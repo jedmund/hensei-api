@@ -1,0 +1,2 @@
+class WeaponKey < ApplicationRecord
+end
