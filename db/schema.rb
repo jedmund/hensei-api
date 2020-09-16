@@ -17,30 +17,28 @@ ActiveRecord::Schema.define(version: 2020_09_13_092045) do
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
-  create_table "compositions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id"
-    t.string "hash"
-    t.string "characters", default: [], array: true
-    t.string "weapons", default: [], array: true
-    t.string "summons", default: [], array: true
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_compositions_on_user_id"
-  end
-
-  create_table "grid_weapons", force: :cascade do |t|
-    t.uuid "composition_id"
+  create_table "grid_weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id"
     t.uuid "weapon_id"
     t.uuid "weapon_key1_id"
     t.uuid "weapon_key2_id"
     t.integer "uncap_level"
+    t.boolean "mainhand"
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["composition_id"], name: "index_grid_weapons_on_composition_id"
+    t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
     t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
+  end
+
+  create_table "parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.string "shortcode"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -52,13 +50,15 @@ ActiveRecord::Schema.define(version: 2020_09_13_092045) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "weapon_keys", force: :cascade do |t|
+  create_table "weapon_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "weapon_id"
     t.string "name_en"
     t.string "name_jp"
     t.integer "series"
     t.integer "type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["weapon_id"], name: "index_weapon_keys_on_weapon_id"
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -81,8 +81,6 @@ ActiveRecord::Schema.define(version: 2020_09_13_092045) do
     t.integer "max_atk"
     t.integer "max_atk_flb"
     t.integer "max_atk_ulb"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
 end
