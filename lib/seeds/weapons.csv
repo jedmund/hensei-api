@@ -1,0 +1,1120 @@
+name_en,name_jp,granblue_id,element,weapon_type,min_hp,min_atk,max_hp,max_atk,max_level,max_skill_level,flb,ulb,max_hp_flb,max_atk_flb
+Sol Remnant,ソル・レムナント,1040311800,2,3,27,405,176,2453,200,20,true,true,236,3272
+Fateless,フェイトレス,1040019700,3,1,34,367,202,2322,200,20,true,true,269,3104
+Yggdrasil's Bough,ユグドラシル・ブランチ,1040416600,4,6,44,318,267,1994,200,20,true,true,356,2664
+Innocent Love,イノセント・ラヴ,1040811600,1,8,40,337,254,2059,200,20,true,true,340,2748
+Rhongomyniad,ロンゴミニアド,1040213700,6,4,39,345,240,2132,200,20,true,true,320,2847
+Claws of Terror,黒銀の滅爪,1040612500,5,7,33,372,227,2196,200,20,true,true,305,2926
+Sword of Repudiation,絶対否定の剣,1040017000,6,1,36,420,316,3660,200,20,false,false,,
+Sword of Renunciation,永遠拒絶の剣,1040017100,6,1,36,420,316,3660,200,20,false,false,,
+Spear of Repudiation,絶対否定の槍,1040212500,1,4,40,390,377,3360,200,20,false,false,,
+Spear of Renunciation,永遠拒絶の槍,1040212600,1,4,40,390,377,3360,200,20,false,false,,
+Scythe of Repudiation,絶対否定の大鎌,1040310600,2,3,30,450,277,3870,200,20,false,false,,
+Scythe of Renunciation,永遠拒絶の大鎌,1040310700,2,3,30,450,277,3870,200,20,false,false,,
+Staff of Repudiation,絶対否定の杖,1040415000,3,6,50,350,420,3140,200,20,false,false,,
+Staff of Renunciation,永遠拒絶の杖,1040415100,3,6,50,350,420,3140,200,20,false,false,,
+Harp of Repudiation,絶対否定の竪琴,1040809400,4,8,70,365,340,3215,200,20,false,false,,
+Harp of Renunciation,永遠拒絶の竪琴,1040809500,4,8,70,365,340,3215,200,20,false,false,,
+Katana of Repudiation,絶対否定の太刀,1040911000,5,10,28,465,269,3915,200,20,false,false,,
+Katana of Renunciation,永遠拒絶の太刀,1040911100,5,10,28,465,269,3915,200,20,false,false,,
+Draconic Harp,ドラゴニックハープ,1040811900,2,8,44,379,399,3240,200,20,false,false,,
+Draconic Buster,ドラゴニックバスター,1040311900,3,3,34,429,281,3831,200,20,false,false,,
+Draconic Bow,ドラゴニックボウ,1040709600,4,5,39,412,334,3644,200,20,false,false,,
+Draconic Rod,ドラゴニックロッド,1040416700,1,6,47,364,418,3148,200,20,false,false,,
+Draconic Blade,ドラゴニックブレイド,1040912100,6,10,32,445,273,3894,200,20,false,false,,
+Draconic Fire,ドラゴニックファイア,1040512300,5,9,26,469,259,3948,200,20,false,false,,
+Wilnas's Finger,ウィルナス・フィンガー,1040613800,2,7,40,401,254,2421,150,15,true,false,297,2825
+Wamdus's Cnidocyte,ワムデュス･ナイダリア,1040215100,3,4,45,373,268,2352,150,15,true,false,313,2748
+Galleon's Jaw,ガレヲン・ジョー,1040513400,4,9,31,444,186,2763,150,15,true,false,217,3227
+Ewiyar's Beak,イーウィヤピーク,1040912400,1,10,31,450,192,2749,150,15,true,false,224,3209
+Lu Woh's Horn,ル･オー･ホーン,1040313000,6,3,31,450,192,2749,150,15,true,false,230,3161
+Fediel's Spine,フェディエル・スパイン,1040020300,5,1,32,439,217,2604,150,15,true,false,313,2748
+Ultima Sword,オメガスウォード,1040011900,0,1,29,435,228,3029,100,10,false,false,,
+Ultima Dagger,オメガバゼラード,1040109700,0,2,33,402,263,2805,100,10,false,false,,
+Ultima Spear,オメガバルーチャ,1040208800,0,4,36,395,278,2746,100,10,false,false,,
+Ultima Axe,オメガファルシャ,1040307800,0,3,23,478,193,3317,100,10,false,false,,
+Ultima Staff,オメガロッド,1040410800,0,6,40,367,317,2525,100,10,false,false,,
+Ultima Gun,オメガシューター,1040507600,0,9,22,480,184,3332,100,10,false,false,,
+Ultima Claw,オメガクロー,1040608300,0,7,35,393,277,2717,100,10,false,false,,
+Ultima Bow,オメガボウ,1040706900,0,5,30,439,241,3042,100,10,false,false,,
+Ultima Harp,オメガストリング,1040807200,0,8,61,381,256,2621,100,10,false,false,,
+Ultima Blade,オメガブレイド,1040907500,0,10,24,479,190,3335,100,10,false,false,,
+Atma Sword,無垢なる竜の剣,1040011300,0,1,29,435,195,2594,100,10,false,false,,
+Atma Dagger,無垢なる竜の短剣,1040109100,0,2,33,402,224,2402,100,10,false,false,,
+Atma Spear,無垢なる竜の槍,1040208200,0,4,36,395,238,2350,100,10,false,false,,
+Atma Axe,無垢なる竜の斧,1040307200,0,3,23,478,165,2844,100,10,false,false,,
+Atma Staff,無垢なる竜の杖,1040410200,0,6,40,367,270,2162,100,10,false,false,,
+Atma Gun,無垢なる竜の筒,1040506800,0,9,22,480,157,2857,100,10,false,false,,
+Atma Claw,無垢なる竜の爪,1040607500,0,7,35,393,237,2328,100,10,false,false,,
+Atma Bow,無垢なる竜の弓,1040706300,0,5,30,439,206,2608,100,10,false,false,,
+Atma Harp,無垢なる竜の弦,1040806400,0,8,61,381,224,2245,100,10,false,false,,
+Atma Blade,無垢なる竜の刃,1040906900,0,10,24,479,163,2856,100,10,false,false,,
+Sword of Bahamut Coda,バハムートソード・フツルス,1040007400,5,1,30,415,240,2885,150,15,false,false,,
+Dagger of Bahamut Coda,バハムートダガー・フツルス,1040106700,5,2,34,395,268,2750,150,15,false,false,,
+Spear of Bahamut Coda,バハムートスピア・フツルス,1040205400,5,4,37,380,290,2640,150,15,false,false,,
+Axe of Bahamut Coda,バハムートアクス・フツルス,1040304300,5,3,26,435,214,3015,150,15,false,false,,
+Staff of Bahamut Coda,バハムートスタッフ・フツルス,1040407000,5,6,41,360,323,2475,150,15,false,false,,
+Pistol of Bahamut Coda,バハムートマズル・フツルス,1040504500,5,9,24,445,200,3085,150,15,false,false,,
+Fist of Bahamut Coda,バハムートナックル・フツルス,1040604400,5,7,35,390,280,2690,150,15,false,false,,
+Bow of Bahamut Coda,バハムートボウ・フツルス,1040703700,5,5,32,415,256,2870,150,15,false,false,,
+Harp of Bahamut Coda,バハムートハープ・フツルス,1040803800,5,8,63,370,264,2545,150,15,false,false,,
+Blade of Bahamut Coda,バハムートブレイド・フツルス,1040904400,5,10,26,440,209,3060,150,15,false,false,,
+Sword of Bahamut Nova,バハムートソード・ノヴム,1040004300,5,1,30,415,205,2470,100,10,false,false,,
+Dagger of Bahamut Nova,バハムートダガー・ノヴム,1040103700,5,2,34,395,229,2355,100,10,false,false,,
+Spear of Bahamut Nova,バハムートスピア・ノヴム,1040203700,5,4,37,380,248,2260,100,10,false,false,,
+Axe of Bahamut Nova,バハムートアクス・ノヴム,1040303000,5,3,26,435,183,2585,100,10,false,false,,
+Staff of Bahamut Nova,バハムートスタッフ・ノヴム,1040403700,5,6,41,360,276,2120,100,10,false,false,,
+Pistol of Bahamut Nova,バハムートマズル・ノヴム,1040502300,5,9,24,445,171,2645,100,10,false,false,,
+Fist of Bahamut Nova,バハムートナックル・ノヴム,1040602400,5,7,35,390,239,2305,100,10,false,false,,
+Bow of Bahamut Nova,バハムートボウ・ノヴム,1040702400,5,5,32,415,219,2460,100,10,false,false,,
+Harp of Bahamut Nova,バハムートハープ・ノヴム,1040802000,5,8,63,370,231,2180,100,10,false,false,,
+Blade of Bahamut Nova,バハムートブレイド・ノヴム,1040901300,5,10,26,440,179,2620,100,10,false,false,,
+Cosmic Sword,ソード・オブ・コスモス,1040008000,6,1,34,398,211,2458,150,15,true,false,255,2973
+Cosmic Dagger,ダガー・オブ・コスモス,1040107300,6,2,38,379,234,2341,150,15,true,false,283,2832
+Cosmic Spear,ランス・オブ・コスモス,1040206000,6,4,41,364,253,2247,150,15,true,false,306,2718
+Cosmic Scythe,サイス・オブ・コスモス,1040304900,6,3,30,417,187,2575,150,15,true,false,226,3115
+Cosmic Rod,ロッド・オブ・コスモス,1040407600,6,6,46,341,281,2107,150,15,true,false,340,2549
+Cosmic Rifle,ガン・オブ・コスモス,1040505100,6,9,29,426,176,2633,150,15,true,false,213,3185
+Cosmic Gauntlet,ガントレット・オブ・コスモス,1040605000,6,7,40,371,243,2294,150,15,true,false,294,2775
+Cosmic Bow,アロー・オブ・コスモス,1040704300,6,5,36,396,224,2446,150,15,true,false,271,2959
+Cosmic Harp,ハープ・オブ・コスモス,1040804400,6,8,67,351,236,2165,150,15,true,false,325,2619
+Cosmic Blade,ブレイド・オブ・コスモス,1040905000,6,10,31,423,184,2610,150,15,true,false,222,3157
+Hollowsky Blade,虚空の裂剣,1040016300,5,1,32,440,216,2600,150,15,true,false,260,3140
+Hollowsky Spear,虚空の楔槍,1040211900,2,4,41,390,265,2370,150,15,true,false,320,2870
+Hollowsky Axe,虚空の晶塊,1040310300,4,3,34,430,200,2700,150,15,true,false,240,3270
+Hollowsky Staff,虚空の拝腕,1040414700,3,6,50,350,300,2200,150,15,true,false,360,2660
+Hollowsky Bow,虚空の歪弦,1040708900,6,5,37,420,234,2580,150,15,true,false,280,3120
+One-Rift Spear [Element Changed],一伐槍・属性変更,1040202100,0,4,44,390,265,2330,100,10,false,false,,
+One-Rift Spear [Awakened],一伐槍・覚醒,1040202100,0,4,44,390,295,2570,100,10,false,false,,
+Two-Crown Bow [Element Changed],二王弓・属性変更,1040701000,0,5,39,425,232,2550,100,10,false,false,,
+Two-Crown Bow [Awakened],二王弓・覚醒,1040701000,0,5,39,425,255,2800,100,10,false,false,,
+Three-Tiger Axe [Element Changed],三寅斧・属性変更,1040301600,0,3,33,445,195,2680,100,10,false,false,,
+Three-Tiger Axe [Awakened],三寅斧・覚醒,1040301600,0,3,33,445,215,2950,100,10,false,false,,
+Four-Sky Blade [Element Changed],四天刃・属性変更,1040102200,0,2,41,405,243,2430,100,10,false,false,,
+Four-Sky Blade [Awakened],四天刃・覚醒,1040102200,0,2,41,405,268,2680,100,10,false,false,,
+Five-Soul Staff [Element Changed],五神杖・属性変更,1040402000,0,6,49,365,290,2200,100,10,false,false,,
+Five-Soul Staff [Awakened],五神杖・覚醒,1040402000,0,6,49,365,320,2420,100,10,false,false,,
+Six-Ruin Fist [Element Changed],六崩拳・属性変更,1040601000,0,7,42,400,250,2400,100,10,false,false,,
+Six-Ruin Fist [Awakened],六崩拳・覚醒,1040601000,0,7,42,400,280,2630,100,10,false,false,,
+Seven-Star Sword [Element Changed],七星剣・属性変更,1040002400,0,1,37,425,220,2550,100,10,false,false,,
+Seven-Star Sword [Awakened],七星剣・覚醒,1040002400,0,1,37,425,242,2810,100,10,false,false,,
+Eight-Life Katana [Element Changed],八命切・属性変更,1040900600,0,10,33,455,190,2720,100,10,false,false,,
+Eight-Life Katana [Awakened],八命切・覚醒,1040900600,0,10,33,455,210,2990,100,10,false,false,,
+Nine-Realm Harp [Element Changed],九界琴・属性変更,1040800400,0,8,75,380,250,2250,100,10,false,false,,
+Nine-Realm Harp [Awakened],九界琴・覚醒,1040800400,0,8,75,380,275,2470,100,10,false,false,,
+Ten-Wolf Gun [Element Changed],十狼雷・属性変更,1040500900,0,9,30,460,180,2740,100,10,false,false,,
+Ten-Wolf Gun [Awakened],十狼雷・覚醒,1040500900,0,9,30,460,200,3020,100,10,false,false,,
+Skofung,スコフニュング,1040003500,3,1,35,377,207,2385,100,10,false,false,,
+Skofnung [Element Changed],スコフニュング・属性変更,1040003500,0,1,35,377,244,2810,150,15,false,false,,
+Guardian's Xiphos [Element Changed],スパルタン・サイフォス・属性変更,1040012600,0,1,35,377,279,3215,200,20,false,false,,
+Aschallon,アシュケロン,1040006200,2,1,31,397,203,2405,100,10,false,false,,
+Aschallon [Element Changed],アシュケロン・属性変更,1040006200,0,1,31,397,240,2830,150,15,false,false,,
+Ridill [Element Changed],リディル・属性変更,1040014400,0,1,31,397,275,3300,200,20,false,false,,
+Proximo,プロキシモ,1040017300,1,1,32,390,203,2387,100,10,false,false,,
+Proximo [Element Changed],プロキシモ・属性変更,1040017300,0,1,32,390,240,2814,150,15,false,false,,
+Wasserspeier [Element Changed],ヴァッサーシュパイア・属性変更,1040018100,0,1,32,390,275,3218,200,20,false,false,,
+Ipetam,イペタム,1040102900,5,2,33,389,224,2301,100,10,false,false,,
+Ipetam [Element Changed],イペタム・属性変更,1040102900,0,2,33,389,265,2710,150,15,false,false,,
+Original Sin [Element Changed],カオスクリエイター・属性変更,1040013200,0,1,33,389,304,3100,200,20,false,false,,
+Faust,ファウスト,1040103000,4,2,38,364,229,2276,100,10,false,false,,
+Faust [Element Changed],ファウスト・属性変更,1040103000,0,2,38,364,270,2680,150,15,false,false,,
+Psycho Syringe [Element Changed],マッドネスシリンジ・属性変更,1040509700,0,9,38,364,309,3065,200,20,false,false,,
+Mezieres [Element Changed],メジエール・属性変更,1040512600,0,9,70,314,312,3033,200,20,false,false,,
+Misericorde,ミセリコルデ,1040105500,1,2,36,375,227,2285,100,10,false,false,,
+Misericorde [Element Changed],ミセリコルデ・属性変更,1040105500,0,2,36,375,270,2690,150,15,false,false,,
+Devil's Finger [Element Changed],ガロット・属性変更,1040111600,0,2,36,375,311,3075,200,20,false,false,,
+Romulus Spear,ロムルスの槍,1040203000,6,4,40,354,246,2189,100,10,false,false,,
+Romulus Spear [Element Changed],ロムルスの槍・属性変更,1040203000,0,4,40,354,290,2580,150,15,false,false,,
+Helmwige [Element Changed],ヘルムヴィーゲ・属性変更,1040209700,0,4,40,354,332,2950,200,20,false,false,,
+Vanguard [Element Changed],ヴァンガード・属性変更,1040214000,0,4,64,384,257,3246,200,20,false,false,,
+Avenger,アヴェンジャー,1040302300,2,3,28,416,180,2519,100,10,false,false,,
+Avenger [Element Changed],アヴェンジャー・属性変更,1040302300,0,3,28,416,213,2960,150,15,false,false,,
+Berserker's Barrage [Element Changed],ベルセルク・オクス・属性変更,1040308400,0,3,28,416,244,3380,200,20,false,false,,
+Tall-Tale Teller [Element Changed],トール・テーラー・属性変更,1040312000,0,3,30,406,226,3297,200,20,false,false,,
+Nirvana,ニルヴァーナ,1040402800,6,6,44,332,274,2053,100,10,false,false,,
+Nirvana [Element Changed],ニルヴァーナ・属性変更,1040402800,0,6,44,332,322,2420,150,15,false,false,,
+Hallowed Pilgrimage [Element Changed],聖者の行進・属性変更,1040411600,0,6,44,332,368,2770,200,20,false,false,,
+Keraunos,ケラウノス,1040402900,4,6,66,336,231,2105,100,10,false,false,,
+Keraunos [Element Changed],ケラウノス・属性変更,1040402900,0,6,66,336,265,2570,150,15,false,false,,
+Demonic Longstaff [Element Changed],デモンズシャフト・属性変更,1040412200,0,6,66,336,298,2940,200,20,false,false,,
+Kapilavastu,カピラヴァストゥ,1040406000,3,6,46,320,276,2040,100,10,false,false,,
+Kapilavastu [Element Changed],カピラヴァストゥ・属性変更,1040406000,0,6,46,320,320,2410,150,15,false,false,,
+Lunatic Broom [Element Changed],ルナティックブルーム・属性変更,1040413400,0,6,46,320,365,2750,200,20,false,false,,
+Kanabo [Element Changed],金砕棒・属性変更,1040417200,0,6,42,345,348,2872,200,20,false,false,,
+Oliver,オリバー,1040501600,1,9,27,420,170,2571,100,10,false,false,,
+Oliver [Element Changed],オリバー・属性変更,1040501600,0,9,27,420,200,3030,150,15,false,false,,
+The Storyteller [Element Changed],浄瑠璃・属性変更,1040508000,0,9,27,420,229,3465,200,20,false,false,,
+Nebuchad,ネブカドネザル,1040503500,5,9,24,435,167,2585,100,10,false,false,,
+Nebuchad [Element Changed],ネブカドネザル・属性変更,1040503500,0,9,24,435,200,3040,150,15,false,false,,
+John Doe [Element Changed],ジョン・ドゥ・属性変更,1040510600,0,9,24,435,231,3475,200,20,false,false,,
+Hellion Gauntlet,鬼神の籠手,1040601700,2,7,36,372,235,2245,100,10,false,false,,
+Hellion Gauntlet [Element Changed],鬼神の籠手・属性変更,1040601700,0,7,36,372,277,2640,150,15,false,false,,
+Championship Belt [Element Changed],チャンピオンベルト・属性変更,1040609100,0,7,36,372,317,3015,200,20,false,false,,
+Ringed Armguards [Element Changed],修武の籠手・属性変更,1040613100,0,7,40,352,345,2961,200,20,false,false,,
+Rosenbogen,ローゼンボーゲン,1040701700,1,5,34,391,217,2388,100,10,false,false,,
+Rosenbogen [Element Changed],ローゼンボーゲン・属性変更,1040701700,0,5,34,391,256,2810,150,15,false,false,,
+Maverick [Element Changed],メース・属性変更,1040707500,0,5,34,391,293,3210,200,20,false,false,,
+Langeleik,ランゲレイク,1040801300,3,8,67,331,232,2100,100,10,false,false,,
+Langeleik [Element Changed],ランゲレイク・属性変更,1040801300,0,8,67,331,266,2480,150,15,false,false,,
+Chanteuse Angelique [Element Changed],シャンゼリゼ・属性変更,1040807600,0,8,67,331,299,2840,200,20,false,false,,
+Soul Echoer,響魂の鼓,1040810100,4,8,66,334,230,2094,100,10,false,false,,
+Soul Echoer [Element Changed],響魂の鼓・属性変更,1040810100,0,8,66,334,266,2470,150,15,false,false,,
+Helmholtz [Element Changed],ヘルムホルツ・属性変更,1040810900,0,8,66,334,300,2826,200,20,false,false,,
+Rip Van Winkle [Element Changed],リップヴァンウィンクル・属性変更,1040812100,0,8,74,294,339,2638,200,20,false,false,,
+Murakumo,天叢雲剣,1040900300,6,10,30,411,179,2543,100,10,false,false,,
+Murakumo [Element Changed],天叢雲剣・属性変更,1040900300,0,10,30,411,211,3000,150,15,false,false,,
+Unsigned Kaneshige [Element Changed],無銘金重・属性変更,1040909300,0,10,30,411,241,3435,200,20,false,false,,
+Muramasa,千子村正,1040900400,5,10,26,431,175,2563,100,10,false,false,,
+Muramasa [Element Changed],千子村正・属性変更,1040900400,0,10,26,431,207,3020,150,15,false,false,,
+Tetrastreamer [Element Changed],テトラストリーマ・属性変更,1040910300,0,10,26,431,237,3455,200,20,false,false,,
+Xeno Purity Sunblade,六道・道天浄土,1040015300,6,1,29,380,180,2345,100,10,false,false,,
+True Purity Sunblade,真・道天浄土,1040015400,6,1,29,380,210,2739,150,15,false,false,,
+Sahrivar,シャフレワル,1040015700,4,1,39,391,200,2240,100,10,false,false,,
+Last Sahrivar,ラスト・シャフレワル,1040015800,4,1,39,391,232,2611,150,15,false,false,,
+Xeno Conviction Flashspear,六道・黄木天の箭,1040209400,1,4,37,340,271,2427,150,15,false,false,,
+True Conviction Flashspear,真・黄木天の箭,1040209500,1,4,37,340,271,2427,150,15,false,false,,
+Advocatus,アドヴォケイト,1040213200,5,4,32,365,225,2114,100,10,false,false,,
+Advocatus Diaboli,デモン・アドヴォケイト,1040213300,5,4,32,365,264,2464,150,15,false,false,,
+Xeno Infernal Flamescythe,六道・灼滅天の刃鎌,1040306200,2,3,25,400,199,2795,150,15,false,false,,
+True Infernal Flamescythe,真・灼滅天の刃鎌,1040306300,2,3,25,400,199,2795,200,20,false,true,228,3198
+Xeno Glacial Dream Staff,六道・氷逆天の戦棍,1040413000,3,6,43,310,260,1940,100,10,false,false,,
+True Glacial Dream Staff,真・氷逆天の戦棍,1040413100,3,6,43,310,303,2270,150,15,false,false,,
+Sol Flamma,ソル・フラマ,1040511500,6,9,26,393,162,2431,100,10,false,false,,
+Flamma Orbis,フラマ・オルビス,1040511600,6,9,26,393,189,2840,150,15,false,false,,
+Arkab,アルカブ,1040611000,1,7,33,357,220,2142,100,10,false,false,,
+Arkab Prior,アルカブ・プリオル,1040611100,1,7,33,357,257,2500,150,15,false,false,,
+Xeno Judgement Lyre,六道・裁考天の鳴弦,1040805700,4,8,63,318,250,2329,150,15,false,false,,
+True Judgement Lyre,真・裁考天の鳴弦,1040805800,4,8,63,318,250,2329,200,20,false,true,281,2664
+Dante's Harp,ダンテの竪琴,1040809700,3,8,64,313,220,1989,100,10,false,false,,
+Dante Alighieri,ダンテ・アリギエーリ,1040809800,3,8,64,313,251,2325,150,15,false,false,,
+Xeno Phantom Demon Blade,六道・普天幻魔,1040908600,5,10,24,410,165,2430,100,10,false,false,,
+True Phantom Demon Blade,真・普天幻魔,1040908700,5,10,24,410,193,2835,150,15,false,false,,
+Emberfire Longblade,焔ノ太刀,1040910100,2,10,26,400,168,2420,100,10,false,false,,
+Wrathfire Longblade,極マリシ烈火ノ太刀,1040910200,2,10,26,400,196,2825,150,15,false,false,,
+Sword of Valorblaze,赤き熾炎の剣,1040017200,2,1,31,410,250,2980,150,15,false,false,,
+Wand of Charmtide,美と慈愛の杖,1040415300,3,6,43,350,340,2540,150,15,false,false,,
+Gauntlet of Proudearth,揺るがぬ大地の拳,1040611300,4,7,35,390,290,2780,150,15,false,false,,
+Ring of Wandergale,果てぬ風呼の魔弓,1040709100,1,5,31,420,270,2970,150,15,false,false,,
+Harp of Everlore,永遠の知識求る竪琴,1040809600,6,8,65,355,270,2660,150,15,false,false,,
+Scythe of Darkherald,闇の子の歯牙,1040310800,5,3,27,435,230,3100,150,15,false,false,,
+Sword of Michael (SSR),ソード・オブ・ミカエル(SSR),1040009600,2,1,31,410,206,2465,100,10,false,false,,
+Wand of Gabriel (SSR),ワンド・オブ・ガブリエル(SSR),1040409400,3,6,43,350,280,2100,100,10,false,false,,
+Gauntlet of Uriel (SSR),グローブ・オブ・ウリエル(SSR),1040606400,4,7,35,390,240,2300,100,10,false,false,,
+Ring of Raphael (SSR),リング・オブ・ラファエル(SSR),1040705700,1,5,31,420,220,2460,100,10,false,false,,
+Harp of the Teachers (SSR),ハープ・オブ・ハルワアムル(SSR),1040809200,6,8,65,355,230,2200,100,10,false,false,,
+Scythe of Belial (SSR),サイス・オブ・ベリアル(SSR),1040310500,5,3,27,435,187,2565,100,10,false,false,,
+Yggdrasil Crystal Blade Omega,世界樹の晶剣・マグナ,1040002200,4,1,32,365,196,2270,200,20,true,true,245,2840
+Luminiera Sword Omega,シュヴァリエソード・マグナ,1040007200,6,1,31,370,195,2275,200,20,true,true,244,2850
+Yggdrasil Dagger Omega,世界樹の雫刃・マグナ,1040101400,4,2,36,345,218,2160,200,20,true,true,272,2700
+Leviathan Gaze Omega,レヴィアンゲイズ・マグナ,1040101500,3,2,37,340,219,2155,200,20,true,true,273,2700
+Tiamat Glaive Omega,ティアマトグレイブ・マグナ,1040201500,1,4,37,340,233,2085,200,20,true,true,292,2600
+Celeste Horn Omega,セレストホーン・マグナ,1040201900,5,4,34,355,230,2100,200,20,true,true,289,2620
+Leviathan Spear Omega,レヴィアンスピア・マグナ,1040205100,3,4,40,325,236,2070,200,20,true,true,295,2590
+Tiamat Amood Omega,ティアマトアムード・マグナ,1040300900,1,3,27,390,172,2390,200,20,true,true,216,2990
+Luminiera Bhuj Omega,シュヴァリエブージ・マグナ,1040301100,6,3,28,385,173,2385,200,20,true,true,217,2990
+Celeste Zaghnal Omega,セレストザグナル・マグナ,1040301400,5,3,24,405,169,2405,200,20,true,true,213,3010
+Leviathan Scepter Omega,レヴィアンセプター・マグナ,1040401400,3,6,44,305,262,1940,200,20,true,true,328,2430
+Colossus Cane Omega,コロッサスケーン・マグナ,1040401500,2,6,40,325,258,1960,200,20,true,true,324,2450
+Yggdrasil Dewbranch Omega,世界樹の雫枝・マグナ,1040405900,4,6,43,310,261,1945,200,20,true,true,327,2430
+Colossus Carbine Omega,コロッサスカービン・マグナ,1040500500,2,9,24,405,160,2450,200,20,true,true,204,3060
+Luminiera Bolt Omega,シュヴァリエボルト・マグナ,1040500600,6,9,26,395,162,2440,200,20,true,true,203,3050
+Tiamat Bolt Omega,ティアマトボルト・マグナ,1040502600,1,9,25,400,161,2445,200,20,true,true,202,3060
+Tiamat Gauntlet Omega,ティアマトガントレ・マグナ,1040600500,1,7,35,350,224,2130,200,20,true,true,281,2670
+Colossus Fist Omega,コロッサスフィスト・マグナ,1040600700,2,7,34,355,223,2135,200,20,true,true,280,2670
+Celeste Claw Omega,セレストクロー・マグナ,1040604300,5,7,32,365,221,2145,200,20,true,true,278,2680
+Yggdrasil Bow Omega,世界樹の蔦弓・マグナ,1040700600,4,5,34,360,208,2260,200,20,true,true,260,2830
+Leviathan Bow Omega,レヴィアンボウ・マグナ,1040700700,3,5,35,355,209,2255,200,20,true,true,261,2830
+Luminiera Harp Omega,シュヴァリエハープ・マグナ,1040800000,6,8,61,325,218,2005,200,20,true,true,265,2510
+Celeste Harp Omega,セレストハープ・マグナ,1040800100,5,8,57,345,214,2025,150,15,true,true,261,2530
+Colossus Blade Omega,コロッサスブレード・マグナ,1040902700,2,10,26,400,168,2425,200,20,true,true,210,3030
+Scimitar of Brahman,ブラフマンシミター,1040015000,2,1,30,387,198,2342,150,15,true,false,230,2730
+Godsworn Edge,極神剣,1040020600,4,1,33,372,200,2300,150,15,true,false,230,2690
+Nibelung Messer,ニーベルン・メッサー,1040110300,4,2,37,354,223,2216,150,15,true,false,260,2590
+Mittron's Treasured Blade,ミトロンの宝剣,1040110400,6,2,36,359,222,2221,150,15,true,false,260,2590
+Trident of Brahman,ブラフマントライデント,1040210400,2,4,37,355,238,2142,150,15,true,false,280,2500
+Last Storm Lance,ラストストームランス,1040210500,1,4,38,350,239,2137,150,15,true,false,280,2490
+Pillar of Flame,炎の柱,1040215200,6,4,37,341,213,2250,150,15,true,false,250,2630
+Nibelung Horn,ニーベルン・ホルン,1040309300,4,3,30,390,179,2438,150,15,true,false,210,2850
+Abyss Striker,アビスストライカー,1040309400,5,3,25,415,174,2463,150,15,true,false,200,2870
+Tyros Scepter,テュロスワンド,1040414100,3,6,45,313,268,1989,150,15,true,false,310,2320
+Abyss Spine,アビススパイン,1040414200,5,6,39,343,262,2019,150,15,true,false,310,2350
+Nilakantha,ニーラカンタ,1040417900,2,6,41,333,226,2210,150,15,true,false,260,2590
+Coruscant Crozier,輝羅煌閃杖,1040418000,1,6,51,324,302,2050,150,15,true,false,350,2400
+Abyss Gaze,アビスルック,1040508900,5,9,23,424,163,2518,150,15,true,false,190,2940
+Hand of Brahman,ブラフマンガントレ,1040609800,2,7,35,362,229,2186,150,15,true,false,270,2550
+Mittron's Gauntlet,ミトロンの籠手,1040609900,6,7,37,352,231,2176,150,15,true,false,270,2540
+Spirit of Mana,スピリット・オブ・マナ,1040614100,3,7,38,340,235,2156,150,15,true,false,270,2520
+Tyros Bow,テュロスボウ,1040708300,3,5,36,365,214,2311,150,15,true,false,250,2700
+Mittron's Bow,ミトロンの弓,1040708400,6,5,34,375,212,2321,150,15,true,false,250,2710
+Tyros Zither,テュロスビネット,1040808200,3,8,65,322,226,2044,150,15,true,false,260,2390
+Last Storm Harp,ラストストームハープ,1040808300,1,8,62,337,223,2059,150,15,true,false,260,2400
+Zechariah,ゼカリヤ,1040813100,5,8,46,325,298,1995,150,15,true,false,350,2330
+Nibelung Klinge,ニーベルン・クリンゲ,1040908900,4,10,30,395,175,2471,150,15,true,false,200,2890
+Last Storm Blade,ラストストームブレイド,1040909000,1,10,28,405,173,2481,150,15,true,false,200,2900
+Ancient Ecke Sachs,オールド・エッケザックス,1040007000,2,1,106,278,664,1677,150,15,true,false,800,2030
+Ancient Cortana,オールド・コルタナ,1040106400,5,2,32,379,218,2241,150,15,true,false,260,2710
+Ancient Nalakuvara,オールド・ナラクーバラ,1040205200,1,4,38,350,239,2137,150,15,true,false,290,2580
+Ancient Auberon,オールド・オベロン,1040604000,3,7,39,342,233,2166,150,15,true,false,280,2620
+Ancient Bow of Artemis,オールド・アルテミス,1040703400,6,5,34,375,212,2321,150,15,true,false,375,2810
+Ancient Perseus,オールド・ペルセウス,1040803500,4,8,65,322,226,2044,150,15,true,false,270,2470
+Murgleis,ミュルグレス,1040004600,3,1,42,450,240,2760,150,15,true,false,290,3340
+Blutgang,ブルトガング,1040008700,5,1,36,480,234,2790,150,15,true,false,280,3370
+Fallen Sword,フォールン・ソード,1040014300,5,1,36,476,241,2750,150,15,true,false,292,3319
+Eternal Love,エターナル・ラヴ,1040105400,1,2,43,445,263,2645,150,15,true,false,320,3200
+Parazonium,パラゾニウム,1040108700,5,2,40,459,259,2652,150,15,true,false,310,3200
+Reunion,リユニオン,1040108200,1,2,42,450,260,2650,150,15,true,false,310,3200
+Mirror-Blade Shard,刃鏡片,1040110600,4,2,42,428,272,2630,150,15,true,false,330,3180
+Ivory Ark,アーク,1040112500,6,2,44,439,263,2632,150,15,true,false,318,3180
+Ramulus,天干地支刀・未之飾,1040202800,5,4,41,415,264,2400,100,10,false,false,,
+Eden,エデン,1040207000,6,4,48,430,280,2600,150,15,true,false,340,3140
+Galilei's Insight,ガリレオ・サイト,1040211600,3,4,49,411,286,2517,150,15,true,false,345,3044
+Vortex of the Void,虚無ノ哭風,1040212700,1,4,43,431,275,2572,150,15,true,false,333,3107
+Sacred Standard,聖布の槍,1040213400,6,4,47,421,290,2550,150,15,true,false,351,3082
+Certificus,サティフィケイト,1040309000,6,3,41,460,232,2800,150,15,true,false,280,3385
+Porculius,天干地支鈴・亥之飾,1040310400,6,3,30,450,180,2690,100,10,false,false,,
+Bab-el-Mandeb,バブ・エル・マンデブ,1040311600,5,3,31,503,207,2915,150,15,true,false,251,3518
+Yahata's Naginata,八幡薙刀,1040312900,4,3,36,478,212,2890,150,15,true,false,256,3493
+Gambanteinn,ガンバンテイン,1040404300,6,6,53,395,317,2375,150,15,true,false,380,2760
+Blue Sphere,ブルースフィア,1040410000,3,6,64,375,335,2300,150,15,true,false,403,2780
+Benedia,ベネディーア,1040502500,2,9,31,505,196,2980,150,15,true,false,240,3600
+AK-4A,エーケイ・フォーエイ,1040504300,4,9,34,490,199,2965,150,15,true,false,240,3580
+Rodentius,天干地支筒・子之飾,1040511900,5,9,26,469,175,2711,100,10,false,false,,
+Cute Ribbon,リボン,1040605900,5,7,37,410,245,2365,100,10,false,false,,
+Fist of Destruction,絶拳,1040612700,2,7,43,435,270,2600,150,15,true,false,327,3141
+Canisius,天干地支爪・戌之飾,1040609700,3,7,41,390,250,2339,100,10,false,false,,
+Gallinarius,天干地支弓・酉之飾,1040705400,4,5,40,430,238,2585,100,10,false,false,,
+Taisai Spirit Bow,太歳精弓,1040708700,3,5,50,420,300,2500,150,15,true,false,363,3020
+Purifying Thunderbolt,悪滅の雷,1040709000,2,5,32,508,242,2800,150,15,true,false,295,3373
+Dormius,天干地支刀・申之飾,1040904200,6,10,32,465,194,2770,100,10,false,false,,
+Unheil,ウン・ハイル,1040809100,5,8,72,431,252,2505,150,15,true,false,297,3024
+Sunya,シューニャ,1040811800,5,8,73,426,255,2490,150,15,true,false,301,3006
+Kerak,ケラク,1040812000,2,8,48,416,301,2445,150,15,true,false,364,2952
+Ixaba,イクサバ,1040906400,2,10,30,502,195,3000,150,15,true,false,236,3620
+Ichigo Hitofuri,一期一振,1040910000,4,10,42,454,214,2900,150,15,true,false,257,3512
+Sky Ace,スカイエース,1040911500,1,10,35,485,206,2940,150,15,true,false,249,3554
+Durandal,デュランダル,1040000100,3,1,38,410,218,2510,150,15,true,false,263,3035
+Joyeuse,ジュワユース,1040001300,1,1,35,430,218,2560,150,15,true,false,264,3090
+Carnwenhan,カルンウェナン,1040101000,4,2,41,395,240,2400,150,15,true,false,290,2900
+Vegalta,ベガルタ,1040100300,5,2,36,420,212,2540,150,15,true,false,256,3070
+Taming Sari,タミン･サリ,1040112200,6,2,38,410,235,2415,150,15,true,false,284,2916
+Gisla,グラーシーザー,1040200700,5,4,39,404,255,2325,150,15,true,false,309,2810
+Spear of Assail,ゲイアサイル,1040212200,1,4,31,442,314,2780,150,15,true,false,314,2780
+Parashu,パラシュ,1040300400,4,3,34,440,196,2680,150,15,true,false,237,3240
+Slarnd,スラーンド,1040300200,3,3,34,430,194,2630,150,15,true,false,234,3180
+Asclepius Rod,アスクレピオスの杖,1040400300,6,6,47,365,288,2160,150,15,true,false,348,2610
+Nereus Staff,ネーレウスの杖,1040416100,3,6,48,360,280,2190,150,15,true,false,338,2648
+Bird Eye,グラッドアイ,1040500200,2,9,28,460,180,2700,150,15,true,false,218,3260
+Gastraphetes,ガストラフェテス,1040500000,4,9,32,460,187,2785,150,15,true,false,226,3370
+Crimson Finger,クリムゾンフィンガー,1040600200,2,7,40,400,248,2360,150,15,true,false,300,2850
+Lion Khan Claw,獅子王戦拳,1040600000,6,7,47,390,250,2350,150,15,true,false,302,2840
+Sphairai,スファライ,1040613900,4,7,42,386,250,2339,150,15,true,false,302,2827
+Eurytos Bow,エウリュトスボウ,1040700000,2,5,36,430,227,2520,150,15,true,false,275,3040
+L'arc Qui ne Faut,アッキヌフォート,1040700300,4,5,39,415,230,2505,150,15,true,false,278,3030
+Rainbow Bow,虹の弓,1040700200,3,5,40,410,231,2500,150,15,true,false,279,3020
+Shekhinah Bow,シェキナーの弓,1040700100,1,5,37,425,228,2515,150,15,true,false,276,3040
+Asura,阿修羅,1040900000,2,10,30,455,186,2675,150,15,true,false,225,3230
+Exitosus,鬼丸国綱,1040900200,3,10,34,435,190,2655,150,15,true,false,229,3210
+Thalassinus,薄緑,1040902000,1,10,31,450,187,2680,150,15,true,false,226,3240
+Ecke Sachs,エッケザックス,1040007100,2,1,106,278,664,1677,150,15,true,false,800,2030
+Cortana,コルタナ,1040106500,5,2,32,379,218,2241,150,15,true,false,260,2710
+Nalakuvara,ナラクーバラ,1040205300,1,4,38,350,239,2137,150,15,true,false,290,2580
+Auberon,オベロン,1040604100,3,7,39,342,233,2166,150,15,true,false,280,2620
+Bow of Artemis,アルテミス,1040703500,6,5,34,375,212,2321,150,15,true,false,375,2810
+Perseus,ペルセウス,1040803600,4,8,65,322,226,2044,150,15,true,false,270,2470
+Sword of Pallas,パラスの剣,1040009200,2,1,30,387,198,2342,150,15,true,false,232,2734
+Plume of Suparna,スパルナフェザー,1040107900,1,2,35,364,221,2226,150,15,true,false,258,2599
+Erichthonius,エリクトニオス,1040206800,2,4,37,355,238,2142,150,15,true,false,278,2500
+Gungnir,グングニル,1040206700,6,4,39,345,240,2132,150,15,true,false,280,2490
+Solomon's Axe,ソロモンドライブ,1040305800,4,3,30,390,179,2438,150,15,true,false,209,2849
+Obscuritas,ブラック・アンド・ダークネス,1040408700,5,6,39,343,262,2019,150,15,true,false,307,2355
+Phantasmas,サンダー・オブ・ファントム,1040506200,5,9,23,424,163,2518,150,15,true,false,191,2938
+Spymur's Vision,マイムールヴィジョン,1040506100,4,9,28,399,168,2493,150,15,true,false,196,2913
+Wilhelm,ヴィルヘルム,1040606000,3,7,40,337,234,2161,150,15,true,false,273,2527
+Bow of Sigurd,シグルズの弓,1040705100,3,5,36,365,214,2311,150,15,true,false,250,2701
+Indra's Edge,インドラリム,1040705200,1,5,33,380,211,2326,150,15,true,false,247,2716
+Sleipnir Shoe,スレイプニルシュー,1040805200,6,8,63,332,224,2054,150,15,true,false,256,2399
+Keeper of Hallowed Ground,聖域の守護剣,1040011200,3,1,34,367,202,2332,150,15,true,false,240,2810
+Chains of Caucasus,チェーン・オブ・カウカソス,1040018900,2,1,30,385,199,2340,150,15,true,false,240,2830
+Le Fay,ル・フェイ,1040109000,1,2,40,340,241,2127,150,15,true,false,290,2570
+All-Might Spear,英雄王の槍,1040208100,4,4,35,364,221,2226,150,15,true,false,270,2690
+Hermanubis,ヘルマニビス,1040307100,5,3,25,415,174,2463,150,15,true,false,210,2980
+All-Might Battle-Axe,英雄王の戦斧,1040311100,4,3,30,390,178,2440,150,15,true,false,220,2950
+Fire of Prometheus,ファイア・オブ・プロメテウス,1040410100,2,6,41,333,264,2009,150,15,true,false,320,2430
+Savior of Hallowed Ground,聖域の錫杖,1040415700,3,6,43,320,266,2000,150,15,true,false,320,2420
+Scales of Dominion,支配の天秤,1040415800,5,6,38,345,261,2020,150,15,true,false,320,2440
+Adamantine Gauntlet,不毀の籠手,1040611700,6,7,36,355,230,2180,150,15,true,false,280,2640
+Bow of Iliad,イーリアスボウ,1040706200,6,5,34,375,212,2321,150,15,true,false,260,2810
+Unius,ウニウス,1040709200,1,5,33,380,210,2330,150,15,true,false,250,2820
+Dainsleif,ダーインスレイブ,1040000000,2,1,33,445,216,2580,150,15,true,false,253,3010
+Ascalon,アスカロン,1040000300,4,1,37,415,217,2515,150,15,true,false,250,2940
+Caladbolg,カラドボルグ,1040000500,6,1,37,435,224,2600,150,15,true,false,260,3030
+Laevateinn,レーヴァテイン,1040000600,2,1,34,435,217,2565,100,10,false,false,,
+Hauteclaire,オートクレール,1040001000,6,1,38,440,226,2640,150,15,true,false,260,3080
+Greatsword Andalius,宝剣アンダリス,1040001400,4,1,36,400,210,2430,150,15,true,false,245,2940
+Claíomh Solais,輝剣クラウ・ソラス,1040001600,3,1,39,415,222,2550,150,15,true,false,259,2980
+Manawydan Blade,マナウィダンブレード,1040001700,3,1,30,315,175,2015,100,10,false,false,,
+Seven-Star Sword,七星剣,1040001800,6,1,35,420,213,2500,100,10,false,false,,
+Seven Star Sword Sterling,七星剣・真,1040002400,6,1,36,420,216,2520,100,10,false,false,,
+Hrotti,フロッティ,1040001900,6,1,37,425,220,2560,150,15,true,false,257,2990
+Albacore Blade,アルバコアブレード,1040002100,5,1,24,345,169,2045,100,10,false,false,,
+Balmung,バルムンク,1040002300,2,1,26,335,171,2035,150,15,true,false,200,2380
+Mistilteinn,ミストルテイン,1040003100,5,1,32,440,212,2540,150,15,true,false,244,2980
+Wind God Sword,風神剣,1040003200,1,1,27,330,172,2030,100,10,false,false,,
+Mysterious Sword,アンノウンソード,1040003300,2,1,26,340,174,2065,100,10,false,false,,
+Valentine Sword,バレンタインソード,1040003400,6,1,28,325,173,2025,100,10,false,false,,
+Lyst Sin,ラスト・シン,1040003600,5,1,33,445,216,2580,150,15,true,false,250,3010
+Lohengrin,ローエングリン,1040004400,2,1,35,444,221,2615,150,15,true,false,260,3050
+Balanced Blade,フェアーソード,1040004500,2,1,27,330,173,2015,100,10,false,false,,
+Deep Desire,ディープデザイア,1040004700,4,1,38,420,221,2555,100,10,false,false,,
+Broadsword of Earth,大地の剣,1040004800,4,1,32,351,190,2201,100,10,false,false,,
+Obsidian Sword,オブシダンソード,1040004900,5,1,23,335,164,1980,100,10,false,false,,
+Truffle Skewer,ウットリュフ串,1040005000,4,1,29,320,174,2020,100,10,false,false,,
+Gram,グラム,1040005800,5,1,33,455,219,2625,150,15,true,false,260,3060
+Blade of Light,光の剣,1040005900,5,1,23,350,167,2045,100,10,false,false,,
+Blast Sword,ブラスト・ソード,1040006000,3,1,31,310,176,2010,100,10,false,false,,
+Ethereal Lasher,オーラフラジェルム,1040006100,6,1,38,450,230,2690,150,15,true,false,280,3250
+Xolotl Ripper,ショロトルリッパー,1040007300,1,1,23,350,168,2050,100,10,false,false,,
+Bewitching Bouquet,コートシップ・ブーケ,1040008500,2,1,27,332,174,2020,100,10,false,false,,
+Disparia,ディスペアー,1040008600,5,1,34,460,223,2665,150,15,true,false,260,3100
+S.D.,S・D,1040008800,2,1,26,335,170,2025,100,10,false,false,,
+Qinglong Manewhip,青竜髭刃,1040008900,1,1,26,320,167,1965,150,15,true,false,200,2290
+Antwerp,アントウェルペン,1040009000,2,1,32,440,210,2535,100,10,false,false,,
+Nagelring,ナーゲルリング,1040009300,3,1,38,410,217,2500,100,10,false,false,,
+Yyrkoon,イイルクーン,1040009400,1,1,36,425,216,2520,100,10,false,false,,
+Blade of the Scourged,カースドブレイド,1040009500,5,1,22,355,166,2050,100,10,false,false,,
+Rose Crystal Sword,ローズクリスタルソード,1040009700,3,1,34,365,204,2320,100,10,false,false,,
+Qilin Sword,麒麟剣,1040010000,5,1,30,420,207,2480,200,20,true,true,420,3310
+Symbol of Justice,フェアネスマーク,1040011000,6,1,43,395,246,2390,100,10,false,false,,
+Prototype,プロトタイプ,1040011100,5,1,32,445,210,2550,100,10,false,false,,
+Frostbite,パーマフロスト・ソード,1040012500,3,1,33,435,205,2575,100,10,false,false,,
+Heiliges Schwert,ハイリゲスシュヴェールト,1040014000,1,1,36,420,215,2510,100,10,false,false,,
+Wyrmsword,ウィルムスウォード,1040014100,4,1,30,315,175,2015,100,10,false,false,,
+Snap Blade,スナップブレード,1040014200,1,1,20,362,137,2199,150,15,true,false,158,2566
+Glory Thread,リバーススレッド,1040015100,6,1,28,324,173,2017,100,10,false,false,,
+Sephira Emerald Sword,セフィラの翠剣,1040015200,1,1,31,385,199,2340,100,10,false,false,,
+Red Cyclone,レッドサイクロン,1040015500,2,1,22,354,152,2122,100,10,false,false,,
+Aluminum Bat,金属バット,1040015900,1,1,21,360,150,2150,100,10,false,false,,
+Gottfried,ゴットフリート,1040016000,3,1,34,421,210,2610,150,15,true,false,250,3160
+Ushumgal,ウシュムガル,1040016100,2,1,30,375,192,2280,150,15,true,false,230,2760
+Ice Claymore,アイスクレイモア,1040016200,3,1,29,320,172,2022,150,15,true,false,208,2448
+Carrot Blade,ニンジンブレード,1040016400,4,1,20,342,158,2052,100,10,false,false,,
+Windhose,ヴィントホーゼ,1040016500,1,1,31,370,193,2275,150,15,true,false,230,2750
+Sword on the Cob,ソードコーン,1040016600,6,1,26,469,180,2687,150,15,true,false,180,2687
+Ain Soph,アイン・ソフ,1040018700,3,1,38,409,202,2577,100,10,false,false,,
+Khopesh,ケペシュ,1040019000,1,1,27,329,168,2042,100,10,false,false,,
+Ishkur Shaft,イシュクルシャフト,1040019200,1,1,18,374,155,2107,100,10,false,false,,
+Gachatti,ガチャッティ,1040019300,1,1,25,339,165,2067,150,15,true,false,200,2500
+Brand of Binding Oath,誓いと洗礼の剣,1040019400,1,1,35,210,165,2570,150,15,true,false,210,2570
+Red King Crab,タラヴァガニ,1040019600,4,1,29,319,144,2160,100,10,false,false,,
+Proelium,プロエリウム,1040019800,3,1,30,449,199,2592,100,10,false,false,,
+Walthari,ヴァルテール,1040020100,6,1,43,384,222,2477,100,10,false,false,,
+Official's Jitte,与力十手,1040020400,6,1,35,420,215,2515,100,10,false,false,,
+Aquamarine Hatchet,水宝玉の手斧,1040020500,3,1,30,314,175,2007,150,15,true,false,211,2430
+Sacred Sword of the Guardian,守護精霊の聖剣,1040020700,2,1,30,314,175,2007,100,10,false,false,,
+Azoth,アゾット,1040100000,5,2,37,430,244,2500,100,10,false,false,,
+Flohrenberk,フローレンベルク,1040100800,2,2,32,350,209,2115,100,10,false,false,,
+Phoenix Beakblade,不死鳥の嘴刃,1040101100,2,2,29,320,190,1930,100,10,false,false,,
+Nephthys Kris,ネフティスクリス,1040101200,1,2,30,315,192,1930,100,10,false,false,,
+Diamond Edge,ダイヤモンドエッジ,1040101300,6,2,40,400,245,2450,100,10,false,false,,
+Hellward Dagger,ヘルウォードダガー,1040101600,5,2,27,330,189,1950,150,15,true,false,221,2275
+Four-Sky Blade,四天刃,1040101700,6,2,37,370,227,2270,100,10,false,false,,
+Four-Sky Blade Sterling,四天刃・真,1040102200,6,2,40,400,240,2400,100,10,false,false,,
+Thunder Dirk Jove,雷公刃ユピテル,1040101800,6,2,41,415,248,2480,150,15,true,false,289,2890
+Abyss Dagger,コムラビ,1040101900,5,2,37,430,240,2460,100,10,false,false,,
+Jack-O'-Brand,トリック・オア・トリート,1040102000,2,2,39,420,242,2450,100,10,false,false,,
+Hoarfrost Blade Persius,霧氷剣ペルソス,1040102100,3,2,42,390,242,2390,150,15,true,false,282,2790
+Heaven's Cloud,ヘヴンズクラウド,1040103800,1,2,39,405,239,2405,150,15,true,false,279,2800
+Pina Colata Cleaver,秘丹弥虚羅多包丁,1040103900,3,2,33,300,195,1915,150,15,true,false,227,2240
+Arsene,アルセーヌ,1040106300,4,2,42,400,245,2435,150,15,true,false,290,2830
+Dual Helix,デュアルヘリックス,1040107800,6,2,41,410,247,2470,100,10,false,false,,
+Bloody Scar,ブラッディスカー,1040108100,5,2,38,410,241,2380,150,15,true,false,290,2870
+Phantom Thief Blade,ファントムシーフナイフ,1040108000,3,2,42,390,241,2380,100,10,false,false,,
+Delta Quartz,デルタ・クォーツ,1040108300,2,2,36,425,216,2495,150,15,true,false,260,3010
+Rose Crystal Knife,ローズクリスタルナイフ,1040108400,1,2,35,365,220,2225,100,10,false,false,,
+Dandelion,ダンデライオン,1040108800,1,2,30,314,191,1926,100,10,false,false,,
+Queen's Stinger,女王の一刺し,1040108900,4,2,32,305,194,1915,100,10,false,false,,
+Sephira Emerald Dagger,セフィラの翠刃,1040110500,2,2,34,370,220,2235,100,10,false,false,,
+Thorny Rose,トーニーローズ,1040110700,4,2,42,390,240,2385,100,10,false,false,,
+Sunshine Blade,サンシャインブレード,1040110800,3,2,39,299,194,1911,150,15,true,false,230,2310
+Chop-Chop,牛鬼包丁,1040110900,5,2,20,349,155,2106,100,10,false,false,,
+Hatsoiiłhał,ハツオイイルハル,1040111000,1,2,35,365,220,2230,150,15,true,false,270,2700
+Gandring,ガンドリン,1040111100,5,2,40,400,250,2360,150,15,true,false,290,2750
+Sharp Letter,レター,1040111200,6,2,40,399,235,2412,100,10,false,false,,
+Winter's Frostnettle,冬ノ霜柱,1040111300,3,2,21,290,189,1857,150,15,true,false,228,2249
+Crystal Bellflowers,クリスタルベルフラワー,1040111400,3,2,42,389,245,2385,100,10,false,false,,
+Love Live Light,ラブライブ！ライト,1040111500,6,2,31,309,191,1921,150,15,true,false,231,2324
+Kris of Hypnos,ヒュプノスクリス,1040112300,3,2,38,349,271,2677,150,15,true,false,271,2677
+Gangsta Knife,ドス,1040112600,2,2,38,409,230,2440,150,15,true,false,280,2950
+Spectral Cleaver,降魔の包丁,1040112700,6,2,26,469,201,2582,150,15,true,false,201,2582
+Simple Opener,ライトオープナー,1040112900,3,2,31,309,192,1921,100,10,false,false,,
+Peridot Edge,橄欖の護剣,1040113000,4,2,32,304,193,1916,150,15,true,false,233,2319
+Cletine,クレティネ,1040200000,6,4,43,385,259,2305,100,10,false,false,,
+Pilum,ピラム,1040200200,2,4,40,380,249,2240,150,15,true,false,291,2610
+Brionac,ブリューナク,1040200300,2,4,41,395,257,2315,150,15,true,false,298,2710
+Turpin Spear,グランテピエ,1040200800,1,4,42,390,258,2310,150,15,true,false,300,2690
+Vergilius,ウェルギリウス,1040201200,3,4,35,290,205,1855,150,15,true,false,239,2170
+Nephthys Fork,ネフティスフォーク,1040201300,1,4,32,300,207,1855,100,10,false,false,,
+Ifrit Halberd,イフリートハルベルト,1040201400,2,4,31,310,206,1860,150,15,true,false,241,2170
+One-Rift Spear,一伐槍,1040201600,6,4,42,370,251,2235,100,10,false,false,,
+One-Rift Spear Sterling,一伐槍・真,1040202100,6,4,43,385,260,2300,100,10,false,false,,
+Gargantua,ガルガンチュア,1040201700,4,4,44,380,260,2300,150,15,true,false,303,2680
+Triaina,トリアイナ,1040201800,3,4,36,290,213,1870,100,10,false,false,,
+Rosen Maiden,ローゼンメイデン,1040202000,5,4,40,410,260,2360,100,10,false,false,,
+Thunder God Spear,雷神矛,1040202900,6,4,33,300,208,1850,100,10,false,false,,
+Avaritia Spear,アワリティアスピア,1040203800,4,4,34,295,209,1845,100,10,false,false,,
+Luin,ルーン,1040203900,2,4,42,400,262,2350,150,15,true,false,310,2730
+Qinglong Spear,青竜牙矛,1040204000,1,4,31,295,201,1800,150,15,true,false,240,2180
+Dragon Spear,竜槍,1040204100,2,4,32,310,209,1890,100,10,false,false,,
+New Year Kadomatsu,貫き門松,1040204900,2,4,30,310,204,1860,100,10,false,false,,
+The Mark of Death,デスシンボル,1040205000,3,4,37,295,217,1895,100,10,false,false,,
+Skyrend Spear,双竜槍,1040206500,5,4,40,415,263,2395,100,10,false,false,,
+Crystal Luin,クリスタルルーン,1040206600,6,4,43,380,260,2295,100,10,false,false,,
+Gae Dearg,ゲイダーグ,1040207100,4,4,40,395,250,2335,100,10,false,false,,
+Neptune's Trident,ネプテゥヌスの三叉鉾,1040206900,3,4,40,315,230,2005,100,10,false,false,,
+Rose Crystal Lance,ローズクリスタルランス,1040207200,4,4,45,350,250,2080,100,10,false,false,,
+Huanglong Spear,黄龍槍,1040207900,6,4,41,365,252,2250,200,20,true,true,336,3010
+Sunspot Spear,サンスポットスピア,1040207500,5,4,39,403,254,2316,100,10,false,false,,
+Nigredo Lance,ランス・オブ・ニグレド,1040208000,6,4,32,300,206,1850,100,10,false,false,,
+Daemon's Spine,ダイモーンスパイン,1040209600,3,4,49,355,283,2175,100,10,false,false,,
+Shadow Viperlance,シャドウサーペント,1040210300,5,4,35,422,250,2335,150,15,true,false,290,2720
+Sephira Emerald Fork,セフィラの翠矛,1040210800,2,4,37,355,238,2145,100,10,false,false,,
+Orleans Standard,オルレアン・フラッグ,1040210900,1,4,52,368,297,2101,150,15,true,false,350,2430
+Conifer,コニファラス,1040211200,6,4,43,383,259,2299,100,10,false,false,,
+Shock-a-Lot,ギュムノートゥス,1040211300,6,4,33,300,195,1905,100,10,false,false,,
+Draco Horn,ドラグホーン,1040211400,3,4,34,397,227,2450,150,15,true,false,270,2860
+Drill,ドリル,1040211500,4,4,35,290,210,1830,100,10,false,false,,
+Feendrache Pennant,フェードラッヘフラッグ,1040211700,2,4,45,385,261,2295,100,10,false,false,,
+Pinkie Needle,ピンキーニードル,1040211800,6,4,37,406,225,2461,100,10,false,false,,
+Sacred Lance,セイクリッドランス,1040212000,2,4,50,350,270,2240,100,10,false,false,,
+Galactic Impact,ギャラクティカインパクト,1040212100,1,4,36,408,222,2476,100,10,false,false,,
+Deirdre's Symbol,ディアドリックシンボル,1040212300,1,4,46,368,261,2281,100,10,false,false,,
+Cherubim's Lance,ランス・オブ・ケルヴィム,1040212400,5,4,26,332,200,1879,100,10,false,false,,
+Spymur's Clause,マイムールクローズ,1040212800,4,4,44,378,245,2360,150,15,true,false,245,2360
+Vagabond,宿無し,1040212900,5,4,30,448,203,2572,150,15,true,false,250,3100
+Autumn's Transformation,秋ノ落葉,1040213000,4,4,33,283,203,1787,150,15,true,false,246,2163
+Cardinal Spear,朱槍,1040213100,1,4,42,388,260,2290,100,10,false,false,,
+Lupercalia,ルペルカリア,1040213600,1,4,42,388,265,2300,100,10,false,false,,
+Bident,バイデント,1040213800,3,4,28,385,199,2244,150,15,true,false,240,2710
+Great Spear,グレートスピア,1040213900,4,4,47,363,262,2276,100,10,false,false,,
+Glaive of Exultation,戦舞の矛,1040214600,2,4,35,290,210,1840,100,10,false,false,,
+Flying A,フライングA,1040214800,1,4,28,322,202,1869,100,10,false,false,,
+Much Ado,暇無し,1040214900,3,4,42,388,257,2301,100,10,false,false,,
+Daggerpeak,剱嶽,1040215000,4,4,39,330,234,2070,150,15,true,false,280,2510
+Ukonvasara,ウコンバサラ,1040300000,6,3,31,425,186,2550,150,15,true,false,217,2980
+Phoenix Wing-Axe,不死鳥の翼斧,1040300500,2,3,23,350,152,2120,100,10,false,false,,
+Windflash,閃刃の剣斧,1040300600,1,3,31,440,190,2640,150,15,true,false,190,2640
+Scarlet Crest Axe,緋紋の絢斧,1040300700,2,3,30,450,190,2650,150,15,true,false,222,3090
+Splitting Axe of Jormungand,ミドガルドの裂斧,1040300800,4,3,26,335,155,2115,100,10,false,false,,
+Hekatonkheles,ヘカトンケイレス,1040301000,6,3,25,340,154,2120,100,10,false,false,,
+Vassago,ヴァサーゴ,1040301200,5,3,28,460,188,2660,100,10,false,false,,
+Three-Tiger Axe,三寅斧,1040301300,6,3,29,405,181,2495,100,10,false,false,,
+Three-Tiger Axe Sterling,三寅斧・真,1040301600,6,3,32,440,192,2640,100,10,false,false,,
+Gleipnir,グレイプニル,1040301500,3,3,27,330,156,2110,150,15,true,false,182,2465
+Mysterious Hatchet,アンノウンスタンプ,1040303100,4,3,26,340,157,2141,100,10,false,false,,
+Veselago Piton,ヴェセラゴハーケン,1040303200,6,3,25,345,157,2150,100,10,false,false,,
+Xuanwu Mace,玄武甲槌,1040303300,3,3,26,320,151,2045,150,15,true,false,180,2480
+Reindeer Horn,レインディアーホーン,1040303400,4,3,27,345,159,2175,100,10,false,false,,
+Way Flyer,フライアウェイ,1040304200,2,3,31,455,193,2695,100,10,false,false,,
+Sombre Axe,ブラックアックス,1040305400,2,3,23,350,150,2130,150,15,true,false,175,2490
+Soul Eater,ソウルイーター,1040305500,5,3,29,465,191,2705,150,15,true,false,220,3150
+Black Whirlwind,黒旋風,1040305600,1,3,24,350,155,2151,100,10,false,false,,
+Mettle,ブラビューラ,1040305700,4,3,34,450,199,2725,150,15,true,false,240,3290
+Swirly Wurst Hammer,マルメテル・ハンマー,1040306000,4,3,22,360,150,2140,150,15,true,false,174,2495
+Split End,スプリットエンド,1040306100,1,3,29,445,181,2685,100,10,false,false,,
+Blossom Axe,ブロッサムアクス,1040306900,3,3,33,434,191,2631,100,10,false,false,,
+Rose Crystal Axe,ローズクリスタルアクス,1040307000,1,3,30,370,210,2300,100,10,false,false,,
+Wurtzite Scythe,ウルツァイトサイズ,1040309100,4,3,28,459,189,2644,100,10,false,false,,
+Bell Striker,ベルタワー,1040309200,1,3,26,337,154,2118,100,10,false,false,,
+Sephira Emerald Reaper,セフィラの翠鎌,1040309600,5,3,25,415,236,2465,100,10,false,false,,
+Banana Bunch,バンチ・オブ・バナナス,1040309700,3,3,20,351,110,2333,100,10,false,false,,
+Master Key,マスターキー,1040309800,5,3,22,470,144,2830,100,10,false,false,,
+Schoolbag,スクールバッグ,1040309900,2,3,29,329,159,2129,150,15,true,false,190,2580
+Two-by-Four,ツーバイフォー,1040310000,2,3,31,440,190,2640,100,10,false,false,,
+Full Metal Recoil,ハイメタルストック,1040310100,6,3,30,450,140,2890,150,15,true,false,170,3500
+Claidheamh Soluis,クレイヴ・ソリッシュ,1040310200,6,3,31,442,188,2646,100,10,false,false,,
+Shark Bite,シャークバイト,1040310900,5,3,25,340,156,2103,100,10,false,false,,
+God Incoming,ゴッド・アドヴェント,1040311000,3,3,27,330,145,2175,100,10,false,false,,
+Hand Axe,手斧,1040311200,2,3,30,449,150,2840,100,10,false,false,,
+Dragon Buster,ドラゴンバスター,1040311300,4,3,26,335,155,2108,100,10,false,false,,
+Spirit Seeker,スピリットシーカー,1040311400,6,3,20,500,120,2986,150,15,true,false,150,3610
+True Tiger's Bane,真武虎薙,1040311700,1,3,31,444,191,2631,100,10,false,false,,
+Teiwaz,テイウァッツ,1040312600,3,3,28,460,160,2770,100,10,false,false,,
+Tiny Logger's Axe,アックスガール・アックス,1040312800,2,3,27,464,186,2656,100,10,false,false,,
+Eighth Point of the Flock,第八綿羊行刃,1040313100,1,3,32,440,191,2630,100,10,false,false,,
+Garnet Broadaxe,柘榴石の鉞,1040313200,2,3,23,350,152,2123,150,15,true,false,184,2566
+Kerykeion,ケーリュケイオン,1040400200,1,6,46,350,277,2095,150,15,true,false,323,2530
+Prismatic Mace,稜鏡の鎚杖,1040400800,6,6,50,370,298,2230,100,10,false,false,,
+Ice Crystal Staff,氷晶杖,1040400900,3,6,48,340,280,2080,150,15,true,false,320,2520
+Sealed Claustrum,封鍵クラウストルム,1040401000,6,6,49,365,293,2195,150,15,true,false,342,2560
+Ouroboros,ウロボロス,1040401100,4,6,49,355,289,2155,150,15,true,false,337,2520
+Illusion Scepter,イリュージョンセプター,1040401200,2,6,46,370,286,2170,150,15,true,false,334,2530
+Sunflower Wand,サンフラワーワンド,1040401300,2,6,44,360,276,2100,100,10,false,false,,
+Mysterious Wand,アンノウンワンド,1040401600,1,6,35,275,240,1685,100,10,false,false,,
+Promise,プロミス,1040401700,1,6,31,325,198,1990,100,10,false,false,,
+Five-Soul Staff,五神杖,1040401800,6,6,44,330,272,2040,100,10,false,false,,
+Five-Soul Staff Sterling,五神杖・真,1040402000,6,6,48,360,288,2160,100,10,false,false,,
+Babylon Staff,バビロンの導杖,1040401900,4,6,38,275,232,1730,100,10,false,false,,
+Valentine Wand,バレンタインワンド,1040402700,5,6,33,300,227,1755,100,10,false,false,,
+Magus Scepter,マギ・リアリジスセプター,1040403000,6,6,37,280,231,1735,100,10,false,false,,
+Kalaurops,カーラウロプス,1040403800,5,6,44,380,284,2180,150,15,true,false,333,2530
+Gotle Bell Cane,ゴトルベルケーン,1040403900,6,6,32,240,200,1500,100,10,false,false,,
+Septian Burner,セプティアンバーナー,1040404000,2,6,39,315,250,1900,100,10,false,false,,
+Majestic Royal Pole,ハイロイヤルポール,1040404100,1,6,37,290,234,1765,100,10,false,false,,
+Ouroboros Treat,トリート・ウロボロス,1040404200,5,6,45,385,289,2215,150,15,true,false,350,2670
+Holiday Wand,クリスマスワンド,1040404400,4,6,40,285,241,1795,100,10,false,false,,
+Starblaze Rings,リング・オブ・サン,1040406800,2,6,47,375,291,2205,150,15,true,false,340,2550
+Magma Rush,マグマストリーム,1040408100,2,6,36,295,232,1770,100,10,false,false,,
+Wing of the Pure,ホワイトウイング,1040408200,1,6,49,375,297,2235,100,10,false,false,,
+Dream Atlas,夢見の書,1040408300,3,6,40,280,235,1700,100,10,false,false,,
+Fonic Rod,フォニックロッド,1040408400,6,6,37,280,230,1730,100,10,false,false,,
+Guivre Rod,ウィーブルロッド,1040408500,5,6,33,300,226,1750,100,10,false,false,,
+Baihu Fangstaff,白虎牙杖,1040408600,4,6,37,265,225,1675,150,15,true,false,260,1960
+Capulet's Oath,キャピュレティオウス,1040408800,6,6,46,370,287,2165,100,10,false,false,,
+Montague's Oath,モンタギュオウス,1040408900,3,6,44,380,283,2175,100,10,false,false,,
+Forbidden Inferno,インフェルノリークス,1040409000,2,6,40,400,280,2200,100,10,false,false,,
+Stardust Holly Rod,星屑の聖杖,1040409100,3,6,49,350,288,2140,100,10,false,false,,
+Gridarvor,グリダーヴォル,1040409200,5,6,42,390,282,2180,100,10,false,false,,
+Luna's Friend,ルナのおともだち,1040409300,5,6,31,308,220,1779,150,15,true,false,231,2073
+Rose Crystal Wand,ローズクリスタルワンド,1040409500,2,6,39,345,260,2030,100,10,false,false,,
+Thyrsus,テュルソス,1040409800,4,6,41,395,281,2185,100,10,false,false,,
+Black Ouroboros,ブラック・ウロボロス,1040409900,5,6,41,400,274,2230,100,10,false,false,,
+Mysterian Holy Scepter,マナリアンホーリーロッド,1040411400,1,6,34,290,227,1740,100,10,false,false,,
+Sealing Staff,封印の杖,1040412800,5,6,32,300,225,1750,150,15,true,false,270,2100
+Trick Stick,トリートスティック,1040412900,5,6,33,298,226,1749,100,10,false,false,,
+Dragon Bar V,D・ビィ,1040413200,5,6,45,375,255,2310,100,10,false,false,,
+Architect Frame,アーキテクトベース,1040413300,5,6,32,300,225,1760,100,10,false,false,,
+Medusiana Staff,メドゥシアナ★ステッキ,1040414000,4,6,51,341,307,2086,150,15,true,false,371,2520
+Sephira Emerald Staff,セフィラの翠杖,1040414300,6,6,43,325,266,2000,100,10,false,false,,
+Returner Staff,リターナースタッフ,1040414400,1,6,48,345,310,2090,100,10,false,false,,
+Staff of Divine Justice,司法神の錫杖,1040414500,6,6,42,253,235,1704,150,15,true,false,280,2070
+Majestas,マジェスタス,1040414600,5,6,40,345,262,2020,150,15,true,false,320,2440
+Cat's Tail,キャットテイル,1040414800,4,6,33,298,211,1824,100,10,false,false,,
+Silphium,シルフィウム,1040414900,5,6,54,329,303,2073,100,10,false,false,,
+Froststar Staff,氷星の煌杖,1040415200,3,6,52,345,300,2095,100,10,false,false,,
+Euripides,エウリピデス,1040415400,4,6,50,350,300,2090,100,10,false,false,,
+Trí Bandia,三相女神,1040415500,1,6,52,339,293,2133,100,10,false,false,,
+Only for a Cutie,オンリー・プリティ・ガール,1040415600,3,6,54,330,260,2293,150,15,true,false,312,2784
+Forbidden Memories,サマーメモリーリークス,1040415900,5,6,43,380,281,2180,100,10,false,false,,
+Enchanted Broomstick,ウィッチブルーム,1040416000,4,6,35,424,255,2313,100,10,false,false,,
+Holy Night Scepter,ホーリーナイトセプター,1040416200,4,6,49,354,288,2148,100,10,false,false,,
+Kaladanda,カラダンダ,1040416300,2,6,41,333,320,2428,150,15,true,false,320,2428
+Dawn Rising,ゴライコウ,1040416500,4,6,43,315,266,1960,150,15,true,false,309,2275
+Tropical Fairy,トロピカルフェアリー,1040416800,2,6,45,374,282,2178,100,10,false,false,,
+Red Sphere,レッドスフィア,1040416900,2,6,56,319,307,2053,100,10,false,false,,
+Piña Bestiary,ぴにゃの書,1040417000,5,6,30,313,206,1849,150,15,true,false,250,2230
+Auguste Commemorative Staff,アウギュステ記念晶杖,1040417800,6,6,38,275,231,1725,100,10,false,false,,
+Tribunal Thunder,裁きの鳴雷,1040500300,4,9,24,345,145,2165,150,15,true,false,169,2530
+Jewel Modele,ジュエルリゾートモデル,1040500400,1,9,23,370,150,2265,100,10,false,false,,
+Far Away,ファラウェイ,1040500700,1,9,29,455,179,2705,150,15,true,false,208,3160
+Ten-Wolf Gun,十狼雷,1040500800,6,9,27,415,170,2550,100,10,false,false,,
+Ten-Wolf Gun Sterling,十狼雷・真,1040500900,6,9,30,450,180,2700,100,10,false,false,,
+Vlisragna,ヴリスラグナ,1040502400,3,9,32,440,182,2690,150,15,true,false,210,3140
+Stratomizer,ストラトゥムバンカー,1040503400,4,9,31,445,181,2695,150,15,true,false,211,3260
+Raphael,ラファエル,1040505700,6,9,21,360,142,2170,100,10,false,false,,
+Gigante Launcher,ギガントアームズ,1040505800,5,9,19,370,140,2180,100,10,false,false,,
+Meteora,メテオラ,1040505900,3,9,35,445,191,2750,150,15,true,false,230,3330
+Cerberus Order,ケルベロス・オーダー,1040506000,5,9,20,375,142,2215,150,15,true,false,167,2585
+Nightmare Mobilizer,ナイトメアバンカー,1040506300,4,9,30,450,180,2700,100,10,false,false,,
+Wicked Sick Blaster,超カッコいいライフル,1040506700,3,9,23,348,140,2180,100,10,false,false,,
+Jolly Starcracker,セイントスタークラッカー,1040508700,6,9,29,456,177,2707,150,15,true,false,210,3160
+Ruler of Fate,フェイトルーラー,1040508800,6,9,25,474,172,2727,150,15,true,false,210,3290
+Tiamat Bolt Prime,ティアマトボルト・オリジン,1040509000,1,9,29,454,178,2696,100,10,false,false,,
+Sephira Emerald Blaster,セフィラの翠銃,1040509100,3,9,29,395,169,2490,100,10,false,false,,
+Railgun,レールガン,1040509200,6,9,25,475,160,2790,100,10,false,false,,
+Compact Automatic Pistol,小型自動拳銃,1040509300,1,9,20,360,140,2180,150,15,true,false,160,2540
+God of a Thousand Demons,万魔の銃,1040509500,5,9,20,365,140,2185,150,15,true,false,170,2640
+Plasma Ripper,プラズマジグソー,1040512000,5,9,21,358,148,2141,100,10,false,false,,
+White Hawk,ホワイトホーク,1040509400,3,9,35,424,206,2556,100,10,false,false,,
+Arachne,アラクネ,1040509600,5,9,24,479,169,2741,150,15,true,false,200,3200
+Ishtar,イシュタル,1040510300,5,9,25,475,170,2740,100,10,false,false,,
+Meteor's Light,ミーティアライト,1040510400,6,9,15,385,135,2205,100,10,false,false,,
+SHRIMP Spreader,エビスプレッダー,1040510500,2,9,20,363,139,2195,150,15,true,false,163,2561
+Clarion,クラリオン,1040511200,3,9,27,385,163,2425,150,15,true,false,200,2940
+V.A.R.I.S.,ヴァリス,1040511300,1,9,24,355,150,2160,150,15,true,false,180,2610
+Summer's Mirage,夏ノ陽炎,1040511400,2,9,20,348,138,2110,150,15,true,false,168,2551
+Ray Gun,レイガン,1040511700,1,9,38,409,203,2571,100,10,false,false,,
+Takeminakata,タケミナカタ,1040512100,6,9,30,449,177,2701,100,10,false,false,,
+Commander's Sidearm,コマンダーピストル,1040512200,3,9,32,439,181,2681,100,10,false,false,,
+Acid Bolt Shooter,アシッドボルト,1040512500,3,9,31,444,180,2686,150,15,true,false,220,3250
+Mystic Spray Gun,ミスティックブラシ,1040513200,2,9,26,469,175,2711,150,15,true,false,210,3270
+Zircon Crossbow,風信子の弩,1040513500,1,9,22,353,143,2166,150,15,true,false,173,2619
+Beach-Camouflage Vlisragna,ヴリスラグナ・サンドカモ,1040513600,4,9,26,469,175,2661,150,15,true,false,210,3210
+Manawydan Gauntlet,マナウィダンガントレ,1040600400,3,7,34,295,202,1880,100,10,false,false,,
+Coco & Mimi,ココ＆ミミ,1040600600,5,7,38,410,245,2380,150,15,true,false,285,2770
+Six-Ruin Fist,六崩拳,1040600800,6,7,38,360,236,2220,100,10,false,false,,
+Six-Ruin Fist Sterling,六崩拳・真,1040601000,6,7,40,400,240,2340,100,10,false,false,,
+Sunset Fan,紅陽扇,1040600900,6,7,32,305,200,1890,150,15,true,false,234,2210
+Scarlet Vane,緋舞扇,1040602500,3,7,44,380,252,2340,150,15,true,false,290,2730
+Mammon Glove,マモーナスグローブ,1040602600,1,7,31,310,199,1890,100,10,false,false,,
+Gigante Fist,ギガントナックル,1040602700,6,7,33,310,203,1910,100,10,false,false,,
+Gauntlets,リスレット,1040602800,6,7,33,300,201,1880,100,10,false,false,,
+Brahma Gauntlet,梵天添甲,1040602900,2,7,41,415,256,2440,150,15,true,false,300,2840
+Baihu Claw,白虎咆拳,1040603000,4,7,32,290,195,1825,150,15,true,false,236,2210
+Street Weapon,ストリートファイト,1040603100,3,7,33,285,196,1820,100,10,false,false,,
+Scissorhands,シザーハンズ,1040603900,5,7,21,360,150,2140,100,10,false,false,,
+Poison Hand,毒手,1040605500,4,7,36,290,204,1860,100,10,false,false,,
+Magma Gauntlet,マグマガントレット,1040605600,2,7,40,410,252,2400,100,10,false,false,,
+Ancient Bandages,エンシェントバンテージ,1040605700,4,7,43,385,251,2345,150,15,true,false,300,2840
+Xuanwu Shellfists,玄武殻拳,1040605800,3,7,33,285,196,1820,150,15,true,false,230,2130
+Blushing Blossom Pin,天華簪,1040606100,2,7,41,390,253,2325,100,10,false,false,,
+Souval Gauntlet,スヴァルガントレット,1040606200,2,7,31,310,197,1900,100,10,false,false,,
+Metal Hand,メタルハンド,1040606700,3,7,42,390,250,2350,100,10,false,false,,
+Huanglong Gauntlet,黄龍拳,1040607100,6,7,40,370,242,2300,200,20,true,true,320,3080
+Deirdre's Claws,ディアドリッククロー,1040607200,1,7,41,391,250,2340,150,15,true,false,300,2830
+Pink Fan,桃色の団扇,1040607300,1,7,29,310,197,1900,150,15,true,false,231,2215
+Rose Crystal Claw,ローズクリスタルクロー,1040607400,4,7,40,360,235,2200,100,10,false,false,,
+Urchin Fist,ウーチンフィスト,1040608700,2,7,30,310,200,1885,100,10,false,false,,
+Tlepilli,トレピリ,1040608800,3,7,50,346,274,2224,100,10,false,false,,
+Draco Claw,ドラグクロー,1040608900,2,7,30,441,207,2571,100,10,false,false,,
+Gothic Cutlery,ゴシックカトラリー,1040609000,6,7,36,412,219,2469,100,10,false,false,,
+Sephira Emerald Duke,セフィラの翠甲,1040610000,4,7,38,350,232,2175,100,10,false,false,,
+Kicking Enhancement Shoes,キック力増強シューズ,1040610100,6,7,30,315,200,1880,150,15,true,false,230,2190
+Emperor's Hand,デスハンド,1040610500,5,7,30,313,190,1935,100,10,false,false,,
+Wyrmtiger Claw,龍虎双滅拳,1040610600,4,7,46,366,270,2239,150,15,true,false,320,2600
+Ruling Pen,ルーリングペン,1040610700,5,7,39,401,249,2344,100,10,false,false,,
+Rainbow Bracelet,レインボーブレス,1040610800,6,7,30,315,200,1882,150,15,true,false,240,2270
+Neko Punch Pro,ネコパンチ・プロ,1040610900,4,7,33,416,218,2499,100,10,false,false,,
+Psycho Gauntlet,サイコガントレット,1040611200,4,7,32,300,200,1882,100,10,false,false,,
+True Grit,ド根性グローブ,1040611400,4,7,32,303,200,1882,100,10,false,false,,
+Rainbow Hand,レインボーハンド,1040611500,4,7,44,376,252,2329,100,10,false,false,,
+Midnight Radiance,蒼宵光華,1040611600,4,7,42,386,252,2340,100,10,false,false,,
+Nibelung Glas,ニーベルン・グラス,1040611800,4,7,30,446,200,2590,150,15,true,false,243,3126
+Rin's Maracas,凛のマラカス,1040611900,1,7,31,308,199,1887,150,15,true,false,241,2282
+Golden Dragon,ゴールドドラゴン,1040612100,1,7,40,396,218,2500,100,10,false,false,,
+Zwei Schaedel,ツヴァイ・シェーデル,1040612200,5,7,31,367,220,2142,150,15,true,false,270,2580
+Deirdre's Heart,ディアドリックハート,1040612400,2,7,39,401,260,2290,150,15,true,false,320,2760
+Honoikazuchi-no-Okami,火雷大神,1040612600,5,7,16,346,166,2046,100,10,false,false,,
+Predator Claw,プレデタークロー,1040612800,5,7,34,426,242,2379,100,10,false,false,,
+Hard Knuckle,硬式ナッコォ,1040613000,4,7,42,386,200,2590,100,10,false,false,,
+Summer Genesis,サマージェネシス,1040613700,5,7,46,366,281,2184,100,10,false,false,,
+Aetherial Bow,エーテリアルボウ,1040700400,1,5,38,430,232,2555,150,15,true,false,271,2980
+Two-Crown Bow,二王弓,1040700500,6,5,35,385,217,2370,100,10,false,false,,
+Two-Crown Bow Sterling,二王弓・真,1040701000,6,5,38,420,230,2510,100,10,false,false,,
+Diablo Bow,ディアボロスボウ,1040700800,5,5,27,355,186,2100,150,15,true,false,218,2450
+Sagittarius Bow,サジタリウスボウ,1040700900,1,5,29,330,183,2020,150,15,true,false,214,2358
+Heroic Bow,ヒロイックボウ,1040702500,6,5,35,435,224,2525,150,15,true,false,260,2940
+Roseate Aetherial Bow,ピンク・エーテリアル,1040703300,2,5,37,435,231,2560,150,15,true,false,280,3090
+Dark Thrasher,扇抜,1040704800,3,5,32,320,188,2030,150,15,true,false,250,2700
+Fimbul,フィンブル,1040705000,3,5,32,320,220,2370,150,15,true,false,220,2370
+Compound Gadget Bow,マシン・ボウ,1040705500,4,5,30,320,186,2000,100,10,false,false,,
+Silver Bow,白銀の弓,1040705600,1,5,27,338,180,2027,150,15,true,false,211,2365
+Qilin Bow,麒麟弓,1040706000,5,5,32,415,220,2465,200,20,true,true,296,3285
+Rose Crystal Bow,ローズクリスタルボウ,1040706100,2,5,33,370,215,2250,100,10,false,false,,
+Sharom Bow,シャローム・ボウ,1040708100,5,5,25,345,180,2030,100,10,false,false,,
+Gandiva,ガーンディーヴァ,1040708200,4,5,37,441,228,2623,100,10,false,false,,
+Sephira Emerald Bow,セフィラの翠弓,1040708500,1,5,33,380,211,2330,100,10,false,false,,
+Arjunan Bow,アルジュナン・ボウ,1040708600,2,5,35,430,230,2505,100,10,false,false,,
+Levin Shooter,レヴィオンシューター,1040708800,6,5,40,410,255,2400,150,15,true,false,300,2800
+Eon,アイオーン,1040709300,6,5,45,380,260,2350,100,10,false,false,,
+Iridescent Bow,アヤの弓,1040709400,6,5,38,417,208,2600,150,15,true,false,250,3150
+Soldier Bow,ソルジャーボウ,1040709700,4,5,31,318,180,2027,100,10,false,false,,
+Heavenly Fawn Bow,天の鹿児弓,1040709900,1,5,37,422,250,2390,150,15,true,false,300,2880
+Ocean Harp,オーシャンハープ,1040800200,3,8,73,360,245,2210,100,10,false,false,,
+Nine-Realm Harp,九界琴,1040800300,6,8,65,340,228,2100,100,10,false,false,,
+Nine-Realm Harp Sterling,九界琴・真,1040800400,6,8,71,370,243,2220,100,10,false,false,,
+Sandcastle Song-Lume,砂城の宮樂弦,1040801100,4,8,72,365,244,2215,150,15,true,false,280,2590
+Branwen Harp,ブランウェンハープ,1040801200,3,8,57,275,196,1770,100,10,false,false,,
+Mobius Strip,メビウス,1040802100,2,8,69,380,241,2230,150,15,true,false,280,2600
+Escalus Harp,エスカラスハープ,1040802200,2,8,53,295,192,1790,100,10,false,false,,
+Anemoi Silver Lyre,アネモイの銀琴,1040802300,1,8,59,320,211,1950,100,10,false,false,,
+Cords of Heaven Lillah,神授のリラ,1040802400,1,8,70,375,242,2225,150,15,true,false,276,2595
+Froggly Bell,カエールベル,1040802500,1,8,55,290,195,1785,100,10,false,false,,
+Melodic Sphere,メロディックスフィア,1040802600,3,8,74,365,249,2245,150,15,true,false,284,2720
+Snowy Mobius Strip,スノウリィメビウス,1040802700,6,8,70,370,242,2210,100,10,false,false,,
+Golden Blossom,ゴールデンブロッサム,1040805000,6,8,55,290,195,1785,100,10,false,false,,
+Zhuque Lyrewings,朱雀翼弦,1040805100,2,8,33,285,186,1740,150,15,true,false,220,2020
+Harp of Westerly Winds,西風の竪琴,1040805300,1,8,52,300,190,1800,100,10,false,false,,
+Dominion Harp,ドミニオンハープ,1040805600,6,8,53,278,188,1727,100,10,false,false,,
+Qilin Lyre,麒麟弦,1040805900,5,8,63,370,232,2185,200,20,true,true,300,2915
+Fusion Mobius,フュージョンメビウス,1040806000,6,8,69,375,240,2225,100,10,false,false,,
+Bella Aeterna,ベッラ・アエテルヌス,1040806100,4,8,75,355,260,2130,100,10,false,false,,
+Rose Crystal Harp,ローズクリスタルハープ,1040806300,3,8,40,360,240,2120,100,10,false,false,,
+Sephira Emerald Harp,セフィラの翠弦,1040808400,3,8,65,325,226,2045,100,10,false,false,,
+Cythara Anglica,キタラアングリカ,1040808500,1,8,72,329,282,2013,100,10,false,false,,
+Renaissance Harp,ルネサンス・ハープ,1040808600,4,8,53,298,175,1872,100,10,false,false,,
+Distant Requiem,ディスタント・レクイエム,1040808700,5,8,66,389,238,2233,150,15,true,false,238,2233
+Golden Bell,ゴールデンベル,1040808800,2,8,55,293,194,1780,100,10,false,false,,
+Another Sky,アナザースカイ,1040809300,1,8,70,370,240,2222,150,15,true,false,280,2690
+Spring's Whisperings,春ノ柔風,1040809900,1,8,52,283,187,1732,150,15,true,false,221,2094
+Holy Fox Strings,聖狐狸弦,1040810000,6,8,55,286,194,1777,100,10,false,false,,
+Plushie Pal,ベスちゃんにんぎょう,1040811700,3,8,79,325,284,2003,100,10,false,false,,
+Sikinnis,スキニス,1040812800,2,8,50,349,279,2193,100,10,false,false,,
+My Little Mim,ミムメモ人形,1040812900,2,8,43,384,272,2228,100,10,false,false,,
+Ophelia,オフィーリア,1040813000,3,8,55,314,325,1953,100,10,false,false,,
+Venustas,丙子椒林剣,1040900100,4,10,33,440,189,2660,150,15,true,false,220,3100
+Eight-Life Katana,八命切,1040900500,6,10,30,410,178,2530,100,10,false,false,,
+Eight-Life Katana Sterling,八命切・真,1040900600,6,10,33,413,188,2675,100,10,false,false,,
+Dragon Slayer,ドラゴンスレイヤー,1040902100,1,10,32,460,191,2725,150,15,true,false,220,3180
+Second Star,ニバンボシ,1040902200,5,10,22,360,148,2160,100,10,false,false,,
+Swordfish,太刀魚,1040902300,3,10,27,335,153,2140,100,10,false,false,,
+Mikazuki,三日月,1040902400,5,10,28,465,184,2695,100,10,false,false,,
+Ray of Zhuque,朱雀光剣,1040902500,2,10,22,345,145,2090,150,15,true,false,175,2530
+Fudo-Kuniyuki,不動国行,1040902600,5,10,29,475,188,2740,150,15,true,false,220,3200
+Master Bamboo Sword,剣聖の袋竹刀,1040905500,4,10,26,345,154,2170,150,15,true,false,200,2890
+Red Sun,レッド・サン,1040905600,2,10,24,355,150,2150,100,10,false,false,,
+Raikiri,雷切,1040905700,3,10,33,440,189,2660,100,10,false,false,,
+Wood Sword,木太刀,1040905800,4,10,25,345,151,2140,100,10,false,false,,
+Snowflake,スノー・フレーク,1040905900,3,10,26,340,151,2150,100,10,false,false,,
+Chichiushi,チチウシ,1040906100,6,10,26,340,153,2130,100,10,false,false,,
+Fugudoku,河豚毒,1040906000,1,10,23,356,148,2155,100,10,false,false,,
+Huanglong Katana,黄龍刀,1040906800,6,10,31,425,184,2610,200,20,true,true,246,3490
+Sinensis,シネンシス,1040908100,1,10,29,460,180,2715,100,10,false,false,,
+Mikazuki Munechika,三日月宗近,1040908200,6,10,25,345,151,2142,150,15,true,false,176,2501
+Tsurumaru Kuninaga,鶴丸国永,1040908300,3,10,27,335,153,2132,150,15,true,false,178,2491
+Izayoi,十六夜,1040908400,3,10,28,466,184,2686,100,10,false,false,,
+Martial Steel of the Sovereign,武王の鉄剣,1040908500,2,10,25,355,150,2150,100,10,false,false,,
+Tanzanite Blade,タンザナイトブレイド,1040908800,2,10,30,455,184,2685,150,15,true,false,210,3130
+Sephira Emerald Blade,セフィラの翠刀,1040909100,4,10,30,395,175,2475,100,10,false,false,,
+Gigante Slicer,ギガントスライサー,1040909200,5,10,30,455,180,2710,100,10,false,false,,
+Crimson Sapphire,蒼紅之華刀,1040910900,1,10,36,430,202,2597,150,15,true,false,240,3140
+Ancestral Blade,古戦場の遺刀,1040911200,3,10,27,335,140,2197,100,10,false,false,,
+Metal Destroyer,メタル・デストロイヤー,1040911300,2,10,35,420,200,2600,150,15,true,false,230,3040
+Black Dragon's Maw,黒竜のアギト,1040911400,2,10,30,455,180,2707,100,10,false,false,,
+Juzumaru,数珠丸,1040911600,5,10,28,465,180,2710,100,10,false,false,,
+Blade of Purification,清めと祓いの刃,1040911700,4,10,26,475,155,2800,100,10,false,false,,
+Alabaster Zenith,極・白刃,1040911900,5,10,28,465,180,2700,100,10,false,false,,
+Soshu Masamune,相州正宗,1040912000,4,10,31,450,180,2707,100,10,false,false,,
+Dayspring,暁,1040912300,3,10,24,485,134,2937,150,15,true,false,160,3550
+Surviving Lightning,ライトニング・サヴァイヴ,1040912500,1,10,26,475,162,2799,100,10,false,false,,
+Excalibur,エクスカリバー,1040007500,0,1,41,475,244,2848,200,20,true,true,316,3792
+Damascus Knife,ダマスカスナイフ,1040106600,0,2,41,472,267,2732,200,20,true,true,640,3728
+Gae Bulg,ゲイボルグ,1040205500,0,4,45,454,289,2624,200,20,true,true,391,3496
+Mjolnir,ミョルニル,1040304400,0,3,36,497,217,2983,200,20,true,true,283,3977
+Caduceus,カドゥケウス,1040406900,0,6,54,407,325,2441,200,20,true,true,435,3259
+Freikugel,フライクーゲル,1040504400,0,9,34,509,203,3051,200,20,true,true,277,4069
+Sky Piercer,方天画戟,1040604500,0,7,43,463,278,2678,200,20,true,true,382,3562
+Hercules,ヘラクレス,1040703600,0,5,39,492,255,2854,200,20,true,true,345,3806
+Ullikummi,ウルリクムミ,1040803700,0,8,76,438,271,2529,200,20,true,true,349,3371
+Ameno Habakiri,天羽々斬,1040904300,0,10,37,504,213,3024,200,20,true,true,287,4036
+Pink Magazine,ピンクグリモワール,1030404800,3,6,23,200,135,1270,75,10,false,false,,
+Wicked Cool Stabber,超クールなダガー,1030105500,3,2,21,205,128,1315,75,10,false,false,,
+Albedo Blaster,ボルト・オブ・アルベド,1030504600,6,9,16,230,97,1460,75,10,false,false,,
+Floaty Sword,フロートソード,1030006700,3,1,29,260,160,1680,75,10,false,false,,
+Honebami Toushirou,骨喰藤四郎,1030902400,5,10,13,250,98,1472,120,15,true,false,115,1716
+Mutsunokami Yoshiyuki,陸奥守吉行,1030902500,1,10,16,235,101,1457,120,15,true,false,118,1701
+Izuminokami Kanesada,和泉守兼定,1030902600,2,10,15,240,100,1462,120,15,true,false,117,1706
+Yamanbagiri Kunihiro,山姥切国広,1030902700,4,10,18,225,103,1447,120,15,true,false,120,1691
+Sword of Michael (SR),ソード・オブ・ミカエル(SR),1030006200,2,1,20,280,140,1680,75,10,false,false,,
+Wand of Gabriel (SR),ワンド・オブ・ガブリエル(SR),1030404700,3,6,26,220,175,1325,75,10,false,false,,
+Gauntlet of Uriel (SR),グローブ・オブ・ウリエル(SR),1030605200,4,7,20,280,160,1580,75,10,false,false,,
+Ring of Raphael (SR),リング・オブ・ラファエル(SR),1030703700,1,5,19,290,147,1685,75,10,false,false,,
+Harp of the Teachers (SR),ハープ・オブ・ハルワアムル(SR),1040809200,6,8,45,232,150,1520,75,10,false,false,,
+Scythe of Belial (SR),サイス・オブ・ベリアル(SR),1040310500,5,3,16,296,120,1785,75,10,false,false,,
+Salad Tongs,サラダトング,1030605300,1,7,20,207,134,1282,75,10,false,false,,
+Arondight,アロンダイト,1030000000,6,1,25,290,150,1750,75,10,false,false,,
+Ilhoon,イルウーン,1030000100,4,1,26,285,150,1740,75,10,false,false,,
+Fragarach,フラガラッハ,1030000200,2,1,23,300,147,1755,75,10,false,false,,
+Tilvung,ティルヴァング,1030000300,5,1,24,280,140,1700,75,10,false,false,,
+Tiamat Blade,ティアマトブレード,1030000400,1,1,18,220,117,1375,75,10,false,false,,
+Yggdrasil Crystal Blade,世界樹の晶剣,1030000500,4,1,20,220,122,1410,75,10,false,false,,
+Ifrit Blade,イフリートブレード,1030000700,2,1,17,225,116,1380,75,10,false,false,,
+Kadala,カダラ,1030001100,2,1,16,220,112,1340,75,10,false,false,,
+Almace,アルマス,1030001200,3,1,28,290,157,1795,75,10,false,false,,
+Tanzanite Sword,タンザナイトソード,1030001300,3,1,26,270,146,1670,75,10,false,false,,
+Ram-Dao,ラム・ダオ,1030001400,2,1,22,290,142,1690,75,10,false,false,,
+Twisted Dagger,マボムバーム,1030001500,4,1,27,295,156,1800,75,10,false,false,,
+Royal Rapier,ロイヤルレイピア,1030001800,3,1,27,280,165,1700,75,10,false,false,,
+Lyst,ラスト,1030001900,5,1,21,310,145,1765,75,10,false,false,,
+Makebranche,マケブランケ,1030002100,3,1,21,210,120,1360,75,10,false,false,,
+Nephthys Rapier,ネフティスレイピア,1030002200,1,1,18,225,118,1400,75,10,false,false,,
+Luminiera Sword,シュヴァリエソード,1030002300,6,1,19,225,121,1415,75,10,false,false,,
+Ripple Rapier,リプルレイピア,1030002400,3,1,28,295,159,1830,75,10,false,false,,
+Skirt Chaser,スカートチェイサー,1030002600,1,1,23,285,143,1685,75,10,false,false,,
+Purity Blade,無垢白刃,1030002700,5,1,21,315,147,1800,75,10,false,false,,
+Sagittarius Blade,サジタリウスブレード,1030002800,1,1,18,230,120,1420,75,10,false,false,,
+Rusted Sword,朽ち果てた剣,1030002900,5,1,1,1,30,96,75,10,false,false,,
+Lantern Blade,ランタンブレード,1030003100,6,1,21,245,132,1540,75,10,false,false,,
+Babylon Sword,バビロンの刀剣,1030003200,4,1,20,210,119,1365,75,10,false,false,,
+Ember Blade,護焔の剣,1030003400,2,1,23,306,150,1785,75,10,false,false,,
+Traveller's Sword,旅立ちの剣,1030003500,2,1,20,250,120,1500,75,10,false,false,,
+Branwen Rapier,ブランウェンレイピア,1030004200,3,1,21,220,123,1405,75,10,false,false,,
+Magus Punishment Sword,マギ・パニッシュメントソード,1030004300,6,1,19,215,118,1370,75,10,false,false,,
+Sword of Bahamut,バハムートソード,1030004400,5,1,19,285,139,1685,75,10,false,false,,
+Tanzanite Sword Mikoh,タンザナイトソード・ミコー,1030004500,2,1,24,310,152,1810,75,10,false,false,,
+Contrary Sword,コントラリーソード,1030004600,2,1,17,230,117,1400,75,10,false,false,,
+Electro Sword,エレクトロソード,1030004700,6,1,19,220,119,1390,75,10,false,false,,
+Pirate Sword,パイレーツソード,1030004800,1,1,24,295,148,1750,75,10,false,false,,
+Aura Whip,オーラウィップ,1030004900,6,1,25,295,152,1775,75,10,false,false,,
+Vyrn Star Sword,ビィスタードソード,1030005000,5,1,15,250,110,1350,75,10,false,false,,
+White Dragon Sword,白竜騎士団制式帯剣,1030005100,2,1,17,235,119,1425,75,10,false,false,,
+New Year Mayudama Branch,まゆ玉,1030005200,2,1,20,223,118,1370,75,10,false,false,,
+Spiked Baseball Bat,釘バット,1030005300,3,1,19,225,110,1470,75,10,false,false,,
+Frying Pan,フライパン,1030005400,4,1,26,290,153,1770,75,10,false,false,,
+Standard Albion Blade,アルビオン制式帯剣,1030005600,6,1,15,250,110,1350,75,10,false,false,,
+Oyster Shell,カキ・シェル,1030009200,3,1,16,231,109,1408,75,10,false,false,,
+Impassioned Rose,狂恋団扇,1030009300,6,1,25,290,148,1740,75,10,false,false,,
+Flame Lit Curl,ファイアウィップ,1030009400,2,1,24,294,150,1732,75,10,false,false,,
+Archangel Sword,アークエンジェルソード,1030099000,6,1,4,10,40,100,75,10,false,false,,
+Cinquedea,チンクエディア,1030100000,6,2,23,235,147,1465,75,10,false,false,,
+Mirage Knife,ミラージュナイフ,1030100100,3,2,30,265,168,1650,75,10,false,false,,
+Stiletto,スティレット,1030100200,4,2,29,270,167,1655,75,10,false,false,,
+Storm Kris,ストームクリス,1030100500,1,2,20,220,134,1350,75,10,false,false,,
+Colossus Breaker,コロッサスブレイカー,1030100600,2,2,19,220,131,1340,75,10,false,false,,
+Leviathan Gaze,レヴィアンゲイズ,1030100800,3,2,23,200,137,1340,75,10,false,false,,
+Facon,ファコン,1030101000,4,2,23,195,133,1295,75,10,false,false,,
+Fusetto,フセット,1030101100,1,2,27,280,165,1665,75,10,false,false,,
+Batadia,バタディア,1030101200,2,2,18,210,125,1280,75,10,false,false,,
+Acinaces,アキナケス,1030101300,3,2,27,280,167,1645,75,10,false,false,,
+Sword Breaker,ソードブレイカー,1030101400,5,2,26,315,174,1800,75,10,false,false,,
+Puppet Knife,傀儡の包丁,1030101800,5,2,20,310,148,1750,75,10,false,false,,
+Tribunal Dagger,裁きの霊剣,1030101900,4,2,22,200,132,1300,75,10,false,false,,
+Manawydan Dagger,マナウィダンダガー,1030102000,3,2,23,195,133,1300,75,10,false,false,,
+Ifrit Dagger,イフリートダガー,1030102100,2,2,19,215,129,1315,75,10,false,false,,
+Severing Blade of Midgardsormr,ミドガルドの断刃,1030102200,4,2,22,205,134,1320,75,10,false,false,,
+Soul Edge,ソウルエッジ,1030102300,6,2,28,275,166,1660,75,10,false,false,,
+Soulbond Dirk,絆の短剣,1030102400,2,2,25,275,158,1610,75,10,false,false,,
+Rusted Dagger,朽ち果てた刃,1030102500,5,2,1,1,30,96,75,10,false,false,,
+Sword of Lisblanc,ソード・オブ・リスブラン,1030102600,1,2,28,290,171,1725,75,10,false,false,,
+Sunset Dagger,紅陽刃,1030102700,6,2,21,205,131,1305,75,10,false,false,,
+Leyding,レージング,1030102900,3,2,23,200,135,1315,75,10,false,false,,
+Diablo Dagger,ディアボロスダガー,1030103700,5,2,17,235,131,1365,75,10,false,false,,
+Dagger of Bahamut,バハムートダガー,1030103800,5,2,21,275,155,1605,75,10,false,false,,
+Shade Knife,シェイドナイフ,1030103900,5,2,25,305,168,1740,75,10,false,false,,
+Sashimi Knife,刺身包丁,1030104000,3,2,23,195,133,1295,75,10,false,false,,
+Veselago Saber,ヴェセラゴセイバー,1030104100,6,2,21,210,133,1325,75,10,false,false,,
+Tadpole Tail,タッドポウルテイル,1030104200,2,2,18,220,128,1320,75,10,false,false,,
+Holly Knife,ペティナイフ,1030104300,4,2,22,210,135,1340,75,10,false,false,,
+Egoism,エゴイズム,1030104500,1,2,22,220,130,1300,75,10,false,false,,
+Sombre Knife,ブラックナイフ,1030104600,5,2,17,220,127,1330,75,10,false,false,,
+Scalpel,スカルペル,1030104700,5,2,25,310,170,1770,75,10,false,false,,
+Oneiros Dagger,オネイロスダガー,1030104800,3,2,20,215,132,1300,75,10,false,false,,
+Shrike's Beak,キルナイフ,1030104900,4,2,29,275,170,1685,75,10,false,false,,
+Archangel Knife,アークエンジェルナイフ,1030199000,6,2,4,10,40,100,75,10,false,false,,
+Vajranda,ヴァジュランダ,1030200000,6,4,30,265,179,1640,75,10,false,false,,
+Dragonfliar Cutter,蜻蛉切,1030200100,1,4,29,270,178,1600,75,10,false,false,,
+Partisan,パルチザン,1030200200,4,4,31,260,184,1620,75,10,false,false,,
+Shura Vhara,シューラヴァラ,1030200300,6,4,31,275,186,1650,75,10,false,false,,
+Longinus,ロンギヌス,1030200400,5,4,22,190,137,1220,75,10,false,false,,
+Leviathan Spine,レヴィアスパイン,1030200500,3,4,25,195,147,1285,75,10,false,false,,
+Trident,トライデント,1030200700,3,4,32,255,185,1610,75,10,false,false,,
+Phoenix Talon-Lance,不死鳥の爪槍,1030201600,2,4,20,210,138,1260,75,10,false,false,,
+Narval,ナーヴァル,1030201700,3,4,26,285,175,1615,75,10,false,false,,
+Sandcastle Spear,砂城の尖塔,1030201800,4,4,25,210,152,1340,75,10,false,false,,
+Cherry Blossom Lance,摩阿姫薙刀,1030201900,1,4,23,215,150,1350,75,10,false,false,,
+Luminiera Spear,シュヴァリエスピア,1030202000,6,4,23,205,145,1295,75,10,false,false,,
+Great Spear of Midgardsormr,ミドガルドの大槍,1030202100,4,4,24,195,144,1270,75,10,false,false,,
+Albacore Nose,アルバコアノーズ,1030202200,5,4,18,220,137,1275,75,10,false,false,,
+Harpoon,ハープーン,1030202300,3,4,27,215,153,1335,75,10,false,false,,
+Rusted Lance,朽ち果てた槍,1030202400,5,4,1,1,30,96,75,10,false,false,,
+Mysterious Needle,アンノウンニードル,1030202500,3,4,24,185,155,1225,75,10,false,false,,
+Flare Glaive,フレアグレイブ,1030202600,2,4,28,275,177,1605,75,10,false,false,,
+Dragonscale Lance,竜鱗の槍,1030202700,2,4,21,210,141,1285,75,10,false,false,,
+Golden Mop,スウィーピングモップ,1030203500,4,4,32,270,187,1645,75,10,false,false,,
+Magus Necro Spear,マギ・ディケイデッドスピア,1030203600,6,4,22,200,141,1255,75,10,false,false,,
+Spear of Bahamut,バハムートスピア,1030203700,5,4,23,265,167,1545,75,10,false,false,,
+Dragoon Lance,ドラグーンランス,1030203800,2,4,25,225,150,1350,75,10,false,false,,
+Electro Fork,エレクトロフォーク,1030203900,6,4,23,200,143,1270,75,10,false,false,,
+Spit Roast,藁焼き,1030204000,3,4,24,190,143,1245,75,10,false,false,,
+Squidpiercer,槍烏賊,1030204100,3,4,20,210,105,1435,75,10,false,false,,
+Emerald Spear,エメラルドスピア,1030204200,1,4,21,205,140,1260,75,10,false,false,,
+Ghost Tree,ゴーストツリー,1030204300,5,4,21,245,160,1400,75,10,false,false,,
+Titanium Harpoon,チタンハープーン,1030204400,3,4,33,265,188,1640,75,10,false,false,,
+Raging Halberd,レイジングハルバード,1030204500,2,4,29,280,181,1630,75,10,false,false,,
+King Crab Spear,鱈場,1030204600,5,4,19,225,139,1295,75,10,false,false,,
+Blau Javelin,ブラウジャベリン,1030204700,3,4,23,200,134,1310,75,10,false,false,,
+Giant Fork,ビッグフォーク,1030204800,4,4,33,275,190,1675,75,10,false,false,,
+Tyrant Fork,タイラントフォーク,1030204900,6,4,22,220,143,1255,75,10,false,false,,
+Dreadflayer,バリアントスパイク,1030205000,4,4,33,280,193,1705,75,10,false,false,,
+Bamboo Spear,竹槍,1030205100,4,4,24,190,143,1240,75,10,false,false,,
+Archangel Spear,アークエンジェルスピア,1030299000,6,4,4,10,40,100,75,10,false,false,,
+Akhu,アクゥ,1030300000,4,3,17,215,102,1390,75,10,false,false,,
+Shoka,ショカ,1030300100,4,3,23,300,134,1820,75,10,false,false,,
+Bullova,ブローバ,1030300200,3,3,24,295,135,1815,75,10,false,false,,
+Horseman's Hammer,ホースマンズハンマー,1030300300,6,3,22,305,133,1825,75,10,false,false,,
+Tiamat Amood,ティアマトアムード,1030300600,1,3,16,230,104,1440,75,10,false,false,,
+Colossus Piton,コロッサスハーケン,1030300700,2,3,15,240,104,1470,75,10,false,false,,
+Footman's Axe,フットマンズアックス,1030300800,2,3,16,252,120,1500,75,10,false,false,,
+Sun Hammer,サンハンマー,1030300900,6,3,23,320,140,1925,75,10,false,false,,
+Manawydan Piton,マナウィダンハーケン,1030301000,3,3,19,215,107,1425,75,10,false,false,,
+Luminiera Bhuj,シュヴァリエブージ,1030301100,6,3,17,235,108,1480,75,10,false,false,,
+Ifrit Axe,イフリートアクス,1030301200,2,3,15,235,103,1450,75,10,false,false,,
+Celeste Zaghnal,セレストザグナル,1030301300,5,3,13,255,104,1500,75,10,false,false,,
+Sagittarius Axe,サジタリウスアックス,1030301500,1,3,16,240,107,1490,75,10,false,false,,
+Poseidon Piton,ポセイドンハーケン,1030301700,3,3,19,215,107,1425,75,10,false,false,,
+Mysterious Hammer,アンノウンハンマー,1030301800,4,3,17,220,116,1410,75,10,false,false,,
+Rusted Axe,朽ち果てた斧,1030302000,5,3,1,1,30,96,75,10,false,false,,
+Wind God Axe,風司の鉞,1030302700,1,3,16,230,104,1440,75,10,false,false,,
+Voulge,ヴォウジェ,1030302800,5,3,18,325,129,1845,75,10,false,false,,
+Axe of Bahamut,バハムートアクス,1030302900,5,3,16,300,123,1765,75,10,false,false,,
+Great Hammer,グレートハンマー,1030303000,4,3,24,305,136,1855,75,10,false,false,,
+Mochi Mallet,杵,1030303100,2,3,13,245,100,1450,75,10,false,false,,
+Golden Woofer,ゴールデンダッグ,1030303200,6,3,23,310,135,1860,75,10,false,false,,
+Massive Axe,マッシヴアクス,1030303300,2,3,20,315,131,1835,75,10,false,false,,
+Leather Belt,レザーベルト,1030303400,2,3,18,220,115,1415,75,10,false,false,,
+Stalwart Hammer,メタルハマー,1030303500,5,3,12,240,97,1415,75,10,false,false,,
+Cloud Tomahawk,クラウドトマホーク,1030303600,1,3,21,310,132,1830,75,10,false,false,,
+Fremel Hammer,フレイメルンハンマー,1030303700,4,3,24,310,138,1880,75,10,false,false,,
+Electro Axe,エレクトロアックス,1030303800,5,3,12,245,100,1455,75,10,false,false,,
+Archangel Axe,アークエンジェルアクス,1030399000,6,3,4,10,40,100,75,10,false,false,,
+Pilgrim's Staff,金剛杖,1030400000,6,6,28,210,176,1320,75,10,false,false,,
+Zhezl,ジェズル,1030400100,3,6,27,175,159,1165,75,10,false,false,,
+Pastoral Staff,パストラルスタッフ,1030400200,4,6,34,245,200,1490,75,10,false,false,,
+Jacaranda,ジャカランダ,1030400300,4,6,29,205,169,1255,75,10,false,false,,
+Yggdrasil Dewbranch,世界樹の雫枝,1030400400,4,6,27,185,163,1205,75,10,false,false,,
+Phoenix Tail Feathers,不死鳥の尾飾,1030400600,2,6,24,200,160,1220,75,10,false,false,,
+Spritewood Staff,森精の杖,1030400700,3,6,31,250,194,1470,75,10,false,false,,
+Zhonpeli,ツォンペリ,1030400800,4,6,32,250,195,1500,75,10,false,false,,
+Staff of Reincarnation,転生の祈杖,1030400900,2,6,23,195,154,1180,75,10,false,false,,
+Nephthys Pole,ネフティスポール,1030401000,1,6,24,195,158,1200,75,10,false,false,,
+Spear of Judgement,裁きの天秤,1030401100,4,6,26,180,158,1170,75,10,false,false,,
+Yagrush,ヤグルシ,1030401200,3,6,36,250,208,1540,75,10,false,false,,
+Arson,アーソン,1030401300,2,6,31,260,197,1505,75,10,false,false,,
+Holy Cane,ホーリーケーン,1030401400,6,6,33,250,199,1495,75,10,false,false,,
+Celeste Cane,セレストケーン,1030401500,5,6,22,210,158,1230,75,10,false,false,,
+Hellward Scepter,ヘルウォードセプター,1030401600,5,6,21,205,153,1195,75,10,false,false,,
+Aerial Cane,エアリアルケーン,1030401700,1,6,32,255,198,1500,75,10,false,false,,
+Skull Wand,スカルワンド,1030401800,5,6,24,230,172,1340,75,10,false,false,,
+Wind-Rhyme Staff,風詠みの杖,1030402100,1,6,33,265,205,1555,75,10,false,false,,
+Rusted Staff,朽ち果てた杖,1030402200,5,6,1,1,30,96,75,10,false,false,,
+Soothing Torch,サルヴトーチ,1030402900,2,6,32,265,201,1530,75,10,false,false,,
+Thunder God Staff,雷司の杖,1030403000,6,6,25,185,157,1175,75,10,false,false,,
+Diablo Scepter,ディアボロスセプター,1030403100,5,6,22,210,158,1230,75,10,false,false,,
+Staff of Bahamut,バハムートスタッフ,1030403200,5,6,24,230,172,1340,75,10,false,false,,
+Little Witch Scepter,リトルウィッチセプター,1030403300,3,6,25,200,150,1200,75,10,false,false,,
+Deathly Arson,アーソン・デス,1030403400,2,6,32,270,204,1560,75,10,false,false,,
+Sunshade Parasol,サンシェードパラソル,1030403500,3,6,36,245,205,1510,75,10,false,false,,
+Cursed Cane,カースドケーン,1030403600,5,6,29,270,195,1515,75,10,false,false,,
+Witch's Broom,魔女の箒,1030403700,2,6,33,275,208,1585,75,10,false,false,,
+Shadow Scepter,アンライトセプター,1030403800,5,6,30,275,199,1540,75,10,false,false,,
+Flower Crown,フラワークラウン,1030403900,1,6,33,260,202,1525,75,10,false,false,,
+Vyrnellious Staff,アスクレビィオスの杖,1030404000,6,6,24,180,152,1140,75,10,false,false,,
+Xolotl Staff,ショロトルケーン,1030404200,1,6,23,195,154,1185,75,10,false,false,,
+Falcon Mace,ファルコンメイス,1030404300,4,6,26,180,160,1185,75,10,false,false,,
+Sacred Codex,ホーリーインデックス,1030404400,6,6,34,255,206,1545,75,10,false,false,,
+Archangel Wand,アークエンジェルワンド,1030499000,6,6,4,10,40,100,75,10,false,false,,
+Cube Staff,キューブ・スタッフ,1030406100,1,6,31,257,194,1506,75,10,false,false,,
+Crosswind,ウィンドクロス,1030500000,1,9,21,340,132,2010,75,10,false,false,,
+Dragon Tail,ドラゴンテイル,1030500100,2,9,19,335,127,1945,75,10,false,false,,
+Swallowtail,スワロウテイル,1030500200,6,9,21,310,124,1870,75,10,false,false,,
+Snaphance,スナップハンス,1030500300,1,9,20,315,123,1875,75,10,false,false,,
+Torador,トラドール,1030500400,3,9,19,255,112,1640,75,10,false,false,,
+Tiamat Bolt,ティアマトボルト,1030500500,1,9,14,240,97,1475,75,10,false,false,,
+Leviathan Muzzle,レヴィアンマズル,1030500600,3,9,18,230,103,1505,75,10,false,false,,
+Wheellock Axe,ホイルロックアックス,1030500800,4,9,22,305,125,1865,75,10,false,false,,
+Fraud Fire,シモニア,1030501000,3,9,17,220,100,1460,75,10,false,false,,
+Arquebus,アークゥイバス,1030501100,2,9,15,260,100,1600,75,10,false,false,,
+Piercing Bolt of Midgardsormr,ミドガルドの破弾,1030501200,4,9,17,230,100,1490,75,10,false,false,,
+Custom Arquebus,アークゥイバス・カスタム,1030501300,2,9,20,340,129,1980,75,10,false,false,,
+Albacore Rifle,アルバコアライフル,1030501400,5,9,11,255,92,1500,75,10,false,false,,
+Celeste Rifle,セレストライフル,1030501500,5,9,12,260,97,1535,75,10,false,false,,
+Hekatonkheir Muzzle,ヘカトンケイルマズル,1030501600,6,9,15,235,98,1470,75,10,false,false,,
+Skirnir,スキールニル,1030501800,3,9,18,225,101,1480,75,10,false,false,,
+Rusted Gun,朽ち果てた銃,1030502500,5,9,1,1,30,96,75,10,false,false,,
+Pistol of Bahamut,バハムートマズル,1030502600,5,9,15,305,115,1805,75,10,false,false,,
+Avaritia Pistol,アワリティアガン,1030502700,4,9,16,225,99,1465,75,10,false,false,,
+Mysterious Shooter,アンノウンショット,1030502800,2,9,13,245,95,1480,75,10,false,false,,
+Quarrel,クォレル,1030502900,3,9,23,300,126,1860,75,10,false,false,,
+Fire Piece,ピーシーズ,1030503000,2,9,22,335,133,2000,75,10,false,false,,
+Desert Arms,デザートアームズ,1030503100,4,9,22,310,128,1895,75,10,false,false,,
+Pina Colata Pistol,秘丹弥虚羅多鉄砲,1030503200,5,9,12,255,95,1515,75,10,false,false,,
+Dreyse,ドライゼン,1030503300,4,9,17,240,100,1400,75,10,false,false,,
+White Dragon Rifle,白竜騎士団制式ボルト,1030503400,2,9,13,245,96,1480,75,10,false,false,,
+Candy Cane Rifle,ステッキライフル,1030503500,4,9,17,235,102,1510,75,10,false,false,,
+Odajumoki Gun,オダヅモッキーモデル,1030503600,3,9,13,255,94,1550,75,10,false,false,,
+Grass Musket,グラスマスケット,1030503700,1,9,14,235,97,1470,75,10,false,false,,
+Colorful Crackerjack,カラフリャーガン,1030503900,3,9,22,305,124,1860,75,10,false,false,,
+Archangel Gun,アークエンジェルガン,1030599000,6,9,4,10,40,100,75,10,false,false,,
+Neko Punch,ネコパンチ,1030600000,4,7,30,265,174,1620,75,10,false,false,,
+Jamadhar,ジャマダハル,1030600100,1,7,28,275,172,1630,75,10,false,false,,
+Kaiser Knuckles,カイザーナックル,1030600200,3,7,30,250,166,1570,75,10,false,false,,
+Jule,ジュル,1030600400,5,7,24,230,146,1370,75,10,false,false,,
+Colossus Fist,コロッサスフィスト,1030600500,2,7,20,215,136,1310,75,10,false,false,,
+Yggdrasil Bark,世界樹の幹甲,1030600700,4,7,23,205,141,1315,75,10,false,false,,
+Mauler,モールハンド,1030600800,4,7,29,285,179,1675,75,10,false,false,,
+Limbo,リンボ,1030600900,3,7,23,190,137,1270,75,10,false,false,,
+Impact Knuckles,インパクトナックル,1030601000,4,7,30,270,176,1650,75,10,false,false,,
+Chain Knuckles,チェインナックル,1030601100,2,7,27,285,174,1665,75,10,false,false,,
+Albacore Head,アルバコアヘッド,1030601200,5,7,17,225,132,1300,75,10,false,false,,
+Squid Hand,スキッドハンド,1030601300,3,7,20,175,124,1145,75,10,false,false,,
+Rusted Gauntlet,朽ち果てた手甲,1030601400,5,7,1,1,30,96,75,10,false,false,,
+Tiger Fang,タイガーファング,1030601500,6,7,29,270,173,1625,75,10,false,false,,
+Vulcan Gauntlet,バルカンガントレット,1030602000,2,7,27,280,131,1450,75,10,false,false,,
+Thunder God Gauntlet,雷司の爪,1030603200,6,7,21,205,136,1280,75,10,false,false,,
+Mysterious Glove,アンノウングラブ,1030603300,1,7,20,210,135,1285,75,10,false,false,,
+Metal Glove,メタルグローブ,1030603400,4,7,31,280,183,1710,75,10,false,false,,
+Cup and Saucer,カップ＆ソーサー,1030603500,2,7,28,290,177,1695,75,10,false,false,,
+Valentine Glove,バレンタイングラブ,1030603600,1,7,21,215,139,1325,75,10,false,false,,
+Fist of Bahamut,バハムートナックル,1030603700,5,7,22,270,161,1575,75,10,false,false,,
+Merciless Chastening,無慈悲な制裁,1030603800,1,7,29,285,178,1690,75,10,false,false,,
+Misanga Bracelet,ミサンガ,1030603900,6,7,29,275,176,1655,75,10,false,false,,
+Heavy Blast Knuckles,ブラストヘヴィナックル,1030604000,6,7,30,280,179,1685,75,10,false,false,,
+Emerald Claw,エメラルドクロー,1030604100,1,7,21,210,137,1305,75,10,false,false,,
+Croak Head,ゲコヘッド,1030604200,3,7,19,215,133,1290,75,10,false,false,,
+Holy Glove,ホーリーグローブ,1030604300,6,7,27,275,170,1630,75,10,false,false,,
+Xolotl Fist,ショロトルスタンプ,1030604400,1,7,19,215,133,1290,75,10,false,false,,
+Sombre Gauntlet,ブラックガントレット,1030604500,4,7,22,195,137,1280,75,10,false,false,,
+Silver Bracelet,シルバーブレスレット,1030604600,2,7,19,215,132,1300,75,10,false,false,,
+Crimson Talons,グレートタロン,1030604700,2,7,28,295,180,1725,75,10,false,false,,
+Silver Rings,シルバーリング,1030604800,4,7,32,275,182,1715,75,10,false,false,,
+Water Balloons,ウォーターバルーン,1030604900,3,7,31,260,174,1610,75,10,false,false,,
+Barnacle Knuckle,フジトゥヴォナックル,1030608600,6,7,22,200,137,1270,75,10,false,false,,
+Lifeguard Glove,ライフセーブグローブ,1030608700,3,7,28,275,158,1691,75,10,false,false,,
+Archangel Brass Knuckles,アークエンジェルナックル,1030699000,6,7,4,10,40,100,75,10,false,false,,
+Sarnga,サルンガ,1030700000,2,5,24,300,157,1745,75,10,false,false,,
+Aves,烏号,1030700100,3,5,28,280,161,1725,75,10,false,false,,
+Elfin Bow,エルフィンボウ,1030700200,1,5,25,295,158,1740,75,10,false,false,,
+Nephthys Bow,ネフティスボウ,1030700300,1,5,19,225,126,1390,75,10,false,false,,
+Shadow Bow,シャドウボウ,1030700500,5,5,22,310,155,1755,75,10,false,false,,
+Imperial Bow,インペリアルボウ,1030700600,2,5,25,310,162,1810,75,10,false,false,,
+Sutera's Bow,翠枝の弓,1030700700,1,5,26,300,160,1770,75,10,false,false,,
+Bow of Judgement,裁きの弓箭,1030700800,4,5,21,210,126,1360,75,10,false,false,,
+Manawydan Bow,マナウィダンボウ,1030700900,3,5,21,205,127,1355,75,10,false,false,,
+Obsidian Bow,漆弓,1030701000,4,5,22,230,135,1460,75,10,false,false,,
+Hellward Bow,ヘルウォードボウ,1030701200,5,5,16,235,121,1385,75,10,false,false,,
+Poseidon Bow,ポセイドンボウ,1030701300,3,5,22,210,129,1375,75,10,false,false,,
+Sunset Bow,紅陽弓,1030701400,6,5,20,215,125,1365,75,10,false,false,,
+Branwen Bow,ブランウェンボウ,1030702200,3,5,22,215,131,1400,75,10,false,false,,
+Rusted Bow,朽ち果てた弓,1030702300,5,5,1,1,30,96,75,10,false,false,,
+Bow of Bahamut,バハムートボウ,1030702400,5,5,20,285,148,1680,75,10,false,false,,
+Mammon Bow,マモーナスボウ,1030702500,1,5,19,230,127,1410,75,10,false,false,,
+Ice Bow,アイスボウ,1030702600,3,5,29,285,163,1755,75,10,false,false,,
+Contrary Bow,コントラリーボウ,1030702800,2,5,18,230,125,1395,75,10,false,false,,
+Pina Colata Bow,秘丹弥虚羅多弓,1030702900,1,5,19,220,124,1370,75,10,false,false,,
+Crafted Bow,クラフトボウ,1030703000,4,5,21,215,128,1380,75,10,false,false,,
+Vogen Crescent,クレセントボーゲン,1030703100,6,5,21,210,126,1355,75,10,false,false,,
+Glass Bow,グラスボウ,1030703200,2,5,25,305,159,1775,75,10,false,false,,
+Tyrant Bow,タイラントボウ,1030703300,6,5,19,220,120,1390,75,10,false,false,,
+Oneiros Bow,オネイロスボウ,1030703400,3,5,21,210,124,1335,75,10,false,false,,
+Wood Bow,木矢,1030703500,4,5,20,215,125,1360,75,10,false,false,,
+Archangel Bow,アークエンジェルボウ,1030799000,6,5,4,10,40,100,75,10,false,false,,
+Songsmith's Harp,吟遊詩人の竪琴,1030800000,1,8,46,252,161,1485,75,10,false,false,,
+Platinum Harp,白金の竪琴,1030800100,1,8,38,212,140,1300,75,10,false,false,,
+Athanasius,アタナシウス,1030800200,4,8,50,250,169,1530,75,10,false,false,,
+Stravaria,ストラヴァリア,1030800300,1,8,48,260,167,1540,75,10,false,false,,
+Hekatonkheir Harp,ヘカトンケイルハープ,1030800400,6,8,37,190,132,1210,75,10,false,false,,
+Dracula Harp,ドラキュラハープ,1030800500,5,8,45,275,164,1555,75,10,false,false,,
+Babylon Harp,バビロンの竪琴,1030800600,4,8,38,185,133,1205,75,10,false,false,,
+Holy Harp,ホーリーチャンター,1030800800,6,8,49,255,168,1535,75,10,false,false,,
+Dragonbeard's Harp,竜髭の弦,1030800900,2,8,35,205,131,1235,75,10,false,false,,
+Wind God Harp,風司の琴,1030801000,1,8,36,195,131,1215,75,10,false,false,,
+Mysterious Harp,アンノウンハープ,1030801100,5,8,36,195,131,1215,75,10,false,false,,
+Rusted Harp,朽ち果てた竪琴,1030801200,5,8,1,1,30,96,75,10,false,false,,
+Valentine Harp,バレンタインハープ,1030801900,2,8,35,210,133,1255,75,10,false,false,,
+Harp of Bahamut,バハムートハープ,1030802000,5,8,20,285,161,1575,75,10,false,false,,
+Aquarium Harp,アクアリウムハープ,1030802100,3,8,51,245,170,1525,75,10,false,false,,
+Mammon Harp,マモーナスハープ,1030802200,1,8,36,200,132,1230,75,10,false,false,,
+Veselago Harp,ヴェセラゴハープ,1030802300,6,8,37,195,133,1225,75,10,false,false,,
+Harpronus,ハープロン,1030802400,4,8,40,180,137,1165,75,10,false,false,,
+Orpheus Harp,オルフェウス,1030802500,1,8,34,190,126,1180,75,10,false,false,,
+Electro Harp,エレクトロハープ,1030802600,5,8,33,210,127,1225,75,10,false,false,,
+Ripple Harp,さざ波の砂弦,1030802700,4,8,54,250,179,1560,75,10,false,false,,
+Resonating Wand,リサウンドワンド,1030802800,3,8,38,170,130,1160,75,10,false,false,,
+Vyrnstrument,メロビィ,1030802900,5,8,37,175,125,1185,75,10,false,false,,
+Ent Harp,エントハープ,1030803000,1,8,36,196,130,1210,75,10,false,false,,
+Archangel Harp,アークエンジェルハープ,1030899000,6,8,40,100,100,400,75,10,false,false,,
+Iron Tiger,虎鉄,1030900000,2,10,20,320,128,1855,75,10,false,false,,
+Fluorithium,蛍丸,1030900100,3,10,24,295,132,1835,75,10,false,false,,
+Sauria,蜥蜴丸,1030900200,5,10,18,325,126,1865,75,10,false,false,,
+Murakumo Replica,模造刀,1030900300,6,10,19,259,115,1631,75,10,false,false,,
+Muramasa Replica,贋作刀,1030900400,5,10,15,279,111,1651,75,10,false,false,,
+Blade of Bahamut,バハムートブレイド,1030900500,5,10,17,300,121,1790,75,10,false,false,,
+Rusted Katana,朽ち果てた太刀,1030900600,5,10,1,1,30,96,75,10,false,false,,
+Avaritia Blade,アワリティアブレード,1030901300,4,10,18,225,104,1450,75,10,false,false,,
+Mysterious Cutter,アンノウンリッパー,1030901400,1,10,16,235,102,1460,75,10,false,false,,
+Wooden Sword,木刀,1030901500,4,10,18,230,105,1475,75,10,false,false,,
+The Piercer,つらぬき丸,1030901600,5,10,12,245,96,1430,75,10,false,false,,
+King Crab Katana,蟹鋏,1030901700,5,10,13,250,99,1475,75,10,false,false,,
+Zanbato,斬馬刀,1030901800,1,10,21,310,129,1855,75,10,false,false,,
+Ent Ripper,エントリッパー,1030901900,1,10,16,235,100,1460,75,10,false,false,,
+Archangel Katana,大天使刀,1030999000,6,10,40,100,100,400,75,10,false,false,,
+Fury Stone,デビルエレメント,1039900000,5,0,30,100,100,300,75,10,false,false,,
