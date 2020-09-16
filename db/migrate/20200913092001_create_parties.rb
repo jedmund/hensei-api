@@ -1,7 +1,7 @@
 class CreateParties < ActiveRecord::Migration[6.0]
     def change
-        create_table :parties, id: :uuid do |t|
             t.belongs_to :user, type: :uuid
+        create_table :parties, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
 
             t.string :hash
 

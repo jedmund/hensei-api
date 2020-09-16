@@ -1,6 +1,6 @@
 class CreateWeapons < ActiveRecord::Migration[6.0]
     def change
-        create_table :weapons, id: :uuid do |t|
+        create_table :weapons, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
             t.string :name_en
             t.string :name_jp
             t.integer :granblue_id
