@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ['127.0.0.1:1234', 'grid.ngrok.io', 'grid-api.ngrok.io']
+    origins ['127.0.0.1:1234', 'siero-app.herokuapp.com']
 
     resource '*',
       headers: :any,
