@@ -11,8 +11,6 @@ class Api::V1::PartyController < ActionController::API
     end
 
     def show
-        ap @party
-        ap @party
     end
 
     def update
@@ -30,6 +28,6 @@ class Api::V1::PartyController < ActionController::API
     end
 
     def set
-        @party = Party.where(shortcode: params[:id])
+        @party = Party.where(shortcode: params[:id]).first
     end
 end
