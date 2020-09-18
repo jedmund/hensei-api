@@ -1,4 +1,4 @@
-name_en,name_jp,granblue_id,element,weapon_type,min_hp,min_atk,max_hp,max_atk,max_level,max_skill_level,flb,ulb,max_hp_flb,max_atk_flb
+name_en,name_jp,granblue_id,element,proficiency,min_hp,min_atk,max_hp,max_atk,max_level,max_skill_level,flb,ulb,max_hp_flb,max_atk_flb
 Sol Remnant,ソル・レムナント,1040311800,2,3,27,405,176,2453,200,20,true,true,236,3272
 Fateless,フェイトレス,1040019700,3,1,34,367,202,2322,200,20,true,true,269,3104
 Yggdrasil's Bough,ユグドラシル・ブランチ,1040416600,4,6,44,318,267,1994,200,20,true,true,356,2664
