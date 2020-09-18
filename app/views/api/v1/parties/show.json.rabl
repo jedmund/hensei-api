@@ -1,3 +1,3 @@
 object @party
 
-extends 'api/v1/party/base'
+extends 'api/v1/parties/base'
