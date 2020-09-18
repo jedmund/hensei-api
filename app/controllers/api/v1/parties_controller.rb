@@ -1,4 +1,4 @@
-class Api::V1::PartyController < ActionController::API
+class Api::V1::PartiesController < ActionController::API
     before_action :set, except: ['create']
 
     def index
