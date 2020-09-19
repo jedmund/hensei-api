@@ -1,4 +1,4 @@
-class Api::V1::GridWeaponsController < ActionController::API
+class Api::V1::GridWeaponsController < Api::V1::ApiController
     def create
         party = Party.find(weapon_params[:party_id])
         canonical_weapon = Weapon.find(weapon_params[:weapon_id])

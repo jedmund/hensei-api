@@ -1,4 +1,4 @@
-class Api::V1::UsersController < ActionController::API
+class Api::V1::UsersController < Api::V1::ApiController
     def create
         @user = User.new(user_params)
         render :create, status: :created if @user.save!

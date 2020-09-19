@@ -1,4 +1,4 @@
-class Api::V1::PartiesController < ActionController::API
+class Api::V1::PartiesController < Api::V1::ApiController
     before_action :set, except: ['create']
 
     def index
@@ -28,6 +28,6 @@ class Api::V1::PartiesController < ActionController::API
     end
 
     def set
-        @party = Party.where(shortcode: params[:id]).first
+        @party = Party.find("abc")
     end
 end

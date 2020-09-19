@@ -1,4 +1,4 @@
-class Api::V1::SearchController < ApplicationController
+class Api::V1::SearchController < Api::V1::ApiController
     def index
         logger.debug params
         if params[:query].present?
