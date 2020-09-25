@@ -11,7 +11,7 @@ Doorkeeper.configure do
 
     # This block will be called to authenticate the resource owner.
     resource_owner_from_credentials do |routes|
-        User.find_by(email: params[:username]).try(:authenticate, params[:password])
+        User.find_by(email: params[:email]).try(:authenticate, params[:password])
     end
 
     # Specify what grant flows are enabled in array of Strings. The valid
