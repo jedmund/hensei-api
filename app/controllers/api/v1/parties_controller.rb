@@ -6,11 +6,12 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def create
-        @party = Party.new(shortcode: random_string)
+        @party = Party.new(shortcode: random_string, user_id: party_params[:user_id])
         render :show, status: :created if @party.save!
     end
 
     def show
+        render_not_found_response if @party.nil?
     end
 
     def update
@@ -28,6 +29,10 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def set
-        @party = Party.find("abc")
+        @party = Party.where("shortcode = ?", params[:id]).first
+    end
+
+    def party_params
+        params.require(:party).permit(:user_id)
     end
 end
