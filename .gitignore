@@ -32,3 +32,5 @@
 /config/master.key
 
 .DS_Store
+
+/config/credentials/development.key
