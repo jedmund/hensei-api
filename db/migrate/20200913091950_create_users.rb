@@ -1,10 +1,10 @@
 class CreateUsers < ActiveRecord::Migration[6.0]
     def change
         create_table :users, id: :uuid, default: -> { "gen_random_uuid()" } do |t|
-            t.string :email
-            t.string :password
-            t.string :username
-            t.integer :granblue_id
+            t.string :email, :unique => true
+            t.string :password_digest
+            t.string :username, :unique => true
+            t.integer :granblue_id, :unique => true
 
             t.timestamps
         end
