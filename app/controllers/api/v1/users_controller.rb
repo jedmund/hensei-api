@@ -1,6 +1,8 @@
 class Api::V1::UsersController < Api::V1::ApiController
     class ForbiddenError < StandardError; end
 
+    before_action :set, except: ['create', 'check_email', 'check_username']
+
     def create
         @user = User.new(user_params)
 
@@ -20,6 +22,11 @@ class Api::V1::UsersController < Api::V1::ApiController
 
             render :create, status: :created
         end
+    end
+
+    def show
+        @parties = @user.parties
+        ap "Hello world"
     end
 
     def check_email
@@ -43,6 +50,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
 
     def show
+        @parties = @user.parties
     end
 
     def update
@@ -54,6 +62,10 @@ class Api::V1::UsersController < Api::V1::ApiController
     private
 
     # Specify whitelisted properties that can be modified.
+    def set
+        @user = User.where("username = ?", params[:id]).first
+    end
+
     def user_params
         params.require(:user).permit(:username, :email, :password, :password_confirmation, :granblue_id)
     end
