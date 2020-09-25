@@ -1,7 +1,7 @@
 object false
 
-child(@user) {
-    attributes :id, :email, :username
+node(:user) {
+    @presenter
 } unless @user.blank?
 
 node(:error) {
