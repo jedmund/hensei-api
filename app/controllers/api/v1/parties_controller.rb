@@ -6,7 +6,12 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def create
-        @party = Party.new(shortcode: random_string, user_id: party_params[:user_id])
+        @party = Party.new(shortcode: random_string)
+        
+        if current_user
+            @party.user = current_user
+        end
+
         render :show, status: :created if @party.save!
     end
 
