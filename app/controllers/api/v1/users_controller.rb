@@ -50,7 +50,11 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
 
     def show
-        @parties = @user.parties
+        if @user
+            @parties = @user.parties
+        else
+            render_not_found_response
+        end
     end
 
     def update
