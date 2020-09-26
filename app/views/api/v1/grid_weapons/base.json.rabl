@@ -1,4 +1,5 @@
 attributes :id,
+    :party_id,
     :mainhand,
     :position
 

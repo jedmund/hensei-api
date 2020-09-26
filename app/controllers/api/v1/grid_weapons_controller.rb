@@ -2,13 +2,17 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
     def create
         party = Party.find(weapon_params[:party_id])
         canonical_weapon = Weapon.find(weapon_params[:weapon_id])
+ 
+        if current_user
+            if party.user != current_user
+                render_unauthorized_response
+            end
+        end
 
         if grid_weapon = GridWeapon.where(
             party_id: party.id, 
             position: weapon_params[:position]
         ).first
-            ap "Grid weapon found!"
-            ap grid_weapon
             GridWeapon.destroy(grid_weapon.id)
         end
 
