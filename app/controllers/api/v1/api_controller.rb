@@ -41,7 +41,6 @@ class Api::V1::ApiController < ActionController::API
 
     def current_user
         @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-        @current_user.update_last_ip_and_last_seen!(request.remote_ip) if @current_user
 
         return @current_user
     end
@@ -57,7 +56,7 @@ class Api::V1::ApiController < ActionController::API
         render 'not_found', status: :not_found
     end
 
-    def render_unauthorized_response(exception)
+    def render_unauthorized_response
         render action: 'errors', status: :unauthorized
     end
 
