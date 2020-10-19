@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
-    t.integer "granblue_id"
+    t.string "granblue_id"
     t.integer "rarity"
     t.integer "element"
     t.integer "proficiency1"
@@ -130,7 +130,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
-    t.integer "granblue_id"
+    t.string "granblue_id"
     t.integer "rarity"
     t.integer "element"
     t.string "series"
@@ -168,7 +168,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
-    t.integer "granblue_id"
+    t.string "granblue_id"
     t.integer "rarity"
     t.integer "element"
     t.integer "proficiency"
