@@ -1,7 +1,7 @@
 class Api::V1::GridCharactersController < Api::V1::ApiController
     def create
         party = Party.find(character_params[:party_id])
-        canonical_charactercter = Character.find(character_params[:character_id])
+        canonical_character = Character.find(character_params[:character_id])
  
         if current_user
             if party.user != current_user
