@@ -10,11 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_23_205642) do
+ActiveRecord::Schema.define(version: 2020_10_17_013949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "grid_summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id"
+    t.uuid "summon_id"
+    t.integer "uncap_level"
+    t.boolean "main"
+    t.boolean "friend"
+    t.integer "position"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["party_id"], name: "index_grid_summons_on_party_id"
+    t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
+  end
 
   create_table "grid_weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id"
@@ -76,6 +89,26 @@ ActiveRecord::Schema.define(version: 2020_09_23_205642) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_parties_on_user_id"
+  end
+
+  create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "granblue_id"
+    t.integer "rarity"
+    t.integer "element"
+    t.string "series"
+    t.boolean "flb"
+    t.boolean "ulb"
+    t.integer "max_level"
+    t.integer "min_hp"
+    t.integer "max_hp"
+    t.integer "max_hp_flb"
+    t.integer "max_hp_ulb"
+    t.integer "min_atk"
+    t.integer "max_atk"
+    t.integer "max_atk_flb"
+    t.integer "max_atk_ulb"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
