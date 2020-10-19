@@ -15,6 +15,9 @@ Rails.application.routes.draw do
             get 'search/weapons', to: 'search#weapons'
             get 'search/summons', to: 'search#summons'
 
+            post 'characters', to: 'grid_characters#create'
+            delete 'characters', to: 'grid_characters#destroy'
+
             post 'weapons', to: 'grid_weapons#create'
             delete 'weapons', to: 'grid_weapons#destroy'
 
