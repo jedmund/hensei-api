@@ -10,11 +10,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_17_013949) do
+ActiveRecord::Schema.define(version: 2020_10_19_103224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "granblue_id"
+    t.integer "rarity"
+    t.integer "element"
+    t.integer "proficiency1"
+    t.integer "proficiency2"
+    t.integer "gender"
+    t.integer "race1"
+    t.integer "race2"
+    t.boolean "flb"
+    t.boolean "max_level"
+    t.integer "min_hp"
+    t.integer "max_hp"
+    t.integer "max_hp_flb"
+    t.integer "min_atk"
+    t.integer "max_atk"
+    t.integer "max_atk_flb"
+    t.integer "base_da"
+    t.integer "base_ta"
+    t.float "ougi_ratio"
+    t.float "ougi_ratio_flb"
+  end
+
+  create_table "grid_characters", force: :cascade do |t|
+    t.uuid "party_id"
+    t.uuid "character_id"
+    t.integer "uncap_level"
+    t.integer "position"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["character_id"], name: "index_grid_characters_on_character_id"
+    t.index ["party_id"], name: "index_grid_characters_on_party_id"
+  end
 
   create_table "grid_summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id"
