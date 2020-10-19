@@ -4,6 +4,6 @@ attributes :id,
     :friend,
     :position
 
-node :summon do |w|
-    partial('summons/base', :object => w.summon)
+node :summon do |s|
+    partial('summons/base', :object => s.summon)
 end
