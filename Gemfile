@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 ruby '3.0.0'
 
-gem 'rails', '~> 6.0'
-gem 'pg', '~> 1.2.3'
-gem 'bootsnap', '~> 1.4.8'
-gem 'rack-cors', '1.1.1'
+gem 'rails'
+gem 'pg'
+gem 'bootsnap'
+gem 'rack-cors'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma'
