@@ -17,4 +17,6 @@ Doorkeeper.configure do
     # Specify what grant flows are enabled in array of Strings. The valid
     # strings and the flows they enable are:
     grant_flows %w(authorization_code client_credentials password)
+
+    skip_client_authentication_for_password_grant true
 end
