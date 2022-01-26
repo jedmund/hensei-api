@@ -5,6 +5,7 @@ class Character < ApplicationRecord
         against: [:name_en, :name_jp],
         using: {
             tsearch: {
+                negation: true,
                 prefix: true
             }
         }
