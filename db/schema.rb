@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_19_103224) do
+ActiveRecord::Schema.define(version: 2022_01_15_062109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
     t.integer "race1"
     t.integer "race2"
     t.boolean "flb"
-    t.boolean "max_level"
     t.integer "min_hp"
     t.integer "max_hp"
     t.integer "max_hp_flb"
@@ -39,6 +38,9 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
     t.integer "base_ta"
     t.float "ougi_ratio"
     t.float "ougi_ratio_flb"
+    t.boolean "ulb"
+    t.integer "max_atk_ulb"
+    t.integer "max_hp_ulb"
   end
 
   create_table "grid_characters", force: :cascade do |t|
@@ -124,6 +126,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
     t.string "shortcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "extra", default: false, null: false
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -145,6 +148,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
     t.integer "max_atk"
     t.integer "max_atk_flb"
     t.integer "max_atk_ulb"
+    t.integer "limit"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -185,6 +189,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_103224) do
     t.integer "max_atk"
     t.integer "max_atk_flb"
     t.integer "max_atk_ulb"
+    t.boolean "extra", default: false, null: false
+    t.integer "limit"
   end
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
