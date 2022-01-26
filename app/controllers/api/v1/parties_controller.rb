@@ -7,6 +7,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def create
         @party = Party.new(shortcode: random_string)
+        @party.extra = party_params['is_extra']
         
         if current_user
             @party.user = current_user
@@ -38,6 +39,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def party_params
-        params.require(:party).permit(:user_id)
+        params.require(:party).permit(:user_id, :is_extra)
     end
 end
