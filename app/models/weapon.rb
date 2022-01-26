@@ -8,4 +8,8 @@ class Weapon < ApplicationRecord
                 prefix: true
             }
         }
+
+    def display_resource(weapon)
+        weapon.name_en
+    end
 end

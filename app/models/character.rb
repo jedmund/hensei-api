@@ -8,4 +8,8 @@ class Character < ApplicationRecord
                 prefix: true
             }
         }
+
+    def display_resource(character)
+        character.name_en
+    end
 end

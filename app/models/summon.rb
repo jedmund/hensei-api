@@ -8,4 +8,8 @@ class Summon < ApplicationRecord
                 prefix: true
             }
         }
+
+    def display_resource(summon)
+        summon.name_en
+    end
 end
