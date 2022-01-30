@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ['127.0.0.1:1234', 'siero-app.herokuapp.com']
+    origins ENV.fetch("CORS_ORIGIN","").split(",")
 
     resource '*',
       headers: :any,
