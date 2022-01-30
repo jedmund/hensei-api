@@ -1,14 +1,16 @@
 default: &default
   adapter: postgresql
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= ENV['DATABASE_PORT'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  encoding: utf8
   timeout: 5000
 
 development:
   <<: *default
   database: hensei_dev
-  username: justin
-  password:
-  encoding: utf8
 
 test:
   <<: *default
