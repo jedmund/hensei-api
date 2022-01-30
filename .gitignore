@@ -36,3 +36,4 @@
 /config/credentials/development.key
 *.enc
 logfile
+config/application.yml
