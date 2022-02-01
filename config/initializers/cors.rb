@@ -8,7 +8,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     # origins ENV.fetch("CORS_ORIGIN","").split(",")
-    origins ["127.0.0.1:3000", "app.granblue.team", "hensei-web-production.up.railway.app"]
+    origins ["127.0.0.1:1234", "app.granblue.team", "hensei-web-production.up.railway.app"]
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head]
