@@ -17,12 +17,15 @@ Rails.application.routes.draw do
             get 'search/summons', to: 'search#summons'
 
             post 'characters', to: 'grid_characters#create'
+            post 'characters/update_uncap', to: 'grid_characters#update_uncap_level'
             delete 'characters', to: 'grid_characters#destroy'
 
             post 'weapons', to: 'grid_weapons#create'
+            post 'weapons/update_uncap', to: 'grid_weapons#update_uncap_level'
             delete 'weapons', to: 'grid_weapons#destroy'
 
             post 'summons', to: 'grid_summons#create'
+            post 'summons/update_uncap', to: 'grid_summons#update_uncap_level'
             delete 'summons', to: 'grid_summons#destroy'
         end
     end
