@@ -17,7 +17,8 @@ end
 
 node :uncap do |w|
     {
-        :flb => w.flb
+        :flb => w.flb,
+        :ulb => w.ulb
     }
 end
 
