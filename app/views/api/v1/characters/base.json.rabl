@@ -5,7 +5,8 @@ attributes :id,
     :rarity,
     :element,
     :gender,
-    :max_level
+    :max_level,
+    :special
 
 node :name do |w|
     {
