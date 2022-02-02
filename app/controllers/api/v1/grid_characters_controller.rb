@@ -21,7 +21,7 @@ class Api::V1::GridCharactersController < Api::V1::ApiController
     end
 
     def update_uncap_level
-        @character = GridCharacter.find(weapon_params[:id])
+        @character = GridCharacter.find(character_params[:id])
 
         if current_user
             if @character.party.user != current_user
@@ -40,6 +40,6 @@ class Api::V1::GridCharactersController < Api::V1::ApiController
 
     # Specify whitelisted properties that can be modified.
     def character_params
-        params.require(:character).permit(:party_id, :character_id, :position, :uncap_level)
+        params.require(:character).permit(:id, :party_id, :character_id, :position, :uncap_level)
     end
 end

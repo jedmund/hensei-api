@@ -21,7 +21,7 @@ class Api::V1::GridSummonsController < Api::V1::ApiController
     end
     
     def update_uncap_level
-        @summon = GridSummon.find@summon_params[:id])
+        @summon = GridSummon.find(summon_params[:id])
 
         if current_user
             if @summon.party.user != current_user
@@ -40,6 +40,6 @@ class Api::V1::GridSummonsController < Api::V1::ApiController
 
     # Specify whitelisted properties that can be modified.
     def summon_params
-        params.require(:summon).permit(:party_id, :summon_id, :position, :main, :friend, :uncap_level)
+        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level)
     end
 end
