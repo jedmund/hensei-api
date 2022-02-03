@@ -19,6 +19,19 @@ class Api::V1::GridSummonsController < Api::V1::ApiController
         @summon = GridSummon.create!(summon_params.merge(party_id: party.id, summon_id: canonical_summon.id))
         render :show, status: :created if @summon.save!
     end
+    
+    def update_uncap_level
+        @summon = GridSummon.find(summon_params[:id])
+
+        if current_user
+            if @summon.party.user != current_user
+                render_unauthorized_response
+            end
+        end
+
+        @summon.uncap_level = summon_params[:uncap_level]
+        render :show, status: :ok if @summon.save!
+    end
 
     def destroy
     end
@@ -27,6 +40,6 @@ class Api::V1::GridSummonsController < Api::V1::ApiController
 
     # Specify whitelisted properties that can be modified.
     def summon_params
-        params.require(:summon).permit(:party_id, :summon_id, :position, :main, :friend)
+        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level)
     end
 end

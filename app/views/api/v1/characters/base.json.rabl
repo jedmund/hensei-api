@@ -5,7 +5,8 @@ attributes :id,
     :rarity,
     :element,
     :gender,
-    :max_level
+    :max_level,
+    :special
 
 node :name do |w|
     {
@@ -16,7 +17,8 @@ end
 
 node :uncap do |w|
     {
-        :flb => w.flb
+        :flb => w.flb,
+        :ulb => w.ulb
     }
 end
 
