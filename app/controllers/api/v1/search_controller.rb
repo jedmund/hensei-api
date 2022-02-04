@@ -4,8 +4,6 @@ class Api::V1::SearchController < Api::V1::ApiController
             excludes = params[:excludes] ? 
                 params[:excludes].split(',').map { |e| "%#{e.gsub(/\([^()]*\)/, '').strip}%" } : ''
             
-            ap excludes
-            
             @characters = Character.where("name_en ILIKE ? AND name_en NOT ILIKE ALL(ARRAY[?])", "%#{params[:query]}%", excludes).limit(10)
             # @characters = Character.search(query).limit(10)
         else
