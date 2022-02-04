@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -27,7 +28,8 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.integer "gender"
     t.integer "race1"
     t.integer "race2"
-    t.boolean "flb", default: false, null: false
+    t.boolean "flb"
+    t.boolean "max_level"
     t.integer "min_hp"
     t.integer "max_hp"
     t.integer "max_hp_flb"
@@ -38,9 +40,6 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.integer "base_ta"
     t.float "ougi_ratio"
     t.float "ougi_ratio_flb"
-    t.boolean "ulb", default: false, null: false
-    t.integer "max_atk_ulb"
-    t.integer "max_hp_ulb"
     t.boolean "special", default: false, null: false
   end
 
@@ -149,6 +148,7 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.integer "max_atk"
     t.integer "max_atk_flb"
     t.integer "max_atk_ulb"
+    t.boolean "subaura", default: false, null: false
     t.integer "limit"
   end
 
@@ -178,8 +178,8 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.integer "element"
     t.integer "proficiency"
     t.string "series"
-    t.boolean "flb", default: false, null: false
-    t.boolean "ulb", default: false, null: false
+    t.boolean "flb"
+    t.boolean "ulb"
     t.integer "max_level"
     t.integer "max_skill_level"
     t.integer "min_hp"
@@ -193,10 +193,6 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.boolean "extra", default: false, null: false
     t.integer "limit"
     t.integer "ax"
-  end
-
-  create_table "weapons_import", id: false, force: :cascade do |t|
-    t.json "doc"
   end
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
