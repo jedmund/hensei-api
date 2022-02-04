@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
     namespace :api, defaults: { format: :json } do
         namespace :v1 do
-            resources :parties, only: [:index, :create, :show, :destroy]
+            resources :parties, only: [:index, :create, :show, :update,     :destroy]
             resources :users, only: [:create, :show]
 
             get 'parties/:id/weapons', to: 'parties#weapons'

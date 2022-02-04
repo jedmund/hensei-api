@@ -1,5 +1,6 @@
 class Api::V1::PartiesController < Api::V1::ApiController
-    before_action :set, except: ['create']
+    before_action :set_from_slug, except: ['create', 'update']
+    before_action :set, only: ['update', 'destroy']
 
     def index
         parties = Party.all
@@ -21,6 +22,12 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def update
+        if @party.user != current_user
+            render_unauthorized_response
+        else
+            @party.extra = party_params['is_extra']
+            render :update, status: :ok if @party.save!
+        end
     end
 
     def destroy
@@ -49,8 +56,13 @@ class Api::V1::PartiesController < Api::V1::ApiController
         return (0...numChars).map { o[rand(o.length)] }.join
     end
 
-    def set
+    def set_from_slug
         @party = Party.where("shortcode = ?", params[:id]).first
+    end
+
+    def set
+        ap params
+        @party = Party.where("id = ?", params[:id]).first
     end
 
     def party_params
