@@ -26,6 +26,21 @@ class Api::V1::PartiesController < Api::V1::ApiController
     def destroy
     end
 
+    def weapons
+        render_not_found_response if @party.nil?
+        render :weapons, status: :ok
+    end
+
+    def summons
+        render_not_found_response if @party.nil?
+        render :summons, status: :ok
+    end
+
+    def characters
+        render_not_found_response if @party.nil?
+        render :characters, status: :ok
+    end
+
     private
 
     def random_string

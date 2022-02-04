@@ -9,6 +9,10 @@ Rails.application.routes.draw do
             resources :parties, only: [:index, :create, :show, :destroy]
             resources :users, only: [:create, :show]
 
+            get 'parties/:id/weapons', to: 'parties#weapons'
+            get 'parties/:id/summons', to: 'parties#summons'
+            get 'parties/:id/characters', to: 'parties#characters'
+
             post 'check/email', to: 'users#check_email'
             post 'check/username', to: 'users#check_username'
 
