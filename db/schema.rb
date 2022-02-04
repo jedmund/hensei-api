@@ -10,12 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_02_005218) do
+ActiveRecord::Schema.define(version: 2022_02_04_093125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -28,8 +27,7 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.integer "gender"
     t.integer "race1"
     t.integer "race2"
-    t.boolean "flb"
-    t.boolean "max_level"
+    t.boolean "flb", null: false
     t.integer "min_hp"
     t.integer "max_hp"
     t.integer "max_hp_flb"
@@ -41,6 +39,9 @@ ActiveRecord::Schema.define(version: 2022_02_02_005218) do
     t.float "ougi_ratio"
     t.float "ougi_ratio_flb"
     t.boolean "special", default: false, null: false
+    t.boolean "ulb", default: false, null: false
+    t.integer "max_hp_ulb"
+    t.integer "max_atk_ulb"
   end
 
   create_table "grid_characters", force: :cascade do |t|
