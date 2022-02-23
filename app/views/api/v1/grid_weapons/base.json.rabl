@@ -4,6 +4,6 @@ attributes :id,
     :position,
     :uncap_level
 
-node :weapon do |w|
+node :object do |w|
     partial("weapons/base", :object => w.weapon)
 end

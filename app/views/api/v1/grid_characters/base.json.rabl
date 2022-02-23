@@ -3,6 +3,6 @@ attributes :id,
     :position,
     :uncap_level
 
-node :character do |c|
+node :object do |c|
     partial("characters/base", :object => c.character)
 end

@@ -5,6 +5,6 @@ attributes :id,
     :position,
     :uncap_level
 
-node :summon do |s|
+node :object do |s|
     partial('summons/base', :object => s.summon)
 end
