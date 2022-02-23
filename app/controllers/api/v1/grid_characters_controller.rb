@@ -2,21 +2,20 @@ class Api::V1::GridCharactersController < Api::V1::ApiController
     def create
         party = Party.find(character_params[:party_id])
         canonical_character = Character.find(character_params[:character_id])
- 
+
         if current_user
             if party.user != current_user
                 render_unauthorized_response
             end
         end
 
-        if grid_character = GridCharacter.where(
-            party_id: party.id, 
-            position: character_params[:position]
-        ).first
-            GridCharacter.destroy(grid_character.id)
+        if GridCharacter.where(party_id: party.id, position: character_params[:position]).exists?
+            @character = GridCharacter.where(party_id: party.id, position: character_params[:position]).limit(1)[0]
+            @character.character_id = canonical_character.id
+        else
+            @character = GridCharacter.create!(character_params.merge(party_id: party.id, character_id: canonical_character.id))
         end
 
-        @character = GridCharacter.create!(character_params.merge(party_id: party.id, character_id: canonical_character.id))
         render :show, status: :created if @character.save!
     end
 
