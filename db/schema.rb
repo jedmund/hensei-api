@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_04_093125) do
+ActiveRecord::Schema.define(version: 2022_02_23_213548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2022_02_04_093125) do
     t.integer "max_atk_ulb"
   end
 
-  create_table "grid_characters", force: :cascade do |t|
+  create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id"
     t.uuid "character_id"
     t.integer "uncap_level"
