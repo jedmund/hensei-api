@@ -2,7 +2,7 @@ class User < ApplicationRecord
     before_save { self.email = email.downcase }
 
     ##### ActiveRecord Associations
-    has_many :parties
+    has_many :parties, dependent: :destroy
 
     ##### ActiveRecord Validations
     validates :username,
