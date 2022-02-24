@@ -25,7 +25,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
         if @party.user != current_user
             render_unauthorized_response
         else
-            @party.extra = party_params['is_extra']
+            @party.attributes = party_params
             render :update, status: :ok if @party.save!
         end
     end
@@ -71,6 +71,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def party_params
-        params.require(:party).permit(:user_id, :is_extra)
+        params.require(:party).permit(:user_id, :is_extra, :name, :description, :raid_id)
     end
 end
