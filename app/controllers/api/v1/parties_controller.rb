@@ -31,6 +31,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def destroy
+        render :destroyed, status: :ok if @party.destroy
     end
 
     def weapons
