@@ -31,7 +31,11 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def destroy
-        render :destroyed, status: :ok if @party.destroy
+        if @party.user != current_user
+            render_unauthorized_response
+        else
+            render :destroyed, status: :ok if @party.destroy
+        end
     end
 
     def weapons
