@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_24_024415) do
+ActiveRecord::Schema.define(version: 2022_02_25_014523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -130,8 +130,7 @@ ActiveRecord::Schema.define(version: 2022_02_24_024415) do
     t.boolean "extra", default: false, null: false
     t.string "name"
     t.text "description"
-    t.bigint "raids_id"
-    t.index ["raids_id"], name: "index_parties_on_raids_id"
+    t.uuid "raid_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -140,6 +139,7 @@ ActiveRecord::Schema.define(version: 2022_02_24_024415) do
     t.string "name_jp"
     t.integer "level"
     t.integer "group"
+    t.integer "element"
   end
 
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
