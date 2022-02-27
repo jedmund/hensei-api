@@ -2,10 +2,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
     before_action :set_from_slug, except: ['create', 'update']
     before_action :set, only: ['update', 'destroy']
 
-    def index
-        parties = Party.all
-    end
-
     def create
         @party = Party.new(shortcode: random_string)
         @party.extra = party_params['extra']
@@ -53,8 +49,14 @@ class Api::V1::PartiesController < Api::V1::ApiController
         render :characters, status: :ok
     end
 
-    def all
-        @parties = Party.all()
+    def index
+        element = request.params['element']
+        raid = request.params['raid']
+        recency = request.params['recency'] ? Time.at(request.params['recency']).to_datetime.beginning_of_day : nil
+        now = DateTime.current
+
+        @parties = Party.where(element: element, raid_id: raid, created_at: recency..now)
+
         render :all, status: :ok
     end
 
