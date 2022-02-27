@@ -20,6 +20,8 @@ Rails.application.routes.draw do
             get 'search/weapons', to: 'search#weapons'
             get 'search/summons', to: 'search#summons'
 
+            get 'raids', to: 'raids#all'
+
             post 'characters', to: 'grid_characters#create'
             post 'characters/update_uncap', to: 'grid_characters#update_uncap_level'
             delete 'characters', to: 'grid_characters#destroy'

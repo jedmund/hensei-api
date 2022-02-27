@@ -1,9 +1,13 @@
 object :party
 
-attributes :id, :user_id, :shortcode
+attributes :id, :user_id, :name, :description, :shortcode
 
 node :is_extra do |p|
     p.extra
+end
+
+node :raid do |p|
+    partial('raids/base', :object => p.raid)
 end
 
 node :characters do |p|

@@ -10,12 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_23_213548) do
+ActiveRecord::Schema.define(version: 2022_02_25_014523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -129,7 +128,18 @@ ActiveRecord::Schema.define(version: 2022_02_23_213548) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "extra", default: false, null: false
+    t.string "name"
+    t.text "description"
+    t.uuid "raid_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
+  end
+
+  create_table "raids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "level"
+    t.integer "group"
+    t.integer "element"
   end
 
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
