@@ -8,7 +8,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def create
         @party = Party.new(shortcode: random_string)
-        @party.extra = party_params['is_extra']
+        @party.extra = party_params['extra']
         
         if current_user
             @party.user = current_user
