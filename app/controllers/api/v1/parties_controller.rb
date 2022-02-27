@@ -53,6 +53,11 @@ class Api::V1::PartiesController < Api::V1::ApiController
         render :characters, status: :ok
     end
 
+    def all
+        @parties = Party.all()
+        render :all, status: :ok
+    end
+
     private
 
     def random_string
