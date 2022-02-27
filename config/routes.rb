@@ -12,6 +12,7 @@ Rails.application.routes.draw do
             get 'parties/:id/weapons', to: 'parties#weapons'
             get 'parties/:id/summons', to: 'parties#summons'
             get 'parties/:id/characters', to: 'parties#characters'
+            get 'parties/all', to: 'parties#all'
 
             post 'check/email', to: 'users#check_email'
             post 'check/username', to: 'users#check_username'

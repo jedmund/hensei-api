@@ -1,10 +1,6 @@
 class Api::V1::PartiesController < Api::V1::ApiController
-    before_action :set_from_slug, except: ['create', 'update']
+    before_action :set_from_slug, except: ['create', 'update', 'index']
     before_action :set, only: ['update', 'destroy']
-
-    def index
-        parties = Party.all
-    end
 
     def create
         @party = Party.new(shortcode: random_string)
@@ -51,6 +47,20 @@ class Api::V1::PartiesController < Api::V1::ApiController
     def characters
         render_not_found_response if @party.nil?
         render :characters, status: :ok
+    end
+
+    def index
+        now = DateTime.current
+        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
+
+        conditions = {}
+        conditions[:element] = request.params['element'] unless request.params['element'].blank?
+        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+        conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
+
+        @parties = Party.where(conditions)
+
+        render :all, status: :ok
     end
 
     private

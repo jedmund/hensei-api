@@ -17,6 +17,12 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
         end
 
         @weapon = GridWeapon.create!(weapon_params.merge(party_id: party.id, weapon_id: canonical_weapon.id))
+
+        if (@weapon.position == -1)
+            party.element = @weapon.weapon.element
+            party.save!
+        end
+
         render :show, status: :created if @weapon.save!
     end
 
