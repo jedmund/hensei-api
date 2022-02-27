@@ -1,6 +1,6 @@
 object :party
 
-attributes :id, :user_id, :name, :description, :shortcode
+attributes :id, :user_id, :name, :description, :shortcode, :created_at, :updated_at
 
 node :is_extra do |p|
     p.extra
