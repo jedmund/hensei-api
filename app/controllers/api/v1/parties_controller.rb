@@ -66,7 +66,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def set
-        ap params
         @party = Party.where("id = ?", params[:id]).first
     end
 
