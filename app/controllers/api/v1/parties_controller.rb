@@ -1,5 +1,5 @@
 class Api::V1::PartiesController < Api::V1::ApiController
-    before_action :set_from_slug, except: ['create', 'update']
+    before_action :set_from_slug, except: ['create', 'update', 'index']
     before_action :set, only: ['update', 'destroy']
 
     def create
@@ -50,12 +50,15 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def index
-        element = request.params['element']
-        raid = request.params['raid']
-        recency = request.params['recency'] ? Time.at(request.params['recency']).to_datetime.beginning_of_day : nil
         now = DateTime.current
+        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
 
-        @parties = Party.where(element: element, raid_id: raid, created_at: recency..now)
+        conditions = {}
+        conditions[:element] = request.params['element'] unless request.params['element'].blank?
+        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+        conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
+
+        @parties = Party.where(conditions)
 
         render :all, status: :ok
     end
