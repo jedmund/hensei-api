@@ -1,4 +1,4 @@
-object :summon
+object :character
 
 attributes :id,
     :granblue_id,
