@@ -36,7 +36,13 @@ class Api::V1::PartiesController < Api::V1::ApiController
     def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
-        @parties = current_user.favorite_parties.each { |party| 
+        conditions = {}
+        conditions[:element] = request.params['element'] unless request.params['element'].blank?
+        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+        conditions[:created_at] = start_time..now unless request.params['recency'].blank?
+        conditions[:favorites] = { user_id: current_user.id }
+
+        @parties = Party.joins(:favorites).where(conditions).each { |party|
             party.favorited = party.is_favorited(current_user)
         }
 
