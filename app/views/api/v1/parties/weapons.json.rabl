@@ -1,6 +1,6 @@
 object @party
 
-attributes :id, :name, :description, :shortcode
+attributes :id, :name, :description, :shortcode, :favorited, :created_at, :updated_at
 
 node :user do |p|
     partial('users/base', :object => p.user)
@@ -10,7 +10,7 @@ node :raid do |p|
     partial('raids/base', :object => p.raid)
 end
 
-node :is_extra do |p|
+node :extra do |p|
     p.extra
 end
 

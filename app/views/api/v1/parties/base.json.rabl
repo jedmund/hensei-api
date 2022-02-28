@@ -1,13 +1,9 @@
 object :party
 
-attributes :id, :name, :description, :element, :shortcode, :created_at, :updated_at
+attributes :id, :name, :description, :element, :favorited, :shortcode, :created_at, :updated_at
 
-node :is_extra do |p|
+node :extra do |p|
     p.extra
-end
-
-node :is_favorite do |p|
-    @favorited
 end
 
 node :user do |p|
