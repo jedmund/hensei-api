@@ -12,7 +12,6 @@ class Api::V1::FavoritesController < Api::V1::ApiController
         elsif Favorite.where(user_id: current_user.id, party_id: party_id).length > 0
             raise Api::V1::FavoriteAlreadyExistsError
         else
-            ap "Create a new favorite"
             object = {
                 user_id: current_user.id,
                 party_id: favorite_params[:party_id]
@@ -25,7 +24,7 @@ class Api::V1::FavoritesController < Api::V1::ApiController
 
     def destroy
         raise Api::V1::UnauthorizedError unless current_user
-        
+
         @favorite = Favorite.where(user_id: current_user.id, party_id: favorite_params[:party_id]).first
         render :destroyed, status: :ok if @favorite && Favorite.destroy(@favorite.id)
     end
@@ -37,6 +36,6 @@ class Api::V1::FavoritesController < Api::V1::ApiController
     end
 
     def favorite_params
-        params.require(:favorite).permit(:id, :party_id)
+        params.require(:favorite).permit(:party_id)
     end
 end
