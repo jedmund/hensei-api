@@ -27,6 +27,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def show
+        @favorited = (current_user) ? @party.is_favorited(current_user) : false
         render_not_found_response if @party.nil?
     end
 

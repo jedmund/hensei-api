@@ -6,6 +6,10 @@ node :is_extra do |p|
     p.extra
 end
 
+node :is_favorite do |p|
+    @favorited
+end
+
 node :user do |p|
     partial('users/base', :object => p.user)
 end
