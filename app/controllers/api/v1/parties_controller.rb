@@ -1,6 +1,19 @@
 class Api::V1::PartiesController < Api::V1::ApiController
-    before_action :set_from_slug, except: ['create', 'update', 'index']
+    before_action :set_from_slug, except: ['create', 'update', 'index', 'favorites']
     before_action :set, only: ['update', 'destroy']
+
+    def index
+        now = DateTime.current
+        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
+
+        conditions = {}
+        conditions[:element] = request.params['element'] unless request.params['element'].blank?
+        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+        conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
+
+        @parties = Party.where(conditions)
+
+    end
 
     def create
         @party = Party.new(shortcode: random_string)
@@ -15,6 +28,13 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def show
         render_not_found_response if @party.nil?
+    end
+
+    def favorites
+        raise Api::V1::UnauthorizedError unless current_user
+
+        @parties = current_user.favorite_parties
+        render :all, status: :ok
     end
 
     def update
@@ -47,20 +67,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
     def characters
         render_not_found_response if @party.nil?
         render :characters, status: :ok
-    end
-
-    def index
-        now = DateTime.current
-        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
-
-        conditions = {}
-        conditions[:element] = request.params['element'] unless request.params['element'].blank?
-        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
-        conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
-
-        @parties = Party.where(conditions)
-
-        render :all, status: :ok
     end
 
     private
