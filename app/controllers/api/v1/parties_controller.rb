@@ -12,7 +12,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
         conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
 
         @parties = Party.where(conditions)
-
+        render :all, status: :ok
     end
 
     def create
