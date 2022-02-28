@@ -8,6 +8,8 @@ class Party < ApplicationRecord
     has_many :weapons, foreign_key: "party_id", class_name: "GridWeapon", dependent: :destroy
     has_many :summons, foreign_key: "party_id", class_name: "GridSummon", dependent: :destroy
 
+    attr_accessor :favorited
+
     def is_favorited(user)
         user.favorite_parties.include? self
     end
