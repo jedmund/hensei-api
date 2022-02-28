@@ -1,6 +1,6 @@
 object @party
 
-attributes :id, :name, :description, :shortcode
+attributes :id, :name, :description, :shortcode, :favorited, :created_at, :updated_at
 
 node :user do |p|
     partial('users/base', :object => p.user)

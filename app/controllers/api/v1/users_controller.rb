@@ -26,7 +26,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     def show
         @parties = @user.parties
-        ap "Hello world"
     end
 
     def check_email

@@ -1,5 +1,5 @@
 class Api::V1::PartiesController < Api::V1::ApiController
-    before_action :set_from_slug, except: ['create', 'update', 'index']
+    before_action :set_from_slug, except: ['create', 'update', 'index', 'favorites']
     before_action :set, only: ['update', 'destroy']
 
     def create
@@ -15,6 +15,38 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def show
         render_not_found_response if @party.nil?
+    end
+
+    def index
+        now = DateTime.current
+        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
+
+        conditions = {}
+        conditions[:element] = request.params['element'] unless request.params['element'].blank?
+        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+        conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
+
+        @parties = Party.where(conditions).each { |party|
+            party.favorited = (current_user) ? party.is_favorited(current_user) : false
+        }
+
+        render :all, status: :ok
+    end
+
+    def favorites
+        raise Api::V1::UnauthorizedError unless current_user
+
+        conditions = {}
+        conditions[:element] = request.params['element'] unless request.params['element'].blank?
+        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+        conditions[:created_at] = start_time..now unless request.params['recency'].blank?
+        conditions[:favorites] = { user_id: current_user.id }
+
+        @parties = Party.joins(:favorites).where(conditions).each { |party|
+            party.favorited = party.is_favorited(current_user)
+        }
+
+        render :all, status: :ok
     end
 
     def update
@@ -49,20 +81,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
         render :characters, status: :ok
     end
 
-    def index
-        now = DateTime.current
-        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
-
-        conditions = {}
-        conditions[:element] = request.params['element'] unless request.params['element'].blank?
-        conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
-        conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
-
-        @parties = Party.where(conditions)
-
-        render :all, status: :ok
-    end
-
     private
 
     def random_string
@@ -73,6 +91,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def set_from_slug
         @party = Party.where("shortcode = ?", params[:id]).first
+        @party.favorited = (current_user) ? @party.is_favorited(current_user) : false
     end
 
     def set

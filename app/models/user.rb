@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
     ##### ActiveRecord Associations
     has_many :parties, dependent: :destroy
+    has_many :favorites, dependent: :destroy
 
     ##### ActiveRecord Validations
     validates :username,
@@ -35,4 +36,8 @@ class User < ApplicationRecord
 
 ##### ActiveModel Security
     has_secure_password
+
+    def favorite_parties
+        self.favorites.map { |favorite| favorite.party }
+    end
 end

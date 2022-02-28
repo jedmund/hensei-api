@@ -6,9 +6,12 @@ Rails.application.routes.draw do
 
     namespace :api, defaults: { format: :json } do
         namespace :v1 do
-            resources :parties, only: [:index, :create, :show, :update, :destroy]
+            resources :parties, only: [:index, :create, :update, :destroy]
             resources :users, only: [:create, :show]
+            resources :favorites, only: [:create]
 
+            get 'parties/favorites', to: 'parties#favorites'
+            get 'parties/:id', to: 'parties#show'
             get 'parties/:id/weapons', to: 'parties#weapons'
             get 'parties/:id/summons', to: 'parties#summons'
             get 'parties/:id/characters', to: 'parties#characters'
@@ -34,6 +37,8 @@ Rails.application.routes.draw do
             post 'summons', to: 'grid_summons#create'
             post 'summons/update_uncap', to: 'grid_summons#update_uncap_level'
             delete 'summons', to: 'grid_summons#destroy'
+
+            delete 'favorites', to: 'favorites#destroy'
         end
     end
 end
