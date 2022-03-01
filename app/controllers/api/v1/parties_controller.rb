@@ -1,5 +1,5 @@
 class Api::V1::PartiesController < Api::V1::ApiController
-    before_action :set_from_slug, except: ['create', 'update', 'index', 'favorites']
+    before_action :set_from_slug, except: ['create', 'destroy', 'update', 'index', 'favorites']
     before_action :set, only: ['update', 'destroy']
 
     def create
