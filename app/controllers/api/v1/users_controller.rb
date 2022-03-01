@@ -25,7 +25,22 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
 
     def show
-        @parties = @user.parties
+        if @user
+            now = DateTime.current
+            start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
+
+            conditions = {}
+            conditions[:element] = request.params['element'] unless request.params['element'].blank?
+            conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+            conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
+            conditions[:user_id] = @user.id
+
+            @parties = Party.where(conditions).each { |party|
+                party.favorited = (current_user) ? party.is_favorited(current_user) : false
+            }
+        else
+            render_not_found_response
+        end
     end
 
     def check_email
@@ -48,14 +63,6 @@ class Api::V1::UsersController < Api::V1::ApiController
         render :available
     end
 
-    def show
-        if @user
-            @parties = @user.parties
-        else
-            render_not_found_response
-        end
-    end
-
     def update
     end
 
@@ -66,6 +73,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     # Specify whitelisted properties that can be modified.
     def set
+        ap "SETTING!!!"
         @user = User.where("username = ?", params[:id]).first
     end
 
