@@ -73,7 +73,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     # Specify whitelisted properties that can be modified.
     def set
-        ap "SETTING!!!"
         @user = User.where("username = ?", params[:id]).first
     end
 
