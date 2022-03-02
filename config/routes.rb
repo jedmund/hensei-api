@@ -25,6 +25,7 @@ Rails.application.routes.draw do
             get 'search/summons', to: 'search#summons'
 
             get 'raids', to: 'raids#all'
+            get 'weapon_keys', to: 'weapon_keys#all'
 
             post 'characters', to: 'grid_characters#create'
             post 'characters/update_uncap', to: 'grid_characters#update_uncap_level'
