@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         namespace :v1 do
             resources :parties, only: [:index, :create, :update, :destroy]
             resources :users, only: [:create, :show]
+            resources :grid_weapons, only: [:update]
             resources :favorites, only: [:create]
 
             get 'parties/favorites', to: 'parties#favorites'
