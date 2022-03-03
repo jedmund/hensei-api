@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_02_071015) do
+ActiveRecord::Schema.define(version: 2022_03_03_092208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -96,9 +96,6 @@ ActiveRecord::Schema.define(version: 2022_03_02_071015) do
     t.integer "element"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
-    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
-    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
-    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -197,6 +194,7 @@ ActiveRecord::Schema.define(version: 2022_03_02_071015) do
     t.integer "series"
     t.integer "slot"
     t.integer "group"
+    t.integer "order"
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
