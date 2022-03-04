@@ -7,6 +7,7 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
 
         if !current_user || party.user != current_user
             render_unauthorized_response
+            return
         end
 
         if grid_weapon = GridWeapon.where(
@@ -29,6 +30,7 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
     def update
         if !current_user || @weapon.party.user != current_user
             render_unauthorized_response 
+            return
         end
 
         # TODO: Server-side validation of weapon mods
