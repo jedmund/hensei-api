@@ -2,6 +2,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     class ForbiddenError < StandardError; end
 
     before_action :set, except: ['create', 'check_email', 'check_username']
+    before_action :set_by_id, only: ['info', 'update']
 
     def create
         @user = User.new(user_params)
@@ -22,6 +23,15 @@ class Api::V1::UsersController < Api::V1::ApiController
 
             render :create, status: :created
         end
+    end
+
+
+    def update
+        render :info, status: :ok if @user.update(user_params)
+    end
+
+    def info
+        render :info, status: :ok
     end
 
     def show
@@ -63,9 +73,6 @@ class Api::V1::UsersController < Api::V1::ApiController
         render :available
     end
 
-    def update
-    end
-
     def destroy
     end
 
@@ -76,7 +83,14 @@ class Api::V1::UsersController < Api::V1::ApiController
         @user = User.where("username = ?", params[:id]).first
     end
 
+    def set_by_id
+        @user = User.where("id = ?", params[:id]).first
+    end
+
     def user_params
-        params.require(:user).permit(:username, :email, :password, :password_confirmation, :granblue_id)
+        params.require(:user).permit(
+            :username, :email, :password, :password_confirmation, 
+            :granblue_id, :picture, :element, :language, :private
+        )
     end
 end

@@ -7,16 +7,17 @@ Rails.application.routes.draw do
     namespace :api, defaults: { format: :json } do
         namespace :v1 do
             resources :parties, only: [:index, :create, :update, :destroy]
-            resources :users, only: [:create, :show]
+            resources :users, only: [:create, :update, :show]
             resources :grid_weapons, only: [:update]
             resources :favorites, only: [:create]
+
+            get 'users/info/:id', to: 'users#info'
 
             get 'parties/favorites', to: 'parties#favorites'
             get 'parties/:id', to: 'parties#show'
             get 'parties/:id/weapons', to: 'parties#weapons'
             get 'parties/:id/summons', to: 'parties#summons'
             get 'parties/:id/characters', to: 'parties#characters'
-            get 'parties/all', to: 'parties#all'
 
             post 'check/email', to: 'users#check_email'
             post 'check/username', to: 'users#check_username'
