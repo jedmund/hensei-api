@@ -5,7 +5,11 @@ attributes :id,
     :element,
     :proficiency,
     :max_level,
-    :max_skill_level
+    :max_skill_level,
+    :limit,
+    :rarity,
+    :series,
+    :ax
 
 node :name do |w|
     {

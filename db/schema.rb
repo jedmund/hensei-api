@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_28_014758) do
+ActiveRecord::Schema.define(version: 2022_03_03_092208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2022_02_28_014758) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "perpetuity"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -87,10 +88,14 @@ ActiveRecord::Schema.define(version: 2022_02_28_014758) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "weapon_key3_id"
+    t.integer "ax_modifier1"
+    t.float "ax_strength1"
+    t.integer "ax_modifier2"
+    t.float "ax_strength2"
+    t.integer "element"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
-    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
-    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -187,9 +192,9 @@ ActiveRecord::Schema.define(version: 2022_02_28_014758) do
     t.string "name_en"
     t.string "name_jp"
     t.integer "series"
-    t.integer "type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.integer "slot"
+    t.integer "group"
+    t.integer "order"
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -199,7 +204,7 @@ ActiveRecord::Schema.define(version: 2022_02_28_014758) do
     t.integer "rarity"
     t.integer "element"
     t.integer "proficiency"
-    t.string "series"
+    t.integer "series"
     t.boolean "flb"
     t.boolean "ulb"
     t.integer "max_level"
@@ -217,6 +222,7 @@ ActiveRecord::Schema.define(version: 2022_02_28_014758) do
     t.integer "ax"
   end
 
+  add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
 end
