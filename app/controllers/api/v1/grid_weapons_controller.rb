@@ -5,9 +5,10 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
         party = Party.find(weapon_params[:party_id])
         canonical_weapon = Weapon.find(weapon_params[:weapon_id])
 
-        if !current_user || party.user != current_user
-            render_unauthorized_response
-            return
+        if current_user
+            if party.user != current_user
+                render_unauthorized_response
+            end
         end
 
         if grid_weapon = GridWeapon.where(
@@ -28,9 +29,10 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
     end
 
     def update
-        if !current_user || @weapon.party.user != current_user
-            render_unauthorized_response 
-            return
+        if current_user
+            if party.user != current_user
+                render_unauthorized_response
+            end
         end
 
         # TODO: Server-side validation of weapon mods
@@ -46,7 +48,7 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
         @weapon = GridWeapon.find(weapon_params[:id])
 
         if current_user
-            if @weapon.party.user != current_user
+            if party.user != current_user
                 render_unauthorized_response
             end
         end
