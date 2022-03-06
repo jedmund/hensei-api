@@ -9,7 +9,7 @@ attributes :id,
 node :name do |w|
     {
         :en => w.name_en,
-        :jp => w.name_jp
+        :ja => w.name_jp
     }
 end
 
