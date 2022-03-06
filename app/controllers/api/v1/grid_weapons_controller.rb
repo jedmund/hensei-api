@@ -30,7 +30,7 @@ class Api::V1::GridWeaponsController < Api::V1::ApiController
 
     def update
         if current_user
-            if party.user != current_user
+            if @weapon.party.user != current_user
                 render_unauthorized_response
             end
         end
