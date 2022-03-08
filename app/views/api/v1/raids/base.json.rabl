@@ -1,6 +1,6 @@
 object :raid
 
-attributes :id, :level, :group, :element
+attributes :id, :slug, :level, :group, :element
 
 node :name do |r|
     {

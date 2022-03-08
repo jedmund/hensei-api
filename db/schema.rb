@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_04_115434) do
+ActiveRecord::Schema.define(version: 2022_03_06_131942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2022_03_04_115434) do
     t.integer "level"
     t.integer "group"
     t.integer "element"
+    t.string "slug"
   end
 
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
