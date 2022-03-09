@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_013333) do
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -99,6 +100,9 @@ ActiveRecord::Schema.define(version: 2022_03_09_013333) do
     t.integer "element"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
+    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
+    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
+    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
