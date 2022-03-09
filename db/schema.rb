@@ -10,9 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_06_131942) do
+ActiveRecord::Schema.define(version: 2022_03_09_013333) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "btree_gin"
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -42,6 +44,7 @@ ActiveRecord::Schema.define(version: 2022_03_06_131942) do
     t.boolean "ulb", default: false, null: false
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
+    t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -178,6 +181,7 @@ ActiveRecord::Schema.define(version: 2022_03_06_131942) do
     t.integer "max_atk_ulb"
     t.boolean "subaura", default: false, null: false
     t.integer "limit"
+    t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -225,6 +229,7 @@ ActiveRecord::Schema.define(version: 2022_03_06_131942) do
     t.boolean "extra", default: false, null: false
     t.integer "limit"
     t.integer "ax"
+    t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
