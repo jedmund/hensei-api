@@ -1,12 +1,20 @@
 class Character < ApplicationRecord
     include PgSearch::Model
 
-    pg_search_scope :search, 
-        against: [:name_en, :name_jp],
+    pg_search_scope :en_search, 
+        against: :name_en,
+        using: {
+            trigram: {
+                threshold: 0.18
+            }
+        }
+
+    pg_search_scope :jp_search, 
+        against: :name_jp,
         using: {
             tsearch: {
-                negation: true,
-                prefix: true
+                prefix: true,
+                dictionary: "simple"
             }
         }
 
