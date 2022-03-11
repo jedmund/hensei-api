@@ -22,9 +22,9 @@ Rails.application.routes.draw do
             post 'check/email', to: 'users#check_email'
             post 'check/username', to: 'users#check_username'
 
-            get 'search/characters', to: 'search#characters'
-            get 'search/weapons', to: 'search#weapons'
-            get 'search/summons', to: 'search#summons'
+            post 'search/characters', to: 'search#characters'
+            post 'search/weapons', to: 'search#weapons'
+            post 'search/summons', to: 'search#summons'
 
             get 'raids', to: 'raids#all'
             get 'weapon_keys', to: 'weapon_keys#all'

@@ -37,7 +37,11 @@ gem 'awesome_nested_set'
 # An email validator for Rails
 gem "email_validator"
 
+# pg_search builds ActiveRecord named scopes that take advantage of PostgreSQL’s full text search
 gem 'pg_search'
+
+# Pagination library
+gem 'will_paginate', '~> 3.3'
 
 group :doc do
     gem 'sdoc'
