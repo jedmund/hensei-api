@@ -1,3 +1,11 @@
-collection @characters, :object_root => false
+node :count do
+    @count
+end
 
-extends 'characters/base'
+node :total_pages do
+    (@count.to_f / 10 > 1) ? (@count.to_f / 10).ceil() : 1  
+end
+
+node(:results) {
+    partial('characters/base', object: @characters)
+} unless @characters.empty?
