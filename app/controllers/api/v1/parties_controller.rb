@@ -19,7 +19,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def index
         now = DateTime.current
-        start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
+        start_time = (now - request.params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
 
         conditions = {}
         conditions[:element] = request.params['element'] unless request.params['element'].blank?
@@ -27,9 +27,10 @@ class Api::V1::PartiesController < Api::V1::ApiController
         conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
         conditions[:weapons_count] = 5..13
 
-        @parties = Party.where(conditions).each { |party|
-            party.favorited = (current_user) ? party.is_favorited(current_user) : false
-        }
+        @parties = Party.where(conditions).paginate(page: request.params[:page], per_page: 15)
+            .each { |party|
+                party.favorited = (current_user) ? party.is_favorited(current_user) : false
+            }
 
         render :all, status: :ok
     end
@@ -46,9 +47,10 @@ class Api::V1::PartiesController < Api::V1::ApiController
         conditions[:created_at] = start_time..now unless request.params['recency'].blank?
         conditions[:favorites] = { user_id: current_user.id }
 
-        @parties = Party.joins(:favorites).where(conditions).each { |party|
-            party.favorited = party.is_favorited(current_user)
-        }
+        @parties = Party.joins(:favorites).where(conditions).paginate(page: request.params[:page], per_page: 15)
+            .each { |party|
+                party.favorited = party.is_favorited(current_user)
+            }
 
         render :all, status: :ok
     end

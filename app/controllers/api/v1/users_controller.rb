@@ -45,9 +45,10 @@ class Api::V1::UsersController < Api::V1::ApiController
             conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
             conditions[:user_id] = @user.id
 
-            @parties = Party.where(conditions).each { |party|
-                party.favorited = (current_user) ? party.is_favorited(current_user) : false
-            }
+            @parties = Party.where(conditions).paginate(page: request.params[:page], per_page: 15)
+                .each { |party|
+                    party.favorited = (current_user) ? party.is_favorited(current_user) : false
+                }
         else
             render_not_found_response
         end
