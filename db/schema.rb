@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_09_013333) do
+ActiveRecord::Schema.define(version: 2022_03_15_005952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -100,9 +99,6 @@ ActiveRecord::Schema.define(version: 2022_03_09_013333) do
     t.integer "element"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
-    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
-    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
-    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -153,6 +149,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_013333) do
     t.text "description"
     t.uuid "raid_id"
     t.integer "element"
+    t.integer "weapons_count"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
