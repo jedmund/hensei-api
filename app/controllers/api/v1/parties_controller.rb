@@ -25,6 +25,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
         conditions[:element] = request.params['element'] unless request.params['element'].blank?
         conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
         conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
+        conditions[:weapons_count] = 5..13
 
         @parties = Party.where(conditions).each { |party|
             party.favorited = (current_user) ? party.is_favorited(current_user) : false
