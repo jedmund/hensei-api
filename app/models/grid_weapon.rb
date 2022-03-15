@@ -1,5 +1,6 @@
 class GridWeapon < ApplicationRecord
-    belongs_to :party
+    belongs_to :party,
+        counter_cache: :weapons_count
 
     belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
     belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
