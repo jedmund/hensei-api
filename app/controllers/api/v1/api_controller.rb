@@ -27,7 +27,6 @@ module Api::V1
         # before returning
         def current_user
             @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-            @current_user.update_last_ip_and_last_seen!(request.remote_ip) if @current_user
 
             return @current_user
         end
@@ -41,12 +40,6 @@ module Api::V1
         # with a UTF-8 charset
         def set_default_content_type
             set_content_type("application/javascript; charset=utf-8")
-        end
-
-        def current_user
-            @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-
-            return @current_user
         end
 
         ### Error response methods
