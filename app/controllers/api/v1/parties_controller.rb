@@ -18,6 +18,8 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def index
+        @per_page = 15
+
         now = DateTime.current
         start_time = (now - request.params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
 
@@ -27,10 +29,14 @@ class Api::V1::PartiesController < Api::V1::ApiController
         conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
         conditions[:weapons_count] = 5..13
 
-        @parties = Party.where(conditions).paginate(page: request.params[:page], per_page: 15)
+        @parties = Party
+            .where(conditions)
+            .order(created_at: :desc)
+            .paginate(page: request.params[:page], per_page: @per_page)
             .each { |party|
                 party.favorited = (current_user) ? party.is_favorited(current_user) : false
             }
+        @count = Party.where(conditions).count
 
         render :all, status: :ok
     end
@@ -38,6 +44,8 @@ class Api::V1::PartiesController < Api::V1::ApiController
     def favorites
         raise Api::V1::UnauthorizedError unless current_user
         
+        @per_page = 15
+
         now = DateTime.current
         start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
 
@@ -47,10 +55,15 @@ class Api::V1::PartiesController < Api::V1::ApiController
         conditions[:created_at] = start_time..now unless request.params['recency'].blank?
         conditions[:favorites] = { user_id: current_user.id }
 
-        @parties = Party.joins(:favorites).where(conditions).paginate(page: request.params[:page], per_page: 15)
+        @parties = Party
+            .joins(:favorites)
+            .where(conditions)
+            .order('favorites.created_at DESC')
+            .paginate(page: request.params[:page], per_page: @per_page)
             .each { |party|
                 party.favorited = party.is_favorited(current_user)
             }
+        @count = Party.joins(:favorites).where(conditions).count
 
         render :all, status: :ok
     end
