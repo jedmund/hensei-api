@@ -36,6 +36,8 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     def show
         if @user
+            @per_page = 15
+
             now = DateTime.current
             start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
 
@@ -45,10 +47,14 @@ class Api::V1::UsersController < Api::V1::ApiController
             conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
             conditions[:user_id] = @user.id
 
-            @parties = Party.where(conditions).paginate(page: request.params[:page], per_page: 15)
+            @parties = Party
+                .where(conditions)
+                .order(created_at: :desc)
+                .paginate(page: request.params[:page], per_page: @per_page)
                 .each { |party|
                     party.favorited = (current_user) ? party.is_favorited(current_user) : false
                 }
+            @count = Party.where(conditions).count
         else
             render_not_found_response
         end
