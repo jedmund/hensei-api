@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_22_092821) do
+ActiveRecord::Schema.define(version: 2022_03_22_095436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -45,15 +45,6 @@ ActiveRecord::Schema.define(version: 2022_03_22_092821) do
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
-  end
-
-  create_table "classes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name_en"
-    t.string "name_jp"
-    t.integer "proficiency1"
-    t.integer "proficiency2"
-    t.string "row"
-    t.boolean "ml", default: false
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -110,6 +101,15 @@ ActiveRecord::Schema.define(version: 2022_03_22_092821) do
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
   end
 
+  create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "proficiency1"
+    t.integer "proficiency2"
+    t.string "row"
+    t.boolean "ml", default: false
+  end
+
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resource_owner_id", null: false
     t.uuid "application_id", null: false
@@ -159,9 +159,9 @@ ActiveRecord::Schema.define(version: 2022_03_22_092821) do
     t.uuid "raid_id"
     t.integer "element"
     t.integer "weapons_count"
-    t.uuid "class_id"
+    t.uuid "job_id"
     t.integer "ml"
-    t.index ["class_id"], name: "index_parties_on_class_id"
+    t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -256,7 +256,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_092821) do
   add_foreign_key "grid_weapons", "weapons"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "parties", "classes"
+  add_foreign_key "parties", "jobs"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
 end
