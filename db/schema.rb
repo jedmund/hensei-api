@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_22_095436) do
+ActiveRecord::Schema.define(version: 2022_03_22_103920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_095436) do
     t.integer "proficiency2"
     t.string "row"
     t.boolean "ml", default: false
+    t.integer "order"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
