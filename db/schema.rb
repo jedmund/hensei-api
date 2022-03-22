@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_15_011802) do
+ActiveRecord::Schema.define(version: 2022_03_22_092821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 2022_03_15_011802) do
     t.integer "gender"
     t.integer "race1"
     t.integer "race2"
-    t.boolean "flb", null: false
+    t.boolean "flb", default: false, null: false
     t.integer "min_hp"
     t.integer "max_hp"
     t.integer "max_hp_flb"
@@ -45,6 +45,15 @@ ActiveRecord::Schema.define(version: 2022_03_15_011802) do
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
+  end
+
+  create_table "classes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "proficiency1"
+    t.integer "proficiency2"
+    t.string "row"
+    t.boolean "ml", default: false
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -63,7 +72,7 @@ ActiveRecord::Schema.define(version: 2022_03_15_011802) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "perpetuity"
+    t.boolean "perpetuity", default: false, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -150,6 +159,9 @@ ActiveRecord::Schema.define(version: 2022_03_15_011802) do
     t.uuid "raid_id"
     t.integer "element"
     t.integer "weapons_count"
+    t.uuid "class_id"
+    t.integer "ml"
+    t.index ["class_id"], name: "index_parties_on_class_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -214,9 +226,9 @@ ActiveRecord::Schema.define(version: 2022_03_15_011802) do
     t.integer "rarity"
     t.integer "element"
     t.integer "proficiency"
-    t.integer "series"
-    t.boolean "flb"
-    t.boolean "ulb"
+    t.integer "series", default: -1, null: false
+    t.boolean "flb", default: false, null: false
+    t.boolean "ulb", default: false, null: false
     t.integer "max_level"
     t.integer "max_skill_level"
     t.integer "min_hp"
@@ -229,11 +241,22 @@ ActiveRecord::Schema.define(version: 2022_03_15_011802) do
     t.integer "max_atk_ulb"
     t.boolean "extra", default: false, null: false
     t.integer "limit"
-    t.integer "ax"
+    t.integer "ax", default: 0, null: false
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
+  add_foreign_key "favorites", "parties"
+  add_foreign_key "favorites", "users"
+  add_foreign_key "grid_characters", "characters"
+  add_foreign_key "grid_characters", "parties"
+  add_foreign_key "grid_summons", "parties"
+  add_foreign_key "grid_summons", "summons"
+  add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
+  add_foreign_key "grid_weapons", "weapons"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "classes"
+  add_foreign_key "parties", "raids"
+  add_foreign_key "parties", "users"
 end
