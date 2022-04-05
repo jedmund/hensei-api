@@ -2,6 +2,7 @@ class Party < ApplicationRecord
 ##### ActiveRecord Associations
     belongs_to :user, optional: true
     belongs_to :raid, optional: true
+    belongs_to :job, optional: true
     
     has_many :characters, 
         foreign_key: "party_id", 
