@@ -118,6 +118,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
     end
 
     def party_params
-        params.require(:party).permit(:user_id, :extra, :name, :description, :raid_id)
+        params.require(:party).permit(:user_id, :extra, :name, :description, :raid_id, :job_id)
     end
 end
