@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_22_103920) do
+ActiveRecord::Schema.define(version: 2022_04_10_190152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -209,6 +209,7 @@ ActiveRecord::Schema.define(version: 2022_03_22_103920) do
     t.string "language", default: "en", null: false
     t.boolean "private", default: false, null: false
     t.string "element", default: "water", null: false
+    t.integer "gender", default: 0, null: false
   end
 
   create_table "weapon_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -4,7 +4,8 @@ attributes :id,
     :username,
     :granblue_id,
     :language,
-    :private
+    :private,
+    :gender
 
 node :picture do |u|
     {
