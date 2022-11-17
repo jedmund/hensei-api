@@ -110,7 +110,7 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
     def set_from_slug
         @party = Party.where("shortcode = ?", params[:id]).first
-        @party.favorited = (current_user) ? @party.is_favorited(current_user) : false
+        @party.favorited = (current_user && @party) ? @party.is_favorited(current_user) : false
     end
 
     def set
