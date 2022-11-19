@@ -2,6 +2,7 @@ object :character
 
 attributes :id,
     :granblue_id,
+    :character_id,
     :rarity,
     :element,
     :gender,
