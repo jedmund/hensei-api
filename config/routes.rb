@@ -31,6 +31,7 @@ Rails.application.routes.draw do
             get 'weapon_keys', to: 'weapon_keys#all'
 
             post 'characters', to: 'grid_characters#create'
+            post 'characters/resolve', to: 'grid_characters#resolve'
             post 'characters/update_uncap', to: 'grid_characters#update_uncap_level'
             delete 'characters', to: 'grid_characters#destroy'
 

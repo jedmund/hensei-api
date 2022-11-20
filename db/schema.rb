@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_10_190152) do
+ActiveRecord::Schema.define(version: 2022_11_17_070255) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2022_04_10_190152) do
     t.boolean "ulb", default: false, null: false
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
+    t.integer "character_id", default: [], null: false, array: true
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
