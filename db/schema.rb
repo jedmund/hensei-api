@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_17_070255) do
+ActiveRecord::Schema.define(version: 2022_11_20_145204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -100,6 +100,20 @@ ActiveRecord::Schema.define(version: 2022_11_17_070255) do
     t.integer "element"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
+  end
+
+  create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "slug", null: false
+    t.integer "color", null: false
+    t.boolean "main", default: false
+    t.boolean "sub", default: false
+    t.boolean "emp", default: false
+    t.integer "order"
+    t.boolean "base", default: false
+    t.index ["job_id"], name: "index_job_skills_on_job_id"
   end
 
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
