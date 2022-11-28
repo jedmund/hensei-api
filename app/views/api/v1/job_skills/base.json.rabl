@@ -1,4 +1,4 @@
-collection @skills, object_root: false
+object :job_skill
 
 attributes :id, :job, :slug, :color, :main, :base, :sub, :emp, :order
 
@@ -8,4 +8,3 @@ node :name do |w|
       :ja => w.name_jp
   }
 end
-
