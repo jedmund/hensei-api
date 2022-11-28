@@ -1,4 +1,4 @@
-collection @skills
+collection @skills, object_root: false
 
 attributes :id, :job, :slug, :color, :main, :base, :sub, :emp, :order
 
