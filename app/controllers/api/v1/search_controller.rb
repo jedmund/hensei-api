@@ -82,11 +82,12 @@ class Api::V1::SearchController < Api::V1::ApiController
         # Set up basic parameters we'll use
         job = Job.find(search_params[:job])
         locale = search_params[:locale] || 'en'
-        group = search_params[:group].to_i unless !search_params[:group].present?
 
         # Set the conditions based on the group requested
         conditions = {}
-        if (group)
+        if search_params[:filters].present? && search_params[:filters]["group"].present?
+            group = search_params[:filters]["group"].to_i
+
             if (group < 4)
                 conditions[:color] = group
                 conditions[:emp] = false
