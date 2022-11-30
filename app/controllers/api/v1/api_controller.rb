@@ -11,6 +11,7 @@ module Api::V1
         rescue_from ActiveRecord::RecordNotUnique, with: :render_unprocessable_entity_response
         rescue_from Api::V1::SameFavoriteUserError, with: :render_unprocessable_entity_response
         rescue_from Api::V1::FavoriteAlreadyExistsError, with: :render_unprocessable_entity_response
+        rescue_from Api::V1::NoJobProvidedError, with: :render_unprocessable_entity_response
         rescue_from Api::V1::UnauthorizedError, with: :render_unauthorized_response
         rescue_from ActionController::ParameterMissing, with: :render_unprocessable_entity_response
 

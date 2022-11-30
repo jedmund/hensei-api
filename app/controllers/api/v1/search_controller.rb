@@ -76,6 +76,53 @@ class Api::V1::SearchController < Api::V1::ApiController
         @summons = @summons.paginate(page: search_params[:page], per_page: 10)
     end
 
+    def job_skills
+        raise Api::V1::NoJobProvidedError unless search_params[:job].present?
+
+        # Set up basic parameters we'll use
+        job = Job.find(search_params[:job])
+        locale = search_params[:locale] || 'en'
+        group = search_params[:group].to_i unless !search_params[:group].present?
+
+        # Set the conditions based on the group requested
+        conditions = {}
+        if (group)
+            if (group < 4)
+                conditions[:color] = group
+                conditions[:emp] = false
+                conditions[:base] = false
+            elsif (group == 4)
+                conditions[:emp] = true
+            elsif (group == 5)
+                conditions[:base] = true
+            end
+        end
+
+        # Perform the query
+        if search_params[:query].present? && search_params[:query].length >= 2
+            @skills = JobSkill.method("#{locale}_search").(search_params[:query])
+                .where(conditions)
+                .where(job: job.id, main: false)
+                .or(
+                    JobSkill.method("#{locale}_search").(search_params[:query])
+                    .where(conditions)
+                    .where(sub: true)
+                )
+        else
+            @skills = JobSkill.all
+                .where(conditions)
+                .where(job: job.id, main: false)
+                .or(
+                    JobSkill.all
+                    .where(conditions)
+                    .where(sub:true)
+                )
+        end        
+
+        @count = @skills.length
+        @skills = @skills.paginate(page: search_params[:page], per_page: 10)
+    end
+
     private
 
     # Specify whitelisted properties that can be modified.

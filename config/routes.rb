@@ -25,6 +25,7 @@ Rails.application.routes.draw do
             post 'search/characters', to: 'search#characters'
             post 'search/weapons', to: 'search#weapons'
             post 'search/summons', to: 'search#summons'
+            post 'search/job_skills', to: 'search#job_skills'
 
             get 'jobs', to: 'jobs#all'
 
