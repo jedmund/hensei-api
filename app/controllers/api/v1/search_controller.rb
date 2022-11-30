@@ -88,7 +88,7 @@ class Api::V1::SearchController < Api::V1::ApiController
         if search_params[:filters].present? && search_params[:filters]["group"].present?
             group = search_params[:filters]["group"].to_i
 
-            if (group < 4)
+            if (group >= 0 && group < 4)
                 conditions[:color] = group
                 conditions[:emp] = false
                 conditions[:base] = false
