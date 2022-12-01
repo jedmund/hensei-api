@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_20_145204) do
+ActiveRecord::Schema.define(version: 2022_12_01_123645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -177,7 +177,15 @@ ActiveRecord::Schema.define(version: 2022_11_20_145204) do
     t.integer "weapons_count"
     t.uuid "job_id"
     t.integer "ml"
+    t.uuid "skill1_id"
+    t.uuid "skill2_id"
+    t.uuid "skill3_id"
+    t.uuid "skill0_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
+    t.index ["skill0_id"], name: "index_parties_on_skill0_id"
+    t.index ["skill1_id"], name: "index_parties_on_skill1_id"
+    t.index ["skill2_id"], name: "index_parties_on_skill2_id"
+    t.index ["skill3_id"], name: "index_parties_on_skill3_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -273,6 +281,10 @@ ActiveRecord::Schema.define(version: 2022_11_20_145204) do
   add_foreign_key "grid_weapons", "weapons"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "job_skills", column: "skill0_id"
+  add_foreign_key "parties", "job_skills", column: "skill1_id"
+  add_foreign_key "parties", "job_skills", column: "skill2_id"
+  add_foreign_key "parties", "job_skills", column: "skill3_id"
   add_foreign_key "parties", "jobs"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
