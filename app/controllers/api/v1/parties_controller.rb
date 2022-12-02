@@ -20,14 +20,32 @@ class Api::V1::PartiesController < Api::V1::ApiController
     if @party.user != current_user
       render_unauthorized_response
     else
-      @party.attributes = party_params
+      @party.attributes =
+        party_params.except(:skill1_id, :skill2_id, :skill3_id)
 
-      if party_params["job_id"].present?
-        job_skills = JobSkill.where(job_id: party_params["job_id"], main: true)
-        job_skills.each_with_index do |skill, i|
-          @party["skill#{i}_id"] = skill.id
+      # Determine which incoming keys contain new skills
+      new_skill_keys =
+        party_params.keys - %i[skill0_id skill1_id skill2_id skill3_id]
+
+      if !new_skill_keys.empty?
+        # If there are new skills, merge them with the existing skills
+        existing_skills = [@party.skill1, @party.skill2, @party.skill3]
+        new_skill_ids = new_skill_keys.map { |key| party_params[key] }
+        positions = extract_positions_from_keys(new_skill_keys)
+
+        new_skills =
+          merge_skills_with_existing_skills(
+            existing_skills,
+            new_skill_ids,
+            positions,
+          )
+
+        new_skill_ids = {}
+        new_skills.each_with_index do |skill, index|
+          new_skill_ids["skill#{index + 1}_id"] = skill.id
         end
-        ap @party
+
+        @party.attributes = new_skill_ids
       end
 
       render :update, status: :ok if @party.save!
@@ -128,6 +146,46 @@ class Api::V1::PartiesController < Api::V1::ApiController
   end
 
   private
+
+  def merge_skills_with_existing_skills(
+    existing_skills,
+    new_skill_ids,
+    positions
+  )
+    new_skills = []
+    new_skill_ids.each { |id| new_skills << JobSkill.find(id) }
+
+    progress = existing_skills
+    new_skills.each do |skill, index|
+      progress = place_skill_in_existing_skills(progress, skill, positions[0])
+    end
+
+    return progress
+  end
+
+  def place_skill_in_existing_skills(existing_skills, skill, position)
+    old_position = existing_skills.index { |x| x.id == skill.id }
+
+    if old_position
+      # Check desired position for a skill
+      displaced_skill = existing_skills[position] if existing_skills[
+        position
+      ].present?
+
+      # Put skill in new position
+      existing_skills[position] = skill
+      existing_skills[old_position] = displaced_skill
+    else
+      existing_skills[position] = skill
+    end
+
+    return existing_skills
+  end
+
+  def extract_positions_from_keys(keys)
+    # Subtract by 1 because we won't operate on the 0th skill, so we don't pass it
+    keys.map { |key| key["skill".length].to_i - 1 }
+  end
 
   def random_string
     numChars = 6
