@@ -41,9 +41,32 @@ class Party < ApplicationRecord
 
   has_many :favorites
 
+  ##### ActiveRecord Validations
+  validate :skills_are_unique
+
   attr_accessor :favorited
 
   def is_favorited(user)
     user.favorite_parties.include? self
+  end
+
+  private
+
+  def skills_are_unique
+    skills = [skill0, skill1, skill2, skill3].compact
+
+    if skills.uniq.length != skills.length
+      errors.add(:skill1, "must be unique") if skill0 == skill1
+
+      if skill0 == skill2 || skill1 == skill2
+        errors.add(:skill2, "must be unique")
+      end
+
+      if skill0 == skill3 || skill1 == skill3 || skill2 == skill3
+        errors.add(:skill3, "must be unique")
+      end
+
+      errors.add(:job_skills, "must be unique")
+    end
   end
 end
