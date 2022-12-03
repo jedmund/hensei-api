@@ -82,9 +82,11 @@ class Api::V1::JobsController < Api::V1::ApiController
     if !existing_skills[position]
       existing_skills[position] = skill
     else
-      old_position = existing_skills.key(existing_skills.detect { |_, value| value.id == skill.id })
+      value = existing_skills.detect { |_, value| value.id == skill.id }
+      old_position = existing_skills.key(value[1]) if value
+
       if old_position
-        existing_skills = swap_skills_at_position(existing_skills, skill, position, old_position[0])
+        existing_skills = swap_skills_at_position(existing_skills, skill, position, old_position)
       else
         # Test if skill will exceed allowances of skill types
         skill_type = skill.sub ? 'sub' : 'emp'

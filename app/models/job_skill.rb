@@ -1,4 +1,6 @@
 class JobSkill < ApplicationRecord
+  alias eql? ==
+
   include PgSearch::Model
 
   belongs_to :job
@@ -25,7 +27,7 @@ class JobSkill < ApplicationRecord
     skill.name_en
   end
 
-  def ==(other)
-    self.class == other.class && @id == other.id
+  def ==(o)
+    self.class == o.class && id == o.id
   end
 end
