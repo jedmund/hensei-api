@@ -5,7 +5,13 @@ class Api::V1::PartiesController < Api::V1::ApiController
 
   def create
     @party = Party.new(shortcode: random_string)
-    @party.extra = party_params["extra"]
+    @party.extra = party_params['extra']
+
+    job = Job.find(party_params['job_id']) if party_params['job_id'].present?
+    job_skills = JobSkill.where(job: job.id, main: true)
+    job_skills.each_with_index do |skill, index|
+      @party["skill#{index}_id"] = skill.id
+    end
 
     @party.user = current_user if current_user
 
@@ -21,28 +27,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
       render_unauthorized_response
     else
       @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
-      ap party_params
-      # Determine which incoming keys contain new skills
-      skill_keys = %w[skill1_id skill2_id skill3_id]
-      if (party_params.keys & skill_keys).any?
-        new_skill_keys = party_params.keys - skill_keys
-
-        # If there are new skills, merge them with the existing skills
-        unless new_skill_keys.empty?
-          existing_skills = [@party.skill1, @party.skill2, @party.skill3]
-          new_skill_ids = new_skill_keys.map { |key| party_params[key] }
-          positions = extract_positions_from_keys(new_skill_keys)
-
-          new_skills = merge_skills_with_existing_skills(existing_skills, new_skill_ids, positions)
-
-          new_skill_ids = {}
-          new_skills.each_with_index do |skill, index|
-            new_skill_ids["skill#{index + 1}_id"] = skill.id
-          end
-
-          @party.attributes = new_skill_ids
-        end
-      end
     end
 
     render :update, status: :ok if @party.save!
@@ -121,8 +105,8 @@ class Api::V1::PartiesController < Api::V1::ApiController
   def destroy
     if @party.user != current_user
       render_unauthorized_response
-    else
-      render :destroyed, status: :ok if @party.destroy
+    elsif @party.destroy
+      render :destroyed, status: :ok
     end
   end
 
@@ -142,69 +126,6 @@ class Api::V1::PartiesController < Api::V1::ApiController
   end
 
   private
-
-  def merge_skills_with_existing_skills(
-    existing_skills,
-    new_skill_ids,
-    positions
-  )
-    new_skills = []
-    new_skill_ids.each { |id| new_skills << JobSkill.find(id) }
-
-    progress = existing_skills
-    new_skills.each do |skill, index|
-      progress = place_skill_in_existing_skills(progress, skill, positions[0])
-    end
-
-    progress
-  end
-
-  def place_skill_in_existing_skills(existing_skills, skill, position)
-    old_position = existing_skills.index { |x| x.id == skill.id }
-
-    if old_position
-      existing_skills = swap_skills_at_position(existing_skills, skill, position, old_position)
-    else
-      # Test if skill will exceed allowances of skill types
-      skill_type = skill.sub ? 'sub' : 'emp'
-      unless can_add_skill_of_type(existing_skills, position, skill_type)
-        raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
-      end
-
-      existing_skills[position] = skill
-    end
-
-    existing_skills
-  end
-
-  def swap_skills_at_position(skills, new_skill, position1, position2)
-    # Check desired position for a skill
-    displaced_skill = skills[position1] if skills[position1].present?
-
-    # Put skill in new position
-    skills[position1] = new_skill
-    skills[position2] = displaced_skill
-
-    skills
-  end
-
-  def can_add_skill_of_type(skills, position, type)
-    max_skill_of_type = 2
-
-    count = skills.reject
-                  .with_index { |_el, index| index == position }
-                  .reduce(0) do |sum, skill|
-      sum + 1 if type == 'emp' && skill.emp
-      sum + 1 if type == 'sub' && skill.sub
-    end
-
-    count + 1 <= max_skill_of_type
-  end
-
-  def extract_positions_from_keys(keys)
-    # Subtract by 1 because we won't operate on the 0th skill, so we don't pass it
-    keys.map { |key| key["skill".length].to_i - 1 }
-  end
 
   def random_string
     numChars = 6
