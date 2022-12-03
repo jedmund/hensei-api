@@ -42,12 +42,11 @@ class Api::V1::JobsController < Api::V1::ApiController
         2 => @party.skill2,
         3 => @party.skill3
       }
+
       new_skill_ids = new_skill_keys.map { |key| job_params[key] }
       new_skill_ids.map do |id|
         skill = JobSkill.find(id)
-        if mismatched_skill(@party.job, skill)
-          raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill)
-        end
+        raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job, skill)
       end
 
       positions = extract_positions_from_keys(new_skill_keys)
@@ -80,19 +79,22 @@ class Api::V1::JobsController < Api::V1::ApiController
   end
 
   def place_skill_in_existing_skills(existing_skills, skill, position)
-    old_position = existing_skills.key(existing_skills.detect { |_, value| value.id == skill.id })
-
-    if old_position
-      existing_skills = swap_skills_at_position(existing_skills, skill, position, old_position[0])
-    else
-      # Test if skill will exceed allowances of skill types
-      skill_type = skill.sub ? 'sub' : 'emp'
-
-      unless can_add_skill_of_type(existing_skills, position, skill_type)
-        raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
-      end
-
+    if !existing_skills[position]
       existing_skills[position] = skill
+    else
+      old_position = existing_skills.key(existing_skills.detect { |_, value| value.id == skill.id })
+      if old_position
+        existing_skills = swap_skills_at_position(existing_skills, skill, position, old_position[0])
+      else
+        # Test if skill will exceed allowances of skill types
+        skill_type = skill.sub ? 'sub' : 'emp'
+
+        unless can_add_skill_of_type(existing_skills, position, skill_type)
+          raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
+        end
+
+        existing_skills[position] = skill
+      end
     end
 
     existing_skills
