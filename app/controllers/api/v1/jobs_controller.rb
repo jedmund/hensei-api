@@ -11,7 +11,6 @@ class Api::V1::JobsController < Api::V1::ApiController
 
     # Extract job and find its main skills
     job = Job.find(job_params[:job_id])
-
     main_skills = JobSkill.where(job: job.id, main: true)
 
     # Update the party
@@ -22,7 +21,8 @@ class Api::V1::JobsController < Api::V1::ApiController
 
     # Check for incompatible Base and EMP skills
     %w[skill1_id skill2_id skill3_id].each do |key|
-      @party[key] = nil if mismatched_skill(@party.job, JobSkill.find(@party[key]))
+      ap "In here with #{key}"
+      @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
     end
 
     render :update, status: :ok if @party.save!
