@@ -19,7 +19,7 @@ Rails.application.routes.draw do
       get 'parties/:id/summons', to: 'parties#summons'
       get 'parties/:id/characters', to: 'parties#characters'
 
-      put 'parties/:id/job', to: 'jobs#update_job'
+      put 'parties/:id/jobs', to: 'jobs#update_job'
       put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
 
       post 'check/email', to: 'users#check_email'
