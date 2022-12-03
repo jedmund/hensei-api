@@ -23,7 +23,7 @@ module Api
         {
           message: message,
           code: code,
-          idea_id: @data[:skill_type]
+          skill_type: @data[:skill_type]
         }
       end
     end
