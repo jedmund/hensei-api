@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_01_123645) do
+ActiveRecord::Schema.define(version: 2022_12_03_112452) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -124,6 +124,8 @@ ActiveRecord::Schema.define(version: 2022_12_01_123645) do
     t.string "row"
     t.boolean "ml", default: false
     t.integer "order"
+    t.uuid "base_job_id"
+    t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -279,6 +281,7 @@ ActiveRecord::Schema.define(version: 2022_12_01_123645) do
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapons"
+  add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "parties", "job_skills", column: "skill0_id"
