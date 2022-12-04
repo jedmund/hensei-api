@@ -121,7 +121,7 @@ class Api::V1::JobsController < Api::V1::ApiController
     if skills.values.compact.length.positive?
       max_skill_of_type = 2
       skills_to_check = skills.compact.reject { |key, _| key == position }
-      
+
       sum = skills_to_check.values.count { |value| value.send(type) }
 
       sum + 1 <= max_skill_of_type
@@ -133,7 +133,7 @@ class Api::V1::JobsController < Api::V1::ApiController
   def mismatched_skill(job, skill)
     mismatched_main = (skill.job.id != job.id) && skill.main && !skill.sub
     mismatched_emp = (skill.job.id != job.id) && skill.emp
-    mismatched_base = (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
+    mismatched_base = skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
 
     if %w[4 5 ex2].include?(job.row)
       true if mismatched_emp || mismatched_base || mismatched_main
