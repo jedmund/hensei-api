@@ -8,9 +8,11 @@ class Api::V1::PartiesController < Api::V1::ApiController
     @party.extra = party_params['extra']
 
     job = Job.find(party_params['job_id']) if party_params['job_id'].present?
-    job_skills = JobSkill.where(job: job.id, main: true)
-    job_skills.each_with_index do |skill, index|
-      @party["skill#{index}_id"] = skill.id
+    if job
+      job_skills = JobSkill.where(job: job.id, main: true)
+      job_skills.each_with_index do |skill, index|
+        @party["skill#{index}_id"] = skill.id
+      end
     end
 
     @party.user = current_user if current_user
