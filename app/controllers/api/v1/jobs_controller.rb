@@ -21,7 +21,6 @@ class Api::V1::JobsController < Api::V1::ApiController
 
     # Check for incompatible Base and EMP skills
     %w[skill1_id skill2_id skill3_id].each do |key|
-      ap "In here with #{key}"
       @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
     end
 
@@ -53,7 +52,7 @@ class Api::V1::JobsController < Api::V1::ApiController
       new_skills = merge_skills_with_existing_skills(existing_skills, new_skill_ids, positions)
 
       new_skill_ids = new_skills.each_with_object({}) do |(index, skill), memo|
-        memo["skill#{index}_id"] = skill.id
+        memo["skill#{index}_id"] = skill.id if skill
       end
 
       @party.attributes = new_skill_ids
@@ -79,22 +78,22 @@ class Api::V1::JobsController < Api::V1::ApiController
   end
 
   def place_skill_in_existing_skills(existing_skills, skill, position)
+    # Test if skill will exceed allowances of skill types
+    skill_type = skill.sub ? 'sub' : 'emp'
+
+    unless can_add_skill_of_type(existing_skills, position, skill_type)
+      raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
+    end
+
     if !existing_skills[position]
       existing_skills[position] = skill
     else
-      value = existing_skills.detect { |_, value| value.id == skill.id }
+      value = existing_skills.compact.detect { |_, value| value && value.id == skill.id }
       old_position = existing_skills.key(value[1]) if value
 
       if old_position
         existing_skills = swap_skills_at_position(existing_skills, skill, position, old_position)
       else
-        # Test if skill will exceed allowances of skill types
-        skill_type = skill.sub ? 'sub' : 'emp'
-
-        unless can_add_skill_of_type(existing_skills, position, skill_type)
-          raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
-        end
-
         existing_skills[position] = skill
       end
     end
@@ -119,21 +118,26 @@ class Api::V1::JobsController < Api::V1::ApiController
   end
 
   def can_add_skill_of_type(skills, position, type)
-    max_skill_of_type = 2
-    skills_to_check = skills.reject { |key, _| key == position }
+    if skills.values.compact.length.positive?
+      max_skill_of_type = 2
+      skills_to_check = skills.compact.reject { |key, _| key == position }
+      
+      sum = skills_to_check.values.count { |value| value.send(type) }
 
-    sum = skills_to_check.values.count { |value| value.send(type) }
-
-    sum + 1 <= max_skill_of_type
+      sum + 1 <= max_skill_of_type
+    else
+      true
+    end
   end
 
   def mismatched_skill(job, skill)
+    mismatched_main = (skill.job.id != job.id) && skill.main && !skill.sub
     mismatched_emp = (skill.job.id != job.id) && skill.emp
     mismatched_base = (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
 
     if %w[4 5 ex2].include?(job.row)
-      true if mismatched_emp || mismatched_base
-    elsif mismatched_emp
+      true if mismatched_emp || mismatched_base || mismatched_main
+    elsif mismatched_emp || mismatched_main
       true
     else
       false
