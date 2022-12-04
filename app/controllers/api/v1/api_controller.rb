@@ -16,7 +16,7 @@ module Api::V1
     rescue_from Api::V1::UnauthorizedError, with: :render_unauthorized_response
     rescue_from ActionController::ParameterMissing, with: :render_unprocessable_entity_response
 
-    rescue_from StandardError do |e|
+    rescue_from GranblueError do |e|
       render_error(e)
     end
 
@@ -50,7 +50,11 @@ module Api::V1
 
     ### Error response methods
     def render_error(error)
-      render action: 'errors', json: error.to_hash, status: error.http_status
+      if error
+        render action: 'errors', json: error.to_hash, status: error.http_status
+      else
+        render action: 'errors'
+      end
     end
 
     def render_unprocessable_entity_response(exception)

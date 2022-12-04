@@ -2,15 +2,7 @@
 
 module Api
   module V1
-    class TooManySkillsOfTypeError < StandardError
-      def initialize(data)
-        @data = data
-      end
-
-      def http_status
-        422
-      end
-
+    class TooManySkillsOfTypeError < GranblueError
       def code
         'too_many_skills_of_type'
       end

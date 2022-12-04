@@ -1,22 +1,20 @@
-module Api::V1
-    class SameFavoriteUserError < StandardError
-        def http_status
-            422
-        end
+module Api
+  module V1
+    class SameFavoriteUserError < GranblueError
+      def code
+        'same_favorite_user'
+      end
 
-        def code
-            "same_favorite_user"
-        end
+      def message
+        'Users cannot favorite their own parties'
+      end
 
-        def message
-            "Users cannot favorite their own parties"
-        end
-
-        def to_hash
-            {
-                message: message,
-                code: code
-            }
-        end
+      def to_hash
+        {
+          message: message,
+          code: code
+        }
+      end
     end
+  end
 end

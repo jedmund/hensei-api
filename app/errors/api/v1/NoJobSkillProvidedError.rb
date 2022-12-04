@@ -1,5 +1,5 @@
 module Api::V1
-  class NoJobSkillProvidedError < StandardError
+  class NoJobSkillProvidedError < GranblueError
     def http_status
       422
     end
