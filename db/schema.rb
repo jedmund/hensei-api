@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_17_070255) do
+ActiveRecord::Schema.define(version: 2022_12_03_112452) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -102,6 +102,20 @@ ActiveRecord::Schema.define(version: 2022_11_17_070255) do
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
   end
 
+  create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "slug", null: false
+    t.integer "color", null: false
+    t.boolean "main", default: false
+    t.boolean "sub", default: false
+    t.boolean "emp", default: false
+    t.integer "order"
+    t.boolean "base", default: false
+    t.index ["job_id"], name: "index_job_skills_on_job_id"
+  end
+
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
@@ -110,6 +124,8 @@ ActiveRecord::Schema.define(version: 2022_11_17_070255) do
     t.string "row"
     t.boolean "ml", default: false
     t.integer "order"
+    t.uuid "base_job_id"
+    t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -163,7 +179,15 @@ ActiveRecord::Schema.define(version: 2022_11_17_070255) do
     t.integer "weapons_count"
     t.uuid "job_id"
     t.integer "ml"
+    t.uuid "skill1_id"
+    t.uuid "skill2_id"
+    t.uuid "skill3_id"
+    t.uuid "skill0_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
+    t.index ["skill0_id"], name: "index_parties_on_skill0_id"
+    t.index ["skill1_id"], name: "index_parties_on_skill1_id"
+    t.index ["skill2_id"], name: "index_parties_on_skill2_id"
+    t.index ["skill3_id"], name: "index_parties_on_skill3_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -257,8 +281,13 @@ ActiveRecord::Schema.define(version: 2022_11_17_070255) do
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapons"
+  add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "job_skills", column: "skill0_id"
+  add_foreign_key "parties", "job_skills", column: "skill1_id"
+  add_foreign_key "parties", "job_skills", column: "skill2_id"
+  add_foreign_key "parties", "job_skills", column: "skill3_id"
   add_foreign_key "parties", "jobs"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"

@@ -1,15 +1,15 @@
 module Api::V1
-  class FavoriteAlreadyExistsError < GranblueError
+  class NoJobProvidedError < GranblueError
     def http_status
       422
     end
 
     def code
-      "favorite_already_exists"
+      "no_job_provided"
     end
 
     def message
-      "This user has favorited this party already"
+      "A job ID must be provided"
     end
 
     def to_hash
