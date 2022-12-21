@@ -148,8 +148,6 @@ GEM
       activesupport (>= 5.2)
     puma (5.5.2)
       nio4r (~> 2.0)
-    rabl (0.14.5)
-      activesupport (>= 2.3.14)
     racc (1.6.0)
     rack (2.2.3)
     rack-cors (1.1.1)
@@ -303,7 +301,6 @@ DEPENDENCIES
   pg
   pg_search
   puma
-  rabl
   rack-cors
   rails
   responders

@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 ruby '3.0.0'
 
-gem 'rails'
-gem 'pg'
 gem 'bootsnap'
+gem 'pg'
 gem 'rack-cors'
+gem 'rails'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma'
@@ -15,9 +15,6 @@ gem 'bcrypt'
 
 # Doorkeeper is an OAuth 2 provider for Rails and Grape.
 gem 'doorkeeper'
-
-# Templating system with JSON, XML and Plist support.
-gem 'rabl'
 
 # Simple, Fast, and Declarative Serialization Library for Ruby
 gem 'blueprinter'
@@ -38,7 +35,7 @@ gem 'gemoji-parser'
 gem 'awesome_nested_set'
 
 # An email validator for Rails
-gem "email_validator"
+gem 'email_validator'
 
 # pg_search builds ActiveRecord named scopes that take advantage of PostgreSQL’s full text search
 gem 'pg_search'
@@ -47,8 +44,8 @@ gem 'pg_search'
 gem 'will_paginate', '~> 3.3'
 
 group :doc do
-  gem 'sdoc'
   gem 'apipie-rails'
+  gem 'sdoc'
 end
 
 group :development, :test do
@@ -56,16 +53,16 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
-  gem 'rspec-rails'
   gem 'rspec_junit_formatter'
+  gem 'rspec-rails'
 end
 
 group :development do
   gem 'listen'
   gem 'rubocop'
   gem 'solargraph'
-  gem 'spring-commands-rspec'
   gem 'spring'
+  gem 'spring-commands-rspec'
 end
 
 group :test do
@@ -73,5 +70,5 @@ group :test do
   gem 'byebug'
   gem 'database_cleaner'
   gem 'shoulda-matchers'
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
 end
