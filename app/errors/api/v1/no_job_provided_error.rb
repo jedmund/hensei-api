@@ -1,12 +1,18 @@
+# frozen_string_literal: true
+
 module Api
   module V1
-    class SameFavoriteUserError < GranblueError
+    class NoJobProvidedError < GranblueError
+      def http_status
+        422
+      end
+
       def code
-        'same_favorite_user'
+        'no_job_provided'
       end
 
       def message
-        'Users cannot favorite their own parties'
+        'A job ID must be provided'
       end
 
       def to_hash

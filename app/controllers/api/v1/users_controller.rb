@@ -1,103 +1,109 @@
-class Api::V1::UsersController < Api::V1::ApiController
-    class ForbiddenError < StandardError; end
+# frozen_string_literal: true
 
-    before_action :set, except: ['create', 'check_email', 'check_username']
-    before_action :set_by_id, only: ['info', 'update']
+module Api
+  module V1
+    class UsersController < Api::V1::ApiController
+      class ForbiddenError < StandardError; end
 
-    def create
+      before_action :set, except: %w[create check_email check_username]
+      before_action :set_by_id, only: %w[info update]
+
+      def create
         @user = User.new(user_params)
 
         token = Doorkeeper::AccessToken.create!(
-            application_id: nil,
-            resource_owner_id: @user.id,
-            expires_in: 30.days,
-            scopes: 'public'
+          application_id: nil,
+          resource_owner_id: @user.id,
+          expires_in: 30.days,
+          scopes: 'public'
         ).token
 
-        if @user.save!
-            @presenter = {
-                user_id: @user.id,
-                username: @user.username,
-                token: token
-            }
+        return unless @user.save!
 
-            render :create, status: :created
-        end
-    end
+        @presenter = {
+          user_id: @user.id,
+          username: @user.username,
+          token: token
+        }
 
+        render :create, status: :created
+      end
 
-    def update
+      def update
         render :info, status: :ok if @user.update(user_params)
-    end
+      end
 
-    def info
+      def info
         render :info, status: :ok
-    end
+      end
 
-    def show
+      def show
         if @user
-            @per_page = 15
+          @per_page = 15
 
-            now = DateTime.current
-            start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day unless request.params['recency'].blank?
+          now = DateTime.current
+          unless request.params['recency'].blank?
+            start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day
+          end
 
-            conditions = {}
-            conditions[:element] = request.params['element'] unless request.params['element'].blank?
-            conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
-            conditions[:created_at] = start_time..now unless request.params['recency'].blank? 
-            conditions[:user_id] = @user.id
+          conditions = {}
+          conditions[:element] = request.params['element'] unless request.params['element'].blank?
+          conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
+          conditions[:created_at] = start_time..now unless request.params['recency'].blank?
+          conditions[:user_id] = @user.id
 
-            @parties = Party
-                .where(conditions)
-                .order(created_at: :desc)
-                .paginate(page: request.params[:page], per_page: @per_page)
-                .each { |party|
-                    party.favorited = (current_user) ? party.is_favorited(current_user) : false
-                }
-            @count = Party.where(conditions).count
+          @parties = Party
+                     .where(conditions)
+                     .order(created_at: :desc)
+                     .paginate(page: request.params[:page], per_page: @per_page)
+                     .each do |party|
+            party.favorited = current_user ? party.is_favorited(current_user) : false
+          end
+          @count = Party.where(conditions).count
         else
-            render_not_found_response
+          render_not_found_response
         end
-    end
+      end
 
-    def check_email
-        if params[:email].present?
-            @available = User.where("email = ?", params[:email]).count == 0
-        else
-            @available = false
-        end
+      def check_email
+        @available = if params[:email].present?
+                       User.where('email = ?', params[:email]).count.zero?
+                     else
+                       false
+                     end
 
         render :available
-    end
+      end
 
-    def check_username
-        if params[:username].present?
-            @available = User.where("username = ?", params[:username]).count == 0
-        else
-            @available = false
-        end
+      def check_username
+        @available = if params[:username].present?
+                       User.where('username = ?', params[:username]).count.zero?
+                     else
+                       false
+                     end
 
         render :available
-    end
+      end
 
-    def destroy
-    end
+      def destroy; end
 
-    private
+      private
 
-    # Specify whitelisted properties that can be modified.
-    def set
-        @user = User.where("username = ?", params[:id]).first
-    end
+      # Specify whitelisted properties that can be modified.
+      def set
+        @user = User.where('username = ?', params[:id]).first
+      end
 
-    def set_by_id
-        @user = User.where("id = ?", params[:id]).first
-    end
+      def set_by_id
+        @user = User.where('id = ?', params[:id]).first
+      end
 
-    def user_params
+      def user_params
         params.require(:user).permit(
-            :username, :email, :password, :password_confirmation, 
-            :granblue_id, :picture, :element, :language, :gender, :private
+          :username, :email, :password, :password_confirmation,
+          :granblue_id, :picture, :element, :language, :gender, :private
         )
+      end
     end
+  end
 end

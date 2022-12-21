@@ -1,4 +1,9 @@
 Rails.application.configure do
+    config.after_initialize do
+    ActiveRecord::Base.logger = Rails.logger.clone
+    ActiveRecord::Base.logger.level = Logger::INFO
+    end
+
     # Settings specified here will take precedence over those in config/application.rb.
     config.hosts << "grid-api.ngrok.io"
 

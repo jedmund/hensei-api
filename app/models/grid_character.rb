@@ -1,7 +1,9 @@
-class GridCharacter < ApplicationRecord
-    belongs_to :party
+# frozen_string_literal: true
 
-    def character
-        Character.find(self.character_id)
-    end
+class GridCharacter < ApplicationRecord
+  belongs_to :party
+
+  def character
+    Character.find(character_id)
+  end
 end
