@@ -37,3 +37,6 @@
 *.enc
 logfile
 config/application.yml
+
+.idea/*
+.vscode/*
