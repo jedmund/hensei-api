@@ -4,8 +4,7 @@ module Api
   module V1
     class RaidsController < Api::V1::ApiController
       def all
-        @raids = Raid.all
-        render :all, status: :ok
+        render json: RaidBlueprint.render(Raid.all)
       end
     end
   end
