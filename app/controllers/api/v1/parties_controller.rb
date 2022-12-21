@@ -2,6 +2,8 @@
 
 module Api
   module V1
+    PER_PAGE = 15
+
     class PartiesController < Api::V1::ApiController
       before_action :set_from_slug,
                     except: %w[create destroy update index favorites]
@@ -11,6 +13,7 @@ module Api
         @party = Party.new(shortcode: random_string)
         @party.extra = party_params['extra']
 
+        # TODO: Extract this into a different method
         job = Job.find(party_params['job_id']) if party_params['job_id'].present?
         if job
           job_skills = JobSkill.where(job: job.id, main: true)
@@ -21,121 +24,94 @@ module Api
 
         @party.user = current_user if current_user
 
-        render :show, status: :created if @party.save!
+        if @party.save!
+          return render json: PartyBlueprint.render(@party, view: :full, root: :party),
+                        status: :created
+        end
+
+        render_validation_error_response(@party)
       end
 
       def show
-        render_not_found_response if @party.nil?
+        return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party
+
+        render_not_found_response('project')
       end
 
       def update
-        if @party.user != current_user
-          render_unauthorized_response
-        else
-          @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
-        end
+        render_unauthorized_response if @party.user != current_user
 
-        render :update, status: :ok if @party.save!
+        @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
+
+        return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party.save!
+
+        render_validation_error_response(@party)
+      end
+
+      def destroy
+        render_unauthorized_response if @party.user != current_user
+        return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
       end
 
       def index
-        @per_page = 15
+        conditions = build_conditions(request.params)
 
-        now = DateTime.current
-        unless request.params['recency'].blank?
-          start_time =
-            (
-              now - request.params['recency'].to_i.seconds
-            ).to_datetime.beginning_of_day
-        end
+        @parties = Party.where(conditions)
+                        .order(created_at: :desc)
+                        .paginate(page: request.params[:page], per_page: PER_PAGE)
+                        .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
 
-        conditions = {}
-        conditions[:element] = request.params['element'] unless request.params[
-          'element'
-        ].blank?
-        conditions[:raid] = request.params['raid'] unless request.params[
-          'raid'
-        ].blank?
-        conditions[:created_at] = start_time..now unless request.params[
-          'recency'
-        ].blank?
-        conditions[:weapons_count] = 5..13
+        count = Party.where(conditions).count
+        total_pages = count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1
 
-        @parties =
-          Party
-          .where(conditions)
-          .order(created_at: :desc)
-          .paginate(page: request.params[:page], per_page: @per_page)
-          .each do |party|
-            party.favorited =
-              current_user ? party.is_favorited(current_user) : false
-          end
-        @count = Party.where(conditions).count
-
-        render :all, status: :ok
+        render json: PartyBlueprint.render(@parties,
+                                           view: :collection,
+                                           root: :results,
+                                           meta: {
+                                             total_pages: total_pages,
+                                             count: count
+                                           })
       end
 
       def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
-        @per_page = 15
-
-        now = DateTime.current
-        unless request.params['recency'].blank?
-          start_time =
-            (
-              now - params['recency'].to_i.seconds
-            ).to_datetime.beginning_of_day
-        end
-
-        conditions = {}
-        conditions[:element] = request.params['element'] unless request.params[
-          'element'
-        ].blank?
-        conditions[:raid] = request.params['raid'] unless request.params[
-          'raid'
-        ].blank?
-        conditions[:created_at] = start_time..now unless request.params[
-          'recency'
-        ].blank?
+        conditions = build_conditions(request.params)
         conditions[:favorites] = { user_id: current_user.id }
 
-        @parties =
-          Party
-          .joins(:favorites)
-          .where(conditions)
-          .order('favorites.created_at DESC')
-          .paginate(page: request.params[:page], per_page: @per_page)
-          .each { |party| party.favorited = party.is_favorited(current_user) }
-        @count = Party.joins(:favorites).where(conditions).count
+        @parties = Party.joins(:favorites)
+                        .where(conditions)
+                        .order('favorites.created_at DESC')
+                        .paginate(page: request.params[:page], per_page: PER_PAGE)
+                        .each { |party| party.favorited = party.is_favorited(current_user) }
 
-        render :all, status: :ok
-      end
+        count = Party.joins(:favorites).where(conditions).count
+        total_pages = count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1
 
-      def destroy
-        if @party.user != current_user
-          render_unauthorized_response
-        elsif @party.destroy
-          render :destroyed, status: :ok
-        end
-      end
-
-      def weapons
-        render_not_found_response if @party.nil?
-        render :weapons, status: :ok
-      end
-
-      def summons
-        render_not_found_response if @party.nil?
-        render :summons, status: :ok
-      end
-
-      def characters
-        render_not_found_response if @party.nil?
-        render :characters, status: :ok
+        render json: PartyBlueprint.render(@parties,
+                                           view: :collection,
+                                           root: :results,
+                                           meta: {
+                                             total_pages: total_pages,
+                                             count: count
+                                           })
       end
 
       private
+
+      def build_conditions(params)
+        unless params['recency'].blank?
+          start_time = (DateTime.current - params['recency'].to_i.seconds)
+                       .to_datetime.beginning_of_day
+        end
+
+        {
+          element: (params['element'] unless params['element'].blank?),
+          raid: (params['raid'] unless params['raid'].blank?),
+          created_at: (start_time..now unless params['recency'].blank?),
+          weapons_count: 5..13
+        }
+      end
 
       def random_string
         num_chars = 6

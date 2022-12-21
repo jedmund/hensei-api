@@ -65,9 +65,16 @@ module Api
         render action: 'errors', status: :unprocessable_entity
       end
 
-      def render_not_found_response
-        response = { errors: [{ message: 'Record could not be found.', code: 'not_found' }] }
-        render 'not_found', status: :not_found
+      def render_validation_error_response(object)
+        render json: ErrorBlueprint.render_as_json(nil, errors: object.errors),
+               status: :unprocessable_entity
+      end
+
+      def render_not_found_response(object)
+        render json: ErrorBlueprint.render(nil, error: {
+                                             message: "#{object.capitalize} could not be found",
+                                             code: 'not_found'
+                                           }), status: :not_found
       end
 
       def render_unauthorized_response

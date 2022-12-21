@@ -3,8 +3,28 @@
 module Api
   module V1
     class PartyBlueprint < ApiBlueprint
+      identifier :id
+
+      view :weapons do
+        association :weapons,
+                    blueprint: GridWeaponBlueprint,
+                    view: :nested
+      end
+
+      view :summons do
+        association :summons,
+                    blueprint: GridSummonBlueprint,
+                    view: :nested
+      end
+
+      view :characters do
+        association :characters,
+                    blueprint: GridCharacterBlueprint,
+                    view: :nested
+      end
+
       view :preview do
-        fields :id, :name, :element, :shortcode, :favorited, :extra, :created_at, :updated_at
+        fields :name, :element, :shortcode, :favorited, :extra, :created_at, :updated_at
 
         association :raid,
                     blueprint: RaidBlueprint
@@ -12,9 +32,7 @@ module Api
         association :job,
                     blueprint: JobBlueprint
 
-        association :weapons,
-                    blueprint: GridWeaponBlueprint,
-                    view: :nested
+        include_view :weapons
       end
 
       view :full do
@@ -30,13 +48,16 @@ module Api
           }
         end
 
-        association :characters,
-                    blueprint: GridCharacterBlueprint,
-                    view: :nested
+        include_view :summons
+        include_view :characters
+      end
 
-        association :summons,
-                    blueprint: GridSummonBlueprint,
-                    view: :nested
+      view :collection do
+        include_view :preview
+      end
+
+      view :destroyed do
+        fields :name, :description, :created_at, :updated_at
       end
     end
   end
