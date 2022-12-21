@@ -25,3 +25,10 @@ node :ax, :if => lambda { |w| w.weapon.ax > 0 } do |w|
         }
     ]
 end
+
+node :awakening, :if => lambda { |w| w.weapon.awakening } do |w|
+    {
+        :type => w.awakening_type,
+        :level => w.awakening_level
+    }
+end

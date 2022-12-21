@@ -9,7 +9,8 @@ attributes :id,
     :limit,
     :rarity,
     :series,
-    :ax
+    :ax,
+    :awakening
 
 node :name do |w|
     {
