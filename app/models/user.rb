@@ -42,4 +42,8 @@ class User < ApplicationRecord
   def favorite_parties
     favorites.map(&:party)
   end
+
+  def blueprint
+    UserBlueprint
+  end
 end

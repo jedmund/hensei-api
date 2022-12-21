@@ -20,4 +20,8 @@ class GridWeapon < ApplicationRecord
 
     weapon_keys
   end
+
+  def blueprint
+    GridWeaponBlueprint
+  end
 end

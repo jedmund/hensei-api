@@ -8,6 +8,10 @@ class Job < ApplicationRecord
              class_name: 'Job',
              optional: true
 
+  def blueprint
+    JobBlueprint
+  end
+
   def display_resource(job)
     job.name_en
   end

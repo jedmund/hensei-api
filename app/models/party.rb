@@ -52,6 +52,10 @@ class Party < ApplicationRecord
     user.favorite_parties.include? self
   end
 
+  def blueprint
+    PartyBlueprint
+  end
+
   private
 
   def skills_are_unique

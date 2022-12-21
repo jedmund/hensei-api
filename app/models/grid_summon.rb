@@ -6,4 +6,8 @@ class GridSummon < ApplicationRecord
   def summon
     Summon.find(summon_id)
   end
+
+  def blueprint
+    GridSummonBlueprint
+  end
 end

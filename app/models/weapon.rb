@@ -20,6 +20,10 @@ class Weapon < ApplicationRecord
                     }
                   }
 
+  def blueprint
+    WeaponBlueprint
+  end
+
   def display_resource(weapon)
     weapon.name_en
   end

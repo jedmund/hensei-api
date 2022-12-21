@@ -7,4 +7,8 @@ class Favorite < ApplicationRecord
   def party
     Party.find(party_id)
   end
+
+  def favorite
+    FavoriteBlueprint
+  end
 end

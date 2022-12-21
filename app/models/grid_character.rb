@@ -6,4 +6,8 @@ class GridCharacter < ApplicationRecord
   def character
     Character.find(character_id)
   end
+
+  def blueprint
+    GridCharacterBlueprint
+  end
 end

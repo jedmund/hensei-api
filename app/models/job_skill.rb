@@ -25,6 +25,10 @@ class JobSkill < ApplicationRecord
                     }
                   }
 
+  def blueprint
+    JobSkillBlueprint
+  end
+
   def display_resource(skill)
     skill.name_en
   end

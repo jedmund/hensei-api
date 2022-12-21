@@ -20,6 +20,10 @@ class Character < ApplicationRecord
                     }
                   }
 
+  def blueprint
+    CharacterBlueprint
+  end
+
   def display_resource(character)
     character.name_en
   end

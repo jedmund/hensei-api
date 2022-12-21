@@ -20,6 +20,10 @@ class Summon < ApplicationRecord
                     }
                   }
 
+  def blueprint
+    SummonBlueprint
+  end
+
   def display_resource(summon)
     summon.name_en
   end
