@@ -19,6 +19,9 @@ gem 'doorkeeper'
 # Templating system with JSON, XML and Plist support.
 gem 'rabl'
 
+# Simple, Fast, and Declarative Serialization Library for Ruby
+gem 'blueprinter'
+
 # Optimized JSON.
 gem 'oj'
 
@@ -44,31 +47,31 @@ gem 'pg_search'
 gem 'will_paginate', '~> 3.3'
 
 group :doc do
-    gem 'sdoc'
-    gem 'apipie-rails'
+  gem 'sdoc'
+  gem 'apipie-rails'
 end
 
 group :development, :test do
-    gem 'awesome_print'
-    gem 'dotenv-rails'
-    gem 'factory_bot_rails'
-    gem 'faker'
-    gem 'rspec-rails'
-    gem 'rspec_junit_formatter'
+  gem 'awesome_print'
+  gem 'dotenv-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec-rails'
+  gem 'rspec_junit_formatter'
 end
 
 group :development do
-    gem 'listen'
-    gem 'rubocop'
-    gem 'solargraph'
-    gem 'spring-commands-rspec'
-    gem 'spring'
+  gem 'listen'
+  gem 'rubocop'
+  gem 'solargraph'
+  gem 'spring-commands-rspec'
+  gem 'spring'
 end
 
 group :test do
-    gem 'api_matchers'
-    gem 'byebug'
-    gem 'database_cleaner'
-    gem 'shoulda-matchers'
-    gem 'simplecov', :require => false
+  gem 'api_matchers'
+  gem 'byebug'
+  gem 'database_cleaner'
+  gem 'shoulda-matchers'
+  gem 'simplecov', :require => false
 end
