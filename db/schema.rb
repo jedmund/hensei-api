@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_03_112452) do
+ActiveRecord::Schema.define(version: 2022_12_21_083126) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 2022_12_03_112452) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "perpetuity", default: false, null: false
+    t.integer "awakening_type", default: 0, null: false
+    t.integer "awakening_level", default: 1, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -98,6 +100,8 @@ ActiveRecord::Schema.define(version: 2022_12_03_112452) do
     t.integer "ax_modifier2"
     t.float "ax_strength2"
     t.integer "element"
+    t.integer "awakening_type"
+    t.integer "awakening_level", default: 1, null: false
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
   end
