@@ -4,7 +4,7 @@ module Api
   module V1
     # This is the base error that we inherit from for application errors
     class GranblueError < StandardError
-      def initialize(data)
+      def initialize(data = '')
         @data = data
       end
 
