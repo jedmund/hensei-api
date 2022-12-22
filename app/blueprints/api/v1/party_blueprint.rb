@@ -40,6 +40,10 @@ module Api
 
         association :job,
                     blueprint: JobBlueprint
+
+        association :user,
+                    blueprint: UserBlueprint,
+                    view: :minimal
       end
 
       view :jobs do
