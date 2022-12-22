@@ -4,13 +4,15 @@ module Api
   module V1
     class WeaponKeysController < Api::V1::ApiController
       def all
-        conditions = {}
-        conditions[:series] = request.params['series']
-        conditions[:slot] = request.params['slot']
-        conditions[:group] = request.params['group'] unless request.params['group'].blank?
+        conditions = {}.tap do |hash|
+          hash[:series] = request.params['series']
+          hash[:slot] = request.params['slot']
+          hash[:group] = request.params['group'] unless request.params['group'].blank?
+        end
 
-        @keys = WeaponKey.where(conditions)
-        render json: WeaponKeyBlueprint.render(@keys)
+        render json: WeaponKeyBlueprint.render(
+          WeaponKey.where(conditions)
+        )
       end
     end
   end
