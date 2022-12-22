@@ -55,6 +55,7 @@ module Api
 
       def index
         conditions = build_conditions(request.params)
+        ap conditions
 
         @parties = Party.where(conditions)
                         .order(created_at: :desc)
@@ -105,12 +106,12 @@ module Api
                        .to_datetime.beginning_of_day
         end
 
-        {
-          element: (params['element'] unless params['element'].blank?),
-          raid: (params['raid'] unless params['raid'].blank?),
-          created_at: (start_time..now unless params['recency'].blank?),
-          weapons_count: 5..13
-        }
+        {}.tap do |hash|
+          hash[:element] = params['element'] unless params['element'].blank?
+          hash[:raid] = params['raid'] unless params['raid'].blank?
+          hash[:created_at] = start_time..now unless params['recency'].blank?
+          hash[:weapons_count] = 5..13
+        end
       end
 
       def random_string
