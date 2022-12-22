@@ -89,7 +89,7 @@ module Api
         {}.tap do |hash|
           hash[:element] = params['element'] unless params['element'].blank?
           hash[:raid] = params['raid'] unless params['raid'].blank?
-          hash[:created_at] = start_time..now unless params['recency'].blank?
+          hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
         end
       end
 
