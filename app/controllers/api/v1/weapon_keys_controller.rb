@@ -10,7 +10,7 @@ module Api
         conditions[:group] = request.params['group'] unless request.params['group'].blank?
 
         @keys = WeaponKey.where(conditions)
-        render :all, status: :ok
+        render json: WeaponKeyBlueprint.render(@keys)
       end
     end
   end
