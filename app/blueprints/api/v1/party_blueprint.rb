@@ -3,8 +3,6 @@
 module Api
   module V1
     class PartyBlueprint < ApiBlueprint
-      identifier :id
-
       view :weapons do
         association :weapons,
                     blueprint: GridWeaponBlueprint,

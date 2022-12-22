@@ -3,9 +3,6 @@
 module Api
   module V1
     class FavoriteBlueprint < ApiBlueprint
-      identifier :id
-      fields :created_at, :updated_at
-
       association :user,
                   name: :user,
                   blueprint: UserBlueprint,
@@ -15,6 +12,8 @@ module Api
                   name: :party,
                   blueprint: PartyBlueprint,
                   view: :preview
+
+      fields :created_at, :updated_at
 
       view :destroyed do
         field :destroyed do

@@ -3,8 +3,6 @@
 module Api
   module V1
     class JobBlueprint < ApiBlueprint
-      fields :id, :row, :ml, :order
-
       field :name do |job|
         {
           en: job.name_en,
@@ -18,6 +16,8 @@ module Api
           job.proficiency2
         ]
       end
+
+      fields :row, :ml, :order
     end
   end
 end

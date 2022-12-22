@@ -3,14 +3,14 @@
 module Api
   module V1
     class SummonBlueprint < ApiBlueprint
-      fields :id, :granblue_id, :element, :rarity, :max_level
-
       field :name do |w|
         {
           en: w.name_en,
           ja: w.name_jp
         }
       end
+
+      fields :granblue_id, :element, :rarity, :max_level
 
       field :uncap do |w|
         {

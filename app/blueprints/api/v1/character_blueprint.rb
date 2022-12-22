@@ -3,15 +3,15 @@
 module Api
   module V1
     class CharacterBlueprint < ApiBlueprint
-      fields :id, :granblue_id, :character_id, :rarity,
-             :element, :gender, :special
-
       field :name do |w|
         {
           en: w.name_en,
           ja: w.name_jp
         }
       end
+
+      fields :granblue_id, :character_id, :rarity,
+             :element, :gender, :special
 
       field :uncap do |w|
         {

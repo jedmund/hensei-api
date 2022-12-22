@@ -3,16 +3,16 @@
 module Api
   module V1
     class WeaponBlueprint < ApiBlueprint
-      fields :id, :granblue_id, :element, :proficiency,
-             :max_level, :max_skill_level, :limit, :rarity,
-             :series, :ax
-
       field :name do |w|
         {
           en: w.name_en,
           ja: w.name_jp
         }
       end
+
+      fields :granblue_id, :element, :proficiency,
+             :max_level, :max_skill_level, :limit, :rarity,
+             :series, :ax
 
       field :uncap do |w|
         {

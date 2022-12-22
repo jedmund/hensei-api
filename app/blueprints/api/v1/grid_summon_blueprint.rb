@@ -3,8 +3,6 @@
 module Api
   module V1
     class GridSummonBlueprint < ApiBlueprint
-      identifier :id
-
       view :uncap do
         association :party, blueprint: PartyBlueprint, view: :minimal
         fields :position, :uncap_level
