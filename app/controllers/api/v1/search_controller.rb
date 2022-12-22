@@ -39,7 +39,8 @@ module Api
 
         render json: CharacterBlueprint.render(paginated, meta: {
                                                  count: count,
-                                                 total_pages: total_pages(count)
+                                                 total_pages: total_pages(count),
+                                                 per_page: PER_PAGE
                                                })
       end
 
@@ -73,7 +74,8 @@ module Api
 
         render json: WeaponBlueprint.render(paginated, meta: {
                                               count: count,
-                                              total_pages: total_pages(count)
+                                              total_pages: total_pages(count),
+                                              per_page: PER_PAGE
                                             })
       end
 
@@ -102,7 +104,8 @@ module Api
 
         render json: SummonBlueprint.render(paginated, meta: {
                                               count: count,
-                                              total_pages: total_pages(count)
+                                              total_pages: total_pages(count),
+                                              per_page: PER_PAGE
                                             })
       end
 
@@ -161,7 +164,8 @@ module Api
 
         render json: JobSkillBlueprint.render(paginated, meta: {
                                                 count: count,
-                                                total_pages: total_pages(count)
+                                                total_pages: total_pages(count),
+                                                per_page: PER_PAGE
                                               })
       end
 

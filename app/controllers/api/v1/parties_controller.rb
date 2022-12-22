@@ -69,8 +69,9 @@ module Api
                                            view: :collection,
                                            root: :results,
                                            meta: {
+                                             count: count,
                                              total_pages: total_pages,
-                                             count: count
+                                             per_page: PER_PAGE
                                            })
       end
 
@@ -93,8 +94,9 @@ module Api
                                            view: :collection,
                                            root: :results,
                                            meta: {
+                                             count: count,
                                              total_pages: total_pages,
-                                             count: count
+                                             per_page: PER_PAGE
                                            })
       end
 
