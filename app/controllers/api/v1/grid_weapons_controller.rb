@@ -11,27 +11,25 @@ module Api
 
         render_unauthorized_response if current_user && (party.user != current_user)
 
-        if grid_weapon = GridWeapon.where(
+        if (grid_weapon = GridWeapon.where(
           party_id: party.id,
           position: weapon_params[:position]
-        ).first
+        ).first)
           GridWeapon.destroy(grid_weapon.id)
         end
 
-        @weapon = GridWeapon.create!(weapon_params.merge(party_id: party.id, weapon_id: canonical_weapon.id))
+        weapon = GridWeapon.create!(weapon_params.merge(party_id: party.id, weapon_id: canonical_weapon.id))
 
-        if @weapon.position == -1
-          party.element = @weapon.weapon.element
+        if weapon.position == -1
+          party.element = weapon.weapon.element
           party.save!
         end
 
-        render :show, status: :created if @weapon.save!
+        render json: GridWeaponBlueprint.render(weapon, view: :full), status: :created if weapon.save!
       end
 
       def update
         render_unauthorized_response if current_user && (@weapon.party.user != current_user)
-
-        ap weapon_params
 
         # TODO: Server-side validation of weapon mods
         # We don't want someone modifying the JSON and adding
@@ -39,16 +37,19 @@ module Api
 
         # Maybe we make methods on the model to validate for us somehow
 
-        render :update, status: :ok if @weapon.update(weapon_params)
+        render json: GridWeaponBlueprint.render(@weapon, view: :nested) if @weapon.update(weapon_params)
       end
+
+      # TODO: Implement removing characters
+      def destroy; end
 
       def update_uncap_level
         @weapon = GridWeapon.find(weapon_params[:id])
 
-        render_unauthorized_response if current_user && (party.user != current_user)
+        render_unauthorized_response if current_user && (@weapon.party.user != current_user)
 
         @weapon.uncap_level = weapon_params[:uncap_level]
-        render :show, status: :ok if @weapon.save!
+        render json: GridWeaponBlueprint.render(@weapon, view: :uncap), status: :created if @weapon.save!
       end
 
       private

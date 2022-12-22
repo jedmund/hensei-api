@@ -27,24 +27,23 @@ module Api
           # a decision.
 
           # Up to 3 characters can be removed at the same time
-          @conflict_characters = conflict_characters
-          @incoming_character = incoming_character
-          @incoming_position = character_params[:position]
-
-          render :conflict, status: :ok
+          render json: ConflictBlueprint.render(nil, view: :characters,
+                                                     conflict_characters: conflict_characters,
+                                                     incoming_character: incoming_character,
+                                                     incoming_position: character_params[:position])
         else
           # Replace the grid character in the position if it is already filled
           if GridCharacter.where(party_id: party.id, position: character_params[:position]).exists?
-            @character = GridCharacter.where(party_id: party.id, position: character_params[:position]).limit(1)[0]
-            @character.character_id = incoming_character.id
+            character = GridCharacter.where(party_id: party.id, position: character_params[:position]).limit(1)[0]
+            character.character_id = incoming_character.id
 
             # Otherwise, create a new grid character
           else
-            @character = GridCharacter.create!(character_params.merge(party_id: party.id,
-                                                                      character_id: incoming_character.id))
+            character = GridCharacter.create!(character_params.merge(party_id: party.id,
+                                                                     character_id: incoming_character.id))
           end
 
-          render :show, status: :created if @character.save!
+          render json: GridCharacterBlueprint.render(character, view: :nested), status: :created if character.save!
         end
       end
 
@@ -70,20 +69,21 @@ module Api
           uncap_level = 5 if incoming.flb
         end
 
-        @character = GridCharacter.create!(party_id: party.id, character_id: incoming.id,
-                                           position: resolve_params[:position], uncap_level: uncap_level)
-        render :show, status: :created if @character.save!
+        character = GridCharacter.create!(party_id: party.id, character_id: incoming.id,
+                                          position: resolve_params[:position], uncap_level: uncap_level)
+        render json: GridCharacterBlueprint.render(character, view: :nested), status: :created if character.save!
       end
 
       def update_uncap_level
-        @character = GridCharacter.find(character_params[:id])
+        character = GridCharacter.find(character_params[:id])
 
-        render_unauthorized_response if current_user && (@character.party.user != current_user)
+        render_unauthorized_response if current_user && (character.party.user != current_user)
 
-        @character.uncap_level = character_params[:uncap_level]
-        render :show, status: :ok if @character.save!
+        character.uncap_level = character_params[:uncap_level]
+        render json: GridCharacterBlueprint.render(character, view: :uncap) if character.save!
       end
 
+      # TODO: Implement removing characters
       def destroy; end
 
       private

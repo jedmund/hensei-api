@@ -16,19 +16,20 @@ module Api
           GridSummon.destroy(grid_summon.id)
         end
 
-        @summon = GridSummon.create!(summon_params.merge(party_id: party.id, summon_id: canonical_summon.id))
-        render :show, status: :created if @summon.save!
+        summon = GridSummon.create!(summon_params.merge(party_id: party.id, summon_id: canonical_summon.id))
+        render json: GridSummonBlueprint.render(summon, view: :nested), status: :created if summon.save!
       end
 
       def update_uncap_level
-        @summon = GridSummon.find(summon_params[:id])
+        summon = GridSummon.find(summon_params[:id])
 
-        render_unauthorized_response if current_user && (@summon.party.user != current_user)
+        render_unauthorized_response if current_user && (summon.party.user != current_user)
 
-        @summon.uncap_level = summon_params[:uncap_level]
-        render :show, status: :ok if @summon.save!
+        summon.uncap_level = summon_params[:uncap_level]
+        render json: GridSummonBlueprint.render(summon, view: :uncap) if summon.save!
       end
 
+      # TODO: Implement removing summons
       def destroy; end
 
       private
