@@ -2,6 +2,8 @@
 
 module Api
   module V1
+    PER_PAGE = 10
+
     class SearchController < Api::V1::ApiController
       def characters
         filters = search_params[:filters]
@@ -22,18 +24,23 @@ module Api
           # conditions[:series] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
         end
 
-        @characters = if search_params[:query].present? && search_params[:query].length >= 2
-                        if locale == 'ja'
-                          Character.jp_search(search_params[:query]).where(conditions)
-                        else
-                          Character.en_search(search_params[:query]).where(conditions)
-                        end
-                      else
-                        Character.where(conditions)
-                      end
+        characters = if search_params[:query].present? && search_params[:query].length >= 2
+                       if locale == 'ja'
+                         Character.jp_search(search_params[:query]).where(conditions)
+                       else
+                         Character.en_search(search_params[:query]).where(conditions)
+                       end
+                     else
+                       Character.where(conditions)
+                     end
 
-        @count = @characters.length
-        @characters = @characters.paginate(page: search_params[:page], per_page: 10)
+        count = characters.length
+        paginated = characters.paginate(page: search_params[:page], per_page: PER_PAGE)
+
+        render json: CharacterBlueprint.render(paginated, meta: {
+                                                 count: count,
+                                                 total_pages: total_pages(count)
+                                               })
       end
 
       def weapons
@@ -51,18 +58,23 @@ module Api
           conditions[:series] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
         end
 
-        @weapons = if search_params[:query].present? && search_params[:query].length >= 2
-                     if locale == 'ja'
-                       Weapon.jp_search(search_params[:query]).where(conditions)
-                     else
-                       Weapon.en_search(search_params[:query]).where(conditions)
-                     end
-                   else
-                     Weapon.where(conditions)
-                   end
+        weapons = if search_params[:query].present? && search_params[:query].length >= 2
+                    if locale == 'ja'
+                      Weapon.jp_search(search_params[:query]).where(conditions)
+                    else
+                      Weapon.en_search(search_params[:query]).where(conditions)
+                    end
+                  else
+                    Weapon.where(conditions)
+                  end
 
-        @count = @weapons.length
-        @weapons = @weapons.paginate(page: search_params[:page], per_page: 10)
+        count = weapons.length
+        paginated = weapons.paginate(page: search_params[:page], per_page: PER_PAGE)
+
+        render json: WeaponBlueprint.render(paginated, meta: {
+                                              count: count,
+                                              total_pages: total_pages(count)
+                                            })
       end
 
       def summons
@@ -75,18 +87,23 @@ module Api
           conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
         end
 
-        @summons = if search_params[:query].present? && search_params[:query].length >= 2
-                     if locale == 'ja'
-                       Summon.jp_search(search_params[:query]).where(conditions)
-                     else
-                       Summon.en_search(search_params[:query]).where(conditions)
-                     end
-                   else
-                     Summon.where(conditions)
-                   end
+        summons = if search_params[:query].present? && search_params[:query].length >= 2
+                    if locale == 'ja'
+                      Summon.jp_search(search_params[:query]).where(conditions)
+                    else
+                      Summon.en_search(search_params[:query]).where(conditions)
+                    end
+                  else
+                    Summon.where(conditions)
+                  end
 
-        @count = @summons.length
-        @summons = @summons.paginate(page: search_params[:page], per_page: 10)
+        count = summons.length
+        paginated = summons.paginate(page: search_params[:page], per_page: PER_PAGE)
+
+        render json: SummonBlueprint.render(paginated, meta: {
+                                              count: count,
+                                              total_pages: total_pages(count)
+                                            })
       end
 
       def job_skills
@@ -113,37 +130,46 @@ module Api
         end
 
         # Perform the query
-        @skills = if search_params[:query].present? && search_params[:query].length >= 2
-                    JobSkill.method("#{locale}_search").call(search_params[:query])
-                            .where(conditions)
-                            .where(job: job.id, main: false)
-                            .or(
-                              JobSkill.method("#{locale}_search").call(search_params[:query])
-                                      .where(conditions)
-                                      .where(sub: true)
-                            )
-                  else
-                    JobSkill.all
-                            .where(conditions)
-                            .where(job: job.id, main: false)
-                            .or(
-                              JobSkill.all
-                                      .where(conditions)
-                                      .where(sub: true)
-                            )
-                            .or(
-                              JobSkill.all
-                                      .where(conditions)
-                                      .where(job: job.base_job.id, base: true)
-                                      .where.not(job: job.id)
-                            )
-                  end
+        skills = if search_params[:query].present? && search_params[:query].length >= 2
+                   JobSkill.method("#{locale}_search").call(search_params[:query])
+                           .where(conditions)
+                           .where(job: job.id, main: false)
+                           .or(
+                             JobSkill.method("#{locale}_search").call(search_params[:query])
+                                     .where(conditions)
+                                     .where(sub: true)
+                           )
+                 else
+                   JobSkill.all
+                           .where(conditions)
+                           .where(job: job.id, main: false)
+                           .or(
+                             JobSkill.all
+                                     .where(conditions)
+                                     .where(sub: true)
+                           )
+                           .or(
+                             JobSkill.all
+                                     .where(conditions)
+                                     .where(job: job.base_job.id, base: true)
+                                     .where.not(job: job.id)
+                           )
+                 end
 
-        @count = @skills.length
-        @skills = @skills.paginate(page: search_params[:page], per_page: 10)
+        count = skills.length
+        paginated = skills.paginate(page: search_params[:page], per_page: PER_PAGE)
+
+        render json: JobSkillBlueprint.render(paginated, meta: {
+                                                count: count,
+                                                total_pages: total_pages(count)
+                                              })
       end
 
       private
+
+      def total_pages(count)
+        count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1
+      end
 
       # Specify whitelisted properties that can be modified.
       def search_params
