@@ -14,11 +14,15 @@ module Api
       end
 
       view :profile do
-        association :parties,
-                    name: :parties,
-                    blueprint: PartyBlueprint, view: :preview,
-                    if: ->(_field_name, user, _options) { user.parties.length.positive? },
-                    &:parties
+        include_view :minimal
+
+        field :parties, if: ->(_fn, _obj, options) { options[:parties].length.positive? } do |_, options|
+          PartyBlueprint.render_as_hash(options[:parties], view: :preview)
+        end
+      end
+
+      view :token do
+        fields :username, :token
       end
 
       view :settings do

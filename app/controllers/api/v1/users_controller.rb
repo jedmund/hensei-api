@@ -2,6 +2,8 @@
 
 module Api
   module V1
+    PER_PAGE = 15
+
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
@@ -9,85 +11,87 @@ module Api
       before_action :set_by_id, only: %w[info update]
 
       def create
-        @user = User.new(user_params)
+        user = User.new(user_params)
 
         token = Doorkeeper::AccessToken.create!(
           application_id: nil,
-          resource_owner_id: @user.id,
+          resource_owner_id: user.id,
           expires_in: 30.days,
           scopes: 'public'
         ).token
 
-        return unless @user.save!
+        if user.save!
+          return render json: UserBlueprint.render({
+                                                     id: user.id,
+                                                     username: user.username,
+                                                     token: token
+                                                   },
+                                                   view: :token),
+                        status: :created
+        end
 
-        @presenter = {
-          user_id: @user.id,
-          username: @user.username,
-          token: token
-        }
-
-        render :create, status: :created
+        render_validation_error_response(@user)
       end
 
       def update
-        render :info, status: :ok if @user.update(user_params)
+        render json: UserBlueprint.render(@user, view: :minimal) if @user.update(user_params)
       end
 
       def info
-        render :info, status: :ok
+        render json: UserBlueprint.render(@user, view: :minimal)
       end
 
       def show
-        if @user
-          @per_page = 15
+        render_not_found_response('user') unless @user
 
-          now = DateTime.current
-          unless request.params['recency'].blank?
-            start_time = (now - params['recency'].to_i.seconds).to_datetime.beginning_of_day
-          end
+        conditions = build_conditions(request.params)
+        conditions[:user_id] = @user.id
 
-          conditions = {}
-          conditions[:element] = request.params['element'] unless request.params['element'].blank?
-          conditions[:raid] = request.params['raid'] unless request.params['raid'].blank?
-          conditions[:created_at] = start_time..now unless request.params['recency'].blank?
-          conditions[:user_id] = @user.id
-
-          @parties = Party
-                     .where(conditions)
-                     .order(created_at: :desc)
-                     .paginate(page: request.params[:page], per_page: @per_page)
-                     .each do |party|
-            party.favorited = current_user ? party.is_favorited(current_user) : false
-          end
-          @count = Party.where(conditions).count
-        else
-          render_not_found_response
+        parties = Party
+                  .where(conditions)
+                  .order(created_at: :desc)
+                  .paginate(page: request.params[:page], per_page: PER_PAGE)
+                  .each do |party|
+          party.favorited = current_user ? party.is_favorited(current_user) : false
         end
+
+        count = Party.where(conditions).count
+
+        render json: UserBlueprint.render(@user,
+                                          view: :profile,
+                                          root: 'profile',
+                                          parties: parties,
+                                          meta: {
+                                            count: count,
+                                            total_pages: count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1,
+                                            per_page: PER_PAGE
+                                          })
       end
 
       def check_email
-        @available = if params[:email].present?
-                       User.where('email = ?', params[:email]).count.zero?
-                     else
-                       false
-                     end
-
-        render :available
+        render json: EmptyBlueprint.render_as_json(nil, email: params[:email])
       end
 
       def check_username
-        @available = if params[:username].present?
-                       User.where('username = ?', params[:username]).count.zero?
-                     else
-                       false
-                     end
-
-        render :available
+        render json: EmptyBlueprint.render_as_json(nil, username: params[:username])
       end
 
       def destroy; end
 
       private
+
+      def build_conditions(params)
+        unless params['recency'].blank?
+          start_time = (DateTime.current - params['recency'].to_i.seconds)
+                       .to_datetime.beginning_of_day
+        end
+
+        {}.tap do |hash|
+          hash[:element] = params['element'] unless params['element'].blank?
+          hash[:raid] = params['raid'] unless params['raid'].blank?
+          hash[:created_at] = start_time..now unless params['recency'].blank?
+        end
+      end
 
       # Specify whitelisted properties that can be modified.
       def set
