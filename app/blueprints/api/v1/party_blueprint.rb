@@ -23,7 +23,7 @@ module Api
                     view: :nested
       end
 
-      view :preview do
+      view :minimal do
         fields :name, :element, :shortcode, :favorited, :extra, :created_at, :updated_at
 
         association :raid,
@@ -31,7 +31,10 @@ module Api
 
         association :job,
                     blueprint: JobBlueprint
+      end
 
+      view :preview do
+        include_view :minimal
         include_view :weapons
       end
 

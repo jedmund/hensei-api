@@ -6,7 +6,7 @@ module Api
       identifier :id
 
       view :uncap do
-        association :party, blueprint: PartyBlueprint
+        association :party, blueprint: PartyBlueprint, view: :minimal
         fields :position, :uncap_level
       end
 
@@ -17,7 +17,7 @@ module Api
 
       view :full do
         include_view :nested
-        association :party, blueprint: PartyBlueprint, view: :preview
+        association :party, blueprint: PartyBlueprint, view: :minimal
       end
     end
   end
