@@ -2,28 +2,28 @@
 
 module Api
   module V1
-    class ConflictBlueprint < ApiBlueprint
-      field :position do
+    class ConflictBlueprint < Blueprinter::Base
+      field :position, if: ->(_fn, _obj, options) { options.key?(:incoming_position) } do |_, options|
         options[:incoming_position]
       end
 
       view :characters do
-        field :conflicts do
-          GridCharacterBlueprint.render_as_hash(options[:conflict_characters])
+        field :conflicts, if: ->(_fn, _obj, options) { options.key?(:conflict_characters) } do |_, options|
+          GridCharacterBlueprint.render_as_hash(options[:conflict_characters], view: :nested)
         end
 
-        field :incoming do
-          GridCharacterBlueprint.render_as_hash(options[:incoming_character])
+        field :incoming, if: ->(_fn, _obj, options) { options.key?(:incoming_character) } do |_, options|
+          CharacterBlueprint.render_as_hash(options[:incoming_character])
         end
       end
 
       view :weapons do
-        field :conflicts do
-          GridWeaponBlueprint.render_as_hash(options[:conflict_weapons])
+        field :conflicts, if: ->(_fn, _obj, options) { options.key?(:conflict_weapons) } do |_, options|
+          GridWeaponBlueprint.render_as_hash(options[:conflict_weapons], view: :nested)
         end
 
-        field :incoming do
-          GridWeaponBlueprint.render_as_hash(options[:incoming_weapon])
+        field :incoming, if: ->(_fn, _obj, options) { options.key?(:incoming_weapon) } do |_, options|
+          WeaponBlueprint.render_as_hash(options[:incoming_weapon])
         end
       end
     end
