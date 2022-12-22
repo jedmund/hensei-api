@@ -18,14 +18,23 @@ module Api
                                    user_id: current_user.id,
                                    party_id: party_id
                                  })
-        render :show, status: :created if @favorite.save!
+
+        if @favorite.save!
+          return render json: FavoriteBlueprint.render(@favorite, root: :favorite),
+                        status: :created
+        end
+
+        render_validation_error_response(@favorite)
       end
 
       def destroy
         raise Api::V1::UnauthorizedError unless current_user
 
         @favorite = Favorite.where(user_id: current_user.id, party_id: favorite_params[:party_id]).first
-        render :destroyed, status: :ok if @favorite && Favorite.destroy(@favorite.id)
+        render_not_found_response('favorite') unless @favorite
+
+        render_error("Couldn't delete favorite") unless Favorite.destroy(@favorite.id)
+        render json: FavoriteBlueprint.render(@favorite, root: :favorite, view: :destroyed)
       end
 
       private
