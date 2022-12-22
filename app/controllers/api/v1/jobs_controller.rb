@@ -6,8 +6,7 @@ module Api
       before_action :set, only: %w[update_job update_job_skills]
 
       def all
-        @jobs = Job.all
-        render :all, status: :ok
+        render json: JobBlueprint.render(Job.all)
       end
 
       def update_job
@@ -28,7 +27,7 @@ module Api
           @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
         end
 
-        render :update, status: :ok if @party.save!
+        render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
       end
 
       def update_job_skills
@@ -63,7 +62,7 @@ module Api
           @party.attributes = new_skill_ids
         end
 
-        render :update, status: :ok if @party.save!
+        render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
       end
 
       private
