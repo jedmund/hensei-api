@@ -17,7 +17,7 @@ module Api
 
       view :full do
         include_view :nested
-        association :party, blueprint: PartyBlueprint
+        association :party, blueprint: PartyBlueprint, view: :preview
       end
     end
   end
