@@ -37,7 +37,9 @@ module Api
         count = characters.length
         paginated = characters.paginate(page: search_params[:page], per_page: PER_PAGE)
 
-        render json: CharacterBlueprint.render(paginated, meta: {
+        render json: CharacterBlueprint.render(paginated,
+                                               root: :results,
+                                               meta: {
                                                  count: count,
                                                  total_pages: total_pages(count),
                                                  per_page: PER_PAGE
@@ -72,7 +74,9 @@ module Api
         count = weapons.length
         paginated = weapons.paginate(page: search_params[:page], per_page: PER_PAGE)
 
-        render json: WeaponBlueprint.render(paginated, meta: {
+        render json: WeaponBlueprint.render(paginated,
+                                            root: :results,
+                                            meta: {
                                               count: count,
                                               total_pages: total_pages(count),
                                               per_page: PER_PAGE
@@ -102,7 +106,9 @@ module Api
         count = summons.length
         paginated = summons.paginate(page: search_params[:page], per_page: PER_PAGE)
 
-        render json: SummonBlueprint.render(paginated, meta: {
+        render json: SummonBlueprint.render(paginated,
+                                            root: :results,
+                                            meta: {
                                               count: count,
                                               total_pages: total_pages(count),
                                               per_page: PER_PAGE
@@ -162,7 +168,9 @@ module Api
         count = skills.length
         paginated = skills.paginate(page: search_params[:page], per_page: PER_PAGE)
 
-        render json: JobSkillBlueprint.render(paginated, meta: {
+        render json: JobSkillBlueprint.render(paginated,
+                                              root: :results,
+                                              meta: {
                                                 count: count,
                                                 total_pages: total_pages(count),
                                                 per_page: PER_PAGE
