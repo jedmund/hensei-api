@@ -37,6 +37,9 @@ module Api
 
       view :full do
         include_view :preview
+        include_view :summons
+        include_view :characters
+
         fields :description, :extra
 
         field :job_skills do |job|
@@ -47,9 +50,6 @@ module Api
             '3' => !job.skill3.nil? ? JobSkillBlueprint.render_as_hash(job.skill3) : nil
           }
         end
-
-        include_view :summons
-        include_view :characters
       end
 
       view :collection do
