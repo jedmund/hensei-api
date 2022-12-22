@@ -3,13 +3,21 @@
 module Api
   module V1
     class GridCharacterBlueprint < ApiBlueprint
+      identifier :id
+
+      view :uncap do
+        association :party, blueprint: PartyBlueprint
+        fields :position, :uncap_level
+      end
+
       view :nested do
-        fields :id, :position, :uncap_level, :perpetuity
+        fields :position, :uncap_level, :perpetuity
         association :character, name: :object, blueprint: CharacterBlueprint
       end
 
       view :full do
-        fields :party_id
+        include_view :nested
+        association :party, blueprint: PartyBlueprint
       end
     end
   end

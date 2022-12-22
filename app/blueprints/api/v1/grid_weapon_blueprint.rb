@@ -3,8 +3,15 @@
 module Api
   module V1
     class GridWeaponBlueprint < ApiBlueprint
+      identifier :id
+
+      view :uncap do
+        association :party, blueprint: PartyBlueprint
+        fields :position, :uncap_level
+      end
+
       view :nested do
-        fields :id, :mainhand, :position, :uncap_level, :element
+        fields :mainhand, :position, :uncap_level, :element
         association :weapon, name: :object, blueprint: WeaponBlueprint
 
         association :weapon_keys,
@@ -28,7 +35,8 @@ module Api
       end
 
       view :full do
-        fields :party_id
+        include_view :nested
+        association :party, blueprint: PartyBlueprint
       end
     end
   end
