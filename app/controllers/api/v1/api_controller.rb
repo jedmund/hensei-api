@@ -61,8 +61,8 @@ module Api
       end
 
       def render_unprocessable_entity_response(exception)
-        @exception = exception
-        render action: 'errors', status: :unprocessable_entity
+        render json: ErrorBlueprint.render_as_json(nil, exception: exception),
+               status: :unprocessable_entity
       end
 
       def render_validation_error_response(object)
@@ -78,7 +78,8 @@ module Api
       end
 
       def render_unauthorized_response
-        render action: 'errors', status: :unauthorized
+        render json: ErrorBlueprint.render_as_json(nil),
+               status: :unauthorized
       end
 
       private

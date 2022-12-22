@@ -10,6 +10,10 @@ module Api
       field :errors, if: ->(_field_name, _error, options) { options.key?(:errors) } do |_, options|
         options[:errors]
       end
+
+      field :errors, if: ->(_field_name, _error, options) { options.key?(:exception) } do |_, options|
+        options[:exception]
+      end
     end
   end
 end
