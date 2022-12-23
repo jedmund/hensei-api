@@ -10,29 +10,36 @@ module Api
       end
 
       def update_job
-        raise NoJobProvidedError unless job_params[:job_id].present?
+        if job_params[:job_id] != -1
+          # Extract job and find its main skills
+          old_job = @party.job
+          job = Job.find(job_params[:job_id])
+          main_skills = JobSkill.where(job: job.id, main: true)
 
-        # Extract job and find its main skills
-        old_job = @party.job
-        job = Job.find(job_params[:job_id])
-        main_skills = JobSkill.where(job: job.id, main: true)
+          # Update the party
+          ap job
+          @party.job = job
+          main_skills.each_with_index do |skill, index|
+            @party["skill#{index}_id"] = skill.id
+          end
 
-        # Update the party
-        @party.job = job
-        main_skills.each_with_index do |skill, index|
-          @party["skill#{index}_id"] = skill.id
-        end
+          # Check for incompatible Base and EMP skills
+          %w[skill1_id skill2_id skill3_id].each do |key|
+            @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
+          end
 
-        # Check for incompatible Base and EMP skills
-        %w[skill1_id skill2_id skill3_id].each do |key|
-          @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
-        end
-
-        # Remove extra subskills if necessary
-        if %w[1 2 3].include?(old_job.row) &&
-           %w[4 5 ex2].include?(job.row) &&
-           @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
-          @party['skill3_id'] = nil
+          # Remove extra subskills if necessary
+          if old_job &&
+             %w[1 2 3].include?(old_job.row) &&
+             %w[4 5 ex2].include?(job.row) &&
+             @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
+            @party['skill3_id'] = nil
+          end
+        else
+          @party.job = nil
+          %w[skill0_id skill1_id skill2_id skill3_id].each do |key|
+            @party[key] = nil
+          end
         end
 
         render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
