@@ -13,6 +13,7 @@ module Api
         raise NoJobProvidedError unless job_params[:job_id].present?
 
         # Extract job and find its main skills
+        old_job = @party.job
         job = Job.find(job_params[:job_id])
         main_skills = JobSkill.where(job: job.id, main: true)
 
@@ -25,6 +26,13 @@ module Api
         # Check for incompatible Base and EMP skills
         %w[skill1_id skill2_id skill3_id].each do |key|
           @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
+        end
+
+        # Remove extra subskills if necessary
+        if %w[1 2 3].include?(old_job.row) &&
+           %w[4 5 ex2].include?(job.row) &&
+           @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
+          @party['skill3_id'] = nil
         end
 
         render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
@@ -122,16 +130,15 @@ module Api
       end
 
       def can_add_skill_of_type(skills, position, type)
-        if skills.values.compact.length.positive?
+        if %w[4 5 ex2].include?(@party.job.row) && skills.values.compact.length.positive?
           max_skill_of_type = 2
           skills_to_check = skills.compact.reject { |key, _| key == position }
 
           sum = skills_to_check.values.count { |value| value.send(type) }
-
-          sum + 1 <= max_skill_of_type
-        else
-          true
+          return sum + 1 <= max_skill_of_type
         end
+
+        true
       end
 
       def mismatched_skill(job, skill)
