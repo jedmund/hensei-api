@@ -26,7 +26,9 @@ module Api
         render_unauthorized_response if current_user && (summon.party.user != current_user)
 
         summon.uncap_level = summon_params[:uncap_level]
-        render json: GridSummonBlueprint.render(summon, view: :uncap) if summon.save!
+        return unless summon.save!
+
+        render json: GridSummonBlueprint.render(summon, view: :nested, root: :grid_summon)
       end
 
       # TODO: Implement removing summons

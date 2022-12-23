@@ -80,7 +80,9 @@ module Api
         render_unauthorized_response if current_user && (character.party.user != current_user)
 
         character.uncap_level = character_params[:uncap_level]
-        render json: GridCharacterBlueprint.render(character, view: :uncap) if character.save!
+        return unless character.save!
+
+        render json: GridCharacterBlueprint.render(character, view: :nested, root: :grid_character)
       end
 
       # TODO: Implement removing characters

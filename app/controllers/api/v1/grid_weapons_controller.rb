@@ -44,12 +44,15 @@ module Api
       def destroy; end
 
       def update_uncap_level
-        @weapon = GridWeapon.find(weapon_params[:id])
+        weapon = GridWeapon.find(weapon_params[:id])
 
-        render_unauthorized_response if current_user && (@weapon.party.user != current_user)
+        render_unauthorized_response if current_user && (weapon.party.user != current_user)
 
-        @weapon.uncap_level = weapon_params[:uncap_level]
-        render json: GridWeaponBlueprint.render(@weapon, view: :uncap), status: :created if @weapon.save!
+        weapon.uncap_level = weapon_params[:uncap_level]
+        return unless weapon.save!
+
+        render json: GridWeaponBlueprint.render(weapon, view: :nested, root: :grid_weapon),
+               status: :created
       end
 
       private
