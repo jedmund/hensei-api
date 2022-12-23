@@ -147,6 +147,7 @@ module Api
                              JobSkill.method("#{locale}_search").call(search_params[:query])
                                      .where(conditions)
                                      .where(sub: true)
+                                     .where.not(job: job.id)
                            )
                  else
                    JobSkill.all
@@ -156,6 +157,7 @@ module Api
                              JobSkill.all
                                      .where(conditions)
                                      .where(sub: true)
+                                     .where.not(job: job.id)
                            )
                            .or(
                              JobSkill.all
