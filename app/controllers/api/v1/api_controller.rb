@@ -9,7 +9,7 @@ module Api
       ##### Errors
       rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotDestroyed, with: :render_unprocessable_entity_response
-      rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
+      rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response_without_object
       rescue_from ActiveRecord::RecordNotSaved, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotUnique, with: :render_unprocessable_entity_response
       rescue_from Api::V1::SameFavoriteUserError, with: :render_unprocessable_entity_response
@@ -25,7 +25,7 @@ module Api
 
       ##### Hooks
       before_action :current_user
-      before_action :set_default_content_type
+      before_action :default_content_type
 
       ##### Responders
       respond_to :json
@@ -41,14 +41,14 @@ module Api
       end
 
       # Set the response content-type
-      def set_content_type(content_type)
+      def content_type(content_type)
         response.headers['Content-Type'] = content_type
       end
 
       # Set the default response content-type to application/javascript
       # with a UTF-8 charset
-      def set_default_content_type
-        set_content_type('application/javascript; charset=utf-8')
+      def default_content_type
+        content_type('application/javascript; charset=utf-8')
       end
 
       ### Error response methods
@@ -68,6 +68,14 @@ module Api
       def render_validation_error_response(object)
         render json: ErrorBlueprint.render_as_json(nil, errors: object.errors),
                status: :unprocessable_entity
+      end
+
+      def render_not_found_response_without_object
+        render json: ErrorBlueprint.render(nil,
+                                           error: {
+                                             message: 'Object could not be found',
+                                             code: 'not_found'
+                                           }), status: :not_found
       end
 
       def render_not_found_response(object)
