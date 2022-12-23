@@ -13,14 +13,14 @@ module Api
       def create
         user = User.new(user_params)
 
-        token = Doorkeeper::AccessToken.create!(
-          application_id: nil,
-          resource_owner_id: user.id,
-          expires_in: 30.days,
-          scopes: 'public'
-        ).token
-
         if user.save!
+          token = Doorkeeper::AccessToken.create!(
+            application_id: nil,
+            resource_owner_id: user.id,
+            expires_in: 30.days,
+            scopes: 'public'
+          ).token
+
           return render json: UserBlueprint.render({
                                                      id: user.id,
                                                      username: user.username,
