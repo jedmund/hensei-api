@@ -69,11 +69,11 @@ module Api
       end
 
       def check_email
-        render json: EmptyBlueprint.render_as_json(nil, email: params[:email])
+        render json: EmptyBlueprint.render_as_json(nil, email: params[:email], availability: true)
       end
 
       def check_username
-        render json: EmptyBlueprint.render_as_json(nil, username: params[:username])
+        render json: EmptyBlueprint.render_as_json(nil, username: params[:username], availability: true)
       end
 
       def destroy; end
