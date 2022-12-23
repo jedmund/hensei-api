@@ -8,8 +8,7 @@ module Api
       end
 
       def job
-        @skills = JobSkill.where(job: Job.find(params[:id]))
-                          .or(JobSkill.where(sub: true))
+        @skills = JobSkill.where('job_id != ? AND emp = ?', params[:id], true)
         render json: JobSkillBlueprint.render(@skills)
       end
     end
