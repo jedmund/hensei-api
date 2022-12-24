@@ -1,8 +1,14 @@
-class Favorite < ApplicationRecord
-    belongs_to :user
-    belongs_to :party
+# frozen_string_literal: true
 
-    def party
-        Party.find(self.party_id)
-    end
+class Favorite < ApplicationRecord
+  belongs_to :user
+  belongs_to :party
+
+  def party
+    Party.find(party_id)
+  end
+
+  def favorite
+    FavoriteBlueprint
+  end
 end

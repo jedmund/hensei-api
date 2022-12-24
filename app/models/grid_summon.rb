@@ -1,7 +1,13 @@
-class GridSummon < ApplicationRecord
-    belongs_to :party
+# frozen_string_literal: true
 
-    def summon
-        Summon.find(self.summon_id)
-    end
+class GridSummon < ApplicationRecord
+  belongs_to :party
+
+  def summon
+    Summon.find(summon_id)
+  end
+
+  def blueprint
+    GridSummonBlueprint
+  end
 end

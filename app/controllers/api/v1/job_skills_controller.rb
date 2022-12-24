@@ -1,13 +1,16 @@
-class Api::V1::JobSkillsController < Api::V1::ApiController
-    def all
-        @skills = JobSkill.all()
-        render :all, status: :ok
-    end
+# frozen_string_literal: true
 
-    def job
-        job = Job.find(params[:id])
+module Api
+  module V1
+    class JobSkillsController < Api::V1::ApiController
+      def all
+        render json: JobSkillBlueprint.render(JobSkill.all)
+      end
 
-        @skills = JobSkill.where(job: job).or(JobSkill.where(sub: true))
-        render :all, status: :ok
+      def job
+        @skills = JobSkill.where('job_id != ? AND emp = ?', params[:id], true)
+        render json: JobSkillBlueprint.render(@skills)
+      end
     end
+  end
 end

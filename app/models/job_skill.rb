@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JobSkill < ApplicationRecord
   alias eql? ==
 
@@ -10,8 +12,8 @@ class JobSkill < ApplicationRecord
                   using: {
                     tsearch: {
                       prefix: true,
-                      dictionary: "simple",
-                    },
+                      dictionary: 'simple'
+                    }
                   }
 
   pg_search_scope :jp_search,
@@ -19,15 +21,19 @@ class JobSkill < ApplicationRecord
                   using: {
                     tsearch: {
                       prefix: true,
-                      dictionary: "simple",
-                    },
+                      dictionary: 'simple'
+                    }
                   }
+
+  def blueprint
+    JobSkillBlueprint
+  end
 
   def display_resource(skill)
     skill.name_en
   end
 
-  def ==(o)
-    self.class == o.class && id == o.id
+  def ==(other)
+    self.class == other.class && id == other.id
   end
 end

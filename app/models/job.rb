@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Job < ApplicationRecord
   belongs_to :party
 
@@ -5,6 +7,10 @@ class Job < ApplicationRecord
              foreign_key: 'base_job_id',
              class_name: 'Job',
              optional: true
+
+  def blueprint
+    JobBlueprint
+  end
 
   def display_resource(job)
     job.name_en

@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   use_doorkeeper do
-    controllers :tokens => 'tokens'
+    controllers tokens: 'tokens'
     skip_controllers :applications, :authorized_applications
   end
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :parties, only: [:index, :create, :update, :destroy]
-      resources :users, only: [:create, :update, :show]
+      resources :parties, only: %i[index create update destroy]
+      resources :users, only: %i[create update show]
       resources :grid_weapons, only: [:update]
       resources :favorites, only: [:create]
 
@@ -15,9 +15,6 @@ Rails.application.routes.draw do
 
       get 'parties/favorites', to: 'parties#favorites'
       get 'parties/:id', to: 'parties#show'
-      get 'parties/:id/weapons', to: 'parties#weapons'
-      get 'parties/:id/summons', to: 'parties#summons'
-      get 'parties/:id/characters', to: 'parties#characters'
 
       put 'parties/:id/jobs', to: 'jobs#update_job'
       put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
