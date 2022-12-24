@@ -5,8 +5,8 @@ module Api
     class WeaponKeysController < Api::V1::ApiController
       def all
         conditions = {}.tap do |hash|
-          hash[:series] = request.params['series']
-          hash[:slot] = request.params['slot']
+          hash[:series] = request.params['series'] unless request.params['series'].blank?
+          hash[:slot] = request.params['slot'] unless request.params['slot'].blank?
           hash[:group] = request.params['group'] unless request.params['group'].blank?
         end
 
