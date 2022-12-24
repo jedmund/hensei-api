@@ -2,8 +2,6 @@
 
 module Api
   module V1
-    PER_PAGE = 15
-
     class PartiesController < Api::V1::ApiController
       before_action :set_from_slug,
                     except: %w[create destroy update index favorites]
@@ -59,11 +57,11 @@ module Api
 
         @parties = Party.where(conditions)
                         .order(created_at: :desc)
-                        .paginate(page: request.params[:page], per_page: PER_PAGE)
+                        .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
                         .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
 
         count = Party.where(conditions).count
-        total_pages = count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1
+        total_pages = count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
 
         render json: PartyBlueprint.render(@parties,
                                            view: :collection,
@@ -71,7 +69,7 @@ module Api
                                            meta: {
                                              count: count,
                                              total_pages: total_pages,
-                                             per_page: PER_PAGE
+                                             per_page: COLLECTION_PER_PAGE
                                            })
       end
 
@@ -84,11 +82,11 @@ module Api
         @parties = Party.joins(:favorites)
                         .where(conditions)
                         .order('favorites.created_at DESC')
-                        .paginate(page: request.params[:page], per_page: PER_PAGE)
+                        .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
                         .each { |party| party.favorited = party.is_favorited(current_user) }
 
         count = Party.joins(:favorites).where(conditions).count
-        total_pages = count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1
+        total_pages = count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
 
         render json: PartyBlueprint.render(@parties,
                                            view: :collection,
@@ -96,7 +94,7 @@ module Api
                                            meta: {
                                              count: count,
                                              total_pages: total_pages,
-                                             per_page: PER_PAGE
+                                             per_page: COLLECTION_PER_PAGE
                                            })
       end
 

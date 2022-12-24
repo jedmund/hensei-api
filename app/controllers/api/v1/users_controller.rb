@@ -2,8 +2,6 @@
 
 module Api
   module V1
-    PER_PAGE = 15
-
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
@@ -50,7 +48,7 @@ module Api
         parties = Party
                   .where(conditions)
                   .order(created_at: :desc)
-                  .paginate(page: request.params[:page], per_page: PER_PAGE)
+                  .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
                   .each do |party|
           party.favorited = current_user ? party.is_favorited(current_user) : false
         end
@@ -63,8 +61,8 @@ module Api
                                           parties: parties,
                                           meta: {
                                             count: count,
-                                            total_pages: count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1,
-                                            per_page: PER_PAGE
+                                            total_pages: count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1,
+                                            per_page: COLLECTION_PER_PAGE
                                           })
       end
 
