@@ -32,6 +32,13 @@ module Api
         end
       end
 
+      field :awakening, if: ->(_field_name, w, _options) { w.weapon.awakening } do |w|
+        {
+          type: w.awakening_type,
+          level: w.awakening_level
+        }
+      end
+
       view :full do
         include_view :nested
         association :party, blueprint: PartyBlueprint, view: :minimal

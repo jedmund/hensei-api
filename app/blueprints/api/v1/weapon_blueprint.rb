@@ -12,7 +12,7 @@ module Api
 
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :limit, :rarity,
-             :series, :ax
+             :series, :ax, :awakening
 
       field :uncap do |w|
         {
