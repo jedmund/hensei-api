@@ -55,7 +55,6 @@ module Api
 
       def index
         conditions = build_conditions(request.params)
-        ap conditions
 
         @parties = Party.where(conditions)
                         .order(created_at: :desc)
