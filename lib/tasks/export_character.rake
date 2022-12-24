@@ -22,20 +22,22 @@ namespace :granblue do
 
       # Set up filepath
       dir = "#{Rails.root}/export/"
+      filename = "#{dir}/character-#{size}.txt"
       FileUtils.mkdir(dir) unless Dir.exist?(dir)
 
-      unless File.exist?("#{dir}/character-#{size}.txt")
-        File.open("#{dir}/character-#{size}.txt", 'w') do |f|
-          Character.all.each do |c|
-            f.write("#{build_chara_url("#{c.granblue_id}_01", size)} \n")
-            f.write("#{build_chara_url("#{c.granblue_id}_02", size)} \n")
-            f.write("#{build_chara_url("#{c.granblue_id}_03", size)} \n") if c.flb
-            f.write("#{build_chara_url("#{c.granblue_id}_04", size)} \n") if c.ulb
-          end
+      # Write to file
+      File.open(filename, 'w+') do |f|
+        Character.all.each do |c|
+          f.write("#{build_chara_url("#{c.granblue_id}_01", size)} \n")
+          f.write("#{build_chara_url("#{c.granblue_id}_02", size)} \n")
+          f.write("#{build_chara_url("#{c.granblue_id}_03", size)} \n") if c.flb
+          f.write("#{build_chara_url("#{c.granblue_id}_04", size)} \n") if c.ulb
         end
       end
 
-      puts "Wrote #{Character.count} character URLs for \"#{size}\" size"
+      # CLI Output
+      count = `wc -l #{filename}`.split.first.to_i
+      puts "Wrote #{count} character URLs for \"#{size}\" size"
     end
   end
 end

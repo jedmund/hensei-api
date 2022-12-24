@@ -22,17 +22,19 @@ namespace :granblue do
 
       # Set up filepath
       dir = "#{Rails.root}/export/"
+      filename = "#{dir}/weapon-#{size}.txt"
       FileUtils.mkdir(dir) unless Dir.exist?(dir)
 
-      unless File.exist?("#{dir}/weapon-#{size}.txt")
-        File.open("#{dir}/weapon-#{size}.txt", 'w') do |f|
-          Weapon.all.each do |w|
-            f.write("#{build_weapon_url(w.granblue_id.to_s, size)} \n")
-          end
+      # Write to file
+      File.open(filename, 'w') do |f|
+        Weapon.all.each do |w|
+          f.write("#{build_weapon_url(w.granblue_id.to_s, size)} \n")
         end
       end
 
-      puts "Wrote #{Weapon.count} weapon URLs for \"#{size}\" size"
+      # CLI output
+      count = `wc -l #{filename}`.split.first.to_i
+      puts "Wrote #{count} weapon URLs for \"#{size}\" size"
     end
   end
 end

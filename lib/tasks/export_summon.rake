@@ -22,18 +22,26 @@ namespace :granblue do
 
       # Set up filepath
       dir = "#{Rails.root}/export/"
+      filename = "#{dir}/summon-#{size}.txt"
       FileUtils.mkdir(dir) unless Dir.exist?(dir)
 
-      unless File.exist?("#{dir}/summon-#{size}.txt")
-        File.open("#{dir}/summon-#{size}.txt", 'w') do |f|
-          Summon.all.each do |s|
-            f.write("#{build_summon_url("#{s.granblue_id}_01", size)} \n")
-            f.write("#{build_summon_url("#{s.granblue_id}_02", size)} \n") if (s.series == 3 || s.series == 0) && s.ulb
+      # Write to file
+      File.open(filename, 'w') do |f|
+        Summon.all.each do |s|
+          series = s.series.to_i
+          f.write("#{build_summon_url(s.granblue_id.to_s, size)} \n")
+
+          # Download second images only for Providence ULBs and Primal summons
+          if series == 3 || (series == 0 && s.ulb)
+            f.write("#{build_summon_url("#{s.granblue_id}_02",
+                                        size)} \n")
           end
         end
       end
 
-      puts "Wrote #{Summon.count} summon URLs for \"#{size}\" size"
+      # CLI output
+      count = `wc -l #{filename}`.split.first.to_i
+      puts "Wrote #{count} summon URLs for \"#{size}\" size"
     end
   end
 end
