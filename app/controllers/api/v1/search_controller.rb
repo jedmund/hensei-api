@@ -2,8 +2,6 @@
 
 module Api
   module V1
-    PER_PAGE = 10
-
     class SearchController < Api::V1::ApiController
       def characters
         filters = search_params[:filters]
@@ -35,14 +33,14 @@ module Api
                      end
 
         count = characters.length
-        paginated = characters.paginate(page: search_params[:page], per_page: PER_PAGE)
+        paginated = characters.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
 
         render json: CharacterBlueprint.render(paginated,
                                                root: :results,
                                                meta: {
                                                  count: count,
                                                  total_pages: total_pages(count),
-                                                 per_page: PER_PAGE
+                                                 per_page: SEARCH_PER_PAGE
                                                })
       end
 
@@ -72,14 +70,14 @@ module Api
                   end
 
         count = weapons.length
-        paginated = weapons.paginate(page: search_params[:page], per_page: PER_PAGE)
+        paginated = weapons.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
 
         render json: WeaponBlueprint.render(paginated,
                                             root: :results,
                                             meta: {
                                               count: count,
                                               total_pages: total_pages(count),
-                                              per_page: PER_PAGE
+                                              per_page: SEARCH_PER_PAGE
                                             })
       end
 
@@ -104,14 +102,14 @@ module Api
                   end
 
         count = summons.length
-        paginated = summons.paginate(page: search_params[:page], per_page: PER_PAGE)
+        paginated = summons.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
 
         render json: SummonBlueprint.render(paginated,
                                             root: :results,
                                             meta: {
                                               count: count,
                                               total_pages: total_pages(count),
-                                              per_page: PER_PAGE
+                                              per_page: SEARCH_PER_PAGE
                                             })
       end
 
@@ -168,21 +166,21 @@ module Api
                  end
 
         count = skills.length
-        paginated = skills.paginate(page: search_params[:page], per_page: PER_PAGE)
+        paginated = skills.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
 
         render json: JobSkillBlueprint.render(paginated,
                                               root: :results,
                                               meta: {
                                                 count: count,
                                                 total_pages: total_pages(count),
-                                                per_page: PER_PAGE
+                                                per_page: SEARCH_PER_PAGE
                                               })
       end
 
       private
 
       def total_pages(count)
-        count.to_f / PER_PAGE > 1 ? (count.to_f / PER_PAGE).ceil : 1
+        count.to_f / SEARCH_PER_PAGE > 1 ? (count.to_f / SEARCH_PER_PAGE).ceil : 1
       end
 
       # Specify whitelisted properties that can be modified.
