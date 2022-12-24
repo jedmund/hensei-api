@@ -31,6 +31,9 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore exported files
+/export
+
 .DS_Store
 
 /config/credentials/development.key
