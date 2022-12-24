@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 2022_12_24_065845) do
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -104,6 +105,9 @@ ActiveRecord::Schema.define(version: 2022_12_24_065845) do
     t.integer "awakening_level", default: 1, null: false
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
+    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
+    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
+    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
