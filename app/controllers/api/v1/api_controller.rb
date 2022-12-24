@@ -6,6 +6,10 @@ module Api
       ##### Doorkeeper
       include Doorkeeper::Rails::Helpers
 
+      ##### Constants
+      COLLECTION_PER_PAGE = 15
+      SEARCH_PER_PAGE = 10
+
       ##### Errors
       rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotDestroyed, with: :render_unprocessable_entity_response
