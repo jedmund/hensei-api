@@ -15,7 +15,7 @@ module Api
         association :weapon_keys,
                     blueprint: WeaponKeyBlueprint,
                     if: lambda { |_field_name, w, _options|
-                      [2, 3, 17, 22].include?(w.weapon.series)
+                      [2, 3, 17, 24].include?(w.weapon.series)
                     }
 
         field :ax, if: ->(_field_name, w, _options) { w.weapon.ax.positive? } do |w|
@@ -30,6 +30,13 @@ module Api
             }
           ]
         end
+      end
+
+      field :awakening, if: ->(_field_name, w, _options) { w.weapon.awakening } do |w|
+        {
+          type: w.awakening_type,
+          level: w.awakening_level
+        }
       end
 
       view :full do

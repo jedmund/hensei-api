@@ -10,6 +10,14 @@ module Api
 
       view :nested do
         fields :position, :uncap_level, :perpetuity
+
+        field :awakening do |c|
+          {
+            type: c.awakening_type,
+            level: c.awakening_level
+          }
+        end
+
         association :character, name: :object, blueprint: CharacterBlueprint
       end
 
