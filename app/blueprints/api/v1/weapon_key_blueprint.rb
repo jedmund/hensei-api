@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :series, :slot, :group, :order
+      fields :slug, :series, :slot, :group, :order
     end
   end
 end

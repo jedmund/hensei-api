@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_21_084556) do
+ActiveRecord::Schema.define(version: 2022_12_24_065845) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 2022_12_21_084556) do
     t.integer "slot"
     t.integer "group"
     t.integer "order"
+    t.string "slug"
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
