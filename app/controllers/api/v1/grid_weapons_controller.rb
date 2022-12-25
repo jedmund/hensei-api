@@ -16,6 +16,10 @@ module Api
         # Set up conflict_position in case it is used
         conflict_position = nil
 
+        if [9, 10, 11].include?(weapon_params[:position].to_i) && ![11, 16, 17, 28, 29].include?(incoming_weapon.series)
+          raise Api::V1::IncompatibleWeaponForPositionError.new(weapon: incoming_weapon)
+        end
+
         # 1. If the weapon has a limit
         # 2. If the weapon does not match a weapon already in grid
         # 3. If the incoming weapon has a limit and other weapons of the same series are in grid

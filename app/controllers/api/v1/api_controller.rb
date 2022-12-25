@@ -20,6 +20,7 @@ module Api
       rescue_from Api::V1::FavoriteAlreadyExistsError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::NoJobProvidedError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::TooManySkillsOfTypeError, with: :render_unprocessable_entity_response
+      rescue_from Api::V1::IncompatibleWeaponForPositionError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::UnauthorizedError, with: :render_unauthorized_response
       rescue_from ActionController::ParameterMissing, with: :render_unprocessable_entity_response
 
