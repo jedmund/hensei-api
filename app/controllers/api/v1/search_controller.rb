@@ -57,6 +57,7 @@ module Api
               filters['proficiency1']
           end
           conditions[:series] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
+          conditions[:extra] = filters['extra'] unless filters['extra'].blank?
         end
 
         weapons = if search_params[:query].present? && search_params[:query].length >= 2
@@ -89,6 +90,7 @@ module Api
         if filters
           conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
           conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
+          conditions[:subaura] = filters['subaura'] unless filters['subaura'].blank?
         end
 
         summons = if search_params[:query].present? && search_params[:query].length >= 2

@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       delete 'characters', to: 'grid_characters#destroy'
 
       post 'weapons', to: 'grid_weapons#create'
+      post 'weapons/resolve', to: 'grid_weapons#resolve'
       post 'weapons/update_uncap', to: 'grid_weapons#update_uncap_level'
       delete 'weapons', to: 'grid_weapons#destroy'
 
