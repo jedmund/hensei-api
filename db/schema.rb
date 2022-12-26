@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_24_065845) do
+ActiveRecord::Schema.define(version: 2022_12_26_000952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -105,9 +104,6 @@ ActiveRecord::Schema.define(version: 2022_12_24_065845) do
     t.integer "awakening_level", default: 1, null: false
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
-    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
-    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
-    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -243,6 +239,7 @@ ActiveRecord::Schema.define(version: 2022_12_24_065845) do
     t.boolean "private", default: false, null: false
     t.string "element", default: "water", null: false
     t.integer "gender", default: 0, null: false
+    t.string "theme", default: "system", null: false
   end
 
   create_table "weapon_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
