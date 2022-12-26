@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_26_000952) do
+ActiveRecord::Schema.define(version: 2022_12_26_054501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -262,8 +262,8 @@ ActiveRecord::Schema.define(version: 2022_12_26_000952) do
     t.integer "series", default: -1, null: false
     t.boolean "flb", default: false, null: false
     t.boolean "ulb", default: false, null: false
-    t.integer "max_level"
-    t.integer "max_skill_level"
+    t.integer "max_level", default: 100, null: false
+    t.integer "max_skill_level", default: 10, null: false
     t.integer "min_hp"
     t.integer "max_hp"
     t.integer "max_hp_flb"

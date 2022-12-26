@@ -6,7 +6,7 @@ namespace :granblue do
     bar = '=' * filled_len + '-' * (bar_len - filled_len)
 
     if !multi
-      print("[#{bar}] #{percents}% ...#{' ' * 20}#{status}\n")
+      print("[#{bar}] #{percents}% ...#{' ' * 14}#{status}\n")
     else
       print "\n"
     end
