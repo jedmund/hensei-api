@@ -54,7 +54,10 @@ module Api
       def index
         conditions = build_conditions(request.params)
 
-        @parties = Party.where(conditions)
+        @parties = Party.joins(:weapons)
+                        .group('parties.id')
+                        .having('count(distinct grid_weapons.weapon_id) > 2')
+                        .where(conditions)
                         .order(created_at: :desc)
                         .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
                         .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
