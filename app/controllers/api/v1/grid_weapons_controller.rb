@@ -41,8 +41,10 @@ module Api
         end
 
         # Render the grid weapon view as a string and assign it to a variable
+        return unless weapon.save!
+
         grid_weapon_view = render_grid_weapon_view(weapon, conflict_position)
-        render json: grid_weapon_view, status: :created if weapon.save!
+        render json: grid_weapon_view, status: :created
       end
 
       def resolve
