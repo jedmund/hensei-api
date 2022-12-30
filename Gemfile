@@ -43,6 +43,8 @@ gem 'pg_search'
 # Pagination library
 gem 'will_paginate', '~> 3.3'
 
+gem 'httparty'
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
@@ -53,6 +55,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'pry'
   gem 'rspec_junit_formatter'
   gem 'rspec-rails'
 end
