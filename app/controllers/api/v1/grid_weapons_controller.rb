@@ -122,6 +122,61 @@ module Api
 
       private
 
+      def check_weapon_compatibility
+        return if compatible_with_position?(incoming_weapon, weapon_params[:position])
+
+        raise Api::V1::IncompatibleWeaponForPositionError.new(weapon: incoming_weapon)
+      end
+
+      # Check if the incoming weapon is compatible with the specified position
+      def compatible_with_position?(incoming_weapon, position)
+        false if [9, 10, 11].include?(position.to_i) && ![11, 16, 17, 28, 29].include?(incoming_weapon.series)
+        true
+      end
+
+      def conflict_weapon
+        @conflict_weapon ||= find_conflict_weapon(party, incoming_weapon)
+      end
+
+      # Find a conflict weapon if one exists
+      def find_conflict_weapon(party, incoming_weapon)
+        return unless incoming_weapon.limit
+
+        party.weapons.find do |weapon|
+          series_match = incoming_weapon.series == weapon.weapon.series
+          weapon if series_match || opus_or_draconic?(weapon.weapon) && opus_or_draconic?(incoming_weapon)
+        end
+      end
+
+      def find_incoming_weapon
+        @incoming_weapon = Weapon.find(weapon_params[:weapon_id])
+        @incoming_weapon.limit
+      end
+
+      def find_party
+        # BUG: I can create grid weapons even when I'm not logged in on an authenticated party
+        @party = Party.find(weapon_params[:party_id])
+        render_unauthorized_response if current_user && (party.user != current_user)
+      end
+
+      def opus_or_draconic?(weapon)
+        [2, 3].include?(weapon.series)
+      end
+
+      # Render the conflict view as a string
+      def render_conflict_view(conflict_weapon, incoming_weapon, incoming_position)
+        ConflictBlueprint.render(nil, view: :weapons,
+                                      conflict_weapons: [conflict_weapon],
+                                      incoming_weapon: incoming_weapon,
+                                      incoming_position: incoming_position)
+      end
+
+      def render_grid_weapon_view(grid_weapon, conflict_position)
+        GridWeaponBlueprint.render(grid_weapon, view: :full,
+                                                root: :grid_weapon,
+                                                meta: { replaced: conflict_position })
+      end
+
       def set
         @weapon = GridWeapon.where('id = ?', params[:id]).first
       end
