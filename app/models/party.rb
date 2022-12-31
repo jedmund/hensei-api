@@ -61,13 +61,13 @@ class Party < ApplicationRecord
   def skills_are_unique
     skills = [skill0, skill1, skill2, skill3].compact
 
-    return unless skills.uniq.length != skills.length
+    return if skills.uniq.length == skills.length
 
-    errors.add(:skill1, 'must be unique') if skill0 == skill1
+    skills.each_with_index do |skill, index|
+      next if index.zero?
 
-    errors.add(:skill2, 'must be unique') if skill0 == skill2 || skill1 == skill2
-
-    errors.add(:skill3, 'must be unique') if skill0 == skill3 || skill1 == skill3 || skill2 == skill3
+      errors.add(:"skill#{index + 1}", 'must be unique') if skills[0...index].include?(skill)
+    end
 
     errors.add(:job_skills, 'must be unique')
   end
