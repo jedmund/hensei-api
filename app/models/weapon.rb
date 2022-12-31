@@ -27,4 +27,8 @@ class Weapon < ApplicationRecord
   def display_resource(weapon)
     weapon.name_en
   end
+
+  def compatible_with_key?(key)
+    key.series == series
+  end
 end
