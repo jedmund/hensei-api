@@ -43,6 +43,9 @@ gem 'pg_search'
 # Pagination library
 gem 'will_paginate', '~> 3.3'
 
+# Migrate and update data alongside your database structure.
+gem 'data_migrate'
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
