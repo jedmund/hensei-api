@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.0.0'
+ruby '3.1.2'
 
 gem 'bootsnap'
 gem 'pg'
@@ -52,7 +52,7 @@ group :doc do
 end
 
 group :development, :test do
-  gem 'awesome_print'
+  gem 'amazing_print'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'

@@ -18,7 +18,7 @@ module Api
                       [2, 3, 17, 24].include?(w.weapon.series)
                     }
 
-        field :ax, if: ->(_field_name, w, _options) { w.weapon.ax.positive? } do |w|
+        field :ax, if: ->(_field_name, w, _options) { w.weapon.ax } do |w|
           [
             {
               modifier: w.ax_modifier1,

@@ -1,0 +1,268 @@
+"id","job_id","name_en","name_jp","slug","color","main","sub","emp","order","base"
+"005b5b80-6c67-4d14-bafe-0237535a6566","a2cff6d3-390a-48df-b414-0c00e4da78c8","Alchemize Green Potion","錬成:キュアポーション","alchemize-green-potion",3,TRUE,FALSE,FALSE,0,FALSE
+"01811568-6f37-409a-9975-4e79b1c8635f","2ea006f4-160d-494c-ab95-85b6d897f12c","Dance of Zeal","狂信演舞","dance-of-zeal",0,FALSE,FALSE,TRUE,2,FALSE
+"02c9740b-458f-494c-ac0e-2aa9e3cadf24","bc88726b-9f96-4061-be1c-7a2306be238e","Aether Blast II","エーテルブラストII","aether-blast-ii",2,TRUE,FALSE,FALSE,0,FALSE
+"03a7d35f-821f-44ed-be4a-da1f2c518f58","3885c629-fc2a-4298-9e51-4857f0afb2b5","Battle Scar","パイルリベレーション","battle-scar",2,TRUE,TRUE,FALSE,2,FALSE
+"040943a8-1a97-4559-8cd8-9d93f70a7c49","249bae0a-c1e8-4c1f-80b5-72760b72511b","Megali Fotia","メガリフォーティア","megali-fotia",2,FALSE,FALSE,TRUE,3,FALSE
+"05241c9e-2b79-4724-8d9e-83ba3f04f723","a2cff6d3-390a-48df-b414-0c00e4da78c8","Fury Capsule","鬼神の丸薬","fury-capsule",0,FALSE,FALSE,TRUE,3,FALSE
+"069b2078-1c08-4dcb-a4d3-6feca0a7f99b","d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Fate Foreseen","宿命陣","fate-foreseen",0,TRUE,FALSE,FALSE,1,TRUE
+"06c20c65-4f56-49dd-aa97-77bf149e192b","683ffee8-4ea2-432d-bc30-4865020ac9f4","Sacred Protection","セイクリッド・プロテクション","sacred-protection",0,FALSE,FALSE,TRUE,3,FALSE
+"07c05520-0b68-428e-afc1-bfb5fa1bfa8f","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Spell Boost","スペルブースト","spell-boost",0,FALSE,FALSE,TRUE,3,FALSE
+"08e5d10a-6322-41b1-9b43-b8547edfc1ab","5b06f834-5b54-4638-8934-0afa82c373e1","Stall III","ディレイIII","stall-iii",2,TRUE,FALSE,FALSE,0,FALSE
+"091f68f6-439d-4c99-b237-9b22a1285754","56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Armor Break","アーマーブレイク","armor-break",2,TRUE,TRUE,FALSE,2,FALSE
+"0947706d-fc3b-403e-aa62-9a64aef8e0a2","2ea006f4-160d-494c-ab95-85b6d897f12c","Crestfallen Flower","曼珠沙華","crestfallen-flower",0,FALSE,FALSE,TRUE,4,FALSE
+"0a01b14d-7b0d-47a5-bdc6-e3f4f2ff133e","34237f55-3646-4a9e-93dc-2039b11bdd12","Refuel","リフューリング","refuel",0,TRUE,FALSE,FALSE,2,FALSE
+"0a9b7527-5893-41d7-a101-691cea53a975","b6284935-2e22-4f84-b886-40eda2a9a4a4","Force Snatch","フォーススナッチ","force-snatch",0,FALSE,FALSE,TRUE,4,FALSE
+"0d6f38e8-806f-4feb-a418-5f6eb2b5e5d1","9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","Quick Step","ライトウェイト","quick-step",0,TRUE,FALSE,FALSE,0,FALSE
+"0db587b6-d94f-4a53-ac4f-5426b3dc8e39","2fd99d5b-9fab-4116-923d-aa84168def6c","Awakening Blade","剣神解放","awakening-blade",0,TRUE,FALSE,FALSE,0,FALSE
+"103cde46-46e8-4f88-be02-bcf848130d37","408c8cd0-6315-4faa-b1eb-d545a3570de8","Einherjar","エインフェリアル","einherjar",0,FALSE,FALSE,TRUE,4,FALSE
+"11fa4d9b-6574-418e-a002-b99143788107","f11459b2-ee20-4927-aeee-bc85bab39c3e","Overdrive Surge III","ドライブバーストIII","overdrive-surge-iii",2,TRUE,TRUE,FALSE,1,FALSE
+"12435660-78c0-4d26-92f8-bf3083acc9be","568406b9-3622-4ef1-953f-57cf7c0bfa43","Chi Channeler","内功","chi-channeler",3,TRUE,TRUE,FALSE,2,FALSE
+"14595690-db53-416d-8491-9cc11d4ebaf2","d2e1858f-66ac-418b-aafb-f40eb8f283c1","Sky Realm Song","ソング・オブ・グランデ","sky-realm-song",0,TRUE,TRUE,FALSE,2,FALSE
+"15001f54-82cd-4fae-b46c-6ef0d4a063d4","07fef189-432c-42e4-bee2-f69603e6a046","Adrenaline Rush","アドレナリンラッシュ","adrenaline-rush",0,FALSE,FALSE,TRUE,3,FALSE
+"168af7d2-19ba-4d34-a990-cf0a9da3aef8","0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Vinland","ヴィンランド","vinland",0,FALSE,FALSE,TRUE,2,FALSE
+"1822275b-0193-4d44-b0df-2ed6854cf2eb","6283eb60-234f-4851-8cc7-7ea36e42def2","Brave Soul","ブレイブソウル","brave-soul",0,FALSE,FALSE,TRUE,3,FALSE
+"19486a63-7dee-4eb7-8004-235a117bc2c4","0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Banahogg","バナホッグ","banahogg",2,FALSE,FALSE,TRUE,1,FALSE
+"19a9b054-de5d-4c1e-97bc-aaeb4798141d","d2e1858f-66ac-418b-aafb-f40eb8f283c1","Soul Soloist","ソウルピルファー","soul-soloist",1,TRUE,TRUE,FALSE,1,FALSE
+"1d03f030-7061-4104-8b3f-64b8ba4c1109","a45ba1fb-64cf-4f29-ad54-4cf75a914622","Acrobatic Volley","アクロバットヴォレイ","acrobatic-volley",1,FALSE,FALSE,TRUE,1,FALSE
+"1d1e9b0a-7ea1-4ddf-966f-7bcb9aee27ce","34237f55-3646-4a9e-93dc-2039b11bdd12","Customized Action","フレキシブル・アーツ","customized-action",0,TRUE,FALSE,FALSE,1,FALSE
+"1e4c2031-c880-4d98-874e-c1249a857448","dcf91798-3cf9-46a0-aec6-313e91248995","Call of the Abyss","コール・オブ・アビス","call-of-the-abyss",0,FALSE,FALSE,TRUE,3,FALSE
+"1edb5266-7538-40c4-ab55-e65a709f63db","787c1554-8ee8-438c-8b30-18b5c86f3831","Non-Sequence","ノン・シークエンス","non-sequence",2,FALSE,FALSE,TRUE,2,FALSE
+"2049e420-b9ac-49be-92f0-7c894724e119","efe756ea-e0b7-4560-8fa2-9bf266f5f013","Blitzburst","ブリッツバースト","blitzburst",0,FALSE,FALSE,TRUE,3,FALSE
+"20a44398-b403-44f9-87d5-4dd4024c1b6e","efe756ea-e0b7-4560-8fa2-9bf266f5f013","Triple Thread","トライン","triple-thread",0,TRUE,FALSE,FALSE,1,FALSE
+"2246cc75-ea0a-413c-becf-7e4efd695967","797bcb10-ebd4-48fc-b253-7fd55ccf4809","Judicious Shot","レイショナルショット","judicious-shot",2,FALSE,FALSE,TRUE,4,FALSE
+"225c6b72-5184-441e-b996-a62253538b41","c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Spirit of Training","練気","spirit-of-training",2,FALSE,FALSE,TRUE,3,FALSE
+"23a19cf9-cb46-4014-a466-895ae4d0d572","113ba069-ede0-4a58-b033-4e574d12dd75","Quick Step II","ライトウェイトII","quick-step-ii",0,TRUE,FALSE,FALSE,0,FALSE
+"244bffc2-b6e9-4067-8d88-96df680d745c","f11459b2-ee20-4927-aeee-bc85bab39c3e","Substitute","かばう","substitute",0,TRUE,TRUE,FALSE,2,FALSE
+"25ff8da3-c54c-450e-a34d-55996ceb9456","e35f8cd6-82ec-4624-beb6-3948f30a0cf8","Pas Seul","ヴァリアシオン","pas-seul",0,FALSE,FALSE,TRUE,3,FALSE
+"26bdb28e-62f4-4624-b4a4-639ac1bedb53","683ffee8-4ea2-432d-bc30-4865020ac9f4","Noblesse Proteger","ノブレス・プロテジー","noblesse-proteger",0,FALSE,FALSE,TRUE,1,FALSE
+"2753fa6d-175b-4b17-a34b-bb8747910095","2262c791-6517-4f4c-bbd3-414999d8fb8a","Panacea III","ヒールオールIII","panacea-iii",3,TRUE,FALSE,FALSE,0,FALSE
+"28317a52-1f7d-425c-8b0b-ec075807215d","34237f55-3646-4a9e-93dc-2039b11bdd12","Actuation","アクチュエーション","actuation",0,FALSE,FALSE,TRUE,3,FALSE
+"286d35e7-ed73-42fd-962f-896667a74dd9","824fb790-26c1-4a1c-911e-9b2debad4662","Quiet Strategy","鴉雀無声","quiet-strategy",0,TRUE,TRUE,FALSE,2,FALSE
+"2aab3577-5953-451a-bb11-9e4b5d85d49e","2262c791-6517-4f4c-bbd3-414999d8fb8a","Dispel Deluge","ディスペル・シージ","dispel-deluge",1,FALSE,FALSE,TRUE,2,FALSE
+"2d0c1823-3608-402d-ae26-03c889f9f19d","45e26ec7-37c6-44f7-a9ac-a8b36f37ea30","Overdrive Surge II","ドライブバーストII","overdrive-surge-ii",2,TRUE,TRUE,FALSE,1,FALSE
+"2d9b03d9-ba63-4dbe-8b1e-db5e305ff480","d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Omnipotent Eye","天眼陣","omnipotent-eye",0,TRUE,FALSE,FALSE,0,FALSE
+"2de20e97-c154-4604-8523-22f0146e5f9b","568406b9-3622-4ef1-953f-57cf7c0bfa43","Taking Chances II","捨身の型II","taking-chances-ii",0,TRUE,TRUE,FALSE,1,FALSE
+"2f8d0aeb-9642-40a7-92b4-90cd9e3621c9","0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Jomsborg","ヨムスボルグ","jomsborg",0,FALSE,FALSE,TRUE,3,FALSE
+"30170049-d25f-4e33-a3e4-5cef02d7197c","43652444-64bb-4938-85d7-aafdfc503d66","Quick Down","クイックダウン","quick-down",1,FALSE,FALSE,TRUE,3,FALSE
+"30df2315-457a-414c-9eef-3980b72b17c2","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Ulfhedinn","ウールヴヘジン","ulfhedinn",0,FALSE,FALSE,TRUE,4,FALSE
+"32dac837-63e2-4712-8e14-939b5ba2584c","82e3adde-f0a1-4769-90ca-305044324448","Blade Swap II","アナザーブレードII","blade-swap-ii",0,TRUE,FALSE,FALSE,0,FALSE
+"32f4b5d7-3de3-43ec-bfd3-b767a239d203","113ba069-ede0-4a58-b033-4e574d12dd75","Rain of Arrows III","アローレインIII","rain-of-arrows-iii",2,TRUE,TRUE,FALSE,1,FALSE
+"3301c8bb-1905-4ff7-841e-c8a4367337f3","b6284935-2e22-4f84-b886-40eda2a9a4a4","Extend Break","ブレイクキープ","extend-break",1,FALSE,FALSE,TRUE,3,FALSE
+"33608780-a3e9-44ca-aaa3-d78c68333918","824fb790-26c1-4a1c-911e-9b2debad4662","Self Reflection","瞑想","self-reflection",0,TRUE,TRUE,FALSE,1,FALSE
+"36684b88-69bb-4c66-aab5-f56102de88a3","6283eb60-234f-4851-8cc7-7ea36e42def2","Power Raise","パワーレイズ","power-raise",0,FALSE,FALSE,TRUE,4,FALSE
+"36fab7a5-a887-445d-81f8-841ebafb7def","544711ef-1191-458c-909d-bc49022708f4","Leaf Burning","落葉焚き","leaf-burning",0,FALSE,FALSE,TRUE,2,FALSE
+"37218a55-3335-4457-98c3-4d8367af3d7c","d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Splitting Spirit","他心陣","splitting-spirit",0,TRUE,TRUE,FALSE,2,FALSE
+"3724e69a-cd1d-44fb-b677-e4129e5cf8c1","67c62a3f-9083-473e-a8a1-47875ad31d2b","Overture","オーヴァチュア","overture",0,TRUE,FALSE,FALSE,0,FALSE
+"38e52d75-9aff-4c34-b37f-d6a4a52f4cac","2262c791-6517-4f4c-bbd3-414999d8fb8a","Peace of Mind","キュアーフェン","peace-of-mind",3,FALSE,FALSE,TRUE,3,FALSE
+"39389075-7627-4133-9159-5f2e0ef2cce1","07fef189-432c-42e4-bee2-f69603e6a046","Maddening Vitality","マッドバイタリティ","maddening-vitality",0,FALSE,FALSE,TRUE,2,FALSE
+"39ada2b6-a8c8-454f-9b12-9ed216eb9b52","824fb790-26c1-4a1c-911e-9b2debad4662","Finishing Touch","画竜点睛","finishing-touch",0,TRUE,FALSE,FALSE,0,FALSE
+"39f6ed51-eae2-45c0-ad38-a2859d12ea39","fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","Conceal","ハイディング","conceal",0,FALSE,FALSE,TRUE,3,FALSE
+"3ad97159-f4cc-4600-9cc6-bde6b0013a1f","99c2a88f-efef-445a-ae34-d17a31fddf7b","Spring's Gate","楼門五三桐","springs-gate",0,FALSE,FALSE,TRUE,4,FALSE
+"3b54377c-04db-4ac1-82ef-dab7e67df019","2fd99d5b-9fab-4116-923d-aa84168def6c","Contrablade","斬釘截鉄","contrablade",2,FALSE,FALSE,TRUE,3,FALSE
+"3b624b80-83c7-4bb9-b4a6-545260fd2654","99c2a88f-efef-445a-ae34-d17a31fddf7b","Crack Shot III","ブレイクアサシンIII","crack-shot-iii",0,TRUE,FALSE,FALSE,0,FALSE
+"3ba3a3fd-f208-4a17-83c2-860d67f5e202","9733c23f-bb42-48b4-8473-5ed7fb94e9c1","Bounty Hunter","トレジャーハント","bounty-hunter",1,TRUE,TRUE,FALSE,1,FALSE
+"3c595281-5036-408a-b8b9-762bc1ee749f","f06a6d30-1f61-4059-97ae-2921a0dfec64","Drive It In","リードドライブ","drive-it-in",2,TRUE,FALSE,FALSE,0,FALSE
+"3dd5bf50-ba06-4294-b6e3-6bbf713055e5","408c8cd0-6315-4faa-b1eb-d545a3570de8","Double Trouble III","デュアルインパルスIII","double-trouble-iii",0,TRUE,TRUE,FALSE,1,FALSE
+"3eb6fbf8-ee62-4366-9694-f00fea1b0830","f9023154-5cb4-448d-b108-36ccb3820d2e","Unyielding Form","剛耐の型","unyielding-form",2,FALSE,FALSE,TRUE,2,FALSE
+"3fdde908-2002-4205-8a44-90eb6860fcf4","6c93ecd6-ed87-4895-87c0-049262814aef","Mosh Pit","モッシュピット","mosh-pit",4,FALSE,FALSE,TRUE,1,FALSE
+"422a2011-b9b4-4996-82f9-2a07bf471f7b","249bae0a-c1e8-4c1f-80b5-72760b72511b","Vita Brevis","ヴィータ・プレウィス","vita-brevis",3,TRUE,FALSE,FALSE,0,FALSE
+"4289394f-ae9e-41a7-b23a-30307ab2a118","2262c791-6517-4f4c-bbd3-414999d8fb8a","Blessing II","シャイニングII","blessing-ii",2,FALSE,FALSE,TRUE,1,FALSE
+"44890a89-47db-4f41-b152-50250b207546","0ce77325-c445-403d-a29e-311044337142","Glory Arts","グロリアス・アーツ","glory-arts",0,TRUE,FALSE,FALSE,0,FALSE
+"44f706ea-ab5b-4693-bb16-e138b78ef283","c128944b-cc79-45b4-bfed-17c8b68db612","Veil","ベール","veil",0,FALSE,FALSE,TRUE,3,FALSE
+"458feea6-e336-4243-a6c6-81e8ffa078c1","408c8cd0-6315-4faa-b1eb-d545a3570de8","Drive It In II","リードドライブII","drive-it-in-ii",2,TRUE,FALSE,FALSE,0,FALSE
+"462dda36-e477-49f5-be91-5930aa2d46ed","408c8cd0-6315-4faa-b1eb-d545a3570de8","Randgrith","ランドグリース","randgrith",1,FALSE,FALSE,TRUE,3,FALSE
+"470ce8a0-1fc1-4287-8b8a-ebe8ca365ac5","f7930eda-b674-4d5f-9233-7c3c6459382c","Bounty Hunter II","トレジャーハントII","bounty-hunter-ii",1,TRUE,TRUE,FALSE,1,FALSE
+"47c2044c-e58b-4978-88f1-612f41c5b862","2ea006f4-160d-494c-ab95-85b6d897f12c","Lightning Strike","霹靂閃電","lightning-strike",0,FALSE,FALSE,TRUE,5,FALSE
+"499b71c1-8877-46c9-9902-9f03753b09be","544711ef-1191-458c-909d-bc49022708f4","Dappled Sunlight","安らぎの木もれ日","dappled-sunlight",3,FALSE,FALSE,TRUE,3,FALSE
+"4a00259a-9e2b-4239-bca2-2afdc2f52be7","c128944b-cc79-45b4-bfed-17c8b68db612","Dispel","ディスペル","dispel",1,TRUE,TRUE,FALSE,1,FALSE
+"4b82c7f9-9090-40b6-9e76-6d3510400a20","3c9e447e-dd30-46da-8df0-adb9fc19ac4a","Execute","エクセキュート","execute",0,TRUE,FALSE,FALSE,0,FALSE
+"4d88655d-2bb0-4210-a1b5-5583e7db1ba6","33e01b0f-068f-4ce0-af61-b8e61e6484e8","Three-Round Burst","スリーラウンドバースト","three-round-burst",2,TRUE,FALSE,FALSE,0,FALSE
+"4df00bf2-aab1-4bd4-a399-fcad942c7daf","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Rage IV","アーマーブレイクII","rage-iv",0,FALSE,FALSE,TRUE,2,FALSE
+"4e4b80a6-eab0-4ae5-8e01-d4bc8131f2bb","eff31084-e70d-4fc0-a468-d07fccb4fe99","Haze","朧","haze",2,TRUE,TRUE,FALSE,2,FALSE
+"4eb53470-1964-4f95-9785-715c0699e08a","bc88726b-9f96-4061-be1c-7a2306be238e","Bounce","バウンス","bounce",2,FALSE,FALSE,TRUE,3,FALSE
+"4f49e4e9-4d9f-4df1-a081-65448fe6e9d3","dcf91798-3cf9-46a0-aec6-313e91248995","Dirge for the Dead","ソング・トゥ・ザ・デッド","dirge-of-the-dead",1,FALSE,FALSE,TRUE,1,FALSE
+"4f96950c-da93-4aa5-b279-4858ec0e300a","e35f8cd6-82ec-4624-beb6-3948f30a0cf8","Two to Tango","リンガリング・セント","two-to-tango",0,TRUE,FALSE,FALSE,2,TRUE
+"52aff1de-bfe4-4154-8415-b9b51e48bfd3","a9953e14-f2a3-4558-8e6c-ecbce9552aa9","Stall","ディレイ","stall",2,TRUE,FALSE,FALSE,0,FALSE
+"5330e738-ed1d-446e-ac3b-738f3de7f73d","568406b9-3622-4ef1-953f-57cf7c0bfa43","Counter","カウンター","counter",2,TRUE,FALSE,FALSE,0,FALSE
+"53513881-1a8c-4cad-ae9d-7639045e6834","950f659b-0521-4a79-b578-7f3b05cb3102","Grace","オーラ","grace",0,TRUE,TRUE,FALSE,1,FALSE
+"547ef737-6bc4-4b70-b503-a71d6ac40efa","a474a4f8-4cd2-453f-aa19-84efc4ef5924","Blitz Raid","ブリッツレイド","blitz-raid",2,FALSE,FALSE,TRUE,3,FALSE
+"5507f560-6e20-4486-9bff-5c4c0df7ea8a","45e26ec7-37c6-44f7-a9ac-a8b36f37ea30","Centurion","センチュリオン","centurion",0,TRUE,TRUE,FALSE,2,FALSE
+"5599cbad-5aa4-4df5-a820-01024cc5542d","be6a2e8e-15e3-4f59-9621-58bda3318874","Overture","オーヴァチュア","overture",0,TRUE,FALSE,FALSE,0,FALSE
+"5770e0a9-cc58-4f4f-8e6a-653efb42991b","f9023154-5cb4-448d-b108-36ccb3820d2e","Rock Crusher","岩崩拳","rock-crusher",2,FALSE,FALSE,TRUE,3,FALSE
+"577613d1-803c-4038-bb92-6dbb84f47f29","6283eb60-234f-4851-8cc7-7ea36e42def2","Full Arsenal II","ウェポンバーストII","full-arsenal-ii",0,TRUE,FALSE,FALSE,0,FALSE
+"5a7b6eaa-d718-4609-921a-c5646c948de6","c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Pandemonium","羅喉阿修羅陣","pandemonium",0,TRUE,TRUE,FALSE,2,FALSE
+"5f5b328d-7278-4686-bc66-a8ab6066b8f8","667bf041-61c9-4568-bdd3-ce6e43f40603","Aether Bane","エーテルフラップ","aether-bane",1,FALSE,FALSE,TRUE,2,FALSE
+"5fd3dfd7-a7f6-40ab-a3cb-8b21320f6120","f945115c-74b0-4baf-9308-c2d7e64396aa","Never Miss a Beat","熱烈峻厳","never-miss-a-beat",0,TRUE,FALSE,FALSE,1,TRUE
+"601d0c6f-4f9d-4bac-863c-335119162072","113ba069-ede0-4a58-b033-4e574d12dd75","Change","チェンジ","change",0,FALSE,FALSE,TRUE,4,FALSE
+"61e5ee77-1487-475a-806d-5333b1defbd2","824fb790-26c1-4a1c-911e-9b2debad4662","Into Thin Air","雲散霧消","into-thin-air",0,FALSE,FALSE,TRUE,3,FALSE
+"61e9a862-41f1-477a-9131-72b366c359be","2abbab55-5bf7-49f8-9ed6-1fe8a3991cca","Clarity","クリアオール","clarity",3,TRUE,TRUE,FALSE,1,FALSE
+"61ef5942-3a9e-4ddb-a442-0a0e1c5a5d8a","6283eb60-234f-4851-8cc7-7ea36e42def2","Rage III","レイジIII","rage-iii",0,TRUE,TRUE,FALSE,2,FALSE
+"622a1521-a66c-450b-a54a-77ca18e2cf93","408c8cd0-6315-4faa-b1eb-d545a3570de8","Resonating Surge","レゾナンスサージ","resonating-surge",2,TRUE,TRUE,FALSE,2,FALSE
+"630814c4-0557-4233-8b48-d97c76f0d978","249bae0a-c1e8-4c1f-80b5-72760b72511b","Pneuma","プネウマ","pneuma",0,FALSE,FALSE,TRUE,2,FALSE
+"6366535f-131e-4b48-9918-27e4ad6f4ae7","a2cff6d3-390a-48df-b414-0c00e4da78c8","Just the Cure","メディク","just-the-cure",3,TRUE,TRUE,FALSE,1,FALSE
+"63a4c4fa-e5e1-485a-9655-c399a0446f23","9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","Rain of Arrows","アローレイン","rain-of-arrows",2,TRUE,TRUE,FALSE,1,FALSE
+"65d0d9cd-d425-45ed-9b08-b8b7a9cc3ea7","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Paws of Power","スペシャルボム","paws-of-power",0,FALSE,FALSE,TRUE,3,FALSE
+"662b0fae-841c-487a-bb8a-947c2f95be3d","bc88726b-9f96-4061-be1c-7a2306be238e","Venom","ヴェノム","venom",2,TRUE,TRUE,FALSE,1,FALSE
+"66389617-ab89-44f0-9a7b-c438525d8195","797bcb10-ebd4-48fc-b253-7fd55ccf4809","Twilight Zone","トワイライトゾーン","twilight-zone",4,FALSE,FALSE,TRUE,3,FALSE
+"669e7c31-a5f2-4601-8ba4-e22687817254","eff31084-e70d-4fc0-a468-d07fccb4fe99","Home-Made Bomb","焙烙玉","home-made-bomb",2,FALSE,FALSE,TRUE,3,FALSE
+"66e84133-6995-4a6a-afee-1af900ca8bf8","2b0cfead-50b3-4acd-8cb0-18aab243fdd1","Aether Blast","エーテルブラスト","aether-blast",2,TRUE,FALSE,FALSE,0,FALSE
+"67a126d1-5515-492f-aeaf-7f88b25e2e26","667bf041-61c9-4568-bdd3-ce6e43f40603","Dark Haze","ブラックヘイズ","dark-haze",1,FALSE,FALSE,TRUE,1,FALSE
+"681e4ace-7104-470c-beec-db18a7fd9d41","eff31084-e70d-4fc0-a468-d07fccb4fe99","Ninjutsu","忍術","ninjutsu",0,TRUE,FALSE,FALSE,0,FALSE
+"693ca807-cd79-4b0d-a3ef-8a67c0cf9063","e35f8cd6-82ec-4624-beb6-3948f30a0cf8","Spellbound Salsa","アトラクト・サルサ","spellbound-salsa",0,TRUE,FALSE,FALSE,0,FALSE
+"69ae220a-da72-4183-b076-11650d8721df","c128944b-cc79-45b4-bfed-17c8b68db612","Panacea II","ヒールオールII","panacea-ii",3,TRUE,FALSE,FALSE,0,FALSE
+"6afdc3c2-42f2-46d8-b16e-f2d269754269","9733c23f-bb42-48b4-8473-5ed7fb94e9c1","Crack Shot","ブレイクアサシン","crack-shot",0,TRUE,FALSE,FALSE,0,FALSE
+"6b46542c-8bd5-4944-b87a-11ce8be026be","82e3adde-f0a1-4769-90ca-305044324448","Diptych","ディプティク","diptych",0,FALSE,FALSE,TRUE,2,FALSE
+"6ba079ef-40f6-4ec9-9806-d93bfcd141d9","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Black Cat's Path","テネブラエ","black-cats-path",1,FALSE,FALSE,TRUE,1,FALSE
+"6bb38027-5768-498f-87a1-50566eb33b8d","5b06f834-5b54-4638-8934-0afa82c373e1","Unpredictable","アンプレディクト","unpredictable",1,FALSE,FALSE,TRUE,2,FALSE
+"6bd2ae41-44df-4dcd-a604-08fe7cb6730d","67c62a3f-9083-473e-a8a1-47875ad31d2b","Bard Song","ミンストレルソング","bard-song",3,TRUE,TRUE,FALSE,2,FALSE
+"6c93430e-f6e2-4051-a648-0f813877d6c6","b6284935-2e22-4f84-b886-40eda2a9a4a4","Crack Shot II","ブレイクアサシンII","crack-shot-ii",0,TRUE,FALSE,FALSE,0,FALSE
+"6e5b2600-e82b-4e51-a01c-6c40be3609ab","a9953e14-f2a3-4558-8e6c-ecbce9552aa9","Quick Strike","クイック","quick-strike",0,TRUE,TRUE,FALSE,2,FALSE
+"6eac28f9-ce12-4edc-9aa6-6c4bece62aff","0ce77325-c445-403d-a29e-311044337142","Espada","エスパーダ","espada",2,FALSE,FALSE,TRUE,1,FALSE
+"6efe3d58-0a8e-43b1-893f-6336a08a2193","0ce77325-c445-403d-a29e-311044337142","Al Doble","ドゥプレクス","al-doble",0,FALSE,FALSE,TRUE,2,FALSE
+"6f01f202-bbd1-45e3-97de-62f0d16b3994","0b536736-669c-48d2-9b3c-a450f5183951","Freeze","アイス","freeze",2,TRUE,TRUE,FALSE,1,FALSE
+"727ab2fa-80eb-4216-9100-3c68263159ae","6283eb60-234f-4851-8cc7-7ea36e42def2","Rampage","ランページ","rampage",0,TRUE,TRUE,FALSE,1,FALSE
+"732293b5-70f0-4fd5-a134-abde8400b54d","f1ac37f0-87ff-470a-8922-5a40f25bee8f","Counter","カウンター","counter",2,TRUE,FALSE,FALSE,0,FALSE
+"733e60db-7ee2-49cc-b407-28f3693566d6","f11459b2-ee20-4927-aeee-bc85bab39c3e","Phalanx II","ファランクスII","phalanx-ii",0,TRUE,FALSE,FALSE,0,FALSE
+"738e3582-de88-4d39-96ee-1b5c78fed03f","a474a4f8-4cd2-453f-aa19-84efc4ef5924","Limit Burst","リミットバースト","limit-burst",0,FALSE,FALSE,TRUE,2,FALSE
+"73f8deed-c7e3-4d82-bf37-33109b1fdf3d","99c2a88f-efef-445a-ae34-d17a31fddf7b","Rupie Flip","ルピフリップ","rupie-flip",2,FALSE,FALSE,TRUE,3,FALSE
+"7425b5d1-8072-43ec-b6dd-21e29658d2b1","a2cff6d3-390a-48df-b414-0c00e4da78c8","A Little Pick-Me-Up","士気向上","a-little-pick-me-up",0,TRUE,TRUE,FALSE,2,FALSE
+"75ed3a64-f650-4dd2-849a-9dc90732111f","77f3a3d5-4236-404e-94e0-f62f9c4ccb2c","Phalanx III","ファランクスIII","phalanx-iii",0,TRUE,FALSE,FALSE,0,FALSE
+"7615b309-a2bd-4723-9a3f-aafe4f191625","249bae0a-c1e8-4c1f-80b5-72760b72511b","Amyntiko Fos","アミティコフォス","amyntiko-fos",0,FALSE,FALSE,TRUE,1,FALSE
+"76485c4d-3196-4481-981a-69c03c461225","f11459b2-ee20-4927-aeee-bc85bab39c3e","Testudo","テストゥド","testudo",0,FALSE,FALSE,TRUE,4,FALSE
+"7729db21-c6ed-4c8e-b39b-a2a6d1ee27f7","9e3a9b34-b077-4600-84df-cce09f1ae4f8","High Command","ハイ・コマンド","high-command",0,FALSE,FALSE,TRUE,3,FALSE
+"77352bbe-22a0-45c6-8aad-1da769edea6a","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Moonshadow","ムーンライト","moonshadow",0,FALSE,FALSE,TRUE,2,FALSE
+"78460a54-a3ac-47a8-94dc-919a22114fe6","dcf91798-3cf9-46a0-aec6-313e91248995","Oratorio","オラトリオ","oratorio",0,FALSE,FALSE,TRUE,4,FALSE
+"786c8cf2-3231-4d54-8853-11c0aeded8d7","ce45920f-7b54-48d1-9a8f-9067ea2aec53","Cross Guard","クロスガード","cross-guard",0,FALSE,FALSE,TRUE,3,FALSE
+"7896f87c-21dc-4fc0-9ff6-1a8ae0c89d0e","b6284935-2e22-4f84-b886-40eda2a9a4a4","Bounty Hunter III","トレジャーハントIII","bounty-hunter-iii",1,TRUE,TRUE,FALSE,1,FALSE
+"7b8f5c96-4667-44bc-ace7-0d33d3d6e9fe","be6a2e8e-15e3-4f59-9621-58bda3318874","Angelic Voice","チャームボイス","angelic-voice",1,TRUE,TRUE,FALSE,1,FALSE
+"7e9f405c-f3f9-4433-8cad-c43f3219f077","0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Norden Harr","ノルデン・ハル","norden-harr",0,TRUE,FALSE,FALSE,0,FALSE
+"80441e90-6992-4fa4-88ed-e433ccc62d5c","21dff3a3-22bc-4863-9861-af0a1b41a5f0","Stall","ディレイ","stall",2,TRUE,FALSE,FALSE,0,FALSE
+"8079a2cf-7a75-445b-a561-f89d5a515a35","3c9e447e-dd30-46da-8df0-adb9fc19ac4a","Devotion","ディヴォーション","devotion",0,FALSE,FALSE,TRUE,1,FALSE
+"80adc124-a5df-4ba1-bf17-b6b7917a0cc8","f06a6d30-1f61-4059-97ae-2921a0dfec64","Double Trouble","デュアルインパルス","double-trouble",0,TRUE,TRUE,FALSE,2,FALSE
+"81501aef-401f-4864-8e4c-19a1515131ea","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Runeweaving","エレメンタルキャスト","runeweaving",0,TRUE,FALSE,FALSE,0,FALSE
+"81a9dba2-8cdf-4589-8fe8-278a5a0e6a8e","113ba069-ede0-4a58-b033-4e574d12dd75","Steady Aim","スタディエイム","steady-aim",1,FALSE,FALSE,TRUE,3,FALSE
+"82284326-145d-4721-bdc0-2a7b0edbd336","67899c05-e73a-43ee-a83b-30fcd6e8ccf8","Full Arsenal","ウェポンバースト","full-arsenal",0,TRUE,FALSE,FALSE,0,FALSE
+"8308c74b-2514-437a-ab87-074c2e42fa64","77f3a3d5-4236-404e-94e0-f62f9c4ccb2c","Guardian","ガーディアン","guardian",0,FALSE,FALSE,TRUE,1,FALSE
+"837d6e6d-288d-4636-940e-05546498ed86","5b06f834-5b54-4638-8934-0afa82c373e1","Uprising","アップリフト","uprising",0,FALSE,FALSE,TRUE,1,FALSE
+"83b4e50b-048c-4892-b036-208ca1093dd9","efe756ea-e0b7-4560-8fa2-9bf266f5f013","Early Shot","アーリーショット","early-shot",2,TRUE,FALSE,FALSE,0,TRUE
+"83b89b14-8bd6-46fa-8be1-9a232b0f1ffb","0ce77325-c445-403d-a29e-311044337142","Colmillos","コルミロス","colmillos",0,FALSE,FALSE,TRUE,3,FALSE
+"8679af5d-405d-4675-967d-7d8696871785","07fef189-432c-42e4-bee2-f69603e6a046","Nutrients","ニュートリエント","nutrients",0,FALSE,FALSE,TRUE,1,FALSE
+"874a40b7-1f39-4861-9fbf-ad1b7d0808c1","a45ba1fb-64cf-4f29-ad54-4cf75a914622","Emerald Fog","エメラルドフォグ","emerald-fog",1,FALSE,FALSE,TRUE,2,FALSE
+"87e68734-92f4-47bf-bc04-0922d42dc7e0","19505ce1-d63f-471d-a18f-2191ef352b6a","Mic Hype","マイクパフォーマンス","mic-hype",0,FALSE,FALSE,TRUE,2,FALSE
+"88aab126-abeb-4931-adb9-a09d9fa5d057","2fd99d5b-9fab-4116-923d-aa84168def6c","Resonating Blade","剣神共鳴","resonating-blade",0,TRUE,FALSE,FALSE,1,TRUE
+"88d13c10-29ba-4366-92bc-a3fe6a098e83","3885c629-fc2a-4298-9e51-4857f0afb2b5","Double Trouble II","デュアルインパルスII","double-trouble-ii",0,TRUE,TRUE,FALSE,1,FALSE
+"89979d4f-d5da-4a2c-ba4e-f0ab39b67daf","f945115c-74b0-4baf-9308-c2d7e64396aa","Resounding Rhythm","闘志の残響","resounding-rhythm",1,TRUE,FALSE,FALSE,2,TRUE
+"8a919595-b9b3-4990-b003-d37b11b6c74d","c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Fighting Spirit","闘気","fighting-spirit",2,TRUE,TRUE,FALSE,1,FALSE
+"8aabbc78-51f4-4f2d-857b-43a437e4bca4","797bcb10-ebd4-48fc-b253-7fd55ccf4809","Tactical Relocation","タクティクスコマンド","tactical-relocation",0,FALSE,FALSE,TRUE,1,FALSE
+"8abd0760-385d-474d-9f65-2d6757b4164f","ce45920f-7b54-48d1-9a8f-9067ea2aec53","Twin Coil","ツインサーキュラー","twin-coil",2,TRUE,TRUE,FALSE,1,FALSE
+"8b067987-93fe-4dae-9584-bc1321d611ab","787c1554-8ee8-438c-8b30-18b5c86f3831","Shall We Dance","ノン・シークエンス","shall-we-dance",4,FALSE,FALSE,TRUE,3,FALSE
+"8ba19fc3-8e00-4ce3-ba21-65c13f73b392","2ea006f4-160d-494c-ab95-85b6d897f12c","Swan Song","水鳥の歌詠","swan-song",0,FALSE,FALSE,TRUE,1,FALSE
+"8f0f85f5-d7cd-463d-b430-3002391380ab","544711ef-1191-458c-909d-bc49022708f4","Woodcutter's Song","木こりのうた","woodcutters-song",0,TRUE,FALSE,FALSE,0,FALSE
+"91dc453f-15b9-4d51-96d5-d54f7a783c8e","43652444-64bb-4938-85d7-aafdfc503d66","Stall II","ディレイII","stall-ii",2,TRUE,FALSE,FALSE,0,FALSE
+"92ad2f2d-cdce-4eea-855e-87e4200526a1","33e01b0f-068f-4ce0-af61-b8e61e6484e8","Guerilla Tactics","ゲリーリャ","guerilla-tactics",0,FALSE,FALSE,TRUE,3,FALSE
+"930a55f7-d473-4e70-9050-f152a59054b1","77f3a3d5-4236-404e-94e0-f62f9c4ccb2c","Centurion II","センチュリオンII","centurion-ii",0,FALSE,FALSE,TRUE,2,FALSE
+"937ec922-f697-461f-b1a7-535d06a1b06f","a9953e14-f2a3-4558-8e6c-ecbce9552aa9","Elemental Focus II","エレメンタルフォースII","elemental-focus-ii",0,TRUE,TRUE,FALSE,1,FALSE
+"9522f44f-c151-40f4-9bf0-86e07a254e82","6c93ecd6-ed87-4895-87c0-049262814aef","Rising Force","ライジングフォース","rising-force",0,TRUE,FALSE,FALSE,0,FALSE
+"95d50136-ff90-4933-a670-74ffb5d21fe5","3c9e447e-dd30-46da-8df0-adb9fc19ac4a","Barbed Wire","バーブド・ワイヤー","barbed-wire",1,FALSE,FALSE,TRUE,3,FALSE
+"9764d315-7805-4906-82a3-f3c8047c92e6","950f659b-0521-4a79-b578-7f3b05cb3102","Panacea","ヒールオール","panacea",3,TRUE,FALSE,FALSE,0,FALSE
+"97c00575-5350-4172-9054-b9000bbe7d15","0b536736-669c-48d2-9b3c-a450f5183951","Aether Blast","エーテルブラスト","aether-blast",2,TRUE,FALSE,FALSE,0,FALSE
+"9965e7e8-b6d2-4e67-998c-40c7636429d4","3885c629-fc2a-4298-9e51-4857f0afb2b5","Drive It In","リードドライブ","drive-it-in",2,TRUE,FALSE,FALSE,0,FALSE
+"9a5b3961-2ba2-4ce6-beb8-9c12738c73e0","2fd99d5b-9fab-4116-923d-aa84168def6c","Energize","集気","energize",0,TRUE,FALSE,FALSE,2,TRUE
+"9ac0cf64-c73b-42f3-826d-1d3f08f375bb","82e3adde-f0a1-4769-90ca-305044324448","Aurum Flow","アーセガル","aurum-flow",2,FALSE,FALSE,TRUE,3,FALSE
+"9baa4203-74cf-4795-a076-01b544841473","b6284935-2e22-4f84-b886-40eda2a9a4a4","Lethal Aim","デッドリーエイム","lethal-aim",0,TRUE,TRUE,FALSE,2,FALSE
+"9be7e39d-6a70-480d-9237-da354bb82b91","6c93ecd6-ed87-4895-87c0-049262814aef","Jet To Jet","ジェット・トゥ・ジェット","jet-to-jet",0,FALSE,FALSE,TRUE,2,FALSE
+"9c8ef30d-53b8-4d86-a91e-91d1d2c43a31","f7930eda-b674-4d5f-9233-7c3c6459382c","Crack Shot","ブレイクアサシン","crack-shot",0,TRUE,FALSE,FALSE,0,FALSE
+"9cde7d58-442c-4106-8e9c-5ae193f55f2f","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Cat's Meow","ブラックチャーム","cats-meow",0,TRUE,FALSE,FALSE,0,FALSE
+"9ef4f4d5-4476-42b5-9699-5e3b28a6ca9f","d2e1858f-66ac-418b-aafb-f40eb8f283c1","Tremor Round","トレマーラウンド","tremor-round",0,FALSE,FALSE,TRUE,4,FALSE
+"9f550c9f-4f47-4887-a05a-01468c00b5a6","f9023154-5cb4-448d-b108-36ccb3820d2e","True Strike","武操術","true-strike",2,FALSE,FALSE,TRUE,1,FALSE
+"a0707562-2407-440d-a938-9ade3aeb13d4","98572ef3-71ac-4081-844c-48a4175dcead","Rain of Arrows II","アローレインII","rain-of-arrows-ii",2,TRUE,TRUE,FALSE,1,FALSE
+"a370a083-e5c4-4f9e-92de-3c4c7e71ec85","21dff3a3-22bc-4863-9861-af0a1b41a5f0","Elemental Focus","エレメンタルフォース","elemental-focus",0,TRUE,TRUE,FALSE,1,FALSE
+"a4929359-5e06-4511-8295-d379c00dd056","07fef189-432c-42e4-bee2-f69603e6a046","Potion Refinement","ポーションリファイン","potion-refinement",3,TRUE,FALSE,FALSE,0,FALSE
+"a61ccb71-22a1-496e-9fef-2ab2a841e3f6","683ffee8-4ea2-432d-bc30-4865020ac9f4","Elemental Phalanx","エレメンタル・ファランクス","elemental-phalanx",0,TRUE,FALSE,FALSE,0,FALSE
+"a82c8b29-6148-4813-96e1-116b63f02919","c128944b-cc79-45b4-bfed-17c8b68db612","White Wall","ホワイトウォール","white-wall",0,FALSE,FALSE,TRUE,4,FALSE
+"a8648d83-c849-4bb5-bcf6-7407d2373398","9e3a9b34-b077-4600-84df-cce09f1ae4f8","Dragphract","ドラグラクト","dragphract",2,FALSE,FALSE,TRUE,1,FALSE
+"a8989905-362f-42ac-a76f-fc3f2e37d1c3","ce45920f-7b54-48d1-9a8f-9067ea2aec53","Decimate","ディストリーム","decimate",2,TRUE,TRUE,FALSE,2,FALSE
+"acc3f1d3-372d-4621-b9e5-67d9f2748e23","a45ba1fb-64cf-4f29-ad54-4cf75a914622","Return of the Fox","フォックス・リターンズ","return-of-the-fox",0,FALSE,FALSE,TRUE,3,FALSE
+"ae28486e-3611-4b73-adb9-540342073dc4","a474a4f8-4cd2-453f-aa19-84efc4ef5924","Engage Augments","オーグメント・マギア","engage-augments",0,TRUE,FALSE,FALSE,0,FALSE
+"b02184ab-cf01-460c-ae22-fe289d1624c1","77f3a3d5-4236-404e-94e0-f62f9c4ccb2c","Hardened Shield","シールドワイア","hardened-shield",1,FALSE,FALSE,TRUE,3,FALSE
+"b0a50aec-6f88-4a0f-900a-c26e84fd09c6","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Full Arsenal III","ウェポンバーストIII","full-arsenal-iii",0,TRUE,FALSE,FALSE,0,FALSE
+"b0c1f2fa-977e-450f-ad4a-1a94883100d9","45e26ec7-37c6-44f7-a9ac-a8b36f37ea30","Phalanx","ファランクス","phalanx",0,TRUE,FALSE,FALSE,0,FALSE
+"b114ce1d-615e-4026-bf19-b645f22f53d6","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Dragon Break","ドラゴンブレイク","dragon-break",0,FALSE,FALSE,TRUE,2,FALSE
+"b1460342-3bdb-4734-9740-acdc82c37a4b","113ba069-ede0-4a58-b033-4e574d12dd75","Bullseye Run","キルストリーク","bullseye-run",2,TRUE,TRUE,FALSE,2,FALSE
+"b1bd0805-ab29-4868-ba8c-4fa0ff62d5e9","787c1554-8ee8-438c-8b30-18b5c86f3831","Bait Step","アトラクト・ステップ","bait-step",0,TRUE,FALSE,FALSE,0,FALSE
+"b30ac223-df93-45ed-91ea-003f70c8f65c","c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Horizontal Solace","一字構え","horizontal-solace",0,FALSE,FALSE,TRUE,4,FALSE
+"b4a5de03-3759-4cce-a964-22b0ea9a7d67","67c62a3f-9083-473e-a8a1-47875ad31d2b","Angelic Voice II","チャームボイスII","angelic-voice-ii",1,TRUE,TRUE,FALSE,1,FALSE
+"b56d9dea-c570-419a-bb62-5075b598d163","9e3a9b34-b077-4600-84df-cce09f1ae4f8","Battering Ram","バタリング・ラム","battering-ram",2,FALSE,FALSE,TRUE,2,FALSE
+"b579ec86-c8b0-4cfc-ae36-ac99561d2521","c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Counter II","カウンターII","counter-ii",2,TRUE,FALSE,FALSE,0,FALSE
+"b63fa776-f255-41c2-866e-4c940f1eacb1","3c9e447e-dd30-46da-8df0-adb9fc19ac4a","Recursive Nightmare","悪夢の再演","recursive-nightmare",0,FALSE,FALSE,TRUE,2,FALSE
+"b8279d60-9811-4b19-a9b5-9a12bb131218","d2e1858f-66ac-418b-aafb-f40eb8f283c1","Overture II","オーヴァチュアII","overture-ii",0,TRUE,FALSE,FALSE,0,FALSE
+"b84799d6-ff65-4957-b3c5-3e86e3471cc3","fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","Selectively Skilled","アサシネーション","selectively-skilled",0,TRUE,FALSE,FALSE,0,FALSE
+"b9ba6eda-bfec-4bec-8eb8-1aa877529ceb","fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","Out of Sight","バニッシュ","out-of-sight",0,TRUE,TRUE,FALSE,1,FALSE
+"b9fb0f26-9384-47c7-9e3e-1968e12736c4","43652444-64bb-4938-85d7-aafdfc503d66","Gravity Wave","グラビティ","gravity-wave",1,TRUE,TRUE,FALSE,2,FALSE
+"bc3bac92-5bf8-462c-bb54-55af078dac60","5b06f834-5b54-4638-8934-0afa82c373e1","Chaos","カオス","chaos",4,FALSE,FALSE,TRUE,3,FALSE
+"bc8e7bc0-7298-4797-8502-cc21d9ee5ae2","0b536736-669c-48d2-9b3c-a450f5183951","Blind","ブラインド","blind",1,TRUE,TRUE,FALSE,2,FALSE
+"bf1be477-a060-4443-9c58-33f5180ffe8a","34237f55-3646-4a9e-93dc-2039b11bdd12","Activate","アクティベート","activate",0,TRUE,FALSE,FALSE,0,FALSE
+"c1654e66-be4f-4248-9e52-8a2f134dae88","5b06f834-5b54-4638-8934-0afa82c373e1","Absorption","アブソーブ","absorption",0,FALSE,FALSE,TRUE,4,FALSE
+"c1cf687d-a256-45e5-94a5-f15a9a0feb1b","e35f8cd6-82ec-4624-beb6-3948f30a0cf8","Classical Lead","プリンシパル・クラシック","classical-lead",0,TRUE,FALSE,FALSE,1,TRUE
+"c28e076e-7fc3-4ad5-8fdd-1810e8e84b22","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Rending Flash","烈刀一閃","rending-flash",0,FALSE,FALSE,TRUE,3,FALSE
+"c33dc375-e8c3-4003-90d2-767ddcbc7bf3","167971f8-0e96-4905-ab53-4fc068027846","Overdrive Surge","ドライブバースト","overdrive-surge",2,TRUE,TRUE,FALSE,1,FALSE
+"c603903e-c9cb-4047-bf20-b1a36d4f6a6f","f945115c-74b0-4baf-9308-c2d7e64396aa","Resonate Rhythm","闘志の残響 ","resonate-rhythm",0,FALSE,FALSE,TRUE,3,FALSE
+"c694f54b-794d-4fe6-8662-cad7cacfbe33","56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Full Arsenal","ウェポンバースト","full-arsenal",0,TRUE,FALSE,FALSE,0,FALSE
+"c8af3aa1-4bb2-43a9-be93-ef945e7fd178","33e01b0f-068f-4ce0-af61-b8e61e6484e8","Fortitude","フォーティチュード","fortitude",0,FALSE,FALSE,TRUE,2,FALSE
+"c96c5fd0-fa53-4fb5-836b-a60907249e7e","67899c05-e73a-43ee-a83b-30fcd6e8ccf8","Rage","レイジ","rage",0,TRUE,TRUE,FALSE,1,FALSE
+"c9f0226d-2709-4fb3-a8e9-5181946cdee7","fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","Retaliation Reprise","ダブルアサシン","retaliation-reprise",0,TRUE,FALSE,FALSE,2,TRUE
+"cb059baa-67e0-4f95-93d6-485aa285778b","2abbab55-5bf7-49f8-9ed6-1fe8a3991cca","Panacea","ヒールオール","panacea",3,TRUE,FALSE,FALSE,0,FALSE
+"cbcfdce4-e8cc-43f4-9482-72dc1b8f4d07","544711ef-1191-458c-909d-bc49022708f4","Laughing Logger","大伐断","laughing-logger",2,FALSE,FALSE,TRUE,1,FALSE
+"cc0c2f2f-1816-43ef-9909-10b2638904d7","667bf041-61c9-4568-bdd3-ce6e43f40603","Aether Blast III","エーテルブラストIII","aether-blast-iii",2,TRUE,FALSE,FALSE,0,FALSE
+"ce3dbf46-392e-4fa8-b8f9-d2aead38e5b7","167971f8-0e96-4905-ab53-4fc068027846","Phalanx","ファランクス","phalanx",0,TRUE,FALSE,FALSE,0,FALSE
+"ce5ce13c-e03c-46b2-8e48-acf4ed5ccdb5","2abbab55-5bf7-49f8-9ed6-1fe8a3991cca","Blessing","シャイニング","blessing",2,TRUE,TRUE,FALSE,2,FALSE
+"cf880f0f-0d9c-4871-9e24-0584765803d7","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Eagle Reversal","大鷲返し","eagle-reversal",2,FALSE,FALSE,TRUE,1,FALSE
+"d09a5020-f0b1-48ff-923c-f306cf3d38ce","797bcb10-ebd4-48fc-b253-7fd55ccf4809","Frequency Jam","ジャミング","frequency-jam",0,FALSE,FALSE,TRUE,2,FALSE
+"d0e4f65a-3e72-4ff9-a201-0999623cf57e","43652444-64bb-4938-85d7-aafdfc503d66","Blood Sword","ブラッドソード","blood-sword",0,FALSE,FALSE,TRUE,4,FALSE
+"d37646b0-1c45-492d-8cb9-21ef20910aca","82e3adde-f0a1-4769-90ca-305044324448","Dual Arts","デュアルアーツ","dual-arts",0,FALSE,FALSE,TRUE,1,FALSE
+"d59822e0-9913-44ea-be1a-9bedba8b912e","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","No More Doubt","無明斬","no-more-doubt",0,FALSE,FALSE,TRUE,2,FALSE
+"d87d93d3-ccc6-466e-af9a-c4a47bd4bf5f","d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Third Eye","三明","third-eye",0,FALSE,FALSE,TRUE,3,FALSE
+"da41d999-7522-4c66-8ce7-34dc5bf8952f","efe756ea-e0b7-4560-8fa2-9bf266f5f013","Lock 'n' Load","バレットリロード","lock-n-load",0,TRUE,FALSE,FALSE,2,TRUE
+"da436b7c-6258-43e2-bdf3-945190737e51","f11459b2-ee20-4927-aeee-bc85bab39c3e","Reflection","リフレクション","reflection",0,FALSE,FALSE,TRUE,3,FALSE
+"da8bedd8-24b6-4d8f-823e-7160efa74331","f945115c-74b0-4baf-9308-c2d7e64396aa","Drum Roll","極点","drum-roll",0,TRUE,FALSE,FALSE,0,FALSE
+"db894daf-24f9-4929-9934-5992d3bb48ba","683ffee8-4ea2-432d-bc30-4865020ac9f4","Boosted Resistance","フルレジスト","boosted-resistance",0,FALSE,FALSE,TRUE,2,FALSE
+"dea7b3d0-c455-4f71-987f-4f4306543b81","c128944b-cc79-45b4-bfed-17c8b68db612","Revive","リヴァイヴ","revive",3,TRUE,TRUE,FALSE,2,FALSE
+"df5b07f8-530e-4314-9e8c-266d89858448","19505ce1-d63f-471d-a18f-2191ef352b6a","Knifehand Strike","ナイフハンド・ストライク","knifehand-strike",2,TRUE,FALSE,FALSE,0,FALSE
+"df8487fa-d3d8-4d8a-9235-1678d552c1ae","dcf91798-3cf9-46a0-aec6-313e91248995","Voice Unveiled","解放の歌声","voice-unveiled",0,FALSE,FALSE,TRUE,2,FALSE
+"e0009528-ebad-4c2b-8d08-14bd03cfce0b","98572ef3-71ac-4081-844c-48a4175dcead","Hard Line","ハードライン","hard-line",2,TRUE,TRUE,FALSE,2,FALSE
+"e0611a5d-95a2-45e9-9067-f5fe602032e0","bc88726b-9f96-4061-be1c-7a2306be238e","Choke","チョーク","choke",0,FALSE,FALSE,TRUE,4,FALSE
+"e10c1cf3-eb46-454e-b103-73802a8fedd7","2ea006f4-160d-494c-ab95-85b6d897f12c","Springwater Robe","湧水の羽衣","springwater-robe",0,FALSE,FALSE,TRUE,3,FALSE
+"e121882b-bab5-4500-b1e3-c650ae6b5995","2b0cfead-50b3-4acd-8cb0-18aab243fdd1","Fire","ファイア","fire",2,TRUE,TRUE,FALSE,1,FALSE
+"e2f0690f-39ab-4df6-80b6-7eef9216cbd1","99c2a88f-efef-445a-ae34-d17a31fddf7b","White Smoke","ホワイトスモーク","white-smoke",0,FALSE,FALSE,TRUE,2,FALSE
+"e3c135af-a784-4699-bea2-830e05a0401a","dcf91798-3cf9-46a0-aec6-313e91248995","Concludere","コンクルージョン","concludere",0,TRUE,FALSE,FALSE,0,FALSE
+"e4a91762-1804-4fe7-85d4-5355b0865cb7","ce45920f-7b54-48d1-9a8f-9067ea2aec53","Blade Swap","アナザーブレード","blade-swap",0,TRUE,FALSE,FALSE,0,FALSE
+"e59cb246-7744-4a44-a45f-a779cc1deb86","a474a4f8-4cd2-453f-aa19-84efc4ef5924","Tactical Shield","タクティカル・シールド","tactical-shield",0,FALSE,FALSE,TRUE,1,FALSE
+"e6bedc00-d162-4750-82f8-a722dd754930","f1ac37f0-87ff-470a-8922-5a40f25bee8f","Taking Chances","捨身の型","taking-chances",0,TRUE,TRUE,FALSE,1,FALSE
+"e705ef94-4d70-4e24-b505-4a1e8b0038f0","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Rampage II","ランページII","rampage-ii",0,FALSE,FALSE,TRUE,3,FALSE
+"e76fbe2a-4dc7-4c29-9db7-7feee06559fb","43652444-64bb-4938-85d7-aafdfc503d66","Miserable Mist","ミゼラブルミスト","miserable-mist",1,TRUE,TRUE,FALSE,1,FALSE
+"e783dc43-8a65-45d0-bfd5-1a1ac7443851","33e01b0f-068f-4ce0-af61-b8e61e6484e8","Open Fire","フルファイア","open-fire",2,FALSE,FALSE,TRUE,1,FALSE
+"e84593bc-faed-4391-8ee5-b071fd8e3a54","a45ba1fb-64cf-4f29-ad54-4cf75a914622","Opening Shot","ビギニングアロー","opening-shot",2,TRUE,FALSE,FALSE,0,FALSE
+"e8659434-66c3-43a8-be14-15da7c89e809","bc88726b-9f96-4061-be1c-7a2306be238e","Laser Focus","フォーカス","laser-focus",0,TRUE,TRUE,FALSE,2,FALSE
+"eadb1ff5-6f61-46fb-8acf-70bb568717db","6c93ecd6-ed87-4895-87c0-049262814aef","Unleash the Fury","アンリーシュザフューリー","unleash-the-fury",2,FALSE,FALSE,TRUE,3,FALSE
+"ebc445b4-0f80-461e-8a98-d1837808dd77","f7930eda-b674-4d5f-9233-7c3c6459382c","Tricky Moves","トリックステップ","tricky-moves",1,TRUE,TRUE,FALSE,2,FALSE
+"edfd5578-9ebb-4ab4-b23d-55a7d959b0a5","797bcb10-ebd4-48fc-b253-7fd55ccf4809","Evasive Maneuvers","チャフリリース","evasive-maneuvers",0,TRUE,FALSE,FALSE,0,FALSE
+"ee1f1353-395d-4421-be18-3323eb0a6d1f","19505ce1-d63f-471d-a18f-2191ef352b6a","Ring Ruler","ファイティングスピリット","ring-ruler",0,FALSE,FALSE,TRUE,1,FALSE
+"eea73967-7001-4a4e-81f6-bb03a0fbb2f8","f9023154-5cb4-448d-b108-36ccb3820d2e","Ascetic Stance","修験の構え","ascetic-stance",2,TRUE,FALSE,FALSE,0,FALSE
+"eed3a9df-d7e7-4957-a0b8-9ae311759c2f","99c2a88f-efef-445a-ae34-d17a31fddf7b","Bounty Hunter IV","トレジャーハントIV","bounty-hunter-iv",2,FALSE,FALSE,TRUE,1,FALSE
+"ef1f882c-31de-4e72-9217-2422ebec0408","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Mana Burst","マナバースト","mana-burst",2,FALSE,FALSE,TRUE,1,FALSE
+"efdca59a-514d-4442-9e7f-021c98e2602c","797bcb10-ebd4-48fc-b253-7fd55ccf4809","Time On Target","タイム・オン・ターゲット","time-on-target",1,FALSE,FALSE,TRUE,5,FALSE
+"f0b5d01d-a55d-45c9-9e9a-6dc994d32aa5","2ea006f4-160d-494c-ab95-85b6d897f12c","Thunder on the Water","雷光水明","thunder-on-the-water",2,TRUE,FALSE,FALSE,0,FALSE
+"f2097538-cd98-46e1-a13b-1fbe29632517","d2e1858f-66ac-418b-aafb-f40eb8f283c1","Sheep Song","ひつじのうた","sheep-song",1,FALSE,FALSE,TRUE,3,FALSE
+"f212d2ec-c503-45c3-8369-7fb61fa0896f","56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Rage II","レイジII","rage-ii",0,TRUE,TRUE,FALSE,1,FALSE
+"f21b22b4-6697-48e0-8394-a50503bd0771","33e01b0f-068f-4ce0-af61-b8e61e6484e8","Blitzburst","ブリッツバースト","blitzburst",2,FALSE,FALSE,TRUE,4,FALSE
+"f2623f05-6395-411c-b8c8-f9aab51d9838","98572ef3-71ac-4081-844c-48a4175dcead","Quick Step","ライトウェイト","quick-step",0,TRUE,FALSE,FALSE,0,FALSE
+"f56f9eca-ef66-4cd6-9626-38ddc85e0e95","19505ce1-d63f-471d-a18f-2191ef352b6a","Tag Team","ツープラトン","tag-team",0,FALSE,FALSE,TRUE,3,FALSE
+"f5da876b-631e-4e54-98f1-f9799e322bad","667bf041-61c9-4568-bdd3-ce6e43f40603","Chase","チェイサー","chase",0,FALSE,FALSE,TRUE,3,FALSE
+"f862ef04-6c38-4869-9a62-297f1251093a","eff31084-e70d-4fc0-a468-d07fccb4fe99","Fuma Shuriken","風魔手裏剣","fuma-shuriken",2,TRUE,TRUE,FALSE,1,FALSE
+"fadd0308-9da1-4f75-804d-5e928b8a44f5","ce45920f-7b54-48d1-9a8f-9067ea2aec53","Chase Blade","チェイスブレード","chase-blade",0,FALSE,FALSE,TRUE,4,FALSE
+"fbae3023-bf61-4901-abf2-80da519f264e","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","One with the Blade","剣禅一如","one-with-the-blade",0,TRUE,FALSE,FALSE,0,FALSE
+"fbafd627-4215-4912-bca4-b761c82ba050","9e3a9b34-b077-4600-84df-cce09f1ae4f8","Horseman's Duty","ホースマンズデューティ","horsemans-duty",0,TRUE,FALSE,FALSE,0,FALSE
+"fc10d311-0ced-41ac-9e8e-54e407624154","787c1554-8ee8-438c-8b30-18b5c86f3831","Bounce Chase","バウンス・シャッセ","bounce-chase",0,FALSE,FALSE,TRUE,1,FALSE
+"fc67859e-160b-4f81-8e07-ae4011aed235","667bf041-61c9-4568-bdd3-ce6e43f40603","Resounding Chant","レプリケーションキャスト","resounding-chant",2,FALSE,FALSE,TRUE,4,FALSE
+"fdfdee6d-6ead-4504-9add-a04776546b15","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Armor Break II","レイジIV","armor-break-ii",2,FALSE,FALSE,TRUE,1,FALSE

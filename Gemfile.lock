@@ -60,6 +60,7 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    amazing_print (1.4.0)
     api_matchers (0.6.2)
       activesupport (>= 3.2.5)
       nokogiri (>= 1.5.2)
@@ -69,7 +70,6 @@ GEM
     ast (2.4.2)
     awesome_nested_set (3.4.0)
       activerecord (>= 4.0.0, < 7.0)
-    awesome_print (1.9.2)
     backport (1.2.0)
     bcrypt (3.1.16)
     benchmark (0.2.0)
@@ -282,10 +282,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  amazing_print
   api_matchers
   apipie-rails
   awesome_nested_set
-  awesome_print
   bcrypt
   blueprinter
   bootsnap
@@ -319,7 +319,7 @@ DEPENDENCIES
   will_paginate (~> 3.3)
 
 RUBY VERSION
-   ruby 3.0.0p0
+   ruby 3.1.2p20
 
 BUNDLED WITH
-   2.2.3
+   2.3.12
