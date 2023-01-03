@@ -42,7 +42,7 @@ class GridWeapon < ApplicationRecord
 
   # Validates whether the weapon can be added to the desired position
   def compatible_with_position
-    return unless [9, 10, 11].include?(position.to_i) && ![11, 16, 17, 28, 29].include?(series)
+    return unless [9, 10, 11].include?(position.to_i) && ![11, 16, 17, 28, 29].include?(weapon.series)
 
     errors.add(:series, 'must be compatible with position')
   end
