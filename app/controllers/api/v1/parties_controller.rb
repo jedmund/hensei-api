@@ -105,7 +105,7 @@ module Api
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                       .to_datetime.beginning_of_day
+                         .to_datetime.beginning_of_day
         end
 
         {}.tap do |hash|
@@ -142,7 +142,14 @@ module Api
           :skill0_id,
           :skill1_id,
           :skill2_id,
-          :skill3_id
+          :skill3_id,
+          :full_auto,
+          :auto_guard,
+          :charge_attack,
+          :clear_time,
+          :button_count,
+          :turn_count,
+          :chain_count
         )
       end
     end
