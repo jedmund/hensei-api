@@ -10,7 +10,7 @@ module Api
       before_action :find_current_characters, only: :create
 
       def create
-        if conflict_characters&.length.positive?
+        if !conflict_characters.nil? && conflict_characters.length.positive?
           # Render a template with the conflicting and incoming characters,
           # as well as the selected position, so the user can be presented with
           # a decision.
