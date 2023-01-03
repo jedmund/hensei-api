@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_02_235042) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_01_02_235042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -54,8 +54,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["party_id"], name: "index_favorites_on_party_id"
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
@@ -65,8 +65,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.uuid "character_id"
     t.integer "uncap_level"
     t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "perpetuity", default: false, null: false
     t.integer "awakening_type", default: 0, null: false
     t.integer "awakening_level", default: 1, null: false
@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.boolean "main"
     t.boolean "friend"
     t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "transcendence_step", default: 0, null: false
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
@@ -107,8 +107,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.integer "uncap_level"
     t.boolean "mainhand"
     t.integer "position"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.uuid "weapon_key3_id"
     t.integer "ax_modifier1"
     t.float "ax_strength1"
@@ -119,6 +119,9 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.integer "awakening_level", default: 1, null: false
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
+    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
+    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
+    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -153,8 +156,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.string "token", null: false
     t.integer "expires_in", null: false
     t.text "redirect_uri", null: false
-    t.datetime "created_at", null: false
-    t.datetime "revoked_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "revoked_at", precision: nil
     t.string "scopes"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
@@ -165,8 +168,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
-    t.datetime "revoked_at"
-    t.datetime "created_at", null: false
+    t.datetime "revoked_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
@@ -180,16 +183,16 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.string "secret", null: false
     t.text "redirect_uri", null: false
     t.string "scopes", default: "", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
   create_table "parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.string "shortcode"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "extra", default: false, null: false
     t.string "name"
     t.text "description"
@@ -248,8 +251,8 @@ ActiveRecord::Schema.define(version: 2023_01_02_235042) do
     t.string "password_digest"
     t.string "username"
     t.integer "granblue_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "picture", default: "gran"
     t.string "language", default: "en", null: false
     t.boolean "private", default: false, null: false
