@@ -8,8 +8,8 @@ class GridWeapon < ApplicationRecord
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
   belongs_to :weapon_key3, class_name: 'WeaponKey', foreign_key: :weapon_key3_id, optional: true
 
-  validate :compatible_with_position
-  validate :no_conflicts
+  validate :compatible_with_position, on: :create
+  validate :no_conflicts, on: :create
 
   # Helper methods
   def blueprint
@@ -22,6 +22,18 @@ class GridWeapon < ApplicationRecord
 
   def weapon_keys
     [weapon_key1, weapon_key2, weapon_key3].compact
+  end
+
+  # Returns conflicting weapons if they exist
+  def conflicts(party)
+    return unless weapon.limit
+
+    party.weapons.find do |party_weapon|
+      id_match = weapon.id == party_weapon.id
+      series_match = weapon.series == party_weapon.weapon.series
+      both_opus_or_draconic = weapon.opus_or_draconic? && party_weapon.weapon.opus_or_draconic?
+      weapon if (series_match || both_opus_or_draconic) && !id_match
+    end
   end
 
   private
@@ -46,20 +58,5 @@ class GridWeapon < ApplicationRecord
   def no_conflicts
     # Check if the grid weapon conflicts with any of the other grid weapons in the party
     errors.add(:series, 'must not conflict with existing weapons') unless conflicts(party).nil?
-  end
-
-  # Returns conflicting weapons if they exist
-  def conflicts(party)
-    return unless limit
-
-    party.weapons.find do |weapon|
-      series_match = series == weapon.weapon.series
-      weapon if series_match || opus_or_draconic? && weapon.opus_or_draconic?
-    end
-  end
-
-  # Returns whether the weapon is included in the Draconic or Dark Opus series
-  def opus_or_draconic?
-    [2, 3].include?(series)
   end
 end
