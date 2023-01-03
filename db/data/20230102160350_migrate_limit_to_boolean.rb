@@ -17,8 +17,9 @@ class MigrateLimitToBoolean < ActiveRecord::Migration[6.1]
         summon.limit2 = false
       end
     end
-
-    def down
-      raise ActiveRecord::IrreversibleMigration
-    end
   end
+
+  def down
+    raise ActiveRecord::IrreversibleMigration
+  end
+end
