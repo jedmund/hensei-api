@@ -18,4 +18,4 @@ test:
 
 production:
   <<: *default
-  database: hensei
+  database: <%= ENV['DATABASE_URL'] %>
