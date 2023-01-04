@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_03_150807) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -203,11 +203,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_150807) do
     t.uuid "skill0_id"
     t.boolean "full_auto", default: false, null: false
     t.boolean "auto_guard", default: false, null: false
-    t.boolean "charge_attack", default: false, null: false
+    t.boolean "charge_attack", default: true, null: false
     t.integer "clear_time", default: 0, null: false
-    t.integer "button_count", default: 0, null: false
-    t.integer "chain_count", default: 0, null: false
-    t.integer "turn_count", default: 1, null: false
+    t.integer "button_count"
+    t.integer "chain_count"
+    t.integer "turn_count"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
