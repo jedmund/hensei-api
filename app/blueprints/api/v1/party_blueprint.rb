@@ -33,7 +33,8 @@ module Api
       end
 
       view :minimal do
-        fields :name, :element, :shortcode, :favorited, :extra, :created_at, :updated_at
+        fields :name, :element, :shortcode, :favorited, :extra,
+               :full_auto, :clear_time, :auto_guard, :created_at, :updated_at
 
         association :raid,
                     blueprint: RaidBlueprint
@@ -63,7 +64,7 @@ module Api
         include_view :characters
         include_view :job_skills
 
-        fields :description, :extra
+        fields :description, :charge_attack, :button_count, :turn_count, :chain_count
       end
 
       view :collection do
