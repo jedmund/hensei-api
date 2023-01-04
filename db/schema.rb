@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_02_235042) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -119,9 +118,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_02_235042) do
     t.integer "awakening_level", default: 1, null: false
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
-    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
-    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
-    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -205,6 +201,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_02_235042) do
     t.uuid "skill2_id"
     t.uuid "skill3_id"
     t.uuid "skill0_id"
+    t.boolean "full_auto", default: false, null: false
+    t.boolean "auto_guard", default: false, null: false
+    t.boolean "charge_attack", default: true, null: false
+    t.integer "clear_time", default: 0, null: false
+    t.integer "button_count"
+    t.integer "chain_count"
+    t.integer "turn_count"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
