@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :parties, only: %i[index create update destroy]
       resources :users, only: %i[create update show]
       resources :grid_weapons, only: [:update]
+      resources :grid_characters, only: [:update]
       resources :favorites, only: [:create]
 
       get 'users/info/:id', to: 'users#info'
