@@ -6,6 +6,8 @@ module Api
       attr_reader :party, :incoming_character, :current_characters
 
       before_action :find_party, only: :create
+      before_action :set, only: [:update, :destroy]
+      before_action :check_authorization, only: [:update, :destroy]
       before_action :find_incoming_character, only: :create
       before_action :find_current_characters, only: :create
 
@@ -34,6 +36,22 @@ module Api
             grid_character_view = render_grid_character_view(character)
             render json: grid_character_view, status: :created
           end
+        end
+      end
+
+      def update
+        mastery = {}
+        [:ring1, :ring2, :ring3, :ring4, :earring, :awakening].each do |key|
+          value = character_params.to_h[key]
+          mastery[key] = value unless value.nil?
+        end
+
+        @character.attributes = character_params.merge(mastery)
+
+        if @character.save
+          return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
+        else
+          render_validation_error_response(@character)
         end
       end
 
@@ -103,6 +121,10 @@ module Api
         end.flatten
       end
 
+      def set
+        @character = GridCharacter.find(character_params[:id])
+      end
+
       def find_incoming_character
         @incoming_character = Character.find(character_params[:character_id])
       end
@@ -112,10 +134,21 @@ module Api
         render_unauthorized_response if current_user && (party.user != current_user)
       end
 
+      def check_authorization
+        render_unauthorized_response if @character.party.user != current_user
+      end
+
       # Specify whitelisted properties that can be modified.
       def character_params
-        params.require(:character).permit(:id, :party_id, :character_id, :position, :uncap_level, :conflicting,
-                                          :incoming)
+        params.require(:character).permit(:id, :party_id, :character_id, :position,
+                                          :uncap_level, :transcendence_step, :perpetuity,
+                                          :ring1 => [:modifier, :strength], :ring2 => [:modifier, :strength],
+                                          :ring3 => [:modifier, :strength], :ring4 => [:modifier, :strength],
+                                          :earring => [:modifier, :strength], :awakening => [:type, :level])
+      end
+
+      def resolve_params
+        params.require(:resolve).permit(:position, :incoming, conflicting: [])
       end
 
       def render_conflict_view(conflict_characters, incoming_character, incoming_position)
@@ -128,10 +161,6 @@ module Api
 
       def render_grid_character_view(grid_character)
         GridCharacterBlueprint.render(grid_character, view: :nested)
-      end
-
-      def resolve_params
-        params.require(:resolve).permit(:position, :incoming, conflicting: [])
       end
     end
   end
