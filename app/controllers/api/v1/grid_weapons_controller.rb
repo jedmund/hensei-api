@@ -115,15 +115,15 @@ module Api
       # Render the conflict view as a string
       def render_conflict_view(conflict_weapon, incoming_weapon, incoming_position)
         ConflictBlueprint.render(nil, view: :weapons,
-                                      conflict_weapon: conflict_weapon,
-                                      incoming_weapon: incoming_weapon,
-                                      incoming_position: incoming_position)
+                                 conflict_weapon: conflict_weapon,
+                                 incoming_weapon: incoming_weapon,
+                                 incoming_position: incoming_position)
       end
 
       def render_grid_weapon_view(grid_weapon, conflict_position)
         GridWeaponBlueprint.render(grid_weapon, view: :full,
-                                                root: :grid_weapon,
-                                                meta: { replaced: conflict_position })
+                                   root: :grid_weapon,
+                                   meta: { replaced: conflict_position })
       end
 
       def save_weapon(weapon)
@@ -139,6 +139,9 @@ module Api
         # Set the party's element if the grid weapon is being set as mainhand
         if weapon.position == -1
           party.element = weapon.weapon.element
+          party.save!
+        elsif [9, 10, 11].include?(weapon.position)
+          party.extra = true
           party.save!
         end
 
