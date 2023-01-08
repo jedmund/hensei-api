@@ -11,6 +11,10 @@ module Api
         party = Party.new(shortcode: random_string)
         party.user = current_user if current_user
 
+        if party_params
+          party.attributes = party_params
+        end
+
         # unless party_params.empty?
         #   party.attributes = party_params
         #
@@ -152,7 +156,7 @@ module Api
           :button_count,
           :turn_count,
           :chain_count
-        )
+        ) if params[:party].present?
       end
     end
   end
