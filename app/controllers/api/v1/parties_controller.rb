@@ -57,6 +57,9 @@ module Api
         return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
       end
 
+      def remix
+      end
+
       def index
         conditions = build_conditions(request.params)
 

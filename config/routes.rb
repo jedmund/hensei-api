@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
       get 'parties/favorites', to: 'parties#favorites'
       get 'parties/:id', to: 'parties#show'
+      post 'parties/:id/remix', to: 'parties#remix'
 
       put 'parties/:id/jobs', to: 'jobs#update_job'
       put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
