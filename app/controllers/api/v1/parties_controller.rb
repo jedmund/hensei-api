@@ -8,22 +8,28 @@ module Api
       before_action :set, only: %w[update destroy]
 
       def create
-        @party = Party.new(shortcode: random_string)
-        @party.extra = party_params['extra']
+        party = Party.new(shortcode: random_string)
+        party.user = current_user if current_user
 
-        # TODO: Extract this into a different method
-        job = Job.find(party_params['job_id']) if party_params['job_id'].present?
-        if job
-          job_skills = JobSkill.where(job: job.id, main: true)
-          job_skills.each_with_index do |skill, index|
-            @party["skill#{index}_id"] = skill.id
-          end
+        if party_params
+          party.attributes = party_params
         end
 
-        @party.user = current_user if current_user
+        # unless party_params.empty?
+        #   party.attributes = party_params
+        #
+        #   # TODO: Extract this into a different method
+        #   job = Job.find(party_params['job_id']) if party_params['job_id'].present?
+        #   if job
+        #     job_skills = JobSkill.where(job: job.id, main: true)
+        #     job_skills.each_with_index do |skill, index|
+        #       party["skill#{index}_id"] = skill.id
+        #     end
+        #   end
+        # end
 
-        if @party.save!
-          return render json: PartyBlueprint.render(@party, view: :full, root: :party),
+        if party.save!
+          return render json: PartyBlueprint.render(party, view: :full, root: :party),
                         status: :created
         end
 
@@ -150,7 +156,7 @@ module Api
           :button_count,
           :turn_count,
           :chain_count
-        )
+        ) if params[:party].present?
       end
     end
   end
