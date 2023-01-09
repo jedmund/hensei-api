@@ -60,8 +60,6 @@ class Party < ApplicationRecord
 
   ##### Amoeba configuration
   amoeba do
-    enable
-
     nullify :description
     nullify :shortcode
 

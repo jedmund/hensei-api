@@ -13,6 +13,14 @@ class GridWeapon < ApplicationRecord
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
 
+  ##### Amoeba configuration
+  amoeba do
+    nullify :ax_modifier1
+    nullify :ax_modifier2
+    nullify :ax_strength1
+    nullify :ax_strength2
+  end
+
   # Helper methods
   def blueprint
     GridWeaponBlueprint
