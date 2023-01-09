@@ -14,12 +14,12 @@ class GridCharacter < ApplicationRecord
 
   ##### Amoeba configuration
   amoeba do
-    nullify :ring1
-    nullify :ring2
-    nullify :ring3
-    nullify :ring4
-    nullify :earring
-    nullify :perpetuity
+    set ring1: { modifier: nil, strength: nil }
+    set ring2: { modifier: nil, strength: nil }
+    set ring3: { modifier: nil, strength: nil }
+    set ring4: { modifier: nil, strength: nil }
+    set earring: { modifier: nil, strength: nil }
+    set perpetuity: false
   end
 
   def awakening_level
