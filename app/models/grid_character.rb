@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class GridCharacter < ApplicationRecord
-  belongs_to :party
+  belongs_to :party,
+             counter_cache: :weapons_count,
+             inverse_of: :characters
+  validates_presence_of :party
 
   validate :awakening_level, on: :update
   validate :transcendence, on: :update
