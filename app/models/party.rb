@@ -43,6 +43,7 @@ class Party < ApplicationRecord
 
   has_many :favorites
 
+  before_save :set_shortcode
   ##### ActiveRecord Validations
   validate :skills_are_unique
 
@@ -57,6 +58,16 @@ class Party < ApplicationRecord
   end
 
   private
+
+  def set_shortcode
+    self.shortcode = random_string
+  end
+
+  def random_string
+    num_chars = 6
+    o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
+    (0...num_chars).map { o[rand(o.length)] }.join
+  end
 
   def skills_are_unique
     skills = [skill0, skill1, skill2, skill3].compact

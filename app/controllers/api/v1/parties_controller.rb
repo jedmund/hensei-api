@@ -8,12 +8,7 @@ module Api
       before_action :set, only: %w[update destroy]
 
       def create
-        party = Party.new(shortcode: random_string)
-        party.user = current_user if current_user
-
-        if party_params
-          party.attributes = party_params
-        end
+        party = Party.new(party_params.merge(user: current_user))
 
         # unless party_params.empty?
         #   party.attributes = party_params
@@ -123,12 +118,6 @@ module Api
           hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
           hash[:weapons_count] = 5..13
         end
-      end
-
-      def random_string
-        num_chars = 6
-        o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
-        (0...num_chars).map { o[rand(o.length)] }.join
       end
 
       def set_from_slug
