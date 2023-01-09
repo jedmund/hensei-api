@@ -55,6 +55,19 @@ module Api
       end
 
       def remix
+        new_party = @party.amoeba_dup
+        new_party.attributes = {
+          user: current_user,
+
+          source_party: @party
+        }
+
+        if new_party.save
+          render json: PartyBlueprint.render(new_party, view: :full, root: :party,
+                                                        meta: { remix: true })
+        else
+          render_validation_error_response(new_party)
+        end
       end
 
       def index
@@ -111,7 +124,7 @@ module Api
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                         .to_datetime.beginning_of_day
+                       .to_datetime.beginning_of_day
         end
 
         {}.tap do |hash|
