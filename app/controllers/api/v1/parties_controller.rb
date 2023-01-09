@@ -136,6 +136,8 @@ module Api
       end
 
       def party_params
+        return unless params[:party].present?
+
         params.require(:party).permit(
           :user_id,
           :extra,
@@ -154,7 +156,7 @@ module Api
           :button_count,
           :turn_count,
           :chain_count
-        ) if params[:party].present?
+        )
       end
     end
   end
