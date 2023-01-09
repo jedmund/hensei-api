@@ -58,7 +58,7 @@ module Api
         new_party = @party.amoeba_dup
         new_party.attributes = {
           user: current_user,
-
+          name: remixed_name(@party.name),
           source_party: @party
         }
 
@@ -132,6 +132,24 @@ module Api
           hash[:raid] = params['raid'] unless params['raid'].blank?
           hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
           hash[:weapons_count] = 5..13
+        end
+      end
+
+      def remixed_name(name)
+        blanked_name = {
+          en: name.blank? ? 'Untitled team' : name,
+          ja: name.blank? ? '無名の編成' : name
+        }
+
+        if current_user
+          case current_user.language
+          when 'en'
+            "Remix of #{blanked_name[:en]}"
+          when 'ja'
+            "#{blanked_name[:ja]}のリミックス"
+          end
+        else
+          "Remix of #{blanked_name[:en]}"
         end
       end
 
