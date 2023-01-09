@@ -8,7 +8,9 @@ module Api
       before_action :set, only: %w[update destroy]
 
       def create
-        party = Party.new(party_params.merge(user: current_user))
+        party = Party.new
+        party.user = current_user if current_user
+        party.attributes = party_params if party_params
 
         # unless party_params.empty?
         #   party.attributes = party_params
