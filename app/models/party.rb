@@ -2,6 +2,16 @@
 
 class Party < ApplicationRecord
   ##### ActiveRecord Associations
+  belongs_to :source_party,
+             class_name: 'Party',
+             foreign_key: :source_party_id,
+             optional: true
+
+  has_many :derivative_parties,
+           class_name: 'Party',
+           foreign_key: :source_party_id,
+           inverse_of: :source_party
+
   belongs_to :user, optional: true
   belongs_to :raid, optional: true
   belongs_to :job, optional: true
@@ -29,21 +39,37 @@ class Party < ApplicationRecord
   has_many :characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
-           dependent: :destroy
+           dependent: :destroy,
+           inverse_of: :party
 
   has_many :weapons,
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
-           dependent: :destroy
+           dependent: :destroy,
+           inverse_of: :party
 
   has_many :summons,
            foreign_key: 'party_id',
            class_name: 'GridSummon',
-           dependent: :destroy
+           dependent: :destroy,
+           inverse_of: :party
 
   has_many :favorites
 
-  before_save :set_shortcode
+  before_create :set_shortcode
+
+  ##### Amoeba configuration
+  amoeba do
+    enable
+
+    nullify :description
+    nullify :shortcode
+
+    include_association :characters
+    include_association :weapons
+    include_association :summons
+  end
+
   ##### ActiveRecord Validations
   validate :skills_are_unique
 
