@@ -124,7 +124,11 @@ module Api
 
       def set_from_slug
         @party = Party.where('shortcode = ?', params[:id]).first
-        @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
+        if @party
+          @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
+        else
+          render_not_found_response('party')
+        end
       end
 
       def set
