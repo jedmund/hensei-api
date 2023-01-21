@@ -3,6 +3,8 @@
 module Api
   module V1
     class GridSummonsController < Api::V1::ApiController
+      before_action :set, only: %w[destroy]
+
       def create
         party = Party.find(summon_params[:party_id])
         canonical_summon = Summon.find(summon_params[:summon_id])
@@ -31,10 +33,16 @@ module Api
         render json: GridSummonBlueprint.render(summon, view: :nested, root: :grid_summon)
       end
 
-      # TODO: Implement removing summons
-      def destroy; end
+      def destroy
+        render_unauthorized_response if @summon.party.user != current_user
+        return render json: GridSummonBlueprint.render(@summon, view: :destroyed) if @summon.destroy
+      end
 
       private
+
+      def set
+        @summon = GridSummon.where('id = ?', params[:id]).first
+      end
 
       # Specify whitelisted properties that can be modified.
       def summon_params
