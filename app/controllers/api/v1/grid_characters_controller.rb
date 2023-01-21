@@ -6,8 +6,8 @@ module Api
       attr_reader :party, :incoming_character, :current_characters
 
       before_action :find_party, only: :create
-      before_action :set, only: [:update, :destroy]
-      before_action :check_authorization, only: [:update, :destroy]
+      before_action :set, only: %i[update destroy]
+      before_action :check_authorization, only: %i[update destroy]
       before_action :find_incoming_character, only: :create
       before_action :find_current_characters, only: :create
 
@@ -41,7 +41,7 @@ module Api
 
       def update
         mastery = {}
-        [:ring1, :ring2, :ring3, :ring4, :earring, :awakening].each do |key|
+        %i[ring1 ring2 ring3 ring4 earring awakening].each do |key|
           value = character_params.to_h[key]
           mastery[key] = value unless value.nil?
         end
@@ -49,8 +49,10 @@ module Api
         @character.attributes = character_params.merge(mastery)
 
         if @character.save
+          ap 'Saved character'
           return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
         else
+          ap 'Could not save'
           render_validation_error_response(@character)
         end
       end
@@ -94,7 +96,10 @@ module Api
       end
 
       # TODO: Implement removing characters
-      def destroy; end
+      def destroy
+        render_unauthorized_response if @character.party.user != current_user
+        return render json: GridCharacterBlueprint.render(@character, view: :destroyed) if @character.destroy
+      end
 
       private
 
@@ -122,7 +127,7 @@ module Api
       end
 
       def set
-        @character = GridCharacter.find(character_params[:id])
+        @character = GridCharacter.find(params[:id])
       end
 
       def find_incoming_character
@@ -142,9 +147,9 @@ module Api
       def character_params
         params.require(:character).permit(:id, :party_id, :character_id, :position,
                                           :uncap_level, :transcendence_step, :perpetuity,
-                                          :ring1 => [:modifier, :strength], :ring2 => [:modifier, :strength],
-                                          :ring3 => [:modifier, :strength], :ring4 => [:modifier, :strength],
-                                          :earring => [:modifier, :strength], :awakening => [:type, :level])
+                                          ring1: %i[modifier strength], ring2: %i[modifier strength],
+                                          ring3: %i[modifier strength], ring4: %i[modifier strength],
+                                          earring: %i[modifier strength], awakening: %i[type level])
       end
 
       def resolve_params

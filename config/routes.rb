@@ -8,8 +8,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :parties, only: %i[index create update destroy]
       resources :users, only: %i[create update show]
-      resources :grid_weapons, only: [:update]
-      resources :grid_characters, only: [:update]
+      resources :grid_weapons, only: %i[update destroy]
+      resources :grid_characters, only: %i[update destroy]
       resources :favorites, only: [:create]
 
       get 'users/info/:id', to: 'users#info'
