@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 ruby '3.0.0'
 
+gem 'bootsnap'
 gem 'pg'
 gem 'rack-cors'
 gem 'rails'
@@ -47,8 +48,6 @@ gem 'data_migrate'
 
 # A ruby gem to allow the copying of ActiveRecord objects and their associated children, configurable with a DSL on the model
 gem 'amoeba'
-
-gem 'bootsnap'
 
 group :doc do
   gem 'apipie-rails'
