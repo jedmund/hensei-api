@@ -5,11 +5,11 @@ module Api
     class GridSummonBlueprint < ApiBlueprint
       view :uncap do
         association :party, blueprint: PartyBlueprint, view: :minimal
-        fields :position, :uncap_level
+        fields :position, :uncap_level, :transcendence_step
       end
 
       view :nested do
-        fields :main, :friend, :position, :uncap_level
+        fields :main, :friend, :position, :uncap_level, :transcendence_step
         association :summon, name: :object, blueprint: SummonBlueprint
       end
 
