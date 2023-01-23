@@ -99,7 +99,8 @@ module Api
 
       # Specify whitelisted properties that can be modified.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level)
+        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level,
+                                       :transcendence_step)
       end
     end
   end
