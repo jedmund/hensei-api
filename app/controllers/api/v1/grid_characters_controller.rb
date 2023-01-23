@@ -48,13 +48,9 @@ module Api
 
         @character.attributes = character_params.merge(mastery)
 
-        if @character.save
-          ap 'Saved character'
-          return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
-        else
-          ap 'Could not save'
-          render_validation_error_response(@character)
-        end
+        return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
+
+        render_validation_error_response(@character)
       end
 
       def resolve
