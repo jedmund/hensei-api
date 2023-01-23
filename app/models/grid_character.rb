@@ -1,13 +1,26 @@
 # frozen_string_literal: true
 
 class GridCharacter < ApplicationRecord
-  belongs_to :party
+  belongs_to :party,
+             counter_cache: :weapons_count,
+             inverse_of: :characters
+  validates_presence_of :party
 
   validate :awakening_level, on: :update
   validate :transcendence, on: :update
   validate :validate_over_mastery_values, on: :update
   validate :validate_aetherial_mastery_value, on: :update
   validate :over_mastery_attack_matches_hp, on: :update
+
+  ##### Amoeba configuration
+  amoeba do
+    set ring1: { modifier: nil, strength: nil }
+    set ring2: { modifier: nil, strength: nil }
+    set ring3: { modifier: nil, strength: nil }
+    set ring4: { modifier: nil, strength: nil }
+    set earring: { modifier: nil, strength: nil }
+    set perpetuity: false
+  end
 
   def awakening_level
     return if awakening.nil?
