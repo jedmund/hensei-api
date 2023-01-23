@@ -21,16 +21,15 @@ module Api
           conflict_view = render_conflict_view(conflict_characters, incoming_character, character_params[:position])
           render json: conflict_view
         else
-          # Replace the grid character in the position if it is already filled
+          # Destroy the grid character in the position if it is already filled
           if GridCharacter.where(party_id: party.id, position: character_params[:position]).exists?
             character = GridCharacter.where(party_id: party.id, position: character_params[:position]).limit(1)[0]
-            character.character_id = incoming_character.id
-
-            # Otherwise, create a new grid character
-          else
-            character = GridCharacter.create!(character_params.merge(party_id: party.id,
-                                                                     character_id: incoming_character.id))
+            character.destroy
           end
+
+          # Then, create a new grid character
+          character = GridCharacter.create!(character_params.merge(party_id: party.id,
+                                                                   character_id: incoming_character.id))
 
           if character.save!
             grid_character_view = render_grid_character_view(character)
