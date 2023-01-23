@@ -27,7 +27,7 @@ module Api
       def update
         @summon.attributes = summon_params
 
-        return render json: GridSummonBlueprint.render(@summon, view: :full) if @summon.save
+        return render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon) if @summon.save
 
         render_validation_error_response(@character)
       end
@@ -65,6 +65,8 @@ module Api
         render_unauthorized_response if current_user && (summon.party.user != current_user)
 
         summon.uncap_level = summon_params[:uncap_level]
+        summon.transcendence_step = 0
+
         return unless summon.save!
 
         render json: GridSummonBlueprint.render(summon, view: :nested, root: :grid_summon)
