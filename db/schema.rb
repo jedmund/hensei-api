@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_07_153724) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_23_035602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -202,11 +202,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_07_153724) do
     t.integer "button_count"
     t.integer "chain_count"
     t.integer "turn_count"
+    t.uuid "source_party_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
     t.index ["skill2_id"], name: "index_parties_on_skill2_id"
     t.index ["skill3_id"], name: "index_parties_on_skill3_id"
+    t.index ["source_party_id"], name: "index_parties_on_source_party_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -240,6 +242,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_07_153724) do
     t.boolean "subaura", default: false, null: false
     t.boolean "limit", default: false, null: false
     t.boolean "xlb", default: false, null: false
+    t.integer "max_atk_xlb"
+    t.integer "max_hp_xlb"
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
@@ -313,6 +317,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_07_153724) do
   add_foreign_key "parties", "job_skills", column: "skill2_id"
   add_foreign_key "parties", "job_skills", column: "skill3_id"
   add_foreign_key "parties", "jobs"
+  add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
 end
