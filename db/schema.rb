@@ -137,7 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
     t.boolean "ml", default: false
     t.integer "order"
     t.uuid "base_job_id"
-    t.string "slug"
+    t.string "granblue_id"
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
