@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_108_150_956) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'btree_gin'
   enable_extension 'pg_trgm'
@@ -128,16 +128,17 @@ ActiveRecord::Schema[7.0].define(version: 20_230_108_150_956) do
     t.index ['job_id'], name: 'index_job_skills_on_job_id'
   end
 
-  create_table 'jobs', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name_en'
-    t.string 'name_jp'
-    t.integer 'proficiency1'
-    t.integer 'proficiency2'
-    t.string 'row'
-    t.boolean 'ml', default: false
-    t.integer 'order'
-    t.uuid 'base_job_id'
-    t.index ['base_job_id'], name: 'index_jobs_on_base_job_id'
+  create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "proficiency1"
+    t.integer "proficiency2"
+    t.string "row"
+    t.boolean "ml", default: false
+    t.integer "order"
+    t.uuid "base_job_id"
+    t.string "granblue_id"
+    t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
   create_table 'oauth_access_grants', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
