@@ -47,13 +47,9 @@ module Api
 
         @character.attributes = character_params.merge(mastery)
 
-        if @character.save
-          ap 'Saved character'
-          return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
-        else
-          ap 'Could not save'
-          render_validation_error_response(@character)
-        end
+        return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
+
+        render_validation_error_response(@character)
       end
 
       def resolve
@@ -89,6 +85,7 @@ module Api
         render_unauthorized_response if current_user && (character.party.user != current_user)
 
         character.uncap_level = character_params[:uncap_level]
+        character.transcendence_step = character_params[:transcendence_step]
         return unless character.save!
 
         render json: GridCharacterBlueprint.render(character, view: :nested, root: :grid_character)

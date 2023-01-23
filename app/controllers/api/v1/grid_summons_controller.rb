@@ -3,7 +3,7 @@
 module Api
   module V1
     class GridSummonsController < Api::V1::ApiController
-      before_action :set, only: %w[destroy]
+      before_action :set, only: %w[update destroy]
 
       attr_reader :party, :incoming_summon
 
@@ -22,6 +22,14 @@ module Api
           ap 'Handling conflict'
           handle_conflict(summon)
         end
+      end
+
+      def update
+        @summon.attributes = summon_params
+
+        return render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon) if @summon.save
+
+        render_validation_error_response(@character)
       end
 
       def save_summon(summon)
@@ -57,6 +65,8 @@ module Api
         render_unauthorized_response if current_user && (summon.party.user != current_user)
 
         summon.uncap_level = summon_params[:uncap_level]
+        summon.transcendence_step = 0
+
         return unless summon.save!
 
         render json: GridSummonBlueprint.render(summon, view: :nested, root: :grid_summon)
@@ -91,7 +101,8 @@ module Api
 
       # Specify whitelisted properties that can be modified.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level)
+        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level,
+                                       :transcendence_step)
       end
     end
   end
