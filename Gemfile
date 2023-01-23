@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 ruby '3.0.0'
 
-gem 'bootsnap'
 gem 'pg'
 gem 'rack-cors'
 gem 'rails'
@@ -45,6 +44,8 @@ gem 'will_paginate', '~> 3.3'
 
 # Migrate and update data alongside your database structure.
 gem 'data_migrate'
+
+gem 'bootsnap'
 
 group :doc do
   gem 'apipie-rails'
