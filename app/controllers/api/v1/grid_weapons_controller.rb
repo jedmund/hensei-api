@@ -3,7 +3,7 @@
 module Api
   module V1
     class GridWeaponsController < Api::V1::ApiController
-      before_action :set, except: %w[create update_uncap_level destroy]
+      before_action :set, except: %w[create update_uncap_level]
 
       attr_reader :party, :incoming_weapon
 
@@ -56,7 +56,10 @@ module Api
       end
 
       # TODO: Implement removing characters
-      def destroy; end
+      def destroy
+        render_unauthorized_response if @weapon.party.user != current_user
+        return render json: GridCharacterBlueprint.render(@weapon, view: :destroyed) if @weapon.destroy
+      end
 
       def update_uncap_level
         weapon = GridWeapon.find(weapon_params[:id])
@@ -115,15 +118,15 @@ module Api
       # Render the conflict view as a string
       def render_conflict_view(conflict_weapon, incoming_weapon, incoming_position)
         ConflictBlueprint.render(nil, view: :weapons,
-                                 conflict_weapon: conflict_weapon,
-                                 incoming_weapon: incoming_weapon,
-                                 incoming_position: incoming_position)
+                                      conflict_weapon: conflict_weapon,
+                                      incoming_weapon: incoming_weapon,
+                                      incoming_position: incoming_position)
       end
 
       def render_grid_weapon_view(grid_weapon, conflict_position)
         GridWeaponBlueprint.render(grid_weapon, view: :full,
-                                   root: :grid_weapon,
-                                   meta: { replaced: conflict_position })
+                                                root: :grid_weapon,
+                                                meta: { replaced: conflict_position })
       end
 
       def save_weapon(weapon)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_07_153724) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -67,19 +67,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "perpetuity", default: false, null: false
-    t.integer "awakening_type", default: 0, null: false
-    t.integer "awakening_level", default: 1, null: false
     t.integer "transcendence_step", default: 0, null: false
-    t.integer "ring_modifier1"
-    t.float "ring_strength1"
-    t.integer "ring_modifier2"
-    t.float "ring_strength2"
-    t.integer "ring_modifier3"
-    t.float "ring_strength3"
-    t.integer "ring_modifier4"
-    t.float "ring_strength4"
-    t.integer "earring_modifier"
-    t.float "earring_strength"
+    t.jsonb "ring1", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring2", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring3", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "awakening", default: {"type"=>1, "level"=>1}, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end

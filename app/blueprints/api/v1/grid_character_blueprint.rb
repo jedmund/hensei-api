@@ -11,11 +11,33 @@ module Api
       view :nested do
         fields :position, :uncap_level, :perpetuity
 
+        field :transcendence_step, if: lambda { |_fn, obj, _opt|
+          obj.character.ulb
+        } do |c|
+          c.transcendence_step
+        end
+
         field :awakening do |c|
-          {
-            type: c.awakening_type,
-            level: c.awakening_level
-          }
+          c.awakening
+        end
+
+        field :over_mastery, if: lambda { |_fn, obj, _opt|
+          !obj.ring1['modifier'].nil? && !obj.ring2['modifier'].nil?
+        } do |c|
+          rings = []
+
+          rings.push(c.ring1) unless c.ring1['modifier'].nil?
+          rings.push(c.ring2) unless c.ring2['modifier'].nil?
+          rings.push(c.ring3) unless c.ring3['modifier'].nil?
+          rings.push(c.ring4) unless c.ring4['modifier'].nil?
+
+          rings
+        end
+
+        field :aetherial_mastery, if: lambda { |_fn, obj, _opt|
+          !obj.earring['modifier'].nil?
+        } do |c|
+          c.earring
         end
 
         association :character, name: :object, blueprint: CharacterBlueprint
@@ -24,6 +46,10 @@ module Api
       view :full do
         include_view :nested
         association :party, blueprint: PartyBlueprint, view: :minimal
+      end
+
+      view :destroyed do
+        fields :position, :created_at, :updated_at
       end
     end
   end
