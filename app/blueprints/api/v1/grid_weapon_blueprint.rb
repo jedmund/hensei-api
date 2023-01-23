@@ -43,6 +43,10 @@ module Api
         include_view :nested
         association :party, blueprint: PartyBlueprint, view: :minimal
       end
+
+      view :destroyed do
+        fields :mainhand, :position, :created_at, :updated_at
+      end
     end
   end
 end

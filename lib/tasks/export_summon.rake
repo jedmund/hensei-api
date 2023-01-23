@@ -36,6 +36,11 @@ namespace :granblue do
             f.write("#{build_summon_url("#{s.granblue_id}_02",
                                         size)} \n")
           end
+
+          if s.xlb
+            f.write("#{build_summon_url("#{s.granblue_id}_03",
+                                        size)} \n")
+          end
         end
       end
 

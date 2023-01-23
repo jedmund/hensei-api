@@ -17,7 +17,7 @@ module Api
         ]
       end
 
-      fields :row, :ml, :order
+      fields :granblue_id, :row, :ml, :order
     end
   end
 end

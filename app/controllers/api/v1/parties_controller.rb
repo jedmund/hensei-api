@@ -8,12 +8,9 @@ module Api
       before_action :set, only: %w[update destroy]
 
       def create
-        party = Party.new(shortcode: random_string)
+        party = Party.new
         party.user = current_user if current_user
-
-        if party_params
-          party.attributes = party_params
-        end
+        party.attributes = party_params if party_params
 
         # unless party_params.empty?
         #   party.attributes = party_params
@@ -55,6 +52,22 @@ module Api
       def destroy
         render_unauthorized_response if @party.user != current_user
         return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
+      end
+
+      def remix
+        new_party = @party.amoeba_dup
+        new_party.attributes = {
+          user: current_user,
+          name: remixed_name(@party.name),
+          source_party: @party
+        }
+
+        if new_party.save
+          render json: PartyBlueprint.render(new_party, view: :full, root: :party,
+                                                        meta: { remix: true })
+        else
+          render_validation_error_response(new_party)
+        end
       end
 
       def index
@@ -111,7 +124,7 @@ module Api
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                         .to_datetime.beginning_of_day
+                       .to_datetime.beginning_of_day
         end
 
         {}.tap do |hash|
@@ -122,15 +135,31 @@ module Api
         end
       end
 
-      def random_string
-        num_chars = 6
-        o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
-        (0...num_chars).map { o[rand(o.length)] }.join
+      def remixed_name(name)
+        blanked_name = {
+          en: name.blank? ? 'Untitled team' : name,
+          ja: name.blank? ? '無名の編成' : name
+        }
+
+        if current_user
+          case current_user.language
+          when 'en'
+            "Remix of #{blanked_name[:en]}"
+          when 'ja'
+            "#{blanked_name[:ja]}のリミックス"
+          end
+        else
+          "Remix of #{blanked_name[:en]}"
+        end
       end
 
       def set_from_slug
         @party = Party.where('shortcode = ?', params[:id]).first
-        @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
+        if @party
+          @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
+        else
+          render_not_found_response('party')
+        end
       end
 
       def set
@@ -138,6 +167,8 @@ module Api
       end
 
       def party_params
+        return unless params[:party].present?
+
         params.require(:party).permit(
           :user_id,
           :extra,
@@ -156,7 +187,7 @@ module Api
           :button_count,
           :turn_count,
           :chain_count
-        ) if params[:party].present?
+        )
       end
     end
   end

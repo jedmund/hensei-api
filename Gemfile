@@ -45,6 +45,9 @@ gem 'will_paginate', '~> 3.3'
 # Migrate and update data alongside your database structure.
 gem 'data_migrate'
 
+# A ruby gem to allow the copying of ActiveRecord objects and their associated children, configurable with a DSL on the model
+gem 'amoeba'
+
 gem 'bootsnap'
 
 group :doc do
