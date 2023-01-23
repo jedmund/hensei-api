@@ -90,6 +90,7 @@ module Api
         render_unauthorized_response if current_user && (character.party.user != current_user)
 
         character.uncap_level = character_params[:uncap_level]
+        character.transcendence_step = character_params[:transcendence_step]
         return unless character.save!
 
         render json: GridCharacterBlueprint.render(character, view: :nested, root: :grid_character)
