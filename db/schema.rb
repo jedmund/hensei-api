@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_23_035602) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -137,6 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_035602) do
     t.boolean "ml", default: false
     t.integer "order"
     t.uuid "base_job_id"
+    t.string "slug"
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
