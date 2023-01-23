@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[create update show]
       resources :grid_weapons, only: %i[update destroy]
       resources :grid_characters, only: %i[update destroy]
-      resources :grid_summons, only: %i[destroy]
+      resources :grid_summons, only: %i[update destroy]
       resources :favorites, only: [:create]
 
       get 'users/info/:id', to: 'users#info'

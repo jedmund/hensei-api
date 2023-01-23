@@ -3,7 +3,7 @@
 module Api
   module V1
     class GridSummonsController < Api::V1::ApiController
-      before_action :set, only: %w[destroy]
+      before_action :set, only: %w[update destroy]
 
       attr_reader :party, :incoming_summon
 
@@ -22,6 +22,14 @@ module Api
           ap 'Handling conflict'
           handle_conflict(summon)
         end
+      end
+
+      def update
+        @summon.attributes = summon_params
+
+        return render json: GridSummonBlueprint.render(@summon, view: :full) if @summon.save
+
+        render_validation_error_response(@character)
       end
 
       def save_summon(summon)
