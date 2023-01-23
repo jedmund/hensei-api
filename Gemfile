@@ -5,6 +5,7 @@ gem 'bootsnap'
 gem 'pg'
 gem 'rack-cors'
 gem 'rails'
+gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma'
