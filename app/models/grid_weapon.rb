@@ -2,7 +2,9 @@
 
 class GridWeapon < ApplicationRecord
   belongs_to :party,
-             counter_cache: :weapons_count
+             counter_cache: :weapons_count,
+             inverse_of: :weapons
+  validates_presence_of :party
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
@@ -10,6 +12,14 @@ class GridWeapon < ApplicationRecord
 
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
+
+  ##### Amoeba configuration
+  amoeba do
+    nullify :ax_modifier1
+    nullify :ax_modifier2
+    nullify :ax_strength1
+    nullify :ax_strength2
+  end
 
   # Helper methods
   def blueprint
@@ -29,6 +39,8 @@ class GridWeapon < ApplicationRecord
     return unless weapon.limit
 
     party.weapons.find do |party_weapon|
+      return unless party_weapon.id
+
       id_match = weapon.id == party_weapon.id
       series_match = weapon.series == party_weapon.weapon.series
       both_opus_or_draconic = weapon.opus_or_draconic? && party_weapon.weapon.opus_or_draconic?
