@@ -32,7 +32,11 @@ namespace :granblue do
       Rake::Task['granblue:export:summon'].invoke('square')
       Rake::Task['granblue:export:summon'].reenable
 
-      puts 'Exported 9 files'
+      # Run job tasks
+      Rake::Task['granblue:export:job'].invoke
+      Rake::Task['granblue:export:job'].reenable
+
+      puts 'Exported 10 files'
     end
   end
 end
