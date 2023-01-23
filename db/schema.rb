@@ -178,38 +178,38 @@ ActiveRecord::Schema[7.0].define(version: 20_230_108_150_956) do
     t.index ['uid'], name: 'index_oauth_applications_on_uid', unique: true
   end
 
-  create_table 'parties', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.uuid 'user_id'
-    t.string 'shortcode'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.boolean 'extra', default: false, null: false
-    t.string 'name'
-    t.text 'description'
-    t.uuid 'raid_id'
-    t.integer 'element'
-    t.integer 'weapons_count'
-    t.uuid 'job_id'
-    t.integer 'ml'
-    t.uuid 'skill1_id'
-    t.uuid 'skill2_id'
-    t.uuid 'skill3_id'
-    t.uuid 'skill0_id'
-    t.boolean 'full_auto', default: false, null: false
-    t.boolean 'auto_guard', default: false, null: false
-    t.boolean 'charge_attack', default: true, null: false
-    t.integer 'clear_time', default: 0, null: false
-    t.integer 'button_count'
-    t.integer 'chain_count'
-    t.integer 'turn_count'
-    t.uuid 'source_party_id'
-    t.index ['job_id'], name: 'index_parties_on_job_id'
-    t.index ['skill0_id'], name: 'index_parties_on_skill0_id'
-    t.index ['skill1_id'], name: 'index_parties_on_skill1_id'
-    t.index ['skill2_id'], name: 'index_parties_on_skill2_id'
-    t.index ['skill3_id'], name: 'index_parties_on_skill3_id'
-    t.index ['source_party_id'], name: 'index_parties_on_source_party_id'
-    t.index ['user_id'], name: 'index_parties_on_user_id'
+  create_table "parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.string "shortcode"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "extra", default: false, null: false
+    t.string "name"
+    t.text "description"
+    t.uuid "raid_id"
+    t.integer "element"
+    t.integer "weapons_count"
+    t.uuid "job_id"
+    t.integer "ml"
+    t.uuid "skill1_id"
+    t.uuid "skill2_id"
+    t.uuid "skill3_id"
+    t.uuid "skill0_id"
+    t.boolean "full_auto", default: false, null: false
+    t.boolean "auto_guard", default: false, null: false
+    t.boolean "charge_attack", default: true, null: false
+    t.integer "clear_time", default: 0, null: false
+    t.integer "button_count"
+    t.integer "chain_count"
+    t.integer "turn_count"
+    t.uuid "source_party_id"
+    t.index ["job_id"], name: "index_parties_on_job_id"
+    t.index ["skill0_id"], name: "index_parties_on_skill0_id"
+    t.index ["skill1_id"], name: "index_parties_on_skill1_id"
+    t.index ["skill2_id"], name: "index_parties_on_skill2_id"
+    t.index ["skill3_id"], name: "index_parties_on_skill3_id"
+    t.index ["source_party_id"], name: "index_parties_on_source_party_id"
+    t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
   create_table 'raids', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
@@ -221,28 +221,30 @@ ActiveRecord::Schema[7.0].define(version: 20_230_108_150_956) do
     t.string 'slug'
   end
 
-  create_table 'summons', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
-    t.string 'name_en'
-    t.string 'name_jp'
-    t.string 'granblue_id'
-    t.integer 'rarity'
-    t.integer 'element'
-    t.string 'series'
-    t.boolean 'flb', default: false, null: false
-    t.boolean 'ulb', default: false, null: false
-    t.integer 'max_level', default: 100, null: false
-    t.integer 'min_hp'
-    t.integer 'max_hp'
-    t.integer 'max_hp_flb'
-    t.integer 'max_hp_ulb'
-    t.integer 'min_atk'
-    t.integer 'max_atk'
-    t.integer 'max_atk_flb'
-    t.integer 'max_atk_ulb'
-    t.boolean 'subaura', default: false, null: false
-    t.boolean 'limit', default: false, null: false
-    t.boolean 'xlb', default: false, null: false
-    t.index ['name_en'], name: 'index_summons_on_name_en', opclass: :gin_trgm_ops, using: :gin
+  create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en"
+    t.string "name_jp"
+    t.string "granblue_id"
+    t.integer "rarity"
+    t.integer "element"
+    t.string "series"
+    t.boolean "flb", default: false, null: false
+    t.boolean "ulb", default: false, null: false
+    t.integer "max_level", default: 100, null: false
+    t.integer "min_hp"
+    t.integer "max_hp"
+    t.integer "max_hp_flb"
+    t.integer "max_hp_ulb"
+    t.integer "min_atk"
+    t.integer "max_atk"
+    t.integer "max_atk_flb"
+    t.integer "max_atk_ulb"
+    t.boolean "subaura", default: false, null: false
+    t.boolean "limit", default: false, null: false
+    t.boolean "xlb", default: false, null: false
+    t.integer "max_atk_xlb"
+    t.integer "max_hp_xlb"
+    t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table 'users', id: :uuid, default: -> { 'gen_random_uuid()' }, force: :cascade do |t|
@@ -298,24 +300,24 @@ ActiveRecord::Schema[7.0].define(version: 20_230_108_150_956) do
     t.index ['name_en'], name: 'index_weapons_on_name_en', opclass: :gin_trgm_ops, using: :gin
   end
 
-  add_foreign_key 'favorites', 'parties'
-  add_foreign_key 'favorites', 'users'
-  add_foreign_key 'grid_characters', 'characters'
-  add_foreign_key 'grid_characters', 'parties'
-  add_foreign_key 'grid_summons', 'parties'
-  add_foreign_key 'grid_summons', 'summons'
-  add_foreign_key 'grid_weapons', 'parties'
-  add_foreign_key 'grid_weapons', 'weapon_keys', column: 'weapon_key3_id'
-  add_foreign_key 'grid_weapons', 'weapons'
-  add_foreign_key 'jobs', 'jobs', column: 'base_job_id'
-  add_foreign_key 'oauth_access_grants', 'oauth_applications', column: 'application_id'
-  add_foreign_key 'oauth_access_tokens', 'oauth_applications', column: 'application_id'
-  add_foreign_key 'parties', 'job_skills', column: 'skill0_id'
-  add_foreign_key 'parties', 'job_skills', column: 'skill1_id'
-  add_foreign_key 'parties', 'job_skills', column: 'skill2_id'
-  add_foreign_key 'parties', 'job_skills', column: 'skill3_id'
-  add_foreign_key 'parties', 'jobs'
-  add_foreign_key 'parties', 'parties', column: 'source_party_id'
-  add_foreign_key 'parties', 'raids'
-  add_foreign_key 'parties', 'users'
+  add_foreign_key "favorites", "parties"
+  add_foreign_key "favorites", "users"
+  add_foreign_key "grid_characters", "characters"
+  add_foreign_key "grid_characters", "parties"
+  add_foreign_key "grid_summons", "parties"
+  add_foreign_key "grid_summons", "summons"
+  add_foreign_key "grid_weapons", "parties"
+  add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
+  add_foreign_key "grid_weapons", "weapons"
+  add_foreign_key "jobs", "jobs", column: "base_job_id"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "job_skills", column: "skill0_id"
+  add_foreign_key "parties", "job_skills", column: "skill1_id"
+  add_foreign_key "parties", "job_skills", column: "skill2_id"
+  add_foreign_key "parties", "job_skills", column: "skill3_id"
+  add_foreign_key "parties", "jobs"
+  add_foreign_key "parties", "parties", column: "source_party_id"
+  add_foreign_key "parties", "raids"
+  add_foreign_key "parties", "users"
 end

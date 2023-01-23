@@ -55,7 +55,6 @@ module Api
         render json: GridWeaponBlueprint.render(@weapon, view: :nested) if @weapon.update(weapon_params)
       end
 
-      # TODO: Implement removing characters
       def destroy
         render_unauthorized_response if @weapon.party.user != current_user
         return render json: GridCharacterBlueprint.render(@weapon, view: :destroyed) if @weapon.destroy
