@@ -44,6 +44,8 @@ module Api
 
         @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
 
+        # TODO: Validate accessory with job
+
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party.save!
 
         render_validation_error_response(@party)
@@ -64,7 +66,7 @@ module Api
 
         if new_party.save
           render json: PartyBlueprint.render(new_party, view: :full, root: :party,
-                                                        meta: { remix: true })
+                                             meta: { remix: true })
         else
           render_validation_error_response(new_party)
         end
@@ -124,7 +126,7 @@ module Api
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                       .to_datetime.beginning_of_day
+                         .to_datetime.beginning_of_day
         end
 
         {}.tap do |hash|
@@ -176,6 +178,7 @@ module Api
           :description,
           :raid_id,
           :job_id,
+          :accessory_id,
           :skill0_id,
           :skill1_id,
           :skill2_id,
