@@ -16,6 +16,11 @@ class Party < ApplicationRecord
   belongs_to :raid, optional: true
   belongs_to :job, optional: true
 
+  belongs_to :accessory,
+             foreign_key: 'accessory_id',
+             class_name: 'JobAccessory',
+             optional: true
+  
   belongs_to :skill0,
              foreign_key: 'skill0_id',
              class_name: 'JobSkill',
