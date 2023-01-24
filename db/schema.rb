@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_24_000252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -113,6 +112,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
     t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
     t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
+  end
+
+  create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "granblue_id", null: false
+    t.integer "rarity"
+    t.date "release_date"
+    t.index ["job_id"], name: "index_job_accessories_on_job_id"
   end
 
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
