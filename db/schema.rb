@@ -17,9 +17,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_26_030358) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "app_updates", id: false, force: :cascade do |t|
+  create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
