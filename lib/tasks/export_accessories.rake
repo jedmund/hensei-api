@@ -1,22 +1,14 @@
 namespace :granblue do
   namespace :export do
-    def build_shield_url(id, size)
+    def build_url(id, type, size)
       # Set up URL
-      base_url = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/shield'
+      base_url = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets'
       extension = '.jpg'
 
       directory = 'm' if size.to_s == 'grid'
       directory = 's' if size.to_s == 'square'
 
-      "#{base_url}/#{directory}/#{id}#{extension}"
-    end
-
-    def build_manabelly_url(id, size)
-      # Set up URL
-      base_url = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/manabelly'
-      extension = '.png'
-
-      "#{base_url}/#{id}#{extension}"
+      "#{base_url}/#{type}/#{directory}/#{id}#{extension}"
     end
 
     desc 'Exports a list of accessories for a given size'
@@ -35,9 +27,9 @@ namespace :granblue do
       File.open(filename, 'w') do |f|
         JobAccessory.all.each do |w|
           if w.accessory_type === 1
-            f.write("#{build_shield_url(w.granblue_id.to_s, size)} \n")
+            f.write("#{build_url(w.granblue_id.to_s, "shield", size)} \n")
           elsif w.accessory_type === 2
-            f.write("#{build_manabelly_url(w.granblue_id.to_s, size)} \n")
+            f.write("#{build_url(w.granblue_id.to_s, "familiar", size)} \n")
           end
         end
       end
