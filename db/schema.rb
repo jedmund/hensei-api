@@ -10,13 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_26_040207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
+
+  create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
+    t.string "update_type", null: false
+    t.string "version"
+  end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -115,6 +119,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
     t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
+  create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "granblue_id", null: false
+    t.integer "rarity"
+    t.date "release_date"
+    t.integer "accessory_type"
+    t.index ["job_id"], name: "index_job_accessories_on_job_id"
+  end
+
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "job_id"
     t.string "name_en", null: false
@@ -205,6 +220,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
     t.integer "chain_count"
     t.integer "turn_count"
     t.uuid "source_party_id"
+    t.uuid "accessory_id"
+    t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
@@ -314,6 +331,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_055508) do
   add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "job_accessories", column: "accessory_id"
   add_foreign_key "parties", "job_skills", column: "skill0_id"
   add_foreign_key "parties", "job_skills", column: "skill1_id"
   add_foreign_key "parties", "job_skills", column: "skill2_id"

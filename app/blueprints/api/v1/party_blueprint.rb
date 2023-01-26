@@ -64,6 +64,8 @@ module Api
         include_view :characters
         include_view :job_skills
 
+        association :accessory,
+                    blueprint: JobAccessoryBlueprint
         fields :description, :charge_attack, :button_count, :turn_count, :chain_count
       end
 

@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       resources :grid_summons, only: %i[update destroy]
       resources :favorites, only: [:create]
 
+      get 'version', to: 'api#version'
+
       get 'users/info/:id', to: 'users#info'
 
       get 'parties/favorites', to: 'parties#favorites'
@@ -34,6 +36,7 @@ Rails.application.routes.draw do
 
       get 'jobs/skills', to: 'job_skills#all'
       get 'jobs/:id/skills', to: 'job_skills#job'
+      get 'jobs/:id/accessories', to: 'job_accessories#job'
 
       get 'raids', to: 'raids#all'
       get 'weapon_keys', to: 'weapon_keys#all'
