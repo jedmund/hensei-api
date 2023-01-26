@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       resources :grid_summons, only: %i[update destroy]
       resources :favorites, only: [:create]
 
-      get 'latest', to: 'api#latest'
+      get 'version', to: 'api#version'
 
       get 'users/info/:id', to: 'users#info'
 

@@ -37,7 +37,7 @@ module Api
 
       ##### Methods
       # Returns the latest update
-      def latest
+      def version
         render json: UpdateBlueprint.render_as_json(AppUpdate.last)
       end
 
