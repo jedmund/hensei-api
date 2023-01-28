@@ -16,6 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_28_091710) do
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -154,8 +155,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_28_091710) do
     t.integer "order"
     t.uuid "base_job_id"
     t.string "granblue_id"
-    t.boolean "accessory", default: false
-    t.integer "accessory_type", default: 0
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
@@ -222,9 +221,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_28_091710) do
     t.integer "chain_count"
     t.integer "turn_count"
     t.uuid "source_party_id"
-    t.uuid "accessory_id"
     t.integer "characters_count"
     t.integer "summons_count"
+    t.uuid "accessory_id"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
