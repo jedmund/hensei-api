@@ -2,7 +2,7 @@
 
 class GridCharacter < ApplicationRecord
   belongs_to :party,
-             counter_cache: :weapons_count,
+             counter_cache: :characters_count,
              inverse_of: :characters
   validates_presence_of :party
 

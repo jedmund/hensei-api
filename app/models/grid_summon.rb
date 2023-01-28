@@ -2,7 +2,7 @@
 
 class GridSummon < ApplicationRecord
   belongs_to :party,
-             counter_cache: :weapons_count,
+             counter_cache: :summons_count,
              inverse_of: :summons
   validates_presence_of :party
 
