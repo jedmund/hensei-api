@@ -20,7 +20,7 @@ class Party < ApplicationRecord
              foreign_key: 'accessory_id',
              class_name: 'JobAccessory',
              optional: true
-  
+
   belongs_to :skill0,
              foreign_key: 'skill0_id',
              class_name: 'JobSkill',
@@ -80,6 +80,14 @@ class Party < ApplicationRecord
 
   def is_favorited(user)
     user.favorite_parties.include? self
+  end
+
+  def is_remix
+    self.source_party != nil
+  end
+
+  def remixes
+    Party.where(source_party_id: self.id)
   end
 
   def blueprint

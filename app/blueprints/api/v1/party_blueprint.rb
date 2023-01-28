@@ -36,6 +36,10 @@ module Api
         fields :name, :element, :shortcode, :favorited, :extra,
                :full_auto, :clear_time, :auto_guard, :created_at, :updated_at
 
+        field :remix do |p|
+          p.is_remix
+        end
+
         association :raid,
                     blueprint: RaidBlueprint
 
@@ -44,6 +48,10 @@ module Api
 
         association :user,
                     blueprint: UserBlueprint,
+                    view: :minimal
+
+        association :remixes,
+                    blueprint: PartyBlueprint,
                     view: :minimal
       end
 
