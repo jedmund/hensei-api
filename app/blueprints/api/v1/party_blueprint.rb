@@ -36,6 +36,10 @@ module Api
         fields :name, :element, :shortcode, :favorited, :extra,
                :full_auto, :clear_time, :auto_guard, :created_at, :updated_at
 
+        field :remix do |p|
+          p.is_remix
+        end
+
         association :raid,
                     blueprint: RaidBlueprint
 
@@ -67,6 +71,15 @@ module Api
         association :accessory,
                     blueprint: JobAccessoryBlueprint
         fields :description, :charge_attack, :button_count, :turn_count, :chain_count
+
+        association :source_party,
+                    blueprint: PartyBlueprint,
+                    view: :minimal
+
+        # TODO: This should probably be paginated
+        association :remixes,
+                    blueprint: PartyBlueprint,
+                    view: :collection
       end
 
       view :collection do
