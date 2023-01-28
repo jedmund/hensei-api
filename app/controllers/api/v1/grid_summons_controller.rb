@@ -16,10 +16,8 @@ module Api
         summon.attributes = summon_params.merge(party_id: party.id, summon_id: incoming_summon.id)
 
         if summon.validate
-          ap 'Validating'
           save_summon(summon)
         else
-          ap 'Handling conflict'
           handle_conflict(summon)
         end
       end
@@ -48,6 +46,7 @@ module Api
 
       def handle_conflict(summon)
         conflict_summon = summon.conflicts(party)
+        ap conflict_summon
         return unless conflict_summon.summon.id == incoming_summon.id
 
         old_position = conflict_summon.position
@@ -91,8 +90,8 @@ module Api
 
       def render_grid_summon_view(grid_summon, conflict_position = nil)
         GridSummonBlueprint.render(grid_summon, view: :nested,
-                                                root: :grid_summon,
-                                                meta: { replaced: conflict_position })
+                                   root: :grid_summon,
+                                   meta: { replaced: conflict_position })
       end
 
       def set
