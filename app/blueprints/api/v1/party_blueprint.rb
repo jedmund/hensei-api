@@ -50,9 +50,10 @@ module Api
                     blueprint: UserBlueprint,
                     view: :minimal
 
+        # TODO: This should probably be paginated
         association :remixes,
                     blueprint: PartyBlueprint,
-                    view: :minimal
+                    view: :collection
       end
 
       view :jobs do
