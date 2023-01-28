@@ -49,11 +49,6 @@ module Api
         association :user,
                     blueprint: UserBlueprint,
                     view: :minimal
-
-        # TODO: This should probably be paginated
-        association :remixes,
-                    blueprint: PartyBlueprint,
-                    view: :collection
       end
 
       view :jobs do
@@ -76,6 +71,15 @@ module Api
         association :accessory,
                     blueprint: JobAccessoryBlueprint
         fields :description, :charge_attack, :button_count, :turn_count, :chain_count
+
+        association :source_party,
+                    blueprint: PartyBlueprint,
+                    view: :minimal
+
+        # TODO: This should probably be paginated
+        association :remixes,
+                    blueprint: PartyBlueprint,
+                    view: :collection
       end
 
       view :collection do
