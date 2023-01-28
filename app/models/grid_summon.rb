@@ -21,13 +21,9 @@ class GridSummon < ApplicationRecord
   def conflicts(party)
     return unless summon.limit
 
-    party.summons.find do |party_summon|
-      ap 'Normal summon:'
-      ap summon
-      ap 'Party summon:'
-      ap party_summon
-
-      summon if summon.id == party_summon.summon.id
+    party.summons.find do |grid_summon|
+      return unless grid_summon.id
+      grid_summon if summon.id == grid_summon.summon.id
     end
   end
 
@@ -35,15 +31,12 @@ class GridSummon < ApplicationRecord
 
   # Validates whether there is a conflict with the party
   def no_conflicts
-    ap conflicts(party)
-
-    # Check if the grid weapon conflicts with any of the other grid weapons in the party
+    # Check if the grid summon conflicts with any of the other grid summons in the party
     errors.add(:series, 'must not conflict with existing summons') unless conflicts(party).nil?
   end
 
-  # Validates whether the weapon can be added to the desired position
+  # Validates whether the summon can be added to the desired position
   def compatible_with_position
-    ap [4, 5].include?(position.to_i) && !summon.subaura
     return unless [4, 5].include?(position.to_i) && !summon.subaura
 
     errors.add(:position, 'must have subaura for position')
