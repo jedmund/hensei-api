@@ -40,30 +40,33 @@ module Api
       end
 
       def show
-        render_not_found_response('user') unless @user
+        if @user.nil?
+          render_not_found_response('user')
+        else
 
-        conditions = build_conditions(request.params)
-        conditions[:user_id] = @user.id
+          conditions = build_conditions(request.params)
+          conditions[:user_id] = @user.id
 
-        parties = Party
-                  .where(conditions)
-                  .order(created_at: :desc)
-                  .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
-                  .each do |party|
-          party.favorited = current_user ? party.is_favorited(current_user) : false
+          parties = Party
+                      .where(conditions)
+                      .order(created_at: :desc)
+                      .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
+                      .each do |party|
+            party.favorited = current_user ? party.is_favorited(current_user) : false
+          end
+
+          count = Party.where(conditions).count
+
+          render json: UserBlueprint.render(@user,
+                                            view: :profile,
+                                            root: 'profile',
+                                            parties: parties,
+                                            meta: {
+                                              count: count,
+                                              total_pages: count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1,
+                                              per_page: COLLECTION_PER_PAGE
+                                            })
         end
-
-        count = Party.where(conditions).count
-
-        render json: UserBlueprint.render(@user,
-                                          view: :profile,
-                                          root: 'profile',
-                                          parties: parties,
-                                          meta: {
-                                            count: count,
-                                            total_pages: count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1,
-                                            per_page: COLLECTION_PER_PAGE
-                                          })
       end
 
       def check_email
@@ -81,7 +84,7 @@ module Api
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                       .to_datetime.beginning_of_day
+                         .to_datetime.beginning_of_day
         end
 
         {}.tap do |hash|
