@@ -36,6 +36,11 @@ module Api
       respond_to :json
 
       ##### Methods
+      # Returns the latest update
+      def version
+        render json: UpdateBlueprint.render_as_json(AppUpdate.last)
+      end
+
       # Assign the current user if the Doorkeeper token isn't nil, then
       # update the current user's last seen datetime and last IP address
       # before returning
@@ -85,9 +90,9 @@ module Api
 
       def render_not_found_response(object)
         render json: ErrorBlueprint.render(nil, error: {
-                                             message: "#{object.capitalize} could not be found",
-                                             code: 'not_found'
-                                           }), status: :not_found
+          message: "#{object.capitalize} could not be found",
+          code: 'not_found'
+        }), status: :not_found
       end
 
       def render_unauthorized_response

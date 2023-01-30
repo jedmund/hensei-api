@@ -8,13 +8,18 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :parties, only: %i[index create update destroy]
       resources :users, only: %i[create update show]
-      resources :grid_weapons, only: [:update]
+      resources :grid_weapons, only: %i[update destroy]
+      resources :grid_characters, only: %i[update destroy]
+      resources :grid_summons, only: %i[update destroy]
       resources :favorites, only: [:create]
+
+      get 'version', to: 'api#version'
 
       get 'users/info/:id', to: 'users#info'
 
       get 'parties/favorites', to: 'parties#favorites'
       get 'parties/:id', to: 'parties#show'
+      post 'parties/:id/remix', to: 'parties#remix'
 
       put 'parties/:id/jobs', to: 'jobs#update_job'
       put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
@@ -31,6 +36,7 @@ Rails.application.routes.draw do
 
       get 'jobs/skills', to: 'job_skills#all'
       get 'jobs/:id/skills', to: 'job_skills#job'
+      get 'jobs/:id/accessories', to: 'job_accessories#job'
 
       get 'raids', to: 'raids#all'
       get 'weapon_keys', to: 'weapon_keys#all'

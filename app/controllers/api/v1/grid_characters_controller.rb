@@ -3,48 +3,53 @@
 module Api
   module V1
     class GridCharactersController < Api::V1::ApiController
+      attr_reader :party, :incoming_character, :current_characters
+
+      before_action :find_party, only: :create
+      before_action :set, only: %i[update destroy]
+      before_action :check_authorization, only: %i[update destroy]
+      before_action :find_incoming_character, only: :create
+      before_action :find_current_characters, only: :create
+
       def create
-        party = Party.find(character_params[:party_id])
-        incoming_character = Character.find(character_params[:character_id])
-
-        render_unauthorized_response if current_user && (party.user != current_user)
-
-        current_characters = party.characters.map do |c|
-          Character.find(c.character.id).character_id
-        end.flatten
-
-        # Check all character ids on incoming character against current characters
-        conflict_ids = (current_characters & incoming_character.character_id)
-
-        if conflict_ids.length.positive?
-          # Find conflicting character ids in party characters
-          conflict_characters = party.characters.filter do |c|
-            c if (conflict_ids & c.character.character_id).length.positive?
-          end.flatten
-
+        if !conflict_characters.nil? && conflict_characters.length.positive?
           # Render a template with the conflicting and incoming characters,
           # as well as the selected position, so the user can be presented with
           # a decision.
 
           # Up to 3 characters can be removed at the same time
-          render json: ConflictBlueprint.render(nil, view: :characters,
-                                                     conflict_characters: conflict_characters,
-                                                     incoming_character: incoming_character,
-                                                     incoming_position: character_params[:position])
+          conflict_view = render_conflict_view(conflict_characters, incoming_character, character_params[:position])
+          render json: conflict_view
         else
-          # Replace the grid character in the position if it is already filled
+          # Destroy the grid character in the position if it is already filled
           if GridCharacter.where(party_id: party.id, position: character_params[:position]).exists?
             character = GridCharacter.where(party_id: party.id, position: character_params[:position]).limit(1)[0]
-            character.character_id = incoming_character.id
-
-            # Otherwise, create a new grid character
-          else
-            character = GridCharacter.create!(character_params.merge(party_id: party.id,
-                                                                     character_id: incoming_character.id))
+            character.destroy
           end
 
-          render json: GridCharacterBlueprint.render(character, view: :nested), status: :created if character.save!
+          # Then, create a new grid character
+          character = GridCharacter.create!(character_params.merge(party_id: party.id,
+                                                                   character_id: incoming_character.id))
+
+          if character.save!
+            grid_character_view = render_grid_character_view(character)
+            render json: grid_character_view, status: :created
+          end
         end
+      end
+
+      def update
+        mastery = {}
+        %i[ring1 ring2 ring3 ring4 earring awakening].each do |key|
+          value = character_params.to_h[key]
+          mastery[key] = value unless value.nil?
+        end
+
+        @character.attributes = character_params.merge(mastery)
+
+        return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
+
+        render_validation_error_response(@character)
       end
 
       def resolve
@@ -80,24 +85,83 @@ module Api
         render_unauthorized_response if current_user && (character.party.user != current_user)
 
         character.uncap_level = character_params[:uncap_level]
+        character.transcendence_step = character_params[:transcendence_step]
         return unless character.save!
 
         render json: GridCharacterBlueprint.render(character, view: :nested, root: :grid_character)
       end
 
       # TODO: Implement removing characters
-      def destroy; end
+      def destroy
+        render_unauthorized_response if @character.party.user != current_user
+        return render json: GridCharacterBlueprint.render(@character, view: :destroyed) if @character.destroy
+      end
 
       private
 
+      def conflict_characters
+        @conflict_characters ||= find_conflict_characters(incoming_character)
+      end
+
+      def find_conflict_characters(incoming_character)
+        # Check all character ids on incoming character against current characters
+        conflict_ids = (current_characters & incoming_character.character_id)
+
+        return unless conflict_ids.length.positive?
+
+        # Find conflicting character ids in party characters
+        party.characters.filter do |c|
+          c if (conflict_ids & c.character.character_id).length.positive?
+        end.flatten
+      end
+
+      def find_current_characters
+        # Make a list of all character IDs
+        @current_characters = party.characters.map do |c|
+          Character.find(c.character.id).character_id
+        end.flatten
+      end
+
+      def set
+        @character = GridCharacter.find(params[:id])
+      end
+
+      def find_incoming_character
+        @incoming_character = Character.find(character_params[:character_id])
+      end
+
+      def find_party
+        @party = Party.find(character_params[:party_id])
+        render_unauthorized_response if current_user && (party.user != current_user)
+      end
+
+      def check_authorization
+        render_unauthorized_response if @character.party.user != current_user
+      end
+
       # Specify whitelisted properties that can be modified.
       def character_params
-        params.require(:character).permit(:id, :party_id, :character_id, :position, :uncap_level, :conflicting,
-                                          :incoming)
+        params.require(:character).permit(:id, :party_id, :character_id, :position,
+                                          :uncap_level, :transcendence_step, :perpetuity,
+                                          ring1: %i[modifier strength], ring2: %i[modifier strength],
+                                          ring3: %i[modifier strength], ring4: %i[modifier strength],
+                                          earring: %i[modifier strength], awakening: %i[type level])
       end
 
       def resolve_params
         params.require(:resolve).permit(:position, :incoming, conflicting: [])
+      end
+
+      def render_conflict_view(conflict_characters, incoming_character, incoming_position)
+        ConflictBlueprint.render(nil,
+                                 view: :characters,
+                                 conflict_characters: conflict_characters,
+                                 incoming_character: incoming_character,
+                                 incoming_position: incoming_position)
+      end
+
+      def render_grid_character_view(grid_character)
+        GridCharacterBlueprint.render(grid_character, view: :nested)
       end
     end
   end

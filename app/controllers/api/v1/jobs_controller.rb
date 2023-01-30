@@ -29,10 +29,10 @@ module Api
 
           # Remove extra subskills if necessary
           if old_job &&
-             %w[1 2 3].include?(old_job.row) &&
-             %w[4 5 ex2].include?(job.row) &&
-             @party.skill1 && @party.skill2 && @party.skill3 &&
-             @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
+            %w[1 2 3].include?(old_job.row) &&
+            %w[4 5 ex2].include?(job.row) &&
+            @party.skill1 && @party.skill2 && @party.skill3 &&
+            @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
             @party['skill3_id'] = nil
           end
         else
@@ -63,8 +63,7 @@ module Api
           new_skill_ids = new_skill_keys.map { |key| job_params[key] }
           new_skill_ids.map do |id|
             skill = JobSkill.find(id)
-            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job,
-                                                                                                         skill)
+            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job, skill)
           end
 
           positions = extract_positions_from_keys(new_skill_keys)
@@ -154,7 +153,11 @@ module Api
         mismatched_base = skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
 
         if %w[4 5 ex2].include?(job.row)
-          true if mismatched_emp || mismatched_base || mismatched_main
+          if skill.base && !mismatched_base
+            false
+          else
+            true if mismatched_emp || mismatched_main
+          end
         elsif mismatched_emp || mismatched_main
           true
         else

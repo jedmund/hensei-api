@@ -18,8 +18,8 @@ module Api
       end
 
       view :weapons do
-        field :conflicts, if: ->(_fn, _obj, options) { options.key?(:conflict_weapons) } do |_, options|
-          GridWeaponBlueprint.render_as_hash(options[:conflict_weapons], view: :nested)
+        field :conflicts, if: ->(_fn, _obj, options) { options.key?(:conflict_weapon) } do |_, options|
+          GridWeaponBlueprint.render_as_hash(options[:conflict_weapon], view: :nested)
         end
 
         field :incoming, if: ->(_fn, _obj, options) { options.key?(:incoming_weapon) } do |_, options|

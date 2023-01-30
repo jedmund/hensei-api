@@ -5,6 +5,7 @@ gem 'bootsnap'
 gem 'pg'
 gem 'rack-cors'
 gem 'rails'
+gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma'
@@ -43,7 +44,15 @@ gem 'pg_search'
 # Pagination library
 gem 'will_paginate', '~> 3.3'
 
+
 gem 'httparty'
+
+# Migrate and update data alongside your database structure.
+gem 'data_migrate'
+
+# A ruby gem to allow the copying of ActiveRecord objects and their associated children, configurable with a DSL on the model
+gem 'amoeba'
+
 
 group :doc do
   gem 'apipie-rails'
@@ -51,7 +60,7 @@ group :doc do
 end
 
 group :development, :test do
-  gem 'awesome_print'
+  gem 'amazing_print'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'

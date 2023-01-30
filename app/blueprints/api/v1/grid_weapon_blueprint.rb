@@ -18,7 +18,7 @@ module Api
                       [2, 3, 17, 24].include?(w.weapon.series)
                     }
 
-        field :ax, if: ->(_field_name, w, _options) { w.weapon.ax.positive? } do |w|
+        field :ax, if: ->(_field_name, w, _options) { w.weapon.ax } do |w|
           [
             {
               modifier: w.ax_modifier1,
@@ -42,6 +42,10 @@ module Api
       view :full do
         include_view :nested
         association :party, blueprint: PartyBlueprint, view: :minimal
+      end
+
+      view :destroyed do
+        fields :mainhand, :position, :created_at, :updated_at
       end
     end
   end

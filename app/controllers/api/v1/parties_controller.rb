@@ -8,22 +8,25 @@ module Api
       before_action :set, only: %w[update destroy]
 
       def create
-        @party = Party.new(shortcode: random_string)
-        @party.extra = party_params['extra']
+        party = Party.new
+        party.user = current_user if current_user
+        party.attributes = party_params if party_params
 
-        # TODO: Extract this into a different method
-        job = Job.find(party_params['job_id']) if party_params['job_id'].present?
-        if job
-          job_skills = JobSkill.where(job: job.id, main: true)
-          job_skills.each_with_index do |skill, index|
-            @party["skill#{index}_id"] = skill.id
-          end
-        end
+        # unless party_params.empty?
+        #   party.attributes = party_params
+        #
+        #   # TODO: Extract this into a different method
+        #   job = Job.find(party_params['job_id']) if party_params['job_id'].present?
+        #   if job
+        #     job_skills = JobSkill.where(job: job.id, main: true)
+        #     job_skills.each_with_index do |skill, index|
+        #       party["skill#{index}_id"] = skill.id
+        #     end
+        #   end
+        # end
 
-        @party.user = current_user if current_user
-
-        if @party.save!
-          return render json: PartyBlueprint.render(@party, view: :full, root: :party),
+        if party.save!
+          return render json: PartyBlueprint.render(party, view: :full, root: :party),
                         status: :created
         end
 
@@ -41,6 +44,8 @@ module Api
 
         @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
 
+        # TODO: Validate accessory with job
+
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party.save!
 
         render_validation_error_response(@party)
@@ -49,6 +54,22 @@ module Api
       def destroy
         render_unauthorized_response if @party.user != current_user
         return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
+      end
+
+      def remix
+        new_party = @party.amoeba_dup
+        new_party.attributes = {
+          user: current_user,
+          name: remixed_name(@party.name),
+          source_party: @party
+        }
+
+        if new_party.save
+          render json: PartyBlueprint.render(new_party, view: :full, root: :party,
+                                             meta: { remix: true })
+        else
+          render_validation_error_response(new_party)
+        end
       end
 
       def index
@@ -105,7 +126,7 @@ module Api
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                       .to_datetime.beginning_of_day
+                         .to_datetime.beginning_of_day
         end
 
         {}.tap do |hash|
@@ -116,15 +137,31 @@ module Api
         end
       end
 
-      def random_string
-        num_chars = 6
-        o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
-        (0...num_chars).map { o[rand(o.length)] }.join
+      def remixed_name(name)
+        blanked_name = {
+          en: name.blank? ? 'Untitled team' : name,
+          ja: name.blank? ? '無名の編成' : name
+        }
+
+        if current_user
+          case current_user.language
+          when 'en'
+            "Remix of #{blanked_name[:en]}"
+          when 'ja'
+            "#{blanked_name[:ja]}のリミックス"
+          end
+        else
+          "Remix of #{blanked_name[:en]}"
+        end
       end
 
       def set_from_slug
         @party = Party.where('shortcode = ?', params[:id]).first
-        @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
+        if @party
+          @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
+        else
+          render_not_found_response('party')
+        end
       end
 
       def set
@@ -132,6 +169,8 @@ module Api
       end
 
       def party_params
+        return unless params[:party].present?
+
         params.require(:party).permit(
           :user_id,
           :extra,
@@ -139,10 +178,18 @@ module Api
           :description,
           :raid_id,
           :job_id,
+          :accessory_id,
           :skill0_id,
           :skill1_id,
           :skill2_id,
-          :skill3_id
+          :skill3_id,
+          :full_auto,
+          :auto_guard,
+          :charge_attack,
+          :clear_time,
+          :button_count,
+          :turn_count,
+          :chain_count
         )
       end
     end
