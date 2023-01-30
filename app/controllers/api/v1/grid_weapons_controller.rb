@@ -40,7 +40,11 @@ module Api
 
         weapon = GridWeapon.create!(party_id: party.id, weapon_id: incoming.id,
                                     position: resolve_params[:position], uncap_level: uncap_level)
-        render json: GridWeaponBlueprint.render(weapon, view: :nested), status: :created if weapon.save!
+
+        if weapon.save
+          view = render_grid_weapon_view(weapon, resolve_params[:position])
+          render json: view, status: :created
+        end
       end
 
       def update
