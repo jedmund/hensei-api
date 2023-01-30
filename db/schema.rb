@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_28_091710) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_30_114432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -155,6 +154,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_28_091710) do
     t.integer "order"
     t.uuid "base_job_id"
     t.string "granblue_id"
+    t.boolean "accessory", default: false
+    t.integer "accessory_type", default: 0
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
