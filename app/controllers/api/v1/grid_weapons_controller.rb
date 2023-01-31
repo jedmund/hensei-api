@@ -3,12 +3,12 @@
 module Api
   module V1
     class GridWeaponsController < Api::V1::ApiController
-      before_action :set, except: %w[create update_uncap_level]
-
       attr_reader :party, :incoming_weapon
 
+      before_action :set, except: %w[create update_uncap_level]
       before_action :find_party, only: :create
       before_action :find_incoming_weapon, only: :create
+      before_action :authorize, only: %i[create update destroy]
 
       def create
         # Create the GridWeapon with the desired parameters
@@ -121,15 +121,15 @@ module Api
       # Render the conflict view as a string
       def render_conflict_view(conflict_weapon, incoming_weapon, incoming_position)
         ConflictBlueprint.render(nil, view: :weapons,
-                                      conflict_weapon: conflict_weapon,
-                                      incoming_weapon: incoming_weapon,
-                                      incoming_position: incoming_position)
+                                 conflict_weapon: conflict_weapon,
+                                 incoming_weapon: incoming_weapon,
+                                 incoming_position: incoming_position)
       end
 
       def render_grid_weapon_view(grid_weapon, conflict_position)
         GridWeaponBlueprint.render(grid_weapon, view: :full,
-                                                root: :grid_weapon,
-                                                meta: { replaced: conflict_position })
+                                   root: :grid_weapon,
+                                   meta: { replaced: conflict_position })
       end
 
       def save_weapon(weapon)
@@ -181,6 +181,15 @@ module Api
 
       def set
         @weapon = GridWeapon.where('id = ?', params[:id]).first
+      end
+
+      def authorize
+        # Create
+        ap @party
+        unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
+        unauthorized_update = @weapon && @weapon.party && (@weapon.party.user != current_user || @weapon.party.edit_key != edit_key)
+
+        render_unauthorized_response if unauthorized_create || unauthorized_update
       end
 
       # Specify whitelisted properties that can be modified.

@@ -4,6 +4,7 @@ module Api
   module V1
     class JobsController < Api::V1::ApiController
       before_action :set, only: %w[update_job update_job_skills]
+      before_action :authorize, only: %w[update_job update_job_skills]
 
       def all
         render json: JobBlueprint.render(Job.all)
@@ -163,6 +164,10 @@ module Api
         else
           false
         end
+      end
+
+      def authorize
+        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
       end
 
       def set

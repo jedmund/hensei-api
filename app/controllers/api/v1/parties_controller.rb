@@ -6,6 +6,7 @@ module Api
       before_action :set_from_slug,
                     except: %w[create destroy update index favorites]
       before_action :set, only: %w[update destroy]
+      before_action :authorize, only: %w[update destroy]
 
       def create
         party = Party.new
@@ -40,8 +41,6 @@ module Api
       end
 
       def update
-        render_unauthorized_response if @party.user != current_user
-
         @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
 
         # TODO: Validate accessory with job
@@ -52,7 +51,6 @@ module Api
       end
 
       def destroy
-        render_unauthorized_response if @party.user != current_user
         return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
       end
 
@@ -123,6 +121,10 @@ module Api
 
       private
 
+      def authorize
+        render_unauthorized_response if @character.party.user != current_user || @party.edit_key != edit_key
+      end
+
       def build_conditions(params)
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
@@ -174,6 +176,7 @@ module Api
         params.require(:party).permit(
           :user_id,
           :local_id,
+          :edit_key,
           :extra,
           :name,
           :description,
