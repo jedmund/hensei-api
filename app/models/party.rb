@@ -62,6 +62,7 @@ class Party < ApplicationRecord
   has_many :favorites
 
   before_create :set_shortcode
+  before_save :set_edit_key
 
   ##### Amoeba configuration
   amoeba do
@@ -98,6 +99,12 @@ class Party < ApplicationRecord
 
   def set_shortcode
     self.shortcode = random_string
+  end
+
+  def set_edit_key
+    if !self.user
+      self.edit_key = Digest::SHA1.hexdigest([Time.now, rand].join)
+    end
   end
 
   def random_string
