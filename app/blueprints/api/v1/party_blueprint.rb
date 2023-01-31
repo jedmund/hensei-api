@@ -86,6 +86,11 @@ module Api
         include_view :preview
       end
 
+      view :created do
+        include_view :full
+        fields :edit_key
+      end
+      
       view :destroyed do
         fields :name, :description, :created_at, :updated_at
       end

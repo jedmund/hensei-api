@@ -26,7 +26,7 @@ module Api
         # end
 
         if party.save!
-          return render json: PartyBlueprint.render(party, view: :full, root: :party),
+          return render json: PartyBlueprint.render(party, view: :created, root: :party),
                         status: :created
         end
 
