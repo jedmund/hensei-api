@@ -3,12 +3,12 @@
 module Api
   module V1
     class GridSummonsController < Api::V1::ApiController
-      before_action :set, only: %w[update destroy]
-
       attr_reader :party, :incoming_summon
-
+      
+      before_action :set, only: %w[update destroy]
       before_action :find_party, only: :create
       before_action :find_incoming_summon, only: :create
+      before_action :authorize, only: %i[create update destroy]
 
       def create
         # Create the GridSummon with the desired parameters
@@ -92,6 +92,14 @@ module Api
         GridSummonBlueprint.render(grid_summon, view: :nested,
                                    root: :grid_summon,
                                    meta: { replaced: conflict_position })
+      end
+
+      def authorize
+        # Create
+        unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
+        unauthorized_update = @summon && @summon.party && (@summon.party.user != current_user || @summon.party.edit_key != edit_key)
+
+        render_unauthorized_response if unauthorized_create || unauthorized_update
       end
 
       def set

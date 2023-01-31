@@ -68,9 +68,10 @@ module Api
         include_view :characters
         include_view :job_skills
 
+        fields :local_id, :description, :charge_attack, :button_count, :turn_count, :chain_count
+
         association :accessory,
                     blueprint: JobAccessoryBlueprint
-        fields :description, :charge_attack, :button_count, :turn_count, :chain_count
 
         association :source_party,
                     blueprint: PartyBlueprint,
@@ -84,6 +85,11 @@ module Api
 
       view :collection do
         include_view :preview
+      end
+
+      view :created do
+        include_view :full
+        fields :edit_key
       end
 
       view :destroyed do
