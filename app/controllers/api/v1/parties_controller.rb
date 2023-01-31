@@ -173,6 +173,7 @@ module Api
 
         params.require(:party).permit(
           :user_id,
+          :local_id,
           :extra,
           :name,
           :description,

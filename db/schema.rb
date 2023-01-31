@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_31_082521) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -226,6 +226,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_082521) do
     t.integer "characters_count"
     t.integer "summons_count"
     t.string "edit_key"
+    t.uuid "local_id"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
