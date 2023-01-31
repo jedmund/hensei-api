@@ -62,7 +62,7 @@ class Party < ApplicationRecord
   has_many :favorites
 
   before_create :set_shortcode
-  before_save :set_edit_key
+  before_create :set_edit_key
 
   ##### Amoeba configuration
   amoeba do
