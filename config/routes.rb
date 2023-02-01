@@ -11,6 +11,9 @@ Rails.application.routes.draw do
       resources :grid_weapons, only: %i[update destroy]
       resources :grid_characters, only: %i[update destroy]
       resources :grid_summons, only: %i[update destroy]
+      resources :weapons, only: :show
+      resources :characters, only: :show
+      resources :summons, only: :show
       resources :favorites, only: [:create]
 
       get 'version', to: 'api#version'

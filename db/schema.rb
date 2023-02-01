@@ -16,6 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
