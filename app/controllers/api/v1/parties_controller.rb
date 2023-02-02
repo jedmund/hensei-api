@@ -122,7 +122,7 @@ module Api
       private
 
       def authorize
-        render_unauthorized_response if @character.party.user != current_user || @party.edit_key != edit_key
+        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
       end
 
       def build_conditions(params)
