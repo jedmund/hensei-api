@@ -167,7 +167,6 @@ module Api
           output = render_conflict_view([conflict_weapon], incoming_weapon, weapon_params[:position])
           render json: output
         else
-          ap "Moving weapon to new position..."
           # Move the original grid weapon to the new position
           # to preserve keys and other modifications
           old_position = conflict_weapon.position
