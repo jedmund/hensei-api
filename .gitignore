@@ -44,3 +44,5 @@ config/application.yml
 
 .idea/*
 .vscode/*
+
+/config/credentials/production.key
