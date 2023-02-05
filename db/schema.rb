@@ -10,12 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "timescaledb"
+
+  create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
+    t.string "update_type", null: false
+    t.string "version"
+  end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
@@ -47,9 +53,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
-  end
-
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
@@ -67,19 +70,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "perpetuity", default: false, null: false
-    t.integer "awakening_type", default: 0, null: false
-    t.integer "awakening_level", default: 1, null: false
     t.integer "transcendence_step", default: 0, null: false
-    t.integer "ring_modifier1"
-    t.float "ring_strength1"
-    t.integer "ring_modifier2"
-    t.float "ring_strength2"
-    t.integer "ring_modifier3"
-    t.float "ring_strength3"
-    t.integer "ring_modifier4"
-    t.float "ring_strength4"
-    t.integer "earring_modifier"
-    t.float "earring_strength"
+    t.jsonb "ring1", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring2", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring3", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "awakening", default: {"type"=>1, "level"=>1}, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -118,6 +115,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.integer "awakening_level", default: 1, null: false
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
+    t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
+    t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
+    t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
+  end
+
+  create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "job_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "granblue_id", null: false
+    t.integer "rarity"
+    t.date "release_date"
+    t.integer "accessory_type"
+    t.index ["job_id"], name: "index_job_accessories_on_job_id"
   end
 
   create_table "job_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -143,6 +154,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.boolean "ml", default: false
     t.integer "order"
     t.uuid "base_job_id"
+    t.string "granblue_id"
+    t.boolean "accessory", default: false
+    t.integer "accessory_type", default: 0
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
@@ -208,11 +222,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.integer "button_count"
     t.integer "chain_count"
     t.integer "turn_count"
+    t.uuid "source_party_id"
+    t.uuid "accessory_id"
+    t.integer "characters_count"
+    t.integer "summons_count"
+    t.string "edit_key"
+    t.uuid "local_id"
+    t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
     t.index ["skill2_id"], name: "index_parties_on_skill2_id"
     t.index ["skill3_id"], name: "index_parties_on_skill3_id"
+    t.index ["source_party_id"], name: "index_parties_on_source_party_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
@@ -246,6 +268,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
     t.boolean "subaura", default: false, null: false
     t.boolean "limit", default: false, null: false
     t.boolean "xlb", default: false, null: false
+    t.integer "max_atk_xlb"
+    t.integer "max_hp_xlb"
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
@@ -314,11 +338,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_180458) do
   add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "job_accessories", column: "accessory_id"
   add_foreign_key "parties", "job_skills", column: "skill0_id"
   add_foreign_key "parties", "job_skills", column: "skill1_id"
   add_foreign_key "parties", "job_skills", column: "skill2_id"
   add_foreign_key "parties", "job_skills", column: "skill3_id"
   add_foreign_key "parties", "jobs"
+  add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
 end

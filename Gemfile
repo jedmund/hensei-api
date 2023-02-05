@@ -5,6 +5,7 @@ gem 'bootsnap'
 gem 'pg'
 gem 'rack-cors'
 gem 'rails'
+gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma'
@@ -45,6 +46,9 @@ gem 'will_paginate', '~> 3.3'
 
 # Migrate and update data alongside your database structure.
 gem 'data_migrate'
+
+# A ruby gem to allow the copying of ActiveRecord objects and their associated children, configurable with a DSL on the model
+gem 'amoeba'
 
 group :doc do
   gem 'apipie-rails'

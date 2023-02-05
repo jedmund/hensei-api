@@ -3,12 +3,12 @@
 module Api
   module V1
     class GridWeaponsController < Api::V1::ApiController
-      before_action :set, except: %w[create update_uncap_level destroy]
-
       attr_reader :party, :incoming_weapon
 
+      before_action :set, except: %w[create update_uncap_level]
       before_action :find_party, only: :create
       before_action :find_incoming_weapon, only: :create
+      before_action :authorize, only: %i[create update destroy]
 
       def create
         # Create the GridWeapon with the desired parameters
@@ -40,7 +40,11 @@ module Api
 
         weapon = GridWeapon.create!(party_id: party.id, weapon_id: incoming.id,
                                     position: resolve_params[:position], uncap_level: uncap_level)
-        render json: GridWeaponBlueprint.render(weapon, view: :nested), status: :created if weapon.save!
+
+        if weapon.save
+          view = render_grid_weapon_view(weapon, resolve_params[:position])
+          render json: view, status: :created
+        end
       end
 
       def update
@@ -55,8 +59,10 @@ module Api
         render json: GridWeaponBlueprint.render(@weapon, view: :nested) if @weapon.update(weapon_params)
       end
 
-      # TODO: Implement removing characters
-      def destroy; end
+      def destroy
+        render_unauthorized_response if @weapon.party.user != current_user
+        return render json: GridCharacterBlueprint.render(@weapon, view: :destroyed) if @weapon.destroy
+      end
 
       def update_uncap_level
         weapon = GridWeapon.find(weapon_params[:id])
@@ -175,6 +181,15 @@ module Api
 
       def set
         @weapon = GridWeapon.where('id = ?', params[:id]).first
+      end
+
+      def authorize
+        # Create
+        ap @party
+        unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
+        unauthorized_update = @weapon && @weapon.party && (@weapon.party.user != current_user || @weapon.party.edit_key != edit_key)
+
+        render_unauthorized_response if unauthorized_create || unauthorized_update
       end
 
       # Specify whitelisted properties that can be modified.
