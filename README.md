@@ -2,13 +2,11 @@
 
 **hensei-api** is the backend for [granblue.team](https://app.granblue.team/), an app for saving and sharing teams for [Granblue Fantasy](https://game.granbluefantasy.jp).
 
-## Getting Started
-
 **Please note that these instructions are a work-in-progress!**
 
 ### Installing Ruby
 
-You'll need to install ruby-3.0.0. We recommend using [RVM](https://rvm.io/) and creating a gemset to manage your Ruby installation.
+You'll need to install ruby-3.0.0. We recommend using [RVM](https://rvm.io/) and creating a gemset to manage your Ruby installation. Before proceeding, install the GPG keys from the official RVM website.
 
 ```
 \curl -sSL https://get.rvm.io | bash -s stable
