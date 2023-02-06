@@ -140,17 +140,27 @@ module Api
 
         # Perform the query
         skills = if search_params[:query].present? && search_params[:query].length >= 2
-                   JobSkill.method("#{locale}_search").call(search_params[:query])
+                   JobSkill.joins(:job)
+                           .method("#{locale}_search").call(search_params[:query])
                            .where(conditions)
                            .where(job: job.id, main: false)
                            .or(
-                             JobSkill.method("#{locale}_search").call(search_params[:query])
+                             JobSkill.joins(:job)
+                                     .method("#{locale}_search").call(search_params[:query])
                                      .where(conditions)
                                      .where(sub: true)
                                      .where.not(job: job.id)
                            )
+                           .or(
+                             JobSkill.joins(:job)
+                                     .method("#{locale}_search").call(search_params[:query])
+                                     .where(conditions)
+                                     .where(job: { base_job: job.base_job.id }, emp: true)
+                                     .where.not(job: job.id)
+                           )
                  else
                    JobSkill.all
+                           .joins(:job)
                            .where(conditions)
                            .where(job: job.id, main: false)
                            .or(
@@ -163,6 +173,13 @@ module Api
                              JobSkill.all
                                      .where(conditions)
                                      .where(job: job.base_job.id, base: true)
+                                     .where.not(job: job.id)
+                           )
+                           .or(
+                             JobSkill.all
+                                     .where(conditions)
+                                     .joins(:job)
+                                     .where(job: { base_job: job.base_job.id }, emp: true)
                                      .where.not(job: job.id)
                            )
                  end
