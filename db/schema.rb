@@ -150,12 +150,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.integer "proficiency1"
     t.integer "proficiency2"
     t.string "row"
-    t.boolean "ml", default: false
+    t.boolean "master_level", default: false, null: false
     t.integer "order"
     t.uuid "base_job_id"
     t.string "granblue_id"
     t.boolean "accessory", default: false
     t.integer "accessory_type", default: 0
+    t.boolean "ultimate_mastery", default: false, null: false
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
@@ -227,7 +228,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.integer "summons_count"
     t.string "edit_key"
     t.uuid "local_id"
-    t.boolean "ultimate_mastery", default: false, null: false
+    t.integer "ultimate_mastery"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
