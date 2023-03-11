@@ -52,6 +52,7 @@ module Api
       end
 
       view :jobs do
+        fields :master_level, :ultimate_mastery
         association :job,
                     blueprint: JobBlueprint
         include_view :job_skills

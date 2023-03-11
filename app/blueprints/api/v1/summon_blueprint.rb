@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :granblue_id, :element, :rarity, :max_level
+      fields :granblue_id, :element, :rarity
 
       field :uncap do |w|
         {
@@ -20,23 +20,23 @@ module Api
         }
       end
 
-      field :hp do |w|
+      field :stats do |w|
         {
-          min_hp: w.min_hp,
-          max_hp: w.max_hp,
-          max_hp_flb: w.max_hp_flb,
-          max_hp_ulb: w.max_hp_ulb,
-          max_hp_xlb: w.max_hp_xlb
-        }
-      end
-
-      field :atk do |w|
-        {
-          min_atk: w.min_atk,
-          max_atk: w.max_atk,
-          max_atk_flb: w.max_atk_flb,
-          max_atk_ulb: w.max_atk_ulb,
-          max_atk_xlb: w.max_atk_xlb
+          atk: {
+            min_atk: w.min_atk,
+            max_atk: w.max_atk,
+            max_atk_flb: w.max_atk_flb,
+            max_atk_ulb: w.max_atk_ulb,
+            max_atk_xlb: w.max_atk_xlb
+          },
+          hp: {
+            min_hp: w.min_hp,
+            max_hp: w.max_hp,
+            max_hp_flb: w.max_hp_flb,
+            max_hp_ulb: w.max_hp_ulb,
+            max_hp_xlb: w.max_hp_xlb
+          },
+          max_level: w.max_level,
         }
       end
     end
