@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_11_092812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -20,6 +20,50 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
     t.string "version"
+  end
+
+  create_table "character_charge_attacks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "character_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.integer "order", null: false
+    t.string "form"
+    t.uuid "effects", array: true
+    t.index ["character_id"], name: "index_character_charge_attacks_on_character_id"
+  end
+
+  create_table "character_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "character_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.integer "type", null: false
+    t.integer "position", null: false
+    t.string "form"
+    t.integer "cooldown", default: 0, null: false
+    t.integer "lockout", default: 0, null: false
+    t.integer "duration", array: true
+    t.boolean "recast", default: false, null: false
+    t.integer "obtained_at", default: 1, null: false
+    t.uuid "effects", array: true
+    t.index ["character_id"], name: "index_character_skills_on_character_id"
+  end
+
+  create_table "character_support_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "character_id"
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.integer "position", null: false
+    t.integer "obtained_at"
+    t.boolean "emp", default: false, null: false
+    t.boolean "transcendence", default: false, null: false
+    t.uuid "effects", array: true
+    t.index ["character_id"], name: "index_character_support_skills_on_character_id"
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -49,7 +93,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
     t.integer "character_id", default: [], null: false, array: true
+    t.string "nicknames_en", default: [], null: false, array: true
+    t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
+  end
+
+  create_table "effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.integer "accuracy_value"
+    t.string "accuracy_suffix"
+    t.string "accuracy_comparator"
+    t.jsonb "strength", array: true
+    t.integer "healing_cap"
+    t.boolean "duration_indefinite", default: false, null: false
+    t.integer "duration_value"
+    t.string "duration_unit"
+    t.string "notes_en"
+    t.string "notes_jp"
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -76,6 +139,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.jsonb "awakening", default: {"type"=>1, "level"=>1}, null: false
+    t.boolean "skill0_enabled", default: true, null: false
+    t.boolean "skill1_enabled", default: true, null: false
+    t.boolean "skill2_enabled", default: true, null: false
+    t.boolean "skill3_enabled", default: true, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -90,6 +157,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "transcendence_step", default: 0, null: false
+    t.boolean "quick_summon", default: false, null: false
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
   end
@@ -271,6 +339,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.boolean "xlb", default: false, null: false
     t.integer "max_atk_xlb"
     t.integer "max_hp_xlb"
+    t.string "nicknames_en", default: [], null: false, array: true
+    t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
@@ -325,6 +395,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
     t.boolean "limit", default: false, null: false
     t.boolean "ax", default: false, null: false
     t.integer "awakening_types", default: [], array: true
+    t.string "nicknames_en", default: [], null: false, array: true
+    t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
