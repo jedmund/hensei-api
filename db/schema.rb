@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_11_065331) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -51,9 +50,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
     t.integer "max_atk_ulb"
     t.integer "character_id", default: [], null: false, array: true
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
-  end
-
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -213,7 +209,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
     t.integer "element"
     t.integer "weapons_count"
     t.uuid "job_id"
-    t.integer "ml"
+    t.integer "master_level"
     t.uuid "skill1_id"
     t.uuid "skill2_id"
     t.uuid "skill3_id"
@@ -231,6 +227,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
     t.integer "summons_count"
     t.string "edit_key"
     t.uuid "local_id"
+    t.boolean "ultimate_mastery", default: false, null: false
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
@@ -326,6 +323,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
     t.boolean "awakening", default: true, null: false
     t.boolean "limit", default: false, null: false
     t.boolean "ax", default: false, null: false
+    t.integer "awakening_types", default: [], array: true
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 

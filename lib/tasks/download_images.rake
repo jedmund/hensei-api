@@ -106,7 +106,7 @@ namespace :granblue do
 
     puts "Summon #{id}"
     sizes.each do |size|
-      path = "#{Rails.root}/download/character-#{size}"
+      path = "#{Rails.root}/download/summon-#{size}"
       download_images(url[size.to_sym], size, path)
     end
   end
