@@ -71,7 +71,7 @@ module Api
 
         fields :local_id, :description, :charge_attack,
                :button_count, :turn_count, :chain_count,
-               :master_level
+               :master_level, :ultimate_mastery
 
         association :accessory,
                     blueprint: JobAccessoryBlueprint
