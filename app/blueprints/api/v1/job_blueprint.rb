@@ -17,7 +17,7 @@ module Api
         ]
       end
 
-      fields :granblue_id, :row, :ml, :order, :accessory, :accessory_type
+      fields :granblue_id, :row, :master_level, :order, :accessory, :accessory_type
     end
   end
 end
