@@ -114,6 +114,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_11_092812) do
     t.string "notes_en"
     t.string "notes_jp"
   end
+  
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
