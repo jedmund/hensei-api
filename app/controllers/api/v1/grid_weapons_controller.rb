@@ -185,7 +185,6 @@ module Api
 
       def authorize
         # Create
-        ap @party
         unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
         unauthorized_update = @weapon && @weapon.party && (@weapon.party.user != current_user || @weapon.party.edit_key != edit_key)
 
