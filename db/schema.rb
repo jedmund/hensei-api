@@ -49,9 +49,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_113023) do
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
     t.integer "character_id", default: [], null: false, array: true
-    t.string "nicknames_en", default: [], null: false, array: true
-    t.string "nicknames_jp", default: [], null: false, array: true
-    t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -78,10 +75,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_113023) do
     t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.jsonb "awakening", default: {"type"=>1, "level"=>1}, null: false
-    t.boolean "skill0_enabled", default: true, null: false
-    t.boolean "skill1_enabled", default: true, null: false
-    t.boolean "skill2_enabled", default: true, null: false
-    t.boolean "skill3_enabled", default: true, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -96,7 +89,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_113023) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "transcendence_step", default: 0, null: false
-    t.boolean "quick_summon", default: false, null: false
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
   end
@@ -278,9 +270,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_113023) do
     t.boolean "xlb", default: false, null: false
     t.integer "max_atk_xlb"
     t.integer "max_hp_xlb"
-    t.string "nicknames_en", default: [], null: false, array: true
-    t.string "nicknames_jp", default: [], null: false, array: true
-    t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -335,9 +324,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_113023) do
     t.boolean "limit", default: false, null: false
     t.boolean "ax", default: false, null: false
     t.integer "awakening_types", default: [], array: true
-    t.string "nicknames_en", default: [], null: false, array: true
-    t.string "nicknames_jp", default: [], null: false, array: true
-    t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
   add_foreign_key "favorites", "parties"
