@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :slug, :series, :slot, :group, :order
+      fields :granblue_id, :slug, :series, :slot, :group, :order
     end
   end
 end
