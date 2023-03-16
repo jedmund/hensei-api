@@ -65,7 +65,7 @@ module Api
         new_party.local_id = party_params[:local_id] if !party_params.nil?
 
         if new_party.save
-          render json: PartyBlueprint.render(new_party, view: :full, root: :party,
+          render json: PartyBlueprint.render(new_party, view: :created, root: :party,
                                              meta: { remix: true })
         else
           render_validation_error_response(new_party)
