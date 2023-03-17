@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_15_095656) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_15_103037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -154,7 +154,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_095656) do
     t.integer "proficiency1"
     t.integer "proficiency2"
     t.string "row"
-    t.boolean "ml", default: false
+    t.boolean "master_level", default: false, null: false
+    t.boolean "ultimate_mastery", default: false, null: false
     t.integer "order"
     t.uuid "base_job_id"
     t.string "granblue_id"
@@ -213,7 +214,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_095656) do
     t.integer "element"
     t.integer "weapons_count"
     t.uuid "job_id"
-    t.integer "ml"
+    t.integer "master_level"
+    t.integer "ultimate_mastery"
     t.uuid "skill1_id"
     t.uuid "skill2_id"
     t.uuid "skill3_id"

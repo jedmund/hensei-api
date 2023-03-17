@@ -68,7 +68,9 @@ module Api
         include_view :characters
         include_view :job_skills
 
-        fields :local_id, :description, :charge_attack, :button_count, :turn_count, :chain_count
+        fields :local_id, :description, :charge_attack,
+               :button_count, :turn_count, :chain_count,
+               :master_level, :ultimate_mastery
 
         association :accessory,
                     blueprint: JobAccessoryBlueprint
