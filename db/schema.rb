@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_15_095656) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -74,12 +74,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
     t.datetime "updated_at", null: false
     t.boolean "perpetuity", default: false, null: false
     t.integer "transcendence_step", default: 0, null: false
-    t.jsonb "ring1", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring2", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring3", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "awakening", default: {"type"=>1, "level"=>1}, null: false
+    t.jsonb "ring1", default: { "modifier" => nil, "strength" => nil }, null: false
+    t.jsonb "ring2", default: { "modifier" => nil, "strength" => nil }, null: false
+    t.jsonb "ring3", default: { "modifier" => nil, "strength" => nil }, null: false
+    t.jsonb "ring4", default: { "modifier" => nil, "strength" => nil }, null: false
+    t.jsonb "earring", default: { "modifier" => nil, "strength" => nil }, null: false
+    t.jsonb "awakening", default: { "type" => 1, "level" => 1 }, null: false
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -299,6 +299,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_31_084343) do
     t.integer "group"
     t.integer "order"
     t.string "slug"
+    t.integer "granblue_id"
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
