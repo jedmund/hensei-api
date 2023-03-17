@@ -66,6 +66,10 @@ class Party < ApplicationRecord
 
   ##### Amoeba configuration
   amoeba do
+    set weapons_count: 0
+    set characters_count: 0
+    set summons_count: 0
+
     nullify :description
     nullify :shortcode
 
