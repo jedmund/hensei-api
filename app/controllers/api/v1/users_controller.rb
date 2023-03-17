@@ -49,6 +49,9 @@ module Api
 
           parties = Party
                       .where(conditions)
+                      .where(name_quality)
+                      .where(user_quality)
+                      .where(original)
                       .order(created_at: :desc)
                       .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
                       .each do |party|
@@ -86,12 +89,60 @@ module Api
           start_time = (DateTime.current - params['recency'].to_i.seconds)
                          .to_datetime.beginning_of_day
         end
+        min_characters_count = params['min_characters'] ? params['min_characters'] : 3
+        min_summons_count = params['min_summons'] ? params['min_summons'] : 2
+        min_weapons_count = params['min_weapons'] ? params['min_weapons'] : 5
+
+        max_clear_time = params['max_clear_time'] ? params['max_clear_time'] : 5400
 
         {}.tap do |hash|
+          # Basic filters
           hash[:element] = params['element'] unless params['element'].blank?
           hash[:raid] = params['raid'] unless params['raid'].blank?
           hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
+
+          # Advanced filters: Team parameters
+          hash[:full_auto] = params['full_auto'] unless params['full_auto'].blank?
+          hash[:charge_attack] = params['charge_attack'] unless params['charge_attack'].blank?
+
+          hash[:turn_count] = params['max_turns'] unless params['max_turns'].blank?
+          hash[:button_count] = params['max_buttons'] unless params['max_buttons'].blank?
+          hash[:clear_time] = 0..max_clear_time
+
+          # Advanced filters: Object counts
+          hash[:characters_count] = min_characters_count..5
+          hash[:summons_count] = min_summons_count..8
+          hash[:weapons_count] = min_weapons_count..13
         end
+      end
+
+      def original
+        "source_party_id IS NULL" unless params['original'].blank? || params['original'] == '0'
+      end
+
+      def user_quality
+        "user_id IS NOT NULL" unless params[:user_quality].nil? || params[:user_quality] == "0"
+      end
+
+      def name_quality
+        low_quality = [
+          "Untitled",
+          "Remix of Untitled",
+          "Remix of Remix of Untitled",
+          "Remix of Remix of Remix of Untitled",
+          "Remix of Remix of Remix of Remix of Untitled",
+          "Remix of Remix of Remix of Remix of Remix of Untitled",
+          "無題",
+          "無題のリミックス",
+          "無題のリミックスのリミックス",
+          "無題のリミックスのリミックスのリミックス",
+          "無題のリミックスのリミックスのリミックスのリミックス",
+          "無題のリミックスのリミックスのリミックスのリミックスのリミックス"
+        ]
+
+        joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
+
+        "name NOT IN (#{joined_names})" unless params[:name_quality].nil? || params[:name_quality] == "0"
       end
 
       # Specify whitelisted properties that can be modified.
