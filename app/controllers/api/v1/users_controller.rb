@@ -8,6 +8,16 @@ module Api
       before_action :set, except: %w[create check_email check_username]
       before_action :set_by_id, only: %w[info update]
 
+      MAX_CHARACTERS = 5
+      MAX_SUMMONS = 8
+      MAX_WEAPONS = 13
+
+      DEFAULT_MIN_CHARACTERS = 3
+      DEFAULT_MIN_SUMMONS = 2
+      DEFAULT_MIN_WEAPONS = 5
+
+      DEFAULT_MAX_CLEAR_TIME = 5400
+
       def create
         user = User.new(user_params)
 
@@ -44,8 +54,17 @@ module Api
           render_not_found_response('user')
         else
 
-          conditions = build_conditions(request.params)
+          conditions = build_conditions
           conditions[:user_id] = @user.id
+
+          @parties = Party
+                       .where(conditions)
+                       .where(name_quality)
+                       .where(user_quality)
+                       .where(original)
+                       .order(created_at: :desc)
+                       .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
+                       .each { |party| party.favorited = party.is_favorited(current_user) }
 
           parties = Party
                       .where(conditions)
@@ -84,35 +103,40 @@ module Api
 
       private
 
-      def build_conditions(params)
+      def build_conditions
+        params = request.params
+
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
                          .to_datetime.beginning_of_day
         end
-        min_characters_count = params['min_characters'] ? params['min_characters'] : 3
-        min_summons_count = params['min_summons'] ? params['min_summons'] : 2
-        min_weapons_count = params['min_weapons'] ? params['min_weapons'] : 5
 
-        max_clear_time = params['max_clear_time'] ? params['max_clear_time'] : 5400
+        min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i
+        min_summons_count = params['summons_count'].blank? ? DEFAULT_MIN_SUMMONS : params['summons_count'].to_i
+        min_weapons_count = params['weapons_count'].blank? ? DEFAULT_MIN_WEAPONS : params['weapons_count'].to_i
+        max_clear_time = params['max_clear_time'].blank? ? DEFAULT_MAX_CLEAR_TIME : params['max_clear_time'].to_i
 
         {}.tap do |hash|
           # Basic filters
-          hash[:element] = params['element'] unless params['element'].blank?
+          hash[:element] = params['element'].to_i unless params['element'].blank?
           hash[:raid] = params['raid'] unless params['raid'].blank?
           hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
 
           # Advanced filters: Team parameters
-          hash[:full_auto] = params['full_auto'] unless params['full_auto'].blank?
-          hash[:charge_attack] = params['charge_attack'] unless params['charge_attack'].blank?
+          hash[:full_auto] = params['full_auto'].to_i unless params['full_auto'].blank? || params['full_auto'].to_i == -1
+          hash[:auto_guard] = params['auto_guard'].to_i unless params['auto_guard'].blank? || params['auto_guard'].to_i == -1
+          hash[:charge_attack] = params['charge_attack'].to_i unless params['charge_attack'].blank? || params['charge_attack'].to_i == -1
 
-          hash[:turn_count] = params['max_turns'] unless params['max_turns'].blank?
-          hash[:button_count] = params['max_buttons'] unless params['max_buttons'].blank?
-          hash[:clear_time] = 0..max_clear_time
+          # Turn count of 0 will not be displayed, so disallow on the frontend or set default to 1
+          # How do we do the same for button count since that can reasonably be 1?
+          # hash[:turn_count] = params['turn_count'].to_i unless params['turn_count'].blank? || params['turn_count'].to_i <= 0
+          # hash[:button_count] = params['button_count'].to_i unless params['button_count'].blank?
+          # hash[:clear_time] = 0..max_clear_time
 
           # Advanced filters: Object counts
-          hash[:characters_count] = min_characters_count..5
-          hash[:summons_count] = min_summons_count..8
-          hash[:weapons_count] = min_weapons_count..13
+          hash[:characters_count] = min_characters_count..MAX_CHARACTERS
+          hash[:summons_count] = min_summons_count..MAX_SUMMONS
+          hash[:weapons_count] = min_weapons_count..MAX_WEAPONS
         end
       end
 
