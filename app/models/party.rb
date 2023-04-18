@@ -84,7 +84,7 @@ class Party < ApplicationRecord
   attr_accessor :favorited
 
   def is_favorited(user)
-    user.favorite_parties.include? self
+    user.favorite_parties.include? self if user
   end
 
   def is_remix
