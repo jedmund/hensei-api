@@ -34,12 +34,15 @@ Rails.application.routes.draw do
       post 'search/weapons', to: 'search#weapons'
       post 'search/summons', to: 'search#summons'
       post 'search/job_skills', to: 'search#job_skills'
+      post 'search/guidebooks', to: 'search#guidebooks'
 
       get 'jobs', to: 'jobs#all'
 
       get 'jobs/skills', to: 'job_skills#all'
       get 'jobs/:id/skills', to: 'job_skills#job'
       get 'jobs/:id/accessories', to: 'job_accessories#job'
+
+      get 'guidebooks', to: 'guidebooks#all'
 
       get 'raids', to: 'raids#all'
       get 'weapon_keys', to: 'weapon_keys#all'
