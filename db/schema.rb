@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_18_061932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -187,6 +187,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
   end
 
+  create_table "guidebooks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
   create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "job_id"
     t.string "name_en", null: false
@@ -297,6 +306,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.string "edit_key"
     t.uuid "local_id"
     t.integer "ultimate_mastery"
+    t.uuid "guidebooks", default: [], null: false, array: true
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
