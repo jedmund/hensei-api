@@ -241,6 +241,8 @@ module Api
       end
 
       def party_params
+        ap "Params are..."
+        ap params
         return unless params[:party].present?
 
         params.require(:party).permit(
@@ -263,7 +265,10 @@ module Api
           :clear_time,
           :button_count,
           :turn_count,
-          :chain_count
+          :chain_count,
+          :guidebook0_id,
+          :guidebook1_id,
+          :guidebook2_id
         )
       end
     end

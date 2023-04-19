@@ -41,6 +41,21 @@ class Party < ApplicationRecord
              class_name: 'JobSkill',
              optional: true
 
+  belongs_to :guidebook0,
+             foreign_key: 'guidebook0_id',
+             class_name: 'Guidebook',
+             optional: true
+
+  belongs_to :guidebook1,
+             foreign_key: 'guidebook1_id',
+             class_name: 'Guidebook',
+             optional: true
+
+  belongs_to :guidebook2,
+             foreign_key: 'guidebook2_id',
+             class_name: 'Guidebook',
+             optional: true
+
   has_many :characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
