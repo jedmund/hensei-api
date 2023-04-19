@@ -12,8 +12,8 @@ module Api
 
       field :description do |book|
         {
-          en: book.name_en,
-          ja: book.name_jp
+          en: book.description_en,
+          ja: book.description_jp
         }
       end
 
