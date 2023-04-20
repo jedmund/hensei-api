@@ -41,11 +41,6 @@ class Party < ApplicationRecord
              class_name: 'JobSkill',
              optional: true
 
-  belongs_to :guidebook0,
-             foreign_key: 'guidebook0_id',
-             class_name: 'Guidebook',
-             optional: true
-
   belongs_to :guidebook1,
              foreign_key: 'guidebook1_id',
              class_name: 'Guidebook',
@@ -53,6 +48,11 @@ class Party < ApplicationRecord
 
   belongs_to :guidebook2,
              foreign_key: 'guidebook2_id',
+             class_name: 'Guidebook',
+             optional: true
+
+  belongs_to :guidebook3,
+             foreign_key: 'guidebook3_id',
              class_name: 'Guidebook',
              optional: true
 
@@ -95,6 +95,7 @@ class Party < ApplicationRecord
 
   ##### ActiveRecord Validations
   validate :skills_are_unique
+  validate :guidebooks_are_unique
 
   attr_accessor :favorited
 
@@ -144,5 +145,18 @@ class Party < ApplicationRecord
     end
 
     errors.add(:job_skills, 'must be unique')
+  end
+
+  def guidebooks_are_unique
+    guidebooks = [guidebook1, guidebook2, guidebook3].compact
+    return if guidebooks.uniq.length == guidebooks.length
+    
+    guidebooks.each_with_index do |book, index|
+      next if index.zero?
+
+      errors.add(:"guidebook#{index + 1}", 'must be unique') if guidebooks[0...index].include?(book)
+    end
+
+    errors.add(:guidebooks, 'must be unique')
   end
 end

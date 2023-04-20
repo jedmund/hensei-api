@@ -55,8 +55,8 @@ module Api
 
         # TODO: Validate accessory with job
 
-        return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party.save!
-
+        return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party.save
+        
         render_validation_error_response(@party)
       end
 
@@ -241,8 +241,6 @@ module Api
       end
 
       def party_params
-        ap "Params are..."
-        ap params
         return unless params[:party].present?
 
         params.require(:party).permit(
@@ -266,9 +264,9 @@ module Api
           :button_count,
           :turn_count,
           :chain_count,
-          :guidebook0_id,
           :guidebook1_id,
-          :guidebook2_id
+          :guidebook2_id,
+          :guidebook3_id
         )
       end
     end
