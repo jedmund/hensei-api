@@ -196,6 +196,26 @@ module Api
                                               })
       end
 
+      def guidebooks
+        # Perform the query
+        books = if search_params[:query].present? && search_params[:query].length >= 2
+                  Guidebook.method("#{locale}_search").call(search_params[:query])
+                else
+                  Guidebook.all
+                end
+
+        count = books.length
+        paginated = books.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+
+        render json: GuidebookBlueprint.render(paginated,
+                                               root: :results,
+                                               meta: {
+                                                 count: count,
+                                                 total_pages: total_pages(count),
+                                                 per_page: SEARCH_PER_PAGE
+                                               })
+      end
+
       private
 
       def total_pages(count)

@@ -40,6 +40,14 @@ module Api
           p.is_remix
         end
 
+        field :guidebooks do |p|
+          {
+            '1' => !p.guidebook1.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook1) : nil,
+            '2' => !p.guidebook2.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook2) : nil,
+            '3' => !p.guidebook3.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook3) : nil
+          }
+        end
+
         association :raid,
                     blueprint: RaidBlueprint
 
