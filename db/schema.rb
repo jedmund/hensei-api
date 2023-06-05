@@ -147,6 +147,29 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_115422) do
     t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
   end
 
+  create_table "gacha", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "premium"
+    t.boolean "classic"
+    t.boolean "flash"
+    t.boolean "legend"
+    t.boolean "valentines"
+    t.boolean "summer"
+    t.boolean "halloween"
+    t.boolean "holiday"
+    t.string "drawable_type"
+    t.uuid "drawable_id"
+    t.index ["drawable_id"], name: "index_gacha_on_drawable_id", unique: true
+    t.index ["drawable_type", "drawable_id"], name: "index_gacha_on_drawable"
+  end
+
+  create_table "gacha_rateups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "gacha_id"
+    t.string "user_id"
+    t.decimal "rate"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
+  end
+
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id"
     t.uuid "character_id"
@@ -208,6 +231,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_115422) do
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
     t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
     t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
+  end
+
+  create_table "guidebooks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "guidebooks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -332,7 +364,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_115422) do
     t.uuid "guidebook3_id"
     t.uuid "guidebook1_id"
     t.uuid "guidebook2_id"
+    t.uuid "guidebook3_id"
+    t.uuid "guidebook1_id"
+    t.uuid "guidebook2_id"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
+    t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
+    t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
+    t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
@@ -462,7 +500,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_115422) do
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.uuid "recruits_id"
+    t.uuid "recruits_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
+    t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
     t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
   end
 
@@ -478,6 +518,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_115422) do
   add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "guidebooks", column: "guidebook1_id"
+  add_foreign_key "parties", "guidebooks", column: "guidebook2_id"
+  add_foreign_key "parties", "guidebooks", column: "guidebook3_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook1_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook2_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook3_id"
