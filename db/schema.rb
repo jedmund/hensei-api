@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -124,6 +124,29 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
+  create_table "gacha", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "premium"
+    t.boolean "classic"
+    t.boolean "flash"
+    t.boolean "legend"
+    t.boolean "valentines"
+    t.boolean "summer"
+    t.boolean "halloween"
+    t.boolean "holiday"
+    t.string "drawable_type"
+    t.uuid "drawable_id"
+    t.index ["drawable_id"], name: "index_gacha_on_drawable_id", unique: true
+    t.index ["drawable_type", "drawable_id"], name: "index_gacha_on_drawable"
+  end
+
+  create_table "gacha_rateups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "gacha_id"
+    t.string "user_id"
+    t.decimal "rate"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
+  end
+
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id"
     t.uuid "character_id"
@@ -185,6 +208,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
     t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
     t.index ["weapon_key3_id"], name: "index_grid_weapons_on_weapon_key3_id"
+  end
+
+  create_table "guidebooks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -297,7 +329,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.string "edit_key"
     t.uuid "local_id"
     t.integer "ultimate_mastery"
+    t.uuid "guidebook3_id"
+    t.uuid "guidebook1_id"
+    t.uuid "guidebook2_id"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
+    t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
+    t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
+    t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
@@ -314,6 +352,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.integer "group"
     t.integer "element"
     t.string "slug"
+  end
+
+  create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "guild_ids", null: false, array: true
+    t.integer "crystals", default: 0
+    t.integer "tickets", default: 0
+    t.integer "ten_tickets", default: 0
+    t.string "target_type"
+    t.bigint "target_id"
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "target_memo"
+    t.index ["target_type", "target_id"], name: "index_sparks_on_target"
+    t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
   end
 
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -398,7 +450,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
     t.integer "awakening_types", default: [], array: true
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.uuid "recruits_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
+    t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
   end
 
   add_foreign_key "favorites", "parties"
@@ -413,6 +467,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_115930) do
   add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "guidebooks", column: "guidebook1_id"
+  add_foreign_key "parties", "guidebooks", column: "guidebook2_id"
+  add_foreign_key "parties", "guidebooks", column: "guidebook3_id"
   add_foreign_key "parties", "job_accessories", column: "accessory_id"
   add_foreign_key "parties", "job_skills", column: "skill0_id"
   add_foreign_key "parties", "job_skills", column: "skill1_id"
