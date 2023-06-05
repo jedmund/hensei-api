@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_31_115422) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -345,13 +345,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
+  create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.integer "difficulty"
+    t.integer "order", null: false
+    t.integer "section", default: 1, null: false
+    t.boolean "extra", default: false, null: false
+    t.boolean "hl", default: true, null: false
+  end
+
   create_table "raids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
     t.integer "level"
-    t.integer "group"
     t.integer "element"
     t.string "slug"
+    t.uuid "group_id"
+    t.index ["group_id"], name: "index_raids_on_group_id"
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -479,4 +490,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
   add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
+  add_foreign_key "raids", "raid_groups", column: "group_id"
 end
