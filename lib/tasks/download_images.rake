@@ -106,7 +106,7 @@ namespace :granblue do
 
     puts "Summon #{id}"
     sizes.each do |size|
-      path = "#{Rails.root}/download/character-#{size}"
+      path = "#{Rails.root}/download/summon-#{size}"
       download_images(url[size.to_sym], size, path)
     end
   end
@@ -125,7 +125,10 @@ namespace :granblue do
       elsif object == 'weapon'
         download_weapon_images(id)
       elsif object == 'summon'
-        download_summon_images(id)
+        download_summon_images("#{id}")
+        download_summon_images("#{id}_02")
+        download_summon_images("#{id}_03")
+        download_summon_images("#{id}_04")
       end
     end
   end
