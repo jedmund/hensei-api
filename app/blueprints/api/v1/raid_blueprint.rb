@@ -3,14 +3,21 @@
 module Api
   module V1
     class RaidBlueprint < ApiBlueprint
-      field :name do |raid|
-        {
-          en: raid.name_en,
-          ja: raid.name_jp
-        }
+      view :nested do
+        field :name do |raid|
+          {
+            en: raid.name_en,
+            ja: raid.name_jp
+          }
+        end
+
+        fields :slug, :level, :element
       end
 
-      fields :slug, :level, :group, :element
+      view :full do
+        include_view :nested
+        association :group, blueprint: RaidGroupBlueprint
+      end
     end
   end
 end
