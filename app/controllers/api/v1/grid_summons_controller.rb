@@ -4,11 +4,11 @@ module Api
   module V1
     class GridSummonsController < Api::V1::ApiController
       attr_reader :party, :incoming_summon
-      
-      before_action :set, only: %w[update destroy]
+
+      before_action :set, only: %w[update update_uncap_level update_quick_summon destroy]
       before_action :find_party, only: :create
       before_action :find_incoming_summon, only: :create
-      before_action :authorize, only: %i[create update destroy]
+      before_action :authorize, only: %i[create update update_uncap_level update_quick_summon destroy]
 
       def create
         # Create the GridSummon with the desired parameters
@@ -28,6 +28,31 @@ module Api
         return render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon) if @summon.save
 
         render_validation_error_response(@character)
+      end
+
+      def update_uncap_level
+        @summon.uncap_level = summon_params[:uncap_level]
+        @summon.transcendence_step = 0
+
+        return unless @summon.save!
+
+        render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon)
+      end
+
+      def update_quick_summon
+        quick_summons = @summon.party.summons.select(&:quick_summon)
+
+        quick_summons.each do |summon|
+          summon.update!(quick_summon: false)
+        end
+
+        @summon.update!(quick_summon: summon_params[:quick_summon])
+        return unless @summon.persisted?
+
+        quick_summons -= [@summon]
+        summons = [@summon] + quick_summons
+
+        render json: GridSummonBlueprint.render(summons, view: :nested, root: :summons)
       end
 
       def save_summon(summon)
@@ -56,19 +81,6 @@ module Api
 
         output = render_grid_summon_view(conflict_summon, old_position)
         render json: output
-      end
-
-      def update_uncap_level
-        summon = GridSummon.find(summon_params[:id])
-
-        render_unauthorized_response if current_user && (summon.party.user != current_user)
-
-        summon.uncap_level = summon_params[:uncap_level]
-        summon.transcendence_step = 0
-
-        return unless summon.save!
-
-        render json: GridSummonBlueprint.render(summon, view: :nested, root: :grid_summon)
       end
 
       def destroy
@@ -103,13 +115,13 @@ module Api
       end
 
       def set
-        @summon = GridSummon.where('id = ?', params[:id]).first
+        @summon = GridSummon.where('id = ?', summon_params[:id]).first
       end
 
       # Specify whitelisted properties that can be modified.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend, :uncap_level,
-                                       :transcendence_step)
+        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend,
+                                       :quick_summon, :uncap_level, :transcendence_step)
       end
     end
   end
