@@ -32,7 +32,7 @@ module Api
 
       def update_uncap_level
         summon = @summon.summon
-        max_uncap_level = if summon.flb
+        max_uncap_level = if summon.flb && !summon.ulb
                             4
                           elsif summon.ulb
                             5
@@ -49,11 +49,15 @@ module Api
                         summon_params[:uncap_level]
                       end
 
-        transcendence_step = summon.xlb ? summon_params[:transcendence_step] : 0
+        transcendence_step = if summon.xlb && summon_params[:transcendence_step]
+                               summon_params[:transcendence_step]
+                             else
+                               0
+                             end
 
         @summon.update!(
           uncap_level: uncap_level,
-          transcendence_step: transcendence_step || 0
+          transcendence_step: transcendence_step
         )
 
         return unless @summon.persisted?
@@ -62,6 +66,8 @@ module Api
       end
 
       def update_quick_summon
+        return if [4, 5, 6].include?(@summon.position)
+
         quick_summons = @summon.party.summons.select(&:quick_summon)
 
         quick_summons.each do |summon|
@@ -136,8 +142,8 @@ module Api
       end
 
       def set
-        ap summon_params
-        @summon = GridSummon.where('id = ?', summon_params[:id]).first
+        id = summon_params[:id] ? summon_params[:id] : params[:id]
+        @summon = GridSummon.where('id = ?', id).first
       end
 
       # Specify whitelisted properties that can be modified.
