@@ -2,6 +2,7 @@
 
 class Job < ApplicationRecord
   belongs_to :party
+  has_many :skills, class_name: 'JobSkill'
 
   belongs_to :base_job,
              foreign_key: 'base_job_id',
