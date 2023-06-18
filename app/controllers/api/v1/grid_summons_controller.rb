@@ -46,7 +46,6 @@ module Api
 
       def handle_conflict(summon)
         conflict_summon = summon.conflicts(party)
-        ap conflict_summon
         return unless conflict_summon.summon.id == incoming_summon.id
 
         old_position = conflict_summon.position
