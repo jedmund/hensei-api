@@ -16,7 +16,7 @@ module Api
 
       view :full do
         include_view :nested
-        association :group, blueprint: RaidGroupBlueprint
+        association :group, blueprint: RaidGroupBlueprint, view: :flat
       end
     end
   end

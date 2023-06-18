@@ -8,7 +8,7 @@ module Api
       end
 
       def groups
-        render json: RaidGroupBlueprint.render(RaidGroup.all)
+        render json: RaidGroupBlueprint.render(RaidGroup.all, view: :full)
       end
     end
   end
