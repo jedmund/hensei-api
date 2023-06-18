@@ -31,10 +31,32 @@ module Api
       end
 
       def update_uncap_level
-        @summon.uncap_level = summon_params[:uncap_level]
-        @summon.transcendence_step = 0
+        summon = @summon.summon
+        max_uncap_level = if summon.flb
+                            4
+                          elsif summon.ulb
+                            5
+                          else
+                            3
+                          end
 
-        return unless @summon.save!
+        greater_than_max_uncap = summon_params[:uncap_level].to_i > max_uncap_level
+        can_be_transcended = summon.xlb && summon_params[:transcendence_step] && summon_params[:transcendence_step]&.to_i.positive?
+
+        uncap_level = if greater_than_max_uncap || can_be_transcended
+                        max_uncap_level
+                      else
+                        summon_params[:uncap_level]
+                      end
+
+        transcendence_step = summon.xlb ? summon_params[:transcendence_step] : 0
+
+        @summon.update!(
+          uncap_level: uncap_level,
+          transcendence_step: transcendence_step || 0
+        )
+
+        return unless @summon.persisted?
 
         render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon)
       end
@@ -114,6 +136,7 @@ module Api
       end
 
       def set
+        ap summon_params
         @summon = GridSummon.where('id = ?', summon_params[:id]).first
       end
 
