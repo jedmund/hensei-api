@@ -381,6 +381,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
   end
 
+  create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "guild_ids", null: false, array: true
+    t.integer "crystals", default: 0
+    t.integer "tickets", default: 0
+    t.integer "ten_tickets", default: 0
+    t.string "target_type"
+    t.bigint "target_id"
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "target_memo"
+    t.index ["target_type", "target_id"], name: "index_sparks_on_target"
+    t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
+  end
+
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
