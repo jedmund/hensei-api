@@ -60,6 +60,7 @@ Rails.application.routes.draw do
 
       post 'summons', to: 'grid_summons#create'
       post 'summons/update_uncap', to: 'grid_summons#update_uncap_level'
+      post 'summons/update_quick_summon', to: 'grid_summons#update_quick_summon'
       delete 'summons', to: 'grid_summons#destroy'
 
       delete 'favorites', to: 'favorites#destroy'
