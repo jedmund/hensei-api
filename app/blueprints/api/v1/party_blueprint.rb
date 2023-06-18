@@ -34,7 +34,8 @@ module Api
 
       view :minimal do
         fields :name, :element, :shortcode, :favorited, :extra,
-               :full_auto, :clear_time, :auto_guard, :created_at, :updated_at
+               :full_auto, :clear_time, :auto_guard, :auto_summon,
+               :created_at, :updated_at
 
         field :remix do |p|
           p.is_remix
@@ -49,7 +50,8 @@ module Api
         end
 
         association :raid,
-                    blueprint: RaidBlueprint
+                    blueprint: RaidBlueprint,
+                    view: :full
 
         association :job,
                     blueprint: JobBlueprint

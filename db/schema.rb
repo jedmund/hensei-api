@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -332,6 +332,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
     t.uuid "guidebook3_id"
     t.uuid "guidebook1_id"
     t.uuid "guidebook2_id"
+    t.boolean "auto_summon", default: false, null: false
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
@@ -345,13 +346,39 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
     t.index ["user_id"], name: "index_parties_on_user_id"
   end
 
+  create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.integer "difficulty"
+    t.integer "order", null: false
+    t.integer "section", default: 1, null: false
+    t.boolean "extra", default: false, null: false
+    t.boolean "hl", default: true, null: false
+    t.boolean "guidebooks", default: false, null: false
+  end
+
   create_table "raids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
     t.integer "level"
-    t.integer "group"
     t.integer "element"
     t.string "slug"
+    t.uuid "group_id"
+    t.index ["group_id"], name: "index_raids_on_group_id"
+  end
+
+  create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "guild_ids", null: false, array: true
+    t.integer "crystals", default: 0
+    t.integer "tickets", default: 0
+    t.integer "ten_tickets", default: 0
+    t.string "target_type"
+    t.bigint "target_id"
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "target_memo"
+    t.index ["target_type", "target_id"], name: "index_sparks_on_target"
+    t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -479,4 +506,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_224353) do
   add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
+  add_foreign_key "raids", "raid_groups", column: "group_id"
 end
