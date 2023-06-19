@@ -158,6 +158,13 @@ module Api
                                      .where(job: { base_job: job.base_job.id }, emp: true)
                                      .where.not(job: job.id)
                            )
+                           .or(
+                             JobSkill.joins(:job)
+                                     .method("#{locale}_search").call(search_params[:query])
+                                     .where(conditions)
+                                     .where(job: { base_job: job.base_job.id }, base: true)
+                                     .where.not(job: job.id)
+                           )
                  else
                    JobSkill.all
                            .joins(:job)
