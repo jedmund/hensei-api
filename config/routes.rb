@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
       put 'parties/:id/jobs', to: 'jobs#update_job'
       put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
+      delete 'parties/:id/job_skills', to: 'jobs#destroy_job_skill'
 
       post 'check/email', to: 'users#check_email'
       post 'check/username', to: 'users#check_username'
