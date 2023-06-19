@@ -11,7 +11,7 @@ class Character < ApplicationRecord
                     }
                   }
 
-  pg_search_scope :jp_search,
+  pg_search_scope :ja_search,
                   against: :name_jp,
                   using: {
                     tsearch: {
