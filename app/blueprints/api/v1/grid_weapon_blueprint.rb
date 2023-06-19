@@ -32,9 +32,9 @@ module Api
         end
       end
 
-      field :awakening, if: ->(_field_name, w, _options) { w.weapon.awakening } do |w|
+      field :awakening, if: ->(_field_name, w, _options) { w.awakening_id } do |w|
         {
-          type: w.awakening_type,
+          type: AwakeningBlueprint.render_as_hash(w.awakening),
           level: w.awakening_level
         }
       end
