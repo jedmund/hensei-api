@@ -3,13 +3,13 @@
 class MigrateCharacterAwakeningTypeToNewAwakeningType < ActiveRecord::Migration[7.0]
   def up
     GridCharacter.all.each do |character|
-      slug = if character.awakening['type'] == 0
+      slug = if character['awakening']['type'] == 0
                'character-balanced'
-             elsif character.awakening['type'] == 1
+             elsif character['awakening']['type'] == 1
                'character-atk'
-             elsif character.awakening['type'] == 2
+             elsif character['awakening']['type'] == 2
                'character-def'
-             elsif character.awakening['type'] == 3
+             elsif character['awakening']['type'] == 3
                'character-multi'
              else
                'character-balanced'
@@ -18,7 +18,7 @@ class MigrateCharacterAwakeningTypeToNewAwakeningType < ActiveRecord::Migration[
       new_awakening = Awakening.find_by(slug: slug)
 
       character.awakening_id = new_awakening.id
-      character.awakening_level = character.awakening['level']
+      character.awakening_level = character['awakening']['level']
 
       character.save!(validate: false)
     end
