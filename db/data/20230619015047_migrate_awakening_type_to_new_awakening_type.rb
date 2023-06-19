@@ -12,11 +12,8 @@ class MigrateAwakeningTypeToNewAwakeningType < ActiveRecord::Migration[7.0]
                  'weapon-special'
                end
 
-        ap "#{weapon.weapon.name_en}: #{slug}"
-
         new_awakening = Awakening.find_by(slug: slug)
         weapon.awakening_id = new_awakening.id
-        ap weapon.awakening_id
         weapon.save!
       end
     end
