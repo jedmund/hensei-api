@@ -11,7 +11,7 @@ class Weapon < ApplicationRecord
                     }
                   }
 
-  pg_search_scope :jp_search,
+  pg_search_scope :ja_search,
                   against: :name_jp,
                   using: {
                     tsearch: {
@@ -19,6 +19,9 @@ class Weapon < ApplicationRecord
                       dictionary: 'simple'
                     }
                   }
+
+  has_many :weapon_awakenings
+  has_many :awakenings, through: :weapon_awakenings
 
   def blueprint
     WeaponBlueprint

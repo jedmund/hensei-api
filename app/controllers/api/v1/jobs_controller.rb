@@ -3,8 +3,8 @@
 module Api
   module V1
     class JobsController < Api::V1::ApiController
-      before_action :set, only: %w[update_job update_job_skills]
-      before_action :authorize, only: %w[update_job update_job_skills]
+      before_action :set, only: %w[update_job update_job_skills destroy_job_skill]
+      before_action :authorize, only: %w[update_job update_job_skills destroy_job_skill]
 
       def all
         render json: JobBlueprint.render(Job.all)
@@ -78,6 +78,12 @@ module Api
         end
 
         render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
+      end
+
+      def destroy_job_skill
+        position = job_params[:skill_position].to_i
+        @party["skill#{position}_id"] = nil
+        render json: PartyBlueprint.render(@party, view: :jobs) if @party.save
       end
 
       private
@@ -180,7 +186,8 @@ module Api
           :skill0_id,
           :skill1_id,
           :skill2_id,
-          :skill3_id
+          :skill3_id,
+          :skill_position
         )
       end
     end

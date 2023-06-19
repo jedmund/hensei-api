@@ -56,7 +56,7 @@ module Api
         # TODO: Validate accessory with job
 
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party.save
-        
+
         render_validation_error_response(@party)
       end
 
@@ -259,6 +259,7 @@ module Api
           :skill3_id,
           :full_auto,
           :auto_guard,
+          :auto_summon,
           :charge_attack,
           :clear_time,
           :button_count,

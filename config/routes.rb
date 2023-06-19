@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
       put 'parties/:id/jobs', to: 'jobs#update_job'
       put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
+      delete 'parties/:id/job_skills', to: 'jobs#destroy_job_skill'
 
       post 'check/email', to: 'users#check_email'
       post 'check/username', to: 'users#check_username'
@@ -45,6 +46,7 @@ Rails.application.routes.draw do
       get 'guidebooks', to: 'guidebooks#all'
 
       get 'raids', to: 'raids#all'
+      get 'raids/groups', to: 'raids#groups'
       get 'weapon_keys', to: 'weapon_keys#all'
 
       post 'characters', to: 'grid_characters#create'
@@ -59,6 +61,7 @@ Rails.application.routes.draw do
 
       post 'summons', to: 'grid_summons#create'
       post 'summons/update_uncap', to: 'grid_summons#update_uncap_level'
+      post 'summons/update_quick_summon', to: 'grid_summons#update_quick_summon'
       delete 'summons', to: 'grid_summons#destroy'
 
       delete 'favorites', to: 'favorites#destroy'

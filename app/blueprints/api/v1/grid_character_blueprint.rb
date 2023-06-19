@@ -18,7 +18,10 @@ module Api
         end
 
         field :awakening do |c|
-          c.awakening
+          {
+            type: AwakeningBlueprint.render_as_hash(c.awakening),
+            level: c.awakening_level
+          }
         end
 
         field :over_mastery, if: lambda { |_fn, obj, _opt|
