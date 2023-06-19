@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_19_000621) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -281,7 +281,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.datetime "revoked_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.string "scopes"
-    t.string "previous_refresh_token", default: "", null: false
+    t.string "previous_refresh_token", default: ""
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -365,20 +365,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.string "slug"
     t.uuid "group_id"
     t.index ["group_id"], name: "index_raids_on_group_id"
-  end
-
-  create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id", null: false
-    t.string "guild_ids", null: false, array: true
-    t.integer "crystals", default: 0
-    t.integer "tickets", default: 0
-    t.integer "ten_tickets", default: 0
-    t.string "target_type"
-    t.bigint "target_id"
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.string "target_memo"
-    t.index ["target_type", "target_id"], name: "index_sparks_on_target"
-    t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
