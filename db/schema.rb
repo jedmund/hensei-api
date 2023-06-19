@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_19_045651) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -20,6 +20,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
     t.string "version"
+  end
+
+  create_table "awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "slug", null: false
+    t.string "object_type", null: false
+    t.integer "order", default: 0, null: false
   end
 
   create_table "character_charge_attacks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -98,6 +106,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en", null: false
     t.string "name_jp", null: false
@@ -161,11 +172,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.jsonb "ring3", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "awakening", default: {"type"=>1, "level"=>1}, null: false
     t.boolean "skill0_enabled", default: true, null: false
     t.boolean "skill1_enabled", default: true, null: false
     t.boolean "skill2_enabled", default: true, null: false
     t.boolean "skill3_enabled", default: true, null: false
+    t.uuid "awakening_id"
+    t.integer "awakening_level", default: 1
+    t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -201,8 +214,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.integer "ax_modifier2"
     t.float "ax_strength2"
     t.integer "element"
-    t.integer "awakening_type"
     t.integer "awakening_level", default: 1, null: false
+    t.uuid "awakening_id"
+    t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
@@ -281,7 +295,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.datetime "revoked_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.string "scopes"
-    t.string "previous_refresh_token", default: "", null: false
+    t.string "previous_refresh_token", default: ""
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -381,20 +395,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
   end
 
-  create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id", null: false
-    t.string "guild_ids", null: false, array: true
-    t.integer "crystals", default: 0
-    t.integer "tickets", default: 0
-    t.integer "ten_tickets", default: 0
-    t.string "target_type"
-    t.bigint "target_id"
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.string "target_memo"
-    t.index ["target_type", "target_id"], name: "index_sparks_on_target"
-    t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
-  end
-
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
@@ -438,6 +438,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.string "theme", default: "system", null: false
   end
 
+  create_table "weapon_awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "weapon_id", null: false
+    t.uuid "awakening_id", null: false
+    t.index ["awakening_id"], name: "index_weapon_awakenings_on_awakening_id"
+    t.index ["weapon_id"], name: "index_weapon_awakenings_on_weapon_id"
+  end
+
   create_table "weapon_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
@@ -471,23 +478,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
     t.integer "max_atk_ulb"
     t.boolean "extra", default: false, null: false
     t.integer "ax_type"
-    t.boolean "awakening", default: true, null: false
     t.boolean "limit", default: false, null: false
     t.boolean "ax", default: false, null: false
-    t.integer "awakening_types", default: [], array: true
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.uuid "recruits_id"
+    t.integer "max_awakening_level"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
   end
 
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
+  add_foreign_key "grid_characters", "awakenings"
   add_foreign_key "grid_characters", "characters"
   add_foreign_key "grid_characters", "parties"
   add_foreign_key "grid_summons", "parties"
   add_foreign_key "grid_summons", "summons"
+  add_foreign_key "grid_weapons", "awakenings"
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapons"
@@ -507,4 +515,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_051638) do
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
   add_foreign_key "raids", "raid_groups", column: "group_id"
+  add_foreign_key "weapon_awakenings", "awakenings"
+  add_foreign_key "weapon_awakenings", "weapons"
 end

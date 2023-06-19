@@ -147,9 +147,10 @@ module Api
       def character_params
         params.require(:character).permit(:id, :party_id, :character_id, :position,
                                           :uncap_level, :transcendence_step, :perpetuity,
+                                          :awakening_id, :awakening_level,
                                           ring1: %i[modifier strength], ring2: %i[modifier strength],
                                           ring3: %i[modifier strength], ring4: %i[modifier strength],
-                                          earring: %i[modifier strength], awakening: %i[type level])
+                                          earring: %i[modifier strength])
       end
 
       def resolve_params

@@ -66,10 +66,14 @@ end
 
 group :development do
   gem 'listen'
-  gem 'rubocop'
   gem 'solargraph'
   gem 'spring'
   gem 'spring-commands-rspec'
+end
+
+group :tools do
+  gem 'squasher', '>= 0.6.0'
+  gem 'rubocop'
 end
 
 group :test do

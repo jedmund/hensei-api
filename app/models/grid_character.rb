@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class GridCharacter < ApplicationRecord
+  belongs_to :awakening, optional: true
   belongs_to :party,
              counter_cache: :characters_count,
              inverse_of: :characters
   validates_presence_of :party
 
-  validate :awakening_level, on: :update
+  validate :validate_awakening_level, on: :update
   validate :transcendence, on: :update
   validate :validate_over_mastery_values, on: :update
   validate :validate_aetherial_mastery_value, on: :update
@@ -22,11 +23,9 @@ class GridCharacter < ApplicationRecord
     set perpetuity: false
   end
 
-  def awakening_level
-    return if awakening.nil?
-
-    errors.add(:awakening, 'awakening level too low') if awakening['level'] < 1
-    errors.add(:awakening, 'awakening level too high') if awakening['level'] > 9
+  def validate_awakening_level
+    errors.add(:awakening, 'awakening level too low') if awakening_level < 1
+    errors.add(:awakening, 'awakening level too high') if awakening_level > 9
   end
 
   def transcendence

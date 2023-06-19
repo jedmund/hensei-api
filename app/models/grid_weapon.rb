@@ -10,6 +10,8 @@ class GridWeapon < ApplicationRecord
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
   belongs_to :weapon_key3, class_name: 'WeaponKey', foreign_key: :weapon_key3_id, optional: true
 
+  belongs_to :awakening, optional: true
+
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
 

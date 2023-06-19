@@ -20,6 +20,9 @@ class Weapon < ApplicationRecord
                     }
                   }
 
+  has_many :weapon_awakenings
+  has_many :awakenings, through: :weapon_awakenings
+
   def blueprint
     WeaponBlueprint
   end
