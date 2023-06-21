@@ -23,6 +23,9 @@ class GridCharacter < ApplicationRecord
     set perpetuity: false
   end
 
+  # Add awakening before the model saves
+  before_save :add_awakening
+
   def validate_awakening_level
     errors.add(:awakening, 'awakening level too low') if awakening_level < 1
     errors.add(:awakening, 'awakening level too high') if awakening_level > 9
@@ -82,6 +85,12 @@ class GridCharacter < ApplicationRecord
   end
 
   private
+
+  def add_awakening
+    if self.awakening.nil?
+      self.awakening = Awakening.where(slug: "character-balanced").sole
+    end
+  end
 
   def check_value(property, type)
     # Input format
