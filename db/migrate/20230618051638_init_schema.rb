@@ -95,7 +95,6 @@ class InitSchema < ActiveRecord::Migration[7.0]
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.integer "transcendence_step", default: 0, null: false
-      t.boolean "quick_summon", default: false, null: false
       t.index ["party_id"], name: "index_grid_summons_on_party_id"
       t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
     end
@@ -238,7 +237,6 @@ class InitSchema < ActiveRecord::Migration[7.0]
       t.uuid "guidebook3_id"
       t.uuid "guidebook1_id"
       t.uuid "guidebook2_id"
-      t.boolean "auto_summon", default: false, null: false
       t.index ["accessory_id"], name: "index_parties_on_accessory_id"
       t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
       t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"

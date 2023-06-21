@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_19_045651) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_21_073125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -65,9 +64,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_045651) do
     t.uuid "character_id"
     t.string "name_en", null: false
     t.string "name_jp", null: false
-    t.string "slug", null: false
-    t.string "object_type", null: false
-    t.integer "order", default: 0, null: false
+    t.string "description_en", null: false
+    t.string "description_jp", null: false
+    t.integer "position", null: false
+    t.integer "obtained_at"
+    t.boolean "emp", default: false, null: false
+    t.boolean "transcendence", default: false, null: false
+    t.uuid "effects", array: true
+    t.index ["character_id"], name: "index_character_support_skills_on_character_id"
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -97,6 +101,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_045651) do
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
     t.integer "character_id", default: [], null: false, array: true
+    t.string "nicknames_en", default: [], null: false, array: true
+    t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
@@ -412,6 +418,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_045651) do
     t.boolean "xlb", default: false, null: false
     t.integer "max_atk_xlb"
     t.integer "max_hp_xlb"
+    t.string "nicknames_en", default: [], null: false, array: true
+    t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
