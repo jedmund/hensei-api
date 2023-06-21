@@ -39,7 +39,7 @@ module Api
         }
       end
 
-      field :awakenings, if: ->(_field_name, w, _options) { w.awakenings } do |w|
+      field :awakenings, if: lambda { |_fn, obj, _opt| obj.awakenings.length.positive? } do |w|
         w.awakenings.map do |a|
           AwakeningBlueprint.render_as_hash(a)
         end
