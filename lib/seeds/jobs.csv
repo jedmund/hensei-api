@@ -1,70 +1,72 @@
-"id","name_en","name_jp","proficiency1","proficiency2","row","ml","order","base_job_id"
-"167971f8-0e96-4905-ab53-4fc068027846","Knight","ナイト",1,4,"1",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846"
-"21dff3a3-22bc-4863-9861-af0a1b41a5f0","Enhancer","エンハンサー",1,2,"1",FALSE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0"
-"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","Wizard","ウィザード",6,2,"1",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1"
-"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","Fighter","ファイター",1,3,"1",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8"
-"950f659b-0521-4a79-b578-7f3b05cb3102","Priest","プリースト",6,4,"1",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102"
-"9733c23f-bb42-48b4-8473-5ed7fb94e9c1","Thief","シーフ",2,9,"1",FALSE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1"
-"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","Ranger","レンジャー",5,9,"1",FALSE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24"
-"be6a2e8e-15e3-4f59-9621-58bda3318874","Harpist","ハーピスト",8,2,"1",FALSE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874"
-"f06a6d30-1f61-4059-97ae-2921a0dfec64","Lancer","ランサー",4,3,"1",FALSE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64"
-"f1ac37f0-87ff-470a-8922-5a40f25bee8f","Grappler","グラップラー",7,7,"1",FALSE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f"
-"0b536736-669c-48d2-9b3c-a450f5183951","Sorcerer","ソーサラー",6,2,"2",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1"
-"2abbab55-5bf7-49f8-9ed6-1fe8a3991cca","Cleric","クレリック",6,4,"2",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102"
-"3885c629-fc2a-4298-9e51-4857f0afb2b5","Dragoon","ドラグーン",4,3,"2",FALSE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64"
-"45e26ec7-37c6-44f7-a9ac-a8b36f37ea30","Sentinel","フォートレス",1,4,"2",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846"
-"568406b9-3622-4ef1-953f-57cf7c0bfa43","Kung Fu Artist","クンフー",7,7,"2",FALSE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f"
-"56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Warrior","ウオーリア",1,3,"2",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8"
-"67c62a3f-9083-473e-a8a1-47875ad31d2b","Bard","ミンストレル",8,2,"2",FALSE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874"
-"98572ef3-71ac-4081-844c-48a4175dcead","Archer","マークスマン",5,9,"2",FALSE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24"
-"a9953e14-f2a3-4558-8e6c-ecbce9552aa9","Arcana Dueler","アルカナソード",1,2,"2",FALSE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0"
-"f7930eda-b674-4d5f-9233-7c3c6459382c","Raider","レイダー",2,9,"2",FALSE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1"
-"113ba069-ede0-4a58-b033-4e574d12dd75","Sidewinder","サイドワインダー",5,9,"3",FALSE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24"
-"408c8cd0-6315-4faa-b1eb-d545a3570de8","Valkyrie","ヴァルキュリア",4,3,"3",FALSE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64"
-"43652444-64bb-4938-85d7-aafdfc503d66","Dark Fencer","ダークフェンサー",1,2,"3",FALSE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0"
-"6283eb60-234f-4851-8cc7-7ea36e42def2","Weapon Master","ウェポンマスター",1,3,"3",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8"
-"b6284935-2e22-4f84-b886-40eda2a9a4a4","Hawkeye","ホークアイ",2,9,"3",FALSE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1"
-"bc88726b-9f96-4061-be1c-7a2306be238e","Hermit","ハーミット",6,2,"3",FALSE,4,"950f659b-0521-4a79-b578-7f3b05cb3102"
-"c128944b-cc79-45b4-bfed-17c8b68db612","Bishop","ビショップ",6,4,"3",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102"
-"c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Ogre","オーガ",7,7,"3",FALSE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f"
-"ce45920f-7b54-48d1-9a8f-9067ea2aec53","Gladiator","グラディエーター",1,10,"3",FALSE,11,"ce45920f-7b54-48d1-9a8f-9067ea2aec53"
-"d2e1858f-66ac-418b-aafb-f40eb8f283c1","Superstar","スーパースター",8,2,"3",FALSE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874"
-"f11459b2-ee20-4927-aeee-bc85bab39c3e","Holy Saber","ホーリーセイバー",1,4,"3",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846"
-"19505ce1-d63f-471d-a18f-2191ef352b6a","Luchador","レスラー",7,7,"4",TRUE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f"
-"1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Berserker","ベルセルク",1,3,"4",TRUE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8"
-"2262c791-6517-4f4c-bbd3-414999d8fb8a","Sage","セージ",6,4,"4",TRUE,3,"950f659b-0521-4a79-b578-7f3b05cb3102"
-"2ea006f4-160d-494c-ab95-85b6d897f12c","Apsaras","アプサラス",4,3,"4",TRUE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64"
-"544711ef-1191-458c-909d-bc49022708f4","Lumberjack","ランバージャック",3,8,"4",TRUE,12,"544711ef-1191-458c-909d-bc49022708f4"
-"5b06f834-5b54-4638-8934-0afa82c373e1","Chaos Ruler","カオスルーダー",1,2,"4",TRUE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0"
-"667bf041-61c9-4568-bdd3-ce6e43f40603","Warlock","ウォーロック",6,2,"4",TRUE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1"
-"77f3a3d5-4236-404e-94e0-f62f9c4ccb2c","Spartan","スパルタ",1,4,"4",TRUE,2,"167971f8-0e96-4905-ab53-4fc068027846"
-"797bcb10-ebd4-48fc-b253-7fd55ccf4809","Nighthound","ハウンドドッグ",5,9,"4",TRUE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24"
-"82e3adde-f0a1-4769-90ca-305044324448","Chrysaor","クリュサオル",1,10,"4",TRUE,11,"ce45920f-7b54-48d1-9a8f-9067ea2aec53"
-"99c2a88f-efef-445a-ae34-d17a31fddf7b","Bandit Tycoon","義賊",2,9,"4",TRUE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1"
-"9e3a9b34-b077-4600-84df-cce09f1ae4f8","Cavalier","キャバルリー",4,9,"4",TRUE,13,"9e3a9b34-b077-4600-84df-cce09f1ae4f8"
-"a45ba1fb-64cf-4f29-ad54-4cf75a914622","Robin Hood","ロビンフッド",5,5,"4",TRUE,15,"a45ba1fb-64cf-4f29-ad54-4cf75a914622"
-"a474a4f8-4cd2-453f-aa19-84efc4ef5924","Relic Buster","レリックバスター",1,9,"4",TRUE,16,"a474a4f8-4cd2-453f-aa19-84efc4ef5924"
-"dcf91798-3cf9-46a0-aec6-313e91248995","Elysian","エリュシオン",8,2,"4",TRUE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874"
-"f9023154-5cb4-448d-b108-36ccb3820d2e","Monk","モンク",7,6,"4",TRUE,14,"f9023154-5cb4-448d-b108-36ccb3820d2e"
-"0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Viking","ヴァイキング",1,3,"5",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8"
-"249bae0a-c1e8-4c1f-80b5-72760b72511b","Iatromantis","パナケイア",6,4,"5",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102"
-"683ffee8-4ea2-432d-bc30-4865020ac9f4","Paladin","パラディン",1,4,"5",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846"
-"2fd99d5b-9fab-4116-923d-aa84168def6c","Sword Master","剣聖",1,10,"ex1",FALSE,4,"2fd99d5b-9fab-4116-923d-aa84168def6c"
-"34237f55-3646-4a9e-93dc-2039b11bdd12","Mechanic","メカニック",9,9,"ex1",FALSE,10,"34237f55-3646-4a9e-93dc-2039b11bdd12"
-"824fb790-26c1-4a1c-911e-9b2debad4662","Samurai","侍",10,5,"ex1",FALSE,3,"824fb790-26c1-4a1c-911e-9b2debad4662"
-"a2cff6d3-390a-48df-b414-0c00e4da78c8","Alchemist","アルケミスト",2,9,"ex1",FALSE,1,"a2cff6d3-390a-48df-b414-0c00e4da78c8"
-"d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Mystic","賢者",6,6,"ex1",FALSE,6,"d27a4f29-5f0b-4bc6-b75a-1bd187e1a529"
-"e35f8cd6-82ec-4624-beb6-3948f30a0cf8","Dancer","ダンサー",2,2,"ex1",FALSE,9,"e35f8cd6-82ec-4624-beb6-3948f30a0cf8"
-"efe756ea-e0b7-4560-8fa2-9bf266f5f013","Gunslinger","ガンスリンガー",9,9,"ex1",FALSE,5,"efe756ea-e0b7-4560-8fa2-9bf266f5f013"
-"eff31084-e70d-4fc0-a468-d07fccb4fe99","Ninja","忍者",10,7,"ex1",FALSE,2,"eff31084-e70d-4fc0-a468-d07fccb4fe99"
-"f945115c-74b0-4baf-9308-c2d7e64396aa","Drum Master","ドラムマスター",8,8,"ex1",FALSE,8,"f945115c-74b0-4baf-9308-c2d7e64396aa"
-"fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","Assassin","アサシン",2,2,"ex1",FALSE,7,"fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a"
-"07fef189-432c-42e4-bee2-f69603e6a046","Doctor","ドクター",2,9,"ex2",TRUE,1,"a2cff6d3-390a-48df-b414-0c00e4da78c8"
-"0ce77325-c445-403d-a29e-311044337142","Glorybringer","ザ・グローリー",1,10,"ex2",TRUE,4,"2fd99d5b-9fab-4116-923d-aa84168def6c"
-"12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Nekomancer","黒猫道士",6,6,"ex2",TRUE,6,"d27a4f29-5f0b-4bc6-b75a-1bd187e1a529"
-"33e01b0f-068f-4ce0-af61-b8e61e6484e8","Soldier","ソルジャー",9,9,"ex2",TRUE,5,"efe756ea-e0b7-4560-8fa2-9bf266f5f013"
-"3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Runeslayer","魔法戦士",10,7,"ex2",TRUE,2,"eff31084-e70d-4fc0-a468-d07fccb4fe99"
-"3c9e447e-dd30-46da-8df0-adb9fc19ac4a","Tormentor","トーメンター",2,2,"ex2",TRUE,7,"fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a"
-"6c93ecd6-ed87-4895-87c0-049262814aef","Rising Force","ライジングフォース",8,8,"ex2",TRUE,8,"f945115c-74b0-4baf-9308-c2d7e64396aa"
-"787c1554-8ee8-438c-8b30-18b5c86f3831","Masquerade","マスカレード",2,2,"ex2",TRUE,9,"e35f8cd6-82ec-4624-beb6-3948f30a0cf8"
-"ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Kengo","剣豪",10,5,"ex2",TRUE,3,"824fb790-26c1-4a1c-911e-9b2debad4662"
+"id","name_en","name_jp","proficiency1","proficiency2","row","master_level","order","base_job_id","granblue_id","accessory","accessory_type","ultimate_mastery"
+"ff7f9e39-f7aa-40d6-a385-04733fa395a5","Yamato","ヤマト",1,10,"4",TRUE,17,"ff7f9e39-f7aa-40d6-a385-04733fa395a5","460301",FALSE,0,FALSE
+"167971f8-0e96-4905-ab53-4fc068027846","Knight","ナイト",1,4,"1",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846","110001",FALSE,0,FALSE
+"21dff3a3-22bc-4863-9861-af0a1b41a5f0","Enhancer","エンハンサー",1,2,"1",FALSE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0","150001",FALSE,0,FALSE
+"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","Wizard","ウィザード",6,2,"1",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130001",FALSE,0,FALSE
+"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","Fighter","ファイター",1,3,"1",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100001",FALSE,0,FALSE
+"950f659b-0521-4a79-b578-7f3b05cb3102","Priest","プリースト",6,4,"1",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102","120001",FALSE,0,FALSE
+"9733c23f-bb42-48b4-8473-5ed7fb94e9c1","Thief","シーフ",2,9,"1",FALSE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1","140001",FALSE,0,FALSE
+"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","Ranger","レンジャー",5,9,"1",FALSE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","170001",FALSE,0,FALSE
+"be6a2e8e-15e3-4f59-9621-58bda3318874","Harpist","ハーピスト",8,2,"1",FALSE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874","180001",FALSE,0,FALSE
+"f06a6d30-1f61-4059-97ae-2921a0dfec64","Lancer","ランサー",4,3,"1",FALSE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64","190001",FALSE,0,FALSE
+"f1ac37f0-87ff-470a-8922-5a40f25bee8f","Grappler","グラップラー",7,7,"1",FALSE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f","160001",FALSE,0,FALSE
+"0b536736-669c-48d2-9b3c-a450f5183951","Sorcerer","ソーサラー",6,2,"2",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130001",FALSE,0,FALSE
+"2abbab55-5bf7-49f8-9ed6-1fe8a3991cca","Cleric","クレリック",6,4,"2",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102","120001",FALSE,0,FALSE
+"3885c629-fc2a-4298-9e51-4857f0afb2b5","Dragoon","ドラグーン",4,3,"2",FALSE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64","190001",FALSE,0,FALSE
+"45e26ec7-37c6-44f7-a9ac-a8b36f37ea30","Sentinel","フォートレス",1,4,"2",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846","110001",FALSE,0,FALSE
+"568406b9-3622-4ef1-953f-57cf7c0bfa43","Kung Fu Artist","クンフー",7,7,"2",FALSE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f","160001",FALSE,0,FALSE
+"56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Warrior","ウオーリア",1,3,"2",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100001",FALSE,0,FALSE
+"67c62a3f-9083-473e-a8a1-47875ad31d2b","Bard","ミンストレル",8,2,"2",FALSE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874","180001",FALSE,0,FALSE
+"98572ef3-71ac-4081-844c-48a4175dcead","Archer","マークスマン",5,9,"2",FALSE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","170001",FALSE,0,FALSE
+"a9953e14-f2a3-4558-8e6c-ecbce9552aa9","Arcana Dueler","アルカナソード",1,2,"2",FALSE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0","150001",FALSE,0,FALSE
+"82e3adde-f0a1-4769-90ca-305044324448","Chrysaor","クリュサオル",1,10,"4",TRUE,11,"ce45920f-7b54-48d1-9a8f-9067ea2aec53","300301",FALSE,0,FALSE
+"99c2a88f-efef-445a-ae34-d17a31fddf7b","Bandit Tycoon","義賊",2,9,"4",TRUE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1","140301",FALSE,0,FALSE
+"9e3a9b34-b077-4600-84df-cce09f1ae4f8","Cavalier","キャバルリー",4,9,"4",TRUE,13,"9e3a9b34-b077-4600-84df-cce09f1ae4f8","420301",FALSE,0,FALSE
+"a45ba1fb-64cf-4f29-ad54-4cf75a914622","Robin Hood","ロビンフッド",5,5,"4",TRUE,15,"a45ba1fb-64cf-4f29-ad54-4cf75a914622","440301",FALSE,0,FALSE
+"a474a4f8-4cd2-453f-aa19-84efc4ef5924","Relic Buster","レリックバスター",1,9,"4",TRUE,16,"a474a4f8-4cd2-453f-aa19-84efc4ef5924","450301",FALSE,0,FALSE
+"dcf91798-3cf9-46a0-aec6-313e91248995","Elysian","エリュシオン",8,2,"4",TRUE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874","180301",FALSE,0,FALSE
+"f9023154-5cb4-448d-b108-36ccb3820d2e","Monk","モンク",7,6,"4",TRUE,14,"f9023154-5cb4-448d-b108-36ccb3820d2e","430301",FALSE,0,FALSE
+"0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Viking","ヴァイキング",1,3,"5",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100401",FALSE,0,FALSE
+"249bae0a-c1e8-4c1f-80b5-72760b72511b","Iatromantis","パナケイア",6,4,"5",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102","120401",FALSE,0,FALSE
+"683ffee8-4ea2-432d-bc30-4865020ac9f4","Paladin","パラディン",1,4,"5",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846","110401",TRUE,1,FALSE
+"a5d6fca3-5649-4e12-a6db-5fcec49150ee","Manadiver","マナダイバー",6,2,"5",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130401",TRUE,2,FALSE
+"2fd99d5b-9fab-4116-923d-aa84168def6c","Sword Master","剣聖",1,10,"ex1",FALSE,4,"2fd99d5b-9fab-4116-923d-aa84168def6c","230201",FALSE,0,FALSE
+"a2cff6d3-390a-48df-b414-0c00e4da78c8","Alchemist","アルケミスト",2,9,"ex1",FALSE,1,"a2cff6d3-390a-48df-b414-0c00e4da78c8","200201",FALSE,0,FALSE
+"d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Mystic","賢者",6,6,"ex1",FALSE,6,"d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","250201",FALSE,0,FALSE
+"e35f8cd6-82ec-4624-beb6-3948f30a0cf8","Dancer","ダンサー",2,2,"ex1",FALSE,9,"e35f8cd6-82ec-4624-beb6-3948f30a0cf8","280201",FALSE,0,FALSE
+"efe756ea-e0b7-4560-8fa2-9bf266f5f013","Gunslinger","ガンスリンガー",9,9,"ex1",FALSE,5,"efe756ea-e0b7-4560-8fa2-9bf266f5f013","240201",FALSE,0,FALSE
+"eff31084-e70d-4fc0-a468-d07fccb4fe99","Ninja","忍者",10,7,"ex1",FALSE,2,"eff31084-e70d-4fc0-a468-d07fccb4fe99","210201",FALSE,0,FALSE
+"f945115c-74b0-4baf-9308-c2d7e64396aa","Drum Master","ドラムマスター",8,8,"ex1",FALSE,8,"f945115c-74b0-4baf-9308-c2d7e64396aa","270201",FALSE,0,FALSE
+"fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","Assassin","アサシン",2,2,"ex1",FALSE,7,"fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","260201",FALSE,0,FALSE
+"07fef189-432c-42e4-bee2-f69603e6a046","Doctor","ドクター",2,9,"ex2",TRUE,1,"a2cff6d3-390a-48df-b414-0c00e4da78c8","200301",FALSE,0,FALSE
+"0ce77325-c445-403d-a29e-311044337142","Glorybringer","ザ・グローリー",1,10,"ex2",TRUE,4,"2fd99d5b-9fab-4116-923d-aa84168def6c","230301",FALSE,0,FALSE
+"12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Nekomancer","黒猫道士",6,6,"ex2",TRUE,6,"d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","250301",FALSE,0,FALSE
+"33e01b0f-068f-4ce0-af61-b8e61e6484e8","Soldier","ソルジャー",9,9,"ex2",TRUE,5,"efe756ea-e0b7-4560-8fa2-9bf266f5f013","240301",FALSE,0,FALSE
+"3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Runeslayer","魔法戦士",10,7,"ex2",TRUE,2,"eff31084-e70d-4fc0-a468-d07fccb4fe99","210301",FALSE,0,FALSE
+"3c9e447e-dd30-46da-8df0-adb9fc19ac4a","Tormentor","トーメンター",2,2,"ex2",TRUE,7,"fb15b381-9eb7-49c3-aa23-2f3d78f2dc1a","260301",FALSE,0,FALSE
+"6c93ecd6-ed87-4895-87c0-049262814aef","Rising Force","ライジングフォース",8,8,"ex2",TRUE,8,"f945115c-74b0-4baf-9308-c2d7e64396aa","270301",FALSE,0,FALSE
+"787c1554-8ee8-438c-8b30-18b5c86f3831","Masquerade","マスカレード",2,2,"ex2",TRUE,9,"e35f8cd6-82ec-4624-beb6-3948f30a0cf8","280301",FALSE,0,FALSE
+"ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Kengo","剣豪",10,5,"ex2",TRUE,3,"824fb790-26c1-4a1c-911e-9b2debad4662","220301",FALSE,0,FALSE
+"34237f55-3646-4a9e-93dc-2039b11bdd12","Mechanic","メカニック",9,9,"ex1",FALSE,10,"34237f55-3646-4a9e-93dc-2039b11bdd12","290201",FALSE,0,FALSE
+"f7930eda-b674-4d5f-9233-7c3c6459382c","Raider","レイダー",2,9,"2",FALSE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1","140001",FALSE,0,FALSE
+"113ba069-ede0-4a58-b033-4e574d12dd75","Sidewinder","サイドワインダー",5,9,"3",FALSE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","170201",FALSE,0,FALSE
+"408c8cd0-6315-4faa-b1eb-d545a3570de8","Valkyrie","ヴァルキュリア",4,3,"3",FALSE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64","190201",FALSE,0,FALSE
+"43652444-64bb-4938-85d7-aafdfc503d66","Dark Fencer","ダークフェンサー",1,2,"3",FALSE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0","150201",FALSE,0,FALSE
+"6283eb60-234f-4851-8cc7-7ea36e42def2","Weapon Master","ウェポンマスター",1,3,"3",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100201",FALSE,0,FALSE
+"b6284935-2e22-4f84-b886-40eda2a9a4a4","Hawkeye","ホークアイ",2,9,"3",FALSE,5,"9733c23f-bb42-48b4-8473-5ed7fb94e9c1","140201",FALSE,0,FALSE
+"bc88726b-9f96-4061-be1c-7a2306be238e","Hermit","ハーミット",6,2,"3",FALSE,4,"950f659b-0521-4a79-b578-7f3b05cb3102","130201",FALSE,0,FALSE
+"c128944b-cc79-45b4-bfed-17c8b68db612","Bishop","ビショップ",6,4,"3",FALSE,3,"950f659b-0521-4a79-b578-7f3b05cb3102","120201",FALSE,0,FALSE
+"c5a7c0f0-9408-4b8b-901c-bd1804db36eb","Ogre","オーガ",7,7,"3",FALSE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f","160201",FALSE,0,FALSE
+"ce45920f-7b54-48d1-9a8f-9067ea2aec53","Gladiator","グラディエーター",1,10,"3",FALSE,11,"ce45920f-7b54-48d1-9a8f-9067ea2aec53","300201",FALSE,0,FALSE
+"d2e1858f-66ac-418b-aafb-f40eb8f283c1","Superstar","スーパースター",8,2,"3",FALSE,9,"be6a2e8e-15e3-4f59-9621-58bda3318874","180201",FALSE,0,FALSE
+"f11459b2-ee20-4927-aeee-bc85bab39c3e","Holy Saber","ホーリーセイバー",1,4,"3",FALSE,2,"167971f8-0e96-4905-ab53-4fc068027846","110201",FALSE,0,FALSE
+"19505ce1-d63f-471d-a18f-2191ef352b6a","Luchador","レスラー",7,7,"4",TRUE,7,"f1ac37f0-87ff-470a-8922-5a40f25bee8f","160301",FALSE,0,FALSE
+"1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Berserker","ベルセルク",1,3,"4",TRUE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100301",FALSE,0,FALSE
+"2262c791-6517-4f4c-bbd3-414999d8fb8a","Sage","セージ",6,4,"4",TRUE,3,"950f659b-0521-4a79-b578-7f3b05cb3102","120301",FALSE,0,FALSE
+"2ea006f4-160d-494c-ab95-85b6d897f12c","Apsaras","アプサラス",4,3,"4",TRUE,10,"f06a6d30-1f61-4059-97ae-2921a0dfec64","190301",FALSE,0,FALSE
+"544711ef-1191-458c-909d-bc49022708f4","Lumberjack","ランバージャック",3,8,"4",TRUE,12,"544711ef-1191-458c-909d-bc49022708f4","410301",FALSE,0,FALSE
+"5b06f834-5b54-4638-8934-0afa82c373e1","Chaos Ruler","カオスルーダー",1,2,"4",TRUE,6,"21dff3a3-22bc-4863-9861-af0a1b41a5f0","150301",FALSE,0,FALSE
+"667bf041-61c9-4568-bdd3-ce6e43f40603","Warlock","ウォーロック",6,2,"4",TRUE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130301",FALSE,0,FALSE
+"77f3a3d5-4236-404e-94e0-f62f9c4ccb2c","Spartan","スパルタ",1,4,"4",TRUE,2,"167971f8-0e96-4905-ab53-4fc068027846","110301",FALSE,0,FALSE
+"797bcb10-ebd4-48fc-b253-7fd55ccf4809","Nighthound","ハウンドドッグ",5,9,"4",TRUE,8,"9d495e8c-7aac-4e22-b5ad-99bbce4a6b24","170301",FALSE,0,FALSE
+"824fb790-26c1-4a1c-911e-9b2debad4662","Samurai","侍",10,5,"ex1",FALSE,3,"824fb790-26c1-4a1c-911e-9b2debad4662","220201",FALSE,0,FALSE
