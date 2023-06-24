@@ -1,42 +1,42 @@
-"id","name_en","name_jp","series","slot","group","order","slug"
-"02b40c48-b0d4-4df6-a27f-da2bc58fdd0f","Pendulum of Strife","闘争のペンデュラム",2,1,0,2,"pendulum-strife"
-"5936e870-61a1-40a4-8c52-b85b9ab96967","Pendulum of Prosperity","隆盛のペンデュラム",2,1,0,3,"pendulum-prosperity"
-"653477b7-5321-4ea4-8b6f-42218e67a090","Pendulum of Zeal","激情のペンデュラム",2,1,0,1,"pendulum-zeal"
-"f5d711d8-f2f8-4909-9a64-ce6dc3584e03","γ Pendulum","ガンマ・ペンデュラム",2,0,0,2,"pendulum-gamma"
-"562c89bd-68cf-4a33-8609-d82e017130d6","Chain of Restoration","賦活のチェイン",2,1,1,1,"chain-restoration"
-"6ded911e-81d6-4fae-a3e7-682a5d18f2fc","Chain of Glorification","謳歌のチェイン",2,1,1,2,"chain-glorification"
-"d5b81056-fd58-45b6-b6ef-a43b45a15194","Chain of Temptation","誘惑のチェイン",2,1,1,3,"chain-temptation"
-"ebe424a0-7370-4b07-bd37-7eeee9b8425c","Chain of Falsehood","虚詐のチェイン",2,1,1,6,"chain-falsehood"
-"f81ec8e8-acc8-4ad3-8460-b628e90cd29d","Chain of Forbiddance","禁忌のチェイン",2,1,1,4,"chain-forbiddance"
-"1929bfa8-6bbd-4918-9ad7-594525b5e2c6","Crag Teluma","巨岩のテルマ",3,0,2,3,"teluma-crag"
-"81950efb-a4e1-4d45-8572-ddb604246212","Malice Teluma","闇禍のテルマ",3,0,2,6,"teluma-malice"
-"dc96edb7-8bee-4721-94c2-daa6508aaed8","Inferno Teluma","炎獄のテルマ",3,0,2,1,"teluma-inferno"
-"e36950be-1ea9-4642-af94-164187e38e6c","Aureole Teluma","後光のテルマ",3,0,2,5,"teluma-aureole"
-"2ebe966e-0339-4464-acb9-0db138c3e2e7","Gauph Key of Will","ガフスキー【戦意】",17,0,3,0,"gauph-will"
-"3d5d610a-3734-444d-8818-fce2024a190b","Gauph Key Tria","ガフスキー【トリア】",17,2,3,2,"gauph-tria"
-"606632e3-3391-4223-8147-07060fe6f2e4","Gauph Key of Courage","ガフスキー【勇気】",17,0,3,5,"gauph-courage"
-"6d03b9c2-08d8-49ea-8522-5507e9243ccc","Gauph Key α","ガフスキー【α】",17,1,3,0,"gauph-alpha"
-"abd48244-8398-4159-ada6-9062803189f1","Gauph Key of Strength","ガフスキー【強壮】",17,0,3,3,"gauph-strength"
-"cdd87f62-2d29-4698-b09d-8eef3f7b4406","Gauph Key Ena","ガフスキー【エナ】",17,2,3,0,"gauph-ena"
-"d0dd2b46-cb55-4c2f-beb6-e2ee380bdb5e","Gauph Key Dio","ガフスキー【ディオ】",17,2,3,1,"gauph-dio"
-"3faafaf1-5fc5-4aa8-8c65-894bbe1c615f","α Pendulum","アルファ・ペンデュラム",2,0,0,0,"pendulum-alpha"
-"b3d8d4d8-8bf6-4e03-9f21-547653bf7574","Pendulum of Strength","強壮のペンデュラム",2,1,0,0,"pendulum-strength"
-"e719de37-500e-44cd-98a4-2d9af71e0809","Δ Pendulum","デルタ・ペンデュラム",2,0,0,4,"pendulum-delta"
-"ed19dcef-8579-4125-8607-5a43922d0999","β Pendulum","ベータ・ペンデュラム",2,0,0,1,"pendulum-beta"
-"5ac2ad0a-f8da-403a-b098-7831d354f8e0","Emblem of Divinity","天聖のエンブレム",24,0,4,1,"emblem-divinity"
-"c2f1e5bc-9f8b-4af1-821c-2b32a9fb5f1f","Emblem of Humanity","英勇のエンブレム",24,0,4,0,"emblem-humanity"
-"14534be3-defa-44cd-9096-09bae07565c8","Chain of Temperament","技錬のチェイン",2,1,1,0,"chain-temperament"
-"1e2a1e5b-75f4-4e00-85d5-e5ef474dd6d7","Chain of Depravity","邪罪のチェイン",2,1,1,5,"chain-depravity"
-"0c6ce91c-864c-4c62-8c9b-be61e8fae47f","Optimus Teluma","オプティマス・テルマ",3,1,2,0,"teluma-optimus"
-"3fa65774-1ed1-4a16-86cd-9133adca2232","Omega Teluma","マグナ・テルマ",3,1,2,1,"teluma-omega"
-"49f46e22-1796-435e-bce2-d9fdfe76d6c5","Tempest Teluma","暴風のテルマ",3,0,2,4,"teluma-tempest"
-"d14e933e-630d-4cd6-9d61-dbdfd6e9332e","Abyss Teluma","深海のテルマ",3,0,2,2,"teluma-abyss"
-"ee80ff09-71c0-48bb-90ff-45e138df7481","Endurance Teluma","剛堅のテルマ",3,0,2,0,"teluma-endurance"
-"0b696acb-baf4-4ad8-9caa-4255b338b13b","Gauph Key of Vitality","ガフスキー【生命】",17,0,3,2,"gauph-vitality"
-"148e3323-395f-417c-b18a-96fd9421cfe6","Gauph Key of Strife","ガフスキー【闘争】",17,0,3,1,"gauph-strife"
-"3ca1a71c-66bf-464a-8ad2-254c52169e8e","Gauph Key γ","ガフスキー【γ】",17,1,3,2,"gauph-gamma"
-"4d6fefb6-09e6-4c92-98b0-a48b35ddd738","Gauph Key β","ガフスキー【β】",17,1,3,1,"gauph-beta"
-"98a358bc-d123-40c9-8c0e-7953467c9a27","Gauph Key Δ","ガフスキー【Δ】",17,1,3,3,"gauph-delta"
-"a1613dcd-dcc1-4290-95e7-3f9dfc28dd06","Gauph Key Tessera","ガフスキー【テーセラ】",17,2,3,3,"gauph-tessera"
-"d6c0afdb-f6f3-4473-ada3-d505228ee348","Gauph Key of Zeal","ガフスキー【激情】",17,0,3,4,"gauph-zeal"
-"44c2b0ba-642e-4edc-9680-1a34abe20418","Emblem of Devilry","魔獄のエンブレム",24,0,4,2,"emblem-devilry"
+"id","name_en","name_jp","series","slot","group","order","slug","granblue_id"
+"02b40c48-b0d4-4df6-a27f-da2bc58fdd0f","Pendulum of Strife","闘争のペンデュラム",2,1,0,2,"pendulum-strife",14003
+"3faafaf1-5fc5-4aa8-8c65-894bbe1c615f","α Pendulum","アルファ・ペンデュラム",2,0,0,0,"pendulum-alpha",13001
+"5936e870-61a1-40a4-8c52-b85b9ab96967","Pendulum of Prosperity","隆盛のペンデュラム",2,1,0,3,"pendulum-prosperity",14004
+"653477b7-5321-4ea4-8b6f-42218e67a090","Pendulum of Zeal","激情のペンデュラム",2,1,0,1,"pendulum-zeal",14002
+"b3d8d4d8-8bf6-4e03-9f21-547653bf7574","Pendulum of Strength","強壮のペンデュラム",2,1,0,0,"pendulum-strength",14001
+"e719de37-500e-44cd-98a4-2d9af71e0809","Δ Pendulum","デルタ・ペンデュラム",2,0,0,4,"pendulum-delta",13004
+"ed19dcef-8579-4125-8607-5a43922d0999","β Pendulum","ベータ・ペンデュラム",2,0,0,1,"pendulum-beta",13002
+"f5d711d8-f2f8-4909-9a64-ce6dc3584e03","γ Pendulum","ガンマ・ペンデュラム",2,0,0,2,"pendulum-gamma",13003
+"562c89bd-68cf-4a33-8609-d82e017130d6","Chain of Restoration","賦活のチェイン",2,1,1,1,"chain-restoration",14012
+"6ded911e-81d6-4fae-a3e7-682a5d18f2fc","Chain of Glorification","謳歌のチェイン",2,1,1,2,"chain-glorification",14013
+"d5b81056-fd58-45b6-b6ef-a43b45a15194","Chain of Temptation","誘惑のチェイン",2,1,1,3,"chain-temptation",14014
+"ebe424a0-7370-4b07-bd37-7eeee9b8425c","Chain of Falsehood","虚詐のチェイン",2,1,1,6,"chain-falsehood",14017
+"f81ec8e8-acc8-4ad3-8460-b628e90cd29d","Chain of Forbiddance","禁忌のチェイン",2,1,1,4,"chain-forbiddance",14015
+"1929bfa8-6bbd-4918-9ad7-594525b5e2c6","Crag Teluma","巨岩のテルマ",3,0,2,3,"teluma-crag",15004
+"81950efb-a4e1-4d45-8572-ddb604246212","Malice Teluma","闇禍のテルマ",3,0,2,6,"teluma-malice",15007
+"dc96edb7-8bee-4721-94c2-daa6508aaed8","Inferno Teluma","炎獄のテルマ",3,0,2,1,"teluma-inferno",15002
+"e36950be-1ea9-4642-af94-164187e38e6c","Aureole Teluma","後光のテルマ",3,0,2,5,"teluma-aureole",15006
+"2ebe966e-0339-4464-acb9-0db138c3e2e7","Gauph Key of Will","ガフスキー【戦意】",17,0,3,0,"gauph-will",10001
+"3d5d610a-3734-444d-8818-fce2024a190b","Gauph Key Tria","ガフスキー【トリア】",17,2,3,2,"gauph-tria",17003
+"606632e3-3391-4223-8147-07060fe6f2e4","Gauph Key of Courage","ガフスキー【勇気】",17,0,3,5,"gauph-courage",10006
+"6d03b9c2-08d8-49ea-8522-5507e9243ccc","Gauph Key α","ガフスキー【α】",17,1,3,0,"gauph-alpha",11001
+"abd48244-8398-4159-ada6-9062803189f1","Gauph Key of Strength","ガフスキー【強壮】",17,0,3,3,"gauph-strength",10004
+"cdd87f62-2d29-4698-b09d-8eef3f7b4406","Gauph Key Ena","ガフスキー【エナ】",17,2,3,0,"gauph-ena",17001
+"d0dd2b46-cb55-4c2f-beb6-e2ee380bdb5e","Gauph Key Dio","ガフスキー【ディオ】",17,2,3,1,"gauph-dio",17002
+"5ac2ad0a-f8da-403a-b098-7831d354f8e0","Emblem of Divinity","天聖のエンブレム",24,0,4,1,"emblem-divinity",2
+"c2f1e5bc-9f8b-4af1-821c-2b32a9fb5f1f","Emblem of Humanity","英勇のエンブレム",24,0,4,0,"emblem-humanity",1
+"14534be3-defa-44cd-9096-09bae07565c8","Chain of Temperament","技錬のチェイン",2,1,1,0,"chain-temperament",14011
+"1e2a1e5b-75f4-4e00-85d5-e5ef474dd6d7","Chain of Depravity","邪罪のチェイン",2,1,1,5,"chain-depravity",14016
+"0c6ce91c-864c-4c62-8c9b-be61e8fae47f","Optimus Teluma","オプティマス・テルマ",3,1,2,0,"teluma-optimus",16001
+"3fa65774-1ed1-4a16-86cd-9133adca2232","Omega Teluma","マグナ・テルマ",3,1,2,1,"teluma-omega",16002
+"49f46e22-1796-435e-bce2-d9fdfe76d6c5","Tempest Teluma","暴風のテルマ",3,0,2,4,"teluma-tempest",15005
+"d14e933e-630d-4cd6-9d61-dbdfd6e9332e","Abyss Teluma","深海のテルマ",3,0,2,2,"teluma-abyss",15003
+"ee80ff09-71c0-48bb-90ff-45e138df7481","Endurance Teluma","剛堅のテルマ",3,0,2,0,"teluma-endurance",15001
+"0b696acb-baf4-4ad8-9caa-4255b338b13b","Gauph Key of Vitality","ガフスキー【生命】",17,0,3,2,"gauph-vitality",10003
+"148e3323-395f-417c-b18a-96fd9421cfe6","Gauph Key of Strife","ガフスキー【闘争】",17,0,3,1,"gauph-strife",10002
+"3ca1a71c-66bf-464a-8ad2-254c52169e8e","Gauph Key γ","ガフスキー【γ】",17,1,3,2,"gauph-gamma",11003
+"4d6fefb6-09e6-4c92-98b0-a48b35ddd738","Gauph Key β","ガフスキー【β】",17,1,3,1,"gauph-beta",11002
+"98a358bc-d123-40c9-8c0e-7953467c9a27","Gauph Key Δ","ガフスキー【Δ】",17,1,3,3,"gauph-delta",11004
+"a1613dcd-dcc1-4290-95e7-3f9dfc28dd06","Gauph Key Tessera","ガフスキー【テーセラ】",17,2,3,3,"gauph-tessera",17004
+"d6c0afdb-f6f3-4473-ada3-d505228ee348","Gauph Key of Zeal","ガフスキー【激情】",17,0,3,4,"gauph-zeal",10005
+"44c2b0ba-642e-4edc-9680-1a34abe20418","Emblem of Devilry","魔獄のエンブレム",24,0,4,2,"emblem-devilry",3

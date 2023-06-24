@@ -258,7 +258,6 @@
 "f21b22b4-6697-48e0-8394-a50503bd0771","33e01b0f-068f-4ce0-af61-b8e61e6484e8","Blitzburst","ブリッツバースト","blitzburst",2,FALSE,FALSE,TRUE,4,FALSE
 "f2623f05-6395-411c-b8c8-f9aab51d9838","98572ef3-71ac-4081-844c-48a4175dcead","Quick Step","ライトウェイト","quick-step",0,TRUE,FALSE,FALSE,0,FALSE
 "f56f9eca-ef66-4cd6-9626-38ddc85e0e95","19505ce1-d63f-471d-a18f-2191ef352b6a","Tag Team","ツープラトン","tag-team",0,FALSE,FALSE,TRUE,3,FALSE
-"f5da876b-631e-4e54-98f1-f9799e322bad","667bf041-61c9-4568-bdd3-ce6e43f40603","Chase","チェイサー","chase",0,FALSE,FALSE,TRUE,3,FALSE
 "f862ef04-6c38-4869-9a62-297f1251093a","eff31084-e70d-4fc0-a468-d07fccb4fe99","Fuma Shuriken","風魔手裏剣","fuma-shuriken",2,TRUE,TRUE,FALSE,1,FALSE
 "fadd0308-9da1-4f75-804d-5e928b8a44f5","ce45920f-7b54-48d1-9a8f-9067ea2aec53","Chase Blade","チェイスブレード","chase-blade",0,FALSE,FALSE,TRUE,4,FALSE
 "fbae3023-bf61-4901-abf2-80da519f264e","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","One with the Blade","剣禅一如","one-with-the-blade",0,TRUE,FALSE,FALSE,0,FALSE
@@ -266,3 +265,39 @@
 "fc10d311-0ced-41ac-9e8e-54e407624154","787c1554-8ee8-438c-8b30-18b5c86f3831","Bounce Chase","バウンス・シャッセ","bounce-chase",0,FALSE,FALSE,TRUE,1,FALSE
 "fc67859e-160b-4f81-8e07-ae4011aed235","667bf041-61c9-4568-bdd3-ce6e43f40603","Resounding Chant","レプリケーションキャスト","resounding-chant",2,FALSE,FALSE,TRUE,4,FALSE
 "fdfdee6d-6ead-4504-9add-a04776546b15","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Armor Break II","レイジIV","armor-break-ii",2,FALSE,FALSE,TRUE,1,FALSE
+"589d1718-887f-4837-9a7b-93e9ce33bbf3","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Aether Siphon","エーテルサクション","aether-siphon",2,TRUE,FALSE,FALSE,0,FALSE
+"0cdd20ec-5869-4bff-8016-35a4a48e897a","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Secret Triad","シークレットトライアド","secret-triad",0,FALSE,FALSE,TRUE,2,FALSE
+"b0fa1cbd-1761-49f7-b250-d601a98fddac","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Wild Magica","ワイルドマギカ","wild-magica",2,FALSE,FALSE,TRUE,1,FALSE
+"a42211a5-e7fd-4cdb-80a9-f2fb3ccce7f2","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Overtrance","オーバートランス","overtrance",0,FALSE,FALSE,TRUE,3,FALSE
+"987c0f68-a390-44a8-9c77-24bf2e8df150","ff7f9e39-f7aa-40d6-a385-04733fa395a5","Take the Head","岐首断剣","take-the-head",2,TRUE,FALSE,FALSE,0,FALSE
+"2ea1d0bf-6391-47ab-8fcc-f39088cb6ea1","ff7f9e39-f7aa-40d6-a385-04733fa395a5","Watch and Wound","見聞一刀","watch-and-wound",2,FALSE,FALSE,TRUE,1,FALSE
+"1fd88101-56cd-4c23-b8c9-471602093470","ff7f9e39-f7aa-40d6-a385-04733fa395a5","Whitehail Gust","白雹乱流","whitehail-gust",0,FALSE,FALSE,TRUE,2,FALSE
+"ab7532de-cd8f-495f-9fe4-b2b931461a96","ff7f9e39-f7aa-40d6-a385-04733fa395a5","Seasplitter","山隆海裂","seasplitter",2,FALSE,FALSE,TRUE,3,FALSE
+"fce0a8e5-b1a5-458c-973f-d5eb30d64200","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Nocked Exorcism","破魔ノ弦","nocked-exorcism",2,FALSE,FALSE,TRUE,4,FALSE
+"2198b87a-80b2-46a0-bdc3-105b782871af","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Secret Style: Blink Slash","秘剣・極一閃","blink-slash",2,FALSE,FALSE,TRUE,5,FALSE
+"6a982316-8aa9-4732-9195-4c47c7beee00","ca1cdbe4-3bf2-4eeb-9dd3-daf94b672682","Intuition","達眼","intuition",2,FALSE,FALSE,TRUE,6,FALSE
+"3b862283-c2b0-42ab-abf8-83f7b71d5fb5","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Ferocious Roar","フェロシティロアー","ferocious-roar",0,FALSE,FALSE,TRUE,5,FALSE
+"a1491902-838f-4e7d-8a4a-572a5653537f","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Beast Fang","ビーストファング","beast-fang",2,FALSE,FALSE,TRUE,6,FALSE
+"0d2987b1-2322-48b6-a071-e6b60699889b","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Bloodzerker","狂戦の血","bloodzerker",0,FALSE,FALSE,TRUE,7,FALSE
+"64dcbd1e-74f4-41d7-9017-288ae43d9457","2ea006f4-160d-494c-ab95-85b6d897f12c","Nyagrodha","ニヤグローダ","nyagrodha",2,FALSE,FALSE,TRUE,6,FALSE
+"896b8c45-9b98-4446-b603-ac83ff4872ce","2ea006f4-160d-494c-ab95-85b6d897f12c","Crowning Fluidity","流麗の宝冠","crowning-fluidity",0,FALSE,FALSE,TRUE,7,FALSE
+"3eff936c-166a-4407-a175-c1da4220cd17","2ea006f4-160d-494c-ab95-85b6d897f12c","Showstopper","饗宴幻惑","showstopper",0,FALSE,FALSE,TRUE,8,FALSE
+"3fe68c98-d628-4e07-9a0c-782398863c70","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Matatabby","木天蓼","matatabby",0,FALSE,FALSE,TRUE,5,FALSE
+"67282b5a-591c-4090-b482-c893342b5a09","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Oculus Felis","オクルス･フェーリス","oculus-felis",0,FALSE,FALSE,TRUE,4,FALSE
+"07495f87-0873-400f-bef7-04088de585f6","12ed80e3-b0ec-4062-bc3b-78c35dbbd1b7","Scratching Post","スクラッチャー","scratching-post",0,FALSE,FALSE,TRUE,6,FALSE
+"f5da876b-631e-4e54-98f1-f9799e322bad","667bf041-61c9-4568-bdd3-ce6e43f40603","Chaser","チェイサー","chase",0,FALSE,FALSE,TRUE,3,FALSE
+"53cc7056-5d1e-4a01-9ce8-6306130215ca","2262c791-6517-4f4c-bbd3-414999d8fb8a","Path Illuminated","イルミネイトパス","path-illuminated",2,FALSE,FALSE,TRUE,4,FALSE
+"a1759aa4-d73d-4ff6-956e-e1ea98d6e8c0","2262c791-6517-4f4c-bbd3-414999d8fb8a","Lapin Blanc","ブランシュラパン","lapin-blanc",0,FALSE,FALSE,TRUE,5,FALSE
+"5282b167-cc73-4a4b-ad21-7c5ae86948f1","2262c791-6517-4f4c-bbd3-414999d8fb8a","Cathedral's Benison","カテドラル","cathedrals-benison",0,FALSE,FALSE,TRUE,6,FALSE
+"42026e50-5943-45d1-af62-0c97feb443c8","5b06f834-5b54-4638-8934-0afa82c373e1","Bleak Disorder","ブリークディスオーダー","bleak-disorder",2,FALSE,FALSE,TRUE,5,FALSE
+"63c9c0cb-a74b-4378-a844-8ae4aed2cce1","5b06f834-5b54-4638-8934-0afa82c373e1","Flames of Chaos","フレイム･オブ･カオス","flames-of-chaos",1,FALSE,FALSE,TRUE,6,FALSE
+"f4332994-a880-44fa-8325-d1f9df3b2692","5b06f834-5b54-4638-8934-0afa82c373e1","Malignity","イノーミティー","malignity",1,FALSE,FALSE,TRUE,7,FALSE
+"8ae3a008-7db3-45a7-8257-08e8a56deb4d","dcf91798-3cf9-46a0-aec6-313e91248995","Flageolet","フラジオレット","flageolet",2,FALSE,FALSE,TRUE,5,FALSE
+"d0d106f9-43b1-472e-96ef-7044565975e4","dcf91798-3cf9-46a0-aec6-313e91248995","Diatonic Harmony","ダイアトニック","diatonic-harmony",0,FALSE,FALSE,TRUE,6,FALSE
+"b8cf5b3f-4b48-46f0-9a90-ed7a2f146709","dcf91798-3cf9-46a0-aec6-313e91248995","Accelerando","アッチェレランド","accelerando",0,FALSE,FALSE,TRUE,7,FALSE
+"47c34be0-8ffa-4fa8-b3ad-6fdad0af02c5","0ce77325-c445-403d-a29e-311044337142","Glorious Vow","白の盟約","glorious-vow",0,FALSE,FALSE,TRUE,4,FALSE
+"3cf79a05-a7ef-4939-a684-dc2c3e18a336","0ce77325-c445-403d-a29e-311044337142","Gloryblade","ブレイド･オブ･グローリー","gloryblade",2,FALSE,FALSE,TRUE,5,FALSE
+"f72557c4-e52c-4177-bbd7-1b3bd302f143","0ce77325-c445-403d-a29e-311044337142","Mastery's Edge","極煌剣","masterys-edge",0,FALSE,FALSE,TRUE,6,FALSE
+"a842ea32-0df4-4e2d-aca6-56bf884f5873","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Multiplying Magic","スウェルマジック","multiplying-magic",0,FALSE,FALSE,TRUE,4,FALSE
+"48987b7d-4628-4573-96d4-89d41a1008f9","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Circle of Coalescence","サークル･コーレス","circle-of-coalescence",0,FALSE,FALSE,TRUE,5,FALSE
+"c628f964-6215-4f9c-95e3-f700f12c58b2","3ae3a8da-a6a6-4114-acbe-7bc2bd928437","Quadruple Hex","クアドラプル･ヘクス","quadruple-hex",2,FALSE,FALSE,TRUE,6,FALSE

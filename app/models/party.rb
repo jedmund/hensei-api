@@ -74,7 +74,7 @@ class Party < ApplicationRecord
            dependent: :destroy,
            inverse_of: :party
 
-  has_many :favorites
+  has_many :favorites, dependent: :destroy
 
   before_create :set_shortcode
   before_create :set_edit_key
@@ -150,7 +150,7 @@ class Party < ApplicationRecord
   def guidebooks_are_unique
     guidebooks = [guidebook1, guidebook2, guidebook3].compact
     return if guidebooks.uniq.length == guidebooks.length
-    
+
     guidebooks.each_with_index do |book, index|
       next if index.zero?
 
