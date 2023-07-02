@@ -10,7 +10,8 @@ class Party < ApplicationRecord
   has_many :derivative_parties,
            class_name: 'Party',
            foreign_key: :source_party_id,
-           inverse_of: :source_party
+           inverse_of: :source_party,
+           dependent: :nullify
 
   belongs_to :user, optional: true
   belongs_to :raid, optional: true

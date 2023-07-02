@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_21_073125) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_02_035508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -347,6 +347,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_21_073125) do
     t.uuid "guidebook1_id"
     t.uuid "guidebook2_id"
     t.boolean "auto_summon", default: false, null: false
+    t.boolean "remix", default: false, null: false
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
