@@ -171,7 +171,7 @@ module Api
 
       # Specify whitelisted properties that can be modified.
       def set
-        @user = User.where('username = ?', params[:id]).first
+        @user = User.where('username = ?', params[:id].downcase).first
       end
 
       def set_by_id
