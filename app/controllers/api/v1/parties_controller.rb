@@ -61,6 +61,7 @@ module Api
         }
 
         new_party.local_id = party_params[:local_id] if !party_params.nil?
+        new_party.edit_key = nil
 
         if new_party.save
           render json: PartyBlueprint.render(new_party, view: :created, root: :party,
