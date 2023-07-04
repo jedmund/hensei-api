@@ -33,13 +33,9 @@ module Api
       end
 
       view :minimal do
-        fields :name, :element, :shortcode, :favorited, :extra,
-               :full_auto, :clear_time, :auto_guard, :auto_summon,
+        fields :name, :element, :shortcode, :favorited, :remix,
+               :extra, :full_auto, :clear_time, :auto_guard, :auto_summon,
                :created_at, :updated_at
-
-        field :remix do |p|
-          p.is_remix
-        end
 
         field :guidebooks do |p|
           {

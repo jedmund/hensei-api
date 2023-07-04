@@ -5,7 +5,7 @@ module Api
     class GridSummonsController < Api::V1::ApiController
       attr_reader :party, :incoming_summon
 
-      before_action :set, only: %w[update update_uncap_level update_quick_summon destroy]
+      before_action :set, only: %w[update update_uncap_level update_quick_summon]
       before_action :find_party, only: :create
       before_action :find_incoming_summon, only: :create
       before_action :authorize, only: %i[create update update_uncap_level update_quick_summon destroy]
@@ -111,8 +111,9 @@ module Api
       end
 
       def destroy
-        render_unauthorized_response if @summon.party.user != current_user
-        return render json: GridSummonBlueprint.render(@summon, view: :destroyed) if @summon.destroy
+        summon = GridSummon.find_by('id = ?', params[:id])
+        render_unauthorized_response if summon.party.user != current_user
+        return render json: GridSummonBlueprint.render(summon, view: :destroyed) if summon.destroy
       end
 
       private
@@ -142,8 +143,7 @@ module Api
       end
 
       def set
-        id = summon_params[:id] ? summon_params[:id] : params[:id]
-        @summon = GridSummon.where('id = ?', id).first
+        @summon = GridSummon.find_by('id = ?', summon_params[:id])
       end
 
       # Specify whitelisted properties that can be modified.

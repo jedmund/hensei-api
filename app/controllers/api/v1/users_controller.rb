@@ -12,9 +12,9 @@ module Api
       MAX_SUMMONS = 8
       MAX_WEAPONS = 13
 
-      DEFAULT_MIN_CHARACTERS = 3
-      DEFAULT_MIN_SUMMONS = 2
-      DEFAULT_MIN_WEAPONS = 5
+      DEFAULT_MIN_CHARACTERS = 0
+      DEFAULT_MIN_SUMMONS = 0
+      DEFAULT_MIN_WEAPONS = 0
 
       DEFAULT_MAX_CLEAR_TIME = 5400
 
@@ -53,18 +53,8 @@ module Api
         if @user.nil?
           render_not_found_response('user')
         else
-
           conditions = build_conditions
           conditions[:user_id] = @user.id
-
-          @parties = Party
-                       .where(conditions)
-                       .where(name_quality)
-                       .where(user_quality)
-                       .where(original)
-                       .order(created_at: :desc)
-                       .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
-                       .each { |party| party.favorited = party.is_favorited(current_user) }
 
           parties = Party
                       .where(conditions)
@@ -141,11 +131,15 @@ module Api
       end
 
       def original
-        "source_party_id IS NULL" unless params['original'].blank? || params['original'] == '0'
+        unless params.key?('original') || params['original'].blank? || params['original'] == '0'
+          "source_party_id IS NULL"
+        end
       end
 
       def user_quality
-        "user_id IS NOT NULL" unless params[:user_quality].nil? || params[:user_quality] == "0"
+        unless params.key?('user_quality') || params[:user_quality].nil? || params[:user_quality] == "0"
+          "user_id IS NOT NULL"
+        end
       end
 
       def name_quality
@@ -166,12 +160,14 @@ module Api
 
         joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
 
-        "name NOT IN (#{joined_names})" unless params[:name_quality].nil? || params[:name_quality] == "0"
+        unless params.key?('name_quality') || params[:name_quality].nil? || params[:name_quality] == "0"
+          "name NOT IN (#{joined_names})"
+        end
       end
 
       # Specify whitelisted properties that can be modified.
       def set
-        @user = User.where('username = ?', params[:id]).first
+        @user = User.where('username = ?', params[:id].downcase).first
       end
 
       def set_by_id

@@ -69,7 +69,8 @@ module Api
         new_party.attributes = {
           user: current_user,
           name: remixed_name(@party.name),
-          source_party: @party
+          source_party: @party,
+          remix: true
         }
 
         new_party.local_id = party_params[:local_id] if !party_params.nil?
