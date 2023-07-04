@@ -23,19 +23,6 @@ module Api
         party.user = current_user if current_user
         party.attributes = party_params if party_params
 
-        # unless party_params.empty?
-        #   party.attributes = party_params
-        #
-        #   # TODO: Extract this into a different method
-        #   job = Job.find(party_params['job_id']) if party_params['job_id'].present?
-        #   if job
-        #     job_skills = JobSkill.where(job: job.id, main: true)
-        #     job_skills.each_with_index do |skill, index|
-        #       party["skill#{index}_id"] = skill.id
-        #     end
-        #   end
-        # end
-
         if party.save!
           return render json: PartyBlueprint.render(party, view: :created, root: :party),
                         status: :created
@@ -76,8 +63,8 @@ module Api
         new_party.local_id = party_params[:local_id] if !party_params.nil?
 
         if new_party.save
-          render json: PartyBlueprint.render(new_party, view: :created, root: :party,
-                                             meta: { remix: true })
+          render json: PartyBlueprint.render(new_party, view: :created, root: :party),
+                 status: :created
         else
           render_validation_error_response(new_party)
         end

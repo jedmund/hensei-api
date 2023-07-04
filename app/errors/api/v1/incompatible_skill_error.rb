@@ -20,7 +20,6 @@ module Api
       end
 
       def to_hash
-        ap @data
         {
           message: message,
           code: code,
