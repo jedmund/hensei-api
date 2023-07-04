@@ -22,6 +22,7 @@ module Api
         party = Party.new
         party.user = current_user if current_user
         party.attributes = party_params if party_params
+        ap party
 
         # unless party_params.empty?
         #   party.attributes = party_params
@@ -76,8 +77,8 @@ module Api
         new_party.local_id = party_params[:local_id] if !party_params.nil?
 
         if new_party.save
-          render json: PartyBlueprint.render(new_party, view: :created, root: :party,
-                                             meta: { remix: true })
+          render json: PartyBlueprint.render(new_party, view: :created, root: :party),
+                 status: :created
         else
           render_validation_error_response(new_party)
         end
