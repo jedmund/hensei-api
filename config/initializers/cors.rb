@@ -8,13 +8,13 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     if Rails.env.production?
-      origins %w[app.granblue.team hensei-web-production.up.railway.app]
+      origins %w[granblue.team app.granblue.team hensei-web-production.up.railway.app]
     else
       origins %w[staging.granblue.team 127.0.0.1:1234]
     end
 
-    resource "*",
+    resource '*',
              headers: :any,
-             methods: [:get, :post, :put, :patch, :delete, :options, :head]
+             methods: %i[get post put patch delete options head]
   end
 end
