@@ -3,6 +3,16 @@
 class Summon < ApplicationRecord
   include PgSearch::Model
 
+  multisearchable against: %i[name_en name_jp],
+                  additional_attributes: lambda { |summon|
+                    {
+                      name_en: summon.name_en,
+                      name_jp: summon.name_jp,
+                      granblue_id: summon.granblue_id,
+                      element: summon.element
+                    }
+                  }
+
   pg_search_scope :en_search,
                   against: :name_en,
                   using: {
