@@ -3,30 +3,47 @@
 module Api
   module V1
     class SearchController < Api::V1::ApiController
+      TRIGRAM = {
+        trigram: {
+          threshold: 0.3
+        }
+      }.freeze
+
+      TSEARCH_WITH_PREFIX = {
+        tsearch: {
+          prefix: true,
+          dictionary: 'simple'
+        }
+      }.freeze
+
       def all
-        trigram = {
-          trigram: {
-            threshold: 0.3
-          }
-        }
+        locale = search_params[:locale] || 'en'
 
-        tsearch = {
-          tsearch: {
-            prefix: true,
-            dictionary: 'simple'
-          }
-        }
-
-
-        PgSearch.multisearch_options = { using: trigram }
-        results = PgSearch.multisearch(search_params[:query]).limit(10)
-
-        if (results.length < 5) && (search_params[:query].length >= 2)
-          PgSearch.multisearch_options = { using: tsearch }
-          results = PgSearch.multisearch(search_params[:query], { using: tsearch }).limit(10)
+        case locale
+        when 'en'
+          results = search_all_en
+        when 'ja'
+          results = search_all_ja
         end
 
         render json: SearchBlueprint.render(results, root: :results)
+      end
+
+      def search_all_en
+        PgSearch.multisearch_options = { using: TRIGRAM }
+        results = PgSearch.multisearch(search_params[:query]).limit(10)
+
+        if (results.length < 5) && (search_params[:query].length >= 2)
+          PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
+          results = PgSearch.multisearch(search_params[:query]).limit(10)
+        end
+
+        results
+      end
+
+      def search_all_ja
+        PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
+        PgSearch.multisearch(search_params[:query]).limit(10)
       end
 
       def characters
