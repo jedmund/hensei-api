@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_02_035508) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_05_065015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -359,6 +359,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_02_035508) do
     t.index ["skill3_id"], name: "index_parties_on_skill3_id"
     t.index ["source_party_id"], name: "index_parties_on_source_party_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
+  end
+
+  create_table "pg_search_documents", force: :cascade do |t|
+    t.text "content"
+    t.string "granblue_id"
+    t.string "name_en"
+    t.string "name_jp"
+    t.integer "element"
+    t.string "searchable_type"
+    t.uuid "searchable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
   end
 
   create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

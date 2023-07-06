@@ -1,0 +1,21 @@
+class CreatePgSearchDocuments < ActiveRecord::Migration[7.0]
+  def up
+    say_with_time('Creating table for pg_search multisearch') do
+      create_table :pg_search_documents do |t|
+        t.text :content
+        t.string :granblue_id
+        t.string :name_en
+        t.string :name_jp
+        t.integer :element
+        t.belongs_to :searchable, type: :uuid, polymorphic: true, index: true
+        t.timestamps null: false
+      end
+    end
+  end
+
+  def down
+    say_with_time('Dropping table for pg_search multisearch') do
+      drop_table :pg_search_documents
+    end
+  end
+end
