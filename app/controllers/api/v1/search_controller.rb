@@ -3,6 +3,32 @@
 module Api
   module V1
     class SearchController < Api::V1::ApiController
+      def all
+        trigram = {
+          trigram: {
+            threshold: 0.3
+          }
+        }
+
+        tsearch = {
+          tsearch: {
+            prefix: true,
+            dictionary: 'simple'
+          }
+        }
+
+
+        PgSearch.multisearch_options = { using: trigram }
+        results = PgSearch.multisearch(search_params[:query]).limit(10)
+
+        if (results.length < 5) && (search_params[:query].length >= 2)
+          PgSearch.multisearch_options = { using: tsearch }
+          results = PgSearch.multisearch(search_params[:query], { using: tsearch }).limit(10)
+        end
+
+        render json: SearchBlueprint.render(results, root: :results)
+      end
+
       def characters
         filters = search_params[:filters]
         locale = search_params[:locale] || 'en'
