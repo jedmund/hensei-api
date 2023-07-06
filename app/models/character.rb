@@ -3,6 +3,16 @@
 class Character < ApplicationRecord
   include PgSearch::Model
 
+  multisearchable against: %i[name_en name_jp],
+                  additional_attributes: lambda { |character|
+                    {
+                      name_en: character.name_en,
+                      name_jp: character.name_jp,
+                      granblue_id: character.granblue_id,
+                      element: character.element
+                    }
+                  }
+
   pg_search_scope :en_search,
                   against: :name_en,
                   using: {
