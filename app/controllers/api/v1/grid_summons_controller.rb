@@ -32,16 +32,18 @@ module Api
 
       def update_uncap_level
         summon = @summon.summon
-        max_uncap_level = if summon.flb && !summon.ulb
+        max_uncap_level = if summon.flb && !summon.ulb && !summon.xlb
                             4
-                          elsif summon.ulb
+                          elsif summon.ulb && !summon.xlb
                             5
+                          elsif summon.xlb
+                            6
                           else
                             3
                           end
 
         greater_than_max_uncap = summon_params[:uncap_level].to_i > max_uncap_level
-        can_be_transcended = summon.xlb && summon_params[:transcendence_step] && summon_params[:transcendence_step]&.to_i.positive?
+        can_be_transcended = summon.xlb && summon_params[:transcendence_step] && summon_params[:transcendence_step]&.to_i&.positive?
 
         uncap_level = if greater_than_max_uncap || can_be_transcended
                         max_uncap_level
@@ -130,8 +132,8 @@ module Api
 
       def render_grid_summon_view(grid_summon, conflict_position = nil)
         GridSummonBlueprint.render(grid_summon, view: :nested,
-                                   root: :grid_summon,
-                                   meta: { replaced: conflict_position })
+                                                root: :grid_summon,
+                                                meta: { replaced: conflict_position })
       end
 
       def authorize
