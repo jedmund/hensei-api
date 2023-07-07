@@ -67,7 +67,7 @@ module Api
 
         characters = if search_params[:query].present? && search_params[:query].length >= 2
                        if locale == 'ja'
-                         Character.jp_search(search_params[:query]).where(conditions)
+                         Character.ja_search(search_params[:query]).where(conditions)
                        else
                          Character.en_search(search_params[:query]).where(conditions)
                        end
@@ -105,7 +105,7 @@ module Api
 
         weapons = if search_params[:query].present? && search_params[:query].length >= 2
                     if locale == 'ja'
-                      Weapon.jp_search(search_params[:query]).where(conditions)
+                      Weapon.ja_search(search_params[:query]).where(conditions)
                     else
                       Weapon.en_search(search_params[:query]).where(conditions)
                     end
@@ -138,7 +138,7 @@ module Api
 
         summons = if search_params[:query].present? && search_params[:query].length >= 2
                     if locale == 'ja'
-                      Summon.jp_search(search_params[:query]).where(conditions)
+                      Summon.ja_search(search_params[:query]).where(conditions)
                     else
                       Summon.en_search(search_params[:query]).where(conditions)
                     end
