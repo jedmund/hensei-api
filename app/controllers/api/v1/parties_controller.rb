@@ -60,7 +60,7 @@ module Api
           remix: true
         }
 
-        new_party.local_id = party_params[:local_id] unless party_params.nil?
+        new_party.local_id = party_params[:local_id] if !party_params.nil?
 
         if new_party.save
           render json: PartyBlueprint.render(new_party, view: :created, root: :party),
@@ -71,164 +71,23 @@ module Api
       end
 
       def index
-        conditions = build_filters
+        conditions = build_conditions
 
-        query = build_query(conditions)
-        query = apply_includes(query, params[:includes]) if params[:includes].present?
-        query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
+        @parties = Party.joins(:weapons)
+                        .group('parties.id')
+                        .having('count(distinct grid_weapons.weapon_id) > 2')
+                        .where(conditions)
+                        .where(name_quality)
+                        .where(user_quality)
+                        .where(original)
+                        .order(created_at: :desc)
+                        .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
+                        .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
 
-        @parties = fetch_parties(query)
-        count = calculate_count(query)
-        total_pages = calculate_total_pages(count)
+        count = Party.where(conditions).count
+        total_pages = count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
 
-        render_party_json(@parties, count, total_pages)
-      end
-
-      def favorites
-        raise Api::V1::UnauthorizedError unless current_user
-
-        conditions = build_filters
-        conditions[:favorites] = { user_id: current_user.id }
-
-        query = build_query(conditions)
-        query = apply_includes(query, params[:includes]) if params[:includes].present?
-        query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
-
-        @parties = fetch_parties(query)
-        count = calculate_count(query)
-        total_pages = calculate_total_pages(count)
-
-        render_party_json(@parties, count, total_pages)
-      end
-
-      private
-
-      def authorize
-        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
-      end
-
-      def build_filters
-        params = request.params
-
-        start_time = build_start_time(params['recency'])
-
-        min_characters_count = build_count(params['characters_count'], DEFAULT_MIN_CHARACTERS)
-        min_summons_count = build_count(params['summons_count'], DEFAULT_MIN_SUMMONS)
-        min_weapons_count = build_count(params['weapons_count'], DEFAULT_MIN_WEAPONS)
-        max_clear_time = build_max_clear_time(params['max_clear_time'])
-
-        {
-          element: build_element(params['element']),
-          raid: params['raid'],
-          created_at: params['recency'].present? ? start_time..DateTime.current : nil,
-          full_auto: build_option(params['full_auto']),
-          auto_guard: build_option(params['auto_guard']),
-          charge_attack: build_option(params['charge_attack']),
-          characters_count: min_characters_count..MAX_CHARACTERS,
-          summons_count: min_summons_count..MAX_SUMMONS,
-          weapons_count: min_weapons_count..MAX_WEAPONS
-        }.delete_if { |_k, v| v.nil? }
-      end
-
-      def build_start_time(recency)
-        return unless recency.present?
-
-        (DateTime.current - recency.to_i.seconds).to_datetime.beginning_of_day
-      end
-
-      def build_count(value, default)
-        value.blank? ? default : value.to_i
-      end
-
-      def build_max_clear_time(value)
-        value.blank? ? DEFAULT_MAX_CLEAR_TIME : value.to_i
-      end
-
-      def build_element(element)
-        element.to_i unless element.blank?
-      end
-
-      def build_option(value)
-        value.to_i unless value.blank? || value.to_i == -1
-      end
-
-      def build_query(conditions)
-        Party.distinct
-             .joins(weapons: [:object], summons: [:object], characters: [:object])
-             .group('parties.id')
-             .where(conditions)
-             .where(name_quality)
-             .where(user_quality)
-             .where(original)
-      end
-
-      def includes(id)
-        "(\"#{id_to_table(id)}\".\"granblue_id\" = '#{id}')"
-      end
-
-      def excludes(id)
-        "(\"#{id_to_table(id)}\".\"granblue_id\" != '#{id}')"
-      end
-
-      def apply_includes(query, includes)
-        included = includes.split(',')
-        includes_condition = included.map { |id| includes(id) }.join(' AND ')
-        query.where(includes_condition)
-      end
-
-      def apply_excludes(query, _excludes)
-        characters_subquery = excluded_characters.select(1).arel
-        summons_subquery = excluded_summons.select(1).arel
-        weapons_subquery = excluded_weapons.select(1).arel
-
-        query.where(characters_subquery.exists.not)
-             .where(weapons_subquery.exists.not)
-             .where(summons_subquery.exists.not)
-      end
-
-      def excluded_characters
-        return unless params[:excludes]
-
-        excluded = params[:excludes].split(',').filter { |id| id[0] == '3' }
-        GridCharacter.joins(:object)
-                     .where(characters: { granblue_id: excluded })
-                     .where('grid_characters.party_id = parties.id')
-      end
-
-      def excluded_summons
-        return unless params[:excludes]
-
-        excluded = params[:excludes].split(',').filter { |id| id[0] == '2' }
-        GridSummon.joins(:object)
-                  .where(summons: { granblue_id: excluded })
-                  .where('grid_summons.party_id = parties.id')
-      end
-
-      def excluded_weapons
-        return unless params[:excludes]
-
-        excluded = params[:excludes].split(',').filter { |id| id[0] == '1' }
-        GridWeapon.joins(:object)
-                  .where(weapons: { granblue_id: excluded })
-                  .where('grid_weapons.party_id = parties.id')
-      end
-
-      def fetch_parties(query)
-        query.order(created_at: :desc)
-             .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
-             .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
-      end
-
-      def calculate_count(query)
-        query.count.values.sum
-      end
-
-      def calculate_total_pages(count)
-        count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
-      end
-
-      def render_party_json(parties, count, total_pages)
-        render json: PartyBlueprint.render(parties,
+        render json: PartyBlueprint.render(@parties,
                                            view: :collection,
                                            root: :results,
                                            meta: {
@@ -238,48 +97,104 @@ module Api
                                            })
       end
 
+      def favorites
+        raise Api::V1::UnauthorizedError unless current_user
+
+        conditions = build_conditions
+        conditions[:favorites] = { user_id: current_user.id }
+
+        @parties = Party.joins(:favorites)
+                        .where(conditions)
+                        .where(name_quality)
+                        .where(user_quality)
+                        .where(original)
+                        .order('favorites.created_at DESC')
+                        .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
+                        .each { |party| party.favorited = party.is_favorited(current_user) }
+
+        count = Party.joins(:favorites).where(conditions).count
+        total_pages = count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
+
+        render json: PartyBlueprint.render(@parties,
+                                           view: :collection,
+                                           root: :results,
+                                           meta: {
+                                             count: count,
+                                             total_pages: total_pages,
+                                             per_page: COLLECTION_PER_PAGE
+                                           })
+      end
+
+      private
+
+      def authorize
+        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
+      end
+
+      def build_conditions
+        params = request.params
+
+        unless params['recency'].blank?
+          start_time = (DateTime.current - params['recency'].to_i.seconds)
+                         .to_datetime.beginning_of_day
+        end
+
+        min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i
+        min_summons_count = params['summons_count'].blank? ? DEFAULT_MIN_SUMMONS : params['summons_count'].to_i
+        min_weapons_count = params['weapons_count'].blank? ? DEFAULT_MIN_WEAPONS : params['weapons_count'].to_i
+        max_clear_time = params['max_clear_time'].blank? ? DEFAULT_MAX_CLEAR_TIME : params['max_clear_time'].to_i
+
+        {}.tap do |hash|
+          # Basic filters
+          hash[:element] = params['element'].to_i unless params['element'].blank?
+          hash[:raid] = params['raid'] unless params['raid'].blank?
+          hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
+
+          # Advanced filters: Team parameters
+          hash[:full_auto] = params['full_auto'].to_i unless params['full_auto'].blank? || params['full_auto'].to_i == -1
+          hash[:auto_guard] = params['auto_guard'].to_i unless params['auto_guard'].blank? || params['auto_guard'].to_i == -1
+          hash[:charge_attack] = params['charge_attack'].to_i unless params['charge_attack'].blank? || params['charge_attack'].to_i == -1
+
+          # Turn count of 0 will not be displayed, so disallow on the frontend or set default to 1
+          # How do we do the same for button count since that can reasonably be 1?
+          # hash[:turn_count] = params['turn_count'].to_i unless params['turn_count'].blank? || params['turn_count'].to_i <= 0
+          # hash[:button_count] = params['button_count'].to_i unless params['button_count'].blank?
+          # hash[:clear_time] = 0..max_clear_time
+
+          # Advanced filters: Object counts
+          hash[:characters_count] = min_characters_count..MAX_CHARACTERS
+          hash[:summons_count] = min_summons_count..MAX_SUMMONS
+          hash[:weapons_count] = min_weapons_count..MAX_WEAPONS
+        end
+      end
+
+      def original
+        "source_party_id IS NULL" unless request.params['original'].blank? || request.params['original'] == "false"
+      end
+
       def user_quality
-        'user_id IS NOT NULL' unless request.params[:user_quality].blank? || request.params[:user_quality] == 'false'
+        "user_id IS NOT NULL" unless request.params[:user_quality].blank? || request.params[:user_quality] == "false"
       end
 
       def name_quality
         low_quality = [
-          'Untitled',
-          'Remix of Untitled',
-          'Remix of Remix of Untitled',
-          'Remix of Remix of Remix of Untitled',
-          'Remix of Remix of Remix of Remix of Untitled',
-          'Remix of Remix of Remix of Remix of Remix of Untitled',
-          '無題',
-          '無題のリミックス',
-          '無題のリミックスのリミックス',
-          '無題のリミックスのリミックスのリミックス',
-          '無題のリミックスのリミックスのリミックスのリミックス',
-          '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
+          "Untitled",
+          "Remix of Untitled",
+          "Remix of Remix of Untitled",
+          "Remix of Remix of Remix of Untitled",
+          "Remix of Remix of Remix of Remix of Untitled",
+          "Remix of Remix of Remix of Remix of Remix of Untitled",
+          "無題",
+          "無題のリミックス",
+          "無題のリミックスのリミックス",
+          "無題のリミックスのリミックスのリミックス",
+          "無題のリミックスのリミックスのリミックスのリミックス",
+          "無題のリミックスのリミックスのリミックスのリミックスのリミックス"
         ]
 
         joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
 
-        return if request.params[:name_quality].blank? || request.params[:name_quality] == 'false'
-
-        "name NOT IN (#{joined_names})"
-      end
-
-      def original
-        'source_party_id IS NULL' unless request.params['original'].blank? || request.params['original'] == 'false'
-      end
-
-      def id_to_table(id)
-        case id[0]
-        when '3'
-          table = 'characters'
-        when '2'
-          table = 'summons'
-        when '1'
-          table = 'weapons'
-        end
-
-        table
+        "name NOT IN (#{joined_names})" unless request.params[:name_quality].blank? || request.params[:name_quality] == "false"
       end
 
       def remixed_name(name)
