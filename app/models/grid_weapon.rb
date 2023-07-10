@@ -6,8 +6,6 @@ class GridWeapon < ApplicationRecord
              inverse_of: :weapons
   validates_presence_of :party
 
-  has_one :object, class_name: 'Weapon', foreign_key: :id, primary_key: :weapon_id
-
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
   belongs_to :weapon_key3, class_name: 'WeaponKey', foreign_key: :weapon_key3_id, optional: true
@@ -80,6 +78,10 @@ class GridWeapon < ApplicationRecord
 
   # Checks if the weapon should be a mainhand before saving the model
   def is_mainhand
-    self.mainhand = position == -1
+    if self.position == -1
+      self.mainhand = true
+    else
+      self.mainhand = false
+    end
   end
 end

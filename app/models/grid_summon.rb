@@ -5,7 +5,6 @@ class GridSummon < ApplicationRecord
              counter_cache: :summons_count,
              inverse_of: :summons
   validates_presence_of :party
-  has_one :object, class_name: 'Summon', foreign_key: :id, primary_key: :summon_id
 
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
@@ -24,7 +23,6 @@ class GridSummon < ApplicationRecord
 
     party.summons.find do |grid_summon|
       return unless grid_summon.id
-
       grid_summon if summon.id == grid_summon.summon.id
     end
   end
