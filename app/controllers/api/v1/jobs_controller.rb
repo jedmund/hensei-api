@@ -3,7 +3,8 @@
 module Api
   module V1
     class JobsController < Api::V1::ApiController
-      before_action :set, only: %w[update_job update_job_skills]
+      before_action :set, only: %w[update_job update_job_skills destroy_job_skill]
+      before_action :authorize, only: %w[update_job update_job_skills destroy_job_skill]
 
       def all
         render json: JobBlueprint.render(Job.all)
@@ -79,6 +80,12 @@ module Api
         render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
       end
 
+      def destroy_job_skill
+        position = job_params[:skill_position].to_i
+        @party["skill#{position}_id"] = nil
+        render json: PartyBlueprint.render(@party, view: :jobs) if @party.save
+      end
+
       private
 
       def merge_skills_with_existing_skills(
@@ -149,7 +156,7 @@ module Api
 
       def mismatched_skill(job, skill)
         mismatched_main = (skill.job.id != job.id) && skill.main && !skill.sub
-        mismatched_emp = (skill.job.id != job.id) && skill.emp
+        mismatched_emp = (skill.job.id != job.id && skill.job.base_job.id != job.base_job.id) && skill.emp
         mismatched_base = skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
 
         if %w[4 5 ex2].include?(job.row)
@@ -165,6 +172,10 @@ module Api
         end
       end
 
+      def authorize
+        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
+      end
+
       def set
         @party = Party.where('id = ?', params[:id]).first
       end
@@ -175,7 +186,8 @@ module Api
           :skill0_id,
           :skill1_id,
           :skill2_id,
-          :skill3_id
+          :skill3_id,
+          :skill_position
         )
       end
     end

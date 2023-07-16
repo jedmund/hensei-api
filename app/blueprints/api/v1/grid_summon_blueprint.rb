@@ -9,7 +9,11 @@ module Api
       end
 
       view :nested do
+<<<<<<< HEAD
         fields :main, :friend, :position, :uncap_level, :transcendence_step
+=======
+        fields :main, :friend, :position, :quick_summon, :uncap_level, :transcendence_step
+>>>>>>> main
         association :summon, name: :object, blueprint: SummonBlueprint
       end
 

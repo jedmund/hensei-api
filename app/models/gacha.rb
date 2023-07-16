@@ -1,0 +1,2 @@
+class Gacha < ApplicationRecord
+end

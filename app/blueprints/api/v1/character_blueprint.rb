@@ -63,6 +63,12 @@ module Api
           ougi_ratio_flb: w.ougi_ratio_flb
         }
       end
+
+      field :awakenings do
+        Awakening.where(object_type: 'Character').map do |a|
+          AwakeningBlueprint.render_as_hash(a)
+        end
+      end
     end
   end
 end

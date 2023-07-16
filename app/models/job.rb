@@ -1,7 +1,20 @@
 # frozen_string_literal: true
 
 class Job < ApplicationRecord
+  include PgSearch::Model
+
   belongs_to :party
+  has_many :skills, class_name: 'JobSkill'
+
+  multisearchable against: %i[name_en name_jp],
+                  additional_attributes: lambda { |job|
+                    {
+                      name_en: job.name_en,
+                      name_jp: job.name_jp,
+                      granblue_id: job.granblue_id,
+                      element: 0
+                    }
+                  }
 
   belongs_to :base_job,
              foreign_key: 'base_job_id',

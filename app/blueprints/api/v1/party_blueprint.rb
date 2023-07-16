@@ -33,15 +33,25 @@ module Api
       end
 
       view :minimal do
-        fields :name, :element, :shortcode, :favorited, :extra,
-               :full_auto, :clear_time, :auto_guard, :created_at, :updated_at
+        fields :name, :element, :shortcode, :favorited, :remix,
+               :extra, :full_auto, :clear_time, :auto_guard, :auto_summon,
+               :created_at, :updated_at
+
+        field :guidebooks do |p|
+          {
+            '1' => !p.guidebook1.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook1) : nil,
+            '2' => !p.guidebook2.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook2) : nil,
+            '3' => !p.guidebook3.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook3) : nil
+          }
+        end
 
         field :remix do |p|
           p.is_remix
         end
 
         association :raid,
-                    blueprint: RaidBlueprint
+                    blueprint: RaidBlueprint,
+                    view: :full
 
         association :job,
                     blueprint: JobBlueprint
@@ -68,9 +78,18 @@ module Api
         include_view :characters
         include_view :job_skills
 
+<<<<<<< HEAD
         association :accessory,
                     blueprint: JobAccessoryBlueprint
         fields :description, :charge_attack, :button_count, :turn_count, :chain_count
+=======
+        fields :local_id, :description, :charge_attack,
+               :button_count, :turn_count, :chain_count,
+               :master_level, :ultimate_mastery
+
+        association :accessory,
+                    blueprint: JobAccessoryBlueprint
+>>>>>>> main
 
         association :source_party,
                     blueprint: PartyBlueprint,
@@ -84,6 +103,11 @@ module Api
 
       view :collection do
         include_view :preview
+      end
+
+      view :created do
+        include_view :full
+        fields :edit_key
       end
 
       view :destroyed do

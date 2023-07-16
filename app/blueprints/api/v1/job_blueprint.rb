@@ -17,7 +17,13 @@ module Api
         ]
       end
 
+<<<<<<< HEAD
       fields :granblue_id, :row, :ml, :order
+=======
+      fields :granblue_id, :row, :order,
+             :master_level, :ultimate_mastery,
+             :accessory, :accessory_type
+>>>>>>> main
     end
   end
 end

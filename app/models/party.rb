@@ -10,7 +10,8 @@ class Party < ApplicationRecord
   has_many :derivative_parties,
            class_name: 'Party',
            foreign_key: :source_party_id,
-           inverse_of: :source_party
+           inverse_of: :source_party,
+           dependent: :nullify
 
   belongs_to :user, optional: true
   belongs_to :raid, optional: true
@@ -41,6 +42,21 @@ class Party < ApplicationRecord
              class_name: 'JobSkill',
              optional: true
 
+  belongs_to :guidebook1,
+             foreign_key: 'guidebook1_id',
+             class_name: 'Guidebook',
+             optional: true
+
+  belongs_to :guidebook2,
+             foreign_key: 'guidebook2_id',
+             class_name: 'Guidebook',
+             optional: true
+
+  belongs_to :guidebook3,
+             foreign_key: 'guidebook3_id',
+             class_name: 'Guidebook',
+             optional: true
+
   has_many :characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
@@ -59,12 +75,17 @@ class Party < ApplicationRecord
            dependent: :destroy,
            inverse_of: :party
 
-  has_many :favorites
+  has_many :favorites, dependent: :destroy
 
   before_create :set_shortcode
+  before_create :set_edit_key
 
   ##### Amoeba configuration
   amoeba do
+    set weapons_count: 0
+    set characters_count: 0
+    set summons_count: 0
+
     nullify :description
     nullify :shortcode
 
@@ -75,11 +96,12 @@ class Party < ApplicationRecord
 
   ##### ActiveRecord Validations
   validate :skills_are_unique
+  validate :guidebooks_are_unique
 
   attr_accessor :favorited
 
   def is_favorited(user)
-    user.favorite_parties.include? self
+    user.favorite_parties.include? self if user
   end
 
   def is_remix
@@ -100,6 +122,12 @@ class Party < ApplicationRecord
     self.shortcode = random_string
   end
 
+  def set_edit_key
+    if !self.user
+      self.edit_key = Digest::SHA1.hexdigest([Time.now, rand].join)
+    end
+  end
+
   def random_string
     num_chars = 6
     o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
@@ -118,5 +146,18 @@ class Party < ApplicationRecord
     end
 
     errors.add(:job_skills, 'must be unique')
+  end
+
+  def guidebooks_are_unique
+    guidebooks = [guidebook1, guidebook2, guidebook3].compact
+    return if guidebooks.uniq.length == guidebooks.length
+
+    guidebooks.each_with_index do |book, index|
+      next if index.zero?
+
+      errors.add(:"guidebook#{index + 1}", 'must be unique') if guidebooks[0...index].include?(book)
+    end
+
+    errors.add(:guidebooks, 'must be unique')
   end
 end

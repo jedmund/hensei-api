@@ -7,7 +7,11 @@ module Api
 
       before_action :find_party, only: :create
       before_action :set, only: %i[update destroy]
+<<<<<<< HEAD
       before_action :check_authorization, only: %i[update destroy]
+=======
+      before_action :authorize, only: %i[create update destroy]
+>>>>>>> main
       before_action :find_incoming_character, only: :create
       before_action :find_current_characters, only: :create
 
@@ -135,17 +139,33 @@ module Api
         render_unauthorized_response if current_user && (party.user != current_user)
       end
 
+<<<<<<< HEAD
       def check_authorization
         render_unauthorized_response if @character.party.user != current_user
+=======
+      def authorize
+        # Create
+        unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
+        unauthorized_update = @character && @character.party && (@character.party.user != current_user || @character.party.edit_key != edit_key)
+
+        render_unauthorized_response if unauthorized_create || unauthorized_update
+>>>>>>> main
       end
 
       # Specify whitelisted properties that can be modified.
       def character_params
         params.require(:character).permit(:id, :party_id, :character_id, :position,
                                           :uncap_level, :transcendence_step, :perpetuity,
+<<<<<<< HEAD
                                           ring1: %i[modifier strength], ring2: %i[modifier strength],
                                           ring3: %i[modifier strength], ring4: %i[modifier strength],
                                           earring: %i[modifier strength], awakening: %i[type level])
+=======
+                                          :awakening_id, :awakening_level,
+                                          ring1: %i[modifier strength], ring2: %i[modifier strength],
+                                          ring3: %i[modifier strength], ring4: %i[modifier strength],
+                                          earring: %i[modifier strength])
+>>>>>>> main
       end
 
       def resolve_params

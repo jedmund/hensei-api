@@ -3,6 +3,49 @@
 module Api
   module V1
     class SearchController < Api::V1::ApiController
+      TRIGRAM = {
+        trigram: {
+          threshold: 0.3
+        }
+      }.freeze
+
+      TSEARCH_WITH_PREFIX = {
+        tsearch: {
+          prefix: true,
+          dictionary: 'simple'
+        }
+      }.freeze
+
+      def all
+        locale = search_params[:locale] || 'en'
+
+        case locale
+        when 'en'
+          results = search_all_en
+        when 'ja'
+          results = search_all_ja
+        end
+
+        render json: SearchBlueprint.render(results, root: :results)
+      end
+
+      def search_all_en
+        PgSearch.multisearch_options = { using: TRIGRAM }
+        results = PgSearch.multisearch(search_params[:query]).limit(10)
+
+        if (results.length < 5) && (search_params[:query].length >= 2)
+          PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
+          results = PgSearch.multisearch(search_params[:query]).limit(10)
+        end
+
+        results
+      end
+
+      def search_all_ja
+        PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
+        PgSearch.multisearch(search_params[:query]).limit(10)
+      end
+
       def characters
         filters = search_params[:filters]
         locale = search_params[:locale] || 'en'
@@ -24,7 +67,7 @@ module Api
 
         characters = if search_params[:query].present? && search_params[:query].length >= 2
                        if locale == 'ja'
-                         Character.jp_search(search_params[:query]).where(conditions)
+                         Character.ja_search(search_params[:query]).where(conditions)
                        else
                          Character.en_search(search_params[:query]).where(conditions)
                        end
@@ -62,7 +105,7 @@ module Api
 
         weapons = if search_params[:query].present? && search_params[:query].length >= 2
                     if locale == 'ja'
-                      Weapon.jp_search(search_params[:query]).where(conditions)
+                      Weapon.ja_search(search_params[:query]).where(conditions)
                     else
                       Weapon.en_search(search_params[:query]).where(conditions)
                     end
@@ -95,7 +138,7 @@ module Api
 
         summons = if search_params[:query].present? && search_params[:query].length >= 2
                     if locale == 'ja'
-                      Summon.jp_search(search_params[:query]).where(conditions)
+                      Summon.ja_search(search_params[:query]).where(conditions)
                     else
                       Summon.en_search(search_params[:query]).where(conditions)
                     end
@@ -140,17 +183,34 @@ module Api
 
         # Perform the query
         skills = if search_params[:query].present? && search_params[:query].length >= 2
-                   JobSkill.method("#{locale}_search").call(search_params[:query])
+                   JobSkill.joins(:job)
+                           .method("#{locale}_search").call(search_params[:query])
                            .where(conditions)
                            .where(job: job.id, main: false)
                            .or(
-                             JobSkill.method("#{locale}_search").call(search_params[:query])
+                             JobSkill.joins(:job)
+                                     .method("#{locale}_search").call(search_params[:query])
                                      .where(conditions)
                                      .where(sub: true)
                                      .where.not(job: job.id)
                            )
+                           .or(
+                             JobSkill.joins(:job)
+                                     .method("#{locale}_search").call(search_params[:query])
+                                     .where(conditions)
+                                     .where(job: { base_job: job.base_job.id }, emp: true)
+                                     .where.not(job: job.id)
+                           )
+                           .or(
+                             JobSkill.joins(:job)
+                                     .method("#{locale}_search").call(search_params[:query])
+                                     .where(conditions)
+                                     .where(job: { base_job: job.base_job.id }, base: true)
+                                     .where.not(job: job.id)
+                           )
                  else
                    JobSkill.all
+                           .joins(:job)
                            .where(conditions)
                            .where(job: job.id, main: false)
                            .or(
@@ -165,6 +225,13 @@ module Api
                                      .where(job: job.base_job.id, base: true)
                                      .where.not(job: job.id)
                            )
+                           .or(
+                             JobSkill.all
+                                     .where(conditions)
+                                     .joins(:job)
+                                     .where(job: { base_job: job.base_job.id }, emp: true)
+                                     .where.not(job: job.id)
+                           )
                  end
 
         count = skills.length
@@ -177,6 +244,26 @@ module Api
                                                 total_pages: total_pages(count),
                                                 per_page: SEARCH_PER_PAGE
                                               })
+      end
+
+      def guidebooks
+        # Perform the query
+        books = if search_params[:query].present? && search_params[:query].length >= 2
+                  Guidebook.method("#{locale}_search").call(search_params[:query])
+                else
+                  Guidebook.all
+                end
+
+        count = books.length
+        paginated = books.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+
+        render json: GuidebookBlueprint.render(paginated,
+                                               root: :results,
+                                               meta: {
+                                                 count: count,
+                                                 total_pages: total_pages(count),
+                                                 per_page: SEARCH_PER_PAGE
+                                               })
       end
 
       private

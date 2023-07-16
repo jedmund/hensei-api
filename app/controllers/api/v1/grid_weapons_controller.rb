@@ -3,12 +3,17 @@
 module Api
   module V1
     class GridWeaponsController < Api::V1::ApiController
+<<<<<<< HEAD
       before_action :set, except: %w[create update_uncap_level]
 
+=======
+>>>>>>> main
       attr_reader :party, :incoming_weapon
 
+      before_action :set, except: %w[create update_uncap_level]
       before_action :find_party, only: :create
       before_action :find_incoming_weapon, only: :create
+      before_action :authorize, only: %i[create update destroy]
 
       def create
         # Create the GridWeapon with the desired parameters
@@ -183,6 +188,14 @@ module Api
         @weapon = GridWeapon.where('id = ?', params[:id]).first
       end
 
+      def authorize
+        # Create
+        unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
+        unauthorized_update = @weapon && @weapon.party && (@weapon.party.user != current_user || @weapon.party.edit_key != edit_key)
+
+        render_unauthorized_response if unauthorized_create || unauthorized_update
+      end
+
       # Specify whitelisted properties that can be modified.
       def weapon_params
         params.require(:weapon).permit(
@@ -190,7 +203,7 @@ module Api
           :position, :mainhand, :uncap_level, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
           :ax_modifier1, :ax_modifier2, :ax_strength1, :ax_strength2,
-          :awakening_type, :awakening_level
+          :awakening_id, :awakening_level
         )
       end
 

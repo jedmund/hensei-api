@@ -304,6 +304,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    squasher (0.7.2)
     stringio (3.0.4)
     thor (1.2.1)
     tilt (2.0.11)
@@ -362,6 +363,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   sprockets-rails
+  squasher (>= 0.6.0)
   will_paginate (~> 3.3)
 
 RUBY VERSION

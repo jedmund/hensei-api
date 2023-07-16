@@ -50,6 +50,12 @@ module Api
         @current_user
       end
 
+      def edit_key
+        @edit_key ||= request.headers['X-Edit-Key'] if request.headers['X-Edit-Key']
+        
+        @edit_key
+      end
+
       # Set the response content-type
       def content_type(content_type)
         response.headers['Content-Type'] = content_type

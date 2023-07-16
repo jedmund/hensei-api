@@ -11,8 +11,8 @@ module Api
       end
 
       fields :granblue_id, :element, :proficiency,
-             :max_level, :max_skill_level, :limit, :rarity,
-             :series, :ax, :ax_type, :awakening
+             :max_level, :max_skill_level, :max_awakening_level, :limit, :rarity,
+             :series, :ax, :ax_type
 
       field :uncap do |w|
         {
@@ -37,6 +37,12 @@ module Api
           max_atk_flb: w.max_atk_flb,
           max_atk_ulb: w.max_atk_ulb
         }
+      end
+
+      field :awakenings, if: lambda { |_fn, obj, _opt| obj.awakenings.length.positive? } do |w|
+        w.awakenings.map do |a|
+          AwakeningBlueprint.render_as_hash(a)
+        end
       end
     end
   end
