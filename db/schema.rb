@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_05_065015) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_17_011150) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -103,6 +103,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_065015) do
     t.integer "character_id", default: [], null: false, array: true
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.string "wiki_en", default: "", null: false
+    t.date "release_date"
+    t.date "flb_date"
+    t.date "ulb_date"
+    t.string "wiki_ja", default: "", null: false
+    t.string "gamewith", default: "", null: false
+    t.string "kamigame", default: "", null: false
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
