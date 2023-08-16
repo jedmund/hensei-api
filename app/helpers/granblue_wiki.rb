@@ -11,6 +11,7 @@ class GranblueWiki
   class_attribute :rarities
   class_attribute :genders
   class_attribute :races
+  class_attribute :bullets
   class_attribute :boolean
 
   self.base_uri = 'https://gbf.wiki/api.php'
@@ -59,10 +60,22 @@ class GranblueWiki
     'mf' => 3
   }.freeze
 
+  self.bullets = {
+    'cartridge' => 1,
+    'rifle' => 2,
+    'parabellum' => 3,
+    'aetherial' => 4
+  }.freeze
+
   self.boolean = {
     'yes' => true,
     'no' => false
   }.freeze
+
+  def initialize(props: ['wikitext'], debug: false)
+    @debug = debug
+    @props = props.join('|')
+  end
 
   def fetch(page)
     query_params = params(page).map do |key, value|
