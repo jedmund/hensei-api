@@ -35,10 +35,10 @@ class CharacterParser
 
     @character.wiki_en = redirect
     if @character.save!
-      ap "Saved new wiki_en value for #{@granblue_id}: #{redirect}" if @debug
+      ap "Saved new wiki_en value for #{@character.granblue_id}: #{redirect}" if @debug
       redirect
     else
-      ap "Unable to save new wiki_en value for #{@granblue_id}: #{redirect}" if @debug
+      ap "Unable to save new wiki_en value for #{@character.granblue_id}: #{redirect}" if @debug
       nil
     end
   end
@@ -46,7 +46,7 @@ class CharacterParser
   # Handle the response from the wiki if the response is successful
   # If the save flag is set, it will persist the data to the database
   def handle_fetch_success(response, save)
-    ap "#{@granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug
+    ap "#{@character.granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug
     extracted = parse_string(response)
     info = parse(extracted)
     persist(info) if save
@@ -180,8 +180,8 @@ class CharacterParser
   end
 
   # Converts proficiencies from a string to a hash
-  def proficiencies_from_hash(weapon)
-    weapon.to_s.split(',').map.with_index do |prof, i|
+  def proficiencies_from_hash(character)
+    character.to_s.split(',').map.with_index do |prof, i|
       { "proficiency#{i + 1}" => GranblueWiki.proficiencies[prof] }
     end.reduce({}, :merge)
   end
