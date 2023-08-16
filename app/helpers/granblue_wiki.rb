@@ -110,7 +110,7 @@ class GranblueWiki
       action: 'parse',
       format: 'json',
       page: page,
-      prop: 'wikitext'
+      prop: @props
     }
   end
 end
