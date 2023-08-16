@@ -83,6 +83,8 @@ class GranblueWiki
     end.join('&')
 
     destination = "#{base_uri}?#{query_params}"
+    ap "--> Fetching #{destination}" if @debug
+
     response = HTTParty.get(destination)
 
     handle_response(response, page)
