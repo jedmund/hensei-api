@@ -50,6 +50,12 @@ gem 'data_migrate'
 # A ruby gem to allow the copying of ActiveRecord objects and their associated children, configurable with a DSL on the model
 gem 'amoeba'
 
+# Makes http fun again!
+gem 'httparty'
+
+# StringScanner provides for lexical scanning operations on a String.
+gem 'strscan'
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
@@ -60,6 +66,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'pry'
   gem 'rspec_junit_formatter'
   gem 'rspec-rails'
 end
@@ -72,8 +79,8 @@ group :development do
 end
 
 group :tools do
-  gem 'squasher', '>= 0.6.0'
   gem 'rubocop'
+  gem 'squasher', '>= 0.6.0'
 end
 
 group :test do
