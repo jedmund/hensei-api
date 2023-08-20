@@ -94,6 +94,32 @@ class WeaponParser
     ap errors
   end
 
+  def self.fetch_list(list: [], save: false, overwrite: false, debug: false, start: nil)
+    errors = []
+
+    start_index = start.nil? ? 0 : list.index { |id| id == start }
+    count = list.drop(start_index).count
+
+    # ap "Start index: #{start_index}"
+
+    list.drop(start_index).each_with_index do |id, i|
+      weapon = Weapon.find_by(granblue_id: id)
+      percentage = ((i + 1) / count.to_f * 100).round(2)
+      ap "#{percentage}%: Fetching #{weapon.wiki_en}... (#{i + 1}/#{count})" if debug
+      next unless weapon.release_date.nil? || overwrite
+
+      begin
+        WeaponParser.new(granblue_id: weapon.granblue_id,
+                         debug: debug).fetch(save: save)
+      rescue WikiError => e
+        errors.push(e.page)
+      end
+    end
+
+    ap 'The following pages were unable to be fetched:'
+    ap errors
+  end
+
   # Parses the response string into a hash
   def parse_string(string)
     data = {}
