@@ -146,7 +146,7 @@ class WeaponParser
     info[:flavor] = { en: hash['flavor'], ja: hash['jpflavor'] }
     info[:id] = hash['id']
 
-    info[:flb] = hash['evo_max'].to_i == 4
+    info[:flb] = hash['evo_max'].to_i >= 4
     info[:ulb] = hash['evo_max'].to_i == 5
 
     info[:rarity] = rarity_from_hash(hash['rarity'])
