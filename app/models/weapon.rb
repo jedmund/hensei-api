@@ -14,15 +14,19 @@ class Weapon < ApplicationRecord
                   }
 
   pg_search_scope :en_search,
-                  against: :name_en,
+                  against: %i[name_en nicknames_en],
                   using: {
+                    tsearch: {
+                      prefix: true,
+                      dictionary: 'simple'
+                    },
                     trigram: {
                       threshold: 0.18
                     }
                   }
 
   pg_search_scope :ja_search,
-                  against: :name_jp,
+                  against: %i[name_jp nicknames_jp],
                   using: {
                     tsearch: {
                       prefix: true,
