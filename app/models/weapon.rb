@@ -8,6 +8,8 @@ class Weapon < ApplicationRecord
                     {
                       name_en: weapon.name_en,
                       name_jp: weapon.name_jp,
+                      nicknames_en: weapon.nicknames_en,
+                      nicknames_jp: weapon.nicknames_jp,
                       granblue_id: weapon.granblue_id,
                       element: weapon.element
                     }

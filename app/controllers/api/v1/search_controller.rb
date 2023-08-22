@@ -30,20 +30,26 @@ module Api
       end
 
       def search_all_en
-        PgSearch.multisearch_options = { using: TRIGRAM }
-        results = PgSearch.multisearch(search_params[:query]).limit(10)
+        query = search_params[:query]
+        exclude = search_params[:exclude]
 
-        if (results.length < 5) && (search_params[:query].length >= 2)
+        PgSearch.multisearch_options = { using: TRIGRAM }
+        results = PgSearch.multisearch(query).where.not(granblue_id: exclude).limit(10)
+
+        if (results.length < 5) && (query.length >= 2)
           PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
-          results = PgSearch.multisearch(search_params[:query]).limit(10)
+          results = PgSearch.multisearch(query).where.not(granblue_id: exclude).limit(10)
         end
 
         results
       end
 
       def search_all_ja
+        query = search_params[:query]
+        exclude = search_params[:exclude]
+
         PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
-        PgSearch.multisearch(search_params[:query]).limit(10)
+        PgSearch.multisearch(query).where.not(granblue_id: exclude).limit(10)
       end
 
       def characters

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GridCharacter < ApplicationRecord
+  has_one :object, class_name: 'Character', foreign_key: :id, primary_key: :character_id
+
   belongs_to :awakening, optional: true
   belongs_to :party,
              counter_cache: :characters_count,
@@ -87,9 +89,9 @@ class GridCharacter < ApplicationRecord
   private
 
   def add_awakening
-    if self.awakening.nil?
-      self.awakening = Awakening.where(slug: "character-balanced").sole
-    end
+    return unless awakening.nil?
+
+    self.awakening = Awakening.where(slug: 'character-balanced').sole
   end
 
   def check_value(property, type)
