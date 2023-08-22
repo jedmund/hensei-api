@@ -90,7 +90,7 @@ module Api
         conditions = build_filters
         conditions[:favorites] = { user_id: current_user.id }
 
-        query = build_query(conditions)
+        query = build_query(conditions, true)
         query = apply_includes(query, params[:includes]) if params[:includes].present?
         query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
 
@@ -152,14 +152,18 @@ module Api
         value.to_i unless value.blank? || value.to_i == -1
       end
 
-      def build_query(conditions)
-        Party.distinct
-             .joins(weapons: [:object], summons: [:object], characters: [:object])
-             .group('parties.id')
-             .where(conditions)
-             .where(name_quality)
-             .where(user_quality)
-             .where(original)
+      def build_query(conditions, favorites = false)
+        query = Party.distinct
+                     .joins(weapons: [:object], summons: [:object], characters: [:object])
+                     .group('parties.id')
+                     .where(conditions)
+                     .where(name_quality)
+                     .where(user_quality)
+                     .where(original)
+
+        query = query.joins(:favorites) if favorites
+
+        query
       end
 
       def includes(id)
