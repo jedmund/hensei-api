@@ -65,7 +65,9 @@ module Api
 
       view :preview do
         include_view :minimal
+        include_view :characters
         include_view :weapons
+        include_view :summons
       end
 
       view :full do
