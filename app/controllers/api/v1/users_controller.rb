@@ -63,6 +63,7 @@ module Api
                     .where(name_quality)
                     .where(user_quality)
                     .where(original)
+                    .where(privacy)
                     .order(created_at: :desc)
                     .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
                     .each do |party|
@@ -117,15 +118,15 @@ module Api
           # Advanced filters: Team parameters
           unless params['full_auto'].blank? || params['full_auto'].to_i == -1
             hash[:full_auto] =
-params['full_auto'].to_i
+              params['full_auto'].to_i
           end
           unless params['auto_guard'].blank? || params['auto_guard'].to_i == -1
             hash[:auto_guard] =
-params['auto_guard'].to_i
+              params['auto_guard'].to_i
           end
           unless params['charge_attack'].blank? || params['charge_attack'].to_i == -1
             hash[:charge_attack] =
-params['charge_attack'].to_i
+              params['charge_attack'].to_i
           end
 
           # Turn count of 0 will not be displayed, so disallow on the frontend or set default to 1
@@ -174,6 +175,12 @@ params['charge_attack'].to_i
         return if params.key?('name_quality') || params[:name_quality].nil? || params[:name_quality] == '0'
 
         "name NOT IN (#{joined_names})"
+      end
+
+      def privacy
+        return if admin_mode
+
+        'visibility = 1' if current_user != @user
       end
 
       # Specify whitelisted properties that can be modified.
