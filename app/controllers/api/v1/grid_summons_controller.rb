@@ -14,6 +14,7 @@ module Api
         # Create the GridSummon with the desired parameters
         summon = GridSummon.new
         summon.attributes = summon_params.merge(party_id: party.id, summon_id: incoming_summon.id)
+        summon.uncap_level = max_uncap_level(summon) if summon.uncap_level.nil?
 
         if summon.validate
           save_summon(summon)
@@ -32,15 +33,7 @@ module Api
 
       def update_uncap_level
         summon = @summon.summon
-        max_uncap_level = if summon.flb && !summon.ulb && !summon.xlb
-                            4
-                          elsif summon.ulb && !summon.xlb
-                            5
-                          elsif summon.xlb
-                            6
-                          else
-                            3
-                          end
+        max_uncap_level = max_uncap_level(summon)
 
         greater_than_max_uncap = summon_params[:uncap_level].to_i > max_uncap_level
         can_be_transcended = summon.xlb && summon_params[:transcendence_step] && summon_params[:transcendence_step]&.to_i&.positive?
@@ -119,6 +112,19 @@ module Api
       end
 
       private
+
+      def max_uncap_level(summon)
+        object = summon.summon
+        if object.flb && !object.ulb && !object.xlb
+          4
+        elsif object.ulb && !object.xlb
+          5
+        elsif object.xlb
+          6
+        else
+          3
+        end
+      end
 
       def find_incoming_summon
         @incoming_summon = Summon.find_by(id: summon_params[:summon_id])
