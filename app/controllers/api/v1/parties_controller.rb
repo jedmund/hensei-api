@@ -33,7 +33,8 @@ module Api
 
       def show
         # If a party is private, check that the user is the owner
-        return render_unauthorized_response if @party.private? && @party.user != current_user
+        not_owner = current_user && @party.private? && @party.user != current_user
+        return render_unauthorized_response if !current_user || (not_owner && !admin_mode)
 
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party
 
@@ -93,7 +94,7 @@ module Api
         conditions = build_filters
         conditions[:favorites] = { user_id: current_user.id }
 
-        query = build_query(conditions, true)
+        query = build_query(conditions, favorites: true)
         query = apply_includes(query, params[:includes]) if params[:includes].present?
         query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
 
@@ -160,7 +161,7 @@ module Api
                      .joins(weapons: [:object], summons: [:object], characters: [:object])
                      .group('parties.id')
                      .where(conditions)
-                     .where(privacy(favorites))
+                     .where(privacy(favorites: favorites))
                      .where(name_quality)
                      .where(user_quality)
                      .where(original)
@@ -247,6 +248,8 @@ module Api
       end
 
       def privacy(favorites: false)
+        return if admin_mode
+
         if favorites
           'visibility < 3'
         else
