@@ -35,7 +35,7 @@ module Api
       view :minimal do
         fields :name, :element, :shortcode, :favorited, :remix,
                :extra, :full_auto, :clear_time, :auto_guard, :auto_summon,
-               :created_at, :updated_at
+               :visibility, :created_at, :updated_at
 
         field :guidebooks do |p|
           {
