@@ -32,9 +32,8 @@ module Api
       end
 
       def show
-        # If a party is private, check that the user is the owner
-        not_owner = current_user && @party.private? && @party.user != current_user
-        return render_unauthorized_response if !current_user || (not_owner && !admin_mode)
+        # If a party is private, check that the user is the owner or an admin
+        return render_unauthorized_response if !current_user || (@party.private && not_owner && !admin_mode)
 
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party
 
@@ -108,7 +107,11 @@ module Api
       private
 
       def authorize
-        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
+        render_unauthorized_response if not_owner || @party.edit_key != edit_key || !admin_mode
+      end
+
+      def not_owner
+        current_user && @party.user != current_user
       end
 
       def build_filters
