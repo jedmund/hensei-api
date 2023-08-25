@@ -256,7 +256,7 @@ module Api
         if favorites
           'visibility < 3'
         else
-          'visibility == 1'
+          'visibility = 1'
         end
       end
 
