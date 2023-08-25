@@ -105,15 +105,27 @@ class Party < ApplicationRecord
   end
 
   def is_remix
-    self.source_party != nil
+    !source_party.nil?
   end
 
   def remixes
-    Party.where(source_party_id: self.id)
+    Party.where(source_party_id: id)
   end
 
   def blueprint
     PartyBlueprint
+  end
+
+  def public?
+    visibility == 1
+  end
+
+  def unlisted?
+    visibility == 2
+  end
+
+  def private?
+    visibility == 3
   end
 
   private
@@ -123,9 +135,9 @@ class Party < ApplicationRecord
   end
 
   def set_edit_key
-    if !self.user
-      self.edit_key = Digest::SHA1.hexdigest([Time.now, rand].join)
-    end
+    return if user
+
+    self.edit_key = Digest::SHA1.hexdigest([Time.now, rand].join)
   end
 
   def random_string

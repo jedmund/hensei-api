@@ -32,6 +32,9 @@ module Api
       end
 
       def show
+        # If a party is private, check that the user is the owner
+        return render_unauthorized_response if @party.private? && @party.user != current_user
+
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party
 
         render_not_found_response('project')
@@ -152,11 +155,12 @@ module Api
         value.to_i unless value.blank? || value.to_i == -1
       end
 
-      def build_query(conditions, favorites = false)
+      def build_query(conditions, favorites: false)
         query = Party.distinct
                      .joins(weapons: [:object], summons: [:object], characters: [:object])
                      .group('parties.id')
                      .where(conditions)
+                     .where(privacy(favorites))
                      .where(name_quality)
                      .where(user_quality)
                      .where(original)
@@ -240,6 +244,14 @@ module Api
                                              total_pages: total_pages,
                                              per_page: COLLECTION_PER_PAGE
                                            })
+      end
+
+      def privacy(favorites: false)
+        if favorites
+          'visibility < 3'
+        else
+          'visibility == 1'
+        end
       end
 
       def user_quality
@@ -329,6 +341,7 @@ module Api
           :description,
           :raid_id,
           :job_id,
+          :visibility,
           :accessory_id,
           :skill0_id,
           :skill1_id,
