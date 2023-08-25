@@ -50,9 +50,17 @@ module Api
         @current_user
       end
 
+      def admin_mode
+        if current_user && current_user.admin? && request.headers['X-Admin-Mode']
+          @admin_mode ||= request.headers['X-Admin-Mode'] == 'true'
+        end
+
+        @admin_mode
+      end
+
       def edit_key
         @edit_key ||= request.headers['X-Edit-Key'] if request.headers['X-Edit-Key']
-        
+
         @edit_key
       end
 
@@ -96,9 +104,9 @@ module Api
 
       def render_not_found_response(object)
         render json: ErrorBlueprint.render(nil, error: {
-          message: "#{object.capitalize} could not be found",
-          code: 'not_found'
-        }), status: :not_found
+                                             message: "#{object.capitalize} could not be found",
+                                             code: 'not_found'
+                                           }), status: :not_found
       end
 
       def render_unauthorized_response

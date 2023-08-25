@@ -41,6 +41,8 @@ module Api
         render_validation_error_response(@user)
       end
 
+      # TODO: Allow admins to update other users
+
       def update
         render json: UserBlueprint.render(@user, view: :minimal) if @user.update(user_params)
       end
@@ -57,13 +59,14 @@ module Api
           conditions[:user_id] = @user.id
 
           parties = Party
-                      .where(conditions)
-                      .where(name_quality)
-                      .where(user_quality)
-                      .where(original)
-                      .order(created_at: :desc)
-                      .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
-                      .each do |party|
+                    .where(conditions)
+                    .where(name_quality)
+                    .where(user_quality)
+                    .where(original)
+                    .where(privacy)
+                    .order(created_at: :desc)
+                    .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
+                    .each do |party|
             party.favorited = current_user ? party.is_favorited(current_user) : false
           end
 
@@ -98,7 +101,7 @@ module Api
 
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                         .to_datetime.beginning_of_day
+                       .to_datetime.beginning_of_day
         end
 
         min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i
@@ -113,9 +116,18 @@ module Api
           hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
 
           # Advanced filters: Team parameters
-          hash[:full_auto] = params['full_auto'].to_i unless params['full_auto'].blank? || params['full_auto'].to_i == -1
-          hash[:auto_guard] = params['auto_guard'].to_i unless params['auto_guard'].blank? || params['auto_guard'].to_i == -1
-          hash[:charge_attack] = params['charge_attack'].to_i unless params['charge_attack'].blank? || params['charge_attack'].to_i == -1
+          unless params['full_auto'].blank? || params['full_auto'].to_i == -1
+            hash[:full_auto] =
+              params['full_auto'].to_i
+          end
+          unless params['auto_guard'].blank? || params['auto_guard'].to_i == -1
+            hash[:auto_guard] =
+              params['auto_guard'].to_i
+          end
+          unless params['charge_attack'].blank? || params['charge_attack'].to_i == -1
+            hash[:charge_attack] =
+              params['charge_attack'].to_i
+          end
 
           # Turn count of 0 will not be displayed, so disallow on the frontend or set default to 1
           # How do we do the same for button count since that can reasonably be 1?
@@ -131,38 +143,44 @@ module Api
       end
 
       def original
-        unless params.key?('original') || params['original'].blank? || params['original'] == '0'
-          "source_party_id IS NULL"
-        end
+        return if params.key?('original') || params['original'].blank? || params['original'] == '0'
+
+        'source_party_id IS NULL'
       end
 
       def user_quality
-        unless params.key?('user_quality') || params[:user_quality].nil? || params[:user_quality] == "0"
-          "user_id IS NOT NULL"
-        end
+        return if params.key?('user_quality') || params[:user_quality].nil? || params[:user_quality] == '0'
+
+        'user_id IS NOT NULL'
       end
 
       def name_quality
         low_quality = [
-          "Untitled",
-          "Remix of Untitled",
-          "Remix of Remix of Untitled",
-          "Remix of Remix of Remix of Untitled",
-          "Remix of Remix of Remix of Remix of Untitled",
-          "Remix of Remix of Remix of Remix of Remix of Untitled",
-          "無題",
-          "無題のリミックス",
-          "無題のリミックスのリミックス",
-          "無題のリミックスのリミックスのリミックス",
-          "無題のリミックスのリミックスのリミックスのリミックス",
-          "無題のリミックスのリミックスのリミックスのリミックスのリミックス"
+          'Untitled',
+          'Remix of Untitled',
+          'Remix of Remix of Untitled',
+          'Remix of Remix of Remix of Untitled',
+          'Remix of Remix of Remix of Remix of Untitled',
+          'Remix of Remix of Remix of Remix of Remix of Untitled',
+          '無題',
+          '無題のリミックス',
+          '無題のリミックスのリミックス',
+          '無題のリミックスのリミックスのリミックス',
+          '無題のリミックスのリミックスのリミックスのリミックス',
+          '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
         ]
 
         joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
 
-        unless params.key?('name_quality') || params[:name_quality].nil? || params[:name_quality] == "0"
-          "name NOT IN (#{joined_names})"
-        end
+        return if params.key?('name_quality') || params[:name_quality].nil? || params[:name_quality] == '0'
+
+        "name NOT IN (#{joined_names})"
+      end
+
+      def privacy
+        return if admin_mode
+
+        'visibility = 1' if current_user != @user
       end
 
       # Specify whitelisted properties that can be modified.

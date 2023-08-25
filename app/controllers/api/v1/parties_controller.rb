@@ -32,6 +32,11 @@ module Api
       end
 
       def show
+        # If a party is private, check that the user is the owner or an admin
+        if (@party.private? && !current_user) || (@party.private? && not_owner && !admin_mode)
+          return render_unauthorized_response
+        end
+
         return render json: PartyBlueprint.render(@party, view: :full, root: :party) if @party
 
         render_not_found_response('project')
@@ -90,7 +95,7 @@ module Api
         conditions = build_filters
         conditions[:favorites] = { user_id: current_user.id }
 
-        query = build_query(conditions, true)
+        query = build_query(conditions, favorites: true)
         query = apply_includes(query, params[:includes]) if params[:includes].present?
         query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
 
@@ -104,7 +109,11 @@ module Api
       private
 
       def authorize
-        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
+        render_unauthorized_response if (not_owner && !admin_mode) || (@party.edit_key != edit_key && !admin_mode)
+      end
+
+      def not_owner
+        current_user && @party.user != current_user
       end
 
       def build_filters
@@ -152,11 +161,12 @@ module Api
         value.to_i unless value.blank? || value.to_i == -1
       end
 
-      def build_query(conditions, favorites = false)
+      def build_query(conditions, favorites: false)
         query = Party.distinct
                      .joins(weapons: [:object], summons: [:object], characters: [:object])
                      .group('parties.id')
                      .where(conditions)
+                     .where(privacy(favorites: favorites))
                      .where(name_quality)
                      .where(user_quality)
                      .where(original)
@@ -240,6 +250,16 @@ module Api
                                              total_pages: total_pages,
                                              per_page: COLLECTION_PER_PAGE
                                            })
+      end
+
+      def privacy(favorites: false)
+        return if admin_mode
+
+        if favorites
+          'visibility < 3'
+        else
+          'visibility = 1'
+        end
       end
 
       def user_quality
@@ -329,6 +349,7 @@ module Api
           :description,
           :raid_id,
           :job_id,
+          :visibility,
           :accessory_id,
           :skill0_id,
           :skill1_id,

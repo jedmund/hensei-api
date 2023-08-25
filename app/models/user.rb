@@ -43,6 +43,10 @@ class User < ApplicationRecord
     favorites.map(&:party)
   end
 
+  def admin?
+    role == 9
+  end
+
   def blueprint
     UserBlueprint
   end
