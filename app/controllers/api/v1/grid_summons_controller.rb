@@ -114,12 +114,11 @@ module Api
       private
 
       def max_uncap_level(summon)
-        object = summon.summon
-        if object.flb && !object.ulb && !object.xlb
+        if summon.flb && !summon.ulb && !summon.xlb
           4
-        elsif object.ulb && !object.xlb
+        elsif summon.ulb && !summon.xlb
           5
-        elsif object.xlb
+        elsif summon.xlb
           6
         else
           3
