@@ -41,10 +41,10 @@ module Api
         weapon = GridWeapon.create!(party_id: party.id, weapon_id: incoming.id,
                                     position: resolve_params[:position], uncap_level: uncap_level)
 
-        if weapon.save
-          view = render_grid_weapon_view(weapon, resolve_params[:position])
-          render json: view, status: :created
-        end
+        return unless weapon.save
+
+        view = render_grid_weapon_view(weapon, resolve_params[:position])
+        render json: view, status: :created
       end
 
       def update
@@ -56,7 +56,14 @@ module Api
 
         # Maybe we make methods on the model to validate for us somehow
 
-        render json: GridWeaponBlueprint.render(@weapon, view: :nested) if @weapon.update(weapon_params)
+        @weapon.assign_attributes(weapon_params)
+
+        @weapon.ax_modifier1 = nil if weapon_params[:ax_modifier1] == -1
+        @weapon.ax_modifier2 = nil if weapon_params[:ax_modifier2] == -1
+        @weapon.ax_strength1 = nil if weapon_params[:ax_strength1].zero?
+        @weapon.ax_strength2 = nil if weapon_params[:ax_strength2].zero?
+
+        render json: GridWeaponBlueprint.render(@weapon, view: :nested) if @weapon.save
       end
 
       def destroy
@@ -121,15 +128,15 @@ module Api
       # Render the conflict view as a string
       def render_conflict_view(conflict_weapon, incoming_weapon, incoming_position)
         ConflictBlueprint.render(nil, view: :weapons,
-                                 conflict_weapon: conflict_weapon,
-                                 incoming_weapon: incoming_weapon,
-                                 incoming_position: incoming_position)
+                                      conflict_weapon: conflict_weapon,
+                                      incoming_weapon: incoming_weapon,
+                                      incoming_position: incoming_position)
       end
 
       def render_grid_weapon_view(grid_weapon, conflict_position)
         GridWeaponBlueprint.render(grid_weapon, view: :full,
-                                   root: :grid_weapon,
-                                   meta: { replaced: conflict_position })
+                                                root: :grid_weapon,
+                                                meta: { replaced: conflict_position })
       end
 
       def save_weapon(weapon)
