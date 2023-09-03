@@ -60,8 +60,8 @@ module Api
 
         @weapon.ax_modifier1 = nil if weapon_params[:ax_modifier1] == -1
         @weapon.ax_modifier2 = nil if weapon_params[:ax_modifier2] == -1
-        @weapon.ax_strength1 = nil if weapon_params[:ax_strength1].zero?
-        @weapon.ax_strength2 = nil if weapon_params[:ax_strength2].zero?
+        @weapon.ax_strength1 = nil if weapon_params[:ax_strength1]&.zero?
+        @weapon.ax_strength2 = nil if weapon_params[:ax_strength2]&.zero?
 
         render json: GridWeaponBlueprint.render(@weapon, view: :nested) if @weapon.save
       end
