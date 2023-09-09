@@ -25,7 +25,8 @@ class TokensController < Doorkeeper::TokensController
         ### Or if you want to just append user using 'as_json'
         body[:user] = {
           id: user.id,
-          username: user.username
+          username: user.username,
+          role: user.role
         }
 
       end
