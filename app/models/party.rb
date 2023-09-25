@@ -88,6 +88,7 @@ class Party < ApplicationRecord
 
     nullify :description
     nullify :shortcode
+    nullify :edit_key
 
     include_association :characters
     include_association :weapons
