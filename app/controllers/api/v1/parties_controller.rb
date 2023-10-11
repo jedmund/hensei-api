@@ -109,11 +109,27 @@ module Api
       private
 
       def authorize
-        render_unauthorized_response if (not_owner && !admin_mode) || (@party.edit_key != edit_key && !admin_mode)
+        return unless not_owner && !admin_mode
+
+        render_unauthorized_response
       end
 
       def not_owner
-        current_user && @party.user != current_user
+        if @party.user
+          # party has a user and current_user does not match
+          return true if current_user != @party.user
+
+          # party has a user, there's no current_user, but edit_key is provided
+          return true if current_user.nil? && edit_key
+        else
+          # party has no user, there's no current_user and there's no edit_key provided
+          return true if current_user.nil? && edit_key.nil?
+
+          # party has no user, there's no current_user, and the party's edit_key doesn't match the provided edit_key
+          return true if current_user.nil? && @party.edit_key != edit_key
+        end
+
+        false
       end
 
       def build_filters
@@ -263,7 +279,9 @@ module Api
       end
 
       def user_quality
-        'user_id IS NOT NULL' unless request.params[:user_quality].blank? || request.params[:user_quality] == 'false'
+        return if request.params[:user_quality].blank? || request.params[:user_quality] == 'false'
+
+        'user_id IS NOT NULL'
       end
 
       def name_quality
@@ -290,7 +308,9 @@ module Api
       end
 
       def original
-        'source_party_id IS NULL' unless request.params['original'].blank? || request.params['original'] == 'false'
+        return if request.params['original'].blank? || request.params['original'] == 'false'
+
+        'source_party_id IS NULL'
       end
 
       def id_to_table(id)
