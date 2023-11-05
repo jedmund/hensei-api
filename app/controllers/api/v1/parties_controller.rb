@@ -23,6 +23,11 @@ module Api
         party.user = current_user if current_user
         party.attributes = party_params if party_params
 
+        if party_params && party_params[:raid_id]
+          raid = Raid.find_by(id: party_params[:raid_id])
+          party.extra = raid.group.extra
+        end
+
         if party.save!
           return render json: PartyBlueprint.render(party, view: :created, root: :party),
                         status: :created
@@ -44,6 +49,11 @@ module Api
 
       def update
         @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
+
+        if party_params && party_params[:raid_id]
+          raid = Raid.find_by(id: party_params[:raid_id])
+          @party.extra = raid.group.extra
+        end
 
         # TODO: Validate accessory with job
 
