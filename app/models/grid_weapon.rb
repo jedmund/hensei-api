@@ -44,14 +44,21 @@ class GridWeapon < ApplicationRecord
   def conflicts(party)
     return unless weapon.limit
 
-    party.weapons.find do |party_weapon|
-      return unless party_weapon.id
+    conflicting_weapons = []
+
+    party.weapons.each do |party_weapon|
+      next unless party_weapon.id
 
       id_match = weapon.id == party_weapon.id
       series_match = weapon.series == party_weapon.weapon.series
       both_opus_or_draconic = weapon.opus_or_draconic? && party_weapon.weapon.opus_or_draconic?
-      weapon if (series_match || both_opus_or_draconic) && !id_match
+      both_draconic = weapon.draconic_or_providence? && party_weapon.weapon.draconic_or_providence?
+
+      conflicting_weapons << party_weapon if (series_match || both_opus_or_draconic || both_draconic) && !id_match
     end
+
+
+    conflicting_weapons
   end
 
   private
@@ -60,9 +67,15 @@ class GridWeapon < ApplicationRecord
 
   # Validates whether the weapon can be added to the desired position
   def compatible_with_position
-    return unless [9, 10, 11].include?(position.to_i) && ![11, 16, 17, 28, 29, 32].include?(weapon.series)
+    is_extra_position = [9, 10, 11].include?(position.to_i)
+    is_extra_weapon = [11, 16, 17, 28, 29, 32, 34].include?(weapon.series.to_i)
+
+    return unless is_extra_position
+
+    return true if is_extra_weapon
 
     errors.add(:series, 'must be compatible with position')
+    false
   end
 
   # Validates whether the desired weapon key can be added to the weapon
