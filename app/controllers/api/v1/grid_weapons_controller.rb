@@ -93,7 +93,7 @@ module Api
 
       # Check if the incoming weapon is compatible with the specified position
       def compatible_with_position?(incoming_weapon, position)
-        false if [9, 10, 11].include?(position.to_i) && ![11, 16, 17, 28, 29].include?(incoming_weapon.series)
+        false if [9, 10, 11].include?(position.to_i) && ![11, 16, 17, 28, 29, 34].include?(incoming_weapon.series)
         true
       end
 
@@ -126,9 +126,9 @@ module Api
       end
 
       # Render the conflict view as a string
-      def render_conflict_view(conflict_weapon, incoming_weapon, incoming_position)
+      def render_conflict_view(conflict_weapons, incoming_weapon, incoming_position)
         ConflictBlueprint.render(nil, view: :weapons,
-                                      conflict_weapon: conflict_weapon,
+                                      conflict_weapons: conflict_weapons,
                                       incoming_weapon: incoming_weapon,
                                       incoming_position: incoming_position)
       end
@@ -166,12 +166,15 @@ module Api
       end
 
       def handle_conflict(weapon)
-        conflict_weapon = weapon.conflicts(party)
 
-        if conflict_weapon.weapon.id != incoming_weapon.id
+        conflict_weapons = weapon.conflicts(party)
+
+        # Map conflict weapon IDs into an array
+        conflict_weapon_ids = conflict_weapons.map(&:id)
+        if conflict_weapon_ids.include?(incoming_weapon.id)
           # Render conflict view if the underlying canonical weapons
           # are not identical
-          output = render_conflict_view([conflict_weapon], incoming_weapon, weapon_params[:position])
+          output = render_conflict_view(conflict_weapons, incoming_weapon, weapon_params[:position])
           render json: output
         else
           # Move the original grid weapon to the new position
