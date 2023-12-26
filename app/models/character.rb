@@ -8,8 +8,6 @@ class Character < ApplicationRecord
                     {
                       name_en: character.name_en,
                       name_jp: character.name_jp,
-                      nicknames_en: character.nicknames_en,
-                      nicknames_jp: character.nicknames_jp,
                       granblue_id: character.granblue_id,
                       element: character.element
                     }
