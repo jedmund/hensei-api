@@ -17,7 +17,7 @@ class GridWeapon < ApplicationRecord
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
 
-  before_save :is_mainhand
+  before_save :mainhand?
 
   ##### Amoeba configuration
   amoeba do
@@ -57,7 +57,6 @@ class GridWeapon < ApplicationRecord
       conflicting_weapons << party_weapon if (series_match || both_opus_or_draconic || both_draconic) && !id_match
     end
 
-
     conflicting_weapons
   end
 
@@ -88,11 +87,13 @@ class GridWeapon < ApplicationRecord
   # Validates whether there is a conflict with the party
   def no_conflicts
     # Check if the grid weapon conflicts with any of the other grid weapons in the party
-    errors.add(:series, 'must not conflict with existing weapons') unless conflicts(party).nil?
+    return unless !conflicts(party).nil? && !conflicts(party).empty?
+
+    errors.add(:series, 'must not conflict with existing weapons')
   end
 
   # Checks if the weapon should be a mainhand before saving the model
-  def is_mainhand
+  def mainhand?
     self.mainhand = position == -1
   end
 end

@@ -166,12 +166,11 @@ module Api
       end
 
       def handle_conflict(weapon)
-
         conflict_weapons = weapon.conflicts(party)
 
         # Map conflict weapon IDs into an array
         conflict_weapon_ids = conflict_weapons.map(&:id)
-        if conflict_weapon_ids.include?(incoming_weapon.id)
+        if !conflict_weapon_ids.include?(incoming_weapon.id)
           # Render conflict view if the underlying canonical weapons
           # are not identical
           output = render_conflict_view(conflict_weapons, incoming_weapon, weapon_params[:position])
