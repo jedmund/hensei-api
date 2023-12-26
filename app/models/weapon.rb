@@ -48,11 +48,16 @@ class Weapon < ApplicationRecord
   end
 
   def compatible_with_key?(key)
-    key.series == series
+    key.series.include?(series)
   end
 
   # Returns whether the weapon is included in the Draconic or Dark Opus series
   def opus_or_draconic?
     [2, 3].include?(series)
+  end
+
+  # Returns whether the weapon belongs to the Draconic Weapon series or the Draconic Weapon Providence series
+  def draconic_or_providence?
+    [3, 34].include?(series)
   end
 end
