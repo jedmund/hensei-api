@@ -8,8 +8,6 @@ class Summon < ApplicationRecord
                     {
                       name_en: summon.name_en,
                       name_jp: summon.name_jp,
-                      nicknames_en: summon.nicknames_en,
-                      nicknames_jp: summon.nicknames_jp,
                       granblue_id: summon.granblue_id,
                       element: summon.element
                     }
