@@ -77,6 +77,10 @@ class Party < ApplicationRecord
 
   has_many :favorites, dependent: :destroy
 
+  accepts_nested_attributes_for :characters
+  accepts_nested_attributes_for :summons
+  accepts_nested_attributes_for :weapons
+
   before_create :set_shortcode
   before_create :set_edit_key
 
