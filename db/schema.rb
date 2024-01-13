@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_13_180227) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_13_181526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -371,7 +371,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_13_180227) do
     t.integer "max_atk_ulb"
     t.boolean "subaura", default: false, null: false
     t.boolean "limit", default: false, null: false
-    t.boolean "xlb", default: false, null: false
+    t.boolean "transcendence", default: false, null: false
     t.integer "max_atk_xlb"
     t.integer "max_hp_xlb"
     t.integer "summon_id"
@@ -382,7 +382,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_13_180227) do
     t.string "wiki_ja", default: ""
     t.string "gamewith", default: ""
     t.string "kamigame", default: ""
-    t.date "xlb_date"
+    t.date "transcendence_date"
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
