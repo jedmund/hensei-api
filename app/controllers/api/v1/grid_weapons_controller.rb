@@ -73,17 +73,49 @@ module Api
 
       def update_uncap_level
         weapon = GridWeapon.find(weapon_params[:id])
+        object = weapon.weapon
+        max_uncap_level = max_uncap_level(object)
 
         render_unauthorized_response if current_user && (weapon.party.user != current_user)
 
-        weapon.uncap_level = weapon_params[:uncap_level]
-        return unless weapon.save!
+        greater_than_max_uncap = weapon_params[:uncap_level].to_i > max_uncap_level
+        can_be_transcended = object.transcendence && weapon_params[:transcendence_step] && weapon_params[:transcendence_step]&.to_i&.positive?
 
-        render json: GridWeaponBlueprint.render(weapon, view: :nested, root: :grid_weapon),
-               status: :created
+        uncap_level = if greater_than_max_uncap || can_be_transcended
+                        max_uncap_level
+                      else
+                        weapon_params[:uncap_level]
+                      end
+
+        transcendence_step = if object.transcendence && weapon_params[:transcendence_step]
+                               weapon_params[:transcendence_step]
+                             else
+                               0
+                             end
+
+        weapon.update!(
+          uncap_level: uncap_level,
+          transcendence_step: transcendence_step
+        )
+
+        return unless weapon.persisted?
+
+        render json: GridWeaponBlueprint.render(weapon, view: :nested, root: :grid_weapon)
       end
 
       private
+
+      def max_uncap_level(weapon)
+        if weapon.flb && !weapon.ulb && !weapon.transcendence
+          4
+        elsif weapon.ulb && !weapon.transcendence
+          5
+        elsif weapon.transcendence
+          6
+        else
+          3
+        end
+      end
 
       def check_weapon_compatibility
         return if compatible_with_position?(incoming_weapon, weapon_params[:position])
