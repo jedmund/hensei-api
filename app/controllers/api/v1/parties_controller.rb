@@ -405,7 +405,7 @@ module Api
           summons_attributes: %i[id party_id summon_id position main friend
                                  quick_summon uncap_level transcendence_step],
           weapons_attributes: %i[id party_id weapon_id
-                                 position mainhand uncap_level element
+                                 position mainhand uncap_level transcendence_step element
                                  weapon_key1_id weapon_key2_id weapon_key3_id
                                  ax_modifier1 ax_modifier2 ax_strength1 ax_strength2
                                  awakening_id awakening_level]
