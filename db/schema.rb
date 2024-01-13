@@ -458,6 +458,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_13_180227) do
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.boolean "transcendence", default: false
+    t.datetime "transcendence_date"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
   end
