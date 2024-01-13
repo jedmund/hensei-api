@@ -37,7 +37,7 @@ namespace :granblue do
                                         size)} \n")
           end
 
-          if s.xlb
+          if s.transcendence
             f.write("#{build_summon_url("#{s.granblue_id}_03",
                                         size)} \n")
           end
