@@ -116,7 +116,7 @@ module Api
                       Weapon.en_search(search_params[:query]).where(conditions)
                     end
                   else
-                    Weapon.where(conditions).order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc'))
+                    Weapon.where(conditions).order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
                   end
 
         count = weapons.length
@@ -149,7 +149,7 @@ module Api
                       Summon.en_search(search_params[:query]).where(conditions)
                     end
                   else
-                    Summon.where(conditions).order(release_date: :desc).order(Arel.sql('greatest(release_date, flb_date, ulb_date, xlb_date) desc'))
+                    Summon.where(conditions).order(release_date: :desc).order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
                   end
 
         count = summons.length
