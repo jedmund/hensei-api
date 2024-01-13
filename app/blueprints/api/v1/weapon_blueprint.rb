@@ -17,7 +17,8 @@ module Api
       field :uncap do |w|
         {
           flb: w.flb,
-          ulb: w.ulb
+          ulb: w.ulb,
+          transcendence: w.transcendence
         }
       end
 
@@ -39,7 +40,7 @@ module Api
         }
       end
 
-      field :awakenings, if: lambda { |_fn, obj, _opt| obj.awakenings.length.positive? } do |w|
+      field :awakenings, if: ->(_fn, obj, _opt) { obj.awakenings.length.positive? } do |w|
         w.awakenings.map do |a|
           AwakeningBlueprint.render_as_hash(a)
         end
