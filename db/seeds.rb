@@ -91,7 +91,7 @@ def seed_summons
     s.series = row['series']
     s.flb = row['flb']
     s.ulb = row['ulb']
-    s.xlb = row['xlb']
+    s.transcendence = row['transcendence']
     s.subaura = row['subaura']
     s.limit = row['limit']
     s.max_level = row['max_level']
@@ -176,7 +176,6 @@ def seed_jobs
   end
 
   puts "There are now #{Job.count} rows in the jobs table."
-
 end
 
 def seed_job_skills

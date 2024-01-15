@@ -179,7 +179,7 @@ class SummonParser
 
     info[:flb] = hash['evo_max'].to_i >= 4
     info[:ulb] = hash['evo_max'].to_i >= 5
-    info[:xlb] = hash['evo_max'].to_i == 6
+    info[:transcendence] = hash['evo_max'].to_i == 6
 
     info[:rarity] = rarity_from_hash(hash['rarity'])
     info[:series] = hash['series']
@@ -205,7 +205,7 @@ class SummonParser
       release_date: parse_date(hash['release_date']),
       flb_date: parse_date(hash['4star_date']),
       ulb_date: parse_date(hash['5star_date']),
-      xlb_date: parse_date(hash['6star_date'])
+      transcendence_date: parse_date(hash['6star_date'])
     }
 
     info[:links] = {

@@ -11,6 +11,7 @@ class GridWeapon < ApplicationRecord
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
   belongs_to :weapon_key3, class_name: 'WeaponKey', foreign_key: :weapon_key3_id, optional: true
+  belongs_to :weapon_key4, class_name: 'WeaponKey', foreign_key: :weapon_key4_id, optional: true
 
   belongs_to :awakening, optional: true
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_13_181526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -61,9 +61,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
     t.date "release_date"
     t.date "flb_date"
     t.date "ulb_date"
-    t.string "wiki_ja", default: "", null: false
-    t.string "gamewith", default: "", null: false
-    t.string "kamigame", default: "", null: false
+    t.string "wiki_ja", default: ""
+    t.string "gamewith", default: ""
+    t.string "kamigame", default: ""
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
@@ -155,6 +155,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
     t.integer "element"
     t.integer "awakening_level", default: 1, null: false
     t.uuid "awakening_id"
+    t.integer "transcendence_step", default: 0
+    t.string "weapon_key4_id"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
@@ -369,7 +371,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
     t.integer "max_atk_ulb"
     t.boolean "subaura", default: false, null: false
     t.boolean "limit", default: false, null: false
-    t.boolean "xlb", default: false, null: false
+    t.boolean "transcendence", default: false, null: false
     t.integer "max_atk_xlb"
     t.integer "max_hp_xlb"
     t.integer "summon_id"
@@ -380,7 +382,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
     t.string "wiki_ja", default: ""
     t.string "gamewith", default: ""
     t.string "kamigame", default: ""
-    t.date "xlb_date"
+    t.date "transcendence_date"
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
@@ -455,6 +457,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
     t.string "kamigame", default: ""
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.boolean "transcendence", default: false
+    t.datetime "transcendence_date"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
   end
@@ -482,7 +486,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_19_051231) do
   add_foreign_key "parties", "job_skills", column: "skill2_id"
   add_foreign_key "parties", "job_skills", column: "skill3_id"
   add_foreign_key "parties", "jobs"
-  add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
   add_foreign_key "raids", "raid_groups", column: "group_id"

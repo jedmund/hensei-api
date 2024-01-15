@@ -16,7 +16,7 @@ module Api
         {
           flb: w.flb,
           ulb: w.ulb,
-          xlb: w.xlb
+          transcendence: w.transcendence
         }
       end
 

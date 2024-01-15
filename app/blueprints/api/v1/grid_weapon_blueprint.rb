@@ -9,7 +9,7 @@ module Api
       end
 
       view :nested do
-        fields :mainhand, :position, :uncap_level, :element
+        fields :mainhand, :position, :uncap_level, :transcendence_step, :element
         association :weapon, name: :object, blueprint: WeaponBlueprint
 
         association :weapon_keys,
