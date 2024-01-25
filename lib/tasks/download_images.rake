@@ -49,18 +49,16 @@ namespace :granblue do
   end
 
   def download_images(url, size, path)
-    begin
-      download = URI.parse(url).open
-      download_URI = "#{path}/#{download.base_uri.to_s.split('/')[-1]}"
-      if File.exist?(download_URI)
-        puts "\tSkipping #{size}\t#{url}"
-      else
-        puts "\tDownloading #{size}\t#{url}..."
-        IO.copy_stream(download, "#{path}/#{download.base_uri.to_s.split('/')[-1]}")
-      end
-    rescue OpenURI::HTTPError
-      puts "\t404 returned\t#{url}"
+    download = URI.parse(url).open
+    download_URI = "#{path}/#{download.base_uri.to_s.split('/')[-1]}"
+    if File.exist?(download_URI)
+      puts "\tSkipping #{size}\t#{url}"
+    else
+      puts "\tDownloading #{size}\t#{url}..."
+      IO.copy_stream(download, "#{path}/#{download.base_uri.to_s.split('/')[-1]}")
     end
+  rescue OpenURI::HTTPError
+    puts "\t404 returned\t#{url}"
   end
 
   def download_chara_images(id)
@@ -118,17 +116,34 @@ namespace :granblue do
 
     list.each do |id|
       if object == 'character'
+        character = Character.find_by(granblue_id: id)
+        next unless character
+
         download_chara_images("#{id}_01")
         download_chara_images("#{id}_02")
-        download_chara_images("#{id}_03")
-        download_chara_images("#{id}_04")
+        download_chara_images("#{id}_03") if character.flb
+        download_chara_images("#{id}_04") if character.ulb
       elsif object == 'weapon'
+        weapon = Weapon.find_by(granblue_id: id)
+        next unless weapon
+
         download_weapon_images(id)
+
+        if weapon.transcendence
+          download_weapon_images("#{id}_02")
+          download_weapon_images("#{id}_03")
+        end
       elsif object == 'summon'
+        summon = Summon.find_by(granblue_id: id)
+        next unless summon
+
         download_summon_images("#{id}")
-        download_summon_images("#{id}_02")
-        download_summon_images("#{id}_03")
-        download_summon_images("#{id}_04")
+        download_summon_images("#{id}_02") if summon.ulb
+
+        if summon.transcendence
+          download_summon_images("#{id}_03")
+          download_summon_images("#{id}_04")
+        end
       end
     end
   end
