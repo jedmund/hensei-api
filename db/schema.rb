@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_13_181526) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_26_032358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -67,6 +67,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_13_181526) do
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -458,7 +461,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_13_181526) do
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.boolean "transcendence", default: false
-    t.datetime "transcendence_date"
+    t.date "transcendence_date"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
   end
