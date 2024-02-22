@@ -7,6 +7,11 @@ module Api
         render json: RaidBlueprint.render(Raid.all, view: :full)
       end
 
+      def show
+        raid = Raid.find_by(slug: params[:id])
+        render json: RaidBlueprint.render(Raid.find_by(slug: params[:id]), view: :full) if raid
+      end
+
       def groups
         render json: RaidGroupBlueprint.render(RaidGroup.all, view: :full)
       end
