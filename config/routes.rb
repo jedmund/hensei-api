@@ -48,6 +48,7 @@ Rails.application.routes.draw do
 
       get 'raids', to: 'raids#all'
       get 'raids/groups', to: 'raids#groups'
+      get 'raids/:id', to: 'raids#show'
       get 'weapon_keys', to: 'weapon_keys#all'
 
       post 'characters', to: 'grid_characters#create'
