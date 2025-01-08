@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       get 'jobs', to: 'jobs#all'
 
       get 'jobs/skills', to: 'job_skills#all'
+      get 'jobs/:id', to: 'jobs#show'
       get 'jobs/:id/skills', to: 'job_skills#job'
       get 'jobs/:id/accessories', to: 'job_accessories#job'
 

@@ -10,6 +10,10 @@ module Api
         render json: JobBlueprint.render(Job.all)
       end
 
+      def show
+        render json: JobBlueprint.render(Job.find_by(granblue_id: params[:id]))
+      end
+
       def update_job
         if job_params[:job_id] != -1
           # Extract job and find its main skills
@@ -30,10 +34,10 @@ module Api
 
           # Remove extra subskills if necessary
           if old_job &&
-            %w[1 2 3].include?(old_job.row) &&
-            %w[4 5 ex2].include?(job.row) &&
-            @party.skill1 && @party.skill2 && @party.skill3 &&
-            @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
+             %w[1 2 3].include?(old_job.row) &&
+             %w[4 5 ex2].include?(job.row) &&
+             @party.skill1 && @party.skill2 && @party.skill3 &&
+             @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
             @party['skill3_id'] = nil
           end
         else
@@ -64,7 +68,8 @@ module Api
           new_skill_ids = new_skill_keys.map { |key| job_params[key] }
           new_skill_ids.map do |id|
             skill = JobSkill.find(id)
-            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job, skill)
+            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job,
+                                                                                                         skill)
           end
 
           positions = extract_positions_from_keys(new_skill_keys)
@@ -162,8 +167,8 @@ module Api
         if %w[4 5 ex2].include?(job.row)
           if skill.base && !mismatched_base
             false
-          else
-            true if mismatched_emp || mismatched_main
+          elsif mismatched_emp || mismatched_main
+            true
           end
         elsif mismatched_emp || mismatched_main
           true
