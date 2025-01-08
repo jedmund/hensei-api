@@ -61,6 +61,15 @@ namespace :granblue do
     puts "\t404 returned\t#{url}"
   end
 
+  def download_elemental_images(url, size, path, filename)
+    filepath = "#{path}/#{filename}"
+    download = URI.parse(url).open
+    puts "\tDownloading #{size}\t#{url}..."
+    IO.copy_stream(download, filepath)
+  rescue OpenURI::HTTPError
+    puts "\t404 returned\t#{url}"
+  end
+
   def download_chara_images(id)
     sizes = %w[main grid square]
 
@@ -109,13 +118,42 @@ namespace :granblue do
     end
   end
 
+  desc 'Downloads elemental weapon images'
+  task :download_elemental_images, [:id_base] => :environment do |_t, args|
+    id_base = args[:id_base].to_i
+    suffixes = [2, 3, 4, 1, 6, 5]
+
+    (1..6).each do |i|
+      id = id_base + (i - 1) * 100
+
+      sizes = %w[main grid square]
+
+      url = {
+        'main': build_weapon_url(id, 'main'),
+        'grid': build_weapon_url(id, 'grid'),
+        'square': build_weapon_url(id, 'square')
+      }
+
+      puts "Elemental Weapon #{id}_#{suffixes[i - 1]}"
+      sizes.each do |size|
+        path = "#{Rails.root}/download/weapon-#{size}"
+        filename = "#{id}_#{suffixes[i - 1]}.jpg"
+        download_elemental_images(url[size.to_sym], size, path, filename)
+      end
+
+      _progress_reporter(count: i, total: 6, result: "Elemental Weapon #{id}_#{suffixes[i - 1]}", bar_len: 40,
+                         multi: true)
+    end
+  end
+
   desc 'Downloads images for the given Granblue_IDs'
   task :download_images, %i[object] => :environment do |_t, args|
     object = args[:object]
     list = args.extras
 
     list.each do |id|
-      if object == 'character'
+      case object
+      when 'character'
         character = Character.find_by(granblue_id: id)
         next unless character
 
@@ -123,7 +161,7 @@ namespace :granblue do
         download_chara_images("#{id}_02")
         download_chara_images("#{id}_03") if character.flb
         download_chara_images("#{id}_04") if character.ulb
-      elsif object == 'weapon'
+      when 'weapon'
         weapon = Weapon.find_by(granblue_id: id)
         next unless weapon
 
@@ -133,7 +171,7 @@ namespace :granblue do
           download_weapon_images("#{id}_02")
           download_weapon_images("#{id}_03")
         end
-      elsif object == 'summon'
+      when 'summon'
         summon = Summon.find_by(granblue_id: id)
         next unless summon
 
