@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_26_032358) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_10_070255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -102,6 +103,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_26_032358) do
     t.decimal "rate"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
+  end
+
+  create_table "granblue_data_version", force: :cascade do |t|
+    t.string "filename", null: false
+    t.datetime "imported_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filename"], name: "index_granblue_data_version_on_filename", unique: true
   end
 
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
