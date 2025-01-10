@@ -73,6 +73,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_10_070255) do
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
+  create_table "data_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "filename", null: false
+    t.datetime "imported_at", null: false
+    t.index ["filename"], name: "index_data_versions_on_filename", unique: true
+  end
+
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
@@ -103,14 +109,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_10_070255) do
     t.decimal "rate"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
-  end
-
-  create_table "granblue_data_version", force: :cascade do |t|
-    t.string "filename", null: false
-    t.datetime "imported_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["filename"], name: "index_granblue_data_version_on_filename", unique: true
   end
 
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
