@@ -1,0 +1,2 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Gran,グラン,3040001000,3,1,1,2,1,1,0,true,1200,6800,8160,6400,8000,9600,6,3,4.5,5.0,false,false,0,0,{1},/wiki/Gran,2014-03-10,2016-04-01,,/wiki/グラン,/gran,/3040001000,{MC},"{主人公,グラン様}"
