@@ -16,7 +16,7 @@ module Granblue
       end
 
       def download
-        log_info "#{object_type.capitalize} #{@id}"
+        log_info "=> #{@id}"
         return if @test_mode
 
         SIZES.each do |size|
@@ -36,7 +36,7 @@ module Granblue
         should_process = should_download?(download_uri, s3_key)
         return unless should_process
 
-        log_info "-> #{size}:\t#{url}..."
+        log_info "-> #{size}: #{url}..."
 
         case @storage
         when :local
@@ -118,7 +118,7 @@ module Granblue
 
         filepath = "#{path}/#{filename}"
         download = URI.parse(url).open
-        log_info "\tDownloading #{size}\t#{url}..."
+        log_info "-> #{size}:\t#{url}..."
         IO.copy_stream(download, filepath)
       rescue OpenURI::HTTPError
         log_info "\t404 returned\t#{url}"

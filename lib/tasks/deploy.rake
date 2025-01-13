@@ -13,7 +13,7 @@ namespace :deploy do
     # Ensure Rails environment is loaded
     Rails.application.eager_load!
 
-    log_header('Starting post-deploy script...', '*', false)
+    log_header('Starting post-deploy script...', '-', false)
     print "\n"
 
     # Parse and validate storage option

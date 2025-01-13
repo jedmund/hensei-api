@@ -30,7 +30,7 @@ class PostDeploymentManager
   private
 
   def import_new_data
-    log_header "Importing new data..."
+    log_header 'Importing new data...'
     importer = Granblue::DataImporter.new(
       test_mode: @test_mode,
       verbose: @verbose
@@ -51,7 +51,8 @@ class PostDeploymentManager
   end
 
   def rebuild_search_indices
-    log_header 'Rebuilding search indices...'
+    log_header 'Rebuilding search indices...', '-'
+    puts "\n"
     [Character, Summon, Weapon, Job].each do |model|
       log_verbose "• #{model.name}... "
       PgSearch::Multisearch.rebuild(model)
@@ -61,9 +62,9 @@ class PostDeploymentManager
 
   def display_import_summary
     if @new_records.size > 0 || @updated_records.size > 0
-      log_step "\nImport Summary:"
-      display_record_summary("New", @new_records)
-      display_record_summary("Updated", @updated_records)
+      log_header 'Import Summary', '-'
+      display_record_summary('New', @new_records)
+      display_record_summary('Updated', @updated_records)
     else
       log_step "\nNo new records imported."
     end
@@ -83,7 +84,7 @@ class PostDeploymentManager
     if @test_mode
       log_step "\nTEST MODE: Would download images for new and updated records..."
     else
-      log_header "Downloading images...", "+"
+      log_header 'Downloading images...', '+'
     end
 
     [@new_records, @updated_records].each do |records|
@@ -110,7 +111,7 @@ class PostDeploymentManager
   def download_single_image(type, id, options)
     action_text = @test_mode ? 'Would download' : 'Downloading'
     storage_text = STORAGE_DESCRIPTIONS[options[:storage]]
-    log_verbose "#{action_text} images #{storage_text} for #{type} #{id}..."
+    log_verbose "\n#{action_text} images #{storage_text} for #{type} #{id}...\n"
 
     Granblue::Downloader::DownloadManager.download_for_object(
       type,
