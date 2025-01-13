@@ -12,6 +12,7 @@ class PostDeploymentManager
     @verbose = options.fetch(:verbose, false)
     @storage = options.fetch(:storage, :both)
     @new_records = Hash.new { |h, k| h[k] = [] }
+    @updated_records = Hash.new { |h, k| h[k] = [] }
   end
 
   def run
@@ -33,17 +34,26 @@ class PostDeploymentManager
   end
 
   def process_imports(importer)
-    importer.process_all_files do |file_records|
-      file_records.each do |type, ids|
+    importer.process_all_files do |result|
+      result[:new].each do |type, ids|
         @new_records[type].concat(ids)
+      end
+      result[:updated].each do |type, ids|
+        @updated_records[type].concat(ids)
       end
     end
   end
 
   def display_import_summary
     log_step "\nImport Summary:"
-    @new_records.each do |type, ids|
-      puts "#{type.capitalize}: #{ids.size} new records"
+    display_record_summary("New", @new_records)
+    display_record_summary("Updated", @updated_records)
+  end
+
+  def display_record_summary(label, records)
+    records.each do |type, ids|
+      next if ids.empty?
+      puts "#{type.capitalize}: #{ids.size} #{label.downcase} records"
       puts "IDs: #{ids.inspect}" if @verbose
     end
   end
@@ -52,15 +62,16 @@ class PostDeploymentManager
     return if all_records_empty?
 
     if @test_mode
-      log_step "\nTEST MODE: Would download images for new records..."
+      log_step "\nTEST MODE: Would download images for new and updated records..."
     else
-      log_step "\nDownloading images for new records..."
+      log_step "\nDownloading images for new and updated records..."
     end
 
-    @new_records.each do |type, ids|
-      next if ids.empty?
-
-      download_type_images(type, ids)
+    [@new_records, @updated_records].each do |records|
+      records.each do |type, ids|
+        next if ids.empty?
+        download_type_images(type, ids)
+      end
     end
   end
 
@@ -94,7 +105,7 @@ class PostDeploymentManager
   end
 
   def all_records_empty?
-    @new_records.values.all?(&:empty?)
+    @new_records.values.all?(&:empty?) && @updated_records.values.all?(&:empty?)
   end
 
   def log_step(message)

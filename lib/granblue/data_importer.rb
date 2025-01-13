@@ -29,11 +29,22 @@ module Granblue
       importer = create_importer(filename, file_path)
       return unless importer
 
-      log_info "Processing #{filename} in #{@test_mode ? 'TEST' : 'LIVE'} mode..."
-      new_records = importer.import
-      log_import(filename)
+      log_info "Processing #{filename} in #{@test_mode ? 'test' : 'live'} mode..."
+      result = importer.import
+      log_import(filename, result)
       log_info "Successfully processed #{filename}"
-      new_records
+      result
+    end
+
+    def log_import_results(result)
+      return unless @verbose
+
+      result[:new].each do |type, ids|
+        log_info "Created #{ids.size} new #{type.pluralize}" if ids.any?
+      end
+      result[:updated].each do |type, ids|
+        log_info "Updated #{ids.size} existing #{type.pluralize}" if ids.any?
+      end
     end
 
     def create_importer(filename, file_path)
@@ -60,9 +71,19 @@ module Granblue
       DataVersion.imported?(filename)
     end
 
-    def log_import(filename)
+    def log_import(filename, result = nil)
       return if @test_mode
+
       DataVersion.mark_as_imported(filename)
+
+      if result && @verbose
+        result[:new].each do |type, ids|
+          log_info "Created #{ids.size} new #{type.pluralize}" if ids.any?
+        end
+        result[:updated].each do |type, ids|
+          log_info "Updated #{ids.size} existing #{type.pluralize}" if ids.any?
+        end
+      end
     end
 
     def log_operation(operation)
