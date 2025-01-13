@@ -16,19 +16,19 @@ module Granblue
       end
 
       def download
-        log_info "=> #{@id}"
+        log_info "-> #{@id}"
         return if @test_mode
 
-        SIZES.each do |size|
+        SIZES.each do |size, i|
           path = download_path(size)
           url = build_url(size)
-          process_download(url, size, path)
+          process_download(url, size, path, last: i == SIZES.size - 1)
         end
       end
 
       private
 
-      def process_download(url, size, path)
+      def process_download(url, size, path, last: false)
         filename = File.basename(url)
         s3_key = build_s3_key(size, filename)
         download_uri = "#{path}/#{filename}"
@@ -36,7 +36,11 @@ module Granblue
         should_process = should_download?(download_uri, s3_key)
         return unless should_process
 
-        log_info "-> #{size}: #{url}..."
+        if last
+          log_info "\t└ #{size}: #{url}..."
+        else
+          log_info "\t├ #{size}: #{url}..."
+        end
 
         case @storage
         when :local
