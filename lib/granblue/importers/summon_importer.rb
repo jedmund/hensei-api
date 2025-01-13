@@ -2,7 +2,7 @@
 
 module Granblue
   module Importers
-    class SummonsImporter < BaseImporter
+    class SummonImporter < BaseImporter
       private
 
       def model_class

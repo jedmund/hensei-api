@@ -2,7 +2,7 @@
 
 module Granblue
   module Importers
-    class WeaponsImporter < BaseImporter
+    class WeaponImporter < BaseImporter
       private
 
       def model_class
