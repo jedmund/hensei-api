@@ -31,6 +31,7 @@ class PostDeploymentManager
 
   def import_new_data
     log_header 'Importing new data...'
+    puts "\n"
     importer = Granblue::DataImporter.new(
       test_mode: @test_mode,
       verbose: @verbose
@@ -63,6 +64,7 @@ class PostDeploymentManager
   def display_import_summary
     if @new_records.size > 0 || @updated_records.size > 0
       log_header 'Import Summary', '-'
+      puts "\n"
       display_record_summary('New', @new_records)
       display_record_summary('Updated', @updated_records)
     else

@@ -19,10 +19,10 @@ module Granblue
         log_info "-> #{@id}"
         return if @test_mode
 
-        SIZES.each do |size, i|
+        SIZES.each_with_index do |size, index|
           path = download_path(size)
           url = build_url(size)
-          process_download(url, size, path, last: i == SIZES.size - 1)
+          process_download(url, size, path, last: index == SIZES.size - 1)
         end
       end
 
