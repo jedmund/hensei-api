@@ -35,6 +35,9 @@ gem 'gemoji-parser'
 # An awesome replacement for acts_as_nested_set and better_nested_set.
 gem 'awesome_nested_set'
 
+# Official AWS Ruby gem for Amazon Simple Storage Service (Amazon S3)
+gem 'aws-sdk-s3'
+
 # An email validator for Rails
 gem 'email_validator'
 
