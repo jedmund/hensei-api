@@ -90,15 +90,46 @@ Values for properties like `element` are pre-defined, so you only need to input 
 | Female      | 2     |
 | Male/Female | 3     | 
 
-#### Weapon Series
+#### Weapon Series (Needs to be cleaned)
 
-| Series Name | Value |
-|-------------|-------|
+| Series Name  | Value | Series Name          | Value |
+|--------------|-------|----------------------|-------|
+| Seraphic     | 0     | Cosmic               | 20    |
+| Grand        | 1     | Draconic             | 21    |
+| Dark Opus    | 2     | Superlative          | 22    |
+| Draconic     | 3     | Vintage              | 23    |
+| Revenant     | 4     | Class Champion       | 24    |
+| Beast        | 5     | Proven               | 25    |
+| Primal       | 6     | Malice               | 26    |
+| Beast        | 7     | Menace               | 27    |
+| Regalia      | 8     | Sephira              | 28    |
+| Omega        | 9     | New World Foundation | 29    |
+| Olden Primal | 10    | Revans               | 30    |
+| Militis      | 11    | Illustrious          | 31    |
+| Hollowsky    | 12    | World                | 32    |
+| Xeno         | 13    | Exo                  | 33    |
+| Astral       | 14    | Event                | 35    |
+| Rose Crystal | 15    | Gacha                | 36    |
+| Bahamut      | 16    | Celestial            | 37    |
+| Ultima       | 17    | Omega Rebirth        | 38    |
+| Epic         | 18    | Assorted             | -1    | 
+| Ennead       | 19    |                      |       |
 
-#### Summon Series
+#### Summon Series (Needs to be cleaned)
 
-| Series Name | Value |
-|-------------|-------|
+| Series Name  | Value |
+|--------------|-------|
+| Providence   | 0     |
+| Genesis      | 1     |
+| Omega        | 2     |
+| Optimus      | 3     |
+| Demi Optimus | 4     |
+| Archangel    | 5     |
+| Arcarum      | 6     |
+| Epic         | 7     | 
+| Dynamis      | 9     |
+| Cryptid      | 11    |
+| Six Dragons  | 12    |
 
 ### Wiki links
 
