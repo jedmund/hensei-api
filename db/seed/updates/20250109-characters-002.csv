@@ -1,0 +1,4 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Hekate (Summer),ヘカテー(水着ver),3040543000,3,5,6,,2,0,,false,236,1258,,1820,9710,,,,,,false,false,,,{3222},Hekate_(Summer),2024-07-31,,,ヘカテー (SSR)水着バージョン,458174,SSR水着ヘカテー,,
+Ragazzo (Summer),ラガッツォ(水着ver),3040542000,3,6,7,,2,1,,false,230,1220,,1850,9900,,,,,,false,false,,,{3230},Ragazzo_(Summer),2024-07-31,,,ラガッツォ (SSR)水着バージョン,458179,SSR水着ラガッツォ,,
+Tweyen (Yukata),ソーン(浴衣ver),3040541000,3,2,5,,1,1,,false,292,1622,,1522,8222,,,,,,false,false,,,{4002},Tweyen_(Yukata),2024-07-31,,,ソーン (SSR)浴衣バージョン,458159,SSR浴衣ソーン,"{song,sorn}",

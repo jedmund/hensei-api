@@ -1,0 +1,5 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Rimuru Tempest,リムル＝テンペスト,3040558000,3,5,10,7,0,0,,true,220,1260,1480,1750,8900,10650,,,,,false,false,,,{3257},Rimuru_Tempest,2024-11-15,2024-11-20,,リムル＝テンペスト(転スラ) (SSR),471080,SSRリムルテンペスト,,
+Shion (Collab),シオン(コラボ),3040560000,3,5,1,10,2,0,,false,258,1402,,2010,10590,,,,,,false,false,,,{3259},Shion_(Collab),2024-11-15,,,シオン(転スラ) (SSR),472947,SSR転スラシオン,,
+Diablo (Collab),ディアブロ(コラボ),3040561000,3,5,7,,1,0,,false,265,1307,,1515,8666,,,,,,false,false,,,{3260},Diablo_(Collab),2024-11-15,,,ディアブロ(転スラ) (SSR),472945,SSRディアブロ,,
+Veldora Tempest,ヴェルドラ＝テンペスト,3040559000,3,1,7,,1,0,,false,232,1272,,1840,9640,,,,,,false,false,,,{3258},Veldora_Tempest,2024-11-20,,,ヴェルドラ＝テンペスト(転スラ) (SSR),471105,SSRヴェルドラテンペスト,,

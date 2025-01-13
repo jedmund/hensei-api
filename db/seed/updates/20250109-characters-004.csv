@@ -1,0 +1,3 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Medusa (Grand),メドゥーサ(リミテッドver),3040547000,3,4,7,6,2,5,,false,230,1250,,1900,9300,,,,,,false,false,,,{3081},Medusa_(Grand),2024-08-31,,,シュシュク (SSR),462208,SSRシュシュク,,
+Sevastien (SSR),セワスチアン(SSR ver),3040548000,3,5,1,,1,1,,false,150,1050,,1900,9000,,,,,,false,false,,,{2128},Sevastien_(SSR),2024-08-31,,,セワスチアン (SSR),462202,SSRセワスチアン,,

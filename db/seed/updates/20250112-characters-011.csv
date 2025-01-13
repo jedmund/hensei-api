@@ -1,0 +1,3 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Lecia (Wind),リーシャ（風属性ver),3040556000,3,1,1,,2,1,,false,270,1310,,1650,9450,,,,,,false,false,,,{2061},Lecia_(SSR),2024-10-31,,,リーシャ (SSR)風属性バージョン,470592,SSR風リーシャ,,
+Will (SSR),ウィル(SSR ver),3040557000,3,5,1,6,1,1,,false,290,1720,,1400,6600,,,,,,false,false,,,{1010},Will_(SSR),2024-10-31,,,ウィル (SSR),470593,SSR闇ウィル,,

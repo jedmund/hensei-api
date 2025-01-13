@@ -1,0 +1,5 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Shushuku,シュシュク,3040527000,3,4,2,,2,1,,false,297,1584,,1515,8080,,,,,,false,false,,,{3250},Shushuku,2024-08-15,,,シュシュク (SSR),458178,SSRシュシュク,,
+Aglovale (Yukata),アグロヴァル(浴衣ver),3040545000,3,2,1,,1,1,,false,230,1220,,1850,9900,,,,,,false,false,,,{3119},Aglovale_(Yukata),2024-08-16,,,アグロヴァル (SSR)浴衣バージョン,458528,SSR浴衣アグロヴァル,,
+Nier (Yukata),ニーア(浴衣ver),3040546000,3,3,3,2,2,2,,false,218,1152,,1475,7920,,,,,,false,false,,,{3108},Nier_(Yukata),2024-08-16,,,ニーア (SSR)浴衣バージョン,460523,SSR浴衣ニーア,,
+Galleon (Summer),ガレヲン(水着ver),3040544000,3,1,6,,0,0,,false,348,1388,,1110,8260,,,,,,false,false,,,{3206},Galleon_(Summer),2024-08-16,,,ガレヲン (SSR)水着バージョン,458527,SSR水着ガレヲン,,
