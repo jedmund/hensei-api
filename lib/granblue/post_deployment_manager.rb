@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative '../logging_helper'
+
 class PostDeploymentManager
+  include LoggingHelper
+
   STORAGE_DESCRIPTIONS = {
     local: 'to local disk',
     s3: 'to S3',
@@ -26,7 +30,7 @@ class PostDeploymentManager
   private
 
   def import_new_data
-    log_step 'Importing new data...'
+    log_header "Importing new data..."
     importer = Granblue::DataImporter.new(
       test_mode: @test_mode,
       verbose: @verbose
@@ -47,18 +51,22 @@ class PostDeploymentManager
   end
 
   def rebuild_search_indices
-    log_step "\nRebuilding search indices..."
-
+    log_header 'Rebuilding search indices...'
     [Character, Summon, Weapon, Job].each do |model|
-      log_verbose "Rebuilding search index for #{model.name}..."
+      log_verbose "• #{model.name}... "
       PgSearch::Multisearch.rebuild(model)
+      log_verbose "✅ done!\n"
     end
   end
 
   def display_import_summary
-    log_step "\nImport Summary:"
-    display_record_summary("New", @new_records)
-    display_record_summary("Updated", @updated_records)
+    if @new_records.size > 0 || @updated_records.size > 0
+      log_step "\nImport Summary:"
+      display_record_summary("New", @new_records)
+      display_record_summary("Updated", @updated_records)
+    else
+      log_step "\nNo new records imported."
+    end
   end
 
   def display_record_summary(label, records)
@@ -75,7 +83,7 @@ class PostDeploymentManager
     if @test_mode
       log_step "\nTEST MODE: Would download images for new and updated records..."
     else
-      log_step "\nDownloading images for new and updated records..."
+      log_header "Downloading images...", "+"
     end
 
     [@new_records, @updated_records].each do |records|
@@ -125,13 +133,5 @@ class PostDeploymentManager
 
   def all_records_empty?
     @new_records.values.all?(&:empty?) && @updated_records.values.all?(&:empty?)
-  end
-
-  def log_step(message)
-    puts message
-  end
-
-  def log_verbose(message)
-    puts message if @verbose
   end
 end

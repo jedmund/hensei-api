@@ -36,7 +36,7 @@ module Granblue
         should_process = should_download?(download_uri, s3_key)
         return unless should_process
 
-        log_info "\tDownloading #{size}\t#{url}..."
+        log_info "-> #{size}:\t#{url}..."
 
         case @storage
         when :local
