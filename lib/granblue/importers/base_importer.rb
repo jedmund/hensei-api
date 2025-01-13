@@ -25,8 +25,10 @@ module Granblue
 
       def import_row(row)
         attributes = build_attributes(row)
+        # Remove nil values from attributes hash for updates
+        # Keep them for new records to ensure proper defaults
         record = find_or_create_record(attributes)
-        track_record(record, attributes) if record
+        track_record(record) if record
       end
 
       def find_or_create_record(attributes)
@@ -37,39 +39,40 @@ module Granblue
             log_test_update(existing_record, attributes)
             nil
           else
-            update_record(existing_record, attributes)
+            # For updates, only include non-nil attributes
+            update_attributes = attributes.compact
+            was_updated = update_attributes.any? { |key, value| existing_record[key] != value }
+            existing_record.update!(update_attributes) if was_updated
+            [existing_record, was_updated]
           end
         else
           if @test_mode
             log_test_creation(attributes)
             nil
           else
-            model_class.create!(attributes)
+            # For new records, use all attributes including nil values
+            [model_class.create!(attributes), false]
           end
         end
       end
 
-      def update_record(record, attributes)
-        changed = attributes.any? { |key, value| record[key] != value }
-        record.update!(attributes) if changed
-        record
-      end
-
-      def track_record(record, attributes)
+      def track_record(result)
+        record, was_updated = result
         type = model_class.name.demodulize.downcase
 
-        # For existing records, check if any attributes were actually changed
-        if record.persisted? && record.previous_changes.any?
+        if was_updated
           @updated_records[type] << record.granblue_id
           log_updated_record(record) if @verbose
-        elsif !record.persisted?
+        else
           @new_records[type] << record.granblue_id
           log_new_record(record) if @verbose
         end
       end
 
       def log_test_update(record, attributes)
-        @logger&.send(:log_operation, "Update #{model_class.name} #{record.granblue_id}: #{attributes.inspect}")
+        # For test mode, show only the attributes that would be updated
+        update_attributes = attributes.compact
+        @logger&.send(:log_operation, "Update #{model_class.name} #{record.granblue_id}: #{update_attributes.inspect}")
       end
 
       def log_test_creation(attributes)
