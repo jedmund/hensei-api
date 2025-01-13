@@ -1,0 +1,5 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Uruki,ウルキ,3040526000,3,3,1,,2,4,,false,329,1754,,1393,7430,,,,,,false,false,,,{3249},Uruki,2024-10-15,,,ウルキ (SSR),465669,SSRウルキ,,
+Manamel (Halloween),マナマル(ハロウィンver),3040555000,3,4,2,,2,2,,false,270,1400,,1350,7400,,,,,,false,false,,,{3204},Manamel_(Halloween),2024-10-15,,,マナマル (SSR)ハロウィン,468422,SSRハロウィンマナマル,,
+Wilnas (Halloween),ウィルナス(ハロウィンver),3040553000,3,6,7,3,0,1,,false,220,1900,,1900,11000,,,,,,false,false,,,{3195},Wilnas_(Halloween),2024-10-15,,,ウィルナス (SSR)ハロウィン,468413,SSRハロウィンウィルナス,,
+Satyr (Halloween),サテュロス(ハロウィンver),3040554000,3,5,6,1,2,5,,false,310,1650,,1300,6950,,,,,,false,false,,,{3160},Satyr_(Halloween),2024-10-15,,,サテュロス (SSR)ハロウィンバージョン,468412,SSRハロウィンサテュロス,,
