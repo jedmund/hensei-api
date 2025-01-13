@@ -1,0 +1,2 @@
+name_en,name_jp,granblue_id,rarity,element,series,flb,ulb,max_level,min_hp,max_hp,max_hp_flb,max_hp_ulb,min_atk,max_atk,max_atk_flb,max_atk_ulb,subaura,limit,transcendence,max_atk_xlb,max_hp_xlb,summon_id,release_date,flb_date,ulb_date,wiki_en,wiki_ja,gamewith,kamigame,transcendence_date,nicknames_en,nicknames_jp
+Bahamut,バハムート,2040003000,3,0,Divine Beasts,true,true,100,600,2400,2880,3360,1500,2000,2400,2800,true,true,true,3200,3840,1,2014-03-10,2016-04-01,2020-07-15,/wiki/Bahamut,/wiki/バハムート,/bahamut,/2040003000,2023-01-15,{Baha},"{バハ,黒龍}"
