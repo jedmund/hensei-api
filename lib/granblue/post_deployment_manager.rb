@@ -20,6 +20,7 @@ class PostDeploymentManager
   end
 
   def run
+    migrate_database
     import_new_data
     display_import_summary
     download_images
@@ -28,6 +29,24 @@ class PostDeploymentManager
   end
 
   private
+
+  def migrate_database
+    log_header 'Running database migrations...', '-'
+    puts "\n"
+    if @test_mode
+      log_step "TEST MODE: Would run pending migrations..."
+    else
+      ActiveRecord::Migration.verbose = @verbose
+      version = ActiveRecord::Migrator.current_version
+      ActiveRecord::Tasks::DatabaseTasks.migrate
+      new_version = ActiveRecord::Migrator.current_version
+      if version == new_version
+        log_step "No pending migrations."
+      else
+        log_step "Migrated from version #{version} to #{new_version}"
+      end
+    end
+  end
 
   def import_new_data
     log_header 'Importing new data...'
