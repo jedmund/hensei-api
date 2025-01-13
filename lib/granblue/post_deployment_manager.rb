@@ -19,6 +19,8 @@ class PostDeploymentManager
     import_new_data
     display_import_summary
     download_images
+    rebuild_search_indices
+    display_completion_message
   end
 
   private
@@ -41,6 +43,15 @@ class PostDeploymentManager
       result[:updated].each do |type, ids|
         @updated_records[type].concat(ids)
       end
+    end
+  end
+
+  def rebuild_search_indices
+    log_step "\nRebuilding search indices..."
+
+    [Character, Summon, Weapon, Job].each do |model|
+      log_verbose "Rebuilding search index for #{model.name}..."
+      PgSearch::Multisearch.rebuild(model)
     end
   end
 
@@ -102,6 +113,14 @@ class PostDeploymentManager
     error_message = "Error #{@test_mode ? 'would occur' : 'occurred'} downloading images for #{type} #{id}: #{e.message}"
     puts error_message
     puts e.backtrace.take(5) if @verbose
+  end
+
+  def display_completion_message
+    if @test_mode
+      log_step "\n✓ Test run completed successfully!"
+    else
+      log_step "\n✓ Post-deployment tasks completed successfully!"
+    end
   end
 
   def all_records_empty?
