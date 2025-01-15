@@ -106,9 +106,9 @@ module PostDeployment
         puts "\n#{type.capitalize}: #{count} #{label.downcase} #{count == 1 ? 'record' : 'records'}"
         items.each do |item|
           if @test_mode
-            puts "  • #{item[:name_en]} (ID: #{item[:granblue_id]})"
+            puts "  - #{item[:name_en]} (ID: #{item[:granblue_id]})"
           else
-            puts "  • #{item.name_en} (ID: #{item.granblue_id})"
+            puts "  - #{item.name_en} (ID: #{item.granblue_id})"
           end
         end
       end
