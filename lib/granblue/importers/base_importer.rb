@@ -21,6 +21,43 @@ module Granblue
         { new: @new_records, updated: @updated_records }
       end
 
+      def simulate_import
+        simulated_new = Hash.new { |h, k| h[k] = [] }
+        simulated_updated = Hash.new { |h, k| h[k] = [] }
+        type = model_class.name.demodulize.downcase
+
+        CSV.foreach(@file_path, headers: true) do |row|
+          attributes = build_attributes(row)
+          existing_record = model_class.find_by(granblue_id: attributes[:granblue_id])
+
+          if existing_record
+            # For updates, only include non-nil attributes
+            update_attributes = attributes.compact
+            would_update = update_attributes.any? { |key, value| existing_record[key] != value }
+
+            if would_update
+              log_test_update(existing_record, attributes)
+              simulated_updated[type] << {
+                granblue_id: attributes[:granblue_id],
+                name_en: attributes[:name_en] || existing_record.name_en,
+                attributes: update_attributes,
+                operation: :update
+              }
+            end
+          else
+            log_test_creation(attributes)
+            simulated_new[type] << {
+              granblue_id: attributes[:granblue_id],
+              name_en: attributes[:name_en],
+              attributes: attributes,
+              operation: :create
+            }
+          end
+        end
+
+        { new: simulated_new, updated: simulated_updated }
+      end
+
       private
 
       def import_row(row)
@@ -69,22 +106,38 @@ module Granblue
         end
       end
 
+      def format_attributes(attributes)
+        attributes.map do |key, value|
+          formatted_value = case value
+                            when Array
+                              value.empty? ? '[]' : value.inspect
+                            else
+                              value.inspect
+                            end
+          "    #{key}: #{formatted_value}"
+        end.join("\n")
+      end
+
       def log_test_update(record, attributes)
         # For test mode, show only the attributes that would be updated
         update_attributes = attributes.compact
-        @logger&.send(:log_operation, "Update #{model_class.name} #{record.granblue_id}: #{update_attributes.inspect}")
+        @logger&.log_step("Updating #{model_class.name} #{record.granblue_id}...")
+        @logger&.log_verbose(format_attributes(update_attributes))
+        @logger&.log_step("\n\n") if @verbose
       end
 
       def log_test_creation(attributes)
-        @logger&.send(:log_operation, "Create #{model_class.name}: #{attributes.inspect}")
+        @logger&.log_step("Creating #{model_class.name}...")
+        @logger&.log_verbose(format_attributes(attributes))
+        @logger&.log_step("\n\n") if @verbose
       end
 
       def log_new_record(record)
-        puts "Created #{model_class.name} with ID: #{record.granblue_id}"
+        @logger&.log_verbose("Created #{model_class.name} with ID: #{record.granblue_id}")
       end
 
       def log_updated_record(record)
-        puts "Updated #{model_class.name} with ID: #{record.granblue_id}"
+        @logger&.log_verbose("Updated #{model_class.name} with ID: #{record.granblue_id}")
       end
 
       def parse_value(value)
