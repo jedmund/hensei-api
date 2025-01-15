@@ -9,10 +9,18 @@ module LoggingHelper
     print message if @verbose
   end
 
+  def log_error(message)
+    puts "❌ #{message}"
+  end
+
+  def log_warning(message)
+    puts "⚠️ #{message}"
+  end
+
   def log_divider(character = '+', leading_newline = true, trailing_newlines = 1)
     output = ""
     output += "\n" if leading_newline
-    output += character * 35
+    output += character * 60
     output += "\n" * trailing_newlines
     log_step output
   end
