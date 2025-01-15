@@ -1,5 +1,5 @@
 name_en,name_jp,granblue_id,rarity,element,proficiency,series,flb,ulb,max_level,max_skill_level,min_hp,max_hp,max_hp_flb,max_hp_ulb,min_atk,max_atk,max_atk_flb,max_atk_ulb,extra,ax_type,limit,ax,recruits_id,max_awakening_level,release_date,flb_date,ulb_date,wiki_en,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp,transcendence,transcendence_date
-Swan,スワン,1040318400,3,1,3,36,true,false,150,15,39,240,290,,463,2750,3322,,false,,false,false,2da95a12-090d-4107-8181-3ad1d0c2b635,,2024-09-30,2024-09-30,,Swan,スワン (SSR),465473,スワン,,,false,
+Swan,スワン,1040318400,3,1,3,1,true,false,150,15,39,240,290,,463,2750,3322,,false,,false,false,2da95a12-090d-4107-8181-3ad1d0c2b635,,2024-09-30,2024-09-30,,Swan,スワン (SSR),465473,スワン,,,false,
 Lunatum Psalterium,ルーナトゥム・プサルテリウム,1040816800,3,5,8,36,false,false,100,10,47,302,,,364,2078,,,false,,false,false,0d5a17b5-b6d4-4186-96cf-73b11c51c308,,2024-09-30,,,Lunatum_Psalterium,ルーナトゥム・プサルテリウム (SSR),465503,ルーナトゥム・プサルテリウム,,,false,
 Le Chevalier au Lion,ル・ポーター・ド・リオン,1040026800,3,1,1,35,false,false,100,10,28,178,,,324,1992,,,false,,false,false,,,2024-09-28,,,Le_Chevalier_au_Lion,ル・ポーター・ド・リオン (SSR),465347,ル・ポーター・ド・リオン,,,false,
 Griffith Bow,グリフィスボウ,1030704800,2,1,5,35,false,false,75,10,18,117,,,225,1401,,,false,,false,false,,,2024-09-28,,,Griffith_Bow,グリフィスボウ (SR),,グリフィスボウ,,,false,
