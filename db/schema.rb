@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_15_094528) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_15_100356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_trgm"
@@ -456,7 +456,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_15_094528) do
     t.integer "ax_type"
     t.boolean "limit", default: false, null: false
     t.boolean "ax", default: false, null: false
-    t.uuid "recruits_id"
     t.integer "max_awakening_level"
     t.date "release_date"
     t.date "flb_date"
@@ -471,7 +470,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_15_094528) do
     t.date "transcendence_date"
     t.string "recruits"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
-    t.index ["recruits_id"], name: "index_weapons_on_recruits_id"
+    t.index ["recruits"], name: "index_weapons_on_recruits"
   end
 
   add_foreign_key "favorites", "parties"
