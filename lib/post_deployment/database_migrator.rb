@@ -65,9 +65,12 @@ module PostDeployment
       new_schema_version = ActiveRecord::Base.connection.migration_context.current_version
 
       # Run data migrations
-      data_version = DataMigrate::DataMigrator.current_version
-      DataMigrate::DataMigrator.migrate
-      new_data_version = DataMigrate::DataMigrator.current_version
+      data_migrations_path = DataMigrate.config.data_migrations_path
+      data_migration_context = DataMigrate::MigrationContext.new(data_migrations_path)
+
+      data_version = data_migration_context.current_version
+      data_migration_context.migrate
+      new_data_version = data_migration_context.current_version
 
       if schema_version == new_schema_version && data_version == new_data_version
         log_step "No pending migrations."
