@@ -55,7 +55,7 @@ module PostDeployment
     end
 
     def log_error(message)
-      puts "❌ #{message}"
+      puts "#{message}"
     end
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'import_error'
+
 module Granblue
   module Importers
     class BaseImporter
@@ -28,42 +30,27 @@ module Granblue
 
         CSV.foreach(@file_path, headers: true) do |row|
           attributes = build_attributes(row)
+
+          # Check if record exists before doing any validation
           existing_record = model_class.find_by(granblue_id: attributes[:granblue_id])
 
           if existing_record
-            # For updates, only include non-nil attributes
-            update_attributes = attributes.compact
-            would_update = update_attributes.any? { |key, value| existing_record[key] != value }
-
-            if would_update
-              log_test_update(existing_record, attributes)
-              simulated_updated[type] << {
-                granblue_id: attributes[:granblue_id],
-                name_en: attributes[:name_en] || existing_record.name_en,
-                attributes: update_attributes,
-                operation: :update
-              }
-            end
+            simulate_update(existing_record, attributes, simulated_updated, type)
           else
-            log_test_creation(attributes)
-            simulated_new[type] << {
-              granblue_id: attributes[:granblue_id],
-              name_en: attributes[:name_en],
-              attributes: attributes,
-              operation: :create
-            }
+            validate_required_attributes(attributes)
+            simulate_create(attributes, simulated_new, type)
           end
         end
 
         { new: simulated_new, updated: simulated_updated }
+      rescue StandardError => e
+        handle_error(e)
       end
 
       private
 
       def import_row(row)
         attributes = build_attributes(row)
-        # Remove nil values from attributes hash for updates
-        # Keep them for new records to ensure proper defaults
         record = find_or_create_record(attributes)
         track_record(record) if record
       end
@@ -76,7 +63,6 @@ module Granblue
             log_test_update(existing_record, attributes)
             nil
           else
-            # For updates, only include non-nil attributes
             update_attributes = attributes.compact
             was_updated = update_attributes.any? { |key, value| existing_record[key] != value }
             existing_record.update!(update_attributes) if was_updated
@@ -87,9 +73,135 @@ module Granblue
             log_test_creation(attributes)
             nil
           else
-            # For new records, use all attributes including nil values
             [model_class.create!(attributes), false]
           end
+        end
+      end
+
+      def simulate_create(attributes, simulated_new, type)
+        test_record = model_class.new(attributes)
+        validate_record(test_record)
+
+        log_test_creation(attributes)
+        simulated_new[type] << {
+          granblue_id: attributes[:granblue_id],
+          name_en: attributes[:name_en],
+          attributes: attributes,
+          operation: :create
+        }
+      end
+
+      def simulate_update(existing_record, attributes, simulated_updated, type)
+        update_attributes = attributes.compact
+        would_update = update_attributes.any? { |key, value| existing_record[key] != value }
+
+        if would_update
+          # Create a test record with existing data
+          test_record = existing_record.dup
+
+          # Validate only the columns being updated
+          validate_update_attributes(update_attributes)
+
+          # Apply the updates and validate the resulting record
+          test_record.assign_attributes(update_attributes)
+          validate_record(test_record)
+
+          log_test_update(existing_record, attributes)
+          simulated_updated[type] << {
+            granblue_id: attributes[:granblue_id],
+            name_en: attributes[:name_en] || existing_record.name_en,
+            attributes: update_attributes,
+            operation: :update
+          }
+        end
+      end
+
+      def validate_required_attributes(attributes)
+        required_columns = model_class.columns.select { |c| !c.null }.map(&:name)
+
+        missing_columns = required_columns.select do |column|
+          attributes[column.to_sym].nil? &&
+            !model_class.column_defaults[column] &&
+            !%w[id created_at updated_at].include?(column)
+        end
+
+        if missing_columns.any?
+          details = [
+            "Missing required columns:",
+            missing_columns.map { |col| "  • #{col}" },
+            "",
+            "Affected model: #{model_class.name}"
+          ].flatten.join("\n")
+
+          raise ImportError.new(
+            file_name: File.basename(@file_path),
+            details: details
+          )
+        end
+      end
+
+      def validate_update_attributes(update_attributes)
+        # Get the list of columns that cannot be null in the database
+        required_columns = model_class.columns.select { |c| !c.null }.map(&:name)
+
+        # For updates, we only need to validate the attributes that are being updated
+        update_columns = update_attributes.keys.map(&:to_s)
+
+        # Only check required columns that are included in the update
+        missing_columns = required_columns.select do |column|
+          update_columns.include?(column) &&
+            update_attributes[column.to_sym].nil? &&
+            !model_class.column_defaults[column] &&
+            !%w[id created_at updated_at].include?(column)
+        end
+
+        if missing_columns.any?
+          details = [
+            "Missing required values for update:",
+            missing_columns.map { |col| "  • #{col}" },
+            "",
+            "Affected model: #{model_class.name}"
+          ].flatten.join("\n")
+
+          raise ImportError.new(
+            file_name: File.basename(@file_path),
+            details: details
+          )
+        end
+      end
+
+      def validate_record(record)
+        unless record.valid?
+          raise ImportError.new(
+            file_name: File.basename(@file_path),
+            details: format_validation_error(ActiveRecord::RecordInvalid.new(record))
+          )
+        end
+
+        begin
+          ActiveRecord::Base.transaction(requires_new: true) do
+            record.save!
+            raise ActiveRecord::Rollback
+          end
+        rescue ActiveRecord::StatementInvalid => e
+          if e.message.include?('violates not-null constraint')
+            column = e.message.match(/column "([^"]+)"/)[1]
+            details = [
+              "Database constraint violation:",
+              "  • Column '#{column}' cannot be null",
+              "",
+              "Affected model: #{model_class.name}"
+            ].join("\n")
+
+            raise ImportError.new(
+              file_name: File.basename(@file_path),
+              details: details
+            )
+          end
+          raise ImportError.new(
+            file_name: File.basename(@file_path),
+            details: format_standard_error(e)
+          )
         end
       end
 
@@ -119,17 +231,19 @@ module Granblue
       end
 
       def log_test_update(record, attributes)
-        # For test mode, show only the attributes that would be updated
         update_attributes = attributes.compact
-        @logger&.log_step("Updating #{model_class.name} #{record.granblue_id}...")
+        @logger&.log_step("\nUpdate #{model_class.name} #{record.granblue_id}:")
+        @logger&.log_verbose("Current values:")
+        @logger&.log_verbose(format_attributes(record.attributes.symbolize_keys))
+        @logger&.log_verbose("\nNew values:")
         @logger&.log_verbose(format_attributes(update_attributes))
-        @logger&.log_step("\n\n") if @verbose
+        @logger&.log_step("\n")
       end
 
       def log_test_creation(attributes)
-        @logger&.log_step("Creating #{model_class.name}...")
+        @logger&.log_step("\nCreate #{model_class.name}:")
         @logger&.log_verbose(format_attributes(attributes))
-        @logger&.log_step("\n\n") if @verbose
+        @logger&.log_step("\n")
       end
 
       def log_new_record(record)
@@ -186,6 +300,43 @@ module Granblue
 
       def build_attributes(row)
         raise NotImplementedError, 'Subclasses must define build_attributes'
+      end
+
+      def handle_error(error)
+        details = case error
+                  when ActiveRecord::RecordInvalid
+                    format_validation_error(error)
+                  else
+                    format_standard_error(error)
+                  end
+
+        raise ImportError.new(
+          file_name: File.basename(@file_path),
+          details: details
+        )
+      end
+
+      def format_validation_error(error)
+        [
+          "Validation failed:",
+          error.record.errors.full_messages.map { |msg| "  • #{msg}" },
+          "",
+          "Record attributes:",
+          format_attributes(error.record.attributes.symbolize_keys)
+        ].flatten.join("\n")
+      end
+
+      def format_standard_error(error)
+        if @verbose && error.respond_to?(:backtrace)
+          [
+            error.message,
+            "",
+            "Backtrace:",
+            error.backtrace.take(3).map { |line| "  #{line}" }
+          ].flatten.join("\n")
+        else
+          error.message.to_s
+        end
       end
     end
   end
