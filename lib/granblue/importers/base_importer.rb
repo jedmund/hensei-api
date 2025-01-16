@@ -252,11 +252,11 @@ module Granblue
       end
 
       def log_new_record(record)
-        @logger&.log_verbose("Created #{model_class.name} with ID: #{record.granblue_id}")
+        @logger&.log_verbose("Created #{model_class.name} with ID: #{record.granblue_id}\n")
       end
 
       def log_updated_record(record)
-        @logger&.log_verbose("Updated #{model_class.name} with ID: #{record.granblue_id}")
+        @logger&.log_verbose("Updated #{model_class.name} with ID: #{record.granblue_id}\n")
       end
 
       def parse_value(value)
