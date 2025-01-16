@@ -1,6 +1,6 @@
 name_en,name_jp,granblue_id,rarity,element,proficiency,series,flb,ulb,max_level,max_skill_level,min_hp,max_hp,max_hp_flb,max_hp_ulb,min_atk,max_atk,max_atk_flb,max_atk_ulb,extra,ax_type,limit,ax,recruits,max_awakening_level,release_date,flb_date,ulb_date,wiki_en,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp,transcendence,transcendence_date
-Amaranthine,アマラントス,1040423600,3,5,6,36,false,false,100,10,47,289,,,364,2143,,,,,,,3040543000,,2024-07-31,,,Amaranthine,アマラントス (SSR),458411,アマラントス,,,false,
-Sole Intenso,ソーレ・インテンソ,1040619100,3,6,7,36,false,false,100,10,35,421,,,235,2414,,,,,,,3040542000,,2024-07-31,,,Sole Intenso,ソーレ・インテンソ (SSR),458412,ソーレ・インテンソ,,,false,
-Shimmering Bloom,燦花,1040713700,3,2,5,36,false,false,100,10,35,223,,,432,2525,,,,,,,3040541000,,2024-07-31,,,Shimmering Bloom,燦花 (SSR),458413,燦花,,,false,
-Albacore Body,アルバコアボディ,1040423500,3,5,6,35,false,false,100,10,32,224,,,303,1759,,,,,,,,,2024-07-29,,,Albacore Body,アルバコアボディ (SSR),458282,アルバコアボディ,,,false,
-Rhothion Harp,ロティオンハープ,1030804600,2,5,8,35,false,false,75,10,20,146,,,211,1225,,,,,,,,,2024-07-29,,,Rhothion Harp,ロティオンハープ (SR),,ロティオンハープ,,,false,
+Amaranthine,アマラントス,1040423600,3,5,6,36,false,false,100,10,47,289,,,364,2143,,,false,,false,false,3040543000,,2024-07-31,,,Amaranthine,アマラントス (SSR),458411,アマラントス,,,false,
+Sole Intenso,ソーレ・インテンソ,1040619100,3,6,7,36,false,false,100,10,35,421,,,235,2414,,,false,,false,false,3040542000,,2024-07-31,,,Sole Intenso,ソーレ・インテンソ (SSR),458412,ソーレ・インテンソ,,,false,
+Shimmering Bloom,燦花,1040713700,3,2,5,36,false,false,100,10,35,223,,,432,2525,,,false,,false,false,3040541000,,2024-07-31,,,Shimmering Bloom,燦花 (SSR),458413,燦花,,,false,
+Albacore Body,アルバコアボディ,1040423500,3,5,6,35,false,false,100,10,32,224,,,303,1759,,,false,,false,false,,,2024-07-29,,,Albacore Body,アルバコアボディ (SSR),458282,アルバコアボディ,,,false,
+Rhothion Harp,ロティオンハープ,1030804600,2,5,8,35,false,false,75,10,20,146,,,211,1225,,,false,,false,false,,,2024-07-29,,,Rhothion Harp,ロティオンハープ (SR),,ロティオンハープ,,,false,
