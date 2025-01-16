@@ -209,11 +209,16 @@ module Granblue
         record, was_updated = result
         type = model_class.name.demodulize.downcase
 
+        record_info = {
+          granblue_id: record.granblue_id,
+          name_en: record.name_en
+        }
+
         if was_updated
-          @updated_records[type] << record.granblue_id
+          @updated_records[type] << record_info
           log_updated_record(record) if @verbose
         else
-          @new_records[type] << record.granblue_id
+          @new_records[type] << record_info
           log_new_record(record) if @verbose
         end
       end
@@ -247,11 +252,11 @@ module Granblue
       end
 
       def log_new_record(record)
-        @logger&.log_verbose("Created #{model_class.name} with ID: #{record.granblue_id}")
+        @logger&.log_verbose("Created #{model_class.name} with ID: #{record.granblue_id}\n")
       end
 
       def log_updated_record(record)
-        @logger&.log_verbose("Updated #{model_class.name} with ID: #{record.granblue_id}")
+        @logger&.log_verbose("Updated #{model_class.name} with ID: #{record.granblue_id}\n")
       end
 
       def parse_value(value)
