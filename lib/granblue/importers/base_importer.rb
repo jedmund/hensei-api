@@ -209,11 +209,16 @@ module Granblue
         record, was_updated = result
         type = model_class.name.demodulize.downcase
 
+        record_info = {
+          granblue_id: record.granblue_id,
+          name_en: record.name_en
+        }
+
         if was_updated
-          @updated_records[type] << record.granblue_id
+          @updated_records[type] << record_info
           log_updated_record(record) if @verbose
         else
-          @new_records[type] << record.granblue_id
+          @new_records[type] << record_info
           log_new_record(record) if @verbose
         end
       end
