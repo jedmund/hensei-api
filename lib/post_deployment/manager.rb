@@ -127,10 +127,54 @@ module PostDeployment
     end
 
     def handle_error(error)
-      log_error("\nError during deployment: #{error.message}")
-      log_error(error.backtrace.take(10).join("\n")) if @verbose
+      error_message = format_error_message(error)
+      log_formatted_error(error_message)
       @test_transaction&.rollback
-      raise error
+      exit(1)
+    end
+
+    def format_error_message(error)
+      sections = []
+
+      # Add header section
+      sections << [
+        "═" * 60,
+        "❌ Error during deployment",
+        "═" * 60
+      ]
+
+      # Add main error message
+      sections << format_main_error(error)
+
+      # Add stack trace if verbose
+      if @verbose && error.respond_to?(:backtrace)
+        sections << [
+          "Stack trace:",
+          error.backtrace.take(5).map { |line| "  #{line}" }
+        ].flatten
+      end
+
+      sections.flatten.join("\n")
+    end
+
+    def format_main_error(error)
+      case error
+      when Granblue::Importers::ImportError
+        [
+          "File: #{error.file_name}",
+          "-" * 80,
+          error.details
+        ]
+      else
+        error.message.to_s
+      end
+    end
+
+    def log_formatted_error(message)
+      # Split message into lines and log each with error prefix
+      message.split("\n").each do |line|
+        log_error line
+      end
     end
 
     def all_records_empty?
