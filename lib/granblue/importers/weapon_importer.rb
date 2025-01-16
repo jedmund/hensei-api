@@ -34,7 +34,7 @@ module Granblue
           ax_type: parse_integer(row['ax_type']),
           limit: parse_boolean(row['limit']),
           ax: parse_boolean(row['ax']),
-          recruits_id: parse_value(row['recruits_id']),
+          recruits: parse_value(row['recruits']),
           max_awakening_level: parse_integer(row['max_awakening_level']),
           release_date: parse_value(row['release_date']),
           flb_date: parse_value(row['flb_date']),
