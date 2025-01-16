@@ -28,8 +28,8 @@ module PostDeployment
       log_step "TEST MODE: Would run pending migrations..."
 
       # Check schema migrations
-      pending_schema_migrations = ActiveRecord::Base.connection.migration_context.needs_migration?
-      schema_migrations = ActiveRecord::Base.connection.migration_context.migrations
+      pending_schema_migrations = ActiveRecord::Base.connection.pool.migration_context.needs_migration?
+      schema_migrations = ActiveRecord::Base.connection.pool.migration_context.migrations
 
       # Check data migrations
       data_migrations_path = DataMigrate.config.data_migrations_path
@@ -60,9 +60,9 @@ module PostDeployment
       ActiveRecord::Migration.verbose = @verbose
 
       # Run schema migrations
-      schema_version = ActiveRecord::Base.connection.migration_context.current_version
+      schema_version = ActiveRecord::Base.connection.pool.migration_context.current_version
       ActiveRecord::Tasks::DatabaseTasks.migrate
-      new_schema_version = ActiveRecord::Base.connection.migration_context.current_version
+      new_schema_version = ActiveRecord::Base.connection.pool.migration_context.current_version
 
       # Run data migrations
       data_migrations_path = DataMigrate.config.data_migrations_path
