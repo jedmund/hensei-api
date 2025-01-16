@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 require_relative '../logging_helper'
+require_relative '../granblue/downloaders/base_downloader'
+require_relative '../granblue/downloaders/character_downloader'
+require_relative '../granblue/downloaders/weapon_downloader'
+require_relative '../granblue/downloaders/summon_downloader'
+require_relative '../granblue/downloaders/elemental_weapon_downloader'
+require_relative '../granblue/download_manager'
 
 module PostDeployment
   class ImageDownloader
@@ -12,6 +18,12 @@ module PostDeployment
       both: 'to local disk and S3'
     }.freeze
 
+    SUPPORTED_TYPES = {
+      'character' => Granblue::Downloader::CharacterDownloader,
+      'summon' => Granblue::Downloader::SummonDownloader,
+      'weapon' => Granblue::Downloader::WeaponDownloader
+    }.freeze
+
     def initialize(test_mode:, verbose:, storage:, new_records:, updated_records:)
       @test_mode = test_mode
       @verbose = verbose
@@ -21,35 +33,34 @@ module PostDeployment
     end
 
     def run
+      return if @test_mode
+
       log_header 'Downloading images...', '+'
 
-      [@new_records, @updated_records].each do |records|
-        records.each do |type, items|
-          next if items.empty?
-          download_type_images(type, items)
-        end
+      SUPPORTED_TYPES.each do |type, downloader_class|
+        download_type_images(type, downloader_class)
       end
     end
 
     private
 
-    def download_type_images(type, items)
-      if @verbose
-        log_header "Processing #{type.pluralize} (#{items.size} records)...", "-"
-        puts "\n"
+    def download_type_images(type, downloader_class)
+      records = (@new_records[type] || []) + (@updated_records[type] || [])
+      return if records.empty?
+
+      puts "\nDownloading #{type} images..." if @verbose
+      records.each do |record|
+        # Get the ID either from the granblue_id hash key (test mode) or method (normal mode)
+        id = record.respond_to?(:granblue_id) ? record.granblue_id : record[:granblue_id]
+
+        downloader = downloader_class.new(
+          id,
+          test_mode: @test_mode,
+          verbose: @verbose,
+          storage: @storage
+        )
+        downloader.download
       end
-
-      download_options = {
-        test_mode: @test_mode,
-        verbose: @verbose,
-        storage: @storage
-      }
-
-      items.each do |item|
-        id = @test_mode ? item[:granblue_id] : item.id
-        download_single_image(type, id, download_options)
-      end
-
     end
 
     def download_single_image(type, id, options)
