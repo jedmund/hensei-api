@@ -7,7 +7,7 @@ namespace :granblue do
     Dir[Rails.root.join('lib', 'granblue', '**', '*.rb')].each { |file| require file }
 
     test_mode = ENV['TEST'] == 'true'
-    importer = Granblue::DataImporter.new(test_mode: test_mode)
+    importer = Granblue::PostDeployment::DataImporter.new(test_mode: test_mode)
     importer.process_all_files
   end
 end
