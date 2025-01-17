@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Granblue
-  module Downloader
+  module Downloaders
     class BaseDownloader
       SIZES = %w[main grid square].freeze
 

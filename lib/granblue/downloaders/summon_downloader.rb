@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Granblue
-  module Downloader
+  module Downloaders
     class SummonDownloader < BaseDownloader
       def download
         summon = Summon.find_by(granblue_id: @id)
