@@ -6,7 +6,7 @@ require_relative '../granblue/downloaders/character_downloader'
 require_relative '../granblue/downloaders/weapon_downloader'
 require_relative '../granblue/downloaders/summon_downloader'
 require_relative '../granblue/downloaders/elemental_weapon_downloader'
-require_relative '../granblue/download_manager'
+require_relative '../granblue/downloaders/download_manager'
 
 module PostDeployment
   class ImageDownloader
@@ -19,9 +19,9 @@ module PostDeployment
     }.freeze
 
     SUPPORTED_TYPES = {
-      'character' => Granblue::Downloader::CharacterDownloader,
-      'summon' => Granblue::Downloader::SummonDownloader,
-      'weapon' => Granblue::Downloader::WeaponDownloader
+      'character' => Granblue::Downloaders::CharacterDownloader,
+      'summon' => Granblue::Downloaders::SummonDownloader,
+      'weapon' => Granblue::Downloaders::WeaponDownloader
     }.freeze
 
     def initialize(test_mode:, verbose:, storage:, new_records:, updated_records:)

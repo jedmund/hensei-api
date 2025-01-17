@@ -3,7 +3,7 @@
 require_relative 'weapon_downloader'
 
 module Granblue
-  module Downloader
+  module Downloaders
     class ElementalWeaponDownloader < WeaponDownloader
       SUFFIXES = [2, 3, 4, 1, 6, 5].freeze
 

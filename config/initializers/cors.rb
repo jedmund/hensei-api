@@ -8,9 +8,9 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     if Rails.env.production?
-      origins %w[granblue.team app.granblue.team hensei-web-production.up.railway.app]
+      origins %w[granblue.team app.granblue.team hensei-web-production.up.railway.app game.granbluefantasy.jp chrome-extension://ahacbogimbikgiodaahmacboojcpdfpf]
     else
-      origins %w[staging.granblue.team 127.0.0.1:1234]
+      origins %w[staging.granblue.team 127.0.0.1:1234 game.granbluefantasy.jp chrome-extension://ahacbogimbikgiodaahmacboojcpdfpf]
     end
 
     resource '*',

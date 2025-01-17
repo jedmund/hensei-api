@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Granblue
-  module Downloader
+  module Downloaders
     class CharacterDownloader < BaseDownloader
       def download
         character = Character.find_by(granblue_id: @id)

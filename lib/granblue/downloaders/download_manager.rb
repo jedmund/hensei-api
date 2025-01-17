@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Granblue
-  module Downloader
+  module Downloaders
     class DownloadManager
       class << self
         def download_for_object(type, granblue_id, test_mode: false, verbose: false, storage: :both)
