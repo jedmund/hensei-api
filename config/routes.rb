@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
       get 'version', to: 'api#version'
 
+      post 'import', to: 'import#create'
+
       get 'users/info/:id', to: 'users#info'
 
       get 'parties/favorites', to: 'parties#favorites'
