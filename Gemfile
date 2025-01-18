@@ -32,6 +32,9 @@ gem 'responders'
 # Parse emoji to strings
 gem 'gemoji-parser'
 
+# Mini replacement for RMagick
+gem 'mini_magick'
+
 # An awesome replacement for acts_as_nested_set and better_nested_set.
 gem 'awesome_nested_set'
 
@@ -43,6 +46,9 @@ gem 'email_validator'
 
 # pg_search builds ActiveRecord named scopes that take advantage of PostgreSQL’s full text search
 gem 'pg_search'
+
+# scheduler for Ruby (at, in, cron and every jobs)
+gem 'rufus-scheduler'
 
 # Pagination library
 gem 'will_paginate', '~> 3.3'
