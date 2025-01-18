@@ -116,6 +116,30 @@ module Api
         render_party_json(@parties, count, total_pages)
       end
 
+      def preview
+        party = Party.find_by!(shortcode: params[:id])
+
+        preview_service = PreviewService::Coordinator.new(party)
+        redirect_to preview_service.preview_url
+      end
+
+      def regenerate_preview
+        party = Party.find_by!(shortcode: params[:id])
+
+        # Ensure only party owner can force regeneration
+        unless current_user && party.user_id == current_user.id
+          return render_unauthorized_response
+        end
+
+        preview_service = PreviewService::Coordinator.new(party)
+        if preview_service.force_regenerate
+          render json: { status: 'Preview regeneration started' }
+        else
+          render json: { error: 'Preview regeneration failed' },
+                 status: :unprocessable_entity
+        end
+      end
+
       private
 
       def authorize
