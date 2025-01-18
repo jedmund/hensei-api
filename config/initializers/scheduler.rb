@@ -5,14 +5,14 @@ unless defined?(Rails::Console) || Rails.env.test? || File.split($0).last == 'ra
   scheduler = Rufus::Scheduler.new
 
   scheduler.every '5m' do
-    PreviewGenerationMonitor.check_stalled_jobs
+    PreviewService::GenerationMonitor.check_stalled_jobs
   end
 
   scheduler.every '1h' do
-    PreviewGenerationMonitor.retry_failed
+    PreviewService::GenerationMonitor.retry_failed
   end
 
   scheduler.every '1d' do
-    PreviewGenerationMonitor.cleanup_old_previews
+    PreviewService::GenerationMonitor.cleanup_old_previews
   end
 end
