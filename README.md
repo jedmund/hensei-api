@@ -125,8 +125,6 @@ Deployment steps:
 
 ## License
 
-## License
-
 This project is licensed under the GNU General Public License v3.0 (GPL-3.0-only) with additional non-commercial restrictions.
 
 Key points:
