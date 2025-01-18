@@ -12,9 +12,7 @@ class GeneratePartyPreviewJob < ApplicationJob
   around_perform :track_timing
 
   def perform(party_id)
-    # Log start of job processing
     Rails.logger.info("Starting preview generation for party #{party_id}")
-
     party = Party.find(party_id)
 
     if party.preview_state == 'generated' &&
@@ -26,7 +24,10 @@ class GeneratePartyPreviewJob < ApplicationJob
 
     begin
       service = PreviewService::Coordinator.new(party)
+      Rails.logger.info("Created PreviewService::Coordinator")
+
       result = service.generate_preview
+      Rails.logger.info("Generate preview result: #{result}")
 
       if result
         Rails.logger.info("Successfully generated preview for party #{party_id}")
@@ -36,9 +37,10 @@ class GeneratePartyPreviewJob < ApplicationJob
       end
     rescue => e
       Rails.logger.error("Error generating preview for party #{party_id}: #{e.message}")
-      Rails.logger.error(e.backtrace.join("\n"))
+      Rails.logger.error("Full error details:")
+      Rails.logger.error(e.full_message) # This will include the stack trace
       notify_failure(party, e)
-      raise # Allow retry mechanism to handle the error
+      raise
     end
   end
 

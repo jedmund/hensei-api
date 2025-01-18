@@ -41,22 +41,33 @@ module PreviewService
         Rails.logger.info("Starting preview generation for party #{@party.id}")
         set_generation_in_progress
 
-        # Generate the preview image
+        Rails.logger.info("Creating preview image...")
         image = create_preview_image
-        save_preview(image)
+        Rails.logger.info("Preview image created successfully")
 
-        # Update party state
+        Rails.logger.info("Saving preview...")
+        save_preview(image)
+        Rails.logger.info("Preview saved successfully")
+
+        Rails.logger.info("Updating party state...")
         @party.update!(
           preview_state: :generated,
           preview_generated_at: Time.current
         )
+        Rails.logger.info("Party state updated successfully")
+
         true
       rescue => e
+        Rails.logger.error("Failed to generate preview: #{e.class} - #{e.message}")
+        Rails.logger.error("Stack trace:")
+        Rails.logger.error(e.backtrace.join("\n"))
         handle_preview_generation_error(e)
         false
       ensure
+        Rails.logger.info("Cleaning up resources...")
         @image_fetcher.cleanup
         clear_generation_in_progress
+        Rails.logger.info("Cleanup completed")
       end
     end
 
@@ -99,28 +110,34 @@ module PreviewService
     #
     # @return [MiniMagick::Image] The generated preview image
     def create_preview_image
-      # Create blank canvas
+      Rails.logger.info("Creating blank canvas...")
       canvas = @canvas_service.create_blank_canvas
       image = MiniMagick::Image.new(canvas.path)
+      Rails.logger.info("Blank canvas created")
 
-      # Fetch job icon
+      Rails.logger.info("Processing job icon...")
       job_icon = nil
       if @party.job.present?
+        Rails.logger.info("Fetching job icon for job ID: #{@party.job.granblue_id}")
         job_icon = @image_fetcher.fetch_job_icon(@party.job.granblue_id)
+        Rails.logger.info("Job icon fetched successfully") if job_icon
       end
 
-      # Add party name with job icon
+      Rails.logger.info("Adding party name and job icon...")
       text_result = @canvas_service.add_text(image, @party.name, job_icon: job_icon, user: @party.user)
       image = text_result[:image]
+      Rails.logger.info("Party name and job icon added")
 
-      # Calculate grid layout
+      Rails.logger.info("Calculating grid layout...")
       grid_layout = @grid_service.calculate_layout(
         canvas_height: Canvas::PREVIEW_HEIGHT,
         title_bottom_y: text_result[:text_bottom_y]
       )
+      Rails.logger.info("Grid layout calculated")
 
-      # Organize and draw weapons
+      Rails.logger.info("Drawing weapons...")
       image = organize_and_draw_weapons(image, grid_layout)
+      Rails.logger.info("Weapons drawn successfully")
 
       image
     end
@@ -196,15 +213,22 @@ module PreviewService
       begin
         image.write(temp_file.path)
 
+        # Use timestamped filename similar to local storage
+        timestamp = Time.current.strftime('%Y%m%d%H%M%S')
+        key = "#{PREVIEW_FOLDER}/#{@party.shortcode}_#{timestamp}.png"
+
         File.open(temp_file.path, 'rb') do |file|
           @aws_service.s3_client.put_object(
-            bucket: S3_BUCKET,
-            key: preview_key,
+            bucket: @aws_service.bucket,
+            key: key,
             body: file,
             content_type: 'image/png',
             acl: 'private'
           )
         end
+
+        # Optionally, store this key on the party record if needed for retrieval
+        @party.update!(preview_s3_key: key)
       ensure
         temp_file.close
         temp_file.unlink

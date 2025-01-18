@@ -1,6 +1,7 @@
-# app/services/preview_generation_monitor.rb
+require 'sidekiq/api'
+
 module PreviewService
-  class PreviewGenerationMonitor
+  class GenerationMonitor
     class << self
       def check_stalled_jobs
         Party.where(preview_state: :queued)

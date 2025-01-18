@@ -1,0 +1,16 @@
+[phases.setup]
+nixPkgs = [
+    "imagemagick",
+    "ghostscript", # For PDF/PS operations
+    "pkgconfig", # For gem compilation
+    "libmagickwand" # ImageMagick C library
+]
+
+[phases.install]
+dependsOn = ["setup"]
+
+[phases.build]
+dependsOn = ["install"]
+
+[start]
+cmd = "bin/rails server"

@@ -47,6 +47,12 @@ gem 'email_validator'
 # pg_search builds ActiveRecord named scopes that take advantage of PostgreSQL’s full text search
 gem 'pg_search'
 
+# A Ruby client library for Redis
+gem 'redis'
+
+# Simple, efficient background processing for Ruby
+gem 'sidekiq'
+
 # scheduler for Ruby (at, in, cron and every jobs)
 gem 'rufus-scheduler'
 
