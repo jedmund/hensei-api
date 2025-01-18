@@ -3,6 +3,8 @@
 require 'aws-sdk-s3'
 
 class AwsService
+  attr_reader :s3_client, :bucket
+
   class ConfigurationError < StandardError; end
 
   def initialize
