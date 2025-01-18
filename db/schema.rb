@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_15_100356) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_18_135254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
@@ -300,11 +300,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_15_100356) do
     t.boolean "auto_summon", default: false
     t.boolean "remix", default: false, null: false
     t.integer "visibility", default: 1, null: false
+    t.integer "preview_state", default: 0, null: false
+    t.datetime "preview_generated_at"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
+    t.index ["preview_generated_at"], name: "index_parties_on_preview_generated_at"
+    t.index ["preview_state"], name: "index_parties_on_preview_state"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
     t.index ["skill2_id"], name: "index_parties_on_skill2_id"
