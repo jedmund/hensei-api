@@ -1,0 +1,18 @@
+module PreviewService
+  class Grid
+    GRID_MARGIN: Integer
+    GRID_CELL_SIZE: Integer
+    GRID_START_X: Integer
+    GRID_START_Y: Integer
+
+    def grid_position: (String type, Integer idx) -> { x: Integer, y: Integer }
+
+    def draw_grid_item: (
+        MiniMagick::Image image,
+        MiniMagick::Image item_image,
+        String type,
+        Integer idx,
+        ?resize_to: Integer
+      ) -> MiniMagick::Image
+  end
+end

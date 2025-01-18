@@ -1,0 +1,26 @@
+module PreviewService
+  class ImageFetcherService
+    @aws_service: AwsService
+    @tempfiles: Array[Tempfile]
+
+    def initialize: (AwsService aws_service) -> void
+
+    def fetch_s3_image: (String key, ?String folder) -> MiniMagick::Image?
+
+    def fetch_job_icon: (String job_name) -> MiniMagick::Image?
+
+    def fetch_weapon_image: (Weapon weapon, ?mainhand: bool) -> MiniMagick::Image?
+
+    def cleanup: -> void
+
+    private
+
+    def create_temp_file: -> Tempfile
+
+    def download_from_s3: (String key, Tempfile temp_file) -> void
+
+    def create_mini_magick_image: (Tempfile temp_file) -> MiniMagick::Image
+
+    def handle_fetch_error: (Exception error, String key) -> nil
+  end
+end

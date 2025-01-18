@@ -1,0 +1,19 @@
+class AwsService
+  class ConfigurationError < StandardError
+  end
+
+  attr_reader bucket: String
+  attr_reader s3_client: Aws::S3::Client
+
+  def initialize: () -> void
+
+  def upload_stream: (IO io, String key) -> Aws::S3::Types::PutObjectOutput
+
+  def file_exists?: (String key) -> bool
+
+  private
+
+  def credentials: () -> Hash[Symbol, String]
+
+  def validate_credentials!: () -> void
+end

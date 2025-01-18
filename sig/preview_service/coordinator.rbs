@@ -1,0 +1,74 @@
+module PreviewService
+  class Coordinator
+    PREVIEW_FOLDER: String
+    PREVIEW_WIDTH: Integer
+    PREVIEW_HEIGHT: Integer
+    PREVIEW_EXPIRY: ActiveSupport::Duration
+    GENERATION_TIMEOUT: ActiveSupport::Duration
+    LOCAL_STORAGE_PATH: Pathname
+    
+    @party: Party
+    @image_fetcher: ImageFetcherService
+    @grid_service: Grid
+    @canvas_service: Canvas
+    @aws_service: AwsService
+
+    def initialize: (Party party) -> void
+
+    def preview_url: -> String
+
+    def generate_preview: -> bool
+
+    def force_regenerate: -> bool
+
+    def delete_preview: -> void
+
+    private
+
+    def create_preview_image: -> MiniMagick::Image
+
+    def add_job_icon: (MiniMagick::Image image, MiniMagick::Image job_icon) -> MiniMagick::Image
+
+    def organize_and_draw_weapons: (MiniMagick::Image image) -> MiniMagick::Image
+
+    def draw_mainhand_weapon: (MiniMagick::Image image, MiniMagick::Image weapon_image) -> MiniMagick::Image
+
+    def save_preview: (MiniMagick::Image image) -> void
+
+    def setup_storage: -> void
+
+    def upload_to_s3: (MiniMagick::Image image) -> void
+
+    def save_to_local_storage: (MiniMagick::Image image) -> void
+
+    def preview_filename: -> String
+
+    def local_preview_path: -> Pathname
+
+    def local_preview_url: -> String
+
+    def preview_key: -> String
+
+    def preview_exists?: -> bool
+
+    def generate_s3_url: -> String
+
+    def should_generate?: -> bool
+
+    def generation_in_progress?: -> bool
+
+    def set_generation_in_progress: -> void
+
+    def clear_generation_in_progress: -> void
+
+    def schedule_generation: -> void
+
+    def default_preview_url: -> String
+
+    def delete_s3_preview: -> void
+
+    def delete_local_previews: -> void
+
+    def handle_preview_generation_error: (Exception error) -> void
+  end
+end

@@ -105,6 +105,15 @@ class Party < ApplicationRecord
 
   attr_accessor :favorited
 
+  self.enum :preview_state, {
+    pending: 0, # Never generated
+    queued: 1, # Generation job scheduled
+    generated: 2, # Has preview image
+    failed: 3 # Generation failed
+  }
+
+  after_commit :schedule_preview_regeneration, if: :preview_relevant_changes?
+
   def is_favorited(user)
     user.favorite_parties.include? self if user
   end
@@ -176,5 +185,19 @@ class Party < ApplicationRecord
     end
 
     errors.add(:guidebooks, 'must be unique')
+  end
+
+  def preview_relevant_changes?
+    return false if preview_state == 'queued'
+
+    (saved_changes.keys & %w[name job_id element weapons_count characters_count summons_count]).any?
+  end
+
+  def schedule_preview_regeneration
+    # Cancel any pending jobs
+    GeneratePartyPreviewJob.cancel_scheduled_jobs(party_id: id)
+
+    # Mark as pending
+    update_column(:preview_state, :pending)
   end
 end
