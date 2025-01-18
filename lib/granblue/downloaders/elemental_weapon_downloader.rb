@@ -4,13 +4,31 @@ require_relative 'weapon_downloader'
 
 module Granblue
   module Downloaders
+    # Specialized downloader for handling elemental weapon variants.
+    # Some weapons have different art for each element, requiring multiple downloads.
+    #
+    # @example Download all elemental variants
+    #   downloader = ElementalWeaponDownloader.new(1040001000)
+    #   downloader.download
+    #
+    # @note Handles weapons that have variants for all six elements
+    # @note Uses specific suffix mappings for element art variants
     class ElementalWeaponDownloader < WeaponDownloader
+      # Element variant suffix mapping
+      # @return [Array<Integer>] Ordered list of suffixes for element variants
       SUFFIXES = [2, 3, 4, 1, 6, 5].freeze
 
+      # Initialize downloader with base weapon ID
+      # @param id_base [Integer] Base ID for the elemental weapon series
+      # @return [void]
       def initialize(id_base)
         @id_base = id_base.to_i
       end
 
+      # Downloads all elemental variants of the weapon
+      # @return [void]
+      # @note Downloads variants for all six elements
+      # @note Uses progress reporter to show download status
       def download
         (1..6).each do |i|
           id = @id_base + (i - 1) * 100

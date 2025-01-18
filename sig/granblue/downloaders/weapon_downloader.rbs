@@ -1,0 +1,48 @@
+module Granblue
+  module Downloaders
+    class WeaponDownloader < BaseDownloader
+      def download: -> void
+
+      private
+
+      def download_variants: (Weapon weapon) -> void
+
+      def download_variant: (String variant_id) -> void
+
+      def build_variant_url: (String variant_id, String size) -> String
+
+      def object_type: -> String
+
+      def base_url: -> String
+
+      def directory_for_size: (String size) -> String
+
+      def build_url_for_id: (String id, String size) -> String
+
+      # Track progress of elemental weapon downloads
+      def progress_reporter: (count: Integer, total: Integer, result: String, ?bar_len: Integer) -> void
+
+      private
+
+      @id: String
+      @base_url: String
+      @test_mode: bool
+      @verbose: bool
+      @storage: Symbol
+      @aws_service: AwsService
+    end
+
+    # Special downloader for handling elemental weapon variants
+    class ElementalWeaponDownloader < WeaponDownloader
+      SUFFIXES: Array[Integer]
+
+      def initialize: (Integer id_base) -> void
+
+      def download: -> void
+
+      private
+
+      @id_base: Integer
+    end
+  end
+end
