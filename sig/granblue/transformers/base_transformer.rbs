@@ -1,0 +1,31 @@
+module Granblue
+  module Transformers
+    class TransformerError < StandardError
+      attr_reader details: untyped
+
+      def initialize: (String message, ?untyped details) -> void
+    end
+
+    class BaseTransformer
+      ELEMENT_MAPPING: Hash[Integer, Integer?]
+
+      @data: untyped
+      @options: Hash[Symbol, untyped]
+      @language: String
+
+      attr_reader data: untyped
+      attr_reader options: Hash[Symbol, untyped]
+      attr_reader language: String
+
+      def initialize: (untyped data, ?Hash[Symbol, untyped] options) -> void
+
+      def transform: -> untyped
+
+      def validate_data: -> bool
+
+      def get_master_param: (Hash[String, untyped] obj) -> [Hash[String, untyped]?, Hash[String, untyped]?]
+
+      def log_debug: (String message) -> void
+    end
+  end
+end

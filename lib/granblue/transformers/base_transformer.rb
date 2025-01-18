@@ -11,7 +11,11 @@ module Granblue
       end
     end
 
+    # Base class for transforming game data into standardized format
+    # @abstract
     class BaseTransformer
+      # Mapping of game element IDs to internal element IDs
+      # @return [Hash<Integer, Integer?>]
       ELEMENT_MAPPING = {
         0 => nil,
         1 => 4, # Wind -> Earth
@@ -22,6 +26,12 @@ module Granblue
         6 => 5 # Light -> Dark
       }.freeze
 
+      # Initialize a new transformer
+      # @param data [Object] Raw game data to transform
+      # @param options [Hash<Symbol, Object>] Optional configuration settings
+      # @option options [String] :language ('en') Language code for transformations
+      # @option options [Boolean] :debug (false) Enable debug logging
+      # @return [void]
       def initialize(data, options = {})
         @data = data
         @options = options
@@ -30,6 +40,9 @@ module Granblue
         validate_data
       end
 
+      # Transform the raw data into standardized format
+      # @abstract Subclasses must implement this method
+      # @return [Object] Transformed data
       def transform
         raise NotImplementedError, "#{self.class} must implement #transform"
       end
@@ -38,6 +51,8 @@ module Granblue
 
       attr_reader :data, :options, :language
 
+      # Validate the input data structure
+      # @return [Boolean] true if valid, false otherwise
       def validate_data
         Rails.logger.info "[TRANSFORM] Validating data: #{data.inspect[0..100]}..."
 
@@ -55,6 +70,9 @@ module Granblue
         true
       end
 
+      # Extract master and parameter data from an object
+      # @param obj [Hash<String, Object>] Object containing master/param data
+      # @return [Array<(Hash?, Hash?)>] Array containing master and param data
       def get_master_param(obj)
         return [nil, nil] unless obj.is_a?(Hash)
 
@@ -65,6 +83,9 @@ module Granblue
         [master, param]
       end
 
+      # Log a debug message if debug mode is enabled
+      # @param message [String] Message to log
+      # @return [void]
       def log_debug(message)
         return unless options[:debug]
         Rails.logger.debug "[TRANSFORM-DEBUG] #{self.class.name}: #{message}"

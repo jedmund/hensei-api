@@ -1,0 +1,20 @@
+module Granblue
+  module Transformers
+    class SummonTransformer < BaseTransformer
+      # Level thresholds for transcendence calculations
+      TRANSCENDENCE_LEVELS: Array[Integer]
+
+      # Quick summon ID for the current transformation
+      @quick_summon_id: String?
+
+      def initialize: (untyped data, ?String? quick_summon_id, ?Hash[Symbol, untyped] options) -> void
+
+      # Implements abstract method from BaseTransformer
+      def transform: -> Array[Hash[Symbol, untyped]]
+
+      private
+
+      def calculate_transcendence_level: (Integer? level) -> Integer
+    end
+  end
+end
