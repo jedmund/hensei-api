@@ -15,12 +15,24 @@ module PreviewService
     end
 
     def create_blank_canvas(width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT, color: DEFAULT_BACKGROUND_COLOR)
-      temp_file = Tempfile.new(%w[canvas .png])
+      Rails.logger.info("Checking ImageMagick installation...")
+      version = `convert -version`
+      Rails.logger.info("ImageMagick version: #{version}")
 
-      MiniMagick::Tool::Convert.new do |convert|
-        convert.size "#{width}x#{height}"
-        convert << "xc:#{color}"
-        convert << temp_file.path
+      temp_file = Tempfile.new(%w[canvas .png])
+      Rails.logger.info("Created temp file: #{temp_file.path}")
+
+      begin
+        MiniMagick::Tool::Convert.new do |convert|
+          convert.size "#{width}x#{height}"
+          convert << "xc:#{color}"
+          convert << temp_file.path
+        end
+        Rails.logger.info("Canvas created successfully")
+      rescue => e
+        Rails.logger.error("Failed to create canvas: #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+        raise
       end
 
       temp_file
