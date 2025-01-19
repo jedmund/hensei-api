@@ -48,7 +48,12 @@ module PreviewService
       font_color = options.fetch(:color, 'white')
 
       # Load custom font for username, for later use
-      @font_path ||= Rails.root.join('app', 'assets', 'fonts', 'Gk-Bd.otf').to_s
+      @font_path = Rails.root.join('app', 'assets', 'fonts', 'Gk-Bd.otf').to_s
+      Rails.logger.info("Using font path: #{@font_path}")
+      unless File.exist?(@font_path)
+        Rails.logger.error("Font file not found at: #{@font_path}")
+        raise "Font file not found"
+      end
 
       # Measure party name text size
       text_metrics = measure_text(party_name, font_size)
