@@ -6,9 +6,10 @@ module PostDeployment
   class SearchIndexer
     include LoggingHelper
 
-    def initialize(test_mode:, verbose:)
+    def initialize(test_mode:, verbose:, new_records: {})
       @test_mode = test_mode
       @verbose = verbose
+      @new_records = new_records
     end
 
     def rebuild_all
@@ -38,12 +39,22 @@ module PostDeployment
     end
 
     def rebuild_index_for(model)
+      # Determine model type (lowercase, pluralized)
+      model_type = model.name.downcase.pluralize
+
+      # Check if there are new records for this model type
+      new_records = @new_records[model_type] || []
+
       if @test_mode
-        log_step "Would rebuild search index for #{model.name}"
+        log_step "Would rebuild search index for #{model.name}" if new_records.any?
       else
-        log_verbose "• #{model.name}... "
-        PgSearch::Multisearch.rebuild(model)
-        log_verbose "✅ done!\n"
+        if new_records.any?
+          log_verbose "• #{model.name}... "
+          PgSearch::Multisearch.rebuild(model)
+          log_verbose "✅ done! (#{new_records.size} new records)\n"
+        else
+          log_step "Skipping #{model.name} - no new records" if @verbose
+        end
       end
     rescue StandardError => e
       log_error("Failed to rebuild index for #{model.name}: #{e.message}")
