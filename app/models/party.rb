@@ -106,10 +106,11 @@ class Party < ApplicationRecord
   attr_accessor :favorited
 
   self.enum :preview_state, {
-    pending: 0, # Never generated
-    queued: 1, # Generation job scheduled
-    generated: 2, # Has preview image
-    failed: 3 # Generation failed
+    pending: 0,
+    queued: 1,
+    in_progress: 2,
+    generated: 3,
+    failed: 4
   }
 
   after_commit :schedule_preview_regeneration, if: :preview_relevant_changes?

@@ -13,7 +13,10 @@ class GeneratePartyPreviewJob < ApplicationJob
 
   def perform(party_id)
     Rails.logger.info("Starting preview generation for party #{party_id}")
+    Rails.logger.info("Debug: should_generate? check starting")
+
     party = Party.find(party_id)
+    Rails.logger.info("Party found: #{party.inspect}")
 
     if party.preview_state == 'generated' &&
       party.preview_generated_at &&
@@ -23,9 +26,22 @@ class GeneratePartyPreviewJob < ApplicationJob
     end
 
     begin
+      Rails.logger.info("Initializing PreviewService::Coordinator")
       service = PreviewService::Coordinator.new(party)
-      Rails.logger.info("Created PreviewService::Coordinator")
+      Rails.logger.info("Coordinator initialized")
 
+      Rails.logger.info("Checking should_generate?")
+      should_gen = service.send(:should_generate?)
+      Rails.logger.info("should_generate? returned: #{should_gen}")
+
+      if !should_gen
+        Rails.logger.info("Not generating preview because should_generate? returned false")
+        Rails.logger.info("Preview state: #{party.preview_state}")
+        Rails.logger.info("Generation in progress: #{service.send(:generation_in_progress?)}")
+        return
+      end
+
+      Rails.logger.info("Starting generate_preview")
       result = service.generate_preview
       Rails.logger.info("Generate preview result: #{result}")
 
@@ -38,7 +54,7 @@ class GeneratePartyPreviewJob < ApplicationJob
     rescue => e
       Rails.logger.error("Error generating preview for party #{party_id}: #{e.message}")
       Rails.logger.error("Full error details:")
-      Rails.logger.error(e.full_message) # This will include the stack trace
+      Rails.logger.error(e.full_message)
       notify_failure(party, e)
       raise
     end
