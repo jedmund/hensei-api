@@ -1,9 +1,20 @@
 [phases.setup]
 nixPkgs = [
     "imagemagick",
-    "ghostscript", # For PDF/PS operations
-    "pkgconfig", # For gem compilation
-    "libmagickwand" # ImageMagick C library
+    # For PDF/PS operations
+    "ghostscript",
+    # For gem compilation
+    "pkgconfig",
+    # ImageMagick C library
+    "libmagickwand",
+    # Font configuration
+    "fontconfig",
+    # A good fallback font
+    "dejavu_fonts",
+    # Arial-compatible fonts
+    "liberation_ttf",
+    # Font rendering
+    "freetype"
 ]
 
 [phases.install]
