@@ -39,15 +39,38 @@ module PreviewService
 
       begin
         Rails.logger.info("Starting preview generation for party #{@party.id}")
+
+        # Update state to in_progress
+        @party.update!(preview_state: :in_progress)
         set_generation_in_progress
 
+        Rails.logger.info("Checking ImageMagick installation...")
+        begin
+          version = `convert -version`
+          Rails.logger.info("ImageMagick version: #{version}")
+        rescue => e
+          Rails.logger.error("Failed to get ImageMagick version: #{e.message}")
+        end
+
         Rails.logger.info("Creating preview image...")
-        image = create_preview_image
-        Rails.logger.info("Preview image created successfully")
+        begin
+          image = create_preview_image
+          Rails.logger.info("Preview image created successfully")
+        rescue => e
+          Rails.logger.error("Failed to create preview image: #{e.class} - #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
+          raise e
+        end
 
         Rails.logger.info("Saving preview...")
-        save_preview(image)
-        Rails.logger.info("Preview saved successfully")
+        begin
+          save_preview(image)
+          Rails.logger.info("Preview saved successfully")
+        rescue => e
+          Rails.logger.error("Failed to save preview: #{e.class} - #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
+          raise e
+        end
 
         Rails.logger.info("Updating party state...")
         @party.update!(
@@ -58,7 +81,7 @@ module PreviewService
 
         true
       rescue => e
-        Rails.logger.error("Failed to generate preview: #{e.class} - #{e.message}")
+        Rails.logger.error("Preview generation failed: #{e.class} - #{e.message}")
         Rails.logger.error("Stack trace:")
         Rails.logger.error(e.backtrace.join("\n"))
         handle_preview_generation_error(e)
@@ -95,6 +118,38 @@ module PreviewService
       Rails.logger.error("Failed to delete preview for party #{@party.id}: #{e.message}")
     end
 
+    # Determines if a new preview should be generated
+    #
+    # @return [Boolean] True if a new preview should be generated, false otherwise
+    def should_generate?
+      Rails.logger.info("Checking should_generate? conditions")
+
+      if generation_in_progress?
+        Rails.logger.info("Generation already in progress, returning false")
+        return false
+      end
+
+      Rails.logger.info("Preview state: #{@party.preview_state}")
+      # Add 'queued' to the list of valid states for generation
+      if @party.preview_state.in?(['pending', 'failed', 'queued'])
+        Rails.logger.info("Preview state is #{@party.preview_state}, returning true")
+        return true
+      end
+
+      if @party.preview_state == 'generated'
+        if @party.preview_generated_at < PREVIEW_EXPIRY.ago
+          Rails.logger.info("Preview is older than expiry time, returning true")
+          return true
+        else
+          Rails.logger.info("Preview is recent, returning false")
+          return false
+        end
+      end
+
+      Rails.logger.info("No conditions met, returning false")
+      false
+    end
+
     private
 
     # Sets up the appropriate storage system based on environment
@@ -111,33 +166,61 @@ module PreviewService
     # @return [MiniMagick::Image] The generated preview image
     def create_preview_image
       Rails.logger.info("Creating blank canvas...")
-      canvas = @canvas_service.create_blank_canvas
-      image = MiniMagick::Image.new(canvas.path)
-      Rails.logger.info("Blank canvas created")
+      begin
+        canvas = @canvas_service.create_blank_canvas
+        Rails.logger.info("Canvas created at: #{canvas.path}")
+        image = MiniMagick::Image.new(canvas.path)
+        Rails.logger.info("MiniMagick image object created")
+      rescue => e
+        Rails.logger.error("Failed to create canvas: #{e.class} - #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+        raise e
+      end
 
+      # Add more detailed logging for job icon handling
       Rails.logger.info("Processing job icon...")
       job_icon = nil
       if @party.job.present?
+        Rails.logger.info("Job present: #{@party.job.inspect}")
         Rails.logger.info("Fetching job icon for job ID: #{@party.job.granblue_id}")
-        job_icon = @image_fetcher.fetch_job_icon(@party.job.granblue_id)
-        Rails.logger.info("Job icon fetched successfully") if job_icon
+        begin
+          job_icon = @image_fetcher.fetch_job_icon(@party.job.granblue_id)
+          Rails.logger.info("Job icon fetched successfully") if job_icon
+        rescue => e
+          Rails.logger.error("Failed to fetch job icon: #{e.class} - #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
+          # Don't raise this error, just log it and continue without the job icon
+        end
       end
 
-      Rails.logger.info("Adding party name and job icon...")
-      text_result = @canvas_service.add_text(image, @party.name, job_icon: job_icon, user: @party.user)
-      image = text_result[:image]
-      Rails.logger.info("Party name and job icon added")
+      begin
+        Rails.logger.info("Adding party name and job icon...")
+        text_result = @canvas_service.add_text(image, @party.name, job_icon: job_icon, user: @party.user)
+        image = text_result[:image]
+        Rails.logger.info("Text and icon added successfully")
+      rescue => e
+        Rails.logger.error("Failed to add text/icon: #{e.class} - #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+        raise e
+      end
 
-      Rails.logger.info("Calculating grid layout...")
-      grid_layout = @grid_service.calculate_layout(
-        canvas_height: Canvas::PREVIEW_HEIGHT,
-        title_bottom_y: text_result[:text_bottom_y]
-      )
-      Rails.logger.info("Grid layout calculated")
+      begin
+        Rails.logger.info("Calculating grid layout...")
+        grid_layout = @grid_service.calculate_layout(
+          canvas_height: Canvas::PREVIEW_HEIGHT,
+          title_bottom_y: text_result[:text_bottom_y]
+        )
+        Rails.logger.info("Grid layout calculated")
 
-      Rails.logger.info("Drawing weapons...")
-      image = organize_and_draw_weapons(image, grid_layout)
-      Rails.logger.info("Weapons drawn successfully")
+        Rails.logger.info("Drawing weapons...")
+        Rails.logger.info("Weapons count: #{@party.weapons.count}")
+        image = organize_and_draw_weapons(image, grid_layout)
+        Rails.logger.info("Weapons drawn successfully")
+      rescue => e
+        Rails.logger.error("Failed during weapons drawing: #{e.class} - #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
+        raise e
+      end
 
       image
     end
@@ -310,25 +393,13 @@ module PreviewService
       )
     end
 
-    # Determines if a new preview should be generated
-    #
-    # @return [Boolean] True if a new preview should be generated, false otherwise
-    def should_generate?
-      return false if generation_in_progress?
-      return true if @party.preview_state.in?(['pending', 'failed'])
-
-      if @party.preview_state == 'generated'
-        return @party.preview_generated_at < PREVIEW_EXPIRY.ago
-      end
-
-      false
-    end
-
     # Checks if a preview generation is currently in progress
     #
     # @return [Boolean] True if a preview is being generated, false otherwise
     def generation_in_progress?
-      Rails.cache.exist?("party_preview_generating_#{@party.id}")
+      in_progress = Rails.cache.exist?("party_preview_generating_#{@party.id}")
+      Rails.logger.info("Cache key check for generation_in_progress: #{in_progress}")
+      in_progress
     end
 
     # Marks the preview generation as in progress

@@ -15,26 +15,31 @@ module PreviewService
     end
 
     def create_blank_canvas(width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT, color: DEFAULT_BACKGROUND_COLOR)
-      Rails.logger.info("Checking ImageMagick installation...")
-      version = `convert -version`
-      Rails.logger.info("ImageMagick version: #{version}")
-
+      Rails.logger.info("Creating blank canvas #{width}x#{height}")
       temp_file = Tempfile.new(%w[canvas .png])
-      Rails.logger.info("Created temp file: #{temp_file.path}")
+      Rails.logger.info("Temp file created at: #{temp_file.path}")
 
       begin
+        Rails.logger.info("Checking ImageMagick setup...")
+        version = `which convert`
+        Rails.logger.info("ImageMagick convert path: #{version}")
+
+        Rails.logger.info("Executing convert command...")
         MiniMagick::Tool::Convert.new do |convert|
           convert.size "#{width}x#{height}"
           convert << "xc:#{color}"
           convert << temp_file.path
         end
-        Rails.logger.info("Canvas created successfully")
+        Rails.logger.info("Convert command completed successfully")
       rescue => e
-        Rails.logger.error("Failed to create canvas: #{e.message}")
+        Rails.logger.error("Failed to create canvas with convert: #{e.class} - #{e.message}")
+        Rails.logger.error("PATH: #{ENV['PATH']}")
+        Rails.logger.error("LD_LIBRARY_PATH: #{ENV['LD_LIBRARY_PATH']}")
         Rails.logger.error(e.backtrace.join("\n"))
         raise
       end
 
+      Rails.logger.info("Canvas created successfully at: #{temp_file.path}")
       temp_file
     end
 
@@ -43,7 +48,12 @@ module PreviewService
       font_color = options.fetch(:color, 'white')
 
       # Load custom font for username, for later use
-      @font_path ||= Rails.root.join('app', 'assets', 'fonts', 'Gk-Bd.otf').to_s
+      @font_path = Rails.root.join('app', 'assets', 'fonts', 'Gk-Bd.otf').to_s
+      Rails.logger.info("Using font path: #{@font_path}")
+      unless File.exist?(@font_path)
+        Rails.logger.error("Font file not found at: #{@font_path}")
+        raise "Font file not found"
+      end
 
       # Measure party name text size
       text_metrics = measure_text(party_name, font_size)

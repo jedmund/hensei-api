@@ -85,7 +85,8 @@ module PostDeployment
     def rebuild_search_indices
       SearchIndexer.new(
         test_mode: @test_mode,
-        verbose: @verbose
+        verbose: @verbose,
+        new_records: @new_records
       ).rebuild_all
     end
 

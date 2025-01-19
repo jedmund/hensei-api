@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_18_135254) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -302,6 +302,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_18_135254) do
     t.integer "visibility", default: 1, null: false
     t.integer "preview_state", default: 0, null: false
     t.datetime "preview_generated_at"
+    t.string "preview_s3_key"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
