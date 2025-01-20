@@ -1,3 +1,5 @@
+# sig/services/preview_service/coordinator.rbs
+
 module PreviewService
   class Coordinator
     PREVIEW_FOLDER: String
@@ -6,69 +8,71 @@ module PreviewService
     PREVIEW_EXPIRY: ActiveSupport::Duration
     GENERATION_TIMEOUT: ActiveSupport::Duration
     LOCAL_STORAGE_PATH: Pathname
-    
+
     @party: Party
     @image_fetcher: ImageFetcherService
     @grid_service: Grid
     @canvas_service: Canvas
     @aws_service: AwsService
 
-    def initialize: (Party party) -> void
+    def initialize: (party: Party) -> void
 
-    def preview_url: -> String
+    def get_s3_object: () -> Aws::S3::Types::GetObjectOutput
 
-    def generate_preview: -> bool
+    def preview_url: () -> String
 
-    def force_regenerate: -> bool
+    def generate_preview: () -> bool
 
-    def delete_preview: -> void
+    def force_regenerate: () -> bool
+
+    def delete_preview: () -> void
+
+    def should_generate?: () -> bool
+
+    def generation_in_progress?: () -> bool
+
+    def create_preview_image: () -> MiniMagick::Image
 
     private
 
-    def create_preview_image: -> MiniMagick::Image
+    def setup_storage: () -> void
 
-    def add_job_icon: (MiniMagick::Image image, MiniMagick::Image job_icon) -> MiniMagick::Image
+    def add_job_icon: (image: MiniMagick::Image, job_icon: MiniMagick::Image) -> MiniMagick::Image
 
-    def organize_and_draw_weapons: (MiniMagick::Image image) -> MiniMagick::Image
+    def organize_and_draw_weapons: (image: MiniMagick::Image, grid_layout: Hash[Symbol, untyped]) -> MiniMagick::Image
 
-    def draw_mainhand_weapon: (MiniMagick::Image image, MiniMagick::Image weapon_image) -> MiniMagick::Image
+    def draw_mainhand_weapon: (image: MiniMagick::Image, weapon_image: MiniMagick::Image) -> MiniMagick::Image
 
-    def save_preview: (MiniMagick::Image image) -> void
+    def save_preview: (image: MiniMagick::Image) -> void
 
-    def setup_storage: -> void
+    def upload_to_s3: (image: MiniMagick::Image) -> void
 
-    def upload_to_s3: (MiniMagick::Image image) -> void
+    def save_to_local_storage: (image: MiniMagick::Image) -> void
 
-    def save_to_local_storage: (MiniMagick::Image image) -> void
+    def preview_filename: () -> String
 
-    def preview_filename: -> String
+    def local_preview_path: () -> Pathname
 
-    def local_preview_path: -> Pathname
+    def local_preview_url: () -> String
 
-    def local_preview_url: -> String
+    def preview_key: () -> String
 
-    def preview_key: -> String
+    def preview_exists?: () -> bool
 
-    def preview_exists?: -> bool
+    def generate_s3_url: () -> String
 
-    def generate_s3_url: -> String
+    def set_generation_in_progress: () -> void
 
-    def should_generate?: -> bool
+    def clear_generation_in_progress: () -> void
 
-    def generation_in_progress?: -> bool
+    def schedule_generation: () -> void
 
-    def set_generation_in_progress: -> void
+    def default_preview_url: () -> String
 
-    def clear_generation_in_progress: -> void
+    def delete_s3_preview: () -> void
 
-    def schedule_generation: -> void
+    def delete_local_previews: () -> void
 
-    def default_preview_url: -> String
-
-    def delete_s3_preview: -> void
-
-    def delete_local_previews: -> void
-
-    def handle_preview_generation_error: (Exception error) -> void
+    def handle_preview_generation_error: (error: Exception) -> void
   end
 end
