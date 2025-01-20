@@ -8,6 +8,8 @@ module PreviewService
     GENERATION_TIMEOUT = 5.minutes
     LOCAL_STORAGE_PATH = Rails.root.join('storage', 'party-previews')
 
+    # Public Interface - Core Operations
+
     # Initialize the party preview service
     #
     # @param party [Party] The party to generate a preview for
@@ -103,6 +105,8 @@ module PreviewService
     end
 
     # Deletes the existing preview image for the party
+    #
+    # @return [void]
     def delete_preview
       if Rails.env.production?
         delete_s3_preview
@@ -117,6 +121,8 @@ module PreviewService
     rescue => e
       Rails.logger.error("Failed to delete preview for party #{@party.id}: #{e.message}")
     end
+
+    # State Management - Public
 
     # Determines if a new preview should be generated
     #
@@ -150,15 +156,43 @@ module PreviewService
       false
     end
 
-    private
+    # Checks if a preview generation is currently in progress
+    #
+    # @return [Boolean] True if a preview is being generated, false otherwise
+    def generation_in_progress?
+      in_progress = Rails.cache.exist?("party_preview_generating_#{@party.id}")
+      Rails.logger.info("Cache key check for generation_in_progress: #{in_progress}")
+      in_progress
+    end
 
-    # Sets up the appropriate storage system based on environment
-    def setup_storage
-      # Always initialize AWS service for potential image fetching
-      @aws_service = AwsService.new
+    # Retrieves the S3 object for the party's preview image
+    #
+    # @return [Aws::S3::Types::GetObjectOutput] S3 object containing the preview image
+    # @raise [Aws::S3::Errors::NoSuchKey] If the preview image doesn't exist in S3
+    # @raise [Aws::S3::Errors::NoSuchBucket] If the configured bucket doesn't exist
+    def get_s3_object
+      @aws_service.s3_client.get_object(
+        bucket: @aws_service.bucket,
+        key: preview_key
+      )
+    end
 
-      # Create local storage paths in development
-      FileUtils.mkdir_p(LOCAL_STORAGE_PATH) unless Dir.exist?(LOCAL_STORAGE_PATH.to_s)
+    # Schedules a background job to generate the preview
+    #
+    # @return [void]
+    def schedule_generation
+      GeneratePartyPreviewJob
+        .set(wait: 30.seconds)
+        .perform_later(@party.id)
+
+      @party.update!(preview_state: :queued)
+    end
+
+    # Returns the full path for storing preview images locally
+    #
+    # @return [Pathname] Full path where the preview image should be stored
+    def local_preview_path
+      LOCAL_STORAGE_PATH.join(preview_filename)
     end
 
     # Creates the preview image for the party
@@ -225,6 +259,21 @@ module PreviewService
       image
     end
 
+    private
+
+    # Sets up the appropriate storage system based on environment
+    #
+    # @return [void]
+    def setup_storage
+      # Always initialize AWS service for potential image fetching
+      @aws_service = AwsService.new
+
+      # Create local storage paths in development
+      FileUtils.mkdir_p(LOCAL_STORAGE_PATH) unless Dir.exist?(LOCAL_STORAGE_PATH.to_s)
+    end
+
+    # Image Generation Pipeline
+
     # Adds the job icon to the preview image
     #
     # @param image [MiniMagick::Image] The base image
@@ -241,6 +290,7 @@ module PreviewService
     # Organizes and draws weapons on the preview image
     #
     # @param image [MiniMagick::Image] The base image
+    # @param grid_layout [Hash] The layout configuration for the grid
     # @return [MiniMagick::Image] The updated image with weapons
     def organize_and_draw_weapons(image, grid_layout)
       mainhand_weapon = @party.weapons.find(&:mainhand)
@@ -277,9 +327,12 @@ module PreviewService
       end
     end
 
+    # Storage Operations
+
     # Saves the preview image to the appropriate storage system
     #
     # @param image [MiniMagick::Image] The image to save
+    # @return [void]
     def save_preview(image)
       if Rails.env.production?
         upload_to_s3(image)
@@ -291,14 +344,14 @@ module PreviewService
     # Uploads the preview image to S3
     #
     # @param image [MiniMagick::Image] The image to upload
+    # @return [void]
     def upload_to_s3(image)
-      temp_file = Tempfile.new(['preview', '.png'])
+      temp_file = Tempfile.new(%w[preview .png])
       begin
         image.write(temp_file.path)
 
-        # Use timestamped filename similar to local storage
-        timestamp = Time.current.strftime('%Y%m%d%H%M%S')
-        key = "#{PREVIEW_FOLDER}/#{@party.shortcode}_#{timestamp}.png"
+        # Use fixed key without timestamp
+        key = "#{PREVIEW_FOLDER}/#{@party.shortcode}.png"
 
         File.open(temp_file.path, 'rb') do |file|
           @aws_service.s3_client.put_object(
@@ -310,7 +363,6 @@ module PreviewService
           )
         end
 
-        # Optionally, store this key on the party record if needed for retrieval
         @party.update!(preview_s3_key: key)
       ensure
         temp_file.close
@@ -321,29 +373,18 @@ module PreviewService
     # Saves the preview image to local storage
     #
     # @param image [MiniMagick::Image] The image to save
+    # @return [void]
     def save_to_local_storage(image)
-      # Remove any existing previews for this party
-      Dir.glob(LOCAL_STORAGE_PATH.join("#{@party.shortcode}_*.png").to_s).each do |file|
-        File.delete(file)
-      end
-
-      # Save new version
       image.write(local_preview_path)
     end
 
-    # Generates a timestamped filename for the preview image
-    #
-    # @return [String] Filename in format "shortcode_YYYYMMDDHHMMSS.png"
-    def preview_filename
-      timestamp = Time.current.strftime('%Y%m%d%H%M%S')
-      "#{@party.shortcode}_#{timestamp}.png"
-    end
+    # Path & URL Generation
 
-    # Returns the full path for storing preview images locally
+    # Generates a filename for the preview image
     #
-    # @return [Pathname] Full path where the preview image should be stored
-    def local_preview_path
-      LOCAL_STORAGE_PATH.join(preview_filename)
+    # @return [String] Filename for the preview image
+    def preview_filename
+      "#{@party.shortcode}.png"
     end
 
     # Returns the URL for accessing locally stored preview images
@@ -364,6 +405,8 @@ module PreviewService
       "#{PREVIEW_FOLDER}/#{@party.shortcode}.png"
     end
 
+    # Preview State Management
+
     # Checks if a preview image exists for the party
     #
     # @return [Boolean] True if a preview exists, false otherwise
@@ -371,10 +414,9 @@ module PreviewService
       return false unless @party.preview_state == 'generated'
 
       if Rails.env.production?
-        @aws_service.s3_client.head_object(bucket: S3_BUCKET, key: preview_key)
-        true
+        @aws_service.file_exists?(preview_key)
       else
-        !Dir.glob(LOCAL_STORAGE_PATH.join("#{@party.shortcode}_*.png").to_s).empty?
+        !Dir.glob(LOCAL_STORAGE_PATH.join("#{@party.shortcode}.png").to_s).empty?
       end
     rescue Aws::S3::Errors::NotFound
       false
@@ -387,22 +429,15 @@ module PreviewService
       signer = Aws::S3::Presigner.new(client: @aws_service.s3_client)
       signer.presigned_url(
         :get_object,
-        bucket: S3_BUCKET,
+        bucket: @aws_service.bucket,
         key: preview_key,
-        expires_in: 1.hour
+        expires_in: 1.hour.to_i
       )
     end
 
-    # Checks if a preview generation is currently in progress
-    #
-    # @return [Boolean] True if a preview is being generated, false otherwise
-    def generation_in_progress?
-      in_progress = Rails.cache.exist?("party_preview_generating_#{@party.id}")
-      Rails.logger.info("Cache key check for generation_in_progress: #{in_progress}")
-      in_progress
-    end
-
     # Marks the preview generation as in progress
+    #
+    # @return [void]
     def set_generation_in_progress
       Rails.cache.write(
         "party_preview_generating_#{@party.id}",
@@ -412,18 +447,15 @@ module PreviewService
     end
 
     # Clears the in-progress flag for preview generation
+    #
+    # @return [void]
     def clear_generation_in_progress
       Rails.cache.delete("party_preview_generating_#{@party.id}")
     end
 
-    # Schedules a background job to generate the preview
-    def schedule_generation
-      GeneratePartyPreviewJob
-        .set(wait: 30.seconds)
-        .perform_later(@party.id)
+    # Job Scheduling
 
-      @party.update!(preview_state: :queued)
-    end
+    # URL Generation
 
     # Provides a default preview URL based on party attributes
     #
@@ -436,24 +468,33 @@ module PreviewService
       end
     end
 
+    # Cleanup Operations
+
     # Deletes the preview from S3
+    #
+    # @return [void]
     def delete_s3_preview
       @aws_service.s3_client.delete_object(
-        bucket: S3_BUCKET,
+        bucket: @aws_service.bucket,
         key: preview_key
       )
     end
 
     # Deletes local preview files
+    #
+    # @return [void]
     def delete_local_previews
       Dir.glob(LOCAL_STORAGE_PATH.join("#{@party.shortcode}_*.png").to_s).each do |file|
         File.delete(file)
       end
     end
 
+    # Error Handling
+
     # Handles errors during preview generation
     #
     # @param error [Exception] The error that occurred
+    # @return [void]
     def handle_preview_generation_error(error)
       Rails.logger.error("Preview generation failed for party #{@party.id}")
       Rails.logger.error("Error: #{error.class} - #{error.message}")

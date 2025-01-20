@@ -22,6 +22,11 @@ dependsOn = ["setup"]
 
 [phases.build]
 dependsOn = ["install"]
+cmds = [
+    "mkdir -p public/assets/fonts",
+    "cp -r app/assets/fonts/* public/assets/fonts/",
+    "bundle exec rake assets:precompile"
+]
 
 [start]
 cmd = "bin/rails server"

@@ -44,11 +44,25 @@ module PreviewService
     end
 
     def add_text(image, party_name, job_icon: nil, user: nil, **options)
+      party_name = party_name.to_s.strip
+      party_name = 'Untitled' if party_name.empty?
+
       font_size = options.fetch(:size, '32')
       font_color = options.fetch(:color, 'white')
 
-      # Load custom font for username, for later use
-      @font_path = Rails.root.join('app', 'assets', 'fonts', 'Gk-Bd.otf').to_s
+      # Try multiple font locations
+      font_locations = [
+        Rails.root.join('app', 'assets', 'fonts', 'Gk-Bd.otf').to_s,
+        Rails.root.join('public', 'assets', 'fonts', 'Gk-Bd.otf').to_s
+      ]
+
+      @font_path = font_locations.find { |path| File.exist?(path) }
+
+      unless @font_path
+        Rails.logger.error("Font file not found in any location: #{font_locations.join(', ')}")
+        raise "Font file not found"
+      end
+
       Rails.logger.info("Using font path: #{@font_path}")
       unless File.exist?(@font_path)
         Rails.logger.error("Font file not found at: #{@font_path}")
@@ -94,16 +108,18 @@ module PreviewService
     end
 
     def draw_party_name(image, party_name, text_metrics, job_icon, font_color, font_size)
-      # Determine x position based on presence of job_icon
       text_x = job_icon ? PADDING + 64 + 16 : PADDING
       text_y = PADDING + text_metrics[:height]
 
       image.combine_options do |c|
-        c.font @font_path
+        c.gravity 'NorthWest'
         c.fill font_color
+        c.font @font_path
         c.pointsize font_size
-        c.draw "text #{text_x},#{text_y} '#{party_name}'"
+        # Escape quotes and use pango markup for better text handling
+        c.annotate "0x0+#{text_x}+#{text_y}", party_name.gsub('"', '\"')
       end
+
       image
     end
 
@@ -154,7 +170,13 @@ module PreviewService
       image
     end
 
-    def measure_text(text, font_size, font: 'Arial')
+    def measure_text(text, font_size, font: @font_path)
+      # Ensure text is not empty and is properly escaped
+      text = text.to_s.strip
+      text = 'Untitled' if text.empty?
+
+      # Escape text for shell command
+      escaped_text = text.gsub(/'/, "'\\\\''")
 
       # Create a temporary file for the text measurement
       temp_file = Tempfile.new(['text_measure', '.png'])
@@ -167,7 +189,7 @@ module PreviewService
           '-fill', 'black',
           '-font', font,
           '-pointsize', font_size.to_s,
-          "label:#{text}",
+          "label:'#{escaped_text}'", # Quote the text
           temp_file.path
         ]
 
@@ -181,15 +203,15 @@ module PreviewService
           height: image.height,
           width: image.width
         }
+      rescue => e
+        Rails.logger.error "Text measurement error: #{e.message}"
+        # Fallback dimensions
+        { height: 50, width: 200 }
       ensure
         # Close and unlink the temporary file
         temp_file.close
         temp_file.unlink
       end
-    rescue => e
-      Rails.logger.error "Text measurement error: #{e.message}"
-      # Fallback dimensions
-      { height: 50, width: 200 }
     end
   end
 end
