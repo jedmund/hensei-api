@@ -117,10 +117,41 @@ module Api
       end
 
       def preview
-        party = Party.find_by!(shortcode: params[:id])
+        coordinator = PreviewService::Coordinator.new(@party)
 
-        preview_service = PreviewService::Coordinator.new(party)
-        redirect_to preview_service.preview_url
+        if coordinator.generation_in_progress?
+          response.headers['Retry-After'] = '2'
+          default_path = Rails.root.join('public', 'default-previews', "#{@party.element || 'default'}.png")
+          send_file default_path,
+                    type: 'image/png',
+                    disposition: 'inline'
+          return
+        end
+
+        # Try to get the preview or send default
+        begin
+          if Rails.env.production?
+            # Stream S3 content instead of redirecting
+            s3_object = coordinator.get_s3_object
+            send_data s3_object.body.read,
+                      filename: "#{@party.shortcode}.png",
+                      type: 'image/png',
+                      disposition: 'inline'
+          else
+            # In development, serve from local filesystem
+            send_file coordinator.local_preview_path,
+                      type: 'image/png',
+                      disposition: 'inline'
+          end
+        rescue Aws::S3::Errors::NoSuchKey
+          # Schedule generation if needed
+          coordinator.schedule_generation unless coordinator.generation_in_progress?
+
+          # Return default preview while generating
+          send_file Rails.root.join('public', 'default-previews', "#{@party.element || 'default'}.png"),
+                    type: 'image/png',
+                    disposition: 'inline'
+        end
       end
 
       def regenerate_preview
