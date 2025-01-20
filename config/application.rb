@@ -1,42 +1,35 @@
 require_relative "boot"
 
 require "rails"
-# Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
-require "active_storage/engine"
-require "action_controller/railtie"
-# require "action_mailer/railtie"
-# require "action_mailbox/engine"
-require "action_text/engine"
-require "action_view/railtie"
-require "action_cable/engine"
-require "rails/test_unit/railtie"
 
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
+# Include only the Rails frameworks we need
+require "active_model/railtie" # Basic model functionality
+require "active_job/railtie" # Background job processing
+require "active_record/railtie" # Database support
+require "active_storage/engine" # File upload and storage
+require "action_controller/railtie" # API controller support
+require "action_text/engine" # Rich text handling
+require "action_view/railtie" # View rendering (needed for some API responses)
+require "rails/test_unit/railtie" # Testing framework
+
+# Load gems from Gemfile
 Bundler.require(*Rails.groups)
 
 module HenseiApi
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
+    # Use Rails 7.0 defaults
     config.load_defaults 7.0
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
-    
+    # Configure autoloading
     config.autoload_paths << Rails.root.join("lib")
     config.eager_load_paths << Rails.root.join("lib")
 
-    # Only loads a smaller set of middleware suitable for API only apps.
-    # Middleware like session, flash, cookies can be added back manually.
-    # Skip views, helpers and assets when generating a new resource.
+    # Configure asset handling for API mode
+    config.paths["app/assets"] ||= []
+    config.paths["app/assets"].unshift(Rails.root.join("app", "assets").to_s)
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
+
+    # API-only application configuration
     config.api_only = true
   end
 end
