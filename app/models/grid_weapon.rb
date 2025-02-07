@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class GridWeapon < ApplicationRecord
+  belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
+
   belongs_to :party,
              counter_cache: :weapons_count,
              inverse_of: :weapons
   validates_presence_of :party
-
-  has_one :object, class_name: 'Weapon', foreign_key: :id, primary_key: :weapon_id
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
@@ -31,10 +31,6 @@ class GridWeapon < ApplicationRecord
   # Helper methods
   def blueprint
     GridWeaponBlueprint
-  end
-
-  def weapon
-    Weapon.find(weapon_id)
   end
 
   def weapon_keys

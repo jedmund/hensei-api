@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GridCharacter < ApplicationRecord
-  has_one :object, class_name: 'Character', foreign_key: :id, primary_key: :character_id
+  belongs_to :character, foreign_key: :character_id, primary_key: :id
 
   belongs_to :awakening, optional: true
   belongs_to :party,
@@ -76,10 +76,6 @@ class GridCharacter < ApplicationRecord
     modifier = aetherial_mastery_modifiers[earring['modifier']].to_sym
     check_value({ "earring": { modifier => earring['strength'] } },
                 'aetherial_mastery')
-  end
-
-  def character
-    Character.find(character_id)
   end
 
   def blueprint
