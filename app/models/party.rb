@@ -120,9 +120,6 @@ class Party < ApplicationRecord
   PREVIEW_EXPIRY = 30.days
   MAX_RETRY_ATTEMPTS = 3
 
-  def is_favorited(user)
-    user.favorite_parties.include? self if user
-  end
   after_commit :schedule_preview_generation, if: :should_generate_preview?
 
   def is_remix
@@ -147,6 +144,14 @@ class Party < ApplicationRecord
 
   def private?
     visibility == 3
+  end
+
+  def is_favorited(user)
+    return false unless user
+
+    Rails.cache.fetch("party_#{id}_favorited_by_#{user.id}", expires_in: 1.hour) do
+      user.favorite_parties.include?(self)
+    end
   end
 
   def ready_for_preview?
