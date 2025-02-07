@@ -440,13 +440,21 @@ module Api
         end
       end
 
+      # == Filter Condition Helpers
+
+      # Generates user quality condition
+      # @return [String, nil] SQL condition for user quality
       def user_quality
-        return if request.params[:user_quality].blank? || request.params[:user_quality] == 'false'
+        return if params[:user_quality].blank? || params[:user_quality] == 'false'
 
         'user_id IS NOT NULL'
       end
 
+      # Generates name quality condition
+      # @return [String, nil] SQL condition for name quality
       def name_quality
+        return if params[:name_quality].blank? || params[:name_quality] == 'false'
+
         low_quality = [
           'Untitled',
           'Remix of Untitled',
@@ -461,16 +469,14 @@ module Api
           '無題のリミックスのリミックスのリミックスのリミックス',
           '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
         ]
-
         joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
-
-        return if request.params[:name_quality].blank? || request.params[:name_quality] == 'false'
-
         "name NOT IN (#{joined_names})"
       end
 
+      # Generates original party condition
+      # @return [String, nil] SQL condition for original parties
       def original
-        return if request.params['original'].blank? || request.params['original'] == 'false'
+        return if params['original'].blank? || params['original'] == 'false'
 
         'source_party_id IS NULL'
       end
