@@ -340,7 +340,12 @@ module Api
       # @return [ActiveRecord::Relation] constructed query
       def build_query(conditions, favorites: false)
         query = Party.distinct
-                     .joins(weapons: [:object], summons: [:object], characters: [:object])
+        # joins vs includes? -> reduces n+1s
+                     .preload(
+                       weapons: { object: %i[name_en name_jp granblue_id element] },
+                       summons: { object: %i[name_en name_jp granblue_id element] },
+                       characters: { object: %i[name_en name_jp granblue_id element] }
+                     )
                      .group('parties.id')
                      .where(conditions)
                      .where(privacy(favorites: favorites))
@@ -348,17 +353,9 @@ module Api
                      .where(user_quality)
                      .where(original)
 
-        query = query.joins(:favorites) if favorites
+        query = query.includes(:favorites) if favorites
 
         query
-      end
-
-      def includes(id)
-        "(\"#{id_to_table(id)}\".\"granblue_id\" = '#{id}')"
-      end
-
-      def excludes(id)
-        "(\"#{id_to_table(id)}\".\"granblue_id\" != '#{id}')"
       end
 
       # Applies the include conditions to query
@@ -366,20 +363,51 @@ module Api
       # @param includes [String] comma-separated list of IDs to include
       # @return [ActiveRecord::Relation] modified query
       def apply_includes(query, includes)
-        included = includes.split(',')
-        includes_condition = included.map { |id| includes(id) }.join(' AND ')
-        query.where(includes_condition)
+        return query unless includes.present?
+
+        includes.split(',').each do |id|
+          grid_table, object_table = grid_table_and_object_table(id)
+          next unless grid_table && object_table
+
+          # Build a subquery that joins the grid table to the object table.
+          condition = <<-SQL.squish
+      EXISTS (
+        SELECT 1
+        FROM #{grid_table}
+        JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id
+        WHERE #{object_table}.granblue_id = ?
+          AND #{grid_table}.party_id = parties.id
+      )
+          SQL
+
+          query = query.where(condition, id)
+        end
+
+        query
       end
 
-      def apply_excludes(query, _excludes)
-        characters_subquery = excluded_characters.select(1).arel
-        summons_subquery = excluded_summons.select(1).arel
-        weapons_subquery = excluded_weapons.select(1).arel
       # Applies the exclude conditions to query
       # @param query [ActiveRecord::Relation] base query
-      # @param excludes [String] comma-separated list of IDs to exclude
       # @return [ActiveRecord::Relation] modified query
-      def apply_excludes(query)
+      def apply_excludes(query, excludes)
+        return query unless excludes.present?
+
+        excludes.split(',').each do |id|
+          grid_table, object_table = grid_table_and_object_table(id)
+          next unless grid_table && object_table
+
+          condition = <<-SQL.squish
+      NOT EXISTS (
+        SELECT 1
+        FROM #{grid_table}
+        JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id
+        WHERE #{object_table}.granblue_id = ?
+          AND #{grid_table}.party_id = parties.id
+      )
+          SQL
+
+          query = query.where(condition, id)
+        end
 
         query.where(characters_subquery.exists.not)
              .where(weapons_subquery.exists.not)
@@ -524,17 +552,22 @@ module Api
         end
       end
 
-      def id_to_table(id)
+      # == Utility Methods
+
+      # Maps ID prefixes to table names
+      # @param id [String] item identifier
+      # @return [Array(String, String)] corresponding table name
+      def grid_table_and_object_table(id)
         case id[0]
         when '3'
-          table = 'characters'
+          %w[grid_characters characters]
         when '2'
-          table = 'summons'
+          %w[grid_summons summons]
         when '1'
-          table = 'weapons'
+          %w[grid_weapons weapons]
+        else
+          [nil, nil]
         end
-
-        table
       end
 
       # Generates name for remixed party
