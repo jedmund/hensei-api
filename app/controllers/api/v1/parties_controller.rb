@@ -92,7 +92,7 @@ module Api
       # Deletes a party if the user has permission
       # @return [void]
       def destroy
-        return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
+        render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
       end
 
       # == Extended Party Actions
