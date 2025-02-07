@@ -38,21 +38,25 @@ module Api
       # Creates a new party with optional user association
       # @return [void]
       def create
-        party = Party.new
+        # Build the party with the provided parameters and assign the user
+        party = Party.new(party_params)
         party.user = current_user if current_user
-        party.attributes = party_params if party_params
 
-        if party_params && party_params[:raid_id]
-          raid = Raid.find_by(id: party_params[:raid_id])
-          party.extra = raid.group.extra
+        # If a raid_id is given, look it up and assign the extra flag from its group.
+        if party_params && party_params[:raid_id].present?
+          if (raid = Raid.find_by(id: party_params[:raid_id]))
+            party.extra = raid.group.extra
+          end
         end
 
-        if party.save!
-          return render json: PartyBlueprint.render(party, view: :created, root: :party),
-                        status: :created
+        # Save and render the party, triggering preview generation if the party is ready
+        if party.save
+          party.schedule_preview_generation if party.ready_for_preview?
+          render json: PartyBlueprint.render(party, view: :created, root: :party),
+                 status: :created
+        else
+          render_validation_error_response(party)
         end
-
-        render_validation_error_response(@party)
       end
 
       # Shows a specific party if the user has permission to view it
