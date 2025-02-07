@@ -116,10 +116,6 @@ class Party < ApplicationRecord
     failed: 4
   }
 
-  # Preview expiry constants
-  PREVIEW_EXPIRY = 30.days
-  MAX_RETRY_ATTEMPTS = 3
-
   after_commit :schedule_preview_generation, if: :should_generate_preview?
 
   def is_remix
