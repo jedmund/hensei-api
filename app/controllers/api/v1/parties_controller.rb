@@ -2,22 +2,41 @@
 
 module Api
   module V1
+    # Controller for managing party-related operations in the API
+    # @api public
     class PartiesController < Api::V1::ApiController
       before_action :set_from_slug,
                     except: %w[create destroy update index favorites]
       before_action :set, only: %w[update destroy]
       before_action :authorize, only: %w[update destroy]
 
+      # == Constants
+
+      # Maximum number of characters allowed in a party
       MAX_CHARACTERS = 5
+
+      # Maximum number of summons allowed in a party
       MAX_SUMMONS = 8
+
+      # Maximum number of weapons allowed in a party
       MAX_WEAPONS = 13
 
+      # Default minimum number of characters required for filtering
       DEFAULT_MIN_CHARACTERS = 3
+
+      # Default minimum number of summons required for filtering
       DEFAULT_MIN_SUMMONS = 2
+
+      # Default minimum number of weapons required for filtering
       DEFAULT_MIN_WEAPONS = 5
 
+      # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
+      # == Primary CRUD Actions
+
+      # Creates a new party with optional user association
+      # @return [void]
       def create
         party = Party.new
         party.user = current_user if current_user
@@ -36,6 +55,8 @@ module Api
         render_validation_error_response(@party)
       end
 
+      # Shows a specific party if the user has permission to view it
+      # @return [void]
       def show
         # If a party is private, check that the user is the owner or an admin
         if (@party.private? && !current_user) || (@party.private? && not_owner && !admin_mode)
@@ -47,6 +68,8 @@ module Api
         render_not_found_response('project')
       end
 
+      # Updates an existing party's attributes
+      # @return [void]
       def update
         @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
 
@@ -62,10 +85,16 @@ module Api
         render_validation_error_response(@party)
       end
 
+      # Deletes a party if the user has permission
+      # @return [void]
       def destroy
         return render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
       end
 
+      # == Extended Party Actions
+
+      # Creates a copy of an existing party with attribution
+      # @return [void]
       def remix
         new_party = @party.amoeba_dup
         new_party.attributes = {
@@ -78,6 +107,8 @@ module Api
         new_party.local_id = party_params[:local_id] unless party_params.nil?
 
         if new_party.save
+          # Remixed parties should have content, so generate preview
+          new_party.schedule_preview_generation
           render json: PartyBlueprint.render(new_party, view: :created, root: :party),
                  status: :created
         else
@@ -85,6 +116,8 @@ module Api
         end
       end
 
+      # Lists parties based on various filter criteria
+      # @return [void]
       def index
         conditions = build_filters
 
@@ -116,6 +149,10 @@ module Api
         render_party_json(@parties, count, total_pages)
       end
 
+      # == Preview Management
+
+      # Serves the party's preview image
+      # @return [void]
       def preview
         coordinator = PreviewService::Coordinator.new(@party)
 
@@ -173,12 +210,18 @@ module Api
 
       private
 
+      # == Authorization Helpers
+
+      # Checks if the current user is authorized to modify the party
+      # @return [void]
       def authorize
         return unless not_owner && !admin_mode
 
         render_unauthorized_response
       end
 
+      # Determines if the current user is not the owner of the party
+      # @return [Boolean]
       def not_owner
         if @party.user
           # party has a user and current_user does not match
@@ -220,28 +263,52 @@ module Api
         }.delete_if { |_k, v| v.nil? }
       end
 
+      # == Parameter Processing Helpers
+
+      # Converts start time parameter for filtering
+      # @param recency [String, nil] time period in seconds
+      # @return [DateTime, nil] calculated start time
       def build_start_time(recency)
         return unless recency.present?
 
         (DateTime.current - recency.to_i.seconds).to_datetime.beginning_of_day
       end
 
+      # Builds count parameter with default fallback
+      # @param value [String, nil] count value
+      # @param default [Integer] default value
+      # @return [Integer] processed count
       def build_count(value, default)
         value.blank? ? default : value.to_i
       end
 
+      # Processes maximum clear time parameter
+      # @param value [String, nil] clear time value in seconds
+      # @return [Integer] processed maximum clear time
       def build_max_clear_time(value)
         value.blank? ? DEFAULT_MAX_CLEAR_TIME : value.to_i
       end
 
+      # Processes element parameter
+      # @param element [String, nil] element identifier
+      # @return [Integer, nil] processed element value
       def build_element(element)
         element.to_i unless element.blank?
       end
 
+      # Processes boolean option parameters
+      # @param value [String, nil] option value
+      # @return [Integer, nil] processed option value
       def build_option(value)
         value.to_i unless value.blank? || value.to_i == -1
       end
 
+      # == Query Building Helpers
+
+      # Constructs the main query for party filtering
+      # @param conditions [Hash] filter conditions
+      # @param favorites [Boolean] whether to include favorites
+      # @return [ActiveRecord::Relation] constructed query
       def build_query(conditions, favorites: false)
         query = Party.distinct
                      .joins(weapons: [:object], summons: [:object], characters: [:object])
@@ -265,6 +332,10 @@ module Api
         "(\"#{id_to_table(id)}\".\"granblue_id\" != '#{id}')"
       end
 
+      # Applies the include conditions to query
+      # @param query [ActiveRecord::Relation] base query
+      # @param includes [String] comma-separated list of IDs to include
+      # @return [ActiveRecord::Relation] modified query
       def apply_includes(query, includes)
         included = includes.split(',')
         includes_condition = included.map { |id| includes(id) }.join(' AND ')
@@ -275,12 +346,21 @@ module Api
         characters_subquery = excluded_characters.select(1).arel
         summons_subquery = excluded_summons.select(1).arel
         weapons_subquery = excluded_weapons.select(1).arel
+      # Applies the exclude conditions to query
+      # @param query [ActiveRecord::Relation] base query
+      # @param excludes [String] comma-separated list of IDs to exclude
+      # @return [ActiveRecord::Relation] modified query
+      def apply_excludes(query)
 
         query.where(characters_subquery.exists.not)
              .where(weapons_subquery.exists.not)
              .where(summons_subquery.exists.not)
       end
 
+      # == Query Filtering Helpers
+
+      # Generates subquery for excluded characters
+      # @return [ActiveRecord::Relation, nil] exclusion query
       def excluded_characters
         return unless params[:excludes]
 
@@ -308,16 +388,27 @@ module Api
                   .where('grid_weapons.party_id = parties.id')
       end
 
+      # == Query Processing
+
+      # Fetches and processes parties query with pagination
+      # @param query [ActiveRecord::Relation] base query
+      # @return [ActiveRecord::Relation] processed and paginated parties
       def fetch_parties(query)
         query.order(created_at: :desc)
              .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
              .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
       end
 
+      # Calculates total count for pagination
+      # @param query [ActiveRecord::Relation] current query
+      # @return [Integer] total count
       def calculate_count(query)
         query.count.values.sum
       end
 
+      # Calculates total pages for pagination
+      # @param count [Integer] total record count
+      # @return [Integer] total pages
       def calculate_total_pages(count)
         count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
       end
@@ -391,6 +482,9 @@ module Api
         table
       end
 
+      # Generates name for remixed party
+      # @param name [String] original party name
+      # @return [String] generated remix name
       def remixed_name(name)
         blanked_name = {
           en: name.blank? ? 'Untitled team' : name,
@@ -409,6 +503,10 @@ module Api
         end
       end
 
+      # == Party Loading
+
+      # Loads party by shortcode for routes using :id
+      # @return [void]
       def set_from_slug
         @party = Party.where('shortcode = ?', params[:id]).first
         if @party
@@ -418,10 +516,16 @@ module Api
         end
       end
 
+      # Loads party by ID for update/destroy actions
+      # @return [void]
       def set
         @party = Party.where('id = ?', params[:id]).first
       end
 
+      # == Parameter Sanitization
+
+      # Sanitizes and permits party parameters
+      # @return [Hash, nil] permitted parameters
       def party_params
         return unless params[:party].present?
 
