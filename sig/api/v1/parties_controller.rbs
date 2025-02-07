@@ -1,0 +1,109 @@
+module Api
+  module V1
+    class PartiesController < Api::V1::ApiController
+      @parties: ActiveRecord::Relation[Party]
+
+      MAX_CHARACTERS: Integer
+      MAX_SUMMONS: Integer
+      MAX_WEAPONS: Integer
+      DEFAULT_MIN_CHARACTERS: Integer
+      DEFAULT_MIN_SUMMONS: Integer
+      DEFAULT_MIN_WEAPONS: Integer
+      DEFAULT_MAX_CLEAR_TIME: Integer
+
+      def create: () -> void
+
+      def show: () -> void
+
+      def update: () -> void
+
+      def destroy: () -> void
+
+      def remix: () -> void
+
+      def index: () -> void
+
+      def favorites: () -> void
+
+      def preview: () -> void
+
+      def preview_status: () -> void
+
+      def regenerate_preview: () -> void
+
+      private
+
+      def authorize: () -> void
+
+      def not_owner: () -> bool
+
+      def params_cache_key: () -> String
+
+      def schedule_preview_generation: () -> void
+
+      def build_filters: () -> Hash[Symbol, untyped]
+
+      def build_combined_conditions: () -> Hash[Symbol, untyped]
+
+      def paginate_and_process: (ActiveRecord::Relation[Party]) -> ActiveRecord::Relation[Party]
+
+      def build_start_time: (String?) -> DateTime?
+
+      def build_count: (String?, Integer) -> Integer
+
+      def build_max_clear_time: (String?) -> Integer
+
+      def build_element: (String?) -> Integer?
+
+      def build_option: (String?) -> Integer?
+
+      def build_query: (Hash[Symbol, untyped], bool) -> ActiveRecord::Relation[Party]
+
+      def includes: (String) -> String
+
+      def excludes: (String) -> String
+
+      def apply_includes: (ActiveRecord::Relation[Party], ActionController::Parameters) -> ActiveRecord::Relation[Party]
+
+      def apply_excludes: (ActiveRecord::Relation[Party], ActionController::Parameters) -> ActiveRecord::Relation[Party]
+
+      def excluded_characters: () -> ActiveRecord::Relation[GridCharacter]?
+
+      def excluded_summons: () -> ActiveRecord::Relation[GridSummon]?
+
+      def excluded_weapons: () -> ActiveRecord::Relation[GridWeapon]?
+
+      def fetch_parties: (ActiveRecord::Relation[Party]) -> ActiveRecord::Relation[Party]
+
+      def calculate_count: (ActiveRecord::Relation[Party]) -> Integer
+
+      def calculate_total_pages: (Integer) -> Integer
+
+      def paginate_parties: (
+          ActiveRecord::Relation[Party],
+          ?page: Integer?,
+          ?per_page: Integer
+        ) -> ActiveRecord::Relation[Party]
+
+      def render_party_json: (ActiveRecord::Relation[Party]) -> void
+
+      def privacy: (?favorites: bool) -> String?
+
+      def user_quality: () -> String?
+
+      def name_quality: () -> String?
+
+      def original: () -> String?
+
+      def id_to_table: (String) -> String
+
+      def remixed_name: (String) -> String
+
+      def set_from_slug: () -> void
+
+      def set: () -> void
+
+      def party_params: () -> Hash[Symbol, untyped]?
+    end
+  end
+end
