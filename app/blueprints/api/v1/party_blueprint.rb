@@ -94,7 +94,7 @@ module Api
         # Re-added remixes association
         association :remixes,
                     blueprint: PartyBlueprint,
-                    view: :collection
+                    view: :preview
       end
 
       # Job-related views
