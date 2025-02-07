@@ -60,18 +60,21 @@ class Party < ApplicationRecord
   has_many :characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
+           counter_cache: true,
            dependent: :destroy,
            inverse_of: :party
 
   has_many :weapons,
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
+           counter_cache: true,
            dependent: :destroy,
            inverse_of: :party
 
   has_many :summons,
            foreign_key: 'party_id',
            class_name: 'GridSummon',
+           counter_cache: true,
            dependent: :destroy,
            inverse_of: :party
 
