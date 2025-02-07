@@ -123,41 +123,9 @@ module Api
       # Lists parties based on various filter criteria
       # @return [void]
       def index
-        query = Party.includes(
-          { raid: :group },
-          :job,
-          :user,
-          :skill0,
-          :skill1,
-          :skill2,
-          :skill3,
-          :guidebook1,
-          :guidebook2,
-          :guidebook3,
-          { characters: :character },
-          { weapons: :weapon },
-          { summons: :summon }
-        ).order(visibility: :asc, created_at: :desc)
-
-        query = apply_filters(query)
-        query = apply_privacy_settings(query)
-        query = apply_includes(query, params[:includes]) if params[:includes].present?
-        query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
-
-        @parties = query.paginate(
-          page: params[:page],
-          per_page: COLLECTION_PER_PAGE
-        )
-
-        render json: PartyBlueprint.render(@parties,
-                                           view: :preview,
-                                           root: :results,
-                                           meta: {
-                                             count: @parties.total_entries,
-                                             total_pages: @parties.total_pages,
-                                             per_page: COLLECTION_PER_PAGE
-                                           },
-                                           current_user: current_user)
+        query = build_parties_query
+        @parties = query.paginate(page: params[:page], per_page: COLLECTION_PER_PAGE)
+        render_paginated_parties(@parties)
       end
 
       # Lists parties favorited by the current user
@@ -165,51 +133,11 @@ module Api
       def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
-        # Start with base query including relationships and filters
-        query = Party.includes(
-          { raid: :group },
-          :job,
-          :user,
-          :skill0,
-          :skill1,
-          :skill2,
-          :skill3,
-          :guidebook1,
-          :guidebook2,
-          :guidebook3,
-          { characters: :character },
-          { weapons: :weapon },
-          { summons: :summon }
-        ).joins(:favorites)
-                     .where(favorites: { user_id: current_user.id }) # Ensure only favorited parties
-                     .order(created_at: :desc) # Show newest first
-                     .distinct # Avoid duplicates
-
-        # Apply improved filtering logic
-        query = apply_filters(query)
-        query = apply_privacy_settings(query)
-        query = apply_includes(query, params[:includes]) if params[:includes].present?
-        query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
-
-        # Paginate results
-        @parties = query.paginate(
-          page: params[:page],
-          per_page: COLLECTION_PER_PAGE
-        )
-
-        # Mark all as favorited for the current user
+        query = build_parties_query(favorites: true)
+        @parties = query.paginate(page: params[:page], per_page: COLLECTION_PER_PAGE)
+        # Mark each party as favorited (if needed)
         @parties.each { |party| party.favorited = true }
-
-        render json: PartyBlueprint.render(
-          parties,
-          view: :preview,
-          root: :results,
-          meta: {
-            count: parties.total_entries,
-            total_pages: parties.total_pages,
-            per_page: COLLECTION_PER_PAGE
-          }
-        )
+        render_paginated_parties(@parties)
       end
 
       # == Preview Management
@@ -285,6 +213,55 @@ module Api
       end
 
       private
+
+      # Builds the base query for parties, optionally including favorites-specific conditions.
+      def build_parties_query(favorites: false)
+        query = Party.includes(
+          { raid: :group },
+          :job,
+          :user,
+          :skill0,
+          :skill1,
+          :skill2,
+          :skill3,
+          :guidebook1,
+          :guidebook2,
+          :guidebook3,
+          { characters: :character },
+          { weapons: :weapon },
+          { summons: :summon }
+        )
+        # Add favorites join and condition if favorites is true.
+        if favorites
+          query = query.joins(:favorites)
+                       .where(favorites: { user_id: current_user.id })
+                       .distinct
+          query = query.order(created_at: :desc)
+        else
+          query = query.order(visibility: :asc, created_at: :desc)
+        end
+
+        query = apply_filters(query)
+        query = apply_privacy_settings(query)
+        query = apply_includes(query, params[:includes]) if params[:includes].present?
+        query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
+        query
+      end
+
+      # Renders the paginated parties with blueprint and meta data.
+      def render_paginated_parties(parties)
+        render json: PartyBlueprint.render(
+          parties,
+          view: :preview,
+          root: :results,
+          meta: {
+            count: parties.total_entries,
+            total_pages: parties.total_pages,
+            per_page: COLLECTION_PER_PAGE
+          },
+          current_user: current_user
+        )
+      end
 
       # == Authorization Helpers
 
