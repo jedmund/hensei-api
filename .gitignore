@@ -49,3 +49,6 @@ config/application.yml
 .vscode/*
 
 /config/credentials/production.key
+
+# Ignore AI Codebase-generated files
+codebase.md
