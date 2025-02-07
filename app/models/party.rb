@@ -116,11 +116,14 @@ class Party < ApplicationRecord
     failed: 4
   }
 
-  after_commit :schedule_preview_regeneration, if: :preview_relevant_changes?
+  # Preview expiry constants
+  PREVIEW_EXPIRY = 30.days
+  MAX_RETRY_ATTEMPTS = 3
 
   def is_favorited(user)
     user.favorite_parties.include? self if user
   end
+  after_commit :schedule_preview_generation, if: :should_generate_preview?
 
   def is_remix
     !source_party.nil?
@@ -144,6 +147,50 @@ class Party < ApplicationRecord
 
   def private?
     visibility == 3
+  end
+
+  def ready_for_preview?
+    return false if weapons_count < 1 # At least 1 weapon
+    return false if characters_count < 1 # At least 1 character
+    return false if summons_count < 1 # At least 1 summon
+    true
+  end
+
+  def should_generate_preview?
+    return false unless ready_for_preview?
+
+    # Always generate if no preview exists
+    return true if preview_state.nil? || preview_state == 'pending'
+
+    # Generate if failed and enough time has passed for conditions to change
+    return true if preview_state == 'failed' && preview_generated_at < 5.minutes.ago
+
+    # Generate if preview is old
+    return true if preview_state == 'generated' && preview_expired?
+
+    # Only regenerate on content changes if the last generation was > 5 minutes ago
+    # This prevents rapid regeneration during party building
+    if preview_content_changed?
+      return true if preview_generated_at.nil? || preview_generated_at < 5.minutes.ago
+    end
+
+    false
+  end
+
+  def preview_expired?
+    preview_generated_at.nil? ||
+      preview_generated_at < PreviewService::Coordinator::PREVIEW_EXPIRY.ago
+  end
+
+  def preview_content_changed?
+    saved_changes.keys.any? { |attr| preview_relevant_attributes.include?(attr) }
+  end
+
+  def schedule_preview_generation
+    return if preview_state == 'queued' || preview_state == 'in_progress'
+
+    update_column(:preview_state, 'queued')
+    GeneratePartyPreviewJob.perform_later(id)
   end
 
   private
@@ -191,17 +238,10 @@ class Party < ApplicationRecord
     errors.add(:guidebooks, 'must be unique')
   end
 
-  def preview_relevant_changes?
-    return false if preview_state == 'queued'
-
-    (saved_changes.keys & %w[name job_id element weapons_count characters_count summons_count]).any?
-  end
-
-  def schedule_preview_regeneration
-    # Cancel any pending jobs
-    GeneratePartyPreviewJob.cancel_scheduled_jobs(party_id: id)
-
-    # Mark as pending
-    update_column(:preview_state, :pending)
+  def preview_relevant_attributes
+    %w[
+      name job_id element weapons_count characters_count summons_count
+      full_auto auto_guard charge_attack clear_time
+    ]
   end
 end
