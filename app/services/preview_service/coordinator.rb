@@ -8,6 +8,9 @@ module PreviewService
     GENERATION_TIMEOUT = 5.minutes
     LOCAL_STORAGE_PATH = Rails.root.join('storage', 'party-previews')
 
+    PREVIEW_DEBOUNCE_PERIOD = 5.minutes
+    PREVIEW_EXPIRY = 30.days
+
     # Public Interface - Core Operations
 
     # Initialize the party preview service
@@ -40,59 +43,59 @@ module PreviewService
       return false unless should_generate?
 
       begin
-        Rails.logger.info("Starting preview generation for party #{@party.id}")
+        Rails.logger.info("🖼️ Starting preview generation for party #{@party.id}")
 
-        # Update state to in_progress
+        Rails.logger.info("🖼️ Updating party state to in_progress")
         @party.update!(preview_state: :in_progress)
         set_generation_in_progress
 
-        Rails.logger.info("Checking ImageMagick installation...")
+        Rails.logger.info("🖼️ Checking ImageMagick installation...")
         begin
           version = `convert -version`
-          Rails.logger.info("ImageMagick version: #{version}")
+          Rails.logger.info("🖼️ ImageMagick version: #{version}")
         rescue => e
-          Rails.logger.error("Failed to get ImageMagick version: #{e.message}")
+          Rails.logger.error("🖼️ Failed to get ImageMagick version: #{e.message}")
         end
 
-        Rails.logger.info("Creating preview image...")
+        Rails.logger.info("🖼️ Creating preview image...")
         begin
           image = create_preview_image
-          Rails.logger.info("Preview image created successfully")
+          Rails.logger.info("🖼️ Preview image created successfully")
         rescue => e
-          Rails.logger.error("Failed to create preview image: #{e.class} - #{e.message}")
+          Rails.logger.error("🖼️ Failed to create preview image: #{e.class} - #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
           raise e
         end
 
-        Rails.logger.info("Saving preview...")
+        Rails.logger.info("🖼️ Saving preview...")
         begin
           save_preview(image)
-          Rails.logger.info("Preview saved successfully")
+          Rails.logger.info("🖼️ Preview saved successfully")
         rescue => e
-          Rails.logger.error("Failed to save preview: #{e.class} - #{e.message}")
+          Rails.logger.error("🖼️ Failed to save preview: #{e.class} - #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
           raise e
         end
 
-        Rails.logger.info("Updating party state...")
+        Rails.logger.info("🖼️ Updating party state...")
         @party.update!(
           preview_state: :generated,
           preview_generated_at: Time.current
         )
-        Rails.logger.info("Party state updated successfully")
+        Rails.logger.info("🖼️ Party state updated successfully")
 
         true
       rescue => e
-        Rails.logger.error("Preview generation failed: #{e.class} - #{e.message}")
-        Rails.logger.error("Stack trace:")
+        Rails.logger.error("🖼️ Preview generation failed: #{e.class} - #{e.message}")
+        Rails.logger.error("🖼️ Stack trace:")
         Rails.logger.error(e.backtrace.join("\n"))
         handle_preview_generation_error(e)
         false
       ensure
-        Rails.logger.info("Cleaning up resources...")
+        Rails.logger.info("🖼️ Cleaning up resources...")
         @image_fetcher.cleanup
         clear_generation_in_progress
-        Rails.logger.info("Cleanup completed")
+        Rails.logger.info("🖼️ Cleanup completed")
       end
     end
 
@@ -128,32 +131,48 @@ module PreviewService
     #
     # @return [Boolean] True if a new preview should be generated, false otherwise
     def should_generate?
-      Rails.logger.info("Checking should_generate? conditions")
+      Rails.logger.info("🖼️ Checking should_generate? conditions")
 
-      if generation_in_progress?
-        Rails.logger.info("Generation already in progress, returning false")
+      unless @party.ready_for_preview?
+        Rails.logger.info("🖼️ Party not ready for preview (insufficient content)")
         return false
       end
 
-      Rails.logger.info("Preview state: #{@party.preview_state}")
-      # Add 'queued' to the list of valid states for generation
-      if @party.preview_state.in?(['pending', 'failed', 'queued'])
-        Rails.logger.info("Preview state is #{@party.preview_state}, returning true")
-        return true
+      if generation_in_progress?
+        Rails.logger.info("🖼️ Generation already in progress, returning false")
+        return false
       end
 
-      if @party.preview_state == 'generated'
-        if @party.preview_generated_at < PREVIEW_EXPIRY.ago
-          Rails.logger.info("Preview is older than expiry time, returning true")
-          return true
-        else
-          Rails.logger.info("Preview is recent, returning false")
-          return false
-        end
-      end
+      Rails.logger.info("🖼️ Preview state: #{@party.preview_state}")
 
-      Rails.logger.info("No conditions met, returning false")
-      false
+      case @party.preview_state
+      when 'pending'
+        Rails.logger.info("🖼️ State is pending, will generate")
+        true
+      when 'queued', 'in_progress'
+        Rails.logger.info("🖼️ State is #{@party.preview_state}, skipping generation")
+        false
+      when 'failed'
+        should_retry = @party.preview_generated_at.nil? ||
+          @party.preview_generated_at < PREVIEW_DEBOUNCE_PERIOD.ago
+        Rails.logger.info("🖼️ Failed state, should retry: #{should_retry}")
+        should_retry
+      when 'generated'
+        expired = @party.preview_expired?
+        changed = @party.preview_content_changed?
+        debounced = @party.preview_generated_at.nil? ||
+          @party.preview_generated_at < PREVIEW_DEBOUNCE_PERIOD.ago
+
+        should_regenerate = expired || (changed && debounced)
+
+        Rails.logger.info("🖼️ Generated state check - expired: #{expired}, content changed: #{changed}, debounced: #{debounced}")
+        Rails.logger.info("🖼️ Should regenerate: #{should_regenerate}")
+
+        should_regenerate
+      else
+        Rails.logger.info("🖼️ Unknown state, will generate")
+        true
+      end
     end
 
     # Checks if a preview generation is currently in progress
@@ -480,6 +499,12 @@ module PreviewService
       )
     end
 
+    def self.cleanup_stalled_jobs
+      Party.where(preview_state: :in_progress)
+           .where('updated_at < ?', 10.minutes.ago)
+           .update_all(preview_state: :pending)
+    end
+
     # Deletes local preview files
     #
     # @return [void]
@@ -498,8 +523,12 @@ module PreviewService
     def handle_preview_generation_error(error)
       Rails.logger.error("Preview generation failed for party #{@party.id}")
       Rails.logger.error("Error: #{error.class} - #{error.message}")
-      Rails.logger.error("Backtrace:\n#{error.backtrace.join("\n")}")
-      @party.update!(preview_state: :failed)
+      Rails.logger.error(error.backtrace.join("\n"))
+
+      @party.update_columns(
+        preview_state: 'failed',
+        preview_generated_at: Time.current
+      )
     end
   end
 end
