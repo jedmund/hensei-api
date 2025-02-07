@@ -10,12 +10,12 @@ module Api
       end
 
       view :preview do
-        association :character, blueprint: CharacterBlueprint
+        association :character, name: :object, blueprint: CharacterBlueprint
       end
 
       view :nested do
         include_view :mastery_bonuses
-        association :character, blueprint: CharacterBlueprint, view: :full
+        association :character, name: :object, blueprint: CharacterBlueprint, view: :full
       end
 
       view :uncap do
