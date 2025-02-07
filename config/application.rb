@@ -29,6 +29,11 @@ module HenseiApi
     config.paths["app/assets"].unshift(Rails.root.join("app", "assets").to_s)
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
 
+    # Enable query logging
+    config.active_record.query_log_tags_enabled = true
+    config.active_record.query_log_tags = [:application, :controller, :action, :job]
+    config.active_record.cache_query_log_tags = true
+
     # API-only application configuration
     config.api_only = true
   end
