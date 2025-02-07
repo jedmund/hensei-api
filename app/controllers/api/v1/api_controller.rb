@@ -28,6 +28,17 @@ module Api
         render_error(e)
       end
 
+      unless Rails.env.production?
+        around_action :n_plus_one_detection
+
+        def n_plus_one_detection
+          Prosopite.scan
+          yield
+        ensure
+          Prosopite.finish
+        end
+      end
+
       ##### Hooks
       before_action :current_user
       before_action :default_content_type
@@ -104,9 +115,9 @@ module Api
 
       def render_not_found_response(object)
         render json: ErrorBlueprint.render(nil, error: {
-                                             message: "#{object.capitalize} could not be found",
-                                             code: 'not_found'
-                                           }), status: :not_found
+          message: "#{object.capitalize} could not be found",
+          code: 'not_found'
+        }), status: :not_found
       end
 
       def render_unauthorized_response
