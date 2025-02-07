@@ -160,21 +160,56 @@ module Api
                                            current_user: current_user)
       end
 
+      # Lists parties favorited by the current user
+      # @return [void]
       def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
-        conditions = build_filters
-        conditions[:favorites] = { user_id: current_user.id }
+        # Start with base query including relationships and filters
+        query = Party.includes(
+          { raid: :group },
+          :job,
+          :user,
+          :skill0,
+          :skill1,
+          :skill2,
+          :skill3,
+          :guidebook1,
+          :guidebook2,
+          :guidebook3,
+          { characters: :character },
+          { weapons: :weapon },
+          { summons: :summon }
+        ).joins(:favorites)
+                     .where(favorites: { user_id: current_user.id }) # Ensure only favorited parties
+                     .order(created_at: :desc) # Show newest first
+                     .distinct # Avoid duplicates
 
-        query = build_query(conditions, favorites: true)
+        # Apply improved filtering logic
+        query = apply_filters(query)
+        query = apply_privacy_settings(query)
         query = apply_includes(query, params[:includes]) if params[:includes].present?
         query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
 
-        @parties = fetch_parties(query)
-        count = calculate_count(query)
-        total_pages = calculate_total_pages(count)
+        # Paginate results
+        @parties = query.paginate(
+          page: params[:page],
+          per_page: COLLECTION_PER_PAGE
+        )
 
-        render_party_json(@parties, count, total_pages)
+        # Mark all as favorited for the current user
+        @parties.each { |party| party.favorited = true }
+
+        render json: PartyBlueprint.render(
+          parties,
+          view: :preview,
+          root: :results,
+          meta: {
+            count: parties.total_entries,
+            total_pages: parties.total_pages,
+            per_page: COLLECTION_PER_PAGE
+          }
+        )
       end
 
       # == Preview Management
@@ -219,6 +254,19 @@ module Api
         end
       end
 
+      # Returns the current status of a party's preview
+      # @return [void]
+      def preview_status
+        party = Party.find_by!(shortcode: params[:id])
+        render json: {
+          state: party.preview_state,
+          generated_at: party.preview_generated_at,
+          ready_for_preview: party.ready_for_preview?
+        }
+      end
+
+      # Forces regeneration of a party's preview image
+      # @return [void]
       def regenerate_preview
         party = Party.find_by!(shortcode: params[:id])
 
@@ -268,28 +316,83 @@ module Api
         false
       end
 
-      def build_filters
-        params = request.params
       # == Preview Generation
 
-        start_time = build_start_time(params['recency'])
+      # Schedules a background job to generate the party preview
+      # @return [void]
+      def schedule_preview_generation
+        GeneratePartyPreviewJob.perform_later(id)
+      end
 
-        min_characters_count = build_count(params['characters_count'], DEFAULT_MIN_CHARACTERS)
-        min_summons_count = build_count(params['summons_count'], DEFAULT_MIN_SUMMONS)
-        min_weapons_count = build_count(params['weapons_count'], DEFAULT_MIN_WEAPONS)
-        max_clear_time = build_max_clear_time(params['max_clear_time'])
+      # == Query Building Helpers
 
+      def apply_filters(query)
+        conditions = build_filters
+
+        # Use the compound indexes effectively
+        query = query.where(conditions)
+                     .where(name_quality) if params[:name_quality].present?
+
+        # Use the counters index
+        query = query.where(
+          weapons_count: build_count(params[:weapons_count], DEFAULT_MIN_WEAPONS)..MAX_WEAPONS,
+          characters_count: build_count(params[:characters_count], DEFAULT_MIN_CHARACTERS)..MAX_CHARACTERS,
+          summons_count: build_count(params[:summons_count], DEFAULT_MIN_SUMMONS)..MAX_SUMMONS
+        )
+
+        query
+      end
+
+      def apply_privacy_settings(query)
+        return query if admin_mode
+
+        if params[:favorites].present?
+          query.where('visibility < 3')
+        else
+          query.where(visibility: 1)
+        end
+      end
+
+      # Builds filter conditions from request parameters
+      # @return [Hash] conditions for the query
+      def build_filters
         {
-          element: build_element(params['element']),
-          raid: params['raid'],
-          created_at: params['recency'].present? ? start_time..DateTime.current : nil,
-          full_auto: build_option(params['full_auto']),
-          auto_guard: build_option(params['auto_guard']),
-          charge_attack: build_option(params['charge_attack']),
-          characters_count: min_characters_count..MAX_CHARACTERS,
-          summons_count: min_summons_count..MAX_SUMMONS,
-          weapons_count: min_weapons_count..MAX_WEAPONS
-        }.delete_if { |_k, v| v.nil? }
+          element: params[:element].present? ? params[:element].to_i : nil,
+          raid_id: params[:raid],
+          created_at: build_date_range,
+          full_auto: build_option(params[:full_auto]),
+          auto_guard: build_option(params[:auto_guard]),
+          charge_attack: build_option(params[:charge_attack]),
+          characters_count: build_count(params[:characters_count], DEFAULT_MIN_CHARACTERS)..MAX_CHARACTERS,
+          summons_count: build_count(params[:summons_count], DEFAULT_MIN_SUMMONS)..MAX_SUMMONS,
+          weapons_count: build_count(params[:weapons_count], DEFAULT_MIN_WEAPONS)..MAX_WEAPONS
+        }.compact
+      end
+
+      def build_date_range
+        return nil unless params[:recency].present?
+
+        start_time = DateTime.current - params[:recency].to_i.seconds
+        start_time.beginning_of_day..DateTime.current
+      end
+
+      # Paginates the given query of parties and marks favorites for the current user
+      #
+      # @param query [ActiveRecord::Relation] The base query containing parties
+      # @param page [Integer, nil] The page number for pagination (defaults to `params[:page]`)
+      # @param per_page [Integer] The number of records per page (defaults to `COLLECTION_PER_PAGE`)
+      # @return [ActiveRecord::Relation] The paginated and processed list of parties
+      #
+      # This method orders parties by creation date in descending order, applies pagination,
+      # and marks each party as favorited if the current user has favorited it.
+      def paginate_parties(query, page: nil, per_page: COLLECTION_PER_PAGE)
+        query.order(created_at: :desc)
+             .paginate(page: page || params[:page], per_page: per_page)
+             .tap do |parties|
+          if current_user
+            parties.each { |party| party.favorited = party.is_favorited(current_user) }
+          end
+        end
       end
 
       # == Parameter Processing Helpers
@@ -409,9 +512,7 @@ module Api
           query = query.where(condition, id)
         end
 
-        query.where(characters_subquery.exists.not)
-             .where(weapons_subquery.exists.not)
-             .where(summons_subquery.exists.not)
+        query
       end
 
       # == Query Filtering Helpers
@@ -456,7 +557,7 @@ module Api
       # @return [ActiveRecord::Relation] processed and paginated parties
       def fetch_parties(query)
         query.order(created_at: :desc)
-             .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
+             .paginate(page: params[:page], per_page: COLLECTION_PER_PAGE)
              .each { |party| party.favorited = current_user ? party.is_favorited(current_user) : false }
       end
 
@@ -472,28 +573,24 @@ module Api
       # @param count [Integer] total record count
       # @return [Integer] total pages
       def calculate_total_pages(count)
-        count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
+        # count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1
+        (count.to_f / COLLECTION_PER_PAGE).ceil
       end
 
-      def render_party_json(parties, count, total_pages)
-        render json: PartyBlueprint.render(parties,
-                                           view: :collection,
-                                           root: :results,
-                                           meta: {
-                                             count: count,
-                                             total_pages: total_pages,
-                                             per_page: COLLECTION_PER_PAGE
-                                           })
+      # == Include/Exclude Processing
+
+      # Generates SQL for including specific items
+      # @param id [String] item identifier
+      # @return [String] SQL condition
+      def includes(id)
+        "(\"#{id_to_table(id)}\".\"granblue_id\" = '#{id}')"
       end
 
-      def privacy(favorites: false)
-        return if admin_mode
-
-        if favorites
-          'visibility < 3'
-        else
-          'visibility = 1'
-        end
+      # Generates SQL for excluding specific items
+      # @param id [String] item identifier
+      # @return [String] SQL condition
+      def excludes(id)
+        "(\"#{id_to_table(id)}\".\"granblue_id\" != '#{id}')"
       end
 
       # == Filter Condition Helpers
