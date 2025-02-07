@@ -76,4 +76,8 @@ Rails.application.configure do
   # This makes it easy to tag log lines with debug information like subdomain and request id -
   # both very helpful in debugging multi-user production applications.
   config.log_tags = [:request_id]
+
+  config.after_initialize do
+    Prosopite.rails_logger = true
+  end
 end
