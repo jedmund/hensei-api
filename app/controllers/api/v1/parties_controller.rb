@@ -123,17 +123,41 @@ module Api
       # Lists parties based on various filter criteria
       # @return [void]
       def index
-        conditions = build_filters
+        query = Party.includes(
+          { raid: :group },
+          :job,
+          :user,
+          :skill0,
+          :skill1,
+          :skill2,
+          :skill3,
+          :guidebook1,
+          :guidebook2,
+          :guidebook3,
+          { characters: :character },
+          { weapons: :weapon },
+          { summons: :summon }
+        ).order(visibility: :asc, created_at: :desc)
 
-        query = build_query(conditions)
+        query = apply_filters(query)
+        query = apply_privacy_settings(query)
         query = apply_includes(query, params[:includes]) if params[:includes].present?
         query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
 
-        @parties = fetch_parties(query)
-        count = calculate_count(query)
-        total_pages = calculate_total_pages(count)
+        @parties = query.paginate(
+          page: params[:page],
+          per_page: COLLECTION_PER_PAGE
+        )
 
-        render_party_json(@parties, count, total_pages)
+        render json: PartyBlueprint.render(@parties,
+                                           view: :preview,
+                                           root: :results,
+                                           meta: {
+                                             count: @parties.total_entries,
+                                             total_pages: @parties.total_pages,
+                                             per_page: COLLECTION_PER_PAGE
+                                           },
+                                           current_user: current_user)
       end
 
       def favorites
