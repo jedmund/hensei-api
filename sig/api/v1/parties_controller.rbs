@@ -35,17 +35,23 @@ module Api
 
       def authorize: () -> void
 
-      def not_owner: () -> bool
+      def grid_table_and_object_table: (String) -> [String?, String?]
 
-      def params_cache_key: () -> String
+      def not_owner: () -> bool
 
       def schedule_preview_generation: () -> void
 
+      def apply_filters: (ActiveRecord::Relation[Party]) -> ActiveRecord::Relation[Party]
+
+      def apply_privacy_settings: (ActiveRecord::Relation[Party]) -> ActiveRecord::Relation[Party]
+
+      def apply_includes: (ActiveRecord::Relation[Party], String) -> ActiveRecord::Relation[Party]
+
+      def apply_excludes: (ActiveRecord::Relation[Party], String) -> ActiveRecord::Relation[Party]
+
       def build_filters: () -> Hash[Symbol, untyped]
 
-      def build_combined_conditions: () -> Hash[Symbol, untyped]
-
-      def paginate_and_process: (ActiveRecord::Relation[Party]) -> ActiveRecord::Relation[Party]
+      def build_date_range: () -> Range[DateTime]?
 
       def build_start_time: (String?) -> DateTime?
 
@@ -59,20 +65,6 @@ module Api
 
       def build_query: (Hash[Symbol, untyped], bool) -> ActiveRecord::Relation[Party]
 
-      def includes: (String) -> String
-
-      def excludes: (String) -> String
-
-      def apply_includes: (ActiveRecord::Relation[Party], ActionController::Parameters) -> ActiveRecord::Relation[Party]
-
-      def apply_excludes: (ActiveRecord::Relation[Party], ActionController::Parameters) -> ActiveRecord::Relation[Party]
-
-      def excluded_characters: () -> ActiveRecord::Relation[GridCharacter]?
-
-      def excluded_summons: () -> ActiveRecord::Relation[GridSummon]?
-
-      def excluded_weapons: () -> ActiveRecord::Relation[GridWeapon]?
-
       def fetch_parties: (ActiveRecord::Relation[Party]) -> ActiveRecord::Relation[Party]
 
       def calculate_count: (ActiveRecord::Relation[Party]) -> Integer
@@ -85,6 +77,12 @@ module Api
           ?per_page: Integer
         ) -> ActiveRecord::Relation[Party]
 
+      def excluded_characters: () -> ActiveRecord::Relation[GridCharacter]?
+
+      def excluded_summons: () -> ActiveRecord::Relation[GridSummon]?
+
+      def excluded_weapons: () -> ActiveRecord::Relation[GridWeapon]?
+
       def render_party_json: (ActiveRecord::Relation[Party]) -> void
 
       def privacy: (?favorites: bool) -> String?
@@ -94,6 +92,10 @@ module Api
       def name_quality: () -> String?
 
       def original: () -> String?
+
+      def includes: (String) -> String
+
+      def excludes: (String) -> String
 
       def id_to_table: (String) -> String
 
