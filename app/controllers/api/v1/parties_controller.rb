@@ -242,6 +242,7 @@ module Api
 
       def build_filters
         params = request.params
+      # == Preview Generation
 
         start_time = build_start_time(params['recency'])
 
@@ -472,6 +473,21 @@ module Api
         return if request.params['original'].blank? || request.params['original'] == 'false'
 
         'source_party_id IS NULL'
+      end
+
+      # == Filter Condition Helpers
+
+      # Generates privacy condition based on favorites
+      # @param favorites [Boolean] whether viewing favorites
+      # @return [String, nil] SQL condition
+      def privacy(favorites: false)
+        return if admin_mode
+
+        if favorites
+          'visibility < 3'
+        else
+          'visibility = 1'
+        end
       end
 
       def id_to_table(id)
