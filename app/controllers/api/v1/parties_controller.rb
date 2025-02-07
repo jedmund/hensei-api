@@ -365,25 +365,29 @@ module Api
         return unless params[:excludes]
 
         excluded = params[:excludes].split(',').filter { |id| id[0] == '3' }
-        GridCharacter.joins(:object)
+        GridCharacter.includes(:object)
                      .where(characters: { granblue_id: excluded })
                      .where('grid_characters.party_id = parties.id')
       end
 
+      # Generates subquery for excluded summons
+      # @return [ActiveRecord::Relation, nil] exclusion query
       def excluded_summons
         return unless params[:excludes]
 
         excluded = params[:excludes].split(',').filter { |id| id[0] == '2' }
-        GridSummon.joins(:object)
+        GridSummon.includes(:object)
                   .where(summons: { granblue_id: excluded })
                   .where('grid_summons.party_id = parties.id')
       end
 
+      # Generates subquery for excluded weapons
+      # @return [ActiveRecord::Relation, nil] exclusion query
       def excluded_weapons
         return unless params[:excludes]
 
         excluded = params[:excludes].split(',').filter { |id| id[0] == '1' }
-        GridWeapon.joins(:object)
+        GridWeapon.includes(:object)
                   .where(weapons: { granblue_id: excluded })
                   .where('grid_weapons.party_id = parties.id')
       end
@@ -403,7 +407,8 @@ module Api
       # @param query [ActiveRecord::Relation] current query
       # @return [Integer] total count
       def calculate_count(query)
-        query.count.values.sum
+        # query.count.values.sum
+        query.count
       end
 
       # Calculates total pages for pagination
