@@ -3,71 +3,76 @@
 module Api
   module V1
     class CharacterBlueprint < ApiBlueprint
-      field :name do |w|
+      field :name do |c|
         {
-          en: w.name_en,
-          ja: w.name_jp
+          en: c.name_en,
+          ja: c.name_jp
         }
       end
 
       fields :granblue_id, :character_id, :rarity,
              :element, :gender, :special
 
-      field :uncap do |w|
+      field :uncap do |c|
         {
-          flb: w.flb,
-          ulb: w.ulb
+          flb: c.flb,
+          ulb: c.ulb
         }
       end
 
-      field :hp do |w|
-        {
-          min_hp: w.min_hp,
-          max_hp: w.max_hp,
-          max_hp_flb: w.max_hp_flb
-        }
+      field :race do |c|
+        [c.race1, c.race2].compact
       end
 
-      field :atk do |w|
-        {
-          min_atk: w.min_atk,
-          max_atk: w.max_atk,
-          max_atk_flb: w.max_atk_flb
-        }
+      field :proficiency do |c|
+        [c.proficiency1, c.proficiency2].compact
       end
 
-      field :race do |w|
-        [
-          w.race1,
-          w.race2
-        ]
-      end
+      view :full do
+        include_view :stats
+        include_view :rates
+        include_view :dates
 
-      field :proficiency do |w|
-        [
-          w.proficiency1,
-          w.proficiency2
-        ]
-      end
-
-      field :data do |w|
-        {
-          base_da: w.base_da,
-          base_ta: w.base_ta
-        }
-      end
-
-      field :ougi_ratio do |w|
-        {
-          ougi_ratio: w.ougi_ratio,
-          ougi_ratio_flb: w.ougi_ratio_flb
-        }
-      end
-
-      field :awakenings do
-        Awakening.where(object_type: 'Character').map do |a|
-          AwakeningBlueprint.render_as_hash(a)
+        field :awakenings do
+          Character::AWAKENINGS.map do |awakening|
+            AwakeningBlueprint.render_as_hash(OpenStruct.new(awakening))
+          end
         end
+      end
+
+      view :stats do
+        field :hp do |c|
+          {
+            min_hp: c.min_hp,
+            max_hp: c.max_hp,
+            max_hp_flb: c.max_hp_flb
+          }
+        end
+
+        field :atk do |c|
+          {
+            min_atk: c.min_atk,
+            max_atk: c.max_atk,
+            max_atk_flb: c.max_atk_flb
+          }
+        end
+      end
+
+      view :rates do
+        fields :base_da, :base_ta
+
+        field :ougi_ratio do |c|
+          {
+            ougi_ratio: c.ougi_ratio,
+            ougi_ratio_flb: c.ougi_ratio_flb
+          }
+        end
+      end
+
+      view :dates do
+        field :release_date
+        field :flb_date
+        field :ulb_date
       end
     end
   end
