@@ -12,6 +12,10 @@ module Api
         end
 
         fields :slug, :level, :element
+
+        field :group do |raid|
+          { extra: raid.group&.extra }
+        end
       end
 
       view :full do
