@@ -19,7 +19,7 @@ module Api
       end
 
       view :uncap do
-        association :party, blueprint: PartyBlueprint, view: :minimal
+        association :party, blueprint: PartyBlueprint
         fields :position, :uncap_level
       end
 
@@ -31,19 +31,35 @@ module Api
         field :awakening, if: ->(_field_name, gc, _options) { gc.association(:awakening).loaded? } do |gc|
           {
             type: AwakeningBlueprint.render_as_hash(gc.awakening),
-            level: gc.awakening_level
+            level: gc.awakening_level.to_i
           }
         end
 
         field :over_mastery, if: lambda { |_fn, obj, _opt|
-          !obj.ring1['modifier'].nil? && !obj.ring2['modifier'].nil?
+          obj.ring1.present? && obj.ring2.present? && !obj.ring1['modifier'].nil? && !obj.ring2['modifier'].nil?
         } do |c|
-          [c.ring1, c.ring2, c.ring3, c.ring4].reject { |ring| ring['modifier'].nil? }
+          mapped_rings = [c.ring1, c.ring2, c.ring3, c.ring4].each_with_object([]) do |ring, arr|
+            # Skip if the ring is nil or its modifier is blank.
+            next if ring.blank? || ring['modifier'].blank?
+
+            # Convert the string values to numbers.
+            mod = ring['modifier'].to_i
+
+            # Only include if modifier is non-zero.
+            next if mod.zero?
+
+            arr << { modifier: mod, strength: ring['strength'].to_i }
+          end
+
+          mapped_rings
         end
 
-        field :aetherial_mastery, if: lambda { |_fn, obj, _opt|
-          !obj.earring['modifier'].nil?
-        }, &:earring
+        field :aetherial_mastery, if: ->(_fn, obj, _opt) { obj.earring.present? && !obj.earring['modifier'].nil? } do |gc, _options|
+          {
+            modifier: gc.earring['modifier'].to_i,
+            strength: gc.earring['strength'].to_i
+          }
+        end
       end
     end
   end

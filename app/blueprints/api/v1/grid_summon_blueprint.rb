@@ -15,11 +15,11 @@ module Api
 
       view :full do
         include_view :nested
-        association :party, blueprint: PartyBlueprint, view: :minimal
+        association :party, blueprint: PartyBlueprint
       end
 
       view :uncap do
-        association :party, blueprint: PartyBlueprint, view: :minimal
+        association :party, blueprint: PartyBlueprint
         fields :position, :uncap_level, :transcendence_step
       end
 
