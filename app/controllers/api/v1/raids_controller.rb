@@ -4,7 +4,7 @@ module Api
   module V1
     class RaidsController < Api::V1::ApiController
       def all
-        render json: RaidBlueprint.render(Raid.all, view: :full)
+        render json: RaidBlueprint.render(Raid.includes(:group).all, view: :nested)
       end
 
       def show
@@ -13,7 +13,7 @@ module Api
       end
 
       def groups
-        render json: RaidGroupBlueprint.render(RaidGroup.all, view: :full)
+        render json: RaidGroupBlueprint.render(RaidGroup.includes(raids: :group).all, view: :full)
       end
     end
   end
