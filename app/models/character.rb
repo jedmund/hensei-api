@@ -34,6 +34,13 @@ class Character < ApplicationRecord
                     }
                   }
 
+  AWAKENINGS = [
+    { slug: 'character-balanced', name_en: 'Balanced', name_jp: 'バランス', order: 0 },
+    { slug: 'character-atk', name_en: 'Attack', name_jp: '攻撃', order: 1 },
+    { slug: 'character-def', name_en: 'Defense', name_jp: '防御', order: 2 },
+    { slug: 'character-multi', name_en: 'Multiattack', name_jp: '連続攻撃', order: 3 }
+  ].freeze
+
   def blueprint
     CharacterBlueprint
   end
