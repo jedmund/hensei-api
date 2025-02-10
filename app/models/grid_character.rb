@@ -15,6 +15,12 @@ class GridCharacter < ApplicationRecord
   validate :validate_aetherial_mastery_value, on: :update
   validate :over_mastery_attack_matches_hp, on: :update
 
+  # Virtual attribute for the new rings structure
+  attr_accessor :new_rings
+
+  # Virtual attribute for the new awakening structure
+  attr_accessor :new_awakening
+
   ##### Amoeba configuration
   amoeba do
     set ring1: { modifier: nil, strength: nil }
@@ -24,6 +30,9 @@ class GridCharacter < ApplicationRecord
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
   end
+
+  before_validation :apply_new_rings, if: -> { new_rings.present? }
+  before_validation :apply_new_awakening, if: -> { new_awakening.present? }
 
   # Add awakening before the model saves
   before_save :add_awakening
@@ -88,6 +97,24 @@ class GridCharacter < ApplicationRecord
     return unless awakening.nil?
 
     self.awakening = Awakening.where(slug: 'character-balanced').sole
+  end
+
+  def apply_new_rings
+    # Expect new_rings to be an array of hashes, e.g.,
+    # [{"modifier" => "1", "strength" => "1500"}, {"modifier" => "2", "strength" => "750"}]
+    default_ring = { "modifier" => nil, "strength" => nil }
+    rings_array = Array(new_rings).map(&:to_h)
+    # Pad with defaults so there are exactly four rings
+    rings_array.fill(default_ring, rings_array.size...4)
+    self.ring1 = rings_array[0]
+    self.ring2 = rings_array[1]
+    self.ring3 = rings_array[2]
+    self.ring4 = rings_array[3]
+  end
+
+  def apply_new_awakening
+    self.awakening_id = new_awakening[:id]
+    self.awakening_level = new_awakening[:level].present? ? new_awakening[:level].to_i : 1
   end
 
   def check_value(property, type)
