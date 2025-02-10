@@ -7,9 +7,9 @@ class Party < ApplicationRecord
              foreign_key: :source_party_id,
              optional: true
 
-  has_many :derivative_parties,
+  has_many :remixes, -> { order(created_at: :desc) },
            class_name: 'Party',
-           foreign_key: :source_party_id,
+           foreign_key: 'source_party_id',
            inverse_of: :source_party,
            dependent: :nullify
 
@@ -105,8 +105,6 @@ class Party < ApplicationRecord
   ##### ActiveRecord Validations
   validate :skills_are_unique
   validate :guidebooks_are_unique
-
-  attr_accessor :favorited
 
   self.enum :preview_state, {
     pending: 0,
