@@ -3,56 +3,63 @@
 module Api
   module V1
     class GridCharacterBlueprint < ApiBlueprint
-      view :uncap do
-        association :party, blueprint: PartyBlueprint, view: :minimal
-        fields :position, :uncap_level
+      fields :position, :uncap_level, :perpetuity
+
+      field :transcendence_step, if: ->(_field, gc, _options) { gc.character&.ulb } do |gc|
+        gc.transcendence_step
       end
 
-      view :nested do
-        fields :position, :uncap_level, :perpetuity
-
-        field :transcendence_step, if: lambda { |_fn, obj, _opt|
-          obj.character.ulb
-        } do |c|
-          c.transcendence_step
-        end
-
-        field :awakening do |c|
-          {
-            type: AwakeningBlueprint.render_as_hash(c.awakening),
-            level: c.awakening_level
-          }
-        end
-
-        field :over_mastery, if: lambda { |_fn, obj, _opt|
-          !obj.ring1['modifier'].nil? && !obj.ring2['modifier'].nil?
-        } do |c|
-          rings = []
-
-          rings.push(c.ring1) unless c.ring1['modifier'].nil?
-          rings.push(c.ring2) unless c.ring2['modifier'].nil?
-          rings.push(c.ring3) unless c.ring3['modifier'].nil?
-          rings.push(c.ring4) unless c.ring4['modifier'].nil?
-
-          rings
-        end
-
-        field :aetherial_mastery, if: lambda { |_fn, obj, _opt|
-          !obj.earring['modifier'].nil?
-        } do |c|
-          c.earring
-        end
-
+      view :preview do
         association :character, name: :object, blueprint: CharacterBlueprint
       end
 
-      view :full do
-        include_view :nested
-        association :party, blueprint: PartyBlueprint, view: :minimal
+      view :nested do
+        include_view :mastery_bonuses
+        association :character, name: :object, blueprint: CharacterBlueprint, view: :full
+      end
+
+      view :uncap do
+        association :party, blueprint: PartyBlueprint
+        fields :position, :uncap_level
       end
 
       view :destroyed do
         fields :position, :created_at, :updated_at
+      end
+
+      view :mastery_bonuses do
+        field :awakening, if: ->(_field_name, gc, _options) { gc.association(:awakening).loaded? } do |gc|
+          {
+            type: AwakeningBlueprint.render_as_hash(gc.awakening),
+            level: gc.awakening_level.to_i
+          }
+        end
+
+        field :over_mastery, if: lambda { |_fn, obj, _opt|
+          obj.ring1.present? && obj.ring2.present? && !obj.ring1['modifier'].nil? && !obj.ring2['modifier'].nil?
+        } do |c|
+          mapped_rings = [c.ring1, c.ring2, c.ring3, c.ring4].each_with_object([]) do |ring, arr|
+            # Skip if the ring is nil or its modifier is blank.
+            next if ring.blank? || ring['modifier'].blank?
+
+            # Convert the string values to numbers.
+            mod = ring['modifier'].to_i
+
+            # Only include if modifier is non-zero.
+            next if mod.zero?
+
+            arr << { modifier: mod, strength: ring['strength'].to_i }
+          end
+
+          mapped_rings
+        end
+
+        field :aetherial_mastery, if: ->(_fn, obj, _opt) { obj.earring.present? && !obj.earring['modifier'].nil? } do |gc, _options|
+          {
+            modifier: gc.earring['modifier'].to_i,
+            strength: gc.earring['strength'].to_i
+          }
+        end
       end
     end
   end

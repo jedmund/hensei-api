@@ -7,6 +7,9 @@
 # Ignore bundler config.
 /.bundle
 
+# Ignore mystery Postgres folder
+/postgres
+
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
@@ -46,3 +49,6 @@ config/application.yml
 .vscode/*
 
 /config/credentials/production.key
+
+# Ignore AI Codebase-generated files
+codebase.md

@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_01_170037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
-  enable_extension "uuid-ossp"
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.string "kamigame", default: ""
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
@@ -129,6 +130,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.integer "awakening_level", default: 1
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
+    t.index ["party_id", "position"], name: "index_grid_characters_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
 
@@ -143,6 +145,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.datetime "updated_at", null: false
     t.integer "transcendence_step", default: 0, null: false
     t.boolean "quick_summon", default: false
+    t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
   end
@@ -168,6 +171,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.integer "transcendence_step", default: 0
     t.string "weapon_key4_id"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
+    t.index ["party_id", "position"], name: "index_grid_weapons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
@@ -304,18 +308,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.datetime "preview_generated_at"
     t.string "preview_s3_key"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
+    t.index ["created_at"], name: "index_parties_on_created_at"
+    t.index ["element"], name: "index_parties_on_element"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["preview_generated_at"], name: "index_parties_on_preview_generated_at"
     t.index ["preview_state"], name: "index_parties_on_preview_state"
+    t.index ["raid_id"], name: "index_parties_on_raid_id"
+    t.index ["shortcode"], name: "index_parties_on_shortcode"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
     t.index ["skill1_id"], name: "index_parties_on_skill1_id"
     t.index ["skill2_id"], name: "index_parties_on_skill2_id"
     t.index ["skill3_id"], name: "index_parties_on_skill3_id"
     t.index ["source_party_id"], name: "index_parties_on_source_party_id"
     t.index ["user_id"], name: "index_parties_on_user_id"
+    t.index ["visibility", "created_at"], name: "index_parties_on_visibility_created_at"
+    t.index ["weapons_count", "characters_count", "summons_count"], name: "index_parties_on_counters"
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
@@ -329,6 +339,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
+  end
+
+  create_table "pghero_query_stats", force: :cascade do |t|
+    t.text "database"
+    t.text "user"
+    t.text "query"
+    t.bigint "query_hash"
+    t.float "total_time"
+    t.bigint "calls"
+    t.datetime "captured_at", precision: nil
+    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
   end
 
   create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -349,7 +370,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.integer "element"
     t.string "slug"
     t.uuid "group_id"
-    t.index ["group_id"], name: "index_raids_on_group_id"
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -400,6 +420,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.date "transcendence_date"
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
 
@@ -474,6 +495,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
     t.boolean "transcendence", default: false
     t.date "transcendence_date"
     t.string "recruits"
+    t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
   end
@@ -501,9 +523,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_19_062554) do
   add_foreign_key "parties", "job_skills", column: "skill2_id"
   add_foreign_key "parties", "job_skills", column: "skill3_id"
   add_foreign_key "parties", "jobs"
+  add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
-  add_foreign_key "raids", "raid_groups", column: "group_id"
+  add_foreign_key "raids", "raid_groups", column: "group_id", name: "raids_group_id_fkey"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
 end

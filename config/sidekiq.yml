@@ -1,0 +1,5 @@
+:scheduler:
+  cleanup_party_previews:
+    cron: '0 0 * * *'  # Daily at midnight
+    class: CleanupPartyPreviewsJob
+    queue: maintenance

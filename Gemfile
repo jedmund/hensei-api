@@ -2,13 +2,15 @@ source 'https://rubygems.org'
 ruby '3.3.7'
 
 gem 'bootsnap'
-gem 'pg'
 gem 'rack-cors'
 gem 'rails'
 gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma'
+
+# Pg is the Ruby interface to the PostgreSQL RDBMS
+gem 'pg'
 
 # A sophisticated and secure hash algorithm for
 # hashing passwords.
@@ -71,6 +73,9 @@ gem 'httparty'
 # StringScanner provides for lexical scanning operations on a String.
 gem 'strscan'
 
+# New Relic Ruby Agent
+gem 'newrelic_rpm'
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
@@ -88,6 +93,8 @@ end
 
 group :development do
   gem 'listen'
+  gem 'pg_query'
+  gem 'prosopite'
   gem 'solargraph'
   gem 'spring'
   gem 'spring-commands-rspec'

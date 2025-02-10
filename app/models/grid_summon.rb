@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
 class GridSummon < ApplicationRecord
+  belongs_to :summon, foreign_key: :summon_id, primary_key: :id
+
   belongs_to :party,
              counter_cache: :summons_count,
              inverse_of: :summons
   validates_presence_of :party
-  has_one :object, class_name: 'Summon', foreign_key: :id, primary_key: :summon_id
 
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
-
-  def summon
-    Summon.find(summon_id)
-  end
 
   def blueprint
     GridSummonBlueprint

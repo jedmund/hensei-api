@@ -58,17 +58,19 @@ module Api
           conditions = build_conditions
           conditions[:user_id] = @user.id
 
-          parties = Party
-                    .where(conditions)
-                    .where(name_quality)
-                    .where(user_quality)
-                    .where(original)
-                    .where(privacy)
-                    .order(created_at: :desc)
-                    .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
-                    .each do |party|
-            party.favorited = current_user ? party.is_favorited(current_user) : false
-          end
+          favorites_query = "EXISTS (SELECT 1 FROM favorites WHERE favorites.party_id = parties.id AND favorites.user_id = #{current_user&.id || 'NULL'}) AS is_favorited"
+          parties = Party.where(conditions)
+                         .where(name_quality)
+                         .where(user_quality)
+                         .where(original)
+                         .where(privacy)
+                         .includes(:favorites)
+                         .select(Party.arel_table[Arel.star])
+                         .select(
+                           Arel.sql(favorites_query)
+                         )
+                         .order(created_at: :desc)
+                         .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
 
           count = Party.where(conditions).count
 
@@ -101,7 +103,7 @@ module Api
 
         unless params['recency'].blank?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                       .to_datetime.beginning_of_day
+                         .to_datetime.beginning_of_day
         end
 
         min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i

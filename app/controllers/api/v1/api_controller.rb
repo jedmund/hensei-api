@@ -31,6 +31,7 @@ module Api
       ##### Hooks
       before_action :current_user
       before_action :default_content_type
+      around_action :n_plus_one_detection, unless: -> { Rails.env.production? }
 
       ##### Responders
       respond_to :json
@@ -104,9 +105,9 @@ module Api
 
       def render_not_found_response(object)
         render json: ErrorBlueprint.render(nil, error: {
-                                             message: "#{object.capitalize} could not be found",
-                                             code: 'not_found'
-                                           }), status: :not_found
+          message: "#{object.capitalize} could not be found",
+          code: 'not_found'
+        }), status: :not_found
       end
 
       def render_unauthorized_response
@@ -118,6 +119,13 @@ module Api
 
       def restrict_access
         raise UnauthorizedError unless current_user
+      end
+
+      def n_plus_one_detection
+        Prosopite.scan
+        yield
+      ensure
+        Prosopite.finish
       end
     end
   end

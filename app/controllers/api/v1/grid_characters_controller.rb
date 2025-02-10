@@ -39,17 +39,22 @@ module Api
       end
 
       def update
-        mastery = {}
-        %i[ring1 ring2 ring3 ring4 earring awakening].each do |key|
-          value = character_params.to_h[key]
-          mastery[key] = value unless value.nil?
+        permitted = character_params.to_h.deep_symbolize_keys
+        puts "Permitted:"
+        ap permitted
+
+        # For the new nested structure, assign them to the virtual attributes:
+        @character.new_rings = permitted[:rings] if permitted[:rings].present?
+        @character.new_awakening = permitted[:awakening] if permitted[:awakening].present?
+
+        # For the rest of the attributes, you can assign them normally.
+        @character.assign_attributes(permitted.except(:rings, :awakening))
+
+        if @character.save
+          render json: GridCharacterBlueprint.render(@character, view: :nested)
+        else
+          render_validation_error_response(@character)
         end
-
-        @character.attributes = character_params.merge(mastery)
-
-        return render json: GridCharacterBlueprint.render(@character, view: :full) if @character.save
-
-        render_validation_error_response(@character)
       end
 
       def resolve
@@ -123,7 +128,7 @@ module Api
       end
 
       def set
-        @character = GridCharacter.find(params[:id])
+        @character = GridCharacter.includes(:awakening).find(params[:id])
       end
 
       def find_incoming_character
@@ -143,14 +148,59 @@ module Api
         render_unauthorized_response if unauthorized_create || unauthorized_update
       end
 
+      def transform_character_params(raw_params)
+        # Convert to a symbolized hash for convenience.
+        raw = raw_params.deep_symbolize_keys
+
+        # Only update keys that were provided.
+        transformed = raw.slice(:uncap_level, :transcendence_step, :perpetuity)
+        transformed[:uncap_level] = raw[:uncap_level].to_i if raw[:uncap_level].present?
+        transformed[:transcendence_step] = raw[:transcendence_step].to_i if raw[:transcendence_step].present?
+
+        # Process rings if provided.
+        transformed.merge!(transform_rings(raw[:rings])) if raw[:rings].present?
+
+        # Process earring if provided.
+        transformed[:earring] = raw[:earring] if raw[:earring].present?
+
+        # Process awakening if provided.
+        if raw[:awakening].present?
+          transformed[:awakening_id] = raw[:awakening][:id]
+          # Default to 1 if level is missing (to satisfy validations)
+          transformed[:awakening_level] = raw[:awakening][:level].present? ? raw[:awakening][:level].to_i : 1
+        end
+
+        transformed
+      end
+
+      def transform_rings(rings)
+        default_ring = { modifier: nil, strength: nil }
+        # Ensure rings is an array of hashes.
+        rings_array = Array(rings).map(&:to_h)
+        # Pad the array to exactly four rings if needed.
+        rings_array.fill(default_ring, rings_array.size...4)
+        {
+          ring1: rings_array[0],
+          ring2: rings_array[1],
+          ring3: rings_array[2],
+          ring4: rings_array[3]
+        }
+      end
+
       # Specify whitelisted properties that can be modified.
       def character_params
-        params.require(:character).permit(:id, :party_id, :character_id, :position,
-                                          :uncap_level, :transcendence_step, :perpetuity,
-                                          :awakening_id, :awakening_level,
-                                          ring1: %i[modifier strength], ring2: %i[modifier strength],
-                                          ring3: %i[modifier strength], ring4: %i[modifier strength],
-                                          earring: %i[modifier strength])
+        params.require(:character).permit(
+          :id,
+          :party_id,
+          :character_id,
+          :position,
+          :uncap_level,
+          :transcendence_step,
+          :perpetuity,
+          awakening: %i[id level],
+          rings: %i[modifier strength],
+          earring: %i[modifier strength]
+        )
       end
 
       def resolve_params

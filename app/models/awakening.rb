@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 class Awakening < ApplicationRecord
-  def weapon_awakenings
-    WeaponAwakening.where(awakening_id: id)
-  end
-
-  def weapons
-    weapon_awakenings.map(&:weapon)
-  end
+  has_many :weapon_awakenings, foreign_key: :awakening_id
+  has_many :weapons, through: :weapon_awakenings
 
   def awakening
     AwakeningBlueprint

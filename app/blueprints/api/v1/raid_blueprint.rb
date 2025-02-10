@@ -12,6 +12,8 @@ module Api
         end
 
         fields :slug, :level, :element
+
+        association :group, blueprint: RaidGroupBlueprint, view: :flat
       end
 
       view :full do

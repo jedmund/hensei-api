@@ -3,105 +3,131 @@
 module Api
   module V1
     class PartyBlueprint < ApiBlueprint
-      view :weapons do
+      # Base fields that are always needed
+      fields :local_id, :description, :shortcode, :visibility,
+             :name, :element, :extra, :charge_attack,
+             :button_count, :turn_count, :chain_count, :clear_time,
+             :full_auto, :auto_guard, :auto_summon,
+             :created_at, :updated_at
+
+      fields :local_id, :description, :charge_attack,
+             :button_count, :turn_count, :chain_count,
+             :master_level, :ultimate_mastery
+
+      # Party associations
+      association :user,
+                  blueprint: UserBlueprint,
+                  view: :minimal
+
+      association :job,
+                  blueprint: JobBlueprint
+
+      association :raid,
+                  blueprint: RaidBlueprint,
+                  view: :nested
+
+      # Metadata associations
+      field :favorited do |party, options|
+        party.is_favorited(options[:current_user])
+      end
+
+      # For collection views
+      view :preview do
+        include_view :preview_objects # Characters, Weapons, Summons
+        include_view :preview_metadata # Object counts
+      end
+
+      # For object views
+      view :full do
+        # Primary object associations
+        include_view :nested_objects # Characters, Weapons, Summons
+        include_view :nested_metadata # Remixes, Source party
+        include_view :job_metadata # Accessory, Skills, Guidebooks
+      end
+
+      # Primary object associations
+      view :preview_objects do
+        association :characters,
+                    blueprint: GridCharacterBlueprint,
+                    view: :preview
+
+        association :weapons,
+                    blueprint: GridWeaponBlueprint,
+                    view: :preview
+
+        association :summons,
+                    blueprint: GridSummonBlueprint,
+                    view: :preview
+      end
+
+      view :nested_objects do
+        association :characters,
+                    blueprint: GridCharacterBlueprint,
+                    view: :nested
+
         association :weapons,
                     blueprint: GridWeaponBlueprint,
                     view: :nested
-      end
 
-      view :summons do
         association :summons,
                     blueprint: GridSummonBlueprint,
                     view: :nested
       end
 
-      view :characters do
-        association :characters,
-                    blueprint: GridCharacterBlueprint,
-                    view: :nested
-      end
-
-      view :job_skills do
-        field :job_skills do |job|
+      # Metadata views
+      view :preview_metadata do
+        field :counts do |party|
           {
-            '0' => !job.skill0.nil? ? JobSkillBlueprint.render_as_hash(job.skill0) : nil,
-            '1' => !job.skill1.nil? ? JobSkillBlueprint.render_as_hash(job.skill1) : nil,
-            '2' => !job.skill2.nil? ? JobSkillBlueprint.render_as_hash(job.skill2) : nil,
-            '3' => !job.skill3.nil? ? JobSkillBlueprint.render_as_hash(job.skill3) : nil
+            weapons: party.weapons_count,
+            characters: party.characters_count,
+            summons: party.summons_count
           }
         end
       end
 
-      view :minimal do
-        fields :name, :element, :shortcode, :favorited, :remix,
-               :extra, :full_auto, :clear_time, :auto_guard, :auto_summon,
-               :visibility, :created_at, :updated_at
-
-        field :guidebooks do |p|
-          {
-            '1' => !p.guidebook1.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook1) : nil,
-            '2' => !p.guidebook2.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook2) : nil,
-            '3' => !p.guidebook3.nil? ? GuidebookBlueprint.render_as_hash(p.guidebook3) : nil
-          }
-        end
-
-        association :raid,
-                    blueprint: RaidBlueprint,
-                    view: :full
-
-        association :job,
-                    blueprint: JobBlueprint
-
-        association :user,
-                    blueprint: UserBlueprint,
-                    view: :minimal
-      end
-
-      view :jobs do
-        association :job,
-                    blueprint: JobBlueprint
-        include_view :job_skills
-      end
-
-      view :preview do
-        include_view :minimal
-        include_view :characters
-        include_view :weapons
-        include_view :summons
-      end
-
-      view :full do
-        include_view :preview
-        include_view :summons
-        include_view :characters
-        include_view :job_skills
-
-        fields :local_id, :description, :charge_attack,
-               :button_count, :turn_count, :chain_count,
-               :master_level, :ultimate_mastery
-
-        association :accessory,
-                    blueprint: JobAccessoryBlueprint
-
+      view :nested_metadata do
         association :source_party,
                     blueprint: PartyBlueprint,
-                    view: :minimal
+                    view: :minimal,
+                    if: ->(_field_name, party, _options) { party.source_party_id.present? }
 
-        # TODO: This should probably be paginated
+        # Re-added remixes association
         association :remixes,
                     blueprint: PartyBlueprint,
-                    view: :collection
+                    view: :preview
       end
 
-      view :collection do
-        include_view :preview
+      # Job-related views
+      view :job_metadata do
+        field :job_skills, cache: true do |party|
+          {
+            '0' => party.skill0 ? JobSkillBlueprint.render_as_hash(party.skill0) : nil,
+            '1' => party.skill1 ? JobSkillBlueprint.render_as_hash(party.skill1) : nil,
+            '2' => party.skill2 ? JobSkillBlueprint.render_as_hash(party.skill2) : nil,
+            '3' => party.skill3 ? JobSkillBlueprint.render_as_hash(party.skill3) : nil
+          }
+        end
+
+        field :guidebooks, cache: true do |party|
+          {
+            '1' => party.guidebook1 ? GuidebookBlueprint.render_as_hash(party.guidebook1) : nil,
+            '2' => party.guidebook2 ? GuidebookBlueprint.render_as_hash(party.guidebook2) : nil,
+            '3' => party.guidebook3 ? GuidebookBlueprint.render_as_hash(party.guidebook3) : nil
+          }
+        end
+
+        association :accessory,
+                    blueprint: JobAccessoryBlueprint,
+                    if: ->(_field_name, party, _options) { party.accessory_id.present? }
       end
 
+      # Created view
       view :created do
         include_view :full
         fields :edit_key
       end
 
+      # Destroyed view
       view :destroyed do
         fields :name, :description, :created_at, :updated_at
       end

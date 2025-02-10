@@ -16,7 +16,7 @@ module Api
 
       view :full do
         include_view :flat
-        association :raids, blueprint: RaidBlueprint, view: :full
+        association :raids, blueprint: RaidBlueprint, view: :nested
       end
     end
   end
