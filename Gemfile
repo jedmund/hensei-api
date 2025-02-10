@@ -109,6 +109,7 @@ group :test do
   gem 'api_matchers'
   gem 'byebug'
   gem 'database_cleaner'
+  gem 'rspec'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
 end
