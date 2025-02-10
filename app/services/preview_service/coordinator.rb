@@ -146,11 +146,11 @@ module PreviewService
       Rails.logger.info("🖼️ Preview state: #{@party.preview_state}")
 
       case @party.preview_state
-      when 'pending'
-        Rails.logger.info("🖼️ State is pending, will generate")
+      when 'pending', 'queued'
+        Rails.logger.info("🖼️ State is #{@party.preview_state}, will generate")
         true
-      when 'queued', 'in_progress'
-        Rails.logger.info("🖼️ State is #{@party.preview_state}, skipping generation")
+      when 'in_progress'
+        Rails.logger.info("🖼️ State is in_progress, skipping generation")
         false
       when 'failed'
         should_retry = @party.preview_generated_at.nil? ||
