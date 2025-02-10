@@ -13,9 +13,7 @@ module Api
 
         fields :slug, :level, :element
 
-        field :group do |raid|
-          { extra: raid.group&.extra }
-        end
+        association :group, blueprint: RaidGroupBlueprint, view: :flat
       end
 
       view :full do
