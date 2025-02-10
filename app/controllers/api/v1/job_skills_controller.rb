@@ -4,11 +4,13 @@ module Api
   module V1
     class JobSkillsController < Api::V1::ApiController
       def all
-        render json: JobSkillBlueprint.render(JobSkill.all)
+        render json: JobSkillBlueprint.render(JobSkill.includes(:job).all)
       end
 
       def job
-        @skills = JobSkill.where('job_id != ? AND emp = ?', params[:id], true)
+        @skills = JobSkill.includes(:job)
+                          .where.not(job_id: params[:id])
+                          .where(emp: true)
         render json: JobSkillBlueprint.render(@skills)
       end
     end
