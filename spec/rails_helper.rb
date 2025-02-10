@@ -1,56 +1,84 @@
+# frozen_string_literal: true
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
+
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
-# Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
-# that will avoid rails generators crashing because migrations haven't been run yet
-# return unless Rails.env.test?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
+
+# Load Rails and RSpec Rails – Rails is not loaded until after the environment is set.
 require 'rspec/rails'
-# Add additional requires below this line. Rails is not loaded until this point!
 
-# Requires supporting ruby files with custom matchers and macros, etc, in
-# spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
-# run as spec files by default. This means that files in spec/support that end
-# in _spec.rb will both be required and run as specs, causing the specs to be
-# run twice. It is recommended that you do not name files matching this glob to
-# end with _spec.rb. You can configure this pattern with the --pattern
-# option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
+# -----------------------------------------------------------------------------
+# Additional Requires:
 #
-# The following line is provided for convenience purposes. It has the downside
-# of increasing the boot-up time by auto-requiring all files in the support
-# directory. Alternatively, in the individual `*_spec.rb` files, manually
-# require only the support files necessary.
-#
-# Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+# Add any additional requires below this line. For example, if you need to load
+# custom libraries or support files that are not automatically required.
+# -----------------------------------------------------------------------------
 
-# Checks for pending migrations and applies them before tests are run.
-# If you are not using ActiveRecord, you can remove these lines.
+# -----------------------------------------------------------------------------
+# Require Support Files:
+#
+# All files in the spec/support directory and its subdirectories (except those
+# ending in _spec.rb) are automatically required here. This is useful for custom
+# matchers, macros, and shared contexts.
+# -----------------------------------------------------------------------------
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+
+# -----------------------------------------------------------------------------
+# Check for Pending Migrations:
+#
+# This will check for any pending migrations before tests are run.
+# -----------------------------------------------------------------------------
 begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_paths = [
-    Rails.root.join('spec/fixtures')
-  ]
+  # Disable ActiveRecord logging during tests for a cleaner test output.
+  ActiveRecord::Base.logger = nil if Rails.env.test?
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-  config.use_transactional_fixtures = true
+  # -----------------------------------------------------------------------------
+  # Shoulda Matchers:
+  #
+  # If you use shoulda-matchers, you can configure them here. (Make sure you have
+  # the shoulda-matchers gem installed and configured in your Gemfile.)
+  # -----------------------------------------------------------------------------
+  # require 'shoulda/matchers'
+  # Shoulda::Matchers.configure do |matcher_config|
+  #   matcher_config.integrate do |with|
+  #     with.test_framework :rspec
+  #     with.library :rails
+  #   end
+  # end
 
-  # Optionally, load fixtures automatically for tests that declare :fixture.
-  config.global_fixtures = :all
+  # -----------------------------------------------------------------------------
+  # FactoryBot Syntax Methods:
+  #
+  # This makes methods like create and build available without needing to prefix
+  # them with FactoryBot.
+  # -----------------------------------------------------------------------------
+  config.include FactoryBot::Syntax::Methods
 
-  # You can uncomment this line to turn off ActiveRecord support entirely.
-  # config.use_active_record = false
+  # -----------------------------------------------------------------------------
+  # Load canonical seed data for test environment:
+  #
+  # This ensures that your canonical CSV data is loaded before your tests run.
+  # -----------------------------------------------------------------------------
+  config.before(:suite) do
+    load Rails.root.join('db', 'seed', 'canonical.rb')
+  end
 
-  # Filter lines from Rails gems in backtraces.
+  # -----------------------------------------------------------------------------
+  # Backtrace Filtering:
+  #
+  # Filter out lines from Rails gems in backtraces for clarity.
+  # -----------------------------------------------------------------------------
   config.filter_rails_from_backtrace!
-  # arbitrary gems may also be filtered via:
+  # You can add additional filters here if needed:
   # config.filter_gems_from_backtrace("gem name")
 end
