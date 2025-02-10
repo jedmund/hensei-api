@@ -670,12 +670,37 @@ module Api
       # Loads party by shortcode for routes using :id
       # @return [void]
       def set_from_slug
-        @party = Party.where('shortcode = ?', params[:id]).first
-        if @party
-          @party.favorited = current_user && @party ? @party.is_favorited(current_user) : false
-        else
-          render_not_found_response('party')
-        end
+        @party = Party.includes(
+          :user,
+          :job,
+          { raid: :group },
+          { characters: [:character, :awakening] },
+          {
+            weapons: {
+              # Eager load the associated weapon and its awakenings.
+              weapon: [:awakenings],
+              # Eager load the grid weapon’s own awakening (if applicable).
+              awakening: {},
+              # Eager load any weapon key associations.
+              weapon_key1: {},
+              weapon_key2: {},
+              weapon_key3: {}
+            }
+          },
+          { summons: :summon },
+          :guidebook1,
+          :guidebook2,
+          :guidebook3,
+          :source_party,
+          :remixes,
+          :skill0,
+          :skill1,
+          :skill2,
+          :skill3,
+          :accessory
+        ).find_by(shortcode: params[:id])
+
+        render_not_found_response('party') unless @party
       end
 
       # Loads party by ID for update/destroy actions
