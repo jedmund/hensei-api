@@ -48,13 +48,13 @@ RSpec.configure do |config|
   # If you use shoulda-matchers, you can configure them here. (Make sure you have
   # the shoulda-matchers gem installed and configured in your Gemfile.)
   # -----------------------------------------------------------------------------
-  # require 'shoulda/matchers'
-  # Shoulda::Matchers.configure do |matcher_config|
-  #   matcher_config.integrate do |with|
-  #     with.test_framework :rspec
-  #     with.library :rails
-  #   end
-  # end
+  require 'shoulda/matchers'
+  Shoulda::Matchers.configure do |matcher_config|
+    matcher_config.integrate do |with|
+      with.test_framework :rspec
+      with.library :rails
+    end
+  end
 
   # -----------------------------------------------------------------------------
   # FactoryBot Syntax Methods:
