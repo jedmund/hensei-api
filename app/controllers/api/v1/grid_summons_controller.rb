@@ -3,17 +3,19 @@
 module Api
   module V1
     ##
-    # Controller responsible for managing grid summons for a party.
-    # Provides actions to create, update, and destroy grid summons.
+    # Controller handling API requests related to grid summons within a party.
     #
-    # @note All actions assume that the request has been authorized.
+    # This controller provides endpoints for creating, updating, resolving conflicts, and deleting grid summons.
+    # It ensures that the correct party and summons are found and that the current user (or edit key) is authorized.
+    #
+    # @see Api::V1::ApiController for shared API behavior.
     class GridSummonsController < Api::V1::ApiController
       attr_reader :party, :incoming_summon
 
-      before_action :set, only: %w[update update_uncap_level update_quick_summon]
-      before_action :find_party, only: :create
+      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon resolve destroy]
+      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon resolve destroy]
       before_action :find_incoming_summon, only: :create
-      before_action :authorize, only: %i[create update update_uncap_level update_quick_summon destroy]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon destroy]
 
       ##
       # Creates a new grid summon.
@@ -52,11 +54,11 @@ module Api
       #
       # @return [void]
       def update
-        @summon.attributes = summon_params
+        @grid_summon.attributes = summon_params
 
-        return render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon) if @summon.save
+        return render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon) if @grid_summon.save
 
-        render_validation_error_response(@summon)
+        render_validation_error_response(@grid_summon)
       end
 
       ##
@@ -68,7 +70,7 @@ module Api
       #
       # @return [void]
       def update_uncap_level
-        summon = @summon.summon
+        summon = @grid_summon.summon
         max_level = max_uncap_level(summon)
 
         greater_than_max_uncap = summon_params[:uncap_level].to_i > max_level
@@ -79,10 +81,10 @@ module Api
         new_uncap_level = greater_than_max_uncap || can_be_transcended ? max_level : summon_params[:uncap_level]
         new_transcendence_step = summon.transcendence && summon_params[:transcendence_step].present? ? summon_params[:transcendence_step] : 0
 
-        if @summon.update(uncap_level: new_uncap_level, transcendence_step: new_transcendence_step)
-          render json: GridSummonBlueprint.render(@summon, view: :nested, root: :grid_summon)
+        if @grid_summon.update(uncap_level: new_uncap_level, transcendence_step: new_transcendence_step)
+          render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon)
         else
-          render_validation_error_response(@summon)
+          render_validation_error_response(@grid_summon)
         end
       end
 
@@ -95,19 +97,19 @@ module Api
       #
       # @return [void]
       def update_quick_summon
-        return if [4, 5, 6].include?(@summon.position)
+        return if [4, 5, 6].include?(@grid_summon.position)
 
-        quick_summons = @summon.party.summons.select(&:quick_summon)
+        quick_summons = @grid_summon.party.summons.select(&:quick_summon)
 
         quick_summons.each do |summon|
           summon.update!(quick_summon: false)
         end
 
-        @summon.update!(quick_summon: summon_params[:quick_summon])
-        return unless @summon.persisted?
+        @grid_summon.update!(quick_summon: summon_params[:quick_summon])
+        return unless @grid_summon.persisted?
 
-        quick_summons -= [@summon]
-        summons = [@summon] + quick_summons
+        quick_summons -= [@grid_summon]
+        summons = [@grid_summon] + quick_summons
 
         render json: GridSummonBlueprint.render(summons, view: :nested, root: :summons)
       end
@@ -124,7 +126,6 @@ module Api
         grid_summon = GridSummon.find_by('id = ?', params[:id])
 
         return render_not_found_response('grid_summon') if grid_summon.nil?
-        return render_unauthorized_response if grid_summon.party.user != current_user
 
         render json: GridSummonBlueprint.render(grid_summon, view: :destroyed), status: :ok if grid_summon.destroy
       end
@@ -182,10 +183,28 @@ module Api
       # user is not the owner of the party.
       #
       # @return [void]
+
+      ##
+      # Finds and sets the party based on parameters.
+      #
+      # Renders an unauthorized response if the current user is not the owner.
+      #
+      # @return [void]
       def find_party
-        # BUG: I can create grid weapons even when I'm not logged in on an authenticated party
-        @party = Party.find(summon_params[:party_id])
-        render_unauthorized_response if current_user && (party.user != current_user)
+        @party = Party.find_by(id: params.dig(:summon, :party_id)) || Party.find_by(id: params[:party_id]) || @grid_summon&.party
+        render_not_found_response('party') unless @party
+      end
+
+      ##
+      # Finds and sets the GridSummon based on the provided parameters.
+      #
+      # Searches for a grid summon using various parameter keys and renders a not found response if it is absent.
+      #
+      # @return [void]
+      def find_grid_summon
+        grid_summon_id = params[:id] || params.dig(:summon, :id) || params.dig(:resolve, :conflicting)
+        @grid_summon = GridSummon.find_by(id: grid_summon_id)
+        render_not_found_response('grid_summon') unless @grid_summon
       end
 
       ##
@@ -196,31 +215,6 @@ module Api
       # @return [void]
       def find_incoming_summon
         @incoming_summon = Summon.find_by(id: summon_params[:summon_id])
-      end
-
-      ##
-      # Finds and sets the grid summon for update actions.
-      #
-      # Sets the @summon instance variable using the provided id parameter.
-      #
-      # @return [void]
-      def set
-        @summon = GridSummon.find_by('id = ?', summon_params[:id])
-      end
-
-      ##
-      # Authorizes the current request based on the party or grid summon ownership and edit key.
-      #
-      # Checks if the current user is authorized to create or update the party or grid summon.
-      # Renders an unauthorized response if the authorization fails.
-      #
-      # @return [void]
-      def authorize
-        # Create
-        unauthorized_create = @party && (@party.user != current_user || @party.edit_key != edit_key)
-        unauthorized_update = @summon && @summon.party && (@summon.party.user != current_user || @summon.party.edit_key != edit_key)
-
-        render_unauthorized_response if unauthorized_create || unauthorized_update
       end
 
       ##
@@ -280,6 +274,61 @@ module Api
         else
           3
         end
+      end
+
+      ##
+      # Authorizes the current action by ensuring that the current user or provided edit key matches the party's owner.
+      #
+      # For parties associated with a user, it verifies that the current_user is the owner.
+      # For anonymous parties, it checks that the provided edit key matches the party's edit key.
+      #
+      # @return [void]
+      def authorize_party_edit!
+        if @party.user.present?
+          authorize_user_party
+        else
+          authorize_anonymous_party
+        end
+      end
+
+      ##
+      # Authorizes an action for a party that belongs to a user.
+      #
+      # Renders an unauthorized response unless the current user is present and
+      # matches the party's user.
+      #
+      # @return [void]
+      def authorize_user_party
+        return if current_user.present? && @party.user == current_user
+
+        render_unauthorized_response
+      end
+
+      ##
+      # Authorizes an action for an anonymous party using an edit key.
+      #
+      # Retrieves and normalizes the provided edit key and compares it with the party's edit key.
+      # Renders an unauthorized response unless the keys are valid.
+      #
+      # @return [void]
+      def authorize_anonymous_party
+        provided_edit_key = edit_key.to_s.strip.force_encoding('UTF-8')
+        party_edit_key = @party.edit_key.to_s.strip.force_encoding('UTF-8')
+        return if valid_edit_key?(provided_edit_key, party_edit_key)
+
+        render_unauthorized_response
+      end
+
+      ##
+      # Validates that the provided edit key matches the party's edit key.
+      #
+      # @param provided_edit_key [String] the edit key provided in the request.
+      # @param party_edit_key [String] the edit key associated with the party.
+      # @return [Boolean] true if the edit keys match; false otherwise.
+      def valid_edit_key?(provided_edit_key, party_edit_key)
+        provided_edit_key.present? &&
+          provided_edit_key.bytesize == party_edit_key.bytesize &&
+          ActiveSupport::SecurityUtils.secure_compare(provided_edit_key, party_edit_key)
       end
 
       ##
