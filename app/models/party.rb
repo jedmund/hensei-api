@@ -219,7 +219,7 @@ class Party < ApplicationRecord
   def set_edit_key
     return if user
 
-    self.edit_key = Digest::SHA1.hexdigest([Time.now, rand].join)
+    self.edit_key ||= Digest::SHA1.hexdigest([Time.now, rand].join)
   end
 
   def random_string
