@@ -354,6 +354,7 @@ RSpec.describe 'GridWeapons API', type: :request do
                         response.body
                       end
       puts "\nDEBUG: Error Message for '#{example.full_description}': #{error_message}"
+      
       # Parse once and grab the trace safely
       parsed_body = JSON.parse(response.body)
       trace = parsed_body.dig('traces', 'Application Trace')

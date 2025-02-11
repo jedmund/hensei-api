@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# spec/factories/grid_summons.rb
 
 FactoryBot.define do
   factory :grid_summon do
