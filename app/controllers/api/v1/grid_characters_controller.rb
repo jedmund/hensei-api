@@ -61,14 +61,12 @@ module Api
         processed_params = transform_character_params(character_params)
         assign_raw_attributes(@grid_character)
         assign_transformed_attributes(@grid_character, processed_params)
-        
+
         if @grid_character.save
           render json: GridCharacterBlueprint.render(@grid_character,
                                                      root: :grid_character,
                                                      view: :nested)
         else
-          ap "you are Here"
-          ap @grid_character.errors
           render_validation_error_response(@grid_character)
         end
       end
