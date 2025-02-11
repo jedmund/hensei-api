@@ -87,6 +87,9 @@ class Party < ApplicationRecord
   before_create :set_shortcode
   before_create :set_edit_key
 
+  after_commit :update_element!, on: %i[create update]
+  after_commit :update_extra!, on: %i[create update]
+
   ##### Amoeba configuration
   amoeba do
     set weapons_count: 0
@@ -193,6 +196,21 @@ class Party < ApplicationRecord
   end
 
   private
+
+  def update_element!
+    main_weapon = weapons.detect { |gw| gw.position.to_i == -1 }
+    new_element = main_weapon&.weapon&.element
+    if new_element.present? && self.element != new_element
+      update_column(:element, new_element)
+    end
+  end
+
+  def update_extra!
+    new_extra = weapons.any? { |gw| GridWeapon::EXTRA_POSITIONS.include?(gw.position.to_i) }
+    if self.extra != new_extra
+      update_column(:extra, new_extra)
+    end
+  end
 
   def set_shortcode
     self.shortcode = random_string
