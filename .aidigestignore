@@ -2,6 +2,7 @@
 
 app/assets
 bin/
+coverage/
 download/
 export/
 log/
@@ -12,6 +13,7 @@ tmp/
 vendor/
 lib/
 sig/
+test/
 
 LICENSE
 logfile
