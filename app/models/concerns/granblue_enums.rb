@@ -31,35 +31,4 @@ module GranblueEnums
     Primal: 5,
     None: 6
   }.freeze
-
-  included do
-    # Make sure the model has been loaded with its table before calling enum.
-    if respond_to?(:column_names) && table_exists? && column_names.include?('rarity')
-      enum rarity: RARITIES
-    end
-
-    if respond_to?(:column_names) && table_exists? && column_names.include?('element')
-      enum element: ELEMENTS
-    end
-
-    if respond_to?(:column_names) && table_exists? && column_names.include?('gender')
-      enum gender: GENDERS
-    end
-
-    if respond_to?(:column_names) && table_exists? && column_names.include?('proficiency1')
-      enum proficiency1: PROFICIENCY, _prefix: :proficiency1, _default: :None
-    end
-
-    if respond_to?(:column_names) && table_exists? && column_names.include?('proficiency2')
-      enum proficiency2: PROFICIENCY, _prefix: :proficiency2, _default: :None
-    end
-
-    if respond_to?(:column_names) && table_exists? && column_names.include?('race1')
-      enum race1: RACES, _prefix: :race1, _default: :Unknown
-    end
-
-    if respond_to?(:column_names) && table_exists? && column_names.include?('race2')
-      enum race2: RACES, _prefix: :race2, _default: :None
-    end
-  end
 end
