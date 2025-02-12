@@ -28,7 +28,7 @@ module Api
 
       # Metadata associations
       field :favorited do |party, options|
-        party.is_favorited(options[:current_user])
+        party.favorited?(options[:current_user])
       end
 
       # For collection views
