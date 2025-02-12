@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       get 'parties/favorites', to: 'parties#favorites'
       get 'parties/:id', to: 'parties#show'
       get 'parties/:id/preview', to: 'parties#preview'
+      get 'parties/:id/preview_status', to: 'parties#preview_status'
       post 'parties/:id/regenerate_preview', to: 'parties#regenerate_preview'
       post 'parties/:id/remix', to: 'parties#remix'
 

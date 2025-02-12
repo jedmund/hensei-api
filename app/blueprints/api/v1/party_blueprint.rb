@@ -41,7 +41,7 @@ module Api
       view :full do
         # Primary object associations
         include_view :nested_objects # Characters, Weapons, Summons
-        include_view :nested_metadata # Remixes, Source party
+        include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
       end
 
@@ -85,11 +85,15 @@ module Api
         end
       end
 
-      view :nested_metadata do
+      view :source_party do
         association :source_party,
                     blueprint: PartyBlueprint,
-                    view: :minimal,
+                    view: :preview,
                     if: ->(_field_name, party, _options) { party.source_party_id.present? }
+      end
+
+      view :remix_metadata do
+        include_view :source_party
 
         # Re-added remixes association
         association :remixes,
@@ -125,6 +129,11 @@ module Api
       view :created do
         include_view :full
         fields :edit_key
+      end
+
+      view :remixed do
+        include_view :created
+        include_view :source_party
       end
 
       # Destroyed view

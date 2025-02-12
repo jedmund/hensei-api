@@ -7,9 +7,7 @@ module PreviewService
     PREVIEW_EXPIRY = 30.days
     GENERATION_TIMEOUT = 5.minutes
     LOCAL_STORAGE_PATH = Rails.root.join('storage', 'party-previews')
-
     PREVIEW_DEBOUNCE_PERIOD = 5.minutes
-    PREVIEW_EXPIRY = 30.days
 
     # Public Interface - Core Operations
 
