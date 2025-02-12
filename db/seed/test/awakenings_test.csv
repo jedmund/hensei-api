@@ -1,0 +1,11 @@
+"id","name_en","name_jp","slug","object_type","order"
+"6e233877-8cda-4c8f-a091-3db6f68749e2","Attack","攻撃","character-atk","Character",1
+"b1847c82-ece0-4d7a-8af1-c7868d90f34a","Balanced","バランス","character-balanced","Character",0
+"c95441de-f949-4a62-b02b-101aa2e0a638","Defense","防御","character-def","Character",2
+"e36b0573-79c3-4dd2-9524-c95def4bbb1a","Multiattack","連続攻撃","character-multi","Character",3
+"d691a61c-dc7e-4d92-a8e6-98c04608353c","Attack","攻撃","weapon-atk","Weapon",1
+"a60b8356-ec37-4f8b-a188-a3d48803ac76","C.A.","奥義","weapon-ca","Weapon",4
+"969d37db-5f14-4d1a-bef4-59ba5a016674","Defense","防御","weapon-def","Weapon",2
+"26a47007-8886-476a-b6c0-b56c8fcdb09f","Healing","回復","weapon-heal","Weapon",5
+"18ab5007-3fcb-4f83-a7a0-879a9a4a7ad7","Skill DMG","アビダメ","weapon-skill","Weapon",6
+"275c9de5-db1e-4c66-8210-660505fd1af4","Special","特殊","weapon-special","Weapon",3

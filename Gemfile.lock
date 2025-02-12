@@ -485,6 +485,7 @@ DEPENDENCIES
   rails
   redis
   responders
+  rspec
   rspec-rails
   rspec_junit_formatter
   rubocop

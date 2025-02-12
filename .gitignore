@@ -21,6 +21,9 @@
 !/log/.keep
 !/tmp/.keep
 
+# Ignore simplecov directory
+/coverage/*
+
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
 !/tmp/pids/

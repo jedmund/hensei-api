@@ -86,7 +86,7 @@ module Api
       end
 
       def render_unprocessable_entity_response(exception)
-        render json: ErrorBlueprint.render_as_json(nil, exception: exception),
+        render json: ErrorBlueprint.render_as_json(nil, errors: exception.to_hash),
                status: :unprocessable_entity
       end
 

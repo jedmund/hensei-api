@@ -1,6 +1,30 @@
 # frozen_string_literal: true
 
+##
+# Model representing a grid weapon within a party.
+#
+# This model associates a weapon with a party and manages validations for weapon compatibility,
+# conflict detection, and attribute adjustments such as determining if a weapon is mainhand.
+#
+# @!attribute [r] weapon
+#   @return [Weapon] the associated weapon.
+# @!attribute [r] party
+#   @return [Party] the party to which the grid weapon belongs.
+# @!attribute [r] weapon_key1
+#   @return [WeaponKey, nil] the primary weapon key, if assigned.
+# @!attribute [r] weapon_key2
+#   @return [WeaponKey, nil] the secondary weapon key, if assigned.
+# @!attribute [r] weapon_key3
+#   @return [WeaponKey, nil] the tertiary weapon key, if assigned.
+# @!attribute [r] weapon_key4
+#   @return [WeaponKey, nil] the quaternary weapon key, if assigned.
+# @!attribute [r] awakening
+#   @return [Awakening, nil] the associated awakening, if any.
 class GridWeapon < ApplicationRecord
+  # Allowed extra positions and allowed weapon series when in an extra position.
+  EXTRA_POSITIONS = [9, 10, 11].freeze
+  ALLOWED_EXTRA_SERIES = [11, 16, 17, 28, 29, 32, 34].freeze
+
   belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
 
   belongs_to :party,
@@ -15,10 +39,14 @@ class GridWeapon < ApplicationRecord
 
   belongs_to :awakening, optional: true
 
+  # Validate that uncap_level and transcendence_step are present and numeric.
+  validates :uncap_level, presence: true, numericality: { only_integer: true }
+  validates :transcendence_step, presence: true, numericality: { only_integer: true }
+
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
 
-  before_save :mainhand?
+  before_save :assign_mainhand
 
   ##### Amoeba configuration
   amoeba do
@@ -28,69 +56,99 @@ class GridWeapon < ApplicationRecord
     nullify :ax_strength2
   end
 
-  # Helper methods
+  ##
+  # Returns the blueprint for rendering the grid weapon.
+  #
+  # @return [GridWeaponBlueprint] the blueprint class for grid weapons.
   def blueprint
     GridWeaponBlueprint
   end
 
+  ##
+  # Returns an array of assigned weapon keys.
+  #
+  # This method returns an array containing weapon_key1, weapon_key2, and weapon_key3,
+  # omitting any nil values.
+  #
+  # @return [Array<WeaponKey>] the non-nil weapon keys.
   def weapon_keys
     [weapon_key1, weapon_key2, weapon_key3].compact
   end
 
-  # Returns conflicting weapons if they exist
+  ##
+  # Returns conflicting grid weapons within a given party.
+  #
+  # Checks if the associated weapon is present, responds to a :limit method, and is limited.
+  # It then iterates over the party's grid weapons and selects those that conflict with this one,
+  # based on series matching or specific conditions related to opus or draconic status.
+  #
+  # @param party [Party] the party in which to check for conflicts.
+  # @return [ActiveRecord::Relation<GridWeapon>] an array of conflicting grid weapons (empty if none are found).
   def conflicts(party)
-    return unless weapon.limit
+    return [] unless weapon.present? && weapon.respond_to?(:limit) && weapon.limit
 
-    conflicting_weapons = []
-
-    party.weapons.each do |party_weapon|
-      next unless party_weapon.id
+    party.weapons.select do |party_weapon|
+      # Skip if the record is not persisted.
+      next false unless party_weapon.id.present?
 
       id_match = weapon.id == party_weapon.id
       series_match = weapon.series == party_weapon.weapon.series
       both_opus_or_draconic = weapon.opus_or_draconic? && party_weapon.weapon.opus_or_draconic?
       both_draconic = weapon.draconic_or_providence? && party_weapon.weapon.draconic_or_providence?
 
-      conflicting_weapons << party_weapon if (series_match || both_opus_or_draconic || both_draconic) && !id_match
+      (series_match || both_opus_or_draconic || both_draconic) && !id_match
     end
-
-    conflicting_weapons
   end
 
   private
 
-  # Conflict management methods
-
-  # Validates whether the weapon can be added to the desired position
+  ##
+  # Validates whether the grid weapon is compatible with the desired position.
+  #
+  # For positions 9, 10, or 11 (considered extra positions), the weapon's series must belong to the allowed set.
+  # If the weapon is in an extra position but does not match an allowed series, an error is added.
+  #
+  # @return [void]
   def compatible_with_position
-    is_extra_position = [9, 10, 11].include?(position.to_i)
-    is_extra_weapon = [11, 16, 17, 28, 29, 32, 34].include?(weapon.series.to_i)
+    return unless weapon.present?
 
-    return unless is_extra_position
-
-    return true if is_extra_weapon
-
-    errors.add(:series, 'must be compatible with position')
-    false
+    if EXTRA_POSITIONS.include?(position.to_i) && !ALLOWED_EXTRA_SERIES.include?(weapon.series.to_i)
+      errors.add(:series, 'must be compatible with position')
+    end
   end
 
-  # Validates whether the desired weapon key can be added to the weapon
+  ##
+  # Validates that the assigned weapon keys are compatible with the weapon.
+  #
+  # Iterates over each non-nil weapon key and checks compatibility using the weapon's
+  # `compatible_with_key?` method. An error is added for any key that is not compatible.
+  #
+  # @return [void]
   def compatible_with_key
     weapon_keys.each do |key|
       errors.add(:weapon_keys, 'must be compatible with weapon') unless weapon.compatible_with_key?(key)
     end
   end
 
-  # Validates whether there is a conflict with the party
+  ##
+  # Validates that there are no conflicting grid weapons in the party.
+  #
+  # Checks if the current grid weapon conflicts with any other grid weapons within the party.
+  # If conflicting weapons are found, an error is added.
+  #
+  # @return [void]
   def no_conflicts
-    # Check if the grid weapon conflicts with any of the other grid weapons in the party
-    return unless !conflicts(party).nil? && !conflicts(party).empty?
-
-    errors.add(:series, 'must not conflict with existing weapons')
+    conflicting = conflicts(party)
+    errors.add(:series, 'must not conflict with existing weapons') if conflicting.any?
   end
 
-  # Checks if the weapon should be a mainhand before saving the model
-  def mainhand?
-    self.mainhand = position == -1
+  ##
+  # Determines if the grid weapon should be marked as mainhand based on its position.
+  #
+  # If the grid weapon's position is -1, sets the `mainhand` attribute to true.
+  #
+  # @return [void]
+  def assign_mainhand
+    self.mainhand = (position == -1)
   end
 end

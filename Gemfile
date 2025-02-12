@@ -84,8 +84,7 @@ end
 group :development, :test do
   gem 'amazing_print'
   gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'faker'
+  gem 'prosopite'
   gem 'pry'
   gem 'rspec_junit_formatter'
   gem 'rspec-rails'
@@ -94,7 +93,6 @@ end
 group :development do
   gem 'listen'
   gem 'pg_query'
-  gem 'prosopite'
   gem 'solargraph'
   gem 'spring'
   gem 'spring-commands-rspec'
@@ -109,6 +107,9 @@ group :test do
   gem 'api_matchers'
   gem 'byebug'
   gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
 end
