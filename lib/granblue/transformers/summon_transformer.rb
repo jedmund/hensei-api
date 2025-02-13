@@ -40,54 +40,56 @@ module Granblue
       def transform
         Rails.logger.info "[TRANSFORM] Starting SummonTransformer#transform"
 
-        # Validate that input data is a Hash
         unless data.is_a?(Hash)
           Rails.logger.error "[TRANSFORM] Invalid summon data structure"
           Rails.logger.error "[TRANSFORM] Data class: #{data.class}"
           return []
         end
 
-        summons = []
-        # Process each summon in the data
-        data.each_value do |summon_data|
+        # Determine the maximum index from the keys (assumed to be numeric strings).
+        max_index = data.keys.map(&:to_i).max || 0
+        # Pre-allocate an array so that key "1" ends up at index 0, etc.
+        summons = Array.new(max_index)
+
+        # Process keys sorted numerically.
+        data.keys.sort_by(&:to_i).each do |key|
+          summon_data = data[key]
           Rails.logger.debug "[TRANSFORM] Processing summon: #{summon_data['master']['name'] if summon_data['master']}"
 
-          # Extract master and parameter data
           master, param = get_master_param(summon_data)
           unless master && param
             Rails.logger.debug "[TRANSFORM] Skipping summon - missing master or param data"
             next
           end
 
-          # Build base summon hash with required attributes
+          # Build the base summon hash.
           summon = {
-            name: master['name'], # Summon's display name
-            id: master['id'], # Unique identifier
-            uncap: param['evolution'].to_i # Current uncap level
+            name: master['name'],
+            id: master['id'],
+            uncap: param['evolution'].to_i
           }
 
-          Rails.logger.debug "[TRANSFORM] Base summon data: #{summon}"
+          # Calculate and add transcendence level.
+          level = param['level'].to_i
+          summon[:transcend] = calculate_transcendence_level(level)
 
-          # Add transcendence level for highly uncapped summons
-          if summon[:uncap] > 5
-            level = param['level'].to_i
-            trans = calculate_transcendence_level(level)
-            summon[:transcend] = trans
-            Rails.logger.debug "[TRANSFORM] Added transcendence level: #{trans}"
-          end
-
-          # Mark quick summon status if this summon matches quick_summon_id
+          # Mark quick summon status if this summon matches quick_summon_id.
           if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
             summon[:qs] = true
-            Rails.logger.debug "[TRANSFORM] Marked as quick summon"
           end
 
-          summons << summon
+          # Include subaura (sub_skill) information if present.
+          if summon_data['sub_skill'].is_a?(Hash) && summon_data['sub_skill']['name']
+            summon[:sub_aura] = summon_data['sub_skill']['name']
+          end
+
+          # Place the summon in the proper 0-indexed slot.
+          summons[key.to_i - 1] = summon
           Rails.logger.info "[TRANSFORM] Successfully processed summon #{summon[:name]}"
         end
 
-        Rails.logger.info "[TRANSFORM] Completed processing #{summons.length} summons"
-        summons
+        Rails.logger.info "[TRANSFORM] Completed processing #{summons.compact.length} summons"
+        summons.compact
       end
 
       private
