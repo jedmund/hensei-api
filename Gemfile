@@ -76,6 +76,11 @@ gem 'strscan'
 # New Relic Ruby Agent
 gem 'newrelic_rpm'
 
+# The Sentry SDK for Rails
+gem "stackprof"
+gem "sentry-ruby"
+gem "sentry-rails"
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
