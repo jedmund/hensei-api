@@ -6,7 +6,7 @@ module Api
       class ForbiddenError < StandardError; end
 
       before_action :set, except: %w[create check_email check_username]
-      before_action :set_by_id, only: %w[info update]
+      before_action :set_by_id, only: %w[update]
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
