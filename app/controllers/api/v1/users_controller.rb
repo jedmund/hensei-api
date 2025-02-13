@@ -55,34 +55,39 @@ module Api
         if @user.nil?
           render_not_found_response('user')
         else
-          conditions = build_conditions
-          conditions[:user_id] = @user.id
-
-          favorites_query = "EXISTS (SELECT 1 FROM favorites WHERE favorites.party_id = parties.id AND favorites.user_id = #{current_user&.id || 'NULL'}) AS is_favorited"
-          parties = Party.where(conditions)
-                         .where(name_quality)
-                         .where(user_quality)
-                         .where(original)
-                         .where(privacy)
-                         .includes(:favorites)
-                         .select(Party.arel_table[Arel.star])
-                         .select(
-                           Arel.sql(favorites_query)
-                         )
-                         .order(created_at: :desc)
-                         .paginate(page: request.params[:page], per_page: COLLECTION_PER_PAGE)
-
-          count = Party.where(conditions).count
-
+          base_query = Party.includes(
+            { raid: :group },
+            :job,
+            :user,
+            :skill0,
+            :skill1,
+            :skill2,
+            :skill3,
+            :guidebook1,
+            :guidebook2,
+            :guidebook3,
+            { characters: :character },
+            { weapons: :weapon },
+            { summons: :summon }
+          )
+          # Restrict to parties belonging to the profile owner
+          base_query = base_query.where(user_id: @user.id)
+          skip_privacy = (current_user&.id == @user.id)
+          query = PartyQueryBuilder.new(
+            base_query,
+            params: params,
+            current_user: current_user,
+            options: { skip_privacy: skip_privacy }
+          ).build
+          parties = query.paginate(page: params[:page], per_page: PartyConstants::COLLECTION_PER_PAGE)
+          count = query.count
           render json: UserBlueprint.render(@user,
                                             view: :profile,
                                             root: 'profile',
                                             parties: parties,
-                                            meta: {
-                                              count: count,
-                                              total_pages: count.to_f / COLLECTION_PER_PAGE > 1 ? (count.to_f / COLLECTION_PER_PAGE).ceil : 1,
-                                              per_page: COLLECTION_PER_PAGE
-                                            })
+                                            meta: { count: count, total_pages: (count.to_f / PartyConstants::COLLECTION_PER_PAGE).ceil, per_page: PartyConstants::COLLECTION_PER_PAGE },
+                                            current_user: current_user
+          )
         end
       end
 
@@ -97,6 +102,36 @@ module Api
       def destroy; end
 
       private
+
+      def build_profile_query(profile_user)
+        query = Party.includes(
+          { raid: :group },
+          :job,
+          :user,
+          :skill0,
+          :skill1,
+          :skill2,
+          :skill3,
+          :guidebook1,
+          :guidebook2,
+          :guidebook3,
+          { characters: :character },
+          { weapons: :weapon },
+          { summons: :summon }
+        )
+        # Restrict to parties belonging to the profile’s owner.
+        query = query.where(user_id: profile_user.id)
+        # Then apply the additional filters that we normally use:
+        query = query.where(name_quality)
+                     .where(user_quality)
+                     .where(original)
+                     .where(privacy)
+        # And if there are any request-supplied filters, includes, or excludes:
+        query = apply_filters(query) if params[:filters].present?
+        query = apply_includes(query, params[:includes]) if params[:includes].present?
+        query = apply_excludes(query, params[:excludes]) if params[:excludes].present?
+        query.order(created_at: :desc)
+      end
 
       def build_conditions
         params = request.params
