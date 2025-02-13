@@ -146,7 +146,7 @@ RSpec.describe 'Parties API', type: :request do
 
   describe 'Preview Management Endpoints' do
     let(:user) { create(:user) }
-    let!(:party) { create(:party, user: user, shortcode: 'PREV01', element: 'default') }
+    let!(:party) { create(:party, user: user, shortcode: 'PREV01', element: 0) }
     let(:headers) do
       { 'Authorization' => "Bearer #{Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public').token}",
         'Content-Type' => 'application/json' }
