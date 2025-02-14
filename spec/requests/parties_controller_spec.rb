@@ -107,6 +107,31 @@ RSpec.describe 'Parties API', type: :request do
       expect(json['results']).to be_an(Array)
       expect(json['meta']).to have_key('count')
     end
+
+    before do
+      # For index, assume the controller builds the query with defaults turned on.
+      # Create one party that meets the default thresholds and one that does not.
+      # Defaults: weapons_count >= 5, characters_count >= 3, summons_count >= 2.
+      @good_party = create(:party, user: user,
+                           weapons_count: 5,
+                           characters_count: 4,
+                           summons_count: 2,
+                           visibility: 1)
+      @bad_party = create(:party, user: user,
+                          weapons_count: 2, # below default threshold
+                          characters_count: 2,
+                          summons_count: 1,
+                          visibility: 1)
+    end
+
+    it 'returns only parties meeting the default filters' do
+      get '/api/v1/parties', headers: headers
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      party_ids = json['results'].map { |p| p['id'] }
+      expect(party_ids).to include(@good_party.id)
+      expect(party_ids).not_to include(@bad_party.id)
+    end
   end
 
   describe 'GET /api/v1/parties/favorites' do
@@ -123,19 +148,12 @@ RSpec.describe 'Parties API', type: :request do
       create_list(:grid_summon, 2, party: party)
       party.reload # Reload to update counter caches.
 
-      ap "DEBUG: Party counts - characters: #{party.characters_count}, weapons: #{party.weapons_count}, summons: #{party.summons_count}"
-
       create(:favorite, user: user, party: party)
     end
 
     before { create(:favorite, user: user, party: party) }
 
     it 'lists parties favorited by the current user' do
-      # Debug: print IDs returned by the join query (this code can be removed later)
-      favorite_ids = Party.joins(:favorites).where(favorites: { user_id: user.id }).distinct.pluck(:id)
-      ap "DEBUG: Created party id: #{party.id}"
-      ap "DEBUG: Favorite party ids: #{favorite_ids.inspect}"
-
       get '/api/v1/parties/favorites', headers: headers
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
