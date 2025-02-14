@@ -25,7 +25,10 @@ module PartyQueryingConcern
 
   # Uses PartyQueryBuilder to apply additional filters (includes, excludes, date ranges, etc.)
   def build_filtered_query(base_query)
-    PartyQueryBuilder.new(base_query, params: params, current_user: current_user).build
+    PartyQueryBuilder.new(base_query,
+                          params: params,
+                          current_user: current_user,
+                          options: { apply_defaults: true }).build
   end
 
   # Renders paginated parties using PartyBlueprint.
