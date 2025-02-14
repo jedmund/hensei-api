@@ -34,7 +34,6 @@ RSpec.describe PartyQueryBuilder, type: :model do
       it 'returns an ActiveRecord::Relation with filters applied' do
         query = subject.build
         sql = query.to_sql
-
         # Expect the element filter to be applied (converted to integer)
         expect(sql).to include('"parties"."element" = 3')
         # Expect the raid filter to be applied
@@ -190,6 +189,61 @@ RSpec.describe PartyQueryBuilder, type: :model do
           query = subject.send(:apply_excludes, base_query, bad_param)
           sql = query.to_sql
           expect(sql).not_to include('NOT EXISTS (')
+        end
+      end
+
+      context 'when apply_defaults option is true' do
+        subject do
+          described_class.new(
+            base_query,
+            params: params,
+            current_user: current_user,
+            options: { apply_defaults: true }
+          )
+        end
+
+        it 'adds count filters to the query' do
+          query = subject.build
+          sql = query.to_sql
+          expect(sql).to include('"weapons_count" BETWEEN')
+          expect(sql).to include('"characters_count" BETWEEN')
+          expect(sql).to include('"summons_count" BETWEEN')
+        end
+      end
+
+      context 'when apply_defaults option is false (or not provided)' do
+        let(:blanked_params) do
+          {
+            element: '3',
+            raid: '123e4567-e89b-12d3-a456-426614174000',
+            recency: '3600',
+            full_auto: '1',
+            auto_guard: '0',
+            charge_attack: '1',
+            weapons_count: '', # blank => should use default
+            characters_count: '',
+            summons_count: '',
+            includes: '300001,200002',
+            excludes: '100003',
+            name_quality: '1' # dummy flag for testing name_quality clause
+          }
+        end
+
+        subject do
+          described_class.new(
+            base_query,
+            params: blanked_params,
+            current_user: current_user,
+            options: {}
+          )
+        end
+
+        it 'does not add count filters to the query' do
+          query = subject.build
+          sql = query.to_sql
+          expect(sql).not_to include('weapons_count BETWEEN')
+          expect(sql).not_to include('characters_count BETWEEN')
+          expect(sql).not_to include('summons_count BETWEEN')
         end
       end
     end
