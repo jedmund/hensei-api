@@ -18,7 +18,7 @@ module PostDeployment
       if @test_mode
         simulate_migrations
       else
-        perform_migrations
+        perform_migrations_in_order
       end
     end
 
@@ -80,6 +80,29 @@ module PostDeployment
         end
         if data_version != new_data_version
           log_step "Migrated data from version #{data_version} to #{new_data_version}"
+        end
+      end
+    end
+
+    def perform_migrations_in_order
+      schema_context = ActiveRecord::Base.connection.migration_context
+      schema_migrations = schema_context.migrations
+
+      data_migrations_path = DataMigrate.config.data_migrations_path
+      data_context = DataMigrate::MigrationContext.new(data_migrations_path)
+      data_migrations = data_context.migrations
+
+      all_migrations = (schema_migrations + data_migrations).sort_by(&:version)
+
+      all_migrations.each do |migration|
+        if migration.filename.start_with?(data_migrations_path)
+          say "Running data migration: #{migration.name}"
+          # Run the data migration (you might need to call `data_context.run(migration)` or similar)
+          data_context.run(migration)
+        else
+          say "Running schema migration: #{migration.name}"
+          # Run the schema migration (Rails will handle this for you)
+          schema_context.run(migration)
         end
       end
     end
