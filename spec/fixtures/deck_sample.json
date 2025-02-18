@@ -1,0 +1,3066 @@
+{
+  "is_equipment_shield": false,
+  "is_equipment_familiar": true,
+  "is_companionweapon_job_skin": false,
+  "bullet_info": [],
+  "hiddenweapon_count": null,
+  "deck": {
+    "group_name": "Party Slot 16",
+    "is_used": false,
+    "name": "ルシゼロ",
+    "order_no": 1,
+    "priority": 161,
+    "combination_id": 20505522,
+    "combination_group_id": 3393346,
+    "npc": {
+      "1": {
+        "master": {
+          "id": "3040425000",
+          "character_id": "3042",
+          "name": "Percival",
+          "short_name": "Percival",
+          "attribute": 1,
+          "rarity": "4",
+          "type": "2",
+          "image_id": null,
+          "tribe": "1",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 83069,
+          "hp": 21974,
+          "level": "80",
+          "total": "22260",
+          "quality": "300",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 205376859,
+          "image_id_3": "skin/3710026000_01_s1",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3710026000_01",
+          "cjs_position": null,
+          "image_id_3_tower": "skin/3710026000_01_s1"
+        },
+        "skill": {
+          "count": 20,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP",
+              "sort": "10100151"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to fire allies' ATK and max HP",
+              "sort": "10100153"
+            },
+            {
+              "over": 4,
+              "comment": "Small boost to fire allies' ATK and critical hit rate",
+              "sort": "10100413"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to all allies' ATK / Small boost to HP",
+              "sort": "10100803"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+              "sort": "10301004"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, DEF, and max HP",
+              "sort": "10301101"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' critical hit rate and healing cap",
+              "sort": "10500411"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10700971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK based on number of turns passed",
+              "sort": "10707971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK based on how many staffs are equipped",
+              "sort": "10708005"
+            },
+            {
+              "over": 3,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+              "sort": "10709311"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify fire allies' DMG against non-elemental foes",
+              "sort": "10710011"
+            },
+            {
+              "over": 3,
+              "comment": "Big Bonus Fire DMG effect to fire allies",
+              "sort": "10710511"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' healing cap",
+              "sort": "20200200"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' DEF based on how low HP is",
+              "sort": "20300011"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' normal attack DMG cap",
+              "sort": "30300005"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300013"
+            },
+            {
+              "over": 1,
+              "comment": "Supplement fire allies' critical hit DMG",
+              "sort": "40101921"
+            },
+            {
+              "over": 3,
+              "comment": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+              "sort": "40102711"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "2": {
+        "master": {
+          "id": "3040499000",
+          "character_id": "3024",
+          "name": "Zeta",
+          "short_name": "Zeta",
+          "attribute": 1,
+          "rarity": "4",
+          "type": "2",
+          "image_id": null,
+          "tribe": "1",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 83825,
+          "hp": 21934,
+          "level": "80",
+          "total": "23900",
+          "quality": "300",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 218553088,
+          "image_id_3": "3040499000_02",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3040499000_02",
+          "cjs_position": null,
+          "image_id_3_tower": "3040499000_02"
+        },
+        "skill": {
+          "count": 21,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP",
+              "sort": "10100151"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to fire allies' ATK and max HP",
+              "sort": "10100153"
+            },
+            {
+              "over": 4,
+              "comment": "Small boost to fire allies' ATK and critical hit rate",
+              "sort": "10100413"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to all allies' ATK / Small boost to HP",
+              "sort": "10100803"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+              "sort": "10301004"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, DEF, and max HP",
+              "sort": "10301101"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' critical hit rate and healing cap",
+              "sort": "10500411"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10700971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK based on number of turns passed",
+              "sort": "10707971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK based on how many staffs are equipped",
+              "sort": "10708005"
+            },
+            {
+              "over": 3,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+              "sort": "10709311"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify fire allies' DMG against non-elemental foes",
+              "sort": "10710011"
+            },
+            {
+              "over": 3,
+              "comment": "Big Bonus Fire DMG effect to fire allies",
+              "sort": "10710511"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' healing cap",
+              "sort": "20200200"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' DEF based on how low HP is",
+              "sort": "20300011"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' normal attack DMG cap",
+              "sort": "30300005"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300013"
+            },
+            {
+              "over": 1,
+              "comment": "Supplement fire allies' critical hit DMG",
+              "sort": "40101921"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify skill DMG for dagger- and spear-specialty allies <span class=text-blue>(Skill DMG further amplified in Arcarum)</span>",
+              "sort": "40102212"
+            },
+            {
+              "over": 3,
+              "comment": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+              "sort": "40102711"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "3": {
+        "master": {
+          "id": "3040519000",
+          "character_id": "3246",
+          "name": "Fenie",
+          "short_name": "Fenie",
+          "attribute": 1,
+          "rarity": "4",
+          "type": "4",
+          "image_id": null,
+          "tribe": "5",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 79400,
+          "hp": 23258,
+          "level": "80",
+          "total": "21104",
+          "quality": "300",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 222912196,
+          "image_id_3": "3040519000_01",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3040519000_02",
+          "cjs_position": null,
+          "image_id_3_tower": "3040519000_01"
+        },
+        "skill": {
+          "count": 21,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP",
+              "sort": "10100151"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to fire allies' ATK and max HP",
+              "sort": "10100153"
+            },
+            {
+              "over": 4,
+              "comment": "Small boost to fire allies' ATK and critical hit rate",
+              "sort": "10100413"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to all allies' ATK / Small boost to HP",
+              "sort": "10100803"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+              "sort": "10301004"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, DEF, and max HP",
+              "sort": "10301101"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' critical hit rate and healing cap",
+              "sort": "10500411"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10700971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK based on number of turns passed",
+              "sort": "10707971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK based on how many staffs are equipped",
+              "sort": "10708005"
+            },
+            {
+              "over": 3,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+              "sort": "10709311"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify fire allies' DMG against non-elemental foes",
+              "sort": "10710011"
+            },
+            {
+              "over": 3,
+              "comment": "Big Bonus Fire DMG effect to fire allies",
+              "sort": "10710511"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' healing cap",
+              "sort": "20200200"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' DEF based on how low HP is",
+              "sort": "20300011"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' normal attack DMG cap",
+              "sort": "30300005"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300013"
+            },
+            {
+              "over": 1,
+              "comment": "<span class=text-small>Big boost to staff-specialty allies' ATK and max HP and multiattack rate</span>",
+              "sort": "40100935"
+            },
+            {
+              "over": 1,
+              "comment": "Supplement fire allies' critical hit DMG",
+              "sort": "40101921"
+            },
+            {
+              "over": 3,
+              "comment": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+              "sort": "40102711"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "4": {
+        "master": {
+          "id": "3040161000",
+          "character_id": "3100",
+          "name": "Fraux",
+          "short_name": "Fraux",
+          "attribute": 1,
+          "rarity": "4",
+          "type": "2",
+          "image_id": null,
+          "tribe": "2",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 80270,
+          "hp": 22449,
+          "level": "100",
+          "total": "23023",
+          "quality": "300",
+          "evolution": "5",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 136112235,
+          "image_id_3": "3040161000_03",
+          "has_npcaugment_constant": false,
+          "cjs_name": "npc_3040161000_03",
+          "cjs_position": {
+            "x": -7,
+            "y": 0
+          },
+          "image_id_3_tower": "3040161000_03"
+        },
+        "skill": {
+          "count": 20,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP",
+              "sort": "10100151"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to fire allies' ATK and max HP",
+              "sort": "10100153"
+            },
+            {
+              "over": 4,
+              "comment": "Small boost to fire allies' ATK and critical hit rate",
+              "sort": "10100413"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to all allies' ATK / Small boost to HP",
+              "sort": "10100803"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+              "sort": "10301004"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, DEF, and max HP",
+              "sort": "10301101"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' critical hit rate and healing cap",
+              "sort": "10500411"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10700971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK based on number of turns passed",
+              "sort": "10707971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK based on how many staffs are equipped",
+              "sort": "10708005"
+            },
+            {
+              "over": 3,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+              "sort": "10709311"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify fire allies' DMG against non-elemental foes",
+              "sort": "10710011"
+            },
+            {
+              "over": 3,
+              "comment": "Big Bonus Fire DMG effect to fire allies",
+              "sort": "10710511"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' healing cap",
+              "sort": "20200200"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' DEF based on how low HP is",
+              "sort": "20300011"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' normal attack DMG cap",
+              "sort": "30300005"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300013"
+            },
+            {
+              "over": 1,
+              "comment": "Supplement fire allies' critical hit DMG",
+              "sort": "40101921"
+            },
+            {
+              "over": 3,
+              "comment": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+              "sort": "40102711"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "5": {
+        "master": {
+          "id": "3040167000",
+          "character_id": "3106",
+          "name": "Alanaan",
+          "short_name": "Alanaan",
+          "attribute": 1,
+          "rarity": "4",
+          "type": "2",
+          "image_id": null,
+          "tribe": "2",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 84825,
+          "hp": 18603,
+          "level": "100",
+          "total": "21874",
+          "quality": "300",
+          "evolution": "5",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 128935603,
+          "image_id_3": "3040167000_03",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3040167000_03",
+          "cjs_position": null,
+          "image_id_3_tower": "3040167000_03"
+        },
+        "skill": {
+          "count": 21,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP",
+              "sort": "10100151"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to fire allies' ATK and max HP",
+              "sort": "10100153"
+            },
+            {
+              "over": 4,
+              "comment": "Small boost to fire allies' ATK and critical hit rate",
+              "sort": "10100413"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to all allies' ATK / Small boost to HP",
+              "sort": "10100803"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+              "sort": "10301004"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK, DEF, and max HP",
+              "sort": "10301101"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' critical hit rate and healing cap",
+              "sort": "10500411"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10700971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK based on number of turns passed",
+              "sort": "10707971"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to ATK based on how many staffs are equipped",
+              "sort": "10708005"
+            },
+            {
+              "over": 3,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+              "sort": "10709311"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify fire allies' DMG against non-elemental foes",
+              "sort": "10710011"
+            },
+            {
+              "over": 3,
+              "comment": "Big Bonus Fire DMG effect to fire allies",
+              "sort": "10710511"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' healing cap",
+              "sort": "20200200"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to fire allies' DEF based on how low HP is",
+              "sort": "20300011"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' normal attack DMG cap",
+              "sort": "30300005"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300013"
+            },
+            {
+              "over": 1,
+              "comment": "<span class=text-small>Big boost to staff-specialty allies' ATK and max HP and multiattack rate</span>",
+              "sort": "40100935"
+            },
+            {
+              "over": 1,
+              "comment": "Supplement fire allies' critical hit DMG",
+              "sort": "40101921"
+            },
+            {
+              "over": 3,
+              "comment": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+              "sort": "40102711"
+            }
+          ]
+        },
+        "is_doll": false
+      }
+    },
+    "pc": {
+      "skin_weapon_id": null,
+      "skin_weapon_id_2": null,
+      "use_skin_weapon_effect": "0",
+      "use_skin_weapon_effect_2": "0",
+      "weapons": {
+        "1": {
+          "param": {
+            "id": 4585965586,
+            "image_id": "1040422700",
+            "level": "150",
+            "attack": "3284",
+            "hp": "496",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040422700",
+            "name": "Phoenix's Torch",
+            "attribute": "1",
+            "kind": "5",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "2347",
+            "description": "Big boost to fire allies' critical hit rate and healing cap",
+            "image": "skill_tec_heal_limit_1_3",
+            "attribute": "1",
+            "name": "Inferno's Precocity"
+          },
+          "skill2": {
+            "id": "2353",
+            "description": "When main weapon (MC only): When MC's HP is 50% or above after normal attacks: 6-hit fire DMG to a foe / Raise Singed lvl by 1",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Flame of the Godrender"
+          },
+          "skill3": {
+            "id": "2354",
+            "description": "When main weapon (MC only): At end of turn when a foe's Singed lvl is 7 or above: Restore fire allies' HP / 10% boost to charge bars",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Prayer of the Phoenix"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "2": {
+          "param": {
+            "id": 4194991591,
+            "image_id": "1040023700",
+            "level": "150",
+            "attack": "3845",
+            "hp": "384",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040023700",
+            "name": "Lord of Flames",
+            "attribute": "1",
+            "kind": "1",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1913",
+            "description": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Scarlet Convergence"
+          },
+          "skill2": {
+            "id": "375",
+            "description": "Small boost to fire allies' ATK and max HP",
+            "image": "skill_god_1",
+            "attribute": "1",
+            "name": "Fire's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "3": {
+          "param": {
+            "id": 4194991596,
+            "image_id": "1040023700",
+            "level": "150",
+            "attack": "3845",
+            "hp": "384",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040023700",
+            "name": "Lord of Flames",
+            "attribute": "1",
+            "kind": "1",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1913",
+            "description": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Scarlet Convergence"
+          },
+          "skill2": {
+            "id": "375",
+            "description": "Small boost to fire allies' ATK and max HP",
+            "image": "skill_god_1",
+            "attribute": "1",
+            "name": "Fire's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "4": {
+          "param": {
+            "id": 4254504765,
+            "image_id": "1040023700",
+            "level": "150",
+            "attack": "3845",
+            "hp": "384",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040023700",
+            "name": "Lord of Flames",
+            "attribute": "1",
+            "kind": "1",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1913",
+            "description": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Scarlet Convergence"
+          },
+          "skill2": {
+            "id": "375",
+            "description": "Small boost to fire allies' ATK and max HP",
+            "image": "skill_god_1",
+            "attribute": "1",
+            "name": "Fire's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "5": {
+          "param": {
+            "id": 4520829180,
+            "image_id": "1040218900",
+            "level": "150",
+            "attack": "3609",
+            "hp": "430",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040218900",
+            "name": "Overrider",
+            "attribute": "1",
+            "kind": "3",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "1",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "2025",
+            "description": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+            "image": "skill_optimus_1",
+            "attribute": "1",
+            "name": "Optimus Exalto Ardendi"
+          },
+          "skill2": {
+            "id": "845",
+            "description": "Small boost to fire allies' ATK and critical hit rate",
+            "image": "skill_moment_1_1",
+            "attribute": "1",
+            "name": "Fire's Celere"
+          },
+          "skill3": {
+            "id": "2174",
+            "description": "Big Bonus Fire DMG effect to fire allies",
+            "image": "skill_concurrent_attack_1_3",
+            "attribute": "1",
+            "name": "Inferno's Deathstrike"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "6": {
+          "param": {
+            "id": 4520829482,
+            "image_id": "1040218900",
+            "level": "150",
+            "attack": "3609",
+            "hp": "430",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040218900",
+            "name": "Overrider",
+            "attribute": "1",
+            "kind": "3",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "1",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "2025",
+            "description": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+            "image": "skill_optimus_1",
+            "attribute": "1",
+            "name": "Optimus Exalto Ardendi"
+          },
+          "skill2": {
+            "id": "845",
+            "description": "Small boost to fire allies' ATK and critical hit rate",
+            "image": "skill_moment_1_1",
+            "attribute": "1",
+            "name": "Fire's Celere"
+          },
+          "skill3": {
+            "id": "2174",
+            "description": "Big Bonus Fire DMG effect to fire allies",
+            "image": "skill_concurrent_attack_1_3",
+            "attribute": "1",
+            "name": "Inferno's Deathstrike"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "7": {
+          "param": {
+            "id": 4520829475,
+            "image_id": "1040218900",
+            "level": "150",
+            "attack": "3609",
+            "hp": "430",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040218900",
+            "name": "Overrider",
+            "attribute": "1",
+            "kind": "3",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "1",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "2025",
+            "description": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+            "image": "skill_optimus_1",
+            "attribute": "1",
+            "name": "Optimus Exalto Ardendi"
+          },
+          "skill2": {
+            "id": "845",
+            "description": "Small boost to fire allies' ATK and critical hit rate",
+            "image": "skill_moment_1_1",
+            "attribute": "1",
+            "name": "Fire's Celere"
+          },
+          "skill3": {
+            "id": "2174",
+            "description": "Big Bonus Fire DMG effect to fire allies",
+            "image": "skill_concurrent_attack_1_3",
+            "attribute": "1",
+            "name": "Inferno's Deathstrike"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "8": {
+          "param": {
+            "id": 2679385223,
+            "image_id": "1040310600_03",
+            "level": "250",
+            "attack": "4935",
+            "hp": "417",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "25"
+          },
+          "master": {
+            "id": "1040310600",
+            "name": "Scythe of Repudiation",
+            "attribute": "1",
+            "kind": "4",
+            "rarity": "4",
+            "is_group": "17",
+            "series_id": "3",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "2192",
+            "description": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+            "image": "skill_atk_hp_rise_1_3\t",
+            "attribute": "1",
+            "name": "Inferno's Apotheosis"
+          },
+          "skill2": {
+            "id": "2209",
+            "description": "Boost to skill DMG cap and skill hit rate",
+            "image": "skill_ability_limit_3",
+            "attribute": "",
+            "name": "β Revelation Albus II"
+          },
+          "skill3": {
+            "id": "2212",
+            "description": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Divine Fire's Ruination"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "9": {
+          "param": {
+            "id": 4517515696,
+            "image_id": "1040025100",
+            "level": "150",
+            "attack": "3901",
+            "hp": "387",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "20",
+            "arousal_form": "2",
+            "arousal_exp": "10500",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": true,
+              "level": 20,
+              "form": 2,
+              "form_name": "Defense",
+              "remain_for_next_level": 0,
+              "width": 100,
+              "is_complete_condition": true,
+              "release_conditions": [
+                {
+                  "condition_type": "1",
+                  "condition_value": "100",
+                  "is_cleared": true
+                }
+              ],
+              "max_level": 20,
+              "total_bonus": {
+                "2": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "3": [
+                  {
+                    "name": "DEF",
+                    "image": "bonus_2",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "4": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ],
+                "5": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ],
+                "6": [
+                  {
+                    "name": "DEF",
+                    "image": "bonus_2",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "7": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 6
+                  }
+                ],
+                "8": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 6
+                  }
+                ],
+                "9": [
+                  {
+                    "name": "DEF",
+                    "image": "bonus_2",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "10": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 8
+                  }
+                ],
+                "11": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 8
+                  }
+                ],
+                "12": [
+                  {
+                    "name": "DEF",
+                    "image": "bonus_2",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "13": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 8
+                  }
+                ],
+                "14": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 8
+                  }
+                ],
+                "15": [
+                  {
+                    "name": "DEF",
+                    "image": "bonus_2",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "16": [
+                  {
+                    "name": "Debuff Resistance",
+                    "image": "bonus_3",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 2
+                  }
+                ],
+                "17": [
+                  {
+                    "name": "Wind Reduc.",
+                    "image": "bonus_7",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 2
+                  }
+                ],
+                "18": [
+                  {
+                    "name": "Debuff Resistance",
+                    "image": "bonus_3",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "19": [
+                  {
+                    "name": "Wind Reduc.",
+                    "image": "bonus_7",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 3
+                  }
+                ],
+                "20": [
+                  {
+                    "name": "Healing Cap",
+                    "image": "bonus_13",
+                    "attribute_image": "icon_type_1",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 5
+                  }
+                ]
+              },
+              "total_acquired_bonus": [
+                {
+                  "status_id": "191",
+                  "level": "2",
+                  "name": "HP",
+                  "effect_value": 55,
+                  "disp_string": "+%s%",
+                  "image": "bonus_14",
+                  "attribute_image": "icon_type_1",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "201",
+                  "level": "3",
+                  "name": "DEF",
+                  "effect_value": 15,
+                  "disp_string": "+%s%",
+                  "image": "bonus_2",
+                  "attribute_image": "icon_type_1",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "121",
+                  "level": "16",
+                  "name": "Debuff Resistance",
+                  "effect_value": 5,
+                  "disp_string": "+%s%",
+                  "image": "bonus_3",
+                  "attribute_image": "icon_type_1",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "134",
+                  "level": "17",
+                  "name": "Wind Reduc.",
+                  "effect_value": 5,
+                  "disp_string": "+%s%",
+                  "image": "bonus_7",
+                  "attribute_image": "icon_type_1",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "141",
+                  "level": "20",
+                  "name": "Healing Cap",
+                  "effect_value": 5,
+                  "disp_string": "+%s%",
+                  "image": "bonus_13",
+                  "attribute_image": "icon_type_1",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                }
+              ],
+              "skill": [
+                {
+                  "skill_id": 2121,
+                  "name": "HP",
+                  "comment": "Boost to fire allies' max HP",
+                  "image": "ex_skill_hp",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 55,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 2133,
+                  "name": "DEF",
+                  "comment": "Boost to fire allies' DEF",
+                  "image": "ex_skill_def",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 15,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 2067,
+                  "name": "Debuff Resistance",
+                  "comment": "Boost to fire allies' debuff resistance",
+                  "image": "ex_skill_guard_ailment",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 5,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 2076,
+                  "name": "Wind Reduction",
+                  "comment": "Wind DMG reduction to fire allies",
+                  "image": "ex_skill_damage_red_4",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 5,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 2079,
+                  "name": "Healing Cap",
+                  "comment": "Boost to fire allies' healing cap",
+                  "image": "ex_skill_heal",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 5,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                }
+              ],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040025100",
+            "name": "Extinction Blade Mk II",
+            "attribute": "1",
+            "kind": "1",
+            "rarity": "4",
+            "is_group": "",
+            "series_id": "37",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "426",
+            "description": "Big boost to fire allies' DEF based on how low HP is",
+            "image": "skill_guard_1_3",
+            "attribute": "1",
+            "name": "Inferno's Garrison"
+          },
+          "skill2": {
+            "id": "845",
+            "description": "Small boost to fire allies' ATK and critical hit rate",
+            "image": "skill_moment_1_1",
+            "attribute": "1",
+            "name": "Fire's Celere"
+          },
+          "skill3": {
+            "id": "1656",
+            "description": "Supplement fire allies' critical hit DMG",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Scarlet Craft"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "10": {
+          "param": {
+            "id": 4667152812,
+            "image_id": "1040423300",
+            "level": "150",
+            "attack": "2840",
+            "hp": "381",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "6",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "1"
+          },
+          "master": {
+            "id": "1040423300",
+            "name": "Altruism-Soul Staff",
+            "attribute": "5",
+            "kind": "5",
+            "rarity": "4",
+            "is_group": "",
+            "series_id": "41",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "1844",
+            "description": "Boost to ATK based on how many staffs are equipped",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Staff Voltage II"
+          },
+          "skill2": {
+            "id": "2252",
+            "description": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Ultimate Wisdom's Shine"
+          },
+          "skill3": {
+            "id": "2280",
+            "description": "Boost to ATK, DEF, and max HP",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Guiding Star's Splendor"
+          },
+          "hidden_skill1": {
+            "id": "2262",
+            "description": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Ultimate Wisdom's Shine"
+          },
+          "hidden_skill2": null
+        },
+        "11": {
+          "param": {
+            "id": 4067585848,
+            "image_id": "1040411100",
+            "level": "200",
+            "attack": "3173",
+            "hp": "401",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "20"
+          },
+          "master": {
+            "id": "1040411100",
+            "name": "Ultima Staff",
+            "attribute": "4",
+            "kind": "5",
+            "rarity": "4",
+            "is_group": "7",
+            "series_id": "13",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "711",
+            "description": "<span class=text-small>Big boost to staff-specialty allies' ATK, max HP, and multiattack rate</span>",
+            "image": "skill_weapon_da_5",
+            "attribute": "",
+            "name": "Baculum Parity"
+          },
+          "skill2": {
+            "id": "758",
+            "description": "Boost to all allies' normal attack DMG cap",
+            "image": "skill_normal_limit",
+            "attribute": "",
+            "name": "Scandere Aggressio"
+          },
+          "skill3": {
+            "id": "1808",
+            "description": "Boost to all allies' healing cap",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Fulgor Sanatio"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "12": {
+          "param": {
+            "id": 4497712807,
+            "image_id": "1040815200",
+            "level": "150",
+            "attack": "2743",
+            "hp": "344",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "10",
+            "arousal_form": "5",
+            "arousal_exp": "5400",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": true,
+              "level": 10,
+              "form": 5,
+              "form_name": "Skill DMG",
+              "remain_for_next_level": 0,
+              "width": 100,
+              "is_complete_condition": true,
+              "release_conditions": [
+                {
+                  "condition_type": "1",
+                  "condition_value": "150",
+                  "is_cleared": true
+                }
+              ],
+              "max_level": 10,
+              "total_bonus": {
+                "2": [
+                  {
+                    "name": "Skill DMG Cap",
+                    "image": "bonus_18",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ],
+                "3": [
+                  {
+                    "name": "EX Might",
+                    "image": "bonus_1",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 5
+                  }
+                ],
+                "4": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 5
+                  }
+                ],
+                "5": [
+                  {
+                    "name": "Skill DMG Cap",
+                    "image": "bonus_18",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ],
+                "6": [
+                  {
+                    "name": "EX Might",
+                    "image": "bonus_1",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 5
+                  }
+                ],
+                "7": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 5
+                  }
+                ],
+                "8": [
+                  {
+                    "name": "Skill DMG Cap",
+                    "image": "bonus_18",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ],
+                "9": [
+                  {
+                    "name": "Skill DMG Cap",
+                    "image": "bonus_18",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ],
+                "10": [
+                  {
+                    "name": "Skill DMG Cap",
+                    "image": "bonus_18",
+                    "attribute_image": "",
+                    "weapon_kind_images": [
+                      "2",
+                      "3"
+                    ],
+                    "disp_string": "+%s%",
+                    "effect_value": 4
+                  }
+                ]
+              },
+              "total_acquired_bonus": [
+                {
+                  "status_id": "223",
+                  "level": "2",
+                  "name": "Skill DMG Cap",
+                  "effect_value": 20,
+                  "disp_string": "+%s%",
+                  "image": "bonus_18",
+                  "attribute_image": "",
+                  "weapon_kind_images": [
+                    "2",
+                    "3"
+                  ],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "228",
+                  "level": "3",
+                  "name": "EX Might",
+                  "effect_value": 10,
+                  "disp_string": "+%s%",
+                  "image": "bonus_1",
+                  "attribute_image": "",
+                  "weapon_kind_images": [
+                    "2",
+                    "3"
+                  ],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "233",
+                  "level": "4",
+                  "name": "HP",
+                  "effect_value": 10,
+                  "disp_string": "+%s%",
+                  "image": "bonus_14",
+                  "attribute_image": "",
+                  "weapon_kind_images": [
+                    "2",
+                    "3"
+                  ],
+                  "unit_type": "1"
+                }
+              ],
+              "skill": [
+                {
+                  "skill_id": 2171,
+                  "name": "Skill DMG Cap",
+                  "comment": "Boost to skill DMG cap for dagger- and spear-specialty allies",
+                  "image": "ex_skill_ab_limit",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 20,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 2275,
+                  "name": "EX Might",
+                  "comment": "Boost to ATK for dagger- and spear-specialty allies",
+                  "image": "ex_skill_atk_ex",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 10,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 2270,
+                  "name": "HP",
+                  "comment": "Boost to max HP for dagger- and spear-specialty allies",
+                  "image": "ex_skill_hp",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 10,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                }
+              ],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040815200",
+            "name": "Worldstorming Aetos",
+            "attribute": "2",
+            "kind": "9",
+            "rarity": "4",
+            "is_group": "28",
+            "series_id": "38",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1996",
+            "description": "Massive boost to all allies' ATK / Small boost to HP",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Tidings of the New World"
+          },
+          "skill2": {
+            "id": "2165",
+            "description": "Amplify skill DMG for dagger- and spear-specialty allies <span class=text-blue>(Skill DMG further amplified in Arcarum)</span>",
+            "image": "skill_weapon_sephiraous_2",
+            "attribute": "",
+            "name": "Sephirath Brogue II"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "13": {
+          "param": {
+            "id": 4527390359,
+            "image_id": "1040815900",
+            "level": "200",
+            "attack": "3892",
+            "hp": "518",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "20"
+          },
+          "master": {
+            "id": "1040815900",
+            "name": "Refrain of Blazing Vigor",
+            "attribute": "1",
+            "kind": "9",
+            "rarity": "4",
+            "is_group": "27",
+            "series_id": "40",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "1453",
+            "description": "Boost to fire allies' ATK based on number of turns passed",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Wilnas's Firestorm"
+          },
+          "skill2": {
+            "id": "2049",
+            "description": "Amplify fire allies' DMG against non-elemental foes",
+            "image": "skill_job_weapon",
+            "attribute": "1",
+            "name": "Vermillion Magnitude"
+          },
+          "skill3": {
+            "id": "1228",
+            "description": "Big boost to fire allies' ATK and max HP",
+            "image": "skill_god_1_3",
+            "attribute": "1",
+            "name": "Inferno's Majesty"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        }
+      },
+      "weapons_attack": 47130,
+      "weapons_hp": 5386,
+      "weapon_kind_replace": {
+        "weapon": 5
+      },
+      "weapon_replace": {
+        "weapon": "1040422700"
+      },
+      "weapon_open_flag_list": {
+        "is_open_weapon_11": true,
+        "is_open_weapon_12": true,
+        "is_open_weapon_13": true
+      },
+      "is_effective_companionweapon": false,
+      "skin_summon_id": null,
+      "skin_summon_is_mypage": false,
+      "skin_summon_pose": null,
+      "summons": {
+        "1": {
+          "param": {
+            "id": "591430969",
+            "image_id": "2040094000_04",
+            "level": "250",
+            "attack": "4652",
+            "hp": "1513",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "6",
+            "is_mypage": true
+          },
+          "master": {
+            "id": "2040094000",
+            "name": "Agni",
+            "attribute": "1",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "120163",
+            "comment": "170% boost to Fire's, Hellfire's, and Inferno's weapon skills (When main summon: 30% boost to fire ATK)",
+            "name": "Agni's Aura"
+          },
+          "sub_skill": {
+            "id": "110492",
+            "comment": "20% boost to fire allies' fire ATK and HP",
+            "name": "Agni's Aura"
+          }
+        },
+        "2": {
+          "param": {
+            "id": "837889690",
+            "image_id": "2040158000",
+            "level": "100",
+            "attack": "2125",
+            "hp": "748",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "3",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040158000",
+            "name": "Qilin",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "10206",
+            "comment": "50% boost to all elemental ATK and skill DMG / 25% boost to skill DMG cap",
+            "name": "Qilin's Aura"
+          },
+          "sub_skill": null
+        },
+        "3": {
+          "param": {
+            "id": "1381579085",
+            "image_id": "2040425000",
+            "level": "150",
+            "attack": "3442",
+            "hp": "1239",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "4",
+            "is_mypage": true
+          },
+          "master": {
+            "id": "2040425000",
+            "name": "Triple Zero",
+            "attribute": "5",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "20484",
+            "comment": "120% boost to all elemental ATK / 12 Wings of Promise to MC at battle start (Boost to MC's ATK and DEF based on number of Wings of Promise / Amplify all allies' DMG dealt when at 12)",
+            "name": "Vying of Twelve Wings"
+          },
+          "sub_skill": {
+            "id": "20485",
+            "comment": "2 Wings of Promise to MC upon MC using a skill or charge attack (Max: 12 / Boost to MC's ATK and DEF based on number of Wings of Promise / Amplify all allies' DMG dealt when at 12)",
+            "name": "Vying of Twelve Wings"
+          }
+        },
+        "4": {
+          "param": {
+            "id": "837027170",
+            "image_id": "2040321000",
+            "level": "200",
+            "attack": "3332",
+            "hp": "1189",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "5",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040321000",
+            "name": "The Sun",
+            "attribute": "1",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "30283",
+            "comment": "Boost to fire allies' multiattack rate (Boost rises based on turns passed)",
+            "name": "The Sun's Aura"
+          },
+          "sub_skill": {
+            "id": "20284",
+            "comment": "Amplify fire allies' DMG against wind foes by 10%",
+            "name": "The Sun's Aura"
+          }
+        },
+        "5": {
+          "param": {
+            "id": "675435184",
+            "image_id": "2040056000_04",
+            "level": "250",
+            "attack": "4181",
+            "hp": "1759",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "6",
+            "is_mypage": true
+          },
+          "master": {
+            "id": "2040056000",
+            "name": "Lucifer",
+            "attribute": "5",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "120130",
+            "comment": "150% boost to all elemental ATK / 50% boost to max HP / When a foe uses a special attack: Remove 1 debuff / Wings of Pure White effect",
+            "name": "Lucifer's Aura"
+          },
+          "sub_skill": {
+            "id": "120471",
+            "comment": "30% boost to healing specs",
+            "name": "Lucifer's Aura"
+          }
+        }
+      },
+      "summons_attack": 17732,
+      "summons_hp": 6448,
+      "sub_summons": {
+        "1": {
+          "param": {
+            "id": "1160191630",
+            "image_id": "2040398000",
+            "level": "150",
+            "attack": "3324",
+            "hp": "1093",
+            "quality": "0",
+            "evolution_flag": "0",
+            "evolution": "4",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040398000",
+            "name": "Wilnas",
+            "attribute": "1",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "20433",
+            "comment": "140% boost to fire ATK",
+            "name": "Wilnas's Aura"
+          },
+          "sub_skill": {
+            "id": "20434",
+            "comment": "40% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+            "name": "Wilnas's Aura"
+          }
+        },
+        "2": {
+          "param": {
+            "id": "827452109",
+            "image_id": "2040306000",
+            "level": "150",
+            "attack": "3181",
+            "hp": "1184",
+            "quality": "0",
+            "evolution_flag": "0",
+            "evolution": "4",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040306000",
+            "name": "Michael",
+            "attribute": "1",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "20330",
+            "comment": "140% boost to fire ATK",
+            "name": "Michael's Aura"
+          },
+          "sub_skill": {
+            "id": "20331",
+            "comment": "15% boost to fire allies' DMG cap",
+            "name": "Michael's Aura"
+          }
+        }
+      },
+      "quick_user_summon_id": 675435184,
+      "cjs_name": "vss_sw_0_01",
+      "cjs_position": {
+        "x": 4,
+        "y": 2
+      },
+      "param": {
+        "id": 11675274,
+        "attack": 96860,
+        "hp": 21853,
+        "attribute": 1,
+        "kind": 5,
+        "image": "310901_sw_0_01"
+      },
+      "job": {
+        "master": {
+          "id": "130401",
+          "name": "Manadiver",
+          "class": "7",
+          "domain": "13",
+          "weapon_1": "5",
+          "weapon_2": "2",
+          "companion_weapon_flag": "",
+          "ex_class": false
+        },
+        "param": {
+          "id": 25094544,
+          "is_master": true,
+          "level": 20,
+          "is_complete_master_level": false,
+          "master_level": 1,
+          "remain_next_master_exp": 50000,
+          "is_complete_perfection_proof": false,
+          "perfection_proof_level": 0,
+          "remain_next_perfection_proof_exp": 250
+        },
+        "bonue": {
+          "level_up_bonus": [
+            {
+              "kind": "bonus_1",
+              "kind_jp": "ATK",
+              "is_percent": "0",
+              "type": "attack_up",
+              "value": 4000,
+              "sort_id": "1010"
+            },
+            {
+              "kind": "bonus_18",
+              "kind_jp": "Skill DMG",
+              "is_percent": "1",
+              "type": "ability_attack_up",
+              "value": 30,
+              "sort_id": "1070"
+            }
+          ],
+          "master_bonus": [
+            {
+              "type": "attack_up",
+              "name": "ATK",
+              "comment": "",
+              "description": "",
+              "param": 19,
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "1010"
+            },
+            {
+              "type": "defense_up",
+              "name": "DEF",
+              "comment": "",
+              "description": "",
+              "param": 13,
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "1020"
+            },
+            {
+              "type": "hp_up",
+              "name": "HP",
+              "comment": "",
+              "description": "",
+              "param": 15,
+              "kind": "bonus_14",
+              "is_percent_master": "1",
+              "sort_id": "1030"
+            },
+            {
+              "type": "double_attack_rate_up",
+              "name": "Double attack rate",
+              "comment": "",
+              "description": "",
+              "param": 4,
+              "kind": "bonus_20",
+              "is_percent_master": "1",
+              "sort_id": "1040"
+            },
+            {
+              "type": "triple_attack_rate_up",
+              "name": "Triple attack rate",
+              "comment": "",
+              "description": "",
+              "param": 3,
+              "kind": "bonus_21",
+              "is_percent_master": "1",
+              "sort_id": "1050"
+            },
+            {
+              "type": "passive_damage_limit_up_plus",
+              "name": "DMG Cap",
+              "comment": "",
+              "description": "",
+              "param": "1",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "1060"
+            },
+            {
+              "type": "ability_attack_up",
+              "name": "Skill DMG",
+              "comment": "",
+              "description": "",
+              "param": 23,
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "1070"
+            },
+            {
+              "type": "ability_damage_limit_up_value",
+              "name": "Skill DMG cap",
+              "comment": "",
+              "description": "",
+              "param": 5,
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "1075"
+            },
+            {
+              "type": "guard_ailment",
+              "name": "Debuff resistance",
+              "comment": "",
+              "description": "",
+              "param": 20,
+              "kind": "bonus_3",
+              "is_percent_master": "1",
+              "sort_id": "1090"
+            },
+            {
+              "type": "ailment_enhance",
+              "name": "Debuff success rate",
+              "comment": "",
+              "description": "",
+              "param": 7,
+              "kind": "bonus_4",
+              "is_percent_master": "1",
+              "sort_id": "1100"
+            },
+            {
+              "type": "dodge",
+              "name": "Dodge",
+              "comment": "",
+              "description": "",
+              "param": 3,
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "1110"
+            },
+            {
+              "type": "heal_up",
+              "name": "Healing",
+              "comment": "",
+              "description": "",
+              "param": 14,
+              "kind": "bonus_13",
+              "is_percent_master": "1",
+              "sort_id": "1120"
+            },
+            {
+              "type": "gauge_effect_up",
+              "name": "Inhibit overdrive",
+              "comment": "",
+              "description": "",
+              "param": 8,
+              "kind": "bonus_5",
+              "is_percent_master": "1",
+              "sort_id": "2010"
+            },
+            {
+              "type": "runaway_damage_cut",
+              "name": "Cut to DMG from a foe in overdrive",
+              "comment": "",
+              "description": "",
+              "param": "1",
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "2030"
+            },
+            {
+              "type": "main_weapon_sword_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a sabre",
+              "comment": "",
+              "description": "",
+              "param": 6,
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4010"
+            },
+            {
+              "type": "main_weapon_dagger_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a dagger",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4020"
+            },
+            {
+              "type": "main_weapon_spear_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a spear",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4030"
+            },
+            {
+              "type": "main_weapon_axe_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is an axe",
+              "comment": "",
+              "description": "",
+              "param": 6,
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4040"
+            },
+            {
+              "type": "main_weapon_wand_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a staff",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4050"
+            },
+            {
+              "type": "main_weapon_gun_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a gun",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4060"
+            },
+            {
+              "type": "main_weapon_melee_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a melee",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4070"
+            },
+            {
+              "type": "main_weapon_bow_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a bow",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4080"
+            },
+            {
+              "type": "main_weapon_harp_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a harp",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4090"
+            },
+            {
+              "type": "main_weapon_katana_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a katana",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4100"
+            },
+            {
+              "type": "special_skill_gauge_bonuse_attack",
+              "name": "Boost to charge bar gain upon normal attacks",
+              "comment": "",
+              "description": "",
+              "param": "1",
+              "kind": "bonus_15",
+              "is_percent_master": "0",
+              "sort_id": "5010"
+            },
+            {
+              "type": "defense_up_my_max_hp",
+              "name": "Boost to DEF when HP is full",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "5020"
+            },
+            {
+              "type": "my_job_class_if:passive_damage_limit_up_plus",
+              "name": "Boost to DMG cap for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "5030"
+            },
+            {
+              "type": "my_job_class_if:defense_up",
+              "name": "Boost to DEF for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "5",
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "5040"
+            },
+            {
+              "type": "my_job_class_if:passive_heal_limit_up",
+              "name": "Boost to healing cap for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_13",
+              "is_percent_master": "1",
+              "sort_id": "5050"
+            },
+            {
+              "type": "my_job_class_if:ability_attack_up",
+              "name": "Boost to skill DMG for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "5060"
+            },
+            {
+              "type": "my_job_class_if:final_attack_rise_plus",
+              "name": "Amplify normal attack DMG for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "5070"
+            },
+            {
+              "type": "my_job_class_if:ailment_enhance",
+              "name": "Boost to debuff success rate for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_4",
+              "is_percent_master": "1",
+              "sort_id": "5080"
+            }
+          ],
+          "master_bonus_of_job": [
+            {
+              "type": "my_job_class_if:ability_attack_up",
+              "name": "Boost to skill DMG for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "5060"
+            }
+          ]
+        }
+      },
+      "set_action": [
+        {
+          "character_id": "0",
+          "action_set_pos": "0",
+          "set_action_id": "201861",
+          "name": "Secret Triad"
+        },
+        {
+          "character_id": "0",
+          "action_set_pos": "1",
+          "set_action_id": "201851",
+          "name": "Wild Magica"
+        },
+        {
+          "character_id": "0",
+          "action_set_pos": "2",
+          "set_action_id": "3021",
+          "name": "Clarity"
+        }
+      ],
+      "shield_id": null,
+      "skin_shield_id": null,
+      "familiar_id": 8,
+      "skin_familiar_id": null,
+      "skill": {
+        "count": 24,
+        "description": [
+          {
+            "over": 1,
+            "comment": "Big boost to fire allies' ATK and max HP",
+            "sort": "10100151"
+          },
+          {
+            "over": 3,
+            "comment": "Small boost to fire allies' ATK and max HP",
+            "sort": "10100153"
+          },
+          {
+            "over": 4,
+            "comment": "Small boost to fire allies' ATK and critical hit rate",
+            "sort": "10100413"
+          },
+          {
+            "over": 1,
+            "comment": "Massive boost to all allies' ATK / Small boost to HP",
+            "sort": "10100803"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to ATK, multiattack rate, C.A. specs, and DMG cap <span class=text-blue>(Boost to specs for staff-specialty allies)</span>",
+            "sort": "10301004"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to ATK, DEF, and max HP",
+            "sort": "10301101"
+          },
+          {
+            "over": 1,
+            "comment": "Big boost to fire allies' critical hit rate and healing cap",
+            "sort": "10500411"
+          },
+          {
+            "over": 1,
+            "comment": "Big boost to fire allies' ATK and max HP / Big amplifying boost to DMG",
+            "sort": "10700971"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to fire allies' ATK based on number of turns passed",
+            "sort": "10707971"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to ATK based on how many staffs are equipped",
+            "sort": "10708005"
+          },
+          {
+            "over": 3,
+            "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to fire allies' ATK, DEF, and DMG cap",
+            "sort": "10709311"
+          },
+          {
+            "over": 1,
+            "comment": "Amplify fire allies' DMG against non-elemental foes",
+            "sort": "10710011"
+          },
+          {
+            "over": 3,
+            "comment": "Big Bonus Fire DMG effect to fire allies",
+            "sort": "10710511"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to all allies' healing cap",
+            "sort": "20200200"
+          },
+          {
+            "over": 1,
+            "comment": "Big boost to fire allies' DEF based on how low HP is",
+            "sort": "20300011"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to all allies' normal attack DMG cap",
+            "sort": "30300005"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to skill DMG cap and skill hit rate",
+            "sort": "30300010"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to fire allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either fire Omega or fire Optimus weapon skills have a boost of 280% or above)</span>",
+            "sort": "30300013"
+          },
+          {
+            "over": 1,
+            "comment": "<span class=text-small>Big boost to staff-specialty allies' ATK and max HP and multiattack rate</span>",
+            "sort": "40100935"
+          },
+          {
+            "over": 1,
+            "comment": "Supplement fire allies' critical hit DMG",
+            "sort": "40101921"
+          },
+          {
+            "over": 1,
+            "comment": "Amplify skill DMG for dagger- and spear-specialty allies <span class=text-blue>(Skill DMG further amplified in Arcarum)</span>",
+            "sort": "40102212"
+          },
+          {
+            "over": 3,
+            "comment": "30% boost to Fire's, Hellfire's, and Inferno's weapon skills",
+            "sort": "40102711"
+          },
+          {
+            "over": 1,
+            "comment": "When MC's HP is 50% or above after normal attacks: 6-hit fire DMG to a foe / Raise Singed lvl by 1",
+            "sort": "40103311"
+          },
+          {
+            "over": 1,
+            "comment": "At end of turn when a foe's Singed lvl is 7 or above: Restore fire allies' HP / 10% boost to charge bars",
+            "sort": "40103411"
+          }
+        ]
+      },
+      "damage_info": {
+        "assumed_advantage_damage_attribute": 4,
+        "assumed_normal_damage_attribute": 1,
+        "assumed_advantage_damage": 1128850,
+        "assumed_normal_damage": 947610,
+        "hp": 122355,
+        "effect_value_info": [
+          {
+            "icon_img": "01_icon_might_01.png",
+            "value": "542%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_might_03.png",
+            "value": "260%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_might_04.png",
+            "value": "24%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_critical.png",
+            "value": "88%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_da_rate.png",
+            "value": "65%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_ta_rate.png",
+            "value": "60%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_fireoptimus.png",
+            "value": "90%",
+            "is_max": true
+          },
+          {
+            "icon_img": "01_icon_fire_concurrent_attack.png",
+            "value": "50%",
+            "is_max": true
+          },
+          {
+            "icon_img": "03_icon_hp.png",
+            "value": "400%",
+            "is_max": true
+          },
+          {
+            "icon_img": "03_icon_heal_cap.png",
+            "value": "100%",
+            "is_max": true
+          },
+          {
+            "icon_img": "02_icon_def.png",
+            "value": "115%",
+            "is_max": false
+          },
+          {
+            "icon_img": "02_icon_wind_reduc.png",
+            "value": "5%",
+            "is_max": false
+          },
+          {
+            "icon_img": "02_icon_debuff_res.png",
+            "value": "5%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_na_dmg_cap.png",
+            "value": "10%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_ca_dmg.png",
+            "value": "20%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_ca_dmg_cap.png",
+            "value": "15%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_skill_dmg_cap.png",
+            "value": "70%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_dmg_cap.png",
+            "value": "17%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_dmg_cap_other.png",
+            "value": "20%",
+            "is_max": true
+          },
+          {
+            "icon_img": "04_icon_plain_amplify.png",
+            "value": "10%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_amplify.png",
+            "value": "8%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_normal_dmg_amp_other.png",
+            "value": "10%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_ability_dmg_amplify.png",
+            "value": "10%",
+            "is_max": false
+          },
+          {
+            "icon_img": "06_icon_hp.png",
+            "value": "2.48%",
+            "is_max": false
+          }
+        ],
+        "summon_name": "Lucifer"
+      },
+      "after_damage_info": []
+    }
+  },
+  "is_main_weapon_fixed": false,
+  "is_weapon_skin": false,
+  "recommend_attr": 4,
+  "is_effective_companionweapon": false,
+  "companionparts_button_flash": false,
+  "is_enable_recommend_party": true,
+  "quest_info": null,
+  "replicard_dungeon_id": null
+}

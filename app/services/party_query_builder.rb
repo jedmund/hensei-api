@@ -46,15 +46,11 @@ class PartyQueryBuilder
   # Example edge case: If the request does not specify 'characters_count',
   # then the default (e.g. 3) will be used, with the upper bound coming from a constant.
   def apply_filters(query)
-    conditions = build_filters
-    query = query.where(conditions)
-    # If name_quality filtering is enabled via params, apply it.
-    query = query.where(name_quality) if @params[:name_quality].present?
-    query.where(
-      weapons_count: build_count(@params[:weapons_count], default_weapons_count)..max_weapons,
-      characters_count: build_count(@params[:characters_count], default_characters_count)..max_characters,
-      summons_count: build_count(@params[:summons_count], default_summons_count)..max_summons
-    )
+    query = apply_base_filters(query)
+    query = apply_name_quality_filter(query)
+    query = apply_count_filters(query)
+
+    query
   end
 
   # Example callback method: if no explicit status filter is provided, we may want
@@ -148,6 +144,63 @@ class PartyQueryBuilder
     query
   end
 
+  # Applies base filtering conditions from build_filters to the query.
+  # @param query [ActiveRecord::QueryMethods::WhereChain] The current query.
+  # @return [ActiveRecord::Relation] The query with base filters applied.
+  def apply_base_filters(query)
+    query.where(build_filters)
+  end
+
+  # Applies the name quality filter to the query if the parameter is present.
+  # @param query [ActiveRecord::QueryMethods::WhereChain] The current query.
+  # @return [ActiveRecord::Relation] The query with the name quality filter applied.
+  def apply_name_quality_filter(query)
+    @params[:name_quality].present? ? query.where(name_quality) : query
+  end
+
+  # Applies count filters to the query based on provided parameters or default options.
+  # If apply_defaults is set in options, default ranges are applied.
+  # Otherwise, count ranges are built from provided parameters.
+  # @param query [ | ActiveRecord::QueryMethods::WhereChain] The current query.
+  # @return [ActiveRecord::Relation] The query with count filters applied.
+  def apply_count_filters(query)
+    if @options[:apply_defaults]
+      query.where(
+        weapons_count: default_weapons_count..max_weapons,
+        characters_count: default_characters_count..max_characters,
+        summons_count: default_summons_count..max_summons
+      )
+    elsif count_filter_provided?
+      query.where(build_count_conditions)
+    else
+      query
+    end
+  end
+
+  # Determines if any count filter parameters have been provided.
+  # @return [Boolean] True if any count filters are provided, false otherwise.
+  def count_filter_provided?
+    @params.key?(:weapons_count) || @params.key?(:characters_count) || @params.key?(:summons_count)
+  end
+
+  # Builds a hash of count conditions based on the count filter parameters.
+  # @return [Hash] A hash with keys :weapons_count, :characters_count, and :summons_count.
+  def build_count_conditions
+    {
+      weapons_count: build_range(@params[:weapons_count], max_weapons),
+      characters_count: build_range(@params[:characters_count], max_characters),
+      summons_count: build_range(@params[:summons_count], max_summons)
+    }
+  end
+
+  # Constructs a range for a given count parameter.
+  # @param param_value [String, nil] The count filter parameter value.
+  # @param max_value [Integer] The maximum allowed value for the count.
+  # @return [Range] A range from the provided count (or 0 if blank) to the max_value.
+  def build_range(param_value, max_value)
+    param_value.present? ? param_value.to_i..max_value : 0..max_value
+  end
+
   # Maps an ID’s first character to the corresponding grid table and object table names.
   #
   # For example:
@@ -170,27 +223,27 @@ class PartyQueryBuilder
 
   # Default values and maximum limits for counts.
   def default_weapons_count
-    @options[:default_weapons_count] || 5;
+    @options[:default_weapons_count] || 5
   end
 
   def default_characters_count
-    @options[:default_characters_count] || 3;
+    @options[:default_characters_count] || 3
   end
 
   def default_summons_count
-    @options[:default_summons_count] || 2;
+    @options[:default_summons_count] || 2
   end
 
   def max_weapons
-    @options[:max_weapons] || 13;
+    @options[:max_weapons] || 13
   end
 
   def max_characters
-    @options[:max_characters] || 5;
+    @options[:max_characters] || 5
   end
 
   def max_summons
-    @options[:max_summons] || 8;
+    @options[:max_summons] || 8
   end
 
   # Stub method for name quality filtering.

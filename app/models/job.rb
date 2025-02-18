@@ -3,7 +3,7 @@
 class Job < ApplicationRecord
   include PgSearch::Model
 
-  belongs_to :party
+  belongs_to :party, optional: true
   has_many :skills, class_name: 'JobSkill'
 
   multisearchable against: %i[name_en name_jp],

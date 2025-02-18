@@ -1,0 +1,18 @@
+"id","job_id","name_en","name_jp","slug","color","main","sub","emp","order","base"
+"589d1718-887f-4837-9a7b-93e9ce33bbf3","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Aether Siphon","エーテルサクション","aether-siphon",2,TRUE,FALSE,FALSE,0,FALSE
+"b0fa1cbd-1761-49f7-b250-d601a98fddac","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Wild Magica","ワイルドマギカ","wild-magica",2,FALSE,FALSE,TRUE,1,FALSE
+"0cdd20ec-5869-4bff-8016-35a4a48e897a","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Secret Triad","シークレットトライアド","secret-triad",0,FALSE,FALSE,TRUE,2,FALSE
+"a42211a5-e7fd-4cdb-80a9-f2fb3ccce7f2","a5d6fca3-5649-4e12-a6db-5fcec49150ee","Overtrance","オーバートランス","overtrance",0,FALSE,FALSE,TRUE,3,FALSE
+"b0a50aec-6f88-4a0f-900a-c26e84fd09c6","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Full Arsenal III","ウェポンバーストIII","full-arsenal-iii",0,TRUE,FALSE,FALSE,0,FALSE
+"fdfdee6d-6ead-4504-9add-a04776546b15","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Armor Break II","レイジIV","armor-break-ii",2,FALSE,FALSE,TRUE,1,FALSE
+"4df00bf2-aab1-4bd4-a399-fcad942c7daf","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Rage IV","アーマーブレイクII","rage-iv",0,FALSE,FALSE,TRUE,2,FALSE
+"e705ef94-4d70-4e24-b505-4a1e8b0038f0","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Rampage II","ランページII","rampage-ii",0,FALSE,FALSE,TRUE,3,FALSE
+"30df2315-457a-414c-9eef-3980b72b17c2","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Ulfhedinn","ウールヴヘジン","ulfhedinn",0,FALSE,FALSE,TRUE,4,FALSE
+"3b862283-c2b0-42ab-abf8-83f7b71d5fb5","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Ferocious Roar","フェロシティロアー","ferocious-roar",0,FALSE,FALSE,TRUE,5,FALSE
+"a1491902-838f-4e7d-8a4a-572a5653537f","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Beast Fang","ビーストファング","beast-fang",2,FALSE,FALSE,TRUE,6,FALSE
+"0d2987b1-2322-48b6-a071-e6b60699889b","1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Bloodzerker","狂戦の血","bloodzerker",0,FALSE,FALSE,TRUE,7,FALSE
+"e76fbe2a-4dc7-4c29-9db7-7feee06559fb","43652444-64bb-4938-85d7-aafdfc503d66","Miserable Mist","ミゼラブルミスト","miserable-mist",1,TRUE,TRUE,FALSE,1,FALSE
+"37218a55-3335-4457-98c3-4d8367af3d7c","d27a4f29-5f0b-4bc6-b75a-1bd187e1a529","Splitting Spirit","他心陣","splitting-spirit",0,TRUE,TRUE,FALSE,2,FALSE
+"61e9a862-41f1-477a-9131-72b366c359be","2abbab55-5bf7-49f8-9ed6-1fe8a3991cca","Clarity","クリアオール","clarity",3,TRUE,TRUE,FALSE,1,FALSE
+"4a00259a-9e2b-4239-bca2-2afdc2f52be7","c128944b-cc79-45b4-bfed-17c8b68db612","Dispel","ディスペル","dispel",1,TRUE,TRUE,FALSE,1,FALSE
+"67a126d1-5515-492f-aeaf-7f88b25e2e26","667bf041-61c9-4568-bdd3-ce6e43f40603","Dark Haze","ブラックヘイズ","dark-haze",1,FALSE,FALSE,TRUE,1,FALSE

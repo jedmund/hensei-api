@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_01_170037) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_18_025315) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -465,7 +465,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_01_170037) do
     t.integer "rarity"
     t.integer "element"
     t.integer "proficiency"
-    t.integer "series", default: -1, null: false
     t.boolean "flb", default: false, null: false
     t.boolean "ulb", default: false, null: false
     t.integer "max_level", default: 100, null: false
@@ -495,6 +494,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_01_170037) do
     t.boolean "transcendence", default: false
     t.date "transcendence_date"
     t.string "recruits"
+    t.integer "series"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
@@ -511,7 +511,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_01_170037) do
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapons"
-  add_foreign_key "jobs", "jobs", column: "base_job_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook1_id"
