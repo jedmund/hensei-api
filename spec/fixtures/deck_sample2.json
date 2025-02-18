@@ -1,0 +1,2564 @@
+{
+  "is_equipment_shield": false,
+  "is_equipment_familiar": true,
+  "is_companionweapon_job_skin": false,
+  "bullet_info": [],
+  "hiddenweapon_count": null,
+  "deck": {
+    "group_name": "Party Slot 21",
+    "is_used": false,
+    "name": "Party 3",
+    "order_no": 3,
+    "priority": 213,
+    "combination_id": 20505554,
+    "combination_group_id": 3393351,
+    "npc": {
+      "1": {
+        "master": {
+          "id": "3040337000",
+          "character_id": "3179",
+          "name": "Tikoh",
+          "short_name": "Tikoh",
+          "attribute": 5,
+          "rarity": "4",
+          "type": "4",
+          "image_id": null,
+          "tribe": "2",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 69075,
+          "hp": 17886,
+          "level": "80",
+          "total": "13254",
+          "quality": "0",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 187223858,
+          "image_id_3": "3040337000_01",
+          "has_npcaugment_constant": false,
+          "cjs_name": "npc_3040337000_02",
+          "cjs_position": null,
+          "image_id_3_tower": "3040337000_01"
+        },
+        "skill": {
+          "count": 6,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Boost to Erune ATK and HP",
+              "sort": "10000021"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+              "sort": "10300903"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify all allies' superior elemental DMG",
+              "sort": "10702901"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to ATK based on how many axes are equipped",
+              "sort": "10708004"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' skill DMG cap",
+              "sort": "30300006"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "2": {
+        "master": {
+          "id": "3040376000",
+          "character_id": "3191",
+          "name": "Fediel",
+          "short_name": "Fediel",
+          "attribute": 6,
+          "rarity": "4",
+          "type": "5",
+          "image_id": null,
+          "tribe": "3",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 77141,
+          "hp": 20842,
+          "level": "80",
+          "total": "22820",
+          "quality": "0",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 194140530,
+          "image_id_3": "skin/3710197000_01_s6",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3710197000_01",
+          "cjs_position": null,
+          "image_id_3_tower": "skin/3710197000_01_s6"
+        },
+        "skill": {
+          "count": 20,
+          "description": [
+            {
+              "over": 2,
+              "comment": "Massive boost to dark allies' ATK",
+              "sort": "10100060"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK",
+              "sort": "10100061"
+            },
+            {
+              "over": 2,
+              "comment": "Medium boost to dark allies' ATK and max HP",
+              "sort": "10100202"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to dark allies' ATK and max HP",
+              "sort": "10100203"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' ATK and critical hit rate",
+              "sort": "10100463"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+              "sort": "10300903"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' multiattack rate",
+              "sort": "10400063"
+            },
+            {
+              "over": 2,
+              "comment": "Big boost to dark allies' critical hit rate",
+              "sort": "10500061"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to dark allies' DMG cap",
+              "sort": "10700026"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' DMG cap <span class=text-blue>(DMG cap further boosted in Arcarum)</span>",
+              "sort": "10700072"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10701021"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify all allies' superior elemental DMG",
+              "sort": "10702901"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to ATK based on how many axes are equipped",
+              "sort": "10708004"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to dark allies' ATK / Boost to dark allies' ATK and DEF when an ally is knocked out (Stackable) ",
+              "sort": "10708202"
+            },
+            {
+              "over": 2,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+              "sort": "10709361"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' skill DMG cap",
+              "sort": "30300006"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300018"
+            },
+            {
+              "over": 1,
+              "comment": "<span class=text-small>Big boost to melee-specialty allies' ATK and max HP / Big boost to ATK based on how high HP is</span>",
+              "sort": "40100957"
+            },
+            {
+              "over": 2,
+              "comment": "Supplement dark allies' DMG",
+              "sort": "40101976"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "3": {
+        "master": {
+          "id": "3040443000",
+          "character_id": "3138",
+          "name": "Halluel and Malluel",
+          "short_name": "Hal & Mal",
+          "attribute": 6,
+          "rarity": "4",
+          "type": "5",
+          "image_id": null,
+          "tribe": "6",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 73448,
+          "hp": 18592,
+          "level": "80",
+          "total": "15150",
+          "quality": "0",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 208551859,
+          "image_id_3": "3040443000_01",
+          "has_npcaugment_constant": false,
+          "cjs_name": "npc_3040443000_02",
+          "cjs_position": {
+            "x": 4,
+            "y": 0
+          },
+          "image_id_3_tower": "3040443000_01"
+        },
+        "skill": {
+          "count": 20,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Boost to Primal ATK and HP",
+              "sort": "10000021"
+            },
+            {
+              "over": 2,
+              "comment": "Massive boost to dark allies' ATK",
+              "sort": "10100060"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK",
+              "sort": "10100061"
+            },
+            {
+              "over": 2,
+              "comment": "Medium boost to dark allies' ATK and max HP",
+              "sort": "10100202"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to dark allies' ATK and max HP",
+              "sort": "10100203"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' ATK and critical hit rate",
+              "sort": "10100463"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+              "sort": "10300903"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' multiattack rate",
+              "sort": "10400063"
+            },
+            {
+              "over": 2,
+              "comment": "Big boost to dark allies' critical hit rate",
+              "sort": "10500061"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to dark allies' DMG cap",
+              "sort": "10700026"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' DMG cap <span class=text-blue>(DMG cap further boosted in Arcarum)</span>",
+              "sort": "10700072"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10701021"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify all allies' superior elemental DMG",
+              "sort": "10702901"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to ATK based on how many axes are equipped",
+              "sort": "10708004"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to dark allies' ATK / Boost to dark allies' ATK and DEF when an ally is knocked out (Stackable) ",
+              "sort": "10708202"
+            },
+            {
+              "over": 2,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+              "sort": "10709361"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' skill DMG cap",
+              "sort": "30300006"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300018"
+            },
+            {
+              "over": 2,
+              "comment": "Supplement dark allies' DMG",
+              "sort": "40101976"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "4": {
+        "master": {
+          "id": "3040169000",
+          "character_id": "3108",
+          "name": "Nier",
+          "short_name": "Nier",
+          "attribute": 6,
+          "rarity": "4",
+          "type": "5",
+          "image_id": null,
+          "tribe": "2",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 88066,
+          "hp": 16255,
+          "level": "100",
+          "total": "24519",
+          "quality": "0",
+          "evolution": "5",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 141675029,
+          "image_id_3": "3040169000_81",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3040169000_03",
+          "cjs_position": null,
+          "image_id_3_tower": "3040169000_81"
+        },
+        "skill": {
+          "count": 20,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Boost to Erune ATK and HP",
+              "sort": "10000021"
+            },
+            {
+              "over": 2,
+              "comment": "Massive boost to dark allies' ATK",
+              "sort": "10100060"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK",
+              "sort": "10100061"
+            },
+            {
+              "over": 2,
+              "comment": "Medium boost to dark allies' ATK and max HP",
+              "sort": "10100202"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to dark allies' ATK and max HP",
+              "sort": "10100203"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' ATK and critical hit rate",
+              "sort": "10100463"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+              "sort": "10300903"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' multiattack rate",
+              "sort": "10400063"
+            },
+            {
+              "over": 2,
+              "comment": "Big boost to dark allies' critical hit rate",
+              "sort": "10500061"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to dark allies' DMG cap",
+              "sort": "10700026"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' DMG cap <span class=text-blue>(DMG cap further boosted in Arcarum)</span>",
+              "sort": "10700072"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10701021"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify all allies' superior elemental DMG",
+              "sort": "10702901"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to ATK based on how many axes are equipped",
+              "sort": "10708004"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to dark allies' ATK / Boost to dark allies' ATK and DEF when an ally is knocked out (Stackable) ",
+              "sort": "10708202"
+            },
+            {
+              "over": 2,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+              "sort": "10709361"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' skill DMG cap",
+              "sort": "30300006"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300018"
+            },
+            {
+              "over": 2,
+              "comment": "Supplement dark allies' DMG",
+              "sort": "40101976"
+            }
+          ]
+        },
+        "is_doll": false
+      },
+      "5": {
+        "master": {
+          "id": "3040357000",
+          "character_id": "3184",
+          "name": "Lich",
+          "short_name": "Lich",
+          "attribute": 6,
+          "rarity": "4",
+          "type": "5",
+          "image_id": null,
+          "tribe": "6",
+          "tribe_2": ""
+        },
+        "param": {
+          "attack": 80565,
+          "hp": 17192,
+          "level": "80",
+          "total": "24050",
+          "quality": "0",
+          "evolution": "4",
+          "phase": "0",
+          "style": "1",
+          "rarity": "4",
+          "id": 190717962,
+          "image_id_3": "skin/3710216000_01_s6",
+          "has_npcaugment_constant": true,
+          "cjs_name": "npc_3710216000_01",
+          "cjs_position": null,
+          "image_id_3_tower": "skin/3710216000_01_s6"
+        },
+        "skill": {
+          "count": 20,
+          "description": [
+            {
+              "over": 1,
+              "comment": "Boost to Primal ATK and HP",
+              "sort": "10000021"
+            },
+            {
+              "over": 2,
+              "comment": "Massive boost to dark allies' ATK",
+              "sort": "10100060"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK",
+              "sort": "10100061"
+            },
+            {
+              "over": 2,
+              "comment": "Medium boost to dark allies' ATK and max HP",
+              "sort": "10100202"
+            },
+            {
+              "over": 3,
+              "comment": "Small boost to dark allies' ATK and max HP",
+              "sort": "10100203"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' ATK and critical hit rate",
+              "sort": "10100463"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+              "sort": "10300903"
+            },
+            {
+              "over": 1,
+              "comment": "Small boost to dark allies' multiattack rate",
+              "sort": "10400063"
+            },
+            {
+              "over": 2,
+              "comment": "Big boost to dark allies' critical hit rate",
+              "sort": "10500061"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to dark allies' DMG cap",
+              "sort": "10700026"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' DMG cap <span class=text-blue>(DMG cap further boosted in Arcarum)</span>",
+              "sort": "10700072"
+            },
+            {
+              "over": 1,
+              "comment": "Big boost to dark allies' ATK and max HP / Big amplifying boost to DMG",
+              "sort": "10701021"
+            },
+            {
+              "over": 1,
+              "comment": "Amplify all allies' superior elemental DMG",
+              "sort": "10702901"
+            },
+            {
+              "over": 2,
+              "comment": "Boost to ATK based on how many axes are equipped",
+              "sort": "10708004"
+            },
+            {
+              "over": 1,
+              "comment": "Massive boost to dark allies' ATK / Boost to dark allies' ATK and DEF when an ally is knocked out (Stackable) ",
+              "sort": "10708202"
+            },
+            {
+              "over": 2,
+              "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+              "sort": "10709361"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to all allies' skill DMG cap",
+              "sort": "30300006"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to skill DMG cap and skill hit rate",
+              "sort": "30300010"
+            },
+            {
+              "over": 1,
+              "comment": "Boost to dark allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)</span>",
+              "sort": "30300018"
+            },
+            {
+              "over": 2,
+              "comment": "Supplement dark allies' DMG",
+              "sort": "40101976"
+            }
+          ]
+        },
+        "is_doll": false
+      }
+    },
+    "pc": {
+      "skin_weapon_id": null,
+      "skin_weapon_id_2": null,
+      "use_skin_weapon_effect": "0",
+      "use_skin_weapon_effect_2": "0",
+      "weapons": {
+        "1": {
+          "param": {
+            "id": 1731164751,
+            "image_id": "1040108700",
+            "level": "150",
+            "attack": "3200",
+            "hp": "310",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "4",
+            "arousal_form": "1",
+            "arousal_exp": "2000",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": true,
+              "level": 4,
+              "form": 1,
+              "form_name": "Attack",
+              "remain_for_next_level": 0,
+              "width": 100,
+              "is_complete_condition": true,
+              "release_conditions": [
+                {
+                  "condition_type": "1",
+                  "condition_value": "150",
+                  "is_cleared": true
+                }
+              ],
+              "max_level": 4,
+              "total_bonus": {
+                "2": [
+                  {
+                    "name": "Might",
+                    "image": "bonus_1",
+                    "attribute_image": "",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 15
+                  }
+                ],
+                "3": [
+                  {
+                    "name": "DMG Cap",
+                    "image": "bonus_1",
+                    "attribute_image": "",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 5
+                  }
+                ],
+                "4": [
+                  {
+                    "name": "Might",
+                    "image": "bonus_1",
+                    "attribute_image": "",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 25
+                  }
+                ]
+              },
+              "total_acquired_bonus": [
+                {
+                  "status_id": "21",
+                  "level": "2",
+                  "name": "Might",
+                  "effect_value": 40,
+                  "disp_string": "+%s%",
+                  "image": "bonus_1",
+                  "attribute_image": "",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "22",
+                  "level": "3",
+                  "name": "DMG Cap",
+                  "effect_value": 5,
+                  "disp_string": "+%s%",
+                  "image": "bonus_1",
+                  "attribute_image": "",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                }
+              ],
+              "skill": [
+                {
+                  "skill_id": 1883,
+                  "name": "Might",
+                  "comment": "Boost to all allies' ATK",
+                  "image": "ex_skill_atk",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 40,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 1885,
+                  "name": "DMG Cap",
+                  "comment": "Boost to all allies' DMG cap",
+                  "image": "ex_skill_atk_limit",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 5,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                }
+              ],
+              "is_caution": true
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040108700",
+            "name": "Parazonium",
+            "attribute": "6",
+            "kind": "2",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "631",
+            "description": "Massive boost to dark allies' ATK",
+            "image": "skill_atk_6_4_3",
+            "attribute": "6",
+            "name": "Oblivion's Might III"
+          },
+          "skill2": {
+            "id": "637",
+            "description": "Small boost to dark allies' multiattack rate",
+            "image": "skill_ta_6_1",
+            "attribute": "6",
+            "name": "Dark's Trium"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "2": {
+          "param": {
+            "id": 4354437903,
+            "image_id": "1040116600",
+            "level": "150",
+            "attack": "3200",
+            "hp": "314",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040116600",
+            "name": "Eternal Signature",
+            "attribute": "6",
+            "kind": "2",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1918",
+            "description": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Graphite Convergence"
+          },
+          "skill2": {
+            "id": "379",
+            "description": "Small boost to dark allies' ATK and max HP",
+            "image": "skill_god_6",
+            "attribute": "6",
+            "name": "Dark's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "3": {
+          "param": {
+            "id": 4341696313,
+            "image_id": "1040116600",
+            "level": "150",
+            "attack": "3200",
+            "hp": "314",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040116600",
+            "name": "Eternal Signature",
+            "attribute": "6",
+            "kind": "2",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1918",
+            "description": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Graphite Convergence"
+          },
+          "skill2": {
+            "id": "379",
+            "description": "Small boost to dark allies' ATK and max HP",
+            "image": "skill_god_6",
+            "attribute": "6",
+            "name": "Dark's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "4": {
+          "param": {
+            "id": 3063995912,
+            "image_id": "1040008700",
+            "level": "150",
+            "attack": "3370",
+            "hp": "280",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "4",
+            "arousal_form": "2",
+            "arousal_exp": "2000",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": true,
+              "level": 4,
+              "form": 2,
+              "form_name": "Defense",
+              "remain_for_next_level": 0,
+              "width": 100,
+              "is_complete_condition": true,
+              "release_conditions": [
+                {
+                  "condition_type": "1",
+                  "condition_value": "150",
+                  "is_cleared": true
+                }
+              ],
+              "max_level": 4,
+              "total_bonus": {
+                "2": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 15
+                  }
+                ],
+                "3": [
+                  {
+                    "name": "DEF",
+                    "image": "bonus_2",
+                    "attribute_image": "",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 20
+                  }
+                ],
+                "4": [
+                  {
+                    "name": "HP",
+                    "image": "bonus_14",
+                    "attribute_image": "",
+                    "weapon_kind_images": [],
+                    "disp_string": "+%s%",
+                    "effect_value": 25
+                  }
+                ]
+              },
+              "total_acquired_bonus": [
+                {
+                  "status_id": "23",
+                  "level": "2",
+                  "name": "HP",
+                  "effect_value": 40,
+                  "disp_string": "+%s%",
+                  "image": "bonus_14",
+                  "attribute_image": "",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                },
+                {
+                  "status_id": "24",
+                  "level": "3",
+                  "name": "DEF",
+                  "effect_value": 20,
+                  "disp_string": "+%s%",
+                  "image": "bonus_2",
+                  "attribute_image": "",
+                  "weapon_kind_images": [],
+                  "unit_type": "1"
+                }
+              ],
+              "skill": [
+                {
+                  "skill_id": 1882,
+                  "name": "HP",
+                  "comment": "Boost to all allies' max HP",
+                  "image": "ex_skill_hp",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 40,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                },
+                {
+                  "skill_id": 1884,
+                  "name": "DEF",
+                  "comment": "Boost to all allies' DEF",
+                  "image": "ex_skill_def",
+                  "disp_string": "+%s%",
+                  "unit_type": 1,
+                  "display_type": 0,
+                  "effect_value": 20,
+                  "acquired_awakening_level": null,
+                  "acquired_skill": true
+                }
+              ],
+              "is_caution": true
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040008700",
+            "name": "Blutgang",
+            "attribute": "6",
+            "kind": "1",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "631",
+            "description": "Massive boost to dark allies' ATK",
+            "image": "skill_atk_6_4_3",
+            "attribute": "6",
+            "name": "Oblivion's Might III"
+          },
+          "skill2": {
+            "id": "850",
+            "description": "Small boost to dark allies' ATK and critical hit rate",
+            "image": "skill_moment_6_1",
+            "attribute": "6",
+            "name": "Dark's Celere"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "5": {
+          "param": {
+            "id": 3896213580,
+            "image_id": "1040314300",
+            "level": "150",
+            "attack": "2260",
+            "hp": "500",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040314300",
+            "name": "Pain and Suffering",
+            "attribute": "6",
+            "kind": "4",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "0",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1793",
+            "description": "Supplement dark allies' DMG",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Purgatory's Pact"
+          },
+          "skill2": {
+            "id": "1794",
+            "description": "Boost to ATK based on how many axes are equipped",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Axe Voltage II"
+          },
+          "skill3": {
+            "id": "1785",
+            "description": "Boost to dark allies' DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Purgatory's Quintessence"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "6": {
+          "param": {
+            "id": 3896213594,
+            "image_id": "1040314300",
+            "level": "150",
+            "attack": "2260",
+            "hp": "500",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040314300",
+            "name": "Pain and Suffering",
+            "attribute": "6",
+            "kind": "4",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "0",
+            "skill2_display": "0",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1793",
+            "description": "Supplement dark allies' DMG",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Purgatory's Pact"
+          },
+          "skill2": {
+            "id": "1794",
+            "description": "Boost to ATK based on how many axes are equipped",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Axe Voltage II"
+          },
+          "skill3": {
+            "id": "1785",
+            "description": "Boost to dark allies' DMG cap",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Purgatory's Quintessence"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "7": {
+          "param": {
+            "id": 2937886284,
+            "image_id": "1040911000_03",
+            "level": "250",
+            "attack": "4490",
+            "hp": "309",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "25"
+          },
+          "master": {
+            "id": "1040911000",
+            "name": "Katana of Repudiation",
+            "attribute": "6",
+            "kind": "10",
+            "rarity": "4",
+            "is_group": "17",
+            "series_id": "3",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "2197",
+            "description": "Big boost to dark allies' ATK and max HP / Big amplifying boost to DMG",
+            "image": "skill_atk_hp_rise_6_3",
+            "attribute": "6",
+            "name": "Oblivion's Apotheosis"
+          },
+          "skill2": {
+            "id": "2209",
+            "description": "Boost to skill DMG cap and skill hit rate",
+            "image": "skill_ability_limit_3",
+            "attribute": "",
+            "name": "β Revelation Albus II"
+          },
+          "skill3": {
+            "id": "2217",
+            "description": "Boost to dark allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)</span>",
+            "image": "skill_job_weapon",
+            "attribute": "6",
+            "name": "Divine Dark's Ruination"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "8": {
+          "param": {
+            "id": 3390857231,
+            "image_id": "1040311600",
+            "level": "150",
+            "attack": "3518",
+            "hp": "251",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040311600",
+            "name": "Bab-el-Mandeb",
+            "attribute": "6",
+            "kind": "4",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1415",
+            "description": "Big boost to dark allies' critical hit rate",
+            "image": "skill_tec_6_3_2",
+            "attribute": "6",
+            "name": "Oblivion's Verity II"
+          },
+          "skill2": {
+            "id": "769",
+            "description": "Medium boost to dark allies' ATK and max HP",
+            "image": "skill_god_6_2",
+            "attribute": "6",
+            "name": "Hatred's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "9": {
+          "param": {
+            "id": 3635127450,
+            "image_id": "1040311600",
+            "level": "150",
+            "attack": "3518",
+            "hp": "251",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "15"
+          },
+          "master": {
+            "id": "1040311600",
+            "name": "Bab-el-Mandeb",
+            "attribute": "6",
+            "kind": "4",
+            "rarity": "4",
+            "is_group": "6",
+            "series_id": "2",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1415",
+            "description": "Big boost to dark allies' critical hit rate",
+            "image": "skill_tec_6_3_2",
+            "attribute": "6",
+            "name": "Oblivion's Verity II"
+          },
+          "skill2": {
+            "id": "769",
+            "description": "Medium boost to dark allies' ATK and max HP",
+            "image": "skill_god_6_2",
+            "attribute": "6",
+            "name": "Hatred's Majesty"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "10": {
+          "param": {
+            "id": 3958436771,
+            "image_id": "1040301400",
+            "level": "200",
+            "attack": "3010",
+            "hp": "213",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [
+              "ex_skill_atk"
+            ],
+            "augment_skill_icon_image": [
+              "ex_skill_atk"
+            ],
+            "augment_skill_info": [
+              [
+                {
+                  "skill_id": 1589,
+                  "effect_value": "3.2",
+                  "show_value": "3.2%"
+                }
+              ]
+            ],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "20"
+          },
+          "master": {
+            "id": "1040301400",
+            "name": "Celeste Zaghnal Omega",
+            "attribute": "6",
+            "kind": "4",
+            "rarity": "4",
+            "is_group": "",
+            "series_id": "8",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "116",
+            "description": "Big boost to dark allies' ATK",
+            "image": "skill_atk_m_6_3",
+            "attribute": "6",
+            "name": "Mistfall's Might III"
+          },
+          "skill2": {
+            "id": "149",
+            "description": "<span class=text-small>Slight chance to dodge and counter (big DMG) for water allies</span>",
+            "image": "skill_counter_2_3",
+            "attribute": "2",
+            "name": "Hoarfrost's Clarity"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "11": {
+          "param": {
+            "id": 2361164138,
+            "image_id": "1040106700",
+            "level": "200",
+            "attack": "3145",
+            "hp": "307",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "20"
+          },
+          "master": {
+            "id": "1040106700",
+            "name": "Dagger of Bahamut Coda",
+            "attribute": "6",
+            "kind": "2",
+            "rarity": "4",
+            "is_group": "",
+            "series_id": "14",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "404",
+            "description": "Boost to Humans' and Erunes' ATK and HP (Also affects Primal and Other allies)",
+            "image": "skill_baha_3",
+            "attribute": "",
+            "name": "Concrio Ventus"
+          },
+          "skill2": {
+            "id": "1799",
+            "description": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Incursio Ventus"
+          },
+          "skill3": null,
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "12": {
+          "param": {
+            "id": 3968394941,
+            "image_id": "1040608500",
+            "level": "200",
+            "attack": "3910",
+            "hp": "448",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "99",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "20"
+          },
+          "master": {
+            "id": "1040608500",
+            "name": "Ultima Claw",
+            "attribute": "5",
+            "kind": "7",
+            "rarity": "4",
+            "is_group": "7",
+            "series_id": "13",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": "0"
+          },
+          "skill1": {
+            "id": "733",
+            "description": "<span class=text-small>Big boost to melee-specialty allies' ATK and max HP / Big boost to ATK based on how high HP is</span>",
+            "image": "skill_weapon_whole_7",
+            "attribute": "",
+            "name": "Luctor Plenum"
+          },
+          "skill2": {
+            "id": "759",
+            "description": "Boost to all allies' skill DMG cap",
+            "image": "skill_ability_limit",
+            "attribute": "",
+            "name": "Scandere Facultas"
+          },
+          "skill3": {
+            "id": "1809",
+            "description": "Amplify all allies' superior elemental DMG",
+            "image": "skill_job_weapon",
+            "attribute": "",
+            "name": "Fulgor Impetus"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        },
+        "13": {
+          "param": {
+            "id": 3893716132,
+            "image_id": "1040113200",
+            "level": "200",
+            "attack": "3173",
+            "hp": "312",
+            "bonus_attack": 0,
+            "bonus_hp": 0,
+            "adequate_flag": true,
+            "quality": "0",
+            "is_user_level": true,
+            "arousal_level": "1",
+            "arousal_form": "1",
+            "arousal_exp": "0",
+            "augment_image": [],
+            "augment_skill_icon_image": [],
+            "augment_skill_info": [],
+            "arousal": {
+              "is_arousal_weapon": false,
+              "level": null,
+              "form": null,
+              "form_name": null,
+              "remain_for_next_level": null,
+              "width": null,
+              "is_complete_condition": false,
+              "release_conditions": [],
+              "max_level": null,
+              "total_bonus": null,
+              "total_acquired_bonus": null,
+              "skill": [],
+              "is_caution": false
+            },
+            "skill_level": "20"
+          },
+          "master": {
+            "id": "1040113200",
+            "name": "Pain of Death",
+            "attribute": "6",
+            "kind": "2",
+            "rarity": "4",
+            "is_group": "23",
+            "series_id": "30",
+            "pre_weapon_skill_index": "",
+            "skill1_display": "",
+            "skill2_display": "0",
+            "skill3_display": ""
+          },
+          "skill1": {
+            "id": "1828",
+            "description": "Massive boost to dark allies' ATK / Boost to dark allies' ATK and DEF when an ally is knocked out (Stackable) ",
+            "image": "skill_evoker_6",
+            "attribute": "6",
+            "name": "Lovers-Death's Demise"
+          },
+          "skill2": {
+            "id": "1962",
+            "description": "Boost to dark allies' DMG cap <span class=text-blue>(DMG cap further boosted in Arcarum)</span>",
+            "image": "skill_limit_arcarum_6",
+            "attribute": "6",
+            "name": "Sephira Maxi-Dark "
+          },
+          "skill3": {
+            "id": "379",
+            "description": "Small boost to dark allies' ATK and max HP",
+            "image": "skill_god_6",
+            "attribute": "6",
+            "name": "Dark's Majesty"
+          },
+          "hidden_skill1": null,
+          "hidden_skill2": null
+        }
+      },
+      "weapons_attack": 42254,
+      "weapons_hp": 4309,
+      "weapon_kind_replace": {
+        "weapon": 2
+      },
+      "weapon_replace": {
+        "weapon": "1040108700"
+      },
+      "weapon_open_flag_list": {
+        "is_open_weapon_11": true,
+        "is_open_weapon_12": true,
+        "is_open_weapon_13": true
+      },
+      "is_effective_companionweapon": false,
+      "skin_summon_id": null,
+      "skin_summon_is_mypage": false,
+      "skin_summon_pose": null,
+      "summons": {
+        "1": {
+          "param": {
+            "id": "675435184",
+            "image_id": "2040056000_04",
+            "level": "250",
+            "attack": "4181",
+            "hp": "1759",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "6",
+            "is_mypage": true
+          },
+          "master": {
+            "id": "2040056000",
+            "name": "Lucifer",
+            "attribute": "5",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "120130",
+            "comment": "150% boost to all elemental ATK / 50% boost to max HP / When a foe uses a special attack: Remove 1 debuff / Wings of Pure White effect",
+            "name": "Lucifer's Aura"
+          },
+          "sub_skill": {
+            "id": "120471",
+            "comment": "30% boost to healing specs",
+            "name": "Lucifer's Aura"
+          }
+        },
+        "2": {
+          "param": {
+            "id": "1218461502",
+            "image_id": "2040408000",
+            "level": "150",
+            "attack": "3767",
+            "hp": "1180",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "4",
+            "is_mypage": true
+          },
+          "master": {
+            "id": "2040408000",
+            "name": "Beelzebub",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "20448",
+            "comment": "100% boost to all elemental ATK / Sharp boost to MC's stats / Raise MC's Trance lvl by 3 at battle start (Max: 3)",
+            "name": "All-in-One, One-in-All"
+          },
+          "sub_skill": {
+            "id": "20449",
+            "comment": "When MC uses a charge attack: Raise MC's Trance lvl by 1 (Max: 3) (Boost to multiattack rate based on lvl / Sharp boost to stats at lvl 3)",
+            "name": "All-in-One, One-in-All"
+          }
+        },
+        "3": {
+          "param": {
+            "id": "664554479",
+            "image_id": "2040003000_04",
+            "level": "250",
+            "attack": "4435",
+            "hp": "1669",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "6",
+            "is_mypage": true
+          },
+          "master": {
+            "id": "2040003000",
+            "name": "Bahamut",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "120041",
+            "comment": "150% boost to all elemental ATK / Amplify summon call DMG by 50% / 3-turn cut to initial summon standbys",
+            "name": "Bahamut's Aura"
+          },
+          "sub_skill": {
+            "id": "120466",
+            "comment": "Amplify summon call DMG by 50% / 1-turn cut to summon cooldowns",
+            "name": "Bahamut's Aura"
+          }
+        },
+        "4": {
+          "param": {
+            "id": "896815088",
+            "image_id": "2040327000",
+            "level": "150",
+            "attack": "3054",
+            "hp": "1119",
+            "quality": "0",
+            "evolution_flag": "0",
+            "evolution": "4",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040327000",
+            "name": "Sariel",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "20351",
+            "comment": "140% boost to dark ATK",
+            "name": "Sariel's Aura"
+          },
+          "sub_skill": {
+            "id": "20352",
+            "comment": "15% boost to dark allies' DMG cap",
+            "name": "Sariel's Aura"
+          }
+        },
+        "5": {
+          "param": {
+            "id": "1120600560",
+            "image_id": "2040385000",
+            "level": "100",
+            "attack": "2174",
+            "hp": "806",
+            "quality": "0",
+            "evolution_flag": "0",
+            "evolution": "3",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040385000",
+            "name": "Zirnitra",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "10418",
+            "comment": "60% boost to dark ATK / 30% boost to C.A. DMG / 30% boost to dark allies' charge bars at battle start",
+            "name": "Zirnitra's Aura"
+          },
+          "sub_skill": {
+            "id": "10419",
+            "comment": "25% boost dark allies' HP",
+            "name": "Zirnitra's Aura"
+          }
+        }
+      },
+      "summons_attack": 17611,
+      "summons_hp": 6533,
+      "sub_summons": {
+        "1": {
+          "param": {
+            "id": "909801625",
+            "image_id": "2040315000",
+            "level": "200",
+            "attack": "3345",
+            "hp": "1227",
+            "quality": "99",
+            "evolution_flag": "0",
+            "evolution": "5",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040315000",
+            "name": "Death",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "30259",
+            "comment": "140% boost to dark allies' ATK",
+            "name": "Death's Aura"
+          },
+          "sub_skill": {
+            "id": "20260",
+            "comment": "Amplify dark allies' DMG against light foes by 10%",
+            "name": "Death's Aura"
+          }
+        },
+        "2": {
+          "param": {
+            "id": "1325490215",
+            "image_id": "2040418000",
+            "level": "150",
+            "attack": "3044",
+            "hp": "1149",
+            "quality": "0",
+            "evolution_flag": "0",
+            "evolution": "4",
+            "is_mypage": false
+          },
+          "master": {
+            "id": "2040418000",
+            "name": "Fediel",
+            "attribute": "6",
+            "rarity": "4"
+          },
+          "skill": {
+            "id": "20469",
+            "comment": "140% boost to dark ATK",
+            "name": "Fediel's Aura"
+          },
+          "sub_skill": {
+            "id": "20470",
+            "comment": "40% boost to Dark's, Hatred's, and Oblivion's weapon skills",
+            "name": "Fediel's Aura"
+          }
+        }
+      },
+      "quick_user_summon_id": null,
+      "cjs_name": "vss_sw_0_01",
+      "cjs_position": {
+        "x": 4,
+        "y": 2
+      },
+      "param": {
+        "id": 11675274,
+        "attack": 92487,
+        "hp": 20777,
+        "attribute": 6,
+        "kind": 2,
+        "image": "310901_sw_0_01"
+      },
+      "job": {
+        "master": {
+          "id": "130401",
+          "name": "Manadiver",
+          "class": "7",
+          "domain": "13",
+          "weapon_1": "5",
+          "weapon_2": "2",
+          "companion_weapon_flag": "",
+          "ex_class": false
+        },
+        "param": {
+          "id": 25094544,
+          "is_master": true,
+          "level": 20,
+          "is_complete_master_level": false,
+          "master_level": 1,
+          "remain_next_master_exp": 50000,
+          "is_complete_perfection_proof": false,
+          "perfection_proof_level": 0,
+          "remain_next_perfection_proof_exp": 250
+        },
+        "bonue": {
+          "level_up_bonus": [
+            {
+              "kind": "bonus_1",
+              "kind_jp": "ATK",
+              "is_percent": "0",
+              "type": "attack_up",
+              "value": 4000,
+              "sort_id": "1010"
+            },
+            {
+              "kind": "bonus_18",
+              "kind_jp": "Skill DMG",
+              "is_percent": "1",
+              "type": "ability_attack_up",
+              "value": 30,
+              "sort_id": "1070"
+            }
+          ],
+          "master_bonus": [
+            {
+              "type": "attack_up",
+              "name": "ATK",
+              "comment": "",
+              "description": "",
+              "param": 19,
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "1010"
+            },
+            {
+              "type": "defense_up",
+              "name": "DEF",
+              "comment": "",
+              "description": "",
+              "param": 13,
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "1020"
+            },
+            {
+              "type": "hp_up",
+              "name": "HP",
+              "comment": "",
+              "description": "",
+              "param": 15,
+              "kind": "bonus_14",
+              "is_percent_master": "1",
+              "sort_id": "1030"
+            },
+            {
+              "type": "double_attack_rate_up",
+              "name": "Double attack rate",
+              "comment": "",
+              "description": "",
+              "param": 4,
+              "kind": "bonus_20",
+              "is_percent_master": "1",
+              "sort_id": "1040"
+            },
+            {
+              "type": "triple_attack_rate_up",
+              "name": "Triple attack rate",
+              "comment": "",
+              "description": "",
+              "param": 3,
+              "kind": "bonus_21",
+              "is_percent_master": "1",
+              "sort_id": "1050"
+            },
+            {
+              "type": "passive_damage_limit_up_plus",
+              "name": "DMG Cap",
+              "comment": "",
+              "description": "",
+              "param": "1",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "1060"
+            },
+            {
+              "type": "ability_attack_up",
+              "name": "Skill DMG",
+              "comment": "",
+              "description": "",
+              "param": 23,
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "1070"
+            },
+            {
+              "type": "ability_damage_limit_up_value",
+              "name": "Skill DMG cap",
+              "comment": "",
+              "description": "",
+              "param": 5,
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "1075"
+            },
+            {
+              "type": "guard_ailment",
+              "name": "Debuff resistance",
+              "comment": "",
+              "description": "",
+              "param": 20,
+              "kind": "bonus_3",
+              "is_percent_master": "1",
+              "sort_id": "1090"
+            },
+            {
+              "type": "ailment_enhance",
+              "name": "Debuff success rate",
+              "comment": "",
+              "description": "",
+              "param": 7,
+              "kind": "bonus_4",
+              "is_percent_master": "1",
+              "sort_id": "1100"
+            },
+            {
+              "type": "dodge",
+              "name": "Dodge",
+              "comment": "",
+              "description": "",
+              "param": 3,
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "1110"
+            },
+            {
+              "type": "heal_up",
+              "name": "Healing",
+              "comment": "",
+              "description": "",
+              "param": 14,
+              "kind": "bonus_13",
+              "is_percent_master": "1",
+              "sort_id": "1120"
+            },
+            {
+              "type": "gauge_effect_up",
+              "name": "Inhibit overdrive",
+              "comment": "",
+              "description": "",
+              "param": 8,
+              "kind": "bonus_5",
+              "is_percent_master": "1",
+              "sort_id": "2010"
+            },
+            {
+              "type": "runaway_damage_cut",
+              "name": "Cut to DMG from a foe in overdrive",
+              "comment": "",
+              "description": "",
+              "param": "1",
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "2030"
+            },
+            {
+              "type": "main_weapon_sword_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a sabre",
+              "comment": "",
+              "description": "",
+              "param": 6,
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4010"
+            },
+            {
+              "type": "main_weapon_dagger_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a dagger",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4020"
+            },
+            {
+              "type": "main_weapon_spear_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a spear",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4030"
+            },
+            {
+              "type": "main_weapon_axe_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is an axe",
+              "comment": "",
+              "description": "",
+              "param": 6,
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4040"
+            },
+            {
+              "type": "main_weapon_wand_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a staff",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4050"
+            },
+            {
+              "type": "main_weapon_gun_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a gun",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4060"
+            },
+            {
+              "type": "main_weapon_melee_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a melee",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4070"
+            },
+            {
+              "type": "main_weapon_bow_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a bow",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4080"
+            },
+            {
+              "type": "main_weapon_harp_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a harp",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4090"
+            },
+            {
+              "type": "main_weapon_katana_attack_up",
+              "name": "Boost to main weapon's ATK when main weapon is a katana",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "4100"
+            },
+            {
+              "type": "special_skill_gauge_bonuse_attack",
+              "name": "Boost to charge bar gain upon normal attacks",
+              "comment": "",
+              "description": "",
+              "param": "1",
+              "kind": "bonus_15",
+              "is_percent_master": "0",
+              "sort_id": "5010"
+            },
+            {
+              "type": "defense_up_my_max_hp",
+              "name": "Boost to DEF when HP is full",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "5020"
+            },
+            {
+              "type": "my_job_class_if:passive_damage_limit_up_plus",
+              "name": "Boost to DMG cap for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "5030"
+            },
+            {
+              "type": "my_job_class_if:defense_up",
+              "name": "Boost to DEF for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "5",
+              "kind": "bonus_2",
+              "is_percent_master": "1",
+              "sort_id": "5040"
+            },
+            {
+              "type": "my_job_class_if:passive_heal_limit_up",
+              "name": "Boost to healing cap for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_13",
+              "is_percent_master": "1",
+              "sort_id": "5050"
+            },
+            {
+              "type": "my_job_class_if:ability_attack_up",
+              "name": "Boost to skill DMG for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "5060"
+            },
+            {
+              "type": "my_job_class_if:final_attack_rise_plus",
+              "name": "Amplify normal attack DMG for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_1",
+              "is_percent_master": "1",
+              "sort_id": "5070"
+            },
+            {
+              "type": "my_job_class_if:ailment_enhance",
+              "name": "Boost to debuff success rate for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_4",
+              "is_percent_master": "1",
+              "sort_id": "5080"
+            }
+          ],
+          "master_bonus_of_job": [
+            {
+              "type": "my_job_class_if:ability_attack_up",
+              "name": "Boost to skill DMG for classes not row V",
+              "comment": "",
+              "description": "",
+              "param": "3",
+              "kind": "bonus_18",
+              "is_percent_master": "1",
+              "sort_id": "5060"
+            }
+          ]
+        }
+      },
+      "set_action": [
+        {
+          "character_id": "0",
+          "action_set_pos": "0",
+          "set_action_id": "3040",
+          "name": "Dispel"
+        },
+        {
+          "character_id": "0",
+          "action_set_pos": "1",
+          "set_action_id": "1422",
+          "name": "Dark Haze"
+        },
+        {
+          "character_id": "0",
+          "action_set_pos": "2",
+          "set_action_id": "201851",
+          "name": "Wild Magica"
+        }
+      ],
+      "shield_id": null,
+      "skin_shield_id": null,
+      "familiar_id": 1,
+      "skin_familiar_id": null,
+      "skill": {
+        "count": 20,
+        "description": [
+          {
+            "over": 1,
+            "comment": "Boost to Main Character ATK and HP",
+            "sort": "10000021"
+          },
+          {
+            "over": 2,
+            "comment": "Massive boost to dark allies' ATK",
+            "sort": "10100060"
+          },
+          {
+            "over": 1,
+            "comment": "Big boost to dark allies' ATK",
+            "sort": "10100061"
+          },
+          {
+            "over": 2,
+            "comment": "Medium boost to dark allies' ATK and max HP",
+            "sort": "10100202"
+          },
+          {
+            "over": 3,
+            "comment": "Small boost to dark allies' ATK and max HP",
+            "sort": "10100203"
+          },
+          {
+            "over": 1,
+            "comment": "Small boost to dark allies' ATK and critical hit rate",
+            "sort": "10100463"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to all allies' ATK based on number of Humans and Erunes in party (Also counts Primal and Other allies)",
+            "sort": "10300903"
+          },
+          {
+            "over": 1,
+            "comment": "Small boost to dark allies' multiattack rate",
+            "sort": "10400063"
+          },
+          {
+            "over": 2,
+            "comment": "Big boost to dark allies' critical hit rate",
+            "sort": "10500061"
+          },
+          {
+            "over": 2,
+            "comment": "Boost to dark allies' DMG cap",
+            "sort": "10700026"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to dark allies' DMG cap <span class=text-blue>(DMG cap further boosted in Arcarum)</span>",
+            "sort": "10700072"
+          },
+          {
+            "over": 1,
+            "comment": "Big boost to dark allies' ATK and max HP / Big amplifying boost to DMG",
+            "sort": "10701021"
+          },
+          {
+            "over": 1,
+            "comment": "Amplify all allies' superior elemental DMG",
+            "sort": "10702901"
+          },
+          {
+            "over": 2,
+            "comment": "Boost to ATK based on how many axes are equipped",
+            "sort": "10708004"
+          },
+          {
+            "over": 1,
+            "comment": "Massive boost to dark allies' ATK / Boost to dark allies' ATK and DEF when an ally is knocked out (Stackable) ",
+            "sort": "10708202"
+          },
+          {
+            "over": 2,
+            "comment": "When at least 4 weapons of the same weapon group are equipped: Boost to dark allies' ATK, DEF, and DMG cap",
+            "sort": "10709361"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to all allies' skill DMG cap",
+            "sort": "30300006"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to skill DMG cap and skill hit rate",
+            "sort": "30300010"
+          },
+          {
+            "over": 1,
+            "comment": "Boost to dark allies' ATK, DMG cap, and multiattack rate / Amplify normal attack DMG <span class=text-blue>(Activates when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)</span>",
+            "sort": "30300018"
+          },
+          {
+            "over": 2,
+            "comment": "Supplement dark allies' DMG",
+            "sort": "40101976"
+          }
+        ]
+      },
+      "damage_info": {
+        "assumed_advantage_damage_attribute": 5,
+        "assumed_normal_damage_attribute": 6,
+        "assumed_advantage_damage": 1134547,
+        "assumed_normal_damage": 765017,
+        "hp": 102961,
+        "effect_value_info": [
+          {
+            "icon_img": "01_icon_might_01.png",
+            "value": "516%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_might_02.png",
+            "value": "20%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_might_03.png",
+            "value": "105%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_might_04.png",
+            "value": "80%",
+            "is_max": true
+          },
+          {
+            "icon_img": "01_icon_critical.png",
+            "value": "78.3%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_da_rate.png",
+            "value": "10.15%",
+            "is_max": false
+          },
+          {
+            "icon_img": "01_icon_ta_rate.png",
+            "value": "10.15%",
+            "is_max": false
+          },
+          {
+            "icon_img": "03_icon_hp.png",
+            "value": "320%",
+            "is_max": false
+          },
+          {
+            "icon_img": "02_icon_def.png",
+            "value": "70%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_skill_dmg_cap.png",
+            "value": "50%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_dmg_cap.png",
+            "value": "20%",
+            "is_max": true
+          },
+          {
+            "icon_img": "04_icon_dmg_cap_other.png",
+            "value": "14%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_dmg_supp.png",
+            "value": "+100000",
+            "is_max": true
+          },
+          {
+            "icon_img": "04_icon_elem_amplify.png",
+            "value": "25%",
+            "is_max": false
+          },
+          {
+            "icon_img": "04_icon_amplify.png",
+            "value": "5.8%",
+            "is_max": false
+          },
+          {
+            "icon_img": "06_icon_super_dmg_cap.png",
+            "value": "2%",
+            "is_max": false
+          },
+          {
+            "icon_img": "05_icon_atk.png",
+            "value": "3.2%",
+            "is_max": false
+          }
+        ],
+        "summon_name": "Hades"
+      },
+      "after_damage_info": []
+    }
+  },
+  "is_main_weapon_fixed": false,
+  "is_weapon_skin": false,
+  "recommend_attr": 4,
+  "is_effective_companionweapon": false,
+  "companionparts_button_flash": false,
+  "is_enable_recommend_party": true,
+  "quest_info": null,
+  "replicard_dungeon_id": null
+}
