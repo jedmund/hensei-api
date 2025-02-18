@@ -6,6 +6,25 @@ module PostDeployment
   class DatabaseMigrator
     include LoggingHelper
 
+    class CombinedMigration
+      attr_reader :version, :name, :migration, :type
+
+      def initialize(version, name, migration, type)
+        @version = version
+        @name = name
+        @migration = migration
+        @type = type
+      end
+
+      def schema_migration?
+        @type == :schema
+      end
+
+      def data_migration?
+        @type == :data
+      end
+    end
+
     def initialize(test_mode:, verbose:)
       @test_mode = test_mode
       @verbose = verbose
@@ -18,92 +37,85 @@ module PostDeployment
       if @test_mode
         simulate_migrations
       else
-        perform_migrations_in_order
+        perform_migrations
       end
     end
 
     private
 
-    def simulate_migrations
-      log_step "TEST MODE: Would run pending migrations..."
+    def collect_pending_migrations
+      # Collect schema migrations
+      schema_context = ActiveRecord::Base.connection.pool.migration_context
+      schema_migrations = schema_context.migrations.map do |migration|
+        CombinedMigration.new(
+          migration.version,
+          migration.name,
+          migration,
+          :schema
+        )
+      end
 
-      # Check schema migrations
-      pending_schema_migrations = ActiveRecord::Base.connection.pool.migration_context.needs_migration?
-      schema_migrations = ActiveRecord::Base.connection.pool.migration_context.migrations
-
-      # Check data migrations
+      # Collect data migrations
       data_migrations_path = DataMigrate.config.data_migrations_path
       data_migration_context = DataMigrate::MigrationContext.new(data_migrations_path)
-      pending_data_migrations = data_migration_context.needs_migration?
-      data_migrations = data_migration_context.migrations
+      data_migrations = data_migration_context.migrations.map do |migration|
+        CombinedMigration.new(
+          migration.version,
+          migration.name,
+          migration,
+          :data
+        )
+      end
 
-      if pending_schema_migrations || pending_data_migrations
-        if schema_migrations.any?
-          log_step "Would apply #{schema_migrations.size} pending schema migrations:"
-          schema_migrations.each do |migration|
-            log_step "  • #{migration.name}"
-          end
-        end
+      # Combine and sort all migrations by version
+      (schema_migrations + data_migrations).sort_by(&:version)
+    end
 
-        if data_migrations.any?
-          log_step "\nWould apply #{data_migrations.size} pending data migrations:"
-          data_migrations.each do |migration|
-            log_step "  • #{migration.name}"
-          end
+    def simulate_migrations
+      pending_migrations = collect_pending_migrations
+
+      if pending_migrations.any?
+        log_step "TEST MODE: Would run #{pending_migrations.size} pending migrations in this order:"
+        pending_migrations.each do |migration|
+          type = migration.schema_migration? ? 'schema' : 'data'
+          log_step "  • [#{type}] #{migration.name} (#{migration.version})"
         end
       else
-        log_step "No pending migrations."
+        log_step 'No pending migrations.'
       end
     end
 
     def perform_migrations
       ActiveRecord::Migration.verbose = @verbose
+      pending_migrations = collect_pending_migrations
 
-      # Run schema migrations
-      schema_version = ActiveRecord::Base.connection.pool.migration_context.current_version
-      ActiveRecord::Tasks::DatabaseTasks.migrate
-      new_schema_version = ActiveRecord::Base.connection.pool.migration_context.current_version
+      return log_step 'No pending migrations.' if pending_migrations.empty?
 
-      # Run data migrations
-      data_migrations_path = DataMigrate.config.data_migrations_path
-      data_migration_context = DataMigrate::MigrationContext.new(data_migrations_path)
+      schema_context = ActiveRecord::Base.connection.pool.migration_context
+      data_context = DataMigrate::MigrationContext.new(DataMigrate.config.data_migrations_path)
 
-      data_version = data_migration_context.current_version
-      data_migration_context.migrate
-      new_data_version = data_migration_context.current_version
+      initial_schema_version = schema_context.current_version
+      initial_data_version = data_context.current_version
 
-      if schema_version == new_schema_version && data_version == new_data_version
-        log_step "No pending migrations."
-      else
-        if schema_version != new_schema_version
-          log_step "Migrated schema from version #{schema_version} to #{new_schema_version}"
-        end
-        if data_version != new_data_version
-          log_step "Migrated data from version #{data_version} to #{new_data_version}"
+      pending_migrations.each do |combined_migration|
+        if combined_migration.schema_migration?
+          # Execute schema migration using Rails migration context
+          schema_context.run(:up, combined_migration.version)
+        else
+          # Execute data migration using data-migrate context
+          data_context.run(:up, combined_migration.version)
         end
       end
-    end
 
-    def perform_migrations_in_order
-      schema_context = ActiveRecord::Base.connection.migration_context
-      schema_migrations = schema_context.migrations
+      final_schema_version = schema_context.current_version
+      final_data_version = data_context.current_version
 
-      data_migrations_path = DataMigrate.config.data_migrations_path
-      data_context = DataMigrate::MigrationContext.new(data_migrations_path)
-      data_migrations = data_context.migrations
+      if initial_schema_version != final_schema_version
+        log_step "Migrated schema from version #{initial_schema_version} to #{final_schema_version}"
+      end
 
-      all_migrations = (schema_migrations + data_migrations).sort_by(&:version)
-
-      all_migrations.each do |migration|
-        if migration.filename.start_with?(data_migrations_path)
-          say "Running data migration: #{migration.name}"
-          # Run the data migration (you might need to call `data_context.run(migration)` or similar)
-          data_context.run(migration)
-        else
-          say "Running schema migration: #{migration.name}"
-          # Run the schema migration (Rails will handle this for you)
-          schema_context.run(migration)
-        end
+      if initial_data_version != final_data_version
+        log_step "Migrated data from version #{initial_data_version} to #{final_data_version}"
       end
     end
   end
