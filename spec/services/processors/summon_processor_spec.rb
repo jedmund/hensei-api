@@ -6,7 +6,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
   let(:party) { create(:party) }
   let(:deck_data) do
     file_path = Rails.root.join('spec', 'fixtures', 'deck_sample.json')
-    JSON.parse(File.read(file_path))['deck']['pc']
+    JSON.parse(File.read(file_path))
   end
 
   subject { described_class.new(party, deck_data, language: 'en') }

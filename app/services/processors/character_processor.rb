@@ -33,7 +33,7 @@ module Processors
       end
 
       @data = @data.with_indifferent_access
-      characters_data = @data['deck']['npc']
+      characters_data = @data.dig('deck', 'npc')
 
       grid_characters = process_characters(characters_data)
       grid_characters.each do |grid_character|

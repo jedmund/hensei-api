@@ -21,7 +21,7 @@ module Processors
     # Initializes a new SummonProcessor.
     #
     # @param party [Party] the Party record.
-    # @param data [Array<Hash>] an array of summon data hashes.
+    # @param data [Hash] the deck hash.
     # @param type [Symbol] the type of summon (:normal, :friend, or :sub).
     # @param quick_summon_id [String, nil] (optional) the quick summon identifier.
     # @param options [Hash] additional options.
@@ -37,21 +37,23 @@ module Processors
     #
     # @return [void]
     def process
-      # Guard: ensure the data is in the expected format.
       unless @data.is_a?(Hash)
         Rails.logger.error "[SUMMON] Invalid data format: expected a Hash, got #{@data.class}"
         return
       end
 
-      return unless @data.key?('summons') &&
-        @data.key?('sub_summons') &&
-        @data.key?('damage_info')
+      unless @data.key?('deck') && @data['deck'].key?('pc')
+        Rails.logger.error '[SUMMON] Missing npc data in deck JSON'
+        return
+      end
 
-      @data = @data.with_indifferent_access if @data.is_a?(Hash)
+      @data = @data.with_indifferent_access
+      summons_data = @data.dig('deck', 'pc', 'summons')
+      sub_summons_data = @data.dig('deck', 'pc', 'sub_summons')
 
-      grid_summons = process_summons(@data['summons'], sub: false)
+      grid_summons = process_summons(summons_data, sub: false)
       friend_summon = process_friend_summon
-      sub_summons = process_summons(@data['sub_summons'], sub: true)
+      sub_summons = process_summons(sub_summons_data, sub: true)
 
       summons = [*grid_summons, friend_summon, *sub_summons]
 
@@ -106,7 +108,7 @@ module Processors
     #
     # @return [GridSummon]
     def process_friend_summon
-      summon_name = @data['damage_info']['summon_name']
+      summon_name = @data.dig('deck', 'pc', 'damage_info', 'summon_name')
       summon = Summon.find_by('name_en = ? OR name_jp = ?', summon_name, summon_name)
 
       GridSummon.new({
