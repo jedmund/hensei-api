@@ -139,6 +139,15 @@ module Processors
                                   1040208200 1040214000 1040021100 1040417200 1040012600 1040317500 1040402900].freeze
     ELEMENTAL_WEAPON_MAPPING_INT = ELEMENTAL_WEAPON_MAPPING.map(&:to_i).sort.freeze
 
+    ELEMENT_MAPPING = {
+      0 => nil,
+      1 => 4, # Wind -> Earth
+      2 => 2, # Fire -> Fire
+      3 => 3, # Water -> Water
+      4 => 1, # Earth -> Wind
+      5 => 6, # Dark -> Light
+      6 => 5 # Light -> Dark
+    }.freeze
     ##
     # Initializes a new WeaponProcessor.
     #
@@ -201,15 +210,19 @@ module Processors
         uncap_level = raw_weapon.dig('param', 'uncap').to_i
         level = raw_weapon.dig('param', 'level').to_i
         transcendence_step = level_to_transcendence(level)
-        element = raw_weapon.dig('param', 'element') || raw_weapon.dig('master', 'attribute')
         series = raw_weapon.dig('master', 'series_id')
-
         weapon_id = raw_weapon.dig('master', 'id')
+
         processed_weapon_id = if Weapon.element_changeable?(series)
                                 process_elemental_weapon(weapon_id)
                               else
                                 weapon_id
                               end
+
+        processed_element = if Weapon.element_changeable?(series)
+                              ELEMENT_MAPPING[raw_weapon.dig('master', 'attribute')]
+                            end
+
         weapon = Weapon.find_by(granblue_id: processed_weapon_id)
 
         unless weapon
@@ -224,7 +237,7 @@ module Processors
           mainhand: mainhand,
           uncap_level: uncap_level,
           transcendence_step: transcendence_step,
-          element: element
+          element: processed_element
         )
 
         arousal_data = raw_weapon.dig('param', 'arousal')
