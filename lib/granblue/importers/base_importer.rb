@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'import_error'
+require 'csv'
 
 module Granblue
   module Importers
