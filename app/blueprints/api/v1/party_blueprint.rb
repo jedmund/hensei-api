@@ -131,6 +131,7 @@ module Api
         fields :edit_key
       end
 
+      # Remixed view
       view :remixed do
         include_view :created
         include_view :source_party
