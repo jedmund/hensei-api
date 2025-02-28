@@ -58,3 +58,4 @@ config/application.yml
 
 # Ignore AI Codebase-generated files
 codebase.md
+mise.toml
