@@ -37,9 +37,12 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# Ignore exported and downloaded files
+# Ignore specific directories
+/.local
 /export
 /download
+/backups
+/logs
 
 .DS_Store
 
@@ -55,3 +58,4 @@ config/application.yml
 
 # Ignore AI Codebase-generated files
 codebase.md
+mise.toml

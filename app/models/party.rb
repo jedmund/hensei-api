@@ -78,6 +78,7 @@ class Party < ApplicationRecord
   include GranblueEnums
 
   # Define preview_state as an enum.
+  attribute :preview_state, :integer
   enum :preview_state, { pending: 0, queued: 1, in_progress: 2, generated: 3, failed: 4 }
 
   # ActiveRecord Associations
@@ -400,7 +401,7 @@ class Party < ApplicationRecord
   # @return [void]
   def skills_are_unique
     validate_uniqueness_of_associations([skill0, skill1, skill2, skill3],
-                                        [:skill0, :skill1, :skill2, :skill3],
+                                        %i[skill0 skill1 skill2 skill3],
                                         :job_skills)
   end
 
@@ -410,7 +411,7 @@ class Party < ApplicationRecord
   # @return [void]
   def guidebooks_are_unique
     validate_uniqueness_of_associations([guidebook1, guidebook2, guidebook3],
-                                        [:guidebook1, :guidebook2, :guidebook3],
+                                        %i[guidebook1 guidebook2 guidebook3],
                                         :guidebooks)
   end
 
@@ -438,7 +439,7 @@ class Party < ApplicationRecord
   def update_element!
     main_weapon = weapons.detect { |gw| gw.position.to_i == -1 }
     new_element = main_weapon&.weapon&.element
-    update_column(:element, new_element) if new_element.present? && self.element != new_element
+    update_column(:element, new_element) if new_element.present? && element != new_element
   end
 
   ##
@@ -449,7 +450,7 @@ class Party < ApplicationRecord
   # @return [void]
   def update_extra!
     new_extra = weapons.any? { |gw| GridWeapon::EXTRA_POSITIONS.include?(gw.position.to_i) }
-    update_column(:extra, new_extra) if self.extra != new_extra
+    update_column(:extra, new_extra) if extra != new_extra
   end
 
   ##

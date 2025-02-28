@@ -25,6 +25,8 @@ common: &default_settings
 
   # agent_enabled: false
 
+  log_file_path: logs/
+
   # Logging level for log/newrelic_agent.log
   log_level: info
 
