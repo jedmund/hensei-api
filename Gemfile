@@ -76,10 +76,13 @@ gem 'strscan'
 # New Relic Ruby Agent
 gem 'newrelic_rpm'
 
+# Parallel processing made simple and fast
+gem 'parallel'
+
 # The Sentry SDK for Rails
-gem "stackprof"
-gem "sentry-ruby"
-gem "sentry-rails"
+gem 'sentry-rails'
+gem 'sentry-ruby'
+gem 'stackprof'
 
 group :doc do
   gem 'apipie-rails'
