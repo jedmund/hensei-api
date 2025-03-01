@@ -482,6 +482,7 @@ DEPENDENCIES
   mini_magick
   newrelic_rpm
   oj
+  parallel
   pg
   pg_query
   pg_search

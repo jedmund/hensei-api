@@ -35,26 +35,31 @@ module Granblue
       # @param verbose [Boolean] When true, enables detailed logging
       # @param storage [Symbol] Storage mode (:local, :s3, or :both)
       # @return [void]
-      def initialize(id, test_mode: false, verbose: false, storage: :both)
+      def initialize(id, test_mode: false, verbose: false, storage: :both, logger: nil)
         @id = id
         @base_url = base_url
         @test_mode = test_mode
         @verbose = verbose
         @storage = storage
+        @logger = logger || Logger.new($stdout) # fallback logger
         @aws_service = AwsService.new
         ensure_directories_exist unless @test_mode
       end
 
       # Download images for all sizes
+      # @param selected_size [String] The size to download
       # @return [void]
-      def download
-        log_info "-> #{@id}"
+      def download(selected_size = nil)
+        log_info("-> #{@id}")
         return if @test_mode
 
-        SIZES.each_with_index do |size, index|
+        # If a specific size is provided, use only that; otherwise, use all available sizes.
+        sizes = selected_size ? [selected_size] : SIZES
+
+        sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_url(size)
-          process_download(url, size, path, last: index == SIZES.size - 1)
+          process_download(url, size, path, last: index == sizes.size - 1)
         end
       end
 
@@ -128,9 +133,9 @@ module Granblue
         download.rewind
 
         # Upload to S3 if it doesn't exist
-        unless @aws_service.file_exists?(s3_key)
-          @aws_service.upload_stream(download, s3_key)
-        end
+        return if @aws_service.file_exists?(s3_key)
+
+        @aws_service.upload_stream(download, s3_key)
       end
 
       # Check if file should be downloaded based on storage mode
@@ -182,7 +187,7 @@ module Granblue
       # Log informational message if verbose
       # @param message [String] Message
       def log_info(message)
-        puts message if @verbose
+        @logger.info(message) if @verbose
       end
 
       # Download elemental variant image
@@ -197,12 +202,10 @@ module Granblue
         filepath = "#{path}/#{filename}"
         URI.open(url) do |file|
           content = file.read
-          if content
-            File.open(filepath, 'wb') do |output|
-              output.write(content)
-            end
-          else
-            raise "Failed to read content from #{url}"
+          raise "Failed to read content from #{url}" unless content
+
+          File.open(filepath, 'wb') do |output|
+            output.write(content)
           end
         end
         log_info "-> #{size}:\t#{url}..."

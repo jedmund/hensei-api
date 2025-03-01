@@ -15,24 +15,27 @@ module Granblue
       # Downloads images for all variants of a character based on their uncap status.
       # Overrides {BaseDownloader#download} to handle character-specific variants.
       #
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Skips download if character is not found in database
       # @note Downloads FLB/ULB variants only if character has those uncaps
       # @see #download_variants
-      def download
+      def download(selected_size = nil)
         character = Character.find_by(granblue_id: @id)
         return unless character
 
-        download_variants(character)
+        download_variants(character, selected_size)
       end
 
       private
 
       # Downloads all variants of a character's images
+      #
       # @param character [Character] Character model instance to download images for
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Only downloads variants that should exist based on character uncap status
-      def download_variants(character)
+      def download_variants(character, selected_size = nil)
         # All characters have 01 and 02 variants
         variants = %W[#{@id}_01 #{@id}_02]
 
@@ -45,18 +48,22 @@ module Granblue
         log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
 
         variants.each do |variant_id|
-          download_variant(variant_id)
+          download_variant(variant_id, selected_size)
         end
       end
 
       # Downloads a specific variant's images in all sizes
+      #
       # @param variant_id [String] Character variant ID (e.g., "3040001000_01")
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
-      def download_variant(variant_id)
+      def download_variant(variant_id, selected_size = nil)
         log_info "-> #{variant_id}" if @verbose
         return if @test_mode
 
-        SIZES.each_with_index do |size, index|
+        sizes = selected_size ? [selected_size] : SIZES
+
+        sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_variant_url(variant_id, size)
           process_download(url, size, path, last: index == SIZES.size - 1)
@@ -64,12 +71,18 @@ module Granblue
       end
 
       # Builds URL for a specific variant and size
+      #
       # @param variant_id [String] Character variant ID
-      # @param size [String] Image size variant ("main", "grid", or "square")
+      # @param size [String] Image size variant ("main", "grid", "square", or "detail")
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
-        "#{@base_url}/#{directory}/#{variant_id}.jpg"
+
+        if size == 'detail'
+          "#{@base_url}/#{directory}/#{variant_id}.png"
+        else
+          "#{@base_url}/#{directory}/#{variant_id}.jpg"
+        end
       end
 
       # Gets object type for file paths and storage keys
@@ -85,6 +98,7 @@ module Granblue
       end
 
       # Gets directory name for a size variant
+      #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
       # @note Maps "main" -> "f", "grid" -> "m", "square" -> "s"
@@ -93,6 +107,7 @@ module Granblue
         when 'main' then 'f'
         when 'grid' then 'm'
         when 'square' then 's'
+        when 'detail' then 'detail'
         end
       end
     end
