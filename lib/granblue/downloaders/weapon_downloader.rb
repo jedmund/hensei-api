@@ -16,25 +16,28 @@ module Granblue
       # Downloads images for all variants of a weapon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle weapon-specific variants.
       #
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Skips download if weapon is not found in database
       # @note Downloads transcendence variants only if weapon has those uncaps
       # @see #download_variants
-      def download
+      def download(selected_size = nil)
         weapon = Weapon.find_by(granblue_id: @id)
         return unless weapon
 
-        download_variants(weapon)
+        download_variants(weapon, selected_size)
       end
 
       private
 
       # Downloads all variants of a weapon's images
+      #
       # @param weapon [Weapon] Weapon model instance to download images for
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Only downloads variants that should exist based on weapon uncap status
       # @note Handles special transcendence art variants for transcendable weapons
-      def download_variants(weapon)
+      def download_variants(weapon, selected_size = nil)
         # All weapons have base variant
         variants = [@id]
 
@@ -46,19 +49,23 @@ module Granblue
         log_info "Downloading weapon variants: #{variants.join(', ')}" if @verbose
 
         variants.each do |variant_id|
-          download_variant(variant_id)
+          download_variant(variant_id, selected_size)
         end
       end
 
       # Downloads a specific variant's images in all sizes
+      #
       # @param variant_id [String] Weapon variant ID (e.g., "1040001000_02")
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Downloads all size variants (main/grid/square) for the given variant
-      def download_variant(variant_id)
+      def download_variant(variant_id, selected_size = nil)
         log_info "-> #{variant_id}" if @verbose
         return if @test_mode
 
-        SIZES.each_with_index do |size, index|
+        sizes = selected_size ? [selected_size] : SIZES
+
+        sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_variant_url(variant_id, size)
           process_download(url, size, path, last: index == SIZES.size - 1)
@@ -66,8 +73,9 @@ module Granblue
       end
 
       # Builds URL for a specific variant and size
+      #
       # @param variant_id [String] Weapon variant ID
-      # @param size [String] Image size variant ("main", "grid", or "square")
+      # @param size [String] Image size variant ("main", "grid", "square", or "raw")
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)

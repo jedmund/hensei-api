@@ -15,25 +15,28 @@ module Granblue
       # Downloads images for all variants of a summon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle summon-specific variants.
       #
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Skips download if summon is not found in database
       # @note Downloads ULB and transcendence variants only if summon has those uncaps
       # @see #download_variants
-      def download
+      def download(selected_size = nil)
         summon = Summon.find_by(granblue_id: @id)
         return unless summon
 
-        download_variants(summon)
+        download_variants(summon, selected_size)
       end
 
       private
 
       # Downloads all variants of a summon's images
+      #
       # @param summon [Summon] Summon model instance to download images for
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Only downloads variants that should exist based on summon uncap status
       # @note Handles special transcendence art variants for 6★ summons
-      def download_variants(summon)
+      def download_variants(summon, selected_size = nil)
         # All summons have base variant
         variants = [@id]
 
@@ -41,26 +44,28 @@ module Granblue
         variants << "#{@id}_02" if summon.ulb
 
         # Add Transcendence variants if available
-        if summon.transcendence
-          variants.push("#{@id}_03", "#{@id}_04")
-        end
+        variants.push("#{@id}_03", "#{@id}_04") if summon.transcendence
 
         log_info "Downloading summon variants: #{variants.join(', ')}" if @verbose
 
         variants.each do |variant_id|
-          download_variant(variant_id)
+          download_variant(variant_id, selected_size)
         end
       end
 
       # Downloads a specific variant's images in all sizes
+      #
       # @param variant_id [String] Summon variant ID (e.g., "2040001000_02")
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
       # @note Downloads all size variants (main/grid/square) for the given variant
-      def download_variant(variant_id)
+      def download_variant(variant_id, selected_size = nil)
         log_info "-> #{variant_id}" if @verbose
         return if @test_mode
 
-        SIZES.each_with_index do |size, index|
+        sizes = selected_size ? [selected_size] : SIZES
+
+        sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_variant_url(variant_id, size)
           process_download(url, size, path, last: index == SIZES.size - 1)
@@ -68,8 +73,9 @@ module Granblue
       end
 
       # Builds URL for a specific variant and size
+      #
       # @param variant_id [String] Summon variant ID
-      # @param size [String] Image size variant ("main", "grid", or "square")
+      # @param size [String] Image size variant ("main", "grid", "square", or "detail")
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
