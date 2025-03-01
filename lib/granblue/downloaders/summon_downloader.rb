@@ -79,7 +79,11 @@ module Granblue
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
-        "#{@base_url}/#{directory}/#{variant_id}.jpg"
+        if size == 'detail'
+          "#{@base_url}/#{directory}/#{variant_id}.png"
+        else
+          "#{@base_url}/#{directory}/#{variant_id}.jpg"
+        end
       end
 
       # Gets object type for file paths and storage keys
@@ -95,14 +99,16 @@ module Granblue
       end
 
       # Gets directory name for a size variant
+      #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
       # @note Maps "main" -> "party_main", "grid" -> "party_sub", "square" -> "s"
       def directory_for_size(size)
         case size.to_s
-        when 'main' then 'party_main'
-        when 'grid' then 'party_sub'
+        when 'main' then 'ls'
+        when 'grid' then 'm'
         when 'square' then 's'
+        when 'detail' then 'detail'
         end
       end
     end

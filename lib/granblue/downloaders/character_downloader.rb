@@ -77,7 +77,12 @@ module Granblue
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
-        "#{@base_url}/#{directory}/#{variant_id}.jpg"
+
+        if size == 'detail'
+          "#{@base_url}/#{directory}/#{variant_id}.png"
+        else
+          "#{@base_url}/#{directory}/#{variant_id}.jpg"
+        end
       end
 
       # Gets object type for file paths and storage keys
@@ -102,6 +107,7 @@ module Granblue
         when 'main' then 'f'
         when 'grid' then 'm'
         when 'square' then 's'
+        when 'detail' then 'detail'
         end
       end
     end

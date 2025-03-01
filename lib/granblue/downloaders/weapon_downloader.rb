@@ -42,9 +42,7 @@ module Granblue
         variants = [@id]
 
         # Add transcendence variants if available
-        if weapon.transcendence
-          variants.push("#{@id}_02", "#{@id}_03")
-        end
+        variants.push("#{@id}_02", "#{@id}_03") if weapon.transcendence
 
         log_info "Downloading weapon variants: #{variants.join(', ')}" if @verbose
 
@@ -79,7 +77,11 @@ module Granblue
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
-        "#{@base_url}/#{directory}/#{variant_id}.jpg"
+        if size == 'raw'
+          "#{@base_url}/#{directory}/#{variant_id}.png"
+        else
+          "#{@base_url}/#{directory}/#{variant_id}.jpg"
+        end
       end
 
       # Gets object type for file paths and storage keys
@@ -95,6 +97,7 @@ module Granblue
       end
 
       # Gets directory name for a size variant
+      #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
       # @note Maps "main" -> "ls", "grid" -> "m", "square" -> "s"
@@ -103,6 +106,7 @@ module Granblue
         when 'main' then 'ls'
         when 'grid' then 'm'
         when 'square' then 's'
+        when 'raw' then 'b'
         end
       end
     end
