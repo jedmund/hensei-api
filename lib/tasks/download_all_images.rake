@@ -1,40 +1,50 @@
 namespace :granblue do
-  def _progress_reporter(count:, total:, result:, bar_len: 40, multi: true)
-    filled_len = (bar_len * count / total).round
-    status = File.basename(result)
-    percents = (100.0 * count / total).round(1)
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+  desc 'Downloads all images for the given object type'
+  # Downloads all images for a specific type of game object (e.g. summons, weapons)
+  # Uses the appropriate downloader class based on the object type
+  #
+  # @param object [String] Type of object to download images for (e.g. 'summon', 'weapon')
+  # @example Download all summon images
+  #   rake granblue:download_all_images\[summon\]
+  # @example Download all weapon images
+  #   rake granblue:download_all_images\[weapon\]
+  # @example Download all character images
+  #   rake granblue:download_all_images\[character\]
+  task :download_all_images, %i[object threads size] => :environment do |_t, args|
+    require 'parallel'
+    require 'logger'
 
-    if !multi
-      print("[#{bar}] #{percents}% ...#{' ' * 14}#{status}\n")
-    else
-      print "\n"
-    end
-  end
+    # Use a thread-safe logger (or Rails.logger if preferred)
+    logger = Logger.new($stdout)
+    logger.level = Logger::INFO # set to WARN or INFO to reduce debug noise
 
-  desc 'Downloads images for the given object type at the given size'
-  task :download_all_images, %i[object size] => :environment do |_t, args|
-    require 'open-uri'
+    # Load downloader classes
+    require_relative '../granblue/downloaders/base_downloader'
+    Dir[Rails.root.join('lib', 'granblue', 'downloaders', '*.rb')].each { |file| require file }
 
-    filename = "export/#{args[:object]}-#{args[:size]}.txt"
-    count = `wc -l #{filename}`.split.first.to_i
+    object = args[:object]
+    specified_size = args[:size]
+    klass = object.classify.constantize
+    ids = klass.pluck(:granblue_id)
 
-    path = "#{Rails.root}/download/#{args[:object]}-#{args[:size]}"
-    FileUtils.mkdir_p(path) unless Dir.exist?(path)
+    puts "Downloading images for #{ids.count} #{object.pluralize}..."
 
-    puts "Downloading #{count} images from #{args[:object]}-#{args[:size]}.txt..."
-    if File.exist?(filename)
-      File.readlines(filename).each_with_index do |line, i|
-        download = URI.parse(line.strip).open
-        download_URI = "#{path}/#{download.base_uri.to_s.split('/')[-1]}"
-        if File.exist?(download_URI)
-          puts "Skipping #{line}"
+    logger.info "Downloading images for #{ids.count} #{object.pluralize}..."
+    thread_count = (args[:threads] || 4).to_i
+    logger.info "Using #{thread_count} threads for parallel downloads..."
+    logger.info "Downloading only size: #{specified_size}" if specified_size
+
+    Parallel.each(ids, in_threads: thread_count) do |id|
+      ActiveRecord::Base.connection_pool.with_connection do
+        downloader_class = "Granblue::Downloaders::#{object.classify}Downloader".constantize
+        downloader = downloader_class.new(id, verbose: true, logger: logger)
+        if specified_size
+          downloader.download(specified_size)
         else
-          IO.copy_stream(download, "#{path}/#{download.base_uri.to_s.split('/')[-1]}")
-          _progress_reporter(count: i, total: count, result: download_URI, bar_len: 40, multi: false)
+          downloader.download
         end
       rescue StandardError => e
-        puts "#{e}: #{line}"
+        logger.error "Error downloading #{object} #{id}: #{e.message}"
       end
     end
   end
