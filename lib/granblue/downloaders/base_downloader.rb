@@ -35,12 +35,13 @@ module Granblue
       # @param verbose [Boolean] When true, enables detailed logging
       # @param storage [Symbol] Storage mode (:local, :s3, or :both)
       # @return [void]
-      def initialize(id, test_mode: false, verbose: false, storage: :both)
+      def initialize(id, test_mode: false, verbose: false, storage: :both, logger: nil)
         @id = id
         @base_url = base_url
         @test_mode = test_mode
         @verbose = verbose
         @storage = storage
+        @logger = logger || Logger.new($stdout) # fallback logger
         @aws_service = AwsService.new
         ensure_directories_exist unless @test_mode
       end
@@ -132,9 +133,9 @@ module Granblue
         download.rewind
 
         # Upload to S3 if it doesn't exist
-        unless @aws_service.file_exists?(s3_key)
-          @aws_service.upload_stream(download, s3_key)
-        end
+        return if @aws_service.file_exists?(s3_key)
+
+        @aws_service.upload_stream(download, s3_key)
       end
 
       # Check if file should be downloaded based on storage mode
