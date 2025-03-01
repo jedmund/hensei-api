@@ -4,14 +4,13 @@ require 'pry'
 
 module Granblue
   module Parsers
-
     # CharacterParser parses character data from gbf.wiki
     class CharacterParser
       attr_reader :granblue_id
 
       def initialize(granblue_id: String, debug: false)
         @character = Character.find_by(granblue_id: granblue_id)
-        @wiki = GranblueWiki.new
+        @wiki = Granblue::Parsers::Wiki.new
         @debug = debug || false
       end
 
