@@ -34,6 +34,15 @@ class Summon < ApplicationRecord
                     }
                   }
 
+  has_many :summon_calls,
+           primary_key: 'granblue_id',
+           foreign_key: 'summon_granblue_id'
+  has_many :summon_auras,
+           primary_key: 'granblue_id',
+           foreign_key: 'summon_granblue_id'
+  has_many :skills,
+           through: :summon_calls
+
   def blueprint
     SummonBlueprint
   end

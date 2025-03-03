@@ -34,6 +34,16 @@ class Character < ApplicationRecord
                     }
                   }
 
+  has_many :character_skills,
+           primary_key: 'granblue_id',
+           foreign_key: 'character_granblue_id'
+  has_many :skills,
+           through: :character_skills
+  has_many :charge_attacks,
+           -> { where(owner_type: 'character') },
+           primary_key: 'granblue_id',
+           foreign_key: 'owner_id'
+
   AWAKENINGS = [
     { slug: 'character-balanced', name_en: 'Balanced', name_jp: 'バランス', order: 0 },
     { slug: 'character-atk', name_en: 'Attack', name_jp: '攻撃', order: 1 },

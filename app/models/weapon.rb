@@ -36,6 +36,15 @@ class Weapon < ApplicationRecord
 
   has_many :weapon_awakenings
   has_many :awakenings, through: :weapon_awakenings
+  has_many :weapon_skills,
+           primary_key: 'granblue_id',
+           foreign_key: 'weapon_granblue_id'
+  has_many :skills,
+           through: :weapon_skills
+  has_many :charge_attacks,
+           -> { where(owner_type: 'weapon') },
+           primary_key: 'granblue_id',
+           foreign_key: 'owner_id'
 
   SERIES_SLUGS = {
     1 => 'seraphic',
