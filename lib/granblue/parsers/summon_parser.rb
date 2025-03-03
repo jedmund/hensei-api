@@ -10,7 +10,7 @@ module Granblue
 
       def initialize(granblue_id: String, debug: false)
         @summon = Summon.find_by(granblue_id: granblue_id)
-        @wiki = GranblueWiki.new(debug: debug)
+        @wiki = Granblue::Parsers::Wiki.new
         @debug = debug || false
       end
 
