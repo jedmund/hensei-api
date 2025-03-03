@@ -10,7 +10,7 @@ module Granblue
 
       def initialize(granblue_id: String, debug: false)
         @weapon = Weapon.find_by(granblue_id: granblue_id)
-        @wiki = GranblueWiki.new(debug: debug)
+        @wiki = Granblue::Parsers::Wiki.new
         @debug = debug || false
       end
 
@@ -278,17 +278,17 @@ module Granblue
 
       # Converts rarities from a string to a hash
       def rarity_from_hash(string)
-        string ? GranblueWiki.rarities[string.upcase] : nil
+        string ? Granblue::Parsers::Wiki.rarities[string.upcase] : nil
       end
 
       # Converts proficiencies from a string to a hash
       def proficiency_from_hash(string)
-        GranblueWiki.proficiencies[string]
+        Granblue::Parsers::Wiki.proficiencies[string]
       end
 
       # Converts a bullet type from a string to a hash
       def bullet_from_hash(string)
-        string ? GranblueWiki.bullets[string] : nil
+        string ? Granblue::Parsers::Wiki.bullets[string] : nil
       end
 
       # Parses a date string into a Date object

@@ -4,21 +4,26 @@ require 'pry'
 
 module Granblue
   module Parsers
-
     # CharacterParser parses character data from gbf.wiki
     class CharacterParser
       attr_reader :granblue_id
 
-      def initialize(granblue_id: String, debug: false)
+      def initialize(granblue_id: String, debug: false, use_local: false)
         @character = Character.find_by(granblue_id: granblue_id)
-        @wiki = GranblueWiki.new
+        @wiki = Granblue::Parsers::Wiki.new
         @debug = debug || false
+        @use_local = use_local
       end
 
       # Fetches using @wiki and then processes the response
       # Returns true if successful, false if not
       # Raises an exception if something went wrong
       def fetch(save: false)
+        if @use_local && @character.wiki_raw.present?
+          wikitext = @character.wiki_raw
+          return handle_fetch_success(wikitext, save)
+        end
+
         response = fetch_wiki_info
         return false if response.nil?
 
@@ -49,6 +54,9 @@ module Granblue
       # Handle the response from the wiki if the response is successful
       # If the save flag is set, it will persist the data to the database
       def handle_fetch_success(response, save)
+        @character.wiki_raw = response
+        @character.save!
+
         ap "#{@character.granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug
         extracted = parse_string(response)
         info = parse(extracted)
@@ -152,12 +160,12 @@ module Granblue
         info[:id] = hash['id']
         info[:charid] = hash['charid'].scan(/\b\d{4}\b/)
 
-        info[:flb] = GranblueWiki.boolean.fetch(hash['5star'], false)
+        info[:flb] = Granblue::Parsers::Wiki.boolean.fetch(hash['5star'], false)
         info[:ulb] = hash['max_evo'].to_i == 6
 
-        info[:rarity] = GranblueWiki.rarities.fetch(hash['rarity'], 0)
-        info[:element] = GranblueWiki.elements.fetch(hash['element'], 0)
-        info[:gender] = GranblueWiki.genders.fetch(hash['gender'], 0)
+        info[:rarity] = Granblue::Parsers::Wiki.rarities.fetch(hash['rarity'], 0)
+        info[:element] = Granblue::Parsers::Wiki.elements.fetch(hash['element'], 0)
+        info[:gender] = Granblue::Parsers::Wiki.genders.fetch(hash['gender'], 0)
 
         info[:proficiencies] = proficiencies_from_hash(hash['weapon'])
         info[:races] = races_from_hash(hash['race'])
@@ -211,14 +219,14 @@ module Granblue
       # Converts proficiencies from a string to a hash
       def proficiencies_from_hash(character)
         character.to_s.split(',').map.with_index do |prof, i|
-          { "proficiency#{i + 1}" => GranblueWiki.proficiencies[prof] }
+          { "proficiency#{i + 1}" => Granblue::Parsers::Wiki.proficiencies[prof] }
         end.reduce({}, :merge)
       end
 
       # Converts races from a string to a hash
       def races_from_hash(race)
         race.to_s.split(',').map.with_index do |r, i|
-          { "race#{i + 1}" => GranblueWiki.races[r] }
+          { "race#{i + 1}" => Granblue::Parsers::Wiki.races[r] }
         end.reduce({}, :merge)
       end
 
