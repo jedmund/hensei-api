@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_18_025315) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -67,6 +67,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_18_025315) do
     t.string "kamigame", default: ""
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.text "wiki_raw"
+    t.text "game_raw_en"
+    t.text "game_raw_jp"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
@@ -420,6 +423,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_18_025315) do
     t.date "transcendence_date"
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
+    t.text "wiki_raw"
+    t.text "game_raw_en"
+    t.text "game_raw_jp"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
@@ -495,6 +501,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_18_025315) do
     t.date "transcendence_date"
     t.string "recruits"
     t.integer "series"
+    t.integer "new_series"
+    t.text "wiki_raw"
+    t.text "game_raw_en"
+    t.text "game_raw_jp"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
