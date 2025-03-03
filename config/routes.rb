@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     get 'version', to: 'api#version'
 
     post 'import', to: 'import#create'
+    post 'import/weapons', to: 'import#weapons'
+    post 'import/summons', to: 'import#summons'
+    post 'import/characters', to: 'import#characters'
 
     get 'users/info/:id', to: 'users#info'
 
