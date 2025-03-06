@@ -62,6 +62,65 @@ class Dataminer
       character_id: granblue_id
     }
 
+    response = fetch_detail(url, body)
+    update_game_data('Character', granblue_id, response) if response
+    response
+  end
+
+  def fetch_weapon(granblue_id)
+    timestamp = Time.now.to_i * 1000
+    url = "/archive/weapon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{BOT_UID}"
+    body = {
+      special_token: nil,
+      user_id: BOT_UID,
+      kind_name: '0',
+      attribute: '0',
+      event_id: nil,
+      story_id: nil,
+      weapon_id: granblue_id
+    }
+
+    response = fetch_detail(url, body)
+    update_game_data('Weapon', granblue_id, response) if response
+    response
+  end
+
+  def fetch_summon(granblue_id)
+    timestamp = Time.now.to_i * 1000
+    url = "/archive/summon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{BOT_UID}"
+    body = {
+      special_token: nil,
+      user_id: BOT_UID,
+      kind_name: '0',
+      attribute: '0',
+      event_id: nil,
+      story_id: nil,
+      summon_id: granblue_id
+    }
+
+    response = fetch_detail(url, body)
+    update_game_data('Summon', granblue_id, response) if response
+    response
+  end
+
+  private
+
+  def format_cookies
+    cookies.map { |k, v| "#{k}=#{v}" }.join('; ')
+  end
+
+  def auth_failed?(response)
+    return true if response.code != 200
+
+    begin
+      parsed = JSON.parse(response.body)
+      parsed.is_a?(Hash) && parsed['auth_status'] == 'require_auth'
+    rescue JSON::ParserError
+      true
+    end
+  end
+
+  def fetch_detail(url, body)
     puts "\n=== Request Details ==="
     puts "URL: #{url}"
     puts 'Headers:'
@@ -101,21 +160,20 @@ class Dataminer
     JSON.parse(response.body)
   end
 
-  private
+  def update_game_data(model_name, granblue_id, response_data)
+    return unless response_data.is_a?(Hash)
 
-  def format_cookies
-    cookies.map { |k, v| "#{k}=#{v}" }.join('; ')
-  end
+    model = Object.const_get(model_name)
+    record = model.find_by(granblue_id: granblue_id)
 
-  def auth_failed?(response)
-    return true if response.code != 200
-
-    begin
-      parsed = JSON.parse(response.body)
-      parsed.is_a?(Hash) && parsed['auth_status'] == 'require_auth'
-    rescue JSON::ParserError
-      true
+    if record
+      record.update(game_raw_en: response_data)
+      puts "Updated #{model_name} #{granblue_id}"
+    else
+      puts "#{model_name} with granblue_id #{granblue_id} not found in database"
     end
+  rescue StandardError => e
+    puts "Error updating #{model_name} #{granblue_id}: #{e.message}"
   end
 
   class AuthenticationError < StandardError; end
