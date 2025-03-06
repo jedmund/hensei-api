@@ -103,6 +103,19 @@ class Dataminer
     response
   end
 
+  # Public batch processing methods
+  def fetch_all_characters
+    process_all_records('Character')
+  end
+
+  def fetch_all_weapons
+    process_all_records('Weapon')
+  end
+
+  def fetch_all_summons
+    process_all_records('Summon')
+  end
+
   private
 
   def format_cookies
@@ -174,6 +187,42 @@ class Dataminer
     end
   rescue StandardError => e
     puts "Error updating #{model_name} #{granblue_id}: #{e.message}"
+  end
+
+  def process_all_records(model_name)
+    model = Object.const_get(model_name)
+    total = model.count
+    success_count = 0
+    error_count = 0
+
+    puts "Starting to fetch #{total} #{model_name.downcase}s..."
+
+    model.find_each do |record|
+      puts "\nProcessing #{model_name} #{record.granblue_id} (#{success_count + error_count + 1}/#{total})"
+
+      response = case model_name
+                 when 'Character'
+                   fetch_character(record.granblue_id)
+                 when 'Weapon'
+                   fetch_weapon(record.granblue_id)
+                 when 'Summon'
+                   fetch_summon(record.granblue_id)
+                 end
+
+      success_count += 1
+      puts "Successfully processed #{model_name} #{record.granblue_id}"
+
+      # Add a small delay to avoid overwhelming the server
+      sleep(1)
+    rescue StandardError => e
+      error_count += 1
+      puts "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
+    end
+
+    puts "\nProcessing complete!"
+    puts "Total: #{total}"
+    puts "Successful: #{success_count}"
+    puts "Failed: #{error_count}"
   end
 
   class AuthenticationError < StandardError; end
