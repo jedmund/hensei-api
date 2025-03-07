@@ -21,9 +21,9 @@ class Dataminer
     'X-Requested-With' => 'XMLHttpRequest'
   }.freeze
 
-  attr_reader :page, :cookies
+  attr_reader :page, :cookies, :logger, :debug
 
-  def initialize(page:, access_token:, wing:, midship:, t: 'dummy')
+  def initialize(page:, access_token:, wing:, midship:, t: 'dummy', debug: false)
     @page = page
     @cookies = {
       access_gbtk: access_token,
@@ -31,6 +31,8 @@ class Dataminer
       t: t,
       midship: midship
     }
+    @debug = debug
+    setup_logger
   end
 
   def fetch
@@ -104,16 +106,16 @@ class Dataminer
   end
 
   # Public batch processing methods
-  def fetch_all_characters
-    process_all_records('Character')
+  def fetch_all_characters(only_missing: false)
+    process_all_records('Character', only_missing: only_missing)
   end
 
-  def fetch_all_weapons
-    process_all_records('Weapon')
+  def fetch_all_weapons(only_missing: false)
+    process_all_records('Weapon', only_missing: only_missing)
   end
 
-  def fetch_all_summons
-    process_all_records('Summon')
+  def fetch_all_summons(only_missing: false)
+    process_all_records('Summon', only_missing: only_missing)
   end
 
   private
@@ -133,17 +135,35 @@ class Dataminer
     end
   end
 
+  def setup_logger
+    @logger = ::Logger.new($stdout)
+    @logger.level = debug ? ::Logger::DEBUG : ::Logger::INFO
+    @logger.formatter = proc do |severity, _datetime, _progname, msg|
+      case severity
+      when 'DEBUG'
+        debug ? "#{msg}\n" : ''
+      else
+        "#{msg}\n"
+      end
+    end
+
+    # Suppress SQL logs in non-debug mode
+    return if debug
+
+    ActiveRecord::Base.logger.level = ::Logger::INFO if defined?(ActiveRecord::Base)
+  end
+
   def fetch_detail(url, body)
-    puts "\n=== Request Details ==="
-    puts "URL: #{url}"
-    puts 'Headers:'
-    puts HEADERS.merge(
+    logger.debug "\n=== Request Details ==="
+    logger.debug "URL: #{url}"
+    logger.debug 'Headers:'
+    logger.debug HEADERS.merge(
       'Cookie' => format_cookies,
       'X-VERSION' => GAME_VERSION
     ).inspect
-    puts 'Body:'
-    puts body.to_json
-    puts '===================='
+    logger.debug 'Body:'
+    logger.debug body.to_json
+    logger.debug '===================='
 
     response = self.class.post(
       url,
@@ -154,19 +174,19 @@ class Dataminer
       body: body.to_json
     )
 
-    puts "\n=== Response Details ==="
-    puts "Response code: #{response.code}"
-    puts 'Response headers:'
-    puts response.headers.inspect
-    puts 'Raw response body:'
-    puts response.body.inspect
+    logger.debug "\n=== Response Details ==="
+    logger.debug "Response code: #{response.code}"
+    logger.debug 'Response headers:'
+    logger.debug response.headers.inspect
+    logger.debug 'Raw response body:'
+    logger.debug response.body.inspect
     begin
-      puts 'Parsed response body (if JSON):'
-      puts JSON.parse(response.body).inspect
+      logger.debug 'Parsed response body (if JSON):'
+      logger.debug JSON.parse(response.body).inspect
     rescue JSON::ParserError => e
-      puts "Could not parse as JSON: #{e.message}"
+      logger.debug "Could not parse as JSON: #{e.message}"
     end
-    puts '======================'
+    logger.debug '======================'
 
     raise AuthenticationError if auth_failed?(response)
 
@@ -181,24 +201,27 @@ class Dataminer
 
     if record
       record.update(game_raw_en: response_data)
-      puts "Updated #{model_name} #{granblue_id}"
+      logger.debug "Updated #{model_name} #{granblue_id}"
     else
-      puts "#{model_name} with granblue_id #{granblue_id} not found in database"
+      logger.warn "#{model_name} with granblue_id #{granblue_id} not found in database"
     end
   rescue StandardError => e
-    puts "Error updating #{model_name} #{granblue_id}: #{e.message}"
+    logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
   end
 
-  def process_all_records(model_name)
+  def process_all_records(model_name, only_missing: false)
     model = Object.const_get(model_name)
-    total = model.count
+    scope = model
+    scope = scope.where(game_raw_en: nil) if only_missing
+
+    total = scope.count
     success_count = 0
     error_count = 0
 
-    puts "Starting to fetch #{total} #{model_name.downcase}s..."
+    logger.info "Starting to fetch #{total} #{model_name.downcase}s#{' (missing data only)' if only_missing}..."
 
-    model.find_each do |record|
-      puts "\nProcessing #{model_name} #{record.granblue_id} (#{success_count + error_count + 1}/#{total})"
+    scope.find_each do |record|
+      logger.info "\nProcessing #{model_name} #{record.granblue_id} (#{success_count + error_count + 1}/#{total})"
 
       response = case model_name
                  when 'Character'
@@ -210,19 +233,18 @@ class Dataminer
                  end
 
       success_count += 1
-      puts "Successfully processed #{model_name} #{record.granblue_id}"
+      logger.debug "Successfully processed #{model_name} #{record.granblue_id}"
 
-      # Add a small delay to avoid overwhelming the server
       sleep(1)
     rescue StandardError => e
       error_count += 1
-      puts "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
+      logger.error "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
     end
 
-    puts "\nProcessing complete!"
-    puts "Total: #{total}"
-    puts "Successful: #{success_count}"
-    puts "Failed: #{error_count}"
+    logger.info "\nProcessing complete!"
+    logger.info "Total: #{total}"
+    logger.info "Successful: #{success_count}"
+    logger.info "Failed: #{error_count}"
   end
 
   class AuthenticationError < StandardError; end
