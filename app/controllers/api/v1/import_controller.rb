@@ -27,6 +27,8 @@ module Api
         6 => 5
       }.freeze
 
+      before_action :ensure_admin_role, only: %i[weapons summons characters]
+
       ##
       # Processes an import request.
       #
@@ -49,9 +51,9 @@ module Api
         end
 
         unless raw_params['deck'].is_a?(Hash) &&
-          raw_params['deck'].key?('pc') &&
-          raw_params['deck'].key?('npc')
-          Rails.logger.error "[IMPORT] Deck data incomplete or missing."
+               raw_params['deck'].key?('pc') &&
+               raw_params['deck'].key?('npc')
+          Rails.logger.error '[IMPORT] Deck data incomplete or missing.'
           return render json: { error: 'Invalid deck data' }, status: :unprocessable_content
         end
 
@@ -68,7 +70,110 @@ module Api
         render json: { error: e.message }, status: :unprocessable_content
       end
 
+      def weapons
+        Rails.logger.info '[IMPORT] Checking weapon gamedata input...'
+
+        body = parse_request_body
+        return unless body
+
+        weapon = Weapon.find_by(granblue_id: body['id'])
+        unless weapon
+          Rails.logger.error "[IMPORT] Weapon not found with ID: #{body['id']}"
+          return render json: { error: 'Weapon not found' }, status: :not_found
+        end
+
+        lang = params[:lang]
+        unless %w[en jp].include?(lang)
+          Rails.logger.error "[IMPORT] Invalid language: #{lang}"
+          return render json: { error: 'Invalid language' }, status: :unprocessable_content
+        end
+
+        begin
+          weapon.update!(
+            "game_raw_#{lang}" => body.to_json
+          )
+          render json: { message: 'Weapon gamedata updated successfully' }, status: :ok
+        rescue StandardError => e
+          Rails.logger.error "[IMPORT] Failed to update weapon gamedata: #{e.message}"
+          render json: { error: e.message }, status: :unprocessable_content
+        end
+      end
+
+      def summons
+        Rails.logger.info '[IMPORT] Checking summon gamedata input...'
+
+        body = parse_request_body
+        return unless body
+
+        summon = Summon.find_by(granblue_id: body['id'])
+        unless summon
+          Rails.logger.error "[IMPORT] Summon not found with ID: #{body['id']}"
+          return render json: { error: 'Summon not found' }, status: :not_found
+        end
+
+        lang = params[:lang]
+        unless %w[en jp].include?(lang)
+          Rails.logger.error "[IMPORT] Invalid language: #{lang}"
+          return render json: { error: 'Invalid language' }, status: :unprocessable_content
+        end
+
+        begin
+          summon.update!(
+            "game_raw_#{lang}" => body.to_json
+          )
+          render json: { message: 'Summon gamedata updated successfully' }, status: :ok
+        rescue StandardError => e
+          Rails.logger.error "[IMPORT] Failed to update summon gamedata: #{e.message}"
+          render json: { error: e.message }, status: :unprocessable_content
+        end
+      end
+
+      ##
+      # Updates character gamedata from JSON blob.
+      #
+      # @return [void] Renders JSON response with success or error message.
+      def characters
+        Rails.logger.info '[IMPORT] Checking character gamedata input...'
+
+        body = parse_request_body
+        return unless body
+
+        character = Character.find_by(granblue_id: body['id'])
+        unless character
+          Rails.logger.error "[IMPORT] Character not found with ID: #{body['id']}"
+          return render json: { error: 'Character not found' }, status: :not_found
+        end
+
+        lang = params[:lang]
+        unless %w[en jp].include?(lang)
+          Rails.logger.error "[IMPORT] Invalid language: #{lang}"
+          return render json: { error: 'Invalid language' }, status: :unprocessable_content
+        end
+
+        begin
+          character.update!(
+            "game_raw_#{lang}" => body.to_json
+          )
+          render json: { message: 'Character gamedata updated successfully' }, status: :ok
+        rescue StandardError => e
+          Rails.logger.error "[IMPORT] Failed to update character gamedata: #{e.message}"
+          render json: { error: e.message }, status: :unprocessable_content
+        end
+      end
+
       private
+
+      ##
+      # Ensures the current user has admin role (role 9).
+      # Renders an error if the user is not an admin.
+      #
+      # @return [void]
+      def ensure_admin_role
+        return if current_user&.role == 9
+
+        Rails.logger.error "[IMPORT] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized' }, status: :unauthorized
+      end
 
       ##
       # Reads and parses the raw JSON request body.
