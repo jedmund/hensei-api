@@ -1,0 +1,5 @@
+name_en,name_jp,granblue_id,rarity,element,proficiency1,proficiency2,gender,race1,race2,flb,min_hp,max_hp,max_hp_flb,min_atk,max_atk,max_atk_flb,base_da,base_ta,ougi_ratio,ougi_ratio_flb,special,ulb,max_hp_ulb,max_atk_ulb,character_id,wiki_en,release_date,flb_date,ulb_date,wiki_ja,gamewith,kamigame,nicknames_en,nicknames_jp
+Basara (Grand),バサラ (リミテッドver),3040582000,3,6,10,7,1,2,,false,192,1128,,1740,8760,,,,,,false,false,,,{3271},Basara,2025-03-17,,,バサラ (SSR)リミテッドバージョン,489323,SSRバサラ,,
+Mahira (Summer),マキラ(水着ver),3040584000,3,1,8,7,2,3,,false,281,1217,,1408,8915,,,,,,false,false,,,{3073},Mahira (Summer),2025-03-17,,,マキラ (SSR)水着バージョン,489328,SSR水着マキラ,,
+Lu Woh (Summer),ル・オー(水着ver),3040583000,3,4,7,6,0,2,,false,236,1172,,1385,7820,,,,,,false,false,,,{3221},Lu Woh (Summer),2025-03-17,,,ル・オー (SSR)水着バージョン,490119,SSR水着ルオー,,
+Joy (Event SSR),ジョイ(イベントSSR),3040588000,3,1,7,5,0,0,,false,108,1080,,1711,9011,,,,,,false,false,,,{2146},Joy (Event SSR),2025-03-11,,,ジョイ (SSR),489593,SSRジョイ,,
