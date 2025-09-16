@@ -13,10 +13,12 @@ module Api
     #
     # @see Api::V1::ApiController for shared API behavior.
     class GridCharactersController < Api::V1::ApiController
-      before_action :find_grid_character, only: %i[update update_uncap_level destroy resolve]
-      before_action :find_party, only: %i[create resolve update update_uncap_level destroy]
+      include IdResolvable
+
+      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve]
+      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy]
       before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level destroy]
+      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy]
 
       ##
       # Creates a new grid character.
@@ -92,6 +94,88 @@ module Api
       end
 
       ##
+      # Updates the position of a GridCharacter.
+      #
+      # Moves a grid character to a new position, maintaining sequential filling for main slots.
+      # Validates that the target position is empty and within allowed bounds.
+      #
+      # @return [void]
+      def update_position
+        new_position = position_params[:position].to_i
+        new_container = position_params[:container]
+
+        # Validate position bounds (0-4 main, 5-6 extra)
+        unless valid_character_position?(new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Invalid position #{new_position} for character")
+          )
+        end
+
+        # Check if target position is occupied
+        if GridCharacter.exists?(party_id: @party.id, position: new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
+          )
+        end
+
+        old_position = @grid_character.position
+        @grid_character.position = new_position
+
+        # Compact positions if needed (for main slots)
+        reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
+
+        if @grid_character.save
+          render json: {
+            party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+            grid_character: GridCharacterBlueprint.render_as_hash(@grid_character.reload, view: :nested),
+            reordered: reordered || false
+          }, status: :ok
+        else
+          render_validation_error_response(@grid_character)
+        end
+      end
+
+      ##
+      # Swaps positions between two GridCharacters.
+      #
+      # Exchanges the positions of two grid characters within the same party.
+      # Both characters must belong to the same party.
+      #
+      # @return [void]
+      def swap
+        source_id = swap_params[:source_id]
+        target_id = swap_params[:target_id]
+
+        source = GridCharacter.find_by(id: source_id, party_id: @party.id)
+        target = GridCharacter.find_by(id: target_id, party_id: @party.id)
+
+        unless source && target
+          return render_not_found_response('grid_character')
+        end
+
+        # Perform the swap
+        ActiveRecord::Base.transaction do
+          temp_position = -999
+          source_pos = source.position
+          target_pos = target.position
+
+          source.update!(position: temp_position)
+          target.update!(position: source_pos)
+          source.update!(position: target_pos)
+        end
+
+        render json: {
+          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          swapped: {
+            source: GridCharacterBlueprint.render_as_hash(source.reload, view: :nested),
+            target: GridCharacterBlueprint.render_as_hash(target.reload, view: :nested)
+          }
+        }, status: :ok
+      rescue ActiveRecord::RecordInvalid => e
+        render_validation_error_response(e.record)
+      end
+
+      ##
       # Resolves conflicts for grid characters.
       #
       # This action destroys any conflicting grid characters as well as any grid character occupying
@@ -100,7 +184,7 @@ module Api
       #
       # @return [void]
       def resolve
-        incoming = Character.find_by(id: resolve_params[:incoming])
+        incoming = find_by_any_id(Character, resolve_params[:incoming])
         render_not_found_response('character') and return unless incoming
 
         conflicting = resolve_params[:conflicting].map { |id| GridCharacter.find_by(id: id) }.compact
@@ -315,7 +399,7 @@ module Api
       #
       # @return [void]
       def find_incoming_character
-        @incoming_character = Character.find_by(id: character_params[:character_id])
+        @incoming_character = find_by_any_id(Character, character_params[:character_id])
         render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new) unless @incoming_character
       end
 
@@ -375,6 +459,45 @@ module Api
       end
 
       ##
+      # Validates if a character position is valid.
+      #
+      # @param position [Integer] the position to validate.
+      # @return [Boolean] true if the position is valid; false otherwise.
+      def valid_character_position?(position)
+        # Main slots (0-4), extra slots (5-6)
+        (0..6).cover?(position)
+      end
+
+      ##
+      # Determines if character positions should be compacted.
+      #
+      # @param old_position [Integer] the old position.
+      # @param new_position [Integer] the new position.
+      # @return [Boolean] true if compaction is needed; false otherwise.
+      def should_compact_characters?(old_position, new_position)
+        # Compact if moving from main slots (0-4) to extra (5-6) or vice versa
+        main_to_extra = (0..4).cover?(old_position) && (5..6).cover?(new_position)
+        extra_to_main = (5..6).cover?(old_position) && (0..4).cover?(new_position)
+        main_to_extra || extra_to_main
+      end
+
+      ##
+      # Compacts character positions to maintain sequential filling.
+      #
+      # @return [Boolean] true if positions were reordered; false otherwise.
+      def compact_character_positions
+        main_characters = @party.characters.where(position: 0..4).order(:position)
+
+        ActiveRecord::Base.transaction do
+          main_characters.each_with_index do |char, index|
+            char.update!(position: index) if char.position != index
+          end
+        end
+
+        true
+      end
+
+      ##
       # Specifies and permits the allowed character parameters.
       #
       # @return [ActionController::Parameters] the permitted parameters.
@@ -391,6 +514,22 @@ module Api
           rings: %i[modifier strength],
           earring: %i[modifier strength]
         )
+      end
+
+      ##
+      # Specifies and permits the position update parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def position_params
+        params.permit(:position, :container)
+      end
+
+      ##
+      # Specifies and permits the swap parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def swap_params
+        params.permit(:source_id, :target_id)
       end
 
       ##
