@@ -3,6 +3,8 @@
 module Api
   module V1
     class SummonsController < Api::V1::ApiController
+      include IdResolvable
+
       before_action :set
 
       def show
@@ -12,7 +14,8 @@ module Api
       private
 
       def set
-        @summon = Summon.where(granblue_id: params[:id]).first
+        @summon = find_by_any_id(Summon, params[:id])
+        render_not_found_response('summon') unless @summon
       end
     end
   end

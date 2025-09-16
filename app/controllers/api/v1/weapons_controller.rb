@@ -3,6 +3,8 @@
 module Api
   module V1
     class WeaponsController < Api::V1::ApiController
+      include IdResolvable
+
       before_action :set
 
       def show
@@ -12,7 +14,8 @@ module Api
       private
 
       def set
-        @weapon = Weapon.where(granblue_id: params[:id]).first
+        @weapon = find_by_any_id(Weapon, params[:id])
+        render_not_found_response('weapon') unless @weapon
       end
     end
   end
