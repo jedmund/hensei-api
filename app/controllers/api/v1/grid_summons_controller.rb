@@ -10,12 +10,14 @@ module Api
     #
     # @see Api::V1::ApiController for shared API behavior.
     class GridSummonsController < Api::V1::ApiController
+      include IdResolvable
+
       attr_reader :party, :incoming_summon
 
-      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon resolve destroy]
-      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon resolve destroy]
+      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy]
+      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy]
       before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon destroy]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy]
 
       ##
       # Creates a new grid summon.
@@ -112,6 +114,97 @@ module Api
         summons = [@grid_summon] + quick_summons
 
         render json: GridSummonBlueprint.render(summons, view: :nested, root: :summons)
+      end
+
+      ##
+      # Updates the position of a GridSummon.
+      #
+      # Moves a grid summon to a new position, optionally changing its container.
+      # Validates that the target position is empty and within allowed bounds.
+      #
+      # @return [void]
+      def update_position
+        new_position = position_params[:position].to_i
+        new_container = position_params[:container]
+
+        # Validate position bounds (-1 main, 0-3 sub, 4-5 subaura, 6 friend)
+        unless valid_summon_position?(new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Invalid position #{new_position} for summon")
+          )
+        end
+
+        # Check if position is restricted (main summon, friend)
+        if restricted_summon_position?(new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Cannot move summon to restricted position #{new_position}")
+          )
+        end
+
+        # Check if target position is occupied
+        if GridSummon.exists?(party_id: @party.id, position: new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
+          )
+        end
+
+        @grid_summon.position = new_position
+
+        if @grid_summon.save
+          render json: {
+            party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+            grid_summon: GridSummonBlueprint.render_as_hash(@grid_summon.reload, view: :nested)
+          }, status: :ok
+        else
+          render_validation_error_response(@grid_summon)
+        end
+      end
+
+      ##
+      # Swaps positions between two GridSummons.
+      #
+      # Exchanges the positions of two grid summons within the same party.
+      # Both summons must belong to the same party and not be in restricted positions.
+      #
+      # @return [void]
+      def swap
+        source_id = swap_params[:source_id]
+        target_id = swap_params[:target_id]
+
+        source = GridSummon.find_by(id: source_id, party_id: @party.id)
+        target = GridSummon.find_by(id: target_id, party_id: @party.id)
+
+        unless source && target
+          return render_not_found_response('grid_summon')
+        end
+
+        # Check if either position is restricted
+        if restricted_summon_position?(source.position) || restricted_summon_position?(target.position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Cannot swap summons in restricted positions")
+          )
+        end
+
+        # Perform the swap
+        ActiveRecord::Base.transaction do
+          temp_position = -999
+          source_pos = source.position
+          target_pos = target.position
+
+          source.update!(position: temp_position)
+          target.update!(position: source_pos)
+          source.update!(position: target_pos)
+        end
+
+        render json: {
+          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          swapped: {
+            source: GridSummonBlueprint.render_as_hash(source.reload, view: :nested),
+            target: GridSummonBlueprint.render_as_hash(target.reload, view: :nested)
+          }
+        }, status: :ok
+      rescue ActiveRecord::RecordInvalid => e
+        render_validation_error_response(e.record)
       end
 
       #
@@ -214,7 +307,7 @@ module Api
       #
       # @return [void]
       def find_incoming_summon
-        @incoming_summon = Summon.find_by(id: summon_params[:summon_id])
+        @incoming_summon = find_by_any_id(Summon, summon_params[:summon_id])
       end
 
       ##
@@ -332,12 +425,48 @@ module Api
       end
 
       ##
+      # Validates if a summon position is valid.
+      #
+      # @param position [Integer] the position to validate.
+      # @return [Boolean] true if the position is valid; false otherwise.
+      def valid_summon_position?(position)
+        # Main (-1), sub slots (0-3), subaura (4-5), friend (6)
+        position == -1 || (0..6).cover?(position)
+      end
+
+      ##
+      # Checks if a summon position is restricted (cannot be drag-drop target).
+      #
+      # @param position [Integer] the position to check.
+      # @return [Boolean] true if the position is restricted; false otherwise.
+      def restricted_summon_position?(position)
+        # Main summon (-1) and friend summon (6) are restricted
+        position == -1 || position == 6
+      end
+
+      ##
       # Defines and permits the whitelisted parameters for a grid summon.
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
         params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend,
                                        :quick_summon, :uncap_level, :transcendence_step)
+      end
+
+      ##
+      # Specifies and permits the position update parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def position_params
+        params.permit(:position, :container)
+      end
+
+      ##
+      # Specifies and permits the swap parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def swap_params
+        params.permit(:source_id, :target_id)
       end
     end
   end
