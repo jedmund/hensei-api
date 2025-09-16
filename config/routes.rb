@@ -76,6 +76,18 @@ Rails.application.routes.draw do
     post 'summons/update_quick_summon', to: 'grid_summons#update_quick_summon'
     delete 'summons', to: 'grid_summons#destroy'
 
+    # Drag-drop API endpoints
+    put 'parties/:party_id/grid_weapons/:id/position', to: 'grid_weapons#update_position'
+    post 'parties/:party_id/grid_weapons/swap', to: 'grid_weapons#swap'
+
+    put 'parties/:party_id/grid_characters/:id/position', to: 'grid_characters#update_position'
+    post 'parties/:party_id/grid_characters/swap', to: 'grid_characters#swap'
+
+    put 'parties/:party_id/grid_summons/:id/position', to: 'grid_summons#update_position'
+    post 'parties/:party_id/grid_summons/swap', to: 'grid_summons#swap'
+
+    post 'parties/:id/grid_update', to: 'parties#grid_update'
+
     delete 'favorites', to: 'favorites#destroy'
   end
 
