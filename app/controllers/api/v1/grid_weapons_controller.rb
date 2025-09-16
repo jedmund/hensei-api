@@ -10,10 +10,12 @@ module Api
     #
     # @see Api::V1::ApiController for shared API behavior.
     class GridWeaponsController < Api::V1::ApiController
-      before_action :find_grid_weapon, only: %i[update update_uncap_level resolve destroy]
-      before_action :find_party, only: %i[create update update_uncap_level resolve destroy]
+      include IdResolvable
+
+      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy]
+      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy]
       before_action :find_incoming_weapon, only: %i[create resolve]
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level resolve destroy]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy]
 
       ##
       # Creates a new GridWeapon.
@@ -80,6 +82,88 @@ module Api
       end
 
       ##
+      # Updates the position of a GridWeapon.
+      #
+      # Moves a grid weapon to a new position, optionally changing its container.
+      # Validates that the target position is empty and within allowed bounds.
+      #
+      # @return [void]
+      def update_position
+        new_position = position_params[:position].to_i
+        new_container = position_params[:container]
+
+        # Validate position bounds
+        unless valid_weapon_position?(new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Invalid position #{new_position} for weapon")
+          )
+        end
+
+        # Check if target position is occupied
+        if GridWeapon.exists?(party_id: @party.id, position: new_position)
+          return render_unprocessable_entity_response(
+            Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
+          )
+        end
+
+        # Update position
+        old_position = @grid_weapon.position
+        @grid_weapon.position = new_position
+
+        # Update party attributes if needed
+        update_party_attributes_for_position(@grid_weapon, new_position)
+
+        if @grid_weapon.save
+          render json: {
+            party: PartyBlueprint.render_as_hash(@party, view: :full),
+            grid_weapon: GridWeaponBlueprint.render_as_hash(@grid_weapon, view: :full)
+          }, status: :ok
+        else
+          render_validation_error_response(@grid_weapon)
+        end
+      end
+
+      ##
+      # Swaps positions between two GridWeapons.
+      #
+      # Exchanges the positions of two grid weapons within the same party.
+      # Both weapons must belong to the same party and be valid for swapping.
+      #
+      # @return [void]
+      def swap
+        source_id = swap_params[:source_id]
+        target_id = swap_params[:target_id]
+
+        source = GridWeapon.find_by(id: source_id, party_id: @party.id)
+        target = GridWeapon.find_by(id: target_id, party_id: @party.id)
+
+        unless source && target
+          return render_not_found_response('grid_weapon')
+        end
+
+        # Perform the swap
+        ActiveRecord::Base.transaction do
+          temp_position = -999
+          source_pos = source.position
+          target_pos = target.position
+
+          source.update!(position: temp_position)
+          target.update!(position: source_pos)
+          source.update!(position: target_pos)
+        end
+
+        render json: {
+          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          swapped: {
+            source: GridWeaponBlueprint.render_as_hash(source.reload, view: :full),
+            target: GridWeaponBlueprint.render_as_hash(target.reload, view: :full)
+          }
+        }, status: :ok
+      rescue ActiveRecord::RecordInvalid => e
+        render_validation_error_response(e.record)
+      end
+
+      ##
       # Resolves conflicts by removing conflicting grid weapons and creating a new one.
       #
       # Expects resolve parameters that include the desired position, the incoming weapon ID,
@@ -88,7 +172,7 @@ module Api
       #
       # @return [void]
       def resolve
-        incoming = Weapon.find_by(id: resolve_params[:incoming])
+        incoming = find_by_any_id(Weapon, resolve_params[:incoming])
         conflicting_ids = resolve_params[:conflicting]
         conflicting_weapons = GridWeapon.where(id: conflicting_ids)
 
@@ -280,7 +364,7 @@ module Api
       # @return [void]
       def find_incoming_weapon
         if params.dig(:weapon, :weapon_id).present?
-          @incoming_weapon = Weapon.find_by(id: params.dig(:weapon, :weapon_id))
+          @incoming_weapon = find_by_any_id(Weapon, params.dig(:weapon, :weapon_id))
           render_not_found_response('weapon') unless @incoming_weapon
         else
           @incoming_weapon = nil
@@ -354,6 +438,32 @@ module Api
       end
 
       ##
+      # Validates if a weapon position is valid.
+      #
+      # @param position [Integer] the position to validate.
+      # @return [Boolean] true if the position is valid; false otherwise.
+      def valid_weapon_position?(position)
+        # Mainhand (-1), grid slots (0-8), extra slots (9-11)
+        position == -1 || (0..11).cover?(position)
+      end
+
+      ##
+      # Updates party attributes based on the weapon's new position.
+      #
+      # @param grid_weapon [GridWeapon] the grid weapon being moved.
+      # @param new_position [Integer] the new position.
+      # @return [void]
+      def update_party_attributes_for_position(grid_weapon, new_position)
+        if new_position == -1
+          @party.element = grid_weapon.weapon.element
+          @party.save!
+        elsif GridWeapon::EXTRA_POSITIONS.include?(new_position)
+          @party.extra = true
+          @party.save!
+        end
+      end
+
+      ##
       # Specifies and permits the allowed weapon parameters.
       #
       # @return [ActionController::Parameters] the permitted parameters.
@@ -365,6 +475,22 @@ module Api
           :ax_modifier1, :ax_modifier2, :ax_strength1, :ax_strength2,
           :awakening_id, :awakening_level
         )
+      end
+
+      ##
+      # Specifies and permits the position update parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def position_params
+        params.permit(:position, :container)
+      end
+
+      ##
+      # Specifies and permits the swap parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def swap_params
+        params.permit(:source_id, :target_id)
       end
 
       ##
