@@ -88,7 +88,17 @@ module Api
       end
 
       def render_unprocessable_entity_response(exception)
-        render json: ErrorBlueprint.render_as_json(nil, errors: exception.to_hash),
+        error_data = if exception.respond_to?(:to_hash)
+                       exception.to_hash
+                     elsif exception.is_a?(ActionController::ParameterMissing)
+                       { message: exception.message, param: exception.param }
+                     elsif exception.respond_to?(:message)
+                       { message: exception.message }
+                     else
+                       exception
+                     end
+
+        render json: ErrorBlueprint.render_as_json(nil, errors: error_data),
                status: :unprocessable_entity
       end
 
