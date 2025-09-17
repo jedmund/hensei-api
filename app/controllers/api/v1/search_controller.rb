@@ -280,6 +280,7 @@ module Api
 
       # Specify whitelisted properties that can be modified.
       def search_params
+        return {} unless params[:search].present?
         params.require(:search).permit!
       end
     end
