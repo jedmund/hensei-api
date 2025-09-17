@@ -275,7 +275,8 @@ module Api
       private
 
       def total_pages(count)
-        count.to_f / SEARCH_PER_PAGE > 1 ? (count.to_f / SEARCH_PER_PAGE).ceil : 1
+        per_page = search_page_size
+        (count.to_f / per_page).ceil
       end
 
       # Specify whitelisted properties that can be modified.
