@@ -82,14 +82,14 @@ module Api
                      end
 
         count = characters.length
-        paginated = characters.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+        paginated = characters.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: CharacterBlueprint.render(paginated,
                                                root: :results,
                                                meta: {
                                                  count: count,
                                                  total_pages: total_pages(count),
-                                                 per_page: SEARCH_PER_PAGE
+                                                 per_page: search_page_size
                                                })
       end
 
@@ -120,14 +120,14 @@ module Api
                   end
 
         count = weapons.length
-        paginated = weapons.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+        paginated = weapons.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: WeaponBlueprint.render(paginated,
                                             root: :results,
                                             meta: {
                                               count: count,
                                               total_pages: total_pages(count),
-                                              per_page: SEARCH_PER_PAGE
+                                              per_page: search_page_size
                                             })
       end
 
@@ -153,14 +153,14 @@ module Api
                   end
 
         count = summons.length
-        paginated = summons.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+        paginated = summons.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: SummonBlueprint.render(paginated,
                                             root: :results,
                                             meta: {
                                               count: count,
                                               total_pages: total_pages(count),
-                                              per_page: SEARCH_PER_PAGE
+                                              per_page: search_page_size
                                             })
       end
 
@@ -241,14 +241,14 @@ module Api
                  end
 
         count = skills.length
-        paginated = skills.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+        paginated = skills.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: JobSkillBlueprint.render(paginated,
                                               root: :results,
                                               meta: {
                                                 count: count,
                                                 total_pages: total_pages(count),
-                                                per_page: SEARCH_PER_PAGE
+                                                per_page: search_page_size
                                               })
       end
 
@@ -261,14 +261,14 @@ module Api
                 end
 
         count = books.length
-        paginated = books.paginate(page: search_params[:page], per_page: SEARCH_PER_PAGE)
+        paginated = books.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: GuidebookBlueprint.render(paginated,
                                                root: :results,
                                                meta: {
                                                  count: count,
                                                  total_pages: total_pages(count),
-                                                 per_page: SEARCH_PER_PAGE
+                                                 per_page: search_page_size
                                                })
       end
 

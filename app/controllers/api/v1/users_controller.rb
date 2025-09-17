@@ -79,13 +79,14 @@ module Api
             current_user: current_user,
             options: { skip_privacy: skip_privacy }
           ).build
-          parties = query.paginate(page: params[:page], per_page: PartyConstants::COLLECTION_PER_PAGE)
+          current_page_size = page_size
+          parties = query.paginate(page: params[:page], per_page: current_page_size)
           count = query.count
           render json: UserBlueprint.render(@user,
                                             view: :profile,
                                             root: 'profile',
                                             parties: parties,
-                                            meta: { count: count, total_pages: (count.to_f / PartyConstants::COLLECTION_PER_PAGE).ceil, per_page: PartyConstants::COLLECTION_PER_PAGE },
+                                            meta: { count: count, total_pages: (count.to_f / current_page_size).ceil, per_page: current_page_size },
                                             current_user: current_user
           )
         end

@@ -144,8 +144,8 @@ module Api
       # Lists parties based on query parameters.
       def index
         query = build_filtered_query(build_common_base_query)
-        @parties = query.paginate(page: params[:page], per_page: COLLECTION_PER_PAGE)
-        render_paginated_parties(@parties)
+        @parties = query.paginate(page: params[:page], per_page: page_size)
+        render_paginated_parties(@parties, page_size)
       end
 
       # GET /api/v1/parties/favorites
@@ -157,8 +157,8 @@ module Api
                        .where(favorites: { user_id: current_user.id })
                        .distinct
         query = build_filtered_query(base_query)
-        @parties = query.paginate(page: params[:page], per_page: COLLECTION_PER_PAGE)
-        render_paginated_parties(@parties)
+        @parties = query.paginate(page: params[:page], per_page: page_size)
+        render_paginated_parties(@parties, page_size)
       end
 
       # Preview Management

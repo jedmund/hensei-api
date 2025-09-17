@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_27_044028) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -29,6 +29,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.string "slug", null: false
     t.string "object_type", null: false
     t.integer "order", default: 0, null: false
+  end
+
+  create_table "character_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "character_granblue_id", null: false
+    t.uuid "skill_id", null: false
+    t.integer "position", null: false
+    t.integer "unlock_level"
+    t.integer "improve_level"
+    t.uuid "alt_skill_id"
+    t.text "alt_condition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["alt_skill_id"], name: "index_character_skills_on_alt_skill_id"
+    t.index ["character_granblue_id", "position"], name: "index_character_skills_on_character_granblue_id_and_position"
+    t.index ["character_granblue_id"], name: "index_character_skills_on_character_granblue_id"
+    t.index ["skill_id"], name: "index_character_skills_on_skill_id"
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -68,10 +84,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.text "wiki_raw"
-    t.text "game_raw_en"
-    t.text "game_raw_jp"
+    t.jsonb "game_raw_en", comment: "JSON data from game (English)"
+    t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
+    t.text "game_raw_en_backup"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
+  end
+
+  create_table "charge_attacks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "owner_id", null: false
+    t.string "owner_type", null: false
+    t.uuid "skill_id", null: false
+    t.integer "uncap_level"
+    t.uuid "alt_skill_id"
+    t.text "alt_condition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["alt_skill_id"], name: "index_charge_attacks_on_alt_skill_id"
+    t.index ["owner_type", "owner_id", "uncap_level"], name: "idx_on_owner_type_owner_id_uncap_level_b37b556440"
+    t.index ["skill_id"], name: "index_charge_attacks_on_skill_id"
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -81,6 +112,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.string "filename", null: false
     t.datetime "imported_at", null: false
     t.index ["filename"], name: "index_data_versions_on_filename", unique: true
+  end
+
+  create_table "effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.text "description_en"
+    t.text "description_jp"
+    t.string "icon_path"
+    t.integer "effect_type", null: false
+    t.string "effect_class"
+    t.uuid "effect_family_id"
+    t.boolean "stackable", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["effect_class"], name: "index_effects_on_effect_class"
+    t.index ["name_en"], name: "index_effects_on_name_en"
   end
 
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -103,6 +150,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.boolean "holiday"
     t.string "drawable_type"
     t.uuid "drawable_id"
+    t.boolean "classic_ii", default: false
+    t.boolean "collab", default: false
     t.index ["drawable_id"], name: "index_gacha_on_drawable_id", unique: true
     t.index ["drawable_type", "drawable_id"], name: "index_gacha_on_drawable"
   end
@@ -375,6 +424,51 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.uuid "group_id"
   end
 
+  create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "skill_id", null: false
+    t.uuid "effect_id", null: false
+    t.integer "target_type"
+    t.integer "duration_type"
+    t.integer "duration_value"
+    t.text "condition"
+    t.integer "chance"
+    t.decimal "value"
+    t.decimal "cap"
+    t.boolean "local", default: true
+    t.boolean "permanent", default: false
+    t.boolean "undispellable", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["effect_id"], name: "index_skill_effects_on_effect_id"
+    t.index ["skill_id", "effect_id", "target_type"], name: "index_skill_effects_on_skill_id_and_effect_id_and_target_type"
+    t.index ["skill_id"], name: "index_skill_effects_on_skill_id"
+  end
+
+  create_table "skill_values", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "skill_id", null: false
+    t.integer "level", default: 1, null: false
+    t.decimal "value"
+    t.string "text_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id", "level"], name: "index_skill_values_on_skill_id_and_level", unique: true
+    t.index ["skill_id"], name: "index_skill_values_on_skill_id"
+  end
+
+  create_table "skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.text "description_en"
+    t.text "description_jp"
+    t.integer "border_type"
+    t.integer "cooldown"
+    t.integer "skill_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name_en"], name: "index_skills_on_name_en"
+    t.index ["skill_type"], name: "index_skills_on_skill_type"
+  end
+
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "user_id", null: false
     t.string "guild_ids", null: false, array: true
@@ -387,6 +481,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.string "target_memo"
     t.index ["target_type", "target_id"], name: "index_sparks_on_target"
     t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
+  end
+
+  create_table "summon_auras", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "summon_granblue_id", null: false
+    t.text "description_en"
+    t.text "description_jp"
+    t.integer "aura_type"
+    t.integer "boost_type"
+    t.string "boost_target"
+    t.decimal "boost_value"
+    t.integer "uncap_level"
+    t.text "condition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["summon_granblue_id", "aura_type", "uncap_level"], name: "idx_on_summon_granblue_id_aura_type_uncap_level_631fc8f523"
+    t.index ["summon_granblue_id"], name: "index_summon_auras_on_summon_granblue_id"
+  end
+
+  create_table "summon_calls", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "summon_granblue_id", null: false
+    t.uuid "skill_id", null: false
+    t.integer "cooldown"
+    t.integer "uncap_level"
+    t.uuid "alt_skill_id"
+    t.text "alt_condition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["alt_skill_id"], name: "index_summon_calls_on_alt_skill_id"
+    t.index ["skill_id"], name: "index_summon_calls_on_skill_id"
+    t.index ["summon_granblue_id", "uncap_level"], name: "index_summon_calls_on_summon_granblue_id_and_uncap_level"
+    t.index ["summon_granblue_id"], name: "index_summon_calls_on_summon_granblue_id"
   end
 
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -424,8 +549,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.text "wiki_raw"
-    t.text "game_raw_en"
-    t.text "game_raw_jp"
+    t.jsonb "game_raw_en", comment: "JSON data from game (English)"
+    t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
   end
@@ -462,6 +587,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.string "slug"
     t.integer "granblue_id"
     t.integer "series", default: [], null: false, array: true
+  end
+
+  create_table "weapon_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "weapon_granblue_id", null: false
+    t.uuid "skill_id", null: false
+    t.integer "position", null: false
+    t.string "skill_modifier"
+    t.string "skill_series"
+    t.string "skill_size"
+    t.integer "unlock_level"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_weapon_skills_on_skill_id"
+    t.index ["skill_series"], name: "index_weapon_skills_on_skill_series"
+    t.index ["weapon_granblue_id", "position"], name: "index_weapon_skills_on_weapon_granblue_id_and_position"
+    t.index ["weapon_granblue_id"], name: "index_weapon_skills_on_weapon_granblue_id"
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -503,13 +644,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
     t.integer "series"
     t.integer "new_series"
     t.text "wiki_raw"
-    t.text "game_raw_en"
-    t.text "game_raw_jp"
+    t.jsonb "game_raw_en", comment: "JSON data from game (English)"
+    t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
   end
 
+  add_foreign_key "character_skills", "skills"
+  add_foreign_key "character_skills", "skills", column: "alt_skill_id"
+  add_foreign_key "charge_attacks", "skills"
+  add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"
+  add_foreign_key "effects", "effects", column: "effect_family_id"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
   add_foreign_key "grid_characters", "awakenings"
@@ -536,6 +682,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
   add_foreign_key "raids", "raid_groups", column: "group_id", name: "raids_group_id_fkey"
+  add_foreign_key "skill_effects", "effects", name: "fk_skill_effects_effects"
+  add_foreign_key "skill_effects", "skills", name: "fk_skill_effects_skills"
+  add_foreign_key "skill_values", "skills"
+  add_foreign_key "summon_calls", "skills"
+  add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
+  add_foreign_key "weapon_skills", "skills"
 end

@@ -9,6 +9,8 @@ module Api
       ##### Constants
       COLLECTION_PER_PAGE = 15
       SEARCH_PER_PAGE = 10
+      MAX_PER_PAGE = 100
+      MIN_PER_PAGE = 1
 
       ##### Errors
       rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
@@ -119,6 +121,24 @@ module Api
 
       def restrict_access
         raise UnauthorizedError unless current_user
+      end
+
+      # Returns the requested page size within valid bounds
+      # Falls back to default if not specified or invalid
+      # Reads from X-Per-Page header
+      def page_size(default = COLLECTION_PER_PAGE)
+        per_page_header = request.headers['X-Per-Page']
+        return default unless per_page_header.present?
+
+        requested_size = per_page_header.to_i
+        return default if requested_size <= 0
+
+        [[requested_size, MAX_PER_PAGE].min, MIN_PER_PAGE].max
+      end
+
+      # Returns the requested page size for search operations
+      def search_page_size
+        page_size(SEARCH_PER_PAGE)
       end
 
       def n_plus_one_detection

@@ -32,7 +32,7 @@ module PartyQueryingConcern
   end
 
   # Renders paginated parties using PartyBlueprint.
-  def render_paginated_parties(parties)
+  def render_paginated_parties(parties, per_page = COLLECTION_PER_PAGE)
     render json: Api::V1::PartyBlueprint.render(
       parties,
       view: :preview,
@@ -40,7 +40,7 @@ module PartyQueryingConcern
       meta: {
         count: parties.total_entries,
         total_pages: parties.total_pages,
-        per_page: COLLECTION_PER_PAGE
+        per_page: per_page
       },
       current_user: current_user
     )
