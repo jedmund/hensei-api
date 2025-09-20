@@ -41,7 +41,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       it 'allows the owner to create a grid character' do
         expect do
-          post '/api/v1/characters', params: valid_params.to_json, headers: headers
+          post '/api/v1/grid_characters', params: valid_params.to_json, headers: headers
         end.to change(GridCharacter, :count).by(1)
         expect(response).to have_http_status(:created)
       end
@@ -89,7 +89,7 @@ RSpec.describe 'GridCharacters API', type: :request do
             transcendence_step: 1
           }
         }
-        post '/api/v1/characters/update_uncap', params: update_uncap_params.to_json, headers: headers
+        post '/api/v1/grid_characters/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
         expect(json_response['grid_character']).to include('uncap_level' => 5, 'transcendence_step' => 1)
@@ -110,7 +110,7 @@ RSpec.describe 'GridCharacters API', type: :request do
           }
         }
         expect do
-          post '/api/v1/characters/resolve', params: resolve_params.to_json, headers: headers
+          post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
         end.to change(GridCharacter, :count).by(0) # one record is destroyed and one is created
         expect(response).to have_http_status(:created)
         json_response = JSON.parse(response.body)
@@ -126,7 +126,7 @@ RSpec.describe 'GridCharacters API', type: :request do
                                 uncap_level: 3)
         # Using the custom route for destroy: DELETE '/api/v1/characters'
         expect do
-          delete '/api/v1/characters', params: { id: grid_character.id }.to_json, headers: headers
+          delete '/api/v1/grid_characters', params: { id: grid_character.id }.to_json, headers: headers
         end.to change(GridCharacter, :count).by(-1)
         expect(response).to have_http_status(:ok)
       end
@@ -152,7 +152,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       it 'allows anonymous creation with correct edit_key' do
         expect do
-          post '/api/v1/characters', params: valid_params.to_json, headers: headers
+          post '/api/v1/grid_characters', params: valid_params.to_json, headers: headers
         end.to change(GridCharacter, :count).by(1)
         expect(response).to have_http_status(:created)
       end
@@ -161,14 +161,14 @@ RSpec.describe 'GridCharacters API', type: :request do
         let(:headers) { super().merge('X-Edit-Key' => 'wrong') }
 
         it 'returns an unauthorized response' do
-          post '/api/v1/characters', params: valid_params.to_json, headers: headers
+          post '/api/v1/grid_characters', params: valid_params.to_json, headers: headers
           expect(response).to have_http_status(:unauthorized)
         end
       end
     end
   end
 
-  describe 'POST /api/v1/characters (create action) with invalid parameters' do
+  describe 'POST /api/v1/grid_characters (create action) with invalid parameters' do
     context 'with missing or invalid required fields' do
       let(:invalid_params) do
         {
@@ -183,7 +183,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       end
 
       it 'returns unprocessable entity status with error messages' do
-        post '/api/v1/characters', params: invalid_params.to_json, headers: headers
+        post '/api/v1/grid_characters', params: invalid_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('errors')
@@ -251,7 +251,7 @@ RSpec.describe 'GridCharacters API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/characters/update_uncap (update uncap level action)' do
+  describe 'POST /api/v1/grid_characters/update_uncap (update uncap level action)' do
     let!(:grid_character) do
       create(:grid_character,
              party: party,
@@ -275,7 +275,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       end
 
       it 'updates the uncap level and transcendence step' do
-        post '/api/v1/characters/update_uncap', params: update_uncap_params.to_json, headers: headers
+        post '/api/v1/grid_characters/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
         expect(json_response['grid_character']).to include('uncap_level' => 5, 'transcendence_step' => 1)
@@ -283,7 +283,7 @@ RSpec.describe 'GridCharacters API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/characters/resolve (conflict resolution action)' do
+  describe 'POST /api/v1/grid_characters/resolve (conflict resolution action)' do
     let!(:conflicting_character) do
       create(:grid_character,
              party: party,
@@ -305,7 +305,7 @@ RSpec.describe 'GridCharacters API', type: :request do
     it 'resolves conflicts by replacing the existing grid character' do
       expect(GridCharacter.exists?(conflicting_character.id)).to be true
       expect do
-        post '/api/v1/characters/resolve', params: resolve_params.to_json, headers: headers
+        post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
       end.to change(GridCharacter, :count).by(0) # one record deleted, one created
       expect(response).to have_http_status(:created)
       json_response = JSON.parse(response.body)
@@ -314,7 +314,7 @@ RSpec.describe 'GridCharacters API', type: :request do
     end
   end
 
-  describe 'DELETE /api/v1/characters (destroy action)' do
+  describe 'DELETE /api/v1/grid_characters (destroy action)' do
     context 'when the party is owned by a logged in user' do
       let!(:grid_character) do
         create(:grid_character,
@@ -326,13 +326,13 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       it 'destroys the grid character and returns a success response' do
         expect do
-          delete '/api/v1/characters', params: { id: grid_character.id }.to_json, headers: headers
+          delete '/api/v1/grid_characters', params: { id: grid_character.id }.to_json, headers: headers
         end.to change(GridCharacter, :count).by(-1)
         expect(response).to have_http_status(:ok)
       end
 
       it 'returns not found when trying to delete a non-existent grid character' do
-        delete '/api/v1/characters', params: { id: '00000000-0000-0000-0000-000000000000' }.to_json, headers: headers
+        delete '/api/v1/grid_characters', params: { id: '00000000-0000-0000-0000-000000000000' }.to_json, headers: headers
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -350,7 +350,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       it 'allows anonymous user to destroy the grid character' do
         expect do
-          delete '/api/v1/characters', params: { id: grid_character.id }.to_json, headers: headers
+          delete '/api/v1/grid_characters', params: { id: grid_character.id }.to_json, headers: headers
         end.to change(GridCharacter, :count).by(-1)
         expect(response).to have_http_status(:ok)
       end
@@ -358,7 +358,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       it 'prevents deletion when a logged in user attempts to delete an anonymous grid character' do
         auth_headers = headers.except('X-Edit-Key')
         expect do
-          delete '/api/v1/characters', params: { id: grid_character.id }.to_json, headers: auth_headers
+          delete '/api/v1/grid_characters', params: { id: grid_character.id }.to_json, headers: auth_headers
         end.not_to change(GridCharacter, :count)
         expect(response).to have_http_status(:unauthorized)
       end

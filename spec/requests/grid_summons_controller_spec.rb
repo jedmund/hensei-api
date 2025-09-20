@@ -31,7 +31,7 @@ RSpec.describe 'GridSummons API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/summons' do
+  describe 'POST /api/v1/grid_summons' do
     let(:valid_params) do
       {
         summon: {
@@ -50,7 +50,7 @@ RSpec.describe 'GridSummons API', type: :request do
     context 'with valid parameters' do
       it 'creates a grid summon and returns status created' do
         expect do
-          post '/api/v1/summons', params: valid_params.to_json, headers: headers
+          post '/api/v1/grid_summons', params: valid_params.to_json, headers: headers
         end.to change(GridSummon, :count).by(1)
         expect(response).to have_http_status(:created)
         json_response = JSON.parse(response.body)
@@ -77,7 +77,7 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'returns unprocessable entity status with error details' do
-        post '/api/v1/summons', params: invalid_params.to_json, headers: headers
+        post '/api/v1/grid_summons', params: invalid_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('errors')
@@ -149,7 +149,7 @@ RSpec.describe 'GridSummons API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/summons/update_uncap' do
+  describe 'POST /api/v1/grid_summons/update_uncap' do
     context 'when summon has flb true, ulb false, transcendence false (max uncap 4)' do
       before do
         @grid_summon = create(:grid_summon,
@@ -177,7 +177,7 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'caps the uncap level at 4 for the summon' do
-        post '/api/v1/summons/update_uncap', params: update_uncap_params.to_json, headers: headers
+        post '/api/v1/grid_summons/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('grid_summon')
@@ -212,7 +212,7 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'updates the uncap level to 5' do
-        post '/api/v1/summons/update_uncap', params: update_uncap_params.to_json, headers: headers
+        post '/api/v1/grid_summons/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('grid_summon')
@@ -247,7 +247,7 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'updates the uncap level to 6' do
-        post '/api/v1/summons/update_uncap', params: update_uncap_params.to_json, headers: headers
+        post '/api/v1/grid_summons/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('grid_summon')
@@ -256,7 +256,7 @@ RSpec.describe 'GridSummons API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/summons/update_quick_summon' do
+  describe 'POST /api/v1/grid_summons/update_quick_summon' do
     context 'when grid summon position is not in [4,5,6]' do
       let!(:grid_summon) do
         create(:grid_summon,
@@ -278,7 +278,7 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'updates the quick summon flag and returns the updated summons array' do
-        post '/api/v1/summons/update_quick_summon', params: update_quick_params.to_json, headers: headers
+        post '/api/v1/grid_summons/update_quick_summon', params: update_quick_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('summons')
@@ -306,7 +306,7 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'returns no content when position is in [4,5,6]' do
-        post '/api/v1/summons/update_quick_summon', params: update_quick_params.to_json, headers: headers
+        post '/api/v1/grid_summons/update_quick_summon', params: update_quick_params.to_json, headers: headers
         expect(response).to have_http_status(:no_content)
       end
     end

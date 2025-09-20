@@ -9,9 +9,9 @@ Rails.application.routes.draw do
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
     resources :parties, only: %i[index create update destroy]
     resources :users, only: %i[create update show]
-    resources :grid_weapons, only: %i[post update destroy]
-    resources :grid_characters, only: %i[post update destroy]
-    resources :grid_summons, only: %i[update destroy]
+    resources :grid_weapons, only: %i[create update destroy]
+    resources :grid_characters, only: %i[create update destroy]
+    resources :grid_summons, only: %i[create update destroy]
     resources :weapons, only: :show
     resources :characters, only: :show
     resources :summons, only: :show
@@ -61,6 +61,7 @@ Rails.application.routes.draw do
     get 'raids/:id', to: 'raids#show'
     get 'weapon_keys', to: 'weapon_keys#all'
 
+    # Grid endpoints - new prefixed versions
     post 'grid_characters/resolve', to: 'grid_characters#resolve'
     post 'grid_characters/update_uncap', to: 'grid_characters#update_uncap_level'
     delete 'grid_characters', to: 'grid_characters#destroy'

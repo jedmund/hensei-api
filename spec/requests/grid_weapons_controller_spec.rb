@@ -39,7 +39,7 @@ RSpec.describe 'GridWeapons API', type: :request do
 
       it 'allows the owner to create a grid weapon' do
         expect do
-          post '/api/v1/weapons', params: weapon_params.to_json, headers: headers
+          post '/api/v1/grid_weapons', params: weapon_params.to_json, headers: headers
         end.to change(GridWeapon, :count).by(1)
         expect(response).to have_http_status(:created)
       end
@@ -49,7 +49,7 @@ RSpec.describe 'GridWeapons API', type: :request do
         other_user = create(:user)
         party_owned_by_other = create(:party, user: other_user, edit_key: 'secret')
         weapon_params[:weapon][:party_id] = party_owned_by_other.id
-        post '/api/v1/weapons', params: weapon_params.to_json, headers: headers
+        post '/api/v1/grid_weapons', params: weapon_params.to_json, headers: headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       end
 
       it 'allows editing with correct edit_key' do
-        expect { post '/api/v1/weapons', params: anon_params.to_json, headers: headers }
+        expect { post '/api/v1/grid_weapons', params: anon_params.to_json, headers: headers }
           .to change(GridWeapon, :count).by(1)
         expect(response).to have_http_status(:created)
       end
@@ -83,14 +83,14 @@ RSpec.describe 'GridWeapons API', type: :request do
         let(:headers) { super().merge('X-Edit-Key' => 'wrong') }
 
         it 'returns an unauthorized response' do
-          post '/api/v1/weapons', params: anon_params.to_json, headers: headers
+          post '/api/v1/grid_weapons', params: anon_params.to_json, headers: headers
           expect(response).to have_http_status(:unauthorized)
         end
       end
     end
   end
 
-  describe 'POST /api/v1/weapons (create action)' do
+  describe 'POST /api/v1/grid_weapons (create action)' do
     context 'with valid parameters' do
       let(:valid_params) do
         {
@@ -116,7 +116,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       end
 
       it 'creates a grid weapon and returns status created' do
-        expect { post '/api/v1/weapons', params: valid_params.to_json, headers: headers }
+        expect { post '/api/v1/grid_weapons', params: valid_params.to_json, headers: headers }
           .to change(GridWeapon, :count).by(1)
         expect(response).to have_http_status(:created)
         json_response = JSON.parse(response.body)
@@ -140,7 +140,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       end
 
       it 'returns unprocessable entity status with errors' do
-        post '/api/v1/weapons', params: invalid_params.to_json, headers: headers
+        post '/api/v1/grid_weapons', params: invalid_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('errors')
@@ -167,7 +167,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       let(:unauthorized_headers) { headers.merge('X-Edit-Key' => 'wrong') }
 
       it 'returns an unauthorized response' do
-        post '/api/v1/weapons', params: valid_params.to_json, headers: unauthorized_headers
+        post '/api/v1/grid_weapons', params: valid_params.to_json, headers: unauthorized_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -215,7 +215,7 @@ RSpec.describe 'GridWeapons API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/weapons/update_uncap (update uncap level action)' do
+  describe 'POST /api/v1/grid_weapons/update_uncap (update uncap level action)' do
     before do
       # For this test, update the weapon so that its conditions dictate a maximum uncap of 5.
       weapon.update!(flb: false, ulb: true, transcendence: false)
@@ -241,14 +241,14 @@ RSpec.describe 'GridWeapons API', type: :request do
     end
 
     it 'updates the uncap level to 5 for the grid weapon' do
-      post '/api/v1/weapons/update_uncap', params: update_uncap_params.to_json, headers: headers
+      post '/api/v1/grid_weapons/update_uncap', params: update_uncap_params.to_json, headers: headers
       expect(response).to have_http_status(:ok)
       json_response = JSON.parse(response.body)
       expect(json_response['grid_weapon']).to include('uncap_level' => 5)
     end
   end
 
-  describe 'POST /api/v1/weapons/resolve (conflict resolution action)' do
+  describe 'POST /api/v1/grid_weapons/resolve (conflict resolution action)' do
     let!(:conflicting_weapon) do
       create(:grid_weapon,
              party: party,
@@ -277,7 +277,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(GridWeapon.exists?(conflicting_weapon.id)).to be true
 
       # The net change should be zero: one grid weapon is destroyed and one is created.
-      expect { post '/api/v1/weapons/resolve', params: resolve_params.to_json, headers: headers }
+      expect { post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers }
         .to change(GridWeapon, :count).by(0)
       expect(response).to have_http_status(:created)
       json_response = JSON.parse(response.body)
