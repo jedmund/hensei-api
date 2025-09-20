@@ -85,6 +85,7 @@ module Api
         paginated = characters.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: CharacterBlueprint.render(paginated,
+                                               view: :dates,
                                                root: :results,
                                                meta: {
                                                  count: count,
@@ -123,6 +124,7 @@ module Api
         paginated = weapons.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: WeaponBlueprint.render(paginated,
+                                            view: :dates,
                                             root: :results,
                                             meta: {
                                               count: count,
@@ -156,6 +158,7 @@ module Api
         paginated = summons.paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: SummonBlueprint.render(paginated,
+                                            view: :dates,
                                             root: :results,
                                             meta: {
                                               count: count,
