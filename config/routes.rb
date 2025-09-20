@@ -9,8 +9,8 @@ Rails.application.routes.draw do
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
     resources :parties, only: %i[index create update destroy]
     resources :users, only: %i[create update show]
-    resources :grid_weapons, only: %i[update destroy]
-    resources :grid_characters, only: %i[update destroy]
+    resources :grid_weapons, only: %i[post update destroy]
+    resources :grid_characters, only: %i[post update destroy]
     resources :grid_summons, only: %i[update destroy]
     resources :weapons, only: :show
     resources :characters, only: :show
@@ -61,20 +61,17 @@ Rails.application.routes.draw do
     get 'raids/:id', to: 'raids#show'
     get 'weapon_keys', to: 'weapon_keys#all'
 
-    post 'characters', to: 'grid_characters#create'
-    post 'characters/resolve', to: 'grid_characters#resolve'
-    post 'characters/update_uncap', to: 'grid_characters#update_uncap_level'
-    delete 'characters', to: 'grid_characters#destroy'
+    post 'grid_characters/resolve', to: 'grid_characters#resolve'
+    post 'grid_characters/update_uncap', to: 'grid_characters#update_uncap_level'
+    delete 'grid_characters', to: 'grid_characters#destroy'
 
-    post 'weapons', to: 'grid_weapons#create'
-    post 'weapons/resolve', to: 'grid_weapons#resolve'
-    post 'weapons/update_uncap', to: 'grid_weapons#update_uncap_level'
-    delete 'weapons', to: 'grid_weapons#destroy'
+    post 'grid_weapons/resolve', to: 'grid_weapons#resolve'
+    post 'grid_weapons/update_uncap', to: 'grid_weapons#update_uncap_level'
+    delete 'grid_weapons', to: 'grid_weapons#destroy'
 
-    post 'summons', to: 'grid_summons#create'
-    post 'summons/update_uncap', to: 'grid_summons#update_uncap_level'
-    post 'summons/update_quick_summon', to: 'grid_summons#update_quick_summon'
-    delete 'summons', to: 'grid_summons#destroy'
+    post 'grid_summons/update_uncap', to: 'grid_summons#update_uncap_level'
+    post 'grid_summons/update_quick_summon', to: 'grid_summons#update_quick_summon'
+    delete 'grid_summons', to: 'grid_summons#destroy'
 
     # Drag-drop API endpoints
     put 'parties/:party_id/grid_weapons/:id/position', to: 'grid_weapons#update_position'
