@@ -20,7 +20,7 @@ module Api
 
       view :uncap do
         association :party, blueprint: PartyBlueprint
-        fields :position, :uncap_level
+        fields :position, :uncap_level, :transcendence_step
       end
 
       view :destroyed do
