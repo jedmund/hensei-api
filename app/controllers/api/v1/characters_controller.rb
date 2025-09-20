@@ -8,7 +8,7 @@ module Api
       before_action :set
 
       def show
-        render json: CharacterBlueprint.render(@character)
+        render json: CharacterBlueprint.render(@character, view: :full)
       end
 
       private

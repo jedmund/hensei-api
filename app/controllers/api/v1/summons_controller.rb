@@ -8,7 +8,7 @@ module Api
       before_action :set
 
       def show
-        render json: SummonBlueprint.render(@summon)
+        render json: SummonBlueprint.render(@summon, view: :full)
       end
 
       private

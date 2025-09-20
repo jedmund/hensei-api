@@ -8,7 +8,7 @@ module Api
       before_action :set
 
       def show
-        render json: WeaponBlueprint.render(@weapon)
+        render json: WeaponBlueprint.render(@weapon, view: :full)
       end
 
       private
