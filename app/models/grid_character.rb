@@ -27,9 +27,9 @@ class GridCharacter < ApplicationRecord
   # Validations
   validates_presence_of :party
 
-  # Validate that uncap_level and transcendence_step are present and numeric.
+  # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
-  validates :transcendence_step, presence: true, numericality: { only_integer: true }
+  validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
   validate :validate_awakening_level, on: :update
   validate :transcendence, on: :update
@@ -77,6 +77,7 @@ class GridCharacter < ApplicationRecord
   # @note Triggered on update.
   # @return [void]
   def transcendence
+    return if transcendence_step.nil?
     errors.add(:transcendence_step, 'character has no transcendence') if transcendence_step.positive? && !character.ulb
     errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5 && character.ulb
     errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative? && character.ulb

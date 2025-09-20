@@ -39,9 +39,9 @@ class GridWeapon < ApplicationRecord
 
   belongs_to :awakening, optional: true
 
-  # Validate that uncap_level and transcendence_step are present and numeric.
+  # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
-  validates :transcendence_step, presence: true, numericality: { only_integer: true }
+  validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
 
   validate :compatible_with_position, on: :create
   validate :no_conflicts, on: :create
