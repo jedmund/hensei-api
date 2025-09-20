@@ -82,12 +82,12 @@ module Api
       # @return [void]
       def update_uncap_level
         @grid_character.uncap_level = character_params[:uncap_level]
-        @grid_character.transcendence_step = character_params[:transcendence_step]
+        @grid_character.transcendence_step = character_params[:transcendence_step] || 0
 
         if @grid_character.save
           render json: GridCharacterBlueprint.render(@grid_character,
                                                      root: :grid_character,
-                                                     view: :nested)
+                                                     view: :uncap)
         else
           render_validation_error_response(@grid_character)
         end

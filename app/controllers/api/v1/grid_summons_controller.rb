@@ -33,7 +33,7 @@ module Api
         # Then, using `tap`, ensure that the uncap_level is set by using the max_uncap_level helper
         # if it hasn't already been provided.
         grid_summon = build_grid_summon.tap do |gs|
-          gs.uncap_level ||= max_uncap_level(gs)
+          gs.uncap_level ||= max_uncap_level(gs.summon)
         end
 
         # If the grid summon is valid (i.e. it passes all validations), then save it normally.
@@ -84,7 +84,7 @@ module Api
         new_transcendence_step = summon.transcendence && summon_params[:transcendence_step].present? ? summon_params[:transcendence_step] : 0
 
         if @grid_summon.update(uncap_level: new_uncap_level, transcendence_step: new_transcendence_step)
-          render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon)
+          render json: GridSummonBlueprint.render(@grid_summon, view: :uncap, root: :grid_summon)
         else
           render_validation_error_response(@grid_summon)
         end

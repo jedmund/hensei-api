@@ -74,8 +74,8 @@ module Api
         requested_uncap = weapon_params[:uncap_level].to_i
         new_uncap = requested_uncap > max_uncap ? max_uncap : requested_uncap
 
-        if @grid_weapon.update(uncap_level: new_uncap, transcendence_step: weapon_params[:transcendence_step].to_i)
-          render json: GridWeaponBlueprint.render(@grid_weapon, view: :full, root: :grid_weapon), status: :ok
+        if @grid_weapon.update(uncap_level: new_uncap, transcendence_step: (weapon_params[:transcendence_step] || 0).to_i)
+          render json: GridWeaponBlueprint.render(@grid_weapon, view: :uncap, root: :grid_weapon), status: :ok
         else
           render_validation_error_response(@grid_weapon)
         end
