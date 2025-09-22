@@ -44,10 +44,8 @@ module Api
       def create
         party = Party.new(party_params)
         party.user = current_user if current_user
-        if party_params && party_params[:raid_id].present?
-          if (raid = Raid.find_by(id: party_params[:raid_id]))
-            party.extra = raid.group.extra
-          end
+        if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
+          party.extra = raid.group.extra
         end
         if party.save
           party.schedule_preview_generation if party.ready_for_preview?
@@ -71,10 +69,8 @@ module Api
       # Updates an existing party.
       def update
         @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
-        if party_params && party_params[:raid_id]
-          if (raid = Raid.find_by(id: party_params[:raid_id]))
-            @party.extra = raid.group.extra
-          end
+        if party_params && party_params[:raid_id] && (raid = Raid.find_by(id: party_params[:raid_id]))
+          @party.extra = raid.group.extra
         end
         if @party.save
           render json: PartyBlueprint.render(@party, view: :full, root: :party)
@@ -85,7 +81,7 @@ module Api
 
       # Deletes a party.
       def destroy
-        render json: PartyBlueprint.render(@party, view: :destroyed, root: :checkin) if @party.destroy
+        head :no_content if @party.destroy
       end
 
       # Extended Party Actions
@@ -93,7 +89,8 @@ module Api
       # Creates a remixed copy of an existing party.
       def remix
         new_party = @party.amoeba_dup
-        new_party.attributes = { user: current_user, name: remixed_name(@party.name), source_party: @party, remix: true }
+        new_party.attributes = { user: current_user, name: remixed_name(@party.name), source_party: @party,
+                                 remix: true }
         new_party.local_id = party_params[:local_id] if party_params
         if new_party.save
           new_party.schedule_preview_generation
@@ -125,9 +122,7 @@ module Api
           end
 
           # Compact character positions if needed
-          if options[:maintain_character_sequence]
-            compact_party_character_positions
-          end
+          compact_party_character_positions if options[:maintain_character_sequence]
         end
 
         render json: {
@@ -153,9 +148,9 @@ module Api
         raise Api::V1::UnauthorizedError unless current_user
 
         base_query = build_common_base_query
-                       .joins(:favorites)
-                       .where(favorites: { user_id: current_user.id })
-                       .distinct
+                     .joins(:favorites)
+                     .where(favorites: { user_id: current_user.id })
+                     .distinct
         query = build_filtered_query(base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
         render_paginated_parties(@parties, page_size)
@@ -173,7 +168,8 @@ module Api
       # Returns the current preview status of a party.
       def preview_status
         party = Party.find_by!(shortcode: params[:id])
-        render json: { state: party.preview_state, generated_at: party.preview_generated_at, ready_for_preview: party.ready_for_preview? }
+        render json: { state: party.preview_state, generated_at: party.preview_generated_at,
+                       ready_for_preview: party.ready_for_preview? }
       end
 
       # Forces regeneration of the party preview.
@@ -202,8 +198,7 @@ module Api
             weapon_key1: {},
             weapon_key2: {},
             weapon_key3: {}
-          }
-          },
+          } },
           { summons: :summon },
           :guidebook1, :guidebook2, :guidebook3,
           :source_party, :remixes, :skill0, :skill1, :skill2, :skill3, :accessory
@@ -237,8 +232,8 @@ module Api
       # Permits parameters for grid update operation.
       def grid_update_params
         params.permit(
-          operations: [:type, :entity, :id, :source_id, :target_id, :position, :container],
-          options: [:maintain_character_sequence, :validate_before_execute]
+          operations: %i[type entity id source_id target_id position container],
+          options: %i[maintain_character_sequence validate_before_execute]
         )
       end
 
