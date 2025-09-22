@@ -31,10 +31,15 @@ module Api
         raise Api::V1::UnauthorizedError unless current_user
 
         @favorite = Favorite.where(user_id: current_user.id, party_id: favorite_params[:party_id]).first
-        render_not_found_response('favorite') unless @favorite
+        return render_not_found_response('favorite') unless @favorite
 
-        render_error("Couldn't delete favorite") unless Favorite.destroy(@favorite.id)
-        render json: FavoriteBlueprint.render(@favorite, root: :favorite, view: :destroyed)
+        if Favorite.destroy(@favorite.id)
+          render json: FavoriteBlueprint.render(@favorite, root: :favorite, view: :destroyed)
+        else
+          render_unprocessable_entity_response(
+            Api::V1::GranblueError.new("Couldn't delete favorite")
+          )
+        end
       end
 
       private

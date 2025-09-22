@@ -5,6 +5,8 @@ module PartyAuthorizationConcern
 
   # Checks whether the current user (or provided edit key) is authorized to modify @party.
   def authorize_party!
+    return render_not_found_response('party') unless @party
+
     if @party.user.present?
       render_unauthorized_response unless current_user.present? && @party.user == current_user
     else

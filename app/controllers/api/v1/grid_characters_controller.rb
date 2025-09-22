@@ -228,7 +228,13 @@ module Api
 
         return render_not_found_response('grid_character') if grid_character.nil?
 
-        render json: GridCharacterBlueprint.render(grid_character, view: :destroyed) if grid_character.destroy
+        if grid_character.destroy
+          render json: GridCharacterBlueprint.render(grid_character, view: :destroyed)
+        else
+          render_unprocessable_entity_response(
+            Api::V1::GranblueError.new(grid_character.errors.full_messages.join(', '))
+          )
+        end
       end
 
       private

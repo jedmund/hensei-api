@@ -81,7 +81,13 @@ module Api
 
       # Deletes a party.
       def destroy
-        head :no_content if @party.destroy
+        if @party.destroy
+          head :no_content
+        else
+          render_unprocessable_entity_response(
+            Api::V1::PartyDeletionFailedError.new(@party.errors.full_messages)
+          )
+        end
       end
 
       # Extended Party Actions

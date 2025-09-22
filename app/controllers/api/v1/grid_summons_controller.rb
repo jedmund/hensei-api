@@ -220,7 +220,13 @@ module Api
 
         return render_not_found_response('grid_summon') if grid_summon.nil?
 
-        render json: GridSummonBlueprint.render(grid_summon, view: :destroyed), status: :ok if grid_summon.destroy
+        if grid_summon.destroy
+          render json: GridSummonBlueprint.render(grid_summon, view: :destroyed), status: :ok
+        else
+          render_unprocessable_entity_response(
+            Api::V1::GranblueError.new(grid_summon.errors.full_messages.join(', '))
+          )
+        end
       end
 
       ##

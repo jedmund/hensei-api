@@ -212,7 +212,13 @@ module Api
 
         return render_not_found_response('grid_weapon') if grid_weapon.nil?
 
-        render json: GridWeaponBlueprint.render(grid_weapon, view: :destroyed), status: :ok if grid_weapon.destroy
+        if grid_weapon.destroy
+          render json: GridWeaponBlueprint.render(grid_weapon, view: :destroyed), status: :ok
+        else
+          render_unprocessable_entity_response(
+            Api::V1::GranblueError.new(grid_weapon.errors.full_messages.join(', '))
+          )
+        end
       end
 
       private
