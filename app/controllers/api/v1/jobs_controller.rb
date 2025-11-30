@@ -51,7 +51,7 @@ module Api
       end
 
       def update_job_skills
-        throw NoJobSkillProvidedError unless job_params[:skill1_id] || job_params[:skill2_id] || job_params[:skill3_id]
+        raise Api::V1::NoJobSkillProvidedError unless job_params[:skill1_id] || job_params[:skill2_id] || job_params[:skill3_id]
 
         # Determine which incoming keys contain new skills
         skill_keys = %w[skill1_id skill2_id skill3_id]
@@ -59,47 +59,47 @@ module Api
 
         # If there are new skills, merge them with the existing skills
         unless new_skill_keys.empty?
+          # Load skills ONCE upfront to avoid N+1 queries
+          new_skill_ids = new_skill_keys.map { |key| job_params[key] }
+          new_skills_loaded = JobSkill.where(id: new_skill_ids).index_by(&:id)
+
+          # Validate all skills exist and are compatible
+          new_skill_ids.each do |id|
+            skill = new_skills_loaded[id]
+            raise ActiveRecord::RecordNotFound.new("Couldn't find JobSkill") unless skill
+            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job, skill)
+          end
+
           existing_skills = {
             1 => @party.skill1,
             2 => @party.skill2,
             3 => @party.skill3
           }
 
-          new_skill_ids = new_skill_keys.map { |key| job_params[key] }
-          new_skill_ids.map do |id|
-            skill = JobSkill.find(id)
-            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job,
-                                                                                                         skill)
-          end
-
           positions = extract_positions_from_keys(new_skill_keys)
-          new_skills = merge_skills_with_existing_skills(existing_skills, new_skill_ids, positions)
+          # Pass loaded skills instead of IDs
+          merged = merge_skills_with_loaded_skills(existing_skills, new_skill_ids.map { |id| new_skills_loaded[id] }, positions)
 
-          new_skill_ids = new_skills.each_with_object({}) do |(index, skill), memo|
-            memo["skill#{index}_id"] = skill.id if skill
+          skill_ids_hash = merged.each_with_object({}) do |(index, skill), memo|
+            memo["skill#{index}_id"] = skill&.id
           end
 
-          @party.attributes = new_skill_ids
+          @party.attributes = skill_ids_hash
         end
 
-        render json: PartyBlueprint.render(@party, view: :jobs) if @party.save!
+        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
       end
 
       def destroy_job_skill
         position = job_params[:skill_position].to_i
         @party["skill#{position}_id"] = nil
-        render json: PartyBlueprint.render(@party, view: :jobs) if @party.save
+        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save
       end
 
       private
 
-      def merge_skills_with_existing_skills(
-        existing_skills,
-        new_skill_ids,
-        positions
-      )
-        new_skills = new_skill_ids.map { |id| JobSkill.find(id) }
-
+      def merge_skills_with_loaded_skills(existing_skills, new_skills, positions)
+        # new_skills is now an array of already-loaded JobSkill objects
         new_skills.each_with_index do |skill, index|
           existing_skills = place_skill_in_existing_skills(existing_skills, skill, positions[index])
         end
@@ -182,7 +182,8 @@ module Api
       end
 
       def set
-        @party = Party.where('id = ?', params[:id]).first
+        @party = Party.find_by(shortcode: params[:id])
+        render_not_found_response('party') unless @party
       end
 
       def job_params

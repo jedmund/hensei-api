@@ -13,6 +13,8 @@ module Granblue
     # @note Supports transcendence variants and element-specific variants
     # @see ElementalWeaponDownloader for handling multi-element weapons
     class WeaponDownloader < BaseDownloader
+      # Override SIZES to include 'base' for b directory images
+      SIZES = %w[main grid square base].freeze
       # Downloads images for all variants of a weapon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle weapon-specific variants.
       #
@@ -66,18 +68,18 @@ module Granblue
         sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_variant_url(variant_id, size)
-          process_download(url, size, path, last: index == SIZES.size - 1)
+          process_download(url, size, path, last: index == sizes.size - 1)
         end
       end
 
       # Builds URL for a specific variant and size
       #
       # @param variant_id [String] Weapon variant ID
-      # @param size [String] Image size variant ("main", "grid", "square", or "raw")
+      # @param size [String] Image size variant ("main", "grid", "square", or "base")
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
-        if size == 'raw'
+        if size == 'base'
           "#{@base_url}/#{directory}/#{variant_id}.png"
         else
           "#{@base_url}/#{directory}/#{variant_id}.jpg"
@@ -93,20 +95,20 @@ module Granblue
       # Gets base URL for weapon assets
       # @return [String] Base URL for weapon images
       def base_url
-        'http://gbf.game-a.mbga.jp/assets/img/sp/assets/weapon'
+        'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon'
       end
 
       # Gets directory name for a size variant
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
-      # @note Maps "main" -> "ls", "grid" -> "m", "square" -> "s"
+      # @note Maps "main" -> "ls", "grid" -> "m", "square" -> "s", "base" -> "b"
       def directory_for_size(size)
         case size.to_s
         when 'main' then 'ls'
         when 'grid' then 'm'
         when 'square' then 's'
-        when 'raw' then 'b'
+        when 'base' then 'b'
         end
       end
     end

@@ -29,6 +29,25 @@ module Granblue
       # @return [Array<String>] Available image size variants
       SIZES = %w[main grid square].freeze
 
+      # Class-level AWS service instance (shared across all downloaders)
+      class << self
+        def aws_service
+          @aws_service_mutex ||= Mutex.new
+          @aws_service_mutex.synchronize do
+            @aws_service ||= AwsService.new
+          end
+        end
+
+        # Reset the shared AWS service (useful for testing)
+        # @return [void]
+        def reset_aws_service
+          @aws_service_mutex ||= Mutex.new
+          @aws_service_mutex.synchronize do
+            @aws_service = nil
+          end
+        end
+      end
+
       # Initialize a new downloader instance
       # @param id [String] ID of the object to download images for
       # @param test_mode [Boolean] When true, only logs actions without downloading
@@ -42,7 +61,7 @@ module Granblue
         @verbose = verbose
         @storage = storage
         @logger = logger || Logger.new($stdout) # fallback logger
-        @aws_service = AwsService.new
+        @aws_service = self.class.aws_service if store_in_s3?
         ensure_directories_exist unless @test_mode
       end
 
@@ -158,7 +177,8 @@ module Granblue
       def ensure_directories_exist
         return unless store_locally?
 
-        SIZES.each do |size|
+        sizes = self.class::SIZES rescue SIZES
+        sizes.each do |size|
           FileUtils.mkdir_p(download_path(size))
         end
       end
@@ -167,6 +187,12 @@ module Granblue
       # @return [Boolean] true if storing locally
       def store_locally?
         %i[local both].include?(@storage)
+      end
+
+      # Check if S3 storage is being used
+      # @return [Boolean] true if storing to S3
+      def store_in_s3?
+        %i[s3 both].include?(@storage)
       end
 
       # Get local download path for a size

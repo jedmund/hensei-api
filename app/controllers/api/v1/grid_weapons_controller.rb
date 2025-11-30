@@ -31,7 +31,8 @@ module Api
         grid_weapon = GridWeapon.new(
           weapon_params.merge(
             party_id: @party.id,
-            weapon_id: @incoming_weapon.id
+            weapon_id: @incoming_weapon.id,
+            uncap_level: compute_default_uncap(@incoming_weapon)
           )
         )
 

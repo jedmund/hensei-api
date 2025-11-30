@@ -194,22 +194,11 @@ module Api
           existing.destroy
         end
 
-        # Compute the default uncap level based on the incoming character's flags.
-        if incoming.special
-          uncap_level = 3
-          uncap_level = 5 if incoming.ulb
-          uncap_level = 4 if incoming.flb
-        else
-          uncap_level = 4
-          uncap_level = 6 if incoming.ulb
-          uncap_level = 5 if incoming.flb
-        end
-
         grid_character = GridCharacter.create!(
           party_id: @party.id,
           character_id: incoming.id,
           position: resolve_params[:position],
-          uncap_level: uncap_level
+          uncap_level: compute_max_uncap_level(incoming)
         )
         render json: GridCharacterBlueprint.render(grid_character,
                                                    root: :grid_character,
@@ -248,12 +237,31 @@ module Api
         grid_character = GridCharacter.new(
           character_params.except(:rings, :awakening).merge(
             party_id: @party.id,
-            character_id: @incoming_character.id
+            character_id: @incoming_character.id,
+            uncap_level: compute_max_uncap_level(@incoming_character)
           )
         )
         assign_transformed_attributes(grid_character, processed_params)
         assign_raw_attributes(grid_character)
         grid_character
+      end
+
+      ##
+      # Computes the maximum uncap level for a character based on its flags.
+      #
+      # Special characters (limited/seasonal) have a different uncap progression:
+      # - Base: 3, FLB: 4, ULB: 5
+      # Regular characters:
+      # - Base: 4, FLB: 5, ULB: 6
+      #
+      # @param character [Character] the character to compute max uncap for.
+      # @return [Integer] the maximum uncap level.
+      def compute_max_uncap_level(character)
+        if character.special
+          character.ulb ? 5 : character.flb ? 4 : 3
+        else
+          character.ulb ? 6 : character.flb ? 5 : 4
+        end
       end
 
       ##

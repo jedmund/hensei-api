@@ -87,6 +87,18 @@ Rails.application.routes.draw do
     post 'parties/:id/grid_update', to: 'parties#grid_update'
 
     delete 'favorites', to: 'favorites#destroy'
+    
+    # User collection viewing (respects privacy settings)
+    get 'users/:user_id/collection', to: 'collection#show'
+
+    # Collection management for current user
+    namespace :collection do
+      resources :characters, controller: '/api/v1/collection_characters'
+      resources :weapons, controller: '/api/v1/collection_weapons'
+      resources :summons, controller: '/api/v1/collection_summons'
+      resources :job_accessories, controller: '/api/v1/collection_job_accessories',
+                only: [:index, :show, :create, :destroy]
+    end
   end
 
   if Rails.env.development?

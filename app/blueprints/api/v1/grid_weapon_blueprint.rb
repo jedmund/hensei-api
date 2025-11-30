@@ -6,7 +6,7 @@ module Api
       fields :mainhand, :position, :uncap_level, :transcendence_step, :element
 
       view :preview do
-        association :weapon, name: :object, blueprint: WeaponBlueprint
+        association :weapon, blueprint: WeaponBlueprint
       end
 
       view :nested do
@@ -24,7 +24,7 @@ module Api
           }
         end
 
-        association :weapon, name: :object, blueprint: WeaponBlueprint, view: :full,
+        association :weapon, blueprint: WeaponBlueprint, view: :full,
                     if: ->(_field_name, w, _options) { w.weapon.present? }
 
         association :weapon_keys,

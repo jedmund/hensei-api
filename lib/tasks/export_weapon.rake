@@ -2,7 +2,7 @@ namespace :granblue do
   namespace :export do
     def build_weapon_url(id, size)
       # Set up URL
-      base_url = 'http://gbf.game-a.mbga.jp/assets/img/sp/assets/weapon'
+      base_url = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon'
       extension = '.jpg'
 
       directory = 'ls' if size.to_s == 'main'

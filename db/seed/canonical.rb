@@ -73,6 +73,11 @@ def load_csv_for(model_class, csv_filename, unique_key = :granblue_id, use_id: f
     # Remove the :id attribute unless we want to preserve it (for fixed canonical IDs).
     attrs.except!(:id) unless use_id
 
+    # Skip records with missing associations (for test data)
+    if model_class == WeaponAwakening
+      next unless Weapon.exists?(attrs[:weapon_id]) && Awakening.exists?(attrs[:awakening_id])
+    end
+
     # Find or create the record based on the unique key.
     record = model_class.find_or_create_by!(unique_key => attrs[unique_key]) do |r|
       # Assign all attributes except the unique_key.

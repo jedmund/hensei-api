@@ -12,6 +12,8 @@ module Granblue
     # @note Character images come in multiple variants (_01, _02, etc.) based on uncap status
     # @note Supports FLB (5★) and ULB (6★) art variants when available
     class CharacterDownloader < BaseDownloader
+      # Override SIZES to include 'detail' for detail images
+      SIZES = %w[main grid square detail].freeze
       # Downloads images for all variants of a character based on their uncap status.
       # Overrides {BaseDownloader#download} to handle character-specific variants.
       #
@@ -66,7 +68,7 @@ module Granblue
         sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_variant_url(variant_id, size)
-          process_download(url, size, path, last: index == SIZES.size - 1)
+          process_download(url, size, path, last: index == sizes.size - 1)
         end
       end
 
@@ -94,7 +96,7 @@ module Granblue
       # Gets base URL for character assets
       # @return [String] Base URL for character images
       def base_url
-        'http://gbf.game-a.mbga.jp/assets/img/sp/assets/npc'
+        'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc'
       end
 
       # Gets directory name for a size variant

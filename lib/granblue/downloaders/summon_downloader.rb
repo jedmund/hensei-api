@@ -12,6 +12,8 @@ module Granblue
     # @note Summon images come in multiple variants based on uncap status
     # @note Supports ULB (5★) and transcendence variants when available
     class SummonDownloader < BaseDownloader
+      # Override SIZES to include 'wide' for m directory images and 'detail' for detail images
+      SIZES = %w[main grid wide square detail].freeze
       # Downloads images for all variants of a summon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle summon-specific variants.
       #
@@ -68,7 +70,7 @@ module Granblue
         sizes.each_with_index do |size, index|
           path = download_path(size)
           url = build_variant_url(variant_id, size)
-          process_download(url, size, path, last: index == SIZES.size - 1)
+          process_download(url, size, path, last: index == sizes.size - 1)
         end
       end
 
@@ -95,18 +97,19 @@ module Granblue
       # Gets base URL for summon assets
       # @return [String] Base URL for summon images
       def base_url
-        'http://gbf.game-a.mbga.jp/assets/img/sp/assets/summon'
+        'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
       end
 
       # Gets directory name for a size variant
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
-      # @note Maps "main" -> "party_main", "grid" -> "party_sub", "square" -> "s"
+      # @note Maps "main" -> "ls", "grid" -> "party_sub", "wide" -> "m", "square" -> "s"
       def directory_for_size(size)
         case size.to_s
         when 'main' then 'ls'
-        when 'grid' then 'm'
+        when 'grid' then 'party_sub'
+        when 'wide' then 'm'
         when 'square' then 's'
         when 'detail' then 'detail'
         end

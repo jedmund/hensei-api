@@ -30,10 +30,9 @@ module Api
       # @return [void]
       def create
         # Build a new grid summon using permitted parameters merged with party and summon IDs.
-        # Then, using `tap`, ensure that the uncap_level is set by using the max_uncap_level helper
-        # if it hasn't already been provided.
+        # Set the uncap_level to the summon's maximum uncap level regardless of what the client sent.
         grid_summon = build_grid_summon.tap do |gs|
-          gs.uncap_level ||= max_uncap_level(gs.summon)
+          gs.uncap_level = max_uncap_level(gs.summon)
         end
 
         # If the grid summon is valid (i.e. it passes all validations), then save it normally.

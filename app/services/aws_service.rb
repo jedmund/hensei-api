@@ -4,11 +4,11 @@ class AwsService
   class ConfigurationError < StandardError; end
 
   def initialize
-    Rails.logger.info "Environment: #{Rails.env}"
+    Rails.logger.debug "Environment: #{Rails.env}"
 
     # Try different methods of getting credentials
     creds = get_credentials
-    Rails.logger.info "Credentials source: #{creds[:source]}"
+    Rails.logger.debug "Credentials source: #{creds[:source]}"
 
     @s3_client = Aws::S3::Client.new(
       region: creds[:region],
@@ -44,14 +44,14 @@ class AwsService
     # Try Rails credentials first
     rails_creds = Rails.application.credentials.dig(:aws)
     if rails_creds&.dig(:access_key_id)
-      Rails.logger.info "Using Rails credentials"
+      Rails.logger.debug "Using Rails credentials"
       return rails_creds.merge(source: 'rails_credentials')
     end
 
     # Try string keys
     rails_creds = Rails.application.credentials.dig('aws')
     if rails_creds&.dig('access_key_id')
-      Rails.logger.info "Using Rails credentials (string keys)"
+      Rails.logger.debug "Using Rails credentials (string keys)"
       return {
         region: rails_creds['region'],
         access_key_id: rails_creds['access_key_id'],
@@ -63,7 +63,7 @@ class AwsService
 
     # Try environment variables
     if ENV['AWS_ACCESS_KEY_ID']
-      Rails.logger.info "Using environment variables"
+      Rails.logger.debug "Using environment variables"
       return {
         region: ENV['AWS_REGION'],
         access_key_id: ENV['AWS_ACCESS_KEY_ID'],
@@ -75,7 +75,7 @@ class AwsService
 
     # Try alternate environment variable names
     if ENV['RAILS_AWS_ACCESS_KEY_ID']
-      Rails.logger.info "Using Rails-prefixed environment variables"
+      Rails.logger.debug "Using Rails-prefixed environment variables"
       return {
         region: ENV['RAILS_AWS_REGION'],
         access_key_id: ENV['RAILS_AWS_ACCESS_KEY_ID'],

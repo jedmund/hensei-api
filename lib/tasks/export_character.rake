@@ -2,7 +2,7 @@ namespace :granblue do
   namespace :export do
     def build_chara_url(id, size)
       # Set up URL
-      base_url = 'http://gbf.game-a.mbga.jp/assets/img/sp/assets/npc'
+      base_url = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc'
       extension = '.jpg'
 
       directory = 'f' if size.to_s == 'main'

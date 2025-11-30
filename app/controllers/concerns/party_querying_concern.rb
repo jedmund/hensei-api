@@ -31,21 +31,6 @@ module PartyQueryingConcern
                           options: { apply_defaults: true }).build
   end
 
-  # Renders paginated parties using PartyBlueprint.
-  def render_paginated_parties(parties, per_page = COLLECTION_PER_PAGE)
-    render json: Api::V1::PartyBlueprint.render(
-      parties,
-      view: :preview,
-      root: :results,
-      meta: {
-        count: parties.total_entries,
-        total_pages: parties.total_pages,
-        per_page: per_page
-      },
-      current_user: current_user
-    )
-  end
-
   # Returns a remixed party name based on the current party name and current_user language.
   def remixed_name(name)
     blanked_name = { en: name.blank? ? 'Untitled team' : name, ja: name.blank? ? '無名の編成' : name }

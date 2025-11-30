@@ -146,7 +146,14 @@ module Api
       def index
         query = build_filtered_query(build_common_base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
-        render_paginated_parties(@parties, page_size)
+
+        render json: Api::V1::PartyBlueprint.render(
+          @parties,
+          view: :preview,
+          root: :results,
+          meta: pagination_meta(@parties),
+          current_user: current_user
+        )
       end
 
       # GET /api/v1/parties/favorites
@@ -159,7 +166,14 @@ module Api
                      .distinct
         query = build_filtered_query(base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
-        render_paginated_parties(@parties, page_size)
+
+        render json: Api::V1::PartyBlueprint.render(
+          @parties,
+          view: :preview,
+          root: :results,
+          meta: pagination_meta(@parties),
+          current_user: current_user
+        )
       end
 
       # Preview Management

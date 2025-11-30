@@ -87,11 +87,7 @@ module Api
         render json: CharacterBlueprint.render(paginated,
                                                view: :dates,
                                                root: :results,
-                                               meta: {
-                                                 count: count,
-                                                 total_pages: total_pages(count),
-                                                 per_page: search_page_size
-                                               })
+                                               meta: pagination_meta(paginated).merge(count: count))
       end
 
       def weapons
@@ -126,11 +122,7 @@ module Api
         render json: WeaponBlueprint.render(paginated,
                                             view: :dates,
                                             root: :results,
-                                            meta: {
-                                              count: count,
-                                              total_pages: total_pages(count),
-                                              per_page: search_page_size
-                                            })
+                                            meta: pagination_meta(paginated).merge(count: count))
       end
 
       def summons
@@ -160,11 +152,7 @@ module Api
         render json: SummonBlueprint.render(paginated,
                                             view: :dates,
                                             root: :results,
-                                            meta: {
-                                              count: count,
-                                              total_pages: total_pages(count),
-                                              per_page: search_page_size
-                                            })
+                                            meta: pagination_meta(paginated).merge(count: count))
       end
 
       def job_skills
@@ -248,11 +236,7 @@ module Api
 
         render json: JobSkillBlueprint.render(paginated,
                                               root: :results,
-                                              meta: {
-                                                count: count,
-                                                total_pages: total_pages(count),
-                                                per_page: search_page_size
-                                              })
+                                              meta: pagination_meta(paginated).merge(count: count))
       end
 
       def guidebooks
@@ -268,19 +252,10 @@ module Api
 
         render json: GuidebookBlueprint.render(paginated,
                                                root: :results,
-                                               meta: {
-                                                 count: count,
-                                                 total_pages: total_pages(count),
-                                                 per_page: search_page_size
-                                               })
+                                               meta: pagination_meta(paginated).merge(count: count))
       end
 
       private
-
-      def total_pages(count)
-        per_page = search_page_size
-        (count.to_f / per_page).ceil
-      end
 
       # Specify whitelisted properties that can be modified.
       def search_params

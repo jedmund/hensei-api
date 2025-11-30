@@ -26,6 +26,11 @@ module Api
       rescue_from Api::V1::UnauthorizedError, with: :render_unauthorized_response
       rescue_from ActionController::ParameterMissing, with: :render_unprocessable_entity_response
 
+      # Collection errors
+      rescue_from CollectionErrors::CollectionError do |e|
+        render json: e.to_hash, status: e.http_status
+      end
+
       rescue_from GranblueError do |e|
         render_error(e)
       end
@@ -156,6 +161,17 @@ module Api
         yield
       ensure
         Prosopite.finish
+      end
+
+      # Returns pagination metadata for will_paginate collections
+      # @param collection [ActiveRecord::Relation] Paginated collection using will_paginate
+      # @return [Hash] Pagination metadata with count, total_pages, and per_page
+      def pagination_meta(collection)
+        {
+          count: collection.total_entries,
+          total_pages: collection.total_pages,
+          per_page: collection.limit_value || collection.per_page
+        }
       end
     end
   end

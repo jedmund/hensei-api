@@ -69,5 +69,67 @@ namespace :granblue do
     task :job, [:size] => :environment do |_t, args|
       write_urls(args[:size])
     end
+
+    desc 'Download job images using the JobDownloader'
+    task :job_images, [:id, :test_mode, :verbose, :storage, :size] => :environment do |_t, args|
+      require 'granblue/downloaders/job_downloader'
+
+      id = args[:id]
+      test_mode = args[:test_mode] == 'true'
+      verbose = args[:verbose] != 'false' # Default to true
+      storage = (args[:storage] || 'both').to_sym
+      size = args[:size]
+
+      logger = Logger.new($stdout)
+
+      if id
+        # Download a specific job
+        job = Job.find_by(granblue_id: id)
+        if job
+          logger.info "Downloading images for job: #{job.name_en} (#{job.granblue_id})"
+          logger.info "Test mode: #{test_mode}" if test_mode
+          logger.info "Storage: #{storage}"
+          logger.info "Size: #{size}" if size
+
+          downloader = Granblue::Downloaders::JobDownloader.new(
+            job.granblue_id,
+            test_mode: test_mode,
+            verbose: verbose,
+            storage: storage,
+            logger: logger
+          )
+          downloader.download(size)
+        else
+          logger.error "Job not found with ID: #{id}"
+          exit 1
+        end
+      else
+        # Download all jobs
+        jobs = Job.all.order(:granblue_id)
+        total = jobs.count
+        logger.info "Found #{total} jobs to process"
+        logger.info "Test mode: #{test_mode}" if test_mode
+        logger.info "Storage: #{storage}"
+        logger.info "Size: #{size}" if size
+
+        jobs.each_with_index do |job, index|
+          logger.info "[#{index + 1}/#{total}] Processing: #{job.name_en} (#{job.granblue_id})"
+
+          downloader = Granblue::Downloaders::JobDownloader.new(
+            job.granblue_id,
+            test_mode: test_mode,
+            verbose: verbose,
+            storage: storage,
+            logger: logger
+          )
+          downloader.download(size)
+
+          # Add a small delay to avoid hammering the server
+          sleep(0.5) unless test_mode
+        end
+      end
+
+      logger.info "Job image download completed!"
+    end
   end
 end

@@ -6,11 +6,11 @@ module Api
       fields :main, :friend, :position, :quick_summon, :uncap_level, :transcendence_step
 
       view :preview do
-        association :summon, name: :object, blueprint: SummonBlueprint
+        association :summon, blueprint: SummonBlueprint
       end
 
       view :nested do
-        association :summon, name: :object, blueprint: SummonBlueprint, view: :full
+        association :summon, blueprint: SummonBlueprint, view: :full
       end
 
       view :full do

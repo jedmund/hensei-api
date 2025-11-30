@@ -2,7 +2,7 @@ namespace :granblue do
   namespace :export do
     def build_summon_url(id, size)
       # Set up URL
-      base_url = 'http://gbf.game-a.mbga.jp/assets/img/sp/assets/summon'
+      base_url = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
       extension = '.jpg'
 
       directory = 'party_main' if size.to_s == 'main'

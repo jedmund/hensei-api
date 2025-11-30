@@ -50,7 +50,7 @@ def seed_weapons
     w.max_atk = row['max_hp']
     w.max_atk_flb = row['max_hp_flb']
     w.max_atk_ulb = row['max_hp_ulb']
-    w.recruits_id = row['recruits_id']
+    w.recruits = row['recruits']
     w.save
   end
 
