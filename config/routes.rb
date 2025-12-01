@@ -22,7 +22,15 @@ Rails.application.routes.draw do
         get 'download_status'
       end
     end
-    resources :summons, only: :show
+    resources :summons, only: %i[show create] do
+      collection do
+        get 'validate/:granblue_id', action: :validate, as: :validate
+      end
+      member do
+        post 'download_images'
+        get 'download_status'
+      end
+    end
     resources :favorites, only: [:create]
 
     get 'version', to: 'api#version'
