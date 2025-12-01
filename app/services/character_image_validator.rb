@@ -72,6 +72,8 @@ class CharacterImageValidator
       http.use_ssl = true
       http.open_timeout = 5
       http.read_timeout = 5
+      # Skip CRL verification in development (Akamai CDN can have CRL issues locally)
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE if Rails.env.development?
 
       request = Net::HTTP::Head.new(uri.request_uri)
       response = http.request(request)
