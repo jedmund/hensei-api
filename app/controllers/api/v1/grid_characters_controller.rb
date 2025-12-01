@@ -268,13 +268,15 @@ module Api
       # Assigns raw attributes from the original parameters to the grid character.
       #
       # These attributes (like new_rings and new_awakening) are used by model callbacks.
+      # Note: We exclude :character_id and :party_id because they are already set correctly
+      # in build_new_grid_character using the resolved UUIDs, not the raw granblue_id from params.
       #
       # @param grid_character [GridCharacter] the grid character instance.
       # @return [void]
       def assign_raw_attributes(grid_character)
         grid_character.new_rings = character_params[:rings] if character_params[:rings].present?
         grid_character.new_awakening = character_params[:awakening] if character_params[:awakening].present?
-        grid_character.assign_attributes(character_params.except(:rings, :awakening))
+        grid_character.assign_attributes(character_params.except(:rings, :awakening, :character_id, :party_id))
       end
 
       ##
@@ -413,8 +415,12 @@ module Api
       #
       # @return [void]
       def find_incoming_character
-        @incoming_character = find_by_any_id(Character, character_params[:character_id])
-        render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new) unless @incoming_character
+        character_id = character_params[:character_id]
+        @incoming_character = find_by_any_id(Character, character_id)
+
+        unless @incoming_character
+          render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
+        end
       end
 
       ##
