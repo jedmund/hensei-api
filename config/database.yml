@@ -1,21 +1,17 @@
 default: &default
   adapter: postgresql
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: <%= ENV['PGHOST'] %>
-  port: <%= ENV['PGPORT'] %>
-  username: <%= ENV['PGUSER'] %>
-  password: <%= ENV['PGPASSWORD'] %>
   encoding: utf8
   timeout: 5000
 
 production:
   <<: *default
-  database: <%= ENV['PGDATABASE'] %>
+  url: <%= ENV['DATABASE_URL'] %>
 
 development:
   <<: *default
-  database: hensei_dev
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://localhost/hensei_dev') %>
 
 test:
   <<: *default
-  database: hensei_test
+  url: <%= ENV.fetch('DATABASE_URL', 'postgres://localhost/hensei_test') %>
