@@ -5,8 +5,8 @@ module Api
     class WeaponsController < Api::V1::ApiController
       include IdResolvable
 
-      before_action :set, only: %i[show download_images download_status]
-      before_action :ensure_editor_role, only: %i[create validate download_images]
+      before_action :set, only: %i[show download_images download_status update]
+      before_action :ensure_editor_role, only: %i[create update validate download_images]
 
       # GET /weapons/:id
       def show
@@ -22,6 +22,16 @@ module Api
           render json: WeaponBlueprint.render(weapon, view: :full), status: :created
         else
           render_validation_error_response(weapon)
+        end
+      end
+
+      # PATCH/PUT /weapons/:id
+      # Updates an existing weapon record
+      def update
+        if @weapon.update(weapon_params)
+          render json: WeaponBlueprint.render(@weapon, view: :full)
+        else
+          render_validation_error_response(@weapon)
         end
       end
 

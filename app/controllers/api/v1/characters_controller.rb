@@ -5,8 +5,8 @@ module Api
     class CharactersController < Api::V1::ApiController
       include IdResolvable
 
-      before_action :set, only: %i[show related download_images download_status]
-      before_action :ensure_editor_role, only: %i[create validate download_images]
+      before_action :set, only: %i[show related download_images download_status update]
+      before_action :ensure_editor_role, only: %i[create update validate download_images]
 
       # GET /characters/:id
       def show
@@ -31,6 +31,16 @@ module Api
           render json: CharacterBlueprint.render(character, view: :full), status: :created
         else
           render_validation_error_response(character)
+        end
+      end
+
+      # PATCH/PUT /characters/:id
+      # Updates an existing character record
+      def update
+        if @character.update(character_params)
+          render json: CharacterBlueprint.render(@character, view: :full)
+        else
+          render_validation_error_response(@character)
         end
       end
 

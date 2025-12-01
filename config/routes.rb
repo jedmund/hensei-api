@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     resources :grid_weapons, only: %i[create update destroy]
     resources :grid_characters, only: %i[create update destroy]
     resources :grid_summons, only: %i[create update destroy]
-    resources :weapons, only: %i[show create] do
+    resources :weapons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
       end
@@ -21,7 +21,7 @@ Rails.application.routes.draw do
         get 'download_status'
       end
     end
-    resources :characters, only: %i[show create] do
+    resources :characters, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
       end
@@ -30,7 +30,7 @@ Rails.application.routes.draw do
         get 'download_status'
       end
     end
-    resources :summons, only: %i[show create] do
+    resources :summons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
       end

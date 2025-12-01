@@ -5,8 +5,8 @@ module Api
     class SummonsController < Api::V1::ApiController
       include IdResolvable
 
-      before_action :set, only: %i[show download_images download_status]
-      before_action :ensure_editor_role, only: %i[create validate download_images]
+      before_action :set, only: %i[show download_images download_status update]
+      before_action :ensure_editor_role, only: %i[create update validate download_images]
 
       # GET /summons/:id
       def show
@@ -22,6 +22,16 @@ module Api
           render json: SummonBlueprint.render(summon, view: :full), status: :created
         else
           render_validation_error_response(summon)
+        end
+      end
+
+      # PATCH/PUT /summons/:id
+      # Updates an existing summon record
+      def update
+        if @summon.update(summon_params)
+          render json: SummonBlueprint.render(@summon, view: :full)
+        else
+          render_validation_error_response(@summon)
         end
       end
 
