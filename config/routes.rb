@@ -13,7 +13,15 @@ Rails.application.routes.draw do
     resources :grid_characters, only: %i[create update destroy]
     resources :grid_summons, only: %i[create update destroy]
     resources :weapons, only: :show
-    resources :characters, only: :show
+    resources :characters, only: %i[show create] do
+      collection do
+        get 'validate/:granblue_id', action: :validate, as: :validate
+      end
+      member do
+        post 'download_images'
+        get 'download_status'
+      end
+    end
     resources :summons, only: :show
     resources :favorites, only: [:create]
 
