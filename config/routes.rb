@@ -54,6 +54,8 @@ Rails.application.routes.draw do
     get 'jobs/:id/skills', to: 'job_skills#job'
     get 'jobs/:id/accessories', to: 'job_accessories#job'
 
+    get 'characters/:id/related', to: 'characters#related'
+
     get 'guidebooks', to: 'guidebooks#all'
 
     get 'raids', to: 'raids#all'

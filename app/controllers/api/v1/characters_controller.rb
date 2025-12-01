@@ -11,6 +11,14 @@ module Api
         render json: CharacterBlueprint.render(@character, view: :full)
       end
 
+      def related
+        return render json: [] unless @character.character_id
+
+        related = Character.where(character_id: @character.character_id)
+                           .where.not(id: @character.id)
+        render json: CharacterBlueprint.render(related)
+      end
+
       private
 
       def set
