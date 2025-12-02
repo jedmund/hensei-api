@@ -68,7 +68,8 @@ module Api
             conditions[:proficiency2] =
               filters['proficiency2']
           end
-          # conditions[:series] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
+          conditions[:season] = filters['season'] unless filters['season'].blank? || filters['season'].empty?
+          conditions[:gacha_available] = filters['gacha_available'] unless filters['gacha_available'].nil?
         end
 
         characters = if search_params[:query].present? && search_params[:query].length >= 2
@@ -80,6 +81,12 @@ module Api
                      else
                        Character.where(conditions).order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc'))
                      end
+
+        # Filter by series (array overlap)
+        if filters && filters['series'].present? && !filters['series'].empty?
+          series_values = Array(filters['series']).map(&:to_i)
+          characters = characters.where('series && ARRAY[?]::integer[]', series_values)
+        end
 
         count = characters.length
         paginated = characters.paginate(page: search_params[:page], per_page: search_page_size)
@@ -116,6 +123,12 @@ module Api
                     Weapon.where(conditions).order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
                   end
 
+        # Filter by promotions (array overlap)
+        if filters && filters['promotions'].present? && !filters['promotions'].empty?
+          promotions_values = Array(filters['promotions']).map(&:to_i)
+          weapons = weapons.where('promotions && ARRAY[?]::integer[]', promotions_values)
+        end
+
         count = weapons.length
         paginated = weapons.paginate(page: search_params[:page], per_page: search_page_size)
 
@@ -145,6 +158,12 @@ module Api
                   else
                     Summon.where(conditions).order(release_date: :desc).order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
                   end
+
+        # Filter by promotions (array overlap)
+        if filters && filters['promotions'].present? && !filters['promotions'].empty?
+          promotions_values = Array(filters['promotions']).map(&:to_i)
+          summons = summons.where('promotions && ARRAY[?]::integer[]', promotions_values)
+        end
 
         count = summons.length
         paginated = summons.paginate(page: search_params[:page], per_page: search_page_size)
