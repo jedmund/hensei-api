@@ -107,6 +107,25 @@ module Granblue
         'holiday' => 6      # Holiday
       }.freeze
 
+      # Maps wiki |obtain= values to PROMOTIONS enum values for weapons/summons
+      # Wiki uses comma-separated values like "premium,gala,flash"
+      def self.promotions
+        {
+          'premium' => 1,    # Premium
+          'classic' => 2,    # Classic
+          'classic2' => 3,   # Classic II
+          'gala' => 4,       # Flash (wiki uses "gala" for Flash Gala)
+          'flash' => 4,      # Flash (alternate)
+          'legend' => 5,     # Legend
+          'valentine' => 6,  # Valentine
+          'summer' => 7,     # Summer
+          'halloween' => 8,  # Halloween
+          'holiday' => 9,    # Holiday
+          'collab' => 10,    # Collab
+          'formal' => 11     # Formal
+        }.freeze
+      end
+
       def initialize(props: ['wikitext'], debug: false)
         @debug = debug
         @props = props.join('|')

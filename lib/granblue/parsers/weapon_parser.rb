@@ -222,6 +222,8 @@ module Granblue
           kamigame: hash['link_kamigame']
         }
 
+        info[:promotions] = promotions_from_obtain(hash['obtain'])
+
         skills[:charge_attack] = {
           name: { en: hash['ougi_name'], ja: hash['jpougi_name'] },
           description: {
@@ -267,6 +269,8 @@ module Granblue
         @weapon.gamewith = hash[:links][:gamewith] if hash[:links].key?(:gamewith)
         @weapon.kamigame = hash[:links][:kamigame] if hash[:links].key?(:kamigame)
 
+        @weapon.promotions = hash[:promotions] if hash[:promotions].present?
+
         if @weapon.save
           ap "#{@weapon.granblue_id}: Successfully saved info for #{@weapon.wiki_en}" if @debug
           puts
@@ -289,6 +293,17 @@ module Granblue
       # Converts a bullet type from a string to a hash
       def bullet_from_hash(string)
         string ? Granblue::Parsers::Wiki.bullets[string] : nil
+      end
+
+      # Converts wiki obtain field to promotions array
+      # @param obtain [String] Comma-separated obtain values like "premium,gala,flash"
+      # @return [Array<Integer>] Array of promotion IDs
+      def promotions_from_obtain(obtain)
+        return [] if obtain.blank?
+
+        obtain.downcase.split(',').map(&:strip).filter_map do |value|
+          Granblue::Parsers::Wiki.promotions[value]
+        end.uniq.sort
       end
 
       # Parses a date string into a Date object

@@ -216,6 +216,8 @@ module Granblue
           kamigame: hash['link_kamigame']
         }
 
+        info[:promotions] = promotions_from_obtain(hash['obtain'])
+
         {
           info: info.compact
           # skills: skills.compact
@@ -232,6 +234,8 @@ module Granblue
         @summon.gamewith = hash[:links][:gamewith] if hash[:links].key?(:gamewith)
         @summon.kamigame = hash[:links][:kamigame] if hash[:links].key?(:kamigame)
 
+        @summon.promotions = hash[:promotions] if hash[:promotions].present?
+
         if @summon.save
           ap "#{@summon.granblue_id}: Successfully saved info for #{@summon.wiki_en}" if @debug
           puts
@@ -244,6 +248,17 @@ module Granblue
       # Converts rarities from a string to a hash
       def rarity_from_hash(string)
         string ? GranblueWiki.rarities[string.upcase] : nil
+      end
+
+      # Converts wiki obtain field to promotions array
+      # @param obtain [String] Comma-separated obtain values like "premium,gala,flash"
+      # @return [Array<Integer>] Array of promotion IDs
+      def promotions_from_obtain(obtain)
+        return [] if obtain.blank?
+
+        obtain.downcase.split(',').map(&:strip).filter_map do |value|
+          Granblue::Parsers::Wiki.promotions[value]
+        end.uniq.sort
       end
 
       # Parses a date string into a Date object
