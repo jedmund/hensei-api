@@ -38,6 +38,39 @@ module Api
             AwakeningBlueprint.render_as_hash(OpenStruct.new(awakening))
           end
         end
+
+        field :nicknames do |c|
+          {
+            en: c.nicknames_en,
+            ja: c.nicknames_jp
+          }
+        end
+
+        field :links do |c|
+          {
+            wiki_en: c.wiki_en,
+            wiki_ja: c.wiki_ja,
+            gamewith: c.gamewith,
+            kamigame: c.kamigame
+          }
+        end
+      end
+
+      # Separate view for raw data - only used by dedicated endpoint
+      view :raw do
+        excludes :name, :granblue_id, :character_id, :rarity, :element, :gender, :special, :uncap, :race, :proficiency
+
+        field :wiki_raw do |c|
+          c.wiki_raw
+        end
+
+        field :game_raw_en do |c|
+          c.game_raw_en
+        end
+
+        field :game_raw_jp do |c|
+          c.game_raw_jp
+        end
       end
 
       view :stats do

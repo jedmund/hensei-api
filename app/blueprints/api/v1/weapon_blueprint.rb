@@ -57,6 +57,56 @@ module Api
         association :awakenings,
                     blueprint: AwakeningBlueprint,
                     if: ->(_field_name, weapon, _options) { weapon.awakenings.any? }
+
+        field :nicknames do |w|
+          {
+            en: w.nicknames_en,
+            ja: w.nicknames_jp
+          }
+        end
+
+        field :links do |w|
+          {
+            wiki_en: w.wiki_en,
+            wiki_ja: w.wiki_ja,
+            gamewith: w.gamewith,
+            kamigame: w.kamigame
+          }
+        end
+
+        field :recruits do |w|
+          next nil unless w.recruits.present?
+
+          character = Character.find_by(granblue_id: w.recruits)
+          next nil unless character
+
+          {
+            id: character.id,
+            granblue_id: character.granblue_id,
+            name: {
+              en: character.name_en,
+              ja: character.name_jp
+            }
+          }
+        end
+      end
+
+      # Separate view for raw data - only used by dedicated endpoint
+      view :raw do
+        excludes :name, :granblue_id, :element, :proficiency, :max_level, :max_skill_level,
+                 :max_awakening_level, :limit, :rarity, :series, :ax, :ax_type, :uncap
+
+        field :wiki_raw do |w|
+          w.wiki_raw
+        end
+
+        field :game_raw_en do |w|
+          w.game_raw_en
+        end
+
+        field :game_raw_jp do |w|
+          w.game_raw_jp
+        end
       end
     end
   end

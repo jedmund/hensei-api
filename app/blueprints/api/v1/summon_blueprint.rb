@@ -52,6 +52,39 @@ module Api
       view :full do
         include_view :stats
         include_view :dates
+
+        field :nicknames do |s|
+          {
+            en: s.nicknames_en,
+            ja: s.nicknames_jp
+          }
+        end
+
+        field :links do |s|
+          {
+            wiki_en: s.wiki_en,
+            wiki_ja: s.wiki_ja,
+            gamewith: s.gamewith,
+            kamigame: s.kamigame
+          }
+        end
+      end
+
+      # Separate view for raw data - only used by dedicated endpoint
+      view :raw do
+        excludes :name, :granblue_id, :element, :rarity, :max_level, :uncap
+
+        field :wiki_raw do |s|
+          s.wiki_raw
+        end
+
+        field :game_raw_en do |s|
+          s.game_raw_en
+        end
+
+        field :game_raw_jp do |s|
+          s.game_raw_jp
+        end
       end
     end
   end
