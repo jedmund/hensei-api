@@ -60,4 +60,18 @@ module GranblueEnums
     Formal: 14,
     Event: 15
   }.freeze
+
+  # Gacha promotions - which pools/banners a weapon or summon appears in
+  PROMOTIONS = {
+    Premium: 1,
+    Classic: 2,
+    ClassicII: 3,
+    Flash: 4,
+    Legend: 5,
+    Valentine: 6,
+    Summer: 7,
+    Halloween: 8,
+    Holiday: 9,
+    Collab: 10
+  }.freeze
 end
