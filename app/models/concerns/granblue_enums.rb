@@ -72,6 +72,7 @@ module GranblueEnums
     Summer: 7,
     Halloween: 8,
     Holiday: 9,
-    Collab: 10
+    Collab: 10,
+    Formal: 11
   }.freeze
 end
