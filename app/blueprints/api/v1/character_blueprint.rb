@@ -11,7 +11,16 @@ module Api
       end
 
       fields :granblue_id, :character_id, :rarity,
-             :element, :gender, :special
+             :element, :gender, :special, :season,
+             :series, :gacha_available
+
+      field :season_name do |c|
+        c.season_name
+      end
+
+      field :series_names do |c|
+        c.series_names
+      end
 
       field :uncap do |c|
         {
