@@ -53,13 +53,15 @@ module Granblue
       # @param test_mode [Boolean] When true, only logs actions without downloading
       # @param verbose [Boolean] When true, enables detailed logging
       # @param storage [Symbol] Storage mode (:local, :s3, or :both)
+      # @param force [Boolean] When true, re-downloads even if file exists
       # @return [void]
-      def initialize(id, test_mode: false, verbose: false, storage: :both, logger: nil)
+      def initialize(id, test_mode: false, verbose: false, storage: :both, force: false, logger: nil)
         @id = id
         @base_url = base_url
         @test_mode = test_mode
         @verbose = verbose
         @storage = storage
+        @force = force
         @logger = logger || Logger.new($stdout) # fallback logger
         @aws_service = self.class.aws_service if store_in_s3?
         ensure_directories_exist unless @test_mode
@@ -130,7 +132,7 @@ module Granblue
       # @param s3_key [String] S3 object key
       # @return [void]
       def stream_to_s3(url, s3_key)
-        return if @aws_service.file_exists?(s3_key)
+        return if !@force && @aws_service.file_exists?(s3_key)
 
         URI.parse(url).open do |file|
           @aws_service.upload_stream(file, s3_key)
@@ -151,17 +153,19 @@ module Granblue
         # Reset file pointer for S3 upload
         download.rewind
 
-        # Upload to S3 if it doesn't exist
-        return if @aws_service.file_exists?(s3_key)
+        # Upload to S3 if force or if it doesn't exist
+        return if !@force && @aws_service.file_exists?(s3_key)
 
         @aws_service.upload_stream(download, s3_key)
       end
 
-      # Check if file should be downloaded based on storage mode
+      # Check if file should be downloaded based on storage mode and force flag
       # @param local_path [String] Local file path
       # @param s3_key [String] S3 object key
       # @return [Boolean] true if file should be downloaded
       def should_download?(local_path, s3_key)
+        return true if @force
+
         if @storage == :local
           !File.exist?(local_path)
         elsif @storage == :s3
