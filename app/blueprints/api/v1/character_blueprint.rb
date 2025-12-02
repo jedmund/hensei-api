@@ -63,6 +63,23 @@ module Api
             kamigame: c.kamigame
           }
         end
+
+        # Reverse relationship: which weapon recruits this character
+        field :recruited_by do |c|
+          weapon = Weapon.find_by(recruits: c.granblue_id)
+          next nil unless weapon
+
+          {
+            id: weapon.id,
+            granblue_id: weapon.granblue_id,
+            name: {
+              en: weapon.name_en,
+              ja: weapon.name_jp
+            },
+            promotions: weapon.promotions,
+            promotion_names: weapon.promotion_names
+          }
+        end
       end
 
       # Separate view for raw data - only used by dedicated endpoint
