@@ -10,13 +10,182 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_28_120005) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_02_120531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
+  enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
+  enable_extension "uuid-ossp"
+
+  create_table "Album", id: :serial, force: :cascade do |t|
+    t.string "slug", limit: 255, null: false
+    t.string "title", limit: 255, null: false
+    t.text "description"
+    t.datetime "date", precision: 3
+    t.string "location", limit: 255
+    t.integer "coverPhotoId"
+    t.string "status", limit: 50, default: "draft", null: false
+    t.boolean "showInUniverse", default: false, null: false
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updatedAt", precision: 3, null: false
+    t.jsonb "content"
+    t.datetime "publishedAt", precision: 3
+    t.index ["slug"], name: "Album_slug_idx"
+    t.index ["slug"], name: "Album_slug_key", unique: true
+    t.index ["status"], name: "Album_status_idx"
+  end
+
+  create_table "AlbumMedia", id: :serial, force: :cascade do |t|
+    t.integer "albumId", null: false
+    t.integer "mediaId", null: false
+    t.integer "displayOrder", default: 0, null: false
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["albumId", "mediaId"], name: "AlbumMedia_albumId_mediaId_key", unique: true
+    t.index ["albumId"], name: "AlbumMedia_albumId_idx"
+    t.index ["mediaId"], name: "AlbumMedia_mediaId_idx"
+  end
+
+  create_table "GeoLocation", id: :serial, force: :cascade do |t|
+    t.integer "albumId", null: false
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.string "title", limit: 255, null: false
+    t.text "description"
+    t.string "markerColor", limit: 7
+    t.integer "order", default: 0, null: false
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updatedAt", precision: 3, null: false
+    t.index ["albumId"], name: "GeoLocation_albumId_idx"
+  end
+
+  create_table "Media", id: :serial, force: :cascade do |t|
+    t.string "filename", limit: 255, null: false
+    t.string "mimeType", limit: 100, null: false
+    t.integer "size", null: false
+    t.text "url", null: false
+    t.text "thumbnailUrl"
+    t.integer "width"
+    t.integer "height"
+    t.jsonb "usedIn", default: [], null: false
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.text "description"
+    t.string "originalName", limit: 255
+    t.datetime "updatedAt", precision: 3, null: false
+    t.boolean "isPhotography", default: false, null: false
+    t.jsonb "exifData"
+    t.text "photoCaption"
+    t.string "photoTitle", limit: 255
+    t.text "photoDescription"
+    t.string "photoSlug", limit: 255
+    t.datetime "photoPublishedAt", precision: 3
+    t.string "dominantColor", limit: 7
+    t.jsonb "colors"
+    t.float "aspectRatio"
+    t.float "duration"
+    t.string "videoCodec", limit: 50
+    t.string "audioCodec", limit: 50
+    t.integer "bitrate"
+    t.index ["photoSlug"], name: "Media_photoSlug_key", unique: true
+  end
+
+  create_table "MediaUsage", id: :serial, force: :cascade do |t|
+    t.integer "mediaId", null: false
+    t.string "contentType", limit: 50, null: false
+    t.integer "contentId", null: false
+    t.string "fieldName", limit: 100, null: false
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updatedAt", precision: 3, null: false
+    t.index ["contentType", "contentId"], name: "MediaUsage_contentType_contentId_idx"
+    t.index ["mediaId", "contentType", "contentId", "fieldName"], name: "MediaUsage_mediaId_contentType_contentId_fieldName_key", unique: true
+    t.index ["mediaId"], name: "MediaUsage_mediaId_idx"
+  end
+
+  create_table "Photo", id: :serial, force: :cascade do |t|
+    t.string "filename", limit: 255, null: false
+    t.string "url", limit: 500, null: false
+    t.string "thumbnailUrl", limit: 500
+    t.integer "width"
+    t.integer "height"
+    t.jsonb "exifData"
+    t.text "caption"
+    t.integer "displayOrder", default: 0, null: false
+    t.string "slug", limit: 255
+    t.string "title", limit: 255
+    t.text "description"
+    t.string "status", limit: 50, default: "draft", null: false
+    t.datetime "publishedAt", precision: 3
+    t.boolean "showInPhotos", default: true, null: false
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.integer "mediaId"
+    t.string "dominantColor", limit: 7
+    t.jsonb "colors"
+    t.float "aspectRatio"
+    t.index ["mediaId"], name: "Photo_mediaId_idx"
+    t.index ["slug"], name: "Photo_slug_idx"
+    t.index ["slug"], name: "Photo_slug_key", unique: true
+    t.index ["status"], name: "Photo_status_idx"
+  end
+
+  create_table "Post", id: :serial, force: :cascade do |t|
+    t.string "slug", limit: 255, null: false
+    t.string "postType", limit: 50, null: false
+    t.string "title", limit: 255
+    t.jsonb "content"
+    t.string "featuredImage", limit: 500
+    t.jsonb "tags"
+    t.string "status", limit: 50, default: "draft", null: false
+    t.datetime "publishedAt", precision: 3
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updatedAt", precision: 3, null: false
+    t.jsonb "attachments"
+    t.index ["postType"], name: "Post_postType_idx"
+    t.index ["slug"], name: "Post_slug_idx"
+    t.index ["slug"], name: "Post_slug_key", unique: true
+    t.index ["status"], name: "Post_status_idx"
+  end
+
+  create_table "Project", id: :serial, force: :cascade do |t|
+    t.string "slug", limit: 255, null: false
+    t.string "title", limit: 255, null: false
+    t.string "subtitle", limit: 255
+    t.text "description"
+    t.integer "year", null: false
+    t.string "client", limit: 255
+    t.string "role", limit: 255
+    t.string "featuredImage", limit: 500
+    t.jsonb "gallery"
+    t.string "externalUrl", limit: 500
+    t.jsonb "caseStudyContent"
+    t.integer "displayOrder", default: 0, null: false
+    t.string "status", limit: 50, default: "draft", null: false
+    t.datetime "publishedAt", precision: 3
+    t.datetime "createdAt", precision: 3, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updatedAt", precision: 3, null: false
+    t.string "backgroundColor", limit: 50
+    t.string "highlightColor", limit: 50
+    t.string "logoUrl", limit: 500
+    t.string "password", limit: 255
+    t.string "projectType", limit: 50, default: "work", null: false
+    t.boolean "showBackgroundColorInHeader", default: true, null: false
+    t.boolean "showFeaturedImageInHeader", default: true, null: false
+    t.boolean "showLogoInHeader", default: true, null: false
+    t.index ["slug"], name: "Project_slug_idx"
+    t.index ["slug"], name: "Project_slug_key", unique: true
+    t.index ["status"], name: "Project_status_idx"
+  end
+
+  create_table "_prisma_migrations", id: { type: :string, limit: 36 }, force: :cascade do |t|
+    t.string "checksum", limit: 64, null: false
+    t.timestamptz "finished_at"
+    t.string "migration_name", limit: 255, null: false
+    t.text "logs"
+    t.timestamptz "rolled_back_at"
+    t.timestamptz "started_at", default: -> { "now()" }, null: false
+    t.integer "applied_steps_count", default: 0, null: false
+  end
 
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
@@ -87,8 +256,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_120005) do
     t.jsonb "game_raw_en", comment: "JSON data from game (English)"
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.text "game_raw_en_backup"
+    t.integer "season"
+    t.integer "series", default: [], null: false, array: true
+    t.boolean "gacha_available", default: true, null: false
+    t.index ["gacha_available"], name: "index_characters_on_gacha_available"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
+    t.index ["season"], name: "index_characters_on_season"
+    t.index ["series"], name: "index_characters_on_series", using: :gin
   end
 
   create_table "charge_attacks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -724,6 +899,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_120005) do
     t.index ["recruits"], name: "index_weapons_on_recruits"
   end
 
+  add_foreign_key "AlbumMedia", "Album", column: "albumId", name: "AlbumMedia_albumId_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "AlbumMedia", "Media", column: "mediaId", name: "AlbumMedia_mediaId_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "GeoLocation", "Album", column: "albumId", name: "GeoLocation_albumId_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "MediaUsage", "Media", column: "mediaId", name: "MediaUsage_mediaId_fkey", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "Photo", "Media", column: "mediaId", name: "Photo_mediaId_fkey", on_update: :cascade, on_delete: :nullify
   add_foreign_key "character_skills", "skills"
   add_foreign_key "character_skills", "skills", column: "alt_skill_id"
   add_foreign_key "charge_attacks", "skills"
