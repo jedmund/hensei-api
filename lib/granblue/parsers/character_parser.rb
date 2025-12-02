@@ -194,6 +194,10 @@ module Granblue
           kamigame: hash['link_kamigame']
         }
 
+        info[:series] = series_from_hash(hash)
+        info[:season] = season_from_hash(hash)
+        info[:gacha_available] = gacha_available_from_hash(hash)
+
         info.compact
       end
 
@@ -206,6 +210,10 @@ module Granblue
         @character.wiki_ja = hash[:links][:wiki][:ja] if hash[:links].key?(:wiki) && hash[:links][:wiki].key?(:ja)
         @character.gamewith = hash[:links][:gamewith] if hash[:links].key?(:gamewith)
         @character.kamigame = hash[:links][:kamigame] if hash[:links].key?(:kamigame)
+
+        @character.series = hash[:series] if hash[:series].present?
+        @character.season = hash[:season] if hash[:season].present?
+        @character.gacha_available = hash[:gacha_available] unless hash[:gacha_available].nil?
 
         if @character.save
           ap "#{@character.granblue_id}: Successfully saved info for #{@character.name_en}" if @debug
@@ -228,6 +236,86 @@ module Granblue
         race.to_s.split(',').map.with_index do |r, i|
           { "race#{i + 1}" => Granblue::Parsers::Wiki.races[r] }
         end.reduce({}, :merge)
+      end
+
+      # Extracts series (identity/pool membership) from wiki hash
+      # Returns an array of series IDs based on |series= and |obtain= fields
+      def series_from_hash(hash)
+        series = []
+
+        # Primary series from |series= field
+        wiki_series = hash['series'].to_s.downcase.strip
+        primary_series = Granblue::Parsers::Wiki.character_series[wiki_series]
+        series << primary_series if primary_series
+
+        # Additional series indicators from |obtain= field
+        obtain = hash['obtain'].to_s.downcase
+        series << 2 if obtain.include?('grand') && !series.include?(2)  # Grand
+        series << 3 if obtain.include?('zodiac') && !series.include?(3) # Zodiac
+
+        # Seasonal series based on page name or obtain field
+        page_name = @character.wiki_en.to_s.downcase
+        if page_name.include?('summer') || page_name.include?('(swimsuit)')
+          series << 10 unless series.include?(10) # Summer
+        end
+        if page_name.include?('yukata')
+          series << 11 unless series.include?(11) # Yukata
+        end
+        if page_name.include?('valentine')
+          series << 12 unless series.include?(12) # Valentine
+        end
+        if page_name.include?('halloween')
+          series << 13 unless series.include?(13) # Halloween
+        end
+        if page_name.include?('(formal)') || page_name.include?('formal ')
+          series << 14 unless series.include?(14) # Formal
+        end
+        if page_name.include?('holiday') || page_name.include?('(holiday)')
+          series << 1 unless series.include?(1)   # Standard for now, Holiday chars usually just standard series
+        end
+
+        # Default to Standard if no series found and character is gacha-available
+        series << 1 if series.empty? && gacha_available_from_hash(hash)
+
+        series.uniq.sort
+      end
+
+      # Extracts season (gacha availability window) from wiki hash
+      # Returns a single season ID based on seasonal indicators
+      def season_from_hash(hash)
+        page_name = @character.wiki_en.to_s.downcase
+        obtain = hash['obtain'].to_s.downcase
+
+        # Check page name for seasonal indicators
+        return 2 if page_name.include?('valentine')
+        return 3 if page_name.include?('(formal)') || page_name.include?('formal ')
+        return 4 if page_name.include?('summer') || page_name.include?('yukata') || page_name.include?('(swimsuit)')
+        return 5 if page_name.include?('halloween')
+        return 6 if page_name.include?('holiday') || page_name.include?('(holiday)')
+
+        # Check obtain field for seasonal banners
+        return 2 if obtain.include?('valentine')
+        return 3 if obtain.include?('formal')
+        return 4 if obtain.include?('summer')
+        return 5 if obtain.include?('halloween')
+        return 6 if obtain.include?('holiday')
+
+        # Default to Standard for gacha-available characters
+        1 if gacha_available_from_hash(hash)
+      end
+
+      # Determines if character can be pulled from gacha based on obtain field and series
+      def gacha_available_from_hash(hash)
+        wiki_series = hash['series'].to_s.downcase.strip
+        obtain = hash['obtain'].to_s.downcase
+
+        # Non-gacha series
+        non_gacha_series = %w[eternal evoker archangel event promo collab]
+        return false if non_gacha_series.include?(wiki_series)
+
+        # Check obtain field for gacha indicators
+        gacha_indicators = %w[premium flash legend classic grand zodiac valentine summer halloween holiday formal]
+        gacha_indicators.any? { |indicator| obtain.include?(indicator) }
       end
 
       # Parses a date string into a Date object

@@ -15,6 +15,8 @@ module Granblue
       class_attribute :races
       class_attribute :bullets
       class_attribute :boolean
+      class_attribute :character_series
+      class_attribute :character_seasons
 
       self.base_uri = 'https://gbf.wiki/api.php'
 
@@ -72,6 +74,37 @@ module Granblue
       self.boolean = {
         'yes' => true,
         'no' => false
+      }.freeze
+
+      # Maps wiki |series= values to CHARACTER_SERIES enum values
+      # Wiki uses lowercase, single values like "grand", "zodiac", etc.
+      self.character_series = {
+        'normal' => 1,      # Standard
+        'grand' => 2,       # Grand
+        'zodiac' => 3,      # Zodiac
+        'promo' => 4,       # Promo
+        'collab' => 5,      # Collab
+        'eternal' => 6,     # Eternal
+        'evoker' => 7,      # Evoker
+        'archangel' => 8,   # Saint (Archangels)
+        'fantasy' => 9,     # Fantasy
+        'summer' => 10,     # Summer
+        'yukata' => 11,     # Yukata
+        'valentine' => 12,  # Valentine
+        'halloween' => 13,  # Halloween
+        'formal' => 14,     # Formal
+        'event' => 15       # Event
+      }.freeze
+
+      # Maps wiki seasonal indicators to CHARACTER_SEASONS enum values
+      # Determined from page name suffix or |obtain= field
+      self.character_seasons = {
+        'standard' => 1,    # Standard (year-round in their pool)
+        'valentine' => 2,   # Valentine
+        'formal' => 3,      # Formal
+        'summer' => 4,      # Summer (includes Yukata)
+        'halloween' => 5,   # Halloween
+        'holiday' => 6      # Holiday
       }.freeze
 
       def initialize(props: ['wikitext'], debug: false)

@@ -59,6 +59,9 @@ module Granblue
       # @option attributes [String] :kamigame Kamigame link
       # @option attributes [Array<String>] :nicknames_en English nicknames
       # @option attributes [Array<String>] :nicknames_jp Japanese nicknames
+      # @option attributes [Integer] :season Character season (gacha availability window)
+      # @option attributes [Array<Integer>] :series Character series (identity/pool membership)
+      # @option attributes [Boolean] :gacha_available Whether character can be pulled from gacha
       #
       # @raise [ImportError] If required attributes are missing or invalid
       def build_attributes(row)
@@ -97,7 +100,10 @@ module Granblue
           gamewith: parse_value(row['gamewith']),
           kamigame: parse_value(row['kamigame']),
           nicknames_en: parse_array(row['nicknames_en']),
-          nicknames_jp: parse_array(row['nicknames_jp'])
+          nicknames_jp: parse_array(row['nicknames_jp']),
+          season: parse_integer(row['season']),
+          series: parse_integer_array(row['series']),
+          gacha_available: parse_boolean(row['gacha_available'])
         }
       end
     end
