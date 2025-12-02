@@ -225,13 +225,13 @@ module Api
         params.require(:character).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element,
           :proficiency1, :proficiency2, :gender, :race1, :race2,
-          :flb, :ulb, :special,
+          :flb, :ulb, :special, :season, :gacha_available,
           :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,
           :release_date, :flb_date, :ulb_date,
           :wiki_en, :wiki_ja, :gamewith, :kamigame,
-          nicknames_en: [], nicknames_jp: [], character_id: []
+          nicknames_en: [], nicknames_jp: [], character_id: [], series: []
         )
       end
     end
