@@ -221,7 +221,7 @@ module Api
           :max_level,
           :release_date, :flb_date, :ulb_date, :transcendence_date,
           :wiki_en, :wiki_ja, :gamewith, :kamigame,
-          nicknames_en: [], nicknames_jp: []
+          nicknames_en: [], nicknames_jp: [], promotions: []
         )
       end
     end
