@@ -111,6 +111,30 @@ class Weapon < ApplicationRecord
     [4, 13, 17, 19].include?(series.to_i)
   end
 
+  # Promotion scopes
+  scope :by_promotion, ->(promotion) { where('? = ANY(promotions)', promotion) }
+  scope :in_premium, -> { by_promotion(GranblueEnums::PROMOTIONS[:Premium]) }
+  scope :in_classic, -> { by_promotion(GranblueEnums::PROMOTIONS[:Classic]) }
+  scope :flash_exclusive, -> { by_promotion(GranblueEnums::PROMOTIONS[:Flash]).where.not('? = ANY(promotions)', GranblueEnums::PROMOTIONS[:Legend]) }
+  scope :legend_exclusive, -> { by_promotion(GranblueEnums::PROMOTIONS[:Legend]).where.not('? = ANY(promotions)', GranblueEnums::PROMOTIONS[:Flash]) }
+
+  # Promotion helpers
+  def flash?
+    promotions.include?(GranblueEnums::PROMOTIONS[:Flash])
+  end
+
+  def legend?
+    promotions.include?(GranblueEnums::PROMOTIONS[:Legend])
+  end
+
+  def premium?
+    promotions.include?(GranblueEnums::PROMOTIONS[:Premium])
+  end
+
+  def promotion_names
+    promotions.filter_map { |p| GranblueEnums::PROMOTIONS.key(p)&.to_s }
+  end
+
   private
 
   def series_slug
