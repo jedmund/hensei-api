@@ -10,7 +10,11 @@ module Api
         }
       end
 
-      fields :granblue_id, :element, :rarity, :max_level
+      fields :granblue_id, :element, :rarity, :max_level, :promotions
+
+      field :promotion_names do |s|
+        s.promotion_names
+      end
 
       field :uncap do |s|
         {

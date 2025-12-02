@@ -13,7 +13,11 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :limit, :rarity,
-             :series, :ax, :ax_type
+             :series, :ax, :ax_type, :promotions
+
+      field :promotion_names do |w|
+        w.promotion_names
+      end
 
       # Uncap information
       field :uncap do |w|
