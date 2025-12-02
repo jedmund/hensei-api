@@ -126,14 +126,20 @@ Rails.application.routes.draw do
 
     delete 'favorites', to: 'favorites#destroy'
     
-    # User collection viewing (respects privacy settings)
-    get 'users/:user_id/collection', to: 'collection#show'
+    # Reading collections - works for any user with privacy check
+    scope 'users/:user_id' do
+      namespace :collection do
+        resources :characters, only: [:index, :show], controller: '/api/v1/collection_characters'
+        resources :weapons, only: [:index, :show], controller: '/api/v1/collection_weapons'
+        resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
+      end
+    end
 
-    # Collection management for current user
+    # Writing to collections - requires auth, operates on current_user
     namespace :collection do
-      resources :characters, controller: '/api/v1/collection_characters'
-      resources :weapons, controller: '/api/v1/collection_weapons'
-      resources :summons, controller: '/api/v1/collection_summons'
+      resources :characters, only: [:create, :update, :destroy], controller: '/api/v1/collection_characters'
+      resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons'
+      resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons'
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
                 only: [:index, :show, :create, :destroy]
     end

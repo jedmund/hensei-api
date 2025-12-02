@@ -16,6 +16,13 @@ class CollectionCharacter < ApplicationRecord
 
   scope :by_element, ->(element) { joins(:character).where(characters: { element: element }) }
   scope :by_rarity, ->(rarity) { joins(:character).where(characters: { rarity: rarity }) }
+  scope :by_race, ->(races) {
+    joins(:character).where('characters.race1 IN (?) OR characters.race2 IN (?)', races, races)
+  }
+  scope :by_proficiency, ->(proficiencies) {
+    joins(:character).where('characters.proficiency1 IN (?) OR characters.proficiency2 IN (?)', proficiencies, proficiencies)
+  }
+  scope :by_gender, ->(genders) { joins(:character).where(characters: { gender: genders }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
 

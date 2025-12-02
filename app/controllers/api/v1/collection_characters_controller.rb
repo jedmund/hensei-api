@@ -1,16 +1,25 @@
 module Api
   module V1
     class CollectionCharactersController < ApiController
-      before_action :restrict_access
-      before_action :set_collection_character, only: %i[show update destroy]
+      # Read actions: look up user from params, check privacy
+      before_action :set_target_user, only: %i[index show]
+      before_action :check_collection_access, only: %i[index show]
+      before_action :set_collection_character_for_read, only: %i[show]
+
+      # Write actions: require auth, use current_user
+      before_action :restrict_access, only: %i[create update destroy]
+      before_action :set_collection_character_for_write, only: %i[update destroy]
 
       def index
-        @collection_characters = current_user.collection_characters
+        @collection_characters = @target_user.collection_characters
                                              .includes(:character, :awakening)
 
         # Apply filters
         @collection_characters = @collection_characters.by_element(params[:element]) if params[:element]
         @collection_characters = @collection_characters.by_rarity(params[:rarity]) if params[:rarity]
+        @collection_characters = @collection_characters.by_race(params[:race]) if params[:race]
+        @collection_characters = @collection_characters.by_proficiency(params[:proficiency]) if params[:proficiency]
+        @collection_characters = @collection_characters.by_gender(params[:gender]) if params[:gender]
 
         # Apply pagination
         @collection_characters = @collection_characters.paginate(page: params[:page], per_page: params[:limit] || 50)
@@ -64,7 +73,26 @@ module Api
 
       private
 
-      def set_collection_character
+      def set_target_user
+        @target_user = User.find(params[:user_id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "User not found" }, status: :not_found
+      end
+
+      def check_collection_access
+        return if @target_user.nil? # Already handled by set_target_user
+        unless @target_user.collection_viewable_by?(current_user)
+          render json: { error: "You do not have permission to view this collection" }, status: :forbidden
+        end
+      end
+
+      def set_collection_character_for_read
+        @collection_character = @target_user.collection_characters.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        raise CollectionErrors::CollectionItemNotFound.new('character', params[:id])
+      end
+
+      def set_collection_character_for_write
         @collection_character = current_user.collection_characters.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         raise CollectionErrors::CollectionItemNotFound.new('character', params[:id])
