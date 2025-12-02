@@ -60,6 +60,7 @@ module Granblue
       # @option attributes [String] :kamigame Kamigame link
       # @option attributes [Array<String>] :nicknames_en English nicknames
       # @option attributes [Array<String>] :nicknames_jp Japanese nicknames
+      # @option attributes [Array<Integer>] :promotions Gacha promotions (pool membership)
       #
       # @raise [ImportError] If required attributes are missing or invalid
       def build_attributes(row)
@@ -99,7 +100,8 @@ module Granblue
           nicknames_en: parse_array(row['nicknames_en']),
           nicknames_jp: parse_array(row['nicknames_jp']),
           transcendence: parse_boolean(row['transcendence']),
-          transcendence_date: parse_value(row['transcendence_date'])
+          transcendence_date: parse_value(row['transcendence_date']),
+          promotions: parse_integer_array(row['promotions'])
         }
       end
     end
