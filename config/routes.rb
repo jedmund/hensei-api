@@ -15,28 +15,40 @@ Rails.application.routes.draw do
     resources :weapons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
+        post 'batch_preview'
       end
       member do
+        post 'download_image'
         post 'download_images'
         get 'download_status'
+        get 'raw'
+        post 'fetch_wiki'
       end
     end
     resources :characters, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
+        post 'batch_preview'
       end
       member do
+        post 'download_image'
         post 'download_images'
         get 'download_status'
+        get 'raw'
+        post 'fetch_wiki'
       end
     end
     resources :summons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
+        post 'batch_preview'
       end
       member do
+        post 'download_image'
         post 'download_images'
         get 'download_status'
+        get 'raw'
+        post 'fetch_wiki'
       end
     end
     resources :favorites, only: [:create]
