@@ -227,7 +227,11 @@ module Api
       end
 
       def set_by_id
-        @user = User.find_by('id = ?', params[:id])
+        if params[:id] == 'me'
+          @user = current_user
+        else
+          @user = User.find_by('id = ?', params[:id])
+        end
       end
 
       def user_params
