@@ -8,6 +8,9 @@ class CollectionWeapon < ApplicationRecord
   belongs_to :weapon_key3, class_name: 'WeaponKey', optional: true
   belongs_to :weapon_key4, class_name: 'WeaponKey', optional: true
 
+  # Set defaults before validation so database defaults don't cause validation failures
+  attribute :awakening_level, :integer, default: 1
+
   validates :uncap_level, inclusion: { in: 0..5 }
   validates :transcendence_step, inclusion: { in: 0..10 }
   validates :awakening_level, inclusion: { in: 1..10 }
