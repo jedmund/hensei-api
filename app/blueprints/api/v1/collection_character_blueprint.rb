@@ -7,11 +7,13 @@ module Api
              :ring1, :ring2, :ring3, :ring4, :earring,
              :created_at, :updated_at
 
-      field :awakening, if: ->(_, obj, _) { obj.awakening.present? } do |obj|
-        {
-          type: AwakeningBlueprint.render_as_hash(obj.awakening),
-          level: obj.awakening_level
-        }
+      field :awakening do |obj|
+        if obj.awakening.present?
+          {
+            type: AwakeningBlueprint.render_as_hash(obj.awakening),
+            level: obj.awakening_level
+          }
+        end
       end
 
       association :character, blueprint: CharacterBlueprint
