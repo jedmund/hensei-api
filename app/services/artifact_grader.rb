@@ -2,12 +2,12 @@
 
 ##
 # Grades artifacts based on skill selection, base strength, and synergy.
-# Also provides reroll recommendations.
+# Provides recommendations: scrap, keep, or reroll with target line.
 #
 # @example
 #   grader = ArtifactGrader.new(collection_artifact)
 #   result = grader.grade
-#   # => { letter: "A", score: 85, ... }
+#   # => { letter: "A", score: 85, recommendation: { action: :keep, ... } }
 #
 class ArtifactGrader
   # Skill priority tiers by group (modifier => tier)
@@ -76,6 +76,11 @@ class ArtifactGrader
 
   SYNERGY_BONUS = 10
 
+  # Recommendation thresholds
+  SCRAP_THRESHOLD = 45        # Score below this = scrap
+  KEEP_THRESHOLD = 80         # Score at or above this = keep (no reroll needed)
+  # Between SCRAP_THRESHOLD and KEEP_THRESHOLD = reroll
+
   def initialize(artifact_instance)
     @artifact = artifact_instance
   end
@@ -83,7 +88,7 @@ class ArtifactGrader
   ##
   # Calculates the full grade for the artifact.
   #
-  # @return [Hash] Grade result with letter, score, breakdown, lines, and reroll recommendation
+  # @return [Hash] Grade result with letter, score, breakdown, lines, and recommendation
   def grade
     return quirk_grade if quirk_artifact?
 
@@ -103,7 +108,7 @@ class ArtifactGrader
         synergy: synergy
       },
       lines: lines,
-      reroll_recommendation: reroll_recommendation(lines)
+      recommendation: build_recommendation(overall, lines)
     }
   end
 
@@ -119,7 +124,7 @@ class ArtifactGrader
       score: nil,
       breakdown: nil,
       lines: nil,
-      reroll_recommendation: nil,
+      recommendation: nil,
       note: 'Quirk artifacts cannot be graded'
     }
   end
@@ -240,12 +245,110 @@ class ArtifactGrader
     'F'
   end
 
-  def reroll_recommendation(lines)
+  ##
+  # Builds a recommendation based on overall score and line analysis.
+  # Actions: :scrap, :keep, or :reroll
+  #
+  # @param overall [Integer] The overall artifact score
+  # @param lines [Array<Hash>] The scored lines
+  # @return [Hash] Recommendation with action and details
+  def build_recommendation(overall, lines)
     valid_lines = lines.compact
     return nil if valid_lines.empty?
 
+    # Check for immediate scrap conditions
+    if should_scrap?(overall, valid_lines)
+      return scrap_recommendation(overall, valid_lines)
+    end
+
+    # Check if artifact is good enough to keep
+    if should_keep?(overall, valid_lines)
+      return keep_recommendation(overall, valid_lines)
+    end
+
+    # Otherwise, recommend rerolling the weakest line
+    reroll_recommendation(overall, valid_lines)
+  end
+
+  def should_scrap?(overall, lines)
+    # Scrap if overall score is very low
+    return true if overall < SCRAP_THRESHOLD
+
+    # Scrap if we have a bad skill and multiple neutral/bad skills
+    bad_count = lines.count { |l| l[:tier] == :bad }
+    neutral_or_worse = lines.count { |l| %i[bad neutral].include?(l[:tier]) }
+
+    return true if bad_count >= 1 && neutral_or_worse >= 3
+
+    # Scrap if no ideal or good skills at all
+    good_or_better = lines.count { |l| %i[ideal good].include?(l[:tier]) }
+    return true if good_or_better.zero?
+
+    false
+  end
+
+  def should_keep?(overall, lines)
+    # Keep if score is high enough
+    return true if overall >= KEEP_THRESHOLD
+
+    # Keep if all lines are ideal tier (even with mediocre rolls)
+    ideal_count = lines.count { |l| l[:tier] == :ideal }
+    return true if ideal_count == lines.size
+
+    # Keep if we have 3+ ideal skills with good synergy
+    return true if ideal_count >= 3 && overall >= 75
+
+    false
+  end
+
+  def scrap_recommendation(overall, lines)
+    bad_lines = lines.select { |l| l[:tier] == :bad }
+    neutral_lines = lines.select { |l| l[:tier] == :neutral }
+
+    reason = if overall < SCRAP_THRESHOLD
+               'Overall score is too low to justify investment'
+             elsif bad_lines.any?
+               bad_names = bad_lines.map { |l| skill_name_for_line(l) }.join(', ')
+               "Contains detrimental skill(s): #{bad_names}"
+             else
+               'No valuable skills worth building around'
+             end
+
+    {
+      action: :scrap,
+      reason: reason,
+      details: {
+        bad_skills: bad_lines.map { |l| skill_name_for_line(l) },
+        neutral_skills: neutral_lines.map { |l| skill_name_for_line(l) }
+      }
+    }
+  end
+
+  def keep_recommendation(overall, lines)
+    ideal_lines = lines.select { |l| l[:tier] == :ideal }
+    good_lines = lines.select { |l| l[:tier] == :good }
+
+    reason = if overall >= KEEP_THRESHOLD
+               'Artifact is well-optimized'
+             elsif ideal_lines.size == lines.size
+               'All skills are ideal tier'
+             else
+               'Strong skill combination with good synergy'
+             end
+
+    {
+      action: :keep,
+      reason: reason,
+      details: {
+        ideal_skills: ideal_lines.map { |l| skill_name_for_line(l) },
+        good_skills: good_lines.map { |l| skill_name_for_line(l) }
+      }
+    }
+  end
+
+  def reroll_recommendation(overall, lines)
     # Find the weakest line
-    weakest = valid_lines.min_by { |l| l[:combined_score] }
+    weakest = lines.min_by { |l| l[:combined_score] }
 
     # Calculate potential gain if rerolled to ideal with max strength
     potential_ideal_score = (TIER_POINTS[:ideal] * 0.7 + 100 * 0.3).round
@@ -255,15 +358,14 @@ class ArtifactGrader
     ideal_skills = ideal_skills_for_slot(weakest[:slot])
 
     {
-      slot: weakest[:slot],
-      current_modifier: weakest[:modifier],
-      current_tier: weakest[:tier],
-      current_score: weakest[:combined_score],
-      potential_score: potential_ideal_score,
-      potential_gain: potential_gain,
-      target_skills: ideal_skills,
+      action: :reroll,
       reason: reroll_reason(weakest),
-      priority: reroll_priority(weakest, potential_gain)
+      slot: weakest[:slot],
+      current_skill: skill_name_for_line(weakest),
+      current_tier: weakest[:tier],
+      potential_gain: potential_gain,
+      priority: reroll_priority(weakest, potential_gain),
+      target_skills: ideal_skills
     }
   end
 
@@ -306,7 +408,7 @@ class ArtifactGrader
       if line[:strength_score] < 60
         "#{skill_name} is ideal but has a poor base roll"
       else
-        'This artifact is already well-optimized'
+        'Weakest line is already well-optimized'
       end
     end
   end
