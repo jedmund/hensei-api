@@ -38,6 +38,7 @@ class CollectionArtifact < ApplicationRecord
   validates :nickname, length: { maximum: 50 }, allow_blank: true
   validates :proficiency, presence: true, if: :quirk_artifact?
   validates :proficiency, absence: true, unless: :quirk_artifact?
+  validates :reroll_slot, inclusion: { in: 1..4 }, allow_nil: true
 
   # Scopes
   scope :by_element, ->(el) { where(element: el) }

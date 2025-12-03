@@ -40,6 +40,7 @@ class GridArtifact < ApplicationRecord
   validates :level, presence: true, inclusion: { in: 1..5 }
   validates :proficiency, presence: true, if: :quirk_artifact?
   validates :proficiency, absence: true, unless: :quirk_artifact?
+  validates :reroll_slot, inclusion: { in: 1..4 }, allow_nil: true
 
   validate :validate_character_compatibility
 

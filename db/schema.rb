@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_03_195857) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_03_211939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -150,6 +150,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_195857) do
     t.jsonb "skill4", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "reroll_slot"
     t.index ["artifact_id"], name: "index_collection_artifacts_on_artifact_id"
     t.index ["element"], name: "index_collection_artifacts_on_element"
     t.index ["user_id", "artifact_id"], name: "index_collection_artifacts_on_user_id_and_artifact_id"
@@ -298,6 +299,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_195857) do
     t.jsonb "skill4", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "reroll_slot"
     t.index ["artifact_id"], name: "index_grid_artifacts_on_artifact_id"
     t.index ["grid_character_id"], name: "index_grid_artifacts_on_grid_character_id", unique: true
   end
