@@ -20,12 +20,13 @@ module Api
         end
       end
 
+      # Include grade and recommendation by default
+      field :grade do |obj|
+        ArtifactGrader.new(obj).grade
+      end
+
       view :nested do
         association :artifact, blueprint: ArtifactBlueprint
-
-        field :grade do |obj|
-          ArtifactGrader.new(obj).grade
-        end
       end
 
       view :full do
