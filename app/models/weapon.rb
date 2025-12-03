@@ -36,7 +36,10 @@ class Weapon < ApplicationRecord
 
   has_many :weapon_awakenings
   has_many :awakenings, through: :weapon_awakenings
+  belongs_to :weapon_series, optional: true
 
+  # Legacy mapping - kept for backwards compatibility during migration
+  # TODO: Remove after data migration is complete
   SERIES_SLUGS = {
     1 => 'seraphic',
     2 => 'grand',
@@ -94,21 +97,36 @@ class Weapon < ApplicationRecord
   end
 
   def compatible_with_key?(key)
-    key.series.include?(series)
+    return false unless weapon_series.present?
+
+    key.weapon_series.include?(weapon_series)
   end
 
   # Returns whether the weapon is included in the Draconic or Dark Opus series
   def opus_or_draconic?
-    [3, 27].include?(series)
+    return false unless weapon_series.present?
+
+    [WeaponSeries::DARK_OPUS, WeaponSeries::DRACONIC].include?(weapon_series.slug)
   end
 
   # Returns whether the weapon belongs to the Draconic Weapon series or the Draconic Weapon Providence series
   def draconic_or_providence?
-    [27, 40].include?(series)
+    return false unless weapon_series.present?
+
+    [WeaponSeries::DRACONIC, WeaponSeries::DRACONIC_PROVIDENCE].include?(weapon_series.slug)
   end
 
-  def self.element_changeable?(series)
-    [4, 13, 17, 19].include?(series.to_i)
+  def self.element_changeable?(weapon_or_series)
+    if weapon_or_series.is_a?(Weapon)
+      weapon_or_series.weapon_series&.element_changeable || false
+    elsif weapon_or_series.is_a?(WeaponSeries)
+      weapon_or_series.element_changeable
+    elsif weapon_or_series.is_a?(Integer)
+      # Legacy support for integer series IDs during transition
+      [4, 13, 17, 19].include?(weapon_or_series)
+    else
+      false
+    end
   end
 
   # Promotion scopes
@@ -135,11 +153,7 @@ class Weapon < ApplicationRecord
     promotions.filter_map { |p| GranblueEnums::PROMOTIONS.key(p)&.to_s }
   end
 
-  private
-
   def series_slug
-    # Assuming series is an array, take the first value
-    series_number = series.first
-    SERIES_SLUGS[series_number]
+    weapon_series&.slug || SERIES_SLUGS[series]
   end
 end

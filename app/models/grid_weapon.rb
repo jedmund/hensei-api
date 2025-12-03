@@ -21,9 +21,8 @@
 # @!attribute [r] awakening
 #   @return [Awakening, nil] the associated awakening, if any.
 class GridWeapon < ApplicationRecord
-  # Allowed extra positions and allowed weapon series when in an extra position.
+  # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze
-  ALLOWED_EXTRA_SERIES = [11, 16, 17, 28, 29, 32, 34].freeze
 
   belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
 
@@ -92,7 +91,8 @@ class GridWeapon < ApplicationRecord
       next false unless party_weapon.id.present?
 
       id_match = weapon.id == party_weapon.id
-      series_match = weapon.series == party_weapon.weapon.series
+      series_match = weapon.weapon_series_id.present? &&
+                     weapon.weapon_series_id == party_weapon.weapon.weapon_series_id
       both_opus_or_draconic = weapon.opus_or_draconic? && party_weapon.weapon.opus_or_draconic?
       both_draconic = weapon.draconic_or_providence? && party_weapon.weapon.draconic_or_providence?
 
@@ -105,14 +105,14 @@ class GridWeapon < ApplicationRecord
   ##
   # Validates whether the grid weapon is compatible with the desired position.
   #
-  # For positions 9, 10, or 11 (considered extra positions), the weapon's series must belong to the allowed set.
+  # For positions 9, 10, or 11 (considered extra positions), the weapon's series must have the `extra` flag set.
   # If the weapon is in an extra position but does not match an allowed series, an error is added.
   #
   # @return [void]
   def compatible_with_position
     return unless weapon.present?
 
-    if EXTRA_POSITIONS.include?(position.to_i) && !ALLOWED_EXTRA_SERIES.include?(weapon.series.to_i)
+    if EXTRA_POSITIONS.include?(position.to_i) && !weapon.weapon_series&.extra
       errors.add(:series, 'must be compatible with position')
     end
   end

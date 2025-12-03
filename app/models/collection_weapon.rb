@@ -23,7 +23,7 @@ class CollectionWeapon < ApplicationRecord
   validate :validate_transcendence_requirements
 
   scope :by_weapon, ->(weapon_id) { where(weapon_id: weapon_id) }
-  scope :by_series, ->(series) { joins(:weapon).where(weapons: { series: series }) }
+  scope :by_series, ->(series_id) { joins(:weapon).where(weapons: { weapon_series_id: series_id }) }
   scope :with_keys, -> { where.not(weapon_key1_id: nil) }
   scope :with_ax, -> { where.not(ax_modifier1: nil) }
   scope :by_element, ->(element) { joins(:weapon).where(weapons: { element: element }) }
@@ -45,7 +45,7 @@ class CollectionWeapon < ApplicationRecord
     return unless weapon.present?
 
     # Validate weapon_key4 is only on Opus/Draconic weapons
-    if weapon_key4.present? && ![3, 27].include?(weapon.series)
+    if weapon_key4.present? && !weapon.opus_or_draconic?
       errors.add(:weapon_key4, "can only be set on Opus or Draconic weapons")
     end
 
@@ -78,7 +78,7 @@ class CollectionWeapon < ApplicationRecord
   def validate_element_change
     return unless element.present? && weapon.present?
 
-    unless Weapon.element_changeable?(weapon.series)
+    unless Weapon.element_changeable?(weapon)
       errors.add(:element, "can only be set on element-changeable weapons")
     end
   end
