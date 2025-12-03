@@ -101,6 +101,17 @@ Rails.application.routes.draw do
 
     resources :weapon_series, only: %i[index show create update destroy]
 
+    # Artifacts (read-only reference data)
+    resources :artifacts, only: %i[index show]
+    resources :artifact_skills, only: %i[index] do
+      collection do
+        get 'for_slot/:slot', action: :for_slot, as: :for_slot
+      end
+    end
+
+    # Grid artifacts
+    resources :grid_artifacts, only: %i[create update destroy]
+
     # Grid endpoints - new prefixed versions
     post 'grid_characters/resolve', to: 'grid_characters#resolve'
     post 'grid_characters/update_uncap', to: 'grid_characters#update_uncap_level'
@@ -134,6 +145,7 @@ Rails.application.routes.draw do
         resources :characters, only: [:index, :show], controller: '/api/v1/collection_characters'
         resources :weapons, only: [:index, :show], controller: '/api/v1/collection_weapons'
         resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
+        resources :artifacts, only: [:index, :show], controller: '/api/v1/collection_artifacts'
       end
     end
 
@@ -156,6 +168,11 @@ Rails.application.routes.draw do
       end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
                 only: [:index, :show, :create, :destroy]
+      resources :artifacts, only: [:create, :update, :destroy], controller: '/api/v1/collection_artifacts' do
+        collection do
+          post :batch
+        end
+      end
     end
   end
 
