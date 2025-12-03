@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :collection_weapons, dependent: :destroy
   has_many :collection_summons, dependent: :destroy
   has_many :collection_job_accessories, dependent: :destroy
+  has_many :collection_artifacts, dependent: :destroy
 
   # Note: The crew association will be added when crews feature is implemented
   # belongs_to :crew, optional: true

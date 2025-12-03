@@ -24,6 +24,8 @@ class GridCharacter < ApplicationRecord
              counter_cache: :characters_count,
              inverse_of: :characters
 
+  has_one :grid_artifact, dependent: :destroy
+
   # Validations
   validates_presence_of :party
 
@@ -42,6 +44,8 @@ class GridCharacter < ApplicationRecord
 
   ##### Amoeba configuration
   amoeba do
+    enable
+    include_association :grid_artifact
     set ring1: { modifier: nil, strength: nil }
     set ring2: { modifier: nil, strength: nil }
     set ring3: { modifier: nil, strength: nil }
