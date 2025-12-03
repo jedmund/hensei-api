@@ -6,7 +6,10 @@ FactoryBot.define do
     rarity { 4 } # SSR
     element { 1 } # Fire
     proficiency { 1 } # Sabre
-    series { 99 } # Gacha
+    series { 99 } # Gacha (legacy)
+
+    # Use weapon_series association if available
+    weapon_series { nil }
 
     # Release info
     release_date { 1.year.ago }
@@ -65,11 +68,18 @@ FactoryBot.define do
     end
 
     trait :opus do
-      series { 3 } # dark-opus
+      series { 3 } # dark-opus (legacy)
+      weapon_series { WeaponSeries.find_by(slug: 'dark-opus') || create(:weapon_series, :opus) }
     end
 
     trait :draconic do
-      series { 27 } # draconic
+      series { 27 } # draconic (legacy)
+      weapon_series { WeaponSeries.find_by(slug: 'draconic') || create(:weapon_series, :draconic) }
+    end
+
+    trait :revenant do
+      series { 4 } # revenant (legacy)
+      weapon_series { WeaponSeries.find_by(slug: 'revenant') || create(:weapon_series, :revenant) }
     end
 
     trait :ax_weapon do

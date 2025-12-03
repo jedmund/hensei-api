@@ -116,7 +116,7 @@ RSpec.describe CollectionWeapon, type: :model do
 
       context 'when weapon_key4 is set on Opus weapon' do
         it 'is valid' do
-          key = create(:weapon_key)
+          key = create(:weapon_key, :opus_key)
           collection_weapon = build(:collection_weapon, weapon: opus_weapon, weapon_key4: key)
           expect(collection_weapon).to be_valid
         end
@@ -133,7 +133,7 @@ RSpec.describe CollectionWeapon, type: :model do
       end
 
       context 'when element is set on Revenant weapon' do
-        let(:revenant_weapon) { create(:weapon, series: 4) } # Revenant series (element-changeable)
+        let(:revenant_weapon) { create(:weapon, :revenant) }
 
         it 'is valid' do
           collection_weapon = build(:collection_weapon, weapon: revenant_weapon, element: 2)

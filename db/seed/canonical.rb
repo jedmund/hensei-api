@@ -89,6 +89,8 @@ def load_csv_for(model_class, csv_filename, unique_key = :granblue_id, use_id: f
 end
 
 # Load canonical data for core models.
+# Load weapon_series first since weapons depend on it
+load_csv_for(WeaponSeries, 'weapon_series_test.csv', :id, use_id: true)
 load_csv_for(Awakening, 'awakenings_test.csv', :id, use_id: true)
 load_csv_for(Summon, 'summons_test.csv', :id, use_id: true)
 load_csv_for(Weapon, 'weapons_test.csv', :id, use_id: true)

@@ -16,7 +16,8 @@ RSpec.describe GridWeapon, type: :model do
 
   # Setup common test objects using FactoryBot.
   let(:party) { create(:party) }
-  let(:weapon) { create(:weapon, limit: false, series: 5) } # a non-limited weapon with series 5
+  let(:default_series) { create(:weapon_series, extra: false) }
+  let(:weapon) { create(:weapon, limit: false, weapon_series: default_series) }
   let(:grid_weapon) do
     build(:grid_weapon,
           party: party,
@@ -42,7 +43,7 @@ RSpec.describe GridWeapon, type: :model do
           before { grid_weapon.position = 9 }
 
           context 'and weapon series is NOT in allowed extra series' do
-            before { weapon.series = 5 } # Allowed extra series are [11, 16, 17, 28, 29, 32, 34]
+            # default_series has extra: false, so this should fail
             it 'adds an error on :series' do
               grid_weapon.validate
               expect(grid_weapon.errors[:series]).to include('must be compatible with position')
@@ -50,7 +51,11 @@ RSpec.describe GridWeapon, type: :model do
           end
 
           context 'and weapon series is in allowed extra series' do
-            before { weapon.series = 11 }
+            let(:extra_series) { create(:weapon_series, extra: true) }
+            let(:extra_weapon) { create(:weapon, limit: false, weapon_series: extra_series) }
+
+            before { grid_weapon.weapon = extra_weapon }
+
             it 'is valid with respect to position compatibility' do
               grid_weapon.validate
               expect(grid_weapon.errors[:series]).to be_empty
@@ -69,9 +74,10 @@ RSpec.describe GridWeapon, type: :model do
 
       describe '#no_conflicts' do
         context 'when there is a conflicting grid weapon in the party' do
+          let(:limited_series) { create(:weapon_series) }
+          let(:limited_weapon) { create(:weapon, limit: true, weapon_series: limited_series) }
+
           before do
-            # Create a limited weapon that will trigger conflict checking.
-            limited_weapon = create(:weapon, limit: true, series: 7)
             # Create an existing grid weapon in the party using that limited weapon.
             create(:grid_weapon, party: party, weapon: limited_weapon, position: 1)
             # Set up grid_weapon to use the same limited weapon in a different position.

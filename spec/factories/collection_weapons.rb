@@ -55,10 +55,12 @@ FactoryBot.define do
     # Trait for weapon with keys
     trait :with_keys do
       after(:build) do |collection_weapon|
-        # Create weapon keys that are compatible with any weapon
-        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :universal_key)
-        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :universal_key)
-        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :universal_key)
+        # Use an Opus weapon since it supports keys
+        collection_weapon.weapon = FactoryBot.create(:weapon, :opus)
+        # Create weapon keys that are compatible with Opus weapons
+        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key)
+        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :opus_key)
+        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :opus_key)
       end
     end
 
@@ -66,8 +68,8 @@ FactoryBot.define do
     trait :with_four_keys do
       with_keys
       after(:build) do |collection_weapon|
-        collection_weapon.weapon = FactoryBot.create(:weapon, :opus) # Opus weapon supports 4 keys
-        collection_weapon.weapon_key4 = FactoryBot.create(:weapon_key, :universal_key)
+        # Opus weapon is already set by :with_keys trait
+        collection_weapon.weapon_key4 = FactoryBot.create(:weapon_key, :opus_key)
       end
     end
 
@@ -88,12 +90,17 @@ FactoryBot.define do
     trait :maxed do
       uncap_level { 5 }
       transcendence_step { 10 }
-      with_keys
       after(:build) do |collection_weapon|
-        collection_weapon.weapon = FactoryBot.create(:weapon, :transcendable)
+        # Create a transcendable Opus weapon for full key support
+        opus_series = WeaponSeries.find_by(slug: 'dark-opus') || FactoryBot.create(:weapon_series, :opus)
+        collection_weapon.weapon = FactoryBot.create(:weapon, :transcendable, weapon_series: opus_series)
         collection_weapon.awakening = Awakening.where(object_type: 'Weapon').first ||
                                      FactoryBot.create(:awakening, object_type: 'Weapon')
         collection_weapon.awakening_level = 10
+        # Create keys compatible with Opus weapons
+        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key)
+        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :opus_key)
+        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :opus_key)
       end
     end
   end
