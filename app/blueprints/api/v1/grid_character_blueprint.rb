@@ -16,6 +16,8 @@ module Api
       view :nested do
         include_view :mastery_bonuses
         association :character, blueprint: CharacterBlueprint, view: :full
+        association :grid_artifact, blueprint: GridArtifactBlueprint, view: :nested,
+                    if: ->(_field_name, gc, _options) { gc.grid_artifact.present? }
       end
 
       view :uncap do
