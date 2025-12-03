@@ -31,8 +31,8 @@ module Api
                     blueprint: WeaponKeyBlueprint,
                     if: ->(_field_name, w, _options) {
                       w.weapon.present? &&
-                        w.weapon.series.present? &&
-                        [2, 3, 17, 24, 34].include?(w.weapon.series)
+                        w.weapon.weapon_series.present? &&
+                        w.weapon.weapon_series.has_weapon_keys
                     }
       end
 

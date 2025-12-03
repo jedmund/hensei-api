@@ -99,6 +99,8 @@ Rails.application.routes.draw do
     get 'raids/:id', to: 'raids#show'
     get 'weapon_keys', to: 'weapon_keys#all'
 
+    resources :weapon_series, only: %i[index show create update destroy]
+
     # Grid endpoints - new prefixed versions
     post 'grid_characters/resolve', to: 'grid_characters#resolve'
     post 'grid_characters/update_uncap', to: 'grid_characters#update_uncap_level'

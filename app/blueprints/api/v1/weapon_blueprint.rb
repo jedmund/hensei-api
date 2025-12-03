@@ -13,7 +13,24 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :limit, :rarity,
-             :series, :ax, :ax_type, :promotions
+             :ax, :ax_type, :promotions
+
+      # Series - returns full object if weapon_series is present, fallback to legacy integer
+      field :series do |w|
+        if w.weapon_series.present?
+          {
+            id: w.weapon_series_id,
+            slug: w.weapon_series.slug,
+            name: {
+              en: w.weapon_series.name_en,
+              ja: w.weapon_series.name_jp
+            }
+          }
+        else
+          # Legacy fallback for backwards compatibility
+          w.series
+        end
+      end
 
       field :promotion_names do |w|
         w.promotion_names
