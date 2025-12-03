@@ -11,31 +11,45 @@
 #
 class ArtifactGrader
   # Skill priority tiers by group (modifier => tier)
+  # Based on community ratings for burst, HL, and general use cases
   SKILL_TIERS = {
     group_i: {
-      # Ideal: ATK (1), Elemental ATK (5), Triple Attack Rate (8)
-      ideal: [1, 5, 8],
-      # Good: HP (2), DEF (3), Superior Element Reduction (4)
-      good: [2, 3, 4],
-      neutral: [6, 7, 9, 10, 11, 12, 13, 14],
-      bad: []
+      # Ideal (Good): Triple Attack Rate (8), Debuff Success Rate (13)
+      ideal: [8, 13],
+      # Good (Nice to have): Elemental ATK (5)
+      good: [5],
+      # Neutral (Meh/Situational): ATK (1), HP (2), CA DMG (3), DEF (9),
+      #                            Superior Element Reduction (10), Dodge Rate (11), Healing (12)
+      neutral: [1, 2, 3, 9, 10, 11, 12],
+      # Bad (Garbage): Skill DMG (4), Critical Hit Rate (6), Double Attack Rate (7), Debuff Resistance (14)
+      bad: [4, 6, 7, 14]
     },
     group_ii: {
-      # Ideal: Crit DMG Cap (4), Supp Skill DMG (13), Supp NA DMG (14), TA at 50%+ HP (17)
-      ideal: [4, 13, 14, 17],
-      # Good: Skill Cap (1), NA Cap (2), CA Cap (3), Special CA Cap (5), Supp CA DMG (15), HP boost/-DEF (20)
-      good: [1, 2, 3, 5, 15, 20],
-      neutral: [6, 7, 8, 9, 10, 11, 12, 16, 18, 19],
-      bad: []
+      # Ideal (Good): NA Cap (1), Skill Cap (2), CA Cap (3), Crit DMG Cap (5), Supp NA (9), Supp Skill (10),
+      #               Supp CA (11), TA at 50%+ (13), 100% HP Amplify (14), HP/-DEF (15)
+      ideal: [1, 2, 3, 5, 9, 10, 11, 13, 14, 15],
+      # Good (Situational): Special CA Cap (4), NA/Skill/CA tradeoffs (6,7,8)
+      good: [4, 6, 7, 8],
+      # Neutral (Meh/Very situational): Chain Amplify (12), DMG reduction <50% (16),
+      #                                  Debuff removal (19), Dispel cancel (20)
+      neutral: [12, 16, 19, 20],
+      # Bad (Garbage): Regeneration (17), Turn-Based DMG Reduction (18)
+      bad: [17, 18]
     },
     group_iii: {
-      # Ideal: Earring finder (29), 10+ turn skill amplified (23)
-      ideal: [29, 23],
-      # Good: First-slot skill CD reduction (19)
-      good: [19],
-      neutral: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 24, 25, 26, 27],
-      # Bad: Turn skip (28)
-      bad: [28]
+      # Ideal (Good): 10+ turn skill amplified (11), Stackable Supp Skill DMG (22)
+      ideal: [11, 22],
+      # Good (Situationally core/Nice to have/Free stuff): First-slot CD (7), Stackable Cap Up (10),
+      #       CA Supp DMG (13), EXP (27), Drop rate (28), Earrings (29)
+      good: [7, 10, 13, 27, 28, 29],
+      # Neutral (Situational/Meh/Very situational): Random buffs start (2), HP consumed/Cap Up (3),
+      #          KO buffs (4), Switch amplified (5), HP restore (6), Debuff skill amplify (8),
+      #          Non-attacker buffs (14), Shield (17), 6-hit Flurry (18), Targeted bonus (19),
+      #          Flurry 3-hit (20), Plain DMG (21), Potion FC (24), Armored (25), Sub debuff (26)
+      neutral: [1, 2, 3, 4, 5, 6, 8, 14, 17, 18, 19, 20, 21, 24, 25, 26],
+      # Bad (Garbage/Probably garbage): Healing skill bonus (9), Linked skill (12),
+      #      Buff removal (15), Turn skip (16), Single attack buffs (23)
+      bad: [9, 12, 15, 16, 23]
     }
   }.freeze
 
@@ -57,21 +71,24 @@ class ArtifactGrader
   }.freeze
 
   # Synergy bonuses: pairs of (group, modifier) that work well together
+  # Based on actual skill modifiers from artifact_skills.json
   SYNERGY_PAIRS = [
-    # ATK + Crit DMG Cap
-    [[:group_i, 1], [:group_ii, 4]],
-    # ATK + Supp NA DMG
-    [[:group_i, 1], [:group_ii, 14]],
-    # Triple Attack + Supp NA DMG
-    [[:group_i, 8], [:group_ii, 14]],
-    # Triple Attack + TA at 50%+ HP
-    [[:group_i, 8], [:group_ii, 17]],
-    # Elemental ATK + Crit DMG Cap
-    [[:group_i, 5], [:group_ii, 4]],
-    # Skill Cap + Supp Skill DMG
-    [[:group_ii, 1], [:group_ii, 13]],
-    # CA Cap + Supp CA DMG
-    [[:group_ii, 3], [:group_ii, 15]]
+    # Triple Attack Rate (I-8) + TA at 50%+ HP (II-13)
+    [[:group_i, 8], [:group_ii, 13]],
+    # Triple Attack Rate (I-8) + Supplemental N.A. DMG (II-9)
+    [[:group_i, 8], [:group_ii, 9]],
+    # Elemental ATK (I-5) + Crit DMG Cap (II-5)
+    [[:group_i, 5], [:group_ii, 5]],
+    # N.A. DMG Cap (II-1) + Supplemental N.A. DMG (II-9)
+    [[:group_ii, 1], [:group_ii, 9]],
+    # Skill DMG Cap (II-2) + Supplemental Skill DMG (II-10)
+    [[:group_ii, 2], [:group_ii, 10]],
+    # C.A. DMG Cap (II-3) + Supplemental C.A. DMG (II-11)
+    [[:group_ii, 3], [:group_ii, 11]],
+    # Skill DMG Cap (II-2) + Stackable Supp Skill DMG (III-22)
+    [[:group_ii, 2], [:group_iii, 22]],
+    # 10+ turn skill amplified (III-11) + Skill DMG Cap (II-2)
+    [[:group_iii, 11], [:group_ii, 2]]
   ].freeze
 
   SYNERGY_BONUS = 10
