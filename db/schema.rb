@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_03_195857) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -21,6 +21,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
     t.string "version"
+  end
+
+  create_table "artifact_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "skill_group", null: false
+    t.integer "modifier", null: false
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.jsonb "base_values", default: [], null: false
+    t.decimal "growth", precision: 15, scale: 2
+    t.string "suffix_en", default: ""
+    t.string "suffix_jp", default: ""
+    t.string "polarity", default: "positive", null: false
+    t.index ["skill_group", "modifier"], name: "index_artifact_skills_on_skill_group_and_modifier", unique: true
+    t.index ["skill_group"], name: "index_artifact_skills_on_skill_group"
+  end
+
+  create_table "artifacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.integer "proficiency"
+    t.integer "rarity", default: 0, null: false
+    t.date "release_date"
+    t.index ["granblue_id"], name: "index_artifacts_on_granblue_id", unique: true
+    t.index ["proficiency"], name: "index_artifacts_on_proficiency"
+    t.index ["rarity"], name: "index_artifacts_on_rarity"
   end
 
   create_table "awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -109,6 +135,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
     t.index ["alt_skill_id"], name: "index_charge_attacks_on_alt_skill_id"
     t.index ["owner_type", "owner_id", "uncap_level"], name: "idx_on_owner_type_owner_id_uncap_level_b37b556440"
     t.index ["skill_id"], name: "index_charge_attacks_on_skill_id"
+  end
+
+  create_table "collection_artifacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "artifact_id", null: false
+    t.integer "element", null: false
+    t.integer "proficiency"
+    t.integer "level", default: 1, null: false
+    t.string "nickname"
+    t.jsonb "skill1", default: {}, null: false
+    t.jsonb "skill2", default: {}, null: false
+    t.jsonb "skill3", default: {}, null: false
+    t.jsonb "skill4", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artifact_id"], name: "index_collection_artifacts_on_artifact_id"
+    t.index ["element"], name: "index_collection_artifacts_on_element"
+    t.index ["user_id", "artifact_id"], name: "index_collection_artifacts_on_user_id_and_artifact_id"
+    t.index ["user_id"], name: "index_collection_artifacts_on_user_id"
   end
 
   create_table "collection_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -239,6 +284,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
     t.decimal "rate"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
+  end
+
+  create_table "grid_artifacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "grid_character_id", null: false
+    t.uuid "artifact_id", null: false
+    t.integer "element", null: false
+    t.integer "proficiency"
+    t.integer "level", default: 1, null: false
+    t.jsonb "skill1", default: {}, null: false
+    t.jsonb "skill2", default: {}, null: false
+    t.jsonb "skill3", default: {}, null: false
+    t.jsonb "skill4", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artifact_id"], name: "index_grid_artifacts_on_artifact_id"
+    t.index ["grid_character_id"], name: "index_grid_artifacts_on_grid_character_id", unique: true
   end
 
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -762,6 +823,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
   add_foreign_key "character_skills", "skills", column: "alt_skill_id"
   add_foreign_key "charge_attacks", "skills"
   add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"
+  add_foreign_key "collection_artifacts", "artifacts"
+  add_foreign_key "collection_artifacts", "users"
   add_foreign_key "collection_characters", "awakenings"
   add_foreign_key "collection_characters", "characters"
   add_foreign_key "collection_characters", "users"
@@ -779,6 +842,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
   add_foreign_key "effects", "effects", column: "effect_family_id"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
+  add_foreign_key "grid_artifacts", "artifacts"
+  add_foreign_key "grid_artifacts", "grid_characters"
   add_foreign_key "grid_characters", "awakenings"
   add_foreign_key "grid_characters", "characters"
   add_foreign_key "grid_characters", "parties"
