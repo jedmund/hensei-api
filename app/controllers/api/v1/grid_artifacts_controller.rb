@@ -107,7 +107,7 @@ module Api
 
       def grid_artifact_params
         params.require(:grid_artifact).permit(
-          :grid_character_id, :artifact_id, :element, :proficiency, :level,
+          :grid_character_id, :artifact_id, :element, :proficiency, :level, :reroll_slot,
           skill1: %i[modifier strength level],
           skill2: %i[modifier strength level],
           skill3: %i[modifier strength level],

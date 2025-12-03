@@ -5,7 +5,7 @@ module Api
     class CollectionArtifactBlueprint < ApiBlueprint
       identifier :id
 
-      fields :element, :level, :nickname, :created_at, :updated_at
+      fields :element, :level, :nickname, :reroll_slot, :created_at, :updated_at
 
       # Proficiency is only present on quirk artifacts
       field :proficiency, if: ->(_field, obj, _options) { obj.proficiency.present? }
@@ -26,6 +26,14 @@ module Api
 
       view :full do
         association :artifact, blueprint: ArtifactBlueprint
+      end
+
+      view :graded do
+        include_view :full
+
+        field :grade do |obj|
+          ArtifactGrader.new(obj).grade
+        end
       end
     end
   end

@@ -125,7 +125,7 @@ module Api
 
       def collection_artifact_params
         params.require(:collection_artifact).permit(
-          :artifact_id, :element, :proficiency, :level, :nickname,
+          :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
           skill1: %i[modifier strength level],
           skill2: %i[modifier strength level],
           skill3: %i[modifier strength level],
@@ -135,7 +135,7 @@ module Api
 
       def batch_artifact_params
         params.permit(collection_artifacts: [
-          :artifact_id, :element, :proficiency, :level, :nickname,
+          :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
           { skill1: %i[modifier strength level] },
           { skill2: %i[modifier strength level] },
           { skill3: %i[modifier strength level] },

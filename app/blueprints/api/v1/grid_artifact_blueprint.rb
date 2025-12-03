@@ -3,7 +3,7 @@
 module Api
   module V1
     class GridArtifactBlueprint < ApiBlueprint
-      fields :element, :level
+      fields :element, :level, :reroll_slot
 
       # Proficiency is only present on quirk artifacts
       field :proficiency, if: ->(_field, obj, _options) { obj.proficiency.present? }
@@ -22,6 +22,10 @@ module Api
 
       view :nested do
         association :artifact, blueprint: ArtifactBlueprint
+
+        field :grade do |obj|
+          ArtifactGrader.new(obj).grade
+        end
       end
 
       view :full do
