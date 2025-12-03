@@ -102,7 +102,11 @@ Rails.application.routes.draw do
     resources :weapon_series, only: %i[index show create update destroy]
 
     # Artifacts (read-only reference data)
-    resources :artifacts, only: %i[index show]
+    resources :artifacts, only: %i[index show] do
+      collection do
+        post :grade
+      end
+    end
     resources :artifact_skills, only: %i[index] do
       collection do
         get 'for_slot/:slot', action: :for_slot, as: :for_slot
