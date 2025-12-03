@@ -10,12 +10,10 @@ module Api
         }
       end
 
-      fields :slug, :order
+      fields :slug, :order, :extra, :element_changeable, :has_weapon_keys,
+             :has_awakening, :has_ax_skills
 
       view :full do
-        fields :extra, :element_changeable, :has_weapon_keys,
-               :has_awakening, :has_ax_skills
-
         field :weapon_count do |ws|
           ws.weapons.count
         end

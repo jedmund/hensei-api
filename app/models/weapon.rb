@@ -156,4 +156,14 @@ class Weapon < ApplicationRecord
   def series_slug
     weapon_series&.slug || SERIES_SLUGS[series]
   end
+
+  # Virtual attribute to set weapon_series by ID or slug
+  # Supports both UUID and slug lookup for flexibility
+  def series=(value)
+    return self.weapon_series = nil if value.blank?
+
+    # Try to find by ID first, then by slug
+    found = WeaponSeries.find_by(id: value) || WeaponSeries.find_by(slug: value)
+    self.weapon_series = found
+  end
 end
