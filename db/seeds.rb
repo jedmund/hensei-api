@@ -299,6 +299,45 @@ def seed_guidebooks
   puts "There are now #{Guidebook.count} rows in the guidebooks table."
 end
 
+# Artifacts
+
+def seed_artifacts
+  csv_text = File.read(Rails.root.join('lib', 'seeds', 'artifacts.csv'))
+  csv = CSV.parse(csv_text, headers: true, encoding: 'UTF-8')
+  csv.each do |row|
+    a = Artifact.new
+    a.granblue_id = row['granblue_id']
+    a.name_en = row['name_en']
+    a.name_jp = row['name_jp']
+    a.proficiency = row['proficiency'].presence
+    a.rarity = row['rarity']
+    a.release_date = row['release_date']
+    a.save
+  end
+
+  puts "There are now #{Artifact.count} rows in the artifacts table."
+end
+
+def seed_artifact_skills
+  json_text = File.read(Rails.root.join('lib', 'seeds', 'artifact_skills.json'))
+  skills = JSON.parse(json_text)
+  skills.each do |skill_data|
+    s = ArtifactSkill.new
+    s.skill_group = skill_data['skill_group']
+    s.modifier = skill_data['modifier']
+    s.name_en = skill_data['name_en']
+    s.name_jp = skill_data['name_jp']
+    s.base_values = skill_data['base_values']
+    s.growth = skill_data['growth']
+    s.suffix_en = skill_data['suffix_en'] || ''
+    s.suffix_jp = skill_data['suffix_jp'] || ''
+    s.polarity = skill_data['polarity']
+    s.save
+  end
+
+  puts "There are now #{ArtifactSkill.count} rows in the artifact_skills table."
+end
+
 def seed_all
   seed_weapons
   seed_summons
