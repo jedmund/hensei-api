@@ -2,17 +2,13 @@
 
 class PopulateWeaponSeriesAndMigrate < ActiveRecord::Migration[8.0]
   def up
-    # Canonical weapon series data with correct names, ordering, and flags
-    # The legacy_id matches the integer values currently in Weapon.series column
-    # Order: Gacha first (0), main series (1-37), misc series (38-44), Event last (99)
+    # Canonical weapon series data matching the frontend JSON exactly
+    # legacy_id maps to the current Weapon.series integer column (from SERIES_SLUGS)
     weapon_series_data = [
-      # Gacha is first
       { legacy_id: 99, order: 0, slug: 'gacha', name_en: 'Gacha Weapons', name_jp: 'ガチャ武器' },
-      # Main series in canonical order
       { legacy_id: 1, order: 1, slug: 'seraphic', name_en: 'Seraphic Weapons', name_jp: 'セラフィックウェポン' },
       { legacy_id: 2, order: 2, slug: 'grand', name_en: 'Grand Weapons', name_jp: 'リミテッドシリーズ', has_weapon_keys: true },
       { legacy_id: 3, order: 3, slug: 'dark-opus', name_en: 'Dark Opus Weapons', name_jp: '終末の神器', has_weapon_keys: true, has_awakening: true },
-      # Destroyer is a new series - no legacy_id mapping yet
       { legacy_id: nil, order: 4, slug: 'destroyer', name_en: 'Destroyer Weapons', name_jp: '破壊の標' },
       { legacy_id: 27, order: 5, slug: 'draconic', name_en: 'Draconic Weapons', name_jp: 'ドラコニックウェポン・オリジン', has_weapon_keys: true, has_awakening: true },
       { legacy_id: 40, order: 6, slug: 'draconic-providence', name_en: 'Draconic Weapons Providence', name_jp: 'ドラコニックウェポン', has_weapon_keys: true, has_awakening: true },
@@ -47,17 +43,15 @@ class PopulateWeaponSeriesAndMigrate < ActiveRecord::Migration[8.0]
       { legacy_id: 32, order: 35, slug: 'militis', name_en: 'Militis Weapons', name_jp: 'ミーレスシリーズ', extra: true },
       { legacy_id: 23, order: 36, slug: 'sephira', name_en: 'Sephira Weapons', name_jp: 'セフィラン・オールドウェポン' },
       { legacy_id: 38, order: 37, slug: 'world', name_en: 'World Weapons', name_jp: 'ワールドシリーズ' },
-      # Misc series at the end (before Event): Replicas, Rusted, Relics, Eternal Splendor, Vyrmament, Collab
-      { legacy_id: 20, order: 38, slug: 'replica', name_en: 'Replica Weapons', name_jp: 'レプリカ' },
+      { legacy_id: 20, order: 38, slug: 'replica', name_en: 'Replicas', name_jp: '複製品' },
       { legacy_id: 22, order: 39, slug: 'rusted', name_en: 'Rusted Weapons', name_jp: '朽ち果てた武器' },
-      { legacy_id: 21, order: 40, slug: 'relic', name_en: 'Relic Weapons', name_jp: 'リビルド' },
-      { legacy_id: 28, order: 41, slug: 'eternal-splendor', name_en: 'Eternal Splendor Weapons', name_jp: '極光の証', extra: true },
-      { legacy_id: 24, order: 42, slug: 'vyrmament', name_en: 'Vyrmament Weapons', name_jp: 'バーミアントシリーズ', has_weapon_keys: true },
-      { legacy_id: 43, order: 43, slug: 'collab', name_en: 'Collab Weapons', name_jp: 'コラボ武器' },
-      # Upgrader (not in canonical list, keeping for legacy support)
-      { legacy_id: 25, order: 44, slug: 'upgrader', name_en: 'Upgrader Weapons', name_jp: 'アップグレーダー' },
-      # Event is last
-      { legacy_id: 98, order: 99, slug: 'event', name_en: 'Event Weapons', name_jp: 'イベント武器' }
+      { legacy_id: 21, order: 40, slug: 'relic', name_en: 'Relics', name_jp: '依代' },
+      { legacy_id: 24, order: 41, slug: 'vyrmament', name_en: 'Vyrmament', name_jp: 'オイラは', has_weapon_keys: true },
+      { legacy_id: 43, order: 42, slug: 'collab', name_en: 'Collab', name_jp: 'コラボ武器' },
+      { legacy_id: 98, order: 43, slug: 'event', name_en: 'Event', name_jp: 'イベント武器' },
+      # Legacy series not in canonical list - keep for backwards compatibility
+      { legacy_id: 25, order: 100, slug: 'upgrader', name_en: 'Upgrader', name_jp: 'アップグレーダー' },
+      { legacy_id: 28, order: 101, slug: 'eternal-splendor', name_en: 'Eternal Splendor', name_jp: '極光の証', extra: true }
     ]
 
     # Build mapping from legacy series integer to new weapon_series_id
