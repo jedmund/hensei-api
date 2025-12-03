@@ -180,6 +180,7 @@ Rails.application.routes.draw do
       resources :artifacts, only: [:create, :update, :destroy], controller: '/api/v1/collection_artifacts' do
         collection do
           post :batch
+          post :import
         end
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_03_211939) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_03_221115) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -151,9 +151,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_211939) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reroll_slot"
+    t.string "game_id"
     t.index ["artifact_id"], name: "index_collection_artifacts_on_artifact_id"
     t.index ["element"], name: "index_collection_artifacts_on_element"
     t.index ["user_id", "artifact_id"], name: "index_collection_artifacts_on_user_id_and_artifact_id"
+    t.index ["user_id", "game_id"], name: "index_collection_artifacts_on_user_id_and_game_id", unique: true, where: "(game_id IS NOT NULL)"
     t.index ["user_id"], name: "index_collection_artifacts_on_user_id"
   end
 
@@ -195,7 +197,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_211939) do
     t.integer "transcendence_step", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_id"
     t.index ["summon_id"], name: "index_collection_summons_on_summon_id"
+    t.index ["user_id", "game_id"], name: "index_collection_summons_on_user_id_and_game_id", unique: true, where: "(game_id IS NOT NULL)"
     t.index ["user_id", "summon_id"], name: "index_collection_summons_on_user_id_and_summon_id"
     t.index ["user_id"], name: "index_collection_summons_on_user_id"
   end
@@ -218,7 +222,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_03_211939) do
     t.integer "element"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_id"
     t.index ["awakening_id"], name: "index_collection_weapons_on_awakening_id"
+    t.index ["user_id", "game_id"], name: "index_collection_weapons_on_user_id_and_game_id", unique: true, where: "(game_id IS NOT NULL)"
     t.index ["user_id", "weapon_id"], name: "index_collection_weapons_on_user_id_and_weapon_id"
     t.index ["user_id"], name: "index_collection_weapons_on_user_id"
     t.index ["weapon_id"], name: "index_collection_weapons_on_weapon_id"
