@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :artifact do
-    # Use high sequence numbers to avoid conflicts with seeded data
-    sequence(:granblue_id) { |n| "39999#{n.to_s.rjust(4, '0')}" }
+    # Use UUID-like sequence to ensure uniqueness across test runs
+    sequence(:granblue_id) { |n| "9#{SecureRandom.hex(4)}#{n}" }
     sequence(:name_en) { |n| "Test Artifact #{n}" }
     name_jp { 'テストアーティファクト' }
     proficiency { :sabre }
@@ -13,7 +13,7 @@ FactoryBot.define do
     trait :quirk do
       rarity { :quirk }
       proficiency { nil }
-      sequence(:granblue_id) { |n| "38888#{n.to_s.rjust(4, '0')}" }
+      sequence(:granblue_id) { |n| "8#{SecureRandom.hex(4)}#{n}" }
       sequence(:name_en) { |n| "Quirk Artifact #{n}" }
       name_jp { 'クィルクアーティファクト' }
     end

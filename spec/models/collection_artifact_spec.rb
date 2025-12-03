@@ -9,7 +9,7 @@ RSpec.describe CollectionArtifact, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:collection_artifact) }
+    subject { build(:collection_artifact, skill1: {}, skill2: {}, skill3: {}, skill4: {}) }
 
     it { is_expected.to validate_presence_of(:element) }
 
@@ -19,14 +19,15 @@ RSpec.describe CollectionArtifact, type: :model do
     end
 
     it 'validates level is between 1 and 5' do
-      subject.level = 0
-      expect(subject).not_to be_valid
+      artifact = build(:collection_artifact, skill1: {}, skill2: {}, skill3: {}, skill4: {})
+      artifact.level = 0
+      expect(artifact).not_to be_valid
 
-      subject.level = 6
-      expect(subject).not_to be_valid
+      artifact.level = 6
+      expect(artifact).not_to be_valid
 
-      subject.level = 3
-      expect(subject).to be_valid
+      artifact.level = 3
+      expect(artifact).to be_valid
     end
   end
 
@@ -80,8 +81,6 @@ RSpec.describe CollectionArtifact, type: :model do
   end
 
   describe 'skill validations' do
-    let(:artifact) { create(:artifact) }
-
     before do
       # Seed the required artifact skills for validation
       ArtifactSkill.find_or_create_by!(skill_group: :group_i, modifier: 1) do |s|
@@ -116,6 +115,7 @@ RSpec.describe CollectionArtifact, type: :model do
     end
 
     it 'is valid with correct skills' do
+      artifact = create(:artifact)
       collection_artifact = build(:collection_artifact,
         artifact: artifact,
         level: 1,
@@ -128,6 +128,7 @@ RSpec.describe CollectionArtifact, type: :model do
     end
 
     it 'is invalid when skill1 and skill2 have the same modifier' do
+      artifact = create(:artifact)
       collection_artifact = build(:collection_artifact,
         artifact: artifact,
         level: 1,
@@ -141,6 +142,7 @@ RSpec.describe CollectionArtifact, type: :model do
     end
 
     it 'validates skill levels sum correctly' do
+      artifact = create(:artifact)
       # At level 1, skill levels must sum to 4 (1 + 3)
       collection_artifact = build(:collection_artifact,
         artifact: artifact,
