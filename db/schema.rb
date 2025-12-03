@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_02_123526) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_03_173746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -659,6 +659,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_123526) do
     t.index ["weapon_id"], name: "index_weapon_awakenings_on_weapon_id"
   end
 
+  create_table "weapon_key_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "weapon_key_id", null: false
+    t.uuid "weapon_series_id", null: false
+    t.index ["weapon_key_id", "weapon_series_id"], name: "index_weapon_key_series_on_weapon_key_id_and_weapon_series_id", unique: true
+    t.index ["weapon_key_id"], name: "index_weapon_key_series_on_weapon_key_id"
+    t.index ["weapon_series_id"], name: "index_weapon_key_series_on_weapon_series_id"
+  end
+
   create_table "weapon_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
@@ -668,6 +676,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_123526) do
     t.string "slug"
     t.integer "granblue_id"
     t.integer "series", default: [], null: false, array: true
+  end
+
+  create_table "weapon_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "slug", null: false
+    t.integer "order", default: 0, null: false
+    t.boolean "extra", default: false, null: false
+    t.boolean "element_changeable", default: false, null: false
+    t.boolean "has_weapon_keys", default: false, null: false
+    t.boolean "has_awakening", default: false, null: false
+    t.boolean "has_ax_skills", default: false, null: false
+    t.index ["order"], name: "index_weapon_series_on_order"
+    t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
 
   create_table "weapon_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -728,10 +750,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_123526) do
     t.jsonb "game_raw_en", comment: "JSON data from game (English)"
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
+    t.uuid "weapon_series_id"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
+    t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
   end
 
   add_foreign_key "character_skills", "skills"
@@ -786,5 +810,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_123526) do
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
+  add_foreign_key "weapon_key_series", "weapon_keys"
+  add_foreign_key "weapon_key_series", "weapon_series"
   add_foreign_key "weapon_skills", "skills"
+  add_foreign_key "weapons", "weapon_series"
 end
