@@ -137,9 +137,21 @@ Rails.application.routes.draw do
 
     # Writing to collections - requires auth, operates on current_user
     namespace :collection do
-      resources :characters, only: [:create, :update, :destroy], controller: '/api/v1/collection_characters'
-      resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons'
-      resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons'
+      resources :characters, only: [:create, :update, :destroy], controller: '/api/v1/collection_characters' do
+        collection do
+          post :batch
+        end
+      end
+      resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons' do
+        collection do
+          post :batch
+        end
+      end
+      resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
+        collection do
+          post :batch
+        end
+      end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
                 only: [:index, :show, :create, :destroy]
     end

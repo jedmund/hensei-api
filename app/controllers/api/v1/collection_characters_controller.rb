@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_character_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy]
+      before_action :restrict_access, only: %i[create update destroy batch]
       before_action :set_collection_character_for_write, only: %i[update destroy]
 
       def index
@@ -74,6 +74,45 @@ module Api
         head :no_content
       end
 
+      # POST /collection/characters/batch
+      # Creates multiple collection characters in a single request
+      def batch
+        items = batch_character_params[:collection_characters] || []
+        created = []
+        skipped = []
+        errors = []
+
+        ActiveRecord::Base.transaction do
+          items.each_with_index do |item_params, index|
+            # Check if already exists (skip duplicates)
+            if current_user.collection_characters.exists?(character_id: item_params[:character_id])
+              skipped << { index: index, character_id: item_params[:character_id], reason: 'already_exists' }
+              next
+            end
+
+            collection_character = current_user.collection_characters.build(item_params)
+
+            if collection_character.save
+              created << collection_character
+            else
+              errors << {
+                index: index,
+                character_id: item_params[:character_id],
+                error: collection_character.errors.full_messages.join(', ')
+              }
+            end
+          end
+        end
+
+        status = errors.any? ? :multi_status : :created
+
+        render json: Api::V1::CollectionCharacterBlueprint.render(
+          created,
+          root: :characters,
+          meta: { created: created.size, skipped: skipped.size, skipped_items: skipped, errors: errors }
+        ), status: status
+      end
+
       private
 
       def set_target_user
@@ -111,6 +150,18 @@ module Api
           ring4: %i[modifier strength],
           earring: %i[modifier strength]
         )
+      end
+
+      def batch_character_params
+        params.permit(collection_characters: [
+          :character_id, :uncap_level, :transcendence_step, :perpetuity,
+          :awakening_id, :awakening_level,
+          ring1: %i[modifier strength],
+          ring2: %i[modifier strength],
+          ring3: %i[modifier strength],
+          ring4: %i[modifier strength],
+          earring: %i[modifier strength]
+        ])
       end
     end
   end
