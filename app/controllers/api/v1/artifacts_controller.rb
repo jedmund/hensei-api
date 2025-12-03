@@ -3,7 +3,7 @@
 module Api
   module V1
     class ArtifactsController < Api::V1::ApiController
-      before_action :set_artifact, only: [:show]
+      before_action :set_artifact, only: %i[show download_image download_images download_status]
 
       # GET /artifacts
       def index
@@ -32,6 +32,55 @@ module Api
         grader = ArtifactGrader.new(artifact_data)
 
         render json: { grade: grader.grade }
+      end
+
+      # POST /artifacts/:id/download_image
+      # Synchronously downloads a single image size for the artifact
+      #
+      # @param size [String] Required - 'square' or 'wide'
+      # @param force [Boolean] Optional - Force re-download even if exists
+      def download_image
+        size = params[:size]
+        force = params[:force] == true || params[:force] == 'true'
+
+        unless %w[square wide].include?(size)
+          return render json: { error: "Invalid size. Must be 'square' or 'wide'" }, status: :bad_request
+        end
+
+        service = ArtifactImageDownloadService.new(@artifact, force: force, size: size, storage: :s3)
+        result = service.download
+
+        if result.success?
+          render json: { success: true, images: result.images }
+        else
+          render json: { success: false, error: result.error }, status: :unprocessable_entity
+        end
+      end
+
+      # POST /artifacts/:id/download_images
+      # Asynchronously downloads all images for the artifact via background job
+      #
+      # @param options.force [Boolean] Optional - Force re-download even if exists
+      # @param options.size [String] Optional - 'square', 'wide', or 'all' (default)
+      def download_images
+        options = params[:options] || {}
+        force = options[:force] == true || options[:force] == 'true'
+        size = options[:size] || 'all'
+
+        DownloadArtifactImagesJob.perform_later(@artifact.id, force: force, size: size)
+
+        render json: {
+          status: 'queued',
+          message: "Image download queued for artifact #{@artifact.granblue_id}",
+          artifact_id: @artifact.id
+        }, status: :accepted
+      end
+
+      # GET /artifacts/:id/download_status
+      # Returns the current status of a background download job
+      def download_status
+        status = DownloadArtifactImagesJob.status(@artifact.id)
+        render json: status
       end
 
       private

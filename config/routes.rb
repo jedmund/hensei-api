@@ -106,6 +106,11 @@ Rails.application.routes.draw do
       collection do
         post :grade
       end
+      member do
+        post :download_image
+        post :download_images
+        get :download_status
+      end
     end
     resources :artifact_skills, only: %i[index] do
       collection do
