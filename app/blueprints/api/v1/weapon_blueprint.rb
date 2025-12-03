@@ -15,7 +15,7 @@ module Api
              :max_level, :max_skill_level, :max_awakening_level, :limit, :rarity,
              :ax, :ax_type, :promotions
 
-      # Series - returns full object if weapon_series is present, fallback to legacy integer
+      # Series - returns full object with flags if weapon_series is present, fallback to legacy integer
       field :series do |w|
         if w.weapon_series.present?
           {
@@ -24,7 +24,12 @@ module Api
             name: {
               en: w.weapon_series.name_en,
               ja: w.weapon_series.name_jp
-            }
+            },
+            has_weapon_keys: w.weapon_series.has_weapon_keys,
+            has_awakening: w.weapon_series.has_awakening,
+            has_ax_skills: w.weapon_series.has_ax_skills,
+            extra: w.weapon_series.extra,
+            element_changeable: w.weapon_series.element_changeable
           }
         else
           # Legacy fallback for backwards compatibility
