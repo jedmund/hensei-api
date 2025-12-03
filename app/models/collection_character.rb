@@ -3,6 +3,8 @@ class CollectionCharacter < ApplicationRecord
   belongs_to :character
   belongs_to :awakening, optional: true
 
+  before_save :add_default_awakening
+
   validates :character_id, uniqueness: { scope: :user_id,
     message: "already exists in your collection" }
   validates :uncap_level, inclusion: { in: 0..5 }
@@ -25,6 +27,26 @@ class CollectionCharacter < ApplicationRecord
   scope :by_gender, ->(genders) { joins(:character).where(characters: { gender: genders }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
+
+  # Sorting scopes
+  scope :sorted_by, ->(sort_key) {
+    case sort_key
+    when 'name_asc'
+      joins(:character).order('characters.name_en ASC NULLS LAST')
+    when 'name_desc'
+      joins(:character).order('characters.name_en DESC NULLS LAST')
+    when 'element_asc'
+      joins(:character).order('characters.element ASC')
+    when 'element_desc'
+      joins(:character).order('characters.element DESC')
+    when 'proficiency_asc'
+      joins(:character).order('characters.proficiency1 ASC')
+    when 'proficiency_desc'
+      joins(:character).order('characters.proficiency1 DESC')
+    else
+      order(created_at: :desc) # Default: newest first
+    end
+  }
 
   def blueprint
     Api::V1::CollectionCharacterBlueprint
@@ -60,5 +82,11 @@ class CollectionCharacter < ApplicationRecord
     if transcendence_step.present? && transcendence_step > 0 && uncap_level < 5
       errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
     end
+  end
+
+  def add_default_awakening
+    return unless awakening.nil?
+
+    self.awakening = Awakening.where(slug: 'character-balanced').sole
   end
 end
