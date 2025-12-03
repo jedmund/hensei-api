@@ -55,6 +55,7 @@ module Api
       def characters
         filters = search_params[:filters]
         locale = search_params[:locale] || 'en'
+        exclude = search_params[:exclude]
         conditions = {}
 
         if filters
@@ -86,6 +87,11 @@ module Api
         if filters && filters['series'].present? && !filters['series'].empty?
           series_values = Array(filters['series']).map(&:to_i)
           characters = characters.where('series && ARRAY[?]::integer[]', series_values)
+        end
+
+        # Exclude already-owned characters (for collection modal)
+        if exclude.present? && exclude.any?
+          characters = characters.where.not(id: exclude)
         end
 
         count = characters.length

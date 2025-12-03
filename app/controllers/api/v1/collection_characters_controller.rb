@@ -21,6 +21,9 @@ module Api
         @collection_characters = @collection_characters.by_proficiency(params[:proficiency]) if params[:proficiency]
         @collection_characters = @collection_characters.by_gender(params[:gender]) if params[:gender]
 
+        # Apply sorting
+        @collection_characters = @collection_characters.sorted_by(params[:sort])
+
         # Apply pagination
         @collection_characters = @collection_characters.paginate(page: params[:page], per_page: params[:limit] || 50)
 
