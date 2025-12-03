@@ -280,7 +280,7 @@ module Processors
     # @param skill_ids [Array<String>] an array of key identifiers.
     # @return [void]
     def process_weapon_keys(grid_weapon, skill_ids)
-      series = grid_weapon.weapon.series.to_i
+      weapon_series = grid_weapon.weapon.weapon_series
 
       skill_ids.each_with_index do |skill_id, idx|
         # Go to the next iteration unless the key under which `skill_id` exists
@@ -289,7 +289,17 @@ module Processors
 
         # Fetch the key from the mapping_pair and find the weapon key based on the weapon series
         mapping_value = mapping_pair.first
-        candidate = WeaponKey.where('granblue_id = ? AND ? = ANY(series)', mapping_value, series).first
+
+        # Find weapon key using the new weapon_series relationship
+        candidate = if weapon_series.present?
+                      WeaponKey.joins(:weapon_series)
+                               .where(granblue_id: mapping_value, weapon_series: { id: weapon_series.id })
+                               .first
+                    else
+                      # Fallback to legacy series lookup for backwards compatibility
+                      series = grid_weapon.weapon.series.to_i
+                      WeaponKey.where('granblue_id = ? AND ? = ANY(series)', mapping_value, series).first
+                    end
 
         if candidate
           grid_weapon["weapon_key#{idx + 1}_id"] = candidate.id
