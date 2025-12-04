@@ -6,7 +6,7 @@ module Api
       fields :preliminary_ranking, :final_ranking
 
       field :total_score do |participation|
-        participation.total_crew_score
+        participation.total_individual_honors
       end
 
       field :wins do |participation|

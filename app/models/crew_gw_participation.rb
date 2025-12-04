@@ -9,9 +9,14 @@ class CrewGwParticipation < ApplicationRecord
 
   validates :crew_id, uniqueness: { scope: :gw_event_id, message: 'is already participating in this event' }
 
-  # Get total crew score across all rounds
+  # Get total crew score across all rounds (from crew battles)
   def total_crew_score
     gw_crew_scores.sum(:crew_score)
+  end
+
+  # Get total individual honors (sum of all member scores)
+  def total_individual_honors
+    gw_individual_scores.sum(:score)
   end
 
   # Get wins count
