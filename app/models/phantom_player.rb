@@ -7,6 +7,8 @@ class PhantomPlayer < ApplicationRecord
 
   has_many :gw_individual_scores, dependent: :nullify
 
+  before_validation :set_joined_at, on: :create
+
   validates :name, presence: true, length: { maximum: 100 }
   validates :granblue_id, length: { maximum: 20 }, allow_blank: true
   validates :granblue_id, uniqueness: { scope: :crew_id }, if: -> { granblue_id.present? }
@@ -17,6 +19,15 @@ class PhantomPlayer < ApplicationRecord
   scope :unclaimed, -> { where(claimed_by_id: nil) }
   scope :claimed, -> { where.not(claimed_by_id: nil) }
   scope :pending_confirmation, -> { claimed.where(claim_confirmed: false) }
+  scope :active, -> { where(retired: false) }
+  scope :retired, -> { where(retired: true) }
+
+  # Phantoms who were active during a date range (either still active, or retired after the end date)
+  # Uses joined_at (editable) instead of created_at for historical accuracy
+  scope :active_during, ->(start_date, end_date) {
+    where('retired = false OR retired_at >= ?', start_date)
+      .where('joined_at <= ?', end_date)
+  }
 
   # Assign this phantom to a user (officer action)
   def assign_to(user)
@@ -43,7 +54,16 @@ class PhantomPlayer < ApplicationRecord
     save!
   end
 
+  # Retire the phantom player (keeps scores)
+  def retire!
+    update!(retired: true, retired_at: Time.current)
+  end
+
   private
+
+  def set_joined_at
+    self.joined_at ||= Time.current
+  end
 
   def claimed_by_must_be_crew_member
     return unless claimed_by.present?

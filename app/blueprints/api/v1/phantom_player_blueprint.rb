@@ -3,7 +3,7 @@
 module Api
   module V1
     class PhantomPlayerBlueprint < ApiBlueprint
-      fields :name, :granblue_id, :notes, :claim_confirmed
+      fields :name, :granblue_id, :notes, :claim_confirmed, :retired, :retired_at, :joined_at
 
       field :claimed do |phantom|
         phantom.claimed_by_id.present?
