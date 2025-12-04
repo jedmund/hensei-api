@@ -16,6 +16,7 @@ class GridSummon < ApplicationRecord
   belongs_to :party,
              counter_cache: :summons_count,
              inverse_of: :summons
+  belongs_to :collection_summon, optional: true
   validates_presence_of :party
 
   # Validate that position is provided.
@@ -37,6 +38,31 @@ class GridSummon < ApplicationRecord
   # @return [GridSummonBlueprint] the blueprint class for grid summons.
   def blueprint
     GridSummonBlueprint
+  end
+
+  ##
+  # Syncs customizations from the linked collection summon.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_from_collection!
+    return false unless collection_summon.present?
+
+    update!(
+      uncap_level: collection_summon.uncap_level,
+      transcendence_step: collection_summon.transcendence_step
+    )
+    true
+  end
+
+  ##
+  # Checks if grid summon is out of sync with collection.
+  #
+  # @return [Boolean] true if any customization differs from collection
+  def out_of_sync?
+    return false unless collection_summon.present?
+
+    uncap_level != collection_summon.uncap_level ||
+      transcendence_step != collection_summon.transcendence_step
   end
 
   ##

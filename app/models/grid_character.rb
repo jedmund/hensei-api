@@ -23,6 +23,7 @@ class GridCharacter < ApplicationRecord
   belongs_to :party,
              counter_cache: :characters_count,
              inverse_of: :characters
+  belongs_to :collection_character, optional: true
 
   has_one :grid_artifact, dependent: :destroy
 
@@ -186,6 +187,50 @@ class GridCharacter < ApplicationRecord
   # @return [GridCharacterBlueprint] the blueprint class used for grid character representation.
   def blueprint
     GridCharacterBlueprint
+  end
+
+  ##
+  # Syncs customizations from the linked collection character.
+  #
+  # Copies uncap level, transcendence, rings, earring, and awakening from the collection.
+  # No-op if no collection character is linked.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_from_collection!
+    return false unless collection_character.present?
+
+    update!(
+      uncap_level: collection_character.uncap_level,
+      transcendence_step: collection_character.transcendence_step,
+      perpetuity: collection_character.perpetuity,
+      ring1: collection_character.ring1,
+      ring2: collection_character.ring2,
+      ring3: collection_character.ring3,
+      ring4: collection_character.ring4,
+      earring: collection_character.earring,
+      awakening_id: collection_character.awakening_id,
+      awakening_level: collection_character.awakening_level
+    )
+    true
+  end
+
+  ##
+  # Checks if grid character is out of sync with collection.
+  #
+  # @return [Boolean] true if any customization differs from collection
+  def out_of_sync?
+    return false unless collection_character.present?
+
+    uncap_level != collection_character.uncap_level ||
+      transcendence_step != collection_character.transcendence_step ||
+      perpetuity != collection_character.perpetuity ||
+      ring1 != collection_character.ring1 ||
+      ring2 != collection_character.ring2 ||
+      ring3 != collection_character.ring3 ||
+      ring4 != collection_character.ring4 ||
+      earring != collection_character.earring ||
+      awakening_id != collection_character.awakening_id ||
+      awakening_level != collection_character.awakening_level
   end
 
   private

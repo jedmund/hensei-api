@@ -6,6 +6,7 @@ class GridArtifact < ApplicationRecord
   # Associations
   belongs_to :grid_character
   belongs_to :artifact
+  belongs_to :collection_artifact, optional: true
 
   has_one :party, through: :grid_character
   has_one :character, through: :grid_character
@@ -52,6 +53,47 @@ class GridArtifact < ApplicationRecord
   # Returns the effective proficiency - from instance for quirk, from artifact for standard
   def effective_proficiency
     quirk_artifact? ? proficiency : artifact&.proficiency
+  end
+
+  ##
+  # Syncs customizations from the linked collection artifact.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_from_collection!
+    return false unless collection_artifact.present?
+
+    attrs = {
+      element: collection_artifact.element,
+      level: collection_artifact.level,
+      skill1: collection_artifact.skill1,
+      skill2: collection_artifact.skill2,
+      skill3: collection_artifact.skill3,
+      skill4: collection_artifact.skill4,
+      reroll_slot: collection_artifact.reroll_slot
+    }
+
+    # Only sync proficiency for quirk artifacts
+    attrs[:proficiency] = collection_artifact.proficiency if quirk_artifact?
+
+    update!(attrs)
+    true
+  end
+
+  ##
+  # Checks if grid artifact is out of sync with collection.
+  #
+  # @return [Boolean] true if any customization differs from collection
+  def out_of_sync?
+    return false unless collection_artifact.present?
+
+    element != collection_artifact.element ||
+      level != collection_artifact.level ||
+      skill1 != collection_artifact.skill1 ||
+      skill2 != collection_artifact.skill2 ||
+      skill3 != collection_artifact.skill3 ||
+      skill4 != collection_artifact.skill4 ||
+      reroll_slot != collection_artifact.reroll_slot ||
+      (quirk_artifact? && proficiency != collection_artifact.proficiency)
   end
 
   private

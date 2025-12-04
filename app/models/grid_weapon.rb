@@ -37,6 +37,7 @@ class GridWeapon < ApplicationRecord
   belongs_to :weapon_key4, class_name: 'WeaponKey', foreign_key: :weapon_key4_id, optional: true
 
   belongs_to :awakening, optional: true
+  belongs_to :collection_weapon, optional: true
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
@@ -61,6 +62,53 @@ class GridWeapon < ApplicationRecord
   # @return [GridWeaponBlueprint] the blueprint class for grid weapons.
   def blueprint
     GridWeaponBlueprint
+  end
+
+  ##
+  # Syncs customizations from the linked collection weapon.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_from_collection!
+    return false unless collection_weapon.present?
+
+    update!(
+      uncap_level: collection_weapon.uncap_level,
+      transcendence_step: collection_weapon.transcendence_step,
+      element: collection_weapon.element,
+      weapon_key1_id: collection_weapon.weapon_key1_id,
+      weapon_key2_id: collection_weapon.weapon_key2_id,
+      weapon_key3_id: collection_weapon.weapon_key3_id,
+      weapon_key4_id: collection_weapon.weapon_key4_id,
+      ax_modifier1: collection_weapon.ax_modifier1,
+      ax_strength1: collection_weapon.ax_strength1,
+      ax_modifier2: collection_weapon.ax_modifier2,
+      ax_strength2: collection_weapon.ax_strength2,
+      awakening_id: collection_weapon.awakening_id,
+      awakening_level: collection_weapon.awakening_level
+    )
+    true
+  end
+
+  ##
+  # Checks if grid weapon is out of sync with collection.
+  #
+  # @return [Boolean] true if any customization differs from collection
+  def out_of_sync?
+    return false unless collection_weapon.present?
+
+    uncap_level != collection_weapon.uncap_level ||
+      transcendence_step != collection_weapon.transcendence_step ||
+      element != collection_weapon.element ||
+      weapon_key1_id != collection_weapon.weapon_key1_id ||
+      weapon_key2_id != collection_weapon.weapon_key2_id ||
+      weapon_key3_id != collection_weapon.weapon_key3_id ||
+      weapon_key4_id != collection_weapon.weapon_key4_id ||
+      ax_modifier1 != collection_weapon.ax_modifier1 ||
+      ax_strength1 != collection_weapon.ax_strength1 ||
+      ax_modifier2 != collection_weapon.ax_modifier2 ||
+      ax_strength2 != collection_weapon.ax_strength2 ||
+      awakening_id != collection_weapon.awakening_id ||
+      awakening_level != collection_weapon.awakening_level
   end
 
   ##
