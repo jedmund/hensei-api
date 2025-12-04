@@ -41,9 +41,33 @@ module Api
       end
 
       # GET /crew/members
+      # Params:
+      #   filter: 'active' (default), 'retired', 'phantom', 'all'
       def members
-        members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
-        render json: CrewMembershipBlueprint.render(members, view: :with_user, root: :members)
+        filter = params[:filter]&.to_sym || :active
+
+        case filter
+        when :active
+          members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
+          phantoms = []
+        when :retired
+          members = @crew.crew_memberships.retired.includes(:user).order(retired_at: :desc)
+          phantoms = []
+        when :phantom
+          members = []
+          phantoms = @crew.phantom_players.includes(:claimed_by).order(:name)
+        when :all
+          members = @crew.crew_memberships.includes(:user).order(role: :desc, retired: :asc, created_at: :asc)
+          phantoms = @crew.phantom_players.includes(:claimed_by).order(:name)
+        else
+          members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
+          phantoms = []
+        end
+
+        render json: {
+          members: CrewMembershipBlueprint.render_as_hash(members, view: :with_user),
+          phantoms: PhantomPlayerBlueprint.render_as_hash(phantoms, view: :with_claimed_by)
+        }
       end
 
       # POST /crew/leave

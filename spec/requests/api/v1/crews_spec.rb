@@ -121,19 +121,59 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
     let!(:member1) { create(:crew_membership, crew: crew, role: :member) }
     let!(:member2) { create(:crew_membership, crew: crew, role: :vice_captain) }
+    let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
 
-    it 'returns all active crew members' do
-      get '/api/v1/crew/members', headers: auth_headers
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json['members'].length).to eq(3)
+    context 'with default filter (active)' do
+      it 'returns all active crew members' do
+        get '/api/v1/crew/members', headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['members'].length).to eq(3)
+        expect(json['phantoms']).to eq([])
+      end
+
+      it 'excludes retired members' do
+        member1.retire!
+        get '/api/v1/crew/members', headers: auth_headers
+        json = JSON.parse(response.body)
+        expect(json['members'].length).to eq(2)
+      end
     end
 
-    it 'excludes retired members' do
-      member1.retire!
-      get '/api/v1/crew/members', headers: auth_headers
-      json = JSON.parse(response.body)
-      expect(json['members'].length).to eq(2)
+    context 'with filter=retired' do
+      before { member1.retire! }
+
+      it 'returns only retired members' do
+        get '/api/v1/crew/members', params: { filter: 'retired' }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['members'].length).to eq(1)
+        expect(json['members'][0]['retired']).to be true
+        expect(json['phantoms']).to eq([])
+      end
+    end
+
+    context 'with filter=phantom' do
+      it 'returns only phantom players' do
+        get '/api/v1/crew/members', params: { filter: 'phantom' }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['members']).to eq([])
+        expect(json['phantoms'].length).to eq(1)
+        expect(json['phantoms'][0]['name']).to eq('Phantom A')
+      end
+    end
+
+    context 'with filter=all' do
+      before { member1.retire! }
+
+      it 'returns all members and phantoms' do
+        get '/api/v1/crew/members', params: { filter: 'all' }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['members'].length).to eq(3) # includes retired
+        expect(json['phantoms'].length).to eq(1)
+      end
     end
   end
 
