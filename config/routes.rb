@@ -147,7 +147,29 @@ Rails.application.routes.draw do
     post 'parties/:id/grid_update', to: 'parties#grid_update'
 
     delete 'favorites', to: 'favorites#destroy'
-    
+
+    # Crews - current user's crew (no ID needed)
+    resource :crew, only: %i[show update], controller: 'crews' do
+      member do
+        get :members
+        post :leave
+      end
+    end
+
+    # Crews - create and manage by ID
+    resources :crews, only: %i[create] do
+      member do
+        post :transfer_captain
+      end
+
+      resources :memberships, controller: 'crew_memberships', only: %i[update destroy] do
+        member do
+          post :promote
+          post :demote
+        end
+      end
+    end
+
     # Reading collections - works for any user with privacy check
     scope 'users/:user_id' do
       namespace :collection do
@@ -163,16 +185,19 @@ Rails.application.routes.draw do
       resources :characters, only: [:create, :update, :destroy], controller: '/api/v1/collection_characters' do
         collection do
           post :batch
+          post :import
         end
       end
       resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons' do
         collection do
           post :batch
+          post :import
         end
       end
       resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
         collection do
           post :batch
+          post :import
         end
       end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
