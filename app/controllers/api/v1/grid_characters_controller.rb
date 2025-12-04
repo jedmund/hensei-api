@@ -15,10 +15,10 @@ module Api
     class GridCharactersController < Api::V1::ApiController
       include IdResolvable
 
-      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve]
-      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy]
+      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync]
+      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync]
       before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy]
+      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy sync]
 
       ##
       # Creates a new grid character.
@@ -224,6 +224,26 @@ module Api
             Api::V1::GranblueError.new(grid_character.errors.full_messages.join(', '))
           )
         end
+      end
+
+      ##
+      # Syncs a grid character from its linked collection character.
+      #
+      # Copies all customizations from the collection character to this grid character.
+      # Returns 422 if no collection character is linked.
+      #
+      # @return [void]
+      def sync
+        unless @grid_character.collection_character.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection character linked')
+          )
+        end
+
+        @grid_character.sync_from_collection!
+        render json: GridCharacterBlueprint.render(@grid_character.reload,
+                                                   root: :grid_character,
+                                                   view: :nested)
       end
 
       private
@@ -526,6 +546,7 @@ module Api
           :id,
           :party_id,
           :character_id,
+          :collection_character_id,
           :position,
           :uncap_level,
           :transcendence_step,

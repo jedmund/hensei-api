@@ -119,7 +119,17 @@ Rails.application.routes.draw do
     end
 
     # Grid artifacts
-    resources :grid_artifacts, only: %i[create update destroy]
+    resources :grid_artifacts, only: %i[create update destroy] do
+      member do
+        post :sync
+      end
+    end
+
+    # Sync endpoints for grid items
+    post 'grid_characters/:id/sync', to: 'grid_characters#sync'
+    post 'grid_weapons/:id/sync', to: 'grid_weapons#sync'
+    post 'grid_summons/:id/sync', to: 'grid_summons#sync'
+    post 'parties/:id/sync_all', to: 'parties#sync_all'
 
     # Grid endpoints - new prefixed versions
     post 'grid_characters/resolve', to: 'grid_characters#resolve'

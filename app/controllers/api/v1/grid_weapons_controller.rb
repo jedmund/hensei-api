@@ -12,10 +12,10 @@ module Api
     class GridWeaponsController < Api::V1::ApiController
       include IdResolvable
 
-      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy]
-      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy]
+      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync]
+      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync]
       before_action :find_incoming_weapon, only: %i[create resolve]
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync]
 
       ##
       # Creates a new GridWeapon.
@@ -220,6 +220,23 @@ module Api
             Api::V1::GranblueError.new(grid_weapon.errors.full_messages.join(', '))
           )
         end
+      end
+
+      ##
+      # Syncs a grid weapon from its linked collection weapon.
+      #
+      # @return [void]
+      def sync
+        unless @grid_weapon.collection_weapon.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection weapon linked')
+          )
+        end
+
+        @grid_weapon.sync_from_collection!
+        render json: GridWeaponBlueprint.render(@grid_weapon.reload,
+                                                root: :grid_weapon,
+                                                view: :full)
       end
 
       private
@@ -476,7 +493,7 @@ module Api
       # @return [ActionController::Parameters] the permitted parameters.
       def weapon_params
         params.require(:weapon).permit(
-          :id, :party_id, :weapon_id,
+          :id, :party_id, :weapon_id, :collection_weapon_id,
           :position, :mainhand, :uncap_level, :transcendence_step, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
           :ax_modifier1, :ax_modifier2, :ax_strength1, :ax_strength2,

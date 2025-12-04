@@ -14,10 +14,10 @@ module Api
 
       attr_reader :party, :incoming_summon
 
-      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy]
-      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy]
+      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync]
+      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync]
       before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync]
 
       ##
       # Creates a new grid summon.
@@ -226,6 +226,23 @@ module Api
             Api::V1::GranblueError.new(grid_summon.errors.full_messages.join(', '))
           )
         end
+      end
+
+      ##
+      # Syncs a grid summon from its linked collection summon.
+      #
+      # @return [void]
+      def sync
+        unless @grid_summon.collection_summon.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection summon linked')
+          )
+        end
+
+        @grid_summon.sync_from_collection!
+        render json: GridSummonBlueprint.render(@grid_summon.reload,
+                                                root: :grid_summon,
+                                                view: :nested)
       end
 
       ##
@@ -454,8 +471,9 @@ module Api
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :position, :main, :friend,
-                                       :quick_summon, :uncap_level, :transcendence_step)
+        params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
+                                       :position, :main, :friend, :quick_summon,
+                                       :uncap_level, :transcendence_step)
       end
 
       ##

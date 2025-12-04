@@ -142,6 +142,47 @@ module Api
         )
       end
 
+      # Syncs all linked grid items from their collection sources.
+      #
+      # POST /parties/:id/sync_all
+      def sync_all
+        @party = Party.find_by(id: params[:id])
+        return render_not_found_response('party') unless @party
+        return render_unauthorized_response unless authorized_to_edit?
+
+        synced = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
+
+        ActiveRecord::Base.transaction do
+          @party.characters.where.not(collection_character_id: nil).each do |gc|
+            gc.sync_from_collection!
+            synced[:characters] += 1
+          end
+
+          @party.weapons.where.not(collection_weapon_id: nil).each do |gw|
+            gw.sync_from_collection!
+            synced[:weapons] += 1
+          end
+
+          @party.summons.where.not(collection_summon_id: nil).each do |gs|
+            gs.sync_from_collection!
+            synced[:summons] += 1
+          end
+
+          GridArtifact.joins(:grid_character)
+                      .where(grid_characters: { party_id: @party.id })
+                      .where.not(collection_artifact_id: nil)
+                      .each do |ga|
+            ga.sync_from_collection!
+            synced[:artifacts] += 1
+          end
+        end
+
+        render json: {
+          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          synced: synced
+        }, status: :ok
+      end
+
       # Lists parties based on query parameters.
       def index
         query = build_filtered_query(build_common_base_query)

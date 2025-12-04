@@ -3,11 +3,11 @@
 module Api
   module V1
     class GridArtifactsController < Api::V1::ApiController
-      before_action :find_grid_artifact, only: %i[update destroy]
-      before_action :find_party, only: %i[create update destroy]
+      before_action :find_grid_artifact, only: %i[update destroy sync]
+      before_action :find_party, only: %i[create update destroy sync]
       before_action :find_grid_character, only: %i[create]
       before_action :find_artifact, only: %i[create]
-      before_action :authorize_party_edit!, only: %i[create update destroy]
+      before_action :authorize_party_edit!, only: %i[create update destroy sync]
 
       # POST /grid_artifacts
       def create
@@ -48,6 +48,20 @@ module Api
             Api::V1::GranblueError.new(@grid_artifact.errors.full_messages.join(', '))
           )
         end
+      end
+
+      # POST /grid_artifacts/:id/sync
+      def sync
+        unless @grid_artifact.collection_artifact.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection artifact linked')
+          )
+        end
+
+        @grid_artifact.sync_from_collection!
+        render json: GridArtifactBlueprint.render(@grid_artifact.reload,
+                                                  root: :grid_artifact,
+                                                  view: :nested)
       end
 
       private
@@ -107,7 +121,8 @@ module Api
 
       def grid_artifact_params
         params.require(:grid_artifact).permit(
-          :grid_character_id, :artifact_id, :element, :proficiency, :level, :reroll_slot,
+          :grid_character_id, :artifact_id, :collection_artifact_id,
+          :element, :proficiency, :level, :reroll_slot,
           skill1: %i[modifier strength level],
           skill2: %i[modifier strength level],
           skill3: %i[modifier strength level],
