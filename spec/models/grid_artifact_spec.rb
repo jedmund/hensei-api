@@ -6,6 +6,7 @@ RSpec.describe GridArtifact, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:grid_character) }
     it { is_expected.to belong_to(:artifact) }
+    it { is_expected.to belong_to(:collection_artifact).optional }
   end
 
   describe 'validations' do
@@ -91,6 +92,101 @@ RSpec.describe GridArtifact, type: :model do
 
     it 'can be duplicated via amoeba' do
       expect(GridArtifact).to respond_to(:amoeba_block)
+    end
+  end
+
+  describe 'Collection Sync' do
+    let(:user) { create(:user) }
+    let(:grid_character) { create(:grid_character) }
+    let(:artifact) { create(:artifact) }
+    let(:collection_artifact) do
+      create(:collection_artifact,
+             user: user,
+             artifact: artifact,
+             element: 2,
+             level: 4,
+             skill1: { 'modifier' => 1, 'strength' => 10 },
+             skill2: { 'modifier' => 2, 'strength' => 5 },
+             skill3: {},
+             skill4: {},
+             reroll_slot: 3)
+    end
+
+    describe '#sync_from_collection!' do
+      context 'when collection_artifact is linked' do
+        let(:linked_grid_artifact) do
+          create(:grid_artifact,
+                 grid_character: grid_character,
+                 artifact: artifact,
+                 collection_artifact: collection_artifact,
+                 element: 1,
+                 level: 2,
+                 skill1: {}, skill2: {}, skill3: {}, skill4: {})
+        end
+
+        it 'copies customizations from collection' do
+          expect(linked_grid_artifact.sync_from_collection!).to be true
+          linked_grid_artifact.reload
+
+          expect(linked_grid_artifact.element).to eq(2)
+          expect(linked_grid_artifact.level).to eq(4)
+          expect(linked_grid_artifact.skill1).to eq({ 'modifier' => 1, 'strength' => 10 })
+          expect(linked_grid_artifact.reroll_slot).to eq(3)
+        end
+      end
+
+      context 'when no collection_artifact is linked' do
+        let(:unlinked_grid_artifact) do
+          create(:grid_artifact,
+                 grid_character: grid_character,
+                 artifact: artifact,
+                 element: 1,
+                 level: 2,
+                 skill1: {}, skill2: {}, skill3: {}, skill4: {})
+        end
+
+        it 'returns false' do
+          expect(unlinked_grid_artifact.sync_from_collection!).to be false
+        end
+      end
+    end
+
+    describe '#out_of_sync?' do
+      context 'when collection_artifact is linked' do
+        let(:linked_grid_artifact) do
+          create(:grid_artifact,
+                 grid_character: grid_character,
+                 artifact: artifact,
+                 collection_artifact: collection_artifact,
+                 element: 1,
+                 level: 2,
+                 skill1: {}, skill2: {}, skill3: {}, skill4: {})
+        end
+
+        it 'returns true when values differ' do
+          expect(linked_grid_artifact.out_of_sync?).to be true
+        end
+
+        it 'returns false after sync' do
+          linked_grid_artifact.sync_from_collection!
+          expect(linked_grid_artifact.out_of_sync?).to be false
+        end
+      end
+
+      context 'when no collection_artifact is linked' do
+        let(:unlinked_grid_artifact) do
+          create(:grid_artifact,
+                 grid_character: grid_character,
+                 artifact: artifact,
+                 element: 1,
+                 level: 2,
+                 skill1: {}, skill2: {}, skill3: {}, skill4: {})
+        end
+
+        it 'returns false' do
+          expect(unlinked_grid_artifact.out_of_sync?).to be false
+        end
+      end
     end
   end
 end

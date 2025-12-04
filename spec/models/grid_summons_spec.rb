@@ -18,6 +18,13 @@ RSpec.describe GridSummon, type: :model do
       expect(association).not_to be_nil
       expect(association.macro).to eq(:belongs_to)
     end
+
+    it 'belongs to a collection_summon (optional)' do
+      association = described_class.reflect_on_association(:collection_summon)
+      expect(association).not_to be_nil
+      expect(association.macro).to eq(:belongs_to)
+      expect(association.options[:optional]).to be true
+    end
   end
 
   describe 'validations' do
@@ -230,6 +237,99 @@ RSpec.describe GridSummon, type: :model do
     it 'returns the GridSummonBlueprint constant' do
       grid_summon = build(:grid_summon)
       expect(grid_summon.blueprint).to eq(GridSummonBlueprint)
+    end
+  end
+
+  describe 'Collection Sync' do
+    let(:party) { create(:party) }
+    let(:user) { create(:user) }
+    let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
+    let(:collection_summon) do
+      create(:collection_summon,
+             user: user,
+             summon: summon,
+             uncap_level: 5,
+             transcendence_step: 2)
+    end
+
+    describe '#sync_from_collection!' do
+      context 'when collection_summon is linked' do
+        let(:linked_grid_summon) do
+          # Ensure summon has transcendence for valid transcendence_step
+          summon.update!(transcendence: true, ulb: true, flb: true)
+          create(:grid_summon,
+                 party: party,
+                 summon: summon,
+                 position: 1,
+                 collection_summon: collection_summon,
+                 uncap_level: 3,
+                 transcendence_step: 0)
+        end
+
+        it 'copies customizations from collection' do
+          expect(linked_grid_summon.sync_from_collection!).to be true
+          linked_grid_summon.reload
+
+          expect(linked_grid_summon.uncap_level).to eq(5)
+          expect(linked_grid_summon.transcendence_step).to eq(2)
+        end
+      end
+
+      context 'when no collection_summon is linked' do
+        let(:unlinked_grid_summon) do
+          build(:grid_summon,
+                party: party,
+                summon: summon,
+                position: 1,
+                uncap_level: 3,
+                transcendence_step: 0)
+        end
+
+        it 'returns false' do
+          unlinked_grid_summon.save!
+          expect(unlinked_grid_summon.sync_from_collection!).to be false
+        end
+      end
+    end
+
+    describe '#out_of_sync?' do
+      context 'when collection_summon is linked' do
+        let(:linked_grid_summon) do
+          summon.update!(transcendence: true, ulb: true, flb: true)
+          create(:grid_summon,
+                 party: party,
+                 summon: summon,
+                 position: 1,
+                 collection_summon: collection_summon,
+                 uncap_level: 3,
+                 transcendence_step: 0)
+        end
+
+        it 'returns true when values differ' do
+          expect(linked_grid_summon.out_of_sync?).to be true
+        end
+
+        it 'returns false after sync' do
+          linked_grid_summon.sync_from_collection!
+          expect(linked_grid_summon.out_of_sync?).to be false
+        end
+      end
+
+      context 'when no collection_summon is linked' do
+        let(:unlinked_grid_summon) do
+          build(:grid_summon,
+                party: party,
+                summon: summon,
+                position: 1,
+                uncap_level: 3,
+                transcendence_step: 0)
+        end
+
+        it 'returns false' do
+          unlinked_grid_summon.save!
+          expect(unlinked_grid_summon.out_of_sync?).to be false
+        end
+      end
     end
   end
 end

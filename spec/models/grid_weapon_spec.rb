@@ -13,6 +13,7 @@ RSpec.describe GridWeapon, type: :model do
   it { is_expected.to belong_to(:weapon_key3).optional }
   it { is_expected.to belong_to(:weapon_key4).optional }
   it { is_expected.to belong_to(:awakening).optional }
+  it { is_expected.to belong_to(:collection_weapon).optional }
 
   # Setup common test objects using FactoryBot.
   let(:party) { create(:party) }
@@ -132,6 +133,73 @@ RSpec.describe GridWeapon, type: :model do
   describe '#blueprint' do
     it 'returns the GridWeaponBlueprint constant' do
       expect(grid_weapon.blueprint).to eq(GridWeaponBlueprint)
+    end
+  end
+
+  describe 'Collection Sync' do
+    let(:user) { create(:user) }
+    let(:collection_weapon) do
+      create(:collection_weapon,
+             user: user,
+             weapon: weapon,
+             uncap_level: 5,
+             transcendence_step: 0,
+             element: 2)
+    end
+
+    describe '#sync_from_collection!' do
+      context 'when collection_weapon is linked' do
+        let(:linked_grid_weapon) do
+          create(:grid_weapon,
+                 party: party,
+                 weapon: weapon,
+                 position: 0,
+                 collection_weapon: collection_weapon,
+                 uncap_level: 3)
+        end
+
+        it 'copies customizations from collection' do
+          expect(linked_grid_weapon.sync_from_collection!).to be true
+          linked_grid_weapon.reload
+
+          expect(linked_grid_weapon.uncap_level).to eq(5)
+          expect(linked_grid_weapon.element).to eq(2)
+        end
+      end
+
+      context 'when no collection_weapon is linked' do
+        it 'returns false' do
+          expect(grid_weapon.sync_from_collection!).to be false
+        end
+      end
+    end
+
+    describe '#out_of_sync?' do
+      context 'when collection_weapon is linked' do
+        let(:linked_grid_weapon) do
+          create(:grid_weapon,
+                 party: party,
+                 weapon: weapon,
+                 position: 0,
+                 collection_weapon: collection_weapon,
+                 uncap_level: 3)
+        end
+
+        it 'returns true when values differ' do
+          expect(linked_grid_weapon.out_of_sync?).to be true
+        end
+
+        it 'returns false after sync' do
+          linked_grid_weapon.sync_from_collection!
+          expect(linked_grid_weapon.out_of_sync?).to be false
+        end
+      end
+
+      context 'when no collection_weapon is linked' do
+        it 'returns false' do
+          expect(grid_weapon.out_of_sync?).to be false
+        end
+      end
     end
   end
 end

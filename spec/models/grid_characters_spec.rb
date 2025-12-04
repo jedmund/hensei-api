@@ -16,6 +16,7 @@ RSpec.describe GridCharacter, type: :model do
   it { is_expected.to belong_to(:character) }
   it { is_expected.to belong_to(:party) }
   it { is_expected.to belong_to(:awakening).optional }
+  it { is_expected.to belong_to(:collection_character).optional }
 
   # Use the canonical "Balanced" awakening already loaded from CSV.
   before(:all) do
@@ -160,6 +161,103 @@ RSpec.describe GridCharacter, type: :model do
         @grid_char.ring2 = { modifier: '2', strength: 150 }
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:over_mastery]).to be_empty
+      end
+    end
+  end
+
+  describe 'Collection Sync' do
+    let(:user) { create(:user) }
+    let(:collection_character) do
+      create(:collection_character,
+             user: user,
+             character: character,
+             uncap_level: 5,
+             transcendence_step: 3,
+             perpetuity: true,
+             ring1: { 'modifier' => '1', 'strength' => 1500 },
+             ring2: { 'modifier' => '2', 'strength' => 750 },
+             ring3: { 'modifier' => nil, 'strength' => nil },
+             ring4: { 'modifier' => nil, 'strength' => nil },
+             earring: { 'modifier' => '3', 'strength' => 20 },
+             awakening: @balanced_awakening,
+             awakening_level: 7)
+    end
+
+    describe '#sync_from_collection!' do
+      context 'when collection_character is linked' do
+        before do
+          character.update!(ulb: true) # Enable transcendence
+          @grid_char = create(:grid_character,
+                              valid_attributes.merge(
+                                collection_character: collection_character,
+                                uncap_level: 3,
+                                transcendence_step: 0
+                              ))
+        end
+
+        it 'copies all customizations from collection' do
+          expect(@grid_char.sync_from_collection!).to be true
+          @grid_char.reload
+
+          expect(@grid_char.uncap_level).to eq(5)
+          expect(@grid_char.transcendence_step).to eq(3)
+          expect(@grid_char.perpetuity).to be true
+          expect(@grid_char.ring1).to eq({ 'modifier' => '1', 'strength' => 1500 })
+          expect(@grid_char.ring2).to eq({ 'modifier' => '2', 'strength' => 750 })
+          expect(@grid_char.awakening_level).to eq(7)
+        end
+      end
+
+      context 'when no collection_character is linked' do
+        before do
+          @grid_char = create(:grid_character, valid_attributes)
+        end
+
+        it 'returns false and does not change anything' do
+          original_uncap = @grid_char.uncap_level
+          expect(@grid_char.sync_from_collection!).to be false
+          expect(@grid_char.uncap_level).to eq(original_uncap)
+        end
+      end
+    end
+
+    describe '#out_of_sync?' do
+      context 'when collection_character is linked' do
+        before do
+          character.update!(ulb: true)
+          @grid_char = create(:grid_character,
+                              valid_attributes.merge(collection_character: collection_character))
+        end
+
+        it 'returns true when uncap_level differs' do
+          @grid_char.update!(uncap_level: 4)
+          expect(@grid_char.out_of_sync?).to be true
+        end
+
+        it 'returns true when transcendence_step differs' do
+          @grid_char.update!(transcendence_step: 1)
+          expect(@grid_char.out_of_sync?).to be true
+        end
+
+        it 'returns true when perpetuity differs' do
+          @grid_char.update!(perpetuity: false)
+          expect(@grid_char.out_of_sync?).to be true
+        end
+
+        it 'returns false when all values match' do
+          @grid_char.sync_from_collection!
+          expect(@grid_char.out_of_sync?).to be false
+        end
+      end
+
+      context 'when no collection_character is linked' do
+        before do
+          @grid_char = create(:grid_character, valid_attributes)
+        end
+
+        it 'returns false' do
+          expect(@grid_char.out_of_sync?).to be false
+        end
       end
     end
   end
