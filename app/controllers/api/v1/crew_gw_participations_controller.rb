@@ -34,7 +34,7 @@ module Api
         return render json: { gw_event: nil, crew_gw_participation: nil, members_during_event: [] } unless event
 
         participation = @crew.crew_gw_participations
-                             .includes(:gw_event, gw_individual_scores: [:crew_membership, :phantom_player])
+                             .includes(:gw_event, gw_individual_scores: [{ crew_membership: :user }, :phantom_player])
                              .find_by(gw_event: event)
 
         # Get all members who were active during the event (includes retired members who left after event started)
