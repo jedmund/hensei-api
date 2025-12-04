@@ -16,6 +16,9 @@ class User < ApplicationRecord
   has_many :crew_memberships, dependent: :destroy
   has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership'
   has_one :crew, through: :active_crew_membership
+  has_many :crew_invitations, dependent: :destroy
+  has_many :pending_crew_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation'
+  has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, dependent: :nullify
 
   ##### ActiveRecord Validations
   validates :username,

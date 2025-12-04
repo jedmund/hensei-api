@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_070124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -234,6 +234,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
     t.index ["weapon_key4_id"], name: "index_collection_weapons_on_weapon_key4_id"
   end
 
+  create_table "crew_invitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crew_id", null: false
+    t.uuid "user_id", null: false, comment: "Invitee"
+    t.uuid "invited_by_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crew_id", "user_id", "status"], name: "index_crew_invitations_on_crew_id_and_user_id_and_status"
+    t.index ["crew_id"], name: "index_crew_invitations_on_crew_id"
+    t.index ["invited_by_id"], name: "index_crew_invitations_on_invited_by_id"
+    t.index ["user_id", "status"], name: "index_crew_invitations_on_user_id_and_status"
+    t.index ["user_id"], name: "index_crew_invitations_on_user_id"
+  end
+
   create_table "crew_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "crew_id", null: false
     t.uuid "user_id", null: false
@@ -332,7 +347,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reroll_slot"
+    t.uuid "collection_artifact_id"
     t.index ["artifact_id"], name: "index_grid_artifacts_on_artifact_id"
+    t.index ["collection_artifact_id"], name: "index_grid_artifacts_on_collection_artifact_id"
     t.index ["grid_character_id"], name: "index_grid_artifacts_on_grid_character_id", unique: true
   end
 
@@ -352,8 +369,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
     t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
     t.uuid "awakening_id"
     t.integer "awakening_level", default: 1
+    t.uuid "collection_character_id"
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
+    t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
     t.index ["party_id", "position"], name: "index_grid_characters_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -369,6 +388,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
     t.datetime "updated_at", null: false
     t.integer "transcendence_step", default: 0, null: false
     t.boolean "quick_summon", default: false
+    t.uuid "collection_summon_id"
+    t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
@@ -394,7 +415,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
     t.uuid "awakening_id"
     t.integer "transcendence_step", default: 0
     t.string "weapon_key4_id"
+    t.uuid "collection_weapon_id"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
+    t.index ["collection_weapon_id"], name: "index_grid_weapons_on_collection_weapon_id"
     t.index ["party_id", "position"], name: "index_grid_weapons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
@@ -874,19 +897,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_063711) do
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key4_id"
   add_foreign_key "collection_weapons", "weapons"
+  add_foreign_key "crew_invitations", "crews"
+  add_foreign_key "crew_invitations", "users"
+  add_foreign_key "crew_invitations", "users", column: "invited_by_id"
   add_foreign_key "crew_memberships", "crews"
   add_foreign_key "crew_memberships", "users"
   add_foreign_key "effects", "effects", column: "effect_family_id"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
   add_foreign_key "grid_artifacts", "artifacts"
+  add_foreign_key "grid_artifacts", "collection_artifacts"
   add_foreign_key "grid_artifacts", "grid_characters"
   add_foreign_key "grid_characters", "awakenings"
   add_foreign_key "grid_characters", "characters"
+  add_foreign_key "grid_characters", "collection_characters"
   add_foreign_key "grid_characters", "parties"
+  add_foreign_key "grid_summons", "collection_summons"
   add_foreign_key "grid_summons", "parties"
   add_foreign_key "grid_summons", "summons"
   add_foreign_key "grid_weapons", "awakenings"
+  add_foreign_key "grid_weapons", "collection_weapons"
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapons"

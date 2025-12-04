@@ -178,6 +178,19 @@ Rails.application.routes.draw do
           post :demote
         end
       end
+
+      resources :invitations, controller: 'crew_invitations', only: %i[index create]
+    end
+
+    # Invitations for current user
+    resources :invitations, controller: 'crew_invitations', only: [] do
+      collection do
+        get :pending
+      end
+      member do
+        post :accept
+        post :reject
+      end
     end
 
     # Reading collections - works for any user with privacy check

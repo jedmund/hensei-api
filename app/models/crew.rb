@@ -5,6 +5,8 @@ class Crew < ApplicationRecord
   has_many :users, through: :crew_memberships
   has_many :active_memberships, -> { where(retired: false) }, class_name: 'CrewMembership'
   has_many :active_members, through: :active_memberships, source: :user
+  has_many :crew_invitations, dependent: :destroy
+  has_many :pending_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation'
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :gamertag, length: { maximum: 50 }, allow_nil: true

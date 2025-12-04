@@ -116,4 +116,60 @@ module CrewErrors
       'Cannot demote the captain'
     end
   end
+
+  class InvitationExpiredError < CrewError
+    def http_status
+      :gone
+    end
+
+    def code
+      'invitation_expired'
+    end
+
+    def message
+      'This invitation has expired'
+    end
+  end
+
+  class InvitationNotFoundError < CrewError
+    def http_status
+      :not_found
+    end
+
+    def code
+      'invitation_not_found'
+    end
+
+    def message
+      'Invitation not found'
+    end
+  end
+
+  class CannotInviteSelfError < CrewError
+    def http_status
+      :unprocessable_entity
+    end
+
+    def code
+      'cannot_invite_self'
+    end
+
+    def message
+      'You cannot invite yourself'
+    end
+  end
+
+  class UserAlreadyInvitedError < CrewError
+    def http_status
+      :conflict
+    end
+
+    def code
+      'user_already_invited'
+    end
+
+    def message
+      'User already has a pending invitation'
+    end
+  end
 end
