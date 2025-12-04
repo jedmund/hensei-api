@@ -115,7 +115,7 @@ DELETE /crews/:id/memberships/:id  - Remove member
 
 ### Database Migration
 
-- [ ] **`create_crew_invitations`**
+- [x] **`create_crew_invitations`** `[b75a905]`
 ```
 crew_invitations:
   - id: uuid (PK)
@@ -135,8 +135,18 @@ Indices:
 
 | Status | File | Purpose |
 |:------:|------|---------|
-| [ ] | `app/models/crew_invitation.rb` | Invitation model with accept/reject |
-| [ ] | `app/controllers/api/v1/crew_invitations_controller.rb` | Send, list, accept, reject |
+| [x] `[b75a905]` | `app/models/crew_invitation.rb` | Invitation model with accept/reject |
+| [x] `[b75a905]` | `app/controllers/api/v1/crew_invitations_controller.rb` | Send, list, accept, reject |
+| [x] `[b75a905]` | `app/blueprints/api/v1/crew_invitation_blueprint.rb` | Invitation serialization |
+| [x] `[b75a905]` | `app/errors/crew_errors.rb` | Added invitation error classes |
+
+### Backend Tests
+
+| Status | File | Purpose |
+|:------:|------|---------|
+| [x] `[b75a905]` | `spec/models/crew_invitation_spec.rb` | CrewInvitation model specs (21 examples) |
+| [x] `[b75a905]` | `spec/requests/crew_invitations_controller_spec.rb` | Invitations API specs (17 examples) |
+| [x] `[b75a905]` | `spec/factories/crew_invitations.rb` | CrewInvitation factory |
 
 ### API Endpoints
 
