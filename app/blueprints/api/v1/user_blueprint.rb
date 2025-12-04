@@ -11,6 +11,9 @@ module Api
             element: user.element
           }
         end
+        field :gamertag, if: ->(_, user, _) { user.show_gamertag && user.crew&.gamertag.present? } do |user|
+          user.crew.gamertag
+        end
       end
 
       view :profile do
@@ -26,7 +29,7 @@ module Api
       end
 
       view :settings do
-        fields :email
+        fields :email, :show_gamertag
       end
     end
   end
