@@ -17,6 +17,7 @@ module Api
 
         @collection_artifacts = @collection_artifacts.where(artifact_id: params[:artifact_id]) if params[:artifact_id]
         @collection_artifacts = @collection_artifacts.where(element: params[:element]) if params[:element]
+        @collection_artifacts = @collection_artifacts.joins(:artifact).where(artifacts: { rarity: params[:rarity] }) if params[:rarity]
 
         @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: params[:limit] || 50)
 
