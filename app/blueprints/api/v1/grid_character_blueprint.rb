@@ -9,6 +9,11 @@ module Api
         gc.transcendence_step
       end
 
+      field :collection_character_id
+      field :out_of_sync, if: ->(_field, gc, _options) { gc.collection_character_id.present? } do |gc|
+        gc.out_of_sync?
+      end
+
       view :preview do
         association :character, blueprint: CharacterBlueprint
       end

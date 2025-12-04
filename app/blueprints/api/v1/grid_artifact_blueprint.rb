@@ -3,10 +3,22 @@
 module Api
   module V1
     class GridArtifactBlueprint < ApiBlueprint
-      fields :element, :level, :reroll_slot
+      fields :level, :reroll_slot
 
-      # Proficiency is only present on quirk artifacts
-      field :proficiency, if: ->(_field, obj, _options) { obj.proficiency.present? }
+      field :collection_artifact_id
+      field :out_of_sync, if: ->(_field, ga, _options) { ga.collection_artifact_id.present? } do |ga|
+        ga.out_of_sync?
+      end
+
+      # Return element as integer
+      field :element do |obj|
+        obj.element_before_type_cast
+      end
+
+      # Proficiency is only present on quirk artifacts, return as integer
+      field :proficiency, if: ->(_field, obj, _options) { obj.proficiency.present? } do |obj|
+        obj.proficiency_before_type_cast
+      end
 
       field :skills do |obj|
         [obj.skill1, obj.skill2, obj.skill3, obj.skill4].map do |skill|

@@ -5,6 +5,11 @@ module Api
     class GridWeaponBlueprint < ApiBlueprint
       fields :mainhand, :position, :uncap_level, :transcendence_step, :element
 
+      field :collection_weapon_id
+      field :out_of_sync, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
+        gw.out_of_sync?
+      end
+
       view :preview do
         association :weapon, blueprint: WeaponBlueprint
       end

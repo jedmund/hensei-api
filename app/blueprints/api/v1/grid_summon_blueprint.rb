@@ -5,6 +5,11 @@ module Api
     class GridSummonBlueprint < ApiBlueprint
       fields :main, :friend, :position, :quick_summon, :uncap_level, :transcendence_step
 
+      field :collection_summon_id
+      field :out_of_sync, if: ->(_field, gs, _options) { gs.collection_summon_id.present? } do |gs|
+        gs.out_of_sync?
+      end
+
       view :preview do
         association :summon, blueprint: SummonBlueprint
       end
