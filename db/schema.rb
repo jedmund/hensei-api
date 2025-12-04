@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_070124) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_071001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -234,6 +234,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_070124) do
     t.index ["weapon_key4_id"], name: "index_collection_weapons_on_weapon_key4_id"
   end
 
+  create_table "crew_gw_participations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crew_id", null: false
+    t.uuid "gw_event_id", null: false
+    t.bigint "preliminary_ranking"
+    t.bigint "final_ranking"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crew_id", "gw_event_id"], name: "index_crew_gw_participations_on_crew_id_and_gw_event_id", unique: true
+    t.index ["crew_id"], name: "index_crew_gw_participations_on_crew_id"
+    t.index ["gw_event_id"], name: "index_crew_gw_participations_on_gw_event_id"
+  end
+
   create_table "crew_invitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "crew_id", null: false
     t.uuid "user_id", null: false, comment: "Invitee"
@@ -433,6 +445,47 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_070124) do
     t.string "description_en", null: false
     t.string "description_jp", null: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
+  create_table "gw_crew_scores", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crew_gw_participation_id", null: false
+    t.integer "round", null: false, comment: "0=prelims, 1=interlude, 2-5=finals day 1-4"
+    t.bigint "crew_score", default: 0, null: false
+    t.bigint "opponent_score"
+    t.string "opponent_name"
+    t.string "opponent_granblue_id"
+    t.boolean "victory"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crew_gw_participation_id", "round"], name: "index_gw_crew_scores_on_crew_gw_participation_id_and_round", unique: true
+    t.index ["crew_gw_participation_id"], name: "index_gw_crew_scores_on_crew_gw_participation_id"
+  end
+
+  create_table "gw_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "element", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.integer "event_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_number"], name: "index_gw_events_on_event_number", unique: true
+    t.index ["start_date"], name: "index_gw_events_on_start_date"
+  end
+
+  create_table "gw_individual_scores", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crew_gw_participation_id", null: false
+    t.uuid "crew_membership_id"
+    t.integer "round", null: false
+    t.bigint "score", default: 0, null: false
+    t.boolean "is_cumulative", default: false, null: false
+    t.uuid "recorded_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crew_gw_participation_id", "crew_membership_id", "round"], name: "idx_gw_individual_scores_unique", unique: true
+    t.index ["crew_gw_participation_id"], name: "index_gw_individual_scores_on_crew_gw_participation_id"
+    t.index ["crew_membership_id"], name: "index_gw_individual_scores_on_crew_membership_id"
+    t.index ["recorded_by_id"], name: "index_gw_individual_scores_on_recorded_by_id"
   end
 
   create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -897,6 +950,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_070124) do
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key4_id"
   add_foreign_key "collection_weapons", "weapons"
+  add_foreign_key "crew_gw_participations", "crews"
+  add_foreign_key "crew_gw_participations", "gw_events"
   add_foreign_key "crew_invitations", "crews"
   add_foreign_key "crew_invitations", "users"
   add_foreign_key "crew_invitations", "users", column: "invited_by_id"
@@ -920,6 +975,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_070124) do
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapons"
+  add_foreign_key "gw_crew_scores", "crew_gw_participations"
+  add_foreign_key "gw_individual_scores", "crew_gw_participations"
+  add_foreign_key "gw_individual_scores", "crew_memberships"
+  add_foreign_key "gw_individual_scores", "users", column: "recorded_by_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook1_id"

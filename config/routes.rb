@@ -193,6 +193,25 @@ Rails.application.routes.draw do
       end
     end
 
+    # GW Events (public read, admin write)
+    resources :gw_events, only: %i[index show create update] do
+      member do
+        post :participations, to: 'crew_gw_participations#create'
+      end
+    end
+
+    # Current user's crew GW participations
+    scope :crew do
+      resources :gw_participations, controller: 'crew_gw_participations', only: %i[index show update] do
+        resources :crew_scores, controller: 'gw_crew_scores', only: %i[create update destroy]
+        resources :individual_scores, controller: 'gw_individual_scores', only: %i[create update destroy] do
+          collection do
+            post :batch
+          end
+        end
+      end
+    end
+
     # Reading collections - works for any user with privacy check
     scope 'users/:user_id' do
       namespace :collection do
