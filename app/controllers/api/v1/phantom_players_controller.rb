@@ -72,7 +72,7 @@ module Api
       end
 
       def phantom_params
-        params.require(:phantom_player).permit(:name, :granblue_id, :notes)
+        params.require(:phantom_player).permit(:name, :granblue_id, :notes, :joined_at)
       end
     end
   end

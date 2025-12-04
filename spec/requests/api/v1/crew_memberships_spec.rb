@@ -29,12 +29,24 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     context 'as vice captain' do
       let!(:vc_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
-      it 'returns unauthorized' do
+      it 'cannot change role but request succeeds' do
         put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
             params: { membership: { role: 'vice_captain' } },
             headers: auth_headers
 
-        expect(response).to have_http_status(:unauthorized)
+        # Vice captains can access update endpoint (for joined_at) but role param is ignored
+        expect(response).to have_http_status(:ok)
+        expect(target_membership.reload.role).to eq('member') # Role not changed
+      end
+
+      it 'can update joined_at' do
+        put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
+            params: { membership: { joined_at: '2024-01-15' } },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['membership']['joined_at']).to include('2024-01-15')
       end
     end
   end

@@ -9,11 +9,18 @@ module Api
       before_action :set_crew
       before_action :set_membership, only: %i[update destroy promote demote]
       before_action :authorize_crew_officer!, only: %i[destroy]
-      before_action :authorize_crew_captain!, only: %i[update promote demote]
+      before_action :authorize_crew_captain!, only: %i[promote demote]
+      before_action :authorize_membership_update!, only: %i[update]
 
       # PUT /crews/:crew_id/memberships/:id
       def update
-        if @membership.update(membership_params)
+        allowed_params = if current_user.crew_captain?
+                           membership_params
+                         else
+                           membership_params.slice(:joined_at)
+                         end
+
+        if @membership.update(allowed_params)
           render json: CrewMembershipBlueprint.render(@membership, view: :with_user, root: :membership)
         else
           render_validation_error_response(@membership)
@@ -59,7 +66,16 @@ module Api
       end
 
       def membership_params
-        params.require(:membership).permit(:role)
+        params.require(:membership).permit(:role, :joined_at)
+      end
+
+      def authorize_membership_update!
+        # Officers can update any membership's joined_at
+        # Captains can update anything
+        return if current_user.crew_captain?
+        return if current_user.crew_officer?
+
+        raise Api::V1::UnauthorizedError
       end
     end
   end
