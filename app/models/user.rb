@@ -12,8 +12,10 @@ class User < ApplicationRecord
   has_many :collection_job_accessories, dependent: :destroy
   has_many :collection_artifacts, dependent: :destroy
 
-  # Note: The crew association will be added when crews feature is implemented
-  # belongs_to :crew, optional: true
+  # Crew associations
+  has_many :crew_memberships, dependent: :destroy
+  has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership'
+  has_one :crew, through: :active_crew_membership
 
   ##### ActiveRecord Validations
   validates :username,
@@ -76,9 +78,7 @@ class User < ApplicationRecord
     when 'everyone'
       true
     when 'crew_only'
-      # Will be implemented when crew feature is added:
-      # viewer.present? && crew.present? && viewer.crew_id == crew_id
-      false # For now, crew_only acts like private until crews are implemented
+      viewer.present? && in_same_crew_as?(viewer)
     when 'private_collection'
       false
     else
@@ -86,11 +86,26 @@ class User < ApplicationRecord
     end
   end
 
-  # Helper method to check if user is in same crew (placeholder for future)
+  # Check if user is in same crew as another user
   def in_same_crew_as?(other_user)
-    # Will be implemented when crew feature is added:
-    # return false unless other_user.present?
-    # crew.present? && other_user.crew_id == crew_id
-    false
+    return false unless other_user.present?
+    return false unless crew.present? && other_user.crew.present?
+
+    crew.id == other_user.crew.id
+  end
+
+  # Get the user's crew role
+  def crew_role
+    active_crew_membership&.role
+  end
+
+  # Check if user is a crew officer (captain or vice captain)
+  def crew_officer?
+    crew_role.in?(%w[captain vice_captain])
+  end
+
+  # Check if user is a crew captain
+  def crew_captain?
+    crew_role == 'captain'
   end
 end
