@@ -46,7 +46,7 @@ module Api
       end
 
       def event_params
-        params.require(:gw_event).permit(:name, :element, :start_date, :end_date, :event_number)
+        params.require(:gw_event).permit(:element, :start_date, :end_date, :event_number)
       end
 
       def require_admin!

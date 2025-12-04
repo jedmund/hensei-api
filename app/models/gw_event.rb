@@ -8,7 +8,6 @@ class GwEvent < ApplicationRecord
 
   enum :element, ELEMENTS
 
-  validates :name, presence: true
   validates :element, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true

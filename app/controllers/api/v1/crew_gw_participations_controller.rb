@@ -22,6 +22,39 @@ module Api
         render json: CrewGwParticipationBlueprint.render(@participation, view: :with_individual_scores, root: :crew_gw_participation)
       end
 
+      # GET /crew/gw_participations/by_event/:event_id
+      def by_event
+        # Support lookup by event_id (UUID) or event_number (integer)
+        event = if params[:event_id].match?(/\A\d+\z/)
+                  GwEvent.find_by(event_number: params[:event_id])
+                else
+                  GwEvent.find_by(id: params[:event_id])
+                end
+
+        return render json: { gw_event: nil, crew_gw_participation: nil, members_during_event: [] } unless event
+
+        participation = @crew.crew_gw_participations
+                             .includes(:gw_event, gw_individual_scores: [:crew_membership, :phantom_player])
+                             .find_by(gw_event: event)
+
+        # Get all members who were active during the event (includes retired members who left after event started)
+        # Also include all currently active members for score entry purposes
+        # Uses joined_at (editable) for historical accuracy
+        members_during_event = @crew.crew_memberships
+                                    .includes(:user)
+                                    .active_during(event.start_date, event.end_date)
+
+        # Get all phantom players who were active during the event or currently active
+        phantom_players = @crew.phantom_players.active_during(event.start_date, event.end_date)
+
+        render json: {
+          gw_event: GwEventBlueprint.render_as_hash(event),
+          crew_gw_participation: participation ? CrewGwParticipationBlueprint.render_as_hash(participation, view: :with_individual_scores) : nil,
+          members_during_event: CrewMembershipBlueprint.render_as_hash(members_during_event, view: :with_user),
+          phantom_players: PhantomPlayerBlueprint.render_as_hash(phantom_players)
+        }
+      end
+
       # POST /gw_events/:id/participations
       def create
         event = GwEvent.find(params[:id])

@@ -91,6 +91,65 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
     end
   end
 
+  describe 'GET /api/v1/crew/gw_participations/by_event/:event_id' do
+    context 'when participating in the event' do
+      let!(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+
+      it 'returns the event and participation by event ID' do
+        get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['gw_event']['id']).to eq(gw_event.id)
+        expect(json['crew_gw_participation']['id']).to eq(participation.id)
+        expect(json['members_during_event']).to be_an(Array)
+      end
+
+      it 'returns the event and participation by event number' do
+        get "/api/v1/crew/gw_participations/by_event/#{gw_event.event_number}", headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['gw_event']['id']).to eq(gw_event.id)
+        expect(json['crew_gw_participation']['id']).to eq(participation.id)
+      end
+
+      it 'includes members who were active during the event' do
+        get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
+        json = JSON.parse(response.body)
+        member_ids = json['members_during_event'].map { |m| m['id'] }
+        expect(member_ids).to include(membership.id)
+      end
+    end
+
+    context 'when not participating in the event' do
+      it 'returns event but null participation' do
+        get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['gw_event']['id']).to eq(gw_event.id)
+        expect(json['crew_gw_participation']).to be_nil
+      end
+    end
+
+    context 'when event does not exist' do
+      it 'returns null for both' do
+        get '/api/v1/crew/gw_participations/by_event/99999', headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['gw_event']).to be_nil
+        expect(json['crew_gw_participation']).to be_nil
+      end
+    end
+
+    context 'without a crew' do
+      let!(:membership) { nil }
+
+      it 'returns unprocessable_entity' do
+        get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
   describe 'PUT /api/v1/crew/gw_participations/:id' do
     let!(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
 

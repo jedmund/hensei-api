@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :gw_event do
-    sequence(:name) { |n| "Unite and Fight ##{n}" }
     element { %i[Fire Water Earth Wind Light Dark].sample }
     start_date { 1.week.from_now.to_date }
     end_date { 2.weeks.from_now.to_date }

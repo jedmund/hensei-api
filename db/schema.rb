@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_075226) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_102935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -269,6 +269,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_075226) do
     t.datetime "retired_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "joined_at"
     t.index ["crew_id", "role"], name: "index_crew_memberships_on_crew_id_and_role"
     t.index ["crew_id", "user_id"], name: "index_crew_memberships_on_crew_id_and_user_id", unique: true
     t.index ["crew_id"], name: "index_crew_memberships_on_crew_id"
@@ -462,7 +463,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_075226) do
   end
 
   create_table "gw_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
     t.integer "element", null: false
     t.date "start_date", null: false
     t.date "end_date", null: false
@@ -664,6 +664,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_075226) do
     t.boolean "claim_confirmed", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "retired", default: false, null: false
+    t.datetime "retired_at"
+    t.datetime "joined_at"
     t.index ["claimed_by_id"], name: "index_phantom_players_on_claimed_by_id"
     t.index ["claimed_from_membership_id"], name: "index_phantom_players_on_claimed_from_membership_id"
     t.index ["crew_id", "granblue_id"], name: "index_phantom_players_on_crew_id_and_granblue_id", unique: true, where: "(granblue_id IS NOT NULL)"

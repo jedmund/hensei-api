@@ -3,7 +3,11 @@
 module Api
   module V1
     class GwEventBlueprint < ApiBlueprint
-      fields :name, :element, :start_date, :end_date, :event_number
+      fields :start_date, :end_date, :event_number
+
+      field :element do |event|
+        GwEvent.elements[event.element]
+      end
 
       field :status do |event|
         if event.active?

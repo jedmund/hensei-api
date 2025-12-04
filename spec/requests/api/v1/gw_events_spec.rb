@@ -31,8 +31,7 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
       get "/api/v1/gw_events/#{event.id}"
       expect(response).to have_http_status(:ok)
       expect(json_response['gw_event']['id']).to eq(event.id)
-      expect(json_response['gw_event']['name']).to eq(event.name)
-      expect(json_response['gw_event']['element']).to eq(event.element)
+      expect(json_response['gw_event']['element']).to eq(GwEvent.elements[event.element])
     end
 
     it 'returns 404 for non-existent event' do
@@ -45,7 +44,6 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
     let(:valid_params) do
       {
         gw_event: {
-          name: 'Unite and Fight #50',
           element: 'Fire',
           start_date: 1.week.from_now.to_date,
           end_date: 2.weeks.from_now.to_date,
@@ -61,12 +59,12 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
         }.to change(GwEvent, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        expect(json_response['gw_event']['name']).to eq('Unite and Fight #50')
-        expect(json_response['gw_event']['element']).to eq('Fire')
+        expect(json_response['gw_event']['element']).to eq(GwEvent.elements['Fire'])
+        expect(json_response['gw_event']['event_number']).to eq(50)
       end
 
       it 'returns errors for invalid params' do
-        post '/api/v1/gw_events', params: { gw_event: { name: '' } }, headers: admin_headers
+        post '/api/v1/gw_events', params: { gw_event: { element: '' } }, headers: admin_headers
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -88,13 +86,13 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
 
   describe 'PUT /api/v1/gw_events/:id' do
     let!(:event) { create(:gw_event) }
-    let(:update_params) { { gw_event: { name: 'Updated Event Name' } } }
+    let(:update_params) { { gw_event: { event_number: 99 } } }
 
     context 'as admin' do
       it 'updates the event' do
         put "/api/v1/gw_events/#{event.id}", params: update_params, headers: admin_headers
         expect(response).to have_http_status(:ok)
-        expect(json_response['gw_event']['name']).to eq('Updated Event Name')
+        expect(json_response['gw_event']['event_number']).to eq(99)
       end
     end
 
