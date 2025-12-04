@@ -9,6 +9,7 @@ class Crew < ApplicationRecord
   has_many :pending_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation'
   has_many :crew_gw_participations, dependent: :destroy
   has_many :gw_events, through: :crew_gw_participations
+  has_many :phantom_players, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :gamertag, length: { maximum: 50 }, allow_nil: true

@@ -180,6 +180,13 @@ Rails.application.routes.draw do
       end
 
       resources :invitations, controller: 'crew_invitations', only: %i[index create]
+
+      resources :phantom_players, only: %i[index show create update destroy] do
+        member do
+          post :assign
+          post :confirm_claim
+        end
+      end
     end
 
     # Invitations for current user

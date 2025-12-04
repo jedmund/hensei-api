@@ -172,4 +172,32 @@ module CrewErrors
       'User already has a pending invitation'
     end
   end
+
+  class NotClaimedByUserError < CrewError
+    def http_status
+      :forbidden
+    end
+
+    def code
+      'not_claimed_by_user'
+    end
+
+    def message
+      'This phantom player is not assigned to you'
+    end
+  end
+
+  class PhantomNotFoundError < CrewError
+    def http_status
+      :not_found
+    end
+
+    def code
+      'phantom_not_found'
+    end
+
+    def message
+      'Phantom player not found'
+    end
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_071001) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_075226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -482,9 +482,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_071001) do
     t.uuid "recorded_by_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "phantom_player_id"
     t.index ["crew_gw_participation_id", "crew_membership_id", "round"], name: "idx_gw_individual_scores_unique", unique: true
     t.index ["crew_gw_participation_id"], name: "index_gw_individual_scores_on_crew_gw_participation_id"
     t.index ["crew_membership_id"], name: "index_gw_individual_scores_on_crew_membership_id"
+    t.index ["phantom_player_id"], name: "index_gw_individual_scores_on_phantom_player_id"
     t.index ["recorded_by_id"], name: "index_gw_individual_scores_on_recorded_by_id"
   end
 
@@ -650,6 +652,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_071001) do
     t.bigint "calls"
     t.datetime "captured_at", precision: nil
     t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
+  end
+
+  create_table "phantom_players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crew_id", null: false
+    t.string "name", null: false
+    t.string "granblue_id"
+    t.text "notes"
+    t.uuid "claimed_by_id"
+    t.uuid "claimed_from_membership_id"
+    t.boolean "claim_confirmed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["claimed_by_id"], name: "index_phantom_players_on_claimed_by_id"
+    t.index ["claimed_from_membership_id"], name: "index_phantom_players_on_claimed_from_membership_id"
+    t.index ["crew_id", "granblue_id"], name: "index_phantom_players_on_crew_id_and_granblue_id", unique: true, where: "(granblue_id IS NOT NULL)"
+    t.index ["crew_id"], name: "index_phantom_players_on_crew_id"
   end
 
   create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -978,6 +996,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_071001) do
   add_foreign_key "gw_crew_scores", "crew_gw_participations"
   add_foreign_key "gw_individual_scores", "crew_gw_participations"
   add_foreign_key "gw_individual_scores", "crew_memberships"
+  add_foreign_key "gw_individual_scores", "phantom_players"
   add_foreign_key "gw_individual_scores", "users", column: "recorded_by_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -993,6 +1012,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_071001) do
   add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
+  add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
+  add_foreign_key "phantom_players", "crews"
+  add_foreign_key "phantom_players", "users", column: "claimed_by_id"
   add_foreign_key "raids", "raid_groups", column: "group_id", name: "raids_group_id_fkey"
   add_foreign_key "skill_effects", "effects", name: "fk_skill_effects_effects"
   add_foreign_key "skill_effects", "skills", name: "fk_skill_effects_skills"
