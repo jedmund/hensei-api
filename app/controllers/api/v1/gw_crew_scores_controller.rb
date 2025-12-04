@@ -11,27 +11,27 @@ module Api
       before_action :set_participation
       before_action :set_score, only: %i[update destroy]
 
-      # POST /crew/gw_participations/:participation_id/crew_scores
+      # POST /crew/gw_participations/:gw_participation_id/crew_scores
       def create
         score = @participation.gw_crew_scores.build(score_params)
 
         if score.save
-          render json: GwCrewScoreBlueprint.render(score, root: :crew_score), status: :created
+          render json: GwCrewScoreBlueprint.render(score, root: :gw_crew_score), status: :created
         else
           render_validation_error_response(score)
         end
       end
 
-      # PUT /crew/gw_participations/:participation_id/crew_scores/:id
+      # PUT /crew/gw_participations/:gw_participation_id/crew_scores/:id
       def update
         if @score.update(score_params)
-          render json: GwCrewScoreBlueprint.render(@score, root: :crew_score)
+          render json: GwCrewScoreBlueprint.render(@score, root: :gw_crew_score)
         else
           render_validation_error_response(@score)
         end
       end
 
-      # DELETE /crew/gw_participations/:participation_id/crew_scores/:id
+      # DELETE /crew/gw_participations/:gw_participation_id/crew_scores/:id
       def destroy
         @score.destroy!
         head :no_content
@@ -45,7 +45,7 @@ module Api
       end
 
       def set_participation
-        @participation = @crew.crew_gw_participations.find(params[:participation_id])
+        @participation = @crew.crew_gw_participations.find(params[:gw_participation_id])
       end
 
       def set_score

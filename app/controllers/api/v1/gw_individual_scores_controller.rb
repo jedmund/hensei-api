@@ -11,7 +11,7 @@ module Api
       before_action :set_participation
       before_action :set_score, only: %i[update destroy]
 
-      # POST /crew/gw_participations/:participation_id/individual_scores
+      # POST /crew/gw_participations/:gw_participation_id/individual_scores
       def create
         # Members can only record their own scores, officers can record anyone's
         membership_id = score_params[:crew_membership_id]
@@ -29,7 +29,7 @@ module Api
         end
       end
 
-      # PUT /crew/gw_participations/:participation_id/individual_scores/:id
+      # PUT /crew/gw_participations/:gw_participation_id/individual_scores/:id
       def update
         unless can_record_score_for?(@score.crew_membership_id)
           raise Api::V1::UnauthorizedError
@@ -42,7 +42,7 @@ module Api
         end
       end
 
-      # DELETE /crew/gw_participations/:participation_id/individual_scores/:id
+      # DELETE /crew/gw_participations/:gw_participation_id/individual_scores/:id
       def destroy
         unless can_record_score_for?(@score.crew_membership_id)
           raise Api::V1::UnauthorizedError
@@ -52,9 +52,9 @@ module Api
         head :no_content
       end
 
-      # POST /crew/gw_participations/:participation_id/individual_scores/batch
+      # POST /crew/gw_participations/:gw_participation_id/individual_scores/batch
       def batch
-        authorize_crew_officer!
+        return render_unauthorized_response unless current_user.crew_officer?
 
         scores_params = params.require(:scores)
         results = []
@@ -94,7 +94,7 @@ module Api
       end
 
       def set_participation
-        @participation = @crew.crew_gw_participations.find(params[:participation_id])
+        @participation = @crew.crew_gw_participations.find(params[:gw_participation_id])
       end
 
       def set_score
