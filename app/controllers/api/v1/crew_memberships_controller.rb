@@ -9,13 +9,10 @@ module Api
       before_action :set_crew
       before_action :set_membership, only: %i[update destroy promote demote]
       before_action :authorize_crew_officer!, only: %i[destroy]
-      before_action :authorize_crew_captain!, only: %i[promote demote]
+      before_action :authorize_crew_captain!, only: %i[update promote demote]
 
       # PUT /crews/:crew_id/memberships/:id
       def update
-        # Only captain can update roles
-        authorize_crew_captain!
-
         if @membership.update(membership_params)
           render json: CrewMembershipBlueprint.render(@membership, view: :with_user, root: :membership)
         else
