@@ -39,6 +39,15 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  # -----------------------------------------------------------------------------
+  # Use transactional fixtures:
+  #
+  # Wrap each example in a database transaction that is rolled back after the
+  # example completes. This ensures test isolation without needing to truncate
+  # or delete data between tests.
+  # -----------------------------------------------------------------------------
+  config.use_transactional_fixtures = true
+
   # Disable ActiveRecord logging during tests for a cleaner test output.
   ActiveRecord::Base.logger = nil if Rails.env.test?
 

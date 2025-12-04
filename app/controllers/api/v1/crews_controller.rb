@@ -7,6 +7,7 @@ module Api
 
       before_action :restrict_access
       before_action :set_crew, only: %i[show update members leave transfer_captain]
+      before_action :require_crew!, only: %i[show update members]
       before_action :authorize_crew_member!, only: %i[show members]
       before_action :authorize_crew_officer!, only: %i[update]
       before_action :authorize_crew_captain!, only: %i[transfer_captain]
@@ -18,7 +19,7 @@ module Api
 
       # POST /crews
       def create
-        raise AlreadyInCrewError if current_user.crew.present?
+        raise CrewErrors::AlreadyInCrewError if current_user.crew.present?
 
         @crew = Crew.new(crew_params)
 
@@ -47,10 +48,9 @@ module Api
 
       # POST /crew/leave
       def leave
-        raise NotInCrewError unless @crew
-
         membership = current_user.active_crew_membership
-        raise CaptainCannotLeaveError if membership.captain?
+        raise CrewErrors::NotInCrewError unless membership
+        raise CrewErrors::CaptainCannotLeaveError if membership.captain?
 
         membership.retire!
         head :no_content
@@ -61,7 +61,7 @@ module Api
         new_captain_id = params[:user_id]
         new_captain_membership = @crew.active_memberships.find_by(user_id: new_captain_id)
 
-        raise MemberNotFoundError unless new_captain_membership
+        raise CrewErrors::MemberNotFoundError unless new_captain_membership
 
         ActiveRecord::Base.transaction do
           current_user.active_crew_membership.update!(role: :vice_captain)
@@ -83,6 +83,10 @@ module Api
 
       def crew_params
         params.require(:crew).permit(:name, :gamertag, :granblue_crew_id, :description)
+      end
+
+      def require_crew!
+        render_not_found_response('crew') unless @crew
       end
     end
   end

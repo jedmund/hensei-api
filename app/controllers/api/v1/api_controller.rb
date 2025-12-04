@@ -31,7 +31,16 @@ module Api
         render json: e.to_hash, status: e.http_status
       end
 
+      # Crew errors
+      rescue_from CrewErrors::CrewError do |e|
+        render json: e.to_hash, status: e.http_status
+      end
+
       rescue_from GranblueError do |e|
+        render_error(e)
+      end
+
+      rescue_from Api::V1::GranblueError do |e|
         render_error(e)
       end
 

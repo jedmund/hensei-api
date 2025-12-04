@@ -25,7 +25,7 @@ module Api
 
       # DELETE /crews/:crew_id/memberships/:id
       def destroy
-        raise CannotRemoveCaptainError if @membership.captain?
+        raise CrewErrors::CannotRemoveCaptainError if @membership.captain?
 
         @membership.retire!
         head :no_content
@@ -33,11 +33,11 @@ module Api
 
       # POST /crews/:crew_id/memberships/:id/promote
       def promote
-        raise CannotRemoveCaptainError if @membership.captain?
+        raise CrewErrors::CannotRemoveCaptainError if @membership.captain?
 
         # Check vice captain limit
         current_vc_count = @crew.crew_memberships.where(role: :vice_captain, retired: false).count
-        raise ViceCaptainLimitError if current_vc_count >= 3 && !@membership.vice_captain?
+        raise CrewErrors::ViceCaptainLimitError if current_vc_count >= 3 && !@membership.vice_captain?
 
         @membership.update!(role: :vice_captain)
         render json: CrewMembershipBlueprint.render(@membership, view: :with_user, root: :membership)
@@ -45,7 +45,7 @@ module Api
 
       # POST /crews/:crew_id/memberships/:id/demote
       def demote
-        raise CannotRemoveCaptainError if @membership.captain?
+        raise CrewErrors::CannotDemoteCaptainError if @membership.captain?
 
         @membership.update!(role: :member)
         render json: CrewMembershipBlueprint.render(@membership, view: :with_user, root: :membership)

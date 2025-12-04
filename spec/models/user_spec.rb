@@ -8,6 +8,9 @@ RSpec.describe User, type: :model do
     it { should have_many(:collection_weapons).dependent(:destroy) }
     it { should have_many(:collection_summons).dependent(:destroy) }
     it { should have_many(:collection_job_accessories).dependent(:destroy) }
+    it { should have_many(:crew_memberships).dependent(:destroy) }
+    it { should have_one(:active_crew_membership) }
+    it { should have_one(:crew).through(:active_crew_membership) }
   end
 
   describe 'validations' do
@@ -72,8 +75,20 @@ RSpec.describe User, type: :model do
     end
 
     context 'when collection privacy is crew_only' do
-      it 'returns false for non-owner (crews not yet implemented)' do
+      let(:crew) { create(:crew) }
+
+      it 'returns true for crew members' do
+        create(:crew_membership, :captain, crew: crew, user: owner)
+        create(:crew_membership, crew: crew, user: viewer)
         owner.update(collection_privacy: :crew_only)
+
+        expect(owner.collection_viewable_by?(viewer)).to be true
+      end
+
+      it 'returns false for non-crew members' do
+        create(:crew_membership, :captain, crew: crew, user: owner)
+        owner.update(collection_privacy: :crew_only)
+
         expect(owner.collection_viewable_by?(viewer)).to be false
       end
 
@@ -87,13 +102,111 @@ RSpec.describe User, type: :model do
   describe '#in_same_crew_as?' do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
+    let(:crew) { create(:crew) }
 
-    it 'returns false (placeholder until crews are implemented)' do
+    it 'returns false when neither user is in a crew' do
       expect(user1.in_same_crew_as?(user2)).to be false
     end
 
-    it 'returns false when other_user is present' do
+    it 'returns false when only one user is in a crew' do
+      create(:crew_membership, :captain, crew: crew, user: user1)
       expect(user1.in_same_crew_as?(user2)).to be false
+    end
+
+    it 'returns true when both users are in the same crew' do
+      create(:crew_membership, :captain, crew: crew, user: user1)
+      create(:crew_membership, crew: crew, user: user2)
+      expect(user1.in_same_crew_as?(user2)).to be true
+    end
+
+    it 'returns false when users are in different crews' do
+      crew2 = create(:crew)
+      create(:crew_membership, :captain, crew: crew, user: user1)
+      create(:crew_membership, :captain, crew: crew2, user: user2)
+      expect(user1.in_same_crew_as?(user2)).to be false
+    end
+
+    it 'returns false when other_user is nil' do
+      create(:crew_membership, :captain, crew: crew, user: user1)
+      expect(user1.in_same_crew_as?(nil)).to be false
+    end
+  end
+
+  describe '#crew_role' do
+    let(:user) { create(:user) }
+    let(:crew) { create(:crew) }
+
+    it 'returns nil when user is not in a crew' do
+      expect(user.crew_role).to be_nil
+    end
+
+    it 'returns captain when user is captain' do
+      create(:crew_membership, :captain, crew: crew, user: user)
+      expect(user.crew_role).to eq('captain')
+    end
+
+    it 'returns vice_captain when user is vice captain' do
+      create(:crew_membership, :captain, crew: crew)
+      create(:crew_membership, :vice_captain, crew: crew, user: user)
+      expect(user.crew_role).to eq('vice_captain')
+    end
+
+    it 'returns member when user is regular member' do
+      create(:crew_membership, :captain, crew: crew)
+      create(:crew_membership, crew: crew, user: user)
+      expect(user.crew_role).to eq('member')
+    end
+  end
+
+  describe '#crew_officer?' do
+    let(:user) { create(:user) }
+    let(:crew) { create(:crew) }
+
+    it 'returns false when user is not in a crew' do
+      expect(user.crew_officer?).to be false
+    end
+
+    it 'returns true for captain' do
+      create(:crew_membership, :captain, crew: crew, user: user)
+      expect(user.crew_officer?).to be true
+    end
+
+    it 'returns true for vice captain' do
+      create(:crew_membership, :captain, crew: crew)
+      create(:crew_membership, :vice_captain, crew: crew, user: user)
+      expect(user.crew_officer?).to be true
+    end
+
+    it 'returns false for regular member' do
+      create(:crew_membership, :captain, crew: crew)
+      create(:crew_membership, crew: crew, user: user)
+      expect(user.crew_officer?).to be false
+    end
+  end
+
+  describe '#crew_captain?' do
+    let(:user) { create(:user) }
+    let(:crew) { create(:crew) }
+
+    it 'returns false when user is not in a crew' do
+      expect(user.crew_captain?).to be false
+    end
+
+    it 'returns true for captain' do
+      create(:crew_membership, :captain, crew: crew, user: user)
+      expect(user.crew_captain?).to be true
+    end
+
+    it 'returns false for vice captain' do
+      create(:crew_membership, :captain, crew: crew)
+      create(:crew_membership, :vice_captain, crew: crew, user: user)
+      expect(user.crew_captain?).to be false
+    end
+
+    it 'returns false for regular member' do
+      create(:crew_membership, :captain, crew: crew)
+      create(:crew_membership, crew: crew, user: user)
+      expect(user.crew_captain?).to be false
     end
   end
 
