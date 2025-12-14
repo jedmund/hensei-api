@@ -101,6 +101,8 @@ Rails.application.routes.draw do
     get 'weapon_keys', to: 'weapon_keys#all'
 
     resources :weapon_series, only: %i[index show create update destroy]
+    resources :character_series, only: %i[index show create update destroy]
+    resources :summon_series, only: %i[index show create update destroy]
 
     # Artifacts (read-only reference data)
     resources :artifacts, only: %i[index show] do
