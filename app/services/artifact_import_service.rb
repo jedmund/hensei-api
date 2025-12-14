@@ -115,7 +115,13 @@ class ArtifactImportService
   # @return [Result] Import result with counts and errors
   def import
     items = extract_items
-    return Result.new(success?: false, errors: ['No artifact items found in data']) if items.empty?
+    if items.empty?
+      return Result.new(success?: false, created: [], updated: [], skipped: [], errors: ['No artifact items found in data'])
+    end
+
+    # Preload artifacts and existing collection artifacts to avoid N+1 queries
+    preload_artifacts(items)
+    preload_existing_collection_artifacts(items)
 
     ActiveRecord::Base.transaction do
       items.each_with_index do |item, index|
@@ -143,30 +149,45 @@ class ArtifactImportService
     []
   end
 
+  def preload_artifacts(items)
+    artifact_ids = items.map { |item| (item['artifact_id'] || item[:artifact_id]).to_s }.uniq
+    artifacts = Artifact.where(granblue_id: artifact_ids).index_by(&:granblue_id)
+    @artifacts_cache = artifacts
+  end
+
+  def preload_existing_collection_artifacts(items)
+    game_ids = items.map { |item| (item['id'] || item[:id]).to_s }.uniq
+    existing = @user.collection_artifacts.where(game_id: game_ids).index_by(&:game_id)
+    @existing_cache = existing
+  end
+
   def import_item(item, _index)
-    artifact = find_artifact(item['artifact_id'])
+    # Handle both string and symbol keys from params
+    data = item.is_a?(Hash) ? item.with_indifferent_access : item
+
+    artifact = find_artifact(data['artifact_id'])
     unless artifact
-      @errors << { game_id: item['id'], artifact_id: item['artifact_id'], error: 'Artifact not found' }
+      @errors << { game_id: data['id'], artifact_id: data['artifact_id'], error: 'Artifact not found' }
       return
     end
 
     # Check for existing collection artifact with same game ID
-    existing = @user.collection_artifacts.find_by(game_id: item['id'].to_s)
+    existing = @existing_cache[data['id'].to_s]
 
     if existing
       if @update_existing
-        update_existing_artifact(existing, item, artifact)
+        update_existing_artifact(existing, data, artifact)
       else
-        @skipped << { game_id: item['id'], reason: 'Already exists' }
+        @skipped << { game_id: data['id'], reason: 'Already exists' }
       end
       return
     end
 
-    create_collection_artifact(item, artifact)
+    create_collection_artifact(data, artifact)
   end
 
   def find_artifact(artifact_id)
-    Artifact.find_by(granblue_id: artifact_id.to_s)
+    @artifacts_cache[artifact_id.to_s]
   end
 
   def create_collection_artifact(item, artifact)
@@ -200,16 +221,19 @@ class ArtifactImportService
   end
 
   def build_collection_artifact_attrs(item, artifact)
+    # Handle both string and symbol keys from params
+    data = item.is_a?(Hash) ? item.with_indifferent_access : item
+
     {
       artifact: artifact,
-      game_id: item['id'].to_s,
-      element: map_element(item['attribute']),
-      proficiency: artifact.quirk? ? map_proficiency(item['kind']) : nil,
-      level: item['level'].to_i,
-      skill1: parse_skill(item['skill1_info']),
-      skill2: parse_skill(item['skill2_info']),
-      skill3: parse_skill(item['skill3_info']),
-      skill4: parse_skill(item['skill4_info'])
+      game_id: data['id'].to_s,
+      element: map_element(data['attribute']),
+      proficiency: artifact.quirk? ? map_proficiency(data['kind']) : nil,
+      level: data['level'].to_i,
+      skill1: parse_skill(data['skill1_info']),
+      skill2: parse_skill(data['skill2_info']),
+      skill3: parse_skill(data['skill3_info']),
+      skill4: parse_skill(data['skill4_info'])
     }
   end
 
@@ -225,9 +249,12 @@ class ArtifactImportService
   def parse_skill(skill_info)
     return {} if skill_info.blank?
 
-    skill_id = skill_info['skill_id']
-    quality = skill_info['skill_quality'] || skill_info['level']
-    level = skill_info['level'] || 1
+    # Handle both string and symbol keys from params
+    info = skill_info.is_a?(Hash) ? skill_info.with_indifferent_access : skill_info
+
+    skill_id = info['skill_id']
+    quality = info['skill_quality'] || info['level']
+    level = info['level'] || 1
 
     group, modifier = decode_skill_id(skill_id)
     return {} unless group && modifier
@@ -266,7 +293,7 @@ class ArtifactImportService
     return nil unless skill
 
     base_values = skill.base_values
-    return nil if base_values.blank?
+    return nil if base_values.nil? || !base_values.is_a?(Array) || base_values.empty?
 
     # Quality 1-5 maps to index 0-4
     index = (quality - 1).clamp(0, base_values.size - 1)
