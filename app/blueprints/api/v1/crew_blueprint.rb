@@ -24,6 +24,14 @@ module Api
         field :vice_captains do |crew|
           UserBlueprint.render_as_hash(crew.vice_captains, view: :minimal)
         end
+
+        field :current_membership do |crew, options|
+          current_user = options[:current_user]
+          next nil unless current_user
+
+          membership = crew.crew_memberships.find_by(user_id: current_user.id, retired: false)
+          CrewMembershipBlueprint.render_as_hash(membership) if membership
+        end
       end
 
       view :with_members do

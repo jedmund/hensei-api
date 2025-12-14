@@ -14,7 +14,7 @@ module Api
 
       # GET /crew or GET /crews/:id
       def show
-        render json: CrewBlueprint.render(@crew, view: :full, root: :crew)
+        render json: CrewBlueprint.render(@crew, view: :full, root: :crew, current_user: current_user)
       end
 
       # POST /crews
@@ -28,13 +28,13 @@ module Api
           CrewMembership.create!(crew: @crew, user: current_user, role: :captain)
         end
 
-        render json: CrewBlueprint.render(@crew, view: :full, root: :crew), status: :created
+        render json: CrewBlueprint.render(@crew.reload, view: :full, root: :crew, current_user: current_user), status: :created
       end
 
       # PUT /crew
       def update
         if @crew.update(crew_params)
-          render json: CrewBlueprint.render(@crew, view: :full, root: :crew)
+          render json: CrewBlueprint.render(@crew, view: :full, root: :crew, current_user: current_user)
         else
           render_validation_error_response(@crew)
         end
@@ -92,7 +92,7 @@ module Api
           new_captain_membership.update!(role: :captain)
         end
 
-        render json: CrewBlueprint.render(@crew.reload, view: :full, root: :crew)
+        render json: CrewBlueprint.render(@crew.reload, view: :full, root: :crew, current_user: current_user)
       end
 
       private
