@@ -137,8 +137,8 @@ class ArtifactImportService
   private
 
   def extract_items
-    return @game_data['list'] if @game_data['list'].is_a?(Array)
     return @game_data if @game_data.is_a?(Array)
+    return @game_data['list'] if @game_data.is_a?(Hash) && @game_data['list'].is_a?(Array)
 
     []
   end
