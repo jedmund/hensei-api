@@ -12,10 +12,29 @@ module Api
 
       fields :granblue_id, :character_id, :rarity,
              :element, :gender, :special, :season,
-             :series, :gacha_available
+             :gacha_available
 
       field :season_name do |c|
         c.season_name
+      end
+
+      field :series do |c|
+        # Use new lookup table if available
+        if c.character_series_records.any?
+          c.character_series_records.ordered.map do |cs|
+            {
+              id: cs.id,
+              slug: cs.slug,
+              name: {
+                en: cs.name_en,
+                ja: cs.name_jp
+              }
+            }
+          end
+        else
+          # Legacy fallback - return integer array
+          c.series
+        end
       end
 
       field :series_names do |c|
