@@ -11,8 +11,11 @@ module Api
             element: user.element
           }
         end
-        field :gamertag, if: ->(_, user, _) { user.show_gamertag && user.crew&.gamertag.present? } do |user|
-          user.crew.gamertag
+        # Use preloaded active_crew_membership to avoid N+1
+        field :gamertag, if: ->(_, user, _) {
+          user.show_gamertag && user.active_crew_membership&.crew&.gamertag.present?
+        } do |user|
+          user.active_crew_membership.crew.gamertag
         end
       end
 

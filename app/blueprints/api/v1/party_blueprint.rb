@@ -28,7 +28,12 @@ module Api
 
       # Metadata associations
       field :favorited do |party, options|
-        party.favorited?(options[:current_user])
+        # Use preloaded favorite_party_ids if available, otherwise fall back to query
+        if options[:favorite_party_ids]
+          options[:favorite_party_ids].include?(party.id)
+        else
+          party.favorited?(options[:current_user])
+        end
       end
 
       # For collection views
