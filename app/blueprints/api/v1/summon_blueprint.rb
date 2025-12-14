@@ -16,6 +16,19 @@ module Api
         s.promotion_names
       end
 
+      field :series do |s|
+        if s.summon_series.present?
+          {
+            id: s.summon_series_id,
+            slug: s.summon_series.slug,
+            name: {
+              en: s.summon_series.name_en,
+              ja: s.summon_series.name_jp
+            }
+          }
+        end
+      end
+
       field :uncap do |s|
         {
           flb: s.flb,

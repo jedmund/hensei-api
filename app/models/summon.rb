@@ -3,6 +3,8 @@
 class Summon < ApplicationRecord
   include PgSearch::Model
 
+  belongs_to :summon_series, optional: true
+
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |summon|
                     {
@@ -64,5 +66,19 @@ class Summon < ApplicationRecord
 
   def promotion_names
     promotions.filter_map { |p| GranblueEnums::PROMOTIONS.key(p)&.to_s }
+  end
+
+  def series_slug
+    summon_series&.slug
+  end
+
+  # Virtual attribute to set summon_series by ID or slug
+  # Supports both UUID and slug lookup for flexibility
+  def series=(value)
+    return self.summon_series = nil if value.blank?
+
+    # Try to find by ID first, then by slug
+    found = SummonSeries.find_by(id: value) || SummonSeries.find_by(slug: value)
+    self.summon_series = found
   end
 end
