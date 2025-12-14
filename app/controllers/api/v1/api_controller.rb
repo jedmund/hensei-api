@@ -44,6 +44,13 @@ module Api
         render_error(e)
       end
 
+      # Catch-all for unhandled exceptions - log details and return 500
+      rescue_from StandardError do |e|
+        Rails.logger.error "[500 Error] #{e.class}: #{e.message}"
+        Rails.logger.error e.backtrace&.first(20)&.join("\n")
+        render json: { error: 'Internal Server Error', message: e.message }, status: :internal_server_error
+      end
+
       ##### Hooks
       before_action :current_user
       before_action :default_content_type
