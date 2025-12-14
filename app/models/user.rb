@@ -53,11 +53,11 @@ class User < ApplicationRecord
   has_secure_password
 
   ##### Enums
-  # Enum for collection privacy levels
+  # Enum for collection privacy levels (1-based to avoid JavaScript falsy 0 issues)
   enum :collection_privacy, {
-    everyone: 0,
-    crew_only: 1,
-    private_collection: 2
+    everyone: 1,
+    crew_only: 2,
+    private_collection: 3
   }, prefix: true
 
   ##### Instance Methods
