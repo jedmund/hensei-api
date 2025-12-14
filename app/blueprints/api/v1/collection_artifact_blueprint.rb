@@ -5,10 +5,17 @@ module Api
     class CollectionArtifactBlueprint < ApiBlueprint
       identifier :id
 
-      fields :element, :level, :nickname, :reroll_slot, :created_at, :updated_at
+      fields :level, :nickname, :reroll_slot, :created_at, :updated_at
 
-      # Proficiency is only present on quirk artifacts
-      field :proficiency, if: ->(_field, obj, _options) { obj.proficiency.present? }
+      # Return element as integer
+      field :element do |obj|
+        obj.element_before_type_cast
+      end
+
+      # Proficiency is only present on quirk artifacts, return as integer
+      field :proficiency, if: ->(_field, obj, _options) { obj.proficiency.present? } do |obj|
+        obj.proficiency_before_type_cast
+      end
 
       field :skills do |obj|
         [obj.skill1, obj.skill2, obj.skill3, obj.skill4].map do |skill|
