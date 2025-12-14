@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_14_104721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -55,6 +55,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
     t.string "slug", null: false
     t.string "object_type", null: false
     t.integer "order", default: 0, null: false
+  end
+
+  create_table "character_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "slug", null: false
+    t.integer "order", default: 0, null: false
+    t.index ["order"], name: "index_character_series_on_order"
+    t.index ["slug"], name: "index_character_series_on_slug", unique: true
+  end
+
+  create_table "character_series_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "character_id", null: false
+    t.uuid "character_series_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "character_series_id"], name: "idx_char_series_membership_unique", unique: true
+    t.index ["character_id"], name: "index_character_series_memberships_on_character_id"
+    t.index ["character_series_id"], name: "index_character_series_memberships_on_character_series_id"
   end
 
   create_table "character_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -783,6 +802,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
     t.index ["summon_granblue_id"], name: "index_summon_calls_on_summon_granblue_id"
   end
 
+  create_table "summon_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp", null: false
+    t.string "slug", null: false
+    t.integer "order", default: 0, null: false
+    t.index ["order"], name: "index_summon_series_on_order"
+    t.index ["slug"], name: "index_summon_series_on_slug", unique: true
+  end
+
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
@@ -821,9 +849,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
     t.jsonb "game_raw_en", comment: "JSON data from game (English)"
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
+    t.uuid "summon_series_id"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_summons_on_promotions", using: :gin
+    t.index ["summon_series_id"], name: "index_summons_on_summon_series_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -952,6 +982,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
     t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
   end
 
+  add_foreign_key "character_series_memberships", "character_series"
+  add_foreign_key "character_series_memberships", "characters"
   add_foreign_key "character_skills", "skills"
   add_foreign_key "character_skills", "skills", column: "alt_skill_id"
   add_foreign_key "charge_attacks", "skills"
@@ -1025,6 +1057,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
   add_foreign_key "skill_values", "skills"
   add_foreign_key "summon_calls", "skills"
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
+  add_foreign_key "summons", "summon_series"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"
