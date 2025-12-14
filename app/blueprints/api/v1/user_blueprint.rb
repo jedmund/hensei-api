@@ -4,7 +4,7 @@ module Api
   module V1
     class UserBlueprint < ApiBlueprint
       view :minimal do
-        fields :username, :language, :private, :gender, :theme, :role
+        fields :username, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag
         field :avatar do |user|
           {
             picture: user.picture,
