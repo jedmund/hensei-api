@@ -5,8 +5,9 @@ module Api
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
-      before_action :set, except: %w[create check_email check_username]
+      before_action :set, except: %w[create check_email check_username me]
       before_action :set_by_id, only: %w[update]
+      before_action :doorkeeper_authorize!, only: %w[me]
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
@@ -49,6 +50,12 @@ module Api
 
       def info
         render json: UserBlueprint.render(@user, view: :minimal)
+      end
+
+      # GET /users/me - returns current user's settings including email
+      # This endpoint is ONLY for authenticated users viewing their own settings
+      def me
+        render json: UserBlueprint.render(current_user, view: :settings)
       end
 
       def show
@@ -237,7 +244,8 @@ module Api
       def user_params
         params.require(:user).permit(
           :username, :email, :password, :password_confirmation,
-          :granblue_id, :picture, :element, :language, :gender, :private, :theme, :show_gamertag
+          :granblue_id, :picture, :element, :language, :gender, :private, :theme, :show_gamertag,
+          :show_granblue_id, :collection_privacy
         )
       end
     end

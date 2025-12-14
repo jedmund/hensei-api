@@ -4,7 +4,11 @@ module Api
   module V1
     class UserBlueprint < ApiBlueprint
       view :minimal do
-        fields :username, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag
+        fields :username, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :show_granblue_id
+        # Return collection_privacy as integer (enum returns string by default)
+        field :collection_privacy do |user|
+          User.collection_privacies[user.collection_privacy]
+        end
         field :avatar do |user|
           {
             picture: user.picture,
@@ -31,8 +35,10 @@ module Api
         fields :username, :token
       end
 
+      # Settings view includes all user data + email (only for authenticated user viewing own settings)
       view :settings do
-        fields :email, :show_gamertag
+        include_view :minimal
+        fields :email
       end
     end
   end
