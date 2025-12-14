@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_102935) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_14_091117) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -840,8 +840,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_102935) do
     t.integer "gender", default: 0, null: false
     t.string "theme", default: "system", null: false
     t.integer "role", default: 1, null: false
-    t.integer "collection_privacy", default: 0, null: false
+    t.integer "collection_privacy", default: 1, null: false
     t.boolean "show_gamertag", default: true, null: false
+    t.boolean "show_granblue_id", default: false, null: false
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
 
