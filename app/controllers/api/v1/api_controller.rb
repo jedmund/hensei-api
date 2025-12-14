@@ -13,6 +13,14 @@ module Api
       MIN_PER_PAGE = 1
 
       ##### Errors
+      # Catch-all for unhandled exceptions - log details and return 500
+      # NOTE: Must be defined FIRST so it's checked LAST (Rails matches bottom-to-top)
+      rescue_from StandardError do |e|
+        Rails.logger.error "[500 Error] #{e.class}: #{e.message}"
+        Rails.logger.error e.backtrace&.first(20)&.join("\n")
+        render json: { error: 'Internal Server Error', message: e.message }, status: :internal_server_error
+      end
+
       rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotDestroyed, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response_without_object
@@ -42,13 +50,6 @@ module Api
 
       rescue_from Api::V1::GranblueError do |e|
         render_error(e)
-      end
-
-      # Catch-all for unhandled exceptions - log details and return 500
-      rescue_from StandardError do |e|
-        Rails.logger.error "[500 Error] #{e.class}: #{e.message}"
-        Rails.logger.error e.backtrace&.first(20)&.join("\n")
-        render json: { error: 'Internal Server Error', message: e.message }, status: :internal_server_error
       end
 
       ##### Hooks
