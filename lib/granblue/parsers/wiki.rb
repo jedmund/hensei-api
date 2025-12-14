@@ -139,7 +139,9 @@ module Granblue
         destination = "#{base_uri}?#{query_params}"
         ap "--> Fetching #{destination}" if @debug
 
-        response = HTTParty.get(destination)
+        response = HTTParty.get(destination, headers: {
+          'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'
+        })
 
         handle_response(response, page)
       end
@@ -156,8 +158,12 @@ module Granblue
           end
 
           response['parse']['wikitext']['*']
-        when 404 then puts "Page #{page} not found"
-        when 500...600 then puts "Server error: #{response.code}"
+        when 404
+          raise WikiError.new(code: 404, message: 'Page not found', page: page)
+        when 500...600
+          raise WikiError.new(code: response.code, message: 'Server error', page: page)
+        else
+          raise WikiError.new(code: response.code, message: 'Unexpected response', page: page)
         end
       end
 
