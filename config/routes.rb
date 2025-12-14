@@ -182,6 +182,9 @@ Rails.application.routes.draw do
       resources :invitations, controller: 'crew_invitations', only: %i[index create]
 
       resources :phantom_players, only: %i[index show create update destroy] do
+        collection do
+          post :bulk_create
+        end
         member do
           post :assign
           post :confirm_claim

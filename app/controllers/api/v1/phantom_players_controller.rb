@@ -8,7 +8,7 @@ module Api
       before_action :restrict_access
       before_action :set_crew
       before_action :authorize_crew_member!, only: %i[index confirm_claim]
-      before_action :authorize_crew_officer!, only: %i[create update destroy assign]
+      before_action :authorize_crew_officer!, only: %i[create bulk_create update destroy assign]
       before_action :set_phantom, only: %i[show update destroy assign confirm_claim]
 
       # GET /crews/:crew_id/phantom_players
@@ -31,6 +31,23 @@ module Api
         else
           render_validation_error_response(phantom)
         end
+      end
+
+      # POST /crews/:crew_id/phantom_players/bulk_create
+      def bulk_create
+        phantoms = []
+
+        ActiveRecord::Base.transaction do
+          bulk_params[:phantom_players].each do |phantom_attrs|
+            phantom = @crew.phantom_players.build(phantom_attrs.permit(:name, :granblue_id, :notes, :joined_at))
+            phantom.save!
+            phantoms << phantom
+          end
+        end
+
+        render json: PhantomPlayerBlueprint.render(phantoms, root: :phantom_players), status: :created
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
       end
 
       # PUT /crews/:crew_id/phantom_players/:id
@@ -73,6 +90,10 @@ module Api
 
       def phantom_params
         params.require(:phantom_player).permit(:name, :granblue_id, :notes, :joined_at)
+      end
+
+      def bulk_params
+        params.permit(phantom_players: %i[name granblue_id notes joined_at])
       end
     end
   end
