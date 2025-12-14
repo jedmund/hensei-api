@@ -154,6 +154,7 @@ module Api
       # Fetches wiki data and suggestions for multiple wiki page names
       def batch_preview
         wiki_pages = params[:wiki_pages]
+        wiki_data = params[:wiki_data] || {}
 
         unless wiki_pages.is_a?(Array) && wiki_pages.any?
           return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_entity
@@ -163,7 +164,7 @@ module Api
         wiki_pages = wiki_pages.first(10)
 
         results = wiki_pages.map do |wiki_page|
-          process_wiki_preview(wiki_page, :summon)
+          process_wiki_preview(wiki_page, :summon, wiki_raw: wiki_data[wiki_page])
         end
 
         render json: { results: results }

@@ -9,25 +9,32 @@ module BatchPreviewable
   # Process a single wiki page and return preview data
   # @param wiki_page [String] The wiki page name to fetch
   # @param entity_type [Symbol] The type of entity (:character, :weapon, :summon)
+  # @param wiki_raw [String, nil] Pre-fetched wiki text (from client-side fetch)
   # @return [Hash] Preview data including status, suggestions, and errors
-  def process_wiki_preview(wiki_page, entity_type)
+  def process_wiki_preview(wiki_page, entity_type, wiki_raw: nil)
     result = {
       wiki_page: wiki_page,
       status: 'success'
     }
 
     begin
-      # Fetch wiki content
-      wiki = Granblue::Parsers::Wiki.new
-      wiki_text = wiki.fetch(wiki_page)
+      # Use provided wiki_raw or fetch from wiki
+      wiki_text = if wiki_raw.present?
+                    wiki_raw
+                  else
+                    wiki = Granblue::Parsers::Wiki.new
+                    wiki.fetch(wiki_page)
+                  end
 
-      # Handle redirects
-      redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-      if redirect_match
-        redirect_target = redirect_match[1]
-        result[:redirected_from] = wiki_page
-        result[:wiki_page] = redirect_target
-        wiki_text = wiki.fetch(redirect_target)
+      # Handle redirects (only if we fetched server-side)
+      if wiki_raw.blank?
+        redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
+        if redirect_match
+          redirect_target = redirect_match[1]
+          result[:redirected_from] = wiki_page
+          result[:wiki_page] = redirect_target
+          wiki_text = wiki.fetch(redirect_target)
+        end
       end
 
       result[:wiki_raw] = wiki_text
