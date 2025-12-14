@@ -13,7 +13,7 @@ class CollectionWeapon < ApplicationRecord
 
   validates :uncap_level, inclusion: { in: 0..5 }
   validates :transcendence_step, inclusion: { in: 0..10 }
-  validates :awakening_level, inclusion: { in: 1..10 }
+  validates :awakening_level, inclusion: { in: 1..20 }
 
   validate :validate_weapon_keys
   validate :validate_ax_skills
