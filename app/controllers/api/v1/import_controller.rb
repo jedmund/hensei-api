@@ -27,6 +27,94 @@ module Api
         6 => 5
       }.freeze
 
+      # GBF series_id to CharacterSeries slug mapping
+      GBF_SERIES_TO_SLUG = {
+        1 => 'summer',
+        2 => 'yukata',
+        3 => 'valentine',
+        4 => 'halloween',
+        5 => 'holiday',
+        6 => 'zodiac',
+        7 => 'grand',
+        8 => 'fantasy',
+        9 => 'collab',
+        10 => 'eternal',
+        11 => 'evoker',
+        12 => 'saint',
+        13 => 'formal'
+      }.freeze
+
+      # GBF series_id to WeaponSeries slug mapping
+      GBF_WEAPON_SERIES_TO_SLUG = {
+        1 => 'seraphic',
+        2 => 'grand',
+        3 => 'dark-opus',
+        4 => 'revenant',
+        5 => 'primal',
+        6 => 'beast',
+        7 => 'regalia',
+        8 => 'omega',
+        9 => 'olden-primal',
+        10 => 'hollowsky',
+        11 => 'xeno',
+        12 => 'rose',
+        13 => 'ultima',
+        14 => 'bahamut',
+        15 => 'epic',
+        16 => 'cosmos',
+        17 => 'superlative',
+        18 => 'vintage',
+        19 => 'class-champion',
+        20 => 'replica',
+        21 => 'relic',
+        22 => 'rusted',
+        23 => 'sephira',
+        24 => 'vyrmament',
+        25 => 'upgrader',
+        26 => 'astral',
+        27 => 'draconic',
+        28 => 'eternal-splendor',
+        29 => 'ancestral',
+        30 => 'new-world-foundation',
+        31 => 'ennead',
+        32 => 'militis',
+        33 => 'malice',
+        34 => 'menace',
+        35 => 'illustrious',
+        36 => 'proven',
+        37 => 'revans',
+        38 => 'world',
+        39 => 'exo',
+        40 => 'draconic-providence',
+        41 => 'celestial',
+        42 => 'omega-rebirth',
+        43 => 'collab',
+        44 => 'destroyer'
+      }.freeze
+
+      # GBF series_id to SummonSeries slug mapping
+      GBF_SUMMON_SERIES_TO_SLUG = {
+        1 => 'providence',
+        2 => 'genesis',
+        3 => 'magna',
+        4 => 'optimus',
+        5 => 'demi-optimus',
+        6 => 'archangel',
+        7 => 'arcarum',
+        8 => 'epic',
+        9 => 'carbuncle',
+        10 => 'dynamis',
+        12 => 'cryptid',
+        13 => 'six-dragons',
+        14 => 'summer',
+        15 => 'yukata',
+        16 => 'holiday',
+        17 => 'collab',
+        18 => 'bellum',
+        19 => 'crest',
+        20 => 'robur'
+      }.freeze
+
       before_action :ensure_admin_role, only: %i[weapons summons characters]
 
       ##
@@ -92,6 +180,20 @@ module Api
           weapon.update!(
             "game_raw_#{lang}" => body.to_json
           )
+
+          # Parse series_id and assign WeaponSeries
+          series_id = body['series_id'] || body.dig('master', 'series_id')
+          if series_id
+            slug = GBF_WEAPON_SERIES_TO_SLUG[series_id.to_i]
+            if slug
+              series_record = WeaponSeries.find_by(slug: slug)
+              if series_record && weapon.weapon_series != series_record
+                weapon.update!(weapon_series: series_record)
+                Rails.logger.info "[IMPORT] Set series '#{slug}' for weapon #{weapon.granblue_id}"
+              end
+            end
+          end
+
           render json: { message: 'Weapon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
           Rails.logger.error "[IMPORT] Failed to update weapon gamedata: #{e.message}"
@@ -121,6 +223,20 @@ module Api
           summon.update!(
             "game_raw_#{lang}" => body.to_json
           )
+
+          # Parse series_id and assign SummonSeries
+          series_id = body['series_id'] || body.dig('master', 'series_id')
+          if series_id
+            slug = GBF_SUMMON_SERIES_TO_SLUG[series_id.to_i]
+            if slug
+              series_record = SummonSeries.find_by(slug: slug)
+              if series_record && summon.summon_series != series_record
+                summon.update!(summon_series: series_record)
+                Rails.logger.info "[IMPORT] Set series '#{slug}' for summon #{summon.granblue_id}"
+              end
+            end
+          end
+
           render json: { message: 'Summon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
           Rails.logger.error "[IMPORT] Failed to update summon gamedata: #{e.message}"
@@ -154,6 +270,20 @@ module Api
           character.update!(
             "game_raw_#{lang}" => body.to_json
           )
+
+          # Parse series_id and create CharacterSeriesMembership
+          series_id = body['series_id'] || body.dig('master', 'series_id')
+          if series_id
+            slug = GBF_SERIES_TO_SLUG[series_id.to_i]
+            if slug
+              series_record = CharacterSeries.find_by(slug: slug)
+              if series_record && !character.character_series_records.include?(series_record)
+                character.character_series_memberships.create!(character_series: series_record)
+                Rails.logger.info "[IMPORT] Added series '#{slug}' to character #{character.granblue_id}"
+              end
+            end
+          end
+
           render json: { message: 'Character gamedata updated successfully' }, status: :ok
         rescue StandardError => e
           Rails.logger.error "[IMPORT] Failed to update character gamedata: #{e.message}"
