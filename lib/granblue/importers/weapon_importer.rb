@@ -71,7 +71,7 @@ module Granblue
           rarity: parse_integer(row['rarity']),
           element: parse_integer(row['element']),
           proficiency: parse_integer(row['proficiency']),
-          series: parse_integer(row['series']),
+          series: parse_value(row['series']),
           flb: parse_boolean(row['flb']),
           ulb: parse_boolean(row['ulb']),
           max_level: parse_integer(row['max_level']),
