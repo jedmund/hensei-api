@@ -260,9 +260,9 @@ module Api
       def set_from_slug
         @party = Party.includes(
           :user, :job, { raid: :group },
-          { characters: %i[character awakening] },
+          { characters: [:character, :awakening, :grid_artifact] },
           { weapons: {
-            weapon: [:awakenings],
+            weapon: [:awakenings, :weapon_series],
             awakening: {},
             weapon_key1: {},
             weapon_key2: {},
