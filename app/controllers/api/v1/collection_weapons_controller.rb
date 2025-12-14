@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_weapon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch]
+      before_action :restrict_access, only: %i[create update destroy batch import]
       before_action :set_collection_weapon_for_write, only: %i[update destroy]
 
       def index
@@ -98,6 +98,37 @@ module Api
         ), status: status
       end
 
+      # POST /collection/weapons/import
+      # Imports weapons from game JSON data
+      #
+      # @param data [Hash] Game data containing weapon list
+      # @param update_existing [Boolean] Whether to update existing weapons (default: false)
+      def import
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = WeaponImportService.new(
+          current_user,
+          game_data,
+          update_existing: import_params[:update_existing] == true
+        )
+
+        result = service.import
+
+        status = result.success? ? :created : :multi_status
+
+        render json: {
+          success: result.success?,
+          created: result.created.size,
+          updated: result.updated.size,
+          skipped: result.skipped.size,
+          errors: result.errors
+        }, status: status
+      end
+
       private
 
       def set_target_user
@@ -143,6 +174,10 @@ module Api
           :ax_modifier1, :ax_strength1, :ax_modifier2, :ax_strength2,
           :element
         ])
+      end
+
+      def import_params
+        params.permit(:update_existing, data: {})
       end
     end
   end
