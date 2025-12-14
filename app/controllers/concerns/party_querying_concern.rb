@@ -9,7 +9,7 @@ module PartyQueryingConcern
     Party.includes(
       { raid: :group },
       :job,
-      :user,
+      { user: { active_crew_membership: :crew } },
       :skill0,
       :skill1,
       :skill2,
@@ -18,7 +18,7 @@ module PartyQueryingConcern
       :guidebook2,
       :guidebook3,
       { characters: :character },
-      { weapons: :weapon },
+      { weapons: { weapon: :weapon_series } },
       { summons: :summon }
     )
   end

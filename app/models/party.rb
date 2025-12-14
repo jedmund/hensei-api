@@ -265,7 +265,7 @@ class Party < ApplicationRecord
     return false unless user
 
     Rails.cache.fetch("party_#{id}_favorited_by_#{user.id}", expires_in: 1.hour) do
-      user.favorite_parties.include?(self)
+      Favorite.exists?(user_id: user.id, party_id: id)
     end
   end
 
