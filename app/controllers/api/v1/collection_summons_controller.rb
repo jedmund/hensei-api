@@ -167,7 +167,10 @@ module Api
       end
 
       def import_params
-        params.permit(:update_existing, data: {})
+        {
+          update_existing: params[:update_existing],
+          data: params[:data]&.to_unsafe_h
+        }
       end
     end
   end

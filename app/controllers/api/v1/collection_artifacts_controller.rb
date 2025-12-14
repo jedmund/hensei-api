@@ -120,10 +120,10 @@ module Api
 
         render json: {
           success: result.success?,
-          created: result.created.size,
-          updated: result.updated.size,
-          skipped: result.skipped.size,
-          errors: result.errors
+          created: result.created&.size || 0,
+          updated: result.updated&.size || 0,
+          skipped: result.skipped&.size || 0,
+          errors: result.errors || []
         }, status: status
       end
 
@@ -176,7 +176,10 @@ module Api
       end
 
       def import_params
-        params.permit(:update_existing, data: {})
+        {
+          update_existing: params[:update_existing],
+          data: params[:data]&.to_unsafe_h
+        }
       end
     end
   end
