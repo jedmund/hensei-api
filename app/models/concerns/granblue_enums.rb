@@ -32,14 +32,14 @@ module GranblueEnums
     None: 6
   }.freeze
 
-  # Character seasons - represents gacha availability window (when you can pull)
+  # Character seasons - display disambiguation for seasonal variants (e.g., "Vane [Halloween]")
+  # If no season, value should be nil (not a default value)
   CHARACTER_SEASONS = {
-    Standard: 1,
-    Valentine: 2,
-    Formal: 3,
-    Summer: 4,
-    Halloween: 5,
-    Holiday: 6
+    Valentine: 1,
+    Formal: 2,
+    Summer: 3,
+    Halloween: 4,
+    Holiday: 5
   }.freeze
 
   # Character series - represents character identity/pool membership (can have multiple)
@@ -58,7 +58,8 @@ module GranblueEnums
     Valentine: 12,
     Halloween: 13,
     Formal: 14,
-    Event: 15
+    Holiday: 15,
+    Event: 16
   }.freeze
 
   # Gacha promotions - which pools/banners a weapon or summon appears in

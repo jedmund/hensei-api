@@ -93,18 +93,19 @@ module Granblue
         'valentine' => 12,  # Valentine
         'halloween' => 13,  # Halloween
         'formal' => 14,     # Formal
-        'event' => 15       # Event
+        'holiday' => 15,    # Holiday
+        'event' => 16       # Event
       }.freeze
 
       # Maps wiki seasonal indicators to CHARACTER_SEASONS enum values
-      # Determined from page name suffix or |obtain= field
+      # Used for display disambiguation (e.g., "Vane [Halloween]")
+      # If no season matches, value should be nil
       self.character_seasons = {
-        'standard' => 1,    # Standard (year-round in their pool)
-        'valentine' => 2,   # Valentine
-        'formal' => 3,      # Formal
-        'summer' => 4,      # Summer (includes Yukata)
-        'halloween' => 5,   # Halloween
-        'holiday' => 6      # Holiday
+        'valentine' => 1,   # Valentine
+        'formal' => 2,      # Formal
+        'summer' => 3,      # Summer (includes Yukata)
+        'halloween' => 4,   # Halloween
+        'holiday' => 5      # Holiday
       }.freeze
 
       # Maps wiki |obtain= values to PROMOTIONS enum values for weapons/summons
