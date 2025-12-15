@@ -81,6 +81,20 @@ module Granblue
         suggestions[:gamewith] = parse_gamewith_url(data['link_gamewith']) if data['link_gamewith'].present?
         suggestions[:kamigame] = parse_kamigame_url(data['link_kamigame'], :character) if data['link_kamigame'].present?
 
+        # Gacha fields - parse from obtain and series fields
+        obtain = data['obtain'].to_s.downcase
+        wiki_series = data['series'].to_s.downcase.strip
+
+        # Season (from series field)
+        suggestions[:season] = character_season_from_series(wiki_series, obtain)
+
+        # Gacha available (from obtain field)
+        suggestions[:gacha_available] = gacha_available_from_obtain(obtain, wiki_series)
+
+        # Promotions (from obtain and series fields)
+        promotions = character_promotions_from_obtain(obtain, wiki_series)
+        suggestions[:promotions] = promotions if promotions.any?
+
         suggestions.compact
       end
 
@@ -309,6 +323,99 @@ module Granblue
       rescue ArgumentError
         # Handle invalid URL encoding
         nil
+      end
+
+      # Seasonal series that indicate a character is only available during that season
+      SEASONAL_SERIES = %w[holiday summer valentine halloween formal].freeze
+
+      # Maps series values to CharacterSeason enum values
+      SEASON_MAP = {
+        'valentine' => 1,
+        'formal' => 2,
+        'summer' => 3,
+        'halloween' => 4,
+        'holiday' => 5
+      }.freeze
+
+      # Maps series to Promotion enum values for seasonal characters
+      SEASONAL_PROMOTION_MAP = {
+        'holiday' => 9,
+        'summer' => 7,
+        'valentine' => 6,
+        'halloween' => 8,
+        'formal' => 11
+      }.freeze
+
+      # Indicators in obtain field that mean character is gacha-available
+      GACHA_INDICATORS = %w[premium flash legend classic classic2 grand zodiac valentine summer halloween holiday formal normal].freeze
+
+      # Non-gacha obtain values
+      NON_GACHA_INDICATORS = %w[rotb event side story promo eternal evoker archangel].freeze
+
+      # Extract season from wiki series field
+      # @param wiki_series [String] The series field value (e.g., "holiday", "summer")
+      # @param obtain [String] The obtain field value
+      # @return [Integer, nil] CharacterSeason enum value, or nil for non-seasonal characters
+      def self.character_season_from_series(wiki_series, obtain)
+        # Check series field first
+        return SEASON_MAP[wiki_series] if SEASON_MAP.key?(wiki_series)
+
+        # Check obtain field for seasonal indicators
+        SEASON_MAP.each do |series, season_id|
+          return season_id if obtain.include?(series)
+        end
+
+        # Non-seasonal characters have nil season
+        nil
+      end
+
+      # Determine if character can be pulled from gacha
+      # @param obtain [String] The obtain field value
+      # @param wiki_series [String] The series field value
+      # @return [Boolean]
+      def self.gacha_available_from_obtain(obtain, wiki_series)
+        return false if obtain.blank?
+
+        # Check for non-gacha indicators
+        return false if NON_GACHA_INDICATORS.any? { |indicator| obtain.include?(indicator) }
+
+        # Check for gacha indicators
+        GACHA_INDICATORS.any? { |indicator| obtain.include?(indicator) }
+      end
+
+      # Extract promotions array from obtain and series fields
+      # @param obtain [String] The obtain field value
+      # @param wiki_series [String] The series field value
+      # @return [Array<Integer>] Array of Promotion enum values
+      def self.character_promotions_from_obtain(obtain, wiki_series)
+        return [] unless gacha_available_from_obtain(obtain, wiki_series)
+
+        promotions = []
+
+        # Seasonal characters ONLY get their seasonal promotion
+        if SEASONAL_SERIES.include?(wiki_series)
+          promotions << SEASONAL_PROMOTION_MAP[wiki_series] if SEASONAL_PROMOTION_MAP[wiki_series]
+          return promotions
+        end
+
+        # Check if obtain indicates a seasonal banner (e.g., obtain=premium,holiday)
+        SEASONAL_SERIES.each do |series|
+          if obtain.include?(series)
+            promotions << SEASONAL_PROMOTION_MAP[series] if SEASONAL_PROMOTION_MAP[series]
+            return promotions
+          end
+        end
+
+        # Standard characters get Premium, Flash, Legend by default
+        promotions << 1 # Premium
+        promotions << 4 # Flash
+        promotions << 5 # Legend
+
+        # Add Classic pools only if explicitly mentioned
+        promotions << 2 if obtain.include?('classic') && !obtain.include?('classic2')
+        promotions << 3 if obtain.include?('classic2')
+
+        promotions.uniq.sort
       end
     end
   end
