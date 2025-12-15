@@ -90,6 +90,7 @@ Rails.application.routes.draw do
     get 'jobs/:id', to: 'jobs#show'
     put 'jobs/:id', to: 'jobs#update'
     get 'jobs/:id/skills', to: 'job_skills#job'
+    get 'jobs/:id/emp_skills', to: 'job_skills#emp'
     get 'jobs/:id/accessories', to: 'job_accessories#job'
 
     get 'characters/:id/related', to: 'characters#related'
