@@ -77,14 +77,14 @@ module Api
           }
         end
 
-        field :links do |s|
+        field :wiki do |s|
           {
-            wiki_en: s.wiki_en,
-            wiki_ja: s.wiki_ja,
-            gamewith: s.gamewith,
-            kamigame: s.kamigame
+            en: s.wiki_en,
+            ja: s.wiki_ja
           }
         end
+
+        fields :gamewith, :kamigame
       end
 
       # Separate view for raw data - only used by dedicated endpoint

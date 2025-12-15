@@ -13,7 +13,7 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :limit, :rarity,
-             :ax, :ax_type, :promotions
+             :ax, :ax_type, :gacha, :promotions
 
       # Series - returns full object with flags if weapon_series is present, fallback to legacy integer
       field :series do |w|
@@ -91,14 +91,14 @@ module Api
           }
         end
 
-        field :links do |w|
+        field :wiki do |w|
           {
-            wiki_en: w.wiki_en,
-            wiki_ja: w.wiki_ja,
-            gamewith: w.gamewith,
-            kamigame: w.kamigame
+            en: w.wiki_en,
+            ja: w.wiki_ja
           }
         end
+
+        fields :gamewith, :kamigame
 
         field :recruits do |w|
           next nil unless w.recruits.present?

@@ -11,8 +11,7 @@ module Api
       end
 
       fields :granblue_id, :character_id, :rarity,
-             :element, :gender, :special, :season,
-             :gacha_available
+             :element, :gender, :special, :season
 
       field :season_name do |c|
         c.season_name
@@ -74,14 +73,14 @@ module Api
           }
         end
 
-        field :links do |c|
+        field :wiki do |c|
           {
-            wiki_en: c.wiki_en,
-            wiki_ja: c.wiki_ja,
-            gamewith: c.gamewith,
-            kamigame: c.kamigame
+            en: c.wiki_en,
+            ja: c.wiki_ja
           }
         end
+
+        fields :gamewith, :kamigame
       end
 
       # Separate view for recruitment info - only include when needed (e.g., character detail page)
