@@ -3,8 +3,10 @@
 module Api
   module V1
     class JobsController < Api::V1::ApiController
-      before_action :set, only: %w[update_job update_job_skills destroy_job_skill]
-      before_action :authorize, only: %w[update_job update_job_skills destroy_job_skill]
+      before_action :set_party, only: %w[update_job update_job_skills destroy_job_skill]
+      before_action :authorize_party, only: %w[update_job update_job_skills destroy_job_skill]
+      before_action :set_job, only: %w[update]
+      before_action :ensure_editor_role, only: %w[update]
 
       def all
         render json: JobBlueprint.render(Job.all)
@@ -12,6 +14,16 @@ module Api
 
       def show
         render json: JobBlueprint.render(Job.find_by(granblue_id: params[:id]))
+      end
+
+      # PATCH/PUT /jobs/:id
+      # Updates an existing job record
+      def update
+        if @job.update(job_update_params)
+          render json: JobBlueprint.render(@job)
+        else
+          render_validation_error_response(@job)
+        end
       end
 
       def update_job
@@ -177,13 +189,35 @@ module Api
         end
       end
 
-      def authorize
+      def authorize_party
         render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
       end
 
-      def set
+      def set_party
         @party = Party.find_by(shortcode: params[:id])
         render_not_found_response('party') unless @party
+      end
+
+      def set_job
+        @job = Job.find_by(granblue_id: params[:id])
+        render_not_found_response('job') unless @job
+      end
+
+      # Ensures the current user has editor role (role >= 7)
+      def ensure_editor_role
+        return if current_user&.role && current_user.role >= 7
+
+        Rails.logger.warn "[JOBS] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+      end
+
+      def job_update_params
+        params.permit(
+          :name_en, :name_jp, :granblue_id,
+          :proficiency1, :proficiency2, :row, :order,
+          :master_level, :ultimate_mastery,
+          :accessory, :accessory_type, :base_job_id
+        )
       end
 
       def job_params
