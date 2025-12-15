@@ -70,7 +70,6 @@ module Api
               filters['proficiency2']
           end
           conditions[:season] = filters['season'] unless filters['season'].blank? || filters['season'].empty?
-          conditions[:gacha_available] = filters['gacha_available'] unless filters['gacha_available'].nil?
         end
 
         characters = if search_params[:query].present? && search_params[:query].length >= 2

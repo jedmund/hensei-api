@@ -134,8 +134,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_15_173625) do
     t.text "game_raw_en_backup"
     t.integer "season"
     t.integer "series", default: [], null: false, array: true
-    t.boolean "gacha_available", default: true, null: false
-    t.index ["gacha_available"], name: "index_characters_on_gacha_available"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["season"], name: "index_characters_on_season"
@@ -975,6 +973,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_15_173625) do
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "weapon_series_id"
+    t.boolean "gacha", default: false, null: false
+    t.index ["gacha"], name: "index_weapons_on_gacha"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin

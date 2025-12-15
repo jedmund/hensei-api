@@ -44,14 +44,6 @@ class Character < ApplicationRecord
     { slug: 'character-multi', name_en: 'Multiattack', name_jp: '連続攻撃', order: 3 }
   ].freeze
 
-  # Non-gachable series (characters that must be recruited, not pulled)
-  NON_GACHABLE_SERIES = [
-    GranblueEnums::CHARACTER_SERIES[:Eternal],
-    GranblueEnums::CHARACTER_SERIES[:Evoker],
-    GranblueEnums::CHARACTER_SERIES[:Saint],
-    GranblueEnums::CHARACTER_SERIES[:Event],
-    GranblueEnums::CHARACTER_SERIES[:Collab]
-  ].freeze
 
   # Validations
   validates :season,
@@ -64,8 +56,6 @@ class Character < ApplicationRecord
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
   scope :by_series, ->(series) { where('? = ANY(series)', series) }
-  scope :gachable, -> { where(gacha_available: true) }
-  scope :recruitable, -> { where(gacha_available: false) }
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
 
   def blueprint
@@ -79,10 +69,6 @@ class Character < ApplicationRecord
   # Helper methods
   def seasonal?
     season.present? && season != GranblueEnums::CHARACTER_SEASONS[:Standard]
-  end
-
-  def gachable?
-    gacha_available
   end
 
   def season_name

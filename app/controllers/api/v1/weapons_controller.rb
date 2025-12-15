@@ -216,7 +216,7 @@ module Api
       def weapon_params
         params.require(:weapon).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :new_series,
-          :flb, :ulb, :transcendence, :extra, :limit, :ax,
+          :flb, :ulb, :transcendence, :extra, :limit, :ax, :gacha,
           :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :max_level, :max_skill_level, :max_awakening_level,
