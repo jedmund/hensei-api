@@ -104,8 +104,11 @@ module Granblue
           suggestions[:element] = Wiki.elements[element_key]
         end
 
-        # Proficiency (weapon type)
-        suggestions[:proficiency] = Wiki.proficiencies[data['type']] if data['type'].present?
+        # Proficiency (weapon type) - wiki uses |weapon= field, not |type=
+        if data['weapon'].present?
+          proficiency_key = data['weapon'].strip.capitalize
+          suggestions[:proficiency] = Wiki.proficiencies[proficiency_key]
+        end
 
         # Stats - weapons use hp1/hp2/hp3/hp4 and atk1/atk2/atk3/atk4
         suggestions[:min_hp] = data['hp1'].to_i if data['hp1'].present?
