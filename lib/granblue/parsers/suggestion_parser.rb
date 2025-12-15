@@ -56,9 +56,14 @@ module Granblue
         suggestions[:max_atk] = data['max_atk'].to_i if data['max_atk'].present?
         suggestions[:max_atk_flb] = data['flb_atk'].to_i if data['flb_atk'].present?
 
-        # Uncap status
-        suggestions[:flb] = Wiki.boolean.fetch(data['5star'], false) if data['5star'].present?
-        suggestions[:ulb] = data['max_evo'].to_i == 6 if data['max_evo'].present?
+        # Uncap status - characters use max_evo (5=FLB, 6=ULB)
+        if data['max_evo'].present?
+          evo = data['max_evo'].to_i
+          suggestions[:flb] = evo >= 5
+          suggestions[:ulb] = evo >= 6
+        end
+        # Fallback to legacy 5star field if max_evo not present
+        suggestions[:flb] ||= Wiki.boolean.fetch(data['5star'], false) if data['5star'].present?
 
         # Series - character series like "grand", "zodiac", etc.
         if data['series'].present?
@@ -168,9 +173,9 @@ module Granblue
         suggestions[:max_atk_flb] = data['atk3'].to_i if data['atk3'].present?
         suggestions[:max_atk_ulb] = data['atk4'].to_i if data['atk4'].present?
 
-        # Uncap status - summons use evo_max (4=FLB, 5=ULB, 6=transcendence)
-        if data['evo_max'].present?
-          evo = data['evo_max'].to_i
+        # Uncap status - summons use max_evo (4=FLB, 5=ULB, 6=transcendence)
+        if data['max_evo'].present?
+          evo = data['max_evo'].to_i
           suggestions[:flb] = evo >= 4
           suggestions[:ulb] = evo >= 5
           suggestions[:transcendence] = evo >= 6
