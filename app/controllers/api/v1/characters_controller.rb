@@ -231,7 +231,7 @@ module Api
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,
           :release_date, :flb_date, :ulb_date,
-          :wiki_en, :wiki_ja, :gamewith, :kamigame,
+          :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           nicknames_en: [], nicknames_jp: [], character_id: [], series: []
         )
       end

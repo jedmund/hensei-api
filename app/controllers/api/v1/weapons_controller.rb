@@ -221,7 +221,7 @@ module Api
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :max_level, :max_skill_level, :max_awakening_level,
           :release_date, :flb_date, :ulb_date, :transcendence_date,
-          :wiki_en, :wiki_ja, :gamewith, :kamigame,
+          :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           :recruits,
           nicknames_en: [], nicknames_jp: [], promotions: []
         )
