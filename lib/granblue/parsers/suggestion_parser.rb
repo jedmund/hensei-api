@@ -126,6 +126,7 @@ module Granblue
         suggestions[:name_en] = data['name'] if data['name'].present?
         suggestions[:name_jp] = data['jpname'] if data['jpname'].present?
         suggestions[:granblue_id] = data['id'] if data['id'].present?
+        suggestions[:summon_id] = data['summonid'] if data['summonid'].present?
 
         # Rarity
         suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
