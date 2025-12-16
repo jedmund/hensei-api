@@ -88,9 +88,6 @@ module Granblue
         # Season (from series field)
         suggestions[:season] = character_season_from_series(wiki_series, obtain)
 
-        # Gacha available (from obtain field)
-        suggestions[:gacha_available] = gacha_available_from_obtain(obtain, wiki_series)
-
         # Promotions (from obtain and series fields)
         promotions = character_promotions_from_obtain(obtain, wiki_series)
         suggestions[:promotions] = promotions if promotions.any?

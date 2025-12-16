@@ -196,7 +196,6 @@ module Granblue
 
         info[:series] = series_from_hash(hash)
         info[:season] = season_from_hash(hash)
-        info[:gacha_available] = gacha_available_from_hash(hash)
 
         info.compact
       end
@@ -213,7 +212,6 @@ module Granblue
 
         @character.series = hash[:series] if hash[:series].present?
         @character.season = hash[:season] if hash[:season].present?
-        @character.gacha_available = hash[:gacha_available] unless hash[:gacha_available].nil?
 
         if @character.save
           ap "#{@character.granblue_id}: Successfully saved info for #{@character.name_en}" if @debug
