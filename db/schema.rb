@@ -529,6 +529,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_15_173625) do
     t.boolean "emp", default: false
     t.integer "order"
     t.boolean "base", default: false
+    t.string "image_id"
+    t.integer "action_id"
+    t.index ["action_id"], name: "index_job_skills_on_action_id"
+    t.index ["image_id"], name: "index_job_skills_on_image_id"
     t.index ["job_id"], name: "index_job_skills_on_job_id"
   end
 
