@@ -12,7 +12,6 @@ class CharacterSeries < ApplicationRecord
   scope :ordered, -> { order(:order) }
 
   # Slug constants for commonly referenced series
-  STANDARD = 'standard'
   GRAND = 'grand'
   ZODIAC = 'zodiac'
   ETERNAL = 'eternal'

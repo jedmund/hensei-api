@@ -248,58 +248,55 @@ module Granblue
 
         # Additional series indicators from |obtain= field
         obtain = hash['obtain'].to_s.downcase
-        series << 2 if obtain.include?('grand') && !series.include?(2)  # Grand
-        series << 3 if obtain.include?('zodiac') && !series.include?(3) # Zodiac
+        series << 1 if obtain.include?('grand') && !series.include?(1)  # Grand
+        series << 2 if obtain.include?('zodiac') && !series.include?(2) # Zodiac
 
         # Seasonal series based on page name or obtain field
         page_name = @character.wiki_en.to_s.downcase
         if page_name.include?('summer') || page_name.include?('(swimsuit)')
-          series << 10 unless series.include?(10) # Summer
+          series << 9 unless series.include?(9) # Summer
         end
         if page_name.include?('yukata')
-          series << 11 unless series.include?(11) # Yukata
+          series << 10 unless series.include?(10) # Yukata
         end
         if page_name.include?('valentine')
-          series << 12 unless series.include?(12) # Valentine
+          series << 11 unless series.include?(11) # Valentine
         end
         if page_name.include?('halloween')
-          series << 13 unless series.include?(13) # Halloween
+          series << 12 unless series.include?(12) # Halloween
         end
         if page_name.include?('(formal)') || page_name.include?('formal ')
-          series << 14 unless series.include?(14) # Formal
+          series << 13 unless series.include?(13) # Formal
         end
         if page_name.include?('holiday') || page_name.include?('(holiday)')
-          series << 1 unless series.include?(1)   # Standard for now, Holiday chars usually just standard series
+          series << 14 unless series.include?(14) # Holiday
         end
-
-        # Default to Standard if no series found and character is gacha-available
-        series << 1 if series.empty? && gacha_available_from_hash(hash)
 
         series.uniq.sort
       end
 
       # Extracts season (gacha availability window) from wiki hash
-      # Returns a single season ID based on seasonal indicators
+      # Returns a single season ID based on seasonal indicators, or nil for non-seasonal
       def season_from_hash(hash)
         page_name = @character.wiki_en.to_s.downcase
         obtain = hash['obtain'].to_s.downcase
 
         # Check page name for seasonal indicators
-        return 2 if page_name.include?('valentine')
-        return 3 if page_name.include?('(formal)') || page_name.include?('formal ')
-        return 4 if page_name.include?('summer') || page_name.include?('yukata') || page_name.include?('(swimsuit)')
-        return 5 if page_name.include?('halloween')
-        return 6 if page_name.include?('holiday') || page_name.include?('(holiday)')
+        return 1 if page_name.include?('valentine')
+        return 2 if page_name.include?('(formal)') || page_name.include?('formal ')
+        return 3 if page_name.include?('summer') || page_name.include?('yukata') || page_name.include?('(swimsuit)')
+        return 4 if page_name.include?('halloween')
+        return 5 if page_name.include?('holiday') || page_name.include?('(holiday)')
 
         # Check obtain field for seasonal banners
-        return 2 if obtain.include?('valentine')
-        return 3 if obtain.include?('formal')
-        return 4 if obtain.include?('summer')
-        return 5 if obtain.include?('halloween')
-        return 6 if obtain.include?('holiday')
+        return 1 if obtain.include?('valentine')
+        return 2 if obtain.include?('formal')
+        return 3 if obtain.include?('summer')
+        return 4 if obtain.include?('halloween')
+        return 5 if obtain.include?('holiday')
 
-        # Default to Standard for gacha-available characters
-        1 if gacha_available_from_hash(hash)
+        # Non-seasonal characters have nil season
+        nil
       end
 
       # Determines if character can be pulled from gacha based on obtain field and series

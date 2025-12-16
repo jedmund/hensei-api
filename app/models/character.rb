@@ -99,20 +99,20 @@ class Character < ApplicationRecord
 
   # Mapping from legacy integer values to slugs
   LEGACY_SERIES_TO_SLUG = {
-    1 => 'standard',
-    2 => 'grand',
-    3 => 'zodiac',
-    4 => 'promo',
-    5 => 'collab',
-    6 => 'eternal',
-    7 => 'evoker',
-    8 => 'saint',
-    9 => 'fantasy',
-    10 => 'summer',
-    11 => 'yukata',
-    12 => 'valentine',
-    13 => 'halloween',
-    14 => 'formal',
+    1 => 'grand',
+    2 => 'zodiac',
+    3 => 'promo',
+    4 => 'collab',
+    5 => 'eternal',
+    6 => 'evoker',
+    7 => 'saint',
+    8 => 'fantasy',
+    9 => 'summer',
+    10 => 'yukata',
+    11 => 'valentine',
+    12 => 'halloween',
+    13 => 'formal',
+    14 => 'holiday',
     15 => 'event'
   }.freeze
 
