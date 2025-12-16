@@ -14,7 +14,7 @@ module Api
                   name: :job,
                   blueprint: JobBlueprint
 
-      fields :slug, :color, :main, :base, :sub, :emp, :order
+      fields :slug, :color, :main, :base, :sub, :emp, :order, :image_id, :action_id
     end
   end
 end

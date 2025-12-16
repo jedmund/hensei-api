@@ -91,6 +91,10 @@ Rails.application.routes.draw do
     put 'jobs/:id', to: 'jobs#update'
     get 'jobs/:id/skills', to: 'job_skills#job'
     get 'jobs/:id/emp_skills', to: 'job_skills#emp'
+    post 'jobs/:job_id/skills', to: 'job_skills#create'
+    put 'jobs/:job_id/skills/:id', to: 'job_skills#update'
+    delete 'jobs/:job_id/skills/:id', to: 'job_skills#destroy'
+    post 'jobs/:job_id/skills/:id/download_image', to: 'job_skills#download_image'
     get 'jobs/:id/accessories', to: 'job_accessories#job'
 
     get 'characters/:id/related', to: 'characters#related'
