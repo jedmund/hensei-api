@@ -66,10 +66,11 @@ module Granblue
         suggestions[:flb] ||= Wiki.boolean.fetch(data['5star'], false) if data['5star'].present?
 
         # Series - character series like "grand", "zodiac", etc.
+        # The |series= field can be comma-separated (e.g., "evoker,summer")
         if data['series'].present?
-          wiki_series = data['series'].to_s.downcase.strip
-          series_value = Wiki.character_series[wiki_series]
-          suggestions[:series] = [series_value] if series_value
+          series_values = data['series'].to_s.downcase.split(',').map(&:strip)
+          series = series_values.map { |s| Wiki.character_series[s] }.compact
+          suggestions[:series] = series.uniq.sort if series.any?
         end
 
         # Dates
