@@ -21,7 +21,7 @@ class RemoveStandardCharacterSeries < ActiveRecord::Migration[8.0]
     CharacterSeries.where('"order" > 0').find_each do |cs|
       cs.update!(order: cs.order - 1)
     end
-    puts "Updated order values for remaining series"
+    puts 'Updated order values for remaining series'
   end
 
   def down
