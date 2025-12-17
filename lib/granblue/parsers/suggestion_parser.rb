@@ -105,7 +105,8 @@ module Granblue
         suggestions = {}
         suggestions[:name_en] = data['name'] if data['name'].present?
         suggestions[:name_jp] = data['jpname'] if data['jpname'].present?
-        suggestions[:granblue_id] = data['id'] if data['id'].present?
+        # Strip _note suffix from null element weapon IDs
+        suggestions[:granblue_id] = data['id'].sub(/_note\z/, '') if data['id'].present?
 
         # Rarity
         suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
@@ -143,8 +144,11 @@ module Granblue
         # Max level based on rarity and uncap status
         suggestions[:max_level] = calculate_weapon_max_level(suggestions[:rarity], suggestions[:flb], suggestions[:ulb], suggestions[:transcendence])
 
-        # Series (e.g., "Revenant", "Optimus", etc.)
-        suggestions[:series] = data['series'] if data['series'].present?
+        # Series - look up by name to get the ID
+        if data['series'].present?
+          series = find_weapon_series_by_name(data['series'])
+          suggestions[:series] = series.id if series
+        end
 
         # Dates
         suggestions[:release_date] = parse_date(data['release_date']) if data['release_date'].present?
@@ -463,6 +467,21 @@ module Granblue
             100
           end
         end
+      end
+
+      # Find a WeaponSeries by wiki name
+      # Converts names like "Revenant Weapons" or "Revenant" to slug "revenant"
+      def self.find_weapon_series_by_name(name)
+        return nil if name.blank?
+
+        # Convert wiki name to slug format
+        slug = name
+               .gsub(/\s*(Weapons?|Series)\s*$/i, '')
+               .strip
+               .downcase
+               .gsub(/\s+/, '-')
+
+        WeaponSeries.find_by(slug: slug)
       end
     end
   end
