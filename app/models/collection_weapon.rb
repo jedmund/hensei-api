@@ -28,8 +28,28 @@ class CollectionWeapon < ApplicationRecord
   scope :with_ax, -> { where.not(ax_modifier1: nil) }
   scope :by_element, ->(element) { joins(:weapon).where(weapons: { element: element }) }
   scope :by_rarity, ->(rarity) { joins(:weapon).where(weapons: { rarity: rarity }) }
+  scope :by_proficiency, ->(proficiency) { joins(:weapon).where(weapons: { proficiency: proficiency }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
+
+  scope :sorted_by, ->(sort_key) {
+    case sort_key
+    when 'name_asc'
+      joins(:weapon).order('weapons.name_en ASC NULLS LAST')
+    when 'name_desc'
+      joins(:weapon).order('weapons.name_en DESC NULLS LAST')
+    when 'element_asc'
+      joins(:weapon).order('weapons.element ASC')
+    when 'element_desc'
+      joins(:weapon).order('weapons.element DESC')
+    when 'proficiency_asc'
+      joins(:weapon).order('weapons.proficiency ASC')
+    when 'proficiency_desc'
+      joins(:weapon).order('weapons.proficiency DESC')
+    else
+      order(created_at: :desc)
+    end
+  }
 
   def blueprint
     Api::V1::CollectionWeaponBlueprint

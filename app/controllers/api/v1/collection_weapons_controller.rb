@@ -19,6 +19,10 @@ module Api
         @collection_weapons = @collection_weapons.by_weapon(params[:weapon_id]) if params[:weapon_id]
         @collection_weapons = @collection_weapons.by_element(params[:element]) if params[:element]
         @collection_weapons = @collection_weapons.by_rarity(params[:rarity]) if params[:rarity]
+        @collection_weapons = @collection_weapons.by_proficiency(params[:proficiency]) if params[:proficiency]
+        @collection_weapons = @collection_weapons.by_series(params[:series]) if params[:series]
+
+        @collection_weapons = @collection_weapons.sorted_by(params[:sort])
 
         @collection_weapons = @collection_weapons.paginate(page: params[:page], per_page: params[:limit] || 50)
 
