@@ -132,12 +132,16 @@ module Granblue
         suggestions[:max_atk_flb] = data['atk3'].to_i if data['atk3'].present?
         suggestions[:max_atk_ulb] = data['atk4'].to_i if data['atk4'].present?
 
-        # Uncap status - weapons use evo_max (4=FLB, 5=ULB)
+        # Uncap status - weapons use evo_max (4=FLB, 5=ULB, 6=transcendence)
         if data['evo_max'].present?
           evo = data['evo_max'].to_i
           suggestions[:flb] = evo >= 4
           suggestions[:ulb] = evo >= 5
+          suggestions[:transcendence] = evo >= 6
         end
+
+        # Max level based on rarity and uncap status
+        suggestions[:max_level] = calculate_weapon_max_level(suggestions[:rarity], suggestions[:flb], suggestions[:ulb], suggestions[:transcendence])
 
         # Series (e.g., "Revenant", "Optimus", etc.)
         suggestions[:series] = data['series'] if data['series'].present?
@@ -195,6 +199,9 @@ module Granblue
           suggestions[:ulb] = evo >= 5
           suggestions[:transcendence] = evo >= 6
         end
+
+        # Max level based on rarity and uncap status
+        suggestions[:max_level] = calculate_summon_max_level(suggestions[:rarity], suggestions[:flb], suggestions[:ulb], suggestions[:transcendence])
 
         # Series (e.g., "Optimus", "Arcarum", etc.)
         suggestions[:series] = data['series'] if data['series'].present?
@@ -414,6 +421,48 @@ module Granblue
         promotions << 3 if obtain.include?('classic2')
 
         promotions.uniq.sort
+      end
+
+      # Calculate max level for weapons based on rarity and uncap status
+      # R weapons: max 50
+      # SR weapons: max 75
+      # SSR weapons: max 100 (FLB: 150, ULB: 200, Trans: 250)
+      def self.calculate_weapon_max_level(rarity, flb, ulb, transcendence)
+        case rarity
+        when 1 then 50  # R
+        when 2 then 75  # SR
+        else # SSR (3+)
+          if transcendence
+            250
+          elsif ulb
+            200
+          elsif flb
+            150
+          else
+            100
+          end
+        end
+      end
+
+      # Calculate max level for summons based on rarity and uncap status
+      # R summons: max 30
+      # SR summons: max 60
+      # SSR summons: max 100 (FLB: 150, ULB: 200, Trans: 250)
+      def self.calculate_summon_max_level(rarity, flb, ulb, transcendence)
+        case rarity
+        when 1 then 30  # R
+        when 2 then 60  # SR
+        else # SSR (3+)
+          if transcendence
+            250
+          elsif ulb
+            200
+          elsif flb
+            150
+          else
+            100
+          end
+        end
       end
     end
   end
