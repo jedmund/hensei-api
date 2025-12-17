@@ -15,6 +15,20 @@ module Granblue
     class WeaponDownloader < BaseDownloader
       # Override SIZES to include 'base' for b directory images
       SIZES = %w[main grid square base].freeze
+
+      # Maps internal element ID to game source offset
+      # :note means use _note suffix on base ID, integer means add offset to base ID
+      # Internal: 0=Null, 1=Wind, 2=Fire, 3=Water, 4=Earth, 5=Dark, 6=Light
+      # Game order: Fire (base), Water (+100), Earth (+200), Wind (+300), Light (+400), Dark (+500)
+      ELEMENT_SOURCE_MAP = {
+        0 => :note,  # {id}_note -> {id}_0 (Null/no element)
+        1 => 300,    # {id+300} -> {id}_1 (Wind)
+        2 => 0,      # {id}     -> {id}_2 (Fire)
+        3 => 100,    # {id+100} -> {id}_3 (Water)
+        4 => 200,    # {id+200} -> {id}_4 (Earth)
+        5 => 500,    # {id+500} -> {id}_5 (Dark)
+        6 => 400     # {id+400} -> {id}_6 (Light)
+      }.freeze
       # Downloads images for all variants of a weapon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle weapon-specific variants.
       #
@@ -39,6 +53,7 @@ module Granblue
       # @return [void]
       # @note Only downloads variants that should exist based on weapon uncap status
       # @note Handles special transcendence art variants for transcendable weapons
+      # @note Downloads element variants for element-changeable weapons
       def download_variants(weapon, selected_size = nil)
         # All weapons have base variant
         variants = [@id]
@@ -51,6 +66,9 @@ module Granblue
         variants.each do |variant_id|
           download_variant(variant_id, selected_size)
         end
+
+        # Download element variants for element-changeable weapons
+        download_element_variants(selected_size) if Weapon.element_changeable?(weapon)
       end
 
       # Downloads a specific variant's images in all sizes
@@ -70,6 +88,108 @@ module Granblue
           url = build_variant_url(variant_id, size)
           process_download(url, size, path, last: index == sizes.size - 1)
         end
+      end
+
+      # Downloads all element variants for element-changeable weapons
+      # Maps game URLs to internal element IDs for storage
+      #
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
+      # @return [void]
+      def download_element_variants(selected_size = nil)
+        base_id = @id.to_i
+        log_info "Downloading element variants for #{@id}" if @verbose
+
+        ELEMENT_SOURCE_MAP.each do |element_id, source|
+          if source == :note
+            # Element 0: download from {id}_note, save as {id}_0
+            source_id = "#{base_id}_note"
+          else
+            # Elements 1-6: download from {id + offset}, save as {id}_{element}
+            source_id = (base_id + source).to_s
+          end
+          target_suffix = "_#{element_id}"
+
+          download_element_variant(source_id, target_suffix, selected_size)
+        end
+      end
+
+      # Downloads a single element variant in all sizes
+      #
+      # @param source_id [String] Source ID to download from (e.g., "1040001000_note" or "1040001100")
+      # @param target_suffix [String] Suffix to use for storage (e.g., "_0" or "_1")
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
+      # @return [void]
+      def download_element_variant(source_id, target_suffix, selected_size = nil)
+        return if @test_mode
+
+        sizes = selected_size ? [selected_size] : SIZES
+
+        sizes.each do |size|
+          path = download_path(size)
+          source_url = build_variant_url(source_id, size)
+          target_filename = "#{@id}#{target_suffix}.#{size == 'base' ? 'png' : 'jpg'}"
+
+          process_element_download(source_url, size, path, target_filename)
+        end
+      end
+
+      # Process download for element variant (source URL differs from target filename)
+      #
+      # @param url [String] Source URL to download from
+      # @param size [String] Image size variant
+      # @param path [String] Local directory path
+      # @param filename [String] Target filename to save as
+      # @return [void]
+      def process_element_download(url, size, path, filename)
+        s3_key = build_s3_key(size, filename)
+        local_path = "#{path}/#{filename}"
+
+        return unless should_download?(local_path, s3_key)
+
+        log_info "\t├ #{size}: #{url} -> #{filename}" if @verbose
+
+        case @storage
+        when :local
+          download_element_to_local(url, local_path)
+        when :s3
+          stream_element_to_s3(url, s3_key)
+        when :both
+          download_element_to_both(url, local_path, s3_key)
+        end
+      rescue OpenURI::HTTPError
+        log_info "\t404 returned\t#{url}" if @verbose
+      end
+
+      # Download element variant to local storage
+      def download_element_to_local(url, local_path)
+        URI.parse(url).open do |file|
+          IO.copy_stream(file, local_path)
+        end
+      end
+
+      # Stream element variant to S3
+      def stream_element_to_s3(url, s3_key)
+        return if !@force && @aws_service&.file_exists?(s3_key)
+
+        URI.parse(url).open do |file|
+          @aws_service.upload_stream(file, s3_key)
+        end
+      end
+
+      # Download element variant to both local and S3
+      def download_element_to_both(url, local_path, s3_key)
+        download = URI.parse(url).open
+
+        # Write to local file
+        IO.copy_stream(download, local_path)
+
+        # Reset file pointer for S3 upload
+        download.rewind
+
+        # Upload to S3 if force or if it doesn't exist
+        return if !@force && @aws_service&.file_exists?(s3_key)
+
+        @aws_service.upload_stream(download, s3_key)
       end
 
       # Builds URL for a specific variant and size
