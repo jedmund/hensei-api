@@ -7,9 +7,9 @@ module Api
 
       before_action :restrict_access
       before_action :set_crew
-      before_action :authorize_crew_member!, only: %i[index confirm_claim]
+      before_action :authorize_crew_member!, only: %i[index confirm_claim decline_claim]
       before_action :authorize_crew_officer!, only: %i[create bulk_create update destroy assign]
-      before_action :set_phantom, only: %i[show update destroy assign confirm_claim]
+      before_action :set_phantom, only: %i[show update destroy assign confirm_claim decline_claim]
 
       # GET /crews/:crew_id/phantom_players
       def index
@@ -75,6 +75,14 @@ module Api
       # POST /crews/:crew_id/phantom_players/:id/confirm_claim
       def confirm_claim
         @phantom.confirm_claim!(current_user)
+        render json: PhantomPlayerBlueprint.render(@phantom, view: :with_claimed_by, root: :phantom_player)
+      end
+
+      # POST /crews/:crew_id/phantom_players/:id/decline_claim
+      def decline_claim
+        raise CrewErrors::NotClaimedByUserError unless @phantom.claimed_by == current_user
+
+        @phantom.unassign!
         render json: PhantomPlayerBlueprint.render(@phantom, view: :with_claimed_by, root: :phantom_player)
       end
 

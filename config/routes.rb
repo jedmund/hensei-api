@@ -197,6 +197,7 @@ Rails.application.routes.draw do
         member do
           post :assign
           post :confirm_claim
+          post :decline_claim
         end
       end
     end
@@ -211,6 +212,9 @@ Rails.application.routes.draw do
         post :reject
       end
     end
+
+    # Pending phantom claims for current user (outside crew context)
+    get :pending_phantom_claims, to: 'phantom_claims#index'
 
     # GW Events (public read, admin write)
     resources :gw_events, only: %i[index show create update] do

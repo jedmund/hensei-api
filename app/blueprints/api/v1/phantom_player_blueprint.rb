@@ -26,6 +26,15 @@ module Api
           phantom.gw_individual_scores.count
         end
       end
+
+      # Used for pending phantom claims - includes crew info for context
+      view :with_crew do
+        include_view :with_claimed_by
+
+        field :crew do |phantom|
+          phantom.crew ? CrewBlueprint.render_as_hash(phantom.crew, view: :minimal) : nil
+        end
+      end
     end
   end
 end
