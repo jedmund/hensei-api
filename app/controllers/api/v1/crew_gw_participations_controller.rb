@@ -19,7 +19,7 @@ module Api
 
       # GET /crew/gw_participations/:id
       def show
-        render json: CrewGwParticipationBlueprint.render(@participation, view: :with_individual_scores, root: :crew_gw_participation)
+        render json: CrewGwParticipationBlueprint.render(@participation, view: :with_individual_scores, root: :crew_gw_participation, current_user: current_user)
       end
 
       # GET /crew/gw_participations/by_event/:event_id
@@ -44,12 +44,12 @@ module Api
                                     .includes(:user)
                                     .active_during(event.start_date, event.end_date)
 
-        # Get all phantom players who were active during the event or currently active
-        phantom_players = @crew.phantom_players.active_during(event.start_date, event.end_date)
+        # Get all phantom players who were active during the event (excludes claimed/deleted phantoms)
+        phantom_players = @crew.phantom_players.not_deleted.active_during(event.start_date, event.end_date)
 
         render json: {
           gw_event: GwEventBlueprint.render_as_hash(event),
-          crew_gw_participation: participation ? CrewGwParticipationBlueprint.render_as_hash(participation, view: :with_individual_scores) : nil,
+          crew_gw_participation: participation ? CrewGwParticipationBlueprint.render_as_hash(participation, view: :with_individual_scores, current_user: current_user) : nil,
           members_during_event: CrewMembershipBlueprint.render_as_hash(members_during_event, view: :with_user),
           phantom_players: PhantomPlayerBlueprint.render_as_hash(phantom_players)
         }
