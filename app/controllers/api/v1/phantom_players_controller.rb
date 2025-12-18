@@ -13,7 +13,7 @@ module Api
 
       # GET /crews/:crew_id/phantom_players
       def index
-        phantoms = @crew.phantom_players.includes(:claimed_by).order(:name)
+        phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
         render json: PhantomPlayerBlueprint.render(phantoms, view: :with_claimed_by, root: :phantom_players)
       end
 

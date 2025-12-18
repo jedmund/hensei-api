@@ -9,6 +9,7 @@ module Api
       # Returns phantom players assigned to the current user that are pending confirmation
       def index
         phantoms = PhantomPlayer
+          .not_deleted
           .includes(:crew, :claimed_by)
           .where(claimed_by: current_user, claim_confirmed: false)
           .order(created_at: :desc)

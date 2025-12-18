@@ -55,10 +55,10 @@ module Api
           phantoms = []
         when :phantom
           members = []
-          phantoms = @crew.phantom_players.includes(:claimed_by).order(:name)
+          phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
         when :all
           members = @crew.crew_memberships.includes(:user).order(role: :desc, retired: :asc, created_at: :asc)
-          phantoms = @crew.phantom_players.includes(:claimed_by).order(:name)
+          phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
         else
           members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
           phantoms = []

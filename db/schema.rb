@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_15_173625) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_17_195837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -688,10 +688,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_15_173625) do
     t.boolean "retired", default: false, null: false
     t.datetime "retired_at"
     t.datetime "joined_at"
+    t.datetime "deleted_at"
     t.index ["claimed_by_id"], name: "index_phantom_players_on_claimed_by_id"
     t.index ["claimed_from_membership_id"], name: "index_phantom_players_on_claimed_from_membership_id"
     t.index ["crew_id", "granblue_id"], name: "index_phantom_players_on_crew_id_and_granblue_id", unique: true, where: "(granblue_id IS NOT NULL)"
     t.index ["crew_id"], name: "index_phantom_players_on_crew_id"
+    t.index ["deleted_at"], name: "index_phantom_players_on_deleted_at"
   end
 
   create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

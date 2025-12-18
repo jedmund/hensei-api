@@ -21,6 +21,8 @@ class PhantomPlayer < ApplicationRecord
   scope :pending_confirmation, -> { claimed.where(claim_confirmed: false) }
   scope :active, -> { where(retired: false) }
   scope :retired, -> { where(retired: true) }
+  scope :not_deleted, -> { where(deleted_at: nil) }
+  scope :deleted, -> { where.not(deleted_at: nil) }
 
   # Phantoms who were active during a date range (either still active, or retired after the end date)
   # Uses joined_at (editable) instead of created_at for historical accuracy
@@ -39,12 +41,19 @@ class PhantomPlayer < ApplicationRecord
   end
 
   # Confirm the claim (user action)
+  # After confirmation, soft deletes the phantom since scores have been transferred
   def confirm_claim!(user)
     raise CrewErrors::NotClaimedByUserError unless claimed_by == user
 
     self.claim_confirmed = true
     transfer_scores_to_membership!
     save!
+    soft_delete!
+  end
+
+  # Soft delete the phantom (keeps record for logging)
+  def soft_delete!
+    update!(deleted_at: Time.current)
   end
 
   # Unassign the phantom (officer action or user rejection)
