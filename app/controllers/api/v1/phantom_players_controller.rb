@@ -97,7 +97,7 @@ module Api
       end
 
       def phantom_params
-        params.require(:phantom_player).permit(:name, :granblue_id, :notes, :joined_at, :retired)
+        params.require(:phantom_player).permit(:name, :granblue_id, :notes, :joined_at, :retired, :retired_at)
       end
 
       def bulk_params

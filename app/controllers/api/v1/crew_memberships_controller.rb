@@ -66,7 +66,7 @@ module Api
       end
 
       def membership_params
-        params.require(:membership).permit(:role, :joined_at, :retired)
+        params.require(:membership).permit(:role, :joined_at, :retired, :retired_at)
       end
 
       def authorize_membership_update!
