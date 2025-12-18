@@ -10,7 +10,17 @@ module Api
       # GET /gw_events
       def index
         events = GwEvent.order(start_date: :desc)
-        render json: GwEventBlueprint.render(events, root: :gw_events)
+
+        # If user has a crew, include participation data for each event
+        participations_by_event = {}
+        if current_user&.crew
+          participations = current_user.crew.crew_gw_participations.includes(:gw_individual_scores)
+          participations.each do |p|
+            participations_by_event[p.gw_event_id] = p
+          end
+        end
+
+        render json: GwEventBlueprint.render(events, root: :gw_events, participations: participations_by_event)
       end
 
       # GET /gw_events/:id

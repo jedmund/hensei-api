@@ -19,6 +19,11 @@ module Api
         end
       end
 
+      # Include crew's total score if participation data is provided
+      field :crew_total_score, if: ->(_fn, event, options) { options[:participations]&.key?(event.id) } do |event, options|
+        options[:participations][event.id]&.total_individual_honors
+      end
+
       view :with_participation do
         field :participation, if: ->(_fn, _obj, options) { options[:participation].present? } do |_, options|
           CrewGwParticipationBlueprint.render_as_hash(options[:participation], view: :summary)
