@@ -46,9 +46,9 @@ class PhantomPlayer < ApplicationRecord
     raise CrewErrors::NotClaimedByUserError unless claimed_by == user
 
     self.claim_confirmed = true
+    self.deleted_at = Time.current
     transfer_scores_to_membership!
     save!
-    soft_delete!
   end
 
   # Soft delete the phantom (keeps record for logging)
