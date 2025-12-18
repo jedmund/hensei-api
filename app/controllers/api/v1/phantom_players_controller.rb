@@ -6,10 +6,12 @@ module Api
       include CrewAuthorizationConcern
 
       before_action :restrict_access
-      before_action :set_crew
-      before_action :authorize_crew_member!, only: %i[index confirm_claim decline_claim]
+      before_action :set_crew, except: %i[gw_scores]
+      before_action :set_crew_from_user, only: %i[gw_scores]
+      before_action :authorize_crew_member!, only: %i[index confirm_claim decline_claim gw_scores]
       before_action :authorize_crew_officer!, only: %i[create bulk_create update destroy assign]
       before_action :set_phantom, only: %i[show update destroy assign confirm_claim decline_claim]
+      before_action :set_phantom_for_scores, only: %i[gw_scores]
 
       # GET /crews/:crew_id/phantom_players
       def index
@@ -86,13 +88,48 @@ module Api
         render json: PhantomPlayerBlueprint.render(@phantom, view: :with_claimed_by, root: :phantom_player)
       end
 
+      # GET /crew/phantom_players/:id/gw_scores
+      def gw_scores
+        # Group scores by participation/event and calculate totals
+        scores_by_event = @phantom.gw_individual_scores
+                                  .includes(crew_gw_participation: :gw_event)
+                                  .group_by(&:crew_gw_participation)
+
+        event_scores = scores_by_event.map do |participation, scores|
+          {
+            gw_event: GwEventBlueprint.render_as_hash(participation.gw_event),
+            total_score: scores.sum(&:score)
+          }
+        end
+
+        # Sort by event number descending (most recent first)
+        event_scores.sort_by! { |es| -es[:gw_event][:event_number] }
+
+        grand_total = event_scores.sum { |es| es[:total_score] }
+
+        render json: {
+          phantom: PhantomPlayerBlueprint.render_as_hash(@phantom),
+          event_scores: event_scores,
+          grand_total: grand_total
+        }
+      end
+
       private
 
       def set_crew
         @crew = Crew.find(params[:crew_id])
       end
 
+      def set_crew_from_user
+        @crew = current_user.crew
+        raise CrewErrors::NotInCrewError unless @crew
+      end
+
       def set_phantom
+        @phantom = @crew.phantom_players.find(params[:id])
+      end
+
+      def set_phantom_for_scores
         @phantom = @crew.phantom_players.find(params[:id])
       end
 

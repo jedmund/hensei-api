@@ -238,6 +238,10 @@ Rails.application.routes.draw do
       # Create individual scores by event (auto-creates participation if needed)
       post 'gw_events/:gw_event_id/individual_scores', to: 'gw_individual_scores#create_by_event'
       post 'gw_events/:gw_event_id/individual_scores/batch', to: 'gw_individual_scores#batch_by_event'
+
+      # Member/phantom GW score history
+      get 'memberships/:id/gw_scores', to: 'crew_memberships#gw_scores'
+      get 'phantom_players/:id/gw_scores', to: 'phantom_players#gw_scores'
     end
 
     # Reading collections - works for any user with privacy check
