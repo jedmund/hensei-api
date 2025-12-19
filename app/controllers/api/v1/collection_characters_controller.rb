@@ -14,12 +14,12 @@ module Api
         @collection_characters = @target_user.collection_characters
                                              .includes(:character, :awakening)
 
-        # Apply filters
-        @collection_characters = @collection_characters.by_element(params[:element]) if params[:element]
-        @collection_characters = @collection_characters.by_rarity(params[:rarity]) if params[:rarity]
-        @collection_characters = @collection_characters.by_race(params[:race]) if params[:race]
-        @collection_characters = @collection_characters.by_proficiency(params[:proficiency]) if params[:proficiency]
-        @collection_characters = @collection_characters.by_gender(params[:gender]) if params[:gender]
+        # Apply filters (array_param splits comma-separated values for OR logic)
+        @collection_characters = @collection_characters.by_element(array_param(:element)) if params[:element]
+        @collection_characters = @collection_characters.by_rarity(array_param(:rarity)) if params[:rarity]
+        @collection_characters = @collection_characters.by_race(array_param(:race)) if params[:race]
+        @collection_characters = @collection_characters.by_proficiency(array_param(:proficiency)) if params[:proficiency]
+        @collection_characters = @collection_characters.by_gender(array_param(:gender)) if params[:gender]
 
         # Apply sorting
         @collection_characters = @collection_characters.sorted_by(params[:sort])
@@ -215,6 +215,10 @@ module Api
 
       def batch_destroy_params
         params.permit(ids: [])
+      end
+
+      def array_param(key)
+        params[key]&.to_s&.split(',')
       end
     end
   end

@@ -16,11 +16,12 @@ module Api
                                                    :weapon_key1, :weapon_key2,
                                                    :weapon_key3, :weapon_key4)
 
+        # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_weapons = @collection_weapons.by_weapon(params[:weapon_id]) if params[:weapon_id]
-        @collection_weapons = @collection_weapons.by_element(params[:element]) if params[:element]
-        @collection_weapons = @collection_weapons.by_rarity(params[:rarity]) if params[:rarity]
-        @collection_weapons = @collection_weapons.by_proficiency(params[:proficiency]) if params[:proficiency]
-        @collection_weapons = @collection_weapons.by_series(params[:series]) if params[:series]
+        @collection_weapons = @collection_weapons.by_element(array_param(:element)) if params[:element]
+        @collection_weapons = @collection_weapons.by_rarity(array_param(:rarity)) if params[:rarity]
+        @collection_weapons = @collection_weapons.by_proficiency(array_param(:proficiency)) if params[:proficiency]
+        @collection_weapons = @collection_weapons.by_series(array_param(:series)) if params[:series]
 
         @collection_weapons = @collection_weapons.sorted_by(params[:sort])
 
@@ -200,6 +201,10 @@ module Api
 
       def batch_destroy_params
         params.permit(ids: [])
+      end
+
+      def array_param(key)
+        params[key]&.to_s&.split(',')
       end
     end
   end

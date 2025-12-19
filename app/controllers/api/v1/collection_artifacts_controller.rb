@@ -15,10 +15,11 @@ module Api
       def index
         @collection_artifacts = @target_user.collection_artifacts.includes(:artifact)
 
+        # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_artifacts = @collection_artifacts.where(artifact_id: params[:artifact_id]) if params[:artifact_id]
-        @collection_artifacts = @collection_artifacts.where(element: params[:element]) if params[:element]
-        @collection_artifacts = @collection_artifacts.by_proficiency(params[:proficiency]) if params[:proficiency].present?
-        @collection_artifacts = @collection_artifacts.joins(:artifact).where(artifacts: { rarity: params[:rarity] }) if params[:rarity]
+        @collection_artifacts = @collection_artifacts.where(element: array_param(:element)) if params[:element]
+        @collection_artifacts = @collection_artifacts.by_proficiency(array_param(:proficiency)) if params[:proficiency].present?
+        @collection_artifacts = @collection_artifacts.joins(:artifact).where(artifacts: { rarity: array_param(:rarity) }) if params[:rarity]
 
         # Skill filters - each slot uses OR logic, slots combined with AND logic
         @collection_artifacts = @collection_artifacts.with_skill_in_slot(1, params[:skill1]) if params[:skill1].present?
@@ -202,6 +203,10 @@ module Api
 
       def batch_destroy_params
         params.permit(ids: [])
+      end
+
+      def array_param(key)
+        params[key]&.to_s&.split(',')
       end
     end
   end
