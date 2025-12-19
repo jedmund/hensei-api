@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_17_195837) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_19_062316) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -500,6 +500,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_17_195837) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "phantom_player_id"
+    t.boolean "excused", default: false, null: false
+    t.text "excuse_reason"
     t.index ["crew_gw_participation_id", "crew_membership_id", "round"], name: "idx_gw_individual_scores_unique", unique: true
     t.index ["crew_gw_participation_id"], name: "index_gw_individual_scores_on_crew_gw_participation_id"
     t.index ["crew_membership_id"], name: "index_gw_individual_scores_on_crew_membership_id"
@@ -549,6 +551,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_17_195837) do
     t.boolean "accessory", default: false
     t.integer "accessory_type", default: 0
     t.boolean "ultimate_mastery", default: false, null: false
+    t.boolean "aux_weapon", default: false
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
   end
 
