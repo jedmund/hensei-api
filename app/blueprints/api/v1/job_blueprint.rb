@@ -19,7 +19,7 @@ module Api
 
       fields :granblue_id, :row, :order,
              :master_level, :ultimate_mastery,
-             :accessory, :accessory_type
+             :accessory, :accessory_type, :aux_weapon
     end
   end
 end
