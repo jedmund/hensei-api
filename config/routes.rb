@@ -121,7 +121,7 @@ Rails.application.routes.draw do
         get :download_status
       end
     end
-    resources :artifact_skills, only: %i[index] do
+    resources :artifact_skills, only: %i[index show update] do
       collection do
         get 'for_slot/:slot', action: :for_slot, as: :for_slot
       end

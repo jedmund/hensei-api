@@ -10,6 +10,13 @@ module Api
         }
       end
 
+      field :game_name do |s|
+        {
+          en: s.game_name_en,
+          ja: s.game_name_jp
+        }
+      end
+
       fields :skill_group, :modifier, :polarity
 
       field :base_values do |s|
