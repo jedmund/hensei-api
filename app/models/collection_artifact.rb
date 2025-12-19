@@ -48,6 +48,19 @@ class CollectionArtifact < ApplicationRecord
   scope :standard_only, -> { joins(:artifact).where(artifacts: { rarity: :standard }) }
   scope :quirk_only, -> { joins(:artifact).where(artifacts: { rarity: :quirk }) }
 
+  # Filter by skill modifier in a specific slot (1-4)
+  # Uses OR logic when multiple modifiers are provided
+  scope :with_skill_in_slot, ->(slot, modifiers) {
+    return all if modifiers.blank?
+
+    modifiers = Array(modifiers).map(&:to_s)
+    column = "skill#{slot}"
+
+    # Build OR conditions for multiple modifiers
+    conditions = modifiers.map { |_| "#{column}->>'modifier' = ?" }.join(' OR ')
+    where(conditions, *modifiers)
+  }
+
   # Returns the effective proficiency - from instance for quirk, from artifact for standard
   def effective_proficiency
     quirk_artifact? ? proficiency : artifact&.proficiency

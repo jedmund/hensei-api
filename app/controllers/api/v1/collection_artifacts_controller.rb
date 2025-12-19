@@ -9,7 +9,7 @@ module Api
       before_action :set_collection_artifact_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch import]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import]
       before_action :set_collection_artifact_for_write, only: %i[update destroy]
 
       def index
@@ -18,6 +18,12 @@ module Api
         @collection_artifacts = @collection_artifacts.where(artifact_id: params[:artifact_id]) if params[:artifact_id]
         @collection_artifacts = @collection_artifacts.where(element: params[:element]) if params[:element]
         @collection_artifacts = @collection_artifacts.joins(:artifact).where(artifacts: { rarity: params[:rarity] }) if params[:rarity]
+
+        # Skill filters - each slot uses OR logic, slots combined with AND logic
+        @collection_artifacts = @collection_artifacts.with_skill_in_slot(1, params[:skill1]) if params[:skill1].present?
+        @collection_artifacts = @collection_artifacts.with_skill_in_slot(2, params[:skill2]) if params[:skill2].present?
+        @collection_artifacts = @collection_artifacts.with_skill_in_slot(3, params[:skill3]) if params[:skill3].present?
+        @collection_artifacts = @collection_artifacts.with_skill_in_slot(4, params[:skill4]) if params[:skill4].present?
 
         @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: params[:limit] || 50)
 
@@ -127,6 +133,17 @@ module Api
         }, status: status
       end
 
+      # DELETE /collection/artifacts/batch_destroy
+      # Deletes multiple collection artifacts in a single request
+      def batch_destroy
+        ids = batch_destroy_params[:ids] || []
+        deleted_count = current_user.collection_artifacts.where(id: ids).destroy_all.count
+
+        render json: {
+          meta: { deleted: deleted_count }
+        }, status: :ok
+      end
+
       private
 
       def set_target_user
@@ -180,6 +197,10 @@ module Api
           update_existing: params[:update_existing],
           data: params[:data]&.to_unsafe_h
         }
+      end
+
+      def batch_destroy_params
+        params.permit(ids: [])
       end
     end
   end
