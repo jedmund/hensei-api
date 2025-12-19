@@ -28,23 +28,23 @@ RSpec.describe ArtifactImportService, type: :service do
 
     # Group I skills
     ArtifactSkill.find_by(skill_group: 1, modifier: 2) ||
-      create(:artifact_skill, :group_i, modifier: 2, name_en: 'HP', base_values: [660, 720, 780, 840, 900])
+      create(:artifact_skill, :group_i, modifier: 2, name_en: 'HP', name_jp: 'HP', base_values: [660, 720, 780, 840, 900])
     ArtifactSkill.find_by(skill_group: 1, modifier: 5) ||
-      create(:artifact_skill, :group_i, modifier: 5, name_en: 'Elemental ATK', base_values: [8.8, 9.6, 10.4, 11.2, 12.0])
+      create(:artifact_skill, :group_i, modifier: 5, name_en: 'Elemental ATK', name_jp: '自属性攻撃力', base_values: [8.8, 9.6, 10.4, 11.2, 12.0])
     ArtifactSkill.find_by(skill_group: 1, modifier: 11) ||
-      create(:artifact_skill, :group_i, modifier: 11, name_en: 'Dodge Rate', base_values: [4.4, 4.8, 5.2, 5.6, 6.0])
+      create(:artifact_skill, :group_i, modifier: 11, name_en: 'Dodge Rate', name_jp: '回避率', base_values: [4.4, 4.8, 5.2, 5.6, 6.0])
 
     # Group II skills
     ArtifactSkill.find_by(skill_group: 2, modifier: 2) ||
-      create(:artifact_skill, :group_ii, modifier: 2, name_en: 'Skill DMG Cap', base_values: [8.8, 9.6, 10.4, 11.2, 12.0])
+      create(:artifact_skill, :group_ii, modifier: 2, name_en: 'Skill DMG Cap', name_jp: 'アビダメ上限', base_values: [8.8, 9.6, 10.4, 11.2, 12.0])
     ArtifactSkill.find_by(skill_group: 2, modifier: 8) ||
-      create(:artifact_skill, :group_ii, modifier: 8, name_en: 'C.A. DMG cap boost tradeoff', base_values: [13.2, 14.4, 15.6, 16.8, 18.0])
+      create(:artifact_skill, :group_ii, modifier: 8, name_en: 'C.A. DMG cap boost tradeoff', name_jp: '奥義ダメ上限UP', base_values: [13.2, 14.4, 15.6, 16.8, 18.0])
 
     # Group III skills
     ArtifactSkill.find_by(skill_group: 3, modifier: 5) ||
-      create(:artifact_skill, :group_iii, modifier: 5, name_en: 'Switch amplified', base_values: [3, 6, 9, 12, 15])
+      create(:artifact_skill, :group_iii, modifier: 5, name_en: 'Switch amplified', name_jp: 'バトル登場時', base_values: [3, 6, 9, 12, 15])
     ArtifactSkill.find_by(skill_group: 3, modifier: 25) ||
-      create(:artifact_skill, :group_iii, modifier: 25, name_en: 'Armored', base_values: [5, 10, 15, 20, 25])
+      create(:artifact_skill, :group_iii, modifier: 25, name_en: 'Armored', name_jp: 'ブロック効果', base_values: [5, 10, 15, 20, 25])
 
     # Clear the cache so new skills are picked up
     ArtifactSkill.clear_cache!
@@ -65,10 +65,10 @@ RSpec.describe ArtifactImportService, type: :service do
               'level' => '1',
               'kind' => '7',
               'attribute' => '5',
-              'skill1_info' => { 'skill_id' => 30_091, 'skill_quality' => 1, 'level' => 1 },
-              'skill2_info' => { 'skill_id' => 20_015, 'skill_quality' => 5, 'level' => 1 },
-              'skill3_info' => { 'skill_id' => 30_301, 'skill_quality' => 1, 'level' => 1 },
-              'skill4_info' => { 'skill_id' => 50_201, 'skill_quality' => 1, 'level' => 1 }
+              'skill1_info' => { 'name' => 'Dodge Rate', 'skill_quality' => 1, 'level' => 1 },
+              'skill2_info' => { 'name' => 'HP', 'skill_quality' => 5, 'level' => 1 },
+              'skill3_info' => { 'name' => 'C.A. DMG cap boost tradeoff', 'skill_quality' => 1, 'level' => 1 },
+              'skill4_info' => { 'name' => 'Switch amplified', 'skill_quality' => 1, 'level' => 1 }
             }
           ]
         }
@@ -100,45 +100,41 @@ RSpec.describe ArtifactImportService, type: :service do
         expect(artifact.element).to eq('light')
       end
 
-      it 'decodes skill1 correctly' do
-        # skill_id 30091 = Dodge Rate (group 1, modifier 11), quality 1 = strength 4.4
+      it 'parses skill1 correctly' do
         service = described_class.new(user, game_data)
         result = service.import
 
         artifact = result.created.first
         expect(artifact.skill1['modifier']).to eq(11)
-        expect(artifact.skill1['strength']).to eq(4.4)
+        expect(artifact.skill1['quality']).to eq(1)
         expect(artifact.skill1['level']).to eq(1)
       end
 
-      it 'decodes skill2 with max quality correctly' do
-        # skill_id 20015 = HP (group 1, modifier 2), quality 5 = strength 900
+      it 'parses skill2 with max quality correctly' do
         service = described_class.new(user, game_data)
         result = service.import
 
         artifact = result.created.first
         expect(artifact.skill2['modifier']).to eq(2)
-        expect(artifact.skill2['strength']).to eq(900)
+        expect(artifact.skill2['quality']).to eq(5)
       end
 
-      it 'decodes skill3 (group II) correctly' do
-        # skill_id 30301 = C.A. DMG cap boost tradeoff (group 2, modifier 8), quality 1 = strength 13.2
+      it 'parses skill3 (group II) correctly' do
         service = described_class.new(user, game_data)
         result = service.import
 
         artifact = result.created.first
         expect(artifact.skill3['modifier']).to eq(8)
-        expect(artifact.skill3['strength']).to eq(13.2)
+        expect(artifact.skill3['quality']).to eq(1)
       end
 
-      it 'decodes skill4 (group III) correctly' do
-        # skill_id 50201 = Switch amplified (group 3, modifier 5), quality 1 = strength 3
+      it 'parses skill4 (group III) correctly' do
         service = described_class.new(user, game_data)
         result = service.import
 
         artifact = result.created.first
         expect(artifact.skill4['modifier']).to eq(5)
-        expect(artifact.skill4['strength']).to eq(3)
+        expect(artifact.skill4['quality']).to eq(1)
       end
     end
 
@@ -152,10 +148,10 @@ RSpec.describe ArtifactImportService, type: :service do
               'level' => '1',
               'kind' => '7',
               'attribute' => '5',
-              'skill1_info' => { 'skill_id' => 30_091, 'skill_quality' => 1, 'level' => 1 },
-              'skill2_info' => { 'skill_id' => 20_015, 'skill_quality' => 5, 'level' => 1 },
-              'skill3_info' => { 'skill_id' => 30_301, 'skill_quality' => 1, 'level' => 1 },
-              'skill4_info' => { 'skill_id' => 50_201, 'skill_quality' => 1, 'level' => 1 }
+              'skill1_info' => { 'name' => 'Dodge Rate', 'skill_quality' => 1, 'level' => 1 },
+              'skill2_info' => { 'name' => 'HP', 'skill_quality' => 5, 'level' => 1 },
+              'skill3_info' => { 'name' => 'C.A. DMG cap boost tradeoff', 'skill_quality' => 1, 'level' => 1 },
+              'skill4_info' => { 'name' => 'Switch amplified', 'skill_quality' => 1, 'level' => 1 }
             }
           ]
         }
@@ -198,10 +194,10 @@ RSpec.describe ArtifactImportService, type: :service do
               'level' => '1',
               'kind' => '8',
               'attribute' => '6',
-              'skill1_info' => { 'skill_id' => 50_321, 'skill_quality' => 1, 'level' => 1 },
-              'skill2_info' => { 'skill_id' => 50_331, 'skill_quality' => 1, 'level' => 1 },
-              'skill3_info' => { 'skill_id' => 50_341, 'skill_quality' => 1, 'level' => 1 },
-              'skill4_info' => { 'skill_id' => 50_351, 'skill_quality' => 1, 'level' => 1 }
+              'skill1_info' => { 'name' => 'Unknown Skill 1', 'skill_quality' => 1, 'level' => 1 },
+              'skill2_info' => { 'name' => 'Unknown Skill 2', 'skill_quality' => 1, 'level' => 1 },
+              'skill3_info' => { 'name' => 'Unknown Skill 3', 'skill_quality' => 1, 'level' => 1 },
+              'skill4_info' => { 'name' => 'Unknown Skill 4', 'skill_quality' => 1, 'level' => 1 }
             }
           ]
         }
@@ -217,7 +213,7 @@ RSpec.describe ArtifactImportService, type: :service do
         expect(artifact.proficiency).to eq('harp') # kind 8 = harp
       end
 
-      it 'stores empty skills for unknown skill_ids' do
+      it 'stores empty skills for unknown skill names' do
         service = described_class.new(user, game_data)
         result = service.import
 
@@ -276,10 +272,10 @@ RSpec.describe ArtifactImportService, type: :service do
               'level' => '1',
               'kind' => '7',
               'attribute' => '5',
-              'skill1_info' => { 'skill_id' => 30_091, 'skill_quality' => 1, 'level' => 1 },
-              'skill2_info' => { 'skill_id' => 20_015, 'skill_quality' => 5, 'level' => 1 },
-              'skill3_info' => { 'skill_id' => 30_301, 'skill_quality' => 1, 'level' => 1 },
-              'skill4_info' => { 'skill_id' => 50_201, 'skill_quality' => 1, 'level' => 1 }
+              'skill1_info' => { 'name' => 'Dodge Rate', 'skill_quality' => 1, 'level' => 1 },
+              'skill2_info' => { 'name' => 'HP', 'skill_quality' => 5, 'level' => 1 },
+              'skill3_info' => { 'name' => 'C.A. DMG cap boost tradeoff', 'skill_quality' => 1, 'level' => 1 },
+              'skill4_info' => { 'name' => 'Switch amplified', 'skill_quality' => 1, 'level' => 1 }
             },
             {
               'artifact_id' => 301_090_101,
@@ -287,10 +283,10 @@ RSpec.describe ArtifactImportService, type: :service do
               'level' => '1',
               'kind' => '9',
               'attribute' => '6',
-              'skill1_info' => { 'skill_id' => 30_112, 'skill_quality' => 2, 'level' => 1 },
-              'skill2_info' => { 'skill_id' => 20_011, 'skill_quality' => 1, 'level' => 1 },
-              'skill3_info' => { 'skill_id' => 30_141, 'skill_quality' => 1, 'level' => 1 },
-              'skill4_info' => { 'skill_id' => 50_121, 'skill_quality' => 1, 'level' => 1 }
+              'skill1_info' => { 'name' => 'Elemental ATK', 'skill_quality' => 2, 'level' => 1 },
+              'skill2_info' => { 'name' => 'HP', 'skill_quality' => 1, 'level' => 1 },
+              'skill3_info' => { 'name' => 'Skill DMG Cap', 'skill_quality' => 1, 'level' => 1 },
+              'skill4_info' => { 'name' => 'Armored', 'skill_quality' => 1, 'level' => 1 }
             }
           ]
         }
@@ -335,10 +331,10 @@ RSpec.describe ArtifactImportService, type: :service do
             'level' => '1',
             'kind' => '7',
             'attribute' => '5',
-            'skill1_info' => { 'skill_id' => 30_091, 'skill_quality' => 1, 'level' => 1 },
-            'skill2_info' => { 'skill_id' => 20_015, 'skill_quality' => 5, 'level' => 1 },
-            'skill3_info' => { 'skill_id' => 30_301, 'skill_quality' => 1, 'level' => 1 },
-            'skill4_info' => { 'skill_id' => 50_201, 'skill_quality' => 1, 'level' => 1 }
+            'skill1_info' => { 'name' => 'Dodge Rate', 'skill_quality' => 1, 'level' => 1 },
+            'skill2_info' => { 'name' => 'HP', 'skill_quality' => 5, 'level' => 1 },
+            'skill3_info' => { 'name' => 'C.A. DMG cap boost tradeoff', 'skill_quality' => 1, 'level' => 1 },
+            'skill4_info' => { 'name' => 'Switch amplified', 'skill_quality' => 1, 'level' => 1 }
           }
         ]
       end
@@ -349,6 +345,36 @@ RSpec.describe ArtifactImportService, type: :service do
 
         expect(result.success?).to be true
         expect(result.created.size).to eq(1)
+      end
+    end
+
+    context 'with Japanese skill names' do
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'artifact_id' => 301_070_101,
+              'id' => 8_138_020,
+              'level' => '1',
+              'kind' => '7',
+              'attribute' => '5',
+              'skill1_info' => { 'name' => '回避率', 'skill_quality' => 1, 'level' => 1 },
+              'skill2_info' => {},
+              'skill3_info' => {},
+              'skill4_info' => {}
+            }
+          ]
+        }
+      end
+
+      it 'matches skills by Japanese name' do
+        service = described_class.new(user, game_data)
+        result = service.import
+
+        expect(result.success?).to be true
+        artifact = result.created.first
+        expect(artifact.skill1['modifier']).to eq(11) # Dodge Rate
+        expect(artifact.skill1['quality']).to eq(1)
       end
     end
   end
@@ -389,8 +415,8 @@ RSpec.describe ArtifactImportService, type: :service do
     end
   end
 
-  describe 'skill quality to strength mapping' do
-    it 'maps quality 1 to base_values[0]' do
+  describe 'skill quality storage' do
+    it 'stores quality 1 correctly' do
       game_data = {
         'list' => [
           {
@@ -399,7 +425,7 @@ RSpec.describe ArtifactImportService, type: :service do
             'level' => '1',
             'kind' => '7',
             'attribute' => '1',
-            'skill1_info' => { 'skill_id' => 30_091, 'skill_quality' => 1, 'level' => 1 },
+            'skill1_info' => { 'name' => 'Dodge Rate', 'skill_quality' => 1, 'level' => 1 },
             'skill2_info' => {},
             'skill3_info' => {},
             'skill4_info' => {}
@@ -410,11 +436,10 @@ RSpec.describe ArtifactImportService, type: :service do
       service = described_class.new(user, game_data)
       result = service.import
 
-      # Dodge Rate base_values[0] = 4.4
-      expect(result.created.first.skill1['strength']).to eq(4.4)
+      expect(result.created.first.skill1['quality']).to eq(1)
     end
 
-    it 'maps quality 5 to base_values[4]' do
+    it 'stores quality 5 correctly' do
       game_data = {
         'list' => [
           {
@@ -423,7 +448,7 @@ RSpec.describe ArtifactImportService, type: :service do
             'level' => '1',
             'kind' => '7',
             'attribute' => '1',
-            'skill1_info' => { 'skill_id' => 30_095, 'skill_quality' => 5, 'level' => 1 },
+            'skill1_info' => { 'name' => 'Dodge Rate', 'skill_quality' => 5, 'level' => 1 },
             'skill2_info' => {},
             'skill3_info' => {},
             'skill4_info' => {}
@@ -434,8 +459,7 @@ RSpec.describe ArtifactImportService, type: :service do
       service = described_class.new(user, game_data)
       result = service.import
 
-      # Dodge Rate base_values[4] = 6.0
-      expect(result.created.first.skill1['strength']).to eq(6.0)
+      expect(result.created.first.skill1['quality']).to eq(5)
     end
   end
 end
