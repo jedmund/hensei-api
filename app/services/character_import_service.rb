@@ -4,6 +4,10 @@
 # Service for importing characters from game JSON data.
 # Parses the game's character inventory data and creates CollectionCharacter records.
 #
+# Supports two data formats:
+# 1. Game inventory format: { param: { id: ... }, master: { id: granblue_id } }
+# 2. Extension stats format: { granblue_id: '...', awakening_type: 1, ring1: {...}, ... }
+#
 # Note: Unlike weapons and summons, characters are unique per user - each character
 # can only be in a user's collection once.
 #
@@ -17,6 +21,15 @@
 class CharacterImportService
   Result = Struct.new(:success?, :created, :updated, :skipped, :errors, keyword_init: true)
 
+  # Map GBF npc_arousal_form to hensei awakening slugs
+  # GBF character awakenings: 1=Attack, 2=Defense, 3=Multiattack, others default to Balanced
+  GBF_AWAKENING_MAP = {
+    1 => 'character-atk',     # Attack
+    2 => 'character-def',     # Defense
+    3 => 'character-multi'    # Multiattack
+    # All others default to character-balanced
+  }.freeze
+
   def initialize(user, game_data, options = {})
     @user = user
     @game_data = game_data
@@ -26,6 +39,7 @@ class CharacterImportService
     @skipped = []
     @errors = []
     @default_awakening = nil
+    @awakening_cache = {}
   end
 
   ##
@@ -63,10 +77,19 @@ class CharacterImportService
   end
 
   def import_item(item, _index)
+    # Detect format: extension stats format has granblue_id at top level
+    if item['granblue_id'].present?
+      import_stats_format(item)
+    else
+      import_game_format(item)
+    end
+  end
+
+  # Import from game inventory format: { param: {...}, master: { id: granblue_id } }
+  def import_game_format(item)
     param = item['param'] || {}
     master = item['master'] || {}
 
-    # The character's granblue_id is in master.id
     granblue_id = master['id']
     game_id = param['id']
 
@@ -76,7 +99,6 @@ class CharacterImportService
       return
     end
 
-    # Characters are unique per user - check by character_id, not game_id
     existing = @user.collection_characters.find_by(character_id: character.id)
 
     if existing
@@ -89,6 +111,30 @@ class CharacterImportService
     end
 
     create_collection_character(item, character)
+  end
+
+  # Import from extension stats format: { granblue_id: '...', awakening_type: 1, ring1: {...}, ... }
+  def import_stats_format(item)
+    granblue_id = item['granblue_id']
+
+    character = find_character(granblue_id)
+    unless character
+      @errors << { granblue_id: granblue_id, error: 'Character not found' }
+      return
+    end
+
+    existing = @user.collection_characters.find_by(character_id: character.id)
+
+    if existing
+      if @update_existing
+        update_existing_stats(existing, item, character)
+      else
+        @skipped << { granblue_id: granblue_id, character_id: character.id, reason: 'Already exists' }
+      end
+      return
+    end
+
+    create_collection_character_from_stats(item, character)
   end
 
   def find_character(granblue_id)
@@ -165,5 +211,74 @@ class CharacterImportService
     # Default to 1 if not present or 0
     value = 1 if value < 1
     value.clamp(1, 10)
+  end
+
+  # Stats format methods
+
+  def create_collection_character_from_stats(item, character)
+    attrs = build_stats_attrs(item, character)
+
+    collection_character = @user.collection_characters.build(attrs)
+
+    if collection_character.save
+      @created << collection_character
+    else
+      @errors << {
+        granblue_id: character.granblue_id,
+        error: collection_character.errors.full_messages.join(', ')
+      }
+    end
+  end
+
+  def update_existing_stats(existing, item, character)
+    attrs = build_stats_attrs(item, character)
+
+    if existing.update(attrs)
+      @updated << existing
+    else
+      @errors << {
+        granblue_id: character.granblue_id,
+        error: existing.errors.full_messages.join(', ')
+      }
+    end
+  end
+
+  def build_stats_attrs(item, character)
+    attrs = { character: character }
+
+    # Awakening type and level
+    if item['awakening_type'].present?
+      attrs[:awakening] = find_awakening_by_type(item['awakening_type'])
+      attrs[:awakening_level] = parse_awakening_level(item['awakening_level'])
+    end
+
+    # Rings (up to 4)
+    attrs[:ring1] = parse_ring(item['ring1']) if item['ring1'].present?
+    attrs[:ring2] = parse_ring(item['ring2']) if item['ring2'].present?
+    attrs[:ring3] = parse_ring(item['ring3']) if item['ring3'].present?
+    attrs[:ring4] = parse_ring(item['ring4']) if item['ring4'].present?
+
+    # Earring
+    attrs[:earring] = parse_ring(item['earring']) if item['earring'].present?
+
+    # Perpetuity ring status
+    attrs[:perpetuity] = item['perpetuity'] if item.key?('perpetuity')
+
+    attrs
+  end
+
+  def find_awakening_by_type(gbf_type)
+    slug = GBF_AWAKENING_MAP[gbf_type.to_i] || 'character-balanced'
+    @awakening_cache[slug] ||= Awakening.find_by(slug: slug, object_type: 'Character')
+  end
+
+  def parse_ring(ring_data)
+    return nil unless ring_data.is_a?(Hash)
+    return nil unless ring_data['modifier'].present?
+
+    {
+      'modifier' => ring_data['modifier'].to_i,
+      'strength' => ring_data['strength'].to_i
+    }
   end
 end
