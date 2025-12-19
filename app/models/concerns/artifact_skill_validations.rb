@@ -24,11 +24,11 @@ module ArtifactSkillValidations
     return if quirk_artifact?
 
     modifier = skill_data['modifier']
-    strength = skill_data['strength']
+    quality = skill_data['quality']
     skill_level = skill_data['level']
 
-    unless modifier && strength && skill_level
-      errors.add(slot_name, 'must have modifier, strength, and level')
+    unless modifier && quality && skill_level
+      errors.add(slot_name, 'must have modifier, quality, and level')
       return
     end
 
@@ -43,9 +43,9 @@ module ArtifactSkillValidations
       return
     end
 
-    # Validate strength is a valid base value for this skill
-    unless skill_def.valid_strength?(strength)
-      errors.add(slot_name, "has invalid base strength #{strength}")
+    # Validate quality is in valid range (1-5)
+    unless (1..5).cover?(quality)
+      errors.add(slot_name, "has invalid quality #{quality}")
     end
   end
 
