@@ -17,6 +17,7 @@ module Api
 
         @collection_artifacts = @collection_artifacts.where(artifact_id: params[:artifact_id]) if params[:artifact_id]
         @collection_artifacts = @collection_artifacts.where(element: params[:element]) if params[:element]
+        @collection_artifacts = @collection_artifacts.by_proficiency(params[:proficiency]) if params[:proficiency].present?
         @collection_artifacts = @collection_artifacts.joins(:artifact).where(artifacts: { rarity: params[:rarity] }) if params[:rarity]
 
         # Skill filters - each slot uses OR logic, slots combined with AND logic

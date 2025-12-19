@@ -43,7 +43,13 @@ class CollectionArtifact < ApplicationRecord
   # Scopes
   scope :by_element, ->(el) { where(element: el) }
   scope :by_artifact, ->(artifact_id) { where(artifact_id: artifact_id) }
-  scope :by_proficiency, ->(prof) { where(proficiency: prof) }
+  # Filter by proficiency - handles both quirk (instance) and standard (artifact) proficiencies
+  scope :by_proficiency, ->(prof) {
+    joins(:artifact).where(
+      'collection_artifacts.proficiency IN (?) OR (collection_artifacts.proficiency IS NULL AND artifacts.proficiency IN (?))',
+      Array(prof), Array(prof)
+    )
+  }
   scope :by_rarity, ->(rar) { joins(:artifact).where(artifacts: { rarity: rar }) }
   scope :standard_only, -> { joins(:artifact).where(artifacts: { rarity: :standard }) }
   scope :quirk_only, -> { joins(:artifact).where(artifacts: { rarity: :quirk }) }
