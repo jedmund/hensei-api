@@ -262,18 +262,21 @@ Rails.application.routes.draw do
       resources :characters, only: [:create, :update, :destroy], controller: '/api/v1/collection_characters' do
         collection do
           post :batch
+          delete :batch_destroy
           post :import
         end
       end
       resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons' do
         collection do
           post :batch
+          delete :batch_destroy
           post :import
         end
       end
       resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
         collection do
           post :batch
+          delete :batch_destroy
           post :import
         end
       end
@@ -282,6 +285,7 @@ Rails.application.routes.draw do
       resources :artifacts, only: [:create, :update, :destroy], controller: '/api/v1/collection_artifacts' do
         collection do
           post :batch
+          delete :batch_destroy
           post :import
         end
       end

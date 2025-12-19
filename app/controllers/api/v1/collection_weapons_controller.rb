@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_weapon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch import]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import]
       before_action :set_collection_weapon_for_write, only: %i[update destroy]
 
       def index
@@ -102,6 +102,17 @@ module Api
         ), status: status
       end
 
+      # DELETE /collection/weapons/batch_destroy
+      # Deletes multiple collection weapons in a single request
+      def batch_destroy
+        ids = batch_destroy_params[:ids] || []
+        deleted_count = current_user.collection_weapons.where(id: ids).destroy_all.count
+
+        render json: {
+          meta: { deleted: deleted_count }
+        }, status: :ok
+      end
+
       # POST /collection/weapons/import
       # Imports weapons from game JSON data
       #
@@ -185,6 +196,10 @@ module Api
           update_existing: params[:update_existing],
           data: params[:data]&.to_unsafe_h
         }
+      end
+
+      def batch_destroy_params
+        params.permit(ids: [])
       end
     end
   end
