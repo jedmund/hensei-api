@@ -28,12 +28,15 @@ class ArtifactSkill < ApplicationRecord
       @cached_skills ||= all.index_by { |s| [s.skill_group, s.modifier] }
     end
 
-    def cached_by_name
-      @name_cache ||= begin
+    def cached_by_game_name
+      @game_name_cache ||= begin
         cache = {}
         all.each do |skill|
-          cache[skill.name_en] = skill
-          cache[skill.name_jp] = skill
+          # Use game names for matching, fall back to display names if not set
+          en_key = skill.game_name_en.presence || skill.name_en
+          jp_key = skill.game_name_jp.presence || skill.name_jp
+          cache[en_key] = skill
+          cache[jp_key] = skill
         end
         cache
       end
@@ -50,13 +53,13 @@ class ArtifactSkill < ApplicationRecord
       cached_skills[[group_key, modifier]]
     end
 
-    def find_by_name(name)
-      cached_by_name[name]
+    def find_by_game_name(name)
+      cached_by_game_name[name]
     end
 
     def clear_cache!
       @cached_skills = nil
-      @name_cache = nil
+      @game_name_cache = nil
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_19_062316) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_19_064037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -33,6 +33,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_19_062316) do
     t.string "suffix_en", default: ""
     t.string "suffix_jp", default: ""
     t.string "polarity", default: "positive", null: false
+    t.string "game_name_en"
+    t.string "game_name_jp"
+    t.index ["game_name_en"], name: "index_artifact_skills_on_game_name_en"
+    t.index ["game_name_jp"], name: "index_artifact_skills_on_game_name_jp"
     t.index ["skill_group", "modifier"], name: "index_artifact_skills_on_skill_group_and_modifier", unique: true
     t.index ["skill_group"], name: "index_artifact_skills_on_skill_group"
   end

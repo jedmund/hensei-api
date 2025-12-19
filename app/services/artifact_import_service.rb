@@ -183,8 +183,8 @@ class ArtifactImportService
     quality = info['skill_quality'] || info['level'] || 1
     level = info['level'] || 1
 
-    # Look up skill by name (supports both EN and JP)
-    skill = ArtifactSkill.find_by_name(name)
+    # Look up skill by game name (supports both EN and JP)
+    skill = ArtifactSkill.find_by_game_name(name)
     return {} unless skill
 
     {
