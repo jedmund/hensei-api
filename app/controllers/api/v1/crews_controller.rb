@@ -49,10 +49,10 @@ module Api
         case filter
         when :active
           members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
-          phantoms = []
+          phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         when :retired
           members = @crew.crew_memberships.retired.includes(:user).order(retired_at: :desc)
-          phantoms = []
+          phantoms = @crew.phantom_players.not_deleted.retired.includes(:claimed_by).order(:name)
         when :phantom
           members = []
           phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
@@ -61,7 +61,7 @@ module Api
           phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
         else
           members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
-          phantoms = []
+          phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         end
 
         render json: {
