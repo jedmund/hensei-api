@@ -10,7 +10,6 @@ class ArtifactSkill < ApplicationRecord
   validates :modifier, presence: true, uniqueness: { scope: :skill_group }
   validates :name_en, presence: true
   validates :name_jp, presence: true
-  validates :base_values, presence: true
   validates :polarity, presence: true
 
   # Scopes
