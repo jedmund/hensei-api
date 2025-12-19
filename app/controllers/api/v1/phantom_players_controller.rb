@@ -90,21 +90,31 @@ module Api
 
       # GET /crew/phantom_players/:id/gw_scores
       def gw_scores
-        # Use SQL GROUP BY and SUM for efficient aggregation
-        event_scores = GwIndividualScore
-                       .joins(crew_gw_participation: :gw_event)
-                       .where(phantom_player_id: @phantom.id)
-                       .group('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date')
-                       .order('gw_events.event_number DESC')
-                       .pluck('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date, SUM(gw_individual_scores.score)')
-                       .map do |id, event_number, element, start_date, end_date, total_score|
-                         {
-                           gw_event: { id: id, event_number: event_number, element: element, start_date: start_date, end_date: end_date },
-                           total_score: total_score.to_i
-                         }
-                       end
+        # Get all crew GW events to identify gaps
+        all_crew_events = @crew.crew_gw_participations
+                               .joins(:gw_event)
+                               .order('gw_events.event_number DESC')
+                               .pluck('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date')
 
-        grand_total = event_scores.sum { |es| es[:total_score] }
+        # Get scores for this phantom
+        scores_by_event = GwIndividualScore
+                          .joins(crew_gw_participation: :gw_event)
+                          .where(phantom_player_id: @phantom.id)
+                          .group('gw_events.id')
+                          .pluck('gw_events.id, SUM(gw_individual_scores.score)')
+                          .to_h
+
+        # Build event scores with gap markers
+        event_scores = all_crew_events.map do |event_id, event_number, element, start_date, end_date|
+          score = scores_by_event[event_id]
+          {
+            gw_event: { id: event_id, event_number: event_number, element: element, start_date: start_date, end_date: end_date },
+            total_score: score&.to_i,
+            in_crew: score.present?
+          }
+        end
+
+        grand_total = event_scores.sum { |es| es[:total_score] || 0 }
 
         render json: {
           phantom: PhantomPlayerBlueprint.render_as_hash(@phantom),

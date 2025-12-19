@@ -10,7 +10,7 @@ module Api
       before_action :set_crew_from_user, only: %i[gw_scores]
       before_action :set_membership, only: %i[update destroy promote demote]
       before_action :set_membership_for_scores, only: %i[gw_scores]
-      before_action :authorize_crew_officer!, only: %i[destroy]
+      before_action :authorize_crew_officer!, only: %i[destroy history]
       before_action :authorize_crew_captain!, only: %i[promote demote]
       before_action :authorize_membership_update!, only: %i[update]
       before_action :authorize_crew_member!, only: %i[gw_scores]
@@ -58,28 +58,56 @@ module Api
         render json: CrewMembershipBlueprint.render(@membership, view: :with_user, root: :membership)
       end
 
+      # GET /crews/:crew_id/memberships/by_user/:user_id
+      def history
+        memberships = @crew.crew_memberships
+                           .where(user_id: params[:user_id])
+                           .order(created_at: :desc)
+        render json: CrewMembershipBlueprint.render(memberships, view: :with_user, root: :memberships)
+      end
+
       # GET /crew/memberships/:id/gw_scores
       def gw_scores
-        # Use SQL GROUP BY and SUM for efficient aggregation
-        event_scores = GwIndividualScore
-                       .joins(crew_gw_participation: :gw_event)
-                       .where(crew_membership_id: @membership.id)
-                       .group('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date')
-                       .order('gw_events.event_number DESC')
-                       .pluck('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date, SUM(gw_individual_scores.score)')
-                       .map do |id, event_number, element, start_date, end_date, total_score|
-                         {
-                           gw_event: { id: id, event_number: event_number, element: element, start_date: start_date, end_date: end_date },
-                           total_score: total_score.to_i
-                         }
-                       end
+        # Find ALL memberships for this user in the crew (for boomerang players)
+        all_memberships = @crew.crew_memberships.where(user_id: @membership.user_id)
+        membership_ids = all_memberships.pluck(:id)
 
-        grand_total = event_scores.sum { |es| es[:total_score] }
+        # Get all crew GW events to identify gaps
+        all_crew_events = @crew.crew_gw_participations
+                               .joins(:gw_event)
+                               .order('gw_events.event_number DESC')
+                               .pluck('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date')
+
+        # Get scores across all membership periods
+        scores_by_event = GwIndividualScore
+                          .joins(crew_gw_participation: :gw_event)
+                          .where(crew_membership_id: membership_ids)
+                          .group('gw_events.id')
+                          .pluck('gw_events.id, SUM(gw_individual_scores.score)')
+                          .to_h
+
+        # Build event scores with gap markers
+        event_scores = all_crew_events.map do |event_id, event_number, element, start_date, end_date|
+          score = scores_by_event[event_id]
+          {
+            gw_event: { id: event_id, event_number: event_number, element: element, start_date: start_date, end_date: end_date },
+            total_score: score&.to_i,
+            in_crew: score.present?
+          }
+        end
+
+        grand_total = event_scores.sum { |es| es[:total_score] || 0 }
+
+        # Build membership periods for context
+        membership_periods = all_memberships.order(created_at: :desc).map do |m|
+          { id: m.id, joined_at: m.joined_at, retired_at: m.retired_at, retired: m.retired }
+        end
 
         render json: {
           member: CrewMembershipBlueprint.render_as_hash(@membership, view: :with_user),
           event_scores: event_scores,
-          grand_total: grand_total
+          grand_total: grand_total,
+          membership_periods: membership_periods
         }
       end
 

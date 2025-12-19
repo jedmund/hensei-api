@@ -182,6 +182,9 @@ Rails.application.routes.draw do
       end
 
       resources :memberships, controller: 'crew_memberships', only: %i[update destroy] do
+        collection do
+          get 'by_user/:user_id', action: :history, as: :history
+        end
         member do
           post :promote
           post :demote
