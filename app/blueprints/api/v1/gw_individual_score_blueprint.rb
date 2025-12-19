@@ -3,7 +3,7 @@
 module Api
   module V1
     class GwIndividualScoreBlueprint < ApiBlueprint
-      fields :round, :score, :is_cumulative
+      fields :round, :score, :is_cumulative, :excused
 
       field :player_name do |score|
         score.player_name
@@ -15,6 +15,12 @@ module Api
         elsif score.phantom_player_id.present?
           'phantom'
         end
+      end
+
+      # Only return excuse_reason to crew officers
+      field :excuse_reason do |score, options|
+        current_user = options[:current_user]
+        score.excuse_reason if current_user&.crew_officer?
       end
 
       view :with_member do

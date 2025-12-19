@@ -24,7 +24,7 @@ module Api
         score.recorded_by = current_user
 
         if score.save
-          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score), status: :created
+          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score, current_user: current_user), status: :created
         else
           render_validation_error_response(score)
         end
@@ -37,7 +37,7 @@ module Api
         end
 
         if @score.update(score_params.except(:crew_membership_id))
-          render json: GwIndividualScoreBlueprint.render(@score, view: :with_member, root: :individual_score)
+          render json: GwIndividualScoreBlueprint.render(@score, view: :with_member, root: :individual_score, current_user: current_user)
         else
           render_validation_error_response(@score)
         end
@@ -69,7 +69,7 @@ module Api
         score.recorded_by = current_user
 
         if score.save
-          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score), status: :created
+          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score, current_user: current_user), status: :created
         else
           render_validation_error_response(score)
         end
@@ -104,11 +104,11 @@ module Api
       end
 
       def score_params
-        params.require(:individual_score).permit(:crew_membership_id, :round, :score, :is_cumulative)
+        params.require(:individual_score).permit(:crew_membership_id, :round, :score, :is_cumulative, :excused, :excuse_reason)
       end
 
       def score_params_with_player
-        params.require(:individual_score).permit(:crew_membership_id, :phantom_player_id, :round, :score, :is_cumulative)
+        params.require(:individual_score).permit(:crew_membership_id, :phantom_player_id, :round, :score, :is_cumulative, :excused, :excuse_reason)
       end
 
       def can_record_score_for?(membership_id)
@@ -132,6 +132,8 @@ module Api
           score.assign_attributes(
             score: score_data[:score],
             is_cumulative: score_data[:is_cumulative] || false,
+            excused: score_data[:excused] || false,
+            excuse_reason: score_data[:excuse_reason],
             recorded_by: current_user
           )
 
@@ -143,9 +145,9 @@ module Api
         end
 
         if errors.empty?
-          render json: GwIndividualScoreBlueprint.render(results, view: :with_member, root: :individual_scores), status: :created
+          render json: GwIndividualScoreBlueprint.render(results, view: :with_member, root: :individual_scores, current_user: current_user), status: :created
         else
-          render json: { individual_scores: GwIndividualScoreBlueprint.render_as_hash(results, view: :with_member), errors: errors },
+          render json: { individual_scores: GwIndividualScoreBlueprint.render_as_hash(results, view: :with_member, current_user: current_user), errors: errors },
                  status: :multi_status
         end
       end

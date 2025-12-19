@@ -52,10 +52,11 @@ module Api
         field :crew_scores do |participation|
           GwCrewScoreBlueprint.render_as_hash(participation.gw_crew_scores.order(:round))
         end
-        field :individual_scores do |participation|
+        field :individual_scores do |participation, options|
           GwIndividualScoreBlueprint.render_as_hash(
             participation.gw_individual_scores.includes(:crew_membership).order(:round),
-            view: :with_member
+            view: :with_member,
+            current_user: options[:current_user]
           )
         end
       end
