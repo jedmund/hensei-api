@@ -250,6 +250,7 @@ Rails.application.routes.draw do
     # Reading collections - works for any user with privacy check
     scope 'users/:user_id' do
       namespace :collection do
+        get :counts, controller: '/api/v1/collection'
         resources :characters, only: [:index, :show], controller: '/api/v1/collection_characters'
         resources :weapons, only: [:index, :show], controller: '/api/v1/collection_weapons'
         resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
