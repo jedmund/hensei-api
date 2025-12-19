@@ -28,6 +28,17 @@ class ArtifactSkill < ApplicationRecord
       @cached_skills ||= all.index_by { |s| [s.skill_group, s.modifier] }
     end
 
+    def cached_by_name
+      @name_cache ||= begin
+        cache = {}
+        all.each do |skill|
+          cache[skill.name_en] = skill
+          cache[skill.name_jp] = skill
+        end
+        cache
+      end
+    end
+
     def find_skill(group, modifier)
       # Convert group number to enum key
       group_key = case group
@@ -39,8 +50,13 @@ class ArtifactSkill < ApplicationRecord
       cached_skills[[group_key, modifier]]
     end
 
+    def find_by_name(name)
+      cached_by_name[name]
+    end
+
     def clear_cache!
       @cached_skills = nil
+      @name_cache = nil
     end
   end
 
@@ -70,5 +86,16 @@ class ArtifactSkill < ApplicationRecord
     return true if base_values.include?(nil) # Unknown values are always valid
 
     base_values.include?(strength)
+  end
+
+  # Get the base strength value for a given quality tier
+  # @param quality [Integer] The quality tier (1-5)
+  # @return [Numeric, nil] The base strength value
+  def strength_for_quality(quality)
+    return nil if base_values.nil? || !base_values.is_a?(Array) || base_values.empty?
+
+    # Quality 1-5 maps to index 0-4
+    index = (quality - 1).clamp(0, base_values.size - 1)
+    base_values[index]
   end
 end
