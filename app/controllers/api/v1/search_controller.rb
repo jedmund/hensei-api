@@ -79,8 +79,15 @@ module Api
                          Character.en_search(search_params[:query]).where(conditions)
                        end
                      else
-                       Character.where(conditions).order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc'))
+                       Character.where(conditions)
                      end
+
+        # Apply sorting if specified, otherwise use default
+        if search_params[:sort].present?
+          characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
+        elsif search_params[:query].blank?
+          characters = characters.order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc'))
+        end
 
         # Filter by series (array overlap)
         if filters && filters['series'].present? && !filters['series'].empty?
@@ -125,8 +132,15 @@ module Api
                       Weapon.en_search(search_params[:query]).where(conditions)
                     end
                   else
-                    Weapon.where(conditions).order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+                    Weapon.where(conditions)
                   end
+
+        # Apply sorting if specified, otherwise use default
+        if search_params[:sort].present?
+          weapons = apply_sort(weapons, search_params[:sort], search_params[:order], locale)
+        elsif search_params[:query].blank?
+          weapons = weapons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+        end
 
         # Filter by promotions (array overlap)
         if filters && filters['promotions'].present? && !filters['promotions'].empty?
@@ -161,8 +175,15 @@ module Api
                       Summon.en_search(search_params[:query]).where(conditions)
                     end
                   else
-                    Summon.where(conditions).order(release_date: :desc).order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+                    Summon.where(conditions)
                   end
+
+        # Apply sorting if specified, otherwise use default
+        if search_params[:sort].present?
+          summons = apply_sort(summons, search_params[:sort], search_params[:order], locale)
+        elsif search_params[:query].blank?
+          summons = summons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+        end
 
         # Filter by promotions (array overlap)
         if filters && filters['promotions'].present? && !filters['promotions'].empty?
@@ -285,6 +306,25 @@ module Api
       def search_params
         return {} unless params[:search].present?
         params.require(:search).permit!
+      end
+
+      # Apply sorting based on column name and order
+      def apply_sort(scope, column, order, locale)
+        sort_dir = order == 'desc' ? :desc : :asc
+
+        case column
+        when 'name'
+          name_col = locale == 'ja' ? :name_ja : :name_en
+          scope.order(name_col => sort_dir)
+        when 'element'
+          scope.order(element: sort_dir)
+        when 'rarity'
+          scope.order(rarity: sort_dir)
+        when 'last_updated'
+          scope.order(updated_at: sort_dir)
+        else
+          scope
+        end
       end
     end
   end
