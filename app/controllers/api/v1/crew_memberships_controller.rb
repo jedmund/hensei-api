@@ -60,20 +60,19 @@ module Api
 
       # GET /crew/memberships/:id/gw_scores
       def gw_scores
-        # Group scores by participation/event and calculate totals
-        scores_by_event = @membership.gw_individual_scores
-                                     .includes(crew_gw_participation: :gw_event)
-                                     .group_by(&:crew_gw_participation)
-
-        event_scores = scores_by_event.map do |participation, scores|
-          {
-            gw_event: GwEventBlueprint.render_as_hash(participation.gw_event),
-            total_score: scores.sum(&:score)
-          }
-        end
-
-        # Sort by event number descending (most recent first)
-        event_scores.sort_by! { |es| -es[:gw_event][:event_number] }
+        # Use SQL GROUP BY and SUM for efficient aggregation
+        event_scores = GwIndividualScore
+                       .joins(crew_gw_participation: :gw_event)
+                       .where(crew_membership_id: @membership.id)
+                       .group('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date')
+                       .order('gw_events.event_number DESC')
+                       .pluck('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date, SUM(gw_individual_scores.score)')
+                       .map do |id, event_number, element, start_date, end_date, total_score|
+                         {
+                           gw_event: { id: id, event_number: event_number, element: element, start_date: start_date, end_date: end_date },
+                           total_score: total_score.to_i
+                         }
+                       end
 
         grand_total = event_scores.sum { |es| es[:total_score] }
 
