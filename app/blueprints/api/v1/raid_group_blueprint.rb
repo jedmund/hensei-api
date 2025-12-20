@@ -4,6 +4,8 @@ module Api
   module V1
     class RaidGroupBlueprint < ApiBlueprint
       view :flat do
+        identifier :id
+
         field :name do |group|
           {
             en: group.name_en,
@@ -11,7 +13,7 @@ module Api
           }
         end
 
-        fields :difficulty, :order, :section, :extra, :guidebooks, :hl
+        fields :difficulty, :order, :section, :extra, :guidebooks, :hl, :unlimited
       end
 
       view :full do
