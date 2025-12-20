@@ -4,6 +4,8 @@ module Api
   module V1
     class RaidBlueprint < ApiBlueprint
       view :nested do
+        identifier :id
+
         field :name do |raid|
           {
             en: raid.name_en,
@@ -18,7 +20,6 @@ module Api
 
       view :full do
         include_view :nested
-        association :group, blueprint: RaidGroupBlueprint, view: :flat
       end
     end
   end

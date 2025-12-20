@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_19_064037) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_20_014422) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -712,6 +712,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_19_064037) do
     t.boolean "extra", default: false, null: false
     t.boolean "hl", default: true, null: false
     t.boolean "guidebooks", default: false, null: false
+    t.boolean "unlimited", default: false, null: false
   end
 
   create_table "raids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
