@@ -44,6 +44,7 @@ class GridWeapon < ApplicationRecord
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
 
   validate :compatible_with_position, on: :create
+  validate :compatible_with_job_proficiency, on: :create
   validate :no_conflicts, on: :create
 
   before_save :assign_mainhand
@@ -188,6 +189,26 @@ class GridWeapon < ApplicationRecord
   def no_conflicts
     conflicting = conflicts(party)
     errors.add(:series, 'must not conflict with existing weapons') if conflicting.any?
+  end
+
+  ##
+  # Validates that mainhand weapon proficiency matches the job's proficiency.
+  #
+  # For position -1 (mainhand), the weapon's proficiency must match either
+  # the party's job proficiency1 or proficiency2.
+  #
+  # @return [void]
+  def compatible_with_job_proficiency
+    return unless position == -1 # Only validate mainhand
+    return unless weapon.present? && party&.job.present?
+
+    job = party.job
+    weapon_prof = weapon.proficiency
+
+    # Weapon proficiency must match one of the job's proficiencies
+    unless [job.proficiency1, job.proficiency2].include?(weapon_prof)
+      errors.add(:weapon, 'proficiency must match job proficiency for mainhand')
+    end
   end
 
   ##
