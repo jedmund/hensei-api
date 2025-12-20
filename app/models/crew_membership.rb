@@ -28,6 +28,10 @@ class CrewMembership < ApplicationRecord
     update!(retired: true, retired_at: Time.current, role: :member)
   end
 
+  def officer?
+    captain? || vice_captain?
+  end
+
   def blueprint
     CrewMembershipBlueprint
   end

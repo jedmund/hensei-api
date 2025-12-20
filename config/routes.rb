@@ -101,9 +101,11 @@ Rails.application.routes.draw do
 
     get 'guidebooks', to: 'guidebooks#all'
 
-    get 'raids', to: 'raids#all'
-    get 'raids/groups', to: 'raids#groups'
-    get 'raids/:id', to: 'raids#show'
+    # Raids and RaidGroups
+    resources :raid_groups, only: %i[index show create update destroy]
+    resources :raids, only: %i[index show create update destroy]
+    get 'raids/groups', to: 'raids#groups' # Legacy endpoint
+
     get 'weapon_keys', to: 'weapon_keys#all'
 
     resources :weapon_series, only: %i[index show create update destroy]
@@ -171,6 +173,7 @@ Rails.application.routes.draw do
     resource :crew, only: %i[show update], controller: 'crews' do
       member do
         get :members
+        get :roster
         post :leave
       end
     end

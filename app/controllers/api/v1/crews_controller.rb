@@ -6,10 +6,10 @@ module Api
       include CrewAuthorizationConcern
 
       before_action :restrict_access
-      before_action :set_crew, only: %i[show update members leave transfer_captain]
-      before_action :require_crew!, only: %i[show update members]
+      before_action :set_crew, only: %i[show update members roster leave transfer_captain]
+      before_action :require_crew!, only: %i[show update members roster]
       before_action :authorize_crew_member!, only: %i[show members]
-      before_action :authorize_crew_officer!, only: %i[update]
+      before_action :authorize_crew_officer!, only: %i[update roster]
       before_action :authorize_crew_captain!, only: %i[transfer_captain]
 
       # GET /crew or GET /crews/:id
@@ -80,6 +80,17 @@ module Api
         head :no_content
       end
 
+      # GET /crew/roster
+      # Returns collection ownership for crew members based on requested item IDs
+      # Params: character_ids[], weapon_ids[], summon_ids[]
+      def roster
+        members = @crew.active_memberships.includes(:user)
+
+        render json: {
+          members: members.map { |m| build_member_roster(m) }
+        }
+      end
+
       # POST /crews/:id/transfer_captain
       def transfer_captain
         new_captain_id = params[:user_id]
@@ -111,6 +122,44 @@ module Api
 
       def require_crew!
         render_not_found_response('crew') unless @crew
+      end
+
+      def build_member_roster(membership)
+        user = membership.user
+        {
+          user_id: user.id,
+          username: user.username,
+          role: membership.role,
+          characters: find_collection_items(user, :characters),
+          weapons: find_collection_items(user, :weapons),
+          summons: find_collection_items(user, :summons)
+        }
+      end
+
+      def find_collection_items(user, type)
+        ids = params["#{type.to_s.singularize}_ids"]
+        return [] if ids.blank?
+
+        collection = case type
+                     when :characters then user.collection_characters.where(character_id: ids)
+                     when :weapons then user.collection_weapons.where(weapon_id: ids)
+                     when :summons then user.collection_summons.where(summon_id: ids)
+                     end
+
+        collection.map do |item|
+          {
+            id: item_id_for(item, type),
+            uncap_level: item.uncap_level
+          }
+        end
+      end
+
+      def item_id_for(item, type)
+        case type
+        when :characters then item.character_id
+        when :weapons then item.weapon_id
+        when :summons then item.summon_id
+        end
       end
     end
   end
