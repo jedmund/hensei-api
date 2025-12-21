@@ -6,12 +6,12 @@ module Api
       # Base fields that are always needed
       fields :local_id, :description, :shortcode, :visibility,
              :name, :element, :extra, :charge_attack,
-             :button_count, :turn_count, :chain_count, :clear_time,
-             :full_auto, :auto_guard, :auto_summon,
+             :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
+             :full_auto, :auto_guard, :auto_summon, :video_url,
              :created_at, :updated_at
 
       fields :local_id, :description, :charge_attack,
-             :button_count, :turn_count, :chain_count,
+             :button_count, :turn_count, :chain_count, :summon_count,
              :master_level, :ultimate_mastery
 
       # Party associations

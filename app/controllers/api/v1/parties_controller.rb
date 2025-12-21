@@ -288,7 +288,7 @@ module Api
           :user_id, :local_id, :edit_key, :extra, :name, :description, :raid_id, :job_id, :visibility,
           :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
           :full_auto, :auto_guard, :auto_summon, :charge_attack, :clear_time, :button_count,
-          :turn_count, :chain_count, :guidebook1_id, :guidebook2_id, :guidebook3_id,
+          :turn_count, :chain_count, :summon_count, :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
           characters_attributes: [:id, :party_id, :character_id, :position, :uncap_level,
                                   :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
                                   { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
