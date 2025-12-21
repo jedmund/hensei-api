@@ -1,11 +1,14 @@
 namespace :db do
   desc 'Backup remote PostgreSQL database'
   task :backup do
-    remote_host = ENV.fetch('REMOTE_DB_HOST', 'roundhouse.proxy.rlwy.net')
-    remote_port = ENV.fetch('REMOTE_DB_PORT', '54629')
-    remote_user = ENV.fetch('REMOTE_DB_USER', 'postgres')
-    remote_db = ENV.fetch('REMOTE_DB_NAME', 'railway')
-    password = ENV.fetch('REMOTE_DB_PASSWORD') { raise 'Please set REMOTE_DB_PASSWORD' }
+    db_url = ENV.fetch('REMOTE_DB_URL') { raise 'Please set REMOTE_DB_URL' }
+    uri = URI.parse(db_url)
+
+    remote_host = uri.host
+    remote_port = uri.port
+    remote_user = uri.user
+    remote_db = uri.path.delete_prefix('/')
+    password = uri.password
 
     backup_dir = File.expand_path('backups')
     FileUtils.mkdir_p(backup_dir)
@@ -21,7 +24,7 @@ namespace :db do
     puts 'Backup completed!'
   end
 
-  desc 'Restore PostgreSQL database from backup'
+  desc 'Restore PostgreSQL database from backup (use CLEAN=1 to drop and recreate first)'
   task :restore, [:backup_file] => [:environment] do |_, args|
     local_user = ENV.fetch('LOCAL_DB_USER', 'justin')
     local_db = ENV.fetch('LOCAL_DB_NAME', 'hensei_dev')
@@ -31,6 +34,18 @@ namespace :db do
     backup_file = args[:backup_file] || Dir.glob("#{backup_dir}/*-prod-backup.tar").max
 
     raise 'Backup file not found. Please specify a valid backup file.' unless backup_file && File.exist?(backup_file)
+
+    if ENV['CLEAN']
+      puts 'Dropping and recreating database...'
+      ActiveRecord::Base.connection.execute(<<~SQL)
+        SELECT pg_terminate_backend(pid)
+        FROM pg_stat_activity
+        WHERE datname = '#{local_db}' AND pid <> pg_backend_pid()
+      SQL
+      ActiveRecord::Base.connection.disconnect!
+      Rake::Task['db:drop'].invoke
+      Rake::Task['db:create'].invoke
+    end
 
     puts "Restoring database from #{backup_file}..."
     system("pg_restore --no-owner --role=#{local_user} --disable-triggers -U #{local_user} -d #{local_db} #{backup_file}")
