@@ -141,16 +141,30 @@ module Api
         return [] if ids.blank?
 
         collection = case type
-                     when :characters then user.collection_characters.where(character_id: ids)
-                     when :weapons then user.collection_weapons.where(weapon_id: ids)
-                     when :summons then user.collection_summons.where(summon_id: ids)
+                     when :characters then user.collection_characters.includes(:character).where(character_id: ids)
+                     when :weapons then user.collection_weapons.includes(:weapon).where(weapon_id: ids)
+                     when :summons then user.collection_summons.includes(:summon).where(summon_id: ids)
                      end
 
         collection.map do |item|
-          {
+          canonical = case type
+                      when :characters then item.character
+                      when :weapons then item.weapon
+                      when :summons then item.summon
+                      end
+
+          result = {
             id: item_id_for(item, type),
-            uncap_level: item.uncap_level
+            uncap_level: item.uncap_level,
+            transcendence_step: item.transcendence_step,
+            flb: canonical&.flb,
+            ulb: canonical&.ulb,
+            transcendence: canonical&.transcendence
           }
+
+          result[:special] = canonical&.special if type == :characters
+
+          result
         end
       end
 
