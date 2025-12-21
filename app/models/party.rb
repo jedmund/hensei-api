@@ -200,7 +200,12 @@ class Party < ApplicationRecord
   validates :button_count, numericality: { only_integer: true }, allow_nil: true
   validates :chain_count, numericality: { only_integer: true }, allow_nil: true
   validates :turn_count, numericality: { only_integer: true }, allow_nil: true
+  validates :summon_count, numericality: { only_integer: true }, allow_nil: true
   validates :ultimate_mastery, numericality: { only_integer: true }, allow_nil: true
+
+  # YouTube URL validation regex
+  YOUTUBE_REGEX = %r{\A(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]+}
+  validates :video_url, format: { with: YOUTUBE_REGEX, message: 'must be a valid YouTube URL' }, allow_blank: true
 
   # Validate visibility (allowed values: 1, 2, or 3).
   validates :visibility,

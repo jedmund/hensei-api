@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_20_014422) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_20_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -135,7 +135,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_20_014422) do
     t.text "wiki_raw"
     t.jsonb "game_raw_en", comment: "JSON data from game (English)"
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
-    t.text "game_raw_en_backup"
     t.integer "season"
     t.integer "series", default: [], null: false, array: true
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
@@ -637,6 +636,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_20_014422) do
     t.integer "preview_state", default: 0, null: false
     t.datetime "preview_generated_at"
     t.string "preview_s3_key"
+    t.string "video_url", limit: 2048
+    t.integer "summon_count"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["created_at"], name: "index_parties_on_created_at"
     t.index ["element"], name: "index_parties_on_element"
