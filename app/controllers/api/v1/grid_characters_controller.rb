@@ -504,8 +504,8 @@ module Api
       # @param position [Integer] the position to validate.
       # @return [Boolean] true if the position is valid; false otherwise.
       def valid_character_position?(position)
-        # Main slots (0-4), extra slots (5-6)
-        (0..6).cover?(position)
+        # Main slots (0-4), extra slots (5-7) for unlimited raids
+        (0..7).cover?(position)
       end
 
       ##
@@ -515,9 +515,9 @@ module Api
       # @param new_position [Integer] the new position.
       # @return [Boolean] true if compaction is needed; false otherwise.
       def should_compact_characters?(old_position, new_position)
-        # Compact if moving from main slots (0-4) to extra (5-6) or vice versa
-        main_to_extra = (0..4).cover?(old_position) && (5..6).cover?(new_position)
-        extra_to_main = (5..6).cover?(old_position) && (0..4).cover?(new_position)
+        # Compact if moving from main slots (0-4) to extra (5-7) or vice versa
+        main_to_extra = (0..4).cover?(old_position) && (5..7).cover?(new_position)
+        extra_to_main = (5..7).cover?(old_position) && (0..4).cover?(new_position)
         main_to_extra || extra_to_main
       end
 
