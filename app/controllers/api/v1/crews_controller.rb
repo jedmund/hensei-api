@@ -158,11 +158,16 @@ module Api
             uncap_level: item.uncap_level,
             transcendence_step: item.transcendence_step,
             flb: canonical&.flb,
-            ulb: canonical&.ulb,
-            transcendence: canonical&.transcendence
+            ulb: canonical&.ulb
           }
 
-          result[:special] = canonical&.special if type == :characters
+          if type == :characters
+            result[:special] = canonical&.special
+            # For characters, transcendence availability is indicated by ulb on non-special chars
+            result[:transcendence] = !canonical&.special && canonical&.ulb
+          else
+            result[:transcendence] = canonical&.transcendence
+          end
 
           result
         end
