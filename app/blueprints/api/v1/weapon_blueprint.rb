@@ -13,7 +13,7 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :limit, :rarity,
-             :ax, :ax_type, :gacha, :promotions
+             :ax, :ax_type, :gacha, :promotions, :forge_order
 
       # Series - returns full object with flags if weapon_series is present, fallback to legacy integer
       field :series do |w|
@@ -46,7 +46,8 @@ module Api
         {
           flb: w.flb,
           ulb: w.ulb,
-          transcendence: w.transcendence
+          transcendence: w.transcendence,
+          extra_prerequisite: w.extra_prerequisite
         }
       end
 
@@ -114,6 +115,39 @@ module Api
               ja: character.name_jp
             }
           }
+        end
+
+        # Forge chain fields
+        field :forged_from do |w|
+          next nil unless w.forged_from.present?
+
+          parent = w.forged_from_weapon
+          next nil unless parent
+
+          {
+            id: parent.id,
+            granblue_id: parent.granblue_id,
+            name: {
+              en: parent.name_en,
+              ja: parent.name_jp
+            }
+          }
+        end
+
+        field :forge_chain do |w|
+          next nil unless w.forge_chain_id.present?
+
+          w.forge_chain.map do |weapon|
+            {
+              id: weapon.id,
+              granblue_id: weapon.granblue_id,
+              name: {
+                en: weapon.name_en,
+                ja: weapon.name_jp
+              },
+              forge_order: weapon.forge_order
+            }
+          end
         end
       end
 
