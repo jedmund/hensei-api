@@ -28,11 +28,13 @@ module Api
       def create
         return render_unprocessable_entity_response(Api::V1::NoWeaponProvidedError.new) if @incoming_weapon.nil?
 
+        position = weapon_params[:position]
+        collection_weapon_id = weapon_params[:collection_weapon_id]
         grid_weapon = GridWeapon.new(
           weapon_params.merge(
             party_id: @party.id,
             weapon_id: @incoming_weapon.id,
-            uncap_level: compute_default_uncap(@incoming_weapon)
+            uncap_level: compute_default_uncap(@incoming_weapon, position, collection_weapon_id)
           )
         )
 
@@ -186,11 +188,13 @@ module Api
         end
 
         # Compute the default uncap level based on incoming weapon flags, maxing out at ULB.
-        new_uncap = compute_default_uncap(incoming)
+        # For extra positions, force ULB for weapons with extra-capable series.
+        position = resolve_params[:position]
+        new_uncap = compute_default_uncap(incoming, position)
         grid_weapon = GridWeapon.create!(
           party_id: @party.id,
           weapon_id: incoming.id,
-          position: resolve_params[:position],
+          position: position,
           uncap_level: new_uncap,
           transcendence_step: 0
         )
@@ -262,11 +266,26 @@ module Api
       # Computes the default uncap level for an incoming weapon.
       #
       # This method calculates the default uncap level by computing the maximum uncap level based on the weapon's flags.
+      # For extra positions (9-11), weapons with extra_prerequisite set will be forced to that uncap level.
+      # This logic is skipped for collection weapons which should retain their actual uncap level.
       #
       # @param incoming [Weapon] the incoming weapon.
+      # @param position [Integer] the target position (optional).
+      # @param collection_weapon_id [String] the collection weapon ID if linking from collection (optional).
       # @return [Integer] the default uncap level.
-      def compute_default_uncap(incoming)
-        compute_max_uncap_level(incoming)
+      def compute_default_uncap(incoming, position = nil, collection_weapon_id = nil)
+        max_uncap = compute_max_uncap_level(incoming)
+
+        # Skip prerequisite logic for collection weapons - use their actual uncap level
+        return max_uncap if collection_weapon_id.present?
+
+        # Extra positions require minimum uncap for weapons with extra_prerequisite set
+        if position && GridWeapon::EXTRA_POSITIONS.include?(position.to_i) &&
+           incoming.extra_prerequisite.present?
+          return [incoming.extra_prerequisite, max_uncap].min
+        end
+
+        max_uncap
       end
 
       ##
