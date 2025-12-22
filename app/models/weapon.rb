@@ -136,6 +136,28 @@ class Weapon < ApplicationRecord
   scope :flash_exclusive, -> { by_promotion(GranblueEnums::PROMOTIONS[:Flash]).where.not('? = ANY(promotions)', GranblueEnums::PROMOTIONS[:Legend]) }
   scope :legend_exclusive, -> { by_promotion(GranblueEnums::PROMOTIONS[:Legend]).where.not('? = ANY(promotions)', GranblueEnums::PROMOTIONS[:Flash]) }
 
+  # Forge chain scopes
+  scope :in_forge_chain, ->(chain_id) { where(forge_chain_id: chain_id).order(:forge_order) }
+
+  # Forge chain methods
+  def forged_from_weapon
+    return nil unless forged_from.present?
+
+    Weapon.find_by(granblue_id: forged_from)
+  end
+
+  def forge_chain(same_element: true)
+    return [] unless forge_chain_id.present?
+
+    chain = Weapon.in_forge_chain(forge_chain_id)
+    same_element ? chain.where(element: element) : chain
+  end
+
+  def forges_to(same_element: true)
+    weapons = Weapon.where(forged_from: granblue_id)
+    same_element ? weapons.where(element: element) : weapons
+  end
+
   # Promotion helpers
   def flash?
     promotions.include?(GranblueEnums::PROMOTIONS[:Flash])
