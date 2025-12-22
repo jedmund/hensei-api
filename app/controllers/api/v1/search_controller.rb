@@ -121,7 +121,7 @@ module Api
             conditions[:proficiency] =
               filters['proficiency1']
           end
-          conditions[:series] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
+          conditions[:weapon_series_id] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
           conditions[:extra] = filters['extra'] unless filters['extra'].blank?
         end
 
