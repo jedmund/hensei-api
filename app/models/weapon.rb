@@ -139,6 +139,9 @@ class Weapon < ApplicationRecord
   # Forge chain scopes
   scope :in_forge_chain, ->(chain_id) { where(forge_chain_id: chain_id).order(:forge_order) }
 
+  # Forge chain callbacks
+  before_save :compute_forge_chain_fields, if: :forged_from_changed?
+
   # Forge chain methods
   def forged_from_weapon
     return nil unless forged_from.present?
@@ -187,5 +190,49 @@ class Weapon < ApplicationRecord
     # Try to find by ID first, then by slug
     found = WeaponSeries.find_by(id: value) || WeaponSeries.find_by(slug: value)
     self.weapon_series = found
+  end
+
+  # Validation to prevent circular forge chains
+  validate :no_circular_forge_chain
+
+  def no_circular_forge_chain
+    return unless forged_from.present?
+
+    visited = Set.new([granblue_id])
+    current = forged_from
+
+    while current.present?
+      if visited.include?(current)
+        errors.add(:forged_from, 'creates a circular forge chain')
+        return
+      end
+      visited << current
+      current = Weapon.find_by(granblue_id: current)&.forged_from
+    end
+  end
+
+  private
+
+  # Auto-compute forge_order and forge_chain_id based on forged_from
+  def compute_forge_chain_fields
+    if forged_from.present?
+      base_weapon = Weapon.find_by(granblue_id: forged_from)
+      if base_weapon
+        # Inherit or create forge_chain_id from base weapon
+        self.forge_chain_id = base_weapon.forge_chain_id || base_weapon.id
+
+        # Compute forge_order as base weapon's order + 1
+        self.forge_order = base_weapon.forge_order.to_i + 1
+
+        # Ensure base weapon has forge_chain_id if it didn't
+        if base_weapon.forge_chain_id.nil?
+          base_weapon.update_column(:forge_chain_id, base_weapon.id)
+          base_weapon.update_column(:forge_order, 0) if base_weapon.forge_order.nil?
+        end
+      end
+    else
+      # Clearing forged_from - reset forge_order if part of a chain
+      self.forge_order = 0 if forge_chain_id.present?
+    end
   end
 end

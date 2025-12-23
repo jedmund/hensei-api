@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_20_100000) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -989,6 +989,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_20_100000) do
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "weapon_series_id"
     t.boolean "gacha", default: false, null: false
+    t.integer "extra_prerequisite"
+    t.string "forged_from"
+    t.uuid "forge_chain_id"
+    t.integer "forge_order"
+    t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
+    t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
