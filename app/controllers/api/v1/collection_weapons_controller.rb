@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_weapon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync]
       before_action :set_collection_weapon_for_write, only: %i[update destroy]
 
       def index
@@ -119,6 +119,8 @@ module Api
       #
       # @param data [Hash] Game data containing weapon list
       # @param update_existing [Boolean] Whether to update existing weapons (default: false)
+      # @param is_full_inventory [Boolean] Whether this represents the user's complete inventory (default: false)
+      # @param reconcile_deletions [Boolean] Whether to delete items not in the import (default: false)
       def import
         game_data = import_params[:data]
 
@@ -129,7 +131,9 @@ module Api
         service = WeaponImportService.new(
           current_user,
           game_data,
-          update_existing: import_params[:update_existing] == true
+          update_existing: import_params[:update_existing] == true,
+          is_full_inventory: import_params[:is_full_inventory] == true,
+          reconcile_deletions: import_params[:reconcile_deletions] == true
         )
 
         result = service.import
@@ -141,8 +145,39 @@ module Api
           created: result.created.size,
           updated: result.updated.size,
           skipped: result.skipped.size,
-          errors: result.errors
+          errors: result.errors,
+          reconciliation: result.reconciliation
         }, status: status
+      end
+
+      # POST /collection/weapons/preview_sync
+      # Previews what would be deleted in a full sync operation
+      #
+      # @param data [Hash] Game data containing weapon list
+      # @return [JSON] List of items that would be deleted
+      def preview_sync
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = WeaponImportService.new(current_user, game_data)
+        items_to_delete = service.preview_deletions
+
+        render json: {
+          will_delete: items_to_delete.map do |cw|
+            {
+              id: cw.id,
+              game_id: cw.game_id,
+              name: cw.weapon&.name_en,
+              granblue_id: cw.weapon&.granblue_id,
+              uncap_level: cw.uncap_level,
+              transcendence_step: cw.transcendence_step
+            }
+          end,
+          count: items_to_delete.size
+        }
       end
 
       private
@@ -195,6 +230,8 @@ module Api
       def import_params
         {
           update_existing: params[:update_existing],
+          is_full_inventory: params[:is_full_inventory],
+          reconcile_deletions: params[:reconcile_deletions],
           data: params[:data]&.to_unsafe_h
         }
       end

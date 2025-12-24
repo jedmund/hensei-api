@@ -19,6 +19,10 @@ class GridSummon < ApplicationRecord
   belongs_to :collection_summon, optional: true
   validates_presence_of :party
 
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
+
   # Validate that position is provided.
   validates :position, presence: true
   validate :compatible_with_position, on: :create
@@ -38,6 +42,14 @@ class GridSummon < ApplicationRecord
   # @return [GridSummonBlueprint] the blueprint class for grid summons.
   def blueprint
     GridSummonBlueprint
+  end
+
+  ##
+  # Marks this grid summon as orphaned and clears its collection link.
+  #
+  # @return [Boolean] true if the update succeeded
+  def mark_orphaned!
+    update!(orphaned: true, collection_summon_id: nil)
   end
 
   ##
