@@ -8,6 +8,10 @@ class CollectionWeapon < ApplicationRecord
   belongs_to :weapon_key3, class_name: 'WeaponKey', optional: true
   belongs_to :weapon_key4, class_name: 'WeaponKey', optional: true
 
+  has_many :grid_weapons, dependent: :nullify
+
+  before_destroy :orphan_grid_items
+
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
 
@@ -128,5 +132,13 @@ class CollectionWeapon < ApplicationRecord
     if weapon.present? && !weapon.transcendence
       errors.add(:transcendence_step, "not available for this weapon") if transcendence_step > 0
     end
+  end
+
+  ##
+  # Marks all linked grid weapons as orphaned before destroying this collection weapon.
+  #
+  # @return [void]
+  def orphan_grid_items
+    grid_weapons.update_all(orphaned: true, collection_weapon_id: nil)
   end
 end

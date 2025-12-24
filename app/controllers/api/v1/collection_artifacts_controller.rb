@@ -9,7 +9,7 @@ module Api
       before_action :set_collection_artifact_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync]
       before_action :set_collection_artifact_for_write, only: %i[update destroy]
 
       def index
@@ -109,6 +109,8 @@ module Api
       #
       # @param data [Hash] Game data containing artifact list
       # @param update_existing [Boolean] Whether to update existing artifacts (default: false)
+      # @param is_full_inventory [Boolean] Whether this represents the user's complete inventory (default: false)
+      # @param reconcile_deletions [Boolean] Whether to delete items not in the import (default: false)
       def import
         game_data = import_params[:data]
 
@@ -119,7 +121,9 @@ module Api
         service = ArtifactImportService.new(
           current_user,
           game_data,
-          update_existing: import_params[:update_existing] == true
+          update_existing: import_params[:update_existing] == true,
+          is_full_inventory: import_params[:is_full_inventory] == true,
+          reconcile_deletions: import_params[:reconcile_deletions] == true
         )
 
         result = service.import
@@ -131,8 +135,39 @@ module Api
           created: result.created&.size || 0,
           updated: result.updated&.size || 0,
           skipped: result.skipped&.size || 0,
-          errors: result.errors || []
+          errors: result.errors || [],
+          reconciliation: result.reconciliation
         }, status: status
+      end
+
+      # POST /collection/artifacts/preview_sync
+      # Previews what would be deleted in a full sync operation
+      #
+      # @param data [Hash] Game data containing artifact list
+      # @return [JSON] List of items that would be deleted
+      def preview_sync
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = ArtifactImportService.new(current_user, game_data)
+        items_to_delete = service.preview_deletions
+
+        render json: {
+          will_delete: items_to_delete.map do |ca|
+            {
+              id: ca.id,
+              game_id: ca.game_id,
+              name: ca.artifact&.name_en,
+              granblue_id: ca.artifact&.granblue_id,
+              element: ca.element,
+              level: ca.level
+            }
+          end,
+          count: items_to_delete.size
+        }
       end
 
       # DELETE /collection/artifacts/batch_destroy
@@ -197,6 +232,8 @@ module Api
       def import_params
         {
           update_existing: params[:update_existing],
+          is_full_inventory: params[:is_full_inventory],
+          reconcile_deletions: params[:reconcile_deletions],
           data: params[:data]&.to_unsafe_h
         }
       end

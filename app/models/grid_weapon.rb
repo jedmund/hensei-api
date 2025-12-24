@@ -39,6 +39,10 @@ class GridWeapon < ApplicationRecord
   belongs_to :awakening, optional: true
   belongs_to :collection_weapon, optional: true
 
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
+
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
@@ -88,6 +92,14 @@ class GridWeapon < ApplicationRecord
       awakening_level: collection_weapon.awakening_level
     )
     true
+  end
+
+  ##
+  # Marks this grid weapon as orphaned and clears its collection link.
+  #
+  # @return [Boolean] true if the update succeeded
+  def mark_orphaned!
+    update!(orphaned: true, collection_weapon_id: nil)
   end
 
   ##
