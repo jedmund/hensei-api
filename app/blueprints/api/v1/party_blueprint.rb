@@ -36,6 +36,10 @@ module Api
         end
       end
 
+      field :has_orphaned_items do |party|
+        party.has_orphaned_items?
+      end
+
       # For collection views
       view :preview do
         include_view :preview_objects # Characters, Weapons, Summons

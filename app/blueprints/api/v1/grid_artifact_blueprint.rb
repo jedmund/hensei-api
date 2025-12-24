@@ -3,7 +3,7 @@
 module Api
   module V1
     class GridArtifactBlueprint < ApiBlueprint
-      fields :level, :reroll_slot
+      fields :level, :reroll_slot, :orphaned
 
       field :collection_artifact_id
       field :out_of_sync, if: ->(_field, ga, _options) { ga.collection_artifact_id.present? } do |ga|

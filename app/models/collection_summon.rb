@@ -2,6 +2,10 @@ class CollectionSummon < ApplicationRecord
   belongs_to :user
   belongs_to :summon
 
+  has_many :grid_summons, dependent: :nullify
+
+  before_destroy :orphan_grid_items
+
   validates :uncap_level, inclusion: { in: 0..5 }
   validates :transcendence_step, inclusion: { in: 0..10 }
 
@@ -30,5 +34,13 @@ class CollectionSummon < ApplicationRecord
     if summon.present? && !summon.transcendence
       errors.add(:transcendence_step, "not available for this summon")
     end
+  end
+
+  ##
+  # Marks all linked grid summons as orphaned before destroying this collection summon.
+  #
+  # @return [void]
+  def orphan_grid_items
+    grid_summons.update_all(orphaned: true, collection_summon_id: nil)
   end
 end
