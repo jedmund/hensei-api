@@ -30,6 +30,7 @@ class WeaponImportService
     @update_existing = options[:update_existing] || false
     @is_full_inventory = options[:is_full_inventory] || false
     @reconcile_deletions = options[:reconcile_deletions] || false
+    @filter = options[:filter] # { elements: [...], proficiencies: [...] }
     @created = []
     @updated = []
     @skipped = []
@@ -41,6 +42,7 @@ class WeaponImportService
   ##
   # Previews what would be deleted in a sync operation.
   # Does not modify any data, just returns items that would be removed.
+  # When a filter is active, only considers items matching that filter.
   #
   # @return [Array<CollectionWeapon>] Collection weapons that would be deleted
   def preview_deletions
@@ -56,10 +58,14 @@ class WeaponImportService
     return [] if game_ids.empty?
 
     # Find collection weapons with game_ids NOT in the import
-    @user.collection_weapons
-         .includes(:weapon)
-         .where.not(game_id: nil)
-         .where.not(game_id: game_ids)
+    # Scoped to filter criteria if present
+    scope = @user.collection_weapons
+                 .includes(:weapon)
+                 .where.not(game_id: nil)
+                 .where.not(game_id: game_ids)
+
+    scope = apply_filter_scope(scope)
+    scope
   end
 
   ##
@@ -313,18 +319,22 @@ class WeaponImportService
   ##
   # Reconciles deletions by removing collection weapons not in the processed list.
   # Only called when @is_full_inventory and @reconcile_deletions are both true.
+  # When a filter is active, only deletes items matching that filter.
   #
   # @return [Hash] Reconciliation result with deleted count and orphaned grid item IDs
   def reconcile_deletions
     # Find collection weapons with game_ids NOT in our processed list
-    missing = @user.collection_weapons
-                   .where.not(game_id: nil)
-                   .where.not(game_id: @processed_game_ids)
+    # Scoped to filter criteria if present
+    scope = @user.collection_weapons
+                 .where.not(game_id: nil)
+                 .where.not(game_id: @processed_game_ids)
+
+    scope = apply_filter_scope(scope)
 
     deleted_count = 0
     orphaned_grid_item_ids = []
 
-    missing.find_each do |coll_weapon|
+    scope.find_each do |coll_weapon|
       # Collect IDs of grid items that will be orphaned
       grid_weapon_ids = GridWeapon.where(collection_weapon_id: coll_weapon.id).pluck(:id)
       orphaned_grid_item_ids.concat(grid_weapon_ids)
@@ -338,5 +348,33 @@ class WeaponImportService
       deleted: deleted_count,
       orphaned_grid_items: orphaned_grid_item_ids
     }
+  end
+
+  ##
+  # Applies element and proficiency filters to a collection weapons scope.
+  # Used to scope deletion checks to only items matching the current game filter.
+  #
+  # @param scope [ActiveRecord::Relation] The collection weapons relation to filter
+  # @return [ActiveRecord::Relation] Filtered relation
+  def apply_filter_scope(scope)
+    return scope unless @filter.present?
+
+    # Element: check collection_weapon.element first (for element-changeable weapons),
+    # fall back to weapon.element if nil
+    if @filter[:elements].present? || @filter['elements'].present?
+      elements = @filter[:elements] || @filter['elements']
+      scope = scope.joins(:weapon).where(
+        'collection_weapons.element IN (?) OR (collection_weapons.element IS NULL AND weapons.element IN (?))',
+        elements, elements
+      )
+    end
+
+    # Proficiency: join through weapon
+    if @filter[:proficiencies].present? || @filter['proficiencies'].present?
+      proficiencies = @filter[:proficiencies] || @filter['proficiencies']
+      scope = scope.joins(:weapon).where(weapons: { proficiency: proficiencies })
+    end
+
+    scope
   end
 end
