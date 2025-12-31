@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class MigrateAxModifiersToFk < ActiveRecord::Migration[8.0]
-  # Old AX_MAPPING from WeaponProcessor: game_skill_id (string) => internal_value (integer)
-  # We need the reverse: internal_value => game_skill_id
+  # Old AX_MAPPING from WeaponProcessor stored internal integer values (0, 1, 2...)
+  # We need to map: old internal_value => game_skill_id => weapon_stat_modifier.id
   OLD_INTERNAL_TO_GAME_SKILL_ID = {
     2 => 1588,   # HP
     0 => 1589,   # ATK
@@ -24,73 +24,92 @@ class MigrateAxModifiersToFk < ActiveRecord::Migration[8.0]
   }.freeze
 
   def up
-    # Build lookup cache: game_skill_id -> weapon_stat_modifier.id
+    # Build lookup: old_internal_value -> new FK id
     modifier_by_game_skill_id = WeaponStatModifier.pluck(:game_skill_id, :id).to_h
-
-    # Migrate CollectionWeapon ax_modifier1
-    CollectionWeapon.where.not(ax_modifier1: nil).find_each do |cw|
-      game_skill_id = OLD_INTERNAL_TO_GAME_SKILL_ID[cw.ax_modifier1]
-      modifier_id = game_skill_id ? modifier_by_game_skill_id[game_skill_id] : nil
-      if modifier_id
-        cw.update_columns(ax_modifier1_ref_id: modifier_id)
-      else
-        Rails.logger.warn "[MigrateAxModifiers] Unknown ax_modifier1=#{cw.ax_modifier1} on CollectionWeapon##{cw.id}"
-      end
+    old_to_new_id = OLD_INTERNAL_TO_GAME_SKILL_ID.transform_values do |game_skill_id|
+      modifier_by_game_skill_id[game_skill_id]
     end
 
-    # Migrate CollectionWeapon ax_modifier2
-    CollectionWeapon.where.not(ax_modifier2: nil).find_each do |cw|
-      game_skill_id = OLD_INTERNAL_TO_GAME_SKILL_ID[cw.ax_modifier2]
-      modifier_id = game_skill_id ? modifier_by_game_skill_id[game_skill_id] : nil
-      if modifier_id
-        cw.update_columns(ax_modifier2_ref_id: modifier_id)
-      else
-        Rails.logger.warn "[MigrateAxModifiers] Unknown ax_modifier2=#{cw.ax_modifier2} on CollectionWeapon##{cw.id}"
-      end
-    end
+    # Use raw SQL to query old integer columns (ax_modifier1, ax_modifier2)
+    # and update the new FK columns (ax_modifier1_id, ax_modifier2_id)
 
-    # Migrate GridWeapon ax_modifier1
-    GridWeapon.where.not(ax_modifier1: nil).find_each do |gw|
-      game_skill_id = OLD_INTERNAL_TO_GAME_SKILL_ID[gw.ax_modifier1]
-      modifier_id = game_skill_id ? modifier_by_game_skill_id[game_skill_id] : nil
-      if modifier_id
-        gw.update_columns(ax_modifier1_ref_id: modifier_id)
-      else
-        Rails.logger.warn "[MigrateAxModifiers] Unknown ax_modifier1=#{gw.ax_modifier1} on GridWeapon##{gw.id}"
-      end
-    end
+    # Migrate CollectionWeapon
+    execute <<-SQL.squish
+      UPDATE collection_weapons
+      SET ax_modifier1_id = CASE ax_modifier1
+        #{old_to_new_id.map { |old_val, new_id| "WHEN #{old_val} THEN #{new_id}" }.join(' ')}
+      END
+      WHERE ax_modifier1 IS NOT NULL
+    SQL
 
-    # Migrate GridWeapon ax_modifier2
-    GridWeapon.where.not(ax_modifier2: nil).find_each do |gw|
-      game_skill_id = OLD_INTERNAL_TO_GAME_SKILL_ID[gw.ax_modifier2]
-      modifier_id = game_skill_id ? modifier_by_game_skill_id[game_skill_id] : nil
-      if modifier_id
-        gw.update_columns(ax_modifier2_ref_id: modifier_id)
-      else
-        Rails.logger.warn "[MigrateAxModifiers] Unknown ax_modifier2=#{gw.ax_modifier2} on GridWeapon##{gw.id}"
-      end
-    end
+    execute <<-SQL.squish
+      UPDATE collection_weapons
+      SET ax_modifier2_id = CASE ax_modifier2
+        #{old_to_new_id.map { |old_val, new_id| "WHEN #{old_val} THEN #{new_id}" }.join(' ')}
+      END
+      WHERE ax_modifier2 IS NOT NULL
+    SQL
+
+    # Migrate GridWeapon
+    execute <<-SQL.squish
+      UPDATE grid_weapons
+      SET ax_modifier1_id = CASE ax_modifier1
+        #{old_to_new_id.map { |old_val, new_id| "WHEN #{old_val} THEN #{new_id}" }.join(' ')}
+      END
+      WHERE ax_modifier1 IS NOT NULL
+    SQL
+
+    execute <<-SQL.squish
+      UPDATE grid_weapons
+      SET ax_modifier2_id = CASE ax_modifier2
+        #{old_to_new_id.map { |old_val, new_id| "WHEN #{old_val} THEN #{new_id}" }.join(' ')}
+      END
+      WHERE ax_modifier2 IS NOT NULL
+    SQL
   end
 
   def down
-    # Build reverse lookup: game_skill_id -> old internal value
+    # Build reverse lookup: new FK id -> old internal value
+    modifier_by_game_skill_id = WeaponStatModifier.pluck(:game_skill_id, :id).to_h
     game_skill_id_to_internal = OLD_INTERNAL_TO_GAME_SKILL_ID.invert
-
-    # Reverse: copy FK back to integer columns using old internal values
-    WeaponStatModifier.find_each do |modifier|
-      next unless modifier.game_skill_id
-
-      internal_value = game_skill_id_to_internal[modifier.game_skill_id]
-      next unless internal_value
-
-      CollectionWeapon.where(ax_modifier1_ref_id: modifier.id)
-                      .update_all(ax_modifier1: internal_value)
-      CollectionWeapon.where(ax_modifier2_ref_id: modifier.id)
-                      .update_all(ax_modifier2: internal_value)
-      GridWeapon.where(ax_modifier1_ref_id: modifier.id)
-                .update_all(ax_modifier1: internal_value)
-      GridWeapon.where(ax_modifier2_ref_id: modifier.id)
-                .update_all(ax_modifier2: internal_value)
+    new_id_to_old = modifier_by_game_skill_id.each_with_object({}) do |(game_skill_id, new_id), hash|
+      old_val = game_skill_id_to_internal[game_skill_id]
+      hash[new_id] = old_val if old_val
     end
+
+    return if new_id_to_old.empty?
+
+    # Reverse: copy FK back to old integer columns
+    execute <<-SQL.squish
+      UPDATE collection_weapons
+      SET ax_modifier1 = CASE ax_modifier1_id
+        #{new_id_to_old.map { |new_id, old_val| "WHEN #{new_id} THEN #{old_val}" }.join(' ')}
+      END
+      WHERE ax_modifier1_id IS NOT NULL
+    SQL
+
+    execute <<-SQL.squish
+      UPDATE collection_weapons
+      SET ax_modifier2 = CASE ax_modifier2_id
+        #{new_id_to_old.map { |new_id, old_val| "WHEN #{new_id} THEN #{old_val}" }.join(' ')}
+      END
+      WHERE ax_modifier2_id IS NOT NULL
+    SQL
+
+    execute <<-SQL.squish
+      UPDATE grid_weapons
+      SET ax_modifier1 = CASE ax_modifier1_id
+        #{new_id_to_old.map { |new_id, old_val| "WHEN #{new_id} THEN #{old_val}" }.join(' ')}
+      END
+      WHERE ax_modifier1_id IS NOT NULL
+    SQL
+
+    execute <<-SQL.squish
+      UPDATE grid_weapons
+      SET ax_modifier2 = CASE ax_modifier2_id
+        #{new_id_to_old.map { |new_id, old_val| "WHEN #{new_id} THEN #{old_val}" }.join(' ')}
+      END
+      WHERE ax_modifier2_id IS NOT NULL
+    SQL
   end
 end
