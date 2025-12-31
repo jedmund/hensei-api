@@ -40,7 +40,25 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
   describe '#process_weapon_ax' do
     let(:grid_weapon) { build(:grid_weapon, party: party) }
-    it 'flattens nested augment_skill_info and assigns ax_modifier and ax_strength' do
+
+    let!(:ax_hp_modifier) do
+      WeaponStatModifier.find_by(slug: 'ax_hp') ||
+        create(:weapon_stat_modifier, :ax_hp)
+    end
+
+    let!(:ax_ca_dmg_modifier) do
+      WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
+        create(:weapon_stat_modifier,
+               slug: 'ax_ca_dmg',
+               name_en: 'C.A. DMG',
+               category: 'ax',
+               stat: 'ca_dmg',
+               polarity: 1,
+               suffix: '%',
+               game_skill_id: 1591)
+    end
+
+    it 'flattens nested augment_skill_info and assigns ax_modifier_id and ax_strength' do
       ax_skill_info = [
         [
           { 'skill_id' => '1588', 'effect_value' => '3', 'show_value' => '3%' },
@@ -48,10 +66,10 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
         ]
       ]
       processor.send(:process_weapon_ax, grid_weapon, ax_skill_info)
-      expect(grid_weapon.ax_modifier1).to eq(2) # from 1588 → 2
-      expect(grid_weapon.ax_strength1).to eq(3)
-      expect(grid_weapon.ax_modifier2).to eq(3) # from 1591 → 3
-      expect(grid_weapon.ax_strength2).to eq(5)
+      expect(grid_weapon.ax_modifier1).to eq(ax_hp_modifier)
+      expect(grid_weapon.ax_strength1).to eq(3.0)
+      expect(grid_weapon.ax_modifier2).to eq(ax_ca_dmg_modifier)
+      expect(grid_weapon.ax_strength2).to eq(5.0)
     end
   end
 

@@ -41,26 +41,6 @@ module Processors
   class WeaponProcessor < BaseProcessor
     TRANSCENDENCE_LEVELS = [200, 210, 220, 230, 240, 250].freeze
 
-    # Mapping from in‑game AX skill IDs (as strings) to our internal modifier values.
-    AX_MAPPING = {
-      '1588' => 2,
-      '1589' => 0,
-      '1590' => 1,
-      '1591' => 3,
-      '1592' => 4,
-      '1593' => 9,
-      '1594' => 13,
-      '1595' => 10,
-      '1596' => 5,
-      '1597' => 6,
-      '1599' => 8,
-      '1600' => 12,
-      '1601' => 11,
-      '1719' => 15,
-      '1720' => 16,
-      '1721' => 17,
-      '1722' => 14
-    }.freeze
 
     # KEY_MAPPING maps the raw key value (as a string) to a canonical range or value.
     # For example, in our test we want a raw key "10001" to be interpreted as any key whose
@@ -331,7 +311,8 @@ module Processors
     # Processes AX (augment) skill data.
     #
     # The deck stores AX skills in an array of arrays under "augment_skill_info".
-    # This method flattens the data and assigns each skill’s modifier and strength.
+    # This method flattens the data and assigns each skill's modifier and strength.
+    # Modifiers are now looked up by game_skill_id in the weapon_stat_modifiers table.
     #
     # @param grid_weapon [GridWeapon] the grid weapon record being built.
     # @param ax_skill_info [Array] the raw AX skill info.
@@ -340,12 +321,57 @@ module Processors
       # Flatten the nested array structure.
       ax_skills = ax_skill_info.flatten
       ax_skills.each_with_index do |ax, idx|
-        ax_id = ax['skill_id'].to_s
-        ax_mod = AX_MAPPING[ax_id] || ax_id.to_i
-        strength = ax['effect_value'].to_s.gsub(/[+%]/, '').to_i
-        grid_weapon["ax_modifier#{idx + 1}"] = ax_mod
+        break if idx >= 2 # Only 2 AX skill slots
+
+        game_skill_id = ax['skill_id'].to_i
+        modifier = find_modifier_by_game_skill_id(game_skill_id)
+
+        unless modifier
+          Rails.logger.warn(
+            "[WeaponProcessor] Unknown augment skill_id=#{game_skill_id} " \
+            "icon=#{ax['augment_skill_icon_image']}"
+          )
+          next
+        end
+
+        strength = parse_augment_strength(ax['effect_value'], ax['show_value'])
+        grid_weapon["ax_modifier#{idx + 1}_id"] = modifier.id
         grid_weapon["ax_strength#{idx + 1}"] = strength
       end
+    end
+
+    ##
+    # Finds a WeaponStatModifier by its game_skill_id.
+    # Uses memoization to cache lookups.
+    #
+    # @param game_skill_id [Integer] the game's skill ID.
+    # @return [WeaponStatModifier, nil]
+    def find_modifier_by_game_skill_id(game_skill_id)
+      @modifier_cache ||= {}
+      @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
+    end
+
+    ##
+    # Parses the strength value from effect_value or show_value.
+    #
+    # @param effect_value [String, nil] the effect_value field.
+    # @param show_value [String, nil] the show_value field.
+    # @return [Float, nil]
+    def parse_augment_strength(effect_value, show_value)
+      if effect_value.present?
+        # Handle "1_3" format (seems to be "tier_value")
+        if effect_value.to_s.include?('_')
+          return effect_value.to_s.split('_').last.to_f
+        end
+        return effect_value.to_f if effect_value.to_s.match?(/\A[\d.]+\z/)
+      end
+
+      # Try show_value (e.g., "3%")
+      if show_value.present?
+        return show_value.to_s.gsub('%', '').to_f
+      end
+
+      nil
     end
 
     ##

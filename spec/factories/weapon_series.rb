@@ -9,7 +9,7 @@ FactoryBot.define do
     element_changeable { false }
     has_weapon_keys { false }
     has_awakening { false }
-    has_ax_skills { false }
+    augment_type { :none }
 
     trait :gacha do
       slug { 'gacha' }
@@ -95,6 +95,22 @@ FactoryBot.define do
 
     trait :with_weapon_keys do
       has_weapon_keys { true }
+    end
+
+    trait :with_ax_skills do
+      augment_type { :ax }
+    end
+
+    trait :with_befoulments do
+      augment_type { :befoulment }
+    end
+
+    trait :odiant do
+      slug { 'odiant' }
+      name_en { 'Odiant' }
+      name_jp { '禁禍武器' }
+      order { 50 }
+      augment_type { :befoulment }
     end
   end
 end
