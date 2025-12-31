@@ -266,7 +266,10 @@ module Api
             awakening: {},
             weapon_key1: {},
             weapon_key2: {},
-            weapon_key3: {}
+            weapon_key3: {},
+            ax_modifier1: {},
+            ax_modifier2: {},
+            befoulment_modifier: {}
           } },
           { summons: :summon },
           :guidebook1, :guidebook2, :guidebook3,
