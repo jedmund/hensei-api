@@ -294,7 +294,7 @@ module Api
                                   { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
                                     earring: %i[modifier strength] }],
           summons_attributes: %i[id party_id summon_id position main friend quick_summon uncap_level transcendence_step],
-          weapons_attributes: %i[id party_id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1 ax_modifier2 ax_strength1 ax_strength2 awakening_id awakening_level]
+          weapons_attributes: %i[id party_id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength exorcism_level awakening_id awakening_level]
         )
       end
 
