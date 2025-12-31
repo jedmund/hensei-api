@@ -5,6 +5,8 @@ class WeaponSeries < ApplicationRecord
   has_many :weapon_key_series, dependent: :destroy
   has_many :weapon_keys, through: :weapon_key_series
 
+  enum :augment_type, { none: 0, ax: 1, befoulment: 2 }, default: :none
+
   validates :name_en, presence: true
   validates :name_jp, presence: true
   validates :slug, presence: true, uniqueness: true
@@ -15,7 +17,8 @@ class WeaponSeries < ApplicationRecord
   scope :element_changeable, -> { where(element_changeable: true) }
   scope :with_weapon_keys, -> { where(has_weapon_keys: true) }
   scope :with_awakening, -> { where(has_awakening: true) }
-  scope :with_ax_skills, -> { where(has_ax_skills: true) }
+  scope :with_ax_skills, -> { where(augment_type: :ax) }
+  scope :with_befoulments, -> { where(augment_type: :befoulment) }
 
   # Slug constants for commonly referenced series
   DARK_OPUS = 'dark-opus'

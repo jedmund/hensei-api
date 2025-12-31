@@ -8,15 +8,21 @@ class CollectionWeapon < ApplicationRecord
   belongs_to :weapon_key3, class_name: 'WeaponKey', optional: true
   belongs_to :weapon_key4, class_name: 'WeaponKey', optional: true
 
+  belongs_to :ax_modifier1, class_name: 'WeaponStatModifier', optional: true
+  belongs_to :ax_modifier2, class_name: 'WeaponStatModifier', optional: true
+  belongs_to :befoulment_modifier, class_name: 'WeaponStatModifier', optional: true
+
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
 
   validates :uncap_level, inclusion: { in: 0..5 }
   validates :transcendence_step, inclusion: { in: 0..10 }
   validates :awakening_level, inclusion: { in: 1..20 }
+  validates :exorcism_level, inclusion: { in: 0..5 }, allow_nil: true
 
   validate :validate_weapon_keys
   validate :validate_ax_skills
+  validate :validate_befoulment
   validate :validate_element_change
   validate :validate_awakening_compatibility
   validate :validate_awakening_level
@@ -25,7 +31,7 @@ class CollectionWeapon < ApplicationRecord
   scope :by_weapon, ->(weapon_id) { where(weapon_id: weapon_id) }
   scope :by_series, ->(series_id) { joins(:weapon).where(weapons: { weapon_series_id: series_id }) }
   scope :with_keys, -> { where.not(weapon_key1_id: nil) }
-  scope :with_ax, -> { where.not(ax_modifier1: nil) }
+  scope :with_ax, -> { where.not(ax_modifier1_id: nil) }
   scope :by_element, ->(element) { joins(:weapon).where(weapons: { element: element }) }
   scope :by_rarity, ->(rarity) { joins(:weapon).where(weapons: { rarity: rarity }) }
   scope :by_proficiency, ->(proficiency) { joins(:weapon).where(weapons: { proficiency: proficiency }) }
@@ -83,15 +89,42 @@ class CollectionWeapon < ApplicationRecord
   end
 
   def validate_ax_skills
-    # Check for incomplete AX skills regardless of weapon.ax
+    # AX skill 1: must have both modifier and strength
     if (ax_modifier1.present? && ax_strength1.blank?) ||
        (ax_modifier1.blank? && ax_strength1.present?)
       errors.add(:base, "AX skill 1 must have both modifier and strength")
     end
 
+    # AX skill 2: must have both modifier and strength
     if (ax_modifier2.present? && ax_strength2.blank?) ||
        (ax_modifier2.blank? && ax_strength2.present?)
       errors.add(:base, "AX skill 2 must have both modifier and strength")
+    end
+
+    # Validate category is 'ax'
+    if ax_modifier1.present? && ax_modifier1.category != 'ax'
+      errors.add(:ax_modifier1, "must be an AX skill modifier")
+    end
+    if ax_modifier2.present? && ax_modifier2.category != 'ax'
+      errors.add(:ax_modifier2, "must be an AX skill modifier")
+    end
+  end
+
+  def validate_befoulment
+    # Befoulment: must have both modifier and strength
+    if (befoulment_modifier.present? && befoulment_strength.blank?) ||
+       (befoulment_modifier.blank? && befoulment_strength.present?)
+      errors.add(:base, "Befoulment must have both modifier and strength")
+    end
+
+    # Validate category is 'befoulment'
+    if befoulment_modifier.present? && befoulment_modifier.category != 'befoulment'
+      errors.add(:befoulment_modifier, "must be a befoulment modifier")
+    end
+
+    # Exorcism level only makes sense with befoulment
+    if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank?
+      errors.add(:exorcism_level, "cannot be set without a befoulment")
     end
   end
 
