@@ -128,6 +128,7 @@ Rails.application.routes.draw do
         get 'for_slot/:slot', action: :for_slot, as: :for_slot
       end
     end
+    resources :weapon_stat_modifiers, only: %i[index show]
 
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
