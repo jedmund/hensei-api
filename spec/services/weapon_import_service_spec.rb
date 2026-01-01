@@ -57,6 +57,29 @@ RSpec.describe WeaponImportService, type: :service do
       create(:awakening, :for_weapon, slug: 'weapon-heal', name_en: 'Healing')
   end
 
+  # Create weapon stat modifiers for AX skill tests
+  let!(:ax_atk_modifier) do
+    WeaponStatModifier.find_by(slug: 'ax_atk') ||
+      create(:weapon_stat_modifier, :ax_atk)
+  end
+
+  let!(:ax_hp_modifier) do
+    WeaponStatModifier.find_by(slug: 'ax_hp') ||
+      create(:weapon_stat_modifier, :ax_hp)
+  end
+
+  let!(:ax_ca_dmg_modifier) do
+    WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
+      create(:weapon_stat_modifier,
+             slug: 'ax_ca_dmg',
+             name_en: 'C.A. DMG',
+             category: 'ax',
+             stat: 'ca_dmg',
+             polarity: 1,
+             suffix: '%',
+             game_skill_id: 1591)
+  end
+
   before do
     standard_weapon
     transcendable_weapon
@@ -279,12 +302,12 @@ RSpec.describe WeaponImportService, type: :service do
                 'augment_skill_info' => [
                   [
                     {
-                      'skill_id' => 1,
+                      'skill_id' => 1589,  # ATK modifier
                       'effect_value' => '7',
                       'show_value' => '7%'
                     },
                     {
-                      'skill_id' => 2,
+                      'skill_id' => 1588,  # HP modifier
                       'effect_value' => '2_4',
                       'show_value' => '4%'
                     }
@@ -302,7 +325,7 @@ RSpec.describe WeaponImportService, type: :service do
         result = service.import
 
         weapon = result.created.first
-        expect(weapon.ax_modifier1).to eq(1)
+        expect(weapon.ax_modifier1).to eq(ax_atk_modifier)
         expect(weapon.ax_strength1).to eq(7.0)
       end
 
@@ -311,7 +334,7 @@ RSpec.describe WeaponImportService, type: :service do
         result = service.import
 
         weapon = result.created.first
-        expect(weapon.ax_modifier2).to eq(2)
+        expect(weapon.ax_modifier2).to eq(ax_hp_modifier)
         expect(weapon.ax_strength2).to eq(4.0)
       end
     end
@@ -329,7 +352,7 @@ RSpec.describe WeaponImportService, type: :service do
                 'augment_skill_info' => [
                   [
                     {
-                      'skill_id' => 3,
+                      'skill_id' => 1591,  # C.A. DMG modifier
                       'effect_value' => nil,
                       'show_value' => '5.5%'
                     }
@@ -347,7 +370,7 @@ RSpec.describe WeaponImportService, type: :service do
         result = service.import
 
         weapon = result.created.first
-        expect(weapon.ax_modifier1).to eq(3)
+        expect(weapon.ax_modifier1).to eq(ax_ca_dmg_modifier)
         expect(weapon.ax_strength1).to eq(5.5)
       end
     end

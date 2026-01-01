@@ -15,11 +15,29 @@ module Api
       end
 
       view :nested do
-        field :ax, if: ->(_field_name, w, _options) { w.weapon.present? && w.weapon.ax } do |w|
-          [
-            { modifier: w.ax_modifier1, strength: w.ax_strength1 },
-            { modifier: w.ax_modifier2, strength: w.ax_strength2 }
-          ]
+        field :ax, if: ->(_field_name, w, _options) { w.ax_modifier1.present? } do |w|
+          skills = []
+          if w.ax_modifier1.present?
+            skills << {
+              modifier: WeaponStatModifierBlueprint.render_as_hash(w.ax_modifier1),
+              strength: w.ax_strength1
+            }
+          end
+          if w.ax_modifier2.present?
+            skills << {
+              modifier: WeaponStatModifierBlueprint.render_as_hash(w.ax_modifier2),
+              strength: w.ax_strength2
+            }
+          end
+          skills
+        end
+
+        field :befoulment, if: ->(_field_name, w, _options) { w.befoulment_modifier.present? } do |w|
+          {
+            modifier: WeaponStatModifierBlueprint.render_as_hash(w.befoulment_modifier),
+            strength: w.befoulment_strength,
+            exorcism_level: w.exorcism_level
+          }
         end
 
         field :awakening, if: ->(_field_name, w, _options) { w.awakening.present? } do |w|

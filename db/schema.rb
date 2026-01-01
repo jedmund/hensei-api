@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_30_000004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -235,15 +235,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.uuid "weapon_key4_id"
     t.uuid "awakening_id"
     t.integer "awakening_level", default: 1, null: false
-    t.integer "ax_modifier1"
     t.float "ax_strength1"
-    t.integer "ax_modifier2"
     t.float "ax_strength2"
     t.integer "element"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "game_id"
+    t.bigint "ax_modifier1_id"
+    t.bigint "ax_modifier2_id"
+    t.bigint "befoulment_modifier_id"
+    t.float "befoulment_strength"
+    t.integer "exorcism_level", default: 0
     t.index ["awakening_id"], name: "index_collection_weapons_on_awakening_id"
+    t.index ["ax_modifier1_id"], name: "index_collection_weapons_on_ax_modifier1_id"
+    t.index ["ax_modifier2_id"], name: "index_collection_weapons_on_ax_modifier2_id"
+    t.index ["befoulment_modifier_id"], name: "index_collection_weapons_on_befoulment_modifier_id"
     t.index ["user_id", "game_id"], name: "index_collection_weapons_on_user_id_and_game_id", unique: true, where: "(game_id IS NOT NULL)"
     t.index ["user_id", "weapon_id"], name: "index_collection_weapons_on_user_id_and_weapon_id"
     t.index ["user_id"], name: "index_collection_weapons_on_user_id"
@@ -381,9 +387,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.datetime "updated_at", null: false
     t.integer "reroll_slot"
     t.uuid "collection_artifact_id"
+    t.boolean "orphaned", default: false, null: false
     t.index ["artifact_id"], name: "index_grid_artifacts_on_artifact_id"
     t.index ["collection_artifact_id"], name: "index_grid_artifacts_on_collection_artifact_id"
     t.index ["grid_character_id"], name: "index_grid_artifacts_on_grid_character_id", unique: true
+    t.index ["orphaned"], name: "index_grid_artifacts_on_orphaned"
   end
 
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -422,7 +430,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.integer "transcendence_step", default: 0, null: false
     t.boolean "quick_summon", default: false
     t.uuid "collection_summon_id"
+    t.boolean "orphaned", default: false, null: false
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
+    t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
@@ -439,9 +449,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "weapon_key3_id"
-    t.integer "ax_modifier1"
     t.float "ax_strength1"
-    t.integer "ax_modifier2"
     t.float "ax_strength2"
     t.integer "element"
     t.integer "awakening_level", default: 1, null: false
@@ -449,8 +457,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.integer "transcendence_step", default: 0
     t.string "weapon_key4_id"
     t.uuid "collection_weapon_id"
+    t.boolean "orphaned", default: false, null: false
+    t.bigint "ax_modifier1_id"
+    t.bigint "ax_modifier2_id"
+    t.bigint "befoulment_modifier_id"
+    t.float "befoulment_strength"
+    t.integer "exorcism_level", default: 0
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
+    t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
+    t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
+    t.index ["befoulment_modifier_id"], name: "index_grid_weapons_on_befoulment_modifier_id"
     t.index ["collection_weapon_id"], name: "index_grid_weapons_on_collection_weapon_id"
+    t.index ["orphaned"], name: "index_grid_weapons_on_orphaned"
     t.index ["party_id", "position"], name: "index_grid_weapons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
@@ -924,7 +942,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.boolean "element_changeable", default: false, null: false
     t.boolean "has_weapon_keys", default: false, null: false
     t.boolean "has_awakening", default: false, null: false
-    t.boolean "has_ax_skills", default: false, null: false
+    t.integer "augment_type", default: 0, null: false
     t.index ["order"], name: "index_weapon_series_on_order"
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
@@ -943,6 +961,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
     t.index ["skill_series"], name: "index_weapon_skills_on_skill_series"
     t.index ["weapon_granblue_id", "position"], name: "index_weapon_skills_on_weapon_granblue_id_and_position"
     t.index ["weapon_granblue_id"], name: "index_weapon_skills_on_weapon_granblue_id"
+  end
+
+  create_table "weapon_stat_modifiers", force: :cascade do |t|
+    t.string "slug", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.string "category", null: false
+    t.string "stat"
+    t.integer "polarity", default: 1, null: false
+    t.string "suffix"
+    t.float "base_min"
+    t.float "base_max"
+    t.integer "game_skill_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_weapon_stat_modifiers_on_category"
+    t.index ["game_skill_id"], name: "index_weapon_stat_modifiers_on_game_skill_id", unique: true
+    t.index ["slug"], name: "index_weapon_stat_modifiers_on_slug", unique: true
   end
 
   create_table "weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1024,6 +1060,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key2_id"
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key4_id"
+  add_foreign_key "collection_weapons", "weapon_stat_modifiers", column: "ax_modifier1_id"
+  add_foreign_key "collection_weapons", "weapon_stat_modifiers", column: "ax_modifier2_id"
+  add_foreign_key "collection_weapons", "weapon_stat_modifiers", column: "befoulment_modifier_id"
   add_foreign_key "collection_weapons", "weapons"
   add_foreign_key "crew_gw_participations", "crews"
   add_foreign_key "crew_gw_participations", "gw_events"
@@ -1049,6 +1088,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_210000) do
   add_foreign_key "grid_weapons", "collection_weapons"
   add_foreign_key "grid_weapons", "parties"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
+  add_foreign_key "grid_weapons", "weapon_stat_modifiers", column: "ax_modifier1_id"
+  add_foreign_key "grid_weapons", "weapon_stat_modifiers", column: "ax_modifier2_id"
+  add_foreign_key "grid_weapons", "weapon_stat_modifiers", column: "befoulment_modifier_id"
   add_foreign_key "grid_weapons", "weapons"
   add_foreign_key "gw_crew_scores", "crew_gw_participations"
   add_foreign_key "gw_individual_scores", "crew_gw_participations"

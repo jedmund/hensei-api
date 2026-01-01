@@ -27,7 +27,7 @@ module Api
             },
             has_weapon_keys: w.weapon_series.has_weapon_keys,
             has_awakening: w.weapon_series.has_awakening,
-            has_ax_skills: w.weapon_series.has_ax_skills,
+            augment_type: w.weapon_series.augment_type,
             extra: w.weapon_series.extra,
             element_changeable: w.weapon_series.element_changeable
           }

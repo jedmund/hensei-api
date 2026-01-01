@@ -11,7 +11,7 @@ module Api
       end
 
       fields :slug, :order, :extra, :element_changeable, :has_weapon_keys,
-             :has_awakening, :has_ax_skills
+             :has_awakening, :augment_type
 
       view :full do
         field :weapon_count do |ws|

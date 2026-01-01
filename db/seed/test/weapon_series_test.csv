@@ -1,12 +1,12 @@
-id,slug,name_en,name_jp,order,extra,element_changeable,has_weapon_keys,has_awakening,has_ax_skills
-00000000-0001-0000-0000-000000000001,gacha,Gacha Weapons,ガチャ武器,0,false,false,false,false,false
-00000000-0001-0000-0000-000000000002,grand,Grand Weapons,リミテッドシリーズ,2,false,false,true,false,false
-00000000-0001-0000-0000-000000000003,dark-opus,Dark Opus Weapons,終末の神器,3,false,false,true,true,false
-00000000-0001-0000-0000-000000000004,revenant,Revenant Weapons,天星器,21,false,true,false,false,false
-00000000-0001-0000-0000-000000000005,xeno,Xeno Weapons,六道武器,23,true,false,false,false,false
-00000000-0001-0000-0000-000000000006,ultima,Ultima Weapons,オメガウェポン,9,false,true,true,false,false
-00000000-0001-0000-0000-000000000007,superlative,Superlative Weapons,スペリオシリーズ,27,true,true,true,false,false
-00000000-0001-0000-0000-000000000008,draconic,Draconic Weapons,ドラコニックウェポン・オリジン,5,false,false,true,true,false
-00000000-0001-0000-0000-000000000009,draconic-providence,Draconic Weapons Providence,ドラコニックウェポン,6,false,false,true,true,false
-00000000-0001-0000-0000-000000000010,primal,Primal Weapons,プライマルシリーズ,32,false,false,false,false,false
-00000000-0001-0000-0000-000000000011,event,Event Weapons,イベント武器,99,false,false,false,false,false
+id,slug,name_en,name_jp,order,extra,element_changeable,has_weapon_keys,has_awakening,augment_type
+00000000-0001-0000-0000-000000000001,gacha,Gacha Weapons,ガチャ武器,0,false,false,false,false,none
+00000000-0001-0000-0000-000000000002,grand,Grand Weapons,リミテッドシリーズ,2,false,false,true,false,none
+00000000-0001-0000-0000-000000000003,dark-opus,Dark Opus Weapons,終末の神器,3,false,false,true,true,none
+00000000-0001-0000-0000-000000000004,revenant,Revenant Weapons,天星器,21,false,true,false,false,none
+00000000-0001-0000-0000-000000000005,xeno,Xeno Weapons,六道武器,23,true,false,false,false,none
+00000000-0001-0000-0000-000000000006,ultima,Ultima Weapons,オメガウェポン,9,false,true,true,false,none
+00000000-0001-0000-0000-000000000007,superlative,Superlative Weapons,スペリオシリーズ,27,true,true,true,false,none
+00000000-0001-0000-0000-000000000008,draconic,Draconic Weapons,ドラコニックウェポン・オリジン,5,false,false,true,true,none
+00000000-0001-0000-0000-000000000009,draconic-providence,Draconic Weapons Providence,ドラコニックウェポン,6,false,false,true,true,none
+00000000-0001-0000-0000-000000000010,primal,Primal Weapons,プライマルシリーズ,32,false,false,false,false,none
+00000000-0001-0000-0000-000000000011,event,Event Weapons,イベント武器,99,false,false,false,false,none

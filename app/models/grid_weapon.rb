@@ -39,6 +39,10 @@ class GridWeapon < ApplicationRecord
   belongs_to :awakening, optional: true
   belongs_to :collection_weapon, optional: true
 
+  belongs_to :ax_modifier1, class_name: 'WeaponStatModifier', optional: true
+  belongs_to :ax_modifier2, class_name: 'WeaponStatModifier', optional: true
+  belongs_to :befoulment_modifier, class_name: 'WeaponStatModifier', optional: true
+
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }
@@ -55,10 +59,13 @@ class GridWeapon < ApplicationRecord
 
   ##### Amoeba configuration
   amoeba do
-    nullify :ax_modifier1
-    nullify :ax_modifier2
+    nullify :ax_modifier1_id
+    nullify :ax_modifier2_id
     nullify :ax_strength1
     nullify :ax_strength2
+    nullify :befoulment_modifier_id
+    nullify :befoulment_strength
+    nullify :exorcism_level
   end
 
   ##
@@ -84,10 +91,13 @@ class GridWeapon < ApplicationRecord
       weapon_key2_id: collection_weapon.weapon_key2_id,
       weapon_key3_id: collection_weapon.weapon_key3_id,
       weapon_key4_id: collection_weapon.weapon_key4_id,
-      ax_modifier1: collection_weapon.ax_modifier1,
+      ax_modifier1_id: collection_weapon.ax_modifier1_id,
       ax_strength1: collection_weapon.ax_strength1,
-      ax_modifier2: collection_weapon.ax_modifier2,
+      ax_modifier2_id: collection_weapon.ax_modifier2_id,
       ax_strength2: collection_weapon.ax_strength2,
+      befoulment_modifier_id: collection_weapon.befoulment_modifier_id,
+      befoulment_strength: collection_weapon.befoulment_strength,
+      exorcism_level: collection_weapon.exorcism_level,
       awakening_id: collection_weapon.awakening_id,
       awakening_level: collection_weapon.awakening_level
     )
@@ -116,10 +126,13 @@ class GridWeapon < ApplicationRecord
       weapon_key2_id != collection_weapon.weapon_key2_id ||
       weapon_key3_id != collection_weapon.weapon_key3_id ||
       weapon_key4_id != collection_weapon.weapon_key4_id ||
-      ax_modifier1 != collection_weapon.ax_modifier1 ||
+      ax_modifier1_id != collection_weapon.ax_modifier1_id ||
       ax_strength1 != collection_weapon.ax_strength1 ||
-      ax_modifier2 != collection_weapon.ax_modifier2 ||
+      ax_modifier2_id != collection_weapon.ax_modifier2_id ||
       ax_strength2 != collection_weapon.ax_strength2 ||
+      befoulment_modifier_id != collection_weapon.befoulment_modifier_id ||
+      befoulment_strength != collection_weapon.befoulment_strength ||
+      exorcism_level != collection_weapon.exorcism_level ||
       awakening_id != collection_weapon.awakening_id ||
       awakening_level != collection_weapon.awakening_level
   end

@@ -14,7 +14,9 @@ module Api
         @collection_weapons = @target_user.collection_weapons
                                           .includes(:weapon, :awakening,
                                                    :weapon_key1, :weapon_key2,
-                                                   :weapon_key3, :weapon_key4)
+                                                   :weapon_key3, :weapon_key4,
+                                                   :ax_modifier1, :ax_modifier2,
+                                                   :befoulment_modifier)
 
         # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_weapons = @collection_weapons.by_weapon(params[:weapon_id]) if params[:weapon_id]
@@ -212,7 +214,8 @@ module Api
           :weapon_id, :uncap_level, :transcendence_step,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id, :weapon_key4_id,
           :awakening_id, :awakening_level,
-          :ax_modifier1, :ax_strength1, :ax_modifier2, :ax_strength2,
+          :ax_modifier1_id, :ax_strength1, :ax_modifier2_id, :ax_strength2,
+          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :element
         )
       end
@@ -222,7 +225,8 @@ module Api
           :weapon_id, :uncap_level, :transcendence_step,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id, :weapon_key4_id,
           :awakening_id, :awakening_level,
-          :ax_modifier1, :ax_strength1, :ax_modifier2, :ax_strength2,
+          :ax_modifier1_id, :ax_strength1, :ax_modifier2_id, :ax_strength2,
+          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :element
         ])
       end
