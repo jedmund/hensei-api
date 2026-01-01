@@ -12,7 +12,7 @@
 #   end
 #
 class WeaponImportService
-  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, keyword_init: true)
+  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, :reconciliation, keyword_init: true)
 
   # Game awakening form to our slug mapping
   AWAKENING_FORM_MAPPING = {
@@ -28,12 +28,39 @@ class WeaponImportService
     @user = user
     @game_data = game_data
     @update_existing = options[:update_existing] || false
+    @is_full_inventory = options[:is_full_inventory] || false
+    @reconcile_deletions = options[:reconcile_deletions] || false
     @created = []
     @updated = []
     @skipped = []
     @errors = []
     @awakening_cache = {}
     @modifier_cache = {}
+    @processed_game_ids = []
+  end
+
+  ##
+  # Previews what would be deleted in a sync operation.
+  # Does not modify any data, just returns items that would be removed.
+  #
+  # @return [Array<CollectionWeapon>] Collection weapons that would be deleted
+  def preview_deletions
+    items = extract_items
+    return [] if items.empty?
+
+    # Extract all game_ids from the import data
+    game_ids = items.filter_map do |item|
+      param = item['param'] || {}
+      param['id'].to_s if param['id'].present?
+    end
+
+    return [] if game_ids.empty?
+
+    # Find collection weapons with game_ids NOT in the import
+    @user.collection_weapons
+         .includes(:weapon)
+         .where.not(game_id: nil)
+         .where.not(game_id: game_ids)
   end
 
   ##
@@ -42,7 +69,16 @@ class WeaponImportService
   # @return [Result] Import result with counts and errors
   def import
     items = extract_items
-    return Result.new(success?: false, created: [], updated: [], skipped: [], errors: ['No weapon items found in data']) if items.empty?
+    if items.empty?
+      return Result.new(
+        success?: false,
+        created: [],
+        updated: [],
+        skipped: [],
+        errors: ['No weapon items found in data'],
+        reconciliation: nil
+      )
+    end
 
     ActiveRecord::Base.transaction do
       items.each_with_index do |item, index|
@@ -52,12 +88,19 @@ class WeaponImportService
       end
     end
 
+    # Handle deletion reconciliation if requested
+    reconciliation_result = nil
+    if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
+      reconciliation_result = reconcile_deletions
+    end
+
     Result.new(
       success?: @errors.empty?,
       created: @created,
       updated: @updated,
       skipped: @skipped,
-      errors: @errors
+      errors: @errors,
+      reconciliation: reconciliation_result
     )
   end
 
@@ -77,6 +120,9 @@ class WeaponImportService
     # The weapon's granblue_id can be in param.image_id or master.id
     granblue_id = param['image_id'] || master['id']
     game_id = param['id']
+
+    # Track this game_id as processed (for reconciliation)
+    @processed_game_ids << game_id.to_s if game_id.present?
 
     weapon = find_weapon(granblue_id)
     unless weapon
@@ -306,5 +352,35 @@ class WeaponImportService
     end
 
     nil
+  end
+
+  ##
+  # Reconciles deletions by removing collection weapons not in the processed list.
+  # Only called when @is_full_inventory and @reconcile_deletions are both true.
+  #
+  # @return [Hash] Reconciliation result with deleted count and orphaned grid item IDs
+  def reconcile_deletions
+    # Find collection weapons with game_ids NOT in our processed list
+    missing = @user.collection_weapons
+                   .where.not(game_id: nil)
+                   .where.not(game_id: @processed_game_ids)
+
+    deleted_count = 0
+    orphaned_grid_item_ids = []
+
+    missing.find_each do |coll_weapon|
+      # Collect IDs of grid items that will be orphaned
+      grid_weapon_ids = GridWeapon.where(collection_weapon_id: coll_weapon.id).pluck(:id)
+      orphaned_grid_item_ids.concat(grid_weapon_ids)
+
+      # The before_destroy callback on CollectionWeapon will mark grid items as orphaned
+      coll_weapon.destroy
+      deleted_count += 1
+    end
+
+    {
+      deleted: deleted_count,
+      orphaned_grid_items: orphaned_grid_item_ids
+    }
   end
 end

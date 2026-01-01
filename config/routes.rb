@@ -276,6 +276,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :preview_sync
         end
       end
       resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
@@ -283,6 +284,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :preview_sync
         end
       end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
@@ -292,6 +294,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :preview_sync
         end
       end
     end
