@@ -11,6 +11,10 @@ class GridArtifact < ApplicationRecord
   has_one :party, through: :grid_character
   has_one :character, through: :grid_character
 
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
+
   # Enums - using GranblueEnums::ELEMENTS values (excluding Null)
   # Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6
   enum :element, {
@@ -53,6 +57,14 @@ class GridArtifact < ApplicationRecord
   # Returns the effective proficiency - from instance for quirk, from artifact for standard
   def effective_proficiency
     quirk_artifact? ? proficiency : artifact&.proficiency
+  end
+
+  ##
+  # Marks this grid artifact as orphaned and clears its collection link.
+  #
+  # @return [Boolean] true if the update succeeded
+  def mark_orphaned!
+    update!(orphaned: true, collection_artifact_id: nil)
   end
 
   ##

@@ -128,6 +128,7 @@ Rails.application.routes.draw do
         get 'for_slot/:slot', action: :for_slot, as: :for_slot
       end
     end
+    resources :weapon_stat_modifiers, only: %i[index show]
 
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
@@ -275,6 +276,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :preview_sync
         end
       end
       resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
@@ -282,6 +284,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :preview_sync
         end
       end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
@@ -291,6 +294,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :preview_sync
         end
       end
     end

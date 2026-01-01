@@ -291,13 +291,13 @@ module Api
       ##
       # Normalizes the AX modifier fields for the weapon parameters.
       #
-      # Sets ax_modifier1 and ax_modifier2 to nil if their integer values equal -1.
+      # Sets ax_modifier1_id and ax_modifier2_id to nil if their integer values equal -1.
       #
       # @return [void]
       def normalize_ax_fields!
-        params[:weapon][:ax_modifier1] = nil if weapon_params[:ax_modifier1].to_i == -1
-
-        params[:weapon][:ax_modifier2] = nil if weapon_params[:ax_modifier2].to_i == -1
+        params[:weapon][:ax_modifier1_id] = nil if weapon_params[:ax_modifier1_id].to_i == -1
+        params[:weapon][:ax_modifier2_id] = nil if weapon_params[:ax_modifier2_id].to_i == -1
+        params[:weapon][:befoulment_modifier_id] = nil if weapon_params[:befoulment_modifier_id].to_i == -1
       end
 
       ##
@@ -515,7 +515,8 @@ module Api
           :id, :party_id, :weapon_id, :collection_weapon_id,
           :position, :mainhand, :uncap_level, :transcendence_step, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
-          :ax_modifier1, :ax_modifier2, :ax_strength1, :ax_strength2,
+          :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,
+          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :awakening_id, :awakening_level
         )
       end

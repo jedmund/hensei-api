@@ -7,6 +7,10 @@ class CollectionArtifact < ApplicationRecord
   belongs_to :user
   belongs_to :artifact
 
+  has_many :grid_artifacts, dependent: :nullify
+
+  before_destroy :orphan_grid_items
+
   # Enums - using GranblueEnums::ELEMENTS values (excluding Null)
   # Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6
   enum :element, {
@@ -76,5 +80,13 @@ class CollectionArtifact < ApplicationRecord
 
   def quirk_artifact?
     artifact&.quirk?
+  end
+
+  ##
+  # Marks all linked grid artifacts as orphaned before destroying this collection artifact.
+  #
+  # @return [void]
+  def orphan_grid_items
+    grid_artifacts.update_all(orphaned: true, collection_artifact_id: nil)
   end
 end

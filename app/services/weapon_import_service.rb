@@ -12,7 +12,7 @@
 #   end
 #
 class WeaponImportService
-  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, keyword_init: true)
+  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, :reconciliation, keyword_init: true)
 
   # Game awakening form to our slug mapping
   AWAKENING_FORM_MAPPING = {
@@ -28,11 +28,45 @@ class WeaponImportService
     @user = user
     @game_data = game_data
     @update_existing = options[:update_existing] || false
+    @is_full_inventory = options[:is_full_inventory] || false
+    @reconcile_deletions = options[:reconcile_deletions] || false
+    @filter = options[:filter] # { elements: [...], proficiencies: [...] }
     @created = []
     @updated = []
     @skipped = []
     @errors = []
     @awakening_cache = {}
+    @modifier_cache = {}
+    @processed_game_ids = []
+  end
+
+  ##
+  # Previews what would be deleted in a sync operation.
+  # Does not modify any data, just returns items that would be removed.
+  # When a filter is active, only considers items matching that filter.
+  #
+  # @return [Array<CollectionWeapon>] Collection weapons that would be deleted
+  def preview_deletions
+    items = extract_items
+    return [] if items.empty?
+
+    # Extract all game_ids from the import data
+    game_ids = items.filter_map do |item|
+      param = item['param'] || {}
+      param['id'].to_s if param['id'].present?
+    end
+
+    return [] if game_ids.empty?
+
+    # Find collection weapons with game_ids NOT in the import
+    # Scoped to filter criteria if present
+    scope = @user.collection_weapons
+                 .includes(:weapon)
+                 .where.not(game_id: nil)
+                 .where.not(game_id: game_ids)
+
+    scope = apply_filter_scope(scope)
+    scope
   end
 
   ##
@@ -41,7 +75,16 @@ class WeaponImportService
   # @return [Result] Import result with counts and errors
   def import
     items = extract_items
-    return Result.new(success?: false, created: [], updated: [], skipped: [], errors: ['No weapon items found in data']) if items.empty?
+    if items.empty?
+      return Result.new(
+        success?: false,
+        created: [],
+        updated: [],
+        skipped: [],
+        errors: ['No weapon items found in data'],
+        reconciliation: nil
+      )
+    end
 
     ActiveRecord::Base.transaction do
       items.each_with_index do |item, index|
@@ -51,12 +94,19 @@ class WeaponImportService
       end
     end
 
+    # Handle deletion reconciliation if requested
+    reconciliation_result = nil
+    if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
+      reconciliation_result = reconcile_deletions
+    end
+
     Result.new(
       success?: @errors.empty?,
       created: @created,
       updated: @updated,
       skipped: @skipped,
-      errors: @errors
+      errors: @errors,
+      reconciliation: reconciliation_result
     )
   end
 
@@ -76,6 +126,9 @@ class WeaponImportService
     # The weapon's granblue_id can be in param.image_id or master.id
     granblue_id = param['image_id'] || master['id']
     game_id = param['id']
+
+    # Track this game_id as processed (for reconciliation)
+    @processed_game_ids << game_id.to_s if game_id.present?
 
     weapon = find_weapon(granblue_id)
     unless weapon
@@ -146,9 +199,18 @@ class WeaponImportService
     awakening_attrs = parse_awakening(param['arousal'])
     attrs.merge!(awakening_attrs) if awakening_attrs
 
-    # Parse AX skills if present
-    ax_attrs = parse_ax_skills(param['augment_skill_info'])
-    attrs.merge!(ax_attrs) if ax_attrs
+    # Check if this is an Odiant (befoulment) weapon
+    odiant = param['odiant']
+    if odiant && odiant['is_odiant_weapon'] == true
+      # Parse befoulment from augment_skill_info
+      befoulment_attrs = parse_befoulment(param['augment_skill_info'])
+      attrs.merge!(befoulment_attrs) if befoulment_attrs
+      attrs[:exorcism_level] = odiant['exorcision_level'].to_i.clamp(0, 5)
+    else
+      # Regular weapon - parse AX skills
+      ax_attrs = parse_ax_skills(param['augment_skill_info'])
+      attrs.merge!(ax_attrs) if ax_attrs
+    end
 
     attrs
   end
@@ -207,18 +269,18 @@ class WeaponImportService
 
     # First AX skill
     if skills[0].is_a?(Hash)
-      ax1 = parse_single_ax_skill(skills[0])
+      ax1 = parse_single_augment_skill(skills[0])
       if ax1
-        attrs[:ax_modifier1] = ax1[:modifier]
+        attrs[:ax_modifier1_id] = ax1[:modifier_id]
         attrs[:ax_strength1] = ax1[:strength]
       end
     end
 
     # Second AX skill
     if skills[1].is_a?(Hash)
-      ax2 = parse_single_ax_skill(skills[1])
+      ax2 = parse_single_augment_skill(skills[1])
       if ax2
-        attrs[:ax_modifier2] = ax2[:modifier]
+        attrs[:ax_modifier2_id] = ax2[:modifier_id]
         attrs[:ax_strength2] = ax2[:strength]
       end
     end
@@ -227,26 +289,60 @@ class WeaponImportService
   end
 
   ##
-  # Parses a single AX skill from game data.
+  # Parses befoulment data from game format.
+  # Odiant weapons have a single befoulment in augment_skill_info.
   #
-  # @param skill [Hash] Single AX skill data with skill_id and effect_value
-  # @return [Hash, nil] { modifier:, strength: } or nil
-  def parse_single_ax_skill(skill)
-    return nil unless skill['skill_id'].present?
+  # @param augment_skill_info [Array] The game's augment skill data
+  # @return [Hash, nil] Befoulment attributes or nil if no befoulment
+  def parse_befoulment(augment_skill_info)
+    return nil if augment_skill_info.blank? || !augment_skill_info.is_a?(Array)
 
-    # The skill_id maps to our AX modifier
-    modifier = skill['skill_id'].to_i
+    skills = augment_skill_info.first
+    return nil if skills.blank? || !skills.is_a?(Array)
 
-    # Parse strength from effect_value (may be "3" or "1_3" format)
-    # or from show_value (may be "3%" format)
-    strength = parse_ax_strength(skill['effect_value'], skill['show_value'])
+    skill = skills.first
+    return nil unless skill.is_a?(Hash)
 
-    return nil unless strength
+    result = parse_single_augment_skill(skill)
+    return nil unless result
 
-    { modifier: modifier, strength: strength }
+    {
+      befoulment_modifier_id: result[:modifier_id],
+      befoulment_strength: result[:strength]
+    }
   end
 
-  def parse_ax_strength(effect_value, show_value)
+  ##
+  # Parses a single augment skill (AX or befoulment) from game data.
+  #
+  # @param skill [Hash] Single skill data with skill_id and effect_value
+  # @return [Hash, nil] { modifier_id:, strength: } or nil
+  def parse_single_augment_skill(skill)
+    return nil unless skill['skill_id'].present?
+
+    game_skill_id = skill['skill_id'].to_i
+    modifier = find_modifier_by_game_skill_id(game_skill_id)
+
+    unless modifier
+      # Log unknown skill ID with icon for discovery
+      Rails.logger.warn(
+        "[WeaponImportService] Unknown augment skill_id=#{game_skill_id} " \
+        "icon=#{skill['augment_skill_icon_image']}"
+      )
+      return nil
+    end
+
+    strength = parse_augment_strength(skill['effect_value'], skill['show_value'])
+    return nil unless strength
+
+    { modifier_id: modifier.id, strength: strength }
+  end
+
+  def find_modifier_by_game_skill_id(game_skill_id)
+    @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
+  end
+
+  def parse_augment_strength(effect_value, show_value)
     # Try effect_value first
     if effect_value.present?
       # Handle "1_3" format (seems to be "tier_value")
@@ -262,5 +358,67 @@ class WeaponImportService
     end
 
     nil
+  end
+
+  ##
+  # Reconciles deletions by removing collection weapons not in the processed list.
+  # Only called when @is_full_inventory and @reconcile_deletions are both true.
+  # When a filter is active, only deletes items matching that filter.
+  #
+  # @return [Hash] Reconciliation result with deleted count and orphaned grid item IDs
+  def reconcile_deletions
+    # Find collection weapons with game_ids NOT in our processed list
+    # Scoped to filter criteria if present
+    scope = @user.collection_weapons
+                 .where.not(game_id: nil)
+                 .where.not(game_id: @processed_game_ids)
+
+    scope = apply_filter_scope(scope)
+
+    deleted_count = 0
+    orphaned_grid_item_ids = []
+
+    scope.find_each do |coll_weapon|
+      # Collect IDs of grid items that will be orphaned
+      grid_weapon_ids = GridWeapon.where(collection_weapon_id: coll_weapon.id).pluck(:id)
+      orphaned_grid_item_ids.concat(grid_weapon_ids)
+
+      # The before_destroy callback on CollectionWeapon will mark grid items as orphaned
+      coll_weapon.destroy
+      deleted_count += 1
+    end
+
+    {
+      deleted: deleted_count,
+      orphaned_grid_items: orphaned_grid_item_ids
+    }
+  end
+
+  ##
+  # Applies element and proficiency filters to a collection weapons scope.
+  # Used to scope deletion checks to only items matching the current game filter.
+  #
+  # @param scope [ActiveRecord::Relation] The collection weapons relation to filter
+  # @return [ActiveRecord::Relation] Filtered relation
+  def apply_filter_scope(scope)
+    return scope unless @filter.present?
+
+    # Element: check collection_weapon.element first (for element-changeable weapons),
+    # fall back to weapon.element if nil
+    if @filter[:elements].present? || @filter['elements'].present?
+      elements = @filter[:elements] || @filter['elements']
+      scope = scope.joins(:weapon).where(
+        'collection_weapons.element IN (?) OR (collection_weapons.element IS NULL AND weapons.element IN (?))',
+        elements, elements
+      )
+    end
+
+    # Proficiency: join through weapon
+    if @filter[:proficiencies].present? || @filter['proficiencies'].present?
+      proficiencies = @filter[:proficiencies] || @filter['proficiencies']
+      scope = scope.joins(:weapon).where(weapons: { proficiency: proficiencies })
+    end
+
+    scope
   end
 end

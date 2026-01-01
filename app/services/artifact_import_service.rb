@@ -12,7 +12,7 @@
 #   end
 #
 class ArtifactImportService
-  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, keyword_init: true)
+  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, :reconciliation, keyword_init: true)
 
   # Game element values to our element enum values
   # Game: 1=Fire, 2=Water, 3=Earth, 4=Wind, 5=Light, 6=Dark
@@ -30,10 +30,44 @@ class ArtifactImportService
     @user = user
     @game_data = game_data
     @update_existing = options[:update_existing] || false
+    @is_full_inventory = options[:is_full_inventory] || false
+    @reconcile_deletions = options[:reconcile_deletions] || false
+    @filter = options[:filter] # { elements: [...], proficiencies: [...] }
     @created = []
     @updated = []
     @skipped = []
     @errors = []
+    @processed_game_ids = []
+  end
+
+  ##
+  # Previews what would be deleted in a sync operation.
+  # Does not modify any data, just returns items that would be removed.
+  # When a filter is active, only considers items matching that filter.
+  #
+  # @return [Array<CollectionArtifact>] Collection artifacts that would be deleted
+  def preview_deletions
+    items = extract_items
+    return [] if items.empty?
+
+    # Extract all game_ids from the import data
+    # Artifacts use 'id' directly (not nested in 'param')
+    game_ids = items.filter_map do |item|
+      data = item.is_a?(Hash) ? item.with_indifferent_access : item
+      data['id'].to_s if data['id'].present?
+    end
+
+    return [] if game_ids.empty?
+
+    # Find collection artifacts with game_ids NOT in the import
+    # Scoped to filter criteria if present
+    scope = @user.collection_artifacts
+                 .includes(:artifact)
+                 .where.not(game_id: nil)
+                 .where.not(game_id: game_ids)
+
+    scope = apply_filter_scope(scope)
+    scope
   end
 
   ##
@@ -43,7 +77,14 @@ class ArtifactImportService
   def import
     items = extract_items
     if items.empty?
-      return Result.new(success?: false, created: [], updated: [], skipped: [], errors: ['No artifact items found in data'])
+      return Result.new(
+        success?: false,
+        created: [],
+        updated: [],
+        skipped: [],
+        errors: ['No artifact items found in data'],
+        reconciliation: nil
+      )
     end
 
     # Preload artifacts and existing collection artifacts to avoid N+1 queries
@@ -58,12 +99,19 @@ class ArtifactImportService
       end
     end
 
+    # Handle deletion reconciliation if requested
+    reconciliation_result = nil
+    if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
+      reconciliation_result = reconcile_deletions
+    end
+
     Result.new(
       success?: @errors.empty?,
       created: @created,
       updated: @updated,
       skipped: @skipped,
-      errors: @errors
+      errors: @errors,
+      reconciliation: reconciliation_result
     )
   end
 
@@ -91,6 +139,10 @@ class ArtifactImportService
   def import_item(item, _index)
     # Handle both string and symbol keys from params
     data = item.is_a?(Hash) ? item.with_indifferent_access : item
+
+    # Track this game_id as processed (for reconciliation)
+    game_id = data['id']
+    @processed_game_ids << game_id.to_s if game_id.present?
 
     artifact = find_artifact(data['artifact_id'])
     unless artifact
@@ -192,5 +244,63 @@ class ArtifactImportService
       'quality' => quality.to_i,
       'level' => level.to_i
     }
+  end
+
+  ##
+  # Reconciles deletions by removing collection artifacts not in the processed list.
+  # Only called when @is_full_inventory and @reconcile_deletions are both true.
+  # When a filter is active, only deletes items matching that filter.
+  #
+  # @return [Hash] Reconciliation result with deleted count and orphaned grid item IDs
+  def reconcile_deletions
+    # Find collection artifacts with game_ids NOT in our processed list
+    # Scoped to filter criteria if present
+    scope = @user.collection_artifacts
+                 .where.not(game_id: nil)
+                 .where.not(game_id: @processed_game_ids)
+
+    scope = apply_filter_scope(scope)
+
+    deleted_count = 0
+    orphaned_grid_item_ids = []
+
+    scope.find_each do |coll_artifact|
+      # Collect IDs of grid items that will be orphaned
+      grid_artifact_ids = GridArtifact.where(collection_artifact_id: coll_artifact.id).pluck(:id)
+      orphaned_grid_item_ids.concat(grid_artifact_ids)
+
+      # The before_destroy callback on CollectionArtifact will mark grid items as orphaned
+      coll_artifact.destroy
+      deleted_count += 1
+    end
+
+    {
+      deleted: deleted_count,
+      orphaned_grid_items: orphaned_grid_item_ids
+    }
+  end
+
+  ##
+  # Applies element and proficiency filters to a collection artifacts scope.
+  # Used to scope deletion checks to only items matching the current game filter.
+  #
+  # @param scope [ActiveRecord::Relation] The collection artifacts relation to filter
+  # @return [ActiveRecord::Relation] Filtered relation
+  def apply_filter_scope(scope)
+    return scope unless @filter.present?
+
+    # Filter by elements if specified
+    if @filter[:elements].present? || @filter['elements'].present?
+      elements = @filter[:elements] || @filter['elements']
+      scope = scope.where(element: elements)
+    end
+
+    # Filter by proficiencies if specified
+    if @filter[:proficiencies].present? || @filter['proficiencies'].present?
+      proficiencies = @filter[:proficiencies] || @filter['proficiencies']
+      scope = scope.where(proficiency: proficiencies)
+    end
+
+    scope
   end
 end

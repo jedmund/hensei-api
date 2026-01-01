@@ -7,10 +7,28 @@ module Api
              :created_at, :updated_at
 
       field :ax, if: ->(_, obj, _) { obj.ax_modifier1.present? } do |obj|
-        [
-          { modifier: obj.ax_modifier1, strength: obj.ax_strength1 },
-          { modifier: obj.ax_modifier2, strength: obj.ax_strength2 }
-        ].compact_blank
+        skills = []
+        if obj.ax_modifier1.present?
+          skills << {
+            modifier: WeaponStatModifierBlueprint.render_as_hash(obj.ax_modifier1),
+            strength: obj.ax_strength1
+          }
+        end
+        if obj.ax_modifier2.present?
+          skills << {
+            modifier: WeaponStatModifierBlueprint.render_as_hash(obj.ax_modifier2),
+            strength: obj.ax_strength2
+          }
+        end
+        skills
+      end
+
+      field :befoulment, if: ->(_, obj, _) { obj.befoulment_modifier.present? } do |obj|
+        {
+          modifier: WeaponStatModifierBlueprint.render_as_hash(obj.befoulment_modifier),
+          strength: obj.befoulment_strength,
+          exorcism_level: obj.exorcism_level
+        }
       end
 
       field :awakening, if: ->(_, obj, _) { obj.awakening.present? } do |obj|

@@ -275,6 +275,19 @@ class Party < ApplicationRecord
   end
 
   ##
+  # Checks if the party has any orphaned grid items.
+  #
+  # An orphaned item is one whose linked collection item has been deleted,
+  # indicating the user no longer has that item in their game inventory.
+  #
+  # @return [Boolean] true if the party has orphaned weapons, summons, or artifacts.
+  def has_orphaned_items?
+    weapons.orphaned.exists? ||
+      summons.orphaned.exists? ||
+      characters.joins(:grid_artifact).where(grid_artifacts: { orphaned: true }).exists?
+  end
+
+  ##
   # Determines if the party meets the minimum requirements for preview generation.
   #
   # The party must have at least one weapon, one character, and one summon.
