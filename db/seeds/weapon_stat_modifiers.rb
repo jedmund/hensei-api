@@ -36,15 +36,15 @@ ax_skills = [
 ]
 
 befoulments = [
-  # Befoulments - game_skill_ids will be populated as we discover them
-  { slug: 'befoul_atk_down', name_en: 'ATK Down', name_jp: '攻撃力DOWN', category: 'befoulment', stat: 'atk', polarity: -1, suffix: '%', base_min: -12, base_max: -6, game_skill_id: nil },
+  # Befoulments - game_skill_ids from game data (2873-2881, 2876 doesn't exist)
+  { slug: 'befoul_atk_down', name_en: 'ATK Down', name_jp: '攻撃力DOWN', category: 'befoulment', stat: 'atk', polarity: -1, suffix: '%', base_min: -12, base_max: -6, game_skill_id: 2873 },
+  { slug: 'befoul_ability_dmg_down', name_en: 'Ability DMG Down', name_jp: 'アビリティダメージDOWN', category: 'befoulment', stat: 'ability_dmg', polarity: -1, suffix: '%', base_min: -50, base_max: -50, game_skill_id: 2874 },
+  { slug: 'befoul_ca_dmg_down', name_en: 'CA DMG Down', name_jp: '奥義ダメージDOWN', category: 'befoulment', stat: 'ca_dmg', polarity: -1, suffix: '%', base_min: -38, base_max: -26, game_skill_id: 2875 },
+  { slug: 'befoul_da_ta_down', name_en: 'DA/TA Down', name_jp: '連撃率DOWN', category: 'befoulment', stat: 'da_ta', polarity: -1, suffix: '%', base_min: -22, base_max: -19, game_skill_id: 2877 },
+  { slug: 'befoul_debuff_down', name_en: 'Debuff Success Down', name_jp: '弱体成功率DOWN', category: 'befoulment', stat: 'debuff_success', polarity: -1, suffix: '%', base_min: -16, base_max: -6, game_skill_id: 2878 },
+  { slug: 'befoul_hp_down', name_en: 'Max HP Down', name_jp: '最大HP減少', category: 'befoulment', stat: 'hp', polarity: -1, suffix: '%', base_min: -50, base_max: -26, game_skill_id: 2879 },
   { slug: 'befoul_def_down', name_en: 'DEF Down', name_jp: '防御力DOWN', category: 'befoulment', stat: 'def', polarity: -1, suffix: '%', base_min: -25, base_max: -21, game_skill_id: 2880 },
-  { slug: 'befoul_da_ta_down', name_en: 'DA/TA Down', name_jp: '連撃率DOWN', category: 'befoulment', stat: 'da_ta', polarity: -1, suffix: '%', base_min: -22, base_max: -19, game_skill_id: nil },
-  { slug: 'befoul_ca_dmg_down', name_en: 'CA DMG Down', name_jp: '奥義ダメージDOWN', category: 'befoulment', stat: 'ca_dmg', polarity: -1, suffix: '%', base_min: -38, base_max: -26, game_skill_id: nil },
-  { slug: 'befoul_dot', name_en: 'Damage Over Time', name_jp: '毎ターンダメージ', category: 'befoulment', stat: 'dot', polarity: -1, suffix: '%', base_min: 6, base_max: 16, game_skill_id: nil },
-  { slug: 'befoul_hp_down', name_en: 'Max HP Down', name_jp: '最大HP減少', category: 'befoulment', stat: 'hp', polarity: -1, suffix: '%', base_min: -50, base_max: -26, game_skill_id: nil },
-  { slug: 'befoul_debuff_down', name_en: 'Debuff Success Down', name_jp: '弱体成功率DOWN', category: 'befoulment', stat: 'debuff_success', polarity: -1, suffix: '%', base_min: -16, base_max: -6, game_skill_id: nil },
-  { slug: 'befoul_ability_dmg_down', name_en: 'Ability DMG Down', name_jp: 'アビリティダメージDOWN', category: 'befoulment', stat: 'ability_dmg', polarity: -1, suffix: '%', base_min: -50, base_max: -50, game_skill_id: nil }
+  { slug: 'befoul_dot', name_en: 'Damage Over Time', name_jp: '毎ターンダメージ', category: 'befoulment', stat: 'dot', polarity: -1, suffix: '%', base_min: 6, base_max: 16, game_skill_id: 2881 }
 ]
 
 (ax_skills + befoulments).each do |attrs|
