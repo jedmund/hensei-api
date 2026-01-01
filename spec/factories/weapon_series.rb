@@ -9,7 +9,7 @@ FactoryBot.define do
     element_changeable { false }
     has_weapon_keys { false }
     has_awakening { false }
-    augment_type { :none }
+    augment_type { :no_augment }
 
     trait :gacha do
       slug { 'gacha' }

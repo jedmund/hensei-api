@@ -5,7 +5,7 @@ class WeaponSeries < ApplicationRecord
   has_many :weapon_key_series, dependent: :destroy
   has_many :weapon_keys, through: :weapon_key_series
 
-  enum :augment_type, { none: 0, ax: 1, befoulment: 2 }, default: :none
+  enum :augment_type, { no_augment: 0, ax: 1, befoulment: 2 }, default: :no_augment
 
   validates :name_en, presence: true
   validates :name_jp, presence: true
