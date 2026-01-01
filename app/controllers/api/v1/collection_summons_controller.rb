@@ -127,7 +127,8 @@ module Api
           game_data,
           update_existing: import_params[:update_existing] == true,
           is_full_inventory: import_params[:is_full_inventory] == true,
-          reconcile_deletions: import_params[:reconcile_deletions] == true
+          reconcile_deletions: import_params[:reconcile_deletions] == true,
+          filter: import_params[:filter]
         )
 
         result = service.import
@@ -151,12 +152,13 @@ module Api
       # @return [JSON] List of items that would be deleted
       def preview_sync
         game_data = import_params[:data]
+        filter = import_params[:filter]
 
         unless game_data.present?
           return render json: { error: 'No data provided' }, status: :bad_request
         end
 
-        service = SummonImportService.new(current_user, game_data)
+        service = SummonImportService.new(current_user, game_data, filter: filter)
         items_to_delete = service.preview_deletions
 
         render json: {
@@ -218,7 +220,8 @@ module Api
           update_existing: params[:update_existing],
           is_full_inventory: params[:is_full_inventory],
           reconcile_deletions: params[:reconcile_deletions],
-          data: params[:data]&.to_unsafe_h
+          data: params[:data]&.to_unsafe_h,
+          filter: params[:filter]&.to_unsafe_h
         }
       end
 
