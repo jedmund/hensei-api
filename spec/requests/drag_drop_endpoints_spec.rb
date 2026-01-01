@@ -138,7 +138,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
       it 'returns error for invalid position' do
         put "/api/v1/parties/#{party.id}/grid_characters/#{char1.id}/position",
-            params: { position: 7 }.to_json,
+            params: { position: 8 }.to_json,
             headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
