@@ -82,9 +82,11 @@ Rails.application.routes.draw do
     post 'search/weapons', to: 'search#weapons'
     post 'search/summons', to: 'search#summons'
     post 'search/job_skills', to: 'search#job_skills'
+    post 'search/jobs', to: 'search#jobs'
     post 'search/guidebooks', to: 'search#guidebooks'
 
     get 'jobs', to: 'jobs#all'
+    post 'jobs', to: 'jobs#create'
 
     get 'jobs/skills', to: 'job_skills#all'
     get 'jobs/:id', to: 'jobs#show'
@@ -96,6 +98,9 @@ Rails.application.routes.draw do
     delete 'jobs/:job_id/skills/:id', to: 'job_skills#destroy'
     post 'jobs/:job_id/skills/:id/download_image', to: 'job_skills#download_image'
     get 'jobs/:id/accessories', to: 'job_accessories#job'
+
+    # Job Accessories (database management)
+    resources :job_accessories, only: %i[index show create update destroy]
 
     get 'characters/:id/related', to: 'characters#related'
 
