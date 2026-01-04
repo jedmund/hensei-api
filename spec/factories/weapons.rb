@@ -85,5 +85,15 @@ FactoryBot.define do
     trait :ax_weapon do
       ax { true }
     end
+
+    trait :odiant do
+      weapon_series { WeaponSeries.find_by(slug: 'odiant') || create(:weapon_series, :odiant) }
+      max_exorcism_level { 5 }
+    end
+
+    trait :with_befoulment do
+      weapon_series { WeaponSeries.find_by(slug: 'odiant') || create(:weapon_series, :odiant) }
+      max_exorcism_level { 5 }
+    end
   end
 end
