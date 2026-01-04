@@ -16,6 +16,22 @@ class Job < ApplicationRecord
                     }
                   }
 
+  pg_search_scope :en_search,
+                  against: :name_en,
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
+
+  pg_search_scope :ja_search,
+                  against: :name_jp,
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
+
   belongs_to :base_job,
              foreign_key: 'base_job_id',
              class_name: 'Job',
