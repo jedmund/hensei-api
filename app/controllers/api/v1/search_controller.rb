@@ -284,6 +284,58 @@ module Api
                                               meta: pagination_meta(paginated).merge(count: count))
       end
 
+      def jobs
+        filters = search_params[:filters]
+        locale = search_params[:locale] || 'en'
+        conditions = {}
+
+        if filters
+          conditions[:row] = filters['row'] unless filters['row'].blank? || filters['row'].empty?
+          unless filters['proficiency'].blank? || filters['proficiency'].empty?
+            # Filter by either proficiency1 or proficiency2 matching
+            proficiency_values = Array(filters['proficiency']).map(&:to_i)
+            conditions[:proficiency1] = proficiency_values
+          end
+        end
+
+        jobs = if search_params[:query].present? && search_params[:query].length >= 2
+                 if locale == 'ja'
+                   Job.ja_search(search_params[:query]).where(conditions)
+                 else
+                   Job.en_search(search_params[:query]).where(conditions)
+                 end
+               else
+                 Job.where(conditions)
+               end
+
+        # Filter by proficiency2 as well (OR condition)
+        if filters && filters['proficiency'].present? && !filters['proficiency'].empty?
+          proficiency_values = Array(filters['proficiency']).map(&:to_i)
+          jobs = jobs.or(Job.where(proficiency2: proficiency_values))
+        end
+
+        # Apply feature filters
+        if filters
+          jobs = jobs.where(master_level: true) if filters['masterLevel'] == true || filters['masterLevel'] == 'true'
+          jobs = jobs.where(ultimate_mastery: true) if filters['ultimateMastery'] == true || filters['ultimateMastery'] == 'true'
+          jobs = jobs.where(accessory: true) if filters['accessory'] == true || filters['accessory'] == 'true'
+        end
+
+        # Apply sorting if specified, otherwise use default (row, then order)
+        if search_params[:sort].present?
+          jobs = apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
+        else
+          jobs = jobs.order(:row, :order)
+        end
+
+        count = jobs.length
+        paginated = jobs.paginate(page: search_params[:page], per_page: search_page_size)
+
+        render json: JobBlueprint.render(paginated,
+                                         root: :results,
+                                         meta: pagination_meta(paginated).merge(count: count))
+      end
+
       def guidebooks
         # Perform the query
         books = if search_params[:query].present? && search_params[:query].length >= 2
@@ -324,6 +376,23 @@ module Api
           scope.order(updated_at: sort_dir)
         else
           scope
+        end
+      end
+
+      # Apply sorting for jobs
+      def apply_job_sort(scope, column, order, locale)
+        sort_dir = order == 'desc' ? :desc : :asc
+
+        case column
+        when 'name'
+          name_col = locale == 'ja' ? :name_ja : :name_en
+          scope.order(name_col => sort_dir)
+        when 'row'
+          scope.order(row: sort_dir, order: :asc)
+        when 'proficiency'
+          scope.order(proficiency1: sort_dir)
+        else
+          scope.order(:row, :order)
         end
       end
     end

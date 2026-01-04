@@ -6,7 +6,7 @@ module Api
       before_action :set_party, only: %w[update_job update_job_skills destroy_job_skill]
       before_action :authorize_party, only: %w[update_job update_job_skills destroy_job_skill]
       before_action :set_job, only: %w[update]
-      before_action :ensure_editor_role, only: %w[update]
+      before_action :ensure_editor_role, only: %w[create update]
 
       def all
         render json: JobBlueprint.render(Job.all)
@@ -14,6 +14,18 @@ module Api
 
       def show
         render json: JobBlueprint.render(Job.find_by(granblue_id: params[:id]))
+      end
+
+      # POST /jobs
+      # Creates a new job record
+      def create
+        @job = Job.new(job_update_params)
+
+        if @job.save
+          render json: JobBlueprint.render(@job), status: :created
+        else
+          render_validation_error_response(@job)
+        end
       end
 
       # PATCH/PUT /jobs/:id
