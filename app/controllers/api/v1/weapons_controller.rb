@@ -219,7 +219,7 @@ module Api
           :flb, :ulb, :transcendence, :extra, :extra_prerequisite, :limit, :ax, :gacha,
           :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
-          :max_level, :max_skill_level, :max_awakening_level,
+          :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
           :release_date, :flb_date, :ulb_date, :transcendence_date,
           :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           :recruits, :forged_from, :forge_chain_id, :forge_order,

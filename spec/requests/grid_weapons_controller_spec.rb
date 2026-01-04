@@ -345,6 +345,71 @@ RSpec.describe 'GridWeapons API', type: :request do
     end
   end
 
+  describe 'default exorcism_level for befoulment weapons' do
+    let(:odiant_series) { create(:weapon_series, :odiant) }
+    let(:befoulment_weapon) { create(:weapon, weapon_series: odiant_series, max_exorcism_level: 5) }
+    let(:regular_weapon) { create(:weapon) }
+
+    it 'sets exorcism_level to 1 when creating with befoulment weapon and no exorcism_level provided' do
+      params = {
+        weapon: {
+          party_id: party.id,
+          weapon_id: befoulment_weapon.id,
+          position: 1,
+          uncap_level: 3,
+          transcendence_step: 0
+        }
+      }
+
+      post '/api/v1/grid_weapons', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      json = JSON.parse(response.body)
+      expect(json['grid_weapon']['exorcismLevel']).to eq(1)
+    end
+
+    it 'respects provided exorcism_level for befoulment weapon' do
+      befoulment_modifier = create(:weapon_stat_modifier, :befoulment)
+
+      params = {
+        weapon: {
+          party_id: party.id,
+          weapon_id: befoulment_weapon.id,
+          position: 1,
+          uncap_level: 3,
+          transcendence_step: 0,
+          exorcism_level: 4,
+          befoulment_modifier_id: befoulment_modifier.id,
+          befoulment_strength: 5.0
+        }
+      }
+
+      post '/api/v1/grid_weapons', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      json = JSON.parse(response.body)
+      expect(json['grid_weapon']['exorcismLevel']).to eq(4)
+    end
+
+    it 'does not set exorcism_level for non-befoulment weapons' do
+      params = {
+        weapon: {
+          party_id: party.id,
+          weapon_id: regular_weapon.id,
+          position: 1,
+          uncap_level: 3,
+          transcendence_step: 0
+        }
+      }
+
+      post '/api/v1/grid_weapons', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      json = JSON.parse(response.body)
+      expect(json['grid_weapon']['exorcismLevel']).to be_nil
+    end
+  end
+
   # Debug hook: if any example fails and a response exists, print the error message.
   after(:each) do |example|
     if example.exception && defined?(response) && response.present?
