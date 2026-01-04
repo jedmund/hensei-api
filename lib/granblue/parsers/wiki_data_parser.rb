@@ -2,9 +2,9 @@
 
 module Granblue
   module Parsers
-    # SuggestionParser extracts structured suggestions from wiki text
+    # WikiDataParser extracts structured data from wiki text
     # for use in batch entity import flows
-    class SuggestionParser
+    class WikiDataParser
       # Parse character wiki text into suggestion fields
       def self.parse_character(wiki_text)
         return {} if wiki_text.blank?
