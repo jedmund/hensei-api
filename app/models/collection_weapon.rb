@@ -15,6 +15,7 @@ class CollectionWeapon < ApplicationRecord
   has_many :grid_weapons, dependent: :nullify
 
   before_destroy :orphan_grid_items
+  before_validation :set_default_exorcism_level, on: :create
 
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
@@ -173,5 +174,17 @@ class CollectionWeapon < ApplicationRecord
   # @return [void]
   def orphan_grid_items
     grid_weapons.update_all(orphaned: true, collection_weapon_id: nil)
+  end
+
+  ##
+  # Sets default exorcism_level to 1 for befoulment weapons if not provided.
+  #
+  # @return [void]
+  def set_default_exorcism_level
+    return unless weapon.present?
+    return unless exorcism_level.nil?
+    return unless weapon.weapon_series&.augment_type == 'befoulment'
+
+    self.exorcism_level = 1
   end
 end

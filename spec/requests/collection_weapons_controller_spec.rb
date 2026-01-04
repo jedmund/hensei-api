@@ -279,4 +279,63 @@ RSpec.describe 'Collection Weapons API', type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe 'default exorcism_level for befoulment weapons' do
+    let(:odiant_series) { create(:weapon_series, :odiant) }
+    let(:befoulment_weapon) { create(:weapon, weapon_series: odiant_series, max_exorcism_level: 5) }
+    let(:regular_weapon) { create(:weapon) }
+
+    it 'sets exorcism_level to 1 when creating with befoulment weapon and no exorcism_level provided' do
+      attributes = {
+        collection_weapon: {
+          weapon_id: befoulment_weapon.id,
+          uncap_level: 3,
+          transcendence_step: 0
+        }
+      }
+
+      post '/api/v1/collection/weapons', params: attributes.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      json = JSON.parse(response.body)
+      expect(json['exorcismLevel']).to eq(1)
+    end
+
+    it 'respects provided exorcism_level for befoulment weapon' do
+      befoulment_modifier = create(:weapon_stat_modifier, :befoulment)
+
+      attributes = {
+        collection_weapon: {
+          weapon_id: befoulment_weapon.id,
+          uncap_level: 3,
+          transcendence_step: 0,
+          exorcism_level: 3,
+          befoulment_modifier_id: befoulment_modifier.id,
+          befoulment_strength: 5.0
+        }
+      }
+
+      post '/api/v1/collection/weapons', params: attributes.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      json = JSON.parse(response.body)
+      expect(json['exorcismLevel']).to eq(3)
+    end
+
+    it 'does not set exorcism_level for non-befoulment weapons' do
+      attributes = {
+        collection_weapon: {
+          weapon_id: regular_weapon.id,
+          uncap_level: 3,
+          transcendence_step: 0
+        }
+      }
+
+      post '/api/v1/collection/weapons', params: attributes.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      json = JSON.parse(response.body)
+      expect(json['exorcismLevel']).to be_nil
+    end
+  end
 end

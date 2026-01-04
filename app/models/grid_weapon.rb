@@ -56,6 +56,7 @@ class GridWeapon < ApplicationRecord
   validate :no_conflicts, on: :create
 
   before_save :assign_mainhand
+  before_validation :set_default_exorcism_level, on: :create
 
   ##### Amoeba configuration
   amoeba do
@@ -244,5 +245,17 @@ class GridWeapon < ApplicationRecord
   # @return [void]
   def assign_mainhand
     self.mainhand = (position == -1)
+  end
+
+  ##
+  # Sets default exorcism_level to 1 for befoulment weapons if not provided.
+  #
+  # @return [void]
+  def set_default_exorcism_level
+    return unless weapon.present?
+    return unless exorcism_level.nil?
+    return unless weapon.weapon_series&.augment_type == 'befoulment'
+
+    self.exorcism_level = 1
   end
 end
