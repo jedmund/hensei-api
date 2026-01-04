@@ -13,7 +13,7 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
-             :limit, :rarity, :ax, :ax_type, :gacha, :promotions, :forge_order
+             :limit, :rarity, :ax, :ax_type, :gacha, :promotions, :forge_order, :extra
 
       # Series - returns full object with flags if weapon_series is present, fallback to legacy integer
       field :series do |w|

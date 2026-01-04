@@ -10,7 +10,7 @@ module BatchPreviewable
   # @param wiki_page [String] The wiki page name to fetch
   # @param entity_type [Symbol] The type of entity (:character, :weapon, :summon)
   # @param wiki_raw [String, nil] Pre-fetched wiki text (from client-side fetch)
-  # @return [Hash] Preview data including status, suggestions, and errors
+  # @return [Hash] Preview data including status, parsed_data, and errors
   def process_wiki_preview(wiki_page, entity_type, wiki_raw: nil)
     result = {
       wiki_page: wiki_page,
@@ -39,22 +39,22 @@ module BatchPreviewable
 
       result[:wiki_raw] = wiki_text
 
-      # Parse suggestions based on entity type
-      suggestions = case entity_type
+      # Parse data from wiki text based on entity type
+      parsed_data = case entity_type
                     when :character
-                      Granblue::Parsers::SuggestionParser.parse_character(wiki_text)
+                      Granblue::Parsers::WikiDataParser.parse_character(wiki_text)
                     when :weapon
-                      Granblue::Parsers::SuggestionParser.parse_weapon(wiki_text)
+                      Granblue::Parsers::WikiDataParser.parse_weapon(wiki_text)
                     when :summon
-                      Granblue::Parsers::SuggestionParser.parse_summon(wiki_text)
+                      Granblue::Parsers::WikiDataParser.parse_summon(wiki_text)
                     end
 
-      result[:granblue_id] = suggestions[:granblue_id] if suggestions[:granblue_id].present?
-      result[:suggestions] = suggestions
+      result[:granblue_id] = parsed_data[:granblue_id] if parsed_data[:granblue_id].present?
+      result[:parsed_data] = parsed_data
 
       # Queue image download if we have a granblue_id
-      if suggestions[:granblue_id].present?
-        result[:image_status] = queue_image_download(suggestions[:granblue_id], entity_type)
+      if parsed_data[:granblue_id].present?
+        result[:image_status] = queue_image_download(parsed_data[:granblue_id], entity_type)
       else
         result[:image_status] = 'no_id'
       end
