@@ -14,7 +14,7 @@ module Api
                   name: :job,
                   blueprint: JobBlueprint
 
-      fields :granblue_id, :rarity, :release_date
+      fields :granblue_id, :rarity, :release_date, :accessory_type
     end
   end
 end
