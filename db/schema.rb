@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_30_000004) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_05_053753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -677,6 +677,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_30_000004) do
     t.index ["weapons_count", "characters_count", "summons_count"], name: "index_parties_on_counters"
   end
 
+  create_table "party_shares", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id", null: false
+    t.string "shareable_type", null: false
+    t.uuid "shareable_id", null: false
+    t.uuid "shared_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["party_id", "shareable_type", "shareable_id"], name: "index_party_shares_unique_per_shareable", unique: true
+    t.index ["party_id"], name: "index_party_shares_on_party_id"
+    t.index ["shareable_type", "shareable_id"], name: "index_party_shares_on_shareable"
+    t.index ["shareable_type", "shareable_id"], name: "index_party_shares_on_shareable_type_and_shareable_id"
+    t.index ["shared_by_id"], name: "index_party_shares_on_shared_by_id"
+  end
+
   create_table "pg_search_documents", force: :cascade do |t|
     t.text "content"
     t.string "granblue_id"
@@ -1029,6 +1043,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_30_000004) do
     t.string "forged_from"
     t.uuid "forge_chain_id"
     t.integer "forge_order"
+    t.integer "max_exorcism_level"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
@@ -1111,6 +1126,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_30_000004) do
   add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
+  add_foreign_key "party_shares", "parties"
+  add_foreign_key "party_shares", "users", column: "shared_by_id"
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
   add_foreign_key "phantom_players", "crews"
   add_foreign_key "phantom_players", "users", column: "claimed_by_id"

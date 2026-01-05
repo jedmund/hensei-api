@@ -6,9 +6,9 @@ module Api
       include CrewAuthorizationConcern
 
       before_action :restrict_access
-      before_action :set_crew, only: %i[show update members roster leave transfer_captain]
-      before_action :require_crew!, only: %i[show update members roster]
-      before_action :authorize_crew_member!, only: %i[show members]
+      before_action :set_crew, only: %i[show update members roster leave transfer_captain shared_parties]
+      before_action :require_crew!, only: %i[show update members roster shared_parties]
+      before_action :authorize_crew_member!, only: %i[show members shared_parties]
       before_action :authorize_crew_officer!, only: %i[update roster]
       before_action :authorize_crew_captain!, only: %i[transfer_captain]
 
@@ -104,6 +104,20 @@ module Api
         end
 
         render json: CrewBlueprint.render(@crew.reload, view: :full, root: :crew, current_user: current_user)
+      end
+
+      # GET /crew/shared_parties
+      # Returns parties that have been shared with this crew
+      def shared_parties
+        parties = @crew.shared_parties
+                       .includes(:user, :job, :raid)
+                       .order(created_at: :desc)
+                       .paginate(page: params[:page], per_page: page_size)
+
+        render json: {
+          parties: PartyBlueprint.render_as_hash(parties, view: :preview, current_user: current_user),
+          meta: pagination_meta(parties)
+        }
       end
 
       private

@@ -44,6 +44,11 @@ module Api
         render json: e.to_hash, status: e.http_status
       end
 
+      # Party share errors
+      rescue_from PartyShareErrors::PartyShareError do |e|
+        render json: e.to_hash, status: e.http_status
+      end
+
       rescue_from GranblueError do |e|
         render_error(e)
       end

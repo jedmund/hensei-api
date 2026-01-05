@@ -56,11 +56,15 @@ module Api
       end
 
       # Shows a specific party.
+      # Uses viewable_by? to check visibility including crew sharing.
+      # Also allows access via edit_key for anonymous parties.
       def show
-        return render_unauthorized_response if @party.private? && (!current_user || not_owner?)
+        unless @party.viewable_by?(current_user) || !not_owner?
+          return render_unauthorized_response
+        end
 
         if @party
-          render json: PartyBlueprint.render(@party, view: :full, root: :party)
+          render json: PartyBlueprint.render(@party, view: :full, root: :party, current_user: current_user)
         else
           render_not_found_response('project')
         end
