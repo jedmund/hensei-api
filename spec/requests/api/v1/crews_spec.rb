@@ -261,4 +261,59 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       end
     end
   end
+
+  describe 'GET /api/v1/crew/shared_parties' do
+    let(:crew) { create(:crew) }
+    let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+
+    context 'as crew member' do
+      it 'returns parties shared with the crew' do
+        other_user = create(:user)
+        create(:crew_membership, crew: crew, user: other_user)
+        party = create(:party, user: other_user, visibility: 3) # private
+        create(:party_share, party: party, shareable: crew, shared_by: other_user)
+
+        get '/api/v1/crew/shared_parties', headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['parties'].length).to eq(1)
+        expect(json['parties'][0]['id']).to eq(party.id)
+      end
+
+      it 'returns empty array when no shared parties' do
+        get '/api/v1/crew/shared_parties', headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['parties']).to eq([])
+      end
+
+      it 'includes pagination meta' do
+        get '/api/v1/crew/shared_parties', headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['meta']).to include('count', 'total_pages', 'per_page')
+      end
+    end
+
+    context 'when not in a crew' do
+      before { membership.retire! }
+
+      it 'returns not found' do
+        get '/api/v1/crew/shared_parties', headers: auth_headers
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'without authentication' do
+      it 'returns unauthorized' do
+        get '/api/v1/crew/shared_parties'
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
