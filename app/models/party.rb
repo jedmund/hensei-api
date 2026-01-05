@@ -156,6 +156,8 @@ class Party < ApplicationRecord
            inverse_of: :party
 
   has_many :favorites, dependent: :destroy
+  has_many :party_shares, dependent: :destroy
+  has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 
   accepts_nested_attributes_for :characters
   accepts_nested_attributes_for :summons
@@ -259,6 +261,38 @@ class Party < ApplicationRecord
   # @return [Boolean] true if the party is private; false otherwise.
   def private?
     visibility == 3
+  end
+
+  ##
+  # Checks if the party is shared with a specific crew.
+  #
+  # @param crew [Crew] the crew to check.
+  # @return [Boolean] true if shared with the crew; false otherwise.
+  def shared_with_crew?(crew)
+    return false unless crew
+
+    party_shares.exists?(shareable_type: 'Crew', shareable_id: crew.id)
+  end
+
+  ##
+  # Checks if a user can view this party based on visibility and sharing rules.
+  # A user can view if:
+  # - The party is public
+  # - The party is unlisted (accessible via direct link)
+  # - They own the party
+  # - They are an admin
+  # - The party is shared with a crew they belong to
+  #
+  # @param user [User, nil] the user to check.
+  # @return [Boolean] true if the user can view the party; false otherwise.
+  def viewable_by?(user)
+    return true if public?
+    return true if unlisted?
+    return true if user && user_id == user.id
+    return true if user&.admin?
+    return true if user&.crew && shared_with_crew?(user.crew)
+
+    false
   end
 
   ##
