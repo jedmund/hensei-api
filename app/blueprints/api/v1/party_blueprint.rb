@@ -52,6 +52,21 @@ module Api
         include_view :nested_objects # Characters, Weapons, Summons
         include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
+
+        # Shares (only visible to owner)
+        field :shares, if: ->(_field_name, party, options) {
+          options[:current_user] && party.user_id == options[:current_user].id
+        } do |party|
+          party.party_shares.includes(:shareable).map do |share|
+            {
+              id: share.id,
+              shareable_type: share.shareable_type.downcase,
+              shareable_id: share.shareable_id,
+              shareable_name: share.shareable.try(:name),
+              created_at: share.created_at
+            }
+          end
+        end
       end
 
       # Primary object associations

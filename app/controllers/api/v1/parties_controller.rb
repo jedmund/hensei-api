@@ -64,7 +64,7 @@ module Api
         end
 
         if @party
-          render json: PartyBlueprint.render(@party, view: :full, root: :party)
+          render json: PartyBlueprint.render(@party, view: :full, root: :party, current_user: current_user)
         else
           render_not_found_response('project')
         end
