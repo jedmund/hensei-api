@@ -61,15 +61,30 @@ class PartyQueryBuilder
   end
 
   # Applies privacy settings based on whether the current user is an admin.
+  # Also includes parties shared with the current user's crew.
   def apply_privacy_settings(query)
     # If the options say to skip privacy filtering (e.g. when viewing your own profile),
     # then return the query unchanged.
     return query if @options[:skip_privacy]
 
-    # Otherwise, if not admin, only show public parties.
+    # Admins can see everything
     return query if @current_user&.admin?
 
-    query.where('visibility = ?', 1)
+    # Build conditions for what the user can see:
+    # 1. Public parties (visibility = 1)
+    # 2. Parties shared with their crew (if they're in a crew)
+    if @current_user&.crew
+      # User is in a crew - include public parties OR parties shared with their crew
+      query.where(<<-SQL.squish, 1, 'Crew', @current_user.crew.id)
+        visibility = ? OR parties.id IN (
+          SELECT party_id FROM party_shares
+          WHERE shareable_type = ? AND shareable_id = ?
+        )
+      SQL
+    else
+      # User is not in a crew - only show public parties
+      query.where('visibility = ?', 1)
+    end
   end
 
   # Builds a hash of filtering conditions from the params.
