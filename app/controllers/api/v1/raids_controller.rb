@@ -75,6 +75,9 @@ module Api
         if size == 'thumbnail' && @raid.summon_id.blank?
           return render json: { error: 'Raid has no summon_id configured' }, status: :unprocessable_entity
         end
+        if %w[lobby background].include?(size) && @raid.quest_id.blank?
+          return render json: { error: 'Raid has no quest_id configured' }, status: :unprocessable_entity
+        end
 
         begin
           downloader = Granblue::Downloaders::RaidDownloader.new(
@@ -151,7 +154,7 @@ module Api
       end
 
       def raid_params
-        params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id, :enemy_id, :summon_id)
+        params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id, :enemy_id, :summon_id, :quest_id)
       end
 
       def apply_filters(scope)

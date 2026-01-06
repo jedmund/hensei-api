@@ -3,21 +3,25 @@
 module Granblue
   module Downloaders
     # Downloads raid image assets from the game server.
-    # Raids have two different image types from different sources:
+    # Raids have four different image types from different sources:
     # - Icon: from enemy directory using enemy_id
     # - Thumbnail: from summon directory using summon_id
+    # - Lobby: from quest/lobby directory using quest_id (with "1" appended)
+    # - Background: from quest/treasureraid directory using quest_id
     #
     # @example Download images for a specific raid
     #   downloader = RaidDownloader.new(raid, storage: :both)
     #   downloader.download
     #
     # @note Unlike other downloaders, RaidDownloader takes a Raid model instance
-    #   since it needs both enemy_id and summon_id
+    #   since it needs enemy_id, summon_id, and quest_id
     class RaidDownloader < BaseDownloader
-      SIZES = %w[icon thumbnail].freeze
+      SIZES = %w[icon thumbnail lobby background].freeze
 
       ICON_BASE_URL = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/enemy'
       THUMBNAIL_BASE_URL = 'https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
+      LOBBY_BASE_URL = 'https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/quest/assets/lobby'
+      BACKGROUND_BASE_URL = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/quest/assets/treasureraid'
 
       # Initialize with a Raid model instead of just an ID
       # @param raid [Raid] Raid model instance
@@ -52,6 +56,10 @@ module Granblue
             download_icon(last: index == sizes.size - 1)
           when 'thumbnail'
             download_thumbnail(last: index == sizes.size - 1)
+          when 'lobby'
+            download_lobby(last: index == sizes.size - 1)
+          when 'background'
+            download_background(last: index == sizes.size - 1)
           end
         end
       end
@@ -94,6 +102,42 @@ module Granblue
         log_info "\t404 returned\t#{url}"
       end
 
+      # Download the lobby image (from quest/lobby directory)
+      def download_lobby(last: false)
+        return unless @raid.quest_id
+
+        path = download_path('lobby')
+        url = build_lobby_url
+        filename = "#{@raid.quest_id}1.png"
+        s3_key = build_s3_key('lobby', filename)
+        download_uri = "#{path}/#{filename}"
+
+        return unless should_download?(download_uri, s3_key)
+
+        log_download('lobby', url, last: last)
+        process_image_download(url, download_uri, s3_key)
+      rescue OpenURI::HTTPError
+        log_info "\t404 returned\t#{url}"
+      end
+
+      # Download the background image (from quest/treasureraid directory)
+      def download_background(last: false)
+        return unless @raid.quest_id
+
+        path = download_path('background')
+        url = build_background_url
+        filename = "raid_image_new.png"
+        s3_key = build_s3_key('background', "#{@raid.quest_id}_raid_image_new.png")
+        download_uri = "#{path}/#{@raid.quest_id}_#{filename}"
+
+        return unless should_download?(download_uri, s3_key)
+
+        log_download('background', url, last: last)
+        process_image_download(url, download_uri, s3_key)
+      rescue OpenURI::HTTPError
+        log_info "\t404 returned\t#{url}"
+      end
+
       def log_download(size, url, last: false)
         if last
           log_info "\t└ #{size}: #{url}..."
@@ -119,6 +163,14 @@ module Granblue
 
       def build_thumbnail_url
         "#{THUMBNAIL_BASE_URL}/qm/#{@raid.summon_id}_high.png"
+      end
+
+      def build_lobby_url
+        "#{LOBBY_BASE_URL}/#{@raid.quest_id}1.png"
+      end
+
+      def build_background_url
+        "#{BACKGROUND_BASE_URL}/#{@raid.quest_id}/raid_image_new.png"
       end
 
       def object_type

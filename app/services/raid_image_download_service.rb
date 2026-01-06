@@ -63,6 +63,11 @@ class RaidImageDownloadService
       manifest['thumbnail'] = ["#{@raid.summon_id}_high.png"]
     end
 
+    if @raid.quest_id
+      manifest['lobby'] = ["#{@raid.quest_id}1.png"]
+      manifest['background'] = ["#{@raid.quest_id}_raid_image_new.png"]
+    end
+
     manifest
   end
 
