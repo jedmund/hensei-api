@@ -13,7 +13,7 @@ module Api
           }
         end
 
-        fields :slug, :level, :element, :game_id
+        fields :slug, :level, :element, :enemy_id, :summon_id
 
         association :group, blueprint: RaidGroupBlueprint, view: :flat
       end

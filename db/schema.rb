@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_102045) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_104115) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -755,7 +755,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_102045) do
     t.integer "element"
     t.string "slug"
     t.uuid "group_id"
-    t.integer "game_id"
+    t.integer "enemy_id"
+    t.bigint "summon_id"
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
