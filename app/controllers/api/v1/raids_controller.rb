@@ -74,7 +74,7 @@ module Api
       end
 
       def raid_params
-        params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id)
+        params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id, :game_id)
       end
 
       def apply_filters(scope)
