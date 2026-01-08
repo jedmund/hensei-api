@@ -72,7 +72,7 @@ module Granblue
 
         path = download_path('icon')
         url = build_icon_url
-        filename = "#{@raid.enemy_id}.png"
+        filename = "#{@raid.slug}.png"
         s3_key = build_s3_key('icon', filename)
         download_uri = "#{path}/#{filename}"
 
@@ -90,7 +90,7 @@ module Granblue
 
         path = download_path('thumbnail')
         url = build_thumbnail_url
-        filename = "#{@raid.summon_id}_high.png"
+        filename = "#{@raid.slug}.png"
         s3_key = build_s3_key('thumbnail', filename)
         download_uri = "#{path}/#{filename}"
 
@@ -108,7 +108,7 @@ module Granblue
 
         path = download_path('lobby')
         url = build_lobby_url
-        filename = "#{@raid.quest_id}1.png"
+        filename = "#{@raid.slug}.png"
         s3_key = build_s3_key('lobby', filename)
         download_uri = "#{path}/#{filename}"
 
@@ -126,9 +126,9 @@ module Granblue
 
         path = download_path('background')
         url = build_background_url
-        filename = "raid_image_new.png"
-        s3_key = build_s3_key('background', "#{@raid.quest_id}_raid_image_new.png")
-        download_uri = "#{path}/#{@raid.quest_id}_#{filename}"
+        filename = "#{@raid.slug}.png"
+        s3_key = build_s3_key('background', filename)
+        download_uri = "#{path}/#{filename}"
 
         return unless should_download?(download_uri, s3_key)
 
