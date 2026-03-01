@@ -3,6 +3,9 @@
 module Api
   module V1
     class SearchController < Api::V1::ApiController
+      rate_limit to: 30, within: 1.minute, by: -> { request.remote_ip }, only: :suggestions,
+                 with: -> { render json: { error: "Rate limit exceeded. Try again later." }, status: :too_many_requests }
+
       TRIGRAM = {
         trigram: {
           threshold: 0.3
@@ -334,6 +337,27 @@ module Api
         render json: JobBlueprint.render(paginated,
                                          root: :results,
                                          meta: pagination_meta(paginated).merge(count: count))
+      end
+
+      def suggestions
+        count = [[params[:count].to_i, 1].max, 30].min
+        per_type = (count / 3.0).ceil
+
+        characters = Character.order(Arel.sql('RANDOM()')).limit(per_type)
+        weapons = Weapon.order(Arel.sql('RANDOM()')).limit(per_type)
+        summons = Summon.order(Arel.sql('RANDOM()')).limit(per_type)
+
+        results = (characters + weapons + summons).shuffle.first(count).map do |entity|
+          {
+            id: entity.id,
+            granblue_id: entity.granblue_id,
+            name: { en: entity.name_en, ja: entity.name_jp },
+            element: entity.element,
+            type: entity.class.name.downcase
+          }
+        end
+
+        render json: { suggestions: results }
       end
 
       def guidebooks
