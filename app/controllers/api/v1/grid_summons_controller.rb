@@ -11,6 +11,7 @@ module Api
     # @see Api::V1::ApiController for shared API behavior.
     class GridSummonsController < Api::V1::ApiController
       include IdResolvable
+      include CollectionSourceConcern
 
       attr_reader :party, :incoming_summon
 
@@ -29,6 +30,12 @@ module Api
       #
       # @return [void]
       def create
+        # Validate collection source constraint before proceeding
+        if summon_params[:collection_summon_id].present?
+          collection_item = CollectionSummon.find_by(id: summon_params[:collection_summon_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
+
         # Build a new grid summon using permitted parameters merged with party and summon IDs.
         # Set the uncap_level to the summon's maximum uncap level regardless of what the client sent.
         grid_summon = build_grid_summon.tap do |gs|
@@ -220,6 +227,7 @@ module Api
         return render_not_found_response('grid_summon') if grid_summon.nil?
 
         if grid_summon.destroy
+          clear_collection_source_if_empty!(@party)
           render json: GridSummonBlueprint.render(grid_summon, view: :destroyed), status: :ok
         else
           render_unprocessable_entity_response(

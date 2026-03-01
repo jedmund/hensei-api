@@ -8,6 +8,7 @@ module Api
              :name, :element, :extra, :charge_attack,
              :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
              :full_auto, :auto_guard, :auto_summon, :video_url,
+             :collection_source_user_id,
              :created_at, :updated_at
 
       fields :local_id, :description, :charge_attack,

@@ -14,6 +14,7 @@ module Api
     # @see Api::V1::ApiController for shared API behavior.
     class GridCharactersController < Api::V1::ApiController
       include IdResolvable
+      include CollectionSourceConcern
 
       before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync]
       before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync]
@@ -30,6 +31,12 @@ module Api
       # @return [void]
       def create
         processed_params = transform_character_params(character_params)
+
+        # Validate collection source constraint before proceeding
+        if character_params[:collection_character_id].present?
+          collection_item = CollectionCharacter.find_by(id: character_params[:collection_character_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
 
         if conflict_characters.present?
           render json: render_conflict_view(conflict_characters, @incoming_character, character_params[:position])
@@ -218,6 +225,7 @@ module Api
         return render_not_found_response('grid_character') if grid_character.nil?
 
         if grid_character.destroy
+          clear_collection_source_if_empty!(@party)
           render json: GridCharacterBlueprint.render(grid_character, view: :destroyed)
         else
           render_unprocessable_entity_response(

@@ -187,6 +187,30 @@ module Api
         }, status: :ok
       end
 
+      # Unlinks all collection items from a party's grid items.
+      # Keeps the grid items but removes collection references and clears the collection source.
+      #
+      # POST /parties/:id/unlink_collection
+      def unlink_collection
+        @party = Party.find_by(id: params[:id])
+        return render_not_found_response('party') unless @party
+        return render_unauthorized_response unless authorized_to_edit?
+
+        ActiveRecord::Base.transaction do
+          @party.characters.where.not(collection_character_id: nil)
+                .update_all(collection_character_id: nil)
+          @party.weapons.where.not(collection_weapon_id: nil)
+                .update_all(collection_weapon_id: nil, orphaned: false)
+          @party.summons.where.not(collection_summon_id: nil)
+                .update_all(collection_summon_id: nil, orphaned: false)
+          @party.update_column(:collection_source_user_id, nil)
+        end
+
+        render json: {
+          party: PartyBlueprint.render_as_hash(@party.reload, view: :full, current_user: current_user)
+        }, status: :ok
+      end
+
       # Lists parties based on query parameters.
       def index
         query = build_filtered_query(build_common_base_query)
