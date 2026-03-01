@@ -254,6 +254,7 @@ class PartyQueryBuilder
       NOT EXISTS (
         SELECT 1 FROM grid_summons gs
         WHERE gs.party_id = parties.id
+        AND gs.friend IS NOT TRUE
         GROUP BY gs.summon_id
         HAVING COUNT(*) > (
           SELECT COUNT(*) FROM collection_summons cs
