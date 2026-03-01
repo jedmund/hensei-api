@@ -87,7 +87,7 @@ module Granblue
         destination = "#{base_uri}?#{query_params}"
         ap "--> Fetching #{destination}" if @debug
 
-        response = HTTParty.get(destination)
+        response = HTTParty.get(destination, headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
 
         handle_response(response, page)
       end
