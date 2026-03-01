@@ -35,7 +35,6 @@ module HenseiApi
     config.active_record.cache_query_log_tags = true
 
     config.active_support.to_time_preserves_timezone = :zone
-
     # API-only application configuration
     config.api_only = true
   end
