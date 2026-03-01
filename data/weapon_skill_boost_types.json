@@ -1,0 +1,515 @@
+[
+  {
+    "key": "atk",
+    "name_en": "ATK",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "multiplicative_by_series",
+    "notes": "Normal, Omega, and EX ATK stack additively within each series but multiply between series. See Damage Formula."
+  },
+  {
+    "key": "enmity",
+    "name_en": "Enmity",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "multiplicative_by_series",
+    "notes": "ATK boost based on low HP. Formula: coeff × (1 + 2 × hp_ratio) × hp_ratio. Multiplicative between series."
+  },
+  {
+    "key": "stamina",
+    "name_en": "Stamina",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "multiplicative_by_series",
+    "notes": "ATK boost based on high HP. Piecewise formula with fixed coefficient per size. Multiplicative between series."
+  },
+  {
+    "key": "hp",
+    "name_en": "HP",
+    "category": "defensive",
+    "grid_cap": 400.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "HP boosts are additive between Normal, Omega, and EX. Total capped at 400%."
+  },
+  {
+    "key": "def",
+    "name_en": "DEF",
+    "category": "defensive",
+    "grid_cap": 400.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Total DEF boosts from weapon skills capped at 400%."
+  },
+  {
+    "key": "da",
+    "name_en": "DA Rate",
+    "category": "multiattack",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": null
+  },
+  {
+    "key": "ta",
+    "name_en": "TA Rate",
+    "category": "multiattack",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": null
+  },
+  {
+    "key": "critical",
+    "name_en": "Critical",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Probability-based critical hit rate. Each weapon skill instance rolls independently."
+  },
+  {
+    "key": "crit_amp",
+    "name_en": "Crit. Amp.",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Amplifies critical hit damage."
+  },
+  {
+    "key": "ca_dmg",
+    "name_en": "C.A. DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to charge attack damage."
+  },
+  {
+    "key": "ca_dmg_cap",
+    "name_en": "C.A. DMG Cap",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to charge attack damage cap."
+  },
+  {
+    "key": "sp_ca_cap",
+    "name_en": "Sp. C.A. Cap",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to special charge attack damage cap."
+  },
+  {
+    "key": "cb_dmg",
+    "name_en": "C.B. DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to chain burst damage."
+  },
+  {
+    "key": "cb_dmg_cap",
+    "name_en": "C.B. DMG Cap",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to chain burst damage cap."
+  },
+  {
+    "key": "fc_dmg_cap",
+    "name_en": "FC DMG Cap",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to full chain damage cap."
+  },
+  {
+    "key": "na_dmg_cap",
+    "name_en": "N.A. DMG Cap",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to normal attack damage cap."
+  },
+  {
+    "key": "na_amp",
+    "name_en": "N.A. Amp.",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Amplify normal attack damage."
+  },
+  {
+    "key": "skill_dmg_cap",
+    "name_en": "Skill DMG Cap",
+    "category": "cap",
+    "grid_cap": 100.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Stacks additively with other skill damage cap boosts, up to 100%."
+  },
+  {
+    "key": "dmg_cap",
+    "name_en": "DMG Cap",
+    "category": "cap",
+    "grid_cap": 20.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "General DMG cap boost. Stacks additively across all weapon skill sources up to 20%."
+  },
+  {
+    "key": "dmg_amp",
+    "name_en": "DMG Amp.",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Amplify all damage types."
+  },
+  {
+    "key": "heal_cap",
+    "name_en": "Heal Cap",
+    "category": "utility",
+    "grid_cap": 100.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boosts maximum healing received. Additive across all weapon skills, capped at 100%. Does not boost fixed heals."
+  },
+  {
+    "key": "counter_dmg",
+    "name_en": "Counter Rate",
+    "category": "utility",
+    "grid_cap": 20.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Chance to dodge and counter. Dodge chance caps at 20% total. Multiple weapons stack additively."
+  },
+  {
+    "key": "bonus_ca",
+    "name_en": "Bonus C.A.",
+    "category": "offensive",
+    "grid_cap": 20.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Bonus C.A. damage caps at 20%."
+  },
+  {
+    "key": "bonus_elem_dmg",
+    "name_en": "Bonus Elem. DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Bonus elemental damage. Element determined by weapon."
+  },
+  {
+    "key": "elem_amplify",
+    "name_en": "Elem. Amplify",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "highest_only",
+    "notes": "Amplify superior elemental damage. Does not stack with Ultima Gauph Key Tria; only the highest value takes effect."
+  },
+  {
+    "key": "debuff_res",
+    "name_en": "Debuff Res.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to debuff resistance."
+  },
+  {
+    "key": "def_ignore",
+    "name_en": "DEF Ignore",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Ignore a portion of foe's DEF. Does not contribute to the 50% DEF Down cap."
+  },
+  {
+    "key": "od_dmg_amp",
+    "name_en": "Od DMG Amp.",
+    "category": "offensive",
+    "grid_cap": 20.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Amplify damage during overdrive. Caps at 20%."
+  },
+  {
+    "key": "rigor",
+    "name_en": "Rigor",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": null
+  },
+  {
+    "key": "e_atk_prog",
+    "name_en": "E. ATK (Prog.)",
+    "category": "offensive",
+    "grid_cap": 75.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Elemental ATK boost per turn from Progression skills. Each instance has an individual maximum. Total caps at 75%. Boosted by auras."
+  },
+  {
+    "key": "ex_atk_sp",
+    "name_en": "EX Might Sp.",
+    "category": "offensive",
+    "grid_cap": 80.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Voltage, Voltage II, Wrath, and Grand Epic share the same 80% cap. Stacks additively."
+  },
+  {
+    "key": "hp_cut",
+    "name_en": "HP Cut",
+    "category": "defensive",
+    "grid_cap": 70.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce max HP. Additive between weapons, caps at 70%."
+  },
+  {
+    "key": "ca_supp",
+    "name_en": "C.A. Supp.",
+    "category": "supplemental",
+    "grid_cap": 1000000.0,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Supplemental boost to C.A. DMG. Stacks additively up to a combined cap of 1,000,000."
+  },
+  {
+    "key": "dmg_supp",
+    "name_en": "DMG Supp.",
+    "category": "supplemental",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Supplemental damage to all attacks."
+  },
+  {
+    "key": "na_supp",
+    "name_en": "N.A. Supp.",
+    "category": "supplemental",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Supplemental normal attack damage."
+  },
+  {
+    "key": "skill_dmg_supp",
+    "name_en": "Skill DMG Supp.",
+    "category": "supplemental",
+    "grid_cap": 200000.0,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Supplemental skill damage. Deals 1% of foe's max HP. Can be boosted by auras to a maximum of 200,000."
+  },
+  {
+    "key": "charge_gain",
+    "name_en": "Charge Gain",
+    "category": "utility",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": null
+  },
+  {
+    "key": "hp_dmg",
+    "name_en": "HP DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Damage based on current HP (Bloodshed)."
+  },
+  {
+    "key": "turn_dmg",
+    "name_en": "Turn DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Damage dealt at end of turn (Insignia)."
+  },
+  {
+    "key": "na_amp_sp",
+    "name_en": "N.A. Amp. (Sp.)",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Conditional normal attack amplify. Activates when series boost >= 280%."
+  },
+  {
+    "key": "ca_amp_sp",
+    "name_en": "C.A. Amp. (Sp.)",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Conditional C.A. damage amplify. Activates when series boost >= 280%."
+  },
+  {
+    "key": "cb_amp",
+    "name_en": "C.B. Amp.",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Chain burst damage amplify."
+  },
+  {
+    "key": "fc_amp",
+    "name_en": "FC Amp.",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Full chain damage amplify."
+  },
+  {
+    "key": "skill_amp_sp",
+    "name_en": "Skill Amp. (Sp.)",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Conditional skill damage amplify. Activates when series boost >= 280%."
+  },
+  {
+    "key": "skill_cap_sp",
+    "name_en": "Skill Cap (Sp.)",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Conditional skill DMG cap. Activates when series boost >= 280%."
+  },
+  {
+    "key": "dmg_cap_sp",
+    "name_en": "DMG Cap (Sp.)",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Conditional DMG cap. Separate from general DMG Cap."
+  },
+  {
+    "key": "dmg_cap_arc",
+    "name_en": "DMG Cap (Arc)",
+    "category": "cap",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "highest_only",
+    "notes": "Arcarum/Replicard Sandbox only. Separate from DMG Cap and DMG Cap (Sp.). Multiple Sephira Maxi of the same element do not stack."
+  },
+  {
+    "key": "ca_supp_sp",
+    "name_en": "C.A. Supp. (Sp.)",
+    "category": "supplemental",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Conditional supplemental C.A. damage."
+  },
+  {
+    "key": "na_supp_sp",
+    "name_en": "N.A. Supp. (Sp.)",
+    "category": "supplemental",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Conditional supplemental normal attack damage."
+  },
+  {
+    "key": "skill_supp_sp",
+    "name_en": "Skill Supp. (Sp.)",
+    "category": "supplemental",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Conditional supplemental skill damage."
+  },
+  {
+    "key": "bonus_des_dmg",
+    "name_en": "Bonus Des. DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Bonus damage against designated element foe (Godblade/Deathstrike)."
+  },
+  {
+    "key": "bonus_des_dmg_ca",
+    "name_en": "Bonus Des. DMG C.A.",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Bonus C.A. damage against designated element foe (Godshield)."
+  },
+  {
+    "key": "elem_reduc",
+    "name_en": "Elem. Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce damage taken from superior element (God-series, Draconic Barrier)."
+  },
+  {
+    "key": "hp_fixed",
+    "name_en": "HP (Fixed)",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "additive",
+    "notes": "Fixed HP amount added (Draconic Fortitude). Not percentage-based."
+  },
+  {
+    "key": "dmg_amp_non_elem",
+    "name_en": "DMG Amp. (Non-elem.)",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Amplify damage against non-elemental foes (Draconic Magnitude)."
+  },
+  {
+    "key": "omega_exalto",
+    "name_en": "Omega Exalto",
+    "category": "utility",
+    "grid_cap": 100.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to Omega summon aura effect. Caps at 100%. Element determined by weapon."
+  },
+  {
+    "key": "optimus_exalto",
+    "name_en": "Optimus Exalto",
+    "category": "utility",
+    "grid_cap": 90.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to Optimus summon aura effect. Caps at 90%. Element determined by weapon."
+  }
+]
