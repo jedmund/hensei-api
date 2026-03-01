@@ -35,6 +35,7 @@ class PartyQueryBuilder
     query = apply_privacy_settings(query)
     query = apply_includes(query, @params[:includes]) if @params[:includes].present?
     query = apply_excludes(query, @params[:excludes]) if @params[:excludes].present?
+    query = apply_collection_filter(query) if @params[:collection_filter].present? && @current_user
     query.order(created_at: :desc)
   end
 
@@ -214,6 +215,54 @@ class PartyQueryBuilder
   # @return [Range] A range from the provided count (or 0 if blank) to the max_value.
   def build_range(param_value, max_value)
     param_value.present? ? param_value.to_i..max_value : 0..max_value
+  end
+
+  # Filters parties to only include those where ALL grid items exist
+  # in the current user’s collection with sufficient copy counts.
+  # Characters use existence check (unique per user), weapons and summons
+  # use count-based check (multiple copies allowed).
+  def apply_collection_filter(query)
+    user_id = @current_user.id
+
+    # Characters: every grid character must exist in user’s collection
+    query = query.where(<<-SQL.squish, user_id)
+      NOT EXISTS (
+        SELECT 1 FROM grid_characters gc
+        WHERE gc.party_id = parties.id
+        AND NOT EXISTS (
+          SELECT 1 FROM collection_characters cc
+          WHERE cc.user_id = ? AND cc.character_id = gc.character_id
+        )
+      )
+    SQL
+
+    # Weapons: user must own >= the count used in the party per weapon_id
+    query = query.where(<<-SQL.squish, user_id)
+      NOT EXISTS (
+        SELECT 1 FROM grid_weapons gw
+        WHERE gw.party_id = parties.id
+        GROUP BY gw.weapon_id
+        HAVING COUNT(*) > (
+          SELECT COUNT(*) FROM collection_weapons cw
+          WHERE cw.user_id = ? AND cw.weapon_id = gw.weapon_id
+        )
+      )
+    SQL
+
+    # Summons: same count-based logic
+    query = query.where(<<-SQL.squish, user_id)
+      NOT EXISTS (
+        SELECT 1 FROM grid_summons gs
+        WHERE gs.party_id = parties.id
+        GROUP BY gs.summon_id
+        HAVING COUNT(*) > (
+          SELECT COUNT(*) FROM collection_summons cs
+          WHERE cs.user_id = ? AND cs.summon_id = gs.summon_id
+        )
+      )
+    SQL
+
+    query
   end
 
   # Maps an ID’s first character to the corresponding grid table and object table names.
