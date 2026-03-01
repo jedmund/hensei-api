@@ -124,7 +124,9 @@ class WeaponImportService
     master = item['master'] || {}
 
     # The weapon's granblue_id can be in param.image_id or master.id
-    granblue_id = param['image_id'] || master['id']
+    # image_id may have a suffix like "_03" for Dark Opus weapons, so strip it
+    image_id = param['image_id'].to_s.split('_').first if param['image_id'].present?
+    granblue_id = image_id || master['id']
     game_id = param['id']
 
     # Track this game_id as processed (for reconciliation)
