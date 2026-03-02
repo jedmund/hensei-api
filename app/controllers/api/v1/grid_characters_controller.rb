@@ -52,7 +52,7 @@ module Api
           if grid_character.save
             render json: GridCharacterBlueprint.render(grid_character,
                                                        root: :grid_character,
-                                                       view: :nested), status: :created
+                                                       view: :full), status: :created
           else
             render_validation_error_response(grid_character)
           end

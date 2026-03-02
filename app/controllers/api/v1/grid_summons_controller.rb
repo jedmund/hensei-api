@@ -371,7 +371,7 @@ module Api
       # @return [String] The rendered grid summon view as JSON.
       def render_grid_summon_view(grid_summon, conflict_position = nil)
         GridSummonBlueprint.render(grid_summon,
-                                   view: :nested,
+                                   view: :full,
                                    root: :grid_summon,
                                    meta: { replaced: conflict_position })
       end
