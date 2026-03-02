@@ -32,7 +32,7 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update]
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
 
@@ -194,7 +194,7 @@ module Api
       def unlink_collection
         @party = Party.find_by(id: params[:id])
         return render_not_found_response('party') unless @party
-        return render_unauthorized_response unless authorized_to_edit?
+        return render_unauthorized_response unless @party.user_id == current_user&.id
 
         ActiveRecord::Base.transaction do
           @party.characters.where.not(collection_character_id: nil)
