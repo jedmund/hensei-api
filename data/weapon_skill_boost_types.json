@@ -511,5 +511,14 @@
     "cap_is_flat": false,
     "stacking_rule": "additive",
     "notes": "Boost to Optimus summon aura effect. Caps at 90%. Element determined by weapon."
+  },
+  {
+    "key": "shield",
+    "name_en": "Shield",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": true,
+    "stacking_rule": "highest_only",
+    "notes": "Flat HP shield granted at start of battle. Multiple shield weapon skills do not stack; only the highest value takes effect."
   }
 ]

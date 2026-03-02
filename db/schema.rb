@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_114730) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -796,8 +796,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_114730) do
     t.string "name_jp"
     t.text "description_en"
     t.text "description_jp"
-    t.integer "border_type"
-    t.integer "cooldown"
     t.integer "skill_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -964,6 +962,41 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_114730) do
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
 
+  create_table "weapon_skill_boost_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "key", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.string "category", null: false
+    t.decimal "grid_cap", precision: 12, scale: 2
+    t.boolean "cap_is_flat", default: false, null: false
+    t.string "stacking_rule", default: "additive", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_weapon_skill_boost_types_on_category"
+    t.index ["key"], name: "index_weapon_skill_boost_types_on_key", unique: true
+  end
+
+  create_table "weapon_skill_data", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "modifier", null: false
+    t.string "boost_type", null: false
+    t.string "series"
+    t.string "size", null: false
+    t.string "formula_type", default: "flat", null: false
+    t.decimal "sl1", precision: 10, scale: 4
+    t.decimal "sl10", precision: 10, scale: 4
+    t.decimal "sl15", precision: 10, scale: 4
+    t.decimal "sl20", precision: 10, scale: 4
+    t.decimal "sl25", precision: 10, scale: 4
+    t.decimal "coefficient", precision: 10, scale: 4
+    t.boolean "aura_boostable", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["modifier", "boost_type", "series", "size"], name: "index_weapon_skill_data_uniqueness", unique: true
+    t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
+    t.index ["series"], name: "index_weapon_skill_data_on_series"
+  end
+
   create_table "weapon_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "weapon_granblue_id", null: false
     t.uuid "skill_id", null: false
@@ -974,9 +1007,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_114730) do
     t.integer "unlock_level"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "uncap_level", default: 0, null: false
     t.index ["skill_id"], name: "index_weapon_skills_on_skill_id"
     t.index ["skill_series"], name: "index_weapon_skills_on_skill_series"
-    t.index ["weapon_granblue_id", "position"], name: "index_weapon_skills_on_weapon_granblue_id_and_position"
+    t.index ["weapon_granblue_id", "position", "uncap_level"], name: "index_weapon_skills_on_weapon_position_uncap", unique: true
     t.index ["weapon_granblue_id"], name: "index_weapon_skills_on_weapon_granblue_id"
   end
 
