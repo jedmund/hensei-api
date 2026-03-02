@@ -5,16 +5,16 @@ class WeaponSkill < ApplicationRecord
   belongs_to :skill
 
   # Skill series determines which summon auras boost this skill.
-  # normal  — boosted by Optimus summons (Agni, Zeus, etc.)
-  # omega   — boosted by Omega summons (Colossus, Tiamat, etc.)
+  # normal  — boosted by Optimus summons (Agni, Varuna, Titan, Zephyrus, Zeus, Hades)
+  # omega   — boosted by Omega summons (Colossus, Leviathan, Yggdrasil, Tiamat, Luminiera, Celeste)
   # ex      — not boosted by any summon aura
-  # odious  — new series, boosting TBD
+  # odious  — boosted by Odious summons
+  # nil     — weapon-specific skills (Militis, CCW, Archangel, Ennead, Arcana, etc.)
   enum :skill_series, {
     normal: 'normal',
     omega: 'omega',
     ex: 'ex',
-    odious: 'odious',
-    sephira: 'sephira'
+    odious: 'odious'
   }
 
   # Skill size determines the base value of the skill effect.

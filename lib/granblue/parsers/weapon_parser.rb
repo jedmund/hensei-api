@@ -277,8 +277,11 @@ module Granblue
       def build_skill_entry(hash, slot, upgrade: false)
         prefix = upgrade ? "s#{slot}_4s" : "s#{slot}"
 
-        name = hash["#{prefix}_name"]
-        return nil unless name.present?
+        raw_name = hash["#{prefix}_name"]
+        return nil unless raw_name.present?
+
+        # Clean wiki template syntax and HTML comments from skill name
+        name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, '').gsub(/<!--.*?-->/, '').strip
 
         # Description: prefer English-specific field, fall back to generic
         description = if upgrade
@@ -290,8 +293,8 @@ module Granblue
         icon = hash["#{prefix}_icon"]
         unlock_level = hash["#{prefix}_lvl"].presence&.to_i
 
-        # Parse the skill name into structured components
-        parsed = Granblue::Parsers::WeaponSkillParser.parse(name)
+        # Parse the raw name (with template) for structured components
+        parsed = Granblue::Parsers::WeaponSkillParser.parse(raw_name)
 
         {
           name_en: name,
@@ -386,7 +389,10 @@ module Granblue
         )
 
         weapon_skill.skill = skill
-        weapon_skill.skill_modifier = entry[:modifier]
+        # Only store standard modifiers that have WeaponSkillDatum entries.
+        # Weapon-specific modifiers (from permissive aura matching) get nil.
+        modifier = entry[:modifier]
+        weapon_skill.skill_modifier = WeaponSkill::VALID_MODIFIERS.include?(modifier) ? modifier : nil
         weapon_skill.skill_series = entry[:series]
         weapon_skill.skill_size = entry[:size]
         weapon_skill.unlock_level = entry[:unlock_level]
