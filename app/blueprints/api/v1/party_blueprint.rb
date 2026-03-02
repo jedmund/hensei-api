@@ -20,6 +20,11 @@ module Api
                   blueprint: UserBlueprint,
                   view: :minimal
 
+      association :collection_source_user,
+                  blueprint: UserBlueprint,
+                  view: :minimal,
+                  if: ->(_field_name, party, _options) { party.collection_source_user_id.present? }
+
       association :job,
                   blueprint: JobBlueprint
 
