@@ -94,6 +94,7 @@ class Party < ApplicationRecord
            dependent: :nullify
 
   belongs_to :user, optional: true
+  belongs_to :collection_source_user, class_name: 'User', optional: true
   belongs_to :raid, optional: true
   belongs_to :job, optional: true
 

@@ -32,7 +32,7 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update]
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
 
@@ -184,6 +184,30 @@ module Api
         render json: {
           party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
           synced: synced
+        }, status: :ok
+      end
+
+      # Unlinks all collection items from a party's grid items.
+      # Keeps the grid items but removes collection references and clears the collection source.
+      #
+      # POST /parties/:id/unlink_collection
+      def unlink_collection
+        @party = Party.find_by(id: params[:id])
+        return render_not_found_response('party') unless @party
+        return render_unauthorized_response unless @party.user_id == current_user&.id
+
+        ActiveRecord::Base.transaction do
+          @party.characters.where.not(collection_character_id: nil)
+                .update_all(collection_character_id: nil)
+          @party.weapons.where.not(collection_weapon_id: nil)
+                .update_all(collection_weapon_id: nil, orphaned: false)
+          @party.summons.where.not(collection_summon_id: nil)
+                .update_all(collection_summon_id: nil, orphaned: false)
+          @party.update_column(:collection_source_user_id, nil)
+        end
+
+        render json: {
+          party: PartyBlueprint.render_as_hash(@party.reload, view: :full, current_user: current_user)
         }, status: :ok
       end
 

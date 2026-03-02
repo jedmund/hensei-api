@@ -11,6 +11,7 @@ module Api
     # @see Api::V1::ApiController for shared API behavior.
     class GridWeaponsController < Api::V1::ApiController
       include IdResolvable
+      include CollectionSourceConcern
 
       before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync]
       before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync]
@@ -27,6 +28,12 @@ module Api
       # @return [void]
       def create
         return render_unprocessable_entity_response(Api::V1::NoWeaponProvidedError.new) if @incoming_weapon.nil?
+
+        # Validate collection source constraint before proceeding
+        if weapon_params[:collection_weapon_id].present?
+          collection_item = CollectionWeapon.find_by(id: weapon_params[:collection_weapon_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
 
         position = weapon_params[:position]
         collection_weapon_id = weapon_params[:collection_weapon_id]
@@ -218,6 +225,7 @@ module Api
         return render_not_found_response('grid_weapon') if grid_weapon.nil?
 
         if grid_weapon.destroy
+          clear_collection_source_if_empty!(@party)
           render json: GridWeaponBlueprint.render(grid_weapon, view: :destroyed), status: :ok
         else
           render_unprocessable_entity_response(

@@ -159,6 +159,7 @@ Rails.application.routes.draw do
     post 'grid_weapons/:id/sync', to: 'grid_weapons#sync'
     post 'grid_summons/:id/sync', to: 'grid_summons#sync'
     post 'parties/:id/sync_all', to: 'parties#sync_all'
+    post 'parties/:id/unlink_collection', to: 'parties#unlink_collection'
 
     # Grid endpoints - new prefixed versions
     post 'grid_characters/resolve', to: 'grid_characters#resolve'
