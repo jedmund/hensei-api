@@ -25,6 +25,11 @@ module Api
                     if: ->(_field_name, gc, _options) { gc.grid_artifact.present? }
       end
 
+      view :full do
+        include_view :nested
+        association :party, blueprint: PartyBlueprint, view: :collection_source
+      end
+
       view :uncap do
         association :party, blueprint: PartyBlueprint
         fields :position, :uncap_level, :transcendence_step

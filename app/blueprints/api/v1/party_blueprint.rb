@@ -46,6 +46,15 @@ module Api
         party.has_orphaned_items?
       end
 
+      # Minimal view for embedding in grid item responses
+      view :collection_source do
+        field :collection_source_user_id
+        association :collection_source_user,
+                    blueprint: UserBlueprint,
+                    view: :minimal,
+                    if: ->(_field_name, party, _options) { party.collection_source_user_id.present? }
+      end
+
       # For collection views
       view :preview do
         include_view :preview_objects # Characters, Weapons, Summons
