@@ -15,6 +15,16 @@ module Api
         }
       end
 
+      # GET /api/v1/users/:user_id/collection/granblue_ids
+      # Returns all granblue IDs in a user's collection (lightweight, for ownership checks)
+      def granblue_ids
+        render json: {
+          weapons: @target_user.collection_weapons.joins(:weapon).pluck('DISTINCT weapons.granblue_id'),
+          characters: @target_user.collection_characters.joins(:character).pluck('DISTINCT characters.granblue_id'),
+          summons: @target_user.collection_summons.joins(:summon).pluck('DISTINCT summons.granblue_id')
+        }
+      end
+
       private
 
       def set_target_user
