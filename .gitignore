@@ -62,3 +62,6 @@ config/application.yml
 codebase.md
 mise.toml
 public/assets
+
+# Ignore generated data files
+/data/**/*.json

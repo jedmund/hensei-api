@@ -85,6 +85,10 @@ module Api
                     blueprint: AwakeningBlueprint,
                     if: ->(_field_name, weapon, _options) { weapon.awakenings.any? }
 
+        association :weapon_skills,
+                    blueprint: WeaponSkillBlueprint,
+                    if: ->(_field_name, weapon, _options) { weapon.weapon_skills.any? }
+
         field :nicknames do |w|
           {
             en: w.nicknames_en,

@@ -146,6 +146,8 @@ Rails.application.routes.draw do
       end
     end
     resources :weapon_stat_modifiers, only: %i[index show]
+    resources :weapon_skill_data, only: %i[index show]
+    resources :weapon_skill_boost_types, only: %i[index show]
 
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
