@@ -21,7 +21,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['membership']['role']).to eq('vice_captain')
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['membership']['joined_at']).to include('2024-01-15')
       end
     end
@@ -68,7 +68,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
                headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('cannot_remove_captain')
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['membership']['role']).to eq('vice_captain')
       end
 
@@ -116,7 +116,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('vice_captain_limit')
       end
 
@@ -151,7 +151,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['membership']['role']).to eq('member')
       end
 
@@ -160,7 +160,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('cannot_demote_captain')
       end
     end

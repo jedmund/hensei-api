@@ -50,7 +50,7 @@ RSpec.describe 'Crew Memberships API', type: :request do
         delete "/api/v1/crews/#{crew.id}/memberships/#{captain_membership.id}", headers: captain_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['message']).to eq('Cannot remove the captain from the crew')
       end
     end
@@ -85,7 +85,7 @@ RSpec.describe 'Crew Memberships API', type: :request do
       post "/api/v1/crews/#{crew.id}/memberships/#{membership.id}/promote", headers: captain_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['membership']['role']).to eq('vice_captain')
     end
 
@@ -101,7 +101,7 @@ RSpec.describe 'Crew Memberships API', type: :request do
       post "/api/v1/crews/#{crew.id}/memberships/#{membership.id}/promote", headers: captain_headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['message']).to eq('Crew can only have up to 3 vice captains')
     end
 
@@ -121,7 +121,7 @@ RSpec.describe 'Crew Memberships API', type: :request do
       post "/api/v1/crews/#{crew.id}/memberships/#{membership.id}/demote", headers: captain_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['membership']['role']).to eq('member')
     end
 

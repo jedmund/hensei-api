@@ -24,7 +24,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get '/api/v1/collection/characters', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['characters'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
@@ -33,7 +33,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get '/api/v1/collection/characters', params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['characters'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
@@ -45,7 +45,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get '/api/v1/collection/characters', params: { element: 0 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       characters = json['characters']
       expect(characters.all? { |c| c['character']['element'] == 0 }).to be true
     end
@@ -57,7 +57,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get '/api/v1/collection/characters', params: { rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       characters = json['characters']
       expect(characters.all? { |c| c['character']['rarity'] == 4 }).to be true
     end
@@ -74,7 +74,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get '/api/v1/collection/characters', params: { element: 0, rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       characters = json['characters']
       expect(characters.length).to eq(1)
       expect(characters.first['character']['element']).to eq(0)
@@ -88,7 +88,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get '/api/v1/collection/characters', params: { element: 1, rarity: 3 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['characters']).to be_empty
     end
 
@@ -105,7 +105,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       get "/api/v1/collection/characters/#{collection_character.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['id']).to eq(collection_character.id)
       expect(json['character']['id']).to eq(character.id)
     end
@@ -144,7 +144,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       end.to change(CollectionCharacter, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['character']['id']).to eq(character.id)
       expect(json['uncap_level']).to eq(3)
     end
@@ -155,7 +155,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       post '/api/v1/collection/characters', params: valid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:conflict)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['error']['message']).to include('already exists in your collection')
     end
 
@@ -168,7 +168,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('must be a character awakening')
     end
 
@@ -180,7 +180,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
   end
@@ -203,7 +203,7 @@ RSpec.describe 'Collection Characters API', type: :request do
           params: update_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['uncap_level']).to eq(5)
       expect(json['transcendence_step']).to eq(3)
       expect(json['ring1']['modifier']).to eq(1)
@@ -228,7 +228,7 @@ RSpec.describe 'Collection Characters API', type: :request do
           params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('Ring 1 must have both modifier and strength')
     end
   end

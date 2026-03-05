@@ -24,7 +24,7 @@ RSpec.describe 'Api::V1::PartyShares', type: :request do
         get "/api/v1/parties/#{party.id}/shares", headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['shares'].length).to eq(1)
         expect(json['shares'][0]['id']).to eq(share.id)
       end
@@ -33,7 +33,7 @@ RSpec.describe 'Api::V1::PartyShares', type: :request do
         get "/api/v1/parties/#{party.id}/shares", headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['shares']).to eq([])
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe 'Api::V1::PartyShares', type: :request do
         post "/api/v1/parties/#{party.id}/shares", headers: auth_headers
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['share']['shareable_type']).to eq('crew')
         expect(json['share']['shareable']['id']).to eq(crew.id)
       end
@@ -90,7 +90,7 @@ RSpec.describe 'Api::V1::PartyShares', type: :request do
         post "/api/v1/parties/#{party.id}/shares", headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('not_in_crew')
       end
     end

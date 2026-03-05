@@ -31,7 +31,7 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
         }.to change(GwCrewScore, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_crew_score']['round']).to eq('preliminaries')
         expect(json['gw_crew_score']['crew_score']).to eq(5_000_000)
       end
@@ -52,7 +52,7 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_crew_score']['opponent_name']).to eq('Rival Crew')
         expect(json['gw_crew_score']['victory']).to be true
       end
@@ -91,7 +91,7 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_crew_score']['crew_score']).to eq(2_000_000)
       end
     end

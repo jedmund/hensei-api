@@ -23,7 +23,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       get '/api/v1/collection/summons', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['collection_summons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
@@ -32,7 +32,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       get '/api/v1/collection/summons', params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['collection_summons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
@@ -41,7 +41,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       get '/api/v1/collection/summons', params: { summon_id: summon1.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       summons = json['collection_summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['id']).to eq(summon1.id)
@@ -59,7 +59,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       get '/api/v1/collection/summons', params: { element: 0, rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       summons = json['collection_summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['element']).to eq(0)
@@ -79,7 +79,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       get "/api/v1/collection/summons/#{collection_summon.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['id']).to eq(collection_summon.id)
       expect(json['summon']['id']).to eq(summon.id)
     end
@@ -115,7 +115,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       end.to change(CollectionSummon, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['summon']['id']).to eq(summon.id)
       expect(json['uncap_level']).to eq(3)
     end
@@ -128,7 +128,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       end.to change(CollectionSummon, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['summon']['id']).to eq(summon.id)
     end
 
@@ -140,7 +140,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       post '/api/v1/collection/summons', params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
   end
@@ -159,7 +159,7 @@ RSpec.describe 'Collection Summons API', type: :request do
           params: update_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['uncap_level']).to eq(5)
     end
 
@@ -185,7 +185,7 @@ RSpec.describe 'Collection Summons API', type: :request do
           params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
   end

@@ -42,7 +42,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
           expect(response).to have_http_status(:ok)
 
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           expect(json['grid_weapon']['position']).to eq(4)
           expect(weapon1.reload.position).to eq(4)
         end
@@ -96,7 +96,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['swapped']['source']['position']).to eq(2)
         expect(json['swapped']['target']['position']).to eq(0)
 
@@ -127,7 +127,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['grid_character']['position']).to eq(5)
         expect(json['reordered']).to be true
 
@@ -154,7 +154,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['swapped']['source']['position']).to eq(2)
         expect(json['swapped']['target']['position']).to eq(0)
 
@@ -176,7 +176,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['grid_summon']['position']).to eq(3)
         expect(summon1.reload.position).to eq(3)
       end
@@ -208,7 +208,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['swapped']['source']['position']).to eq(2)
         expect(json['swapped']['target']['position']).to eq(0)
 
@@ -249,7 +249,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['operations_applied']).to eq(3)
         expect(json['changes'].count).to eq(3)
 

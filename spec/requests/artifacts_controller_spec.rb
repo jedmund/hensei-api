@@ -11,7 +11,7 @@ RSpec.describe 'Artifacts API', type: :request do
       get '/api/v1/artifacts'
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].length).to eq(2)
     end
 
@@ -19,7 +19,7 @@ RSpec.describe 'Artifacts API', type: :request do
       get '/api/v1/artifacts', params: { rarity: 'standard' }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].length).to eq(1)
       expect(json['artifacts'].first['rarity']).to eq('standard')
     end
@@ -30,7 +30,7 @@ RSpec.describe 'Artifacts API', type: :request do
       get '/api/v1/artifacts', params: { proficiency: 'sabre' }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].all? { |a| a['proficiency'] == 'sabre' }).to be true
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe 'Artifacts API', type: :request do
       get "/api/v1/artifacts/#{artifact.id}"
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['id']).to eq(artifact.id)
       expect(json['name']['en']).to eq(artifact.name_en)
     end

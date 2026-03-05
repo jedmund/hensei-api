@@ -57,7 +57,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       get "/api/v1/users/#{user.id}/collection/artifacts", headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].length).to eq(2)
     end
 
@@ -65,7 +65,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       get "/api/v1/users/#{user.id}/collection/artifacts", params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
@@ -74,7 +74,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       get "/api/v1/users/#{user.id}/collection/artifacts", params: { artifact_id: artifact.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].length).to eq(1)
     end
 
@@ -82,7 +82,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       get "/api/v1/users/#{user.id}/collection/artifacts", params: { element: 'water' }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifacts'].all? { |a| a['element'] == 'water' }).to be true
     end
 
@@ -101,7 +101,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       get "/api/v1/users/#{user.id}/collection/artifacts/#{collection_artifact.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['id']).to eq(collection_artifact.id)
       expect(json['artifact']['id']).to eq(artifact.id)
     end
@@ -128,7 +128,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       end.to change(CollectionArtifact, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact']['id']).to eq(artifact.id)
       expect(json['element']).to eq('fire')
     end
@@ -151,7 +151,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       post '/api/v1/collection/artifacts', params: attributes_with_nickname.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['nickname']).to eq('My Best Artifact')
     end
 
@@ -172,7 +172,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       post '/api/v1/collection/artifacts', params: quirk_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['proficiency']).to eq('staff')
     end
 
@@ -187,7 +187,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       post '/api/v1/collection/artifacts', params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('cannot have the same modifier')
     end
 
@@ -213,7 +213,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
           params: update_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['nickname']).to eq('Updated Name')
       expect(json['element']).to eq('water')
     end
@@ -282,7 +282,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       end.to change(CollectionArtifact, :count).by(2)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['meta']['created']).to eq(2)
       expect(json['meta']['errors']).to be_empty
     end
@@ -310,7 +310,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       post '/api/v1/collection/artifacts/batch', params: batch_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:multi_status)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['meta']['created']).to eq(1)
       expect(json['meta']['errors'].length).to eq(1)
     end

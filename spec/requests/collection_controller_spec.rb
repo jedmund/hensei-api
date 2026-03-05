@@ -32,7 +32,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{user.id}/collection", headers: headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('characters')
         expect(json).to have_key('weapons')
         expect(json).to have_key('summons')
@@ -47,7 +47,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{user.id}/collection", params: { type: 'characters' }, headers: headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('characters')
         expect(json).not_to have_key('weapons')
         expect(json).not_to have_key('summons')
@@ -58,7 +58,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{user.id}/collection", params: { type: 'weapons' }, headers: headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('weapons')
         expect(json).not_to have_key('characters')
         expect(json).not_to have_key('summons')
@@ -69,7 +69,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{user.id}/collection", params: { type: 'summons' }, headers: headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('summons')
         expect(json).not_to have_key('characters')
         expect(json).not_to have_key('weapons')
@@ -80,7 +80,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{user.id}/collection", params: { type: 'job_accessories' }, headers: headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('job_accessories')
         expect(json).not_to have_key('characters')
         expect(json).not_to have_key('weapons')
@@ -91,7 +91,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{user.id}/collection"
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('characters')
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{private_user.id}/collection", headers: headers
 
         expect(response).to have_http_status(:forbidden)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['error']).to include('do not have permission')
       end
 
@@ -119,7 +119,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{private_user.id}/collection", headers: owner_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('characters')
         expect(json).to have_key('weapons')
       end
@@ -130,7 +130,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{crew_only_user.id}/collection", headers: headers
 
         expect(response).to have_http_status(:forbidden)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['error']).to include('do not have permission')
       end
 
@@ -148,7 +148,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{crew_only_user.id}/collection", headers: owner_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json).to have_key('characters')
       end
     end
@@ -158,7 +158,7 @@ RSpec.describe 'Collection Viewing API', type: :request do
         get "/api/v1/users/#{SecureRandom.uuid}/collection", headers: headers
 
         expect(response).to have_http_status(:not_found)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['error']).to include('User not found')
       end
     end
