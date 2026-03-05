@@ -123,10 +123,10 @@ module Api
         params.require(:grid_artifact).permit(
           :grid_character_id, :artifact_id, :collection_artifact_id,
           :element, :proficiency, :level, :reroll_slot,
-          skill1: %i[modifier strength level],
-          skill2: %i[modifier strength level],
-          skill3: %i[modifier strength level],
-          skill4: %i[modifier strength level]
+          skill1: %i[modifier quality level],
+          skill2: %i[modifier quality level],
+          skill3: %i[modifier quality level],
+          skill4: %i[modifier quality level]
         )
       end
     end
