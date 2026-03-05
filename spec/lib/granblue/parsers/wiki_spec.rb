@@ -78,7 +78,7 @@ RSpec.describe Granblue::Parsers::Wiki do
     end
 
     context 'when response has error key' do
-      it 'raises WikiError' do
+      it 'raises WikiError with error details' do
         response = double('Response', code: 200)
         allow(response).to receive(:key?).with('error').and_return(true)
         allow(response).to receive(:[]).with('error').and_return({
@@ -87,7 +87,7 @@ RSpec.describe Granblue::Parsers::Wiki do
         })
 
         allow(HTTParty).to receive(:get).and_return(response)
-        expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError)
+        expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError, /missingtitle|Page not found/)
       end
     end
 
@@ -104,6 +104,13 @@ RSpec.describe Granblue::Parsers::Wiki do
         response = double('Response', code: 500)
         allow(HTTParty).to receive(:get).and_return(response)
         expect { wiki.fetch('Broken') }.to raise_error(Granblue::WikiError)
+      end
+    end
+
+    context 'when network error occurs' do
+      it 'raises the underlying error' do
+        allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
+        expect { wiki.fetch('Timeout') }.to raise_error(Net::ReadTimeout)
       end
     end
   end
