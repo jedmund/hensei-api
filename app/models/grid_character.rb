@@ -174,9 +174,9 @@ class GridCharacter < ApplicationRecord
   def validate_aetherial_mastery_value
     return if earring['modifier'].nil?
 
-    return unless earring['modifier'].positive?
+    return unless earring['modifier'].to_i.positive?
 
-    modifier = aetherial_mastery_modifiers[earring['modifier']].to_sym
+    modifier = aetherial_mastery_modifiers[earring['modifier'].to_i].to_sym
     check_value({ "earring": { modifier => earring['strength'] } },
                 'aetherial_mastery')
   end

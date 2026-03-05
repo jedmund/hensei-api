@@ -127,8 +127,9 @@ class CollectionWeapon < ApplicationRecord
       errors.add(:befoulment_modifier, "must be a befoulment modifier")
     end
 
-    # Exorcism level only makes sense with befoulment
-    if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank?
+    # Exorcism level only makes sense with befoulment or befoulment-capable weapons
+    if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank? &&
+       weapon&.weapon_series&.augment_type != 'befoulment'
       errors.add(:exorcism_level, "cannot be set without a befoulment")
     end
   end
@@ -182,7 +183,7 @@ class CollectionWeapon < ApplicationRecord
   # @return [void]
   def set_default_exorcism_level
     return unless weapon.present?
-    return unless exorcism_level.nil?
+    return unless exorcism_level.nil? || exorcism_level.zero?
     return unless weapon.weapon_series&.augment_type == 'befoulment'
 
     self.exorcism_level = 1
