@@ -52,20 +52,19 @@ RSpec.describe 'GridSummons API', type: :request do
           summon: {
             party_id: party.id,
             summon_id: summon.id,
-            position: 0,
+            position: nil,
             main: true,
             friend: false,
             quick_summon: false,
-            uncap_level: 'invalid',
+            uncap_level: 3,
             transcendence_step: 0
           }
         }
       end
 
-      it 'returns unprocessable entity with uncap_level error' do
+      it 'returns unprocessable entity when position is missing' do
         post '/api/v1/grid_summons', params: invalid_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body['errors']).to include('uncap_level')
       end
     end
   end

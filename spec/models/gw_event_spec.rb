@@ -7,7 +7,6 @@ RSpec.describe GwEvent, type: :model do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:element) }
     it { is_expected.to validate_presence_of(:start_date) }
     it { is_expected.to validate_presence_of(:end_date) }

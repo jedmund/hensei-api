@@ -13,7 +13,7 @@ RSpec.describe 'Collection Characters API', type: :request do
   let(:character) { create(:character) }
   let(:awakening) { create(:awakening, object_type: 'Character') }
 
-  describe 'GET /api/v1/collection_characters' do
+  describe 'GET /api/v1/users/:user_id/collection/characters' do
     let(:character1) { create(:character) }
     let(:character2) { create(:character) }
     let!(:collection_character1) { create(:collection_character, user: user, character: character1, uncap_level: 5) }
@@ -21,7 +21,7 @@ RSpec.describe 'Collection Characters API', type: :request do
     let!(:other_user_character) { create(:collection_character, user: other_user) }
 
     it 'returns the current user\'s collection characters' do
-      get '/api/v1/collection/characters', headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -30,7 +30,7 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
 
     it 'supports pagination' do
-      get '/api/v1/collection/characters', params: { page: 1, limit: 1 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -42,7 +42,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       fire_character = create(:character, element: 0)
       create(:collection_character, user: user, character: fire_character)
 
-      get '/api/v1/collection/characters', params: { element: 0 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 0 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -54,7 +54,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       ssr_character = create(:character, rarity: 4)
       create(:collection_character, user: user, character: ssr_character)
 
-      get '/api/v1/collection/characters', params: { rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -71,7 +71,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       create(:collection_character, user: user, character: water_ssr)
       create(:collection_character, user: user, character: fire_sr)
 
-      get '/api/v1/collection/characters', params: { element: 0, rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 0, rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -85,24 +85,27 @@ RSpec.describe 'Collection Characters API', type: :request do
       fire_character = create(:character, element: 0, rarity: 4)
       create(:collection_character, user: user, character: fire_character)
 
-      get '/api/v1/collection/characters', params: { element: 1, rarity: 3 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 1, rarity: 3 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['characters']).to be_empty
     end
 
-    it 'returns unauthorized without authentication' do
-      get '/api/v1/collection/characters'
-      expect(response).to have_http_status(:unauthorized)
+    it 'returns forbidden for private collection without authentication' do
+      private_user = create(:user, collection_privacy: :private_collection)
+      create(:collection_character, user: private_user)
+
+      get "/api/v1/users/#{private_user.id}/collection/characters"
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
-  describe 'GET /api/v1/collection_characters/:id' do
+  describe 'GET /api/v1/users/:user_id/collection/characters/:id' do
     let!(:collection_character) { create(:collection_character, user: user, character: character) }
 
     it 'returns the collection character' do
-      get "/api/v1/collection/characters/#{collection_character.id}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters/#{collection_character.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -112,13 +115,13 @@ RSpec.describe 'Collection Characters API', type: :request do
 
     it 'returns not found for other user\'s character' do
       other_collection = create(:collection_character, user: other_user)
-      get "/api/v1/collection/characters/#{other_collection.id}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters/#{other_collection.id}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
 
     it 'returns not found for non-existent character' do
-      get "/api/v1/collection/characters/#{SecureRandom.uuid}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters/#{SecureRandom.uuid}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end

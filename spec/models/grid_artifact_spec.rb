@@ -96,6 +96,38 @@ RSpec.describe GridArtifact, type: :model do
   end
 
   describe 'Collection Sync' do
+    before do
+      ArtifactSkill.find_or_create_by!(skill_group: :group_i, modifier: 1) do |s|
+        s.name_en = 'ATK'
+        s.name_jp = '攻撃力'
+        s.base_values = [1320, 1440, 1560, 1680, 1800]
+        s.growth = 300.0
+        s.polarity = :positive
+      end
+      ArtifactSkill.find_or_create_by!(skill_group: :group_i, modifier: 2) do |s|
+        s.name_en = 'HP'
+        s.name_jp = 'HP'
+        s.base_values = [660, 720, 780, 840, 900]
+        s.growth = 150.0
+        s.polarity = :positive
+      end
+      ArtifactSkill.find_or_create_by!(skill_group: :group_ii, modifier: 1) do |s|
+        s.name_en = 'C.A. DMG'
+        s.name_jp = '奥義ダメ'
+        s.base_values = [13.2, 14.4, 15.6, 16.8, 18.0]
+        s.growth = 3.0
+        s.polarity = :positive
+      end
+      ArtifactSkill.find_or_create_by!(skill_group: :group_iii, modifier: 1) do |s|
+        s.name_en = 'Chain Burst DMG'
+        s.name_jp = 'チェインダメ'
+        s.base_values = [6, 7, 8, 9, 10]
+        s.growth = 2.5
+        s.polarity = :positive
+      end
+      ArtifactSkill.clear_cache!
+    end
+
     let(:user) { create(:user) }
     let(:grid_character) { create(:grid_character) }
     let(:artifact) { create(:artifact) }
@@ -103,12 +135,12 @@ RSpec.describe GridArtifact, type: :model do
       create(:collection_artifact,
              user: user,
              artifact: artifact,
-             element: 2,
+             element: :light,
              level: 4,
-             skill1: { 'modifier' => 1, 'strength' => 10 },
-             skill2: { 'modifier' => 2, 'strength' => 5 },
-             skill3: {},
-             skill4: {},
+             skill1: { 'modifier' => 1, 'quality' => 3, 'level' => 2 },
+             skill2: { 'modifier' => 2, 'quality' => 3, 'level' => 2 },
+             skill3: { 'modifier' => 1, 'quality' => 3, 'level' => 2 },
+             skill4: { 'modifier' => 1, 'quality' => 3, 'level' => 1 },
              reroll_slot: 3)
     end
 
@@ -119,7 +151,7 @@ RSpec.describe GridArtifact, type: :model do
                  grid_character: grid_character,
                  artifact: artifact,
                  collection_artifact: collection_artifact,
-                 element: 1,
+                 element: :light,
                  level: 2,
                  skill1: {}, skill2: {}, skill3: {}, skill4: {})
         end
@@ -128,9 +160,9 @@ RSpec.describe GridArtifact, type: :model do
           expect(linked_grid_artifact.sync_from_collection!).to be true
           linked_grid_artifact.reload
 
-          expect(linked_grid_artifact.element).to eq(2)
+          expect(linked_grid_artifact.element).to eq('light')
           expect(linked_grid_artifact.level).to eq(4)
-          expect(linked_grid_artifact.skill1).to eq({ 'modifier' => 1, 'strength' => 10 })
+          expect(linked_grid_artifact.skill1).to eq({ 'modifier' => 1, 'quality' => 3, 'level' => 2 })
           expect(linked_grid_artifact.reroll_slot).to eq(3)
         end
       end
@@ -140,7 +172,7 @@ RSpec.describe GridArtifact, type: :model do
           create(:grid_artifact,
                  grid_character: grid_character,
                  artifact: artifact,
-                 element: 1,
+                 element: :light,
                  level: 2,
                  skill1: {}, skill2: {}, skill3: {}, skill4: {})
         end
@@ -158,7 +190,7 @@ RSpec.describe GridArtifact, type: :model do
                  grid_character: grid_character,
                  artifact: artifact,
                  collection_artifact: collection_artifact,
-                 element: 1,
+                 element: :light,
                  level: 2,
                  skill1: {}, skill2: {}, skill3: {}, skill4: {})
         end
@@ -178,7 +210,7 @@ RSpec.describe GridArtifact, type: :model do
           create(:grid_artifact,
                  grid_character: grid_character,
                  artifact: artifact,
-                 element: 1,
+                 element: :light,
                  level: 2,
                  skill1: {}, skill2: {}, skill3: {}, skill4: {})
         end

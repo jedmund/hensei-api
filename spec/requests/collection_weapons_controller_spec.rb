@@ -14,7 +14,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
   let(:awakening) { create(:awakening, object_type: 'Weapon') }
   let(:weapon_key) { create(:weapon_key) }
 
-  describe 'GET /api/v1/collection/weapons' do
+  describe 'GET /api/v1/users/:user_id/collection/weapons' do
     let(:weapon1) { create(:weapon) }
     let(:weapon2) { create(:weapon) }
     let!(:collection_weapon1) { create(:collection_weapon, user: user, weapon: weapon1, uncap_level: 5) }
@@ -22,29 +22,29 @@ RSpec.describe 'Collection Weapons API', type: :request do
     let!(:other_user_weapon) { create(:collection_weapon, user: other_user) }
 
     it 'returns the current user\'s collection weapons' do
-      get '/api/v1/collection/weapons', headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['collection_weapons'].length).to eq(2)
+      expect(json['weapons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
 
     it 'supports pagination' do
-      get '/api/v1/collection/weapons', params: { page: 1, limit: 1 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['collection_weapons'].length).to eq(1)
+      expect(json['weapons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
 
     it 'supports filtering by weapon' do
-      get '/api/v1/collection/weapons', params: { weapon_id: weapon1.id }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { weapon_id: weapon1.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      weapons = json['collection_weapons']
+      weapons = json['weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['id']).to eq(weapon1.id)
     end
@@ -58,27 +58,30 @@ RSpec.describe 'Collection Weapons API', type: :request do
       create(:collection_weapon, user: user, weapon: water_ssr)
       create(:collection_weapon, user: user, weapon: fire_sr)
 
-      get '/api/v1/collection/weapons', params: { element: 0, rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { element: 0, rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      weapons = json['collection_weapons']
+      weapons = json['weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['element']).to eq(0)
       expect(weapons.first['weapon']['rarity']).to eq(4)
     end
 
-    it 'returns unauthorized without authentication' do
-      get '/api/v1/collection/weapons'
-      expect(response).to have_http_status(:unauthorized)
+    it 'returns forbidden for private collection without authentication' do
+      private_user = create(:user, collection_privacy: :private_collection)
+      create(:collection_weapon, user: private_user)
+
+      get "/api/v1/users/#{private_user.id}/collection/weapons"
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
-  describe 'GET /api/v1/collection/weapons/:id' do
+  describe 'GET /api/v1/users/:user_id/collection/weapons/:id' do
     let!(:collection_weapon) { create(:collection_weapon, user: user, weapon: weapon) }
 
     it 'returns the collection weapon' do
-      get "/api/v1/collection/weapons/#{collection_weapon.id}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons/#{collection_weapon.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -88,13 +91,13 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
     it 'returns not found for other user\'s weapon' do
       other_collection = create(:collection_weapon, user: other_user)
-      get "/api/v1/collection/weapons/#{other_collection.id}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons/#{other_collection.id}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
 
     it 'returns not found for non-existent weapon' do
-      get "/api/v1/collection/weapons/#{SecureRandom.uuid}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons/#{SecureRandom.uuid}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
@@ -298,7 +301,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['exorcismLevel']).to eq(1)
+      expect(json['exorcism_level']).to eq(1)
     end
 
     it 'respects provided exorcism_level for befoulment weapon' do
@@ -319,7 +322,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['exorcismLevel']).to eq(3)
+      expect(json['exorcism_level']).to eq(3)
     end
 
     it 'does not set exorcism_level for non-befoulment weapons' do
@@ -335,7 +338,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['exorcismLevel']).to be_nil
+      expect(json['exorcism_level']).to eq(0)
     end
   end
 end

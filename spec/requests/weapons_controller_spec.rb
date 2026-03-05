@@ -28,7 +28,7 @@ RSpec.describe 'Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['maxExorcismLevel']).to eq(5)
+      expect(json['max_exorcism_level']).to eq(5)
     end
 
     it 'returns null for max_exorcism_level when not set' do
@@ -38,7 +38,7 @@ RSpec.describe 'Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['maxExorcismLevel']).to be_nil
+      expect(json['max_exorcism_level']).to be_nil
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe 'Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['maxExorcismLevel']).to eq(5)
+      expect(json['max_exorcism_level']).to eq(5)
     end
 
     it 'creates a weapon with null max_exorcism_level' do
@@ -73,7 +73,7 @@ RSpec.describe 'Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['maxExorcismLevel']).to be_nil
+      expect(json['max_exorcism_level']).to be_nil
     end
 
     it 'rejects creation from non-editor' do
@@ -91,7 +91,7 @@ RSpec.describe 'Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['maxExorcismLevel']).to eq(3)
+      expect(json['max_exorcism_level']).to eq(3)
     end
 
     it 'clears max_exorcism_level when set to null' do
@@ -101,7 +101,7 @@ RSpec.describe 'Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['maxExorcismLevel']).to be_nil
+      expect(json['max_exorcism_level']).to be_nil
     end
 
     it 'rejects update from non-editor' do

@@ -83,14 +83,15 @@ RSpec.describe 'Collection Artifacts API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['artifacts'].all? { |a| a['element'] == 'water' }).to be true
+      # Blueprint returns element as integer (water = 3)
+      expect(json['artifacts'].all? { |a| a['element'] == 3 }).to be true
     end
 
-    it 'returns unauthorized without authentication' do
-      other_user.update!(collection_visibility: 'private')
+    it 'returns forbidden for private collection without authentication' do
+      other_user.update!(collection_privacy: :private_collection)
       get "/api/v1/users/#{other_user.id}/collection/artifacts"
 
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
@@ -114,10 +115,10 @@ RSpec.describe 'Collection Artifacts API', type: :request do
           artifact_id: artifact.id,
           element: 'fire',
           level: 1,
-          skill1: { modifier: 1, strength: 1800, level: 1 },
-          skill2: { modifier: 2, strength: 900, level: 1 },
-          skill3: { modifier: 1, strength: 18.0, level: 1 },
-          skill4: { modifier: 1, strength: 10, level: 1 }
+          skill1: { modifier: 1, quality: 5, level: 1 },
+          skill2: { modifier: 2, quality: 5, level: 1 },
+          skill3: { modifier: 1, quality: 5, level: 1 },
+          skill4: { modifier: 1, quality: 5, level: 1 }
         }
       }
     end
@@ -130,7 +131,8 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       expect(response).to have_http_status(:created)
       json = response.parsed_body
       expect(json['artifact']['id']).to eq(artifact.id)
-      expect(json['element']).to eq('fire')
+      # Blueprint returns element as integer (fire = 2)
+      expect(json['element']).to eq(2)
     end
 
     it 'allows multiple copies of the same artifact' do
@@ -173,14 +175,15 @@ RSpec.describe 'Collection Artifacts API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['proficiency']).to eq('staff')
+      # Blueprint returns proficiency as integer (staff = 6)
+      expect(json['proficiency']).to eq(6)
     end
 
     it 'returns error when skill1 and skill2 have same modifier' do
       invalid_attributes = valid_attributes.deep_merge(
         collection_artifact: {
-          skill1: { modifier: 1, strength: 1800, level: 1 },
-          skill2: { modifier: 1, strength: 1800, level: 1 }
+          skill1: { modifier: 1, quality: 5, level: 1 },
+          skill2: { modifier: 1, quality: 5, level: 1 }
         }
       )
 
@@ -215,7 +218,8 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['nickname']).to eq('Updated Name')
-      expect(json['element']).to eq('water')
+      # Blueprint returns element as integer (water = 3)
+      expect(json['element']).to eq(3)
     end
 
     it 'returns not found for other user\'s artifact' do
@@ -260,19 +264,19 @@ RSpec.describe 'Collection Artifacts API', type: :request do
             artifact_id: artifact.id,
             element: 'fire',
             level: 1,
-            skill1: { modifier: 1, strength: 1800, level: 1 },
-            skill2: { modifier: 2, strength: 900, level: 1 },
-            skill3: { modifier: 1, strength: 18.0, level: 1 },
-            skill4: { modifier: 1, strength: 10, level: 1 }
+            skill1: { modifier: 1, quality: 5, level: 1 },
+            skill2: { modifier: 2, quality: 5, level: 1 },
+            skill3: { modifier: 1, quality: 5, level: 1 },
+            skill4: { modifier: 1, quality: 5, level: 1 }
           },
           {
             artifact_id: artifact2.id,
             element: 'water',
             level: 1,
-            skill1: { modifier: 1, strength: 1800, level: 1 },
-            skill2: { modifier: 2, strength: 900, level: 1 },
-            skill3: { modifier: 1, strength: 18.0, level: 1 },
-            skill4: { modifier: 1, strength: 10, level: 1 }
+            skill1: { modifier: 1, quality: 5, level: 1 },
+            skill2: { modifier: 2, quality: 5, level: 1 },
+            skill3: { modifier: 1, quality: 5, level: 1 },
+            skill4: { modifier: 1, quality: 5, level: 1 }
           }
         ]
       }
@@ -294,15 +298,15 @@ RSpec.describe 'Collection Artifacts API', type: :request do
             artifact_id: artifact.id,
             element: 'fire',
             level: 1,
-            skill1: { modifier: 1, strength: 1800, level: 1 },
-            skill2: { modifier: 2, strength: 900, level: 1 },
-            skill3: { modifier: 1, strength: 18.0, level: 1 },
-            skill4: { modifier: 1, strength: 10, level: 1 }
+            skill1: { modifier: 1, quality: 5, level: 1 },
+            skill2: { modifier: 2, quality: 5, level: 1 },
+            skill3: { modifier: 1, quality: 5, level: 1 },
+            skill4: { modifier: 1, quality: 5, level: 1 }
           },
           {
             artifact_id: artifact.id,
-            element: 'invalid_element', # Invalid
-            level: 1
+            element: 'fire',
+            level: 0 # Invalid: level must be 1-5
           }
         ]
       }
