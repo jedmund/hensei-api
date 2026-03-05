@@ -23,36 +23,63 @@ RSpec.describe 'Api::V1::Raids', type: :request do
     let!(:raid1) { create(:raid, group: group, element: 1) }
     let!(:raid2) { create(:raid, group: group, element: 2) }
 
-    it 'returns all raids' do
+    it 'returns all raids with correct fields' do
       get '/api/v1/raids'
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.length).to be >= 2
+
+      json = response.parsed_body
+      expect(json.length).to be >= 2
+
+      entry = json.find { |r| r['id'] == raid1.id }
+      expect(entry['name']['en']).to eq(raid1.name_en)
+      expect(entry['slug']).to eq(raid1.slug)
+      expect(entry['level']).to eq(raid1.level)
+      expect(entry['element']).to eq(raid1.element)
     end
 
-    it 'filters by element' do
+    it 'filters by element and excludes non-matching' do
       get '/api/v1/raids', params: { element: 1 }
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.length).to be >= 1
+
+      json = response.parsed_body
+      json.each do |r|
+        expect(r['element']).to eq(1)
+      end
+      ids = json.map { |r| r['id'] }
+      expect(ids).to include(raid1.id)
+      expect(ids).not_to include(raid2.id)
     end
 
-    it 'filters by group_id' do
+    it 'filters by group_id and excludes other groups' do
+      other_group = create(:raid_group)
+      other_raid = create(:raid, group: other_group)
+
       get '/api/v1/raids', params: { group_id: group.id }
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.length).to be >= 2
+
+      ids = response.parsed_body.map { |r| r['id'] }
+      expect(ids).to include(raid1.id, raid2.id)
+      expect(ids).not_to include(other_raid.id)
     end
   end
 
   describe 'GET /api/v1/raids/:id' do
     let!(:raid) { create(:raid) }
 
-    it 'returns the raid by slug' do
+    it 'returns the raid by slug with correct fields' do
       get "/api/v1/raids/#{raid.slug}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(raid.id)
+      expect(json['name']['en']).to eq(raid.name_en)
+      expect(json['slug']).to eq(raid.slug)
     end
 
     it 'returns the raid by id' do
       get "/api/v1/raids/#{raid.id}"
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['id']).to eq(raid.id)
     end
   end
 
@@ -67,9 +94,16 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       }
     end
 
-    it 'creates a raid as editor' do
-      post '/api/v1/raids', params: valid_params.to_json, headers: editor_headers
+    it 'creates a raid as editor and returns it' do
+      expect {
+        post '/api/v1/raids', params: valid_params.to_json, headers: editor_headers
+      }.to change(Raid, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body
+      expect(json['name']['en']).to eq('Proto Bahamut')
+      expect(json['slug']).to eq('proto-bahamut')
+      expect(json['level']).to eq(150)
     end
 
     it 'rejects creation by regular user' do
@@ -81,11 +115,12 @@ RSpec.describe 'Api::V1::Raids', type: :request do
   describe 'PUT /api/v1/raids/:id' do
     let!(:raid) { create(:raid) }
 
-    it 'updates a raid as editor' do
+    it 'updates a raid as editor and persists changes' do
       put "/api/v1/raids/#{raid.id}",
           params: { raid: { level: 200 } }.to_json,
           headers: editor_headers
       expect(response).to have_http_status(:ok)
+      expect(raid.reload.level).to eq(200)
     end
 
     it 'rejects update by regular user' do
@@ -99,7 +134,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
   describe 'DELETE /api/v1/raids/:id' do
     it 'deletes a raid without dependencies' do
       raid = create(:raid)
-      delete "/api/v1/raids/#{raid.id}", headers: editor_headers
+      expect {
+        delete "/api/v1/raids/#{raid.id}", headers: editor_headers
+      }.to change(Raid, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 

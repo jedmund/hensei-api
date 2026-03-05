@@ -19,25 +19,39 @@ RSpec.describe 'Api::V1::SummonSeries', type: :request do
   end
 
   describe 'GET /api/v1/summon_series' do
-    it 'returns all summon series' do
-      create(:summon_series)
+    it 'returns all summon series with correct fields' do
+      series = create(:summon_series)
       get '/api/v1/summon_series'
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.length).to be >= 1
+
+      json = response.parsed_body
+      expect(json.length).to be >= 1
+
+      entry = json.find { |s| s['id'] == series.id }
+      expect(entry['name']['en']).to eq(series.name_en)
+      expect(entry['name']['ja']).to eq(series.name_jp)
+      expect(entry['slug']).to eq(series.slug)
+      expect(entry['order']).to eq(series.order)
     end
   end
 
   describe 'GET /api/v1/summon_series/:id' do
     let!(:series) { create(:summon_series) }
 
-    it 'returns the series by id' do
+    it 'returns the series by id with correct fields' do
       get "/api/v1/summon_series/#{series.id}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(series.id)
+      expect(json['name']['en']).to eq(series.name_en)
+      expect(json['slug']).to eq(series.slug)
     end
 
     it 'returns the series by slug' do
       get "/api/v1/summon_series/#{series.slug}"
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['id']).to eq(series.id)
     end
   end
 
@@ -46,9 +60,15 @@ RSpec.describe 'Api::V1::SummonSeries', type: :request do
       { summon_series: { name_en: 'New Series', name_jp: '新シリーズ', slug: 'new-summon-series', order: 99 } }
     end
 
-    it 'creates a series as editor' do
-      post '/api/v1/summon_series', params: valid_params.to_json, headers: editor_headers
+    it 'creates a series as editor and returns it' do
+      expect {
+        post '/api/v1/summon_series', params: valid_params.to_json, headers: editor_headers
+      }.to change(SummonSeries, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body
+      expect(json['name']['en']).to eq('New Series')
+      expect(json['slug']).to eq('new-summon-series')
     end
 
     it 'rejects creation by regular user' do
@@ -60,12 +80,13 @@ RSpec.describe 'Api::V1::SummonSeries', type: :request do
   describe 'PUT /api/v1/summon_series/:id' do
     let!(:series) { create(:summon_series) }
 
-    it 'updates a series as editor' do
+    it 'updates a series as editor and persists changes' do
       put "/api/v1/summon_series/#{series.id}",
           params: { summon_series: { name_en: 'Updated' } }.to_json,
           headers: editor_headers
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['name']['en']).to eq('Updated')
+      expect(series.reload.name_en).to eq('Updated')
     end
 
     it 'rejects update by regular user' do
@@ -79,7 +100,9 @@ RSpec.describe 'Api::V1::SummonSeries', type: :request do
   describe 'DELETE /api/v1/summon_series/:id' do
     it 'deletes a series without dependencies' do
       series = create(:summon_series)
-      delete "/api/v1/summon_series/#{series.id}", headers: editor_headers
+      expect {
+        delete "/api/v1/summon_series/#{series.id}", headers: editor_headers
+      }.to change(SummonSeries, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 

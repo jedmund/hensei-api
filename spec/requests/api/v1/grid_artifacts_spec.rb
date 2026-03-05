@@ -15,32 +15,41 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
   let(:artifact) { create(:artifact) }
 
   describe 'POST /api/v1/grid_artifacts' do
-    it 'creates a grid artifact' do
-      post '/api/v1/grid_artifacts', params: {
-        party_id: party.id,
-        grid_artifact: {
-          grid_character_id: grid_character.id,
-          artifact_id: artifact.id,
-          element: 'light',
-          level: 1
-        }
-      }.to_json, headers: headers
+    it 'creates a grid artifact and returns correct fields' do
+      expect {
+        post '/api/v1/grid_artifacts', params: {
+          party_id: party.id,
+          grid_artifact: {
+            grid_character_id: grid_character.id,
+            artifact_id: artifact.id,
+            element: 'light',
+            level: 1
+          }
+        }.to_json, headers: headers
+      }.to change(GridArtifact, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body['grid_artifact']
+      expect(json['element']).to eq(6) # light = 6
+      expect(json['level']).to eq(1)
     end
 
     it 'replaces existing artifact on same grid character' do
-      create(:grid_artifact, grid_character: grid_character, artifact: artifact)
+      existing = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
       new_artifact = create(:artifact)
-      post '/api/v1/grid_artifacts', params: {
-        party_id: party.id,
-        grid_artifact: {
-          grid_character_id: grid_character.id,
-          artifact_id: new_artifact.id,
-          element: 'light',
-          level: 1
-        }
-      }.to_json, headers: headers
+      expect {
+        post '/api/v1/grid_artifacts', params: {
+          party_id: party.id,
+          grid_artifact: {
+            grid_character_id: grid_character.id,
+            artifact_id: new_artifact.id,
+            element: 'light',
+            level: 1
+          }
+        }.to_json, headers: headers
+      }.not_to change(GridArtifact, :count)
       expect(response).to have_http_status(:created)
+      expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'rejects creation by non-owner' do
@@ -62,11 +71,13 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
   describe 'PUT /api/v1/grid_artifacts/:id' do
     let!(:grid_artifact) { create(:grid_artifact, grid_character: grid_character, artifact: artifact) }
 
-    it 'updates a grid artifact' do
+    it 'updates a grid artifact and persists changes' do
       put "/api/v1/grid_artifacts/#{grid_artifact.id}",
           params: { grid_artifact: { level: 5 } }.to_json,
           headers: headers
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['grid_artifact']['level']).to eq(5)
+      expect(grid_artifact.reload.level).to eq(5)
     end
 
     it 'rejects update by non-owner' do
@@ -82,7 +93,9 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
   describe 'DELETE /api/v1/grid_artifacts/:id' do
     it 'deletes a grid artifact' do
       ga = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
-      delete "/api/v1/grid_artifacts/#{ga.id}", headers: headers
+      expect {
+        delete "/api/v1/grid_artifacts/#{ga.id}", headers: headers
+      }.to change(GridArtifact, :count).by(-1)
       expect(response).to have_http_status(:ok)
     end
 
