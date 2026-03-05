@@ -253,7 +253,7 @@ class GridWeapon < ApplicationRecord
   # @return [void]
   def set_default_exorcism_level
     return unless weapon.present?
-    return unless exorcism_level.nil?
+    return unless exorcism_level.nil? || exorcism_level.zero?
     return unless weapon.weapon_series&.augment_type == 'befoulment'
 
     self.exorcism_level = 1
