@@ -3,7 +3,7 @@ module Api
     class CollectionWeaponBlueprint < ApiBlueprint
       identifier :id
 
-      fields :uncap_level, :transcendence_step, :element,
+      fields :uncap_level, :transcendence_step, :element, :exorcism_level,
              :created_at, :updated_at
 
       field :ax, if: ->(_, obj, _) { obj.ax_modifier1.present? } do |obj|
