@@ -12,7 +12,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
   let(:summon) { create(:summon) }
 
-  describe 'GET /api/v1/collection/summons' do
+  describe 'GET /api/v1/users/:user_id/collection/summons' do
     let(:summon1) { create(:summon) }
     let(:summon2) { create(:summon) }
     let!(:collection_summon1) { create(:collection_summon, user: user, summon: summon1, uncap_level: 5) }
@@ -20,29 +20,29 @@ RSpec.describe 'Collection Summons API', type: :request do
     let!(:other_user_summon) { create(:collection_summon, user: other_user) }
 
     it 'returns the current user\'s collection summons' do
-      get '/api/v1/collection/summons', headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons", headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['collection_summons'].length).to eq(2)
+      expect(json['summons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
 
     it 'supports pagination' do
-      get '/api/v1/collection/summons', params: { page: 1, limit: 1 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons", params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['collection_summons'].length).to eq(1)
+      expect(json['summons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
 
     it 'supports filtering by summon' do
-      get '/api/v1/collection/summons', params: { summon_id: summon1.id }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons", params: { summon_id: summon1.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      summons = json['collection_summons']
+      summons = json['summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['id']).to eq(summon1.id)
     end
@@ -56,27 +56,30 @@ RSpec.describe 'Collection Summons API', type: :request do
       create(:collection_summon, user: user, summon: water_ssr)
       create(:collection_summon, user: user, summon: fire_sr)
 
-      get '/api/v1/collection/summons', params: { element: 0, rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons", params: { element: 0, rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      summons = json['collection_summons']
+      summons = json['summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['element']).to eq(0)
       expect(summons.first['summon']['rarity']).to eq(4)
     end
 
-    it 'returns unauthorized without authentication' do
-      get '/api/v1/collection/summons'
-      expect(response).to have_http_status(:unauthorized)
+    it 'returns forbidden for private collection without authentication' do
+      private_user = create(:user, collection_privacy: :private_collection)
+      create(:collection_summon, user: private_user)
+
+      get "/api/v1/users/#{private_user.id}/collection/summons"
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
-  describe 'GET /api/v1/collection/summons/:id' do
+  describe 'GET /api/v1/users/:user_id/collection/summons/:id' do
     let!(:collection_summon) { create(:collection_summon, user: user, summon: summon) }
 
     it 'returns the collection summon' do
-      get "/api/v1/collection/summons/#{collection_summon.id}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons/#{collection_summon.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -86,13 +89,13 @@ RSpec.describe 'Collection Summons API', type: :request do
 
     it 'returns not found for other user\'s summon' do
       other_collection = create(:collection_summon, user: other_user)
-      get "/api/v1/collection/summons/#{other_collection.id}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons/#{other_collection.id}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
 
     it 'returns not found for non-existent summon' do
-      get "/api/v1/collection/summons/#{SecureRandom.uuid}", headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons/#{SecureRandom.uuid}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end

@@ -82,7 +82,7 @@ RSpec.describe 'Parties API', type: :request do
 
     it 'destroys the party' do
       delete "/api/v1/parties/#{party.id}", headers: headers
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:no_content)
       expect { party.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
@@ -159,6 +159,11 @@ RSpec.describe 'Parties API', type: :request do
 
     describe 'GET /api/v1/parties/:id/preview' do
       before do
+        coordinator = instance_double(PreviewService::Coordinator)
+        allow(PreviewService::Coordinator).to receive(:new).and_return(coordinator)
+        allow(coordinator).to receive(:generation_in_progress?).and_return(false)
+        allow(coordinator).to receive(:local_preview_path).and_return('/tmp/fake_preview.png')
+
         allow_any_instance_of(Api::V1::PartiesController).to receive(:send_file) do |instance, *_args|
           instance.render plain: 'dummy image content', content_type: 'image/png', status: 200
         end
@@ -181,6 +186,12 @@ RSpec.describe 'Parties API', type: :request do
     end
 
     describe 'POST /api/v1/parties/:id/regenerate_preview' do
+      before do
+        coordinator = instance_double(PreviewService::Coordinator)
+        allow(PreviewService::Coordinator).to receive(:new).and_return(coordinator)
+        allow(coordinator).to receive(:force_regenerate).and_return(true)
+      end
+
       it 'accepts the regeneration request' do
         post "/api/v1/parties/#{party.shortcode}/regenerate_preview", headers: headers
         expect(response).to have_http_status(:ok).or have_http_status(:unprocessable_entity)

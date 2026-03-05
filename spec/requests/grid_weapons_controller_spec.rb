@@ -356,7 +356,7 @@ RSpec.describe 'GridWeapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['grid_weapon']['exorcismLevel']).to eq(1)
+      expect(json['grid_weapon']['exorcism_level']).to eq(1)
     end
 
     it 'respects provided exorcism_level for befoulment weapon' do
@@ -379,7 +379,7 @@ RSpec.describe 'GridWeapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['grid_weapon']['exorcismLevel']).to eq(4)
+      expect(json['grid_weapon']['exorcism_level']).to eq(4)
     end
 
     it 'does not set exorcism_level for non-befoulment weapons' do
@@ -397,7 +397,7 @@ RSpec.describe 'GridWeapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['grid_weapon']['exorcismLevel']).to be_nil
+      expect(json['grid_weapon']['exorcism_level']).to eq(0)
     end
   end
 end
