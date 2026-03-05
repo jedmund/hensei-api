@@ -119,9 +119,7 @@ RSpec.describe 'GridWeapons API', type: :request do
         expect { post '/api/v1/grid_weapons', params: valid_params.to_json, headers: headers }
           .to change(GridWeapon, :count).by(1)
         expect(response).to have_http_status(:created)
-        json_response = JSON.parse(response.body)
-        expect(json_response).to have_key('grid_weapon')
-        expect(json_response['grid_weapon']).to include('position' => 0)
+        expect(response.parsed_body['grid_weapon']).to include('position' => 0)
       end
     end
 
@@ -142,8 +140,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       it 'returns unprocessable entity status with errors' do
         post '/api/v1/grid_weapons', params: invalid_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json_response = JSON.parse(response.body)
-        expect(json_response).to have_key('errors')
+        expect(response.parsed_body['errors']).to be_present
       end
     end
 
@@ -210,8 +207,7 @@ RSpec.describe 'GridWeapons API', type: :request do
     it 'updates the grid weapon and returns the updated record' do
       put "/api/v1/grid_weapons/#{grid_weapon.id}", params: update_params.to_json, headers: headers
       expect(response).to have_http_status(:ok)
-      json_response = JSON.parse(response.body)
-      expect(json_response['grid_weapon']).to include('mainhand' => false, 'uncap_level' => 4)
+      expect(response.parsed_body['grid_weapon']).to include('mainhand' => false, 'uncap_level' => 4)
     end
   end
 
@@ -240,11 +236,10 @@ RSpec.describe 'GridWeapons API', type: :request do
       }
     end
 
-    it 'updates the uncap level to 5 for the grid weapon' do
+    it 'caps the uncap level at 5' do
       post '/api/v1/grid_weapons/update_uncap', params: update_uncap_params.to_json, headers: headers
       expect(response).to have_http_status(:ok)
-      json_response = JSON.parse(response.body)
-      expect(json_response['grid_weapon']).to include('uncap_level' => 5)
+      expect(response.parsed_body['grid_weapon']).to include('uncap_level' => 5)
     end
   end
 
@@ -273,17 +268,13 @@ RSpec.describe 'GridWeapons API', type: :request do
       }
     end
 
-    it 'resolves conflicts by destroying conflicting grid weapons and creating a new one' do
+    it 'destroys the conflicting weapon and creates a new one with correct uncap' do
       expect(GridWeapon.exists?(conflicting_weapon.id)).to be true
 
-      # The net change should be zero: one grid weapon is destroyed and one is created.
       expect { post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers }
         .to change(GridWeapon, :count).by(0)
       expect(response).to have_http_status(:created)
-      json_response = JSON.parse(response.body)
-      expect(json_response).to have_key('grid_weapon')
-      # According to the controller logic, with incoming.flb true, the uncap level should be 4.
-      expect(json_response['grid_weapon']).to include('uncap_level' => 4)
+      expect(response.parsed_body['grid_weapon']).to include('uncap_level' => 4, 'position' => 5)
       expect { conflicting_weapon.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
@@ -364,7 +355,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       post '/api/v1/grid_weapons', params: params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['grid_weapon']['exorcismLevel']).to eq(1)
     end
 
@@ -387,7 +378,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       post '/api/v1/grid_weapons', params: params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['grid_weapon']['exorcismLevel']).to eq(4)
     end
 
@@ -405,25 +396,8 @@ RSpec.describe 'GridWeapons API', type: :request do
       post '/api/v1/grid_weapons', params: params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['grid_weapon']['exorcismLevel']).to be_nil
-    end
-  end
-
-  # Debug hook: if any example fails and a response exists, print the error message.
-  after(:each) do |example|
-    if example.exception && defined?(response) && response.present?
-      error_message = begin
-                        JSON.parse(response.body)['exception']
-                      rescue JSON::ParserError
-                        response.body
-                      end
-      puts "\nDEBUG: Error Message for '#{example.full_description}': #{error_message}"
-      
-      # Parse once and grab the trace safely
-      parsed_body = JSON.parse(response.body)
-      trace = parsed_body.dig('traces', 'Application Trace')
-      ap trace if trace # Only print if trace is not nil
     end
   end
 end

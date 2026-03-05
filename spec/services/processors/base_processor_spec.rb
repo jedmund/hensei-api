@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'rails_helper'
 
 module Processors
   class DummyBaseProcessor < BaseProcessor
@@ -34,12 +33,6 @@ RSpec.describe Processors::DummyBaseProcessor, type: :model do
       message = "Test log message"
       expect(Rails.logger).to receive(:info).with(a_string_including("DummyBaseProcessor", message))
       processor.public_log(message)
-    end
-  end
-
-  after(:each) do |example|
-    if example.exception
-      puts "\nDEBUG [DummyBaseProcessor]: #{example.full_description} failed with error: #{example.exception.message}"
     end
   end
 end

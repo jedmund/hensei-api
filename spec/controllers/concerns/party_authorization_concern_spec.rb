@@ -113,22 +113,4 @@ RSpec.describe DummyAuthorizationController, type: :controller do
       end
     end
   end
-
-  # Debug block: prints debug info if an example fails.
-  after(:each) do |example|
-    if example.exception && defined?(response) && response.present?
-      error_message = begin
-                        JSON.parse(response.body)['exception']
-                      rescue JSON::ParserError
-                        response.body
-                      end
-
-      puts "\nDEBUG: Error Message for '#{example.full_description}': #{error_message}"
-
-      # Parse once and grab the trace safely
-      parsed_body = JSON.parse(response.body)
-      trace = parsed_body.dig('traces', 'Application Trace')
-      ap trace if trace # Only print if trace is not nil
-    end
-  end
 end

@@ -77,10 +77,4 @@ RSpec.describe Processors::JobProcessor, type: :model do
       expect { subject.process }.not_to(change { party.reload.job })
     end
   end
-
-  after(:each) do |example|
-    if example.exception
-      puts "\nDEBUG [JobProcessor]: #{example.full_description} failed with error: #{example.exception.message}"
-    end
-  end
 end
