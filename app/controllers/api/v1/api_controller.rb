@@ -99,10 +99,9 @@ module Api
         response.headers['Content-Type'] = content_type
       end
 
-      # Set the default response content-type to application/javascript
-      # with a UTF-8 charset
+      # Set the default response content-type
       def default_content_type
-        content_type('application/javascript; charset=utf-8')
+        content_type('application/json; charset=utf-8')
       end
 
       ### Error response methods
