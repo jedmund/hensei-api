@@ -33,13 +33,60 @@ RSpec.describe GridArtifact, type: :model do
   end
 
   describe 'enums' do
-    it 'defines element enum' do
-      expect(GridArtifact.elements).to include(
+    it 'defines element enum with all 6 elements' do
+      expect(GridArtifact.elements).to eq(
         'wind' => 1,
         'fire' => 2,
         'water' => 3,
-        'earth' => 4
+        'earth' => 4,
+        'dark' => 5,
+        'light' => 6
       )
+    end
+
+    it 'defines proficiency enum' do
+      expect(GridArtifact.proficiencies).to include(
+        'sabre' => 1,
+        'spear' => 4,
+        'melee' => 7
+      )
+    end
+  end
+
+  describe '#validate_character_compatibility' do
+    let(:grid_character) { create(:grid_character) }
+    let(:character) { grid_character.character }
+
+    context 'when element does not match character' do
+      it 'adds an error for mismatched element' do
+        # Set character to fire element (2)
+        character.update_columns(element: 2, proficiency1: 1)
+        artifact = create(:artifact, proficiency: :sabre)
+
+        grid_artifact = build(:grid_artifact,
+          grid_character: grid_character,
+          artifact: artifact,
+          element: :water,
+          skill1: {}, skill2: {}, skill3: {}, skill4: {}
+        )
+        expect(grid_artifact).not_to be_valid
+        expect(grid_artifact.errors[:element]).to be_present
+      end
+    end
+
+    context 'when character has null element (e.g. Lyria)' do
+      it 'allows any element artifact' do
+        character.update_columns(element: 0, proficiency1: 1)
+        artifact = create(:artifact, proficiency: :sabre)
+
+        grid_artifact = build(:grid_artifact,
+          grid_character: grid_character,
+          artifact: artifact,
+          element: :dark,
+          skill1: {}, skill2: {}, skill3: {}, skill4: {}
+        )
+        expect(grid_artifact).to be_valid
+      end
     end
   end
 

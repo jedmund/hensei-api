@@ -65,6 +65,30 @@ RSpec.describe Character, type: :model do
     end
   end
 
+  describe 'scopes' do
+    let!(:summer_char) { create(:character, season: GranblueEnums::CHARACTER_SEASONS[:Summer]) }
+    let!(:halloween_char) { create(:character, season: GranblueEnums::CHARACTER_SEASONS[:Halloween]) }
+    let!(:standard_char) { create(:character, season: nil) }
+
+    it '.by_season filters by season value' do
+      expect(Character.by_season(GranblueEnums::CHARACTER_SEASONS[:Summer])).to include(summer_char)
+      expect(Character.by_season(GranblueEnums::CHARACTER_SEASONS[:Summer])).not_to include(halloween_char, standard_char)
+    end
+
+    it '.seasonal returns non-standard seasonal characters' do
+      expect(Character.seasonal).to include(summer_char, halloween_char)
+      expect(Character.seasonal).not_to include(standard_char)
+    end
+  end
+
+  describe 'search' do
+    it 'can search by English name' do
+      character = create(:character, name_en: 'Unique Character Name')
+      results = Character.en_search('Unique Character')
+      expect(results).to include(character)
+    end
+  end
+
   describe '#series=' do
     let(:character) { build(:character) }
 
