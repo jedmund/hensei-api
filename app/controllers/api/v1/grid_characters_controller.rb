@@ -128,10 +128,11 @@ module Api
         old_position = @grid_character.position
         @grid_character.position = new_position
 
-        # Compact positions if needed (for main slots)
-        reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
-
         if @grid_character.save
+          # Compact positions after save so the moved character is no longer
+          # included in the main positions query
+          reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
+
           render json: {
             party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
             grid_character: GridCharacterBlueprint.render_as_hash(@grid_character.reload, view: :nested),

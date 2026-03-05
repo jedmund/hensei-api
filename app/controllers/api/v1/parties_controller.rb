@@ -380,7 +380,7 @@ module Api
         model_class = grid_model_for_entity(operation[:entity])
         item = model_class.find_by(id: operation[:id], party_id: @party.id)
 
-        return nil unless item
+        raise ActiveRecord::RecordNotFound, "#{operation[:entity]} #{operation[:id]} not found" unless item
 
         old_position = item.position
         item.update!(position: operation[:position])
