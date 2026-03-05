@@ -68,12 +68,14 @@ RSpec.describe 'Parties API', type: :request do
       { party: { name: 'New Name', description: 'Updated description' } }
     end
 
-    it 'updates the party and returns the updated party' do
+    it 'updates the party and persists changes' do
       put "/api/v1/parties/#{party.id}", params: update_attributes.to_json, headers: headers
       expect(response).to have_http_status(:ok)
 
       party_json = response.parsed_body['party']
       expect(party_json).to include('name' => 'New Name', 'description' => 'Updated description')
+      expect(party.reload.name).to eq('New Name')
+      expect(party.description).to eq('Updated description')
     end
   end
 
@@ -81,9 +83,10 @@ RSpec.describe 'Parties API', type: :request do
     let!(:party) { create(:party, user: user) }
 
     it 'destroys the party' do
-      delete "/api/v1/parties/#{party.id}", headers: headers
+      expect {
+        delete "/api/v1/parties/#{party.id}", headers: headers
+      }.to change(Party, :count).by(-1)
       expect(response).to have_http_status(:no_content)
-      expect { party.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 

@@ -28,11 +28,16 @@ RSpec.describe 'Api::V1::Search', type: :request do
       expect(response.parsed_body['results']).to be_an(Array)
     end
 
-    it 'filters by element' do
+    it 'filters by element and returns only matching results' do
       post '/api/v1/search/characters',
            params: { search: { filters: { element: [1] }, page: 1 } }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
+
+      results = response.parsed_body['results']
+      results.each do |r|
+        expect(r['element']).to eq(1)
+      end
     end
   end
 
@@ -77,11 +82,15 @@ RSpec.describe 'Api::V1::Search', type: :request do
   end
 
   describe 'POST /api/v1/search/guidebooks' do
-    it 'returns guidebooks without query' do
+    it 'returns guidebooks with results and meta' do
       post '/api/v1/search/guidebooks',
            params: { search: { page: 1 } }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['results']).to be_an(Array)
+      expect(json['meta']).to be_present
     end
   end
 end

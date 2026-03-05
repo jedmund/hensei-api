@@ -57,11 +57,16 @@ RSpec.describe 'Weapons API', type: :request do
     end
 
     it 'creates a weapon with max_exorcism_level when editor' do
-      post '/api/v1/weapons', params: valid_params.to_json, headers: editor_headers
+      expect {
+        post '/api/v1/weapons', params: valid_params.to_json, headers: editor_headers
+      }.to change(Weapon, :count).by(1)
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
       expect(json['max_exorcism_level']).to eq(5)
+      expect(json['granblue_id']).to eq('1040000001')
+      expect(json['name']['en']).to eq('Test Weapon')
+      expect(json['element']).to eq(1)
     end
 
     it 'creates a weapon with null max_exorcism_level' do
@@ -84,7 +89,7 @@ RSpec.describe 'Weapons API', type: :request do
   end
 
   describe 'PATCH /api/v1/weapons/:id' do
-    it 'updates max_exorcism_level' do
+    it 'updates max_exorcism_level and persists changes' do
       patch "/api/v1/weapons/#{weapon.id}",
             params: { weapon: { max_exorcism_level: 3 } }.to_json,
             headers: editor_headers
@@ -92,6 +97,7 @@ RSpec.describe 'Weapons API', type: :request do
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['max_exorcism_level']).to eq(3)
+      expect(weapon.reload.max_exorcism_level).to eq(3)
     end
 
     it 'clears max_exorcism_level when set to null' do

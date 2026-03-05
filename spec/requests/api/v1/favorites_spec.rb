@@ -13,12 +13,18 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
   end
 
   describe 'POST /api/v1/favorites' do
-    it 'creates a favorite' do
+    it 'creates a favorite and returns it' do
       party = create(:party, user: other_user)
-      post '/api/v1/favorites',
-           params: { favorite: { party_id: party.id } }.to_json,
-           headers: auth_headers
+      expect {
+        post '/api/v1/favorites',
+             params: { favorite: { party_id: party.id } }.to_json,
+             headers: auth_headers
+      }.to change(Favorite, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body['favorite']
+      expect(json['user']['id']).to eq(user.id)
+      expect(json['party']['id']).to eq(party.id)
     end
 
     it 'returns error when favoriting own party' do
@@ -51,9 +57,11 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
     it 'deletes a favorite' do
       party = create(:party, user: other_user)
       create(:favorite, user: user, party: party)
-      delete '/api/v1/favorites',
-             params: { favorite: { party_id: party.id } }.to_json,
-             headers: auth_headers
+      expect {
+        delete '/api/v1/favorites',
+               params: { favorite: { party_id: party.id } }.to_json,
+               headers: auth_headers
+      }.to change(Favorite, :count).by(-1)
       expect(response).to have_http_status(:ok)
     end
 
