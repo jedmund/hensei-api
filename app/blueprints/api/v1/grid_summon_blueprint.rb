@@ -11,7 +11,7 @@ module Api
       end
 
       view :preview do
-        association :summon, blueprint: SummonBlueprint
+        association :summon, blueprint: SummonBlueprint, view: :preview
       end
 
       view :nested do

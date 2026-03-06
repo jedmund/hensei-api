@@ -26,7 +26,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['weapons'].length).to eq(2)
+      expect(json['collection_weapons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
 
@@ -35,7 +35,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['weapons'].length).to eq(1)
+      expect(json['collection_weapons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
 
@@ -44,7 +44,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      weapons = json['weapons']
+      weapons = json['collection_weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['id']).to eq(weapon1.id)
     end
@@ -62,7 +62,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      weapons = json['weapons']
+      weapons = json['collection_weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['element']).to eq(0)
       expect(weapons.first['weapon']['rarity']).to eq(4)
@@ -301,7 +301,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['exorcism_level']).to eq(1)
+      expect(json['exorcismLevel']).to eq(1)
     end
 
     it 'respects provided exorcism_level for befoulment weapon' do
@@ -322,7 +322,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['exorcism_level']).to eq(3)
+      expect(json['exorcismLevel']).to eq(3)
     end
 
     it 'does not set exorcism_level for non-befoulment weapons' do
@@ -338,7 +338,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['exorcism_level']).to eq(0)
+      expect(json['exorcismLevel']).to be_nil
     end
   end
 end
