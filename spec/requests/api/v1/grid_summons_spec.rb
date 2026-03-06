@@ -20,6 +20,68 @@ RSpec.describe 'GridSummons API', type: :request do
     }
   end
 
+  describe 'Authorization for editing grid summons' do
+    let(:valid_params) do
+      {
+        summon: {
+          party_id: party.id,
+          summon_id: summon.id,
+          position: 0,
+          main: true,
+          friend: false,
+          quick_summon: false,
+          uncap_level: 3,
+          transcendence_step: 0
+        }
+      }
+    end
+
+    it 'rejects a logged-in user that does not own the party' do
+      other_user = create(:user)
+      other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+      other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+
+      expect {
+        post '/api/v1/grid_summons', params: valid_params.to_json, headers: other_headers
+      }.not_to change(GridSummon, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    context 'when the party is anonymous (no user)' do
+      let(:anon_party) { create(:party, user: nil, edit_key: 'anonsecret') }
+      let(:anon_headers) { { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' } }
+      let(:anon_params) do
+        {
+          summon: {
+            party_id: anon_party.id,
+            summon_id: summon.id,
+            position: 0,
+            main: true,
+            friend: false,
+            quick_summon: false,
+            uncap_level: 3,
+            transcendence_step: 0
+          }
+        }
+      end
+
+      it 'allows anonymous creation with correct edit_key' do
+        expect {
+          post '/api/v1/grid_summons', params: anon_params.to_json, headers: anon_headers
+        }.to change(GridSummon, :count).by(1)
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'rejects anonymous creation with wrong edit_key' do
+        wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
+        expect {
+          post '/api/v1/grid_summons', params: anon_params.to_json, headers: wrong_headers
+        }.not_to change(GridSummon, :count)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'POST /api/v1/grid_summons' do
     let(:valid_params) do
       {
@@ -232,6 +294,13 @@ RSpec.describe 'GridSummons API', type: :request do
         expect { delete "/api/v1/grid_summons/#{grid_summon.id}", headers: anonymous_headers }
           .to change(GridSummon, :count).by(-1)
         expect(response).to have_http_status(:ok)
+      end
+
+      it 'rejects destruction with incorrect edit key' do
+        wrong_headers = headers.merge('X-Edit-Key' => 'wrong').except('Authorization')
+        expect { delete "/api/v1/grid_summons/#{grid_summon.id}", headers: wrong_headers }
+          .not_to change(GridSummon, :count)
+        expect(response).to have_http_status(:unauthorized)
       end
 
       it 'prevents deletion when a logged in user attempts to delete an anonymous grid summon' do

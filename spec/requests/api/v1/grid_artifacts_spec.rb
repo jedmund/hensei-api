@@ -99,9 +99,66 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it 'rejects deletion by non-owner' do
+      ga = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
+      other_user = create(:user)
+      other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+      expect {
+        delete "/api/v1/grid_artifacts/#{ga.id}",
+               headers: { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+      }.not_to change(GridArtifact, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
     it 'returns 404 for non-existent artifact' do
       delete '/api/v1/grid_artifacts/00000000-0000-0000-0000-000000000000', headers: headers
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'anonymous party authorization' do
+    let(:anon_party) { create(:party, user: nil, edit_key: 'anonsecret') }
+    let(:anon_character) { create(:grid_character, party: anon_party) }
+    let(:anon_headers) { { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' } }
+
+    it 'allows anonymous creation with correct edit_key' do
+      expect {
+        post '/api/v1/grid_artifacts', params: {
+          party_id: anon_party.id,
+          grid_artifact: {
+            grid_character_id: anon_character.id,
+            artifact_id: artifact.id,
+            element: 'light',
+            level: 1
+          }
+        }.to_json, headers: anon_headers
+      }.to change(GridArtifact, :count).by(1)
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'rejects anonymous creation with wrong edit_key' do
+      wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
+      expect {
+        post '/api/v1/grid_artifacts', params: {
+          party_id: anon_party.id,
+          grid_artifact: {
+            grid_character_id: anon_character.id,
+            artifact_id: artifact.id,
+            element: 'light',
+            level: 1
+          }
+        }.to_json, headers: wrong_headers
+      }.not_to change(GridArtifact, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'prevents a logged-in user from editing an anonymous party grid artifact' do
+      ga = create(:grid_artifact, grid_character: anon_character, artifact: artifact)
+      put "/api/v1/grid_artifacts/#{ga.id}",
+          params: { grid_artifact: { level: 5 } }.to_json,
+          headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(ga.reload.level).not_to eq(5)
     end
   end
 

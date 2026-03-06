@@ -77,6 +77,16 @@ RSpec.describe 'Parties API', type: :request do
       expect(party.reload.name).to eq('New Name')
       expect(party.description).to eq('Updated description')
     end
+
+    it 'rejects update by non-owner' do
+      other_user = create(:user)
+      other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+      other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+
+      put "/api/v1/parties/#{party.id}", params: update_attributes.to_json, headers: other_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(party.reload.name).to eq('Old Name')
+    end
   end
 
   describe 'DELETE /api/v1/parties/:id' do
@@ -87,6 +97,62 @@ RSpec.describe 'Parties API', type: :request do
         delete "/api/v1/parties/#{party.id}", headers: headers
       }.to change(Party, :count).by(-1)
       expect(response).to have_http_status(:no_content)
+    end
+
+    it 'rejects deletion by non-owner' do
+      other_user = create(:user)
+      other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+      other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+
+      expect {
+        delete "/api/v1/parties/#{party.id}", headers: other_headers
+      }.not_to change(Party, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'anonymous party management' do
+    let!(:anon_party) { create(:party, user: nil, edit_key: 'anonsecret', name: 'Anon Party') }
+    let(:anon_headers) { { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' } }
+
+    it 'allows updating an anonymous party with correct edit_key' do
+      put "/api/v1/parties/#{anon_party.id}",
+          params: { party: { name: 'Updated Anon' } }.to_json,
+          headers: anon_headers
+      expect(response).to have_http_status(:ok)
+      expect(anon_party.reload.name).to eq('Updated Anon')
+    end
+
+    it 'rejects updating an anonymous party with wrong edit_key' do
+      wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
+      put "/api/v1/parties/#{anon_party.id}",
+          params: { party: { name: 'Hacked' } }.to_json,
+          headers: wrong_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(anon_party.reload.name).to eq('Anon Party')
+    end
+
+    it 'allows deleting an anonymous party with correct edit_key' do
+      expect {
+        delete "/api/v1/parties/#{anon_party.id}", headers: anon_headers
+      }.to change(Party, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'rejects deleting an anonymous party with wrong edit_key' do
+      wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
+      expect {
+        delete "/api/v1/parties/#{anon_party.id}", headers: wrong_headers
+      }.not_to change(Party, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'prevents a logged-in user from editing an anonymous party' do
+      put "/api/v1/parties/#{anon_party.id}",
+          params: { party: { name: 'Stolen' } }.to_json,
+          headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(anon_party.reload.name).to eq('Anon Party')
     end
   end
 
