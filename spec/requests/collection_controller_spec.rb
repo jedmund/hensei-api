@@ -124,6 +124,34 @@ RSpec.describe 'Collection Controller API', type: :request do
       end
     end
 
+    context 'viewing crew-only collection' do
+      it 'returns forbidden for non-crew members' do
+        get "/api/v1/users/#{crew_only_user.id}/collection", headers: headers
+
+        expect(response).to have_http_status(:forbidden)
+        json = response.parsed_body
+        expect(json['error']).to include('do not have permission')
+      end
+
+      it 'allows owner to view their own crew-only collection' do
+        owner_token = Doorkeeper::AccessToken.create!(
+          resource_owner_id: crew_only_user.id,
+          expires_in: 30.days,
+          scopes: 'public'
+        )
+        owner_headers = {
+          'Authorization' => "Bearer #{owner_token.token}",
+          'Content-Type' => 'application/json'
+        }
+
+        get "/api/v1/users/#{crew_only_user.id}/collection", headers: owner_headers
+
+        expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        expect(json).to have_key('characters')
+      end
+    end
+
     context 'viewing non-existent user' do
       it 'returns not found for non-existent user' do
         get "/api/v1/users/#{SecureRandom.uuid}/collection", headers: headers
