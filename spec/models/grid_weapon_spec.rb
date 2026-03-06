@@ -136,6 +136,45 @@ RSpec.describe GridWeapon, type: :model do
     end
   end
 
+  describe 'EXTRA_POSITIONS' do
+    it 'contains positions 9, 10, and 11' do
+      expect(GridWeapon::EXTRA_POSITIONS).to eq([9, 10, 11])
+    end
+  end
+
+  describe 'scopes' do
+    let(:orphaned_gw) { create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 3, orphaned: true) }
+    let(:normal_gw) { create(:grid_weapon, party: party, weapon: weapon, position: 1, uncap_level: 3, orphaned: false) }
+
+    describe '.orphaned' do
+      it 'returns only orphaned grid weapons' do
+        orphaned_gw
+        normal_gw
+        expect(GridWeapon.orphaned).to include(orphaned_gw)
+        expect(GridWeapon.orphaned).not_to include(normal_gw)
+      end
+    end
+
+    describe '.not_orphaned' do
+      it 'returns only non-orphaned grid weapons' do
+        orphaned_gw
+        normal_gw
+        expect(GridWeapon.not_orphaned).to include(normal_gw)
+        expect(GridWeapon.not_orphaned).not_to include(orphaned_gw)
+      end
+    end
+  end
+
+  describe '#mark_orphaned!' do
+    it 'sets orphaned to true and clears collection_weapon_id' do
+      gw = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 3, orphaned: false)
+      gw.mark_orphaned!
+      gw.reload
+      expect(gw.orphaned).to be true
+      expect(gw.collection_weapon_id).to be_nil
+    end
+  end
+
   describe 'Collection Sync' do
     let(:user) { create(:user) }
     let(:ec_series) { create(:weapon_series, :element_changeable) }

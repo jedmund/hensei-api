@@ -8,6 +8,7 @@ RSpec.describe User, type: :model do
     it { should have_many(:collection_weapons).dependent(:destroy) }
     it { should have_many(:collection_summons).dependent(:destroy) }
     it { should have_many(:collection_job_accessories).dependent(:destroy) }
+    it { should have_many(:collection_artifacts).dependent(:destroy) }
     it { should have_many(:crew_memberships).dependent(:destroy) }
     it { should have_one(:active_crew_membership) }
     it { should have_one(:crew).through(:active_crew_membership) }
@@ -243,6 +244,44 @@ RSpec.describe User, type: :model do
     it 'returns false when role is not 9' do
       user = create(:user, role: 0)
       expect(user.admin?).to be false
+    end
+  end
+
+  describe '#favorite_parties' do
+    it 'returns parties the user has favorited' do
+      user = create(:user)
+      party1 = create(:party)
+      party2 = create(:party)
+      create(:favorite, user: user, party: party1)
+      create(:favorite, user: user, party: party2)
+      expect(user.favorite_parties).to match_array([party1, party2])
+    end
+
+    it 'returns empty array when no favorites' do
+      user = create(:user)
+      expect(user.favorite_parties).to be_empty
+    end
+  end
+
+  describe 'email normalization' do
+    it 'downcases email before save' do
+      user = create(:user, email: 'Test@Example.COM')
+      expect(user.reload.email).to eq('test@example.com')
+    end
+  end
+
+  describe 'password validations' do
+    it 'requires password on create' do
+      user = User.new(username: 'testuser', email: 'test@example.com')
+      expect(user).not_to be_valid
+      expect(user.errors[:password]).to be_present
+    end
+
+    it 'requires minimum 8 characters' do
+      user = User.new(username: 'testuser', email: 'test@example.com',
+                       password: 'short', password_confirmation: 'short')
+      expect(user).not_to be_valid
+      expect(user.errors[:password].join).to match(/too short|minimum/)
     end
   end
 end

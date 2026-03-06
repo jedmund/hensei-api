@@ -233,6 +233,71 @@ RSpec.describe GridSummon, type: :model do
     end
   end
 
+  describe 'scopes' do
+    let(:party) { create(:party) }
+    let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
+
+    let(:orphaned_gs) do
+      create(:grid_summon, party: party, summon: summon, position: 0,
+             uncap_level: 3, transcendence_step: 0, orphaned: true)
+    end
+    let(:normal_gs) do
+      create(:grid_summon, party: party, summon: summon, position: 1,
+             uncap_level: 3, transcendence_step: 0, orphaned: false)
+    end
+
+    describe '.orphaned' do
+      it 'returns only orphaned grid summons' do
+        orphaned_gs
+        normal_gs
+        expect(GridSummon.orphaned).to include(orphaned_gs)
+        expect(GridSummon.orphaned).not_to include(normal_gs)
+      end
+    end
+
+    describe '.not_orphaned' do
+      it 'returns only non-orphaned grid summons' do
+        orphaned_gs
+        normal_gs
+        expect(GridSummon.not_orphaned).to include(normal_gs)
+        expect(GridSummon.not_orphaned).not_to include(orphaned_gs)
+      end
+    end
+  end
+
+  describe '#mark_orphaned!' do
+    let(:party) { create(:party) }
+    let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
+
+    it 'sets orphaned to true and clears collection_summon_id' do
+      gs = create(:grid_summon, party: party, summon: summon, position: 0,
+                  uncap_level: 3, transcendence_step: 0, orphaned: false)
+      gs.mark_orphaned!
+      gs.reload
+      expect(gs.orphaned).to be true
+      expect(gs.collection_summon_id).to be_nil
+    end
+  end
+
+  describe 'compatible_with_position validation' do
+    let(:party) { create(:party) }
+    let(:summon_without_subaura) { Summon.find_by!(granblue_id: '2040433000').tap { |s| s.subaura = false } }
+
+    it 'adds error when placing non-subaura summon in position 4' do
+      gs = build(:grid_summon, party: party, summon: summon_without_subaura,
+                 position: 4, uncap_level: 3, transcendence_step: 0)
+      gs.validate
+      expect(gs.errors[:position]).to include('must have subaura for position')
+    end
+
+    it 'allows non-subaura summon in normal position' do
+      gs = build(:grid_summon, party: party, summon: summon_without_subaura,
+                 position: 1, uncap_level: 3, transcendence_step: 0)
+      gs.validate
+      expect(gs.errors[:position]).to be_empty
+    end
+  end
+
   describe '#blueprint' do
     it 'returns the GridSummonBlueprint constant' do
       grid_summon = build(:grid_summon)

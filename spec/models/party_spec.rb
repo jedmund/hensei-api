@@ -407,6 +407,118 @@ RSpec.describe Party, type: :model do
     end
   end
 
+  describe '#viewable_by?' do
+    let(:owner) { create(:user) }
+    let(:viewer) { create(:user) }
+
+    it 'returns true for public parties regardless of user' do
+      party = create(:party, user: owner, visibility: 1)
+      expect(party.viewable_by?(nil)).to be true
+      expect(party.viewable_by?(viewer)).to be true
+    end
+
+    it 'returns true for unlisted parties' do
+      party = create(:party, user: owner, visibility: 2)
+      expect(party.viewable_by?(viewer)).to be true
+    end
+
+    it 'returns true for the party owner even when private' do
+      party = create(:party, user: owner, visibility: 3)
+      expect(party.viewable_by?(owner)).to be true
+    end
+
+    it 'returns false for a non-owner on a private party' do
+      party = create(:party, user: owner, visibility: 3)
+      expect(party.viewable_by?(viewer)).to be false
+    end
+
+    it 'returns false for nil user on a private party' do
+      party = create(:party, user: owner, visibility: 3)
+      expect(party.viewable_by?(nil)).to be false
+    end
+
+    it 'returns true for an admin on a private party' do
+      admin = create(:user, role: 9)
+      party = create(:party, user: owner, visibility: 3)
+      expect(party.viewable_by?(admin)).to be true
+    end
+  end
+
+  describe '#shared_with_crew?' do
+    it 'returns false when crew is nil' do
+      party = create(:party)
+      expect(party.shared_with_crew?(nil)).to be false
+    end
+
+    it 'returns false when no party_share exists' do
+      party = create(:party)
+      crew = create(:crew)
+      expect(party.shared_with_crew?(crew)).to be false
+    end
+  end
+
+  describe '#has_orphaned_items?' do
+    it 'returns false when party has no grid items' do
+      party = create(:party)
+      expect(party.has_orphaned_items?).to be false
+    end
+  end
+
+  describe 'video_url validation' do
+    it 'accepts a valid YouTube URL' do
+      party = build(:party, video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+      expect(party).to be_valid
+    end
+
+    it 'accepts a youtu.be short URL' do
+      party = build(:party, video_url: 'https://youtu.be/dQw4w9WgXcQ')
+      expect(party).to be_valid
+    end
+
+    it 'rejects an invalid URL' do
+      party = build(:party, video_url: 'https://vimeo.com/12345')
+      expect(party).not_to be_valid
+      expect(party.errors[:video_url]).to include('must be a valid YouTube URL')
+    end
+
+    it 'allows blank video_url' do
+      party = build(:party, video_url: '')
+      expect(party).to be_valid
+    end
+  end
+
+  describe 'skills_are_unique validation' do
+    it 'is valid when all skills are different' do
+      skill_a = create(:job_skill)
+      skill_b = create(:job_skill)
+      party = build(:party, skill0: skill_a, skill1: skill_b)
+      expect(party).to be_valid
+    end
+
+    it 'is invalid when duplicate skills are assigned' do
+      skill = create(:job_skill)
+      party = build(:party, skill0: skill, skill1: skill)
+      expect(party).not_to be_valid
+      expect(party.errors[:job_skills]).to include('must be unique')
+    end
+  end
+
+  describe 'guidebooks_are_unique validation' do
+    it 'is valid when all guidebooks are different' do
+      gb1 = create(:guidebook)
+      gb2 = create(:guidebook)
+      party = build(:party, guidebook1: gb1, guidebook2: gb2)
+      expect(party).to be_valid
+    end
+
+    it 'is invalid when duplicate guidebooks are assigned' do
+      gb = create(:guidebook)
+      party = build(:party, guidebook1: gb, guidebook2: gb)
+      expect(party).not_to be_valid
+      expect(party.errors[:guidebooks]).to include('must be unique')
+    end
+  end
+
   # Debug block: print debug info if an example fails.
   after(:each) do |example|
     if example.exception
