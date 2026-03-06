@@ -37,6 +37,11 @@ module Api
         }
       end
 
+      view :preview do
+        excludes :name, :element, :rarity, :max_level, :promotions,
+                 :promotion_names, :series, :uncap
+      end
+
       view :stats do
         field :hp do |s|
           {

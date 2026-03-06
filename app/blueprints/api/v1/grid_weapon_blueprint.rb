@@ -11,7 +11,7 @@ module Api
       end
 
       view :preview do
-        association :weapon, blueprint: WeaponBlueprint
+        association :weapon, blueprint: WeaponBlueprint, view: :preview
       end
 
       view :nested do
