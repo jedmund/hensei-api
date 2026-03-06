@@ -73,8 +73,8 @@ module Api
             :guidebook1,
             :guidebook2,
             :guidebook3,
-            { characters: :character },
-            { weapons: :weapon },
+            { characters: { character: :character_series_records } },
+            { weapons: { weapon: :weapon_series } },
             { summons: :summon }
           )
           # Restrict to parties belonging to the profile owner
@@ -123,8 +123,8 @@ module Api
           :guidebook1,
           :guidebook2,
           :guidebook3,
-          { characters: :character },
-          { weapons: :weapon },
+          { characters: { character: :character_series_records } },
+          { weapons: { weapon: :weapon_series } },
           { summons: :summon }
         )
         # Restrict to parties belonging to the profile’s owner.

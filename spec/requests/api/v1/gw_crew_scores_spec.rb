@@ -32,7 +32,7 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
-        expect(json['gw_crew_score']['round']).to eq(0)
+        expect(json['gw_crew_score']['round']).to eq('preliminaries')
         expect(json['gw_crew_score']['crew_score']).to eq(5_000_000)
       end
 
