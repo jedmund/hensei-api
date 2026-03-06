@@ -55,6 +55,11 @@ module Api
         [c.proficiency1, c.proficiency2].compact
       end
 
+      view :preview do
+        excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
+                 :season_name, :series, :series_names, :uncap, :race, :proficiency
+      end
+
       view :full do
         include_view :stats
         include_view :rates

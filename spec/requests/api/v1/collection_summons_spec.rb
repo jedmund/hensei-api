@@ -24,7 +24,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['summons'].length).to eq(2)
+      expect(json['collection_summons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
 
@@ -33,7 +33,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['summons'].length).to eq(1)
+      expect(json['collection_summons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
 
@@ -42,7 +42,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      summons = json['summons']
+      summons = json['collection_summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['id']).to eq(summon1.id)
     end
@@ -60,7 +60,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      summons = json['summons']
+      summons = json['collection_summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['element']).to eq(0)
       expect(summons.first['summon']['rarity']).to eq(4)
