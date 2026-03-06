@@ -119,10 +119,10 @@ RSpec.describe CollectionArtifact, type: :model do
       collection_artifact = build(:collection_artifact,
         artifact: artifact,
         level: 1,
-        skill1: { 'modifier' => 1, 'strength' => 1800, 'level' => 1 },
-        skill2: { 'modifier' => 2, 'strength' => 900, 'level' => 1 },
-        skill3: { 'modifier' => 1, 'strength' => 18.0, 'level' => 1 },
-        skill4: { 'modifier' => 1, 'strength' => 10, 'level' => 1 }
+        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+        skill2: { 'modifier' => 2, 'quality' => 5, 'level' => 1 },
+        skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+        skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }
       )
       expect(collection_artifact).to be_valid
     end
@@ -132,10 +132,10 @@ RSpec.describe CollectionArtifact, type: :model do
       collection_artifact = build(:collection_artifact,
         artifact: artifact,
         level: 1,
-        skill1: { 'modifier' => 1, 'strength' => 1800, 'level' => 1 },
-        skill2: { 'modifier' => 1, 'strength' => 1800, 'level' => 1 }, # Same modifier
-        skill3: { 'modifier' => 1, 'strength' => 18.0, 'level' => 1 },
-        skill4: { 'modifier' => 1, 'strength' => 10, 'level' => 1 }
+        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+        skill2: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }, # Same modifier
+        skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+        skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }
       )
       expect(collection_artifact).not_to be_valid
       expect(collection_artifact.errors[:base]).to include('Skill 1 and Skill 2 cannot have the same modifier')
@@ -147,10 +147,10 @@ RSpec.describe CollectionArtifact, type: :model do
       collection_artifact = build(:collection_artifact,
         artifact: artifact,
         level: 1,
-        skill1: { 'modifier' => 1, 'strength' => 1800, 'level' => 2 },
-        skill2: { 'modifier' => 2, 'strength' => 900, 'level' => 2 },
-        skill3: { 'modifier' => 1, 'strength' => 18.0, 'level' => 2 },
-        skill4: { 'modifier' => 1, 'strength' => 10, 'level' => 2 }
+        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 2 },
+        skill2: { 'modifier' => 2, 'quality' => 5, 'level' => 2 },
+        skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 2 },
+        skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 2 }
       )
       expect(collection_artifact).not_to be_valid
       expect(collection_artifact.errors[:base].first).to include('Skill levels must sum to')
@@ -179,7 +179,7 @@ RSpec.describe CollectionArtifact, type: :model do
         artifact: quirk_artifact,
         proficiency: :sabre,
         level: 1,
-        skill1: { 'modifier' => 1, 'strength' => 1800, 'level' => 1 },
+        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
         skill2: {},
         skill3: {},
         skill4: {}

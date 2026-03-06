@@ -16,18 +16,18 @@ FactoryBot.define do
 
     trait :with_skills do
       # Use this trait after seeding artifact skills in your test
-      skill1 { { 'modifier' => 1, 'strength' => 1800, 'level' => 1 } }
-      skill2 { { 'modifier' => 2, 'strength' => 900, 'level' => 1 } }
-      skill3 { { 'modifier' => 1, 'strength' => 18.0, 'level' => 1 } }
-      skill4 { { 'modifier' => 1, 'strength' => 10, 'level' => 1 } }
+      skill1 { { 'modifier' => 1, 'quality' => 5, 'level' => 1 } }
+      skill2 { { 'modifier' => 2, 'quality' => 5, 'level' => 1 } }
+      skill3 { { 'modifier' => 1, 'quality' => 5, 'level' => 1 } }
+      skill4 { { 'modifier' => 1, 'quality' => 5, 'level' => 1 } }
     end
 
     trait :max_level do
       level { 5 }
-      skill1 { { 'modifier' => 1, 'strength' => 1800, 'level' => 2 } }
-      skill2 { { 'modifier' => 2, 'strength' => 900, 'level' => 2 } }
-      skill3 { { 'modifier' => 1, 'strength' => 18.0, 'level' => 2 } }
-      skill4 { { 'modifier' => 1, 'strength' => 10, 'level' => 2 } }
+      skill1 { { 'modifier' => 1, 'quality' => 5, 'level' => 2 } }
+      skill2 { { 'modifier' => 2, 'quality' => 5, 'level' => 2 } }
+      skill3 { { 'modifier' => 1, 'quality' => 5, 'level' => 2 } }
+      skill4 { { 'modifier' => 1, 'quality' => 5, 'level' => 2 } }
     end
 
     trait :quirk do

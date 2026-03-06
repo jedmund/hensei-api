@@ -60,7 +60,7 @@ module Api
       ##### Hooks
       before_action :current_user
       before_action :default_content_type
-      around_action :n_plus_one_detection, unless: -> { Rails.env.production? }
+      around_action :n_plus_one_detection, if: -> { Rails.env.development? }
 
       ##### Responders
       respond_to :json

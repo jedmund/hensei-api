@@ -82,7 +82,7 @@ RSpec.describe 'Parties API', type: :request do
 
     it 'destroys the party' do
       delete "/api/v1/parties/#{party.id}", headers: headers
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:no_content)
       expect { party.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end

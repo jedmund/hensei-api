@@ -121,8 +121,6 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
     let!(:member1) { create(:crew_membership, crew: crew, role: :member) }
     let!(:member2) { create(:crew_membership, crew: crew, role: :vice_captain) }
-    let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
-
     context 'with default filter (active)' do
       it 'returns all active crew members' do
         get '/api/v1/crew/members', headers: auth_headers
@@ -154,6 +152,8 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'with filter=phantom' do
+      let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
+
       it 'returns only phantom players' do
         get '/api/v1/crew/members', params: { filter: 'phantom' }, headers: auth_headers
         expect(response).to have_http_status(:ok)
@@ -165,6 +165,8 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'with filter=all' do
+      let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
+
       before { member1.retire! }
 
       it 'returns all members and phantoms' do

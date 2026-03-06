@@ -138,10 +138,12 @@ RSpec.describe GridWeapon, type: :model do
 
   describe 'Collection Sync' do
     let(:user) { create(:user) }
+    let(:ec_series) { create(:weapon_series, :element_changeable) }
+    let(:ec_weapon) { create(:weapon, limit: false, weapon_series: ec_series) }
     let(:collection_weapon) do
       create(:collection_weapon,
              user: user,
-             weapon: weapon,
+             weapon: ec_weapon,
              uncap_level: 5,
              transcendence_step: 0,
              element: 2)
@@ -152,7 +154,7 @@ RSpec.describe GridWeapon, type: :model do
         let(:linked_grid_weapon) do
           create(:grid_weapon,
                  party: party,
-                 weapon: weapon,
+                 weapon: ec_weapon,
                  position: 0,
                  collection_weapon: collection_weapon,
                  uncap_level: 3)
@@ -179,7 +181,7 @@ RSpec.describe GridWeapon, type: :model do
         let(:linked_grid_weapon) do
           create(:grid_weapon,
                  party: party,
-                 weapon: weapon,
+                 weapon: ec_weapon,
                  position: 0,
                  collection_weapon: collection_weapon,
                  uncap_level: 3)

@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
   end
 
   describe 'collection_privacy enum' do
-    it { should define_enum_for(:collection_privacy).with_values(everyone: 0, crew_only: 1, private_collection: 2).with_prefix(true) }
+    it { should define_enum_for(:collection_privacy).with_values(everyone: 1, crew_only: 2, private_collection: 3).with_prefix(true) }
 
     it 'defaults to everyone' do
       user = build(:user)
