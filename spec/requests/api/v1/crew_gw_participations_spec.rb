@@ -44,7 +44,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns unprocessable_entity' do
         post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('not_in_crew')
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
     it 'returns crew participations' do
       get '/api/v1/crew/gw_participations', headers: auth_headers
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['crew_gw_participations'].length).to eq(2)
     end
 
@@ -80,7 +80,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
     it 'returns the participation' do
       get "/api/v1/crew/gw_participations/#{participation.id}", headers: auth_headers
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['crew_gw_participation']['id']).to eq(participation.id)
     end
 
@@ -98,7 +98,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns the event and participation by event ID' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_event']['id']).to eq(gw_event.id)
         expect(json['crew_gw_participation']['id']).to eq(participation.id)
         expect(json['members_during_event']).to be_an(Array)
@@ -107,14 +107,14 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns the event and participation by event number' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.event_number}", headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_event']['id']).to eq(gw_event.id)
         expect(json['crew_gw_participation']['id']).to eq(participation.id)
       end
 
       it 'includes members who were active during the event' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         member_ids = json['members_during_event'].map { |m| m['id'] }
         expect(member_ids).to include(membership.id)
       end
@@ -124,7 +124,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns event but null participation' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_event']['id']).to eq(gw_event.id)
         expect(json['crew_gw_participation']).to be_nil
       end
@@ -134,7 +134,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns null for both' do
         get '/api/v1/crew/gw_participations/by_event/99999', headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['gw_event']).to be_nil
         expect(json['crew_gw_participation']).to be_nil
       end
@@ -160,7 +160,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['crew_gw_participation']['preliminary_ranking']).to eq(1500)
         expect(json['crew_gw_participation']['final_ranking']).to eq(1200)
       end

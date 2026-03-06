@@ -69,7 +69,7 @@ RSpec.describe 'GridCharacters API', type: :request do
         # Use the resource route for update (as defined by resources :grid_characters)
         put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response['grid_character']).to include('uncap_level' => 4, 'transcendence_step' => 1)
       end
 
@@ -91,7 +91,7 @@ RSpec.describe 'GridCharacters API', type: :request do
         }
         post '/api/v1/grid_characters/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response['grid_character']).to include('uncap_level' => 5, 'transcendence_step' => 1)
       end
 
@@ -113,7 +113,7 @@ RSpec.describe 'GridCharacters API', type: :request do
           post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
         end.to change(GridCharacter, :count).by(0) # one record is destroyed and one is created
         expect(response).to have_http_status(:created)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response['grid_character']).to include('position' => 4)
         expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -185,7 +185,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       it 'returns unprocessable entity status with error messages' do
         post '/api/v1/grid_characters', params: invalid_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response).to have_key('errors')
         # Verify that the error message on uncap_level includes a specific phrase.
         expect(json_response['errors']['code'].to_s).to eq('no_character_provided')
@@ -222,7 +222,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       it 'updates the grid character and returns the updated record' do
         put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response['grid_character']).to include('uncap_level' => 4, 'transcendence_step' => 1)
       end
     end
@@ -244,7 +244,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       it 'returns unprocessable entity status with error details' do
         put "/api/v1/grid_characters/#{grid_character.id}", params: invalid_update_params.to_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response).to have_key('errors')
         expect(json_response['errors']['uncap_level'].to_s).to include('is not a number')
       end
@@ -277,7 +277,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       it 'updates the uncap level and transcendence step' do
         post '/api/v1/grid_characters/update_uncap', params: update_uncap_params.to_json, headers: headers
         expect(response).to have_http_status(:ok)
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(json_response['grid_character']).to include('uncap_level' => 5, 'transcendence_step' => 1)
       end
     end
@@ -308,7 +308,7 @@ RSpec.describe 'GridCharacters API', type: :request do
         post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
       end.to change(GridCharacter, :count).by(0) # one record deleted, one created
       expect(response).to have_http_status(:created)
-      json_response = JSON.parse(response.body)
+      json_response = response.parsed_body
       expect(json_response['grid_character']).to include('position' => 4)
       expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -362,23 +362,6 @@ RSpec.describe 'GridCharacters API', type: :request do
         end.not_to change(GridCharacter, :count)
         expect(response).to have_http_status(:unauthorized)
       end
-    end
-  end
-
-  # Debug hook: if any example fails and a response exists, print the error message.
-  after(:each) do |example|
-    if example.exception && defined?(response) && response.present?
-      error_message = begin
-                        JSON.parse(response.body)['exception']
-                      rescue JSON::ParserError
-                        response.body
-                      end
-      puts "\nDEBUG: Error Message for '#{example.full_description}': #{error_message}"
-
-      # Parse once and grab the trace safely
-      parsed_body = JSON.parse(response.body)
-      trace = parsed_body.dig('traces', 'Application Trace')
-      ap trace if trace # Only print if trace is not nil
     end
   end
 end

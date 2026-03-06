@@ -32,7 +32,7 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
         }.to change(GwIndividualScore, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['individual_score']['score']).to eq(1_000_000)
         expect(json['individual_score']['round']).to eq('preliminaries')
       end
@@ -118,7 +118,7 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['individual_score']['score']).to eq(2_000_000)
       end
     end
@@ -216,7 +216,7 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
         }.to change(GwIndividualScore, :count).by(2)
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['individual_scores'].length).to eq(2)
       end
 

@@ -32,7 +32,7 @@ RSpec.describe 'Crews API', type: :request do
       post '/api/v1/crews', params: valid_params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['crew']['name']).to eq('Test Crew')
       expect(json['crew']['gamertag']).to eq('TEST')
 
@@ -48,7 +48,7 @@ RSpec.describe 'Crews API', type: :request do
       post '/api/v1/crews', params: valid_params.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['message']).to eq('You are already in a crew')
     end
 
@@ -77,7 +77,7 @@ RSpec.describe 'Crews API', type: :request do
       get '/api/v1/crew', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['crew']['name']).to eq(crew.name)
     end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Crews API', type: :request do
         put '/api/v1/crew', params: { crew: { name: 'New Name' } }.to_json, headers: headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['crew']['name']).to eq('New Name')
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe 'Crews API', type: :request do
       get '/api/v1/crew/members', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['members'].length).to eq(3)
     end
 
@@ -165,7 +165,7 @@ RSpec.describe 'Crews API', type: :request do
       get '/api/v1/crew/members', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['members'].length).to eq(2)
     end
   end
@@ -197,7 +197,7 @@ RSpec.describe 'Crews API', type: :request do
         post '/api/v1/crew/leave', headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['message']).to eq('Captain must transfer ownership before leaving')
       end
     end

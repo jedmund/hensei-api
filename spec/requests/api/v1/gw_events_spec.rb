@@ -107,6 +107,6 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
   private
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 end

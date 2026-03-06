@@ -27,7 +27,7 @@ RSpec.describe 'Weapons API', type: :request do
       get "/api/v1/weapons/#{weapon.id}"
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['maxExorcismLevel']).to eq(5)
     end
 
@@ -37,7 +37,7 @@ RSpec.describe 'Weapons API', type: :request do
       get "/api/v1/weapons/#{weapon_without_exorcism.id}"
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['maxExorcismLevel']).to be_nil
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe 'Weapons API', type: :request do
       post '/api/v1/weapons', params: valid_params.to_json, headers: editor_headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['maxExorcismLevel']).to eq(5)
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Weapons API', type: :request do
       post '/api/v1/weapons', params: params.to_json, headers: editor_headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['maxExorcismLevel']).to be_nil
     end
 
@@ -90,7 +90,7 @@ RSpec.describe 'Weapons API', type: :request do
             headers: editor_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['maxExorcismLevel']).to eq(3)
     end
 
@@ -100,7 +100,7 @@ RSpec.describe 'Weapons API', type: :request do
             headers: editor_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['maxExorcismLevel']).to be_nil
     end
 

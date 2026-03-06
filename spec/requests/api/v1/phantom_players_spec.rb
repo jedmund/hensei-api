@@ -19,7 +19,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
         get "/api/v1/crews/#{crew.id}/phantom_players", headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['phantom_players'].length).to eq(2)
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       get "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}", headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['phantom_player']['name']).to eq(phantom.name)
       expect(json['phantom_player']).to have_key('total_score')
     end
@@ -71,7 +71,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
         }.to change(PhantomPlayer, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['phantom_player']['name']).to eq('New Phantom')
         expect(json['phantom_player']['granblue_id']).to eq('12345678')
       end
@@ -108,7 +108,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['phantom_player']['name']).to eq('New Name')
       end
     end
@@ -164,7 +164,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['phantom_player']['claimed']).to be true
         expect(json['phantom_player']['claimed_by']['id']).to eq(target_user.id)
       end
@@ -207,7 +207,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
            headers: claimer_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['phantom_player']['claim_confirmed']).to be true
     end
 
@@ -216,7 +216,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
            headers: auth_headers
 
       expect(response).to have_http_status(:forbidden)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['code']).to eq('not_claimed_by_user')
     end
   end

@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
           .and change(CrewMembership, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['crew']['name']).to eq('Test Crew')
         expect(json['crew']['gamertag']).to eq('TEST')
 
@@ -49,7 +49,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns error' do
         post '/api/v1/crews', params: valid_params, headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('already_in_crew')
       end
     end
@@ -70,7 +70,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns the crew' do
         get '/api/v1/crew', headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['crew']['name']).to eq('My Crew')
       end
     end
@@ -92,7 +92,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'updates the crew' do
         put '/api/v1/crew', params: { crew: { name: 'New Name' } }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['crew']['name']).to eq('New Name')
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns all active crew members' do
         get '/api/v1/crew/members', headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['members'].length).to eq(3)
         expect(json['phantoms']).to eq([])
       end
@@ -135,7 +135,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'excludes retired members' do
         member1.retire!
         get '/api/v1/crew/members', headers: auth_headers
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['members'].length).to eq(2)
       end
     end
@@ -146,7 +146,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns only retired members' do
         get '/api/v1/crew/members', params: { filter: 'retired' }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['members'].length).to eq(1)
         expect(json['members'][0]['retired']).to be true
         expect(json['phantoms']).to eq([])
@@ -157,7 +157,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns only phantom players' do
         get '/api/v1/crew/members', params: { filter: 'phantom' }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['members']).to eq([])
         expect(json['phantoms'].length).to eq(1)
         expect(json['phantoms'][0]['name']).to eq('Phantom A')
@@ -170,7 +170,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns all members and phantoms' do
         get '/api/v1/crew/members', params: { filter: 'all' }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['members'].length).to eq(3) # includes retired
         expect(json['phantoms'].length).to eq(1)
       end
@@ -206,7 +206,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns error' do
         post '/api/v1/crew/leave', headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('captain_cannot_leave')
       end
     end
@@ -215,7 +215,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'returns error' do
         post '/api/v1/crew/leave', headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('not_in_crew')
       end
     end
@@ -244,7 +244,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('member_not_found')
       end
     end
@@ -276,7 +276,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
         get '/api/v1/crew/shared_parties', headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['parties'].length).to eq(1)
         expect(json['parties'][0]['id']).to eq(party.id)
       end
@@ -285,7 +285,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
         get '/api/v1/crew/shared_parties', headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['parties']).to eq([])
       end
 
@@ -293,7 +293,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
         get '/api/v1/crew/shared_parties', headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['meta']).to include('count', 'total_pages', 'per_page')
       end
     end

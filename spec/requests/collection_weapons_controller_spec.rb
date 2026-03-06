@@ -25,7 +25,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       get '/api/v1/collection/weapons', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['collection_weapons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
@@ -34,7 +34,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       get '/api/v1/collection/weapons', params: { page: 1, limit: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['collection_weapons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
@@ -43,7 +43,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       get '/api/v1/collection/weapons', params: { weapon_id: weapon1.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       weapons = json['collection_weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['id']).to eq(weapon1.id)
@@ -61,7 +61,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       get '/api/v1/collection/weapons', params: { element: 0, rarity: 4 }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       weapons = json['collection_weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['element']).to eq(0)
@@ -81,7 +81,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       get "/api/v1/collection/weapons/#{collection_weapon.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['id']).to eq(collection_weapon.id)
       expect(json['weapon']['id']).to eq(weapon.id)
     end
@@ -119,7 +119,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       end.to change(CollectionWeapon, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['weapon']['id']).to eq(weapon.id)
       expect(json['uncap_level']).to eq(3)
     end
@@ -132,7 +132,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       end.to change(CollectionWeapon, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['weapon']['id']).to eq(weapon.id)
     end
 
@@ -145,7 +145,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('must be a weapon awakening')
     end
 
@@ -157,7 +157,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
 
@@ -179,7 +179,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: ax_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['ax']).to be_present
       expect(json['ax'].first['modifier']['slug']).to eq('ax_atk')
       expect(json['ax'].first['strength']).to eq(3.5)
@@ -199,7 +199,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: invalid_ax.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('AX skill 1 must have both modifier and strength')
     end
   end
@@ -229,7 +229,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
           params: simple_update.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['uncap_level']).to eq(5)
     end
 
@@ -253,7 +253,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
           params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['errors'].to_s).to include('cannot have duplicate keys')
     end
   end
@@ -297,7 +297,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['exorcismLevel']).to eq(1)
     end
 
@@ -318,7 +318,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['exorcismLevel']).to eq(3)
     end
 
@@ -334,7 +334,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       post '/api/v1/collection/weapons', params: attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['exorcismLevel']).to be_nil
     end
   end

@@ -26,7 +26,7 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
       get '/api/v1/collection/job_accessories', headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['collection_job_accessories'].length).to eq(2)
     end
 
@@ -34,7 +34,7 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
       get '/api/v1/collection/job_accessories', params: { job_id: job1.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       accessories = json['collection_job_accessories']
       expect(accessories.length).to eq(1)
       expect(accessories.first['job_accessory']['job']['id']).to eq(job1.id)
@@ -53,7 +53,7 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
       get "/api/v1/collection/job_accessories/#{collection_accessory.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['id']).to eq(collection_accessory.id)
       expect(json['job_accessory']['id']).to eq(job_accessory.id)
     end
@@ -92,7 +92,7 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
       end.to change(CollectionJobAccessory, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['job_accessory']['id']).to eq(job_accessory.id)
     end
 
@@ -102,7 +102,7 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
       post '/api/v1/collection/job_accessories', params: valid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:conflict)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['error']['message']).to include('already exists in your collection')
     end
 

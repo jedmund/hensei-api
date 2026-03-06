@@ -19,7 +19,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
         get "/api/v1/crews/#{crew.id}/invitations", headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['invitations'].length).to eq(1)
         expect(json['invitations'][0]['id']).to eq(pending_invitation.id)
       end
@@ -49,7 +49,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
         }.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['invitation']['user']['id']).to eq(invitee.id)
       end
 
@@ -75,7 +75,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('cannot_invite_self')
       end
 
@@ -88,7 +88,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('already_in_crew')
       end
 
@@ -100,7 +100,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:conflict)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['code']).to eq('user_already_invited')
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       get '/api/v1/invitations/pending', headers: invitee_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['invitations'].length).to eq(2)
     end
   end
@@ -162,7 +162,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       post "/api/v1/invitations/#{invitation.id}/accept", headers: invitee_headers
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['crew']['id']).to eq(crew.id)
       expect(invitation.reload.status).to eq('accepted')
       expect(invitee.reload.crew).to eq(crew)
@@ -172,7 +172,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       post "/api/v1/invitations/#{invitation.id}/accept", headers: auth_headers
 
       expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['code']).to eq('invitation_not_found')
     end
   end
@@ -196,7 +196,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       post "/api/v1/invitations/#{invitation.id}/reject", headers: auth_headers
 
       expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['code']).to eq('invitation_not_found')
     end
   end

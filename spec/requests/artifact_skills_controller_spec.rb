@@ -16,7 +16,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills'
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].length).to eq(4)
     end
 
@@ -24,7 +24,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills', params: { group: 'group_i' }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].length).to eq(2)
       expect(json['artifact_skills'].all? { |s| s['skill_group'] == 'group_i' }).to be true
     end
@@ -35,7 +35,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills', params: { polarity: 'negative' }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].all? { |s| s['polarity'] == 'negative' }).to be true
     end
   end
@@ -45,7 +45,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills/for_slot/1'
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].all? { |s| s['skill_group'] == 'group_i' }).to be true
     end
 
@@ -53,7 +53,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills/for_slot/2'
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].all? { |s| s['skill_group'] == 'group_i' }).to be true
     end
 
@@ -61,7 +61,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills/for_slot/3'
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].all? { |s| s['skill_group'] == 'group_ii' }).to be true
     end
 
@@ -69,7 +69,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills/for_slot/4'
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['artifact_skills'].all? { |s| s['skill_group'] == 'group_iii' }).to be true
     end
 
@@ -77,7 +77,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       get '/api/v1/artifact_skills/for_slot/5'
 
       expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json['error']).to include('Slot must be between 1 and 4')
     end
 
