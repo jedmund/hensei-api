@@ -46,6 +46,17 @@ RSpec.describe 'GridCharacters API', type: :request do
         expect(response).to have_http_status(:created)
       end
 
+      it 'rejects a logged-in user that does not own the party' do
+        other_user = create(:user)
+        other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+        other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+
+        expect {
+          post '/api/v1/grid_characters', params: valid_params.to_json, headers: other_headers
+        }.not_to change(GridCharacter, :count)
+        expect(response).to have_http_status(:unauthorized)
+      end
+
       it 'allows the owner to update a grid character' do
         grid_character = create(:grid_character,
                                 party: party,

@@ -81,6 +81,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
                headers: auth_headers
 
         expect(response).to have_http_status(:no_content)
+        expect(target_membership.reload.retired).to be true
       end
     end
 
@@ -92,6 +93,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
                headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
+        expect(target_membership.reload.retired).not_to be true
       end
     end
   end
@@ -125,6 +127,8 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
+        json = response.parsed_body
+        expect(json['code']).to eq('cannot_remove_captain')
       end
     end
 
@@ -136,6 +140,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
+        expect(target_membership.reload.role).to eq('member')
       end
     end
   end
@@ -173,6 +178,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
+        expect(vc_target.reload.role).to eq('vice_captain')
       end
     end
   end

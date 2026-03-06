@@ -40,6 +40,8 @@ RSpec.describe GridCharacter, type: :model do
     }
   end
 
+  it { is_expected.to have_one(:grid_artifact).dependent(:destroy) }
+
   describe 'Validations and Associations' do
     context 'with valid attributes' do
       subject { build(:grid_character, valid_attributes) }
@@ -162,6 +164,24 @@ RSpec.describe GridCharacter, type: :model do
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:over_mastery]).to be_empty
       end
+    end
+  end
+
+  describe 'validate_aetherial_mastery_value (on :update)' do
+    before do
+      @grid_char = create(:grid_character, valid_attributes)
+    end
+
+    it 'allows a valid earring value within range' do
+      @grid_char.earring = { 'modifier' => '3', 'strength' => 20 }
+      @grid_char.valid?(:update)
+      expect(@grid_char.errors[:earring]).to be_empty
+    end
+
+    it 'skips validation when earring modifier is nil' do
+      @grid_char.earring = { 'modifier' => nil, 'strength' => nil }
+      @grid_char.valid?(:update)
+      expect(@grid_char.errors[:earring]).to be_empty
     end
   end
 

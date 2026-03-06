@@ -19,13 +19,18 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
         }.to change(CrewGwParticipation, :count).by(1)
 
         expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json['crew_gw_participation']['gw_event']['id']).to eq(gw_event.id)
       end
 
       it 'returns error if already participating' do
         create(:crew_gw_participation, crew: crew, gw_event: gw_event)
 
-        post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
+        expect {
+          post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
+        }.not_to change(CrewGwParticipation, :count)
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['errors']).to be_present
       end
     end
 
@@ -33,7 +38,9 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
+        expect {
+          post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
+        }.not_to change(CrewGwParticipation, :count)
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -70,6 +77,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns unprocessable_entity' do
         get '/api/v1/crew/gw_participations', headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['code']).to eq('not_in_crew')
       end
     end
   end
@@ -146,6 +154,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns unprocessable_entity' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['code']).to eq('not_in_crew')
       end
     end
   end

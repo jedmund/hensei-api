@@ -24,6 +24,12 @@ RSpec.describe Processors::CharacterProcessor, type: :model do
       expect(grid_chars[3].uncap_level).to eq(deck_data.dig('deck', 'npc', '4', 'param', 'evolution').to_i)
       expect(grid_chars[4].position).to eq(4)
     end
+
+    it 'assigns all positions sequentially from 0' do
+      subject.process
+      positions = GridCharacter.where(party_id: party.id).pluck(:position).sort
+      expect(positions).to eq((0..4).to_a)
+    end
   end
 
   context 'with invalid character data' do

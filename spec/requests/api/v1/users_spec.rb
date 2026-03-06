@@ -25,9 +25,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/users/me' do
-    it 'returns current user settings' do
+    it 'returns current user settings with correct fields' do
       get '/api/v1/users/me', headers: auth_headers
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(user.id)
+      expect(json['username']).to eq(user.username)
+      expect(json['email']).to eq(user.email)
     end
 
     it 'returns 401 without authentication' do
@@ -37,16 +42,24 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/users/info/:id' do
-    it 'returns user info' do
+    it 'returns user info with correct fields' do
       get "/api/v1/users/info/#{user.username}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(user.id)
+      expect(json['username']).to eq(user.username)
     end
   end
 
   describe 'GET /api/v1/users/:id' do
-    it 'returns user profile with parties' do
+    it 'returns user profile with correct fields' do
       get "/api/v1/users/#{user.username}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body['profile']
+      expect(json['id']).to eq(user.id)
+      expect(json['username']).to eq(user.username)
     end
 
     it 'returns 404 for non-existent user' do
@@ -56,11 +69,12 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'PUT /api/v1/users/:id' do
-    it 'updates user settings' do
+    it 'updates user settings and persists changes' do
       put "/api/v1/users/#{user.id}",
           params: { user: { language: 'ja' } }.to_json,
           headers: auth_headers
       expect(response).to have_http_status(:ok)
+      expect(user.reload.language).to eq('ja')
     end
   end
 

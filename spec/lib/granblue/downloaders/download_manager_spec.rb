@@ -31,8 +31,9 @@ RSpec.describe Granblue::Downloaders::DownloadManager do
       expect(Granblue::Downloaders::SummonDownloader).to have_received(:new).with('2040001000', hash_including(storage: :both))
     end
 
-    it 'does not raise for unknown type' do
-      expect { described_class.download_for_object('artifact', '99999') }.not_to raise_error
+    it 'does not raise for unknown type and returns nil' do
+      result = described_class.download_for_object('artifact', '99999')
+      expect(result).to be_nil
     end
 
     it 'passes options through' do
@@ -41,6 +42,12 @@ RSpec.describe Granblue::Downloaders::DownloadManager do
       expect(Granblue::Downloaders::CharacterDownloader).to have_received(:new).with(
         '3040001000', hash_including(test_mode: true, verbose: true, storage: :s3)
       )
+    end
+
+    it 'calls download on the instantiated downloader' do
+      allow(Granblue::Downloaders::CharacterDownloader).to receive(:new).and_return(downloader_double)
+      described_class.download_for_object('character', '3040001000')
+      expect(downloader_double).to have_received(:download)
     end
   end
 end

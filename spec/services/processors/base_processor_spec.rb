@@ -34,5 +34,19 @@ RSpec.describe Processors::DummyBaseProcessor, type: :model do
       expect(Rails.logger).to receive(:info).with(a_string_including("DummyBaseProcessor", message))
       processor.public_log(message)
     end
+
+    it 'formats log with bracket-wrapped class name' do
+      expect(Rails.logger).to receive(:info).with(/\[.*DummyBaseProcessor.*\]/)
+      processor.public_log("any message")
+    end
+  end
+
+  describe '#initialize' do
+    it 'stores party and data' do
+      party = create(:party)
+      data = { 'key' => 'value' }
+      proc = described_class.new(party, data)
+      expect(proc.process).to eq("processed")
+    end
   end
 end

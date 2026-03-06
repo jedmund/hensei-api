@@ -54,6 +54,8 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json['individual_score']['score']).to eq(500_000)
       end
 
       it 'returns error for duplicate round per member' do
@@ -79,6 +81,8 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
              headers: auth_headers
 
         expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json['individual_score']['score']).to eq(1_000_000)
       end
 
       it 'cannot record score for other members' do
@@ -93,9 +97,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
           }
         }
 
-        post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores",
-             params: params,
-             headers: auth_headers
+        expect {
+          post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores",
+               params: params,
+               headers: auth_headers
+        }.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -132,6 +138,8 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        expect(json['individual_score']['score']).to eq(2_000_000)
       end
 
       it 'cannot update other member scores' do
@@ -147,6 +155,7 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
+        expect(other_score.reload.score).not_to eq(2_000_000)
       end
     end
   end
@@ -188,8 +197,10 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
                              crew_gw_participation: participation,
                              crew_membership: other_membership)
 
-        delete "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/#{other_score.id}",
-               headers: auth_headers
+        expect {
+          delete "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/#{other_score.id}",
+                 headers: auth_headers
+        }.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -254,9 +265,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
           ]
         }
 
-        post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/batch",
-             params: params,
-             headers: auth_headers
+        expect {
+          post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/batch",
+               params: params,
+               headers: auth_headers
+        }.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

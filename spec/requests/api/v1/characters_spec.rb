@@ -21,14 +21,22 @@ RSpec.describe 'Api::V1::Characters', type: :request do
   describe 'GET /api/v1/characters/:id' do
     let!(:character) { create(:character) }
 
-    it 'returns the character by uuid' do
+    it 'returns the character by uuid with correct fields' do
       get "/api/v1/characters/#{character.id}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(character.id)
+      expect(json['name']['en']).to eq(character.name_en)
+      expect(json['granblue_id']).to eq(character.granblue_id)
+      expect(json['rarity']).to eq(character.rarity)
+      expect(json['element']).to eq(character.element)
     end
 
     it 'returns the character by granblue_id' do
       get "/api/v1/characters/#{character.granblue_id}"
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['id']).to eq(character.id)
     end
 
     it 'returns 404 for non-existent id' do
@@ -64,13 +72,22 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       }
     end
 
-    it 'creates a character as editor' do
-      post '/api/v1/characters', params: valid_params.to_json, headers: editor_headers
+    it 'creates a character as editor and returns it' do
+      expect {
+        post '/api/v1/characters', params: valid_params.to_json, headers: editor_headers
+      }.to change(Character, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body
+      expect(json['granblue_id']).to eq('3040999000')
+      expect(json['name']['en']).to eq('Test Character')
+      expect(json['element']).to eq(1)
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/characters', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/characters', params: valid_params.to_json, headers: user_headers
+      }.not_to change(Character, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -78,11 +95,13 @@ RSpec.describe 'Api::V1::Characters', type: :request do
   describe 'PUT /api/v1/characters/:id' do
     let!(:character) { create(:character) }
 
-    it 'updates a character as editor' do
+    it 'updates a character as editor and persists changes' do
       put "/api/v1/characters/#{character.id}",
           params: { character: { name_en: 'Updated Name' } }.to_json,
           headers: editor_headers
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['name']['en']).to eq('Updated Name')
+      expect(character.reload.name_en).to eq('Updated Name')
     end
 
     it 'rejects update by regular user' do
@@ -96,9 +115,12 @@ RSpec.describe 'Api::V1::Characters', type: :request do
   describe 'GET /api/v1/characters/:id/raw' do
     let!(:character) { create(:character) }
 
-    it 'returns raw character data' do
+    it 'returns raw character data with expected fields' do
       get "/api/v1/characters/#{character.id}/raw"
       expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['id']).to eq(character.id)
+      expect(json).to have_key('wiki_raw')
     end
   end
 end

@@ -15,6 +15,13 @@ RSpec.describe Processors::SummonProcessor, type: :model do
     it 'creates the correct number of GridSummon records' do
       expect { subject.process }.to change(GridSummon, :count).by(7)
     end
+
+    it 'creates GridSummons associated with the party' do
+      subject.process
+      grid_summons = GridSummon.where(party_id: party.id)
+      expect(grid_summons.count).to eq(7)
+      expect(grid_summons.map(&:summon)).to all(be_present)
+    end
   end
 
   context 'with invalid summon data' do

@@ -187,11 +187,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
     t.boolean "perpetuity", default: false, null: false
     t.uuid "awakening_id"
     t.integer "awakening_level", default: 1
-    t.jsonb "ring1", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring2", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring3", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring1", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "ring2", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "ring3", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "ring4", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "earring", default: {"modifier" => nil, "strength" => nil}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["awakening_id"], name: "index_collection_characters_on_awakening_id"
@@ -403,11 +403,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
     t.datetime "updated_at", null: false
     t.boolean "perpetuity", default: false, null: false
     t.integer "transcendence_step", default: 0, null: false
-    t.jsonb "ring1", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring2", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring3", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "ring4", default: {"modifier"=>nil, "strength"=>nil}, null: false
-    t.jsonb "earring", default: {"modifier"=>nil, "strength"=>nil}, null: false
+    t.jsonb "ring1", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "ring2", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "ring3", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "ring4", default: {"modifier" => nil, "strength" => nil}, null: false
+    t.jsonb "earring", default: {"modifier" => nil, "strength" => nil}, null: false
     t.uuid "awakening_id"
     t.integer "awakening_level", default: 1
     t.uuid "collection_character_id"
@@ -656,7 +656,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
     t.string "preview_s3_key"
     t.string "video_url", limit: 2048
     t.integer "summon_count"
+    t.uuid "collection_source_user_id"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
+    t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
     t.index ["created_at"], name: "index_parties_on_created_at"
     t.index ["element"], name: "index_parties_on_element"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
@@ -1163,6 +1165,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
   add_foreign_key "parties", "parties", column: "source_party_id"
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
+  add_foreign_key "parties", "users", column: "collection_source_user_id"
   add_foreign_key "party_shares", "parties"
   add_foreign_key "party_shares", "users", column: "shared_by_id"
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"

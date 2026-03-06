@@ -19,20 +19,32 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
   end
 
   describe 'GET /api/v1/raid_groups' do
-    it 'returns all raid groups' do
-      create(:raid_group)
+    it 'returns all raid groups with correct fields' do
+      group = create(:raid_group)
       get '/api/v1/raid_groups'
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.length).to be >= 1
+
+      json = response.parsed_body
+      expect(json.length).to be >= 1
+
+      entry = json.find { |g| g['id'] == group.id }
+      expect(entry['name']['en']).to eq(group.name_en)
+      expect(entry['name']['ja']).to eq(group.name_jp)
+      expect(entry['order']).to eq(group.order)
+      expect(entry['section']).to eq(group.section)
     end
   end
 
   describe 'GET /api/v1/raid_groups/:id' do
     let!(:group) { create(:raid_group) }
 
-    it 'returns the raid group' do
+    it 'returns the raid group with correct fields' do
       get "/api/v1/raid_groups/#{group.id}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(group.id)
+      expect(json['name']['en']).to eq(group.name_en)
     end
 
     it 'returns not found for invalid id' do
@@ -51,13 +63,21 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
       }
     end
 
-    it 'creates a raid group as editor' do
-      post '/api/v1/raid_groups', params: valid_params.to_json, headers: editor_headers
+    it 'creates a raid group as editor and returns it' do
+      expect {
+        post '/api/v1/raid_groups', params: valid_params.to_json, headers: editor_headers
+      }.to change(RaidGroup, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body
+      expect(json['name']['en']).to eq('New Group')
+      expect(json['section']).to eq(1)
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/raid_groups', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/raid_groups', params: valid_params.to_json, headers: user_headers
+      }.not_to change(RaidGroup, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -65,11 +85,13 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
   describe 'PUT /api/v1/raid_groups/:id' do
     let!(:group) { create(:raid_group) }
 
-    it 'updates a raid group as editor' do
+    it 'updates a raid group as editor and persists changes' do
       put "/api/v1/raid_groups/#{group.id}",
           params: { raid_group: { name_en: 'Updated Group' } }.to_json,
           headers: editor_headers
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['name']['en']).to eq('Updated Group')
+      expect(group.reload.name_en).to eq('Updated Group')
     end
 
     it 'rejects update by regular user' do
@@ -77,27 +99,34 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
           params: { raid_group: { name_en: 'Updated Group' } }.to_json,
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
+      expect(group.reload.name_en).not_to eq('Updated Group')
     end
   end
 
   describe 'DELETE /api/v1/raid_groups/:id' do
     it 'deletes a group without dependencies' do
       group = create(:raid_group)
-      delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
+      expect {
+        delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
+      }.to change(RaidGroup, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 
     it 'rejects deletion when raids exist' do
       group = create(:raid_group)
       create(:raid, group: group)
-      delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
+      expect {
+        delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
+      }.not_to change(RaidGroup, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body['error']['code']).to eq('has_dependencies')
     end
 
     it 'rejects deletion by regular user' do
       group = create(:raid_group)
-      delete "/api/v1/raid_groups/#{group.id}", headers: user_headers
+      expect {
+        delete "/api/v1/raid_groups/#{group.id}", headers: user_headers
+      }.not_to change(RaidGroup, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end

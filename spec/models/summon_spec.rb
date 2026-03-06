@@ -56,6 +56,26 @@ RSpec.describe Summon, type: :model do
     end
   end
 
+  describe 'promotion scopes' do
+    let(:flash_value) { GranblueEnums::PROMOTIONS[:Flash] }
+    let(:legend_value) { GranblueEnums::PROMOTIONS[:Legend] }
+    let(:premium_value) { GranblueEnums::PROMOTIONS[:Premium] }
+
+    let!(:flash_summon) { create(:summon, promotions: [flash_value]) }
+    let!(:legend_summon) { create(:summon, promotions: [legend_value]) }
+    let!(:premium_summon) { create(:summon, promotions: [premium_value]) }
+
+    it '.by_promotion filters by promotion value' do
+      expect(Summon.by_promotion(flash_value)).to include(flash_summon)
+      expect(Summon.by_promotion(flash_value)).not_to include(legend_summon, premium_summon)
+    end
+
+    it '.in_premium returns summons with Premium promotion' do
+      expect(Summon.in_premium).to include(premium_summon)
+      expect(Summon.in_premium).not_to include(flash_summon, legend_summon)
+    end
+  end
+
   describe '#series_slug' do
     it 'returns the summon_series slug' do
       series = create(:summon_series, slug: "test-series-#{SecureRandom.hex(4)}")

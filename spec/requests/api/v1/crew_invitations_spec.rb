@@ -54,11 +54,15 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       end
 
       it 'creates an invitation by username' do
-        post "/api/v1/crews/#{crew.id}/invitations",
-             params: { username: invitee.username },
-             headers: auth_headers
+        expect {
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { username: invitee.username },
+               headers: auth_headers
+        }.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json['invitation']['user']['username']).to eq(invitee.username)
       end
 
       it 'returns error for non-existent user' do
@@ -109,11 +113,15 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'can create invitations' do
-        post "/api/v1/crews/#{crew.id}/invitations",
-             params: { user_id: invitee.id },
-             headers: auth_headers
+        expect {
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { user_id: invitee.id },
+               headers: auth_headers
+        }.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json['invitation']['user']['id']).to eq(invitee.id)
       end
     end
 
@@ -121,9 +129,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        post "/api/v1/crews/#{crew.id}/invitations",
-             params: { user_id: invitee.id },
-             headers: auth_headers
+        expect {
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { user_id: invitee.id },
+               headers: auth_headers
+        }.not_to change(CrewInvitation, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

@@ -41,8 +41,10 @@ RSpec.describe LoggingHelper do
   end
 
   describe '#log_warning' do
-    it 'prints with warning prefix' do
-      expect { helper.log_warning('watch out') }.to output(/watch out/).to_stdout
+    it 'prints with warning prefix and emoji' do
+      output = capture_stdout { helper.log_warning('watch out') }
+      expect(output).to include('watch out')
+      expect(output.length).to be > 'watch out'.length
     end
   end
 

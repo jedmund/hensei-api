@@ -68,12 +68,24 @@ RSpec.describe 'Parties API', type: :request do
       { party: { name: 'New Name', description: 'Updated description' } }
     end
 
-    it 'updates the party and returns the updated party' do
+    it 'updates the party and persists changes' do
       put "/api/v1/parties/#{party.id}", params: update_attributes.to_json, headers: headers
       expect(response).to have_http_status(:ok)
 
       party_json = response.parsed_body['party']
       expect(party_json).to include('name' => 'New Name', 'description' => 'Updated description')
+      expect(party.reload.name).to eq('New Name')
+      expect(party.description).to eq('Updated description')
+    end
+
+    it 'rejects update by non-owner' do
+      other_user = create(:user)
+      other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+      other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+
+      put "/api/v1/parties/#{party.id}", params: update_attributes.to_json, headers: other_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(party.reload.name).to eq('Old Name')
     end
   end
 
@@ -81,9 +93,66 @@ RSpec.describe 'Parties API', type: :request do
     let!(:party) { create(:party, user: user) }
 
     it 'destroys the party' do
-      delete "/api/v1/parties/#{party.id}", headers: headers
+      expect {
+        delete "/api/v1/parties/#{party.id}", headers: headers
+      }.to change(Party, :count).by(-1)
       expect(response).to have_http_status(:no_content)
-      expect { party.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'rejects deletion by non-owner' do
+      other_user = create(:user)
+      other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
+      other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
+
+      expect {
+        delete "/api/v1/parties/#{party.id}", headers: other_headers
+      }.not_to change(Party, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'anonymous party management' do
+    let!(:anon_party) { create(:party, user: nil, edit_key: 'anonsecret', name: 'Anon Party') }
+    let(:anon_headers) { { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' } }
+
+    it 'allows updating an anonymous party with correct edit_key' do
+      put "/api/v1/parties/#{anon_party.id}",
+          params: { party: { name: 'Updated Anon' } }.to_json,
+          headers: anon_headers
+      expect(response).to have_http_status(:ok)
+      expect(anon_party.reload.name).to eq('Updated Anon')
+    end
+
+    it 'rejects updating an anonymous party with wrong edit_key' do
+      wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
+      put "/api/v1/parties/#{anon_party.id}",
+          params: { party: { name: 'Hacked' } }.to_json,
+          headers: wrong_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(anon_party.reload.name).to eq('Anon Party')
+    end
+
+    it 'allows deleting an anonymous party with correct edit_key' do
+      expect {
+        delete "/api/v1/parties/#{anon_party.id}", headers: anon_headers
+      }.to change(Party, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'rejects deleting an anonymous party with wrong edit_key' do
+      wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
+      expect {
+        delete "/api/v1/parties/#{anon_party.id}", headers: wrong_headers
+      }.not_to change(Party, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'prevents a logged-in user from editing an anonymous party' do
+      put "/api/v1/parties/#{anon_party.id}",
+          params: { party: { name: 'Stolen' } }.to_json,
+          headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(anon_party.reload.name).to eq('Anon Party')
     end
   end
 
@@ -159,6 +228,11 @@ RSpec.describe 'Parties API', type: :request do
 
     describe 'GET /api/v1/parties/:id/preview' do
       before do
+        coordinator = instance_double(PreviewService::Coordinator)
+        allow(PreviewService::Coordinator).to receive(:new).and_return(coordinator)
+        allow(coordinator).to receive(:generation_in_progress?).and_return(false)
+        allow(coordinator).to receive(:local_preview_path).and_return('/tmp/fake_preview.png')
+
         allow_any_instance_of(Api::V1::PartiesController).to receive(:send_file) do |instance, *_args|
           instance.render plain: 'dummy image content', content_type: 'image/png', status: 200
         end
@@ -181,6 +255,12 @@ RSpec.describe 'Parties API', type: :request do
     end
 
     describe 'POST /api/v1/parties/:id/regenerate_preview' do
+      before do
+        coordinator = instance_double(PreviewService::Coordinator)
+        allow(PreviewService::Coordinator).to receive(:new).and_return(coordinator)
+        allow(coordinator).to receive(:force_regenerate).and_return(true)
+      end
+
       it 'accepts the regeneration request' do
         post "/api/v1/parties/#{party.shortcode}/regenerate_preview", headers: headers
         expect(response).to have_http_status(:ok).or have_http_status(:unprocessable_entity)

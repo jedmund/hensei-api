@@ -35,7 +35,9 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       end
 
       it 'returns validation error for missing name' do
-        post '/api/v1/crews', params: { crew: { name: '' } }, headers: auth_headers
+        expect {
+          post '/api/v1/crews', params: { crew: { name: '' } }, headers: auth_headers
+        }.not_to change(Crew, :count)
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -103,6 +105,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'updates the crew' do
         put '/api/v1/crew', params: { crew: { description: 'Updated' } }, headers: auth_headers
         expect(response).to have_http_status(:ok)
+        expect(crew.reload.description).to eq('Updated')
       end
     end
 
@@ -199,6 +202,8 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       it 'leaves the crew' do
         post '/api/v1/crew/leave', headers: auth_headers
         expect(response).to have_http_status(:no_content)
+        expect(membership.reload.retired).to be true
+        expect(user.reload.crew).to be_nil
       end
     end
 

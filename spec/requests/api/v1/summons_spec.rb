@@ -21,14 +21,22 @@ RSpec.describe 'Api::V1::Summons', type: :request do
   describe 'GET /api/v1/summons/:id' do
     let!(:summon) { create(:summon) }
 
-    it 'returns the summon by uuid' do
+    it 'returns the summon by uuid with correct fields' do
       get "/api/v1/summons/#{summon.id}"
       expect(response).to have_http_status(:ok)
+
+      json = response.parsed_body
+      expect(json['id']).to eq(summon.id)
+      expect(json['name']['en']).to eq(summon.name_en)
+      expect(json['granblue_id']).to eq(summon.granblue_id)
+      expect(json['rarity']).to eq(summon.rarity)
+      expect(json['element']).to eq(summon.element)
     end
 
     it 'returns the summon by granblue_id' do
       get "/api/v1/summons/#{summon.granblue_id}"
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['id']).to eq(summon.id)
     end
 
     it 'returns 404 for non-existent id' do
@@ -47,13 +55,22 @@ RSpec.describe 'Api::V1::Summons', type: :request do
       }
     end
 
-    it 'creates a summon as editor' do
-      post '/api/v1/summons', params: valid_params.to_json, headers: editor_headers
+    it 'creates a summon as editor and returns it' do
+      expect {
+        post '/api/v1/summons', params: valid_params.to_json, headers: editor_headers
+      }.to change(Summon, :count).by(1)
       expect(response).to have_http_status(:created)
+
+      json = response.parsed_body
+      expect(json['granblue_id']).to eq('2040999000')
+      expect(json['name']['en']).to eq('Test Summon')
+      expect(json['element']).to eq(1)
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/summons', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/summons', params: valid_params.to_json, headers: user_headers
+      }.not_to change(Summon, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -61,11 +78,13 @@ RSpec.describe 'Api::V1::Summons', type: :request do
   describe 'PUT /api/v1/summons/:id' do
     let!(:summon) { create(:summon) }
 
-    it 'updates a summon as editor' do
+    it 'updates a summon as editor and persists changes' do
       put "/api/v1/summons/#{summon.id}",
           params: { summon: { name_en: 'Updated Summon' } }.to_json,
           headers: editor_headers
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['name']['en']).to eq('Updated Summon')
+      expect(summon.reload.name_en).to eq('Updated Summon')
     end
 
     it 'rejects update by regular user' do
@@ -73,6 +92,7 @@ RSpec.describe 'Api::V1::Summons', type: :request do
           params: { summon: { name_en: 'Updated Summon' } }.to_json,
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
+      expect(summon.reload.name_en).not_to eq('Updated Summon')
     end
   end
 

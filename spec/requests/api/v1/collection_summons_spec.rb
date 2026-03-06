@@ -24,7 +24,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['collection_summons'].length).to eq(2)
+      expect(json['summons'].length).to eq(2)
       expect(json['meta']['count']).to eq(2)
     end
 
@@ -33,7 +33,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['collection_summons'].length).to eq(1)
+      expect(json['summons'].length).to eq(1)
       expect(json['meta']['total_pages']).to be >= 2
     end
 
@@ -42,7 +42,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      summons = json['collection_summons']
+      summons = json['summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['id']).to eq(summon1.id)
     end
@@ -60,7 +60,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      summons = json['collection_summons']
+      summons = json['summons']
       expect(summons.length).to eq(1)
       expect(summons.first['summon']['element']).to eq(0)
       expect(summons.first['summon']['rarity']).to eq(4)
@@ -140,7 +140,9 @@ RSpec.describe 'Collection Summons API', type: :request do
         collection_summon: { uncap_level: 3, transcendence_step: 5 }
       )
 
-      post '/api/v1/collection/summons', params: invalid_attributes.to_json, headers: headers
+      expect {
+        post '/api/v1/collection/summons', params: invalid_attributes.to_json, headers: headers
+      }.not_to change(CollectionSummon, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -167,13 +169,14 @@ RSpec.describe 'Collection Summons API', type: :request do
     end
 
     it 'returns not found for other user\'s summon' do
-      other_collection = create(:collection_summon, user: other_user)
+      other_collection = create(:collection_summon, user: other_user, uncap_level: 3)
       update_attributes = { collection_summon: { uncap_level: 5 } }
 
       put "/api/v1/collection/summons/#{other_collection.id}",
           params: update_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:not_found)
+      expect(other_collection.reload.uncap_level).to eq(3)
     end
 
     it 'returns error with invalid transcendence' do
@@ -188,6 +191,7 @@ RSpec.describe 'Collection Summons API', type: :request do
           params: invalid_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(collection_summon.reload.transcendence_step).not_to eq(5)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end

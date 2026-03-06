@@ -83,7 +83,8 @@ RSpec.describe 'Collection Artifacts API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['artifacts'].all? { |a| a['element'] == 'water' }).to be true
+      # Blueprint returns element as integer (water = 3)
+      expect(json['artifacts'].all? { |a| a['element'] == 3 }).to be true
     end
 
     it 'returns forbidden for private collection without authentication' do
@@ -174,7 +175,8 @@ RSpec.describe 'Collection Artifacts API', type: :request do
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
-      expect(json['proficiency']).to eq('staff')
+      # Blueprint returns proficiency as integer (staff = 6)
+      expect(json['proficiency']).to eq(6)
     end
 
     it 'returns error when skill1 and skill2 have same modifier' do
@@ -185,7 +187,9 @@ RSpec.describe 'Collection Artifacts API', type: :request do
         }
       )
 
-      post '/api/v1/collection/artifacts', params: invalid_attributes.to_json, headers: headers
+      expect {
+        post '/api/v1/collection/artifacts', params: invalid_attributes.to_json, headers: headers
+      }.not_to change(CollectionArtifact, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -193,7 +197,9 @@ RSpec.describe 'Collection Artifacts API', type: :request do
     end
 
     it 'returns unauthorized without authentication' do
-      post '/api/v1/collection/artifacts', params: valid_attributes.to_json
+      expect {
+        post '/api/v1/collection/artifacts', params: valid_attributes.to_json
+      }.not_to change(CollectionArtifact, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end
@@ -221,12 +227,13 @@ RSpec.describe 'Collection Artifacts API', type: :request do
     end
 
     it 'returns not found for other user\'s artifact' do
-      other_collection = create(:collection_artifact, user: other_user)
+      other_collection = create(:collection_artifact, user: other_user, nickname: 'Original')
 
       put "/api/v1/collection/artifacts/#{other_collection.id}",
           params: { collection_artifact: { nickname: 'Hack' } }.to_json, headers: headers
 
       expect(response).to have_http_status(:not_found)
+      expect(other_collection.reload.nickname).to eq('Original')
     end
   end
 
