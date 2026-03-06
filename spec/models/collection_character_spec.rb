@@ -158,6 +158,10 @@ RSpec.describe CollectionCharacter, type: :model do
 
     describe '.with_awakening' do
       it 'returns only characters with awakening' do
+        # The before_save callback assigns a default awakening to all records,
+        # so we bypass it with update_column to create a record without one
+        fire_collection.update_column(:awakening_id, nil)
+
         expect(CollectionCharacter.with_awakening).to include(awakened)
         expect(CollectionCharacter.with_awakening).not_to include(fire_collection)
       end

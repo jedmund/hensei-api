@@ -15,7 +15,7 @@ module Api
       end
 
       view :preview do
-        association :character, blueprint: CharacterBlueprint
+        association :character, blueprint: CharacterBlueprint, view: :preview
       end
 
       view :nested do

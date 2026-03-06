@@ -52,11 +52,11 @@ RSpec.describe 'GridSummons API', type: :request do
           summon: {
             party_id: party.id,
             summon_id: summon.id,
-            position: 0,
+            position: nil,
             main: true,
             friend: false,
             quick_summon: false,
-            uncap_level: 'invalid',
+            uncap_level: 3,
             transcendence_step: 0
           }
         }

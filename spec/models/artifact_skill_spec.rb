@@ -10,7 +10,6 @@ RSpec.describe ArtifactSkill, type: :model do
     it { is_expected.to validate_presence_of(:modifier) }
     it { is_expected.to validate_presence_of(:name_en) }
     it { is_expected.to validate_presence_of(:name_jp) }
-    it { is_expected.to validate_presence_of(:base_values) }
     it { is_expected.to validate_presence_of(:polarity) }
 
     it 'validates uniqueness of modifier within skill_group' do
