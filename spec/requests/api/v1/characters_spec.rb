@@ -85,7 +85,9 @@ RSpec.describe 'Api::V1::Characters', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/characters', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/characters', params: valid_params.to_json, headers: user_headers
+      }.not_to change(Character, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -113,9 +115,12 @@ RSpec.describe 'Api::V1::Characters', type: :request do
   describe 'GET /api/v1/characters/:id/raw' do
     let!(:character) { create(:character) }
 
-    it 'returns raw character data' do
+    it 'returns raw character data with expected fields' do
       get "/api/v1/characters/#{character.id}/raw"
       expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['id']).to eq(character.id)
+      expect(json).to have_key('wiki_raw')
     end
   end
 end

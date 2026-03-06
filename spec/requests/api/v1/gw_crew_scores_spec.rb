@@ -60,9 +60,11 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
       it 'returns error for duplicate round' do
         create(:gw_crew_score, crew_gw_participation: participation, round: :preliminaries)
 
-        post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
-             params: valid_params,
-             headers: auth_headers
+        expect {
+          post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
+               params: valid_params,
+               headers: auth_headers
+        }.not_to change(GwCrewScore, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -72,9 +74,11 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
-             params: valid_params,
-             headers: auth_headers
+        expect {
+          post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
+               params: valid_params,
+               headers: auth_headers
+        }.not_to change(GwCrewScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -105,6 +109,7 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
+        expect(score.reload.crew_score).to eq(1_000_000)
       end
     end
   end
@@ -127,8 +132,10 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        delete "/api/v1/crew/gw_participations/#{participation.id}/crew_scores/#{score.id}",
-               headers: auth_headers
+        expect {
+          delete "/api/v1/crew/gw_participations/#{participation.id}/crew_scores/#{score.id}",
+                 headers: auth_headers
+        }.not_to change(GwCrewScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

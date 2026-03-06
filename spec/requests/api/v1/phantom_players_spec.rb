@@ -77,9 +77,11 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       end
 
       it 'returns validation error for missing name' do
-        post "/api/v1/crews/#{crew.id}/phantom_players",
-             params: { phantom_player: { name: '' } },
-             headers: auth_headers
+        expect {
+          post "/api/v1/crews/#{crew.id}/phantom_players",
+               params: { phantom_player: { name: '' } },
+               headers: auth_headers
+        }.not_to change(PhantomPlayer, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -89,9 +91,11 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        post "/api/v1/crews/#{crew.id}/phantom_players",
-             params: valid_params,
-             headers: auth_headers
+        expect {
+          post "/api/v1/crews/#{crew.id}/phantom_players",
+               params: valid_params,
+               headers: auth_headers
+        }.not_to change(PhantomPlayer, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -122,6 +126,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
             headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
+        expect(phantom.reload.name).to eq('Old Name')
       end
     end
   end
@@ -144,8 +149,10 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        delete "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}",
-               headers: auth_headers
+        expect {
+          delete "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}",
+                 headers: auth_headers
+        }.not_to change(PhantomPlayer, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

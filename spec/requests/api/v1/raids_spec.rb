@@ -107,7 +107,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/raids', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/raids', params: valid_params.to_json, headers: user_headers
+      }.not_to change(Raid, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -120,6 +122,7 @@ RSpec.describe 'Api::V1::Raids', type: :request do
           params: { raid: { level: 200 } }.to_json,
           headers: editor_headers
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['level']).to eq(200)
       expect(raid.reload.level).to eq(200)
     end
 
@@ -128,6 +131,7 @@ RSpec.describe 'Api::V1::Raids', type: :request do
           params: { raid: { level: 200 } }.to_json,
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
+      expect(raid.reload.level).not_to eq(200)
     end
   end
 
@@ -150,7 +154,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
 
     it 'rejects deletion by regular user' do
       raid = create(:raid)
-      delete "/api/v1/raids/#{raid.id}", headers: user_headers
+      expect {
+        delete "/api/v1/raids/#{raid.id}", headers: user_headers
+      }.not_to change(Raid, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end

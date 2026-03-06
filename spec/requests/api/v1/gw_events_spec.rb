@@ -64,7 +64,9 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
       end
 
       it 'returns errors for invalid params' do
-        post '/api/v1/gw_events', params: { gw_event: { element: '' } }, headers: admin_headers
+        expect {
+          post '/api/v1/gw_events', params: { gw_event: { element: '' } }, headers: admin_headers
+        }.not_to change(GwEvent, :count)
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -100,6 +102,7 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
       it 'returns unauthorized' do
         put "/api/v1/gw_events/#{event.id}", params: update_params, headers: auth_headers
         expect(response).to have_http_status(:unauthorized)
+        expect(event.reload.event_number).not_to eq(99)
       end
     end
   end
