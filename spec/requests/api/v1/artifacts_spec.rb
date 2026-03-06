@@ -31,7 +31,7 @@ RSpec.describe 'Artifacts API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      expect(json['artifacts'].all? { |a| a['proficiency'] == 1 }).to be true
+      expect(json['artifacts'].all? { |a| a['proficiency'] == 'sabre' }).to be true
     end
   end
 
