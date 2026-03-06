@@ -155,7 +155,9 @@ RSpec.describe 'Collection Characters API', type: :request do
     it 'returns error when character already in collection' do
       create(:collection_character, user: user, character: character)
 
-      post '/api/v1/collection/characters', params: valid_attributes.to_json, headers: headers
+      expect {
+        post '/api/v1/collection/characters', params: valid_attributes.to_json, headers: headers
+      }.not_to change(CollectionCharacter, :count)
 
       expect(response).to have_http_status(:conflict)
       json = response.parsed_body
@@ -168,7 +170,9 @@ RSpec.describe 'Collection Characters API', type: :request do
         collection_character: { awakening_id: weapon_awakening.id }
       )
 
-      post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
+      expect {
+        post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
+      }.not_to change(CollectionCharacter, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -180,7 +184,9 @@ RSpec.describe 'Collection Characters API', type: :request do
         collection_character: { uncap_level: 3, transcendence_step: 5 }
       )
 
-      post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
+      expect {
+        post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
+      }.not_to change(CollectionCharacter, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -213,11 +219,12 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
 
     it 'returns not found for other user\'s character' do
-      other_collection = create(:collection_character, user: other_user)
+      other_collection = create(:collection_character, user: other_user, uncap_level: 3)
       put "/api/v1/collection/characters/#{other_collection.id}",
           params: update_attributes.to_json, headers: headers
 
       expect(response).to have_http_status(:not_found)
+      expect(other_collection.reload.uncap_level).to eq(3)
     end
 
     it 'returns error with invalid ring data' do

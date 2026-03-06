@@ -75,7 +75,9 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/raid_groups', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/raid_groups', params: valid_params.to_json, headers: user_headers
+      }.not_to change(RaidGroup, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -97,6 +99,7 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
           params: { raid_group: { name_en: 'Updated Group' } }.to_json,
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
+      expect(group.reload.name_en).not_to eq('Updated Group')
     end
   end
 
@@ -112,14 +115,18 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
     it 'rejects deletion when raids exist' do
       group = create(:raid_group)
       create(:raid, group: group)
-      delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
+      expect {
+        delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
+      }.not_to change(RaidGroup, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body['error']['code']).to eq('has_dependencies')
     end
 
     it 'rejects deletion by regular user' do
       group = create(:raid_group)
-      delete "/api/v1/raid_groups/#{group.id}", headers: user_headers
+      expect {
+        delete "/api/v1/raid_groups/#{group.id}", headers: user_headers
+      }.not_to change(RaidGroup, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end

@@ -68,7 +68,9 @@ RSpec.describe 'Api::V1::Summons', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/summons', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/summons', params: valid_params.to_json, headers: user_headers
+      }.not_to change(Summon, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -90,6 +92,7 @@ RSpec.describe 'Api::V1::Summons', type: :request do
           params: { summon: { name_en: 'Updated Summon' } }.to_json,
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
+      expect(summon.reload.name_en).not_to eq('Updated Summon')
     end
   end
 

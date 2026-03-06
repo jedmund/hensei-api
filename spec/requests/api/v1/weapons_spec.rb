@@ -82,7 +82,9 @@ RSpec.describe 'Weapons API', type: :request do
     end
 
     it 'rejects creation from non-editor' do
-      post '/api/v1/weapons', params: valid_params.to_json, headers: regular_headers
+      expect {
+        post '/api/v1/weapons', params: valid_params.to_json, headers: regular_headers
+      }.not_to change(Weapon, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end
@@ -116,6 +118,7 @@ RSpec.describe 'Weapons API', type: :request do
             headers: regular_headers
 
       expect(response).to have_http_status(:unauthorized)
+      expect(weapon.reload.max_exorcism_level).to eq(5)
     end
   end
 end

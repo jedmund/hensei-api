@@ -95,7 +95,9 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      post '/api/v1/job_accessories', params: valid_params.to_json, headers: user_headers
+      expect {
+        post '/api/v1/job_accessories', params: valid_params.to_json, headers: user_headers
+      }.not_to change(JobAccessory, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -117,6 +119,7 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
           params: { name_en: 'Updated Accessory' }.to_json,
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
+      expect(accessory.reload.name_en).not_to eq('Updated Accessory')
     end
   end
 
@@ -131,7 +134,9 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
 
     it 'rejects deletion by regular user' do
       accessory = create(:job_accessory)
-      delete "/api/v1/job_accessories/#{accessory.granblue_id}", headers: user_headers
+      expect {
+        delete "/api/v1/job_accessories/#{accessory.granblue_id}", headers: user_headers
+      }.not_to change(JobAccessory, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
