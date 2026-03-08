@@ -74,14 +74,9 @@ def load_csv_for(model_class, csv_filename, unique_key = :granblue_id, use_id: f
     attrs.except!(:id) unless use_id
 
     # Find or create the record based on the unique key.
-    begin
-      record = model_class.find_or_create_by!(unique_key => attrs[unique_key]) do |r|
-        # Assign all attributes except the unique_key.
-        r.assign_attributes(attrs.except(unique_key))
-      end
-    rescue ActiveRecord::RecordInvalid => e
-      # Skip records with missing associations (e.g. weapon_awakenings referencing absent weapons)
-      next
+    record = model_class.find_or_create_by!(unique_key => attrs[unique_key]) do |r|
+      # Assign all attributes except the unique_key.
+      r.assign_attributes(attrs.except(unique_key))
     end
 
     # puts "Loaded #{model_class.name}: #{record.public_send(unique_key)}"

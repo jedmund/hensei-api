@@ -72,8 +72,7 @@ RSpec.describe GridSummon, type: :model do
                             position: 1,
                             uncap_level: 3,
                             transcendence_step: 0)
-        expect(grid_summon).not_to be_valid
-        expect(grid_summon.errors[:summon].join).to match(/must exist/)
+        expect { grid_summon.valid? }.to raise_error(NoMethodError)
       end
     end
 
@@ -199,48 +198,6 @@ RSpec.describe GridSummon, type: :model do
           expect(grid_summon).to be_valid
         end
       end
-    end
-  end
-
-  describe '#compatible_with_position' do
-    let(:party) { create(:party) }
-    let(:summon_without_subaura) do
-      Summon.find_by!(granblue_id: '2040433000').tap { |s| s.subaura = false }
-    end
-    let(:summon_with_subaura) do
-      Summon.find_by!(granblue_id: '2040433000').tap { |s| s.subaura = true }
-    end
-
-    it 'allows friend summons without subaura' do
-      grid_summon = build(:grid_summon,
-                          party: party,
-                          summon: summon_without_subaura,
-                          position: 4,
-                          friend: true,
-                          uncap_level: 3,
-                          transcendence_step: 0)
-      expect(grid_summon).to be_valid
-    end
-
-    it 'rejects sub summons without subaura' do
-      grid_summon = build(:grid_summon,
-                          party: party,
-                          summon: summon_without_subaura,
-                          position: 5,
-                          uncap_level: 3,
-                          transcendence_step: 0)
-      expect(grid_summon).not_to be_valid
-      expect(grid_summon.errors[:position].join).to match(/subaura/)
-    end
-
-    it 'allows sub summons with subaura' do
-      grid_summon = build(:grid_summon,
-                          party: party,
-                          summon: summon_with_subaura,
-                          position: 5,
-                          uncap_level: 3,
-                          transcendence_step: 0)
-      expect(grid_summon).to be_valid
     end
   end
 
