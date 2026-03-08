@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_weapon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts]
       before_action :set_collection_weapon_for_write, only: %i[update destroy]
 
       def index
@@ -136,7 +136,8 @@ module Api
           update_existing: import_params[:update_existing] == true,
           is_full_inventory: import_params[:is_full_inventory] == true,
           reconcile_deletions: import_params[:reconcile_deletions] == true,
-          filter: import_params[:filter]
+          filter: import_params[:filter],
+          conflict_resolutions: import_params[:conflict_resolutions]
         )
 
         result = service.import
@@ -182,6 +183,54 @@ module Api
           end,
           count: items_to_delete.size
         }
+      end
+
+      # POST /collection/weapons/check_conflicts
+      # Checks for items that would conflict with existing null-game_id records
+      #
+      # @param data [Hash] Game data containing weapon list
+      # @return [JSON] List of conflicting items
+      def check_conflicts
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        items = game_data.is_a?(Array) ? game_data : (game_data['list'] || [])
+        conflicts = []
+
+        items.each do |item|
+          param = item['param'] || {}
+          master = item['master'] || {}
+
+          game_id = param['id']
+          next unless game_id.present?
+
+          image_id = param['image_id'].to_s.split('_').first if param['image_id'].present?
+          granblue_id = image_id || master['id']
+          next unless granblue_id.present?
+
+          weapon = Weapon.find_by(granblue_id: granblue_id.to_s)
+          next unless weapon
+
+          # Already matched by game_id — no conflict
+          next if current_user.collection_weapons.exists?(game_id: game_id.to_s)
+
+          # Check for existing record with null game_id for the same weapon
+          existing = current_user.collection_weapons.find_by(weapon_id: weapon.id, game_id: nil)
+          next unless existing
+
+          conflicts << {
+            game_id: game_id.to_s,
+            granblue_id: granblue_id.to_s,
+            name: weapon.name_en,
+            existing_id: existing.id,
+            existing_uncap_level: existing.uncap_level
+          }
+        end
+
+        render json: { conflicts: conflicts }
       end
 
       private
@@ -239,7 +288,8 @@ module Api
           is_full_inventory: params[:is_full_inventory],
           reconcile_deletions: params[:reconcile_deletions],
           data: params[:data]&.to_unsafe_h,
-          filter: params[:filter]&.to_unsafe_h
+          filter: params[:filter]&.to_unsafe_h,
+          conflict_resolutions: params[:conflict_resolutions]&.to_unsafe_h
         }
       end
 
