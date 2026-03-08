@@ -31,6 +31,7 @@ class WeaponImportService
     @is_full_inventory = options[:is_full_inventory] || false
     @reconcile_deletions = options[:reconcile_deletions] || false
     @filter = options[:filter] # { elements: [...], proficiencies: [...] }
+    @conflict_resolutions = options[:conflict_resolutions] || {}
     @created = []
     @updated = []
     @skipped = []
@@ -141,8 +142,19 @@ class WeaponImportService
     # Check for existing collection weapon with same game ID
     existing = @user.collection_weapons.find_by(game_id: game_id.to_s)
 
+    # If no match by game_id, check for conflict resolutions (null game_id records)
+    if !existing && game_id.present? && @conflict_resolutions.present?
+      resolution = @conflict_resolutions[game_id.to_s]
+      if resolution == 'import'
+        existing = @user.collection_weapons.find_by(weapon_id: weapon.id, game_id: nil)
+      elsif resolution == 'skip'
+        @skipped << { game_id: game_id, reason: 'Skipped by user' }
+        return
+      end
+    end
+
     if existing
-      if @update_existing
+      if @update_existing || @conflict_resolutions[game_id.to_s] == 'import'
         update_existing_weapon(existing, item, weapon)
       else
         @skipped << { game_id: game_id, reason: 'Already exists' }
@@ -192,7 +204,7 @@ class WeaponImportService
 
     attrs = {
       weapon: weapon,
-      game_id: param['id'].to_s,
+      game_id: param['id'].present? ? param['id'].to_s : nil,
       uncap_level: parse_uncap_level(param['evolution']),
       transcendence_step: parse_transcendence_step(param['phase'])
     }
