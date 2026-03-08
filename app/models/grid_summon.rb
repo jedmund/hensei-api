@@ -48,7 +48,7 @@ class GridSummon < ApplicationRecord
   # @param party [Party] the party in which to check for conflicts.
   # @return [GridSummon, nil] the conflicting grid summon if found, otherwise nil.
   def conflicts(party)
-    return unless summon.limit
+    return unless summon&.limit
 
     party.summons.find do |grid_summon|
       return unless grid_summon.id
@@ -128,7 +128,7 @@ class GridSummon < ApplicationRecord
   #
   # @return [void]
   def compatible_with_position
-    return unless [4, 5].include?(position.to_i) && !summon.subaura
+    return unless summon && [4, 5].include?(position.to_i) && !summon.subaura
 
     errors.add(:position, 'must have subaura for position')
   end
