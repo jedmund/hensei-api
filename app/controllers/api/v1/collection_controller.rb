@@ -25,6 +25,18 @@ module Api
         }
       end
 
+      # GET /api/v1/users/:user_id/collection/game_ids
+      # Returns game instance IDs for ownership checks (per-instance matching)
+      # Characters use granblue_ids since they have no game_id column
+      def game_ids
+        render json: {
+          weapons: @target_user.collection_weapons.where.not(game_id: nil).pluck(:game_id),
+          summons: @target_user.collection_summons.where.not(game_id: nil).pluck(:game_id),
+          artifacts: @target_user.collection_artifacts.where.not(game_id: nil).pluck(:game_id),
+          characters: @target_user.collection_characters.joins(:character).distinct.pluck('characters.granblue_id')
+        }
+      end
+
       private
 
       def set_target_user
