@@ -79,7 +79,8 @@ RSpec.describe GridSummon, type: :model do
                             position: 1,
                             uncap_level: 3,
                             transcendence_step: 0)
-        expect { grid_summon.valid? }.to raise_error(NoMethodError)
+        expect(grid_summon).not_to be_valid
+        expect(grid_summon.errors[:summon].join).to match(/must exist/)
       end
     end
 
@@ -208,6 +209,48 @@ RSpec.describe GridSummon, type: :model do
     end
   end
 
+  describe '#compatible_with_position' do
+    let(:party) { create(:party) }
+    let(:summon_without_subaura) do
+      Summon.find_by!(granblue_id: '2040433000').tap { |s| s.subaura = false }
+    end
+    let(:summon_with_subaura) do
+      Summon.find_by!(granblue_id: '2040433000').tap { |s| s.subaura = true }
+    end
+
+    it 'allows friend summons without subaura' do
+      grid_summon = build(:grid_summon,
+                          party: party,
+                          summon: summon_without_subaura,
+                          position: 4,
+                          friend: true,
+                          uncap_level: 3,
+                          transcendence_step: 0)
+      expect(grid_summon).to be_valid
+    end
+
+    it 'rejects sub summons without subaura' do
+      grid_summon = build(:grid_summon,
+                          party: party,
+                          summon: summon_without_subaura,
+                          position: 5,
+                          uncap_level: 3,
+                          transcendence_step: 0)
+      expect(grid_summon).not_to be_valid
+      expect(grid_summon.errors[:position].join).to match(/subaura/)
+    end
+
+    it 'allows sub summons with subaura' do
+      grid_summon = build(:grid_summon,
+                          party: party,
+                          summon: summon_with_subaura,
+                          position: 5,
+                          uncap_level: 3,
+                          transcendence_step: 0)
+      expect(grid_summon).to be_valid
+    end
+  end
+
   describe 'default values' do
     let(:party) { create(:party) }
     let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
@@ -283,9 +326,9 @@ RSpec.describe GridSummon, type: :model do
     let(:party) { create(:party) }
     let(:summon_without_subaura) { Summon.find_by!(granblue_id: '2040433000').tap { |s| s.subaura = false } }
 
-    it 'adds error when placing non-subaura summon in position 4' do
+    it 'adds error when placing non-subaura summon in sub position' do
       gs = build(:grid_summon, party: party, summon: summon_without_subaura,
-                 position: 4, uncap_level: 3, transcendence_step: 0)
+                 position: 5, uncap_level: 3, transcendence_step: 0)
       gs.validate
       expect(gs.errors[:position]).to include('must have subaura for position')
     end
