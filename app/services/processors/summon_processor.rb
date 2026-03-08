@@ -179,7 +179,7 @@ module Processors
       return 0 if level < 200
 
       floored_level = (level / 10).floor * 10
-      TRANSCENDENCE_LEVELS.index(floored_level)
+      TRANSCENDENCE_LEVELS.index(floored_level) || 0
     end
 
     ##
