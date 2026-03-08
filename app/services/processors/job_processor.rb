@@ -104,6 +104,8 @@ module Processors
     # @return [Array<JobSkill>] an array of JobSkill records that were associated with the job.
     def process_job_skills(job_skills)
       job_skills.map do |skill|
+        next unless skill.is_a?(Hash)
+
         name = skill['name']
         JobSkill.find_by(name_en: name)
       end
