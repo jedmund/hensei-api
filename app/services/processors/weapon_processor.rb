@@ -167,6 +167,7 @@ module Processors
       grid_weapons.each do |grid_weapon|
         begin
           grid_weapon.save!
+          grid_weapon.sync_from_collection! if grid_weapon.collection_weapon.present?
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
         end
@@ -187,10 +188,10 @@ module Processors
         position = key.to_i == 1 ? -1 : key.to_i - 2
         mainhand = (position == -1)
 
-        uncap_level = raw_weapon.dig('param', 'uncap').to_i
+        uncap_level = raw_weapon.dig('param', 'evolution').to_i
         level = raw_weapon.dig('param', 'level').to_i
         transcendence_step = level_to_transcendence(level)
-        series = raw_weapon.dig('master', 'series_id')
+        series = raw_weapon.dig('master', 'series_id').to_i
         weapon_id = raw_weapon.dig('master', 'id')
 
         processed_weapon_id = if Weapon.element_changeable?(series)
@@ -200,7 +201,7 @@ module Processors
                               end
 
         processed_element = if Weapon.element_changeable?(series)
-                              ELEMENT_MAPPING[raw_weapon.dig('master', 'attribute')]
+                              ELEMENT_MAPPING[raw_weapon.dig('master', 'attribute').to_i]
                             end
 
         weapon = Weapon.find_by(granblue_id: processed_weapon_id)
@@ -219,6 +220,13 @@ module Processors
           transcendence_step: transcendence_step,
           element: processed_element
         )
+
+        # Link to collection weapon if available
+        game_id = raw_weapon.dig('param', 'id')
+        if game_id.present?
+          collection_weapon = @party.user.collection_weapons.find_by(game_id: game_id.to_s)
+          grid_weapon.collection_weapon = collection_weapon if collection_weapon
+        end
 
         arousal_data = raw_weapon.dig('param', 'arousal')
         if arousal_data && arousal_data['is_arousal_weapon']

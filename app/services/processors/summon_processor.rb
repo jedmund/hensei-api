@@ -59,6 +59,7 @@ module Processors
 
       summons.each do |summon|
         summon.save!
+        summon.sync_from_collection! if summon.collection_summon.present?
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
       end
@@ -88,18 +89,27 @@ module Processors
                      key.to_i == 1 ? -1 : key.to_i - 2
                    end
 
-        GridSummon.new({
-                         party: @party,
-                         summon: summon,
-                         position: position,
-                         main: key.to_i == 1,
-                         friend: false,
-                         quick_summon: summon_params['id'].to_i == internal_quick_summon_id,
-                         uncap_level: summon_params['evolution'].to_i,
-                         transcendence_step: level_to_transcendence(summon_params['level'].to_i),
-                         created_at: Time.now,
-                         updated_at: Time.now
-                       })
+        grid_summon = GridSummon.new({
+                                       party: @party,
+                                       summon: summon,
+                                       position: position,
+                                       main: key.to_i == 1,
+                                       friend: false,
+                                       quick_summon: summon_params['id'].to_i == internal_quick_summon_id,
+                                       uncap_level: summon_params['evolution'].to_i,
+                                       transcendence_step: level_to_transcendence(summon_params['level'].to_i),
+                                       created_at: Time.now,
+                                       updated_at: Time.now
+                                     })
+
+        # Link to collection summon if available
+        game_id = summon_params['id']
+        if game_id.present?
+          collection_summon = @party.user.collection_summons.find_by(game_id: game_id.to_s)
+          grid_summon.collection_summon = collection_summon if collection_summon
+        end
+
+        grid_summon
       end
     end
 
