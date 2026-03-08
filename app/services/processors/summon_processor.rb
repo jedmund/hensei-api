@@ -55,7 +55,7 @@ module Processors
       friend_summon = process_friend_summon
       sub_summons = process_summons(sub_summons_data, sub: true)
 
-      summons = [*grid_summons, friend_summon, *sub_summons]
+      summons = [*grid_summons, friend_summon, *sub_summons].compact
 
       summons.each do |summon|
         summon.save!
@@ -78,10 +78,15 @@ module Processors
     def process_summons(summons, sub: false)
       internal_quick_summon_id = @data['quick_user_summon_id'].to_i if sub
 
-      summons.map do |key, raw_summon|
+      summons.filter_map do |key, raw_summon|
         summon_params = raw_summon['param']
         summon_id = raw_summon['master']['id']
         summon = Summon.find_by(granblue_id: transform_id(summon_id))
+
+        unless summon
+          Rails.logger.error "[SUMMON] Summon not found with id #{summon_id}"
+          next
+        end
 
         position = if sub
                      key.to_i + 4
@@ -120,6 +125,11 @@ module Processors
     def process_friend_summon
       summon_name = @data.dig('deck', 'pc', 'damage_info', 'summon_name')
       summon = Summon.find_by('name_en = ? OR name_jp = ?', summon_name, summon_name)
+
+      unless summon
+        Rails.logger.error "[SUMMON] Friend summon not found: #{summon_name}"
+        return nil
+      end
 
       GridSummon.new({
                        party: @party,
@@ -179,7 +189,7 @@ module Processors
       return 0 if level < 200
 
       floored_level = (level / 10).floor * 10
-      TRANSCENDENCE_LEVELS.index(floored_level)
+      TRANSCENDENCE_LEVELS.index(floored_level) || 0
     end
 
     ##
