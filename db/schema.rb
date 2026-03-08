@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_27_044028) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_01_143956) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -103,8 +103,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_044028) do
     t.boolean "holiday"
     t.string "drawable_type"
     t.uuid "drawable_id"
-    t.boolean "classic_ii", default: false
-    t.boolean "collab", default: false
     t.index ["drawable_id"], name: "index_gacha_on_drawable_id", unique: true
     t.index ["drawable_type", "drawable_id"], name: "index_gacha_on_drawable"
   end
