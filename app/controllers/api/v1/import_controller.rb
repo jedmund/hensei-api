@@ -150,7 +150,7 @@ module Api
         return if performed? # Rendered an error response already
 
         party = Party.create(user: current_user)
-        deck_data = raw_params['import']
+        deck_data = raw_params
         process_data(party, deck_data)
 
         render json: { shortcode: party.shortcode }, status: :created
