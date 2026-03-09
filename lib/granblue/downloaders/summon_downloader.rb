@@ -81,10 +81,11 @@ module Granblue
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
         directory = directory_for_size(size)
+        url = base_url_for_size(size)
         if size == 'detail'
-          "#{@base_url}/#{directory}/#{variant_id}.png"
+          "#{url}/#{directory}/#{variant_id}.png"
         else
-          "#{@base_url}/#{directory}/#{variant_id}.jpg"
+          "#{url}/#{directory}/#{variant_id}.jpg"
         end
       end
 
@@ -98,6 +99,10 @@ module Granblue
       # @return [String] Base URL for summon images
       def base_url
         'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
+      end
+
+      def base_url_for_size(size)
+        @base_url
       end
 
       # Gets directory name for a size variant
