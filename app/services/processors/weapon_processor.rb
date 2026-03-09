@@ -121,12 +121,12 @@ module Processors
 
     ELEMENT_MAPPING = {
       0 => nil,
-      1 => 4, # Wind -> Earth
-      2 => 2, # Fire -> Fire
-      3 => 3, # Water -> Water
-      4 => 1, # Earth -> Wind
-      5 => 6, # Dark -> Light
-      6 => 5 # Light -> Dark
+      1 => 2, # Fire -> Fire
+      2 => 3, # Water -> Water
+      3 => 4, # Earth -> Earth
+      4 => 1, # Wind -> Wind
+      5 => 6, # Light -> Light
+      6 => 5  # Dark -> Dark
     }.freeze
     ##
     # Initializes a new WeaponProcessor.
