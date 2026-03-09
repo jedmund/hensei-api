@@ -101,14 +101,8 @@ module Granblue
         'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
       end
 
-      # Gets base URL for a specific size variant.
-      # Wide images use img_low instead of img.
       def base_url_for_size(size)
-        if size == 'wide'
-          'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img_low/sp/assets/summon'
-        else
-          @base_url
-        end
+        @base_url
       end
 
       # Gets directory name for a size variant
