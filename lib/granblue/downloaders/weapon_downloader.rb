@@ -67,12 +67,7 @@ module Granblue
           download_variant(variant_id, selected_size)
         end
 
-        # Download null element variant (element == 0) from _note source
-        if weapon.element == 0
-          download_element_variant("#{@id}_note", '_0', selected_size)
-        end
-
-        # Download element variants for element-changeable weapons
+        # Download element variants for element-changeable weapons (which are null element)
         download_element_variants(selected_size) if Weapon.element_changeable?(weapon)
       end
 
