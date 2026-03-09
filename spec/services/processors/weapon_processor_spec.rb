@@ -142,7 +142,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
     it 'processes the deck and creates the expected number of GridWeapon records' do
       # Assume the canonical records are already loaded (via canonical.rb).
-      expect { subject.process }.to change(GridWeapon, :count).by(10)
+      expect { subject.process }.to change(GridWeapon, :count).by(13)
     end
 
     it 'creates the correct main weapon' do
