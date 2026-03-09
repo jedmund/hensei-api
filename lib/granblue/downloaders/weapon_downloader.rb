@@ -55,21 +55,21 @@ module Granblue
       # @note Handles special transcendence art variants for transcendable weapons
       # @note Downloads element variants for element-changeable weapons
       def download_variants(weapon, selected_size = nil)
-        # All weapons have base variant
-        variants = [@id]
-
-        # Add transcendence variants if available
-        variants.push("#{@id}_02", "#{@id}_03") if weapon.transcendence
-
-        log_info "Downloading weapon variants: #{variants.join(', ')}" if @verbose
-
-        variants.each do |variant_id|
-          download_variant(variant_id, selected_size)
-        end
-
-        # Download null element variant (element == 0) from _note source
         if weapon.element == 0
+          # Null element: download from _note URL, save with _0 suffix
           download_element_variant("#{@id}_note", '_0', selected_size)
+        else
+          # All other weapons have base variant
+          variants = [@id]
+
+          # Add transcendence variants if available
+          variants.push("#{@id}_02", "#{@id}_03") if weapon.transcendence
+
+          log_info "Downloading weapon variants: #{variants.join(', ')}" if @verbose
+
+          variants.each do |variant_id|
+            download_variant(variant_id, selected_size)
+          end
         end
 
         # Download element variants for element-changeable weapons
