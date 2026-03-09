@@ -167,7 +167,7 @@ class GridSummon < ApplicationRecord
   #
   # @return [void]
   def compatible_with_position
-    return unless summon && !friend && position.to_i >= 5 && !summon.subaura
+    return unless summon && !friend && position.to_i.in?(4..5) && !summon.subaura
 
     errors.add(:position, 'must have subaura for position')
   end
