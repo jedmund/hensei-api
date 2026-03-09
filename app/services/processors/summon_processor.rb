@@ -89,7 +89,7 @@ module Processors
         end
 
         position = if sub
-                     key.to_i + 4
+                     key.to_i + 3
                    else
                      key.to_i == 1 ? -1 : key.to_i - 2
                    end
@@ -134,7 +134,7 @@ module Processors
       GridSummon.new({
                        party: @party,
                        summon: summon,
-                       position: 4,
+                       position: 6,
                        main: false,
                        friend: true,
                        quick_summon: false,
