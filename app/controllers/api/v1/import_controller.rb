@@ -343,6 +343,25 @@ module Api
         Processors::CharacterProcessor.new(party, data).process
         Processors::SummonProcessor.new(party, data).process
         Processors::WeaponProcessor.new(party, data).process
+
+        detect_unlimited_raid(party, data)
+      end
+
+      ##
+      # Detects if the imported deck is an Unlimited grid and sets the raid accordingly.
+      # Unlimited grids have more than 10 weapons AND more than 5 characters.
+      #
+      # @param party [Party] the party record.
+      # @param data [Hash] the deck data.
+      # @return [void]
+      def detect_unlimited_raid(party, data)
+        weapons_count = data.dig('deck', 'pc', 'weapons')&.size.to_i
+        characters_count = data.dig('deck', 'npc')&.size.to_i
+
+        return unless weapons_count > 10 && characters_count > 5
+
+        raid = Raid.joins(:group).find_by(raid_groups: { unlimited: true })
+        party.update!(raid: raid) if raid
       end
     end
   end
