@@ -13,7 +13,7 @@ module Granblue
     # @note Supports ULB (5★) and transcendence variants when available
     class SummonDownloader < BaseDownloader
       # Override SIZES to include 'wide' for m directory images and 'detail' for detail images
-      SIZES = %w[main grid wide square detail].freeze
+      SIZES = %w[main tall grid wide square detail].freeze
       # Downloads images for all variants of a summon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle summon-specific variants.
       #
@@ -109,10 +109,11 @@ module Granblue
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
-      # @note Maps "main" -> "ls", "grid" -> "party_sub", "wide" -> "m", "square" -> "s"
+      # @note Maps "main" -> "party_main", "tall" -> "ls", "grid" -> "party_sub", "wide" -> "m", "square" -> "s"
       def directory_for_size(size)
         case size.to_s
-        when 'main' then 'ls'
+        when 'main' then 'party_main'
+        when 'tall' then 'ls'
         when 'grid' then 'party_sub'
         when 'wide' then 'm'
         when 'square' then 's'

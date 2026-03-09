@@ -41,7 +41,8 @@ RSpec.describe SummonImageValidator do
         validator.valid?
 
         aggregate_failures do
-          expect(validator.image_urls[:main]).to include('summon/ls/2040001000.jpg')
+          expect(validator.image_urls[:main]).to include('summon/party_main/2040001000.jpg')
+          expect(validator.image_urls[:tall]).to include('summon/ls/2040001000.jpg')
           expect(validator.image_urls[:grid]).to include('summon/party_sub/2040001000.jpg')
           expect(validator.image_urls[:square]).to include('summon/s/2040001000.jpg')
         end
