@@ -17,11 +17,13 @@ namespace :granblue do
     require 'parallel'
     require 'logger'
 
-    logger = Logger.new($stdout)
-    logger.level = Logger::INFO
-
     require_relative '../granblue/downloaders/base_downloader'
     Dir[Rails.root.join('lib', 'granblue', 'downloaders', '*.rb')].each { |file| require file }
+
+    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
+    log_path = Rails.root.join('log', "download_null_weapons_#{timestamp}.log")
+    logger = Logger.new(log_path)
+    logger.level = Logger::INFO
 
     specified_size = args[:size]
     force = args[:force].to_s == 'true'
@@ -30,6 +32,8 @@ namespace :granblue do
 
     ids = Weapon.where(element: 0).pluck(:granblue_id)
 
+    puts "Downloading images for #{ids.count} null-element weapons..."
+    puts "Logging to #{log_path}"
     logger.info "Downloading images for #{ids.count} null-element weapons..."
     logger.info "Using #{thread_count} threads for parallel downloads..."
     logger.info "Downloading only size: #{specified_size}" if specified_size
