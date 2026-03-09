@@ -14,7 +14,8 @@ class SummonImageValidator
   BASE_URL = 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
 
   SIZES = {
-    main: 'ls',
+    main: 'party_main',
+    tall: 'ls',
     grid: 'party_sub',
     square: 's'
   }.freeze
