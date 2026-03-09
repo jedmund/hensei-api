@@ -67,7 +67,7 @@ module Granblue
           download_variant(variant_id, selected_size)
         end
 
-        # Download element variants for element-changeable weapons
+        # Download element variants for element-changeable weapons (which are null element)
         download_element_variants(selected_size) if Weapon.element_changeable?(weapon)
       end
 
@@ -157,7 +157,7 @@ module Granblue
           download_element_to_both(url, local_path, s3_key)
         end
       rescue OpenURI::HTTPError
-        log_info "\t404 returned\t#{url}" if @verbose
+        log_info "\t404 returned\t#{url}"
       end
 
       # Download element variant to local storage

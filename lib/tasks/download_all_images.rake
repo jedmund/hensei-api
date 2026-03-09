@@ -14,9 +14,10 @@ namespace :granblue do
     require 'parallel'
     require 'logger'
 
-    # Use a thread-safe logger (or Rails.logger if preferred)
-    logger = Logger.new($stdout)
-    logger.level = Logger::INFO # set to WARN or INFO to reduce debug noise
+    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
+    log_path = Rails.root.join('log', "download_#{args[:object]}_#{timestamp}.log")
+    logger = Logger.new(log_path)
+    logger.level = Logger::INFO
 
     # Load downloader classes
     require_relative '../granblue/downloaders/base_downloader'
@@ -30,7 +31,7 @@ namespace :granblue do
     ids = klass.pluck(:granblue_id)
 
     puts "Downloading images for #{ids.count} #{object.pluralize}..."
-
+    puts "Logging to #{log_path}"
     logger.info "Downloading images for #{ids.count} #{object.pluralize}..."
     thread_count = (args[:threads] || 4).to_i
     logger.info "Using #{thread_count} threads for parallel downloads..."
