@@ -82,69 +82,6 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
   end
 
-  describe 'GET /api/v1/users/:user_id/collection/granblue_ids' do
-    let(:weapon1) { create(:weapon, granblue_id: '1040000100') }
-    let(:weapon2) { create(:weapon, granblue_id: '1040000200') }
-    let(:character1) { create(:character, granblue_id: '3040000100') }
-    let(:summon1) { create(:summon, granblue_id: '2040000100') }
-
-    before do
-      create(:collection_weapon, user: user, weapon: weapon1)
-      create(:collection_weapon, user: user, weapon: weapon2)
-      create(:collection_character, user: user, character: character1)
-      create(:collection_summon, user: user, summon: summon1)
-    end
-
-    it 'returns granblue IDs for all collection types' do
-      get "/api/v1/users/#{user.id}/collection/granblue_ids", headers: headers
-
-      expect(response).to have_http_status(:ok)
-      json = response.parsed_body
-      expect(json['weapons']).to contain_exactly('1040000100', '1040000200')
-      expect(json['characters']).to contain_exactly('3040000100')
-      expect(json['summons']).to contain_exactly('2040000100')
-    end
-
-    it 'returns empty arrays for empty collection' do
-      empty_user = create(:user, collection_privacy: :everyone)
-
-      get "/api/v1/users/#{empty_user.id}/collection/granblue_ids", headers: headers
-
-      expect(response).to have_http_status(:ok)
-      json = response.parsed_body
-      expect(json['weapons']).to be_empty
-      expect(json['characters']).to be_empty
-      expect(json['summons']).to be_empty
-    end
-
-    it 'returns distinct granblue IDs when duplicates exist' do
-      # Weapons allow multiple copies of the same weapon
-      create(:collection_weapon, user: user, weapon: weapon1)
-
-      get "/api/v1/users/#{user.id}/collection/granblue_ids", headers: headers
-
-      expect(response).to have_http_status(:ok)
-      json = response.parsed_body
-      expect(json['weapons']).to contain_exactly('1040000100', '1040000200')
-    end
-
-    it 'returns forbidden for private collection' do
-      get "/api/v1/users/#{private_user.id}/collection/granblue_ids", headers: headers
-
-      expect(response).to have_http_status(:forbidden)
-      json = response.parsed_body
-      expect(json['error']).to include('do not have permission')
-    end
-
-    it 'returns not found for non-existent user' do
-      get "/api/v1/users/#{SecureRandom.uuid}/collection/granblue_ids", headers: headers
-
-      expect(response).to have_http_status(:not_found)
-      json = response.parsed_body
-      expect(json['error']).to include('User not found')
-    end
-  end
-
   describe 'GET /api/v1/users/:user_id/collection/game_ids' do
     let(:weapon1) { create(:weapon, granblue_id: '1040000100') }
     let(:weapon2) { create(:weapon, granblue_id: '1040000200') }
