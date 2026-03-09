@@ -187,7 +187,7 @@ class GridWeapon < ApplicationRecord
   def compatible_with_position
     return unless weapon.present?
 
-    if EXTRA_POSITIONS.include?(position.to_i) && !weapon.weapon_series&.extra
+    if EXTRA_POSITIONS.include?(position.to_i) && !weapon.extra
       errors.add(:series, 'must be compatible with position')
     end
   end
