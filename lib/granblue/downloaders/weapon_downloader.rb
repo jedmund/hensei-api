@@ -162,7 +162,7 @@ module Granblue
           download_element_to_both(url, local_path, s3_key)
         end
       rescue OpenURI::HTTPError
-        log_info "\t404 returned\t#{url}" if @verbose
+        log_info "\t404 returned\t#{url}"
       end
 
       # Download element variant to local storage
