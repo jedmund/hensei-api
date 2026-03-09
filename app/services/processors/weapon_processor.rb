@@ -121,12 +121,12 @@ module Processors
 
     ELEMENT_MAPPING = {
       0 => nil,
-      1 => 4, # Wind -> Earth
-      2 => 2, # Fire -> Fire
-      3 => 3, # Water -> Water
-      4 => 1, # Earth -> Wind
-      5 => 6, # Dark -> Light
-      6 => 5 # Light -> Dark
+      1 => 2, # Fire -> Fire
+      2 => 3, # Water -> Water
+      3 => 4, # Earth -> Earth
+      4 => 1, # Wind -> Wind
+      5 => 6, # Light -> Light
+      6 => 5  # Dark -> Dark
     }.freeze
     ##
     # Initializes a new WeaponProcessor.
@@ -188,9 +188,9 @@ module Processors
         position = key.to_i == 1 ? -1 : key.to_i - 2
         mainhand = (position == -1)
 
-        uncap_level = raw_weapon.dig('param', 'evolution').to_i
         level = raw_weapon.dig('param', 'level').to_i
         transcendence_step = level_to_transcendence(level)
+        uncap_level = level_to_uncap(level, transcendence_step)
         series = raw_weapon.dig('master', 'series_id').to_i
         weapon_id = raw_weapon.dig('master', 'id')
 
@@ -254,6 +254,21 @@ module Processors
     #
     # @param level [Integer] the weapon’s level.
     # @return [Integer] the transcendence step.
+    ##
+    # Derives the uncap level from a weapon's current level and transcendence step.
+    # Deck weapon data does not include an evolution field, so uncap must be inferred.
+    #
+    # @param level [Integer] the weapon's current level.
+    # @param transcendence_step [Integer] the computed transcendence step.
+    # @return [Integer] the uncap level (3-6).
+    def level_to_uncap(level, transcendence_step)
+      return 6 if transcendence_step.positive? || level > 200
+      return 5 if level > 150
+      return 4 if level > 100
+
+      3
+    end
+
     def level_to_transcendence(level)
       return 0 if level < 200
 
