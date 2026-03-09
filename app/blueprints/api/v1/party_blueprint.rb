@@ -82,6 +82,30 @@ module Api
             }
           end
         end
+
+        # Viewing user's collection items matching this party's grid items
+        field :viewer_collection, if: ->(_field_name, _party, options) {
+          options[:viewer_collection].present?
+        } do |_party, options|
+          vc = options[:viewer_collection]
+          {
+            characters: CollectionCharacterBlueprint.render_as_hash(vc[:characters]),
+            weapons: CollectionWeaponBlueprint.render_as_hash(vc[:weapons]),
+            summons: CollectionSummonBlueprint.render_as_hash(vc[:summons])
+          }
+        end
+
+        # Collection source user's items matching this party's grid items
+        field :source_collection, if: ->(_field_name, _party, options) {
+          options[:source_collection].present?
+        } do |_party, options|
+          sc = options[:source_collection]
+          {
+            characters: CollectionCharacterBlueprint.render_as_hash(sc[:characters]),
+            weapons: CollectionWeaponBlueprint.render_as_hash(sc[:weapons]),
+            summons: CollectionSummonBlueprint.render_as_hash(sc[:summons])
+          }
+        end
       end
 
       # Primary object associations
