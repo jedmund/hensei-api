@@ -346,6 +346,8 @@ module Api
         end
 
         if weapon.save
+          weapon.sync_from_collection! if weapon.collection_weapon_id.present?
+          weapon.reload
           output = GridWeaponBlueprint.render(weapon, view: :full, root: :grid_weapon)
           render json: output, status: :created
         else

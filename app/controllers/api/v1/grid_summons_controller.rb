@@ -271,6 +271,8 @@ module Api
 
         return unless summon.save
 
+        summon.sync_from_collection! if summon.collection_summon_id.present?
+        summon.reload
         output = render_grid_summon_view(summon)
         render json: output, status: :created
       end
