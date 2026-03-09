@@ -10,7 +10,7 @@ namespace :granblue do
   #   rake granblue:download_all_images\[weapon\]
   # @example Download all character images
   #   rake granblue:download_all_images\[character\]
-  task :download_all_images, %i[object threads size] => :environment do |_t, args|
+  task :download_all_images, %i[object threads size force storage] => :environment do |_t, args|
     require 'parallel'
     require 'logger'
 
@@ -24,6 +24,8 @@ namespace :granblue do
 
     object = args[:object]
     specified_size = args[:size]
+    force = args[:force].to_s == 'true'
+    storage = (args[:storage] || 'both').to_sym
     klass = object.classify.constantize
     ids = klass.pluck(:granblue_id)
 
@@ -37,7 +39,7 @@ namespace :granblue do
     Parallel.each(ids, in_threads: thread_count) do |id|
       ActiveRecord::Base.connection_pool.with_connection do
         downloader_class = "Granblue::Downloaders::#{object.classify}Downloader".constantize
-        downloader = downloader_class.new(id, verbose: true, logger: logger)
+        downloader = downloader_class.new(id, verbose: true, force: force, storage: storage, logger: logger)
         if specified_size
           downloader.download(specified_size)
         else

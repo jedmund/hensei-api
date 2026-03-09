@@ -37,11 +37,12 @@ module Granblue
         # @see CharacterDownloader
         # @see WeaponDownloader
         # @see SummonDownloader
-        def download_for_object(type, granblue_id, test_mode: false, verbose: false, storage: :both)
+        def download_for_object(type, granblue_id, test_mode: false, verbose: false, storage: :both, force: false)
           downloader_options = {
             test_mode: test_mode,
             verbose: verbose,
-            storage: storage
+            storage: storage,
+            force: force
           }
 
           case type
