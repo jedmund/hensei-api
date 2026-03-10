@@ -60,6 +60,183 @@ RSpec.describe 'Parties API', type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
     end
+
+    context 'viewer_collection' do
+      let(:weapon) { create(:weapon, granblue_id: '1040099001') }
+      let(:character) { create(:character, granblue_id: '3040099001') }
+      let(:summon) { create(:summon, granblue_id: '2040099001') }
+
+      let!(:party_with_items) do
+        p = create(:party, user: create(:user), visibility: 1)
+        create(:grid_weapon, party: p, weapon: weapon, position: 0)
+        create(:grid_character, party: p, character: character, position: 0)
+        create(:grid_summon, party: p, summon: summon, position: 1)
+        p.reload
+      end
+
+      it 'includes matching collection items for the viewing user' do
+        create(:collection_weapon, user: user, weapon: weapon, uncap_level: 4)
+        create(:collection_character, user: user, character: character, uncap_level: 5)
+        create(:collection_summon, user: user, summon: summon, uncap_level: 3)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        expect(response).to have_http_status(:ok)
+        vc = response.parsed_body.dig('party', 'viewer_collection')
+        expect(vc).to be_present
+        expect(vc['characters'].length).to eq(1)
+        expect(vc['characters'][0]['uncap_level']).to eq(5)
+        expect(vc['weapons'].length).to eq(1)
+        expect(vc['weapons'][0]['uncap_level']).to eq(4)
+        expect(vc['summons'].length).to eq(1)
+        expect(vc['summons'][0]['uncap_level']).to eq(3)
+      end
+
+      it 'returns all copies when viewer owns multiple items with the same granblue_id' do
+        create(:collection_weapon, user: user, weapon: weapon, uncap_level: 3)
+        create(:collection_weapon, user: user, weapon: weapon, uncap_level: 4)
+        create(:collection_weapon, user: user, weapon: weapon, uncap_level: 5)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        vc = response.parsed_body.dig('party', 'viewer_collection')
+        expect(vc['weapons'].length).to eq(3)
+        uncap_levels = vc['weapons'].map { |w| w['uncap_level'] }
+        expect(uncap_levels).to contain_exactly(3, 4, 5)
+      end
+
+      it 'omits viewer_collection when not logged in' do
+        get "/api/v1/parties/#{party_with_items.shortcode}"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.dig('party', 'viewer_collection')).to be_nil
+      end
+
+      it 'returns empty arrays when viewer has no matching collection items' do
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        vc = response.parsed_body.dig('party', 'viewer_collection')
+        expect(vc).to be_present
+        expect(vc['characters']).to eq([])
+        expect(vc['weapons']).to eq([])
+        expect(vc['summons']).to eq([])
+      end
+
+      it 'excludes collection items that do not match any party granblue_id' do
+        unrelated_weapon = create(:weapon, granblue_id: '1040099999')
+        create(:collection_weapon, user: user, weapon: unrelated_weapon)
+        create(:collection_weapon, user: user, weapon: weapon)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        vc = response.parsed_body.dig('party', 'viewer_collection')
+        expect(vc['weapons'].length).to eq(1)
+        expect(vc['weapons'][0]['weapon']['granblue_id']).to eq('1040099001')
+      end
+
+      it 'returns viewer_collection regardless of viewer privacy setting' do
+        user.update!(collection_privacy: :private_collection)
+        create(:collection_weapon, user: user, weapon: weapon)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        vc = response.parsed_body.dig('party', 'viewer_collection')
+        expect(vc).to be_present
+        expect(vc['weapons'].length).to eq(1)
+      end
+
+      it 'returns empty arrays when party has no grid items' do
+        empty_party = create(:party, user: create(:user), visibility: 1)
+
+        get "/api/v1/parties/#{empty_party.shortcode}", headers: headers
+
+        vc = response.parsed_body.dig('party', 'viewer_collection')
+        expect(vc).to be_present
+        expect(vc['characters']).to eq([])
+        expect(vc['weapons']).to eq([])
+        expect(vc['summons']).to eq([])
+      end
+
+      it 'includes expected fields in collection weapon items' do
+        create(:collection_weapon, user: user, weapon: weapon, uncap_level: 4)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        weapon_item = response.parsed_body.dig('party', 'viewer_collection', 'weapons', 0)
+        expect(weapon_item).to include('uncap_level' => 4, 'transcendence_step' => 0)
+        expect(weapon_item).to have_key('weapon')
+      end
+
+      it 'includes expected fields in collection character items' do
+        create(:collection_character, user: user, character: character, uncap_level: 5, perpetuity: true)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        char_item = response.parsed_body.dig('party', 'viewer_collection', 'characters', 0)
+        expect(char_item).to include('uncap_level' => 5, 'perpetuity' => true)
+        expect(char_item).to have_key('character')
+      end
+
+      it 'includes expected fields in collection summon items' do
+        create(:collection_summon, user: user, summon: summon, uncap_level: 4)
+
+        get "/api/v1/parties/#{party_with_items.shortcode}", headers: headers
+
+        summon_item = response.parsed_body.dig('party', 'viewer_collection', 'summons', 0)
+        expect(summon_item).to include('uncap_level' => 4, 'transcendence_step' => 0)
+        expect(summon_item).to have_key('summon')
+      end
+    end
+
+    context 'source_collection' do
+      let(:weapon) { create(:weapon, granblue_id: '1040098001') }
+      let(:source_user) { create(:user, collection_privacy: :everyone) }
+
+      it 'includes source_collection when party has a collection source user' do
+        party_with_source = create(:party, user: create(:user), visibility: 1, collection_source_user: source_user)
+        create(:grid_weapon, party: party_with_source, weapon: weapon, position: 0)
+        create(:collection_weapon, user: source_user, weapon: weapon, uncap_level: 5)
+
+        get "/api/v1/parties/#{party_with_source.shortcode}", headers: headers
+
+        sc = response.parsed_body.dig('party', 'source_collection')
+        expect(sc).to be_present
+        expect(sc['weapons'].length).to eq(1)
+        expect(sc['weapons'][0]['uncap_level']).to eq(5)
+      end
+
+      it 'omits source_collection when source user collection is private' do
+        private_source = create(:user, collection_privacy: :private_collection)
+        party_with_source = create(:party, user: create(:user), visibility: 1, collection_source_user: private_source)
+        create(:grid_weapon, party: party_with_source, weapon: weapon, position: 0)
+        create(:collection_weapon, user: private_source, weapon: weapon)
+
+        get "/api/v1/parties/#{party_with_source.shortcode}", headers: headers
+
+        expect(response.parsed_body.dig('party', 'source_collection')).to be_nil
+      end
+
+      it 'omits source_collection when viewer is the source user' do
+        party_with_source = create(:party, user: create(:user), visibility: 1, collection_source_user: user)
+        create(:grid_weapon, party: party_with_source, weapon: weapon, position: 0)
+        create(:collection_weapon, user: user, weapon: weapon)
+
+        get "/api/v1/parties/#{party_with_source.shortcode}", headers: headers
+
+        expect(response.parsed_body.dig('party', 'source_collection')).to be_nil
+        # But viewer_collection should still be present
+        expect(response.parsed_body.dig('party', 'viewer_collection')).to be_present
+      end
+
+      it 'omits source_collection when party has no collection source' do
+        party_no_source = create(:party, user: create(:user), visibility: 1)
+        create(:grid_weapon, party: party_no_source, weapon: weapon, position: 0)
+
+        get "/api/v1/parties/#{party_no_source.shortcode}", headers: headers
+
+        expect(response.parsed_body.dig('party', 'source_collection')).to be_nil
+      end
+    end
   end
 
   describe 'PUT /api/v1/parties/:id' do

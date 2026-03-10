@@ -64,9 +64,22 @@ module Api
         end
 
         if @party
-          render json: PartyBlueprint.render(@party, view: :full, root: :party, current_user: current_user)
+          options = { view: :full, root: :party, current_user: current_user }
+
+          if current_user
+            options[:viewer_collection] = fetch_collection_for(@party, current_user)
+          end
+
+          if @party.collection_source_user_id.present?
+            source_user = @party.collection_source_user
+            if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
+              options[:source_collection] = fetch_collection_for(@party, source_user)
+            end
+          end
+
+          render json: PartyBlueprint.render(@party, **options)
         else
-          render_not_found_response('project')
+          render_not_found_response('party')
         end
       end
 
@@ -444,6 +457,28 @@ module Api
         when 'summon'
           GridSummon
         end
+      end
+
+      # Fetches collection items for a user that match the party's grid items.
+      # Uses the already-eager-loaded grid associations to extract granblue_ids,
+      # then batch-queries the user's collection with WHERE IN.
+      def fetch_collection_for(party, user)
+        char_gids = party.characters.filter_map { |gc| gc.character&.granblue_id }.uniq
+        weap_gids = party.weapons.filter_map { |gw| gw.weapon&.granblue_id }.uniq
+        summ_gids = party.summons.filter_map { |gs| gs.summon&.granblue_id }.uniq
+
+        {
+          characters: char_gids.any? ? user.collection_characters.joins(:character)
+            .includes(:character, :awakening)
+            .where(characters: { granblue_id: char_gids }) : [],
+          weapons: weap_gids.any? ? user.collection_weapons.joins(:weapon)
+            .includes(:weapon, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
+                      :ax_modifier1, :ax_modifier2, :befoulment_modifier)
+            .where(weapons: { granblue_id: weap_gids }) : [],
+          summons: summ_gids.any? ? user.collection_summons.joins(:summon)
+            .includes(:summon)
+            .where(summons: { granblue_id: summ_gids }) : []
+        }
       end
 
       # Compacts character positions to maintain sequential filling.

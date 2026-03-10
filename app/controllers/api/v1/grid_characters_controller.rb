@@ -50,6 +50,8 @@ module Api
           grid_character = build_new_grid_character(processed_params)
 
           if grid_character.save
+            grid_character.sync_from_collection! if grid_character.collection_character_id.present?
+            grid_character.reload
             render json: GridCharacterBlueprint.render(grid_character,
                                                        root: :grid_character,
                                                        view: :full), status: :created
