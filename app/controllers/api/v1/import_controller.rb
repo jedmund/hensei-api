@@ -154,6 +154,13 @@ module Api
           party = Party.create!(user: current_user)
           deck_data = raw_params
           process_data(party, deck_data)
+
+          # Apply raid - explicit selection takes priority over auto-detect
+          if body['raid_id'].present?
+            assign_raid(party, body['raid_id'])
+          else
+            detect_raid_type(party, deck_data)
+          end
         end
 
         render json: { shortcode: party.shortcode }, status: :created
@@ -343,25 +350,45 @@ module Api
         Processors::CharacterProcessor.new(party, data).process
         Processors::SummonProcessor.new(party, data).process
         Processors::WeaponProcessor.new(party, data).process
-
-        detect_unlimited_raid(party, data)
       end
 
       ##
-      # Detects if the imported deck is an Unlimited grid and sets the raid accordingly.
-      # Unlimited grids have more than 10 weapons AND more than 5 characters.
+      # Assigns an explicitly selected raid to the party.
+      #
+      # @param party [Party] the party record.
+      # @param raid_id [String] the raid ID from the request body.
+      # @return [void]
+      def assign_raid(party, raid_id)
+        raid = Raid.find_by(id: raid_id)
+        return unless raid
+
+        party.update!(raid: raid, extra: raid.group.extra)
+      end
+
+      ##
+      # Detects the raid type based on weapon and character counts and sets the raid accordingly.
+      # - 10 weapons AND 5 characters → Farming raid
+      # - 13 weapons AND 5 characters → Farming (V2) raid
+      # - 13 weapons AND 7 characters → Unlimited raid
       #
       # @param party [Party] the party record.
       # @param data [Hash] the deck data.
       # @return [void]
-      def detect_unlimited_raid(party, data)
+      def detect_raid_type(party, data)
         weapons_count = data.dig('deck', 'pc', 'weapons')&.size.to_i
         characters_count = data.dig('deck', 'npc')&.size.to_i
 
-        return unless weapons_count > 10 && characters_count > 5
+        raid = if weapons_count == 10 && characters_count == 5
+                 Raid.find_by(slug: 'farming')
+               elsif weapons_count == 13 && characters_count == 5
+                 Raid.find_by(slug: 'farming-v2')
+               elsif weapons_count == 13 && characters_count == 7
+                 Raid.joins(:group).find_by(raid_groups: { unlimited: true })
+               end
 
-        raid = Raid.joins(:group).find_by(raid_groups: { unlimited: true })
-        party.update!(raid: raid) if raid
+        return unless raid
+
+        party.update!(raid: raid, extra: raid.group.extra)
       end
     end
   end
