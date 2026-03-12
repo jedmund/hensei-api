@@ -398,7 +398,7 @@ module Api
         when 'rarity'
           scope.order(rarity: sort_dir)
         when 'last_updated'
-          scope.order(updated_at: sort_dir)
+          scope.order(Arel.sql("greatest(release_date, flb_date, ulb_date) #{sort_dir}"))
         else
           scope
         end
