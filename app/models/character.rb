@@ -3,6 +3,9 @@
 class Character < ApplicationRecord
   include PgSearch::Model
 
+  belongs_to :base_character, class_name: 'Character', optional: true
+  has_many :style_swaps, class_name: 'Character', foreign_key: :base_character_id, dependent: :nullify
+
   has_many :character_series_memberships, dependent: :destroy
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
 
@@ -52,11 +55,14 @@ class Character < ApplicationRecord
             allow_nil: true
 
   validate :validate_series_values
+  validate :validate_base_character
 
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
   scope :by_series, ->(series) { where('? = ANY(series)', series) }
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
+  scope :style_swap_variants, -> { where(style_swap: true) }
+  scope :base_characters, -> { where(style_swap: false) }
 
   def blueprint
     CharacterBlueprint
@@ -145,6 +151,16 @@ class Character < ApplicationRecord
   end
 
   private
+
+  def validate_base_character
+    if style_swap? && base_character_id.blank?
+      errors.add(:base_character_id, 'must be present for style swap characters')
+    end
+
+    if !style_swap? && base_character_id.present?
+      errors.add(:base_character_id, 'should only be set for style swap characters')
+    end
+  end
 
   def validate_series_values
     return if series.blank?
