@@ -13,7 +13,7 @@ module Api
           }
         end
 
-        fields :slug, :level, :element, :enemy_id, :summon_id, :quest_id
+        fields :slug, :level, :element, :player_count, :enemy_id, :summon_id, :quest_id
 
         field :extra do |raid|
           raid.effective_extra

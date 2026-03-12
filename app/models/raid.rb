@@ -9,6 +9,7 @@ class Raid < ApplicationRecord
   validates :group_id, presence: true
   validates :element, inclusion: { in: 0..6 }, allow_nil: true
   validates :level, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :player_count, inclusion: { in: [1, 6, 18, 30] }
 
   # Filter scopes
   scope :by_element, ->(element) { where(element: element) if element.present? }
