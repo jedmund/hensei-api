@@ -11,7 +11,7 @@ module Api
 
       # GET /characters/:id
       def show
-        render json: CharacterBlueprint.render(@character, view: :full)
+        render json: CharacterBlueprint.render(@character, view: :with_recruitment)
       end
 
       # GET /characters/:id/related
