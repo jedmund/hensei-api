@@ -233,7 +233,7 @@ module Api
         params.require(:character).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element,
           :proficiency1, :proficiency2, :gender, :race1, :race2,
-          :flb, :ulb, :transcendence, :special, :season, :style_swap, :style_name_en, :style_name_jp,
+          :flb, :ulb, :special, :season, :style_swap, :style_name_en, :style_name_jp,
           :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,
