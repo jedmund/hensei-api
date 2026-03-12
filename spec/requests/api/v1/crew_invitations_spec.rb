@@ -107,6 +107,42 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
         json = response.parsed_body
         expect(json['code']).to eq('user_already_invited')
       end
+
+      context 'with phantom_player_id' do
+        let!(:phantom) { create(:phantom_player, crew: crew) }
+
+        it 'creates an invitation with a pre-assigned phantom' do
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { user_id: invitee.id, phantom_player_id: phantom.id },
+               headers: auth_headers
+
+          expect(response).to have_http_status(:created)
+          json = response.parsed_body
+          expect(json['invitation']['phantom_player']).not_to be_nil
+          expect(json['invitation']['phantom_player']['name']).to eq(phantom.name)
+        end
+
+        it 'creates an invitation without phantom when phantom_player_id is not provided' do
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { user_id: invitee.id },
+               headers: auth_headers
+
+          expect(response).to have_http_status(:created)
+          json = response.parsed_body
+          expect(json['invitation']['phantom_player']).to be_nil
+        end
+
+        it 'returns error when phantom belongs to a different crew' do
+          other_crew = create(:crew)
+          other_phantom = create(:phantom_player, crew: other_crew)
+
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { user_id: invitee.id, phantom_player_id: other_phantom.id },
+               headers: auth_headers
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
     end
 
     context 'as vice captain' do
@@ -158,6 +194,24 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       json = response.parsed_body
       expect(json['invitations'].length).to eq(2)
     end
+
+    context 'with a phantom pre-assigned on an invitation' do
+      let(:phantom) { create(:phantom_player, crew: pending1.crew) }
+
+      before do
+        pending1.update!(phantom_player: phantom)
+      end
+
+      it 'includes phantom player info in the response' do
+        get '/api/v1/invitations/pending', headers: invitee_headers
+
+        expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        inv_with_phantom = json['invitations'].find { |i| i['id'] == pending1.id }
+        expect(inv_with_phantom['phantom_player']).not_to be_nil
+        expect(inv_with_phantom['phantom_player']['name']).to eq(phantom.name)
+      end
+    end
   end
 
   describe 'POST /api/v1/invitations/:id/accept' do
@@ -184,6 +238,20 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       expect(response).to have_http_status(:not_found)
       json = response.parsed_body
       expect(json['code']).to eq('invitation_not_found')
+    end
+
+    context 'with a pre-assigned phantom' do
+      let(:phantom) { create(:phantom_player, crew: crew) }
+      let!(:invitation) { create(:crew_invitation, crew: crew, user: invitee, invited_by: user, status: :pending, phantom_player: phantom) }
+
+      it 'auto-assigns the phantom when accepting' do
+        post "/api/v1/invitations/#{invitation.id}/accept", headers: invitee_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(invitee.reload.crew).to eq(crew)
+        expect(phantom.reload.claimed_by).to eq(invitee)
+        expect(phantom.claim_confirmed).to be false
+      end
     end
   end
 
