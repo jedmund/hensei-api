@@ -5,9 +5,9 @@ module Api
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
-      before_action :set, except: %w[create check_email check_username me]
+      before_action :set, except: %w[create check_email check_username me search]
       before_action :set_by_id, only: %w[update]
-      before_action :doorkeeper_authorize!, only: %w[me]
+      before_action :doorkeeper_authorize!, only: %w[me search]
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
@@ -50,6 +50,16 @@ module Api
 
       def info
         render json: UserBlueprint.render(@user, view: :minimal)
+      end
+
+      def search
+        query = params[:query].to_s.strip
+        return render json: { users: [] } if query.length < 2
+
+        users = User.where('lower(username) LIKE ?', "#{query.downcase}%")
+                     .where.not(id: current_user.id)
+                     .limit(10)
+        render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
       end
 
       # GET /users/me - returns current user's settings including email
