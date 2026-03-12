@@ -8,7 +8,7 @@ module Api
 
       # GET /raid_groups
       def index
-        groups = RaidGroup.includes(:raids).ordered
+        groups = RaidGroup.includes(raids: :group).ordered
         render json: RaidGroupBlueprint.render(groups, view: :full)
       end
 

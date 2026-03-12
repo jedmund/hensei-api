@@ -153,7 +153,7 @@ module Api
         end
 
         count = weapons.length
-        paginated = weapons.paginate(page: search_params[:page], per_page: search_page_size)
+        paginated = weapons.includes(:weapon_series).paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: WeaponBlueprint.render(paginated,
                                             view: :dates,
@@ -196,7 +196,7 @@ module Api
         end
 
         count = summons.length
-        paginated = summons.paginate(page: search_params[:page], per_page: search_page_size)
+        paginated = summons.includes(:summon_series).paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: SummonBlueprint.render(paginated,
                                             view: :dates,
