@@ -146,6 +146,11 @@ Rails.application.routes.draw do
       end
     end
     resources :weapon_stat_modifiers, only: %i[index show]
+    resources :awakenings, only: %i[index show create update destroy] do
+      member do
+        post :upload_image
+      end
+    end
     resources :weapon_skill_data, only: %i[index show]
     resources :weapon_skill_boost_types, only: %i[index show]
 
