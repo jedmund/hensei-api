@@ -213,7 +213,11 @@ module Api
       private
 
       def set
-        @character = find_by_any_id(Character, params[:id])
+        if params[:style_swap] == 'true' && !uuid_format?(params[:id])
+          @character = Character.where(granblue_id: params[:id], style_swap: true).first
+        else
+          @character = find_by_any_id(Character, params[:id])
+        end
         render_not_found_response('character') unless @character
       end
 
