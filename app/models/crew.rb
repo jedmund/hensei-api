@@ -18,11 +18,14 @@ class Crew < ApplicationRecord
   validates :granblue_crew_id, uniqueness: true, allow_nil: true
 
   def captain
-    crew_memberships.find_by(role: :captain, retired: false)&.user
+    crew_memberships.includes(user: { active_crew_membership: :crew })
+                    .find_by(role: :captain, retired: false)&.user
   end
 
   def vice_captains
-    crew_memberships.where(role: :vice_captain, retired: false).includes(:user).map(&:user)
+    crew_memberships.where(role: :vice_captain, retired: false)
+                    .includes(user: { active_crew_membership: :crew })
+                    .map(&:user)
   end
 
   def officers
