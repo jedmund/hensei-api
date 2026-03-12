@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -280,9 +280,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "phantom_player_id"
     t.index ["crew_id", "user_id", "status"], name: "index_crew_invitations_on_crew_id_and_user_id_and_status"
     t.index ["crew_id"], name: "index_crew_invitations_on_crew_id"
     t.index ["invited_by_id"], name: "index_crew_invitations_on_invited_by_id"
+    t.index ["phantom_player_id"], name: "index_crew_invitations_on_phantom_player_id"
     t.index ["user_id", "status"], name: "index_crew_invitations_on_user_id_and_status"
     t.index ["user_id"], name: "index_crew_invitations_on_user_id"
   end
@@ -1121,6 +1123,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
   add_foreign_key "crew_gw_participations", "crews"
   add_foreign_key "crew_gw_participations", "gw_events"
   add_foreign_key "crew_invitations", "crews"
+  add_foreign_key "crew_invitations", "phantom_players"
   add_foreign_key "crew_invitations", "users"
   add_foreign_key "crew_invitations", "users", column: "invited_by_id"
   add_foreign_key "crew_memberships", "crews"
