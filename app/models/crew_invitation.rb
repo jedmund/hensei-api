@@ -4,6 +4,7 @@ class CrewInvitation < ApplicationRecord
   belongs_to :crew
   belongs_to :user
   belongs_to :invited_by, class_name: 'User'
+  belongs_to :phantom_player, optional: true
 
   enum :status, { pending: 0, accepted: 1, rejected: 2, expired: 3 }
 
@@ -15,12 +16,14 @@ class CrewInvitation < ApplicationRecord
 
   validate :user_not_in_crew, on: :create
   validate :inviter_is_officer
+  validate :phantom_belongs_to_crew, if: :phantom_player_id_changed?
 
   scope :active, -> { where(status: :pending).where('expires_at IS NULL OR expires_at > ?', Time.current) }
 
   before_create :set_expiration
 
   # Accept the invitation and create membership
+  # If a phantom was pre-assigned, auto-assign it to the new member
   def accept!
     raise CrewErrors::InvitationExpiredError if expired? || (expires_at.present? && expires_at < Time.current)
     raise CrewErrors::AlreadyInCrewError if user.reload.crew.present?
@@ -28,6 +31,11 @@ class CrewInvitation < ApplicationRecord
     transaction do
       update!(status: :accepted)
       CrewMembership.create!(crew: crew, user: user, role: :member)
+
+      if phantom_player.present? && phantom_player.claimed_by_id.nil?
+        user.reload
+        phantom_player.assign_to(user)
+      end
     end
   end
 
@@ -60,5 +68,12 @@ class CrewInvitation < ApplicationRecord
     return if invited_by.crew&.id == crew_id && invited_by.crew_officer?
 
     errors.add(:invited_by, 'must be an officer of the crew')
+  end
+
+  def phantom_belongs_to_crew
+    return unless phantom_player.present?
+    return if phantom_player.crew_id == crew_id
+
+    errors.add(:phantom_player, 'must belong to the same crew')
   end
 end

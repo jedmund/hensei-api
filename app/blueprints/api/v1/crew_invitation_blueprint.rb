@@ -21,6 +21,9 @@ module Api
         field :crew do |invitation|
           CrewBlueprint.render_as_hash(invitation.crew, view: :minimal)
         end
+        field :phantom_player do |invitation|
+          invitation.phantom_player ? PhantomPlayerBlueprint.render_as_hash(invitation.phantom_player) : nil
+        end
       end
 
       view :for_invitee do
@@ -29,6 +32,9 @@ module Api
         end
         field :invited_by do |invitation|
           UserBlueprint.render_as_hash(invitation.invited_by, view: :minimal)
+        end
+        field :phantom_player do |invitation|
+          invitation.phantom_player ? PhantomPlayerBlueprint.render_as_hash(invitation.phantom_player) : nil
         end
       end
     end

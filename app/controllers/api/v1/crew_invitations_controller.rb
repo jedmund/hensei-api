@@ -13,7 +13,7 @@ module Api
       # GET /crews/:crew_id/invitations
       # List pending invitations for a crew (officers only)
       def index
-        invitations = @crew.crew_invitations.pending.includes(:user, :invited_by)
+        invitations = @crew.crew_invitations.pending.includes(:user, :invited_by, :phantom_player)
         render json: CrewInvitationBlueprint.render(invitations, view: :with_user, root: :invitations)
       end
 
@@ -31,7 +31,8 @@ module Api
 
         invitation = @crew.crew_invitations.build(
           user: user,
-          invited_by: current_user
+          invited_by: current_user,
+          phantom_player_id: params[:phantom_player_id]
         )
 
         if invitation.save
@@ -44,7 +45,7 @@ module Api
       # GET /invitations/pending
       # List pending invitations for current user
       def pending
-        invitations = current_user.crew_invitations.active.includes(:crew, :invited_by)
+        invitations = current_user.crew_invitations.active.includes(:crew, :invited_by, :phantom_player)
         render json: CrewInvitationBlueprint.render(invitations, view: :for_invitee, root: :invitations)
       end
 

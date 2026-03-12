@@ -13,6 +13,7 @@ RSpec.describe CrewInvitation, type: :model do
     it { is_expected.to belong_to(:crew) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:invited_by).class_name('User') }
+    it { is_expected.to belong_to(:phantom_player).optional }
   end
 
   describe 'validations' do
@@ -63,6 +64,29 @@ RSpec.describe CrewInvitation, type: :model do
         expect(invitation).to be_valid
       end
     end
+
+    context 'with phantom_player' do
+      let(:phantom) { create(:phantom_player, crew: crew) }
+
+      it 'is valid when phantom belongs to the same crew' do
+        invitation = build(:crew_invitation, crew: crew, user: invitee, invited_by: captain, phantom_player: phantom)
+        expect(invitation).to be_valid
+      end
+
+      it 'is invalid when phantom belongs to a different crew' do
+        other_crew = create(:crew)
+        other_phantom = create(:phantom_player, crew: other_crew)
+
+        invitation = build(:crew_invitation, crew: crew, user: invitee, invited_by: captain, phantom_player: other_phantom)
+        expect(invitation).not_to be_valid
+        expect(invitation.errors[:phantom_player]).to include('must belong to the same crew')
+      end
+
+      it 'is valid without a phantom_player' do
+        invitation = build(:crew_invitation, crew: crew, user: invitee, invited_by: captain, phantom_player: nil)
+        expect(invitation).to be_valid
+      end
+    end
   end
 
   describe '#accept!' do
@@ -96,6 +120,52 @@ RSpec.describe CrewInvitation, type: :model do
 
       it 'raises InvitationExpiredError' do
         expect { invitation.accept! }.to raise_error(CrewErrors::InvitationExpiredError)
+      end
+    end
+
+    context 'with a pre-assigned phantom' do
+      let(:phantom) { create(:phantom_player, crew: crew) }
+      let(:invitation) { create(:crew_invitation, crew: crew, user: invitee, invited_by: captain, phantom_player: phantom) }
+
+      it 'auto-assigns the phantom to the new member' do
+        invitation.accept!
+        expect(phantom.reload.claimed_by).to eq(invitee)
+        expect(phantom.claim_confirmed).to be false
+      end
+
+      it 'creates membership and assigns phantom in one transaction' do
+        expect { invitation.accept! }.to change(CrewMembership, :count).by(1)
+        expect(invitee.reload.crew).to eq(crew)
+        expect(phantom.reload.claimed_by).to eq(invitee)
+      end
+    end
+
+    context 'with a phantom that was already claimed by someone else' do
+      let(:other_member) { create(:user) }
+      let(:phantom) { create(:phantom_player, crew: crew) }
+      let(:invitation) { create(:crew_invitation, crew: crew, user: invitee, invited_by: captain, phantom_player: phantom) }
+
+      before do
+        create(:crew_membership, crew: crew, user: other_member)
+        phantom.assign_to(other_member)
+      end
+
+      it 'skips phantom assignment but still accepts the invitation' do
+        invitation.accept!
+        expect(invitation.reload.status).to eq('accepted')
+        expect(invitee.reload.crew).to eq(crew)
+        # Phantom remains with the other member
+        expect(phantom.reload.claimed_by).to eq(other_member)
+      end
+    end
+
+    context 'without a phantom' do
+      let(:invitation) { create(:crew_invitation, crew: crew, user: invitee, invited_by: captain, phantom_player: nil) }
+
+      it 'accepts normally without phantom assignment' do
+        invitation.accept!
+        expect(invitation.reload.status).to eq('accepted')
+        expect(invitee.reload.crew).to eq(crew)
       end
     end
 
