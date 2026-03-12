@@ -19,8 +19,10 @@ module Api
 
       field :series do |c|
         # Use new lookup table if available
-        if c.character_series_records.any?
-          c.character_series_records.ordered.map do |cs|
+        records = c.character_series_records
+        if records.loaded? ? records.any? : records.exists?
+          sorted = records.loaded? ? records.sort_by(&:order) : records.ordered
+          sorted.map do |cs|
             {
               id: cs.id,
               slug: cs.slug,

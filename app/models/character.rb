@@ -80,7 +80,11 @@ class Character < ApplicationRecord
   def series_names
     # Use new lookup table if available
     if character_series_records.loaded? ? character_series_records.any? : character_series_records.exists?
-      character_series_records.ordered.pluck(:name_en)
+      if character_series_records.loaded?
+        character_series_records.sort_by(&:order).map(&:name_en)
+      else
+        character_series_records.ordered.pluck(:name_en)
+      end
     elsif series.present?
       # Legacy fallback
       series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }

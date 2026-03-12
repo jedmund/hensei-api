@@ -104,7 +104,8 @@ module Api
         end
 
         count = characters.length
-        paginated = characters.paginate(page: search_params[:page], per_page: search_page_size)
+        paginated = characters.includes(:character_series_records)
+                              .paginate(page: search_params[:page], per_page: search_page_size)
 
         render json: CharacterBlueprint.render(paginated,
                                                view: :dates,
