@@ -38,19 +38,25 @@ module Granblue
       # @return [void]
       # @note Only downloads variants that should exist based on character uncap status
       def download_variants(character, selected_size = nil)
-        # All characters have 01 and 02 variants
-        variants = %W[#{@id}_01 #{@id}_02]
+        if character.style_swap?
+          # Style swap characters only have a single style variant
+          log_info "Downloading style swap variant: #{@id}_01_st2 -> #{@id}_01_style" if @verbose
+          download_style_variant(selected_size)
+        else
+          # All characters have 01 and 02 variants
+          variants = %W[#{@id}_01 #{@id}_02]
 
-        # Add FLB variant if available
-        variants << "#{@id}_03" if character.flb
+          # Add FLB variant if available
+          variants << "#{@id}_03" if character.flb
 
-        # Add ULB variant if available
-        variants << "#{@id}_04" if character.ulb
+          # Add ULB variant if available
+          variants << "#{@id}_04" if character.ulb
 
-        log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
+          log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
 
-        variants.each do |variant_id|
-          download_variant(variant_id, selected_size)
+          variants.each do |variant_id|
+            download_variant(variant_id, selected_size)
+          end
         end
       end
 
@@ -69,6 +75,46 @@ module Granblue
           path = download_path(size)
           url = build_variant_url(variant_id, size)
           process_download(url, size, path, last: index == sizes.size - 1)
+        end
+      end
+
+      # Downloads style swap images, fetching from _st2 URLs and storing with _style suffix
+      #
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
+      # @return [void]
+      def download_style_variant(selected_size = nil)
+        return if @test_mode
+
+        sizes = selected_size ? [selected_size] : SIZES
+        source_id = "#{@id}_01_st2"
+        storage_id = "#{@id}_01_style"
+
+        sizes.each_with_index do |size, index|
+          source_url = build_variant_url(source_id, size)
+          ext = size == 'detail' ? '.png' : '.jpg'
+          storage_filename = "#{storage_id}#{ext}"
+          path = download_path(size)
+          s3_key = build_s3_key(size, storage_filename)
+          local_path = "#{path}/#{storage_filename}"
+
+          next unless should_download?(local_path, s3_key)
+
+          if index == sizes.size - 1
+            log_info "\t└ #{size}: #{source_url} -> #{storage_filename}..."
+          else
+            log_info "\t├ #{size}: #{source_url} -> #{storage_filename}..."
+          end
+
+          case @storage
+          when :local
+            download_to_local(source_url, local_path)
+          when :s3
+            stream_to_s3(source_url, s3_key)
+          when :both
+            download_to_both(source_url, local_path, s3_key)
+          end
+        rescue OpenURI::HTTPError
+          log_info "\t404 returned\t#{source_url}"
         end
       end
 
