@@ -124,7 +124,7 @@ module Api
 
       def set_crew
         @crew = if params[:id]
-                  Crew.find(params[:id])
+                  Crew.includes(crew_memberships: { user: { active_crew_membership: :crew } }).find(params[:id])
                 else
                   current_user&.crew
                 end
