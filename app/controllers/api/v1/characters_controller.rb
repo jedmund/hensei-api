@@ -11,7 +11,7 @@ module Api
 
       # GET /characters/:id
       def show
-        render json: CharacterBlueprint.render(@character, view: :full)
+        render json: CharacterBlueprint.render(@character, view: :with_recruitment)
       end
 
       # GET /characters/:id/related
@@ -82,14 +82,11 @@ module Api
           return render json: { error: "Invalid size. Must be one of: #{valid_sizes.join(', ')}" }, status: :unprocessable_entity
         end
 
-        # Validate transformation for characters (01, 02, 03, 04)
-        valid_transformations = %w[01 02 03 04]
+        # Validate transformation for characters (01, 02, 03, 04, or style for style swaps)
+        valid_transformations = %w[01 02 03 04 style]
         if transformation.present? && !valid_transformations.include?(transformation)
           return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_entity
         end
-
-        # Build variant ID
-        variant_id = transformation.present? ? "#{@character.granblue_id}_#{transformation}" : "#{@character.granblue_id}_01"
 
         begin
           downloader = Granblue::Downloaders::CharacterDownloader.new(
@@ -99,8 +96,14 @@ module Api
             verbose: true
           )
 
-          # Call the download_variant method directly for a single variant/size
-          downloader.send(:download_variant, variant_id, size)
+          if transformation == 'style' || (@character.style_swap? && transformation.blank?)
+            # Style swap: fetch from _st2 URL and store as _style
+            downloader.send(:download_style_variant, size)
+          else
+            # Standard variant download
+            variant_id = transformation.present? ? "#{@character.granblue_id}_#{transformation}" : "#{@character.granblue_id}_01"
+            downloader.send(:download_variant, variant_id, size)
+          end
 
           render json: {
             success: true,
@@ -210,7 +213,11 @@ module Api
       private
 
       def set
-        @character = find_by_any_id(Character, params[:id])
+        if params[:style_swap] == 'true' && !uuid_format?(params[:id])
+          @character = Character.where(granblue_id: params[:id], style_swap: true).first
+        else
+          @character = find_by_any_id(Character, params[:id])
+        end
         render_not_found_response('character') unless @character
       end
 
@@ -226,7 +233,7 @@ module Api
         params.require(:character).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element,
           :proficiency1, :proficiency2, :gender, :race1, :race2,
-          :flb, :ulb, :special, :season,
+          :flb, :ulb, :special, :season, :style_swap, :style_name_en, :style_name_jp,
           :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,

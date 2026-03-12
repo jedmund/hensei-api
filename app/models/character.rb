@@ -57,6 +57,8 @@ class Character < ApplicationRecord
   scope :by_season, ->(season) { where(season: season) }
   scope :by_series, ->(series) { where('? = ANY(series)', series) }
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
+  scope :style_swap_variants, -> { where(style_swap: true) }
+  scope :base_characters, -> { where(style_swap: false) }
 
   def blueprint
     CharacterBlueprint
@@ -95,6 +97,19 @@ class Character < ApplicationRecord
 
   def series_slugs
     character_series_records.pluck(:slug)
+  end
+
+  # Style swap helpers — derived from shared granblue_id
+  def base_character
+    return nil unless style_swap? && granblue_id.present?
+
+    Character.where(granblue_id: granblue_id, style_swap: false).first
+  end
+
+  def style_swaps
+    return Character.none if style_swap? || granblue_id.blank?
+
+    Character.where(granblue_id: granblue_id, style_swap: true).where.not(id: id)
   end
 
   # Mapping from legacy integer values to slugs

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -137,6 +137,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "season"
     t.integer "series", default: [], null: false, array: true
+    t.boolean "style_swap", default: false, null: false
+    t.string "style_name_en"
+    t.uuid "base_character_id"
+    t.string "style_name_jp"
+    t.index ["base_character_id"], name: "index_characters_on_base_character_id"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["season"], name: "index_characters_on_season"
@@ -280,9 +285,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "phantom_player_id"
     t.index ["crew_id", "user_id", "status"], name: "index_crew_invitations_on_crew_id_and_user_id_and_status"
     t.index ["crew_id"], name: "index_crew_invitations_on_crew_id"
     t.index ["invited_by_id"], name: "index_crew_invitations_on_invited_by_id"
+    t.index ["phantom_player_id"], name: "index_crew_invitations_on_phantom_player_id"
     t.index ["user_id", "status"], name: "index_crew_invitations_on_user_id_and_status"
     t.index ["user_id"], name: "index_crew_invitations_on_user_id"
   end
@@ -1097,6 +1104,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
   add_foreign_key "character_series_memberships", "characters"
   add_foreign_key "character_skills", "skills"
   add_foreign_key "character_skills", "skills", column: "alt_skill_id"
+  add_foreign_key "characters", "characters", column: "base_character_id"
   add_foreign_key "charge_attacks", "skills"
   add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"
   add_foreign_key "collection_artifacts", "artifacts"
@@ -1121,6 +1129,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_02_015500) do
   add_foreign_key "crew_gw_participations", "crews"
   add_foreign_key "crew_gw_participations", "gw_events"
   add_foreign_key "crew_invitations", "crews"
+  add_foreign_key "crew_invitations", "phantom_players"
   add_foreign_key "crew_invitations", "users"
   add_foreign_key "crew_invitations", "users", column: "invited_by_id"
   add_foreign_key "crew_memberships", "crews"
