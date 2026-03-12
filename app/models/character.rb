@@ -3,9 +3,6 @@
 class Character < ApplicationRecord
   include PgSearch::Model
 
-  belongs_to :base_character, class_name: 'Character', optional: true
-  has_many :style_swaps, class_name: 'Character', foreign_key: :base_character_id, dependent: :nullify
-
   has_many :character_series_memberships, dependent: :destroy
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
 
@@ -55,7 +52,6 @@ class Character < ApplicationRecord
             allow_nil: true
 
   validate :validate_series_values
-  validate :validate_base_character
 
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
@@ -101,6 +97,19 @@ class Character < ApplicationRecord
 
   def series_slugs
     character_series_records.pluck(:slug)
+  end
+
+  # Style swap helpers — derived from shared granblue_id
+  def base_character
+    return nil unless style_swap? && granblue_id.present?
+
+    Character.where(granblue_id: granblue_id, style_swap: false).first
+  end
+
+  def style_swaps
+    return Character.none if style_swap? || granblue_id.blank?
+
+    Character.where(granblue_id: granblue_id, style_swap: true).where.not(id: id)
   end
 
   # Mapping from legacy integer values to slugs
@@ -151,16 +160,6 @@ class Character < ApplicationRecord
   end
 
   private
-
-  def validate_base_character
-    if style_swap? && base_character_id.blank?
-      errors.add(:base_character_id, 'must be present for style swap characters')
-    end
-
-    if !style_swap? && base_character_id.present?
-      errors.add(:base_character_id, 'should only be set for style swap characters')
-    end
-  end
 
   def validate_series_values
     return if series.blank?

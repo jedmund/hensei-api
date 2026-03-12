@@ -15,8 +15,6 @@ module Api
              :style_swap, :style_name
 
       field :base_character do |c|
-        next nil unless c.base_character_id.present?
-
         base = c.base_character
         next nil unless base
 
