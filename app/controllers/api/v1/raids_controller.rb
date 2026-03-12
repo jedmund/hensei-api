@@ -154,7 +154,7 @@ module Api
       end
 
       def raid_params
-        params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id, :enemy_id, :summon_id, :quest_id, :extra)
+        params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id, :enemy_id, :summon_id, :quest_id, :extra, :player_count)
       end
 
       def apply_filters(scope)
@@ -168,7 +168,7 @@ module Api
       end
 
       def filter_params
-        params.permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks)
+        params.except(:controller, :action, :format, :raid).permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks)
       end
 
       def ensure_editor_role
