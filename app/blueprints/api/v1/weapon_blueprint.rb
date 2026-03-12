@@ -87,13 +87,13 @@ module Api
       view :full do
         include_view :stats
         include_view :dates
-        association :awakenings,
-                    blueprint: AwakeningBlueprint,
-                    if: ->(_field_name, weapon, _options) { weapon.awakenings.any? }
+        field :awakenings do |weapon|
+          AwakeningBlueprint.render_as_hash(weapon.awakenings)
+        end
 
-        association :weapon_skills,
-                    blueprint: WeaponSkillBlueprint,
-                    if: ->(_field_name, weapon, _options) { weapon.weapon_skills.any? }
+        field :weapon_skills do |weapon|
+          WeaponSkillBlueprint.render_as_hash(weapon.weapon_skills)
+        end
 
         field :nicknames do |w|
           {

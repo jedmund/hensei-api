@@ -30,6 +30,7 @@ module Api
       # Updates an existing weapon record
       def update
         if @weapon.update(weapon_params)
+          @weapon.reload
           render json: WeaponBlueprint.render(@weapon, view: :full)
         else
           render_validation_error_response(@weapon)
@@ -223,7 +224,7 @@ module Api
           :release_date, :flb_date, :ulb_date, :transcendence_date,
           :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           :recruits, :forged_from, :forge_chain_id, :forge_order,
-          nicknames_en: [], nicknames_jp: [], promotions: []
+          nicknames_en: [], nicknames_jp: [], promotions: [], awakening_ids: []
         )
       end
     end

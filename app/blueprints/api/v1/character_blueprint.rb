@@ -11,7 +11,29 @@ module Api
       end
 
       fields :granblue_id, :character_id, :rarity,
-             :element, :gender, :special, :season
+             :element, :gender, :special, :season,
+             :style_swap
+
+      field :style_name do |c|
+        {
+          en: c.style_name_en,
+          ja: c.style_name_jp
+        }
+      end
+
+      field :base_character do |c|
+        base = c.base_character
+        next nil unless base
+
+        {
+          id: base.id,
+          granblue_id: base.granblue_id,
+          name: {
+            en: base.name_en,
+            ja: base.name_jp
+          }
+        }
+      end
 
       field :season_name do |c|
         c.season_name
@@ -19,8 +41,10 @@ module Api
 
       field :series do |c|
         # Use new lookup table if available
-        if c.character_series_records.any?
-          c.character_series_records.ordered.map do |cs|
+        records = c.character_series_records
+        if records.loaded? ? records.any? : records.exists?
+          sorted = records.loaded? ? records.sort_by(&:order) : records.ordered
+          sorted.map do |cs|
             {
               id: cs.id,
               slug: cs.slug,
@@ -57,7 +81,8 @@ module Api
 
       view :preview do
         excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
-                 :season_name, :series, :series_names, :uncap, :race, :proficiency
+                 :season_name, :series, :series_names, :uncap, :race, :proficiency,
+                 :style_swap, :style_name, :base_character
       end
 
       view :full do
@@ -86,6 +111,23 @@ module Api
         end
 
         fields :gamewith, :kamigame
+
+        field :style_swaps do |c|
+          c.style_swaps.map do |swap|
+            {
+              id: swap.id,
+              granblue_id: swap.granblue_id,
+              name: {
+                en: swap.name_en,
+                ja: swap.name_jp
+              },
+              style_name: {
+                en: swap.style_name_en,
+                ja: swap.style_name_jp
+              }
+            }
+          end
+        end
       end
 
       # Separate view for recruitment info - only include when needed (e.g., character detail page)

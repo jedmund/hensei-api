@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_11_000002) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -137,6 +137,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_000002) do
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "season"
     t.integer "series", default: [], null: false, array: true
+    t.boolean "style_swap", default: false, null: false
+    t.string "style_name_en"
+    t.uuid "base_character_id"
+    t.string "style_name_jp"
+    t.index ["base_character_id"], name: "index_characters_on_base_character_id"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["season"], name: "index_characters_on_season"
@@ -1099,6 +1104,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_000002) do
   add_foreign_key "character_series_memberships", "characters"
   add_foreign_key "character_skills", "skills"
   add_foreign_key "character_skills", "skills", column: "alt_skill_id"
+  add_foreign_key "characters", "characters", column: "base_character_id"
   add_foreign_key "charge_attacks", "skills"
   add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"
   add_foreign_key "collection_artifacts", "artifacts"

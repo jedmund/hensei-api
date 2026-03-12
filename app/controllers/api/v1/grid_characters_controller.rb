@@ -16,10 +16,10 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
 
-      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync]
-      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync]
+      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync switch_style]
+      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync switch_style]
       before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy sync]
+      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy sync switch_style]
 
       ##
       # Creates a new grid character.
@@ -252,6 +252,34 @@ module Api
         end
 
         @grid_character.sync_from_collection!
+        render json: GridCharacterBlueprint.render(@grid_character.reload,
+                                                   root: :grid_character,
+                                                   view: :nested)
+      end
+
+      ##
+      # Switches a grid character between its base and style swap variant.
+      #
+      # Finds the alternate character with the same granblue_id but opposite style_swap flag,
+      # then updates the grid character's character_id to the alternate.
+      #
+      # @return [void]
+      def switch_style
+        current_character = @grid_character.character
+
+        alternate = if current_character.style_swap?
+                      current_character.base_character
+                    else
+                      current_character.style_swaps.first
+                    end
+
+        unless alternate
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No style swap variant found')
+          )
+        end
+
+        @grid_character.update!(character_id: alternate.id)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
