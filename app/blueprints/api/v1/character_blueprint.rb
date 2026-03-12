@@ -12,7 +12,14 @@ module Api
 
       fields :granblue_id, :character_id, :rarity,
              :element, :gender, :special, :season,
-             :style_swap, :style_name
+             :style_swap
+
+      field :style_name do |c|
+        {
+          en: c.style_name_en,
+          ja: c.style_name_jp
+        }
+      end
 
       field :base_character do |c|
         base = c.base_character
@@ -112,7 +119,10 @@ module Api
                 en: swap.name_en,
                 ja: swap.name_jp
               },
-              style_name: swap.style_name
+              style_name: {
+                en: swap.style_name_en,
+                ja: swap.style_name_jp
+              }
             }
           end
         end
