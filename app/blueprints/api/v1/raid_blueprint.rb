@@ -15,6 +15,10 @@ module Api
 
         fields :slug, :level, :element, :enemy_id, :summon_id, :quest_id
 
+        field :extra do |raid|
+          raid.effective_extra
+        end
+
         association :group, blueprint: RaidGroupBlueprint, view: :flat
       end
 
