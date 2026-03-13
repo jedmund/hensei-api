@@ -15,10 +15,10 @@ module Api
 
       attr_reader :party, :incoming_summon
 
-      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync]
-      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync]
+      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync duplicate]
+      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync duplicate]
       before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync duplicate]
 
       ##
       # Creates a new grid summon.
@@ -251,6 +251,58 @@ module Api
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,
                                                 view: :nested)
+      end
+
+      ##
+      # Duplicates a GridSummon to a new position.
+      #
+      # Creates a copy of the grid summon at the specified target position.
+      # Limited summons cannot be duplicated.
+      # Collection links are not carried over to the duplicate.
+      #
+      # @return [void]
+      def duplicate
+        # Block limited summons
+        if @grid_summon.summon.limit
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('Limited summons cannot be duplicated')
+          )
+        end
+
+        position = duplicate_params[:position].to_i
+
+        # Validate target position is a sub-summon slot (0-3)
+        unless (0..3).cover?(position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Invalid duplicate target position #{position}")
+          )
+        end
+
+        # Check target position is empty
+        if GridSummon.exists?(party_id: @party.id, position: position)
+          return render_unprocessable_entity_response(
+            Api::V1::PositionOccupiedError.new("Position #{position} is already occupied")
+          )
+        end
+
+        new_summon = GridSummon.new(
+          party_id: @party.id,
+          summon_id: @grid_summon.summon_id,
+          position: position,
+          uncap_level: @grid_summon.uncap_level,
+          transcendence_step: @grid_summon.transcendence_step,
+          collection_summon_id: nil,
+          orphaned: false,
+          main: false,
+          friend: false,
+          quick_summon: false
+        )
+
+        if new_summon.save
+          render json: GridSummonBlueprint.render(new_summon, view: :full, root: :grid_summon), status: :created
+        else
+          render_validation_error_response(new_summon)
+        end
       end
 
       ##
@@ -500,6 +552,14 @@ module Api
       # @return [ActionController::Parameters] the permitted parameters.
       def swap_params
         params.permit(:source_id, :target_id)
+      end
+
+      ##
+      # Specifies and permits the duplicate parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def duplicate_params
+        params.permit(:position)
       end
     end
   end
