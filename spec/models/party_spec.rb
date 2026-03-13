@@ -190,6 +190,185 @@ RSpec.describe Party, type: :model do
     end
   end
 
+  describe '#mod_and_side' do
+    # Use real seeded summons to test the full stack (model -> series -> mod mapping)
+    let(:agni) { Summon.find_by!(granblue_id: '2040094000') }         # series "3" (Primal)
+    let(:hades) { Summon.find_by!(granblue_id: '2040090000') }        # series "3" (Primal)
+    let(:colossus) { Summon.find_by!(granblue_id: '2040034000') }     # series "2" (Omega)
+    let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }      # series "0" (Other)
+    let(:beelzebub) { Summon.find_by!(granblue_id: '2040408000') }    # series "0" (Other)
+    let(:qilin) { Summon.find_by!(granblue_id: '2040158000') }        # series nil
+
+    def add_summon(party, summon, main:, friend:)
+      position = main ? -1 : (friend ? 4 : 1)
+      GridSummon.create!(
+        party: party,
+        summon: summon,
+        position: position,
+        main: main,
+        friend: friend,
+        uncap_level: 3,
+        transcendence_step: 0
+      )
+    end
+
+    context 'double sided' do
+      it 'returns double primal with two real Primal summons (Agni + Hades)' do
+        party = create(:party)
+        add_summon(party, agni, main: true, friend: false)
+        add_summon(party, hades, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('primal')
+        expect(result[:side]).to eq('double')
+      end
+
+      it 'returns double omega with two Omega summons in both slots' do
+        # Use Colossus Omega in main; update Bahamut's series temporarily for friend
+        party = create(:party)
+        add_summon(party, colossus, main: true, friend: false)
+
+        # Create a second omega by temporarily changing a summon's series
+        beelzebub.update_column(:series, '2')
+        add_summon(party, beelzebub, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('omega')
+        expect(result[:side]).to eq('double')
+      ensure
+        beelzebub.update_column(:series, '0')
+      end
+
+      it 'returns double odious when both summons have series 15' do
+        party = create(:party)
+        bahamut.update_column(:series, '15')
+        beelzebub.update_column(:series, '15')
+        add_summon(party, bahamut, main: true, friend: false)
+        add_summon(party, beelzebub, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('odious')
+        expect(result[:side]).to eq('double')
+      ensure
+        bahamut.update_column(:series, '0')
+        beelzebub.update_column(:series, '0')
+      end
+
+      it 'treats demi-primal (series 4) as primal for double' do
+        party = create(:party)
+        add_summon(party, agni, main: true, friend: false)
+        bahamut.update_column(:series, '4')
+        add_summon(party, bahamut, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('primal')
+        expect(result[:side]).to eq('double')
+      ensure
+        bahamut.update_column(:series, '0')
+      end
+    end
+
+    context 'single sided' do
+      it 'returns single primal when main is Agni and friend is Bahamut' do
+        party = create(:party)
+        add_summon(party, agni, main: true, friend: false)
+        add_summon(party, bahamut, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('primal')
+        expect(result[:side]).to eq('single')
+      end
+
+      it 'returns single omega when main is Colossus and friend is Bahamut' do
+        party = create(:party)
+        add_summon(party, colossus, main: true, friend: false)
+        add_summon(party, bahamut, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('omega')
+        expect(result[:side]).to eq('single')
+      end
+
+      it 'uses main summon type when main is Primal and friend is Omega' do
+        party = create(:party)
+        add_summon(party, agni, main: true, friend: false)
+        add_summon(party, colossus, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('primal')
+        expect(result[:side]).to eq('single')
+      end
+
+      it 'uses friend type when main is non-mod and friend is Primal' do
+        party = create(:party)
+        add_summon(party, bahamut, main: true, friend: false)
+        add_summon(party, hades, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('primal')
+        expect(result[:side]).to eq('single')
+      end
+    end
+
+    context 'unboosted' do
+      it 'returns unboosted when both summons are non-mod types' do
+        party = create(:party)
+        add_summon(party, bahamut, main: true, friend: false)
+        add_summon(party, beelzebub, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('unboosted')
+        expect(result[:side]).to eq('none')
+      end
+
+      it 'returns unboosted when both summons have nil series' do
+        party = create(:party)
+        add_summon(party, qilin, main: true, friend: false)
+        bahamut.update_column(:series, nil)
+        add_summon(party, bahamut, main: false, friend: true)
+        party.reload
+
+        result = party.mod_and_side
+        expect(result[:mod]).to eq('unboosted')
+        expect(result[:side]).to eq('none')
+      ensure
+        bahamut.update_column(:series, '0')
+      end
+    end
+
+    context 'missing summon slots' do
+      it 'returns nil when party has no summons' do
+        party = create(:party)
+        expect(party.mod_and_side).to be_nil
+      end
+
+      it 'returns nil when only main summon is set (no friend)' do
+        party = create(:party)
+        add_summon(party, agni, main: true, friend: false)
+        party.reload
+
+        expect(party.mod_and_side).to be_nil
+      end
+
+      it 'returns nil when only friend summon is set (no main)' do
+        party = create(:party)
+        add_summon(party, agni, main: false, friend: true)
+        party.reload
+
+        expect(party.mod_and_side).to be_nil
+      end
+    end
+  end
+
   describe '#ready_for_preview?' do
     it 'returns false if weapons_count is less than 1' do
       party = build(:party, weapons_count: 0, characters_count: 1, summons_count: 1)
