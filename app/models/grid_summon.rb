@@ -36,6 +36,8 @@ class GridSummon < ApplicationRecord
 
   validate :no_conflicts, on: :create
 
+  before_validation :set_default_uncap_level, on: :create
+
   ##
   # Returns the blueprint for rendering the grid summon.
   #
@@ -96,6 +98,10 @@ class GridSummon < ApplicationRecord
   end
 
   private
+
+  def set_default_uncap_level
+    self.uncap_level ||= 0
+  end
 
   ##
   # Validates the uncap_level based on the associated Summon’s flags.

@@ -56,6 +56,7 @@ class GridWeapon < ApplicationRecord
   validate :no_conflicts, on: :create
 
   before_save :assign_mainhand
+  before_validation :set_default_uncap_level, on: :create
   before_validation :set_default_exorcism_level, on: :create
 
   ##### Amoeba configuration
@@ -251,6 +252,10 @@ class GridWeapon < ApplicationRecord
   # Sets default exorcism_level to 1 for befoulment weapons if not provided.
   #
   # @return [void]
+  def set_default_uncap_level
+    self.uncap_level ||= 0
+  end
+
   def set_default_exorcism_level
     return unless weapon.present?
     return unless exorcism_level.nil? || exorcism_level.zero?
