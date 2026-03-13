@@ -77,6 +77,13 @@
 class Party < ApplicationRecord
   include GranblueEnums
 
+  SUMMON_SERIES_MOD = {
+    '2' => 'omega',
+    '3' => 'primal',
+    '4' => 'primal',
+    '15' => 'odious'
+  }.freeze
+
   # Define preview_state as an enum.
   attribute :preview_state, :integer
   enum :preview_state, { pending: 0, queued: 1, in_progress: 2, generated: 3, failed: 4 }
@@ -306,6 +313,25 @@ class Party < ApplicationRecord
 
     Rails.cache.fetch("party_#{id}_favorited_by_#{user.id}", expires_in: 1.hour) do
       Favorite.exists?(user_id: user.id, party_id: id)
+    end
+  end
+
+  def mod_and_side
+    main_summon = summons.detect { |gs| gs.main? }&.summon
+    friend_summon = summons.detect { |gs| gs.friend? }&.summon
+    return nil unless main_summon && friend_summon
+
+    main_type = SUMMON_SERIES_MOD[main_summon.series]
+    friend_type = SUMMON_SERIES_MOD[friend_summon.series]
+
+    if main_type && main_type == friend_type
+      { mod: main_type, side: 'double' }
+    elsif main_type
+      { mod: main_type, side: 'single' }
+    elsif friend_type
+      { mod: friend_type, side: 'single' }
+    else
+      { mod: 'unboosted', side: 'none' }
     end
   end
 
