@@ -166,7 +166,9 @@ Rails.application.routes.draw do
     post 'grid_characters/:id/sync', to: 'grid_characters#sync'
     post 'grid_characters/:id/switch_style', to: 'grid_characters#switch_style'
     post 'grid_weapons/:id/sync', to: 'grid_weapons#sync'
+    post 'grid_weapons/:id/duplicate', to: 'grid_weapons#duplicate'
     post 'grid_summons/:id/sync', to: 'grid_summons#sync'
+    post 'grid_summons/:id/duplicate', to: 'grid_summons#duplicate'
     post 'parties/:id/sync_all', to: 'parties#sync_all'
     post 'parties/:id/unlink_collection', to: 'parties#unlink_collection'
 
