@@ -13,10 +13,10 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
 
-      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync]
-      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync]
+      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync duplicate]
+      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync duplicate]
       before_action :find_incoming_weapon, only: %i[create resolve]
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync duplicate]
 
       ##
       # Creates a new GridWeapon.
@@ -249,6 +249,51 @@ module Api
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
+      end
+
+      ##
+      # Duplicates a GridWeapon to a new position.
+      #
+      # Creates a copy of the grid weapon at the specified target position using amoeba_dup.
+      # AX skills and befoulment are nullified per the amoeba configuration.
+      # Limited weapons (Opus, Draconic, etc.) cannot be duplicated.
+      # Collection links are not carried over to the duplicate.
+      #
+      # @return [void]
+      def duplicate
+        # Block limited weapons
+        if @grid_weapon.weapon.limit
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('Limited weapons cannot be duplicated')
+          )
+        end
+
+        position = duplicate_params[:position].to_i
+
+        # Validate target position is a sub-weapon slot (0-8)
+        unless (0..8).cover?(position)
+          return render_unprocessable_entity_response(
+            Api::V1::InvalidPositionError.new("Invalid duplicate target position #{position}")
+          )
+        end
+
+        # Check target position is empty
+        if GridWeapon.exists?(party_id: @party.id, position: position)
+          return render_unprocessable_entity_response(
+            Api::V1::PositionOccupiedError.new("Position #{position} is already occupied")
+          )
+        end
+
+        new_weapon = @grid_weapon.amoeba_dup
+        new_weapon.position = position
+        new_weapon.collection_weapon_id = nil
+        new_weapon.orphaned = false
+
+        if new_weapon.save
+          render json: GridWeaponBlueprint.render(new_weapon, view: :full, root: :grid_weapon), status: :created
+        else
+          render_validation_error_response(new_weapon)
+        end
       end
 
       private
@@ -553,6 +598,14 @@ module Api
       # @return [ActionController::Parameters] the permitted parameters.
       def resolve_params
         params.require(:resolve).permit(:position, :incoming, conflicting: [])
+      end
+
+      ##
+      # Specifies and permits the duplicate parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
+      def duplicate_params
+        params.permit(:position)
       end
     end
   end
