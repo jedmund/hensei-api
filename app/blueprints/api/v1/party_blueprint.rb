@@ -31,6 +31,14 @@ module Api
         party.favorited?(options[:current_user])
       end
 
+      field :mod do |party|
+        party.mod_and_side&.dig(:mod)
+      end
+
+      field :side do |party|
+        party.mod_and_side&.dig(:side)
+      end
+
       # For collection views
       view :preview do
         include_view :preview_objects # Characters, Weapons, Summons
