@@ -17,7 +17,7 @@ module Api
         }
       end
 
-      fields :skill_group, :modifier, :polarity
+      fields :skill_group, :modifier, :polarity, :score_category
 
       field :base_values do |s|
         s.base_values
