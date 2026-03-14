@@ -49,9 +49,15 @@ module Api
         end
       end
 
-      # Include grade and recommendation by default
-      field :grade do |obj|
-        ArtifactGrader.new(obj).grade
+      field :score do |obj|
+        if obj.total_score.present?
+          {
+            attack: obj.attack_score,
+            defense: obj.defense_score,
+            special: obj.special_score,
+            total: obj.total_score
+          }
+        end
       end
 
       association :artifact, blueprint: ArtifactBlueprint

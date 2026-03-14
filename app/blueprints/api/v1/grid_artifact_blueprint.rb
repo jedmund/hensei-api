@@ -32,9 +32,16 @@ module Api
         end
       end
 
-      # Include grade and recommendation by default
-      field :grade do |obj|
-        ArtifactGrader.new(obj).grade
+      field :score do |obj|
+        ca = obj.collection_artifact
+        if ca&.total_score.present?
+          {
+            attack: ca.attack_score,
+            defense: ca.defense_score,
+            special: ca.special_score,
+            total: ca.total_score
+          }
+        end
       end
 
       view :nested do

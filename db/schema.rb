@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_12_202346) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_14_060715) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -35,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_12_202346) do
     t.string "polarity", default: "positive", null: false
     t.string "game_name_en"
     t.string "game_name_jp"
+    t.integer "score_category"
     t.index ["game_name_en"], name: "index_artifact_skills_on_game_name_en"
     t.index ["game_name_jp"], name: "index_artifact_skills_on_game_name_jp"
     t.index ["skill_group", "modifier"], name: "index_artifact_skills_on_skill_group_and_modifier", unique: true
@@ -177,6 +178,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_12_202346) do
     t.datetime "updated_at", null: false
     t.integer "reroll_slot"
     t.string "game_id"
+    t.integer "attack_score"
+    t.integer "defense_score"
+    t.integer "special_score"
+    t.integer "total_score"
     t.index ["artifact_id"], name: "index_collection_artifacts_on_artifact_id"
     t.index ["element"], name: "index_collection_artifacts_on_element"
     t.index ["user_id", "artifact_id"], name: "index_collection_artifacts_on_user_id_and_artifact_id"

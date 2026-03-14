@@ -203,6 +203,12 @@ class ArtifactImportService
     # Handle both string and symbol keys from params
     data = item.is_a?(Hash) ? item.with_indifferent_access : item
 
+    # Extract Cygames scores
+    score_info = data['score_info'] || {}
+
+    # Update score_category on ArtifactSkill records if present
+    update_skill_score_categories(data)
+
     {
       artifact: artifact,
       game_id: data['id'].to_s,
@@ -212,7 +218,11 @@ class ArtifactImportService
       skill1: parse_skill(data['skill1_info']),
       skill2: parse_skill(data['skill2_info']),
       skill3: parse_skill(data['skill3_info']),
-      skill4: parse_skill(data['skill4_info'])
+      skill4: parse_skill(data['skill4_info']),
+      attack_score: score_info['attack_score'],
+      defense_score: score_info['defense_score'],
+      special_score: score_info['special_score'],
+      total_score: score_info['total_score']
     }
   end
 
@@ -223,6 +233,24 @@ class ArtifactImportService
   def map_proficiency(kind)
     # Game 'kind' field maps directly to proficiency enum (1-10)
     kind.to_i
+  end
+
+  def update_skill_score_categories(data)
+    (1..4).each do |slot|
+      info = data["skill#{slot}_info"]
+      next if info.blank?
+
+      info = info.is_a?(Hash) ? info.with_indifferent_access : info
+      category = info['score_category']
+      next if category.blank? || category.to_s == ''
+
+      name = info['name']
+      skill = ArtifactSkill.find_by_game_name(name)
+      next unless skill
+      next if skill.score_category.present?
+
+      skill.update_column(:score_category, category.to_i)
+    end
   end
 
   def parse_skill(skill_info)
