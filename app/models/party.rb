@@ -137,32 +137,40 @@ class Party < ApplicationRecord
              class_name: 'Guidebook',
              optional: true
 
-  has_many :characters,
+  # Scoped associations (exclude substitutes) — used by blueprints and public API
+  has_many :characters, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridCharacter'
+
+  has_many :weapons, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridWeapon'
+
+  has_many :summons, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridSummon'
+
+  # Unscoped associations (include substitutes) — used by amoeba and internal logic
+  has_many :all_characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
-           counter_cache: true,
-           dependent: :destroy,
-           inverse_of: :party
+           dependent: :destroy
 
-  has_many :weapons,
+  has_many :all_weapons,
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
-           counter_cache: true,
-           dependent: :destroy,
-           inverse_of: :party
+           dependent: :destroy
 
-  has_many :summons,
+  has_many :all_summons,
            foreign_key: 'party_id',
            class_name: 'GridSummon',
-           counter_cache: true,
-           dependent: :destroy,
-           inverse_of: :party
+           dependent: :destroy
 
   has_many :favorites, dependent: :destroy
 
-  accepts_nested_attributes_for :characters
-  accepts_nested_attributes_for :summons
-  accepts_nested_attributes_for :weapons
+  accepts_nested_attributes_for :all_characters
+  accepts_nested_attributes_for :all_summons
+  accepts_nested_attributes_for :all_weapons
 
   before_create :set_shortcode
   before_create :set_edit_key
@@ -180,10 +188,12 @@ class Party < ApplicationRecord
     nullify :shortcode
     nullify :edit_key
 
-    include_association :characters
-    include_association :weapons
-    include_association :summons
+    include_association :all_characters
+    include_association :all_weapons
+    include_association :all_summons
   end
+
+  after_amoeba_dup :remap_substitutions
 
   # ActiveRecord Validations
   validate :skills_are_unique
@@ -483,5 +493,51 @@ class Party < ApplicationRecord
     num_chars = 6
     o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
     (0...num_chars).map { o[rand(o.length)] }.join
+  end
+
+  ##
+  # Remaps substitution join records after amoeba duplication.
+  #
+  # Amoeba copies grid items but not their substitution join records.
+  # This callback rebuilds them by matching old grid items to new ones
+  # based on their item FK, position, and is_substitute flag.
+  #
+  # @return [void]
+  def remap_substitutions
+    return unless source_party_id.present?
+
+    source = Party.find(source_party_id)
+
+    # Build mapping from old grid item IDs to new grid items for each type
+    {
+      'GridCharacter' => { source: source.all_characters, target: all_characters, item_fk: :character_id },
+      'GridWeapon' => { source: source.all_weapons, target: all_weapons, item_fk: :weapon_id },
+      'GridSummon' => { source: source.all_summons, target: all_summons, item_fk: :summon_id }
+    }.each do |grid_type, config|
+      id_map = {}
+      config[:source].each do |old_item|
+        new_item = config[:target].detect do |ni|
+          ni.send(config[:item_fk]) == old_item.send(config[:item_fk]) &&
+            ni.position == old_item.position &&
+            ni.is_substitute == old_item.is_substitute
+        end
+        id_map[old_item.id] = new_item.id if new_item
+      end
+
+      # Rebuild substitution records
+      Substitution.where(grid_type: grid_type, grid_id: id_map.keys).find_each do |sub|
+        new_grid_id = id_map[sub.grid_id]
+        new_substitute_grid_id = id_map[sub.substitute_grid_id]
+        next unless new_grid_id && new_substitute_grid_id
+
+        Substitution.create!(
+          grid_type: grid_type,
+          grid_id: new_grid_id,
+          substitute_grid_type: grid_type,
+          substitute_grid_id: new_substitute_grid_id,
+          position: sub.position
+        )
+      end
+    end
   end
 end
