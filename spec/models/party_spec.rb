@@ -191,13 +191,19 @@ RSpec.describe Party, type: :model do
   end
 
   describe '#mod_and_side' do
-    # Use real seeded summons to test the full stack (model -> series -> mod mapping)
-    let(:agni) { Summon.find_by!(granblue_id: '2040094000') }         # series "3" (Primal)
-    let(:hades) { Summon.find_by!(granblue_id: '2040090000') }        # series "3" (Primal)
-    let(:colossus) { Summon.find_by!(granblue_id: '2040034000') }     # series "2" (Omega)
-    let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }      # series "0" (Other)
-    let(:beelzebub) { Summon.find_by!(granblue_id: '2040408000') }    # series "0" (Other)
-    let(:qilin) { Summon.find_by!(granblue_id: '2040158000') }        # series nil
+    # Create summon series for testing
+    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
+    let(:optimus_series) { SummonSeries.find_or_create_by!(slug: 'optimus') { |s| s.name_en = 'Optimus'; s.name_jp = 'オプティマス'; s.order = 3 } }
+    let(:demi_optimus_series) { SummonSeries.find_or_create_by!(slug: 'demi-optimus') { |s| s.name_en = 'Demi Optimus'; s.name_jp = 'デミ・オプティマス'; s.order = 4 } }
+    let(:bellum_series) { SummonSeries.find_or_create_by!(slug: 'bellum') { |s| s.name_en = 'Bellum'; s.name_jp = 'ベルム'; s.order = 18 } }
+
+    # Use real seeded summons, associate with summon_series for testing
+    let(:agni) { Summon.find_by!(granblue_id: '2040094000').tap { |s| s.update_column(:summon_series_id, optimus_series.id) } }
+    let(:hades) { Summon.find_by!(granblue_id: '2040090000').tap { |s| s.update_column(:summon_series_id, optimus_series.id) } }
+    let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
+    let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }      # no mod series
+    let(:beelzebub) { Summon.find_by!(granblue_id: '2040408000') }    # no mod series
+    let(:qilin) { Summon.find_by!(granblue_id: '2040158000') }        # no series
 
     def add_summon(party, summon, main:, friend:)
       position = main ? -1 : (friend ? 4 : 1)
@@ -225,12 +231,10 @@ RSpec.describe Party, type: :model do
       end
 
       it 'returns double omega with two Omega summons in both slots' do
-        # Use Colossus Omega in main; update Bahamut's series temporarily for friend
         party = create(:party)
         add_summon(party, colossus, main: true, friend: false)
 
-        # Create a second omega by temporarily changing a summon's series
-        beelzebub.update_column(:series, '2')
+        beelzebub.update_column(:summon_series_id, magna_series.id)
         add_summon(party, beelzebub, main: false, friend: true)
         party.reload
 
@@ -238,13 +242,13 @@ RSpec.describe Party, type: :model do
         expect(result[:mod]).to eq('omega')
         expect(result[:side]).to eq('double')
       ensure
-        beelzebub.update_column(:series, '0')
+        beelzebub.update_column(:summon_series_id, nil)
       end
 
-      it 'returns double odious when both summons have series 15' do
+      it 'returns double odious when both summons are bellum series' do
         party = create(:party)
-        bahamut.update_column(:series, '15')
-        beelzebub.update_column(:series, '15')
+        bahamut.update_column(:summon_series_id, bellum_series.id)
+        beelzebub.update_column(:summon_series_id, bellum_series.id)
         add_summon(party, bahamut, main: true, friend: false)
         add_summon(party, beelzebub, main: false, friend: true)
         party.reload
@@ -253,14 +257,14 @@ RSpec.describe Party, type: :model do
         expect(result[:mod]).to eq('odious')
         expect(result[:side]).to eq('double')
       ensure
-        bahamut.update_column(:series, '0')
-        beelzebub.update_column(:series, '0')
+        bahamut.update_column(:summon_series_id, nil)
+        beelzebub.update_column(:summon_series_id, nil)
       end
 
-      it 'treats demi-primal (series 4) as primal for double' do
+      it 'treats demi-optimus as primal for double' do
         party = create(:party)
         add_summon(party, agni, main: true, friend: false)
-        bahamut.update_column(:series, '4')
+        bahamut.update_column(:summon_series_id, demi_optimus_series.id)
         add_summon(party, bahamut, main: false, friend: true)
         party.reload
 
@@ -268,7 +272,7 @@ RSpec.describe Party, type: :model do
         expect(result[:mod]).to eq('primal')
         expect(result[:side]).to eq('double')
       ensure
-        bahamut.update_column(:series, '0')
+        bahamut.update_column(:summon_series_id, nil)
       end
     end
 
@@ -330,18 +334,15 @@ RSpec.describe Party, type: :model do
         expect(result[:side]).to eq('none')
       end
 
-      it 'returns unboosted when both summons have nil series' do
+      it 'returns unboosted when both summons have no summon series' do
         party = create(:party)
         add_summon(party, qilin, main: true, friend: false)
-        bahamut.update_column(:series, nil)
         add_summon(party, bahamut, main: false, friend: true)
         party.reload
 
         result = party.mod_and_side
         expect(result[:mod]).to eq('unboosted')
         expect(result[:side]).to eq('none')
-      ensure
-        bahamut.update_column(:series, '0')
       end
     end
 
