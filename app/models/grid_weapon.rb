@@ -27,10 +27,17 @@ class GridWeapon < ApplicationRecord
 
   belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
 
-  belongs_to :party,
-             counter_cache: :weapons_count,
-             inverse_of: :weapons
+  belongs_to :party
+  belongs_to :role, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+
   validates_presence_of :party
+  validate :role_slot_type_matches, if: :role_id?
+
+  # Counter cache (only for non-substitute items)
+  after_create :increment_counter_cache, unless: :is_substitute?
+  after_destroy :decrement_counter_cache, unless: :is_substitute?
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
@@ -43,8 +50,8 @@ class GridWeapon < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, presence: true, numericality: { only_integer: true }
 
-  validate :compatible_with_position, on: :create
-  validate :no_conflicts, on: :create
+  validate :compatible_with_position, on: :create, unless: :is_substitute?
+  validate :no_conflicts, on: :create, unless: :is_substitute?
 
   before_save :assign_mainhand
 
@@ -54,6 +61,12 @@ class GridWeapon < ApplicationRecord
     nullify :ax_modifier2
     nullify :ax_strength1
     nullify :ax_strength2
+    nullify :role_id
+    nullify :substitution_note
+  end
+
+  def substitute?
+    is_substitute?
   end
 
   ##
@@ -150,5 +163,19 @@ class GridWeapon < ApplicationRecord
   # @return [void]
   def assign_mainhand
     self.mainhand = (position == -1)
+  end
+
+  def role_slot_type_matches
+    return unless role.present? && role.slot_type != 'Weapon'
+
+    errors.add(:role, 'must be a Weapon role')
+  end
+
+  def increment_counter_cache
+    Party.increment_counter(:weapons_count, party_id)
+  end
+
+  def decrement_counter_cache
+    Party.decrement_counter(:weapons_count, party_id)
   end
 end

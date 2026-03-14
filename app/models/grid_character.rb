@@ -20,12 +20,18 @@ class GridCharacter < ApplicationRecord
   # Associations
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
-  belongs_to :party,
-             counter_cache: :characters_count,
-             inverse_of: :characters
+  belongs_to :party
+  belongs_to :role, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
 
   # Validations
   validates_presence_of :party
+  validate :role_slot_type_matches, if: :role_id?
+
+  # Counter cache (only for non-substitute items)
+  after_create :increment_counter_cache, unless: :is_substitute?
+  after_destroy :decrement_counter_cache, unless: :is_substitute?
 
   # Validate that uncap_level and transcendence_step are present and numeric.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
@@ -48,6 +54,12 @@ class GridCharacter < ApplicationRecord
     set ring4: { modifier: nil, strength: nil }
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
+    nullify :role_id
+    nullify :substitution_note
+  end
+
+  def substitute?
+    is_substitute?
   end
 
   # Hooks
@@ -388,5 +400,19 @@ class GridCharacter < ApplicationRecord
   # @return [Array<Integer>] list of allowed HP values.
   def hp_values
     [150, 300, 450, 600, 750, 900, 1050, 1200, 1350, 1500]
+  end
+
+  def role_slot_type_matches
+    return unless role.present? && role.slot_type != 'Character'
+
+    errors.add(:role, 'must be a Character role')
+  end
+
+  def increment_counter_cache
+    Party.increment_counter(:characters_count, party_id)
+  end
+
+  def decrement_counter_cache
+    Party.decrement_counter(:characters_count, party_id)
   end
 end

@@ -13,14 +13,21 @@
 class GridSummon < ApplicationRecord
   belongs_to :summon, foreign_key: :summon_id, primary_key: :id
 
-  belongs_to :party,
-             counter_cache: :summons_count,
-             inverse_of: :summons
+  belongs_to :party
+  belongs_to :role, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+
   validates_presence_of :party
+  validate :role_slot_type_matches, if: :role_id?
+
+  # Counter cache (only for non-substitute items)
+  after_create :increment_counter_cache, unless: :is_substitute?
+  after_destroy :decrement_counter_cache, unless: :is_substitute?
 
   # Validate that position is provided.
   validates :position, presence: true
-  validate :compatible_with_position, on: :create
+  validate :compatible_with_position, on: :create, unless: :is_substitute?
 
   # Validate that uncap_level and transcendence_step are present and numeric.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
@@ -29,7 +36,11 @@ class GridSummon < ApplicationRecord
   # Custom validation to enforce maximum uncap_level based on the associated Summon’s flags.
   validate :validate_uncap_level_based_on_summon_flags
 
-  validate :no_conflicts, on: :create
+  validate :no_conflicts, on: :create, unless: :is_substitute?
+
+  def substitute?
+    is_substitute?
+  end
 
   ##
   # Returns the blueprint for rendering the grid summon.
@@ -131,5 +142,19 @@ class GridSummon < ApplicationRecord
     return unless [4, 5].include?(position.to_i) && !summon.subaura
 
     errors.add(:position, 'must have subaura for position')
+  end
+
+  def role_slot_type_matches
+    return unless role.present? && role.slot_type != 'Summon'
+
+    errors.add(:role, 'must be a Summon role')
+  end
+
+  def increment_counter_cache
+    Party.increment_counter(:summons_count, party_id)
+  end
+
+  def decrement_counter_cache
+    Party.decrement_counter(:summons_count, party_id)
   end
 end
