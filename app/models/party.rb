@@ -145,31 +145,43 @@ class Party < ApplicationRecord
              class_name: 'Guidebook',
              optional: true
 
-  has_many :characters,
+  has_many :characters, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
-           dependent: :delete_all,
            inverse_of: :party
 
-  has_many :weapons,
+  has_many :weapons, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
-           dependent: :delete_all,
            inverse_of: :party
 
-  has_many :summons,
+  has_many :summons, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
            class_name: 'GridSummon',
-           dependent: :delete_all,
            inverse_of: :party
+
+  has_many :all_characters,
+           foreign_key: 'party_id',
+           class_name: 'GridCharacter',
+           dependent: :delete_all
+
+  has_many :all_weapons,
+           foreign_key: 'party_id',
+           class_name: 'GridWeapon',
+           dependent: :delete_all
+
+  has_many :all_summons,
+           foreign_key: 'party_id',
+           class_name: 'GridSummon',
+           dependent: :delete_all
 
   has_many :favorites, dependent: :destroy
   has_many :party_shares, dependent: :destroy
   has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 
-  accepts_nested_attributes_for :characters
-  accepts_nested_attributes_for :summons
-  accepts_nested_attributes_for :weapons
+  accepts_nested_attributes_for :all_characters
+  accepts_nested_attributes_for :all_summons
+  accepts_nested_attributes_for :all_weapons
 
   before_create :set_shortcode
   before_create :set_edit_key
@@ -187,10 +199,12 @@ class Party < ApplicationRecord
     nullify :shortcode
     nullify :edit_key
 
-    include_association :characters
-    include_association :weapons
-    include_association :summons
+    include_association :all_characters
+    include_association :all_weapons
+    include_association :all_summons
   end
+
+  after_create :create_remapped_substitutions, if: -> { @_source_party_for_remap.present? }
 
   # ActiveRecord Validations
   validate :skills_are_unique
@@ -235,6 +249,8 @@ class Party < ApplicationRecord
   # Checks if the party is a remix of another party.
   #
   # @return [Boolean] true if the party is a remix; false otherwise.
+  attr_writer :_source_party_for_remap
+
   def remix?
     !source_party.nil?
   end
@@ -512,6 +528,55 @@ class Party < ApplicationRecord
       name job_id element weapons_count characters_count summons_count
       full_auto auto_guard charge_attack clear_time
     ]
+  end
+
+  #########################
+  # Substitution Remapping
+  #########################
+
+  def create_remapped_substitutions
+    source = @_source_party_for_remap
+    return unless source
+
+    subs = Substitution.where(grid_type: 'GridCharacter', grid_id: source.all_characters.select(:id))
+                       .or(Substitution.where(grid_type: 'GridWeapon', grid_id: source.all_weapons.select(:id)))
+                       .or(Substitution.where(grid_type: 'GridSummon', grid_id: source.all_summons.select(:id)))
+                       .to_a
+    return if subs.empty?
+
+    remap_for_type(subs, 'GridCharacter', all_characters.reload, source.all_characters, :character_id)
+    remap_for_type(subs, 'GridWeapon', all_weapons.reload, source.all_weapons, :weapon_id)
+    remap_for_type(subs, 'GridSummon', all_summons.reload, source.all_summons, :summon_id)
+  end
+
+  def remap_for_type(subs, grid_type, new_items, old_items, item_fk)
+    type_subs = subs.select { |s| s.grid_type == grid_type }
+    return if type_subs.empty?
+
+    # Map old grid item ID → new grid item by matching item FK + position + is_substitute
+    id_map = {}
+    old_items.each do |old_item|
+      new_item = new_items.detect do |ni|
+        ni.send(item_fk) == old_item.send(item_fk) &&
+          ni.position == old_item.position &&
+          ni.is_substitute? == old_item.is_substitute?
+      end
+      id_map[old_item.id] = new_item.id if new_item
+    end
+
+    type_subs.each do |sub|
+      new_grid_id = id_map[sub.grid_id]
+      new_sub_grid_id = id_map[sub.substitute_grid_id]
+      next unless new_grid_id && new_sub_grid_id
+
+      Substitution.create!(
+        grid_type: grid_type,
+        grid_id: new_grid_id,
+        substitute_grid_type: sub.substitute_grid_type,
+        substitute_grid_id: new_sub_grid_id,
+        position: sub.position
+      )
+    end
   end
 
   #########################
