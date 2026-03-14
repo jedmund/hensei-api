@@ -78,10 +78,10 @@ class Party < ApplicationRecord
   include GranblueEnums
 
   SUMMON_SERIES_MOD = {
-    '2' => 'omega',
-    '3' => 'primal',
-    '4' => 'primal',
-    '15' => 'odious'
+    'magna' => 'omega',
+    'optimus' => 'primal',
+    'demi-optimus' => 'primal',
+    'bellum' => 'odious'
   }.freeze
 
   # Define preview_state as an enum.
@@ -321,8 +321,8 @@ class Party < ApplicationRecord
     friend_summon = summons.detect { |gs| gs.friend? }&.summon
     return nil unless main_summon && friend_summon
 
-    main_type = SUMMON_SERIES_MOD[main_summon.series]
-    friend_type = SUMMON_SERIES_MOD[friend_summon.series]
+    main_type = SUMMON_SERIES_MOD[main_summon.summon_series&.slug]
+    friend_type = SUMMON_SERIES_MOD[friend_summon.summon_series&.slug]
 
     if main_type && main_type == friend_type
       { mod: main_type, side: 'double' }
@@ -333,6 +333,18 @@ class Party < ApplicationRecord
     else
       { mod: 'unboosted', side: 'none' }
     end
+  end
+
+  def recompute_boost!
+    result = mod_and_side
+    new_mod = result&.dig(:mod)
+    update_column(:boost_mod, new_mod) if boost_mod != new_mod
+  end
+
+  def recompute_side!
+    result = mod_and_side
+    new_side = result&.dig(:side)
+    update_column(:boost_side, new_side) if boost_side != new_side
   end
 
   ##

@@ -55,12 +55,8 @@ module Api
                     if: ->(_field_name, party, _options) { party.collection_source_user_id.present? }
       end
 
-      field :mod do |party|
-        party.mod_and_side&.dig(:mod)
-      end
-
-      field :side do |party|
-        party.mod_and_side&.dig(:side)
+      field :boost do |party|
+        { mod: party.boost_mod, side: party.boost_side }
       end
 
       # For collection views

@@ -77,6 +77,45 @@ RSpec.describe PartyQueryBuilder, type: :model do
     end
   end
 
+    context 'boost_mod filter' do
+      let!(:omega_party) { create(:party, boost_mod: 'omega', boost_side: 'double', visibility: 1) }
+      let!(:primal_party) { create(:party, boost_mod: 'primal', boost_side: 'single', visibility: 1) }
+      let(:params) { { boost_mod: 'omega' } }
+
+      it 'returns only parties matching the boost mod' do
+        results = subject.build
+        expect(results).to include(omega_party)
+        expect(results).not_to include(primal_party)
+      end
+    end
+
+    context 'boost_side filter' do
+      let!(:double_party) { create(:party, boost_mod: 'omega', boost_side: 'double', visibility: 1) }
+      let!(:single_party) { create(:party, boost_mod: 'omega', boost_side: 'single', visibility: 1) }
+      let(:params) { { boost_side: 'double' } }
+
+      it 'returns only parties matching the boost side' do
+        results = subject.build
+        expect(results).to include(double_party)
+        expect(results).not_to include(single_party)
+      end
+    end
+
+    context 'combined boost_mod and boost_side filter' do
+      let!(:omega_double) { create(:party, boost_mod: 'omega', boost_side: 'double', visibility: 1) }
+      let!(:omega_single) { create(:party, boost_mod: 'omega', boost_side: 'single', visibility: 1) }
+      let!(:primal_double) { create(:party, boost_mod: 'primal', boost_side: 'double', visibility: 1) }
+      let(:params) { { boost_mod: 'omega', boost_side: 'double' } }
+
+      it 'returns only parties matching both mod and side' do
+        results = subject.build
+        expect(results).to include(omega_double)
+        expect(results).not_to include(omega_single)
+        expect(results).not_to include(primal_double)
+      end
+    end
+  end
+
   describe 'privacy filtering' do
     let!(:public_party) { create(:party, visibility: 1) }
     let!(:private_party) { create(:party, visibility: 3) }

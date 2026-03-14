@@ -19,7 +19,7 @@ module PartyQueryingConcern
       :guidebook3,
       { characters: { character: :character_series_records } },
       { weapons: { weapon: :weapon_series } },
-      { summons: :summon }
+      { summons: { summon: :summon_series } }
     )
   end
 

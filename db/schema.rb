@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_14_060715) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_14_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -669,7 +669,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_14_060715) do
     t.string "video_url", limit: 2048
     t.integer "summon_count"
     t.uuid "collection_source_user_id"
+    t.string "boost_mod"
+    t.string "boost_side"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
+    t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
     t.index ["created_at"], name: "index_parties_on_created_at"
     t.index ["element"], name: "index_parties_on_element"
