@@ -363,7 +363,8 @@ module Api
           :position, :mainhand, :uncap_level, :transcendence_step, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
           :ax_modifier1, :ax_modifier2, :ax_strength1, :ax_strength2,
-          :awakening_id, :awakening_level
+          :awakening_id, :awakening_level,
+          :role_id, :substitution_note
         )
       end
 
