@@ -370,6 +370,70 @@ RSpec.describe Party, type: :model do
     end
   end
 
+  describe '#recompute_boost!' do
+    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
+    let(:optimus_series) { SummonSeries.find_or_create_by!(slug: 'optimus') { |s| s.name_en = 'Optimus'; s.name_jp = 'オプティマス'; s.order = 3 } }
+    let(:agni) { Summon.find_by!(granblue_id: '2040094000').tap { |s| s.update_column(:summon_series_id, optimus_series.id) } }
+    let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
+    let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }
+
+    def add_summon(party, summon, main:, friend:)
+      position = main ? -1 : (friend ? 4 : 1)
+      GridSummon.create!(party: party, summon: summon, position: position, main: main, friend: friend, uncap_level: 3, transcendence_step: 0)
+    end
+
+    it 'persists boost_mod to the database' do
+      party = create(:party)
+      add_summon(party, agni, main: true, friend: false)
+      add_summon(party, bahamut, main: false, friend: true)
+      party.reload
+
+      party.recompute_boost!
+      expect(party.reload.boost_mod).to eq('primal')
+    end
+
+    it 'sets boost_mod to nil when summon slots are incomplete' do
+      party = create(:party)
+      add_summon(party, agni, main: true, friend: false)
+      party.reload
+
+      party.recompute_boost!
+      expect(party.reload.boost_mod).to be_nil
+    end
+  end
+
+  describe '#recompute_side!' do
+    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
+    let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
+    let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }
+    let(:beelzebub) { Summon.find_by!(granblue_id: '2040408000') }
+
+    def add_summon(party, summon, main:, friend:)
+      position = main ? -1 : (friend ? 4 : 1)
+      GridSummon.create!(party: party, summon: summon, position: position, main: main, friend: friend, uncap_level: 3, transcendence_step: 0)
+    end
+
+    it 'persists boost_side to the database' do
+      party = create(:party)
+      add_summon(party, colossus, main: true, friend: false)
+      add_summon(party, bahamut, main: false, friend: true)
+      party.reload
+
+      party.recompute_side!
+      expect(party.reload.boost_side).to eq('single')
+    end
+
+    it 'stores none when both summons are non-mod' do
+      party = create(:party)
+      add_summon(party, bahamut, main: true, friend: false)
+      add_summon(party, beelzebub, main: false, friend: true)
+      party.reload
+
+      party.recompute_side!
+      expect(party.reload.boost_side).to eq('none')
+    end
+  end
+
   describe '#ready_for_preview?' do
     it 'returns false if weapons_count is less than 1' do
       party = build(:party, weapons_count: 0, characters_count: 1, summons_count: 1)

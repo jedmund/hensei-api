@@ -440,4 +440,32 @@ RSpec.describe GridSummon, type: :model do
       end
     end
   end
+
+  describe 'boost recomputation callback' do
+    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
+    let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
+    let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }
+
+    it 'updates party boost columns when a main summon is created' do
+      party = create(:party)
+      GridSummon.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+
+      GridSummon.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
+
+      party.reload
+      expect(party.boost_mod).to eq('omega')
+      expect(party.boost_side).to eq('single')
+    end
+
+    it 'does not recompute when a non-main/non-friend summon changes' do
+      party = create(:party)
+      party.update_columns(boost_mod: 'omega', boost_side: 'double')
+
+      sub_summon = GridSummon.create!(party: party, summon: bahamut, position: 1, main: false, friend: false, uncap_level: 3, transcendence_step: 0)
+
+      party.reload
+      expect(party.boost_mod).to eq('omega')
+      expect(party.boost_side).to eq('double')
+    end
+  end
 end
