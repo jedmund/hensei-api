@@ -38,6 +38,8 @@ class GridSummon < ApplicationRecord
 
   before_validation :set_default_uncap_level, on: :create
 
+  after_commit :recompute_party_boost!, on: %i[create update destroy]
+
   ##
   # Returns the blueprint for rendering the grid summon.
   #
@@ -101,6 +103,14 @@ class GridSummon < ApplicationRecord
 
   def set_default_uncap_level
     self.uncap_level ||= 0
+  end
+
+  def recompute_party_boost!
+    return unless main? || friend?
+
+    party.reload
+    party.recompute_boost!
+    party.recompute_side!
   end
 
   ##
