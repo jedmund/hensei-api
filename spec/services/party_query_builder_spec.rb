@@ -75,7 +75,6 @@ RSpec.describe PartyQueryBuilder, type: :model do
         expect(results).not_to include(untitled_party)
       end
     end
-  end
 
     context 'boost_mod filter' do
       let!(:omega_party) { create(:party, boost_mod: 'omega', boost_side: 'double', visibility: 1) }
