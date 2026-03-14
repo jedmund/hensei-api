@@ -19,21 +19,6 @@ module Api
         render json: ArtifactBlueprint.render(@artifact)
       end
 
-      # POST /artifacts/grade
-      # Grades artifact skills without persisting. Accepts skill data and returns grade/recommendation.
-      #
-      # @param artifact_id [String] Optional - ID of base artifact (for quirk detection)
-      # @param skill1 [Hash] Skill data with modifier, strength, level
-      # @param skill2 [Hash] Skill data with modifier, strength, level
-      # @param skill3 [Hash] Skill data with modifier, strength, level
-      # @param skill4 [Hash] Skill data with modifier, strength, level
-      def grade
-        artifact_data = build_gradeable_artifact
-        grader = ArtifactGrader.new(artifact_data)
-
-        render json: { grade: grader.grade }
-      end
-
       # POST /artifacts/:id/download_image
       # Synchronously downloads a single image size for the artifact
       #
@@ -91,28 +76,6 @@ module Api
         render_not_found_response('artifact')
       end
 
-      def build_gradeable_artifact
-        base_artifact = params[:artifact_id].present? ? Artifact.find_by(id: params[:artifact_id]) : nil
-
-        # Build a simple struct that responds to what ArtifactGrader needs
-        OpenStruct.new(
-          skill1: grade_params[:skill1] || {},
-          skill2: grade_params[:skill2] || {},
-          skill3: grade_params[:skill3] || {},
-          skill4: grade_params[:skill4] || {},
-          artifact: base_artifact || OpenStruct.new(quirk?: false)
-        )
-      end
-
-      def grade_params
-        params.permit(
-          :artifact_id,
-          skill1: %i[modifier quality level],
-          skill2: %i[modifier quality level],
-          skill3: %i[modifier quality level],
-          skill4: %i[modifier quality level]
-        )
-      end
     end
   end
 end

@@ -132,9 +132,6 @@ Rails.application.routes.draw do
 
     # Artifacts (read-only reference data)
     resources :artifacts, only: %i[index show] do
-      collection do
-        post :grade
-      end
       member do
         post :download_image
         post :download_images
