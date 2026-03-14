@@ -34,6 +34,14 @@ module Api
                         w.weapon.series.present? &&
                         [2, 3, 17, 24, 34].include?(w.weapon.series)
                     }
+
+        association :role, blueprint: RoleBlueprint,
+                    if: ->(_fn, w, _opt) { w.role_id.present? }
+
+        field :substitution_note, if: ->(_fn, w, _opt) { w.substitution_note.present? }
+
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_fn, w, _opt) { !w.is_substitute && w.substitutions.any? }
       end
 
       view :full do

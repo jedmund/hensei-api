@@ -16,6 +16,14 @@ module Api
       view :nested do
         include_view :mastery_bonuses
         association :character, name: :object, blueprint: CharacterBlueprint, view: :full
+
+        association :role, blueprint: RoleBlueprint,
+                    if: ->(_fn, gc, _opt) { gc.role_id.present? }
+
+        field :substitution_note, if: ->(_fn, gc, _opt) { gc.substitution_note.present? }
+
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_fn, gc, _opt) { !gc.is_substitute && gc.substitutions.any? }
       end
 
       view :uncap do
