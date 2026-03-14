@@ -112,6 +112,7 @@ module Api
       # Creates a remixed copy of an existing party.
       def remix
         new_party = @party.amoeba_dup
+        new_party._source_party_for_remap = @party
         new_party.attributes = { user: current_user, name: remixed_name(@party.name), source_party: @party,
                                  remix: true }
         new_party.local_id = party_params[:local_id] if party_params
