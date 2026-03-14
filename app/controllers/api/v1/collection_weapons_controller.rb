@@ -24,6 +24,7 @@ module Api
         @collection_weapons = @collection_weapons.by_rarity(array_param(:rarity)) if params[:rarity]
         @collection_weapons = @collection_weapons.by_proficiency(array_param(:proficiency)) if params[:proficiency]
         @collection_weapons = @collection_weapons.by_series(array_param(:series)) if params[:series]
+        @collection_weapons = @collection_weapons.by_name(params[:search]) if params[:search].present?
 
         @collection_weapons = @collection_weapons.sorted_by(params[:sort])
 
