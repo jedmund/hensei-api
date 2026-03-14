@@ -12,7 +12,8 @@ module Api
 
       def index
         @collection_characters = @target_user.collection_characters
-                                             .includes(:character, :awakening)
+                                             .includes(character: :character_series_records)
+                                             .includes(:awakening)
 
         # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_characters = @collection_characters.by_element(array_param(:element)) if params[:element]
