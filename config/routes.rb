@@ -19,6 +19,14 @@ Rails.application.routes.draw do
 
     get 'version', to: 'api#version'
 
+    # Roles (read-only)
+    get 'roles', to: 'roles#index'
+
+    # Substitutions
+    post 'substitutions', to: 'substitutions#create'
+    put 'substitutions/:id', to: 'substitutions#update'
+    delete 'substitutions/:id', to: 'substitutions#destroy'
+
     post 'import', to: 'import#create'
     post 'import/weapons', to: 'import#weapons'
     post 'import/summons', to: 'import#summons'
