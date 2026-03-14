@@ -23,6 +23,11 @@ module Api
         association :character, blueprint: CharacterBlueprint, view: :full
         association :grid_artifact, blueprint: GridArtifactBlueprint, view: :nested,
                     if: ->(_field_name, gc, _options) { gc.grid_artifact.present? }
+        association :role, blueprint: RoleBlueprint,
+                    if: ->(_fn, gc, _opt) { gc.role.present? }
+        field :substitution_note, if: ->(_fn, gc, _opt) { gc.substitution_note.present? }
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_fn, gc, _opt) { !gc.is_substitute? && gc.substitutions.any? }
       end
 
       view :full do
