@@ -18,6 +18,7 @@ module Api
         @collection_summons = @collection_summons.by_summon(params[:summon_id]) if params[:summon_id]
         @collection_summons = @collection_summons.by_element(array_param(:element)) if params[:element]
         @collection_summons = @collection_summons.by_rarity(array_param(:rarity)) if params[:rarity]
+        @collection_summons = @collection_summons.by_name(params[:search]) if params[:search].present?
 
         @collection_summons = @collection_summons.paginate(page: params[:page], per_page: params[:limit] || 50)
 

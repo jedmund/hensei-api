@@ -16,6 +16,9 @@ class CollectionSummon < ApplicationRecord
   scope :by_rarity, ->(rarity) { joins(:summon).where(summons: { rarity: rarity }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :max_uncapped, -> { where(uncap_level: 5) }
+  scope :by_name, ->(query) {
+    joins(:summon).where("summons.name_en ILIKE :q OR summons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  }
 
   def blueprint
     Api::V1::CollectionSummonBlueprint

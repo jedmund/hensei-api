@@ -42,6 +42,9 @@ class CollectionWeapon < ApplicationRecord
   scope :by_proficiency, ->(proficiency) { joins(:weapon).where(weapons: { proficiency: proficiency }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
+  scope :by_name, ->(query) {
+    joins(:weapon).where("weapons.name_en ILIKE :q OR weapons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  }
 
   scope :sorted_by, ->(sort_key) {
     case sort_key

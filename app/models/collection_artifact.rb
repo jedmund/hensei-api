@@ -57,6 +57,9 @@ class CollectionArtifact < ApplicationRecord
   scope :by_rarity, ->(rar) { joins(:artifact).where(artifacts: { rarity: rar }) }
   scope :standard_only, -> { joins(:artifact).where(artifacts: { rarity: :standard }) }
   scope :quirk_only, -> { joins(:artifact).where(artifacts: { rarity: :quirk }) }
+  scope :by_name, ->(query) {
+    joins(:artifact).where("artifacts.name_en ILIKE :q OR artifacts.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  }
 
   scope :sorted_by, ->(sort_key) {
     case sort_key
