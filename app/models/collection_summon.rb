@@ -14,6 +14,7 @@ class CollectionSummon < ApplicationRecord
   scope :by_summon, ->(summon_id) { where(summon_id: summon_id) }
   scope :by_element, ->(element) { joins(:summon).where(summons: { element: element }) }
   scope :by_rarity, ->(rarity) { joins(:summon).where(summons: { rarity: rarity }) }
+  scope :by_series, ->(series_id) { joins(:summon).where(summons: { summon_series_id: series_id }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :max_uncapped, -> { where(uncap_level: 5) }
   scope :by_name, ->(query) {
