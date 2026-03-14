@@ -58,6 +58,25 @@ class CollectionArtifact < ApplicationRecord
   scope :standard_only, -> { joins(:artifact).where(artifacts: { rarity: :standard }) }
   scope :quirk_only, -> { joins(:artifact).where(artifacts: { rarity: :quirk }) }
 
+  scope :sorted_by, ->(sort_key) {
+    case sort_key
+    when 'name_asc'
+      joins(:artifact).order('artifacts.name_en ASC NULLS LAST')
+    when 'name_desc'
+      joins(:artifact).order('artifacts.name_en DESC NULLS LAST')
+    when 'element_asc'
+      order(element: :asc)
+    when 'element_desc'
+      order(element: :desc)
+    when 'score_desc'
+      order(Arel.sql('total_score DESC NULLS LAST'))
+    when 'score_asc'
+      order(Arel.sql('total_score ASC NULLS LAST'))
+    else
+      order(created_at: :desc)
+    end
+  }
+
   # Filter by skill modifier in a specific slot (1-4)
   # Uses OR logic when multiple modifiers are provided
   scope :with_skill_in_slot, ->(slot, modifiers) {

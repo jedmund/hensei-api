@@ -27,6 +27,8 @@ module Api
         @collection_artifacts = @collection_artifacts.with_skill_in_slot(3, params[:skill3]) if params[:skill3].present?
         @collection_artifacts = @collection_artifacts.with_skill_in_slot(4, params[:skill4]) if params[:skill4].present?
 
+        @collection_artifacts = @collection_artifacts.sorted_by(params[:sort])
+
         @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: params[:limit] || 50)
 
         render json: Api::V1::CollectionArtifactBlueprint.render(
