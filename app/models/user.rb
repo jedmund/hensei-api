@@ -53,6 +53,9 @@ class User < ApplicationRecord
   ##### ActiveModel Security
   has_secure_password
 
+  RESET_TOKEN_EXPIRY = 1.hour
+  RESET_TOKEN_COOLDOWN = 2.minutes
+
   ##### Enums
   # Enum for collection privacy levels (1-based to avoid JavaScript falsy 0 issues)
   enum :collection_privacy, {
@@ -111,5 +114,32 @@ class User < ApplicationRecord
   # Check if user is a crew captain
   def crew_captain?
     crew_role == 'captain'
+  end
+
+  def generate_reset_token!
+    raw_token = SecureRandom.urlsafe_base64(32)
+    update_columns(
+      reset_password_token_digest: Digest::SHA256.hexdigest(raw_token),
+      reset_password_sent_at: Time.current
+    )
+    raw_token
+  end
+
+  def reset_token_valid?(raw_token)
+    return false if reset_password_token_digest.blank? || reset_password_sent_at.blank?
+    return false if reset_password_sent_at < RESET_TOKEN_EXPIRY.ago
+
+    Digest::SHA256.hexdigest(raw_token) == reset_password_token_digest
+  end
+
+  def clear_reset_token!
+    update_columns(
+      reset_password_token_digest: nil,
+      reset_password_sent_at: nil
+    )
+  end
+
+  def reset_token_cooldown?
+    reset_password_sent_at.present? && reset_password_sent_at > RESET_TOKEN_COOLDOWN.ago
   end
 end
