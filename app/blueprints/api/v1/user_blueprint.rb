@@ -39,6 +39,9 @@ module Api
       view :settings do
         include_view :minimal
         fields :email, :email_verified
+        field :has_stored_edit_keys do |user|
+          user.user_edit_keys.any?
+        end
       end
     end
   end
