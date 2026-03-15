@@ -355,9 +355,15 @@ class Party < ApplicationRecord
   #
   # @return [Boolean] true if the party has orphaned weapons, summons, or artifacts.
   def has_orphaned_items?
-    weapons.orphaned.exists? ||
-      summons.orphaned.exists? ||
-      characters.joins(:grid_artifact).where(grid_artifacts: { orphaned: true }).exists?
+    if weapons.loaded? && summons.loaded? && characters.loaded?
+      weapons.any?(&:orphaned?) ||
+        summons.any?(&:orphaned?) ||
+        characters.any? { |c| c.grid_artifact&.orphaned? }
+    else
+      weapons.orphaned.exists? ||
+        summons.orphaned.exists? ||
+        characters.joins(:grid_artifact).where(grid_artifacts: { orphaned: true }).exists?
+    end
   end
 
   ##
