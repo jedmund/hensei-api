@@ -5,6 +5,8 @@ class Character < ApplicationRecord
 
   has_many :character_series_memberships, dependent: :destroy
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
+  has_many :style_swap_variants, -> { where(style_swap: true) },
+           class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |character|
