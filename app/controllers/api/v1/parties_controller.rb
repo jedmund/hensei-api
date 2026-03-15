@@ -32,7 +32,7 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection]
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection migrate]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
 
@@ -117,6 +117,50 @@ module Api
             Api::V1::PartyDeletionFailedError.new(@party.errors.full_messages)
           )
         end
+      end
+
+      # Migrates anonymous parties to the authenticated user's account.
+      def migrate
+        raise Api::V1::UnauthorizedError unless current_user
+
+        entries = if params[:parties].present?
+                    params.require(:parties).map { |p| p.permit(:shortcode, :edit_key) }
+                  else
+                    current_user.user_edit_keys.map { |uek| { shortcode: uek.shortcode, edit_key: uek.edit_key } }
+                  end
+
+        if entries.size > 100
+          return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity
+        end
+
+        results = []
+        migrated_count = 0
+
+        ActiveRecord::Base.transaction do
+          entries.each do |entry|
+            shortcode = entry[:shortcode]
+            party = Party.find_by(shortcode: shortcode)
+
+            if party.nil?
+              results << { shortcode: shortcode, status: 'not_found' }
+            elsif party.user_id.present?
+              results << { shortcode: shortcode, status: 'already_claimed' }
+            elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
+                                   party.edit_key.to_s.strip.force_encoding('UTF-8'))
+              results << { shortcode: shortcode, status: 'invalid_key' }
+            else
+              party.update_columns(user_id: current_user.id, edit_key: nil)
+              migrated_count += 1
+              results << { shortcode: shortcode, status: 'migrated' }
+            end
+          end
+
+          # Clean up deposited edit keys for migrated or already-claimed parties
+          claimed_shortcodes = results.select { |r| r[:status].in?(%w[migrated already_claimed]) }.map { |r| r[:shortcode] }
+          current_user.user_edit_keys.where(shortcode: claimed_shortcodes).delete_all if claimed_shortcodes.any?
+        end
+
+        render json: { results: results, migrated_count: migrated_count }, status: :ok
       end
 
       # Extended Party Actions
