@@ -8,6 +8,7 @@ require "active_job/railtie" # Background job processing
 require "active_record/railtie" # Database support
 require "active_storage/engine" # File upload and storage
 require "action_controller/railtie" # API controller support
+require "action_mailer/railtie" # Email delivery
 require "action_text/engine" # Rich text handling
 require "action_view/railtie" # View rendering (needed for some API responses)
 require "rails/test_unit/railtie" # Testing framework
@@ -35,6 +36,9 @@ module HenseiApi
     config.active_record.cache_query_log_tags = true
 
     config.active_support.to_time_preserves_timezone = :zone
+    # ActionMailer configuration
+    config.action_mailer.delivery_method = :resend
+
     # API-only application configuration
     config.api_only = true
   end
