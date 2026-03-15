@@ -55,6 +55,8 @@ class User < ApplicationRecord
 
   RESET_TOKEN_EXPIRY = 1.hour
   RESET_TOKEN_COOLDOWN = 2.minutes
+  VERIFICATION_TOKEN_EXPIRY = 24.hours
+  VERIFICATION_TOKEN_COOLDOWN = 2.minutes
 
   ##### Enums
   # Enum for collection privacy levels (1-based to avoid JavaScript falsy 0 issues)
@@ -141,5 +143,33 @@ class User < ApplicationRecord
 
   def reset_token_cooldown?
     reset_password_sent_at.present? && reset_password_sent_at > RESET_TOKEN_COOLDOWN.ago
+  end
+
+  def generate_verification_token!
+    raw_token = SecureRandom.urlsafe_base64(32)
+    update_columns(
+      email_verification_token_digest: Digest::SHA256.hexdigest(raw_token),
+      email_verification_sent_at: Time.current
+    )
+    raw_token
+  end
+
+  def verification_token_valid?(raw_token)
+    return false if email_verification_token_digest.blank? || email_verification_sent_at.blank?
+    return false if email_verification_sent_at < VERIFICATION_TOKEN_EXPIRY.ago
+
+    Digest::SHA256.hexdigest(raw_token) == email_verification_token_digest
+  end
+
+  def verify_email!
+    update_columns(
+      email_verified: true,
+      email_verification_token_digest: nil,
+      email_verification_sent_at: nil
+    )
+  end
+
+  def verification_token_cooldown?
+    email_verification_sent_at.present? && email_verification_sent_at > VERIFICATION_TOKEN_COOLDOWN.ago
   end
 end
