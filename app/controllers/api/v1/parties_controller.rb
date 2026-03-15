@@ -134,7 +134,7 @@ module Api
         ActiveRecord::Base.transaction do
           entries.each do |entry|
             shortcode = entry[:shortcode]
-            party = Party.find_by(shortcode: shortcode)
+            party = Party.find_by(shortcode: shortcode) || Party.find_by(id: shortcode)
 
             if party.nil?
               results << { shortcode: shortcode, status: 'not_found' }
@@ -167,28 +167,60 @@ module Api
           return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity
         end
 
-        shortcodes = entries.map { |e| e[:shortcode] }
-        parties_by_shortcode = Party.includes(
+        identifiers = entries.map { |e| e[:shortcode] }.uniq
+        uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
+        uuid_ids = identifiers.select { |i| i.match?(uuid_pattern) }
+        non_uuid_ids = identifiers.reject { |i| i.match?(uuid_pattern) }
+
+        query = Party.includes(
           { raid: :group }, :job,
           { characters: { character: :character_series_records } },
           { weapons: { weapon: :weapon_series } },
           { summons: { summon: :summon_series } }
-        ).where(shortcode: shortcodes).index_by(&:shortcode)
+        )
+        conditions = []
+        binds = []
+        if non_uuid_ids.any?
+          conditions << 'shortcode IN (?)'
+          binds << non_uuid_ids
+        end
+        if uuid_ids.any?
+          conditions << 'shortcode IN (?)'
+          binds << uuid_ids
+          conditions << 'id IN (?)'
+          binds << uuid_ids
+        end
+        parties = conditions.any? ? query.where(conditions.join(' OR '), *binds) : Party.none
 
-        results = entries.map do |entry|
-          shortcode = entry[:shortcode]
-          party = parties_by_shortcode[shortcode]
+        # Build lookup by both id and shortcode so either format resolves
+        party_lookup = {}
+        parties.each do |p|
+          party_lookup[p.shortcode] = p
+          party_lookup[p.id] = p
+        end
 
-          if party.nil?
-            { party: nil, status: 'not_found' }
-          elsif party.user_id.present?
-            { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'already_claimed' }
-          elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
-                                 party.edit_key.to_s.strip.force_encoding('UTF-8'))
-            { party: nil, status: 'invalid_key' }
-          else
-            { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'ready' }
-          end
+        # Deduplicate: skip entries that resolve to an already-seen party
+        seen_party_ids = Set.new
+        results = []
+
+        entries.each do |entry|
+          party = party_lookup[entry[:shortcode]]
+          next if party && seen_party_ids.include?(party.id)
+
+          seen_party_ids.add(party.id) if party
+
+          result = if party.nil?
+                     { party: nil, status: 'not_found' }
+                   elsif party.user_id.present?
+                     { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'already_claimed' }
+                   elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
+                                          party.edit_key.to_s.strip.force_encoding('UTF-8'))
+                     { party: nil, status: 'invalid_key' }
+                   else
+                     { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'ready' }
+                   end
+
+          results << result
         end
 
         render json: { parties: results }, status: :ok
