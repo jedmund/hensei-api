@@ -86,6 +86,9 @@ Rails.application.routes.draw do
     post 'password_resets', to: 'password_resets#create'
     put 'password_resets', to: 'password_resets#update'
 
+    post 'email_verifications', to: 'email_verifications#create'
+    put 'email_verifications', to: 'email_verifications#update'
+
     post 'search', to: 'search#all'
     post 'search/characters', to: 'search#characters'
     post 'search/weapons', to: 'search#weapons'
