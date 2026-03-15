@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     post 'users/edit_keys', to: 'users#deposit_edit_keys'
 
     post 'parties/migrate', to: 'parties#migrate'
+    post 'parties/preview_migrate', to: 'parties#preview_migrate'
     get 'parties/favorites', to: 'parties#favorites'
     get 'parties/:id', to: 'parties#show'
     get 'parties/:id/preview', to: 'parties#preview'

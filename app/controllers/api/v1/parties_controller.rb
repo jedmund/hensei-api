@@ -32,7 +32,7 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection migrate]
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection migrate preview_migrate]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
 
@@ -123,13 +123,8 @@ module Api
       def migrate
         raise Api::V1::UnauthorizedError unless current_user
 
-        entries = if params[:parties].present?
-                    params.require(:parties).map { |p| p.permit(:shortcode, :edit_key) }
-                  else
-                    current_user.user_edit_keys.map { |uek| { shortcode: uek.shortcode, edit_key: uek.edit_key } }
-                  end
-
-        if entries.size > 100
+        entries = resolve_edit_key_entries
+        if entries.nil?
           return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity
         end
 
@@ -161,6 +156,42 @@ module Api
         end
 
         render json: { results: results, migrated_count: migrated_count }, status: :ok
+      end
+
+      # Returns a preview of what migrate would do, without modifying any data.
+      def preview_migrate
+        raise Api::V1::UnauthorizedError unless current_user
+
+        entries = resolve_edit_key_entries
+        if entries.nil?
+          return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity
+        end
+
+        shortcodes = entries.map { |e| e[:shortcode] }
+        parties_by_shortcode = Party.includes(
+          { raid: :group }, :job,
+          { characters: { character: :character_series_records } },
+          { weapons: { weapon: :weapon_series } },
+          { summons: { summon: :summon_series } }
+        ).where(shortcode: shortcodes).index_by(&:shortcode)
+
+        results = entries.map do |entry|
+          shortcode = entry[:shortcode]
+          party = parties_by_shortcode[shortcode]
+
+          if party.nil?
+            { party: nil, status: 'not_found' }
+          elsif party.user_id.present?
+            { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'already_claimed' }
+          elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
+                                 party.edit_key.to_s.strip.force_encoding('UTF-8'))
+            { party: nil, status: 'invalid_key' }
+          else
+            { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'ready' }
+          end
+        end
+
+        render json: { parties: results }, status: :ok
       end
 
       # Extended Party Actions
@@ -352,6 +383,20 @@ module Api
       end
 
       private
+
+      # Resolves edit key entries from params or the current user's deposited keys.
+      # Returns nil if there are too many entries (> 100).
+      def resolve_edit_key_entries
+        entries = if params[:parties].present?
+                    params.require(:parties).map { |p| p.permit(:shortcode, :edit_key) }
+                  else
+                    current_user.user_edit_keys.map { |uek| { shortcode: uek.shortcode, edit_key: uek.edit_key } }
+                  end
+
+        return nil if entries.size > 100
+
+        entries
+      end
 
       # Loads the party by its shortcode.
       def set_from_slug
