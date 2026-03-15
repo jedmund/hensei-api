@@ -420,6 +420,75 @@ RSpec.describe 'Parties API', type: :request do
     end
   end
 
+  describe 'POST /api/v1/parties/preview_migrate' do
+    let!(:anon_party1) { create(:party, user: nil, name: 'Anon 1') }
+    let!(:anon_party2) { create(:party, user: nil, name: 'Anon 2') }
+
+    before do
+      anon_party1.update_columns(edit_key: 'key1')
+      anon_party2.update_columns(edit_key: 'key2')
+    end
+
+    it 'returns preview data for valid edit keys without modifying parties' do
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [
+             { shortcode: anon_party1.shortcode, edit_key: 'key1' },
+             { shortcode: anon_party2.shortcode, edit_key: 'key2' }
+           ] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['parties'].length).to eq(2)
+      expect(json['parties'].map { |r| r['status'] }).to all(eq('ready'))
+      expect(json['parties'].first['party']).to be_present
+
+      anon_party1.reload
+      expect(anon_party1.user_id).to be_nil
+      expect(anon_party1.edit_key).to eq('key1')
+    end
+
+    it 'returns already_claimed for parties that already have a user_id' do
+      claimed_party = create(:party, user: user, name: 'Claimed')
+
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [{ shortcode: claimed_party.shortcode, edit_key: 'anything' }] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['parties'].first['status']).to eq('already_claimed')
+      expect(response.parsed_body['parties'].first['party']).to be_present
+    end
+
+    it 'returns not_found for bad shortcode' do
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [{ shortcode: 'NOPE99', edit_key: 'key1' }] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['parties'].first['status']).to eq('not_found')
+      expect(response.parsed_body['parties'].first['party']).to be_nil
+    end
+
+    it 'returns invalid_key for wrong edit key' do
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'wrong' }] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['parties'].first['status']).to eq('invalid_key')
+      expect(response.parsed_body['parties'].first['party']).to be_nil
+    end
+
+    it 'requires authentication' do
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'key1' }] }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
   describe 'POST /api/v1/parties/:id/remix' do
     let!(:party) { create(:party, user: user, name: 'Original Party') }
     let(:remix_params) { { party: { local_id: party.local_id } } }
