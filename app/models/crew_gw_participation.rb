@@ -16,7 +16,11 @@ class CrewGwParticipation < ApplicationRecord
 
   # Get total individual honors (sum of all member scores)
   def total_individual_honors
-    gw_individual_scores.sum(:score)
+    if gw_individual_scores.loaded?
+      gw_individual_scores.sum(&:score)
+    else
+      gw_individual_scores.sum(:score)
+    end
   end
 
   # Get wins count

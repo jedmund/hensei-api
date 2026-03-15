@@ -114,7 +114,7 @@ module Api
         field :recruits do |w|
           next nil unless w.recruits.present?
 
-          character = Character.find_by(granblue_id: w.recruits)
+          character = w.recruited_character
           next nil unless character
 
           {

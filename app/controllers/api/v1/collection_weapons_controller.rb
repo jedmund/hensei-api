@@ -12,7 +12,7 @@ module Api
 
       def index
         @collection_weapons = @target_user.collection_weapons
-                                          .includes(:weapon, :awakening,
+                                          .includes({ weapon: :weapon_series }, :awakening,
                                                    :weapon_key1, :weapon_key2,
                                                    :weapon_key3, :weapon_key4,
                                                    :ax_modifier1, :ax_modifier2,

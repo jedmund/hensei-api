@@ -434,9 +434,10 @@ module Api
       def set_from_slug
         @party = Party.includes(
           :user, :job, { raid: :group },
-          { characters: [{ character: :character_series_records }, :awakening, :grid_artifact] },
+          { characters: [{ character: [:character_series_records, :style_swap_variants] }, :awakening, :grid_artifact] },
           { weapons: {
-            weapon: [:awakenings, :weapon_series],
+            weapon: [:awakenings, :weapon_series, :weapon_skills, :recruited_character],
+            collection_weapon: {},
             awakening: {},
             weapon_key1: {},
             weapon_key2: {},
@@ -445,7 +446,7 @@ module Api
             ax_modifier2: {},
             befoulment_modifier: {}
           } },
-          { summons: :summon },
+          { summons: [{ summon: :summon_series }, :collection_summon] },
           :guidebook1, :guidebook2, :guidebook3,
           :source_party, :remixes, :skill0, :skill1, :skill2, :skill3, :accessory
         ).find_by(shortcode: params[:id])
@@ -602,14 +603,14 @@ module Api
 
         {
           characters: char_gids.any? ? user.collection_characters.joins(:character)
-            .includes(:character, :awakening)
+            .includes({ character: :character_series_records }, :awakening)
             .where(characters: { granblue_id: char_gids }) : [],
           weapons: weap_gids.any? ? user.collection_weapons.joins(:weapon)
-            .includes(:weapon, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
+            .includes({ weapon: :weapon_series }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
                       :ax_modifier1, :ax_modifier2, :befoulment_modifier)
             .where(weapons: { granblue_id: weap_gids }) : [],
           summons: summ_gids.any? ? user.collection_summons.joins(:summon)
-            .includes(:summon)
+            .includes(summon: :summon_series)
             .where(summons: { granblue_id: summ_gids }) : []
         }
       end

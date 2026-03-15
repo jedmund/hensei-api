@@ -12,7 +12,7 @@ module Api
 
       def index
         @collection_summons = @target_user.collection_summons
-                                          .includes(:summon)
+                                          .includes(summon: :summon_series)
 
         # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_summons = @collection_summons.by_summon(params[:summon_id]) if params[:summon_id]

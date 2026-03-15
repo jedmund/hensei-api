@@ -39,6 +39,7 @@ class Weapon < ApplicationRecord
   has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
   has_many :skills, through: :weapon_skills
   belongs_to :weapon_series, optional: true
+  belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
 
   # Legacy mapping - kept for backwards compatibility during migration
   # TODO: Remove after data migration is complete

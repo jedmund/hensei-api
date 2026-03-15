@@ -48,7 +48,7 @@ module Api
 
         case filter
         when :active
-          members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
+          members = @crew.active_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, created_at: :asc)
           phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         when :retired
           members = @crew.crew_memberships.retired.includes(:user).order(retired_at: :desc)
@@ -57,10 +57,10 @@ module Api
           members = []
           phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
         when :all
-          members = @crew.crew_memberships.includes(:user).order(role: :desc, retired: :asc, created_at: :asc)
+          members = @crew.crew_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, retired: :asc, created_at: :asc)
           phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
         else
-          members = @crew.active_memberships.includes(:user).order(role: :desc, created_at: :asc)
+          members = @crew.active_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, created_at: :asc)
           phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         end
 
@@ -85,6 +85,10 @@ module Api
       # Params: character_ids[], weapon_ids[], summon_ids[]
       def roster
         members = @crew.active_memberships.includes(:user)
+        user_ids = members.map(&:user_id)
+
+        # Batch-load all collection items for all members at once
+        @roster_cache = preload_roster_collections(user_ids)
 
         render json: {
           members: members.map { |m| build_member_roster(m) }
@@ -150,15 +154,36 @@ module Api
         }
       end
 
+      def preload_roster_collections(user_ids)
+        char_ids = params[:character_ids]
+        weap_ids = params[:weapon_ids]
+        summ_ids = params[:summon_ids]
+
+        cache = { characters: {}, weapons: {}, summons: {} }
+
+        if char_ids.present?
+          CollectionCharacter.includes(:character).where(user_id: user_ids, character_id: char_ids)
+            .each { |item| (cache[:characters][item.user_id] ||= []) << item }
+        end
+
+        if weap_ids.present?
+          CollectionWeapon.includes(:weapon).where(user_id: user_ids, weapon_id: weap_ids)
+            .each { |item| (cache[:weapons][item.user_id] ||= []) << item }
+        end
+
+        if summ_ids.present?
+          CollectionSummon.includes(:summon).where(user_id: user_ids, summon_id: summ_ids)
+            .each { |item| (cache[:summons][item.user_id] ||= []) << item }
+        end
+
+        cache
+      end
+
       def find_collection_items(user, type)
         ids = params["#{type.to_s.singularize}_ids"]
         return [] if ids.blank?
 
-        collection = case type
-                     when :characters then user.collection_characters.includes(:character).where(character_id: ids)
-                     when :weapons then user.collection_weapons.includes(:weapon).where(weapon_id: ids)
-                     when :summons then user.collection_summons.includes(:summon).where(summon_id: ids)
-                     end
+        collection = @roster_cache[type][user.id] || []
 
         collection.map do |item|
           canonical = case type
@@ -177,7 +202,6 @@ module Api
 
           if type == :characters
             result[:special] = canonical&.special
-            # For characters, transcendence availability is indicated by ulb on non-special chars
             result[:transcendence] = !canonical&.special && canonical&.ulb
           else
             result[:transcendence] = canonical&.transcendence

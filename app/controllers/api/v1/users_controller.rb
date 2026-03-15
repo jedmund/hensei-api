@@ -87,9 +87,9 @@ module Api
             :guidebook1,
             :guidebook2,
             :guidebook3,
-            { characters: { character: :character_series_records } },
-            { weapons: { weapon: :weapon_series } },
-            { summons: :summon }
+            { characters: [{ character: :character_series_records }, :grid_artifact] },
+            { weapons: { weapon: :weapon_series, collection_weapon: {} } },
+            { summons: [:summon, :collection_summon] }
           )
           # Restrict to parties belonging to the profile owner
           base_query = base_query.where(user_id: @user.id)
