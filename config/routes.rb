@@ -83,6 +83,9 @@ Rails.application.routes.draw do
     post 'check/email', to: 'users#check_email'
     post 'check/username', to: 'users#check_username'
 
+    post 'password_resets', to: 'password_resets#create'
+    put 'password_resets', to: 'password_resets#update'
+
     post 'search', to: 'search#all'
     post 'search/characters', to: 'search#characters'
     post 'search/weapons', to: 'search#weapons'
