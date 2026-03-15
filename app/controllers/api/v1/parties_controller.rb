@@ -44,6 +44,18 @@ module Api
       def create
         party = Party.new(party_params)
         party.user = current_user if current_user
+
+        # Validate collection source user if provided
+        if party_params[:collection_source_user_id].present?
+          source_user = User.find_by(id: party_params[:collection_source_user_id])
+          if source_user.nil?
+            return render_not_found_response('user')
+          end
+          unless source_user == current_user || source_user.collection_viewable_by?(current_user)
+            return render_forbidden_response('Collection is not accessible')
+          end
+        end
+
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
           party.extra = raid.group.extra
         end
@@ -331,7 +343,7 @@ module Api
         params.require(:party).permit(
           :user_id, :local_id, :edit_key, :extra, :name, :description, :raid_id, :job_id, :visibility,
           :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
-          :full_auto, :auto_guard, :auto_summon, :charge_attack, :clear_time, :button_count,
+          :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :clear_time, :button_count,
           :turn_count, :chain_count, :summon_count, :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
           characters_attributes: [:id, :party_id, :character_id, :position, :uncap_level,
                                   :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
