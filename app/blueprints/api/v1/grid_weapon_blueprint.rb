@@ -57,6 +57,11 @@ module Api
                         w.weapon.weapon_series.present? &&
                         w.weapon.weapon_series.has_weapon_keys
                     }
+        association :role, blueprint: RoleBlueprint,
+                    if: ->(_fn, gw, _opt) { gw.role.present? }
+        field :substitution_note, if: ->(_fn, gw, _opt) { gw.substitution_note.present? }
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_fn, gw, _opt) { !gw.is_substitute? && gw.substitutions.any? }
       end
 
       view :full do

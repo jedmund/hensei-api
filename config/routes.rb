@@ -136,6 +136,12 @@ Rails.application.routes.draw do
 
     get 'weapon_keys', to: 'weapon_keys#all'
 
+    # Roles (read-only)
+    get 'roles', to: 'roles#index'
+
+    # Substitutions
+    resources :substitutions, only: %i[create update destroy]
+
     resources :weapon_series, only: %i[index show create update destroy]
     resources :character_series, only: %i[index show create update destroy]
     resources :summon_series, only: %i[index show create update destroy]

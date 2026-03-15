@@ -26,9 +26,11 @@ class GridWeapon < ApplicationRecord
 
   belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
 
-  belongs_to :party,
-             counter_cache: :weapons_count,
-             inverse_of: :weapons
+  belongs_to :party, inverse_of: :weapons
+  belongs_to :role, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+
   validates_presence_of :party
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
@@ -51,13 +53,17 @@ class GridWeapon < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
 
-  validate :compatible_with_position, on: :create
-  validate :compatible_with_job_proficiency, on: :create
-  validate :no_conflicts, on: :create
+  validate :compatible_with_position, on: :create, unless: :is_substitute?
+  validate :compatible_with_job_proficiency, on: :create, unless: :is_substitute?
+  validate :no_conflicts, on: :create, unless: :is_substitute?
+  validate :role_slot_type_matches
 
   before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
   before_validation :set_default_exorcism_level, on: :create
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
 
   ##### Amoeba configuration
   amoeba do
@@ -68,6 +74,8 @@ class GridWeapon < ApplicationRecord
     nullify :befoulment_modifier_id
     nullify :befoulment_strength
     nullify :exorcism_level
+    nullify :role_id
+    nullify :substitution_note
   end
 
   ##
@@ -254,6 +262,25 @@ class GridWeapon < ApplicationRecord
   # @return [void]
   def set_default_uncap_level
     self.uncap_level ||= 0
+  end
+
+  def substitute?
+    is_substitute?
+  end
+
+  def role_slot_type_matches
+    return unless role.present?
+    return if role.slot_type == 'Weapon'
+
+    errors.add(:role, 'must be a Weapon role')
+  end
+
+  def increment_party_counter
+    Party.increment_counter(:weapons_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:weapons_count, party_id)
   end
 
   def set_default_exorcism_level

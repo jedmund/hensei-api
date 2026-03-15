@@ -20,12 +20,12 @@ class GridCharacter < ApplicationRecord
   # Associations
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
-  belongs_to :party,
-             counter_cache: :characters_count,
-             inverse_of: :characters
+  belongs_to :party, inverse_of: :characters
   belongs_to :collection_character, optional: true
+  belongs_to :role, optional: true
 
   has_one :grid_artifact, dependent: :destroy
+  has_many :substitutions, as: :grid, dependent: :destroy
 
   # Validations
   validates_presence_of :party
@@ -43,6 +43,8 @@ class GridCharacter < ApplicationRecord
   attr_accessor :new_rings
   attr_accessor :new_awakening
 
+  validate :role_slot_type_matches
+
   ##### Amoeba configuration
   amoeba do
     enable
@@ -53,12 +55,21 @@ class GridCharacter < ApplicationRecord
     set ring4: { modifier: nil, strength: nil }
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
+    nullify :role_id
+    nullify :substitution_note
   end
 
   # Hooks
   before_validation :apply_new_rings, if: -> { new_rings.present? }
   before_validation :apply_new_awakening, if: -> { new_awakening.present? }
   before_save :add_awakening
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
+
+  def substitute?
+    is_substitute?
+  end
 
   ##
   # Validates the awakening level to ensure it falls within the allowed range.
@@ -438,5 +449,20 @@ class GridCharacter < ApplicationRecord
   # @return [Array<Integer>] list of allowed HP values.
   def hp_values
     [150, 300, 450, 600, 750, 900, 1050, 1200, 1350, 1500]
+  end
+
+  def role_slot_type_matches
+    return unless role.present?
+    return if role.slot_type == 'Character'
+
+    errors.add(:role, 'must be a Character role')
+  end
+
+  def increment_party_counter
+    Party.increment_counter(:characters_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:characters_count, party_id)
   end
 end
