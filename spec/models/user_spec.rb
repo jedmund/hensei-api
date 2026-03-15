@@ -284,4 +284,78 @@ RSpec.describe User, type: :model do
       expect(user.errors[:password].join).to match(/too short|minimum/)
     end
   end
+
+  describe '#generate_reset_token!' do
+    let(:user) { create(:user) }
+
+    it 'returns a token that can be verified' do
+      raw_token = user.generate_reset_token!
+      expect(user.reset_token_valid?(raw_token)).to be true
+    end
+
+    it 'generates different tokens on successive calls' do
+      first_token = user.generate_reset_token!
+      second_token = user.generate_reset_token!
+      expect(first_token).not_to eq(second_token)
+    end
+
+    it 'invalidates the previous token when a new one is generated' do
+      first_token = user.generate_reset_token!
+      user.generate_reset_token!
+      expect(user.reset_token_valid?(first_token)).to be false
+    end
+  end
+
+  describe '#reset_token_valid?' do
+    let(:user) { create(:user) }
+
+    it 'returns false when no token has been generated' do
+      expect(user.reset_token_valid?('anything')).to be false
+    end
+
+    it 'returns false for a wrong token' do
+      user.generate_reset_token!
+      expect(user.reset_token_valid?('wrong-token')).to be false
+    end
+
+    it 'returns false after the token expires' do
+      raw_token = user.generate_reset_token!
+      travel_to(61.minutes.from_now) do
+        expect(user.reset_token_valid?(raw_token)).to be false
+      end
+    end
+
+    it 'returns true just before expiry' do
+      raw_token = user.generate_reset_token!
+      travel_to(59.minutes.from_now) do
+        expect(user.reset_token_valid?(raw_token)).to be true
+      end
+    end
+  end
+
+  describe '#clear_reset_token!' do
+    let(:user) { create(:user) }
+
+    it 'makes a previously valid token invalid' do
+      raw_token = user.generate_reset_token!
+      user.clear_reset_token!
+      expect(user.reset_token_valid?(raw_token)).to be false
+    end
+  end
+
+  describe '#reset_token_cooldown?' do
+    let(:user) { create(:user) }
+
+    it 'returns true immediately after generating a token' do
+      user.generate_reset_token!
+      expect(user.reset_token_cooldown?).to be true
+    end
+
+    it 'returns false after the cooldown period' do
+      user.generate_reset_token!
+      travel_to(3.minutes.from_now) do
+        expect(user.reset_token_cooldown?).to be false
+      end
+    end
+  end
 end

@@ -46,6 +46,9 @@ gem 'aws-sdk-s3'
 # An email validator for Rails
 gem 'email_validator'
 
+# Resend is the email API for developers
+gem 'resend'
+
 # pg_search builds ActiveRecord named scopes that take advantage of PostgreSQL’s full text search
 gem 'pg_search'
 
