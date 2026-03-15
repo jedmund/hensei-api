@@ -34,14 +34,14 @@ module Api
         return render json: { gw_event: nil, crew_gw_participation: nil, members_during_event: [] } unless event
 
         participation = @crew.crew_gw_participations
-                             .includes(:gw_event, gw_individual_scores: [{ crew_membership: :user }, :phantom_player])
+                             .includes(:gw_event, gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
                              .find_by(gw_event: event)
 
         # Get all members who were active during the event (includes retired members who left after event started)
         # Also include all currently active members for score entry purposes
         # Uses joined_at (editable) for historical accuracy
         members_during_event = @crew.crew_memberships
-                                    .includes(:user)
+                                    .includes(user: { active_crew_membership: :crew })
                                     .active_during(event.start_date, event.end_date)
 
         # Get all phantom players who were active during the event (excludes claimed/deleted phantoms)

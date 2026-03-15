@@ -53,8 +53,14 @@ module Api
           GwCrewScoreBlueprint.render_as_hash(participation.gw_crew_scores.order(:round))
         end
         field :individual_scores do |participation, options|
+          scores = if participation.gw_individual_scores.loaded?
+                     participation.gw_individual_scores.sort_by(&:round)
+                   else
+                     participation.gw_individual_scores.includes({ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player).order(:round)
+                   end
+
           GwIndividualScoreBlueprint.render_as_hash(
-            participation.gw_individual_scores.includes(:crew_membership).order(:round),
+            scores,
             view: :with_member,
             current_user: options[:current_user]
           )
