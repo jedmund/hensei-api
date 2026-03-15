@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :granblue_id, :element, :rarity, :max_level, :promotions
+      fields :granblue_id, :element, :rarity, :max_level, :subaura, :limit, :promotions
 
       field :promotion_names do |s|
         s.promotion_names
