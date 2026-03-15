@@ -32,13 +32,13 @@ module Api
       end
 
       view :token do
-        fields :username, :token
+        fields :username, :token, :email_verified
       end
 
       # Settings view includes all user data + email (only for authenticated user viewing own settings)
       view :settings do
         include_view :minimal
-        fields :email
+        fields :email, :email_verified
       end
     end
   end

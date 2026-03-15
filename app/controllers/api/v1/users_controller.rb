@@ -30,10 +30,14 @@ module Api
             scopes: 'public'
           ).token
 
+          raw_token = user.generate_verification_token!
+          SendEmailVerificationJob.perform_later(user.id, raw_token)
+
           return render json: UserBlueprint.render({
                                                      id: user.id,
                                                      username: user.username,
-                                                     token: token
+                                                     token: token,
+                                                     email_verified: false
                                                    },
                                                    view: :token),
                         status: :created
