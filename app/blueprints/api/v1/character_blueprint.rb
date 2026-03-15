@@ -113,7 +113,15 @@ module Api
         fields :gamewith, :kamigame
 
         field :style_swaps do |c|
-          c.style_swaps.map do |swap|
+          next [] if c.style_swap? || c.granblue_id.blank?
+
+          variants = if c.association(:style_swap_variants).loaded?
+                       c.style_swap_variants.reject { |s| s.id == c.id }
+                     else
+                       c.style_swaps
+                     end
+
+          variants.map do |swap|
             {
               id: swap.id,
               granblue_id: swap.granblue_id,
