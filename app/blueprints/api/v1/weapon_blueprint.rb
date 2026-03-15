@@ -54,7 +54,7 @@ module Api
       view :preview do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
                  :max_exorcism_level, :limit, :rarity, :ax, :ax_type, :gacha, :promotions,
-                 :forge_order, :extra, :series, :promotion_names, :uncap
+                 :forge_order, :extra, :series, :promotion_names
       end
 
       view :stats do
