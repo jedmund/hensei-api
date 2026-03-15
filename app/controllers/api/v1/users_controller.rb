@@ -7,7 +7,7 @@ module Api
 
       before_action :set, except: %w[create check_email check_username me search]
       before_action :set_by_id, only: %w[update]
-      before_action :doorkeeper_authorize!, only: %w[me search]
+      before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys]
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
@@ -119,6 +119,22 @@ module Api
 
       def check_username
         render json: EmptyBlueprint.render_as_json(nil, username: params[:username], availability: true)
+      end
+
+      def deposit_edit_keys
+        entries = params.require(:edit_keys).map { |e| e.permit(:shortcode, :edit_key) }
+
+        if entries.size > 100
+          return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_entity
+        end
+
+        entries.each do |entry|
+          current_user.user_edit_keys.find_or_create_by(edit_key: entry[:edit_key]) do |uek|
+            uek.shortcode = entry[:shortcode]
+          end
+        end
+
+        render json: { deposited: entries.size }, status: :ok
       end
 
       def destroy; end
