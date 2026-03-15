@@ -5,9 +5,6 @@ class AddEmailVerificationToUsers < ActiveRecord::Migration[7.0]
     add_column :users, :email_verified, :boolean, default: false, null: false
     add_column :users, :email_verification_token_digest, :string
     add_column :users, :email_verification_sent_at, :datetime
-
-    # Existing users predate this feature and are considered verified
-    User.update_all(email_verified: true)
   end
 
   def down
