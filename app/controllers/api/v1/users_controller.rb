@@ -5,7 +5,7 @@ module Api
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
-      before_action :set, except: %w[create check_email check_username me search]
+      before_action :set, except: %w[create check_email check_username me search deposit_edit_keys]
       before_action :set_by_id, only: %w[update]
       before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys]
 
