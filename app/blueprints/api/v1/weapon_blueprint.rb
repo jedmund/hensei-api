@@ -84,9 +84,45 @@ module Api
         field :transcendence_date
       end
 
+      view :grid do
+        include_view :dates
+
+        field :forged_from do |w|
+          next nil unless w.forged_from.present?
+
+          parent = w.base_weapon
+          next nil unless parent
+
+          {
+            id: parent.id,
+            granblue_id: parent.granblue_id,
+            name: {
+              en: parent.name_en,
+              ja: parent.name_jp
+            }
+          }
+        end
+
+        field :recruits do |w|
+          next nil unless w.recruits.present?
+
+          character = w.recruited_character
+          next nil unless character
+
+          {
+            id: character.id,
+            granblue_id: character.granblue_id,
+            name: {
+              en: character.name_en,
+              ja: character.name_jp
+            }
+          }
+        end
+      end
+
       view :full do
         include_view :stats
-        include_view :dates
+        include_view :grid
         field :awakenings do |weapon|
           AwakeningBlueprint.render_as_hash(weapon.awakenings)
         end
@@ -110,39 +146,6 @@ module Api
         end
 
         fields :gamewith, :kamigame
-
-        field :recruits do |w|
-          next nil unless w.recruits.present?
-
-          character = w.recruited_character
-          next nil unless character
-
-          {
-            id: character.id,
-            granblue_id: character.granblue_id,
-            name: {
-              en: character.name_en,
-              ja: character.name_jp
-            }
-          }
-        end
-
-        # Forge chain fields
-        field :forged_from do |w|
-          next nil unless w.forged_from.present?
-
-          parent = w.forged_from_weapon
-          next nil unless parent
-
-          {
-            id: parent.id,
-            granblue_id: parent.granblue_id,
-            name: {
-              en: parent.name_en,
-              ja: parent.name_jp
-            }
-          }
-        end
 
         field :forge_chain do |w|
           next nil unless w.forge_chain_id.present?
