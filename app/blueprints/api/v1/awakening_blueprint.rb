@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :slug, :object_type, :order
+      fields :id, :slug, :object_type, :order
     end
   end
 end
