@@ -89,7 +89,7 @@ module Api
         if search_params[:sort].present?
           characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          characters = characters.order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc'))
+          characters = characters.order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc, id asc'))
         end
 
         # Filter by series (array overlap)
@@ -143,7 +143,7 @@ module Api
         if search_params[:sort].present?
           weapons = apply_sort(weapons, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          weapons = weapons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+          weapons = weapons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc, id asc'))
         end
 
         # Filter by promotions (array overlap)
@@ -186,7 +186,7 @@ module Api
         if search_params[:sort].present?
           summons = apply_sort(summons, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          summons = summons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+          summons = summons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc, id asc'))
         end
 
         # Filter by promotions (array overlap)
