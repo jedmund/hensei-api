@@ -28,6 +28,7 @@ class WeaponImageDownloadService
     downloader = Granblue::Downloaders::WeaponDownloader.new(
       @weapon.granblue_id,
       storage: @storage,
+      force: @force,
       verbose: Rails.env.development?
     )
 
