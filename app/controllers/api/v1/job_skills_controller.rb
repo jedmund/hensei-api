@@ -10,6 +10,13 @@ module Api
         render json: JobSkillBlueprint.render(JobSkill.includes(:job).all)
       end
 
+      def show
+        skill = JobSkill.includes(:job).find(params[:id])
+        render json: JobSkillBlueprint.render(skill)
+      rescue ActiveRecord::RecordNotFound
+        render_not_found_response('job_skill')
+      end
+
       # Returns skills that belong to a specific job
       def job
         job = Job.find_by(granblue_id: params[:id])
