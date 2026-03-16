@@ -39,8 +39,12 @@ module Granblue
       # @see #download_variants
       def download(selected_size = nil)
         weapon = Weapon.find_by(granblue_id: @id)
-        return unless weapon
+        unless weapon
+          log_info "Weapon #{@id} not found in database, skipping"
+          return
+        end
 
+        log_info "Downloading weapon #{@id} (#{weapon.name_en}), selected_size=#{selected_size || 'all'}"
         download_variants(weapon, selected_size)
       end
 
@@ -97,18 +101,17 @@ module Granblue
       # @return [void]
       def download_element_variants(selected_size = nil)
         base_id = @id.to_i
-        log_info "Downloading element variants for #{@id}" if @verbose
+        log_info "Downloading element variants for #{@id} (base_id=#{base_id})"
 
         ELEMENT_SOURCE_MAP.each do |element_id, source|
           if source == :note
-            # Element 0: download from {id}_note, save as {id}_0
             source_id = "#{base_id}_note"
           else
-            # Elements 1-6: download from {id + offset}, save as {id}_{element}
             source_id = (base_id + source).to_s
           end
           target_suffix = "_#{element_id}"
 
+          log_info "  Element #{element_id}: source=#{source_id} -> target=#{@id}#{target_suffix}"
           download_element_variant(source_id, target_suffix, selected_size)
         end
       end
@@ -144,9 +147,12 @@ module Granblue
         s3_key = build_s3_key(size, filename)
         local_path = "#{path}/#{filename}"
 
-        return unless should_download?(local_path, s3_key)
+        unless should_download?(local_path, s3_key)
+          log_info "\t  #{size}: skipped (already exists, force=#{@force})"
+          return
+        end
 
-        log_info "\t├ #{size}: #{url} -> #{filename}" if @verbose
+        log_info "\t├ #{size}: #{url} -> #{filename} (s3_key=#{s3_key})"
 
         case @storage
         when :local
@@ -156,8 +162,11 @@ module Granblue
         when :both
           download_element_to_both(url, local_path, s3_key)
         end
-      rescue OpenURI::HTTPError
-        log_info "\t404 returned\t#{url}"
+        log_info "\t  #{size}: done"
+      rescue OpenURI::HTTPError => e
+        log_info "\t  #{size}: HTTP error #{e.message} for #{url}"
+      rescue StandardError => e
+        log_info "\t  #{size}: ERROR #{e.class} - #{e.message} for #{url}"
       end
 
       # Download element variant to local storage
@@ -169,7 +178,10 @@ module Granblue
 
       # Stream element variant to S3
       def stream_element_to_s3(url, s3_key)
-        return if !@force && @aws_service&.file_exists?(s3_key)
+        if !@force && @aws_service&.file_exists?(s3_key)
+          log_info "\t  s3: skipped #{s3_key} (exists, force=#{@force})"
+          return
+        end
 
         URI.parse(url).open do |file|
           @aws_service.upload_stream(file, s3_key)

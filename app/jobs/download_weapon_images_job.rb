@@ -48,9 +48,12 @@ class DownloadWeaponImagesJob < ApplicationJob
   end
 
   def perform(weapon_id, force: false, size: 'all')
-    Rails.logger.info "[DownloadWeaponImages] Starting download for weapon #{weapon_id}"
+    Rails.logger.info "[DownloadWeaponImages] Starting download for weapon #{weapon_id} " \
+                      "(force=#{force}, size=#{size})"
 
     weapon = Weapon.find(weapon_id)
+    Rails.logger.info "[DownloadWeaponImages] Found weapon: #{weapon.granblue_id} " \
+                      "(element=#{weapon.element}, series=#{weapon.weapon_series_id})"
     update_status(weapon_id, 'processing', progress: 0, images_downloaded: 0)
 
     service = WeaponImageDownloadService.new(
