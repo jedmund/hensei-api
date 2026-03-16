@@ -9,6 +9,7 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
     extra { false }
     full_auto { false }
+    solo { false }
     auto_guard { false }
     charge_attack { true }
     clear_time { 0 }

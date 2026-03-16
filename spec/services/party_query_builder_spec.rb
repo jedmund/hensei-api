@@ -64,6 +64,18 @@ RSpec.describe PartyQueryBuilder, type: :model do
       end
     end
 
+    context 'solo filter' do
+      let!(:solo_party) { create(:party, solo: true, visibility: 1) }
+      let!(:group_party) { create(:party, solo: false, visibility: 1) }
+      let(:params) { { solo: '1' } }
+
+      it 'returns only solo parties when filter is 1' do
+        results = subject.build
+        expect(results).to include(solo_party)
+        expect(results).not_to include(group_party)
+      end
+    end
+
     context 'name_quality filter' do
       let!(:named_party) { create(:party, name: 'My Build', visibility: 1) }
       let!(:untitled_party) { create(:party, name: 'Untitled Party', visibility: 1) }
