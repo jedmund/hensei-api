@@ -5,6 +5,8 @@ FactoryBot.define do
     password_confirmation { "password" }
     username { Faker::Internet.username(specifier: 5..8) }
     granblue_id { Faker::Number.number(digits: 4) }
+    wiki_profile { nil }
+    show_wiki_profile { false }
     picture { "gran" }
     language { ["en", "ja"].sample }
     private { Faker::Boolean.boolean }
