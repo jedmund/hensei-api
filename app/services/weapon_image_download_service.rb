@@ -25,25 +25,34 @@ class WeaponImageDownloadService
   #
   # @return [Result] Struct with success status, images manifest, and any errors
   def download
+    Rails.logger.info "[WeaponImageDownload] Starting for #{@weapon.granblue_id} " \
+                      "(size=#{@size}, force=#{@force}, storage=#{@storage}, " \
+                      "element_changeable=#{Weapon.element_changeable?(@weapon)})"
+
     downloader = Granblue::Downloaders::WeaponDownloader.new(
       @weapon.granblue_id,
       storage: @storage,
       force: @force,
-      verbose: Rails.env.development?
+      verbose: true,
+      logger: Rails.logger
     )
 
     selected_size = @size == 'all' ? nil : @size
     downloader.download(selected_size)
 
     manifest = build_image_manifest
+    total = count_total_images(manifest)
+
+    Rails.logger.info "[WeaponImageDownload] Completed for #{@weapon.granblue_id}: #{total} images"
 
     Result.new(
       success?: true,
       images: manifest,
-      total: count_total_images(manifest)
+      total: total
     )
   rescue StandardError => e
-    Rails.logger.error "[WeaponImageDownload] Failed for #{@weapon.granblue_id}: #{e.message}"
+    Rails.logger.error "[WeaponImageDownload] Failed for #{@weapon.granblue_id}: #{e.class} - #{e.message}"
+    Rails.logger.error e.backtrace&.first(10)&.join("\n")
     Result.new(
       success?: false,
       error: e.message

@@ -111,11 +111,18 @@ module Api
       # POST /weapons/:id/download_images
       # Triggers async image download for a weapon
       def download_images
+        force = params.dig(:options, :force) == true
+        size = params.dig(:options, :size) || 'all'
+
+        Rails.logger.info "[WEAPONS] Enqueueing download_images for #{@weapon.id} " \
+                          "(granblue_id=#{@weapon.granblue_id}, force=#{force}, size=#{size}, " \
+                          "element_changeable=#{Weapon.element_changeable?(@weapon)})"
+
         # Queue the download job
         DownloadWeaponImagesJob.perform_later(
           @weapon.id,
-          force: params.dig(:options, :force) == true,
-          size: params.dig(:options, :size) || 'all'
+          force: force,
+          size: size
         )
 
         # Set initial status
@@ -138,6 +145,10 @@ module Api
       # Returns the status of an image download job
       def download_status
         status = DownloadWeaponImagesJob.status(@weapon.id)
+
+        Rails.logger.info "[WEAPONS] download_status for #{@weapon.id}: #{status[:status]} " \
+                          "(progress=#{status[:progress]}, downloaded=#{status[:images_downloaded]}, " \
+                          "total=#{status[:images_total]}, error=#{status[:error]})"
 
         render json: status.merge(
           weapon_id: @weapon.id,

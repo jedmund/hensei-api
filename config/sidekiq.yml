@@ -1,3 +1,9 @@
+:queues:
+  - default
+  - downloads
+  - maintenance
+  - previews
+
 :scheduler:
   cleanup_party_previews:
     cron: '0 0 * * *'  # Daily at midnight

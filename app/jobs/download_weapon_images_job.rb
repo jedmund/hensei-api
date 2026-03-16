@@ -48,9 +48,14 @@ class DownloadWeaponImagesJob < ApplicationJob
   end
 
   def perform(weapon_id, force: false, size: 'all')
-    Rails.logger.info "[DownloadWeaponImages] Starting download for weapon #{weapon_id}"
+    Rails.logger.info "[DownloadWeaponImages] Starting download for weapon #{weapon_id} " \
+                      "(force=#{force}, size=#{size})"
 
     weapon = Weapon.find(weapon_id)
+    Rails.logger.info "[DownloadWeaponImages] Found weapon: #{weapon.granblue_id} " \
+                      "(element=#{weapon.element}, series=#{weapon.weapon_series_id}, " \
+                      "element_changeable=#{Weapon.element_changeable?(weapon)}, " \
+                      "transcendence=#{weapon.transcendence})"
     update_status(weapon_id, 'processing', progress: 0, images_downloaded: 0)
 
     service = WeaponImageDownloadService.new(
@@ -60,10 +65,13 @@ class DownloadWeaponImagesJob < ApplicationJob
       storage: :s3
     )
 
+    Rails.logger.info "[DownloadWeaponImages] Calling service.download..."
     result = service.download
+    Rails.logger.info "[DownloadWeaponImages] Service returned: success=#{result.success?}, " \
+                      "total=#{result.total}, error=#{result.error}"
 
     if result.success?
-      Rails.logger.info "[DownloadWeaponImages] Completed for weapon #{weapon_id}"
+      Rails.logger.info "[DownloadWeaponImages] Completed for weapon #{weapon_id}: #{result.total} images"
       update_status(
         weapon_id,
         'completed',
