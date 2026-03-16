@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_15_010002) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1020,6 +1020,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_15_010002) do
     t.boolean "has_weapon_keys", default: false, null: false
     t.boolean "has_awakening", default: false, null: false
     t.integer "augment_type", default: 0, null: false
+    t.integer "num_weapon_keys"
     t.index ["order"], name: "index_weapon_series_on_order"
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
