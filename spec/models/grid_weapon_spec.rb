@@ -51,15 +51,40 @@ RSpec.describe GridWeapon, type: :model do
             end
           end
 
-          context 'and weapon series is in allowed extra series' do
+          context 'and weapon is extra-eligible' do
             let(:extra_series) { create(:weapon_series, extra: true) }
-            let(:extra_weapon) { create(:weapon, limit: false, weapon_series: extra_series) }
+            let(:extra_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series) }
 
             before { grid_weapon.weapon = extra_weapon }
 
             it 'is valid with respect to position compatibility' do
               grid_weapon.validate
               expect(grid_weapon.errors[:series]).to be_empty
+            end
+          end
+
+          context 'and weapon has extra_prerequisite' do
+            let(:extra_series) { create(:weapon_series, extra: true) }
+            let(:prereq_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series, extra_prerequisite: 4, flb: true) }
+
+            before { grid_weapon.weapon = prereq_weapon }
+
+            it 'rejects placement when uncap_level is below prerequisite' do
+              grid_weapon.uncap_level = 3
+              grid_weapon.validate
+              expect(grid_weapon.errors[:uncap_level]).to include('must meet extra prerequisite')
+            end
+
+            it 'allows placement when uncap_level meets prerequisite' do
+              grid_weapon.uncap_level = 4
+              grid_weapon.validate
+              expect(grid_weapon.errors[:uncap_level]).to be_empty
+            end
+
+            it 'allows placement when uncap_level exceeds prerequisite' do
+              grid_weapon.uncap_level = 5
+              grid_weapon.validate
+              expect(grid_weapon.errors[:uncap_level]).to be_empty
             end
           end
         end
@@ -69,6 +94,25 @@ RSpec.describe GridWeapon, type: :model do
           it 'does not add an error on :series' do
             grid_weapon.validate
             expect(grid_weapon.errors[:series]).to be_empty
+          end
+        end
+
+        context 'when updating position to an extra slot' do
+          let(:extra_series) { create(:weapon_series, extra: true) }
+          let(:extra_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series) }
+          let(:non_extra_weapon) { create(:weapon, limit: false, extra: false, weapon_series: default_series) }
+
+          it 'blocks non-extra weapon from moving to extra slot' do
+            gw = create(:grid_weapon, party: party, weapon: non_extra_weapon, position: 0, uncap_level: 3)
+            gw.position = 9
+            expect(gw).not_to be_valid
+            expect(gw.errors[:series]).to include('must be compatible with position')
+          end
+
+          it 'allows extra weapon to move to extra slot' do
+            gw = create(:grid_weapon, party: party, weapon: extra_weapon, position: 0, uncap_level: 3)
+            gw.position = 9
+            expect(gw).to be_valid
           end
         end
       end
