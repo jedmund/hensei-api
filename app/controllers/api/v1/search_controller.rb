@@ -392,13 +392,13 @@ module Api
         case column
         when 'name'
           name_col = locale == 'ja' ? :name_ja : :name_en
-          scope.order(name_col => sort_dir)
+          scope.order(name_col => sort_dir, id: :asc)
         when 'element'
-          scope.order(element: sort_dir)
+          scope.order(element: sort_dir, id: :asc)
         when 'rarity'
-          scope.order(rarity: sort_dir)
+          scope.order(rarity: sort_dir, id: :asc)
         when 'last_updated'
-          scope.order(Arel.sql("greatest(release_date, flb_date, ulb_date) #{sort_dir}"))
+          scope.order(Arel.sql("greatest(release_date, flb_date, ulb_date, transcendence_date) #{sort_dir}, id asc"))
         else
           scope
         end
@@ -411,13 +411,13 @@ module Api
         case column
         when 'name'
           name_col = locale == 'ja' ? :name_ja : :name_en
-          scope.order(name_col => sort_dir)
+          scope.order(name_col => sort_dir, id: :asc)
         when 'row'
-          scope.order(row: sort_dir, order: :asc)
+          scope.order(row: sort_dir, order: :asc, id: :asc)
         when 'proficiency'
-          scope.order(proficiency1: sort_dir)
+          scope.order(proficiency1: sort_dir, id: :asc)
         else
-          scope.order(:row, :order)
+          scope.order(:row, :order, :id)
         end
       end
     end
