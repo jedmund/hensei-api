@@ -99,6 +99,7 @@ class PartyQueryBuilder
       full_auto: build_option(@params[:full_auto]),
       auto_guard: build_option(@params[:auto_guard]),
       charge_attack: build_option(@params[:charge_attack]),
+      solo: build_option(@params[:solo]),
       boost_mod: (@params[:boost_mod] if @params[:boost_mod].present?),
       boost_side: (@params[:boost_side] if @params[:boost_side].present?)
     }.compact
