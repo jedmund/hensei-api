@@ -106,6 +106,7 @@ Rails.application.routes.draw do
     post 'jobs', to: 'jobs#create'
 
     get 'jobs/skills', to: 'job_skills#all'
+    get 'job_skills/:id', to: 'job_skills#show'
     get 'jobs/:id', to: 'jobs#show'
     put 'jobs/:id', to: 'jobs#update'
     get 'jobs/:id/skills', to: 'job_skills#job'
