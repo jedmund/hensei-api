@@ -40,6 +40,7 @@ class Weapon < ApplicationRecord
   has_many :skills, through: :weapon_skills
   belongs_to :weapon_series, optional: true
   belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
+  belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true
 
   # Legacy mapping - kept for backwards compatibility during migration
   # TODO: Remove after data migration is complete
