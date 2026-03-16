@@ -89,7 +89,7 @@ module Api
         if search_params[:sort].present?
           characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          characters = characters.order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc'))
+          characters = characters.order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc, id asc'))
         end
 
         # Filter by series (array overlap)
@@ -143,7 +143,7 @@ module Api
         if search_params[:sort].present?
           weapons = apply_sort(weapons, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          weapons = weapons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+          weapons = weapons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc, id asc'))
         end
 
         # Filter by promotions (array overlap)
@@ -186,7 +186,7 @@ module Api
         if search_params[:sort].present?
           summons = apply_sort(summons, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          summons = summons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc'))
+          summons = summons.order(Arel.sql('greatest(release_date, flb_date, ulb_date, transcendence_date) desc, id asc'))
         end
 
         # Filter by promotions (array overlap)
@@ -392,13 +392,13 @@ module Api
         case column
         when 'name'
           name_col = locale == 'ja' ? :name_ja : :name_en
-          scope.order(name_col => sort_dir)
+          scope.order(name_col => sort_dir, id: :asc)
         when 'element'
-          scope.order(element: sort_dir)
+          scope.order(element: sort_dir, id: :asc)
         when 'rarity'
-          scope.order(rarity: sort_dir)
+          scope.order(rarity: sort_dir, id: :asc)
         when 'last_updated'
-          scope.order(Arel.sql("greatest(release_date, flb_date, ulb_date) #{sort_dir}"))
+          scope.order(Arel.sql("greatest(release_date, flb_date, ulb_date, transcendence_date) #{sort_dir}, id asc"))
         else
           scope
         end
@@ -411,13 +411,13 @@ module Api
         case column
         when 'name'
           name_col = locale == 'ja' ? :name_ja : :name_en
-          scope.order(name_col => sort_dir)
+          scope.order(name_col => sort_dir, id: :asc)
         when 'row'
-          scope.order(row: sort_dir, order: :asc)
+          scope.order(row: sort_dir, order: :asc, id: :asc)
         when 'proficiency'
-          scope.order(proficiency1: sort_dir)
+          scope.order(proficiency1: sort_dir, id: :asc)
         else
-          scope.order(:row, :order)
+          scope.order(:row, :order, :id)
         end
       end
     end
