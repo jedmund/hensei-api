@@ -82,7 +82,13 @@ module Api
       def update_uncap_level
         max_uncap = compute_max_uncap_level(@grid_weapon.weapon)
         requested_uncap = weapon_params[:uncap_level].to_i
-        new_uncap = requested_uncap > max_uncap ? max_uncap : requested_uncap
+        new_uncap = [requested_uncap, max_uncap].min
+
+        # Enforce floor when weapon is in an extra slot with a prerequisite
+        if GridWeapon::EXTRA_POSITIONS.include?(@grid_weapon.position) &&
+           @grid_weapon.weapon.extra_prerequisite.present?
+          new_uncap = [new_uncap, @grid_weapon.weapon.extra_prerequisite].max
+        end
 
         if @grid_weapon.update(uncap_level: new_uncap, transcendence_step: (weapon_params[:transcendence_step] || 0).to_i)
           render json: GridWeaponBlueprint.render(@grid_weapon, view: :uncap, root: :grid_weapon), status: :ok
