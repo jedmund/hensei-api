@@ -51,7 +51,7 @@ class GridWeapon < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
 
-  validate :compatible_with_position, on: :create
+  validate :compatible_with_position
   validate :compatible_with_job_proficiency, on: :create
   validate :no_conflicts, on: :create
 
@@ -188,8 +188,15 @@ class GridWeapon < ApplicationRecord
   def compatible_with_position
     return unless weapon.present?
 
-    if EXTRA_POSITIONS.include?(position.to_i) && !weapon.extra
-      errors.add(:series, 'must be compatible with position')
+    if EXTRA_POSITIONS.include?(position.to_i)
+      unless weapon.extra
+        errors.add(:series, 'must be compatible with position')
+        return
+      end
+
+      if weapon.extra_prerequisite.present? && uncap_level < weapon.extra_prerequisite
+        errors.add(:uncap_level, 'must meet extra prerequisite')
+      end
     end
   end
 
