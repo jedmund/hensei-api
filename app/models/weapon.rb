@@ -218,21 +218,39 @@ class Weapon < ApplicationRecord
   private
 
   # Auto-compute forge_order and forge_chain_id based on forged_from
+  # Walks the full chain to the root to ensure correct ordering
   def compute_forge_chain_fields
     if forged_from.present?
-      base_weapon = Weapon.find_by(granblue_id: forged_from)
-      if base_weapon
-        # Inherit or create forge_chain_id from base weapon
-        self.forge_chain_id = base_weapon.forge_chain_id || base_weapon.id
+      # Walk up the chain to find the root and count depth
+      chain = []
+      current = Weapon.find_by(granblue_id: forged_from)
+      return unless current
 
-        # Compute forge_order as base weapon's order + 1
-        self.forge_order = base_weapon.forge_order.to_i + 1
+      visited = Set.new([granblue_id])
+      while current
+        break if visited.include?(current.granblue_id)
+        chain.unshift(current)
+        visited.add(current.granblue_id)
 
-        # Ensure base weapon has forge_chain_id if it didn't
-        if base_weapon.forge_chain_id.nil?
-          base_weapon.update_column(:forge_chain_id, base_weapon.id)
-          base_weapon.update_column(:forge_order, 0) if base_weapon.forge_order.nil?
+        if current.forged_from.present?
+          current = Weapon.find_by(granblue_id: current.forged_from)
+        else
+          break
         end
+      end
+
+      # First element is the root
+      root = chain.first
+      root_chain_id = root.forge_chain_id || root.id
+      self.forge_chain_id = root_chain_id
+      self.forge_order = chain.length
+
+      # Fix up the entire chain: root and all intermediates
+      chain.each_with_index do |weapon, index|
+        updates = {}
+        updates[:forge_chain_id] = root_chain_id if weapon.forge_chain_id != root_chain_id
+        updates[:forge_order] = index if weapon.forge_order != index
+        weapon.update_columns(updates) if updates.any?
       end
     else
       # Clearing forged_from - reset forge_order if part of a chain
