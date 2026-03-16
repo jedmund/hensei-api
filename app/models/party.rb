@@ -516,7 +516,7 @@ class Party < ApplicationRecord
   def preview_relevant_attributes
     %w[
       name job_id element weapons_count characters_count summons_count
-      full_auto auto_guard charge_attack clear_time
+      full_auto auto_guard charge_attack clear_time solo
     ]
   end
 
