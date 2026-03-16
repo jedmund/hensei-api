@@ -68,7 +68,7 @@ module Api
         params.require(:weapon_series).permit(
           :name_en, :name_jp, :slug, :order,
           :extra, :element_changeable, :has_weapon_keys,
-          :has_awakening, :augment_type
+          :has_awakening, :augment_type, :num_weapon_keys
         )
       end
     end
