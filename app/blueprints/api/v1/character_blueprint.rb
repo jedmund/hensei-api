@@ -91,9 +91,9 @@ module Api
         include_view :dates
 
         field :awakenings do
-          Character::AWAKENINGS.map do |awakening|
-            AwakeningBlueprint.render_as_hash(OpenStruct.new(awakening))
-          end
+          AwakeningBlueprint.render_as_hash(
+            Awakening.where(object_type: 'Character').order(:order)
+          )
         end
 
         field :nicknames do |c|
