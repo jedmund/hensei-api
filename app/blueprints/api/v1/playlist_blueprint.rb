@@ -23,7 +23,7 @@ module Api
           ordered = playlist.parties.includes(
             :user, :job, { raid: :group },
             { characters: { character: :character_series_records } },
-            { weapons: { weapon: [:awakenings, :weapon_series] } },
+            { weapons: { weapon: [:awakenings, :weapon_series, :weapon_series_variant] } },
             { summons: :summon }
           ).order(updated_at: :desc)
 

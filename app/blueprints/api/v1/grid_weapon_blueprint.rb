@@ -54,8 +54,7 @@ module Api
                     blueprint: WeaponKeyBlueprint,
                     if: ->(_field_name, w, _options) {
                       w.weapon.present? &&
-                        w.weapon.weapon_series.present? &&
-                        w.weapon.weapon_series.has_weapon_keys
+                        w.weapon.effective_has_weapon_keys
                     }
       end
 

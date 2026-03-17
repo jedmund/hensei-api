@@ -15,7 +15,7 @@ module Api
              :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
              :limit, :rarity, :ax, :ax_type, :gacha, :promotions, :forge_order, :extra
 
-      # Series - returns full object with flags from weapon_series
+      # Series - returns full object with flags resolved through variant overrides
       field :series do |w|
         next nil unless w.weapon_series.present?
 
@@ -26,12 +26,12 @@ module Api
             en: w.weapon_series.name_en,
             ja: w.weapon_series.name_jp
           },
-          has_weapon_keys: w.weapon_series.has_weapon_keys,
-          has_awakening: w.weapon_series.has_awakening,
-          augment_type: w.weapon_series.augment_type,
-          num_weapon_keys: w.weapon_series.num_weapon_keys,
-          extra: w.weapon_series.extra,
-          element_changeable: w.weapon_series.element_changeable
+          has_weapon_keys: w.effective_has_weapon_keys,
+          has_awakening: w.effective_has_awakening,
+          augment_type: w.effective_augment_type,
+          num_weapon_keys: w.effective_num_weapon_keys,
+          extra: w.effective_extra,
+          element_changeable: w.effective_element_changeable
         }
       end
 
