@@ -15,26 +15,24 @@ module Api
              :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
              :limit, :rarity, :ax, :ax_type, :gacha, :promotions, :forge_order, :extra
 
-      # Series - returns full object with flags if weapon_series is present, fallback to legacy integer
+      # Series - returns full object with flags from weapon_series
       field :series do |w|
-        if w.weapon_series.present?
-          {
-            id: w.weapon_series_id,
-            slug: w.weapon_series.slug,
-            name: {
-              en: w.weapon_series.name_en,
-              ja: w.weapon_series.name_jp
-            },
-            has_weapon_keys: w.weapon_series.has_weapon_keys,
-            has_awakening: w.weapon_series.has_awakening,
-            augment_type: w.weapon_series.augment_type,
-            extra: w.weapon_series.extra,
-            element_changeable: w.weapon_series.element_changeable
-          }
-        else
-          # Legacy fallback for backwards compatibility
-          w.series
-        end
+        next nil unless w.weapon_series.present?
+
+        {
+          id: w.weapon_series_id,
+          slug: w.weapon_series.slug,
+          name: {
+            en: w.weapon_series.name_en,
+            ja: w.weapon_series.name_jp
+          },
+          has_weapon_keys: w.weapon_series.has_weapon_keys,
+          has_awakening: w.weapon_series.has_awakening,
+          augment_type: w.weapon_series.augment_type,
+          num_weapon_keys: w.weapon_series.num_weapon_keys,
+          extra: w.weapon_series.extra,
+          element_changeable: w.weapon_series.element_changeable
+        }
       end
 
       field :promotion_names do |w|

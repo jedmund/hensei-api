@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_16_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_17_002851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1128,7 +1128,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_160000) do
     t.boolean "transcendence", default: false
     t.date "transcendence_date"
     t.string "recruits"
-    t.integer "series"
     t.integer "new_series"
     t.text "wiki_raw"
     t.jsonb "game_raw_en", comment: "JSON data from game (English)"
