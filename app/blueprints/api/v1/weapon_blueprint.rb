@@ -32,7 +32,8 @@ module Api
           num_weapon_keys: w.effective_num_weapon_keys,
           extra: w.effective_extra,
           element_changeable: w.effective_element_changeable,
-          weapon_series_variant_id: w.weapon_series_variant_id
+          weapon_series_variant_id: w.weapon_series_variant_id,
+          weapon_series_variant_name: w.weapon_series_variant&.name
         }
       end
 
