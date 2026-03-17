@@ -161,6 +161,8 @@ module Api
           else
             detect_raid_type(party, deck_data)
           end
+
+          assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
         end
 
         render json: { shortcode: party.shortcode }, status: :created
@@ -363,6 +365,21 @@ module Api
         return unless raid
 
         party.update!(raid: raid, extra: raid.group.extra)
+      end
+
+      ##
+      # Assigns the party to one or more playlists owned by the current user.
+      #
+      # @param party [Party] the party record.
+      # @param playlist_ids [Array<String>] the playlist IDs from the request body.
+      # @return [void]
+      def assign_playlists(party, playlist_ids)
+        Array(playlist_ids).each do |playlist_id|
+          playlist = current_user.playlists.find_by(id: playlist_id)
+          next unless playlist
+
+          PlaylistParty.create!(playlist: playlist, party: party)
+        end
       end
 
       ##
