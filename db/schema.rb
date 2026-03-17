@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_17_120001) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_17_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -978,6 +978,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120001) do
     t.datetime "email_verification_sent_at"
     t.string "wiki_profile"
     t.boolean "show_wiki_profile", default: false, null: false
+    t.boolean "import_weapons", default: true, null: false
+    t.integer "default_import_visibility", default: 1, null: false
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
 
@@ -1032,6 +1034,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120001) do
     t.boolean "extra"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", default: "", null: false
     t.index ["weapon_series_id"], name: "index_weapon_series_variants_on_weapon_series_id"
   end
 

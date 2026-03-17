@@ -139,7 +139,9 @@ Rails.application.routes.draw do
 
     get 'weapon_keys', to: 'weapon_keys#all'
 
-    resources :weapon_series, only: %i[index show create update destroy]
+    resources :weapon_series, only: %i[index show create update destroy] do
+      resources :weapon_series_variants, only: %i[create update destroy]
+    end
     resources :character_series, only: %i[index show create update destroy]
     resources :summon_series, only: %i[index show create update destroy]
 
