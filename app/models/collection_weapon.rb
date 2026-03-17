@@ -20,7 +20,7 @@ class CollectionWeapon < ApplicationRecord
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
 
-  validates :uncap_level, inclusion: { in: 0..5 }
+  validates :uncap_level, inclusion: { in: 0..6 }
   validates :transcendence_step, inclusion: { in: 0..10 }
   validates :awakening_level, inclusion: { in: 1..20 }
   validates :exorcism_level, inclusion: { in: 0..5 }, allow_nil: true

@@ -170,12 +170,12 @@ RSpec.describe WeaponImportService, type: :service do
         expect(weapon.transcendence_step).to eq(6)
       end
 
-      it 'sets uncap_level to 5 for transcended weapons' do
+      it 'sets uncap_level to 6 for transcended weapons' do
         service = described_class.new(user, game_data)
         result = service.import
 
         weapon = result.created.first
-        expect(weapon.uncap_level).to eq(5)
+        expect(weapon.uncap_level).to eq(6)
       end
     end
 
@@ -559,12 +559,12 @@ RSpec.describe WeaponImportService, type: :service do
         }
       end
 
-      it 'clamps uncap_level to max 5' do
+      it 'clamps uncap_level to max 6 for transcended weapons' do
         service = described_class.new(user, game_data)
         result = service.import
 
         weapon = result.created.first
-        expect(weapon.uncap_level).to eq(5)
+        expect(weapon.uncap_level).to eq(6)
       end
 
       it 'clamps transcendence_step to max 10' do

@@ -202,11 +202,17 @@ class WeaponImportService
   def build_collection_weapon_attrs(item, weapon)
     param = item['param'] || {}
 
+    uncap = parse_uncap_level(param['evolution'])
+    transcendence = parse_transcendence_step(param['phase'])
+
+    # Transcended weapons have uncap_level 6 (beyond the normal 0-5 range)
+    uncap = 6 if transcendence > 0 && uncap >= 5
+
     attrs = {
       weapon: weapon,
       game_id: param['id'].present? ? param['id'].to_s : nil,
-      uncap_level: parse_uncap_level(param['evolution']),
-      transcendence_step: parse_transcendence_step(param['phase'])
+      uncap_level: uncap,
+      transcendence_step: transcendence
     }
 
     # Parse awakening if present
