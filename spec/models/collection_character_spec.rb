@@ -14,7 +14,7 @@ RSpec.describe CollectionCharacter, type: :model do
     subject { build(:collection_character, user: user, character: character) }
 
     describe 'basic validations' do
-      it { should validate_inclusion_of(:uncap_level).in_range(0..5) }
+      it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
       it { should validate_inclusion_of(:transcendence_step).in_range(0..10) }
       it { should validate_inclusion_of(:awakening_level).in_range(1..10) }
     end

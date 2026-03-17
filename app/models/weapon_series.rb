@@ -2,6 +2,7 @@
 
 class WeaponSeries < ApplicationRecord
   has_many :weapons, dependent: :restrict_with_error
+  has_many :weapon_series_variants, dependent: :destroy
   has_many :weapon_key_series, dependent: :destroy
   has_many :weapon_keys, through: :weapon_key_series
 

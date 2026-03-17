@@ -175,7 +175,7 @@ module Api
         query = Party.includes(
           { raid: :group }, :job,
           { characters: { character: :character_series_records } },
-          { weapons: { weapon: :weapon_series } },
+          { weapons: { weapon: [:weapon_series, :weapon_series_variant] } },
           { summons: { summon: :summon_series } }
         )
         conditions = []
@@ -436,7 +436,7 @@ module Api
           :user, :job, { raid: :group },
           { characters: [{ character: [:character_series_records, :style_swap_variants] }, :awakening, :grid_artifact] },
           { weapons: {
-            weapon: [:awakenings, :weapon_series, :weapon_skills, :recruited_character],
+            weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character],
             collection_weapon: {},
             awakening: {},
             weapon_key1: {},
@@ -606,7 +606,7 @@ module Api
             .includes({ character: :character_series_records }, :awakening)
             .where(characters: { granblue_id: char_gids }) : [],
           weapons: weap_gids.any? ? user.collection_weapons.joins(:weapon)
-            .includes({ weapon: :weapon_series }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
+            .includes({ weapon: [:weapon_series, :weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
                       :ax_modifier1, :ax_modifier2, :befoulment_modifier)
             .where(weapons: { granblue_id: weap_gids }) : [],
           summons: summ_gids.any? ? user.collection_summons.joins(:summon)
