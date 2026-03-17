@@ -222,15 +222,7 @@ class GridCharacter < ApplicationRecord
     return false unless collection_character.present?
 
     uncap_level != collection_character.uncap_level ||
-      transcendence_step != collection_character.transcendence_step ||
-      perpetuity != collection_character.perpetuity ||
-      ring1 != collection_character.ring1 ||
-      ring2 != collection_character.ring2 ||
-      ring3 != collection_character.ring3 ||
-      ring4 != collection_character.ring4 ||
-      earring != collection_character.earring ||
-      awakening_id != collection_character.awakening_id ||
-      awakening_level != collection_character.awakening_level
+      transcendence_step != collection_character.transcendence_step
   end
 
   private
