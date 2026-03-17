@@ -18,7 +18,7 @@ RSpec.describe CollectionWeapon, type: :model do
     subject { build(:collection_weapon, user: user, weapon: weapon) }
 
     describe 'basic validations' do
-      it { should validate_inclusion_of(:uncap_level).in_range(0..5) }
+      it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
       it { should validate_inclusion_of(:transcendence_step).in_range(0..10) }
       it { should validate_inclusion_of(:awakening_level).in_range(1..20) }
     end
@@ -144,6 +144,61 @@ RSpec.describe CollectionWeapon, type: :model do
           collection_weapon = build(:collection_weapon, weapon: revenant_weapon, element: 2)
           expect(collection_weapon).to be_valid
         end
+      end
+    end
+  end
+
+  describe 'variant-aware validations' do
+    let(:ccw_series) { create(:weapon_series, :class_champion) }
+    let(:replica_variant) { create(:weapon_series_variant, :ccw_replica, weapon_series: ccw_series) }
+    let(:forge_variant) { create(:weapon_series_variant, :ccw_forge, weapon_series: ccw_series) }
+    let(:emblem_key) { create(:weapon_key) }
+
+    before do
+      create(:weapon_key_series, weapon_key: emblem_key, weapon_series: ccw_series)
+    end
+
+    context 'replica CCW with emblem key' do
+      let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: replica_variant) }
+
+      it 'is valid' do
+        cw = build(:collection_weapon, weapon: weapon, weapon_key1: emblem_key)
+        expect(cw).to be_valid
+      end
+    end
+
+    context 'forge CCW with emblem key' do
+      let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: forge_variant) }
+
+      it 'is invalid because the forge variant disables weapon keys' do
+        cw = build(:collection_weapon, weapon: weapon, weapon_key1: emblem_key)
+        expect(cw).not_to be_valid
+        expect(cw.errors[:weapon_keys]).to be_present
+      end
+    end
+
+    context 'variant overrides element_changeable to false' do
+      let(:variant) { create(:weapon_series_variant, weapon_series: ccw_series, element_changeable: false) }
+      let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: variant) }
+
+      it 'rejects element change despite series allowing it' do
+        cw = build(:collection_weapon, weapon: weapon, element: 2)
+        expect(cw).not_to be_valid
+        expect(cw.errors[:element]).to be_present
+      end
+    end
+
+    context 'weapon without variant inherits series capabilities' do
+      let(:weapon) { create(:weapon, weapon_series: ccw_series) }
+
+      it 'allows element change from series' do
+        cw = build(:collection_weapon, weapon: weapon, element: 2)
+        expect(cw).to be_valid
+      end
+
+      it 'allows weapon keys from series' do
+        cw = build(:collection_weapon, weapon: weapon, weapon_key1: emblem_key)
+        expect(cw).to be_valid
       end
     end
   end

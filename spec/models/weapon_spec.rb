@@ -9,6 +9,7 @@ RSpec.describe Weapon, type: :model do
     it { is_expected.to have_many(:weapon_skills) }
     it { is_expected.to have_many(:skills).through(:weapon_skills) }
     it { is_expected.to belong_to(:weapon_series).optional }
+    it { is_expected.to belong_to(:weapon_series_variant).optional }
   end
 
   describe '#compatible_with_key?' do
@@ -101,6 +102,88 @@ RSpec.describe Weapon, type: :model do
 
     it 'returns false for unknown types' do
       expect(described_class.element_changeable?('string')).to be false
+    end
+  end
+
+  describe 'variant-aware capability resolution' do
+    let(:series) { create(:weapon_series, has_weapon_keys: true, has_awakening: false, element_changeable: true) }
+
+    context 'without a variant' do
+      let(:weapon) { build(:weapon, weapon_series: series) }
+
+      it 'falls back to series values' do
+        expect(weapon.effective_has_weapon_keys).to be true
+        expect(weapon.effective_has_awakening).to be false
+        expect(weapon.effective_element_changeable).to be true
+      end
+    end
+
+    context 'with a variant that overrides some flags' do
+      let(:variant) { create(:weapon_series_variant, weapon_series: series, has_weapon_keys: false, has_awakening: true) }
+      let(:weapon) { build(:weapon, weapon_series: series, weapon_series_variant: variant) }
+
+      it 'uses variant values where set' do
+        expect(weapon.effective_has_weapon_keys).to be false
+        expect(weapon.effective_has_awakening).to be true
+      end
+
+      it 'falls back to series for nil variant fields' do
+        expect(weapon.effective_element_changeable).to be true
+      end
+    end
+
+    context 'without a series' do
+      let(:weapon) { build(:weapon, weapon_series: nil) }
+
+      it 'returns safe defaults' do
+        expect(weapon.effective_has_weapon_keys).to be false
+        expect(weapon.effective_has_awakening).to be false
+        expect(weapon.effective_element_changeable).to be false
+        expect(weapon.effective_augment_type).to eq('no_augment')
+      end
+    end
+  end
+
+  describe 'CCW variant scenarios' do
+    let(:ccw_series) { create(:weapon_series, :class_champion) }
+    let(:replica_variant) { create(:weapon_series_variant, :ccw_replica, weapon_series: ccw_series) }
+    let(:forge_variant) { create(:weapon_series_variant, :ccw_forge, weapon_series: ccw_series) }
+    let(:emblem_key) { create(:weapon_key) }
+
+    before do
+      create(:weapon_key_series, weapon_key: emblem_key, weapon_series: ccw_series)
+    end
+
+    context 'replica CCW' do
+      let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: replica_variant) }
+
+      it 'supports weapon keys' do
+        expect(weapon.effective_has_weapon_keys).to be true
+      end
+
+      it 'does not support awakenings' do
+        expect(weapon.effective_has_awakening).to be false
+      end
+
+      it 'is compatible with emblem keys' do
+        expect(weapon.compatible_with_key?(emblem_key)).to be true
+      end
+    end
+
+    context 'forge CCW' do
+      let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: forge_variant) }
+
+      it 'does not support weapon keys' do
+        expect(weapon.effective_has_weapon_keys).to be false
+      end
+
+      it 'supports awakenings' do
+        expect(weapon.effective_has_awakening).to be true
+      end
+
+      it 'is not compatible with emblem keys despite series allowing them' do
+        expect(weapon.compatible_with_key?(emblem_key)).to be false
+      end
     end
   end
 

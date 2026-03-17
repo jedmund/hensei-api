@@ -13,7 +13,7 @@ RSpec.describe CollectionSummon, type: :model do
     subject { build(:collection_summon, user: user, summon: summon) }
 
     describe 'basic validations' do
-      it { should validate_inclusion_of(:uncap_level).in_range(0..5) }
+      it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
       it { should validate_inclusion_of(:transcendence_step).in_range(0..10) }
     end
 

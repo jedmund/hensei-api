@@ -112,5 +112,14 @@ FactoryBot.define do
       order { 50 }
       augment_type { :befoulment }
     end
+
+    trait :class_champion do
+      slug { 'class-champion' }
+      name_en { 'Class Champion Weapons' }
+      name_jp { '英雄武器' }
+      order { 30 }
+      has_weapon_keys { true }
+      element_changeable { true }
+    end
   end
 end
