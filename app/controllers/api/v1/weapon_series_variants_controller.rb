@@ -53,7 +53,7 @@ module Api
 
       def variant_params
         params.require(:weapon_series_variant).permit(
-          :has_weapon_keys, :has_awakening, :num_weapon_keys,
+          :name, :has_weapon_keys, :has_awakening, :num_weapon_keys,
           :augment_type, :element_changeable, :extra
         )
       end
