@@ -7,7 +7,7 @@ class CollectionCharacter < ApplicationRecord
 
   validates :character_id, uniqueness: { scope: :user_id,
     message: "already exists in your collection" }
-  validates :uncap_level, inclusion: { in: 0..5 }
+  validates :uncap_level, inclusion: { in: 0..6 }
   validates :transcendence_step, inclusion: { in: 0..10 }
   validates :awakening_level, inclusion: { in: 1..10 }
 

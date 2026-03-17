@@ -175,10 +175,16 @@ class CharacterImportService
     param = item['param'] || {}
     awakening_level = parse_awakening_level(param['arousal_level'])
 
+    uncap = parse_uncap_level(param['evolution'])
+    transcendence = parse_transcendence_step(param['phase'])
+
+    # Transcended characters have uncap_level 6 (beyond the normal 0-5 range)
+    uncap = 6 if transcendence > 0 && uncap >= 5
+
     attrs = {
       character: character,
-      uncap_level: parse_uncap_level(param['evolution']),
-      transcendence_step: parse_transcendence_step(param['phase'])
+      uncap_level: uncap,
+      transcendence_step: transcendence
     }
 
     # Only set awakening_level if > 1 (requires awakening to be set)
