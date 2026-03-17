@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_17_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_17_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1022,6 +1022,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120000) do
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
 
+  create_table "weapon_series_variants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "weapon_series_id", null: false
+    t.boolean "has_weapon_keys"
+    t.boolean "has_awakening"
+    t.integer "num_weapon_keys"
+    t.integer "augment_type"
+    t.boolean "element_changeable"
+    t.boolean "extra"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["weapon_series_id"], name: "index_weapon_series_variants_on_weapon_series_id"
+  end
+
   create_table "weapon_skill_boost_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "key", null: false
     t.string "name_en", null: false
@@ -1140,6 +1153,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120000) do
     t.uuid "forge_chain_id"
     t.integer "forge_order"
     t.integer "max_exorcism_level"
+    t.uuid "weapon_series_variant_id"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
@@ -1148,6 +1162,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120000) do
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
     t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
+    t.index ["weapon_series_variant_id"], name: "index_weapons_on_weapon_series_variant_id"
   end
 
   add_foreign_key "character_series_memberships", "character_series"
@@ -1244,6 +1259,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120000) do
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"
   add_foreign_key "weapon_key_series", "weapon_series"
+  add_foreign_key "weapon_series_variants", "weapon_series"
   add_foreign_key "weapon_skills", "skills"
   add_foreign_key "weapons", "weapon_series"
+  add_foreign_key "weapons", "weapon_series_variants"
 end
