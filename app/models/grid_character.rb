@@ -67,7 +67,7 @@ class GridCharacter < ApplicationRecord
   # @return [void]
   def validate_awakening_level
     errors.add(:awakening, 'awakening level too low') if awakening_level < 1
-    errors.add(:awakening, 'awakening level too high') if awakening_level > 9
+    errors.add(:awakening, 'awakening level too high') if awakening_level > 10
   end
 
   ##
