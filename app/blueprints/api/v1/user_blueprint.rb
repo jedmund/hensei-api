@@ -38,7 +38,7 @@ module Api
       # Settings view includes all user data + email (only for authenticated user viewing own settings)
       view :settings do
         include_view :minimal
-        fields :email, :email_verified
+        fields :email, :email_verified, :import_weapons, :default_import_visibility
         field :has_stored_edit_keys do |user|
           user.user_edit_keys.any?
         end
