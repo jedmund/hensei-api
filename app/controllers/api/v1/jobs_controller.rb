@@ -3,8 +3,8 @@
 module Api
   module V1
     class JobsController < Api::V1::ApiController
-      before_action :set_party, only: %w[update_job update_job_skills destroy_job_skill]
-      before_action :authorize_party, only: %w[update_job update_job_skills destroy_job_skill]
+      before_action :set_party, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
+      before_action :authorize_party, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
       before_action :set_job, only: %w[update]
       before_action :ensure_editor_role, only: %w[create update]
 
@@ -118,6 +118,16 @@ module Api
         position = job_params[:skill_position].to_i
         @party["skill#{position}_id"] = nil
         render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save
+      end
+
+      def update_accessory
+        @party.accessory = JobAccessory.find(job_params[:accessory_id])
+        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
+      end
+
+      def destroy_accessory
+        @party.accessory = nil
+        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
       end
 
       private
@@ -235,6 +245,7 @@ module Api
       def job_params
         params.require(:party).permit(
           :job_id,
+          :accessory_id,
           :skill0_id,
           :skill1_id,
           :skill2_id,
