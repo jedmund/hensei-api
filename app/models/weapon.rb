@@ -42,56 +42,6 @@ class Weapon < ApplicationRecord
   belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
   belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true
 
-  # Legacy mapping - kept for backwards compatibility during migration
-  # TODO: Remove after data migration is complete
-  SERIES_SLUGS = {
-    1 => 'seraphic',
-    2 => 'grand',
-    3 => 'dark-opus',
-    4 => 'revenant',
-    5 => 'primal',
-    6 => 'beast',
-    7 => 'regalia',
-    8 => 'omega',
-    9 => 'olden-primal',
-    10 => 'hollowsky',
-    11 => 'xeno',
-    12 => 'rose',
-    13 => 'ultima',
-    14 => 'bahamut',
-    15 => 'epic',
-    16 => 'cosmos',
-    17 => 'superlative',
-    18 => 'vintage',
-    19 => 'class-champion',
-    20 => 'replica',
-    21 => 'relic',
-    22 => 'rusted',
-    23 => 'sephira',
-    24 => 'vyrmament',
-    25 => 'upgrader',
-    26 => 'astral',
-    27 => 'draconic',
-    28 => 'eternal-splendor',
-    29 => 'ancestral',
-    30 => 'new-world-foundation',
-    31 => 'ennead',
-    32 => 'militis',
-    33 => 'malice',
-    34 => 'menace',
-    35 => 'illustrious',
-    36 => 'proven',
-    37 => 'revans',
-    38 => 'world',
-    39 => 'exo',
-    40 => 'draconic-providence',
-    41 => 'celestial',
-    42 => 'omega-rebirth',
-    43 => 'collab',
-    98 => 'event',
-    99 => 'gacha'
-  }.freeze
-
   def blueprint
     WeaponBlueprint
   end
@@ -125,9 +75,6 @@ class Weapon < ApplicationRecord
       weapon_or_series.weapon_series&.element_changeable || false
     elsif weapon_or_series.is_a?(WeaponSeries)
       weapon_or_series.element_changeable
-    elsif weapon_or_series.is_a?(Integer)
-      # Legacy support for integer series IDs during transition
-      [4, 13, 17, 19].include?(weapon_or_series)
     else
       false
     end
@@ -183,7 +130,7 @@ class Weapon < ApplicationRecord
   end
 
   def series_slug
-    weapon_series&.slug || SERIES_SLUGS[series]
+    weapon_series&.slug
   end
 
   # Virtual attribute to set weapon_series by ID or slug

@@ -119,6 +119,9 @@ module Processors
                                   1040208200 1040214000 1040021100 1040417200 1040012600 1040317500 1040402900].freeze
     ELEMENTAL_WEAPON_MAPPING_INT = ELEMENTAL_WEAPON_MAPPING.map(&:to_i).sort.freeze
 
+    # Game series IDs for element-changeable weapon series (Revenant, Ultima, Superlative, Class Champion)
+    ELEMENT_CHANGEABLE_GAME_SERIES_IDS = [4, 13, 17, 19].freeze
+
     ELEMENT_MAPPING = {
       0 => nil,
       1 => 2, # Fire -> Fire
@@ -194,13 +197,15 @@ module Processors
         series = raw_weapon.dig('master', 'series_id').to_i
         weapon_id = raw_weapon.dig('master', 'id')
 
-        processed_weapon_id = if Weapon.element_changeable?(series)
+        element_changeable = ELEMENT_CHANGEABLE_GAME_SERIES_IDS.include?(series)
+
+        processed_weapon_id = if element_changeable
                                 process_elemental_weapon(weapon_id)
                               else
                                 weapon_id
                               end
 
-        processed_element = if Weapon.element_changeable?(series)
+        processed_element = if element_changeable
                               ELEMENT_MAPPING[raw_weapon.dig('master', 'attribute').to_i]
                             end
 
@@ -293,15 +298,11 @@ module Processors
         # Fetch the key from the mapping_pair and find the weapon key based on the weapon series
         mapping_value = mapping_pair.first
 
-        # Find weapon key using the new weapon_series relationship
+        # Find weapon key using the weapon_series relationship
         candidate = if weapon_series.present?
                       WeaponKey.joins(:weapon_series)
                                .where(granblue_id: mapping_value, weapon_series: { id: weapon_series.id })
                                .first
-                    else
-                      # Fallback to legacy series lookup for backwards compatibility
-                      series = grid_weapon.weapon.series.to_i
-                      WeaponKey.where('granblue_id = ? AND ? = ANY(series)', mapping_value, series).first
                     end
 
         if candidate

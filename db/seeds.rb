@@ -32,7 +32,6 @@ def seed_weapons
     w.rarity = row['rarity']
     w.element = row['element']
     w.proficiency = row['proficiency']
-    w.series = row['series']
     w.flb = row['flb']
     w.ulb = row['ulb']
     w.extra = row['extra']
