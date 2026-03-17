@@ -39,6 +39,15 @@ module Processors
       grid_characters.each do |grid_character|
         begin
           grid_character.save!
+          if grid_character.collection_character.present?
+            update_collection_from_game(grid_character)
+            begin
+              grid_character.sync_from_collection!
+            rescue ActiveRecord::RecordInvalid => e
+              Rails.logger.error "[CHARACTER] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+              grid_character.reload
+            end
+          end
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[CHARACTER] Failed to create GridCharacter: #{e.record.errors.full_messages.join(', ')}"
         end
@@ -49,6 +58,20 @@ module Processors
     end
 
     private
+
+    def update_collection_from_game(grid_character)
+      cc = grid_character.collection_character
+      return unless cc.character_id == grid_character.character_id
+
+      updates = {}
+      updates[:uncap_level] = grid_character.uncap_level if grid_character.uncap_level > cc.uncap_level
+      updates[:transcendence_step] = grid_character.transcendence_step if grid_character.transcendence_step > cc.transcendence_step
+
+      if updates.any?
+        cc.update!(updates)
+        Rails.logger.info "[CHARACTER] Updated collection character #{cc.id} from game data: #{updates}"
+      end
+    end
 
     def process_characters(characters_data)
       characters_data.map do |key, raw_character|
@@ -67,7 +90,7 @@ module Processors
 
         # The deck doesn't have Awakening data, so use the default
         awakening = Awakening.where(slug: 'character-balanced').first
-        grid_character = GridCharacter.create(
+        grid_character = GridCharacter.new(
           party_id: @party.id,
           character_id: character.id,
           uncap_level: raw_character.dig('param', 'evolution').to_i,
@@ -76,6 +99,25 @@ module Processors
           perpetuity: raw_character.dig('param', 'has_npcaugment_constant'),
           awakening: awakening
         )
+
+        # Link to collection character if available, or create one
+        collection_character = @party.user.collection_characters.find_by(character_id: character.id)
+
+        if collection_character.nil? && @party.user.import_weapons
+          begin
+            collection_character = @party.user.collection_characters.create!(
+              character_id: character.id,
+              uncap_level: grid_character.uncap_level,
+              transcendence_step: grid_character.transcendence_step,
+              perpetuity: grid_character.perpetuity
+            )
+          rescue StandardError => e
+            Rails.logger.error "[CHARACTER] Failed to create collection character during import: #{e.message}"
+            collection_character = nil
+          end
+        end
+
+        grid_character.collection_character = collection_character if collection_character
 
         grid_character
       end.compact

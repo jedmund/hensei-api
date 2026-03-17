@@ -258,6 +258,21 @@ module Processors
         game_id = raw_weapon.dig('param', 'id')
         if game_id.present?
           collection_weapon = @party.user.collection_weapons.find_by(game_id: game_id.to_s)
+
+          if collection_weapon.nil? && @party.user.import_weapons
+            begin
+              collection_weapon = @party.user.collection_weapons.create!(
+                weapon_id: grid_weapon.weapon_id,
+                game_id: game_id.to_s,
+                uncap_level: grid_weapon.uncap_level,
+                transcendence_step: grid_weapon.transcendence_step
+              )
+            rescue StandardError => e
+              Rails.logger.error("Failed to create collection weapon during import: #{e.message}")
+              collection_weapon = nil
+            end
+          end
+
           grid_weapon.collection_weapon = collection_weapon if collection_weapon
         end
 

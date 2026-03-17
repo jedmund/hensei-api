@@ -58,16 +58,40 @@ module Processors
       summons = [*grid_summons, friend_summon, *sub_summons].compact
 
       summons.each do |summon|
-        summon.save!
-        summon.sync_from_collection! if summon.collection_summon.present?
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
+        begin
+          summon.save!
+          if summon.collection_summon.present?
+            update_collection_from_game(summon)
+            begin
+              summon.sync_from_collection!
+            rescue ActiveRecord::RecordInvalid => e
+              Rails.logger.error "[SUMMON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+              summon.reload
+            end
+          end
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
+        end
       end
     end
 
     private
 
     attr_reader :type
+
+    def update_collection_from_game(grid_summon)
+      cs = grid_summon.collection_summon
+      return unless cs.summon_id == grid_summon.summon_id
+
+      updates = {}
+      updates[:uncap_level] = grid_summon.uncap_level if grid_summon.uncap_level > cs.uncap_level
+      updates[:transcendence_step] = grid_summon.transcendence_step if grid_summon.transcendence_step > cs.transcendence_step
+
+      if updates.any?
+        cs.update!(updates)
+        Rails.logger.info "[SUMMON] Updated collection summon #{cs.id} from game data: #{updates}"
+      end
+    end
 
     ##
     # Processes a set of summon data and creates GridSummon records.
@@ -107,10 +131,25 @@ module Processors
                                        updated_at: Time.now
                                      })
 
-        # Link to collection summon if available
+        # Link to collection summon if available, or create one
         game_id = summon_params['id']
         if game_id.present?
           collection_summon = @party.user.collection_summons.find_by(game_id: game_id.to_s)
+
+          if collection_summon.nil? && @party.user.import_weapons
+            begin
+              collection_summon = @party.user.collection_summons.create!(
+                summon_id: grid_summon.summon_id,
+                game_id: game_id.to_s,
+                uncap_level: grid_summon.uncap_level,
+                transcendence_step: grid_summon.transcendence_step
+              )
+            rescue StandardError => e
+              Rails.logger.error "[SUMMON] Failed to create collection summon during import: #{e.message}"
+              collection_summon = nil
+            end
+          end
+
           grid_summon.collection_summon = collection_summon if collection_summon
         end
 
