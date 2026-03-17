@@ -155,15 +155,8 @@ RSpec.describe Weapon, type: :model do
       expect(weapon.series_slug).to eq(series.slug)
     end
 
-    it 'falls back to SERIES_SLUGS for legacy integer series' do
+    it 'returns nil when no weapon_series' do
       weapon = build(:weapon, weapon_series: nil)
-      weapon.write_attribute(:series, 3)
-      expect(weapon.series_slug).to eq('dark-opus')
-    end
-
-    it 'returns nil when no series at all' do
-      weapon = build(:weapon, weapon_series: nil)
-      weapon.write_attribute(:series, nil)
       expect(weapon.series_slug).to be_nil
     end
   end
