@@ -18,6 +18,19 @@ module Api
         playlist.playlist_parties.pluck(:party_id)
       end
 
+      field :raid_slugs do |playlist|
+        party_ids = playlist.playlist_parties.pluck(:party_id)
+        next [] if party_ids.empty?
+
+        raid_ids = Party.where(id: party_ids)
+                        .where.not(raid_id: nil)
+                        .group(:raid_id)
+                        .order(Arel.sql('MAX(updated_at) DESC'))
+                        .limit(4)
+                        .pluck(:raid_id)
+        Raid.where(id: raid_ids).pluck(:slug)
+      end
+
       view :with_parties do
         field :parties do |playlist, options|
           ordered = playlist.parties.includes(
