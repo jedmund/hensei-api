@@ -45,6 +45,55 @@ RSpec.describe 'ImportController', type: :request do
       end
     end
 
+    context 'with playlist_ids' do
+      let!(:playlist1) { create(:playlist, user: user) }
+      let!(:playlist2) { create(:playlist, user: user) }
+
+      it 'adds the imported party to the specified playlists' do
+        body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, playlist2.id] }.to_json
+
+        expect {
+          post '/api/v1/import', params: body, headers: headers
+        }.to change(PlaylistParty, :count).by(2)
+
+        expect(response).to have_http_status(:created)
+        party = Party.find_by(shortcode: response.parsed_body['shortcode'])
+        expect(party.playlists).to contain_exactly(playlist1, playlist2)
+      end
+
+      it 'ignores playlist IDs belonging to another user' do
+        other_user = create(:user)
+        other_playlist = create(:playlist, user: other_user)
+        body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, other_playlist.id] }.to_json
+
+        expect {
+          post '/api/v1/import', params: body, headers: headers
+        }.to change(PlaylistParty, :count).by(1)
+
+        party = Party.find_by(shortcode: response.parsed_body['shortcode'])
+        expect(party.playlists).to contain_exactly(playlist1)
+      end
+
+      it 'ignores non-existent playlist IDs' do
+        body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, SecureRandom.uuid] }.to_json
+
+        expect {
+          post '/api/v1/import', params: body, headers: headers
+        }.to change(PlaylistParty, :count).by(1)
+
+        party = Party.find_by(shortcode: response.parsed_body['shortcode'])
+        expect(party.playlists).to contain_exactly(playlist1)
+      end
+
+      it 'works normally when playlist_ids is not provided' do
+        expect {
+          post '/api/v1/import', params: valid_deck_json, headers: headers
+        }.not_to change(PlaylistParty, :count)
+
+        expect(response).to have_http_status(:created)
+      end
+    end
+
     context 'when a processor raises an error' do
       it 'returns unprocessable entity with the error message' do
         failing_processor = instance_double(Processors::JobProcessor)
