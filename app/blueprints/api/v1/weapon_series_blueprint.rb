@@ -17,6 +17,10 @@ module Api
         field :weapon_count do |ws|
           ws.weapons.count
         end
+
+        field :variants do |ws|
+          WeaponSeriesVariantBlueprint.render_as_hash(ws.weapon_series_variants)
+        end
       end
     end
   end
