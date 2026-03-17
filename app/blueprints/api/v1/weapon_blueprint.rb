@@ -31,7 +31,8 @@ module Api
           augment_type: w.effective_augment_type,
           num_weapon_keys: w.effective_num_weapon_keys,
           extra: w.effective_extra,
-          element_changeable: w.effective_element_changeable
+          element_changeable: w.effective_element_changeable,
+          weapon_series_variant_id: w.weapon_series_variant_id
         }
       end
 
