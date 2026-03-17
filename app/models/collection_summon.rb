@@ -6,7 +6,7 @@ class CollectionSummon < ApplicationRecord
 
   before_destroy :orphan_grid_items
 
-  validates :uncap_level, inclusion: { in: 0..5 }
+  validates :uncap_level, inclusion: { in: 0..6 }
   validates :transcendence_step, inclusion: { in: 0..10 }
 
   validate :validate_transcendence_requirements

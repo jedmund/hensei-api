@@ -190,11 +190,17 @@ class SummonImportService
   def build_collection_summon_attrs(item, summon)
     param = item['param'] || {}
 
+    uncap = parse_uncap_level(param['evolution'])
+    transcendence = parse_transcendence_step(param['phase'])
+
+    # Transcended summons have uncap_level 6 (beyond the normal 0-5 range)
+    uncap = 6 if transcendence > 0 && uncap >= 5
+
     {
       summon: summon,
       game_id: param['id'].present? ? param['id'].to_s : nil,
-      uncap_level: parse_uncap_level(param['evolution']),
-      transcendence_step: parse_transcendence_step(param['phase'])
+      uncap_level: uncap,
+      transcendence_step: transcendence
     }
   end
 
