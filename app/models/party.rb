@@ -164,6 +164,8 @@ class Party < ApplicationRecord
            inverse_of: :party
 
   has_many :favorites, dependent: :destroy
+  has_many :playlist_parties, dependent: :destroy
+  has_many :playlists, through: :playlist_parties
   has_many :party_shares, dependent: :destroy
   has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 

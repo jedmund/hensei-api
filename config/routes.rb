@@ -289,6 +289,16 @@ Rails.application.routes.draw do
       get 'phantom_players/:id/gw_scores', to: 'phantom_players#gw_scores'
     end
 
+    # Reading playlists - scoped to a user
+    scope 'users/:user_id' do
+      resources :playlists, only: [:index, :show], controller: '/api/v1/playlists'
+    end
+
+    # Writing playlists - requires auth
+    resources :playlists, only: [:create, :update, :destroy] do
+      resources :parties, controller: 'playlist_parties', only: [:create, :destroy]
+    end
+
     # Reading collections - works for any user with privacy check
     scope 'users/:user_id' do
       namespace :collection do

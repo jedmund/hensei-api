@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_16_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -421,15 +421,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.uuid "awakening_id"
     t.integer "awakening_level", default: 1
     t.uuid "collection_character_id"
-    t.boolean "is_substitute", default: false, null: false
-    t.uuid "role_id"
-    t.text "substitution_note"
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
     t.index ["party_id", "position"], name: "index_grid_characters_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
-    t.index ["role_id"], name: "index_grid_characters_on_role_id"
   end
 
   create_table "grid_summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -445,14 +441,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.boolean "quick_summon", default: false
     t.uuid "collection_summon_id"
     t.boolean "orphaned", default: false, null: false
-    t.boolean "is_substitute", default: false, null: false
-    t.uuid "role_id"
-    t.text "substitution_note"
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
-    t.index ["role_id"], name: "index_grid_summons_on_role_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
   end
 
@@ -481,9 +473,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.bigint "befoulment_modifier_id"
     t.float "befoulment_strength"
     t.integer "exorcism_level", default: 0
-    t.boolean "is_substitute", default: false, null: false
-    t.uuid "role_id"
-    t.text "substitution_note"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
@@ -492,7 +481,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.index ["orphaned"], name: "index_grid_weapons_on_orphaned"
     t.index ["party_id", "position"], name: "index_grid_weapons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
-    t.index ["role_id"], name: "index_grid_weapons_on_role_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
     t.index ["weapon_key1_id"], name: "index_grid_weapons_on_weapon_key1_id"
     t.index ["weapon_key2_id"], name: "index_grid_weapons_on_weapon_key2_id"
@@ -681,6 +669,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.uuid "collection_source_user_id"
     t.string "boost_mod"
     t.string "boost_side"
+    t.boolean "solo", default: false, null: false
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
@@ -763,6 +752,31 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.index ["deleted_at"], name: "index_phantom_players_on_deleted_at"
   end
 
+  create_table "playlist_parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "playlist_id", null: false
+    t.uuid "party_id", null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["party_id"], name: "index_playlist_parties_on_party_id"
+    t.index ["playlist_id", "party_id"], name: "index_playlist_parties_on_playlist_id_and_party_id", unique: true
+    t.index ["playlist_id"], name: "index_playlist_parties_on_playlist_id"
+  end
+
+  create_table "playlists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.string "video_url"
+    t.integer "visibility", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug", default: "", null: false
+    t.index ["user_id", "slug"], name: "index_playlists_on_user_id_and_slug", unique: true
+    t.index ["user_id", "title"], name: "index_playlists_on_user_id_and_title", unique: true
+    t.index ["user_id"], name: "index_playlists_on_user_id"
+  end
+
   create_table "raid_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en", null: false
     t.string "name_jp", null: false
@@ -787,16 +801,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.bigint "quest_id"
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
-  end
-
-  create_table "roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name_en", null: false
-    t.string "name_jp"
-    t.string "slot_type", null: false
-    t.integer "sort_order", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["slot_type"], name: "index_roles_on_slot_type"
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -854,18 +858,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.string "target_memo"
     t.index ["target_type", "target_id"], name: "index_sparks_on_target"
     t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
-  end
-
-  create_table "substitutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "grid_type", null: false
-    t.uuid "grid_id", null: false
-    t.string "substitute_grid_type", null: false
-    t.uuid "substitute_grid_id", null: false
-    t.integer "position", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["grid_type", "grid_id", "position"], name: "index_substitutions_on_grid_type_and_grid_id_and_position", unique: true
-    t.index ["grid_type", "grid_id"], name: "index_substitutions_on_grid_type_and_grid_id"
   end
 
   create_table "summon_auras", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -981,6 +973,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
     t.boolean "show_granblue_id", default: false, null: false
     t.string "reset_password_token_digest"
     t.datetime "reset_password_sent_at"
+    t.boolean "email_verified", default: false, null: false
+    t.string "email_verification_token_digest"
+    t.datetime "email_verification_sent_at"
+    t.string "wiki_profile"
+    t.boolean "show_wiki_profile", default: false, null: false
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
 
@@ -1197,15 +1194,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
   add_foreign_key "grid_characters", "characters"
   add_foreign_key "grid_characters", "collection_characters"
   add_foreign_key "grid_characters", "parties"
-  add_foreign_key "grid_characters", "roles"
   add_foreign_key "grid_summons", "collection_summons"
   add_foreign_key "grid_summons", "parties"
-  add_foreign_key "grid_summons", "roles"
   add_foreign_key "grid_summons", "summons"
   add_foreign_key "grid_weapons", "awakenings"
   add_foreign_key "grid_weapons", "collection_weapons"
   add_foreign_key "grid_weapons", "parties"
-  add_foreign_key "grid_weapons", "roles"
   add_foreign_key "grid_weapons", "weapon_keys", column: "weapon_key3_id"
   add_foreign_key "grid_weapons", "weapon_stat_modifiers", column: "ax_modifier1_id"
   add_foreign_key "grid_weapons", "weapon_stat_modifiers", column: "ax_modifier2_id"
@@ -1236,6 +1230,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_16_025144) do
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
   add_foreign_key "phantom_players", "crews"
   add_foreign_key "phantom_players", "users", column: "claimed_by_id"
+  add_foreign_key "playlist_parties", "parties"
+  add_foreign_key "playlist_parties", "playlists"
+  add_foreign_key "playlists", "users"
   add_foreign_key "raids", "raid_groups", column: "group_id", name: "raids_group_id_fkey"
   add_foreign_key "skill_effects", "effects", name: "fk_skill_effects_effects"
   add_foreign_key "skill_effects", "skills", name: "fk_skill_effects_skills"
