@@ -1,4 +1,6 @@
 class CollectionWeapon < ApplicationRecord
+  include WeaponCapabilityResolution
+
   belongs_to :user
   belongs_to :weapon
   belongs_to :awakening, optional: true
@@ -132,7 +134,7 @@ class CollectionWeapon < ApplicationRecord
 
     # Exorcism level only makes sense with befoulment or befoulment-capable weapons
     if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank? &&
-       weapon&.weapon_series&.augment_type != 'befoulment'
+       weapon_augment_type != 'befoulment'
       errors.add(:exorcism_level, "cannot be set without a befoulment")
     end
   end
@@ -140,7 +142,7 @@ class CollectionWeapon < ApplicationRecord
   def validate_element_change
     return unless element.present? && weapon.present?
 
-    unless Weapon.element_changeable?(weapon)
+    unless weapon_element_changeable?
       errors.add(:element, "can only be set on element-changeable weapons")
     end
   end
@@ -187,7 +189,7 @@ class CollectionWeapon < ApplicationRecord
   def set_default_exorcism_level
     return unless weapon.present?
     return unless exorcism_level.nil? || exorcism_level.zero?
-    return unless weapon.weapon_series&.augment_type == 'befoulment'
+    return unless weapon_augment_type == 'befoulment'
 
     self.exorcism_level = 1
   end

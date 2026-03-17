@@ -39,6 +39,7 @@ class Weapon < ApplicationRecord
   has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
   has_many :skills, through: :weapon_skills
   belongs_to :weapon_series, optional: true
+  belongs_to :weapon_series_variant, optional: true
   belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
   belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true
 
@@ -52,6 +53,7 @@ class Weapon < ApplicationRecord
 
   def compatible_with_key?(key)
     return false unless weapon_series.present?
+    return false unless effective_has_weapon_keys
 
     key.weapon_series.include?(weapon_series)
   end
@@ -72,12 +74,50 @@ class Weapon < ApplicationRecord
 
   def self.element_changeable?(weapon_or_series)
     if weapon_or_series.is_a?(Weapon)
-      weapon_or_series.weapon_series&.element_changeable || false
+      weapon_or_series.effective_element_changeable
     elsif weapon_or_series.is_a?(WeaponSeries)
       weapon_or_series.element_changeable
     else
       false
     end
+  end
+
+  # Variant-aware capability accessors. Returns the variant override if present,
+  # otherwise falls back to the weapon series value.
+  def effective_has_weapon_keys
+    return weapon_series_variant.has_weapon_keys unless weapon_series_variant&.has_weapon_keys.nil?
+
+    weapon_series&.has_weapon_keys || false
+  end
+
+  def effective_has_awakening
+    return weapon_series_variant.has_awakening unless weapon_series_variant&.has_awakening.nil?
+
+    weapon_series&.has_awakening || false
+  end
+
+  def effective_element_changeable
+    return weapon_series_variant.element_changeable unless weapon_series_variant&.element_changeable.nil?
+
+    weapon_series&.element_changeable || false
+  end
+
+  def effective_extra
+    return weapon_series_variant.extra unless weapon_series_variant&.extra.nil?
+
+    weapon_series&.extra || false
+  end
+
+  def effective_num_weapon_keys
+    return weapon_series_variant.num_weapon_keys unless weapon_series_variant&.num_weapon_keys.nil?
+
+    weapon_series&.num_weapon_keys
+  end
+
+  def effective_augment_type
+    return weapon_series_variant.augment_type unless weapon_series_variant&.augment_type.nil?
+
+    weapon_series&.augment_type || 'no_augment'
   end
 
   # Promotion scopes

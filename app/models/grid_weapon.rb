@@ -21,6 +21,8 @@
 # @!attribute [r] awakening
 #   @return [Awakening, nil] the associated awakening, if any.
 class GridWeapon < ApplicationRecord
+  include WeaponCapabilityResolution
+
   # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze
 
@@ -262,7 +264,7 @@ class GridWeapon < ApplicationRecord
   def set_default_exorcism_level
     return unless weapon.present?
     return unless exorcism_level.nil? || exorcism_level.zero?
-    return unless weapon.weapon_series&.augment_type == 'befoulment'
+    return unless weapon_augment_type == 'befoulment'
 
     self.exorcism_level = 1
   end
