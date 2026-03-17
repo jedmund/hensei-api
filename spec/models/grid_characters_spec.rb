@@ -119,8 +119,8 @@ RSpec.describe GridCharacter, type: :model do
         expect(@grid_char.errors[:awakening]).to include('awakening level too low')
       end
 
-      it 'adds an error if awakening_level is above 9' do
-        @grid_char.awakening_level = 10
+      it 'adds an error if awakening_level is above 10' do
+        @grid_char.awakening_level = 11
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:awakening]).to include('awakening level too high')
       end
