@@ -170,7 +170,15 @@ module Processors
       grid_weapons.each do |grid_weapon|
         begin
           grid_weapon.save!
-          grid_weapon.sync_from_collection! if grid_weapon.collection_weapon.present?
+          if grid_weapon.collection_weapon.present?
+            update_collection_from_game(grid_weapon)
+            begin
+              grid_weapon.sync_from_collection!
+            rescue ActiveRecord::RecordInvalid => e
+              Rails.logger.error "[WEAPON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+              grid_weapon.reload
+            end
+          end
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
         end
@@ -178,6 +186,26 @@ module Processors
     end
 
     private
+
+    ##
+    # Updates a collection weapon's uncap_level and transcendence_step from game data
+    # when the game shows higher values. The game is the source of truth.
+    #
+    # @param grid_weapon [GridWeapon] the grid weapon with game-derived values.
+    # @return [void]
+    def update_collection_from_game(grid_weapon)
+      cw = grid_weapon.collection_weapon
+      return unless cw.weapon_id == grid_weapon.weapon_id
+
+      updates = {}
+      updates[:uncap_level] = grid_weapon.uncap_level if grid_weapon.uncap_level > cw.uncap_level
+      updates[:transcendence_step] = grid_weapon.transcendence_step if grid_weapon.transcendence_step > cw.transcendence_step
+
+      if updates.any?
+        cw.update!(updates)
+        Rails.logger.info "[WEAPON] Updated collection weapon #{cw.id} from game data: #{updates}"
+      end
+    end
 
     ##
     # Processes a hash of raw weapon data and returns an array of GridWeapon records.
