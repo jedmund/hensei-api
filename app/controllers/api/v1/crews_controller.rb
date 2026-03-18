@@ -114,7 +114,12 @@ module Api
       # Returns parties that have been shared with this crew
       def shared_parties
         parties = @crew.shared_parties
-                       .includes(:user, :job, :raid)
+                       .includes(
+                         :user, :job, { raid: :group },
+                         { characters: [{ character: :character_series_records }, :grid_artifact] },
+                         { weapons: { weapon: [:weapon_series, :weapon_series_variant] } },
+                         { summons: [{ summon: :summon_series }] }
+                       )
                        .order(created_at: :desc)
                        .paginate(page: params[:page], per_page: page_size)
 
