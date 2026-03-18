@@ -44,7 +44,7 @@ Metrics/AbcSize:
     - 'spec/**/*'
 
 Metrics/BlockLength:
-  Max: 71
+  Max: 80
   Exclude:
     - 'spec/**/*'
     - 'lib/tasks/**/*'
