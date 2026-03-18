@@ -141,12 +141,14 @@ class WeaponImportService
 
     # Check for existing collection weapon with same game ID
     existing = @user.collection_weapons.find_by(game_id: game_id.to_s)
+    found_via_conflict = false
 
     # If no match by game_id, check for conflict resolutions (null game_id records)
     if !existing && game_id.present? && @conflict_resolutions.present?
       resolution = @conflict_resolutions[game_id.to_s]
       if resolution == 'import'
         existing = @user.collection_weapons.find_by(weapon_id: weapon.id, game_id: nil)
+        found_via_conflict = true
       elsif resolution == 'skip'
         @skipped << { game_id: game_id, reason: 'Skipped by user' }
         return
@@ -154,7 +156,7 @@ class WeaponImportService
     end
 
     if existing
-      if @update_existing || @conflict_resolutions[game_id.to_s] == 'import'
+      if @update_existing || found_via_conflict
         update_existing_weapon(existing, item, weapon)
       else
         @skipped << { game_id: game_id, reason: 'Already exists' }
