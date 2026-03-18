@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 require:
   - rubocop-performance
 
@@ -72,8 +74,7 @@ Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
-  Enabled: true
-  EnforcedStyle: always
+  Enabled: false
 
 Style/HashSyntax:
   EnforcedShorthandSyntax: never

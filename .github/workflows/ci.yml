@@ -56,9 +56,7 @@ jobs:
           ruby-version: '3.4.4'
           bundler-cache: true
       - name: Setup database
-        run: |
-          bundle exec rails db:schema:load
-          bundle exec rails data:migrate
+        run: bundle exec rails db:schema:load
       - name: Run tests
         run: bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec-results.xml
       - name: Upload coverage
