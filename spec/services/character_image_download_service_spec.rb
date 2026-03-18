@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe CharacterImageDownloadService do
-  let(:character) { double('Character', granblue_id: '3040001000', flb: false, ulb: false) }
+  let(:character) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false) }
   let(:downloader_double) { double('CharacterDownloader', download: nil) }
 
   before do
@@ -30,8 +30,8 @@ RSpec.describe CharacterImageDownloadService do
         expect(result.images['main']).to include('3040001000_03.jpg')
       end
 
-      it 'includes _04 variant when ulb is true' do
-        allow(character).to receive(:ulb).and_return(true)
+      it 'includes _04 variant when transcendence is true' do
+        allow(character).to receive(:transcendence).and_return(true)
         result = described_class.new(character).download
         expect(result.images['main']).to include('3040001000_04.jpg')
       end

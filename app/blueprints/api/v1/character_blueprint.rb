@@ -67,7 +67,7 @@ module Api
       field :uncap do |c|
         {
           flb: c.flb,
-          ulb: c.ulb
+          transcendence: c.transcendence
         }
       end
 
@@ -208,7 +208,7 @@ module Api
       view :dates do
         field :release_date
         field :flb_date
-        field :ulb_date
+        field :transcendence_date
       end
     end
   end

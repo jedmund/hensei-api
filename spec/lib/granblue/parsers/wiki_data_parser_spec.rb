@@ -265,7 +265,7 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
         expect(result[:element]).to eq(Granblue::Parsers::Wiki.elements['Water'])
         expect(result[:rarity]).to eq(Granblue::Parsers::Wiki.rarities['SSR'])
         expect(result[:flb]).to be true
-        expect(result[:ulb]).to be false
+        expect(result[:transcendence]).to be false
       end
     end
   end

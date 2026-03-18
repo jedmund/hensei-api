@@ -89,7 +89,7 @@ module Api
         if search_params[:sort].present?
           characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
-          characters = characters.order(Arel.sql('greatest(release_date, flb_date, ulb_date) desc, id asc'))
+          characters = characters.order(Arel.sql('greatest(release_date, flb_date, transcendence_date) desc, id asc'))
         end
 
         # Filter by series (array overlap)
@@ -398,7 +398,12 @@ module Api
         when 'rarity'
           scope.order(rarity: sort_dir, id: :asc)
         when 'last_updated'
-          scope.order(Arel.sql("greatest(release_date, flb_date, ulb_date, transcendence_date) #{sort_dir}, id asc"))
+          date_cols = if scope.model.column_names.include?('ulb_date')
+                        'release_date, flb_date, ulb_date, transcendence_date'
+                      else
+                        'release_date, flb_date, transcendence_date'
+                      end
+          scope.order(Arel.sql("greatest(#{date_cols}) #{sort_dir}, id asc"))
         else
           scope
         end

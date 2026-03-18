@@ -66,7 +66,7 @@ class CharacterImageDownloadService
   def build_variants
     variants = ["#{@character.granblue_id}_01", "#{@character.granblue_id}_02"]
     variants << "#{@character.granblue_id}_03" if @character.flb
-    variants << "#{@character.granblue_id}_04" if @character.ulb
+    variants << "#{@character.granblue_id}_04" if @character.transcendence
     variants
   end
 

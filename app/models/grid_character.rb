@@ -73,19 +73,19 @@ class GridCharacter < ApplicationRecord
   ##
   # Validates the transcendence step of the character.
   #
-  # Ensures that the transcendence step is appropriate based on the character's ULB status.
+  # Ensures that the transcendence step is appropriate based on the character's transcendence status.
   # Adds errors if:
-  # - The character has a positive transcendence_step but no transcendence (ulb is false).
+  # - The character has a positive transcendence_step but no transcendence (transcendence is false).
   # - The transcendence_step exceeds the allowed maximum.
-  # - The transcendence_step is negative when character.ulb is true.
+  # - The transcendence_step is negative when character.transcendence is true.
   #
   # @note Triggered on update.
   # @return [void]
   def transcendence
     return if transcendence_step.nil?
-    errors.add(:transcendence_step, 'character has no transcendence') if transcendence_step.positive? && !character.ulb
-    errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5 && character.ulb
-    errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative? && character.ulb
+    errors.add(:transcendence_step, 'character has no transcendence') if transcendence_step.positive? && !character.transcendence
+    errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5 && character.transcendence
+    errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative? && character.transcendence
   end
 
   ##

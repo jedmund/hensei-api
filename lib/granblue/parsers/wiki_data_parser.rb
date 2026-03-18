@@ -56,11 +56,11 @@ module Granblue
         suggestions[:max_atk] = data['max_atk'].to_i if data['max_atk'].present?
         suggestions[:max_atk_flb] = data['flb_atk'].to_i if data['flb_atk'].present?
 
-        # Uncap status - characters use max_evo (5=FLB, 6=ULB)
+        # Uncap status - characters use max_evo (5=FLB, 6=transcendence)
         if data['max_evo'].present?
           evo = data['max_evo'].to_i
           suggestions[:flb] = evo >= 5
-          suggestions[:ulb] = evo >= 6
+          suggestions[:transcendence] = evo >= 6
         end
         # Fallback to legacy 5star field if max_evo not present
         suggestions[:flb] ||= Wiki.boolean.fetch(data['5star'], false) if data['5star'].present?
@@ -76,7 +76,7 @@ module Granblue
         # Dates
         suggestions[:release_date] = parse_date(data['release_date']) if data['release_date'].present?
         suggestions[:flb_date] = parse_date(data['5star_date']) if data['5star_date'].present?
-        suggestions[:ulb_date] = parse_date(data['6star_date']) if data['6star_date'].present?
+        suggestions[:transcendence_date] = parse_date(data['6star_date']) if data['6star_date'].present?
 
         # External links - parse URLs to extract values
         suggestions[:gamewith] = parse_gamewith_url(data['link_gamewith']) if data['link_gamewith'].present?
