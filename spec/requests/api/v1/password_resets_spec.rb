@@ -51,6 +51,7 @@ RSpec.describe 'Password Resets API', type: :request do
     end
 
     it 'handles mixed-case email addresses' do
+      user # ensure the user record exists
       expect {
         post '/api/v1/password_resets', params: { email: 'RESET@Example.COM' }.to_json, headers: headers
       }.to have_enqueued_job(SendPasswordResetEmailJob)
