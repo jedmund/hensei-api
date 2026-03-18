@@ -105,36 +105,6 @@ module Processors
       '7' => 'weapon-multi'
     }.freeze
 
-    # Base weapon IDs for element-changeable weapons, grouped by game series_id.
-    # Element variants in the game are offset from the base by (attribute * 100).
-    ELEMENTAL_WEAPON_MAPPING = {
-      # Ultima Weapons (game series 13)
-      13 => Set.new([
-        1040506800, 1040608100, 1040307200, 1040410200, 1040011900, 1040208800,
-        1040906900, 1040011300, 1040607500, 1040109700, 1040807200, 1040507400,
-        1040307800, 1040706900, 1040907500, 1040410800, 1040109100, 1040706300,
-        1040806400, 1040208200
-      ]),
-      # Superlative Weapons (game series 17)
-      17 => Set.new([
-        1040504400, 1040703600, 1040904300, 1040002000, 1040200900, 1040604200,
-        1040300100, 1040106600, 1040803700, 1040406900
-      ]),
-      # Class Champion Weapons (game series 19)
-      19 => Set.new([
-        1040914600, 1040810100, 1040312000, 1040513800, 1040810900, 1040910300,
-        1040114200, 1040027000, 1040807600, 1040120300, 1040318500, 1040710000,
-        1040812100, 1040510600, 1040018100, 1040113400, 1040017300, 1040412200,
-        1040508000, 1040512600, 1040609100, 1040411600, 1040909300, 1040509700,
-        1040014400, 1040308400, 1040613100, 1040013200, 1040413400, 1040406000,
-        1040601700, 1040900300, 1040102900, 1040203000, 1040402800, 1040501600,
-        1040103000, 1040003500, 1040105500, 1040503500, 1040801300, 1040702700,
-        1040006200, 1040302300, 1040900400, 1040111600, 1040209700, 1040707500,
-        1040214000, 1040021100, 1040417200, 1040012600, 1040317500, 1040402900
-      ])
-    }.freeze
-    ELEMENTAL_WEAPON_ALL = ELEMENTAL_WEAPON_MAPPING.each_value.reduce(Set.new, :|).freeze
-
     # Game series IDs for element-changeable weapon series (Revenant, Ultima, Superlative, Class Champion)
     ELEMENT_CHANGEABLE_GAME_SERIES_IDS = [4, 13, 17, 19].freeze
 
@@ -243,43 +213,14 @@ module Processors
 
         element_changeable = ELEMENT_CHANGEABLE_GAME_SERIES_IDS.include?(series)
 
-        processed_weapon_id = if element_changeable
-                                process_elemental_weapon(weapon_id, series)
-                              else
-                                weapon_id
-                              end
-
         processed_element = if element_changeable
                               ELEMENT_MAPPING[raw_weapon.dig('master', 'attribute').to_i]
                             end
 
-        weapon = Weapon.find_by(granblue_id: processed_weapon_id)
-
-        # Fallback 1: reverse-lookup via element_variant_ids JSONB
-        if weapon.nil? && element_changeable
-          weapon = Weapon.where(
-            "EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)",
-            weapon_id
-          ).first
-          if weapon
-            Rails.logger.info "[WEAPON] Resolved element-changeable weapon (game id #{weapon_id}) via element_variant_ids on #{weapon.granblue_id}"
-          end
-        end
-
-        # Fallback 2: name match within element-changeable weapon series
-        if weapon.nil? && element_changeable
-          weapon_name = raw_weapon.dig('master', 'name')
-          weapon = Weapon.joins(:weapon_series)
-                         .where(weapon_series: { element_changeable: true })
-                         .where(name_en: weapon_name)
-                         .first
-          if weapon
-            Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) via name fallback to #{weapon.granblue_id}"
-          end
-        end
+        weapon = find_weapon(weapon_id, element_changeable, raw_weapon.dig('master', 'name'))
 
         unless weapon
-          Rails.logger.error "[WEAPON] Weapon not found with id #{processed_weapon_id}"
+          Rails.logger.error "[WEAPON] Weapon not found with id #{weapon_id}"
           next
         end
 
@@ -505,21 +446,38 @@ module Processors
       awakening&.id
     end
 
-    def process_elemental_weapon(granblue_id, series_id)
-      granblue_int = granblue_id.to_i
-      base_ids = ELEMENTAL_WEAPON_MAPPING[series_id] || ELEMENTAL_WEAPON_ALL
+    # Finds a Weapon record for the given game ID.
+    # For element-changeable weapons, the game sends element-variant IDs that differ
+    # from the base granblue_id stored in our DB. We resolve these via element_variant_ids JSONB,
+    # falling back to name matching if the JSONB data isn't populated.
+    def find_weapon(weapon_id, element_changeable, weapon_name)
+      # Direct match (works for non-elemental weapons and base-element variants)
+      weapon = Weapon.find_by(granblue_id: weapon_id)
+      return weapon if weapon
 
-      # Exact match (base element / null element)
-      return granblue_id if base_ids.include?(granblue_int)
+      return nil unless element_changeable
 
-      # Try subtracting known element offsets (attributes 1-6 map to +100..+600)
-      (1..6).each do |offset|
-        candidate = granblue_int - (offset * 100)
-        return candidate.to_s if base_ids.include?(candidate)
+      # Primary: reverse-lookup via element_variant_ids JSONB
+      weapon = Weapon.where(
+        "EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)",
+        weapon_id
+      ).first
+      if weapon
+        Rails.logger.info "[WEAPON] Resolved element-changeable weapon (game id #{weapon_id}) via element_variant_ids on #{weapon.granblue_id}"
+        return weapon
       end
 
-      # No match — return original ID unchanged
-      granblue_id
+      # Fallback: name match within element-changeable weapon series
+      return nil unless weapon_name
+
+      weapon = Weapon.joins(:weapon_series)
+                     .where(weapon_series: { element_changeable: true })
+                     .where(name_en: weapon_name)
+                     .first
+      if weapon
+        Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) via name fallback to #{weapon.granblue_id}"
+      end
+      weapon
     end
   end
 end
