@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_18_014558) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_18_060000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -120,14 +120,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_014558) do
     t.float "ougi_ratio"
     t.float "ougi_ratio_flb"
     t.boolean "special", default: false, null: false
-    t.boolean "ulb", default: false, null: false
-    t.integer "max_hp_ulb"
-    t.integer "max_atk_ulb"
+    t.boolean "transcendence", default: false, null: false
+    t.integer "max_hp_transcendence"
+    t.integer "max_atk_transcendence"
     t.integer "character_id", default: [], null: false, array: true
     t.string "wiki_en", default: "", null: false
     t.date "release_date"
     t.date "flb_date"
-    t.date "ulb_date"
+    t.date "transcendence_date"
     t.string "wiki_ja", default: ""
     t.string "gamewith", default: ""
     t.string "kamigame", default: ""
