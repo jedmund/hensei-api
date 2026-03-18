@@ -152,10 +152,10 @@ module Api
         party = nil
         ActiveRecord::Base.transaction do
           party = Party.create!(
-          user: current_user,
-          visibility: current_user.default_import_visibility,
-          name: body['name'].presence
-        )
+            user: current_user,
+            visibility: current_user.default_import_visibility,
+            name: body['name'].presence
+          )
           deck_data = raw_params
           process_data(party, deck_data)
 
