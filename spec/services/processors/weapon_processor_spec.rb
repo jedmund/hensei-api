@@ -132,6 +132,51 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
+  describe '#process_elemental_weapon name fallback' do
+    let(:element_changeable_series) do
+      WeaponSeries.find_by(slug: 'ultima') ||
+        create(:weapon_series, element_changeable: true, slug: 'ultima')
+    end
+    let!(:excalibur) do
+      Weapon.find_by(granblue_id: '1040002000') ||
+        create(:weapon, name_en: 'Excalibur', granblue_id: '1040002000', element: 0, weapon_series: element_changeable_series)
+    end
+
+    it 'resolves a null-element weapon variant by name when ID proximity fails' do
+      deck_data = {
+        'deck' => {
+          'pc' => {
+            'weapons' => {
+              '1' => {
+                'master' => {
+                  'id' => '1040007900',
+                  'name' => 'Excalibur',
+                  'attribute' => '6',
+                  'series_id' => '13',
+                  'kind' => '1',
+                  'rarity' => '4'
+                },
+                'param' => {
+                  'id' => 999,
+                  'level' => '150',
+                  'image_id' => '1040007900'
+                }
+              }
+            }
+          }
+        }
+      }
+
+      proc = described_class.new(party, deck_data)
+      expect { proc.process }.to change(GridWeapon, :count).by(1)
+
+      grid_weapon = party.weapons.find_by(position: -1)
+      expect(grid_weapon).not_to be_nil
+      expect(grid_weapon.weapon).to eq(excalibur)
+      expect(grid_weapon.element).to eq(5) # Dark
+    end
+  end
+
   describe 'processing a complete canonical deck' do
     let(:deck_data) do
       file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
