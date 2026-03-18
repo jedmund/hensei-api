@@ -151,7 +151,7 @@ module Api
         field :forge_chain do |w|
           next nil unless w.forge_chain_id.present?
 
-          w.forge_chain.map do |weapon|
+          w.forge_chain_weapons.select { |fw| fw.element == w.element }.sort_by(&:forge_order).map do |weapon|
             {
               id: weapon.id,
               granblue_id: weapon.granblue_id,
