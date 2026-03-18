@@ -11,7 +11,7 @@ RSpec.describe 'Api::V1::WeaponStatModifiers', type: :request do
       get '/api/v1/weapon_stat_modifiers'
       expect(response).to have_http_status(:ok)
 
-      json = response.parsed_body['weapon_stat_modifiers']
+      json = response.parsed_body
       expect(json.length).to be >= 2
 
       entry = json.find { |m| m['id'] == ax_mod.id }
@@ -27,7 +27,7 @@ RSpec.describe 'Api::V1::WeaponStatModifiers', type: :request do
       get '/api/v1/weapon_stat_modifiers', params: { category: 'ax' }
       expect(response).to have_http_status(:ok)
 
-      json = response.parsed_body['weapon_stat_modifiers']
+      json = response.parsed_body
       json.each do |m|
         expect(m['category']).to eq('ax')
       end
