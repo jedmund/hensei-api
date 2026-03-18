@@ -14,7 +14,7 @@ class Crew < ApplicationRecord
   has_many :shared_parties, through: :party_shares, source: :party
 
   validates :name, presence: true, length: { maximum: 100 }
-  validates :gamertag, length: { maximum: 50 }, allow_nil: true
+  validates :gamertag, length: { maximum: 4 }, uniqueness: { case_sensitive: false }, allow_nil: true
   validates :granblue_crew_id, uniqueness: true, allow_nil: true
 
   def captain
