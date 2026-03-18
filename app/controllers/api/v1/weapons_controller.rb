@@ -235,7 +235,8 @@ module Api
           :release_date, :flb_date, :ulb_date, :transcendence_date,
           :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           :recruits, :forged_from, :forge_chain_id, :forge_order,
-          nicknames_en: [], nicknames_jp: [], promotions: [], awakening_ids: []
+          nicknames_en: [], nicknames_jp: [], promotions: [], awakening_ids: [],
+          element_variant_ids: {}
         )
       end
     end
