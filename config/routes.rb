@@ -301,7 +301,7 @@ Rails.application.routes.draw do
     end
 
     # Reading user parties and playlists - scoped to a user
-    scope 'users/:user_id' do
+    scope 'users/:user_id', user_id: /[^\/]+/ do
       resources :parties, only: [:index], controller: '/api/v1/user_parties'
       resources :playlists, only: [:index, :show], controller: '/api/v1/playlists'
     end
@@ -312,7 +312,7 @@ Rails.application.routes.draw do
     end
 
     # Reading collections - works for any user with privacy check
-    scope 'users/:user_id' do
+    scope 'users/:user_id', user_id: /[^\/]+/ do
       namespace :collection do
         get :counts, controller: '/api/v1/collection'
         get :game_ids, controller: '/api/v1/collection'
