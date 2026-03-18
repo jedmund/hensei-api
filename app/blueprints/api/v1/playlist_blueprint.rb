@@ -18,7 +18,9 @@ module Api
         playlist.playlist_parties.map(&:party_id)
       end
 
-      field :raid_slugs do |playlist|
+      field :raid_slugs do |playlist, options|
+        next options[:raid_slugs_map][playlist.id] || [] if options[:raid_slugs_map]
+
         party_ids = playlist.playlist_parties.map(&:party_id)
         next [] if party_ids.empty?
 
