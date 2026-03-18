@@ -153,6 +153,13 @@ module Api
                status: :unauthorized
       end
 
+      def render_forbidden_response(message = 'Forbidden')
+        render json: ErrorBlueprint.render(nil, error: {
+          message: message,
+          code: 'forbidden'
+        }), status: :forbidden
+      end
+
       private
 
       def restrict_access
@@ -175,6 +182,17 @@ module Api
       # Returns the requested page size for search operations
       def search_page_size
         page_size(SEARCH_PER_PAGE)
+      end
+
+      # Returns a clamped page size from the `limit` query parameter
+      def collection_page_size(default = 50)
+        raw = params[:limit]
+        return default unless raw.present?
+
+        requested = raw.to_i
+        return default if requested <= 0
+
+        [[requested, MAX_PER_PAGE].min, MIN_PER_PAGE].max
       end
 
       def n_plus_one_detection
