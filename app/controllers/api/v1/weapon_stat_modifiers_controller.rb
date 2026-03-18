@@ -8,7 +8,7 @@ module Api
         @modifiers = WeaponStatModifier.all
         @modifiers = @modifiers.where(category: params[:category]) if params[:category].present?
 
-        render json: WeaponStatModifierBlueprint.render(@modifiers, root: :weapon_stat_modifiers)
+        render json: WeaponStatModifierBlueprint.render(@modifiers)
       end
 
       # GET /weapon_stat_modifiers/:id
