@@ -127,22 +127,22 @@ RSpec.describe GridCharacter, type: :model do
     end
 
     context 'transcendence validation' do
-      it 'adds an error if transcendence_step is positive but character.ulb is false' do
-        @grid_char.character.update!(ulb: false)
+      it 'adds an error if transcendence_step is positive but character.transcendence is false' do
+        @grid_char.character.update!(transcendence: false)
         @grid_char.transcendence_step = 1
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:transcendence_step]).to include('character has no transcendence')
       end
 
-      it 'adds an error if transcendence_step is greater than 5 when character.ulb is true' do
-        @grid_char.character.update!(ulb: true)
+      it 'adds an error if transcendence_step is greater than 5 when character.transcendence is true' do
+        @grid_char.character.update!(transcendence: true)
         @grid_char.transcendence_step = 6
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too high')
       end
 
-      it 'adds an error if transcendence_step is negative when character.ulb is true' do
-        @grid_char.character.update!(ulb: true)
+      it 'adds an error if transcendence_step is negative when character.transcendence is true' do
+        @grid_char.character.update!(transcendence: true)
         @grid_char.transcendence_step = -1
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too low')
@@ -206,7 +206,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#sync_from_collection!' do
       context 'when collection_character is linked' do
         before do
-          character.update!(ulb: true) # Enable transcendence
+          character.update!(transcendence: true) # Enable transcendence
           @grid_char = create(:grid_character,
                               valid_attributes.merge(
                                 collection_character: collection_character,
@@ -244,7 +244,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#out_of_sync?' do
       context 'when collection_character is linked' do
         before do
-          character.update!(ulb: true)
+          character.update!(transcendence: true)
           @grid_char = create(:grid_character,
                               valid_attributes.merge(collection_character: collection_character))
         end

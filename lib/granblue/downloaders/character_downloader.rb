@@ -50,7 +50,7 @@ module Granblue
           variants << "#{@id}_03" if character.flb
 
           # Add ULB variant if available
-          variants << "#{@id}_04" if character.ulb
+          variants << "#{@id}_04" if character.transcendence
 
           log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
 
