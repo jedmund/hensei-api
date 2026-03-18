@@ -208,14 +208,14 @@ module Api
             id: item_id_for(item, type),
             uncap_level: item.uncap_level,
             transcendence_step: item.transcendence_step,
-            flb: canonical&.flb,
-            ulb: canonical&.ulb
+            flb: canonical&.flb
           }
 
           if type == :characters
             result[:special] = canonical&.special
             result[:transcendence] = !canonical&.special && canonical&.transcendence
           else
+            result[:ulb] = canonical&.ulb
             result[:transcendence] = canonical&.transcendence
           end
 
