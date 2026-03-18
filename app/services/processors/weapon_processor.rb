@@ -239,6 +239,19 @@ module Processors
 
         weapon = Weapon.find_by(granblue_id: processed_weapon_id)
 
+        # Fallback: for element-changeable weapons with unrecognized variant IDs,
+        # look up by name within element-changeable weapon series
+        if weapon.nil? && element_changeable
+          weapon_name = raw_weapon.dig('master', 'name')
+          weapon = Weapon.joins(:weapon_series)
+                         .where(weapon_series: { element_changeable: true })
+                         .where(name_en: weapon_name)
+                         .first
+          if weapon
+            Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) via name fallback to #{weapon.granblue_id}"
+          end
+        end
+
         unless weapon
           Rails.logger.error "[WEAPON] Weapon not found with id #{processed_weapon_id}"
           next
@@ -265,7 +278,8 @@ module Processors
                 weapon_id: grid_weapon.weapon_id,
                 game_id: game_id.to_s,
                 uncap_level: grid_weapon.uncap_level,
-                transcendence_step: grid_weapon.transcendence_step
+                transcendence_step: grid_weapon.transcendence_step,
+                element: processed_element
               )
             rescue StandardError => e
               Rails.logger.error("Failed to create collection weapon during import: #{e.message}")
