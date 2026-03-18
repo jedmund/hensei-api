@@ -152,12 +152,12 @@ RSpec.describe CharacterImportService, type: :service do
         }
       end
 
-      it 'clamps uncap_level to 5 even when evolution is 6' do
+      it 'sets uncap_level to 6 for transcended characters' do
         service = described_class.new(user, game_data)
         result = service.import
 
         character = result.created.first
-        expect(character.uncap_level).to eq(5)
+        expect(character.uncap_level).to eq(6)
       end
 
       it 'sets transcendence_step from phase' do
@@ -367,12 +367,12 @@ RSpec.describe CharacterImportService, type: :service do
         }
       end
 
-      it 'clamps uncap_level to max 5' do
+      it 'sets uncap_level to 6 for transcended characters' do
         service = described_class.new(user, game_data)
         result = service.import
 
         character = result.created.first
-        expect(character.uncap_level).to eq(5)
+        expect(character.uncap_level).to eq(6)
       end
 
       it 'clamps transcendence_step to max 10' do
