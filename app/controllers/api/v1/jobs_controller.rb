@@ -3,8 +3,10 @@
 module Api
   module V1
     class JobsController < Api::V1::ApiController
+      include PartyAuthorizationConcern
+
       before_action :set_party, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
-      before_action :authorize_party, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
+      before_action :authorize_party!, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
       before_action :set_job, only: %w[update]
       before_action :ensure_editor_role, only: %w[create update]
 
@@ -71,7 +73,8 @@ module Api
           end
         end
 
-        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
+        @party.save!
+        render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
 
       def update_job_skills
@@ -111,7 +114,8 @@ module Api
           @party.attributes = skill_ids_hash
         end
 
-        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
+        @party.save!
+        render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
 
       def destroy_job_skill
@@ -122,12 +126,14 @@ module Api
 
       def update_accessory
         @party.accessory = JobAccessory.find(job_params[:accessory_id])
-        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
+        @party.save!
+        render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
 
       def destroy_accessory
         @party.accessory = nil
-        render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save!
+        @party.save!
+        render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
 
       private
@@ -209,10 +215,6 @@ module Api
         else
           false
         end
-      end
-
-      def authorize_party
-        render_unauthorized_response if @party.user != current_user || @party.edit_key != edit_key
       end
 
       def set_party
