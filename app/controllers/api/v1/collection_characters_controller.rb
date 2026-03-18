@@ -26,7 +26,7 @@ module Api
         @collection_characters = @collection_characters.sorted_by(params[:sort])
 
         # Apply pagination
-        @collection_characters = @collection_characters.paginate(page: params[:page], per_page: params[:limit] || 50)
+        @collection_characters = @collection_characters.paginate(page: params[:page], per_page: collection_page_size)
 
         render json: Api::V1::CollectionCharacterBlueprint.render(
           @collection_characters,
