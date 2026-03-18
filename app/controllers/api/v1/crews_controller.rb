@@ -214,7 +214,7 @@ module Api
 
           if type == :characters
             result[:special] = canonical&.special
-            result[:transcendence] = !canonical&.special && canonical&.ulb
+            result[:transcendence] = !canonical&.special && canonical&.transcendence
           else
             result[:transcendence] = canonical&.transcendence
           end

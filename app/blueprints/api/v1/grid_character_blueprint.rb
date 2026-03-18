@@ -5,7 +5,7 @@ module Api
     class GridCharacterBlueprint < ApiBlueprint
       fields :position, :uncap_level, :perpetuity
 
-      field :transcendence_step, if: ->(_field, gc, _options) { gc.character&.ulb } do |gc|
+      field :transcendence_step, if: ->(_field, gc, _options) { gc.character&.transcendence } do |gc|
         gc.transcendence_step
       end
 

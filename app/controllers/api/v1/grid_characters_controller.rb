@@ -310,17 +310,17 @@ module Api
       # Computes the maximum uncap level for a character based on its flags.
       #
       # Special characters (limited/seasonal) have a different uncap progression:
-      # - Base: 3, FLB: 4, ULB: 5
+      # - Base: 3, FLB: 4, Transcendence: 5
       # Regular characters:
-      # - Base: 4, FLB: 5, ULB: 6
+      # - Base: 4, FLB: 5, Transcendence: 6
       #
       # @param character [Character] the character to compute max uncap for.
       # @return [Integer] the maximum uncap level.
       def compute_max_uncap_level(character)
         if character.special
-          character.ulb ? 5 : character.flb ? 4 : 3
+          character.transcendence ? 5 : character.flb ? 4 : 3
         else
-          character.ulb ? 6 : character.flb ? 5 : 4
+          character.transcendence ? 6 : character.flb ? 5 : 4
         end
       end
 
