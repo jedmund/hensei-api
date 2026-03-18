@@ -15,6 +15,7 @@ module Api
     class GridCharactersController < Api::V1::ApiController
       include IdResolvable
       include CollectionSourceConcern
+      include PartyAuthorizationConcern
 
       before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync switch_style]
       before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync switch_style]
@@ -480,61 +481,6 @@ module Api
         unless @incoming_character
           render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
         end
-      end
-
-      ##
-      # Authorizes the current action by ensuring that the current user or provided edit key
-      # matches the party's owner.
-      #
-      # For parties associated with a user, it verifies that the current user is the owner.
-      # For anonymous parties, it compares the provided edit key with the party's edit key.
-      #
-      # @return [void]
-      def authorize_party_edit!
-        if @party.user.present?
-          authorize_user_party
-        else
-          authorize_anonymous_party
-        end
-      end
-
-      ##
-      # Authorizes an action for a party that belongs to a user.
-      #
-      # Renders an unauthorized response unless the current user is present and matches the party's user.
-      #
-      # @return [void]
-      def authorize_user_party
-        return if current_user.present? && @party.user == current_user
-
-        render_unauthorized_response
-      end
-
-      ##
-      # Authorizes an action for an anonymous party using an edit key.
-      #
-      # Compares the provided edit key with the party's edit key and renders an unauthorized response
-      # if they do not match.
-      #
-      # @return [void]
-      def authorize_anonymous_party
-        provided_edit_key = edit_key.to_s.strip.force_encoding('UTF-8')
-        party_edit_key = @party.edit_key.to_s.strip.force_encoding('UTF-8')
-        return if valid_edit_key?(provided_edit_key, party_edit_key)
-
-        render_unauthorized_response
-      end
-
-      ##
-      # Validates that the provided edit key matches the party's edit key.
-      #
-      # @param provided_edit_key [String] the edit key provided in the request.
-      # @param party_edit_key [String] the edit key associated with the party.
-      # @return [Boolean] true if the keys match; false otherwise.
-      def valid_edit_key?(provided_edit_key, party_edit_key)
-        provided_edit_key.present? &&
-          provided_edit_key.bytesize == party_edit_key.bytesize &&
-          ActiveSupport::SecurityUtils.secure_compare(provided_edit_key, party_edit_key)
       end
 
       ##

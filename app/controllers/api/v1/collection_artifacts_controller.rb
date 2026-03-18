@@ -30,7 +30,7 @@ module Api
 
         @collection_artifacts = @collection_artifacts.sorted_by(params[:sort])
 
-        @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: params[:limit] || 50)
+        @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: collection_page_size)
 
         render json: Api::V1::CollectionArtifactBlueprint.render(
           @collection_artifacts,

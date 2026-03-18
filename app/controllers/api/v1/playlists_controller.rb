@@ -10,6 +10,7 @@ module Api
       def index
         owner = User.find_by!(username: params[:user_id])
         playlists = owner.playlists
+                         .includes(:playlist_parties)
                          .visible_to(current_user, owner)
                          .order(updated_at: :desc)
                          .paginate(page: params[:page], per_page: page_size)

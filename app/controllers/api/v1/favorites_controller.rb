@@ -19,12 +19,9 @@ module Api
                                    party_id: party_id
                                  })
 
-        if @favorite.save!
-          return render json: FavoriteBlueprint.render(@favorite, root: :favorite),
-                        status: :created
-        end
-
-        render_validation_error_response(@favorite)
+        @favorite.save!
+        render json: FavoriteBlueprint.render(@favorite, root: :favorite),
+                      status: :created
       end
 
       def destroy

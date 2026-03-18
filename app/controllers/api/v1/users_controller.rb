@@ -22,28 +22,26 @@ module Api
       def create
         user = User.new(user_params)
 
-        if user.save!
-          token = Doorkeeper::AccessToken.create!(
-            application_id: nil,
-            resource_owner_id: user.id,
-            expires_in: 30.days,
-            scopes: 'public'
-          ).token
+        user.save!
 
-          raw_token = user.generate_verification_token!
-          SendEmailVerificationJob.perform_later(user.id, raw_token)
+        token = Doorkeeper::AccessToken.create!(
+          application_id: nil,
+          resource_owner_id: user.id,
+          expires_in: 30.days,
+          scopes: 'public'
+        ).token
 
-          return render json: UserBlueprint.render({
-                                                     id: user.id,
-                                                     username: user.username,
-                                                     token: token,
-                                                     email_verified: false
-                                                   },
-                                                   view: :token),
-                        status: :created
-        end
+        raw_token = user.generate_verification_token!
+        SendEmailVerificationJob.perform_later(user.id, raw_token)
 
-        render_validation_error_response(@user)
+        render json: UserBlueprint.render({
+                                            id: user.id,
+                                            username: user.username,
+                                            token: token,
+                                            email_verified: false
+                                          },
+                                          view: :token),
+                      status: :created
       end
 
       # TODO: Allow admins to update other users

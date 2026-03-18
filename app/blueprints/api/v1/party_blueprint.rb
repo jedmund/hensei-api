@@ -76,7 +76,7 @@ module Api
         field :shares, if: ->(_field_name, party, options) {
           options[:current_user] && party.user_id == options[:current_user].id
         } do |party|
-          party.party_shares.includes(:shareable).map do |share|
+          party.party_shares.map do |share|
             {
               id: share.id,
               shareable_type: share.shareable_type.downcase,

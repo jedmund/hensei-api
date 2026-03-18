@@ -39,7 +39,7 @@ module CollectionSourceConcern
 
     # Set the source user if this is the first collection-linked item
     if party.collection_source_user_id.nil?
-      party.update_column(:collection_source_user_id, owner.id)
+      party.update!(collection_source_user_id: owner.id)
     end
 
     true
@@ -58,6 +58,6 @@ module CollectionSourceConcern
                 party.weapons.where.not(collection_weapon_id: nil).exists? ||
                 party.summons.where.not(collection_summon_id: nil).exists?
 
-    party.update_column(:collection_source_user_id, nil) unless has_links
+    party.update!(collection_source_user_id: nil) unless has_links
   end
 end

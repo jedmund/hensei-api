@@ -12,6 +12,7 @@ module Api
     class GridSummonsController < Api::V1::ApiController
       include IdResolvable
       include CollectionSourceConcern
+      include PartyAuthorizationConcern
 
       attr_reader :party, :incoming_summon
 
@@ -451,61 +452,6 @@ module Api
         else
           3
         end
-      end
-
-      ##
-      # Authorizes the current action by ensuring that the current user or provided edit key matches the party's owner.
-      #
-      # For parties associated with a user, it verifies that the current_user is the owner.
-      # For anonymous parties, it checks that the provided edit key matches the party's edit key.
-      #
-      # @return [void]
-      def authorize_party_edit!
-        if @party.user.present?
-          authorize_user_party
-        else
-          authorize_anonymous_party
-        end
-      end
-
-      ##
-      # Authorizes an action for a party that belongs to a user.
-      #
-      # Renders an unauthorized response unless the current user is present and
-      # matches the party's user.
-      #
-      # @return [void]
-      def authorize_user_party
-        return if current_user.present? && @party.user == current_user
-
-        render_unauthorized_response
-      end
-
-      ##
-      # Authorizes an action for an anonymous party using an edit key.
-      #
-      # Retrieves and normalizes the provided edit key and compares it with the party's edit key.
-      # Renders an unauthorized response unless the keys are valid.
-      #
-      # @return [void]
-      def authorize_anonymous_party
-        provided_edit_key = edit_key.to_s.strip.force_encoding('UTF-8')
-        party_edit_key = @party.edit_key.to_s.strip.force_encoding('UTF-8')
-        return if valid_edit_key?(provided_edit_key, party_edit_key)
-
-        render_unauthorized_response
-      end
-
-      ##
-      # Validates that the provided edit key matches the party's edit key.
-      #
-      # @param provided_edit_key [String] the edit key provided in the request.
-      # @param party_edit_key [String] the edit key associated with the party.
-      # @return [Boolean] true if the edit keys match; false otherwise.
-      def valid_edit_key?(provided_edit_key, party_edit_key)
-        provided_edit_key.present? &&
-          provided_edit_key.bytesize == party_edit_key.bytesize &&
-          ActiveSupport::SecurityUtils.secure_compare(provided_edit_key, party_edit_key)
       end
 
       ##

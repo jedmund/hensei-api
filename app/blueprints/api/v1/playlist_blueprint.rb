@@ -15,11 +15,11 @@ module Api
       end
 
       field :party_ids do |playlist|
-        playlist.playlist_parties.pluck(:party_id)
+        playlist.playlist_parties.map(&:party_id)
       end
 
       field :raid_slugs do |playlist|
-        party_ids = playlist.playlist_parties.pluck(:party_id)
+        party_ids = playlist.playlist_parties.map(&:party_id)
         next [] if party_ids.empty?
 
         raid_ids = Party.where(id: party_ids)

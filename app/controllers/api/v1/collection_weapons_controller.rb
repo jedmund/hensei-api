@@ -28,7 +28,7 @@ module Api
 
         @collection_weapons = @collection_weapons.sorted_by(params[:sort])
 
-        @collection_weapons = @collection_weapons.paginate(page: params[:page], per_page: params[:limit] || 50)
+        @collection_weapons = @collection_weapons.paginate(page: params[:page], per_page: collection_page_size)
 
         render json: Api::V1::CollectionWeaponBlueprint.render(
           @collection_weapons,

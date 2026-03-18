@@ -144,7 +144,7 @@ module Api
                                    party.edit_key.to_s.strip.force_encoding('UTF-8'))
               results << { shortcode: shortcode, status: 'invalid_key' }
             else
-              party.update_columns(user_id: current_user.id, edit_key: nil)
+              party.update!(user_id: current_user.id, edit_key: nil)
               migrated_count += 1
               results << { shortcode: shortcode, status: 'migrated' }
             end
@@ -284,7 +284,8 @@ module Api
       def sync_all
         @party = Party.find_by(id: params[:id])
         return render_not_found_response('party') unless @party
-        return render_unauthorized_response unless authorized_to_edit?
+        authorize_party!
+        return if performed?
 
         synced = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
 
@@ -335,7 +336,7 @@ module Api
                 .update_all(collection_weapon_id: nil, orphaned: false)
           @party.summons.where.not(collection_summon_id: nil)
                 .update_all(collection_summon_id: nil, orphaned: false)
-          @party.update_column(:collection_source_user_id, nil)
+          @party.update!(collection_source_user_id: nil)
         end
 
         render json: {
@@ -448,7 +449,8 @@ module Api
           } },
           { summons: [{ summon: :summon_series }, :collection_summon] },
           :guidebook1, :guidebook2, :guidebook3,
-          :source_party, :remixes, :skill0, :skill1, :skill2, :skill3, :accessory
+          :source_party, :remixes, :skill0, :skill1, :skill2, :skill3, :accessory,
+          { party_shares: :shareable }
         ).find_by(shortcode: params[:id])
         render_not_found_response('party') unless @party
       end
