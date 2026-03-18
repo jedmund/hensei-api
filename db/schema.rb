@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_18_000134) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_18_014558) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1158,6 +1158,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_000134) do
     t.integer "forge_order"
     t.integer "max_exorcism_level"
     t.uuid "weapon_series_variant_id"
+    t.jsonb "element_variant_ids"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
