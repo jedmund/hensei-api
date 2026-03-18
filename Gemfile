@@ -111,6 +111,7 @@ end
 
 group :tools do
   gem 'rubocop'
+  gem 'rubocop-performance'
   gem 'squasher', '>= 0.6.0'
 end
 
