@@ -83,8 +83,10 @@ class WeaponImageDownloadService
 
     # Add element variants for element-changeable weapons (7 variants: 0-6)
     if Weapon.element_changeable?(@weapon)
+      variant_ids = @weapon.element_variant_ids || {}
       (0..6).each do |element|
-        variants << "#{@weapon.granblue_id}_#{element}"
+        variant_id = variant_ids[element.to_s]
+        variants << (variant_id || "#{@weapon.granblue_id}_#{element}")
       end
     end
 

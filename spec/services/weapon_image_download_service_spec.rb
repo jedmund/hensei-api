@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe WeaponImageDownloadService do
-  let(:weapon) { double('Weapon', granblue_id: '1040001000', transcendence: false) }
+  let(:weapon) { double('Weapon', granblue_id: '1040001000', transcendence: false, element_variant_ids: nil) }
   let(:downloader_double) { double('WeaponDownloader', download: nil) }
 
   before do
