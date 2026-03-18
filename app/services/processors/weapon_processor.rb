@@ -239,8 +239,18 @@ module Processors
 
         weapon = Weapon.find_by(granblue_id: processed_weapon_id)
 
-        # Fallback: for element-changeable weapons with unrecognized variant IDs,
-        # look up by name within element-changeable weapon series
+        # Fallback 1: reverse-lookup via element_variant_ids JSONB
+        if weapon.nil? && element_changeable
+          weapon = Weapon.where(
+            "EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)",
+            weapon_id
+          ).first
+          if weapon
+            Rails.logger.info "[WEAPON] Resolved element-changeable weapon (game id #{weapon_id}) via element_variant_ids on #{weapon.granblue_id}"
+          end
+        end
+
+        # Fallback 2: name match within element-changeable weapon series
         if weapon.nil? && element_changeable
           weapon_name = raw_weapon.dig('master', 'name')
           weapon = Weapon.joins(:weapon_series)

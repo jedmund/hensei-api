@@ -132,7 +132,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
-  describe '#process_elemental_weapon name fallback' do
+  describe '#process_elemental_weapon fallbacks' do
     let(:element_changeable_series) do
       WeaponSeries.find_by(slug: 'ultima') ||
         create(:weapon_series, element_changeable: true, slug: 'ultima')
@@ -142,8 +142,8 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
         create(:weapon, name_en: 'Excalibur', granblue_id: '1040002000', element: 0, weapon_series: element_changeable_series)
     end
 
-    it 'resolves a null-element weapon variant by name when ID proximity fails' do
-      deck_data = {
+    let(:dark_excalibur_deck) do
+      {
         'deck' => {
           'pc' => {
             'weapons' => {
@@ -166,8 +166,21 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
           }
         }
       }
+    end
 
-      proc = described_class.new(party, deck_data)
+    it 'resolves via element_variant_ids when populated' do
+      excalibur.update!(element_variant_ids: { '5' => '1040007900' })
+
+      proc = described_class.new(party, dark_excalibur_deck)
+      expect { proc.process }.to change(GridWeapon, :count).by(1)
+
+      grid_weapon = party.weapons.find_by(position: -1)
+      expect(grid_weapon.weapon).to eq(excalibur)
+      expect(grid_weapon.element).to eq(5)
+    end
+
+    it 'resolves a null-element weapon variant by name when element_variant_ids is empty' do
+      proc = described_class.new(party, dark_excalibur_deck)
       expect { proc.process }.to change(GridWeapon, :count).by(1)
 
       grid_weapon = party.weapons.find_by(position: -1)

@@ -72,7 +72,7 @@ module Granblue
         end
 
         # Download element variants for element-changeable weapons (which are null element)
-        download_element_variants(selected_size) if Weapon.element_changeable?(weapon)
+        download_element_variants(weapon, selected_size) if Weapon.element_changeable?(weapon)
       end
 
       # Downloads a specific variant's images in all sizes
@@ -94,35 +94,43 @@ module Granblue
         end
       end
 
-      # Downloads all element variants for element-changeable weapons
-      # Maps game URLs to internal element IDs for storage
+      # Downloads all element variants for element-changeable weapons.
+      # Uses variant IDs from the weapon record when available, falling back to offset math.
       #
+      # @param weapon [Weapon] Weapon model instance
       # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
-      def download_element_variants(selected_size = nil)
+      def download_element_variants(weapon, selected_size = nil)
         base_id = @id.to_i
-        log_info "Downloading element variants for #{@id} (base_id=#{base_id})"
+        variant_ids = weapon.element_variant_ids || {}
+        log_info "Downloading element variants for #{@id} (base_id=#{base_id}, variant_ids=#{variant_ids})"
 
         ELEMENT_SOURCE_MAP.each do |element_id, source|
-          if source == :note
+          variant_id = variant_ids[element_id.to_s]
+
+          if variant_id
+            source_id = variant_id
+            target_stem = variant_id
+          elsif source == :note
             source_id = "#{base_id}_note"
+            target_stem = "#{@id}_#{element_id}"
           else
             source_id = (base_id + source).to_s
+            target_stem = "#{@id}_#{element_id}"
           end
-          target_suffix = "_#{element_id}"
 
-          log_info "  Element #{element_id}: source=#{source_id} -> target=#{@id}#{target_suffix}"
-          download_element_variant(source_id, target_suffix, selected_size)
+          log_info "  Element #{element_id}: source=#{source_id} -> target=#{target_stem}"
+          download_element_variant(source_id, target_stem, selected_size)
         end
       end
 
       # Downloads a single element variant in all sizes
       #
-      # @param source_id [String] Source ID to download from (e.g., "1040001000_note" or "1040001100")
-      # @param target_suffix [String] Suffix to use for storage (e.g., "_0" or "_1")
+      # @param source_id [String] Source ID to download from (e.g., "1040007900" or "1040001100")
+      # @param target_stem [String] Filename stem for storage (e.g., "1040007900" or "1040002000_1")
       # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
-      def download_element_variant(source_id, target_suffix, selected_size = nil)
+      def download_element_variant(source_id, target_stem, selected_size = nil)
         return if @test_mode
 
         sizes = selected_size ? [selected_size] : SIZES
@@ -130,7 +138,7 @@ module Granblue
         sizes.each do |size|
           path = download_path(size)
           source_url = build_variant_url(source_id, size)
-          target_filename = "#{@id}#{target_suffix}.#{size == 'base' ? 'png' : 'jpg'}"
+          target_filename = "#{target_stem}.#{size == 'base' ? 'png' : 'jpg'}"
 
           process_element_download(source_url, size, path, target_filename)
         end
