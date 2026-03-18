@@ -102,7 +102,7 @@ module Api
 
         # Build per-playlist raid slugs
         playlists.each_with_object({}) do |pl, result|
-          pl_party_ids = pl.playlist_parties.map(&:party_id).to_set
+          pl_party_ids = pl.playlist_parties.to_set(&:party_id)
           relevant = party_raid_pairs.select { |pid, _, _| pl_party_ids.include?(pid) }
 
           # Group by raid_id, pick most recent updated_at per raid, sort desc, limit 4
