@@ -102,7 +102,7 @@ RSpec.describe 'ImportController', type: :request do
 
         post '/api/v1/import', params: valid_deck_json, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body['error']).to eq('Error processing import')
+        expect(response.parsed_body['error']).to eq('Import failed due to an unexpected error. Please try again.')
       end
     end
   end

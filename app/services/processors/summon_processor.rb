@@ -103,6 +103,8 @@ module Processors
       internal_quick_summon_id = @data['quick_user_summon_id'].to_i if sub
 
       summons.filter_map do |key, raw_summon|
+        next if raw_summon.nil? || raw_summon['param'].nil? || raw_summon['master'].nil?
+
         summon_params = raw_summon['param']
         summon_id = raw_summon['master']['id']
         summon = Summon.find_by(granblue_id: transform_id(summon_id))

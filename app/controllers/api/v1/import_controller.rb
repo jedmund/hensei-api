@@ -167,7 +167,9 @@ module Api
 
         render json: { shortcode: party.shortcode }, status: :created
       rescue StandardError => e
-        render json: { error: e.message }, status: :unprocessable_content
+        Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
+        Rails.logger.error e.backtrace&.first(10)&.join("\n")
+        render json: { error: 'Import failed due to an unexpected error. Please try again.' }, status: :unprocessable_content
       end
 
       def weapons
