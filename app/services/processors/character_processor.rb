@@ -79,9 +79,17 @@ module Processors
 
         position = key.to_i - 1
 
-        # Find the Character record by its granblue_id.
+        # Find the Character record by its granblue_id, respecting style change.
         character_id = raw_character.dig('master', 'id')
-        character = Character.find_by(granblue_id: character_id)
+        style = raw_character.dig('param', 'style')
+
+        character = if style == '2'
+                      Character.find_by(granblue_id: character_id, style_swap: true) ||
+                        Character.find_by(granblue_id: character_id)
+                    else
+                      Character.find_by(granblue_id: character_id, style_swap: false) ||
+                        Character.find_by(granblue_id: character_id)
+                    end
 
         unless character
           Rails.logger.error "[CHARACTER] Character not found with id #{character_id}"
