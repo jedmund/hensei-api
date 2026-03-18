@@ -121,7 +121,13 @@ Rails.application.routes.draw do
     get 'jobs/:id/accessories', to: 'job_accessories#job'
 
     # Job Accessories (database management)
-    resources :job_accessories, only: %i[index show create update destroy]
+    resources :job_accessories, only: %i[index show create update destroy] do
+      member do
+        post 'download_image'
+        post 'download_images'
+        get 'download_status'
+      end
+    end
 
     get 'characters/:id/related', to: 'characters#related'
 
