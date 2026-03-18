@@ -72,6 +72,7 @@ RSpec.configure do |config|
   # them with FactoryBot.
   # -----------------------------------------------------------------------------
   config.include FactoryBot::Syntax::Methods
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # -----------------------------------------------------------------------------
   # Load canonical seed data for test environment:

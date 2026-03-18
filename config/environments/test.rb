@@ -50,4 +50,10 @@ Rails.application.configure do
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
+
+  # Use :test delivery method so mailer specs don't hit real APIs (e.g. Resend).
+  config.action_mailer.delivery_method = :test
+
+  # Use :test queue adapter so ActiveJob matchers (have_enqueued_job) work.
+  config.active_job.queue_adapter = :test
 end
