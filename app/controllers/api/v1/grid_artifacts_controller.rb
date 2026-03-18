@@ -3,6 +3,8 @@
 module Api
   module V1
     class GridArtifactsController < Api::V1::ApiController
+      include PartyAuthorizationConcern
+
       before_action :find_grid_artifact, only: %i[update destroy sync]
       before_action :find_party, only: %i[create update destroy sync]
       before_action :find_grid_character, only: %i[create]
@@ -89,34 +91,6 @@ module Api
         artifact_id = params.dig(:grid_artifact, :artifact_id)
         @artifact = Artifact.find_by(id: artifact_id)
         render_not_found_response('artifact') unless @artifact
-      end
-
-      def authorize_party_edit!
-        if @party.user.present?
-          authorize_user_party
-        else
-          authorize_anonymous_party
-        end
-      end
-
-      def authorize_user_party
-        return if current_user.present? && @party.user == current_user
-
-        render_unauthorized_response
-      end
-
-      def authorize_anonymous_party
-        provided_edit_key = edit_key.to_s.strip.force_encoding('UTF-8')
-        party_edit_key = @party.edit_key.to_s.strip.force_encoding('UTF-8')
-        return if valid_edit_key?(provided_edit_key, party_edit_key)
-
-        render_unauthorized_response
-      end
-
-      def valid_edit_key?(provided_edit_key, party_edit_key)
-        provided_edit_key.present? &&
-          provided_edit_key.bytesize == party_edit_key.bytesize &&
-          ActiveSupport::SecurityUtils.secure_compare(provided_edit_key, party_edit_key)
       end
 
       def grid_artifact_params
