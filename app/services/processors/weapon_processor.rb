@@ -105,19 +105,35 @@ module Processors
       '7' => 'weapon-multi'
     }.freeze
 
-    ELEMENTAL_WEAPON_MAPPING = %w[1040914600 1040810100 1040506800 1040312000 1040513800 1040810900 1040910300
-                                  1040114200 1040027000 1040807600 1040120300 1040318500 1040710000 1040608100
-                                  1040812100 1040307200 1040410200 1040510600 1040018100 1040113400 1040017300
-                                  1040011900 1040412200 1040508000 1040512600 1040609100 1040411600 1040208800
-                                  1040906900 1040909300 1040509700 1040014400 1040308400 1040613100 1040013200
-                                  1040011300 1040413400 1040607500 1040504400 1040703600 1040406000 1040601700
-                                  1040904300 1040109700 1040900300 1040002000 1040807200 1040102900 1040203000
-                                  1040402800 1040507400 1040200900 1040307800 1040501600 1040706900 1040604200
-                                  1040103000 1040003500 1040300100 1040907500 1040105500 1040106600 1040503500
-                                  1040801300 1040410800 1040702700 1040006200 1040302300 1040803700 1040900400
-                                  1040406900 1040109100 1040111600 1040706300 1040806400 1040209700 1040707500
-                                  1040208200 1040214000 1040021100 1040417200 1040012600 1040317500 1040402900].freeze
-    ELEMENTAL_WEAPON_MAPPING_INT = ELEMENTAL_WEAPON_MAPPING.map(&:to_i).sort.freeze
+    # Base weapon IDs for element-changeable weapons, grouped by game series_id.
+    # Element variants in the game are offset from the base by (attribute * 100).
+    ELEMENTAL_WEAPON_MAPPING = {
+      # Ultima Weapons (game series 13)
+      13 => Set.new([
+        1040506800, 1040608100, 1040307200, 1040410200, 1040011900, 1040208800,
+        1040906900, 1040011300, 1040607500, 1040109700, 1040807200, 1040507400,
+        1040307800, 1040706900, 1040907500, 1040410800, 1040109100, 1040706300,
+        1040806400, 1040208200
+      ]),
+      # Superlative Weapons (game series 17)
+      17 => Set.new([
+        1040504400, 1040703600, 1040904300, 1040002000, 1040200900, 1040604200,
+        1040300100, 1040106600, 1040803700, 1040406900
+      ]),
+      # Class Champion Weapons (game series 19)
+      19 => Set.new([
+        1040914600, 1040810100, 1040312000, 1040513800, 1040810900, 1040910300,
+        1040114200, 1040027000, 1040807600, 1040120300, 1040318500, 1040710000,
+        1040812100, 1040510600, 1040018100, 1040113400, 1040017300, 1040412200,
+        1040508000, 1040512600, 1040609100, 1040411600, 1040909300, 1040509700,
+        1040014400, 1040308400, 1040613100, 1040013200, 1040413400, 1040406000,
+        1040601700, 1040900300, 1040102900, 1040203000, 1040402800, 1040501600,
+        1040103000, 1040003500, 1040105500, 1040503500, 1040801300, 1040702700,
+        1040006200, 1040302300, 1040900400, 1040111600, 1040209700, 1040707500,
+        1040214000, 1040021100, 1040417200, 1040012600, 1040317500, 1040402900
+      ])
+    }.freeze
+    ELEMENTAL_WEAPON_ALL = ELEMENTAL_WEAPON_MAPPING.each_value.reduce(Set.new, :|).freeze
 
     # Game series IDs for element-changeable weapon series (Revenant, Ultima, Superlative, Class Champion)
     ELEMENT_CHANGEABLE_GAME_SERIES_IDS = [4, 13, 17, 19].freeze
@@ -228,7 +244,7 @@ module Processors
         element_changeable = ELEMENT_CHANGEABLE_GAME_SERIES_IDS.include?(series)
 
         processed_weapon_id = if element_changeable
-                                process_elemental_weapon(weapon_id)
+                                process_elemental_weapon(weapon_id, series)
                               else
                                 weapon_id
                               end
@@ -489,34 +505,21 @@ module Processors
       awakening&.id
     end
 
-    def process_elemental_weapon(granblue_id)
+    def process_elemental_weapon(granblue_id, series_id)
       granblue_int = granblue_id.to_i
+      base_ids = ELEMENTAL_WEAPON_MAPPING[series_id] || ELEMENTAL_WEAPON_ALL
 
-      # Find the index of the first element that is >= granblue_int.
-      idx = ELEMENTAL_WEAPON_MAPPING_INT.bsearch_index { |x| x >= granblue_int }
+      # Exact match (base element / null element)
+      return granblue_id if base_ids.include?(granblue_int)
 
-      # We'll check the candidate at idx and the one immediately before it.
-      candidates = []
-      if idx
-        candidate = ELEMENTAL_WEAPON_MAPPING_INT[idx]
-        candidates << candidate if (granblue_int - candidate).abs <= 500
-        # Check the candidate just before, if it exists.
-        if idx > 0
-          candidate_prev = ELEMENTAL_WEAPON_MAPPING_INT[idx - 1]
-          candidates << candidate_prev if (granblue_int - candidate_prev).abs <= 500
-        end
-      else
-        # If idx is nil, then granblue_int is greater than all mapped values.
-        candidate = ELEMENTAL_WEAPON_MAPPING_INT.last
-        candidates << candidate if (granblue_int - candidate).abs <= 500
+      # Try subtracting known element offsets (attributes 1-6 map to +100..+600)
+      (1..6).each do |offset|
+        candidate = granblue_int - (offset * 100)
+        return candidate.to_s if base_ids.include?(candidate)
       end
 
-      # If no candidate is close enough, return the original input.
-      return granblue_id if candidates.empty?
-
-      # Choose the candidate with the smallest difference.
-      best_match = candidates.min_by { |x| (granblue_int - x).abs }
-      best_match.to_s
+      # No match — return original ID unchanged
+      granblue_id
     end
   end
 end

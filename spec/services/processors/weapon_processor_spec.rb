@@ -38,6 +38,45 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
+  describe '#process_elemental_weapon' do
+    # Ultima Axe base: 1040307800 (game series 13)
+    # Berserker's Barrage base: 1040308400 (game series 19)
+    # These are only 600 apart — the old proximity search confused them.
+
+    it 'returns the base ID for an exact match' do
+      result = processor.send(:process_elemental_weapon, '1040307800', 13)
+      expect(result).to eq('1040307800')
+    end
+
+    it 'resolves element variants back to the base ID' do
+      # Water Ultima Axe (offset +200)
+      result = processor.send(:process_elemental_weapon, '1040308000', 13)
+      expect(result).to eq('1040307800')
+    end
+
+    it 'resolves high-offset variants without cross-series collision' do
+      # Light Ultima Axe (offset +500) — previously mapped to Berserker's Barrage
+      result = processor.send(:process_elemental_weapon, '1040308300', 13)
+      expect(result).to eq('1040307800')
+    end
+
+    it 'resolves dark variants without cross-series collision' do
+      # Dark Ultima Axe (offset +600) — previously mapped to Berserker's Barrage
+      result = processor.send(:process_elemental_weapon, '1040308400', 13)
+      expect(result).to eq('1040307800')
+    end
+
+    it 'resolves Berserker Barrage correctly in its own series' do
+      result = processor.send(:process_elemental_weapon, '1040308400', 19)
+      expect(result).to eq('1040308400')
+    end
+
+    it 'returns the original ID when no mapping matches' do
+      result = processor.send(:process_elemental_weapon, '9999999999', 13)
+      expect(result).to eq('9999999999')
+    end
+  end
+
   describe '#process_weapon_ax' do
     let(:grid_weapon) { build(:grid_weapon, party: party) }
 
