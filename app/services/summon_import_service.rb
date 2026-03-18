@@ -129,12 +129,14 @@ class SummonImportService
 
     # Check for existing collection summon with same game ID
     existing = @user.collection_summons.find_by(game_id: game_id.to_s)
+    found_via_conflict = false
 
     # If no match by game_id, check for conflict resolutions (null game_id records)
     if !existing && game_id.present? && @conflict_resolutions.present?
       resolution = @conflict_resolutions[game_id.to_s]
       if resolution == 'import'
         existing = @user.collection_summons.find_by(summon_id: summon.id, game_id: nil)
+        found_via_conflict = true
       elsif resolution == 'skip'
         @skipped << { game_id: game_id, reason: 'Skipped by user' }
         return
@@ -142,7 +144,7 @@ class SummonImportService
     end
 
     if existing
-      if @update_existing || @conflict_resolutions[game_id.to_s] == 'import'
+      if @update_existing || found_via_conflict
         update_existing_summon(existing, item, summon)
       else
         @skipped << { game_id: game_id, reason: 'Already exists' }

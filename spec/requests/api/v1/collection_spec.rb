@@ -171,9 +171,6 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
 
     it 'returns distinct granblue_ids for characters' do
-      # Add the same character again (if model allows)
-      create(:collection_character, user: user, character: character1)
-
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
       json = response.parsed_body

@@ -646,7 +646,7 @@ RSpec.describe Party, type: :model do
   describe '#preview_relevant_attributes' do
     it 'returns an array of expected attribute names' do
       party = build(:party)
-      expected = %w[name job_id element weapons_count characters_count summons_count full_auto auto_guard charge_attack clear_time]
+      expected = %w[name job_id element weapons_count characters_count summons_count full_auto auto_guard charge_attack clear_time solo]
       expect(party.send(:preview_relevant_attributes)).to match_array(expected)
     end
   end

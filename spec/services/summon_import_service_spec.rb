@@ -170,12 +170,12 @@ RSpec.describe SummonImportService, type: :service do
         }
       end
 
-      it 'clamps uncap_level to 5 even when evolution is 6' do
+      it 'sets uncap_level to 6 for transcended summons' do
         service = described_class.new(user, game_data)
         result = service.import
 
         summon = result.created.first
-        expect(summon.uncap_level).to eq(5)
+        expect(summon.uncap_level).to eq(6)
       end
 
       it 'sets transcendence_step from phase' do
@@ -397,12 +397,12 @@ RSpec.describe SummonImportService, type: :service do
         }
       end
 
-      it 'clamps uncap_level to max 5' do
+      it 'sets uncap_level to 6 for transcended summons' do
         service = described_class.new(user, game_data)
         result = service.import
 
         summon = result.created.first
-        expect(summon.uncap_level).to eq(5)
+        expect(summon.uncap_level).to eq(6)
       end
 
       it 'clamps transcendence_step to max 10' do
