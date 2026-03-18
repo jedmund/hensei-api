@@ -124,6 +124,13 @@ module Api
         }
       end
 
+      # POST /check/gamertag
+      def check_gamertag
+        gamertag = params[:gamertag]&.strip
+        available = gamertag.present? && !Crew.where('lower(gamertag) = ?', gamertag.downcase).where.not(id: current_user&.crew&.id).exists?
+        render json: { available: available }
+      end
+
       private
 
       def set_crew
