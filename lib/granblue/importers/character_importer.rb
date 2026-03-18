@@ -36,23 +36,23 @@ module Granblue
       # @option attributes [Integer] :race1 First character race
       # @option attributes [Integer] :race2 Second character race
       # @option attributes [Boolean] :flb Flag for FLB
-      # @option attributes [Boolean] :ulb Flag for ULB
+      # @option attributes [Boolean] :transcendence Flag for transcendence
       # @option attributes [Boolean] :special Flag for characters with special uncap patterns
       # @option attributes [Integer] :min_hp Minimum HP
       # @option attributes [Integer] :max_hp Maximum HP
       # @option attributes [Integer] :max_hp_flb Maximum HP after FLB
-      # @option attributes [Integer] :max_hp_ulb Maximum HP after ULB
+      # @option attributes [Integer] :max_hp_transcendence Maximum HP after transcendence
       # @option attributes [Integer] :min_atk Minimum attack
       # @option attributes [Integer] :max_atk Maximum attack
       # @option attributes [Integer] :max_atk_flb Maximum attack after FLB
-      # @option attributes [Integer] :max_atk_ulb Maximum attack after ULB
+      # @option attributes [Integer] :max_atk_transcendence Maximum attack after transcendence
       # @option attributes [Integer] :base_da Base double attack rate
       # @option attributes [Integer] :base_ta Base triple attack rate
       # @option attributes [Float] :ougi_ratio Original ougi (charge attack) ratio
       # @option attributes [Float] :ougi_ratio_flb Ougi ratio after FLB
       # @option attributes [String] :release_date Character release date
       # @option attributes [String] :flb_date Date FLB was implemented
-      # @option attributes [String] :ulb_date Date ULB was implemented
+      # @option attributes [String] :transcendence_date Date transcendence was implemented
       # @option attributes [String] :wiki_en English wiki link
       # @option attributes [String] :wiki_ja Japanese wiki link
       # @option attributes [String] :gamewith Gamewith link
@@ -87,14 +87,14 @@ module Granblue
           ougi_ratio: parse_float(row['ougi_ratio']),
           ougi_ratio_flb: parse_float(row['ougi_ratio_flb']),
           special: parse_boolean(row['special']),
-          ulb: parse_boolean(row['ulb']),
-          max_hp_ulb: parse_integer(row['max_hp_ulb']),
-          max_atk_ulb: parse_integer(row['max_atk_ulb']),
+          transcendence: parse_boolean(row['transcendence']),
+          max_hp_transcendence: parse_integer(row['max_hp_transcendence']),
+          max_atk_transcendence: parse_integer(row['max_atk_transcendence']),
           character_id: parse_integer_array(row['character_id']),
           wiki_en: parse_value(row['wiki_en']),
           release_date: parse_value(row['release_date']),
           flb_date: parse_value(row['flb_date']),
-          ulb_date: parse_value(row['ulb_date']),
+          transcendence_date: parse_value(row['transcendence_date']),
           wiki_ja: parse_value(row['wiki_ja']),
           gamewith: parse_value(row['gamewith']),
           kamigame: parse_value(row['kamigame']),
