@@ -10,15 +10,18 @@ module Api
       def index
         owner = User.find_by!(username: params[:user_id])
         playlists = owner.playlists
-                         .includes(:playlist_parties)
+                         .includes(:playlist_parties, :user)
                          .visible_to(current_user, owner)
                          .order(updated_at: :desc)
                          .paginate(page: params[:page], per_page: page_size)
 
+        raid_slugs_map = precompute_raid_slugs(playlists)
+
         render json: PlaylistBlueprint.render(
           playlists,
           root: :results,
-          meta: pagination_meta(playlists)
+          meta: pagination_meta(playlists),
+          raid_slugs_map: raid_slugs_map
         )
       end
 
@@ -82,6 +85,34 @@ module Api
 
       def playlist_params
         params.require(:playlist).permit(:title, :description, :video_url, :visibility)
+      end
+
+      def precompute_raid_slugs(playlists)
+        all_party_ids = playlists.flat_map { |pl| pl.playlist_parties.map(&:party_id) }
+        return {} if all_party_ids.empty?
+
+        # Build a map of party_id => raid_id
+        party_raid_pairs = Party.where(id: all_party_ids)
+                                .where.not(raid_id: nil)
+                                .pluck(:id, :raid_id, :updated_at)
+
+        # Build raid slug lookup
+        all_raid_ids = party_raid_pairs.map { |_, rid, _| rid }.uniq
+        raid_slug_map = Raid.where(id: all_raid_ids).pluck(:id, :slug).to_h
+
+        # Build per-playlist raid slugs
+        playlists.each_with_object({}) do |pl, result|
+          pl_party_ids = pl.playlist_parties.to_set(&:party_id)
+          relevant = party_raid_pairs.select { |pid, _, _| pl_party_ids.include?(pid) }
+
+          # Group by raid_id, pick most recent updated_at per raid, sort desc, limit 4
+          by_raid = relevant.group_by { |_, rid, _| rid }
+          sorted = by_raid.map { |rid, entries| [rid, entries.map { |_, _, ts| ts }.max] }
+                          .sort_by { |_, ts| -ts.to_i }
+                          .first(4)
+
+          result[pl.id] = sorted.filter_map { |rid, _| raid_slug_map[rid] }
+        end
       end
     end
   end

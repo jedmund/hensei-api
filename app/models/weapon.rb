@@ -42,6 +42,7 @@ class Weapon < ApplicationRecord
   belongs_to :weapon_series_variant, optional: true
   belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
   belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true
+  has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id
 
   def blueprint
     WeaponBlueprint
