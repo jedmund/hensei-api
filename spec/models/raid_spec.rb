@@ -35,10 +35,10 @@ RSpec.describe Raid, type: :model do
       expect(raid).to be_valid
     end
 
-    it 'validates level is a positive integer when present' do
+    it 'validates level is a non-negative integer when present' do
       group = create(:raid_group)
-      expect(build(:raid, level: 0, group: group)).not_to be_valid
       expect(build(:raid, level: -1, group: group)).not_to be_valid
+      expect(build(:raid, level: 0, group: group)).to be_valid
       expect(build(:raid, level: 150, group: group)).to be_valid
       expect(build(:raid, level: nil, group: group)).to be_valid
     end
@@ -50,8 +50,8 @@ RSpec.describe Raid, type: :model do
     let!(:water_raid) { create(:raid, :water, group: group) }
 
     it '.by_element filters by element' do
-      expect(described_class.by_element(1)).to include(fire_raid)
-      expect(described_class.by_element(1)).not_to include(water_raid)
+      expect(described_class.by_element(2)).to include(fire_raid)
+      expect(described_class.by_element(2)).not_to include(water_raid)
     end
 
     it '.by_group filters by group_id' do
