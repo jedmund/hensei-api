@@ -81,6 +81,12 @@ RSpec.configure do |config|
   # -----------------------------------------------------------------------------
   config.before(:suite) do
     load Rails.root.join('db', 'seed', 'canonical.rb')
+
+    # Run data migrations so test DB has element_variant_ids etc.
+    Dir[Rails.root.join('db', 'data', '*.rb')].sort.each do |migration_file|
+      load migration_file
+    end
+    PopulateElementVariantIds.new.up
   end
 
   # -----------------------------------------------------------------------------

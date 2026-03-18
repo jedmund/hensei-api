@@ -38,42 +38,41 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
-  describe '#process_elemental_weapon' do
-    # Ultima Axe base: 1040307800 (game series 13)
-    # Berserker's Barrage base: 1040308400 (game series 19)
-    # These are only 600 apart — the old proximity search confused them.
-
-    it 'returns the base ID for an exact match' do
-      result = processor.send(:process_elemental_weapon, '1040307800', 13)
-      expect(result).to eq('1040307800')
+  describe '#find_weapon' do
+    let(:element_changeable_series) do
+      WeaponSeries.find_by(slug: 'ultima') ||
+        create(:weapon_series, element_changeable: true, slug: 'ultima')
     end
 
-    it 'resolves element variants back to the base ID' do
-      # Water Ultima Axe (offset +200)
-      result = processor.send(:process_elemental_weapon, '1040308000', 13)
-      expect(result).to eq('1040307800')
+    let!(:ultima_axe) do
+      Weapon.find_by(granblue_id: '1040307800') ||
+        create(:weapon, name_en: 'Ultima Axe', granblue_id: '1040307800', element: 0, weapon_series: element_changeable_series,
+                        element_variant_ids: {
+                          '1' => '1040308100', '2' => '1040307800', '3' => '1040307900',
+                          '4' => '1040308000', '5' => '1040308300', '6' => '1040308200'
+                        })
     end
 
-    it 'resolves high-offset variants without cross-series collision' do
-      # Light Ultima Axe (offset +500) — previously mapped to Berserker's Barrage
-      result = processor.send(:process_elemental_weapon, '1040308300', 13)
-      expect(result).to eq('1040307800')
+    it 'returns an exact match on granblue_id' do
+      result = processor.send(:find_weapon, '1040307800', true, 'Ultima Axe')
+      expect(result).to eq(ultima_axe)
     end
 
-    it 'resolves dark variants without cross-series collision' do
-      # Dark Ultima Axe (offset +600) — previously mapped to Berserker's Barrage
-      result = processor.send(:process_elemental_weapon, '1040308400', 13)
-      expect(result).to eq('1040307800')
+    it 'resolves element variants via element_variant_ids JSONB' do
+      # Dark Ultima Axe — previously collided with Berserker's Barrage
+      result = processor.send(:find_weapon, '1040308300', true, 'Ultima Axe')
+      expect(result).to eq(ultima_axe)
     end
 
-    it 'resolves Berserker Barrage correctly in its own series' do
-      result = processor.send(:process_elemental_weapon, '1040308400', 19)
-      expect(result).to eq('1040308400')
+    it 'returns nil for unknown weapons' do
+      result = processor.send(:find_weapon, '9999999999', false, 'Unknown')
+      expect(result).to be_nil
     end
 
-    it 'returns the original ID when no mapping matches' do
-      result = processor.send(:process_elemental_weapon, '9999999999', 13)
-      expect(result).to eq('9999999999')
+    it 'falls back to name matching when element_variant_ids is empty' do
+      ultima_axe.update_column(:element_variant_ids, nil)
+      result = processor.send(:find_weapon, '1040308300', true, 'Ultima Axe')
+      expect(result).to eq(ultima_axe)
     end
   end
 
@@ -171,7 +170,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
-  describe '#process_elemental_weapon fallbacks' do
+  describe 'element-changeable weapon resolution (integration)' do
     let(:element_changeable_series) do
       WeaponSeries.find_by(slug: 'ultima') ||
         create(:weapon_series, element_changeable: true, slug: 'ultima')
