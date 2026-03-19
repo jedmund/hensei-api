@@ -23,7 +23,7 @@ module Api
 
       # Minimal view for party list cards — just the icon
       view :list do
-        excludes :name, :proficiency, :row, :order,
+        excludes :proficiency, :row, :order,
                  :master_level, :ultimate_mastery,
                  :accessory, :accessory_type, :aux_weapon
       end
