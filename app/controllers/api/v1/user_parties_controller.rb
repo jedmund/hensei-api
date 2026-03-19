@@ -9,7 +9,7 @@ module Api
 
       def index
         skip_privacy = current_user&.id == @user.id
-        base_query = build_common_base_query.where(user_id: @user.id)
+        base_query = build_preview_base_query.where(user_id: @user.id)
 
         query = PartyQueryBuilder.new(
           base_query,

@@ -4,6 +4,19 @@ module PartyQueryingConcern
   extend ActiveSupport::Concern
   include PartyConstants
 
+  # Returns a lighter base query for party list/preview endpoints.
+  # Only includes associations needed by the :preview blueprint view.
+  def build_preview_base_query
+    Party.includes(
+      { raid: :group },
+      :job,
+      { user: { active_crew_membership: :crew } },
+      { characters: :character },
+      { weapons: :weapon },
+      { summons: :summon }
+    )
+  end
+
   # Returns the common base query for Parties including all necessary associations.
   def build_common_base_query
     Party.includes(
