@@ -16,7 +16,7 @@ module Api
 
       # Minimal view for party list cards
       view :list do
-        excludes :quick_summon, :uncap_level, :transcendence_step,
+        excludes :quick_summon,
                  :orphaned, :collection_summon_id, :out_of_sync
         association :summon, blueprint: SummonBlueprint, view: :list
       end
