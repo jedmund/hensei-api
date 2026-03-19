@@ -145,7 +145,13 @@ Rails.application.routes.draw do
     get 'raids/groups', to: 'raids#groups' # Legacy endpoint
 
     get 'weapon_keys', to: 'weapon_keys#all'
-    resources :bullets, only: %i[index show create update destroy]
+    resources :bullets, only: %i[index show create update destroy] do
+      member do
+        post :download_image
+        post :download_images
+        get :download_status
+      end
+    end
 
     resources :weapon_series, only: %i[index show create update destroy] do
       resources :weapon_series_variants, only: %i[create update destroy]
