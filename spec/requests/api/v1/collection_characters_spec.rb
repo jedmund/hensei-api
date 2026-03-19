@@ -81,6 +81,23 @@ RSpec.describe 'Collection Characters API', type: :request do
       expect(characters.first['character']['rarity']).to eq(4)
     end
 
+    it 'supports filtering by series' do
+      grand_series = create(:character_series, :grand)
+      grand_char = create(:character)
+      create(:character_series_membership, character: grand_char, character_series: grand_series)
+      create(:collection_character, user: user, character: grand_char)
+
+      other_char = create(:character)
+      create(:collection_character, user: user, character: other_char)
+
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { series: grand_series.id }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['characters'].length).to eq(1)
+    end
+
     it 'returns empty array when filters match nothing' do
       fire_character = create(:character, element: 0, rarity: 4)
       create(:collection_character, user: user, character: fire_character)

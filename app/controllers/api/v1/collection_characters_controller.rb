@@ -20,6 +20,7 @@ module Api
         @collection_characters = @collection_characters.by_race(array_param(:race)) if params[:race]
         @collection_characters = @collection_characters.by_proficiency(array_param(:proficiency)) if params[:proficiency]
         @collection_characters = @collection_characters.by_gender(array_param(:gender)) if params[:gender]
+        @collection_characters = @collection_characters.by_series(array_param(:series)) if params[:series]
         @collection_characters = @collection_characters.by_name(params[:search]) if params[:search].present?
 
         # Apply sorting

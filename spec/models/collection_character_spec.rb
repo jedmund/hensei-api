@@ -156,6 +156,40 @@ RSpec.describe CollectionCharacter, type: :model do
       end
     end
 
+    describe '.by_series' do
+      let!(:grand_series) { create(:character_series, :grand) }
+      let!(:zodiac_series) { create(:character_series, :zodiac) }
+
+      let!(:grand_char) { create(:character) }
+      let!(:zodiac_char) { create(:character) }
+      let!(:no_series_char) { create(:character) }
+
+      let!(:grand_membership) { create(:character_series_membership, character: grand_char, character_series: grand_series) }
+      let!(:zodiac_membership) { create(:character_series_membership, character: zodiac_char, character_series: zodiac_series) }
+
+      let!(:grand_collection) { create(:collection_character, character: grand_char) }
+      let!(:zodiac_collection) { create(:collection_character, character: zodiac_char) }
+      let!(:no_series_collection) { create(:collection_character, character: no_series_char) }
+
+      it 'returns characters belonging to specified series' do
+        results = CollectionCharacter.by_series([grand_series.id])
+        expect(results).to include(grand_collection)
+        expect(results).not_to include(zodiac_collection, no_series_collection)
+      end
+
+      it 'supports multiple series IDs (OR logic)' do
+        results = CollectionCharacter.by_series([grand_series.id, zodiac_series.id])
+        expect(results).to include(grand_collection, zodiac_collection)
+        expect(results).not_to include(no_series_collection)
+      end
+
+      it 'does not return duplicates when character belongs to multiple matched series' do
+        create(:character_series_membership, character: grand_char, character_series: zodiac_series)
+        results = CollectionCharacter.by_series([grand_series.id, zodiac_series.id])
+        expect(results.count).to eq(2)
+      end
+    end
+
     describe '.with_awakening' do
       it 'returns only characters with awakening' do
         # The before_save callback assigns a default awakening to all records,

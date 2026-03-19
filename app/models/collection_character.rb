@@ -25,6 +25,11 @@ class CollectionCharacter < ApplicationRecord
     joins(:character).where('characters.proficiency1 IN (?) OR characters.proficiency2 IN (?)', proficiencies, proficiencies)
   }
   scope :by_gender, ->(genders) { joins(:character).where(characters: { gender: genders }) }
+  scope :by_series, ->(series_ids) {
+    joins(character: :character_series_records)
+      .where(character_series: { id: series_ids })
+      .distinct
+  }
   scope :by_name, ->(query) {
     joins(:character).where("characters.name_en ILIKE :q OR characters.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
   }
