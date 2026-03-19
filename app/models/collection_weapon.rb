@@ -14,6 +14,9 @@ class CollectionWeapon < ApplicationRecord
   belongs_to :ax_modifier2, class_name: 'WeaponStatModifier', optional: true
   belongs_to :befoulment_modifier, class_name: 'WeaponStatModifier', optional: true
 
+  has_many :collection_weapon_bullets, dependent: :destroy
+  has_many :bullets, through: :collection_weapon_bullets
+
   has_many :grid_weapons, dependent: :nullify
 
   before_destroy :orphan_grid_items

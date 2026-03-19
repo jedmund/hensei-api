@@ -62,6 +62,14 @@ module GranblueEnums
     Event: 16
   }.freeze
 
+  # Bullet types - slot types for gun-proficiency weapons
+  BULLET_TYPES = {
+    Parabellum: 1,
+    Rifle: 2,
+    Cartridge: 3,
+    Aetherial: 4
+  }.freeze
+
   # Gacha promotions - which pools/banners a weapon or summon appears in
   PROMOTIONS = {
     Premium: 1,

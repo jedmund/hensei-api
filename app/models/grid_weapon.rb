@@ -45,6 +45,9 @@ class GridWeapon < ApplicationRecord
   belongs_to :ax_modifier2, class_name: 'WeaponStatModifier', optional: true
   belongs_to :befoulment_modifier, class_name: 'WeaponStatModifier', optional: true
 
+  has_many :grid_weapon_bullets, dependent: :destroy
+  has_many :bullets, through: :grid_weapon_bullets
+
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }
@@ -105,6 +108,13 @@ class GridWeapon < ApplicationRecord
       awakening_id: collection_weapon.awakening_id,
       awakening_level: collection_weapon.awakening_level
     )
+
+    # Sync bullet loadout
+    grid_weapon_bullets.destroy_all
+    collection_weapon.collection_weapon_bullets.each do |cwb|
+      grid_weapon_bullets.create!(bullet_id: cwb.bullet_id, position: cwb.position)
+    end
+
     true
   end
 
@@ -134,7 +144,8 @@ class GridWeapon < ApplicationRecord
       befoulment_strength != collection_weapon.befoulment_strength ||
       exorcism_level != collection_weapon.exorcism_level ||
       awakening_id != collection_weapon.awakening_id ||
-      awakening_level != collection_weapon.awakening_level
+      awakening_level != collection_weapon.awakening_level ||
+      bullets_out_of_sync?
   end
 
   ##
@@ -249,6 +260,14 @@ class GridWeapon < ApplicationRecord
   # If the grid weapon's position is -1, sets the `mainhand` attribute to true.
   #
   # @return [void]
+  def bullets_out_of_sync?
+    return false unless collection_weapon.present?
+
+    grid_bullets = grid_weapon_bullets.order(:position).pluck(:position, :bullet_id)
+    collection_bullets = collection_weapon.collection_weapon_bullets.order(:position).pluck(:position, :bullet_id)
+    grid_bullets != collection_bullets
+  end
+
   def assign_mainhand
     self.mainhand = (position == -1)
   end

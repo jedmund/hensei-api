@@ -62,6 +62,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
     t.integer "order", default: 0, null: false
   end
 
+  create_table "bullets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id"
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.string "effect_en"
+    t.string "effect_jp"
+    t.string "slug", null: false
+    t.integer "bullet_type", null: false
+    t.integer "atk", default: 0, null: false
+    t.boolean "hits_all", default: false, null: false
+    t.integer "order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "wiki_raw"
+    t.index ["bullet_type"], name: "index_bullets_on_bullet_type"
+    t.index ["granblue_id"], name: "index_bullets_on_granblue_id", unique: true
+    t.index ["slug"], name: "index_bullets_on_slug", unique: true
+  end
+
   create_table "character_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en", null: false
     t.string "name_jp", null: false
@@ -230,6 +249,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
     t.index ["user_id", "game_id"], name: "index_collection_summons_on_user_id_and_game_id", unique: true, where: "(game_id IS NOT NULL)"
     t.index ["user_id", "summon_id"], name: "index_collection_summons_on_user_id_and_summon_id"
     t.index ["user_id"], name: "index_collection_summons_on_user_id"
+  end
+
+  create_table "collection_weapon_bullets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "collection_weapon_id", null: false
+    t.uuid "bullet_id", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bullet_id"], name: "index_collection_weapon_bullets_on_bullet_id"
+    t.index ["collection_weapon_id", "position"], name: "idx_collection_weapon_bullets_unique", unique: true
+    t.index ["collection_weapon_id"], name: "index_collection_weapon_bullets_on_collection_weapon_id"
   end
 
   create_table "collection_weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -447,6 +477,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
+  end
+
+  create_table "grid_weapon_bullets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "grid_weapon_id", null: false
+    t.uuid "bullet_id", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bullet_id"], name: "index_grid_weapon_bullets_on_bullet_id"
+    t.index ["grid_weapon_id", "position"], name: "index_grid_weapon_bullets_on_grid_weapon_id_and_position", unique: true
+    t.index ["grid_weapon_id"], name: "index_grid_weapon_bullets_on_grid_weapon_id"
   end
 
   create_table "grid_weapons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1160,6 +1201,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
     t.integer "max_exorcism_level"
     t.uuid "weapon_series_variant_id"
     t.jsonb "element_variant_ids"
+    t.integer "bullet_slots", default: [], null: false, array: true
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
@@ -1186,6 +1228,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
   add_foreign_key "collection_job_accessories", "users"
   add_foreign_key "collection_summons", "summons"
   add_foreign_key "collection_summons", "users"
+  add_foreign_key "collection_weapon_bullets", "bullets"
+  add_foreign_key "collection_weapon_bullets", "collection_weapons"
   add_foreign_key "collection_weapons", "awakenings"
   add_foreign_key "collection_weapons", "users"
   add_foreign_key "collection_weapons", "weapon_keys", column: "weapon_key1_id"
@@ -1217,6 +1261,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
   add_foreign_key "grid_summons", "collection_summons"
   add_foreign_key "grid_summons", "parties"
   add_foreign_key "grid_summons", "summons"
+  add_foreign_key "grid_weapon_bullets", "bullets"
+  add_foreign_key "grid_weapon_bullets", "grid_weapons"
   add_foreign_key "grid_weapons", "awakenings"
   add_foreign_key "grid_weapons", "collection_weapons"
   add_foreign_key "grid_weapons", "parties"

@@ -435,7 +435,8 @@ module Api
             weapon_key3: {},
             ax_modifier1: {},
             ax_modifier2: {},
-            befoulment_modifier: {}
+            befoulment_modifier: {},
+            grid_weapon_bullets: :bullet
           } },
           { summons: [{ summon: :summon_series }, :collection_summon] },
           :guidebook1, :guidebook2, :guidebook3,
@@ -601,7 +602,7 @@ module Api
             .where(characters: { granblue_id: char_gids }) : [],
           weapons: weap_gids.any? ? user.collection_weapons.joins(:weapon)
             .includes({ weapon: [:weapon_series, :weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
-                      :ax_modifier1, :ax_modifier2, :befoulment_modifier)
+                      :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
             .where(weapons: { granblue_id: weap_gids }) : [],
           summons: summ_gids.any? ? user.collection_summons.joins(:summon)
             .includes(summon: :summon_series)

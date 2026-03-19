@@ -236,7 +236,7 @@ module Api
           :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           :recruits, :forged_from, :forge_chain_id, :forge_order,
           nicknames_en: [], nicknames_jp: [], promotions: [], awakening_ids: [],
-          element_variant_ids: {}
+          element_variant_ids: {}, bullet_slots: []
         )
       end
     end

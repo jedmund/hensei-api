@@ -16,6 +16,8 @@ module Api
              :limit, :rarity, :ax, :ax_type, :gacha, :promotions, :forge_order, :extra,
              :element_variant_ids
 
+      field :bullet_slots, if: ->(_field_name, w, _options) { w.bullet_slots.present? }
+
       # Series - returns full object with flags resolved through variant overrides
       field :series do |w|
         next nil unless w.weapon_series.present?
