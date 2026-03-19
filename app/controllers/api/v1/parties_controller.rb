@@ -346,7 +346,7 @@ module Api
 
       # Lists parties based on query parameters.
       def index
-        query = build_filtered_query(build_common_base_query)
+        query = build_filtered_query(build_preview_base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
 
         # Preload current user's favorite party IDs to avoid N+1
@@ -366,7 +366,7 @@ module Api
       def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
-        base_query = build_common_base_query
+        base_query = build_preview_base_query
                      .joins(:favorites)
                      .where(favorites: { user_id: current_user.id })
                      .distinct
