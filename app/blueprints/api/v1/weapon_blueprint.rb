@@ -58,6 +58,13 @@ module Api
                  :forge_order, :extra, :series, :promotion_names
       end
 
+      # Minimal view for party list cards — just enough for image rendering
+      view :list do
+        excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
+                 :max_exorcism_level, :limit, :rarity, :ax, :ax_type, :gacha, :promotions,
+                 :forge_order, :extra, :series, :promotion_names
+      end
+
       view :stats do
         field :hp do |w|
           {

@@ -42,6 +42,12 @@ module Api
                  :promotion_names, :series, :uncap
       end
 
+      # Minimal view for party list cards — just enough for image rendering
+      view :list do
+        excludes :name, :element, :rarity, :max_level, :promotions,
+                 :promotion_names, :series, :uncap, :subaura, :limit
+      end
+
       view :stats do
         field :hp do |s|
           {

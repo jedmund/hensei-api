@@ -14,6 +14,13 @@ module Api
         association :weapon, blueprint: WeaponBlueprint, view: :preview
       end
 
+      # Minimal view for party list cards
+      view :list do
+        excludes :uncap_level, :transcendence_step, :element, :exorcism_level,
+                 :orphaned, :collection_weapon_id, :out_of_sync
+        association :weapon, blueprint: WeaponBlueprint, view: :list
+      end
+
       view :nested do
         field :ax, if: ->(_field_name, w, _options) { w.ax_modifier1.present? } do |w|
           skills = []

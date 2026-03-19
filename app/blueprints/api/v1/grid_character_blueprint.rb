@@ -18,6 +18,12 @@ module Api
         association :character, blueprint: CharacterBlueprint, view: :preview
       end
 
+      # Minimal view for party list cards
+      view :list do
+        excludes :perpetuity, :collection_character_id, :out_of_sync
+        association :character, blueprint: CharacterBlueprint, view: :list
+      end
+
       view :nested do
         include_view :mastery_bonuses
         association :character, blueprint: CharacterBlueprint, view: :full
