@@ -57,7 +57,7 @@ class Character < ApplicationRecord
 
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
-  scope :by_series, ->(series_ids) {
+  scope :by_series, lambda { |series_ids|
     joins(:character_series_records)
       .where(character_series: { id: series_ids })
       .distinct
