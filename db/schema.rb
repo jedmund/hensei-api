@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_18_060000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_19_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -703,6 +703,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_060000) do
     t.datetime "updated_at", null: false
     t.index ["party_id", "shareable_type", "shareable_id"], name: "index_party_shares_unique_per_shareable", unique: true
     t.index ["party_id"], name: "index_party_shares_on_party_id"
+    t.index ["shareable_type", "shareable_id", "party_id"], name: "idx_party_shares_shareable_lookup"
     t.index ["shareable_type", "shareable_id"], name: "index_party_shares_on_shareable"
     t.index ["shareable_type", "shareable_id"], name: "index_party_shares_on_shareable_type_and_shareable_id"
     t.index ["shared_by_id"], name: "index_party_shares_on_shared_by_id"
