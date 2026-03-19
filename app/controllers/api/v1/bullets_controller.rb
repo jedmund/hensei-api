@@ -3,8 +3,9 @@
 module Api
   module V1
     class BulletsController < Api::V1::ApiController
-      before_action :doorkeeper_authorize!, only: %i[create update destroy]
-      before_action :ensure_editor_role, only: %i[create update destroy]
+      before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images]
+      before_action :ensure_editor_role, only: %i[create update destroy download_image download_images]
+      before_action :set_bullet, only: %i[download_image download_images download_status]
 
       # GET /bullets
       def index
@@ -53,10 +54,56 @@ module Api
         head :no_content
       end
 
+      # POST /bullets/:id/download_image
+      def download_image
+        size = params[:size]
+        force = params[:force] == true || params[:force] == 'true'
+
+        unless %w[square].include?(size)
+          return render json: { error: "Invalid size. Must be 'square'" }, status: :bad_request
+        end
+
+        service = BulletImageDownloadService.new(@bullet, force: force, size: size, storage: :s3)
+        result = service.download
+
+        if result.success?
+          render json: { success: true, images: result.images }
+        else
+          render json: { success: false, error: result.error }, status: :unprocessable_entity
+        end
+      end
+
+      # POST /bullets/:id/download_images
+      def download_images
+        options = params[:options] || {}
+        force = options[:force] == true || options[:force] == 'true'
+        size = options[:size] || 'all'
+
+        DownloadBulletImagesJob.perform_later(@bullet.id, force: force, size: size)
+
+        render json: {
+          status: 'queued',
+          message: "Image download queued for bullet #{@bullet.granblue_id}",
+          bullet_id: @bullet.id
+        }, status: :accepted
+      end
+
+      # GET /bullets/:id/download_status
+      def download_status
+        status = DownloadBulletImagesJob.status(@bullet.id)
+        render json: status
+      end
+
       private
 
       def find_bullet
         Bullet.find_by(granblue_id: params[:id]) || Bullet.find_by(id: params[:id])
+      end
+
+      def set_bullet
+        @bullet = Bullet.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render_not_found_response('bullet')
       end
 
       def bullet_params
