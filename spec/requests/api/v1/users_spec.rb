@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Users', type: :request do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, username: 'testuser') }
   let(:access_token) do
     Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public')
   end
