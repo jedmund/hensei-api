@@ -3,7 +3,7 @@ FactoryBot.define do
     email { Faker::Internet.email }
     password { "password" }
     password_confirmation { "password" }
-    username { Faker::Internet.username(specifier: 5..8) }
+    sequence(:username) { |n| "user#{n}" }
     granblue_id { Faker::Number.number(digits: 4) }
     wiki_profile { nil }
     show_wiki_profile { false }
