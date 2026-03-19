@@ -79,6 +79,39 @@ RSpec.describe Character, type: :model do
       expect(Character.seasonal).to include(summer_char, halloween_char)
       expect(Character.seasonal).not_to include(standard_char)
     end
+
+    describe '.by_series' do
+      let!(:grand_series) { create(:character_series, :grand) }
+      let!(:eternal_series) { create(:character_series, :eternal) }
+      let!(:grand_char) { create(:character) }
+      let!(:eternal_char) { create(:character) }
+      let!(:both_char) { create(:character) }
+      let!(:no_series_char) { create(:character) }
+
+      before do
+        create(:character_series_membership, character: grand_char, character_series: grand_series)
+        create(:character_series_membership, character: eternal_char, character_series: eternal_series)
+        create(:character_series_membership, character: both_char, character_series: grand_series)
+        create(:character_series_membership, character: both_char, character_series: eternal_series)
+      end
+
+      it 'filters by single series' do
+        results = Character.by_series([grand_series.id])
+        expect(results).to include(grand_char, both_char)
+        expect(results).not_to include(eternal_char, no_series_char)
+      end
+
+      it 'filters by multiple series (OR logic)' do
+        results = Character.by_series([grand_series.id, eternal_series.id])
+        expect(results).to include(grand_char, eternal_char, both_char)
+        expect(results).not_to include(no_series_char)
+      end
+
+      it 'does not return duplicates for characters in multiple matched series' do
+        results = Character.by_series([grand_series.id, eternal_series.id])
+        expect(results.where(id: both_char.id).count).to eq(1)
+      end
+    end
   end
 
   describe 'search' do
@@ -98,6 +131,19 @@ RSpec.describe Character, type: :model do
       expect(character.character_series_memberships.map(&:character_series)).to include(series)
     end
 
+    it 'assigns character series by UUID' do
+      series = create(:character_series, slug: "test-uuid-#{SecureRandom.hex(4)}")
+      character.series = [series.id]
+      expect(character.character_series_memberships.map(&:character_series)).to include(series)
+    end
+
+    it 'assigns multiple series at once' do
+      s1 = create(:character_series, slug: "multi-a-#{SecureRandom.hex(4)}")
+      s2 = create(:character_series, slug: "multi-b-#{SecureRandom.hex(4)}")
+      character.series = [s1.id, s2.id]
+      expect(character.character_series_memberships.map(&:character_series_id)).to contain_exactly(s1.id, s2.id)
+    end
+
     it 'ignores blank values' do
       character.series = [nil, '', []]
       expect(character.character_series_memberships).to be_empty
@@ -106,6 +152,44 @@ RSpec.describe Character, type: :model do
     it 'does nothing when passed nil' do
       character.series = nil
       expect(character.character_series_memberships).to be_empty
+    end
+
+    context 'on a persisted character' do
+      let(:character) { create(:character) }
+      let!(:grand) { create(:character_series, slug: "grand-sync-#{SecureRandom.hex(4)}") }
+      let!(:eternal) { create(:character_series, slug: "eternal-sync-#{SecureRandom.hex(4)}") }
+      let!(:zodiac) { create(:character_series, slug: "zodiac-sync-#{SecureRandom.hex(4)}") }
+
+      it 'removes old memberships not in the new list' do
+        character.series = [grand.id, eternal.id]
+        character.save!
+
+        character.series = [zodiac.id]
+        character.save!
+
+        character.reload
+        expect(character.character_series_records).to contain_exactly(zodiac)
+      end
+
+      it 'keeps existing memberships that are still in the new list' do
+        character.series = [grand.id, eternal.id]
+        character.save!
+
+        character.series = [grand.id, zodiac.id]
+        character.save!
+
+        character.reload
+        expect(character.character_series_records).to contain_exactly(grand, zodiac)
+      end
+
+      it 'clears all memberships when passed blank' do
+        character.series = [grand.id]
+        character.save!
+
+        character.series = []
+        character.reload
+        expect(character.character_series_records).to be_empty
+      end
     end
   end
 end
