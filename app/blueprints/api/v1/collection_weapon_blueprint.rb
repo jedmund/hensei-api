@@ -38,6 +38,12 @@ module Api
         }
       end
 
+      field :bullets, if: ->(_, obj, _) { obj.weapon&.bullet_slots&.any? } do |obj|
+        obj.collection_weapon_bullets.order(:position).map do |cwb|
+          { position: cwb.position, bullet: BulletBlueprint.render_as_hash(cwb.bullet) }
+        end
+      end
+
       association :weapon, blueprint: WeaponBlueprint
       association :weapon_keys, blueprint: WeaponKeyBlueprint,
                   if: ->(_, obj, _) { obj.weapon_keys.any? }
