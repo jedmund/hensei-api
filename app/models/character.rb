@@ -57,7 +57,11 @@ class Character < ApplicationRecord
 
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
-  scope :by_series, ->(series) { where('? = ANY(series)', series) }
+  scope :by_series, ->(series_ids) {
+    joins(:character_series_records)
+      .where(character_series: { id: series_ids })
+      .distinct
+  }
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
   scope :style_swap_variants, -> { where(style_swap: true) }
   scope :base_characters, -> { where(style_swap: false) }
@@ -137,31 +141,38 @@ class Character < ApplicationRecord
     15 => 'event'
   }.freeze
 
-  # Virtual attribute to set character_series by array of IDs, slugs, or legacy integers
-  # Supports multiple formats for flexibility during migration
+  # Virtual attribute to set character_series by array of IDs, slugs, or legacy integers.
+  # Performs a full sync: removes memberships not in the new list, adds new ones.
   def series=(values)
-    return if values.blank?
+    if values.blank?
+      character_series_memberships.destroy_all if persisted?
+      return
+    end
 
-    # Ensure it's an array
     values = Array(values)
 
-    values.each do |value|
+    # Resolve all values to CharacterSeries IDs
+    new_series_ids = values.filter_map do |value|
       next if value.blank?
 
-      # Try to find the series record
-      series_record = if value.is_a?(Integer)
-                        # Legacy integer - convert to slug first
-                        slug = LEGACY_SERIES_TO_SLUG[value]
-                        slug ? CharacterSeries.find_by(slug: slug) : nil
-                      else
-                        # String - try UUID first, then slug
-                        CharacterSeries.find_by(id: value) || CharacterSeries.find_by(slug: value)
-                      end
+      record = if value.is_a?(Integer)
+                 slug = LEGACY_SERIES_TO_SLUG[value]
+                 slug ? CharacterSeries.find_by(slug: slug) : nil
+               else
+                 CharacterSeries.find_by(id: value) || CharacterSeries.find_by(slug: value)
+               end
 
-      next unless series_record
+      record&.id
+    end
 
-      # Create membership if it doesn't exist
-      character_series_memberships.find_or_initialize_by(character_series: series_record)
+    # Remove memberships not in the new list
+    if persisted?
+      character_series_memberships.where.not(character_series_id: new_series_ids).destroy_all
+    end
+
+    # Add new memberships
+    new_series_ids.each do |series_id|
+      character_series_memberships.find_or_initialize_by(character_series_id: series_id)
     end
   end
 
