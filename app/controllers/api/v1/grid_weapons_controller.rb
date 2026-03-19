@@ -66,7 +66,19 @@ module Api
       # @return [void]
       def update
         normalize_ax_fields!
-        if @grid_weapon.update(weapon_params)
+
+        ActiveRecord::Base.transaction do
+          unless @grid_weapon.update(weapon_params.except(:bullets))
+            raise ActiveRecord::Rollback
+          end
+
+          if params.dig(:weapon, :bullets).present?
+            update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets])
+          end
+        end
+
+        if @grid_weapon.errors.empty?
+          @grid_weapon.reload
           render json: GridWeaponBlueprint.render(@grid_weapon, view: :full, root: :grid_weapon), status: :ok
         else
           render_validation_error_response(@grid_weapon)
@@ -517,6 +529,22 @@ module Api
       # Specifies and permits the allowed weapon parameters.
       #
       # @return [ActionController::Parameters] the permitted parameters.
+      def update_bullet_loadout!(grid_weapon, bullets_params)
+        grid_weapon.grid_weapon_bullets.destroy_all
+
+        bullets_params.each do |bullet_entry|
+          gwb = grid_weapon.grid_weapon_bullets.build(
+            bullet_id: bullet_entry[:bullet_id],
+            position: bullet_entry[:position]
+          )
+          unless gwb.valid?
+            gwb.errors.each { |error| grid_weapon.errors.add(:bullets, error.full_message) }
+            raise ActiveRecord::Rollback
+          end
+          gwb.save!
+        end
+      end
+
       def weapon_params
         params.require(:weapon).permit(
           :id, :party_id, :weapon_id, :collection_weapon_id,
@@ -524,7 +552,8 @@ module Api
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
           :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,
           :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
-          :awakening_id, :awakening_level
+          :awakening_id, :awakening_level,
+          bullets: [:position, :bullet_id]
         )
       end
 

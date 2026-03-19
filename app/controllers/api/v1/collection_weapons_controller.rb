@@ -16,7 +16,8 @@ module Api
                                                    :weapon_key1, :weapon_key2,
                                                    :weapon_key3, :weapon_key4,
                                                    :ax_modifier1, :ax_modifier2,
-                                                   :befoulment_modifier)
+                                                   :befoulment_modifier,
+                                                   { collection_weapon_bullets: :bullet })
 
         # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_weapons = @collection_weapons.by_weapon(params[:weapon_id]) if params[:weapon_id]
