@@ -54,7 +54,7 @@ module Api
                  :created_at, :updated_at,
                  :master_level, :ultimate_mastery,
                  :user, :collection_source_user,
-                 :job, :raid, :boost
+                 :boost
 
         association :job, blueprint: JobBlueprint, view: :list
         association :raid, blueprint: RaidBlueprint, view: :list
