@@ -57,7 +57,7 @@ module Api
       # POST /bullets/:id/download_image
       def download_image
         size = params[:size]
-        force = params[:force] == true || params[:force] == 'true'
+        force = [true, 'true'].include?(params[:force])
 
         unless %w[square].include?(size)
           return render json: { error: "Invalid size. Must be 'square'" }, status: :bad_request
@@ -76,7 +76,7 @@ module Api
       # POST /bullets/:id/download_images
       def download_images
         options = params[:options] || {}
-        force = options[:force] == true || options[:force] == 'true'
+        force = [true, 'true'].include?(options[:force])
         size = options[:size] || 'all'
 
         DownloadBulletImagesJob.perform_later(@bullet.id, force: force, size: size)
