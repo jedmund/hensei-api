@@ -115,16 +115,16 @@ module Api
       def shared_parties
         parties = @crew.shared_parties
                        .includes(
-                         :user, :job, { raid: :group },
-                         { characters: [{ character: :character_series_records }, :grid_artifact] },
-                         { weapons: { weapon: [:weapon_series, :weapon_series_variant] } },
-                         { summons: [{ summon: :summon_series }] }
+                         :job, { raid: :group },
+                         { characters: :character },
+                         { weapons: :weapon },
+                         { summons: :summon }
                        )
                        .order(created_at: :desc)
                        .paginate(page: params[:page], per_page: page_size)
 
         render json: {
-          parties: PartyBlueprint.render_as_hash(parties, view: :preview, current_user: current_user),
+          parties: PartyBlueprint.render_as_hash(parties, view: :list),
           meta: pagination_meta(parties)
         }
       end
