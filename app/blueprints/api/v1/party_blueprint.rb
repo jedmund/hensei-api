@@ -65,6 +65,26 @@ module Api
         include_view :preview_metadata # Object counts
       end
 
+      # Slim view for party list cards — only fields GridRep actually renders
+      view :list do
+        excludes :local_id, :description, :visibility, :element, :extra,
+                 :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
+                 :auto_guard, :auto_summon, :solo, :video_url,
+                 :collection_source_user_id,
+                 :created_at, :updated_at,
+                 :master_level, :ultimate_mastery,
+                 :user, :collection_source_user,
+                 :job, :raid,
+                 :favorited, :has_orphaned_items, :boost
+
+        association :job, blueprint: JobBlueprint, view: :list
+        association :raid, blueprint: RaidBlueprint, view: :list
+
+        association :characters, blueprint: GridCharacterBlueprint, view: :list
+        association :weapons, blueprint: GridWeaponBlueprint, view: :list
+        association :summons, blueprint: GridSummonBlueprint, view: :list
+      end
+
       # For object views
       view :full do
         # Primary object associations

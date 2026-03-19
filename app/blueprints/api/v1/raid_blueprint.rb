@@ -22,6 +22,24 @@ module Api
         association :group, blueprint: RaidGroupBlueprint, view: :flat
       end
 
+      # Minimal view for party list cards
+      view :list do
+        identifier :id
+
+        field :name do |raid|
+          {
+            en: raid.name_en,
+            ja: raid.name_jp
+          }
+        end
+
+        field :extra do |raid|
+          raid.effective_extra
+        end
+
+        association :group, blueprint: RaidGroupBlueprint, view: :list
+      end
+
       view :full do
         include_view :nested
       end

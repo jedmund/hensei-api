@@ -20,6 +20,13 @@ module Api
       fields :granblue_id, :row, :order,
              :master_level, :ultimate_mastery,
              :accessory, :accessory_type, :aux_weapon
+
+      # Minimal view for party list cards — just the icon
+      view :list do
+        excludes :name, :proficiency, :row, :order,
+                 :master_level, :ultimate_mastery,
+                 :accessory, :accessory_type, :aux_weapon
+      end
     end
   end
 end
