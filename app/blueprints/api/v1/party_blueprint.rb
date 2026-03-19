@@ -32,18 +32,8 @@ module Api
                   blueprint: RaidBlueprint,
                   view: :nested
 
-      # Metadata associations
-      field :favorited do |party, options|
-        # Use preloaded favorite_party_ids if available, otherwise fall back to query
-        if options[:favorite_party_ids]
-          options[:favorite_party_ids].include?(party.id)
-        else
-          party.favorited?(options[:current_user])
-        end
-      end
-
-      field :has_orphaned_items do |party|
-        party.has_orphaned_items?
+      field :boost do |party|
+        { mod: party.boost_mod, side: party.boost_side }
       end
 
       # Minimal view for embedding in grid item responses
@@ -55,14 +45,46 @@ module Api
                     if: ->(_field_name, party, _options) { party.collection_source_user_id.present? }
       end
 
-      field :boost do |party|
-        { mod: party.boost_mod, side: party.boost_side }
+      # Slim view for party list cards — only fields GridRep actually renders
+      view :list do
+        excludes :local_id, :description, :visibility, :element, :extra,
+                 :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
+                 :auto_guard, :auto_summon, :solo, :video_url,
+                 :collection_source_user_id,
+                 :created_at, :updated_at,
+                 :master_level, :ultimate_mastery,
+                 :user, :collection_source_user,
+                 :job, :raid, :boost
+
+        association :job, blueprint: JobBlueprint, view: :list
+        association :raid, blueprint: RaidBlueprint, view: :list
+
+        association :characters, blueprint: GridCharacterBlueprint, view: :list
+        association :weapons, blueprint: GridWeaponBlueprint, view: :list
+        association :summons, blueprint: GridSummonBlueprint, view: :list
+      end
+
+      # Summary view for embedding in remix/source lists — minimal party metadata
+      view :summary do
+        excludes :local_id, :description, :visibility, :element, :extra,
+                 :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
+                 :auto_guard, :auto_summon, :solo, :video_url,
+                 :collection_source_user_id,
+                 :created_at, :updated_at,
+                 :master_level, :ultimate_mastery,
+                 :collection_source_user,
+                 :job, :raid, :boost
+
+        association :user, blueprint: UserBlueprint, view: :inline
+
+        include_view :preview_metadata
       end
 
       # For collection views
       view :preview do
         include_view :preview_objects # Characters, Weapons, Summons
         include_view :preview_metadata # Object counts
+        include_view :party_metadata # favorited, has_orphaned_items
       end
 
       # For object views
@@ -71,6 +93,7 @@ module Api
         include_view :nested_objects # Characters, Weapons, Summons
         include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
+        include_view :party_metadata # favorited, has_orphaned_items
 
         # Shares (only visible to owner)
         field :shares, if: ->(_field_name, party, options) {
@@ -152,20 +175,34 @@ module Api
         end
       end
 
+      # Computed metadata — only included in views that need it
+      view :party_metadata do
+        field :favorited do |party, options|
+          if options[:favorite_party_ids]
+            options[:favorite_party_ids].include?(party.id)
+          else
+            party.favorited?(options[:current_user])
+          end
+        end
+
+        field :has_orphaned_items do |party|
+          party.has_orphaned_items?
+        end
+      end
+
       view :source_party do
         association :source_party,
                     blueprint: PartyBlueprint,
-                    view: :preview,
+                    view: :summary,
                     if: ->(_field_name, party, _options) { party.source_party_id.present? }
       end
 
       view :remix_metadata do
         include_view :source_party
 
-        # Re-added remixes association
         association :remixes,
                     blueprint: PartyBlueprint,
-                    view: :preview
+                    view: :summary
       end
 
       # Job-related views

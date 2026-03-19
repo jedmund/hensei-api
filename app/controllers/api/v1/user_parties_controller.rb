@@ -20,19 +20,11 @@ module Api
 
         parties = query.paginate(page: params[:page], per_page: page_size)
 
-        favorite_party_ids = if current_user
-                               current_user.favorites.pluck(:party_id).to_set
-                             else
-                               Set.new
-                             end
-
         render json: Api::V1::PartyBlueprint.render(
           parties,
-          view: :preview,
+          view: :list,
           root: :results,
-          meta: pagination_meta(parties),
-          current_user: current_user,
-          favorite_party_ids: favorite_party_ids
+          meta: pagination_meta(parties)
         )
       end
 

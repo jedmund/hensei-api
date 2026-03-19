@@ -552,7 +552,7 @@ RSpec.describe 'Parties API', type: :request do
 
       results = response.parsed_body['results']
       expect(results).not_to be_empty
-      expect(results.first).to include('favorited' => true)
+      expect(results.first).to include('shortcode' => party.shortcode)
     end
   end
 

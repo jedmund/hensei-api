@@ -85,6 +85,13 @@ module Api
                  :style_swap, :style_name, :base_character
       end
 
+      # Minimal view for party list cards — just enough for image rendering
+      view :list do
+        excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
+                 :season_name, :series, :series_names, :uncap, :race, :proficiency,
+                 :style_name, :base_character
+      end
+
       view :full do
         include_view :stats
         include_view :rates

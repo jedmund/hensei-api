@@ -349,16 +349,11 @@ module Api
         query = build_filtered_query(build_preview_base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
 
-        # Preload current user's favorite party IDs to avoid N+1
-        favorite_party_ids = current_user ? current_user.favorites.pluck(:party_id).to_set : Set.new
-
         render json: Api::V1::PartyBlueprint.render(
           @parties,
-          view: :preview,
+          view: :list,
           root: :results,
-          meta: pagination_meta(@parties),
-          current_user: current_user,
-          favorite_party_ids: favorite_party_ids
+          meta: pagination_meta(@parties)
         )
       end
 
@@ -373,16 +368,11 @@ module Api
         query = build_filtered_query(base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
 
-        # All parties in this list are favorites, but preload for consistency
-        favorite_party_ids = current_user.favorites.pluck(:party_id).to_set
-
         render json: Api::V1::PartyBlueprint.render(
           @parties,
-          view: :preview,
+          view: :list,
           root: :results,
-          meta: pagination_meta(@parties),
-          current_user: current_user,
-          favorite_party_ids: favorite_party_ids
+          meta: pagination_meta(@parties)
         )
       end
 

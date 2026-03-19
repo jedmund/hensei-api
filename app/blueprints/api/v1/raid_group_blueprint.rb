@@ -16,6 +16,11 @@ module Api
         fields :difficulty, :order, :section, :extra, :guidebooks, :hl, :unlimited
       end
 
+      # Minimal view for party list cards
+      view :list do
+        fields :unlimited
+      end
+
       view :full do
         include_view :flat
         association :raids, blueprint: RaidBlueprint, view: :nested
