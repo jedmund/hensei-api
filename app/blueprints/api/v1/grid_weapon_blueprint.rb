@@ -16,7 +16,7 @@ module Api
 
       # Minimal view for party list cards
       view :list do
-        excludes :element, :exorcism_level,
+        excludes :exorcism_level,
                  :orphaned, :collection_weapon_id, :out_of_sync
         association :weapon, blueprint: WeaponBlueprint, view: :list
       end
