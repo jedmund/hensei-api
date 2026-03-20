@@ -358,6 +358,7 @@ module Api
         Processors::CharacterProcessor.new(party, data).process
         Processors::SummonProcessor.new(party, data).process
         Processors::WeaponProcessor.new(party, data).process
+        Processors::BulletProcessor.new(party, data).process
       end
 
       ##

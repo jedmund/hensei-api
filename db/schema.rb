@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_19_114700) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1023,6 +1023,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_114700) do
     t.boolean "show_wiki_profile", default: false, null: false
     t.boolean "import_weapons", default: true, null: false
     t.integer "default_import_visibility", default: 1, null: false
+    t.string "youtube"
+    t.boolean "show_youtube", default: false, null: false
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
 
