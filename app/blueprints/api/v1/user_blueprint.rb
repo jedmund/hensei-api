@@ -15,7 +15,7 @@ module Api
       end
 
       view :minimal do
-        fields :username, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :show_granblue_id, :wiki_profile, :show_wiki_profile
+        fields :username, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :show_granblue_id, :wiki_profile, :show_wiki_profile, :youtube, :show_youtube
         # Return collection_privacy as integer (enum returns string by default)
         field :collection_privacy do |user|
           User.collection_privacies[user.collection_privacy]
