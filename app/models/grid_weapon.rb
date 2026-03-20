@@ -263,8 +263,8 @@ class GridWeapon < ApplicationRecord
   def bullets_out_of_sync?
     return false unless collection_weapon.present?
 
-    grid_bullets = grid_weapon_bullets.order(:position).pluck(:position, :bullet_id)
-    collection_bullets = collection_weapon.collection_weapon_bullets.order(:position).pluck(:position, :bullet_id)
+    grid_bullets = grid_weapon_bullets.sort_by(&:position).map { |b| [b.position, b.bullet_id] }
+    collection_bullets = collection_weapon.collection_weapon_bullets.sort_by(&:position).map { |b| [b.position, b.bullet_id] }
     grid_bullets != collection_bullets
   end
 
