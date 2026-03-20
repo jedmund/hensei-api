@@ -49,6 +49,8 @@ class PartyQueryBuilder
   def apply_filters(query)
     query = apply_base_filters(query)
     query = apply_name_quality_filter(query)
+    query = apply_user_quality_filter(query)
+    query = apply_original_filter(query)
     query = apply_count_filters(query)
 
     query
@@ -175,6 +177,20 @@ class PartyQueryBuilder
   # @return [ActiveRecord::Relation] The query with the name quality filter applied.
   def apply_name_quality_filter(query)
     @params[:name_quality].present? ? query.where(name_quality) : query
+  end
+
+  # Applies the user quality filter to the query if the parameter is present.
+  # @param query [ActiveRecord::QueryMethods::WhereChain] The current query.
+  # @return [ActiveRecord::Relation] The query with the user quality filter applied.
+  def apply_user_quality_filter(query)
+    @params[:user_quality].present? ? query.where(user_quality) : query
+  end
+
+  # Applies the original filter to the query if the parameter is present.
+  # @param query [ActiveRecord::QueryMethods::WhereChain] The current query.
+  # @return [ActiveRecord::Relation] The query with the original filter applied.
+  def apply_original_filter(query)
+    @params[:original].present? ? query.where(original) : query
   end
 
   # Applies count filters to the query based on provided parameters or default options.
@@ -314,11 +330,24 @@ class PartyQueryBuilder
     @options[:max_summons] || 8
   end
 
-  # Stub method for name quality filtering.
-  # In your application, this might be defined in a helper or concern.
+  # Excludes parties with low-quality default names (Untitled and its remixes).
   def name_quality
-    # Example: exclude parties with names like 'Untitled' (edge case)
-    "name NOT LIKE 'Untitled%'"
+    low_quality = [
+      'Untitled',
+      'Remix of Untitled',
+      'Remix of Remix of Untitled',
+      'Remix of Remix of Remix of Untitled',
+      'Remix of Remix of Remix of Remix of Untitled',
+      'Remix of Remix of Remix of Remix of Remix of Untitled',
+      '無題',
+      '無題のリミックス',
+      '無題のリミックスのリミックス',
+      '無題のリミックスのリミックスのリミックス',
+      '無題のリミックスのリミックスのリミックスのリミックス',
+      '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
+    ]
+    joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
+    "name NOT IN (#{joined_names})"
   end
 
   # Stub method for user quality filtering.
@@ -327,9 +356,10 @@ class PartyQueryBuilder
     'user_id IS NOT NULL'
   end
 
-  # Stub method for original filtering.
+  # Excludes remixed parties. Uses the remix boolean flag rather than
+  # source_party_id since nullified foreign keys leave orphaned remixes.
   def original
-    'source_party_id IS NULL'
+    'remix = false'
   end
 
   # Stub method for privacy filtering.

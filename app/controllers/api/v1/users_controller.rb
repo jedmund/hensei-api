@@ -218,7 +218,7 @@ module Api
       def original
         return if params.key?('original') || params['original'].blank? || params['original'] == '0'
 
-        'source_party_id IS NULL'
+        'remix = false'
       end
 
       def user_quality
