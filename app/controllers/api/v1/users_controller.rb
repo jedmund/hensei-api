@@ -273,7 +273,7 @@ module Api
         params.require(:user).permit(
           :username, :email, :password, :password_confirmation,
           :granblue_id, :picture, :element, :language, :gender, :private, :theme, :show_gamertag,
-          :show_granblue_id, :wiki_profile, :show_wiki_profile, :collection_privacy,
+          :show_granblue_id, :wiki_profile, :show_wiki_profile, :youtube, :show_youtube, :collection_privacy,
           :import_weapons, :default_import_visibility
         )
       end
