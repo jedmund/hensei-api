@@ -428,7 +428,7 @@ module Api
           { characters: [{ character: [:character_series_records, :style_swap_variants] }, :awakening, :grid_artifact, :collection_character] },
           { weapons: {
             weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character, :base_weapon, :forge_chain_weapons],
-            collection_weapon: {},
+            collection_weapon: { collection_weapon_bullets: {} },
             awakening: {},
             weapon_key1: {},
             weapon_key2: {},

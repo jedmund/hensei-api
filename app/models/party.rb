@@ -154,7 +154,7 @@ class Party < ApplicationRecord
   has_many :weapons,
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
-           dependent: :delete_all,
+           dependent: :destroy,
            inverse_of: :party
 
   has_many :summons,
