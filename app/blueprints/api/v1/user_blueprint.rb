@@ -32,6 +32,11 @@ module Api
         } do |user|
           user.active_crew_membership.crew.gamertag
         end
+        field :crew_name, if: ->(_, user, _) {
+          user.show_gamertag && user.active_crew_membership&.crew&.name.present?
+        } do |user|
+          user.active_crew_membership.crew.name
+        end
       end
 
       view :profile do
