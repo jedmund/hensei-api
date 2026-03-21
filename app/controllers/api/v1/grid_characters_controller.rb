@@ -425,7 +425,7 @@ module Api
         return [] if incoming_ids.blank?
 
         @party.characters.includes(:character).select do |gc|
-          (gc.character.character_id & incoming_ids).any?
+          gc.character.character_id.intersect?(incoming_ids)
         end
       end
 
