@@ -429,12 +429,12 @@ module Api
       # @param weapon [GridWeapon] the weapon that failed validation.
       # @return [void]
       def handle_conflict(weapon)
-        conflict_weapons = weapon.conflicts(party)
+        conflict_weapons = weapon.conflicts(@party)
         # Find if one of the conflicting grid weapons is associated with the incoming weapon.
-        conflict_weapon = conflict_weapons.find { |gw| gw.weapon.id == incoming_weapon.id }
+        conflict_weapon = conflict_weapons.find { |gw| gw.weapon.id == @incoming_weapon.id }
 
         if conflict_weapon.nil?
-          output = render_conflict_view(conflict_weapons, incoming_weapon, weapon_params[:position])
+          output = render_conflict_view(conflict_weapons, @incoming_weapon, weapon_params[:position])
           render json: output
         else
           old_position = conflict_weapon.position

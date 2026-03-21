@@ -400,4 +400,75 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(json['grid_weapon']['exorcism_level']).to eq(0)
     end
   end
+
+  describe 'Conflict detection on create' do
+    let(:limited_series) { create(:weapon_series) }
+    let(:limited_weapon_a) { create(:weapon, limit: true, weapon_series: limited_series) }
+    let(:limited_weapon_b) { create(:weapon, limit: true, weapon_series: limited_series) }
+
+    it 'returns a conflict response for different limited weapons in the same series' do
+      create(:grid_weapon, party: party, weapon: limited_weapon_a, position: 1, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_weapons', params: {
+          weapon: { party_id: party.id, weapon_id: limited_weapon_b.id, position: 2, uncap_level: 3 }
+        }.to_json, headers: headers
+      end.not_to change(GridWeapon, :count)
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['conflicts']).to be_an(Array)
+      expect(json['conflicts'].length).to eq(1)
+      expect(json['incoming']['id']).to eq(limited_weapon_b.id)
+      expect(json['position']).to eq(2)
+    end
+
+    it 'auto-moves when adding the exact same limited weapon to a new position' do
+      create(:grid_weapon, party: party, weapon: limited_weapon_a, position: 1, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_weapons', params: {
+          weapon: { party_id: party.id, weapon_id: limited_weapon_a.id, position: 2, uncap_level: 3 }
+        }.to_json, headers: headers
+      end.not_to change(GridWeapon, :count)
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['grid_weapon']).to include('position' => 2)
+    end
+
+    it 'does not flag conflict for non-limited weapons in the same series' do
+      non_limited_a = create(:weapon, limit: false, weapon_series: limited_series)
+      non_limited_b = create(:weapon, limit: false, weapon_series: limited_series)
+
+      create(:grid_weapon, party: party, weapon: non_limited_a, position: 1, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_weapons', params: {
+          weapon: { party_id: party.id, weapon_id: non_limited_b.id, position: 2, uncap_level: 3 }
+        }.to_json, headers: headers
+      end.to change(GridWeapon, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'detects opus/draconic cross-series conflict' do
+      opus_series = WeaponSeries.find_by(slug: 'dark-opus') || create(:weapon_series, :opus)
+      draconic_series = WeaponSeries.find_by(slug: 'draconic') || create(:weapon_series, :draconic)
+      opus_weapon = create(:weapon, limit: true, weapon_series: opus_series)
+      draconic_weapon = create(:weapon, limit: true, weapon_series: draconic_series)
+
+      create(:grid_weapon, party: party, weapon: opus_weapon, position: 1, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_weapons', params: {
+          weapon: { party_id: party.id, weapon_id: draconic_weapon.id, position: 2, uncap_level: 3 }
+        }.to_json, headers: headers
+      end.not_to change(GridWeapon, :count)
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['conflicts']).to be_an(Array)
+    end
+  end
 end
