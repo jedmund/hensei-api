@@ -375,4 +375,76 @@ RSpec.describe 'GridCharacters API', type: :request do
       end
     end
   end
+
+  describe 'Conflict detection on create' do
+    # Zeta SSR and Zeta Grand share character_id {3024} — they are variants of
+    # the same base character and must not coexist in a party.
+    let(:zeta_ssr) { Character.find_by!(granblue_id: '3040028000') }
+    let(:zeta_grand) { Character.find_by!(granblue_id: '3040499000') }
+
+    # Rosamia R, SR, and SSR all share character_id {1018}.
+    let(:rosamia_r) { Character.find_by!(granblue_id: '3020018000') }
+    let(:rosamia_sr) { Character.find_by!(granblue_id: '3030049000') }
+    let(:rosamia_ssr) { Character.find_by!(granblue_id: '3040087000') }
+
+    # Seofon has character_id {4007} — unrelated to Zeta or Rosamia.
+    let(:seofon) { Character.find_by!(granblue_id: '3040036000') }
+
+    it 'returns a conflict response when adding a variant of an existing character' do
+      create(:grid_character, party: party, character: zeta_ssr, position: 0, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_characters', params: {
+          character: { party_id: party.id, character_id: zeta_grand.id, position: 1 }
+        }.to_json, headers: headers
+      end.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['conflicts']).to be_an(Array)
+      expect(json['conflicts'].length).to eq(1)
+      expect(json['incoming']['granblue_id']).to eq(zeta_grand.granblue_id)
+      expect(json['position']).to eq(1)
+    end
+
+    it 'detects conflicts across multiple variants' do
+      create(:grid_character, party: party, character: rosamia_r, position: 0, uncap_level: 3)
+      create(:grid_character, party: party, character: rosamia_sr, position: 1, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_characters', params: {
+          character: { party_id: party.id, character_id: rosamia_ssr.id, position: 2 }
+        }.to_json, headers: headers
+      end.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['conflicts'].length).to eq(2)
+    end
+
+    it 'does not flag a conflict for unrelated characters' do
+      create(:grid_character, party: party, character: zeta_ssr, position: 0, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_characters', params: {
+          character: { party_id: party.id, character_id: seofon.id, position: 1 }
+        }.to_json, headers: headers
+      end.to change(GridCharacter, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'replaces an existing character at the same position without conflict' do
+      existing = create(:grid_character, party: party, character: seofon, position: 0, uncap_level: 3)
+
+      expect do
+        post '/api/v1/grid_characters', params: {
+          character: { party_id: party.id, character_id: zeta_ssr.id, position: 0 }
+        }.to_json, headers: headers
+      end.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:created)
+      expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end
