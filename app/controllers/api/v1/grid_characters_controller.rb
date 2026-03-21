@@ -415,31 +415,33 @@ module Api
       ##
       # Returns any grid characters in the party that conflict with the incoming character.
       #
-      # Conflict is defined as any grid character already in the party with the same character_id as the
-      # incoming character. This method is used to prompt the user for conflict resolution.
+      # Conflict is detected by comparing the integer `character_id` arrays on the Character records.
+      # Characters that share any overlapping IDs in their `character_id` arrays are considered
+      # variants of the same base character and cannot coexist in a party.
       #
       # @return [Array<GridCharacter>]
       def conflict_characters
-        @party.characters.where(character_id: @incoming_character.id).to_a
+        incoming_ids = @incoming_character.character_id
+        return [] if incoming_ids.blank?
+
+        @party.characters.includes(:character).select do |gc|
+          (gc.character.character_id & incoming_ids).any?
+        end
       end
 
-      def find_conflict_characters(incoming_character)
-        # Check all character ids on incoming character against current characters
-        conflict_ids = (current_characters & incoming_character.character_id)
-
-        return unless conflict_ids.length.positive?
-
-        # Find conflicting character ids in party characters
-        party.characters.filter do |c|
-          c if (conflict_ids & c.character.character_id).length.positive?
-        end.flatten
-      end
-
-      def find_current_characters
-        # Make a list of all character IDs
-        @current_characters = party.characters.map do |c|
-          Character.find(c.character.id).character_id
-        end.flatten
+      ##
+      # Renders the conflict view for characters.
+      #
+      # @param conflict_characters [Array<GridCharacter>] the conflicting grid characters.
+      # @param incoming_character [Character] the incoming character.
+      # @param incoming_position [Integer] the desired position.
+      # @return [String] the rendered conflict view.
+      def render_conflict_view(conflict_characters, incoming_character, incoming_position)
+        ConflictBlueprint.render(nil,
+                                 view: :characters,
+                                 conflict_characters: conflict_characters,
+                                 incoming_character: incoming_character,
+                                 incoming_position: incoming_position)
       end
 
       ##
