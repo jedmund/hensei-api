@@ -51,7 +51,7 @@ module Api
           members = @crew.active_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, created_at: :asc)
           phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         when :retired
-          members = @crew.crew_memberships.retired.includes(:user).order(retired_at: :desc)
+          members = @crew.crew_memberships.retired.includes(user: { active_crew_membership: :crew }).order(retired_at: :desc)
           phantoms = @crew.phantom_players.not_deleted.retired.includes(:claimed_by).order(:name)
         when :phantom
           members = []
