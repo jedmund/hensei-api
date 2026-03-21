@@ -78,7 +78,7 @@ RSpec.describe PartyQueryBuilder, type: :model do
 
     context 'name_quality filter' do
       let!(:named_party) { create(:party, name: 'My Build', visibility: 1) }
-      let!(:untitled_party) { create(:party, name: 'Untitled Party', visibility: 1) }
+      let!(:untitled_party) { create(:party, name: 'Untitled', visibility: 1) }
       let(:params) { { name_quality: '1' } }
 
       it 'excludes untitled parties' do

@@ -52,6 +52,8 @@ class PartyQueryBuilder
     query = apply_user_quality_filter(query)
     query = apply_original_filter(query)
     query = apply_count_filters(query)
+    query = apply_has_video_filter(query)
+    query = apply_boost_mod_filter(query)
 
     query
   end
@@ -95,16 +97,24 @@ class PartyQueryBuilder
   # Uses guard clauses to ignore keys when a parameter is missing.
   def build_filters
     {
-      element: (@params[:element].present? ? @params[:element].to_i : nil),
+      element: build_element_filter,
       raid_id: @params[:raid],
       created_at: build_date_range,
       full_auto: build_option(@params[:full_auto]),
       auto_guard: build_option(@params[:auto_guard]),
       charge_attack: build_option(@params[:charge_attack]),
       solo: build_option(@params[:solo]),
-      boost_mod: (@params[:boost_mod] if @params[:boost_mod].present?),
       boost_side: (@params[:boost_side] if @params[:boost_side].present?)
     }.compact
+  end
+
+  # Parses the element parameter, supporting both single values and
+  # comma-separated lists (e.g. "1,3" for multiple elements).
+  def build_element_filter
+    return nil unless @params[:element].present?
+
+    values = @params[:element].to_s.split(',').map(&:to_i)
+    values.length == 1 ? values.first : values
   end
 
   # Returns a date range based on the 'recency' parameter.
@@ -170,6 +180,25 @@ class PartyQueryBuilder
   # @return [ActiveRecord::Relation] The query with base filters applied.
   def apply_base_filters(query)
     query.where(build_filters)
+  end
+
+  # Filters to parties that have a video_url set.
+  def apply_has_video_filter(query)
+    return query unless @params[:has_video].present?
+
+    query.where.not(video_url: [nil, ''])
+  end
+
+  # Filters by boost_mod. When filtering for 'unboosted', also includes
+  # parties with NULL boost_mod (incomplete summon setups).
+  def apply_boost_mod_filter(query)
+    return query unless @params[:boost_mod].present?
+
+    if @params[:boost_mod] == 'unboosted'
+      query.where(boost_mod: ['unboosted', nil])
+    else
+      query.where(boost_mod: @params[:boost_mod])
+    end
   end
 
   # Applies the name quality filter to the query if the parameter is present.
