@@ -60,6 +60,7 @@ module Api
 
         users = User.where('lower(username) LIKE ?', "#{query.downcase}%")
                      .where.not(id: current_user.id)
+                     .includes(active_crew_membership: :crew)
                      .limit(10)
         render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
       end
@@ -85,8 +86,8 @@ module Api
             :guidebook1,
             :guidebook2,
             :guidebook3,
-            { characters: [{ character: :character_series_records }, :grid_artifact] },
-            { weapons: { weapon: [:weapon_series, :weapon_series_variant], collection_weapon: {} } },
+            { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
+            { weapons: [{ weapon: [:weapon_series, :weapon_series_variant], collection_weapon: {} }, :awakening] },
             { summons: [:summon, :collection_summon] }
           )
           # Restrict to parties belonging to the profile owner
@@ -151,8 +152,8 @@ module Api
           :guidebook1,
           :guidebook2,
           :guidebook3,
-          { characters: { character: :character_series_records } },
-          { weapons: { weapon: [:weapon_series, :weapon_series_variant] } },
+          { characters: [{ character: :character_series_records }, :awakening] },
+          { weapons: [{ weapon: [:weapon_series, :weapon_series_variant] }, :awakening] },
           { summons: :summon }
         )
         # Restrict to parties belonging to the profile’s owner.
@@ -258,14 +259,14 @@ module Api
 
       # Specify whitelisted properties that can be modified.
       def set
-        @user = User.find_by('lower(username) = ?', params[:id].downcase)
+        @user = User.includes(active_crew_membership: :crew).find_by('lower(username) = ?', params[:id].downcase)
       end
 
       def set_by_id
         if params[:id] == 'me'
-          @user = current_user
+          @user = User.includes(active_crew_membership: :crew).find(current_user.id)
         else
-          @user = User.find_by('id = ?', params[:id])
+          @user = User.includes(active_crew_membership: :crew).find_by('id = ?', params[:id])
         end
       end
 
