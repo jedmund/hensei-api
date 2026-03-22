@@ -172,6 +172,10 @@ class GridWeapon < ApplicationRecord
     uncap_level != collection_weapon.uncap_level ||
       transcendence_step != collection_weapon.transcendence_step ||
       element != collection_weapon.element ||
+      weapon_key1_id != collection_weapon.weapon_key1_id ||
+      weapon_key2_id != collection_weapon.weapon_key2_id ||
+      weapon_key3_id != collection_weapon.weapon_key3_id ||
+      weapon_key4_id != collection_weapon.weapon_key4_id ||
       ax_modifier1_id != collection_weapon.ax_modifier1_id ||
       ax_strength1 != collection_weapon.ax_strength1 ||
       ax_modifier2_id != collection_weapon.ax_modifier2_id ||
