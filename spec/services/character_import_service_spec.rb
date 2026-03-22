@@ -393,6 +393,90 @@ RSpec.describe CharacterImportService, type: :service do
     end
   end
 
+  describe 'perpetuity ring' do
+    context 'when has_npcaugment_constant is true' do
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'master' => { 'id' => '3040171000' },
+              'param' => {
+                'id' => 111_111_111,
+                'evolution' => '4',
+                'phase' => '0',
+                'arousal_level' => 10,
+                'has_npcaugment_constant' => true
+              }
+            }
+          ]
+        }
+      end
+
+      it 'sets perpetuity to true' do
+        service = described_class.new(user, game_data)
+        result = service.import
+
+        expect(result.created.first.perpetuity).to be true
+      end
+    end
+
+    context 'when has_npcaugment_constant is false' do
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'master' => { 'id' => '3040171000' },
+              'param' => {
+                'id' => 111_111_111,
+                'evolution' => '4',
+                'phase' => '0',
+                'arousal_level' => 10,
+                'has_npcaugment_constant' => false
+              }
+            }
+          ]
+        }
+      end
+
+      it 'does not set perpetuity' do
+        service = described_class.new(user, game_data)
+        result = service.import
+
+        expect(result.created.first.perpetuity).to be false
+      end
+    end
+
+    context 'when updating an existing ringed character with unreliable data' do
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'master' => { 'id' => '3040171000' },
+              'param' => {
+                'id' => 111_111_111,
+                'evolution' => '4',
+                'phase' => '0',
+                'arousal_level' => 10,
+                'has_npcaugment_constant' => false
+              }
+            }
+          ]
+        }
+      end
+
+      before do
+        create(:collection_character, user: user, character: standard_character, perpetuity: true)
+      end
+
+      it 'preserves existing perpetuity true value' do
+        service = described_class.new(user, game_data, update_existing: true)
+        result = service.import
+
+        expect(result.updated.first.perpetuity).to be true
+      end
+    end
+  end
+
   describe 'edge cases' do
     context 'with nil arousal_level' do
       let(:game_data) do
