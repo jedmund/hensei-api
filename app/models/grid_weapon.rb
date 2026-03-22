@@ -198,8 +198,8 @@ class GridWeapon < ApplicationRecord
     if weapon&.transcendence
       errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5
       errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
-    else
-      errors.add(:transcendence_step, 'weapon has no transcendence') if transcendence_step.positive?
+    elsif transcendence_step.positive?
+      errors.add(:transcendence_step, 'weapon has no transcendence')
     end
   end
 

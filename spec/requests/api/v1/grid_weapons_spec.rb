@@ -189,7 +189,7 @@ RSpec.describe 'GridWeapons API', type: :request do
           position: 2,
           mainhand: false,
           uncap_level: 4,
-          transcendence_step: 1,
+          transcendence_step: 0,
           element: weapon.element,
           weapon_key1_id: nil,
           weapon_key2_id: nil,
