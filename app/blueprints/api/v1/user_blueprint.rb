@@ -5,7 +5,7 @@ module Api
     class UserBlueprint < ApiBlueprint
       # Lightweight view for embedding in party responses — just enough for avatar + link
       view :inline do
-        fields :username, :youtube, :show_youtube
+        fields :username, :display_name, :youtube, :show_youtube
         field :avatar do |user|
           {
             picture: user.picture,
@@ -15,7 +15,7 @@ module Api
       end
 
       view :minimal do
-        fields :username, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :show_granblue_id, :wiki_profile, :show_wiki_profile, :youtube, :show_youtube
+        fields :username, :display_name, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :show_granblue_id, :wiki_profile, :show_wiki_profile, :youtube, :show_youtube
         # Return collection_privacy as integer (enum returns string by default)
         field :collection_privacy do |user|
           User.collection_privacies[user.collection_privacy]
@@ -48,7 +48,7 @@ module Api
       end
 
       view :token do
-        fields :username, :token, :email_verified
+        fields :username, :display_name, :token, :email_verified
       end
 
       # Settings view includes all user data + email (only for authenticated user viewing own settings)
