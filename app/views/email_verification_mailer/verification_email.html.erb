@@ -70,7 +70,7 @@
 <body>
   <div class="wrapper">
     <div class="card">
-      <p class="greeting">Thanks for signing up, <%= @user.username %>!</p>
+      <p class="greeting">Thanks for signing up, <%= @user.display_name_or_username %>!</p>
       <p class="body-text">Please verify your email address by clicking the button below:</p>
       <div class="button-wrapper">
         <a href="<%= @verification_url %>" class="button" style="background-color: <%= @element_color %>;">Verify email</a>

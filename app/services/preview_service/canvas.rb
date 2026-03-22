@@ -140,7 +140,8 @@ module PreviewService
       end
 
       # Measure username text size
-      username_metrics = measure_text(user.username, username_font_size, font: username_font_path)
+      display_text = user.display_name_or_username
+      username_metrics = measure_text(display_text, username_font_size, font: username_font_path)
 
       right_padding = PADDING
       total_user_width = 48 + 8 + username_metrics[:width]
@@ -164,7 +165,8 @@ module PreviewService
         c.fill font_color
         c.pointsize username_font_size
         text_x = user_x + 48 + 12
-        c.draw "text #{text_x},#{user_text_y} '#{user.username}'"
+        safe_name = display_text.gsub(/'/, "'\\\\''")
+        c.draw "text #{text_x},#{user_text_y} '#{safe_name}'"
       end
 
       image
