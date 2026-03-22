@@ -16,10 +16,14 @@ module Api
 
       attr_reader :party, :incoming_summon
 
-      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync sync_to_collection duplicate]
-      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync sync_to_collection duplicate]
+      before_action :find_grid_summon,
+                    only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync sync_to_collection duplicate]
+      before_action :find_party,
+                    only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync
+                             sync_to_collection duplicate]
       before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync sync_to_collection duplicate]
+      before_action :authorize_party_edit!,
+                    only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync sync_to_collection duplicate]
 
       ##
       # Creates a new grid summon.

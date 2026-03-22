@@ -17,10 +17,13 @@ module Api
       include CollectionSourceConcern
       include PartyAuthorizationConcern
 
-      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
-      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
+      before_action :find_grid_character,
+                    only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
+      before_action :find_party,
+                    only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
       before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
+      before_action :authorize_party_edit!,
+                    only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
 
       ##
       # Creates a new grid character.
