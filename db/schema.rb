@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_22_054806) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_22_101238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -343,6 +343,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_054806) do
     t.index ["crew_id"], name: "index_crew_memberships_on_crew_id"
     t.index ["user_id"], name: "index_crew_memberships_on_active_user", unique: true, where: "(retired = false)"
     t.index ["user_id"], name: "index_crew_memberships_on_user_id"
+  end
+
+  create_table "crew_rosters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crew_id", null: false
+    t.string "name", null: false
+    t.integer "element", null: false
+    t.jsonb "items", default: [], null: false
+    t.uuid "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_crew_rosters_on_created_by_id"
+    t.index ["crew_id", "element"], name: "index_crew_rosters_on_crew_id_and_element", unique: true
+    t.index ["crew_id"], name: "index_crew_rosters_on_crew_id"
   end
 
   create_table "crews", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1031,6 +1044,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_054806) do
     t.integer "default_import_visibility", default: 1, null: false
     t.string "youtube"
     t.boolean "show_youtube", default: false, null: false
+    t.string "display_name"
+    t.boolean "username_migrated", default: false, null: false
+    t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
 
@@ -1258,6 +1274,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_054806) do
   add_foreign_key "crew_invitations", "users", column: "invited_by_id"
   add_foreign_key "crew_memberships", "crews"
   add_foreign_key "crew_memberships", "users"
+  add_foreign_key "crew_rosters", "crews"
+  add_foreign_key "crew_rosters", "users", column: "created_by_id"
   add_foreign_key "effects", "effects", column: "effect_family_id"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
