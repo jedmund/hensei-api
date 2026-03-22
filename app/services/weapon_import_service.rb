@@ -133,7 +133,7 @@ class WeaponImportService
     # Track this game_id as processed (for reconciliation)
     @processed_game_ids << game_id.to_s if game_id.present?
 
-    weapon = find_weapon(granblue_id)
+    weapon, resolved_element = find_weapon(granblue_id)
     unless weapon
       @errors << { game_id: game_id, granblue_id: granblue_id, error: 'Weapon not found' }
       return
@@ -157,22 +157,52 @@ class WeaponImportService
 
     if existing
       if @update_existing || found_via_conflict
-        update_existing_weapon(existing, item, weapon)
+        update_existing_weapon(existing, item, weapon, resolved_element)
       else
         @skipped << { game_id: game_id, reason: 'Already exists' }
       end
       return
     end
 
-    create_collection_weapon(item, weapon)
+    create_collection_weapon(item, weapon, resolved_element)
   end
 
+  # Finds a Weapon record for the given granblue_id.
+  # For element-changeable weapons, the game sends element-variant IDs that differ
+  # from the base granblue_id stored in our DB. We resolve these via element_variant_ids JSONB.
+  #
+  # @param granblue_id [String] the game's weapon ID (may be a variant ID)
+  # @return [Array<Weapon, Integer>] the weapon and resolved element, or [nil, nil]
   def find_weapon(granblue_id)
-    Weapon.find_by(granblue_id: granblue_id.to_s)
+    id_str = granblue_id.to_s
+
+    # Direct match (works for non-element-changeable weapons and base variants)
+    weapon = Weapon.find_by(granblue_id: id_str)
+    if weapon
+      # For element-changeable weapons, the base granblue_id may also be a variant ID
+      element = resolve_element_from_variants(weapon, id_str)
+      return [weapon, element]
+    end
+
+    # Reverse-lookup via element_variant_ids JSONB
+    weapon = Weapon.where(
+      "EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)",
+      id_str
+    ).first
+    return [nil, nil] unless weapon
+
+    element = resolve_element_from_variants(weapon, id_str)
+    [weapon, element]
   end
 
-  def create_collection_weapon(item, weapon)
-    attrs = build_collection_weapon_attrs(item, weapon)
+  def resolve_element_from_variants(weapon, variant_id)
+    return nil unless weapon.element_variant_ids.present?
+
+    weapon.element_variant_ids.find { |_k, v| v == variant_id }&.first&.to_i
+  end
+
+  def create_collection_weapon(item, weapon, resolved_element = nil)
+    attrs = build_collection_weapon_attrs(item, weapon, resolved_element)
 
     collection_weapon = @user.collection_weapons.build(attrs)
 
@@ -187,8 +217,8 @@ class WeaponImportService
     end
   end
 
-  def update_existing_weapon(existing, item, weapon)
-    attrs = build_collection_weapon_attrs(item, weapon)
+  def update_existing_weapon(existing, item, weapon, resolved_element = nil)
+    attrs = build_collection_weapon_attrs(item, weapon, resolved_element)
 
     if existing.update(attrs)
       @updated << existing
@@ -201,7 +231,7 @@ class WeaponImportService
     end
   end
 
-  def build_collection_weapon_attrs(item, weapon)
+  def build_collection_weapon_attrs(item, weapon, resolved_element = nil)
     param = item['param'] || {}
 
     uncap = parse_uncap_level(param['evolution'])
@@ -214,7 +244,8 @@ class WeaponImportService
       weapon: weapon,
       game_id: param['id'].present? ? param['id'].to_s : nil,
       uncap_level: uncap,
-      transcendence_step: transcendence
+      transcendence_step: transcendence,
+      element: resolved_element
     }
 
     # Parse awakening if present
