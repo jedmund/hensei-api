@@ -26,6 +26,7 @@ module Api
         ActiveRecord::Base.transaction do
           @crew.save!
           CrewMembership.create!(crew: @crew, user: current_user, role: :captain)
+          CrewRoster.seed_for_crew!(@crew, current_user)
         end
 
         render json: CrewBlueprint.render(@crew.reload, view: :full, root: :crew, current_user: current_user), status: :created

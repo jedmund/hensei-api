@@ -233,6 +233,7 @@ Rails.application.routes.draw do
         get :shared_parties
         post :leave
       end
+      resources :crew_rosters, only: %i[index show update destroy]
     end
 
     # Crews - create and manage by ID
