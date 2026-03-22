@@ -7,11 +7,6 @@ class FixQuirkArtifactProficiencies < ActiveRecord::Migration[7.1]
     #
     # Game:  1=Sabre, 2=Dagger, 3=Spear, 4=Axe, 5=Staff, 6=Gun, 7=Melee, 8=Bow, 9=Harp, 10=Katana
     # Ours:  1=Sabre, 2=Dagger, 3=Axe,   4=Spear, 5=Bow, 6=Staff, 7=Melee, 8=Harp, 9=Gun, 10=Katana
-    #
-    # Only quirk artifacts store proficiency on collection_artifacts;
-    # standard artifacts inherit it from the artifact record.
-    quirk_artifact_ids = Artifact.where(rarity: :quirk).pluck(:id)
-    return if quirk_artifact_ids.empty?
 
     # old_value => correct_value (only values that differ)
     remapping = {
@@ -29,15 +24,11 @@ class FixQuirkArtifactProficiencies < ActiveRecord::Migration[7.1]
       SET proficiency = CASE proficiency
         #{remapping.map { |old, new_val| "WHEN #{old} THEN #{new_val}" }.join("\n        ")}
       END
-      WHERE artifact_id IN (#{quirk_artifact_ids.join(',')})
-        AND proficiency IN (#{remapping.keys.join(',')})
+      WHERE proficiency IN (#{remapping.keys.join(',')})
     SQL
   end
 
   def down
-    quirk_artifact_ids = Artifact.where(rarity: :quirk).pluck(:id)
-    return if quirk_artifact_ids.empty?
-
     # Reverse the mapping
     remapping = {
       4 => 3,
@@ -53,8 +44,7 @@ class FixQuirkArtifactProficiencies < ActiveRecord::Migration[7.1]
       SET proficiency = CASE proficiency
         #{remapping.map { |old, new_val| "WHEN #{old} THEN #{new_val}" }.join("\n        ")}
       END
-      WHERE artifact_id IN (#{quirk_artifact_ids.join(',')})
-        AND proficiency IN (#{remapping.keys.join(',')})
+      WHERE proficiency IN (#{remapping.keys.join(',')})
     SQL
   end
 end
