@@ -42,7 +42,12 @@ class CollectionWeapon < ApplicationRecord
   scope :by_series, ->(series_id) { joins(:weapon).where(weapons: { weapon_series_id: series_id }) }
   scope :with_keys, -> { where.not(weapon_key1_id: nil) }
   scope :with_ax, -> { where.not(ax_modifier1_id: nil) }
-  scope :by_element, ->(element) { joins(:weapon).where(weapons: { element: element }) }
+  scope :by_element, ->(element) {
+    joins(:weapon).where(
+      'collection_weapons.element IN (?) OR (collection_weapons.element IS NULL AND weapons.element IN (?))',
+      element, element
+    )
+  }
   scope :by_rarity, ->(rarity) { joins(:weapon).where(weapons: { rarity: rarity }) }
   scope :by_proficiency, ->(proficiency) { joins(:weapon).where(weapons: { proficiency: proficiency }) }
   scope :transcended, -> { where('transcendence_step > 0') }

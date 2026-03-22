@@ -218,9 +218,25 @@ RSpec.describe CollectionWeapon, type: :model do
     let!(:with_keys) { create(:collection_weapon, :with_keys) }
 
     describe '.by_element' do
-      it 'returns weapons of specified element' do
+      it 'returns weapons matching weapon.element' do
         expect(CollectionWeapon.by_element(0)).to include(fire_collection)
         expect(CollectionWeapon.by_element(0)).not_to include(water_collection)
+      end
+
+      it 'returns element-changeable weapons by collection_weapon.element override' do
+        # Null-element weapon (element 0) on an element-changeable series, with element override set to Water (1)
+        ec_series = create(:weapon_series, :element_changeable)
+        null_element_weapon = create(:weapon, element: 0, weapon_series: ec_series)
+        cw_with_override = create(:collection_weapon, weapon: null_element_weapon, element: 1)
+
+        expect(CollectionWeapon.by_element(1)).to include(cw_with_override)
+        # Should NOT appear under element 0 since override takes precedence
+        expect(CollectionWeapon.by_element(0)).not_to include(cw_with_override)
+      end
+
+      it 'falls back to weapon.element when collection_weapon.element is nil' do
+        null_override = create(:collection_weapon, weapon: fire_weapon, element: nil)
+        expect(CollectionWeapon.by_element(0)).to include(null_override)
       end
     end
 
