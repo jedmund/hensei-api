@@ -56,6 +56,7 @@ class GridWeapon < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
 
+  validate :validate_transcendence_step
   validate :compatible_with_position
   validate :compatible_with_job_proficiency, on: :create
   validate :no_conflicts, on: :create
@@ -186,6 +187,21 @@ class GridWeapon < ApplicationRecord
   end
 
   private
+
+  ##
+  # Validates the transcendence step of the weapon.
+  #
+  # @return [void]
+  def validate_transcendence_step
+    return if transcendence_step.nil?
+
+    if weapon&.transcendence
+      errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5
+      errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
+    else
+      errors.add(:transcendence_step, 'weapon has no transcendence') if transcendence_step.positive?
+    end
+  end
 
   ##
   # Validates whether the grid weapon is compatible with the desired position.
