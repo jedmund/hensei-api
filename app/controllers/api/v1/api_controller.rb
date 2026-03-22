@@ -66,9 +66,20 @@ module Api
       respond_to :json
 
       ##### Methods
-      # Returns the latest update
+      # Returns the latest version for each update type
       def version
-        render json: UpdateBlueprint.render_as_json(AppUpdate.last)
+        latest_updates = AppUpdate
+                         .select('DISTINCT ON (update_type) update_type, version, updated_at')
+                         .order(:update_type, updated_at: :desc)
+
+        result = latest_updates.each_with_object({}) do |update, hash|
+          hash[update.update_type] = {
+            version: update.version,
+            updated_at: update.updated_at
+          }
+        end
+
+        render json: result
       end
 
       # Assign the current user if the Doorkeeper token isn't nil, then
