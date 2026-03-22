@@ -210,7 +210,7 @@ RSpec.describe ArtifactImportService, type: :service do
         expect(result.success?).to be true
         artifact = result.created.first
         expect(artifact.artifact.quirk?).to be true
-        expect(artifact.proficiency).to eq('harp') # kind 8 = harp
+        expect(artifact.proficiency).to eq('bow') # game kind 8 = bow
       end
 
       it 'stores empty skills for unknown skill names' do
