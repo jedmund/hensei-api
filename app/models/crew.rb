@@ -10,6 +10,7 @@ class Crew < ApplicationRecord
   has_many :crew_gw_participations, dependent: :destroy
   has_many :gw_events, through: :crew_gw_participations
   has_many :phantom_players, dependent: :destroy
+  has_many :crew_rosters, dependent: :destroy
   has_many :party_shares, as: :shareable, dependent: :destroy
   has_many :shared_parties, through: :party_shares, source: :party
 
