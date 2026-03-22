@@ -51,6 +51,7 @@ module Api
           grid_character = build_new_grid_character(processed_params)
 
           if grid_character.save
+            @party.mark_updated!
             grid_character.sync_from_collection! if grid_character.collection_character_id.present?
             grid_character.reload
             render json: GridCharacterBlueprint.render(grid_character,
@@ -132,6 +133,7 @@ module Api
         @grid_character.position = new_position
 
         if @grid_character.save
+          @party.mark_updated!
           # Compact positions after save so the moved character is no longer
           # included in the main positions query
           reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
@@ -175,6 +177,8 @@ module Api
           source.update!(position: target_pos)
         end
 
+        @party.mark_updated!
+
         render json: {
           party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
           swapped: {
@@ -211,6 +215,7 @@ module Api
           position: resolve_params[:position],
           uncap_level: compute_max_uncap_level(incoming)
         )
+        @party.mark_updated!
         render json: GridCharacterBlueprint.render(grid_character,
                                                    root: :grid_character,
                                                    view: :nested), status: :created
@@ -229,6 +234,7 @@ module Api
         return render_not_found_response('grid_character') if grid_character.nil?
 
         if grid_character.destroy
+          @party.mark_updated!
           clear_collection_source_if_empty!(@party)
           render json: GridCharacterBlueprint.render(grid_character, view: :destroyed)
         else
@@ -281,6 +287,7 @@ module Api
         end
 
         @grid_character.update!(character_id: alternate.id)
+        @party.mark_updated!
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)

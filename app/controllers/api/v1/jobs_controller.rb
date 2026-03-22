@@ -73,6 +73,7 @@ module Api
           end
         end
 
+        @party.last_updated = Time.current
         @party.save!
         render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
@@ -114,6 +115,7 @@ module Api
           @party.attributes = skill_ids_hash
         end
 
+        @party.last_updated = Time.current
         @party.save!
         render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
@@ -121,17 +123,20 @@ module Api
       def destroy_job_skill
         position = job_params[:skill_position].to_i
         @party["skill#{position}_id"] = nil
+        @party.last_updated = Time.current
         render json: PartyBlueprint.render(@party, view: :job_metadata) if @party.save
       end
 
       def update_accessory
         @party.accessory = JobAccessory.find(job_params[:accessory_id])
+        @party.last_updated = Time.current
         @party.save!
         render json: PartyBlueprint.render(@party, view: :job_metadata)
       end
 
       def destroy_accessory
         @party.accessory = nil
+        @party.last_updated = Time.current
         @party.save!
         render json: PartyBlueprint.render(@party, view: :job_metadata)
       end

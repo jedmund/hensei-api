@@ -117,6 +117,8 @@ module Api
         @grid_summon.update!(quick_summon: summon_params[:quick_summon])
         return unless @grid_summon.persisted?
 
+        @party.mark_updated!
+
         quick_summons -= [@grid_summon]
         summons = [@grid_summon] + quick_summons
 
@@ -158,6 +160,7 @@ module Api
         @grid_summon.position = new_position
 
         if @grid_summon.save
+          @party.mark_updated!
           render json: {
             party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
             grid_summon: GridSummonBlueprint.render_as_hash(@grid_summon.reload, view: :nested)
@@ -203,6 +206,8 @@ module Api
           source.update!(position: target_pos)
         end
 
+        @party.mark_updated!
+
         render json: {
           party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
           swapped: {
@@ -228,6 +233,7 @@ module Api
         return render_not_found_response('grid_summon') if grid_summon.nil?
 
         if grid_summon.destroy
+          @party.mark_updated!
           clear_collection_source_if_empty!(@party)
           render json: GridSummonBlueprint.render(grid_summon, view: :destroyed), status: :ok
         else
@@ -300,6 +306,7 @@ module Api
         )
 
         if new_summon.save
+          @party.mark_updated!
           render json: GridSummonBlueprint.render(new_summon, view: :full, root: :grid_summon), status: :created
         else
           render_validation_error_response(new_summon)
@@ -324,6 +331,7 @@ module Api
 
         return unless summon.save
 
+        @party.mark_updated!
         summon.sync_from_collection! if summon.collection_summon_id.present?
         summon.reload
         output = render_grid_summon_view(summon)
