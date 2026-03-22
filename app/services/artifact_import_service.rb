@@ -26,6 +26,22 @@ class ArtifactImportService
     '6' => 5   # Dark
   }.freeze
 
+  # Game artifact 'kind' values to our proficiency enum values
+  # Game: 1=Sabre, 2=Dagger, 3=Spear, 4=Axe, 5=Staff, 6=Gun, 7=Melee, 8=Bow, 9=Harp, 10=Katana
+  # Ours: 1=Sabre, 2=Dagger, 3=Axe, 4=Spear, 5=Bow, 6=Staff, 7=Melee, 8=Harp, 9=Gun, 10=Katana
+  PROFICIENCY_MAPPING = {
+    '1' => 1,   # Sabre
+    '2' => 2,   # Dagger
+    '3' => 4,   # Spear
+    '4' => 3,   # Axe
+    '5' => 6,   # Staff
+    '6' => 9,   # Gun
+    '7' => 7,   # Melee
+    '8' => 5,   # Bow
+    '9' => 8,   # Harp
+    '10' => 10  # Katana
+  }.freeze
+
   def initialize(user, game_data, options = {})
     @user = user
     @game_data = game_data
@@ -231,8 +247,7 @@ class ArtifactImportService
   end
 
   def map_proficiency(kind)
-    # Game 'kind' field maps directly to proficiency enum (1-10)
-    kind.to_i
+    PROFICIENCY_MAPPING[kind.to_s]
   end
 
   def update_skill_score_categories(data)
