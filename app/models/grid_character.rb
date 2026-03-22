@@ -215,6 +215,31 @@ class GridCharacter < ApplicationRecord
   end
 
   ##
+  # Syncs customizations from this grid character to the linked collection character.
+  #
+  # Copies uncap level, transcendence, rings, earring, and awakening to the collection.
+  # No-op if no collection character is linked.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_to_collection!
+    return false unless collection_character.present?
+
+    collection_character.update!(
+      uncap_level: uncap_level,
+      transcendence_step: transcendence_step,
+      perpetuity: perpetuity,
+      ring1: ring1,
+      ring2: ring2,
+      ring3: ring3,
+      ring4: ring4,
+      earring: earring,
+      awakening_id: awakening_id,
+      awakening_level: awakening_level
+    )
+    true
+  end
+
+  ##
   # Checks if grid character is out of sync with collection.
   #
   # @return [Boolean] true if any customization differs from collection

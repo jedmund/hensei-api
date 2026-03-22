@@ -195,6 +195,12 @@ Rails.application.routes.draw do
     post 'grid_weapons/:id/duplicate', to: 'grid_weapons#duplicate'
     post 'grid_summons/:id/sync', to: 'grid_summons#sync'
     post 'grid_summons/:id/duplicate', to: 'grid_summons#duplicate'
+
+    # Sync to collection endpoints (grid item → collection)
+    post 'grid_characters/:id/sync_to_collection', to: 'grid_characters#sync_to_collection'
+    post 'grid_weapons/:id/sync_to_collection', to: 'grid_weapons#sync_to_collection'
+    post 'grid_summons/:id/sync_to_collection', to: 'grid_summons#sync_to_collection'
+
     post 'parties/:id/sync_all', to: 'parties#sync_all'
     post 'parties/:id/unlink_collection', to: 'parties#unlink_collection'
 

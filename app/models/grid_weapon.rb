@@ -120,6 +120,41 @@ class GridWeapon < ApplicationRecord
   end
 
   ##
+  # Syncs customizations from this grid weapon to the linked collection weapon.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_to_collection!
+    return false unless collection_weapon.present?
+
+    collection_weapon.update!(
+      uncap_level: uncap_level,
+      transcendence_step: transcendence_step,
+      element: element,
+      weapon_key1_id: weapon_key1_id,
+      weapon_key2_id: weapon_key2_id,
+      weapon_key3_id: weapon_key3_id,
+      weapon_key4_id: weapon_key4_id,
+      ax_modifier1_id: ax_modifier1_id,
+      ax_strength1: ax_strength1,
+      ax_modifier2_id: ax_modifier2_id,
+      ax_strength2: ax_strength2,
+      befoulment_modifier_id: befoulment_modifier_id,
+      befoulment_strength: befoulment_strength,
+      exorcism_level: exorcism_level,
+      awakening_id: awakening_id,
+      awakening_level: awakening_level
+    )
+
+    # Sync bullet loadout
+    collection_weapon.collection_weapon_bullets.destroy_all
+    grid_weapon_bullets.each do |gwb|
+      collection_weapon.collection_weapon_bullets.create!(bullet_id: gwb.bullet_id, position: gwb.position)
+    end
+
+    true
+  end
+
+  ##
   # Marks this grid weapon as orphaned and clears its collection link.
   #
   # @return [Boolean] true if the update succeeded

@@ -14,10 +14,10 @@ module Api
       include CollectionSourceConcern
       include PartyAuthorizationConcern
 
-      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync duplicate]
-      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync duplicate]
+      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync sync_to_collection duplicate]
+      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
       before_action :find_incoming_weapon, only: %i[create resolve]
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync duplicate]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
 
       ##
       # Creates a new GridWeapon.
@@ -271,6 +271,27 @@ module Api
         end
 
         @grid_weapon.sync_from_collection!
+        render json: GridWeaponBlueprint.render(@grid_weapon.reload,
+                                                root: :grid_weapon,
+                                                view: :full)
+      end
+
+      ##
+      # Syncs a grid weapon to its linked collection weapon.
+      #
+      # @return [void]
+      def sync_to_collection
+        unless @grid_weapon.collection_weapon.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection weapon linked')
+          )
+        end
+
+        unless current_user.present? && @party.collection_source_user_id == current_user.id
+          return render_unauthorized_response
+        end
+
+        @grid_weapon.sync_to_collection!
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)

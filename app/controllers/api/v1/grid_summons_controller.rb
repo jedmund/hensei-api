@@ -16,10 +16,10 @@ module Api
 
       attr_reader :party, :incoming_summon
 
-      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync duplicate]
-      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync duplicate]
+      before_action :find_grid_summon, only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync sync_to_collection duplicate]
+      before_action :find_party, only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync sync_to_collection duplicate]
       before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync duplicate]
+      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync sync_to_collection duplicate]
 
       ##
       # Creates a new grid summon.
@@ -260,6 +260,27 @@ module Api
         end
 
         @grid_summon.sync_from_collection!
+        render json: GridSummonBlueprint.render(@grid_summon.reload,
+                                                root: :grid_summon,
+                                                view: :nested)
+      end
+
+      ##
+      # Syncs a grid summon to its linked collection summon.
+      #
+      # @return [void]
+      def sync_to_collection
+        unless @grid_summon.collection_summon.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection summon linked')
+          )
+        end
+
+        unless current_user.present? && @party.collection_source_user_id == current_user.id
+          return render_unauthorized_response
+        end
+
+        @grid_summon.sync_to_collection!
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,
                                                 view: :nested)
