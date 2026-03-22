@@ -32,7 +32,7 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection migrate preview_migrate]
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
 
@@ -59,6 +59,7 @@ module Api
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
           party.extra = raid.group.extra
         end
+        party.last_updated = Time.current
         if party.save
           party.schedule_preview_generation if party.ready_for_preview?
           render json: PartyBlueprint.render(party, view: :created, root: :party), status: :created
@@ -101,6 +102,7 @@ module Api
         if party_params && party_params[:raid_id] && (raid = Raid.find_by(id: party_params[:raid_id]))
           @party.extra = raid.group.extra
         end
+        @party.last_updated = Time.current
         if @party.save
           render json: PartyBlueprint.render(@party, view: :full, root: :party)
         else
@@ -234,6 +236,7 @@ module Api
         new_party.attributes = { user: current_user, name: remixed_name(@party.name), source_party: @party,
                                  remix: true }
         new_party.local_id = party_params[:local_id] if party_params
+        new_party.last_updated = Time.current
         if new_party.save
           new_party.schedule_preview_generation
           render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
@@ -266,6 +269,8 @@ module Api
           # Compact character positions if needed
           compact_party_character_positions if options[:maintain_character_sequence]
         end
+
+        @party.mark_updated!
 
         render json: {
           party: PartyBlueprint.render_as_hash(@party.reload, view: :full),

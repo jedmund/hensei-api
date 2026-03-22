@@ -143,6 +143,7 @@ module Api
         update_party_attributes_for_position(@grid_weapon, new_position)
 
         if @grid_weapon.save
+          @party.mark_updated!
           render json: {
             party: PartyBlueprint.render_as_hash(@party, view: :full),
             grid_weapon: GridWeaponBlueprint.render_as_hash(@grid_weapon, view: :full)
@@ -180,6 +181,8 @@ module Api
           target.update!(position: source_pos)
           source.update!(position: target_pos)
         end
+
+        @party.mark_updated!
 
         render json: {
           party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
@@ -226,6 +229,7 @@ module Api
         )
 
         if grid_weapon.persisted?
+          @party.mark_updated!
           render json: GridWeaponBlueprint.render(grid_weapon, view: :full, root: :grid_weapon, meta: { replaced: resolve_params[:position] }), status: :created
         else
           render_validation_error_response(grid_weapon)
@@ -244,6 +248,7 @@ module Api
         return render_not_found_response('grid_weapon') if grid_weapon.nil?
 
         if grid_weapon.destroy
+          @party.mark_updated!
           clear_collection_source_if_empty!(@party)
           render json: GridWeaponBlueprint.render(grid_weapon, view: :destroyed), status: :ok
         else
@@ -309,6 +314,7 @@ module Api
         new_weapon.orphaned = false
 
         if new_weapon.save
+          @party.mark_updated!
           render json: GridWeaponBlueprint.render(new_weapon, view: :full, root: :grid_weapon), status: :created
         else
           render_validation_error_response(new_weapon)
@@ -410,6 +416,7 @@ module Api
         end
 
         if weapon.save
+          @party.mark_updated!
           weapon.sync_from_collection! if weapon.collection_weapon_id.present?
           weapon.reload
           output = GridWeaponBlueprint.render(weapon, view: :full, root: :grid_weapon)

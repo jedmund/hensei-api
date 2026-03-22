@@ -234,6 +234,15 @@ class Party < ApplicationRecord
   #########################
 
   ##
+  # Bumps the user-visible last_updated timestamp without touching updated_at.
+  # Use this for user-initiated changes to grid items that don't go through party.save.
+  #
+  # @return [Boolean] true if the update succeeded.
+  def mark_updated!
+    update_column(:last_updated, Time.current)
+  end
+
+  ##
   # Checks if the party is a remix of another party.
   #
   # @return [Boolean] true if the party is a remix; false otherwise.

@@ -53,10 +53,10 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
   end
 
   describe 'GET /api/v1/users/:user_id/playlists/:id' do
-    it 'returns a public playlist with parties ordered by updated_at desc' do
+    it 'returns a public playlist with parties ordered by last_updated desc' do
       playlist = create(:playlist, user: user, visibility: 1)
-      old_party = create(:party, user: user, updated_at: 2.days.ago)
-      new_party = create(:party, user: user, updated_at: 1.hour.ago)
+      old_party = create(:party, user: user, last_updated: 2.days.ago)
+      new_party = create(:party, user: user, last_updated: 1.hour.ago)
       create(:playlist_party, playlist: playlist, party: old_party)
       create(:playlist_party, playlist: playlist, party: new_party)
 

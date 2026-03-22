@@ -154,7 +154,8 @@ module Api
           party = Party.create!(
             user: current_user,
             visibility: current_user.default_import_visibility,
-            name: body['name'].presence
+            name: body['name'].presence,
+            last_updated: Time.current
           )
           deck_data = raw_params
           process_data(party, deck_data)

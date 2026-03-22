@@ -27,7 +27,7 @@ module Api
         raid_ids = Party.where(id: party_ids)
                         .where.not(raid_id: nil)
                         .group(:raid_id)
-                        .order(Arel.sql('MAX(updated_at) DESC'))
+                        .order(Arel.sql('MAX(last_updated) DESC'))
                         .limit(4)
                         .pluck(:raid_id)
         Raid.where(id: raid_ids).pluck(:slug)
@@ -40,7 +40,7 @@ module Api
             { characters: :character },
             { weapons: :weapon },
             { summons: :summon }
-          ).order(updated_at: :desc)
+          ).order(last_updated: :desc)
 
           PartyBlueprint.render_as_hash(ordered, view: :list)
         end

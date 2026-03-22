@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_21_170000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_22_054806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -714,6 +714,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_21_170000) do
     t.string "boost_mod"
     t.string "boost_side"
     t.boolean "solo", default: false, null: false
+    t.datetime "last_updated"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
@@ -723,6 +724,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_21_170000) do
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
+    t.index ["last_updated"], name: "index_parties_on_last_updated"
     t.index ["preview_generated_at"], name: "index_parties_on_preview_generated_at"
     t.index ["preview_state"], name: "index_parties_on_preview_state"
     t.index ["raid_id"], name: "index_parties_on_raid_id"
