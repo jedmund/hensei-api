@@ -42,7 +42,8 @@ module Api
           weapon_params.merge(
             party_id: @party.id,
             weapon_id: @incoming_weapon.id,
-            uncap_level: compute_default_uncap(@incoming_weapon, position, collection_weapon_id)
+            uncap_level: compute_default_uncap(@incoming_weapon, position, collection_weapon_id),
+            transcendence_step: compute_max_transcendence_step(@incoming_weapon)
           )
         )
 
@@ -103,7 +104,7 @@ module Api
           new_uncap = [new_uncap, @grid_weapon.weapon.extra_prerequisite].max
         end
 
-        if @grid_weapon.update(uncap_level: new_uncap, transcendence_step: (weapon_params[:transcendence_step] || 0).to_i)
+        if @grid_weapon.update(uncap_level: new_uncap, transcendence_step: [(weapon_params[:transcendence_step] || 0).to_i, 5].min)
           render json: GridWeaponBlueprint.render(@grid_weapon, view: :uncap, root: :grid_weapon), status: :ok
         else
           render_validation_error_response(@grid_weapon)
@@ -225,7 +226,7 @@ module Api
           weapon_id: incoming.id,
           position: position,
           uncap_level: new_uncap,
-          transcendence_step: 0
+          transcendence_step: compute_max_transcendence_step(incoming)
         )
 
         if grid_weapon.persisted?
@@ -328,6 +329,10 @@ module Api
       #
       # @param weapon [Weapon] the associated weapon.
       # @return [Integer] the maximum allowed uncap level.
+      def compute_max_transcendence_step(weapon)
+        weapon.transcendence ? 5 : 0
+      end
+
       def compute_max_uncap_level(weapon)
         if weapon.flb && !weapon.ulb && !weapon.transcendence
           4

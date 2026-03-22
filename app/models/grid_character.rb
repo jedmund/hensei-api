@@ -35,7 +35,7 @@ class GridCharacter < ApplicationRecord
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
   validate :validate_awakening_level, on: :update
-  validate :transcendence, on: :update
+  validate :transcendence
   validate :validate_over_mastery_values, on: :update
   validate :validate_aetherial_mastery_value, on: :update
 

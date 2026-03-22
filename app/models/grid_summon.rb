@@ -154,13 +154,12 @@ class GridSummon < ApplicationRecord
   #
   # @return [void]
   def validate_transcendence_limits
-    return if summon.transcendence
-
-    errors.add(:uncap_level, 'cannot be greater than 5 if summon does not have transcendence') if uncap_level.to_i > 5
-
-    return unless transcendence_step.to_i.positive?
-
-    errors.add(:transcendence_step, 'must be 0 if summon does not have transcendence')
+    if summon.transcendence
+      errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step.to_i > 5
+    else
+      errors.add(:uncap_level, 'cannot be greater than 5 if summon does not have transcendence') if uncap_level.to_i > 5
+      errors.add(:transcendence_step, 'must be 0 if summon does not have transcendence') if transcendence_step.to_i.positive?
+    end
   end
 
   ##
