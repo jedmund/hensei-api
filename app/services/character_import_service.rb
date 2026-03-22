@@ -194,6 +194,10 @@ class CharacterImportService
       attrs[:awakening_level] = awakening_level
     end
 
+    # Only set perpetuity when true; the field is unreliable (sometimes
+    # false even for ringed characters), so never overwrite a known true.
+    attrs[:perpetuity] = true if param['has_npcaugment_constant']
+
     attrs
   end
 
