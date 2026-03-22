@@ -41,6 +41,7 @@ module Api
         # Set the uncap_level to the summon's maximum uncap level regardless of what the client sent.
         grid_summon = build_grid_summon.tap do |gs|
           gs.uncap_level = max_uncap_level(gs.summon)
+          gs.transcendence_step = compute_max_transcendence_step(gs.summon)
         end
 
         # If the grid summon is valid (i.e. it passes all validations), then save it normally.
@@ -88,7 +89,11 @@ module Api
           summon_params[:transcendence_step].to_i.positive?
 
         new_uncap_level = greater_than_max_uncap || can_be_transcended ? max_level : summon_params[:uncap_level]
-        new_transcendence_step = summon.transcendence && summon_params[:transcendence_step].present? ? summon_params[:transcendence_step] : 0
+        new_transcendence_step = if summon.transcendence && summon_params[:transcendence_step].present?
+                                   [summon_params[:transcendence_step].to_i, 5].min
+                                 else
+                                   0
+                                 end
 
         if @grid_summon.update(uncap_level: new_uncap_level, transcendence_step: new_transcendence_step)
           render json: GridSummonBlueprint.render(@grid_summon, view: :uncap, root: :grid_summon)
@@ -450,6 +455,10 @@ module Api
       #
       # @param summon [Summon] The summon for which to determine the maximum uncap level.
       # @return [Integer] The maximum uncap level.
+      def compute_max_transcendence_step(summon)
+        summon.transcendence ? 5 : 0
+      end
+
       def max_uncap_level(summon)
         if summon.flb && !summon.ulb && !summon.transcendence
           4

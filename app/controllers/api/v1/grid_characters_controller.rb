@@ -93,7 +93,7 @@ module Api
       # @return [void]
       def update_uncap_level
         @grid_character.uncap_level = character_params[:uncap_level]
-        @grid_character.transcendence_step = character_params[:transcendence_step] || 0
+        @grid_character.transcendence_step = [character_params[:transcendence_step].to_i, 5].min
 
         if @grid_character.save
           render json: GridCharacterBlueprint.render(@grid_character,
@@ -213,7 +213,8 @@ module Api
           party_id: @party.id,
           character_id: incoming.id,
           position: resolve_params[:position],
-          uncap_level: compute_max_uncap_level(incoming)
+          uncap_level: compute_max_uncap_level(incoming),
+          transcendence_step: compute_max_transcendence_step(incoming)
         )
         @party.mark_updated!
         render json: GridCharacterBlueprint.render(grid_character,
@@ -305,7 +306,8 @@ module Api
           character_params.except(:rings, :awakening).merge(
             party_id: @party.id,
             character_id: @incoming_character.id,
-            uncap_level: compute_max_uncap_level(@incoming_character)
+            uncap_level: compute_max_uncap_level(@incoming_character),
+            transcendence_step: compute_max_transcendence_step(@incoming_character)
           )
         )
         assign_transformed_attributes(grid_character, processed_params)
@@ -323,6 +325,10 @@ module Api
       #
       # @param character [Character] the character to compute max uncap for.
       # @return [Integer] the maximum uncap level.
+      def compute_max_transcendence_step(character)
+        character.transcendence ? 5 : 0
+      end
+
       def compute_max_uncap_level(character)
         if character.special
           character.transcendence ? 5 : character.flb ? 4 : 3
