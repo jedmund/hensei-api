@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_22_054806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -160,7 +160,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
     t.boolean "style_swap", default: false, null: false
     t.string "style_name_en"
     t.string "style_name_jp"
+    t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, transcendence_date)", stored: true
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
+    t.index ["latest_date", "id"], name: "index_characters_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["season"], name: "index_characters_on_season"
     t.index ["series"], name: "index_characters_on_series", using: :gin
@@ -712,6 +714,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
     t.string "boost_mod"
     t.string "boost_side"
     t.boolean "solo", default: false, null: false
+    t.datetime "last_updated"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
@@ -721,6 +724,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
+    t.index ["last_updated"], name: "index_parties_on_last_updated"
     t.index ["preview_generated_at"], name: "index_parties_on_preview_generated_at"
     t.index ["preview_state"], name: "index_parties_on_preview_state"
     t.index ["raid_id"], name: "index_parties_on_raid_id"
@@ -982,7 +986,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "summon_series_id"
+    t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
+    t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_summons_on_promotions", using: :gin
     t.index ["summon_series_id"], name: "index_summons_on_summon_series_id"
@@ -1204,10 +1210,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_005200) do
     t.uuid "weapon_series_variant_id"
     t.jsonb "element_variant_ids"
     t.integer "bullet_slots", default: [], null: false, array: true
+    t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
+    t.index ["latest_date", "id"], name: "index_weapons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
