@@ -55,6 +55,73 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'username profanity filter' do
+    it 'rejects an exact offensive word as username' do
+      user = build(:user, username: 'asshole')
+      expect(user).not_to be_valid
+      expect(user.errors[:username]).to include('is not available')
+    end
+
+    it 'rejects an offensive word as a segment' do
+      user = build(:user, username: 'ass-man')
+      expect(user).not_to be_valid
+      expect(user.errors[:username]).to include('is not available')
+    end
+
+    it 'rejects an offensive word separated by underscores' do
+      user = build(:user, username: 'big_ass_dude')
+      expect(user).not_to be_valid
+    end
+
+    it 'allows words that contain an offensive substring' do
+      user = build(:user, username: 'class')
+      expect(user).to be_valid
+    end
+
+    it 'allows assassin (contains ass as substring but not as segment)' do
+      user = build(:user, username: 'assassin')
+      expect(user).to be_valid
+    end
+  end
+
+  describe 'username reserved words' do
+    it 'rejects admin' do
+      user = build(:user, username: 'admin')
+      expect(user).not_to be_valid
+      expect(user.errors[:username]).to include('is not available')
+    end
+
+    it 'rejects system (case-insensitive)' do
+      user = build(:user, username: 'System')
+      expect(user).not_to be_valid
+    end
+
+    it 'allows normal usernames' do
+      user = build(:user, username: 'jedmund')
+      expect(user).to be_valid
+    end
+  end
+
+  describe 'display_name profanity filter' do
+    it 'rejects offensive English display names' do
+      user = build(:user, display_name: 'asshole')
+      expect(user).not_to be_valid
+      expect(user.errors[:display_name]).to include('contains inappropriate language')
+    end
+
+    it 'rejects offensive Japanese display names' do
+      # Use a word from the JA list
+      user = build(:user, display_name: 'アナル')
+      expect(user).not_to be_valid
+      expect(user.errors[:display_name]).to include('contains inappropriate language')
+    end
+
+    it 'allows clean display names' do
+      user = build(:user, display_name: 'グランブルー太郎')
+      expect(user).to be_valid
+    end
+  end
+
   describe 'username grandfathering' do
     it 'allows legacy users to save non-username fields without format validation' do
       user = create(:user)

@@ -118,9 +118,18 @@ module Api
 
       def check_username
         username = params[:username].to_s.strip
+        normalized = username.downcase
+        segments = normalized.split(/[_\-]+/)
+        candidates = segments + [normalized]
+
+        profane = candidates.any? { |c| ProfanityValidator.word_list(:en).include?(c) }
+        reserved = ProfanityValidator.reserved_list.include?(normalized)
+
         available = username.length.between?(3, 26) &&
                     username.match?(User::USERNAME_FORMAT) &&
-                    User.where('lower(username) = ?', username.downcase).none?
+                    !profane &&
+                    !reserved &&
+                    User.where('lower(username) = ?', normalized).none?
         render json: { available: available }
       end
 
