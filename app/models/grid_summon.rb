@@ -71,6 +71,20 @@ class GridSummon < ApplicationRecord
   end
 
   ##
+  # Syncs customizations from this grid summon to the linked collection summon.
+  #
+  # @return [Boolean] true if sync was performed, false if no collection link
+  def sync_to_collection!
+    return false unless collection_summon.present?
+
+    collection_summon.update!(
+      uncap_level: uncap_level,
+      transcendence_step: transcendence_step
+    )
+    true
+  end
+
+  ##
   # Checks if grid summon is out of sync with collection.
   #
   # @return [Boolean] true if any customization differs from collection

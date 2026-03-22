@@ -17,10 +17,13 @@ module Api
       include CollectionSourceConcern
       include PartyAuthorizationConcern
 
-      before_action :find_grid_character, only: %i[update update_uncap_level update_position destroy resolve sync switch_style]
-      before_action :find_party, only: %i[create resolve update update_uncap_level update_position swap destroy sync switch_style]
+      before_action :find_grid_character,
+                    only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
+      before_action :find_party,
+                    only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
       before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!, only: %i[create resolve update update_uncap_level update_position swap destroy sync switch_style]
+      before_action :authorize_party_edit!,
+                    only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
 
       ##
       # Creates a new grid character.
@@ -260,6 +263,30 @@ module Api
         end
 
         @grid_character.sync_from_collection!
+        render json: GridCharacterBlueprint.render(@grid_character.reload,
+                                                   root: :grid_character,
+                                                   view: :nested)
+      end
+
+      ##
+      # Syncs a grid character to its linked collection character.
+      #
+      # Copies all customizations from this grid character to the collection character.
+      # Returns 422 if no collection character is linked.
+      #
+      # @return [void]
+      def sync_to_collection
+        unless @grid_character.collection_character.present?
+          return render_unprocessable_entity_response(
+            Api::V1::GranblueError.new('No collection character linked')
+          )
+        end
+
+        unless current_user.present? && @party.collection_source_user_id == current_user.id
+          return render_unauthorized_response
+        end
+
+        @grid_character.sync_to_collection!
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
