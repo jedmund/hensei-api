@@ -6,6 +6,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
   before_action :restrict_access
   before_action :set_crew
   before_action :set_roster, only: %i[show update destroy]
+  before_action :authorize_crew_officer!, only: %i[update destroy]
 
   def index
     rosters = @crew.crew_rosters.order(:element)
@@ -32,15 +33,11 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
   end
 
   def update
-    authorize_crew_officer!
-
     @roster.update!(roster_params)
     render json: Api::V1::CrewRosterBlueprint.render(@roster, root: :crew_roster, view: :full)
   end
 
   def destroy
-    authorize_crew_officer!
-
     @roster.destroy!
     head :no_content
   end
@@ -49,7 +46,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
 
   def set_crew
     @crew = current_user.crew
-    render_not_found_response unless @crew
+    render_not_found_response('crew') unless @crew
   end
 
   def set_roster
@@ -105,34 +102,34 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
 
     # Batch-load all collection data in 3 queries (instead of 3 × N members)
     chars_by_user = if character_ids.present?
-      CollectionCharacter.where(user_id: user_ids)
-        .joins(:character)
-        .where(characters: { id: character_ids })
-        .includes(:character)
-        .group_by(&:user_id)
-    else
-      {}
-    end
+                      CollectionCharacter.where(user_id: user_ids)
+                                         .joins(:character)
+                                         .where(characters: { id: character_ids })
+                                         .includes(:character)
+                                         .group_by(&:user_id)
+                    else
+                      {}
+                    end
 
     weapons_by_user = if weapon_ids.present?
-      CollectionWeapon.where(user_id: user_ids)
-        .joins(:weapon)
-        .where(weapons: { id: weapon_ids })
-        .includes(:weapon)
-        .group_by(&:user_id)
-    else
-      {}
-    end
+                        CollectionWeapon.where(user_id: user_ids)
+                                        .joins(:weapon)
+                                        .where(weapons: { id: weapon_ids })
+                                        .includes(:weapon)
+                                        .group_by(&:user_id)
+                      else
+                        {}
+                      end
 
     summons_by_user = if summon_ids.present?
-      CollectionSummon.where(user_id: user_ids)
-        .joins(:summon)
-        .where(summons: { id: summon_ids })
-        .includes(:summon)
-        .group_by(&:user_id)
-    else
-      {}
-    end
+                        CollectionSummon.where(user_id: user_ids)
+                                        .joins(:summon)
+                                        .where(summons: { id: summon_ids })
+                                        .includes(:summon)
+                                        .group_by(&:user_id)
+                      else
+                        {}
+                      end
 
     memberships.map do |membership|
       user = membership.user
