@@ -122,7 +122,7 @@ module Api
         segments = normalized.split(/[_\-]+/)
         candidates = segments + [normalized]
 
-        profane = candidates.any? { |c| ProfanityValidator.word_list(:en).include?(c) }
+        profane = candidates.any? { |c| ProfanityValidator.word_list(:en, tier: :strict).include?(c) }
         reserved = ProfanityValidator.reserved_list.include?(normalized)
 
         available = username.length.between?(3, 26) &&

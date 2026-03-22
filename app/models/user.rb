@@ -33,12 +33,12 @@ class User < ApplicationRecord
 
   validates :username,
             format: { with: USERNAME_FORMAT, message: 'can only contain letters, numbers, underscores, and hyphens' },
-            profanity: { languages: [:en], reserved: true, message: 'is not available' },
+            profanity: { languages: [:en], tier: :strict, reserved: true, message: 'is not available' },
             if: :should_validate_username_format?
 
   validates :display_name,
             length: { minimum: 3, maximum: 26 },
-            profanity: { languages: [:en, :ja], message: 'contains inappropriate language' },
+            profanity: { languages: [:en, :ja], tier: :strict, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
 

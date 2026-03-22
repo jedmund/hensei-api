@@ -198,6 +198,16 @@ class Party < ApplicationRecord
   validate :skills_are_unique
   validate :guidebooks_are_unique
 
+  validates :name,
+            profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
+            allow_nil: true,
+            allow_blank: true
+
+  validates :description,
+            profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
+            allow_nil: true,
+            allow_blank: true
+
   # For element, validate numericality and inclusion using the allowed values from GranblueEnums.
   validates :element,
             numericality: { only_integer: true },

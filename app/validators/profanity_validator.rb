@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 class ProfanityValidator < ActiveModel::EachValidator
+  TIERS = %i[moderate strict].freeze
+
   class << self
-    def word_list(*languages)
-      @word_lists ||= {}
+    def word_list(*languages, tier: :strict)
+      tiers_to_load = case tier
+                      when :strict then %i[moderate strict]
+                      when :moderate then %i[moderate]
+                      else %i[moderate]
+                      end
+
       languages.flat_map do |lang|
-        @word_lists[lang] ||= load_list("config/profanity/#{lang}.yml")
+        tiers_to_load.flat_map { |t| tier_list(lang, t) }
       end
     end
 
@@ -14,11 +21,17 @@ class ProfanityValidator < ActiveModel::EachValidator
     end
 
     def reset!
-      @word_lists = nil
+      @tier_lists = nil
       @reserved_list = nil
     end
 
     private
+
+    def tier_list(lang, tier)
+      @tier_lists ||= {}
+      key = :"#{lang}_#{tier}"
+      @tier_lists[key] ||= load_list("config/profanity/#{lang}/#{tier}.yml")
+    end
 
     def load_list(path)
       file = Rails.root.join(path)
@@ -32,13 +45,14 @@ class ProfanityValidator < ActiveModel::EachValidator
     return if value.blank?
 
     languages = options.fetch(:languages, [:en])
+    tier = options.fetch(:tier, :strict)
     check_reserved = options.fetch(:reserved, false)
 
     normalized = value.strip.downcase
     segments = normalized.split(/[_\-\s]+/)
     candidates = segments + [normalized]
 
-    words = self.class.word_list(*languages)
+    words = self.class.word_list(*languages, tier: tier)
     if candidates.any? { |c| words.include?(c) }
       record.errors.add(attribute, options[:message] || :profanity)
       return
