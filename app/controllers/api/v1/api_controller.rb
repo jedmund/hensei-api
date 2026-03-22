@@ -69,8 +69,8 @@ module Api
       # Returns the latest version for each update type
       def version
         latest_updates = AppUpdate
-          .select('DISTINCT ON (update_type) update_type, version, updated_at')
-          .order(:update_type, updated_at: :desc)
+                         .select('DISTINCT ON (update_type) update_type, version, updated_at')
+                         .order(:update_type, updated_at: :desc)
 
         result = latest_updates.each_with_object({}) do |update, hash|
           hash[update.update_type] = {
