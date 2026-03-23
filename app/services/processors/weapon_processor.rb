@@ -265,7 +265,7 @@ module Processors
 
         # Extract skill IDs and convert into weapon keys
         skill_ids = [raw_weapon['skill1'], raw_weapon['skill2'], raw_weapon['skill3']].compact.map { |s| s['id'] }
-        process_weapon_keys(grid_weapon, skill_ids) if skill_ids.length.positive?
+        process_weapon_keys(grid_weapon, skill_ids, raw_weapon) if skill_ids.length.positive?
 
         if raw_weapon.dig('param', 'augment_skill_info').present?
           process_weapon_ax(grid_weapon, raw_weapon.dig('param', 'augment_skill_info'))
@@ -305,14 +305,33 @@ module Processors
       TRANSCENDENCE_LEVELS.index(floored_level) || 0
     end
 
+    # GBF series_id to WeaponSeries slug mapping (mirrors ImportController::GBF_WEAPON_SERIES_TO_SLUG)
+    GBF_WEAPON_SERIES_TO_SLUG = {
+      3 => 'dark-opus', 13 => 'ultima', 17 => 'superlative',
+      19 => 'class-champion', 27 => 'draconic', 40 => 'draconic-providence', 44 => 'destroyer'
+    }.freeze
+
     ##
     # Processes weapon key data and assigns them to the grid_weapon.
     #
     # @param grid_weapon [GridWeapon] the grid weapon record being built.
     # @param skill_ids [Array<String>] an array of key identifiers.
+    # @param raw_weapon [Hash] the raw weapon data (for series_id fallback).
     # @return [void]
-    def process_weapon_keys(grid_weapon, skill_ids)
+    def process_weapon_keys(grid_weapon, skill_ids, raw_weapon = {})
       weapon_series = grid_weapon.weapon.weapon_series
+
+      # Fallback: if the weapon doesn't have a series, look it up from the deck's series_id
+      unless weapon_series
+        game_series_id = raw_weapon.dig('master', 'series_id').to_i
+        slug = GBF_WEAPON_SERIES_TO_SLUG[game_series_id]
+        weapon_series = WeaponSeries.find_by(slug: slug) if slug
+      end
+
+      unless weapon_series
+        Rails.logger.debug "[WEAPON] Skipping weapon keys: no weapon_series for weapon #{grid_weapon.weapon&.granblue_id}"
+        return
+      end
 
       skill_ids.each_with_index do |skill_id, idx|
         # Go to the next iteration unless the key under which `skill_id` exists
@@ -323,16 +342,14 @@ module Processors
         mapping_value = mapping_pair.first
 
         # Find weapon key using the weapon_series relationship
-        candidate = if weapon_series.present?
-                      WeaponKey.joins(:weapon_series)
-                               .where(granblue_id: mapping_value, weapon_series: { id: weapon_series.id })
-                               .first
-                    end
+        candidate = WeaponKey.joins(:weapon_series)
+                             .where(granblue_id: mapping_value, weapon_series: { id: weapon_series.id })
+                             .first
 
         if candidate
           grid_weapon["weapon_key#{idx + 1}_id"] = candidate.id
         else
-          Rails.logger.warn "[WEAPON] No matching WeaponKey found for raw key #{skill_id} using mapping #{mapping_value}"
+          Rails.logger.warn "[WEAPON] No matching WeaponKey found for raw key #{skill_id} (mapping #{mapping_value}, series #{weapon_series.slug})"
         end
       end
     end

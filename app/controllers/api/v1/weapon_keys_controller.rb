@@ -21,6 +21,25 @@ module Api
 
         render json: WeaponKeyBlueprint.render(weapon_keys)
       end
+
+      # Returns a mapping of game skill IDs to weapon key slugs.
+      # Used by the extension to display weapon key icons without needing the full DB.
+      def skill_map
+        key_mapping = Processors::WeaponProcessor::KEY_MAPPING
+        weapon_keys = WeaponKey.all.index_by(&:granblue_id)
+
+        result = {}
+        key_mapping.each do |category_id, skill_ids|
+          weapon_key = weapon_keys[category_id.to_i]
+          next unless weapon_key
+
+          Array(skill_ids).each do |skill_id|
+            result[skill_id] = weapon_key.slug
+          end
+        end
+
+        render json: result
+      end
     end
   end
 end
