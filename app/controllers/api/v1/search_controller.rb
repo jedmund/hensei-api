@@ -73,6 +73,7 @@ module Api
               filters['proficiency2']
           end
           conditions[:season] = filters['season'] unless filters['season'].blank? || filters['season'].empty?
+          conditions[:gender] = filters['gender'] unless filters['gender'].blank? || filters['gender'].empty?
         end
 
         characters = if search_params[:query].present? && search_params[:query].length >= 2
@@ -92,10 +93,15 @@ module Api
           characters = characters.order(latest_date: :desc, id: :asc)
         end
 
-        # Filter by series (array overlap)
+        # Filter by race (matches race1 or race2)
+        if filters && filters['race'].present? && !filters['race'].empty?
+          race_values = Array(filters['race']).map(&:to_i)
+          characters = characters.where(race1: race_values).or(characters.where(race2: race_values))
+        end
+
+        # Filter by character series (UUID-based)
         if filters && filters['series'].present? && !filters['series'].empty?
-          series_values = Array(filters['series']).map(&:to_i)
-          characters = characters.where('series && ARRAY[?]::integer[]', series_values)
+          characters = characters.by_series(Array(filters['series']))
         end
 
         # Exclude already-owned characters (for collection modal)
