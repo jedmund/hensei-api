@@ -8,6 +8,13 @@ module Processors
   #   processor = Processors::CharacterProcessor.new(party, transformed_characters_array)
   #   processor.process
   class CharacterProcessor < BaseProcessor
+    CHARACTER_AWAKENING_MAPPING = {
+      1 => 'character-balanced',
+      2 => 'character-atk',
+      3 => 'character-def',
+      4 => 'character-multi'
+    }.freeze
+
     def initialize(party, data, type = :normal, options = {})
       super(party, data, options)
       @party = party
@@ -96,8 +103,9 @@ module Processors
           next
         end
 
-        # The deck doesn't have Awakening data, so use the default
-        awakening = Awakening.where(slug: 'character-balanced').first
+        arousal_form = raw_character.dig('param', 'npc_arousal_form').to_i
+        awakening_slug = CHARACTER_AWAKENING_MAPPING[arousal_form] || 'character-balanced'
+        awakening = Awakening.find_by(slug: awakening_slug, object_type: 'Character')
         grid_character = GridCharacter.new(
           party_id: @party.id,
           character_id: character.id,
