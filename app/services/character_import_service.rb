@@ -257,6 +257,15 @@ class CharacterImportService
   def build_stats_attrs(item, character)
     attrs = { character: character }
 
+    # Uncap level and transcendence
+    if item['uncap_level'].present?
+      uncap = parse_uncap_level(item['uncap_level'])
+      transcendence = item['transcendence_step'].present? ? parse_transcendence_step(item['transcendence_step']) : 0
+      uncap = 6 if transcendence > 0 && uncap >= 5
+      attrs[:uncap_level] = uncap
+      attrs[:transcendence_step] = transcendence
+    end
+
     # Awakening type and level
     if item['awakening_type'].present?
       attrs[:awakening] = find_awakening_by_type(item['awakening_type'])
