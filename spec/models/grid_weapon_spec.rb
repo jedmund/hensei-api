@@ -147,6 +147,27 @@ RSpec.describe GridWeapon, type: :model do
   end
 
   describe 'Callbacks' do
+    context 'before_validation :reset_awakening_level_without_awakening' do
+      it 'defaults awakening_level to 1 when awakening_id is nil and awakening_level is nil' do
+        gw = build(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 3, awakening: nil, awakening_level: nil)
+        gw.validate
+        expect(gw.awakening_level).to eq(1)
+      end
+
+      it 'does not change awakening_level when awakening is present' do
+        awakening = create(:awakening, object_type: 'Weapon')
+        gw = build(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 3, awakening: awakening, awakening_level: 5)
+        gw.validate
+        expect(gw.awakening_level).to eq(5)
+      end
+
+      it 'allows updating uncap_level without triggering NOT NULL violation on awakening_level' do
+        gw = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 3)
+        expect { gw.update!(uncap_level: 4) }.not_to raise_error
+        expect(gw.reload.uncap_level).to eq(4)
+      end
+    end
+
     context 'before_save :mainhand?' do
       it 'sets mainhand to true if position is -1' do
         grid_weapon.position = -1
