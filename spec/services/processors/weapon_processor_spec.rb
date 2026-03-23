@@ -170,6 +170,38 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
+  describe 'AX skills survive collection sync' do
+    # Weapon 10 in deck_sample2 is Celeste Zaghnal Omega with augment_skill_info skill_id=1589 (ax_atk)
+    let(:deck_data) do
+      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      JSON.parse(File.read(file_path))
+    end
+
+    let!(:ax_atk_modifier) do
+      WeaponStatModifier.find_by(game_skill_id: 1589) ||
+        create(:weapon_stat_modifier,
+               slug: 'ax_atk',
+               name_en: 'ATK',
+               category: 'ax',
+               stat: 'atk',
+               polarity: 1,
+               suffix: '%',
+               game_skill_id: 1589)
+    end
+
+    subject { described_class.new(party, deck_data) }
+
+    it 'preserves AX skills on grid weapon after collection sync' do
+      subject.process
+
+      # Weapon 10 maps to position 8 (key 10, position = 10 - 2 = 8)
+      grid_weapon = party.weapons.find_by(position: 8)
+      expect(grid_weapon).to be_present
+      expect(grid_weapon.ax_modifier1_id).to eq(ax_atk_modifier.id)
+      expect(grid_weapon.ax_strength1).to eq(3.2)
+    end
+  end
+
   describe 'element-changeable weapon resolution (integration)' do
     let(:element_changeable_series) do
       WeaponSeries.find_by(slug: 'ultima') ||
