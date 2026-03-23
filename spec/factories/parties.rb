@@ -6,7 +6,7 @@ FactoryBot.define do
 
     # Use a sequence for unique party names (optional).
     sequence(:name) { |n| "Party #{n}" }
-    description { Faker::Lorem.sentence }
+    sequence(:description) { |n| "Test party description #{n}" }
     extra { false }
     full_auto { false }
     solo { false }

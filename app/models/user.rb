@@ -24,9 +24,23 @@ class User < ApplicationRecord
   has_many :user_edit_keys, dependent: :destroy
 
   ##### ActiveRecord Validations
+  USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
+
   validates :username,
             presence: true,
-            length: { minimum: 3, maximum: 26 }
+            length: { minimum: 3, maximum: 26 },
+            uniqueness: { case_sensitive: false }
+
+  validates :username,
+            format: { with: USERNAME_FORMAT, message: 'can only contain letters, numbers, underscores, and hyphens' },
+            profanity: { languages: [:en], tier: :strict, reserved: true, message: 'is not available' },
+            if: :should_validate_username_format?
+
+  validates :display_name,
+            length: { minimum: 3, maximum: 26 },
+            profanity: { languages: [:en, :ja], tier: :strict, message: 'contains inappropriate language' },
+            allow_nil: true,
+            allow_blank: true
 
   validates :email,
             presence: true,
@@ -68,7 +82,15 @@ class User < ApplicationRecord
     private_collection: 3
   }, prefix: true
 
+  ##### Callbacks
+  before_validation :set_username_migrated, on: :create
+  before_save :mark_username_migrated, if: :username_changed?
+
   ##### Instance Methods
+  def display_name_or_username
+    display_name.presence || username
+  end
+
   def favorite_parties
     favorites.map(&:party)
   end
@@ -173,5 +195,19 @@ class User < ApplicationRecord
 
   def verification_token_cooldown?
     email_verification_sent_at.present? && email_verification_sent_at > VERIFICATION_TOKEN_COOLDOWN.ago
+  end
+
+  private
+
+  def should_validate_username_format?
+    username_migrated? || username_changed?
+  end
+
+  def set_username_migrated
+    self.username_migrated = true
+  end
+
+  def mark_username_migrated
+    self.username_migrated = true
   end
 end

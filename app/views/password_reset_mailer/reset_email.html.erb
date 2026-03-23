@@ -70,7 +70,7 @@
 <body>
   <div class="wrapper">
     <div class="card">
-      <p class="greeting">Hi <%= @user.username %>,</p>
+      <p class="greeting">Hi <%= @user.display_name_or_username %>,</p>
       <p class="body-text">You requested a password reset. Click the button below to set a new password:</p>
       <div class="button-wrapper">
         <a href="<%= @reset_url %>" class="button" style="background-color: <%= @element_color %>;">Reset password</a>

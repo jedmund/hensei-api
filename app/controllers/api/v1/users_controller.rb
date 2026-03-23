@@ -117,7 +117,20 @@ module Api
       end
 
       def check_username
-        render json: EmptyBlueprint.render_as_json(nil, username: params[:username], availability: true)
+        username = params[:username].to_s.strip
+        normalized = username.downcase
+        segments = normalized.split(/[_\-]+/)
+        candidates = segments + [normalized]
+
+        profane = candidates.any? { |c| ProfanityValidator.word_list(:en, tier: :strict).include?(c) }
+        reserved = ProfanityValidator.reserved_list.include?(normalized)
+
+        available = username.length.between?(3, 26) &&
+                    username.match?(User::USERNAME_FORMAT) &&
+                    !profane &&
+                    !reserved &&
+                    User.where('lower(username) = ?', normalized).none?
+        render json: { available: available }
       end
 
       def deposit_edit_keys
@@ -272,7 +285,7 @@ module Api
 
       def user_params
         params.require(:user).permit(
-          :username, :email, :password, :password_confirmation,
+          :username, :email, :password, :password_confirmation, :display_name,
           :granblue_id, :picture, :element, :language, :gender, :private, :theme, :show_gamertag,
           :show_granblue_id, :wiki_profile, :show_wiki_profile, :youtube, :show_youtube, :collection_privacy,
           :import_weapons, :default_import_visibility
