@@ -22,11 +22,12 @@ class CharacterImportService
   Result = Struct.new(:success?, :created, :updated, :skipped, :errors, keyword_init: true)
 
   # Map GBF npc_arousal_form to hensei awakening slugs
-  # GBF character awakenings: 1=Attack, 2=Defense, 3=Multiattack, others default to Balanced
+  # GBF character awakenings: 1=Balanced, 2=Attack, 3=Defense, 4=Multiattack
   GBF_AWAKENING_MAP = {
-    1 => 'character-atk',     # Attack
-    2 => 'character-def',     # Defense
-    3 => 'character-multi'    # Multiattack
+    1 => 'character-balanced', # Balanced
+    2 => 'character-atk',      # Attack
+    3 => 'character-def',      # Defense
+    4 => 'character-multi'     # Multiattack
     # All others default to character-balanced
   }.freeze
 

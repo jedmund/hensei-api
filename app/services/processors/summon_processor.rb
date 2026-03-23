@@ -100,7 +100,7 @@ module Processors
     # @param sub [Boolean] true if we are polling sub summons
     # @return [Array<GridSummon>]
     def process_summons(summons, sub: false)
-      internal_quick_summon_id = @data['quick_user_summon_id'].to_i if sub
+      internal_quick_summon_id = @data.dig('deck', 'pc', 'quick_user_summon_id').to_i if sub
 
       summons.filter_map do |key, raw_summon|
         next if raw_summon.nil? || raw_summon['param'].nil? || raw_summon['master'].nil?
