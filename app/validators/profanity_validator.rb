@@ -7,7 +7,6 @@ class ProfanityValidator < ActiveModel::EachValidator
     def word_list(*languages, tier: :strict)
       tiers_to_load = case tier
                       when :strict then %i[moderate strict]
-                      when :moderate then %i[moderate]
                       else %i[moderate]
                       end
 
