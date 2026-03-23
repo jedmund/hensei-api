@@ -74,10 +74,17 @@ module Processors
       updates[:uncap_level] = grid_character.uncap_level if grid_character.uncap_level > cc.uncap_level
       updates[:transcendence_step] = grid_character.transcendence_step if grid_character.transcendence_step > cc.transcendence_step
 
-      if updates.any?
-        cc.update!(updates)
-        Rails.logger.info "[CHARACTER] Updated collection character #{cc.id} from game data: #{updates}"
+      # Sync game-derived customizations so sync_from_collection! round-trips correctly
+      if grid_character.awakening_id.present?
+        updates[:awakening_id] = grid_character.awakening_id
+        updates[:awakening_level] = grid_character.awakening_level || 1
       end
+      updates[:perpetuity] = grid_character.perpetuity
+
+      cc.update!(updates)
+      Rails.logger.info "[CHARACTER] Updated collection character #{cc.id} from game data: #{updates}"
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.warn "[CHARACTER] Could not update collection character #{cc.id}: #{e.record.errors.full_messages.join(', ')}"
     end
 
     def process_characters(characters_data)
