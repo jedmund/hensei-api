@@ -335,7 +335,7 @@ module Processors
 
       skill_ids.each_with_index do |skill_id, idx|
         # Go to the next iteration unless the key under which `skill_id` exists
-        mapping_pair = KEY_MAPPING.find { |key, value| Array(value).include?(skill_id) }
+        mapping_pair = KEY_MAPPING.find { |key, value| Array(value).include?(skill_id.to_s) }
         next unless mapping_pair
 
         # Fetch the key from the mapping_pair and find the weapon key based on the weapon series
