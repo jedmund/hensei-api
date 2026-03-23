@@ -5,7 +5,7 @@ module Api
     class UserBlueprint < ApiBlueprint
       # Lightweight view for embedding in party responses — just enough for avatar + link
       view :inline do
-        fields :username, :display_name, :youtube, :show_youtube
+        fields :username, :display_name, :gender, :youtube, :show_youtube
         field :avatar do |user|
           {
             picture: user.picture,
