@@ -170,6 +170,7 @@ module Api
           conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
           conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
           conditions[:subaura] = filters['subaura'] unless filters['subaura'].blank?
+          conditions[:summon_series_id] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
         end
 
         summons = if search_params[:query].present? && search_params[:query].length >= 2
