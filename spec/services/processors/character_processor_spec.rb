@@ -32,6 +32,42 @@ RSpec.describe Processors::CharacterProcessor, type: :model do
     end
   end
 
+  context 'awakening and perpetuity survive collection sync' do
+    let(:deck_data) do
+      data = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'deck_sample2.json')))
+      # Add npc_arousal_form to first character (Attack awakening)
+      data['deck']['npc']['1']['param']['npc_arousal_form'] = 2
+      # Ensure perpetuity is set
+      data['deck']['npc']['1']['param']['has_npcaugment_constant'] = true
+      data
+    end
+
+    it 'preserves awakening on grid character after collection sync' do
+      subject.process
+      gc = GridCharacter.where(party_id: party.id).order(:position).first
+      awakening = Awakening.find_by(slug: 'character-atk', object_type: 'Character')
+
+      expect(gc.awakening).to eq(awakening)
+    end
+
+    it 'preserves perpetuity on grid character after collection sync' do
+      subject.process
+      gc = GridCharacter.where(party_id: party.id).order(:position).first
+
+      expect(gc.perpetuity).to eq(true)
+    end
+
+    it 'syncs awakening to the collection character' do
+      subject.process
+      gc = GridCharacter.where(party_id: party.id).order(:position).first
+      cc = gc.collection_character
+      awakening = Awakening.find_by(slug: 'character-atk', object_type: 'Character')
+
+      expect(cc).to be_present
+      expect(cc.awakening).to eq(awakening)
+    end
+  end
+
   context 'with invalid character data' do
     let(:deck_data) { 'invalid data' }
 

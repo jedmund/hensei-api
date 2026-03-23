@@ -187,10 +187,25 @@ module Processors
       updates[:uncap_level] = grid_weapon.uncap_level if grid_weapon.uncap_level > cw.uncap_level
       updates[:transcendence_step] = grid_weapon.transcendence_step if grid_weapon.transcendence_step > cw.transcendence_step
 
-      if updates.any?
-        cw.update!(updates)
-        Rails.logger.info "[WEAPON] Updated collection weapon #{cw.id} from game data: #{updates}"
+      # Sync game-derived customizations so sync_from_collection! round-trips correctly
+      updates[:weapon_key1_id] = grid_weapon.weapon_key1_id
+      updates[:weapon_key2_id] = grid_weapon.weapon_key2_id
+      updates[:weapon_key3_id] = grid_weapon.weapon_key3_id
+      updates[:ax_modifier1_id] = grid_weapon.ax_modifier1_id
+      updates[:ax_strength1] = grid_weapon.ax_strength1
+      updates[:ax_modifier2_id] = grid_weapon.ax_modifier2_id
+      updates[:ax_strength2] = grid_weapon.ax_strength2
+      updates[:element] = grid_weapon.element
+
+      if grid_weapon.awakening_id.present?
+        updates[:awakening_id] = grid_weapon.awakening_id
+        updates[:awakening_level] = grid_weapon.awakening_level || 1
       end
+
+      cw.update!(updates)
+      Rails.logger.info "[WEAPON] Updated collection weapon #{cw.id} from game data: #{updates}"
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.warn "[WEAPON] Could not update collection weapon #{cw.id}: #{e.record.errors.full_messages.join(', ')}"
     end
 
     ##

@@ -69,6 +69,38 @@ RSpec.describe Processors::SummonProcessor, type: :model do
     end
   end
 
+  describe 'quick summon detection' do
+    it 'sets quick_summon on the matching main grid summon' do
+      # deck_sample.json has quick_user_summon_id=675435184 which matches summons[5] (param.id=675435184)
+      subject.process
+      grid_summons = GridSummon.where(party: party, friend: false).order(:position)
+      quick = grid_summons.select(&:quick_summon)
+      expect(quick.length).to eq(1)
+
+      # Position 3 = summons[5] (slot 5 maps to position: 5-2=3)
+      expect(quick.first.position).to eq(3)
+    end
+
+    it 'does not set quick_summon on sub summons' do
+      subject.process
+      sub_summons = GridSummon.where(party: party).where('position >= ?', 4)
+      expect(sub_summons.pluck(:quick_summon)).to all(be false)
+    end
+
+    context 'when quick_user_summon_id is absent' do
+      let(:deck_data) do
+        data = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'deck_sample.json')))
+        data['deck']['pc'].delete('quick_user_summon_id')
+        data
+      end
+
+      it 'sets quick_summon to false on all summons' do
+        subject.process
+        expect(GridSummon.where(party: party).pluck(:quick_summon)).to all(be false)
+      end
+    end
+  end
+
   describe '#level_to_transcendence' do
     let(:dummy_deck) { { 'deck' => { 'pc' => { 'summons' => {}, 'sub_summons' => {} } } } }
     let(:processor) { described_class.new(party, dummy_deck) }

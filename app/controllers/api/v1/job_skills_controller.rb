@@ -10,6 +10,17 @@ module Api
         render json: JobSkillBlueprint.render(JobSkill.includes(:job).all)
       end
 
+      # POST /job_skills/resolve
+      # Accepts { names: ["Dispel", "Dark Haze"] }
+      # Returns [{ name: "Dispel", slug: "dispel" }, ...]
+      def resolve
+        names = params[:names]
+        return render json: [] unless names.is_a?(Array) && names.any?
+
+        skills = JobSkill.where(name_en: names)
+        render json: skills.map { |s| { name: s.name_en, slug: s.slug } }
+      end
+
       def show
         skill = JobSkill.includes(:job).find(params[:id])
         render json: JobSkillBlueprint.render(skill)
