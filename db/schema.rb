@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_22_230454) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_24_162839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1033,18 +1033,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_22_230454) do
     t.integer "role", default: 1, null: false
     t.integer "collection_privacy", default: 1, null: false
     t.boolean "show_gamertag", default: true, null: false
-    t.boolean "show_granblue_id", default: false, null: false
     t.string "reset_password_token_digest"
     t.datetime "reset_password_sent_at"
     t.boolean "email_verified", default: false, null: false
     t.string "email_verification_token_digest"
     t.datetime "email_verification_sent_at"
     t.string "wiki_profile"
-    t.boolean "show_wiki_profile", default: false, null: false
     t.boolean "import_weapons", default: true, null: false
     t.integer "default_import_visibility", default: 1, null: false
     t.string "youtube"
-    t.boolean "show_youtube", default: false, null: false
     t.string "display_name"
     t.boolean "username_migrated", default: false, null: false
     t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
