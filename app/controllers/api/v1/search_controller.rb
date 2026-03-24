@@ -64,14 +64,6 @@ module Api
         if filters
           conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
           conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
-          unless filters['proficiency1'].blank? || filters['proficiency1'].empty?
-            conditions[:proficiency1] =
-              filters['proficiency1']
-          end
-          unless filters['proficiency2'].blank? || filters['proficiency2'].empty?
-            conditions[:proficiency2] =
-              filters['proficiency2']
-          end
           conditions[:season] = filters['season'] unless filters['season'].blank? || filters['season'].empty?
           conditions[:gender] = filters['gender'] unless filters['gender'].blank? || filters['gender'].empty?
         end
@@ -91,6 +83,12 @@ module Api
           characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
         elsif search_params[:query].blank?
           characters = characters.order(latest_date: :desc, id: :asc)
+        end
+
+        # Filter by proficiency (matches proficiency1 or proficiency2)
+        if filters && filters['proficiency1'].present? && !filters['proficiency1'].empty?
+          prof_values = Array(filters['proficiency1']).map(&:to_i)
+          characters = characters.where(proficiency1: prof_values).or(characters.where(proficiency2: prof_values))
         end
 
         # Filter by race (matches race1 or race2)

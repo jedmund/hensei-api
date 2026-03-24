@@ -39,6 +39,24 @@ RSpec.describe 'Api::V1::Search', type: :request do
         expect(r['element']).to eq(1)
       end
     end
+
+    context 'when filtering by proficiency' do
+      # Sabre = 1, Dagger = 2, Axe = 3
+      let!(:sabre_primary) { create(:character, proficiency1: 1, proficiency2: nil) }
+      let!(:sabre_secondary) { create(:character, proficiency1: 3, proficiency2: 1) }
+      let!(:no_sabre) { create(:character, proficiency1: 2, proficiency2: 3) }
+
+      it 'matches characters with the proficiency in either slot' do
+        post '/api/v1/search/characters',
+             params: { search: { filters: { proficiency1: [1] }, page: 1 } }.to_json,
+             headers: { 'Content-Type' => 'application/json' }
+        expect(response).to have_http_status(:ok)
+
+        ids = response.parsed_body['results'].map { |r| r['id'] }
+        expect(ids).to include(sabre_primary.id, sabre_secondary.id)
+        expect(ids).not_to include(no_sabre.id)
+      end
+    end
   end
 
   describe 'POST /api/v1/search/weapons' do
