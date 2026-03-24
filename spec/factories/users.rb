@@ -6,9 +6,7 @@ FactoryBot.define do
     sequence(:username) { |n| "user#{n}" }
     granblue_id { Faker::Number.number(digits: 4) }
     wiki_profile { nil }
-    show_wiki_profile { false }
     youtube { nil }
-    show_youtube { false }
     picture { "gran" }
     language { ["en", "ja"].sample }
     private { Faker::Boolean.boolean }
