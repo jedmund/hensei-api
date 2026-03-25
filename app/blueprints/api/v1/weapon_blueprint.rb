@@ -13,7 +13,7 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
-             :limit, :rarity, :ax, :ax_type, :gacha, :promotions, :forge_order, :extra,
+             :limit, :rarity, :gacha, :promotions, :forge_order, :extra,
              :element_variant_ids
 
       field :bullet_slots, if: ->(_field_name, w, _options) { w.bullet_slots.present? }
@@ -56,14 +56,14 @@ module Api
 
       view :preview do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
-                 :max_exorcism_level, :limit, :rarity, :ax, :ax_type, :gacha, :promotions,
+                 :max_exorcism_level, :limit, :rarity, :gacha, :promotions,
                  :forge_order, :extra, :series, :promotion_names
       end
 
       # Minimal view for party list cards — just enough for image rendering
       view :list do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
-                 :max_exorcism_level, :limit, :rarity, :ax, :ax_type, :gacha, :promotions,
+                 :max_exorcism_level, :limit, :rarity, :gacha, :promotions,
                  :forge_order, :extra, :series, :promotion_names
       end
 
@@ -177,7 +177,7 @@ module Api
       # Separate view for raw data - only used by dedicated endpoint
       view :raw do
         excludes :name, :granblue_id, :element, :proficiency, :max_level, :max_skill_level,
-                 :max_awakening_level, :limit, :rarity, :series, :ax, :ax_type, :uncap
+                 :max_awakening_level, :limit, :rarity, :series, :uncap
 
         field :wiki_raw do |w|
           w.wiki_raw
