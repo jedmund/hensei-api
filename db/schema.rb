@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_24_162839) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_25_185721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1193,9 +1193,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_162839) do
     t.integer "max_atk_flb"
     t.integer "max_atk_ulb"
     t.boolean "extra", default: false, null: false
-    t.integer "ax_type"
     t.boolean "limit", default: false, null: false
-    t.boolean "ax", default: false, null: false
     t.integer "max_awakening_level"
     t.date "release_date"
     t.date "flb_date"
