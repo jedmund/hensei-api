@@ -29,8 +29,6 @@ FactoryBot.define do
     flb { true }
     ulb { false }
     transcendence { false }
-    ax { false }
-
     # Skill info
     max_skill_level { 15 }
     max_level { 150 }
@@ -80,10 +78,6 @@ FactoryBot.define do
     trait :revenant do
       series { 4 } # revenant (legacy)
       weapon_series { WeaponSeries.find_by(slug: 'revenant') || create(:weapon_series, :revenant) }
-    end
-
-    trait :ax_weapon do
-      ax { true }
     end
 
     trait :odiant do

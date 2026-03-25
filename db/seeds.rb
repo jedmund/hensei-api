@@ -35,8 +35,6 @@ def seed_weapons
     w.flb = row['flb']
     w.ulb = row['ulb']
     w.extra = row['extra']
-    w.ax = row['ax']
-    w.ax_type = row['ax_type']
     w.limit = row['limit']
     w.max_level = row['max_level']
     w.max_skill_level = row['max_skill_level']
