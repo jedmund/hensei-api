@@ -22,7 +22,11 @@ module Api
       def create
         user = User.new(user_params)
 
-        user.save!
+        unless user.save
+          Rails.logger.error "[Registration] Validation failed: #{user.errors.full_messages.join(', ')}"
+          return render json: { error: 'Validation failed', messages: user.errors.full_messages },
+                        status: :unprocessable_entity
+        end
 
         token = Doorkeeper::AccessToken.create!(
           application_id: nil,
@@ -42,6 +46,11 @@ module Api
                                           },
                                           view: :token),
                       status: :created
+      rescue StandardError => e
+        Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
+        Rails.logger.error e.backtrace&.first(10)&.join("\n")
+        render json: { error: 'Registration failed', message: e.message },
+               status: :internal_server_error
       end
 
       # TODO: Allow admins to update other users
