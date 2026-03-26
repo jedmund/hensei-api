@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_24_162839) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1044,6 +1044,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_162839) do
     t.string "youtube"
     t.string "display_name"
     t.boolean "username_migrated", default: false, null: false
+    t.boolean "simple_portraits", default: false, null: false
     t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
