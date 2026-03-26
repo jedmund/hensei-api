@@ -205,7 +205,8 @@ module Api
           granblue_id = image_id || master['id']
           next unless granblue_id.present?
 
-          summon = Summon.find_by(granblue_id: granblue_id.to_s)
+          resolved_id = SummonIdMapping.resolve(granblue_id)
+          summon = Summon.find_by(granblue_id: resolved_id)
           next unless summon
 
           # Already matched by game_id — no conflict
