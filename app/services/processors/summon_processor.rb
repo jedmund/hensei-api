@@ -242,21 +242,7 @@ module Processors
     # @param id [String] the ID to match
     # @return [String] the resulting ID
     def transform_id(id)
-      mapping = {
-        '2040315000' => '2040238000',
-        '2040316000' => '2040239000',
-        '2040314000' => '2040237000',
-        '2040313000' => '2040236000',
-        '2040321000' => '2040244000',
-        '2040319000' => '2040242000',
-        '2040317000' => '2040240000',
-        '2040322000' => '2040245000',
-        '2040318000' => '2040241000',
-        '2040320000' => '2040243000'
-      }
-
-      # If the id is a key, return the mapped value; otherwise, return the id.
-      mapping[id] || id
+      SummonIdMapping.resolve(id)
     end
   end
 end
