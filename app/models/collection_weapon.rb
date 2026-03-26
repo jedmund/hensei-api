@@ -63,9 +63,9 @@ class CollectionWeapon < ApplicationRecord
     when 'name_desc'
       joins(:weapon).order('weapons.name_en DESC NULLS LAST')
     when 'element_asc'
-      joins(:weapon).order('weapons.element ASC')
+      joins(:weapon).order(Arel.sql('COALESCE(collection_weapons.element, weapons.element) ASC'))
     when 'element_desc'
-      joins(:weapon).order('weapons.element DESC')
+      joins(:weapon).order(Arel.sql('COALESCE(collection_weapons.element, weapons.element) DESC'))
     when 'proficiency_asc'
       joins(:weapon).order('weapons.proficiency ASC')
     when 'proficiency_desc'
