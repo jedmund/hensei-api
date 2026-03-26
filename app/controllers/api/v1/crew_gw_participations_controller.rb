@@ -37,21 +37,29 @@ module Api
                              .includes(:gw_event, gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
                              .find_by(gw_event: event)
 
-        # Get all members who were active during the event (includes retired members who left after event started)
-        # Also include all currently active members for score entry purposes
-        # Uses joined_at (editable) for historical accuracy
+        # IDs of members/phantoms who were truly active during the event
+        active_during_ids = @crew.crew_memberships.active_during(event.start_date, event.end_date).pluck(:id).to_set
+        active_phantom_ids = @crew.phantom_players.not_deleted.active_during(event.start_date, event.end_date).pluck(:id).to_set
+
+        # Return active_during + currently active members (for historical score entry)
         members_during_event = @crew.crew_memberships
                                     .includes(user: { active_crew_membership: :crew })
                                     .active_during(event.start_date, event.end_date)
+                                    .or(@crew.crew_memberships.where(retired: false))
 
-        # Get all phantom players who were active during the event (excludes claimed/deleted phantoms)
-        phantom_players = @crew.phantom_players.not_deleted.active_during(event.start_date, event.end_date)
+        phantom_players = @crew.phantom_players.not_deleted
+                               .active_during(event.start_date, event.end_date)
+                               .or(@crew.phantom_players.not_deleted.where(retired: false))
 
         render json: {
           gw_event: GwEventBlueprint.render_as_hash(event),
           crew_gw_participation: participation ? CrewGwParticipationBlueprint.render_as_hash(participation, view: :with_individual_scores, current_user: current_user) : nil,
-          members_during_event: CrewMembershipBlueprint.render_as_hash(members_during_event, view: :with_user),
-          phantom_players: PhantomPlayerBlueprint.render_as_hash(phantom_players)
+          members_during_event: members_during_event.map { |m|
+            CrewMembershipBlueprint.render_as_hash(m, view: :with_user).merge(active_during_event: active_during_ids.include?(m.id))
+          },
+          phantom_players: phantom_players.map { |p|
+            PhantomPlayerBlueprint.render_as_hash(p).merge(active_during_event: active_phantom_ids.include?(p.id))
+          }
         }
       end
 
