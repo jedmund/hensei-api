@@ -56,12 +56,13 @@ class CollectionWeapon < ApplicationRecord
     joins(:weapon).where("weapons.name_en ILIKE :q OR weapons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
   }
 
-  scope :sorted_by, ->(sort_key) {
+  scope :sorted_by, ->(sort_key, locale = 'en') {
+    name_col = locale == 'ja' ? 'weapons.name_jp' : 'weapons.name_en'
     case sort_key
     when 'name_asc'
-      joins(:weapon).order('weapons.name_en ASC NULLS LAST')
+      joins(:weapon).order(Arel.sql("#{name_col} ASC NULLS LAST"))
     when 'name_desc'
-      joins(:weapon).order('weapons.name_en DESC NULLS LAST')
+      joins(:weapon).order(Arel.sql("#{name_col} DESC NULLS LAST"))
     when 'element_asc'
       joins(:weapon).order(Arel.sql('COALESCE(collection_weapons.element, weapons.element) ASC'))
     when 'element_desc'

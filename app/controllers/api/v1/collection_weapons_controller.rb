@@ -27,7 +27,7 @@ module Api
         @collection_weapons = @collection_weapons.by_series(array_param(:series)) if params[:series]
         @collection_weapons = @collection_weapons.by_name(params[:search]) if params[:search].present?
 
-        @collection_weapons = @collection_weapons.sorted_by(params[:sort])
+        @collection_weapons = @collection_weapons.sorted_by(params[:sort], current_user&.language || 'en')
 
         @collection_weapons = @collection_weapons.paginate(page: params[:page], per_page: collection_page_size)
 
