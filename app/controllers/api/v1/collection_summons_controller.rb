@@ -21,6 +21,8 @@ module Api
         @collection_summons = @collection_summons.by_series(array_param(:series)) if params[:series]
         @collection_summons = @collection_summons.by_name(params[:search]) if params[:search].present?
 
+        @collection_summons = @collection_summons.sorted_by(params[:sort], current_user&.language || 'en')
+
         @collection_summons = @collection_summons.paginate(page: params[:page], per_page: collection_page_size)
 
         render json: Api::V1::CollectionSummonBlueprint.render(

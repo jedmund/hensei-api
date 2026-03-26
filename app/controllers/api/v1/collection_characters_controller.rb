@@ -24,7 +24,7 @@ module Api
         @collection_characters = @collection_characters.by_name(params[:search]) if params[:search].present?
 
         # Apply sorting
-        @collection_characters = @collection_characters.sorted_by(params[:sort])
+        @collection_characters = @collection_characters.sorted_by(params[:sort], current_user&.language || 'en')
 
         # Apply pagination
         @collection_characters = @collection_characters.paginate(page: params[:page], per_page: collection_page_size)

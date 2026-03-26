@@ -28,7 +28,7 @@ module Api
         @collection_artifacts = @collection_artifacts.with_skill_in_slot(4, params[:skill4]) if params[:skill4].present?
         @collection_artifacts = @collection_artifacts.by_name(params[:search]) if params[:search].present?
 
-        @collection_artifacts = @collection_artifacts.sorted_by(params[:sort])
+        @collection_artifacts = @collection_artifacts.sorted_by(params[:sort], current_user&.language || 'en')
 
         @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: collection_page_size)
 
