@@ -69,6 +69,12 @@ module Api
             { position: gwb.position, bullet: BulletBlueprint.render_as_hash(gwb.bullet) }
           end
         end
+
+        association :role, blueprint: RoleBlueprint,
+                    if: ->(_field_name, gw, _options) { gw.role.present? }
+        field :substitution_note, if: ->(_field_name, gw, _options) { gw.substitution_note.present? }
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_field_name, gw, _options) { !gw.is_substitute? && gw.substitutions.any? }
       end
 
       view :full do
