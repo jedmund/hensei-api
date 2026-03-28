@@ -4,58 +4,94 @@ require 'rails_helper'
 
 RSpec.describe Substitution, type: :model do
   let(:party) { create(:party) }
+  let(:weapon) { Weapon.find_by!(granblue_id: '1040611300') }
+  let(:other_weapon) { Weapon.find_by!(granblue_id: '1040912100') }
 
   describe 'validations' do
-    it 'requires position between 0 and 9' do
-      grid_weapon = create(:grid_weapon, party: party)
-      sub_weapon = create(:grid_weapon, party: party, is_substitute: true)
-
-      sub = build(:substitution,
-                  grid: grid_weapon,
-                  substitute_grid: sub_weapon,
-                  position: 10)
-      expect(sub).not_to be_valid
-
-      sub.position = -1
-      expect(sub).not_to be_valid
-
-      sub.position = 0
+    it 'is valid at position 0' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = build(:substitution, grid: gw, substitute_grid: sw, position: 0)
       expect(sub).to be_valid
     end
 
-    it 'requires grid types to match' do
-      grid_weapon = create(:grid_weapon, party: party)
-      grid_character = create(:grid_character, party: party, is_substitute: true)
+    it 'is valid at position 9 (max)' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = build(:substitution, grid: gw, substitute_grid: sw, position: 9)
+      expect(sub).to be_valid
+    end
 
-      sub = build(:substitution,
-                  grid: grid_weapon,
-                  substitute_grid: grid_character,
-                  position: 0)
+    it 'rejects position 10 (over max)' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = build(:substitution, grid: gw, substitute_grid: sw, position: 10)
+      expect(sub).not_to be_valid
+      expect(sub.errors[:position]).to be_present
+    end
+
+    it 'rejects negative position' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = build(:substitution, grid: gw, substitute_grid: sw, position: -1)
+      expect(sub).not_to be_valid
+    end
+
+    it 'rejects mismatched grid types (weapon grid + character substitute)' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      gc = create(:grid_character, party: party, is_substitute: true)
+
+      sub = build(:substitution, grid: gw, substitute_grid: gc, position: 0)
       expect(sub).not_to be_valid
       expect(sub.errors[:substitute_grid_type]).to include('must match grid type')
     end
 
+    it 'allows matching grid types' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = build(:substitution, grid: gw, substitute_grid: sw, position: 0)
+      expect(sub).to be_valid
+    end
+
+    it 'enforces uniqueness of grid + substitute_grid pair' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+
+      duplicate = build(:substitution, grid: gw, substitute_grid: sw, position: 1)
+      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
     it 'enforces 10-per-slot cap' do
-      grid_weapon = create(:grid_weapon, party: party)
+      gw = create(:grid_weapon, party: party, weapon: weapon)
 
       10.times do |i|
-        sub_weapon = create(:grid_weapon, party: party, is_substitute: true)
-        create(:substitution, grid: grid_weapon, substitute_grid: sub_weapon, position: i)
+        sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+        create(:substitution, grid: gw, substitute_grid: sw, position: i)
       end
 
-      extra_weapon = create(:grid_weapon, party: party, is_substitute: true)
-      sub = build(:substitution, grid: grid_weapon, substitute_grid: extra_weapon, position: 10)
+      extra = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = build(:substitution, grid: gw, substitute_grid: extra, position: 0)
       expect(sub).not_to be_valid
+      expect(sub.errors[:base]).to include('maximum of 10 substitutions per slot')
     end
   end
 
   describe 'cascade delete' do
-    it 'destroys substitutions when grid item is destroyed' do
-      grid_weapon = create(:grid_weapon, party: party)
-      sub_weapon = create(:grid_weapon, party: party, is_substitute: true)
-      create(:substitution, grid: grid_weapon, substitute_grid: sub_weapon, position: 0)
+    it 'destroys substitutions when primary grid item is destroyed' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      create(:substitution, grid: gw, substitute_grid: sw, position: 0)
 
-      expect { grid_weapon.destroy }.to change(Substitution, :count).by(-1)
+      expect { gw.destroy }.to change(Substitution, :count).by(-1)
+    end
+
+    it 'does not destroy the substitute grid item when substitution is destroyed' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sub = create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+
+      expect { sub.destroy }.not_to change(GridWeapon, :count)
     end
   end
 end
