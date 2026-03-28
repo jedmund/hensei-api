@@ -237,6 +237,7 @@ module Api
                                  remix: true }
         new_party.local_id = party_params[:local_id] if party_params
         new_party.last_updated = Time.current
+        new_party._source_party_for_remap = @party
         if new_party.save
           new_party.schedule_preview_generation
           render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created

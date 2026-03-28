@@ -145,19 +145,34 @@ class Party < ApplicationRecord
              class_name: 'Guidebook',
              optional: true
 
-  has_many :characters,
+  has_many :characters, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridCharacter',
+           inverse_of: :party
+
+  has_many :weapons, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridWeapon',
+           inverse_of: :party
+
+  has_many :summons, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridSummon',
+           inverse_of: :party
+
+  has_many :all_characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
            dependent: :delete_all,
            inverse_of: :party
 
-  has_many :weapons,
+  has_many :all_weapons,
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
            dependent: :destroy,
            inverse_of: :party
 
-  has_many :summons,
+  has_many :all_summons,
            foreign_key: 'party_id',
            class_name: 'GridSummon',
            dependent: :delete_all,
@@ -169,9 +184,11 @@ class Party < ApplicationRecord
   has_many :party_shares, dependent: :destroy
   has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 
-  accepts_nested_attributes_for :characters
-  accepts_nested_attributes_for :summons
-  accepts_nested_attributes_for :weapons
+  accepts_nested_attributes_for :all_characters
+  accepts_nested_attributes_for :all_summons
+  accepts_nested_attributes_for :all_weapons
+
+  attr_writer :_source_party_for_remap
 
   before_create :set_shortcode
   before_create :set_edit_key
@@ -189,10 +206,12 @@ class Party < ApplicationRecord
     nullify :shortcode
     nullify :edit_key
 
-    include_association :characters
-    include_association :weapons
-    include_association :summons
+    include_association :all_characters
+    include_association :all_weapons
+    include_association :all_summons
   end
+
+  after_create :create_remapped_substitutions
 
   # ActiveRecord Validations
   validate :skills_are_unique
@@ -544,6 +563,52 @@ class Party < ApplicationRecord
   #########################
   # Miscellaneous Helpers
   #########################
+
+  ##
+  # Recreates substitution join records after an amoeba remix.
+  #
+  # Maps old grid item IDs to new ones by matching on item FK + position + is_substitute,
+  # then creates Substitution records pointing to the new grid items.
+  #
+  # @return [void]
+  def create_remapped_substitutions
+    return unless @_source_party_for_remap
+
+    remap_substitutions_for('GridCharacter', @_source_party_for_remap.all_characters, all_characters, :character_id)
+    remap_substitutions_for('GridWeapon', @_source_party_for_remap.all_weapons, all_weapons, :weapon_id)
+    remap_substitutions_for('GridSummon', @_source_party_for_remap.all_summons, all_summons, :summon_id)
+  end
+
+  def remap_substitutions_for(grid_type, old_items, new_items, item_fk)
+    old_items.each do |old_item|
+      old_item.substitutions.each do |sub|
+        new_grid = new_items.detect do |ni|
+          ni.send(item_fk) == old_item.send(item_fk) &&
+            ni.position == old_item.position &&
+            ni.is_substitute == old_item.is_substitute
+        end
+
+        old_sub_grid = old_items.detect { |oi| oi.id == sub.substitute_grid_id }
+        next unless old_sub_grid
+
+        new_sub_grid = new_items.detect do |ni|
+          ni.send(item_fk) == old_sub_grid.send(item_fk) &&
+            ni.position == old_sub_grid.position &&
+            ni.is_substitute == old_sub_grid.is_substitute
+        end
+
+        next unless new_grid && new_sub_grid
+
+        Substitution.create!(
+          grid_type: grid_type,
+          grid_id: new_grid.id,
+          substitute_grid_type: grid_type,
+          substitute_grid_id: new_sub_grid.id,
+          position: sub.position
+        )
+      end
+    end
+  end
 
   ##
   # Updates the party's element based on its main weapon.
