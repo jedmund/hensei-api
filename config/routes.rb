@@ -55,6 +55,8 @@ Rails.application.routes.draw do
       end
     end
     resources :favorites, only: [:create]
+    resources :substitutions, only: %i[create update destroy]
+    get 'roles', to: 'roles#index'
 
     get 'version', to: 'api#version'
 
