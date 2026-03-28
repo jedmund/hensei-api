@@ -118,6 +118,75 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
   end
 
+  describe 'GET /api/v1/users/:user_id/collection/characters?unowned=true' do
+    it 'returns characters not in the user\'s collection' do
+      owned_char = create(:character)
+      unowned_char1 = create(:character)
+      unowned_char2 = create(:character)
+      create(:collection_character, user: user, character: owned_char)
+
+      get "/api/v1/users/#{user.id}/collection/characters", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(unowned_char1.id, unowned_char2.id)
+      expect(returned_ids).not_to include(owned_char.id)
+    end
+
+    it 'returns 403 when requesting another user\'s unowned characters' do
+      get "/api/v1/users/#{other_user.id}/collection/characters", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'filters by element in unowned mode' do
+      fire_char = create(:character, element: 0)
+      water_char = create(:character, element: 1)
+      owned_fire_char = create(:character, element: 0)
+      create(:collection_character, user: user, character: owned_fire_char)
+
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, element: 0 }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(fire_char.id)
+      expect(returned_ids).not_to include(water_char.id)
+      expect(returned_ids).not_to include(owned_fire_char.id)
+      expect(json['characters'].all? { |c| c['element'] == 0 }).to be true
+    end
+
+    it 'searches by name in unowned mode' do
+      matching_char = create(:character, name_en: 'Zeta Unique Name')
+      other_char = create(:character, name_en: 'Lyria Different Name')
+
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, search: 'Unique' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(matching_char.id)
+      expect(returned_ids).not_to include(other_char.id)
+    end
+
+    it 'does not return a character the user owns when requesting unowned' do
+      owned_char = create(:character)
+      create(:collection_character, user: user, character: owned_char)
+
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, search: owned_char.name_en }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).not_to include(owned_char.id)
+      expect(json['meta']['count']).to eq(0)
+    end
+  end
+
   describe 'GET /api/v1/users/:user_id/collection/characters/:id' do
     let!(:collection_character) { create(:collection_character, user: user, character: character) }
 
