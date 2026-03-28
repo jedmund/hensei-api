@@ -21,7 +21,10 @@ module Api
           @summons = @summons.where(element: array_param(:element)) if params[:element]
           @summons = @summons.where(rarity: array_param(:rarity)) if params[:rarity]
           @summons = @summons.where(summon_series_id: array_param(:series)) if params[:series]
-          @summons = @summons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%") if params[:search].present?
+          if params[:search].present?
+            q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
+            @summons = @summons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+          end
 
           lang = current_user&.language || 'en'
           @summons = apply_unowned_summon_sort(@summons, params[:sort], lang)

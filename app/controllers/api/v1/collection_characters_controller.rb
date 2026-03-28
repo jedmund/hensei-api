@@ -30,7 +30,10 @@ module Api
           end
           @characters = @characters.where(gender: array_param(:gender)) if params[:gender]
           @characters = @characters.by_series(array_param(:series)) if params[:series]
-          @characters = @characters.where("name_en ILIKE :q OR name_jp ILIKE :q", q: "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%") if params[:search].present?
+          if params[:search].present?
+            q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
+            @characters = @characters.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+          end
 
           lang = current_user&.language || 'en'
           @characters = apply_unowned_character_sort(@characters, params[:sort], lang)

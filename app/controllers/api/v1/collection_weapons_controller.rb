@@ -22,7 +22,10 @@ module Api
           @weapons = @weapons.where(rarity: array_param(:rarity)) if params[:rarity]
           @weapons = @weapons.where(proficiency: array_param(:proficiency)) if params[:proficiency]
           @weapons = @weapons.where(weapon_series_id: array_param(:series)) if params[:series]
-          @weapons = @weapons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%") if params[:search].present?
+          if params[:search].present?
+            q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
+            @weapons = @weapons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+          end
 
           lang = current_user&.language || 'en'
           @weapons = apply_unowned_weapon_sort(@weapons, params[:sort], lang)
