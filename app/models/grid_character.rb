@@ -21,9 +21,11 @@ class GridCharacter < ApplicationRecord
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
-             counter_cache: :characters_count,
              inverse_of: :characters
   belongs_to :collection_character, optional: true
+  belongs_to :role, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
 
   has_one :grid_artifact, dependent: :destroy
 
@@ -34,10 +36,11 @@ class GridCharacter < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
-  validate :validate_awakening_level, on: :update
-  validate :transcendence
-  validate :validate_over_mastery_values, on: :update
-  validate :validate_aetherial_mastery_value, on: :update
+  validate :validate_awakening_level, on: :update, unless: :is_substitute?
+  validate :transcendence, unless: :is_substitute?
+  validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
+  validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
+  validate :role_slot_type_matches
 
   # Virtual attributes
   attr_accessor :new_rings
@@ -53,12 +56,21 @@ class GridCharacter < ApplicationRecord
     set ring4: { modifier: nil, strength: nil }
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
+    nullify :role_id
+    nullify :substitution_note
   end
+
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
 
   # Hooks
   before_validation :apply_new_rings, if: -> { new_rings.present? }
   before_validation :apply_new_awakening, if: -> { new_awakening.present? }
-  before_save :add_awakening
+  before_save :add_awakening, unless: :is_substitute?
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
 
   ##
   # Validates the awakening level to ensure it falls within the allowed range.
@@ -259,6 +271,20 @@ class GridCharacter < ApplicationRecord
   end
 
   private
+
+  def increment_party_counter
+    Party.increment_counter(:characters_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:characters_count, party_id)
+  end
+
+  def role_slot_type_matches
+    return unless role.present?
+
+    errors.add(:role, 'slot type must be Character') unless role.slot_type == 'Character'
+  end
 
   ##
   # Adds a default awakening to the character before saving if none is set.
