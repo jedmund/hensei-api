@@ -77,12 +77,14 @@ module Api
         Substitution.where(grid_type: grid_type, grid_id: grid_id).maximum(:position).to_i + 1
       end
 
+      GRID_TYPE_FOREIGN_KEYS = {
+        'GridCharacter' => :character_id,
+        'GridWeapon' => :weapon_id,
+        'GridSummon' => :summon_id
+      }.freeze
+
       def item_foreign_key(grid_type)
-        case grid_type
-        when 'GridCharacter' then :character_id
-        when 'GridWeapon' then :weapon_id
-        when 'GridSummon' then :summon_id
-        end
+        GRID_TYPE_FOREIGN_KEYS[grid_type]
       end
     end
   end
