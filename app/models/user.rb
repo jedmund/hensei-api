@@ -22,6 +22,7 @@ class User < ApplicationRecord
   has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, dependent: :nullify
   has_many :party_shares, foreign_key: :shared_by_id, dependent: :destroy
   has_many :user_edit_keys, dependent: :destroy
+  has_many :user_raid_elements, dependent: :destroy
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
