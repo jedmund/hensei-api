@@ -75,6 +75,90 @@ RSpec.describe 'Collection Summons API', type: :request do
     end
   end
 
+  describe 'GET /api/v1/users/:user_id/collection/summons?unowned=true' do
+    it 'returns summons not owned by the user, excluding owned summon IDs' do
+      owned_smn = create(:summon)
+      unowned_smn1 = create(:summon)
+      unowned_smn2 = create(:summon)
+      create(:collection_summon, user: user, summon: owned_smn)
+
+      get "/api/v1/users/#{user.id}/collection/summons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).to include(unowned_smn1.id, unowned_smn2.id)
+      expect(returned_ids).not_to include(owned_smn.id)
+    end
+
+    it 'treats multiple copies of the same summon as owned and excludes it' do
+      owned_smn = create(:summon)
+      create(:collection_summon, user: user, summon: owned_smn)
+      create(:collection_summon, user: user, summon: owned_smn)
+
+      get "/api/v1/users/#{user.id}/collection/summons",
+          params: { unowned: true, search: owned_smn.name_en }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).not_to include(owned_smn.id)
+      expect(json['meta']['count']).to eq(0)
+    end
+
+    it 'returns 403 when requesting another user\'s unowned summons' do
+      get "/api/v1/users/#{other_user.id}/collection/summons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'filters by element in unowned mode' do
+      fire_smn = create(:summon, element: 0)
+      water_smn = create(:summon, element: 1)
+      owned_fire_smn = create(:summon, element: 0)
+      create(:collection_summon, user: user, summon: owned_fire_smn)
+
+      get "/api/v1/users/#{user.id}/collection/summons",
+          params: { unowned: true, element: 0 }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).to include(fire_smn.id)
+      expect(returned_ids).not_to include(water_smn.id)
+      expect(returned_ids).not_to include(owned_fire_smn.id)
+      expect(json['summons'].all? { |s| s['element'] == 0 }).to be true
+    end
+
+    it 'searches by name in unowned mode' do
+      matching_smn = create(:summon, name_en: 'Lucifer Unique Name')
+      other_smn = create(:summon, name_en: 'Bahamut Different Name')
+
+      get "/api/v1/users/#{user.id}/collection/summons",
+          params: { unowned: true, search: 'Unique' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).to include(matching_smn.id)
+      expect(returned_ids).not_to include(other_smn.id)
+    end
+
+    it 'does not return a summon the user owns when requesting unowned' do
+      owned_smn = create(:summon)
+      create(:collection_summon, user: user, summon: owned_smn)
+
+      get "/api/v1/users/#{user.id}/collection/summons",
+          params: { unowned: true, search: owned_smn.name_en }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).not_to include(owned_smn.id)
+      expect(json['meta']['count']).to eq(0)
+    end
+  end
+
   describe 'GET /api/v1/users/:user_id/collection/summons/:id' do
     let!(:collection_summon) { create(:collection_summon, user: user, summon: summon) }
 

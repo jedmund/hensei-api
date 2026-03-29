@@ -61,12 +61,13 @@ class CollectionArtifact < ApplicationRecord
     joins(:artifact).where("artifacts.name_en ILIKE :q OR artifacts.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
   }
 
-  scope :sorted_by, ->(sort_key) {
+  scope :sorted_by, ->(sort_key, locale = 'en') {
+    name_col = locale == 'ja' ? 'artifacts.name_jp' : 'artifacts.name_en'
     case sort_key
     when 'name_asc'
-      joins(:artifact).order('artifacts.name_en ASC NULLS LAST')
+      joins(:artifact).order(Arel.sql("#{name_col} ASC NULLS LAST"))
     when 'name_desc'
-      joins(:artifact).order('artifacts.name_en DESC NULLS LAST')
+      joins(:artifact).order(Arel.sql("#{name_col} DESC NULLS LAST"))
     when 'element_asc'
       order(element: :asc)
     when 'element_desc'

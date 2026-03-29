@@ -11,6 +11,43 @@ module Api
       before_action :set_collection_character_for_write, only: %i[update destroy]
 
       def index
+        if params[:unowned].present?
+          return head :forbidden unless current_user && @target_user.id == current_user.id
+
+          owned_ids = @target_user.collection_characters.select(:character_id)
+          @characters = Character.where.not(id: owned_ids)
+                                 .includes(:character_series_records)
+
+          @characters = @characters.where(element: array_param(:element)) if params[:element]
+          @characters = @characters.where(rarity: array_param(:rarity)) if params[:rarity]
+          if params[:race]
+            races = array_param(:race)
+            @characters = @characters.where(race1: races).or(@characters.where(race2: races))
+          end
+          if params[:proficiency]
+            profs = array_param(:proficiency)
+            @characters = @characters.where(proficiency1: profs).or(@characters.where(proficiency2: profs))
+          end
+          @characters = @characters.where(gender: array_param(:gender)) if params[:gender]
+          @characters = @characters.by_series(array_param(:series)) if params[:series]
+          if params[:search].present?
+            q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
+            @characters = @characters.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+          end
+
+          lang = current_user&.language || 'en'
+          @characters = apply_unowned_character_sort(@characters, params[:sort], lang)
+          @characters = @characters.paginate(page: params[:page], per_page: collection_page_size)
+
+          render json: CharacterBlueprint.render(
+            @characters,
+            view: :dates,
+            root: :characters,
+            meta: pagination_meta(@characters)
+          )
+          return
+        end
+
         @collection_characters = @target_user.collection_characters
                                              .includes({ character: :character_series_records }, :awakening)
 
@@ -24,7 +61,7 @@ module Api
         @collection_characters = @collection_characters.by_name(params[:search]) if params[:search].present?
 
         # Apply sorting
-        @collection_characters = @collection_characters.sorted_by(params[:sort])
+        @collection_characters = @collection_characters.sorted_by(params[:sort], current_user&.language || 'en')
 
         # Apply pagination
         @collection_characters = @collection_characters.paginate(page: params[:page], per_page: collection_page_size)
@@ -221,6 +258,26 @@ module Api
 
       def array_param(key)
         params[key]&.to_s&.split(',')
+      end
+
+      def apply_unowned_character_sort(scope, sort_key, locale)
+        name_col = locale == 'ja' ? 'name_jp' : 'name_en'
+        case sort_key
+        when 'name_asc'
+          scope.order(Arel.sql("#{name_col} ASC NULLS LAST"))
+        when 'name_desc'
+          scope.order(Arel.sql("#{name_col} DESC NULLS LAST"))
+        when 'element_asc'
+          scope.order(element: :asc)
+        when 'element_desc'
+          scope.order(element: :desc)
+        when 'proficiency_asc'
+          scope.order(proficiency1: :asc)
+        when 'proficiency_desc'
+          scope.order(proficiency1: :desc)
+        else
+          scope.order(latest_date: :desc, id: :asc)
+        end
       end
     end
   end

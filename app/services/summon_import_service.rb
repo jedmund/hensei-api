@@ -156,7 +156,9 @@ class SummonImportService
   end
 
   def find_summon(granblue_id)
-    Summon.find_by(granblue_id: granblue_id.to_s)
+    id_str = granblue_id.to_s
+    Summon.find_by(granblue_id: id_str) ||
+      Summon.find_by(granblue_id: SummonIdMapping.resolve(id_str))
   end
 
   def create_collection_summon(item, summon)

@@ -47,7 +47,7 @@ module Api
 
       # Slim view for party list cards — only fields GridRep actually renders
       view :list do
-        excludes :local_id, :description, :visibility, :element, :extra,
+        excludes :local_id, :description, :element, :extra,
                  :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
                  :auto_guard, :auto_summon, :solo, :video_url,
                  :collection_source_user_id,

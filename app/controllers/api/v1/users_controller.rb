@@ -297,7 +297,7 @@ module Api
           :username, :email, :password, :password_confirmation, :display_name,
           :granblue_id, :picture, :element, :language, :gender, :private, :theme, :show_gamertag,
           :wiki_profile, :youtube, :collection_privacy,
-          :import_weapons, :default_import_visibility
+          :import_weapons, :default_import_visibility, :simple_portraits
         )
       end
     end

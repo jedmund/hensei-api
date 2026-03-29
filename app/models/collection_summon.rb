@@ -21,6 +21,22 @@ class CollectionSummon < ApplicationRecord
     joins(:summon).where("summons.name_en ILIKE :q OR summons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
   }
 
+  scope :sorted_by, ->(sort_key, locale = 'en') {
+    name_col = locale == 'ja' ? 'summons.name_jp' : 'summons.name_en'
+    case sort_key
+    when 'name_asc'
+      joins(:summon).order(Arel.sql("#{name_col} ASC NULLS LAST"))
+    when 'name_desc'
+      joins(:summon).order(Arel.sql("#{name_col} DESC NULLS LAST"))
+    when 'element_asc'
+      joins(:summon).order('summons.element ASC')
+    when 'element_desc'
+      joins(:summon).order('summons.element DESC')
+    else
+      order(created_at: :desc)
+    end
+  }
+
   def blueprint
     Api::V1::CollectionSummonBlueprint
   end

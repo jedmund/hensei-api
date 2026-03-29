@@ -37,12 +37,13 @@ class CollectionCharacter < ApplicationRecord
   scope :with_awakening, -> { where.not(awakening_id: nil) }
 
   # Sorting scopes
-  scope :sorted_by, ->(sort_key) {
+  scope :sorted_by, ->(sort_key, locale = 'en') {
+    name_col = locale == 'ja' ? 'characters.name_jp' : 'characters.name_en'
     case sort_key
     when 'name_asc'
-      joins(:character).order('characters.name_en ASC NULLS LAST')
+      joins(:character).order(Arel.sql("#{name_col} ASC NULLS LAST"))
     when 'name_desc'
-      joins(:character).order('characters.name_en DESC NULLS LAST')
+      joins(:character).order(Arel.sql("#{name_col} DESC NULLS LAST"))
     when 'element_asc'
       joins(:character).order('characters.element ASC')
     when 'element_desc'

@@ -77,6 +77,90 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
   end
 
+  describe 'GET /api/v1/users/:user_id/collection/weapons?unowned=true' do
+    it 'returns weapons not owned by the user, excluding owned weapon IDs' do
+      owned_wpn = create(:weapon)
+      unowned_wpn1 = create(:weapon)
+      unowned_wpn2 = create(:weapon)
+      create(:collection_weapon, user: user, weapon: owned_wpn)
+
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['weapons'].map { |w| w['id'] }
+      expect(returned_ids).to include(unowned_wpn1.id, unowned_wpn2.id)
+      expect(returned_ids).not_to include(owned_wpn.id)
+    end
+
+    it 'treats multiple copies of the same weapon as owned and excludes it' do
+      owned_wpn = create(:weapon)
+      create(:collection_weapon, user: user, weapon: owned_wpn)
+      create(:collection_weapon, user: user, weapon: owned_wpn)
+
+      get "/api/v1/users/#{user.id}/collection/weapons",
+          params: { unowned: true, search: owned_wpn.name_en }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['weapons'].map { |w| w['id'] }
+      expect(returned_ids).not_to include(owned_wpn.id)
+      expect(json['meta']['count']).to eq(0)
+    end
+
+    it 'returns 403 when requesting another user\'s unowned weapons' do
+      get "/api/v1/users/#{other_user.id}/collection/weapons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'filters by element in unowned mode' do
+      fire_wpn = create(:weapon, element: 0)
+      water_wpn = create(:weapon, element: 1)
+      owned_fire_wpn = create(:weapon, element: 0)
+      create(:collection_weapon, user: user, weapon: owned_fire_wpn)
+
+      get "/api/v1/users/#{user.id}/collection/weapons",
+          params: { unowned: true, element: 0 }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['weapons'].map { |w| w['id'] }
+      expect(returned_ids).to include(fire_wpn.id)
+      expect(returned_ids).not_to include(water_wpn.id)
+      expect(returned_ids).not_to include(owned_fire_wpn.id)
+      expect(json['weapons'].all? { |w| w['element'] == 0 }).to be true
+    end
+
+    it 'searches by name in unowned mode' do
+      matching_wpn = create(:weapon, name_en: 'Baihu Claw Unique')
+      other_wpn = create(:weapon, name_en: 'Sword of Purity Different')
+
+      get "/api/v1/users/#{user.id}/collection/weapons",
+          params: { unowned: true, search: 'Unique' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['weapons'].map { |w| w['id'] }
+      expect(returned_ids).to include(matching_wpn.id)
+      expect(returned_ids).not_to include(other_wpn.id)
+    end
+
+    it 'does not return a weapon the user owns when requesting unowned' do
+      owned_wpn = create(:weapon)
+      create(:collection_weapon, user: user, weapon: owned_wpn)
+
+      get "/api/v1/users/#{user.id}/collection/weapons",
+          params: { unowned: true, search: owned_wpn.name_en }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['weapons'].map { |w| w['id'] }
+      expect(returned_ids).not_to include(owned_wpn.id)
+      expect(json['meta']['count']).to eq(0)
+    end
+  end
+
   describe 'GET /api/v1/users/:user_id/collection/weapons/:id' do
     let!(:collection_weapon) { create(:collection_weapon, user: user, weapon: weapon) }
 
