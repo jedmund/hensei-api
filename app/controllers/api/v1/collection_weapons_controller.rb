@@ -11,6 +11,35 @@ module Api
       before_action :set_collection_weapon_for_write, only: %i[update destroy]
 
       def index
+        if params[:unowned].present?
+          return head :forbidden unless current_user && @target_user.id == current_user.id
+
+          owned_ids = @target_user.collection_weapons.select(:weapon_id).distinct
+          @weapons = Weapon.where.not(id: owned_ids)
+                           .includes(:weapon_series, :weapon_series_variant)
+
+          @weapons = @weapons.where(element: array_param(:element)) if params[:element]
+          @weapons = @weapons.where(rarity: array_param(:rarity)) if params[:rarity]
+          @weapons = @weapons.where(proficiency: array_param(:proficiency)) if params[:proficiency]
+          @weapons = @weapons.where(weapon_series_id: array_param(:series)) if params[:series]
+          if params[:search].present?
+            q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
+            @weapons = @weapons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+          end
+
+          lang = current_user&.language || 'en'
+          @weapons = apply_unowned_weapon_sort(@weapons, params[:sort], lang)
+          @weapons = @weapons.paginate(page: params[:page], per_page: collection_page_size)
+
+          render json: WeaponBlueprint.render(
+            @weapons,
+            view: :grid,
+            root: :weapons,
+            meta: pagination_meta(@weapons)
+          )
+          return
+        end
+
         @collection_weapons = @target_user.collection_weapons
                                           .includes({ weapon: [:weapon_series, :weapon_series_variant] }, :awakening,
                                                    :weapon_key1, :weapon_key2,
@@ -301,6 +330,26 @@ module Api
 
       def array_param(key)
         params[key]&.to_s&.split(',')
+      end
+
+      def apply_unowned_weapon_sort(scope, sort_key, locale)
+        name_col = locale == 'ja' ? 'name_jp' : 'name_en'
+        case sort_key
+        when 'name_asc'
+          scope.order(Arel.sql("#{name_col} ASC NULLS LAST"))
+        when 'name_desc'
+          scope.order(Arel.sql("#{name_col} DESC NULLS LAST"))
+        when 'element_asc'
+          scope.order(element: :asc)
+        when 'element_desc'
+          scope.order(element: :desc)
+        when 'proficiency_asc'
+          scope.order(proficiency: :asc)
+        when 'proficiency_desc'
+          scope.order(proficiency: :desc)
+        else
+          scope.order(latest_date: :desc, id: :asc)
+        end
       end
     end
   end

@@ -11,6 +11,34 @@ module Api
       before_action :set_collection_summon_for_write, only: %i[update destroy]
 
       def index
+        if params[:unowned].present?
+          return head :forbidden unless current_user && @target_user.id == current_user.id
+
+          owned_ids = @target_user.collection_summons.select(:summon_id).distinct
+          @summons = Summon.where.not(id: owned_ids)
+                           .includes(:summon_series)
+
+          @summons = @summons.where(element: array_param(:element)) if params[:element]
+          @summons = @summons.where(rarity: array_param(:rarity)) if params[:rarity]
+          @summons = @summons.where(summon_series_id: array_param(:series)) if params[:series]
+          if params[:search].present?
+            q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
+            @summons = @summons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+          end
+
+          lang = current_user&.language || 'en'
+          @summons = apply_unowned_summon_sort(@summons, params[:sort], lang)
+          @summons = @summons.paginate(page: params[:page], per_page: collection_page_size)
+
+          render json: SummonBlueprint.render(
+            @summons,
+            view: :dates,
+            root: :summons,
+            meta: pagination_meta(@summons)
+          )
+          return
+        end
+
         @collection_summons = @target_user.collection_summons
                                           .includes(summon: :summon_series)
 
@@ -286,6 +314,22 @@ module Api
 
       def array_param(key)
         params[key]&.to_s&.split(',')
+      end
+
+      def apply_unowned_summon_sort(scope, sort_key, locale)
+        name_col = locale == 'ja' ? 'name_jp' : 'name_en'
+        case sort_key
+        when 'name_asc'
+          scope.order(Arel.sql("#{name_col} ASC NULLS LAST"))
+        when 'name_desc'
+          scope.order(Arel.sql("#{name_col} DESC NULLS LAST"))
+        when 'element_asc'
+          scope.order(element: :asc)
+        when 'element_desc'
+          scope.order(element: :desc)
+        else
+          scope.order(latest_date: :desc, id: :asc)
+        end
       end
     end
   end
