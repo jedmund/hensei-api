@@ -1194,9 +1194,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_26_120000) do
     t.integer "max_atk_flb"
     t.integer "max_atk_ulb"
     t.boolean "extra", default: false, null: false
-    t.integer "ax_type"
     t.boolean "limit", default: false, null: false
-    t.boolean "ax", default: false, null: false
     t.integer "max_awakening_level"
     t.date "release_date"
     t.date "flb_date"

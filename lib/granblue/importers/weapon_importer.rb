@@ -35,12 +35,10 @@ module Granblue
       # @option attributes [Boolean] :ulb Flag for ULB status
       # @option attributes [Boolean] :extra Flag indicating whether weapon can be slotted in Extra slots
       # @option attributes [Boolean] :limit Flag indicating only one of this weapon can be equipped at once
-      # @option attributes [Boolean] :ax Flag indicating whether weapon supports AX skills
       # @option attributes [Boolean] :transcendence Flag for transcendence status
       # @option attributes [Integer] :max_level Maximum level of the weapon
       # @option attributes [Integer] :max_skill_level Maximum skill level
       # @option attributes [Integer] :max_awakening_level Maximum awakening level
-      # @option attributes [Integer] :ax_type AX type classification
       # @option attributes [Integer] :min_hp Minimum HP
       # @option attributes [Integer] :max_hp Maximum HP
       # @option attributes [Integer] :max_hp_flb Maximum HP after FLB
@@ -85,9 +83,7 @@ module Granblue
           max_atk_flb: parse_integer(row['max_atk_flb']),
           max_atk_ulb: parse_integer(row['max_atk_ulb']),
           extra: parse_boolean(row['extra']),
-          ax_type: parse_integer(row['ax_type']),
           limit: parse_boolean(row['limit']),
-          ax: parse_boolean(row['ax']),
           recruits: parse_value(row['recruits']),
           max_awakening_level: parse_integer(row['max_awakening_level']),
           release_date: parse_value(row['release_date']),

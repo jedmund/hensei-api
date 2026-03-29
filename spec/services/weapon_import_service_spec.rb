@@ -23,7 +23,7 @@ RSpec.describe WeaponImportService, type: :service do
 
   let(:ax_weapon) do
     Weapon.find_by(granblue_id: '1040213900') ||
-      create(:weapon, :ax_weapon, granblue_id: '1040213900', name_en: 'Celeste Claw Omega')
+      create(:weapon, granblue_id: '1040213900', name_en: 'Celeste Claw Omega')
   end
 
   # Create weapon awakenings
