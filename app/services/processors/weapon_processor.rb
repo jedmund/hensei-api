@@ -92,7 +92,11 @@ module Processors
       # Emblems (series {24})
       '3' => '3',
       '2' => '2',
-      '1' => '1'
+      '1' => '1',
+      # Anklets (series {44} — Destroyer)
+      '19001' => %w[2655 2656 2657 2658 2659 2660 2661 2662 2663 2664 2665 2666], # Anklet of Oblivion
+      '19002' => %w[2667 2668 2669 2670 2671 2672 2673 2674 2675 2676 2677 2678], # Anklet of Ascendance
+      '19003' => %w[2679 2680 2681 2682 2683 2684 2685 2686 2687 2688 2689 2690]  # Anklet of Maximality
     }.freeze
 
     AWAKENING_MAPPING = {
