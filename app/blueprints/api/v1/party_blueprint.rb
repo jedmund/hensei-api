@@ -53,8 +53,10 @@ module Api
                  :collection_source_user_id,
                  :created_at, :updated_at,
                  :master_level, :ultimate_mastery,
-                 :user, :collection_source_user,
+                 :collection_source_user,
                  :boost
+
+        association :user, blueprint: UserBlueprint, view: :inline
 
         association :job, blueprint: JobBlueprint, view: :list
         association :raid, blueprint: RaidBlueprint, view: :list
