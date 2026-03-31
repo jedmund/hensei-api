@@ -44,17 +44,35 @@ module Granblue
           download_style_variant(selected_size)
         else
           # All characters have 01 and 02 variants
-          variants = %W[#{@id}_01 #{@id}_02]
+          poses = %w[01 02]
+          poses << '03' if character.flb
+          poses << '04' if character.transcendence
 
-          # Add FLB variant if available
-          variants << "#{@id}_03" if character.flb
-
-          # Add ULB variant if available
-          variants << "#{@id}_04" if character.transcendence
+          variants = poses.map { |pose| "#{@id}_#{pose}" }
 
           log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
 
           variants.each do |variant_id|
+            download_variant(variant_id, selected_size)
+          end
+
+          # Null-element characters (element == 0) have element-suffixed variants
+          download_element_variants(poses, selected_size) if character.element&.zero?
+        end
+      end
+
+      # Downloads element-suffixed variants for null-element characters.
+      # For each pose and element (1-6), downloads {id}_{pose}_0{element} in all sizes.
+      #
+      # @param poses [Array<String>] Available poses (e.g., ["01", "02", "03"])
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
+      # @return [void]
+      def download_element_variants(poses, selected_size = nil)
+        log_info "Downloading element variants for null-element character #{@id}"
+
+        (1..6).each do |element|
+          poses.each do |pose|
+            variant_id = "#{@id}_#{pose}_0#{element}"
             download_variant(variant_id, selected_size)
           end
         end
