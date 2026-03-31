@@ -46,7 +46,15 @@ RSpec.describe CharacterImageDownloadService do
     it 'counts total images across all sizes' do
       result = described_class.new(character).download
       sizes_count = Granblue::Downloaders::CharacterDownloader::SIZES.length
-      expect(result.total).to eq(2 * sizes_count) # 2 variants * sizes
+      # 2 base poses + 2 poses * 2 genders = 6 variants * sizes
+      expect(result.total).to eq(6 * sizes_count)
+    end
+
+    it 'includes gender variants for all characters' do
+      result = described_class.new(character).download
+      main_files = result.images['main']
+      expect(main_files).to include('3040001000_01_0.jpg', '3040001000_01_1.jpg')
+      expect(main_files).to include('3040001000_02_0.jpg', '3040001000_02_1.jpg')
     end
 
     context 'null-element characters' do
@@ -55,8 +63,8 @@ RSpec.describe CharacterImageDownloadService do
       it 'includes element-suffixed variants for all 6 elements and both genders' do
         result = described_class.new(null_element_char).download
         main_files = result.images['main']
-        # 2 base poses + 2 poses * 6 elements * 2 genders = 26 variants
-        expect(main_files.length).to eq(26)
+        # 2 base poses + 2 poses * 2 genders + 2 poses * 6 elements * 2 genders = 30 variants
+        expect(main_files.length).to eq(30)
         expect(main_files).to include(
           '3040643000_01_01_0.jpg', '3040643000_01_01_1.jpg',
           '3040643000_02_06_0.jpg', '3040643000_02_06_1.jpg'

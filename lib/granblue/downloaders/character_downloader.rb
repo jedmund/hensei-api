@@ -56,8 +56,28 @@ module Granblue
             download_variant(variant_id, selected_size)
           end
 
+          # Try gender variants (Gran=_0, Djeeta=_1) for all characters
+          download_gender_variants(poses, selected_size)
+
           # Null-element characters (element == 0) have element-suffixed variants
           download_element_variants(poses, selected_size) if character.element&.zero?
+        end
+      end
+
+      # Downloads gender variants (Gran=_0, Djeeta=_1) for any character.
+      # Not all characters have gender variants; missing ones fail silently.
+      #
+      # @param poses [Array<String>] Available poses (e.g., ["01", "02", "03"])
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
+      # @return [void]
+      def download_gender_variants(poses, selected_size = nil)
+        log_info "Downloading gender variants for character #{@id}"
+
+        poses.each do |pose|
+          (0..1).each do |gender|
+            variant_id = "#{@id}_#{pose}_#{gender}"
+            download_variant(variant_id, selected_size)
+          end
         end
       end
 
