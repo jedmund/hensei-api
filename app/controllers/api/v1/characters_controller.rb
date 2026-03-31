@@ -111,14 +111,16 @@ module Api
           if transformation == 'style' || (@character.style_swap? && transformation.blank?)
             # Style swap: fetch from _st2 URL and store as _style
             downloader.send(:download_style_variant, size)
-          elsif element.present?
-            # Element variant for null-element characters: {id}_{pose}_0{element}_{gender}
-            pose = transformation.present? ? transformation : '01'
-            variant_id = "#{@character.granblue_id}_#{pose}_0#{element}_#{gender}"
-            downloader.send(:download_variant, variant_id, size)
           else
-            # Standard variant download
-            variant_id = transformation.present? ? "#{@character.granblue_id}_#{transformation}" : "#{@character.granblue_id}_01"
+            pose = transformation.present? ? transformation : '01'
+            variant_id = "#{@character.granblue_id}_#{pose}"
+
+            # Add element suffix for null-element characters
+            variant_id = "#{variant_id}_0#{element}" if element.present?
+
+            # Add gender suffix when requested
+            variant_id = "#{variant_id}_#{gender}" if params[:gender].present?
+
             downloader.send(:download_variant, variant_id, size)
           end
 
