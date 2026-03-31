@@ -74,7 +74,7 @@ class CharacterImageDownloadService
     if @character.element&.zero?
       (1..6).each do |element|
         poses.each do |pose|
-          variants << "#{@character.granblue_id}_#{pose}_0#{element}"
+          variants << "#{@character.granblue_id}_#{pose}_0#{element}_0"
         end
       end
     end

@@ -57,7 +57,7 @@ RSpec.describe CharacterImageDownloadService do
         main_files = result.images['main']
         # 2 base poses + 2 poses * 6 elements = 14 variants
         expect(main_files.length).to eq(14)
-        expect(main_files).to include('3040643000_01_01.jpg', '3040643000_02_06.jpg')
+        expect(main_files).to include('3040643000_01_01_0.jpg', '3040643000_02_06_0.jpg')
       end
     end
 

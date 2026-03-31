@@ -72,7 +72,7 @@ module Granblue
 
         (1..6).each do |element|
           poses.each do |pose|
-            variant_id = "#{@id}_#{pose}_0#{element}"
+            variant_id = "#{@id}_#{pose}_0#{element}_0"
             download_variant(variant_id, selected_size)
           end
         end

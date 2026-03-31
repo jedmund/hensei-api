@@ -108,7 +108,7 @@ module Api
           elsif element.present?
             # Element variant for null-element characters: {id}_{pose}_0{element}
             pose = transformation.present? ? transformation : '01'
-            variant_id = "#{@character.granblue_id}_#{pose}_0#{element}"
+            variant_id = "#{@character.granblue_id}_#{pose}_0#{element}_0"
             downloader.send(:download_variant, variant_id, size)
           else
             # Standard variant download
