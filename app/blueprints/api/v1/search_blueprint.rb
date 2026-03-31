@@ -26,6 +26,21 @@ module Api
           }
         end
       end
+
+      field :proficiency do |document|
+        case document.searchable_type
+        when 'Character'
+          character = document.searchable
+          next nil unless character
+          [character.proficiency1, character.proficiency2].compact.presence
+        when 'Weapon'
+          document.searchable&.proficiency
+        end
+      end
+
+      field :style_swap do |document|
+        document.searchable_type == 'Character' ? document.searchable&.style_swap : nil
+      end
     end
   end
 end

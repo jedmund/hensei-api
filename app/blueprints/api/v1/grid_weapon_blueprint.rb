@@ -65,7 +65,7 @@ module Api
                     }
 
         field :bullets, if: ->(_field_name, w, _options) { w.weapon&.bullet_slots&.any? } do |w|
-          w.grid_weapon_bullets.order(:position).map do |gwb|
+          w.grid_weapon_bullets.sort_by(&:position).map do |gwb|
             { position: gwb.position, bullet: BulletBlueprint.render_as_hash(gwb.bullet) }
           end
         end
