@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe CharacterImageDownloadService do
-  let(:character) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false) }
+  let(:character) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false, element: 1) }
   let(:downloader_double) { double('CharacterDownloader', download: nil) }
 
   before do
@@ -47,6 +47,18 @@ RSpec.describe CharacterImageDownloadService do
       result = described_class.new(character).download
       sizes_count = Granblue::Downloaders::CharacterDownloader::SIZES.length
       expect(result.total).to eq(2 * sizes_count) # 2 variants * sizes
+    end
+
+    context 'null-element characters' do
+      let(:null_element_char) { double('Character', granblue_id: '3040643000', flb: false, transcendence: false, element: 0) }
+
+      it 'includes element-suffixed variants for all 6 elements' do
+        result = described_class.new(null_element_char).download
+        main_files = result.images['main']
+        # 2 base poses + 2 poses * 6 elements = 14 variants
+        expect(main_files.length).to eq(14)
+        expect(main_files).to include('3040643000_01_01.jpg', '3040643000_02_06.jpg')
+      end
     end
 
     it 'returns failure result on error' do
