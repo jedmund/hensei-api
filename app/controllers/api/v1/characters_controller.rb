@@ -75,6 +75,7 @@ module Api
         size = params[:size]
         transformation = params[:transformation]
         element = params[:element].present? ? params[:element].to_i : nil
+        gender = params[:gender].present? ? params[:gender].to_i : 0
         force = params[:force] == true
 
         # Validate size
@@ -94,6 +95,11 @@ module Api
           return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_entity
         end
 
+        # Validate gender (0=Gran, 1=Djeeta)
+        unless [0, 1].include?(gender)
+          return render json: { error: 'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)' }, status: :unprocessable_entity
+        end
+
         begin
           downloader = Granblue::Downloaders::CharacterDownloader.new(
             @character.granblue_id,
@@ -106,9 +112,9 @@ module Api
             # Style swap: fetch from _st2 URL and store as _style
             downloader.send(:download_style_variant, size)
           elsif element.present?
-            # Element variant for null-element characters: {id}_{pose}_0{element}
+            # Element variant for null-element characters: {id}_{pose}_0{element}_{gender}
             pose = transformation.present? ? transformation : '01'
-            variant_id = "#{@character.granblue_id}_#{pose}_0#{element}"
+            variant_id = "#{@character.granblue_id}_#{pose}_0#{element}_#{gender}"
             downloader.send(:download_variant, variant_id, size)
           else
             # Standard variant download

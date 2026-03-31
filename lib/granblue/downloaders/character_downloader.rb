@@ -62,7 +62,9 @@ module Granblue
       end
 
       # Downloads element-suffixed variants for null-element characters.
-      # For each pose and element (1-6), downloads {id}_{pose}_0{element} in all sizes.
+      # For each pose, element (1-6), and gender (0=Gran, 1=Djeeta),
+      # downloads {id}_{pose}_0{element}_{gender} in all sizes.
+      # Not all characters have both gender variants; missing ones fail silently.
       #
       # @param poses [Array<String>] Available poses (e.g., ["01", "02", "03"])
       # @param selected_size [String] The size to download. If nil, downloads all sizes.
@@ -72,8 +74,10 @@ module Granblue
 
         (1..6).each do |element|
           poses.each do |pose|
-            variant_id = "#{@id}_#{pose}_0#{element}"
-            download_variant(variant_id, selected_size)
+            (0..1).each do |gender|
+              variant_id = "#{@id}_#{pose}_0#{element}_#{gender}"
+              download_variant(variant_id, selected_size)
+            end
           end
         end
       end

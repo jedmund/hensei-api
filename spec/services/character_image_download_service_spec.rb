@@ -52,12 +52,15 @@ RSpec.describe CharacterImageDownloadService do
     context 'null-element characters' do
       let(:null_element_char) { double('Character', granblue_id: '3040643000', flb: false, transcendence: false, element: 0) }
 
-      it 'includes element-suffixed variants for all 6 elements' do
+      it 'includes element-suffixed variants for all 6 elements and both genders' do
         result = described_class.new(null_element_char).download
         main_files = result.images['main']
-        # 2 base poses + 2 poses * 6 elements = 14 variants
-        expect(main_files.length).to eq(14)
-        expect(main_files).to include('3040643000_01_01.jpg', '3040643000_02_06.jpg')
+        # 2 base poses + 2 poses * 6 elements * 2 genders = 26 variants
+        expect(main_files.length).to eq(26)
+        expect(main_files).to include(
+          '3040643000_01_01_0.jpg', '3040643000_01_01_1.jpg',
+          '3040643000_02_06_0.jpg', '3040643000_02_06_1.jpg'
+        )
       end
     end
 

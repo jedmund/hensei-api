@@ -70,11 +70,13 @@ class CharacterImageDownloadService
 
     variants = poses.map { |pose| "#{@character.granblue_id}_#{pose}" }
 
-    # Null-element characters have element-suffixed variants
+    # Null-element characters have element-suffixed variants with gender (0=Gran, 1=Djeeta)
     if @character.element&.zero?
       (1..6).each do |element|
         poses.each do |pose|
-          variants << "#{@character.granblue_id}_#{pose}_0#{element}"
+          (0..1).each do |gender|
+            variants << "#{@character.granblue_id}_#{pose}_0#{element}_#{gender}"
+          end
         end
       end
     end
