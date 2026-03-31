@@ -12,7 +12,7 @@ module Api
 
       fields :granblue_id, :character_id, :rarity,
              :element, :gender, :special, :season,
-             :style_swap
+             :style_swap, :gender_variants
 
       field :style_name do |c|
         {
