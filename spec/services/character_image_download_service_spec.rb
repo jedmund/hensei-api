@@ -78,7 +78,10 @@ RSpec.describe CharacterImageDownloadService do
 
     context 'null-element characters' do
       context 'without gender_variants' do
-        let(:null_element_char) { double('Character', granblue_id: '3040643000', flb: false, transcendence: false, element: 0, gender_variants?: false) }
+        let(:null_element_char) do
+          double('Character', granblue_id: '3040643000', flb: false,
+                              transcendence: false, element: 0, gender_variants?: false)
+        end
 
         it 'includes element-suffixed variants without gender' do
           result = described_class.new(null_element_char).download
@@ -91,7 +94,10 @@ RSpec.describe CharacterImageDownloadService do
       end
 
       context 'with gender_variants' do
-        let(:null_element_gendered) { double('Character', granblue_id: '3040643000', flb: false, transcendence: false, element: 0, gender_variants?: true) }
+        let(:null_element_gendered) do
+          double('Character', granblue_id: '3040643000', flb: false,
+                              transcendence: false, element: 0, gender_variants?: true)
+        end
 
         it 'includes element-suffixed variants with gender' do
           result = described_class.new(null_element_gendered).download
