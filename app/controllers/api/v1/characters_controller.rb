@@ -74,6 +74,7 @@ module Api
       def download_image
         size = params[:size]
         transformation = params[:transformation]
+        element = params[:element].present? ? params[:element].to_i : nil
         force = params[:force] == true
 
         # Validate size
@@ -88,6 +89,11 @@ module Api
           return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_entity
         end
 
+        # Validate element for null-element characters
+        if element.present? && !(1..6).cover?(element)
+          return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_entity
+        end
+
         begin
           downloader = Granblue::Downloaders::CharacterDownloader.new(
             @character.granblue_id,
@@ -99,6 +105,11 @@ module Api
           if transformation == 'style' || (@character.style_swap? && transformation.blank?)
             # Style swap: fetch from _st2 URL and store as _style
             downloader.send(:download_style_variant, size)
+          elsif element.present?
+            # Element variant for null-element characters: {id}_{pose}_0{element}
+            pose = transformation.present? ? transformation : '01'
+            variant_id = "#{@character.granblue_id}_#{pose}_0#{element}"
+            downloader.send(:download_variant, variant_id, size)
           else
             # Standard variant download
             variant_id = transformation.present? ? "#{@character.granblue_id}_#{transformation}" : "#{@character.granblue_id}_01"
@@ -111,6 +122,7 @@ module Api
             granblue_id: @character.granblue_id,
             size: size,
             transformation: transformation,
+            element: element,
             message: 'Image downloaded successfully'
           }
         rescue StandardError => e

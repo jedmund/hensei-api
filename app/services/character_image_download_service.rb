@@ -64,9 +64,21 @@ class CharacterImageDownloadService
   end
 
   def build_variants
-    variants = ["#{@character.granblue_id}_01", "#{@character.granblue_id}_02"]
-    variants << "#{@character.granblue_id}_03" if @character.flb
-    variants << "#{@character.granblue_id}_04" if @character.transcendence
+    poses = %w[01 02]
+    poses << '03' if @character.flb
+    poses << '04' if @character.transcendence
+
+    variants = poses.map { |pose| "#{@character.granblue_id}_#{pose}" }
+
+    # Null-element characters have element-suffixed variants
+    if @character.element&.zero?
+      (1..6).each do |element|
+        poses.each do |pose|
+          variants << "#{@character.granblue_id}_#{pose}_0#{element}"
+        end
+      end
+    end
+
     variants
   end
 
