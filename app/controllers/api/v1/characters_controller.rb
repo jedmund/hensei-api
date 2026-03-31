@@ -113,15 +113,19 @@ module Api
             downloader.send(:download_style_variant, size)
           else
             pose = transformation.present? ? transformation : '01'
-            variant_id = "#{@character.granblue_id}_#{pose}"
+            storage_id = "#{@character.granblue_id}_#{pose}"
+            storage_id = "#{storage_id}_0#{element}" if element.present?
+            storage_id = "#{storage_id}_#{gender}" if params[:gender].present?
 
-            # Add element suffix for null-element characters
-            variant_id = "#{variant_id}_0#{element}" if element.present?
-
-            # Add gender suffix when requested
-            variant_id = "#{variant_id}_#{gender}" if params[:gender].present?
-
-            downloader.send(:download_variant, variant_id, size)
+            if element.present?
+              # Element variants need remapping: internal element ID for storage, GBF ID for download
+              gbf_element = GranblueEnums::INTERNAL_TO_GBF_ELEMENT[element] || element
+              source_id = "#{@character.granblue_id}_#{pose}_0#{gbf_element}"
+              source_id = "#{source_id}_#{gender}" if params[:gender].present?
+              downloader.send(:download_remapped_variant, source_id, storage_id, size)
+            else
+              downloader.send(:download_variant, storage_id, size)
+            end
           end
 
           render json: {

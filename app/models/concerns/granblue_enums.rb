@@ -4,6 +4,17 @@ module GranblueEnums
   # Define constants for shared enum mappings.
   RARITIES = { R: 1, SR: 2, SSR: 3 }.freeze
   ELEMENTS = { Null: 0, Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6 }.freeze
+
+  # Maps internal element IDs to official GBF element IDs for image URLs.
+  # Internal: 0=Null, 1=Wind, 2=Fire, 3=Water, 4=Earth, 5=Dark, 6=Light
+  # GBF:      0=Null, 1=Fire, 2=Water, 3=Earth, 4=Wind, 5=Light, 6=Dark
+  INTERNAL_TO_GBF_ELEMENT = { 0 => 0, 1 => 4, 2 => 1, 3 => 2, 4 => 3, 5 => 6, 6 => 5 }.freeze
+
+  included do
+    def self.to_granblue_element(internal_element)
+      INTERNAL_TO_GBF_ELEMENT[internal_element] || internal_element
+    end
+  end
   GENDERS = { Unknown: 0, Male: 1, Female: 2, "Male/Female": 3 }.freeze
 
   # Single proficiency enum mapping used for both proficiency1 and proficiency2.
