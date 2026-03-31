@@ -70,19 +70,25 @@ class CharacterImageDownloadService
 
     variants = poses.map { |pose| "#{@character.granblue_id}_#{pose}" }
 
-    # Gender variants (Gran=_0, Djeeta=_1) for all characters
-    poses.each do |pose|
-      (0..1).each do |gender|
-        variants << "#{@character.granblue_id}_#{pose}_#{gender}"
+    # Gender variants (Gran=_0, Djeeta=_1) only when character has them
+    if @character.gender_variants?
+      poses.each do |pose|
+        (0..1).each do |gender|
+          variants << "#{@character.granblue_id}_#{pose}_#{gender}"
+        end
       end
     end
 
-    # Null-element characters have element-suffixed variants with gender (0=Gran, 1=Djeeta)
+    # Null-element characters have element-suffixed variants
     if @character.element&.zero?
       (1..6).each do |element|
         poses.each do |pose|
-          (0..1).each do |gender|
-            variants << "#{@character.granblue_id}_#{pose}_0#{element}_#{gender}"
+          if @character.gender_variants?
+            (0..1).each do |gender|
+              variants << "#{@character.granblue_id}_#{pose}_0#{element}_#{gender}"
+            end
+          else
+            variants << "#{@character.granblue_id}_#{pose}_0#{element}"
           end
         end
       end

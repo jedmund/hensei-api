@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_29_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_31_194038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -161,6 +161,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_29_120000) do
     t.string "style_name_en"
     t.string "style_name_jp"
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, transcendence_date)", stored: true
+    t.boolean "gender_variants", default: false, null: false
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_characters_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe CharacterImageDownloadService do
-  let(:character) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false, element: 1) }
+  let(:character) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false, element: 1, gender_variants?: false) }
   let(:downloader_double) { double('CharacterDownloader', download: nil) }
 
   before do
@@ -43,32 +43,72 @@ RSpec.describe CharacterImageDownloadService do
       end
     end
 
-    it 'counts total images across all sizes' do
-      result = described_class.new(character).download
-      sizes_count = Granblue::Downloaders::CharacterDownloader::SIZES.length
-      # 2 base poses + 2 poses * 2 genders = 6 variants * sizes
-      expect(result.total).to eq(6 * sizes_count)
+    context 'without gender_variants' do
+      it 'does not include gender suffixed files' do
+        result = described_class.new(character).download
+        main_files = result.images['main']
+        expect(main_files).not_to include('3040001000_01_0.jpg', '3040001000_01_1.jpg')
+      end
+
+      it 'counts only base variants' do
+        result = described_class.new(character).download
+        sizes_count = Granblue::Downloaders::CharacterDownloader::SIZES.length
+        # 2 base poses only
+        expect(result.total).to eq(2 * sizes_count)
+      end
     end
 
-    it 'includes gender variants for all characters' do
-      result = described_class.new(character).download
-      main_files = result.images['main']
-      expect(main_files).to include('3040001000_01_0.jpg', '3040001000_01_1.jpg')
-      expect(main_files).to include('3040001000_02_0.jpg', '3040001000_02_1.jpg')
+    context 'with gender_variants' do
+      let(:gendered_char) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false, element: 1, gender_variants?: true) }
+
+      it 'includes gender suffixed files' do
+        result = described_class.new(gendered_char).download
+        main_files = result.images['main']
+        expect(main_files).to include('3040001000_01_0.jpg', '3040001000_01_1.jpg')
+        expect(main_files).to include('3040001000_02_0.jpg', '3040001000_02_1.jpg')
+      end
+
+      it 'counts base + gender variants' do
+        result = described_class.new(gendered_char).download
+        sizes_count = Granblue::Downloaders::CharacterDownloader::SIZES.length
+        # 2 base poses + 2 poses * 2 genders = 6 variants
+        expect(result.total).to eq(6 * sizes_count)
+      end
     end
 
     context 'null-element characters' do
-      let(:null_element_char) { double('Character', granblue_id: '3040643000', flb: false, transcendence: false, element: 0) }
+      context 'without gender_variants' do
+        let(:null_element_char) do
+          double('Character', granblue_id: '3040643000', flb: false,
+                              transcendence: false, element: 0, gender_variants?: false)
+        end
 
-      it 'includes element-suffixed variants for all 6 elements and both genders' do
-        result = described_class.new(null_element_char).download
-        main_files = result.images['main']
-        # 2 base poses + 2 poses * 2 genders + 2 poses * 6 elements * 2 genders = 30 variants
-        expect(main_files.length).to eq(30)
-        expect(main_files).to include(
-          '3040643000_01_01_0.jpg', '3040643000_01_01_1.jpg',
-          '3040643000_02_06_0.jpg', '3040643000_02_06_1.jpg'
-        )
+        it 'includes element-suffixed variants without gender' do
+          result = described_class.new(null_element_char).download
+          main_files = result.images['main']
+          # 2 base poses + 2 poses * 6 elements = 14 variants
+          expect(main_files.length).to eq(14)
+          expect(main_files).to include('3040643000_01_01.jpg', '3040643000_02_06.jpg')
+          expect(main_files).not_to include('3040643000_01_01_0.jpg')
+        end
+      end
+
+      context 'with gender_variants' do
+        let(:null_element_gendered) do
+          double('Character', granblue_id: '3040643000', flb: false,
+                              transcendence: false, element: 0, gender_variants?: true)
+        end
+
+        it 'includes element-suffixed variants with gender' do
+          result = described_class.new(null_element_gendered).download
+          main_files = result.images['main']
+          # 2 base poses + 2 poses * 2 genders + 2 poses * 6 elements * 2 genders = 30 variants
+          expect(main_files.length).to eq(30)
+          expect(main_files).to include(
+            '3040643000_01_01_0.jpg', '3040643000_01_01_1.jpg',
+            '3040643000_02_06_0.jpg', '3040643000_02_06_1.jpg'
+          )
+        end
       end
     end
 
