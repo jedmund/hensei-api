@@ -90,7 +90,7 @@ module Api
         end
 
         # Validate element for null-element characters
-        if element.present? && !(1..6).include?(element)
+        if element.present? && !(1..6).cover?(element)
           return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_entity
         end
 
