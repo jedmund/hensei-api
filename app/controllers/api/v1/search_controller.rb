@@ -37,11 +37,11 @@ module Api
         exclude = search_params[:exclude]
 
         PgSearch.multisearch_options = { using: TRIGRAM }
-        results = PgSearch.multisearch(query).where.not(granblue_id: exclude).limit(10)
+        results = PgSearch.multisearch(query).where.not(granblue_id: exclude).includes(:searchable).limit(10)
 
         if (results.length < 5) && (query.length >= 2)
           PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
-          results = PgSearch.multisearch(query).where.not(granblue_id: exclude).limit(10)
+          results = PgSearch.multisearch(query).where.not(granblue_id: exclude).includes(:searchable).limit(10)
         end
 
         results
@@ -52,7 +52,7 @@ module Api
         exclude = search_params[:exclude]
 
         PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
-        PgSearch.multisearch(query).where.not(granblue_id: exclude).limit(10)
+        PgSearch.multisearch(query).where.not(granblue_id: exclude).includes(:searchable).limit(10)
       end
 
       def characters
