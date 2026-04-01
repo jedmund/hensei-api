@@ -117,6 +117,25 @@ RSpec.describe GridWeapon, type: :model do
         end
       end
 
+      describe '#no_duplicate_weapon_keys' do
+        let(:weapon_key) { create(:weapon_key) }
+
+        it 'rejects duplicate weapon keys' do
+          grid_weapon.weapon_key1 = weapon_key
+          grid_weapon.weapon_key2 = weapon_key
+          grid_weapon.validate
+          expect(grid_weapon.errors[:weapon_keys]).to include('cannot have duplicate keys')
+        end
+
+        it 'allows different weapon keys' do
+          weapon_key2 = create(:weapon_key)
+          grid_weapon.weapon_key1 = weapon_key
+          grid_weapon.weapon_key2 = weapon_key2
+          grid_weapon.validate
+          expect(grid_weapon.errors[:weapon_keys]).to be_empty
+        end
+      end
+
       describe '#no_conflicts' do
         context 'when there is a conflicting grid weapon in the party' do
           let(:limited_series) { create(:weapon_series) }
