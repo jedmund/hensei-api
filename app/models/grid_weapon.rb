@@ -60,6 +60,7 @@ class GridWeapon < ApplicationRecord
   validate :compatible_with_position
   validate :compatible_with_job_proficiency, on: :create
   validate :no_conflicts, on: :create
+  validate :no_duplicate_weapon_keys
 
   before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
@@ -274,6 +275,13 @@ class GridWeapon < ApplicationRecord
   def compatible_with_key
     weapon_keys.each do |key|
       errors.add(:weapon_keys, 'must be compatible with weapon') unless weapon.compatible_with_key?(key)
+    end
+  end
+
+  def no_duplicate_weapon_keys
+    key_ids = [weapon_key1_id, weapon_key2_id, weapon_key3_id, weapon_key4_id].compact
+    if key_ids.length != key_ids.uniq.length
+      errors.add(:weapon_keys, 'cannot have duplicate keys')
     end
   end
 
