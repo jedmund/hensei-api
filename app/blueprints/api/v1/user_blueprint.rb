@@ -55,6 +55,9 @@ module Api
       view :settings do
         include_view :minimal
         fields :email, :email_verified, :import_weapons, :default_import_visibility
+        field :has_crew do |user|
+          user.crew.present?
+        end
         field :has_stored_edit_keys do |user|
           user.user_edit_keys.any?
         end
