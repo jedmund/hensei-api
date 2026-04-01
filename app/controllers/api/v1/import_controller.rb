@@ -153,7 +153,7 @@ module Api
         ActiveRecord::Base.transaction do
           party = Party.create!(
             user: current_user,
-            visibility: current_user.default_import_visibility,
+            visibility: resolve_import_visibility(body),
             name: body['name'].presence,
             last_updated: Time.current
           )
@@ -170,7 +170,7 @@ module Api
           assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
         end
 
-        render json: { shortcode: party.shortcode }, status: :created
+        render json: { shortcode: party.shortcode, party_id: party.id }, status: :created
       rescue StandardError => e
         Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
@@ -311,6 +311,11 @@ module Api
       end
 
       private
+
+      def resolve_import_visibility(body)
+        vis = body['visibility'].to_i
+        [1, 2, 3].include?(vis) ? vis : current_user.default_import_visibility
+      end
 
       ##
       # Ensures the current user has admin role (role 9).
