@@ -72,7 +72,7 @@ module Api
       # Uses viewable_by? to check visibility including crew sharing.
       # Also allows access via edit_key for anonymous parties.
       def show
-        unless @party.viewable_by?(current_user) || !not_owner?
+        unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
           return render_unauthorized_response
         end
 

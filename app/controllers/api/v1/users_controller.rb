@@ -106,7 +106,7 @@ module Api
             base_query,
             params: params,
             current_user: current_user,
-            options: { skip_privacy: skip_privacy }
+            options: { skip_privacy: skip_privacy, admin_mode: admin_mode }
           ).build
           current_page_size = page_size
           parties = query.paginate(page: params[:page], per_page: current_page_size)
