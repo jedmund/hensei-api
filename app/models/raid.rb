@@ -2,6 +2,7 @@
 
 class Raid < ApplicationRecord
   belongs_to :group, class_name: 'RaidGroup', foreign_key: :group_id
+  has_many :user_raid_elements, dependent: :destroy
 
   # Validations
   validates :name_en, presence: true
@@ -23,6 +24,7 @@ class Raid < ApplicationRecord
       )
     end
   }
+  scope :trackable, -> { where(trackable: true) }
   scope :with_guidebooks, -> { joins(:group).where(raid_groups: { guidebooks: true }) }
   scope :ordered, -> { joins(:group).order('raid_groups.order ASC, raids.level DESC') }
 
