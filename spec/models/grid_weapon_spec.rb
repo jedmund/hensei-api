@@ -118,7 +118,7 @@ RSpec.describe GridWeapon, type: :model do
       end
 
       describe '#no_duplicate_weapon_keys' do
-        let(:weapon_key) { create(:weapon_key) }
+        let(:weapon_key) { create(:weapon_key, slot: 0) }
 
         it 'rejects duplicate weapon keys' do
           grid_weapon.weapon_key1 = weapon_key
@@ -128,9 +128,29 @@ RSpec.describe GridWeapon, type: :model do
         end
 
         it 'allows different weapon keys' do
-          weapon_key2 = create(:weapon_key)
+          weapon_key2 = create(:weapon_key, slot: 1)
           grid_weapon.weapon_key1 = weapon_key
           grid_weapon.weapon_key2 = weapon_key2
+          grid_weapon.validate
+          expect(grid_weapon.errors[:weapon_keys]).to be_empty
+        end
+      end
+
+      describe '#no_duplicate_weapon_key_slots' do
+        it 'rejects keys with the same slot in different positions' do
+          key_a = create(:weapon_key, slot: 1)
+          key_b = create(:weapon_key, slot: 1)
+          grid_weapon.weapon_key1 = key_a
+          grid_weapon.weapon_key2 = key_b
+          grid_weapon.validate
+          expect(grid_weapon.errors[:weapon_keys]).to include('cannot have multiple keys for the same slot')
+        end
+
+        it 'allows keys with different slots' do
+          key_a = create(:weapon_key, slot: 0)
+          key_b = create(:weapon_key, slot: 1)
+          grid_weapon.weapon_key1 = key_a
+          grid_weapon.weapon_key2 = key_b
           grid_weapon.validate
           expect(grid_weapon.errors[:weapon_keys]).to be_empty
         end

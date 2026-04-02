@@ -366,7 +366,7 @@ module Processors
                              .first
 
         if candidate
-          grid_weapon["weapon_key#{idx + 1}_id"] = candidate.id
+          grid_weapon["weapon_key#{candidate.slot + 1}_id"] = candidate.id
         else
           Rails.logger.warn "[WEAPON] No matching WeaponKey found for raw key #{skill_id} (mapping #{mapping_value}, series #{weapon_series.slug})"
         end

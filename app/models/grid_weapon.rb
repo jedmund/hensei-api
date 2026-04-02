@@ -61,6 +61,7 @@ class GridWeapon < ApplicationRecord
   validate :compatible_with_job_proficiency, on: :create
   validate :no_conflicts, on: :create
   validate :no_duplicate_weapon_keys
+  validate :no_duplicate_weapon_key_slots
 
   before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
@@ -282,6 +283,13 @@ class GridWeapon < ApplicationRecord
     key_ids = [weapon_key1_id, weapon_key2_id, weapon_key3_id, weapon_key4_id].compact
     if key_ids.length != key_ids.uniq.length
       errors.add(:weapon_keys, 'cannot have duplicate keys')
+    end
+  end
+
+  def no_duplicate_weapon_key_slots
+    slots = [weapon_key1, weapon_key2, weapon_key3, weapon_key4].compact.map(&:slot)
+    if slots.length != slots.uniq.length
+      errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
     end
   end
 

@@ -62,10 +62,10 @@ FactoryBot.define do
       after(:build) do |collection_weapon|
         # Use an Opus weapon since it supports keys
         collection_weapon.weapon = FactoryBot.create(:weapon, :opus)
-        # Create weapon keys that are compatible with Opus weapons
-        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key)
-        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :opus_key)
-        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :opus_key)
+        # Create weapon keys with distinct slots to avoid slot uniqueness validation
+        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key, slot: 0)
+        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :opus_key, slot: 1)
+        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :opus_key, slot: 2)
       end
     end
 
@@ -74,7 +74,7 @@ FactoryBot.define do
       with_keys
       after(:build) do |collection_weapon|
         # Opus weapon is already set by :with_keys trait
-        collection_weapon.weapon_key4 = FactoryBot.create(:weapon_key, :opus_key)
+        collection_weapon.weapon_key4 = FactoryBot.create(:weapon_key, :opus_key, slot: 3)
       end
     end
 
@@ -116,10 +116,10 @@ FactoryBot.define do
         collection_weapon.awakening = Awakening.where(object_type: 'Weapon').first ||
                                      FactoryBot.create(:awakening, object_type: 'Weapon')
         collection_weapon.awakening_level = 10
-        # Create keys compatible with Opus weapons
-        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key)
-        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :opus_key)
-        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :opus_key)
+        # Create keys with distinct slots compatible with Opus weapons
+        collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key, slot: 0)
+        collection_weapon.weapon_key2 = FactoryBot.create(:weapon_key, :opus_key, slot: 1)
+        collection_weapon.weapon_key3 = FactoryBot.create(:weapon_key, :opus_key, slot: 2)
       end
     end
   end
