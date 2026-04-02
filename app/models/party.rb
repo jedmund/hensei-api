@@ -314,11 +314,11 @@ class Party < ApplicationRecord
   #
   # @param user [User, nil] the user to check.
   # @return [Boolean] true if the user can view the party; false otherwise.
-  def viewable_by?(user)
+  def viewable_by?(user, admin_mode: false)
     return true if public?
     return true if unlisted?
     return true if user && user_id == user.id
-    return true if user&.admin?
+    return true if user&.admin? && admin_mode
     return true if user&.crew && shared_with_crew?(user.crew)
 
     false

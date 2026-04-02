@@ -142,10 +142,22 @@ RSpec.describe PartyQueryBuilder, type: :model do
     context 'as an admin' do
       let(:current_user) { create(:user, role: 9) }
 
-      it 'returns all parties including private ones' do
-        results = subject.build
-        expect(results).to include(public_party)
-        expect(results).to include(private_party)
+      context 'with admin_mode enabled' do
+        let(:options) { { admin_mode: true } }
+
+        it 'returns all parties including private ones' do
+          results = subject.build
+          expect(results).to include(public_party)
+          expect(results).to include(private_party)
+        end
+      end
+
+      context 'without admin_mode' do
+        it 'returns only public parties' do
+          results = subject.build
+          expect(results).to include(public_party)
+          expect(results).not_to include(private_party)
+        end
       end
     end
 

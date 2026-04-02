@@ -681,10 +681,16 @@ RSpec.describe Party, type: :model do
       expect(party.viewable_by?(nil)).to be false
     end
 
-    it 'returns true for an admin on a private party' do
+    it 'returns true for an admin with admin_mode on a private party' do
       admin = create(:user, role: 9)
       party = create(:party, user: owner, visibility: 3)
-      expect(party.viewable_by?(admin)).to be true
+      expect(party.viewable_by?(admin, admin_mode: true)).to be true
+    end
+
+    it 'returns false for an admin without admin_mode on a private party' do
+      admin = create(:user, role: 9)
+      party = create(:party, user: owner, visibility: 3)
+      expect(party.viewable_by?(admin)).to be false
     end
   end
 

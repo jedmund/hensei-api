@@ -72,8 +72,8 @@ class PartyQueryBuilder
     # then return the query unchanged.
     return query if @options[:skip_privacy]
 
-    # Admins can see everything
-    return query if @current_user&.admin?
+    # Admins can see everything when admin mode is active
+    return query if @current_user&.admin? && @options[:admin_mode]
 
     # Build conditions for what the user can see:
     # 1. Public parties (visibility = 1)

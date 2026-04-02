@@ -41,7 +41,7 @@ module PartyQueryingConcern
     PartyQueryBuilder.new(base_query,
                           params: params,
                           current_user: current_user,
-                          options: { apply_defaults: true }).build
+                          options: { apply_defaults: true, admin_mode: try(:admin_mode) }).build
   end
 
   # Returns a remixed party name based on the current party name and current_user language.
