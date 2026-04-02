@@ -105,6 +105,12 @@ class CollectionWeapon < ApplicationRecord
     if key_ids.length != key_ids.uniq.length
       errors.add(:weapon_keys, "cannot have duplicate keys")
     end
+
+    # Check for duplicate slots
+    slots = weapon_keys.map(&:slot)
+    if slots.length != slots.uniq.length
+      errors.add(:weapon_keys, "cannot have multiple keys for the same slot")
+    end
   end
 
   def validate_ax_skills
