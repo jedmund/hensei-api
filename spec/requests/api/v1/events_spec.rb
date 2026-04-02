@@ -50,6 +50,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
       {
         event: {
           name: 'New Event',
+          slug: 'new-event',
           event_type: 'unite_and_fight',
           start_time: 1.day.from_now.iso8601,
           end_time: 3.days.from_now.iso8601
@@ -63,6 +64,8 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(response).to have_http_status(:created)
       json = response.parsed_body
       expect(json['name']).to eq('New Event')
+      expect(json['slug']).to eq('new-event')
+      expect(json['banner_image']).to eq('images/events/new-event.png')
       expect(Event.count).to eq(1)
     end
 

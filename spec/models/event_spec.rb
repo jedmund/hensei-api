@@ -4,6 +4,8 @@ require 'rails_helper'
 
 RSpec.describe Event, type: :model do
   describe 'validations' do
+    subject { build(:event) }
+
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:event_type) }
     it { should validate_presence_of(:start_time) }
@@ -25,6 +27,44 @@ RSpec.describe Event, type: :model do
     it 'is valid when end_time is after start_time' do
       event = build(:event, start_time: 1.day.from_now, end_time: 3.days.from_now)
       expect(event).to be_valid
+    end
+
+    describe 'slug' do
+      it { should validate_uniqueness_of(:slug) }
+
+      it 'is invalid without a slug when name is also blank' do
+        event = build(:event, name: nil, slug: nil)
+        expect(event).not_to be_valid
+        expect(event.errors[:slug]).to include("can't be blank")
+      end
+
+      it 'is invalid with uppercase letters' do
+        event = build(:event, slug: 'My-Event')
+        expect(event).not_to be_valid
+        expect(event.errors[:slug]).to include('only allows lowercase letters, numbers, and hyphens')
+      end
+
+      it 'is invalid with spaces' do
+        event = build(:event, slug: 'my event')
+        expect(event).not_to be_valid
+      end
+
+      it 'is valid with lowercase letters, numbers, and hyphens' do
+        event = build(:event, slug: 'my-event-123')
+        expect(event).to be_valid
+      end
+
+      it 'auto-generates slug from name when blank' do
+        event = build(:event, name: 'Unite and Fight 2026', slug: nil)
+        event.valid?
+        expect(event.slug).to eq('unite-and-fight-2026')
+      end
+
+      it 'does not overwrite an existing slug' do
+        event = build(:event, name: 'Unite and Fight', slug: 'custom-slug')
+        event.valid?
+        expect(event.slug).to eq('custom-slug')
+      end
     end
   end
 
@@ -78,6 +118,13 @@ RSpec.describe Event, type: :model do
     it 'returns "past" for a finished event' do
       event = build(:event, start_time: 3.days.ago, end_time: 1.day.ago)
       expect(event.status).to eq('past')
+    end
+  end
+
+  describe '#banner_image_path' do
+    it 'returns the path based on slug' do
+      event = build(:event, slug: 'unite-and-fight-2026')
+      expect(event.banner_image_path).to eq('images/events/unite-and-fight-2026.png')
     end
   end
 end
