@@ -3,7 +3,11 @@
 module Api
   module V1
     class EventBlueprint < ApiBlueprint
-      fields :name, :event_type, :start_time, :end_time, :element, :banner_image, :created_at, :updated_at
+      fields :name, :slug, :event_type, :start_time, :end_time, :element, :created_at, :updated_at
+
+      field :banner_image do |event|
+        event.banner_image_path
+      end
 
       field :status do |event|
         event.status

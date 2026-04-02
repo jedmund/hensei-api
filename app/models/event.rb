@@ -14,17 +14,24 @@ class Event < ApplicationRecord
 
   enum :event_type, EVENT_TYPES
 
+  before_validation :generate_slug, if: -> { slug.blank? }
+
   validates :name, presence: true
   validates :event_type, presence: true
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :element, inclusion: { in: 0..6 }, allow_nil: true
+  validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9-]+\z/, message: 'only allows lowercase letters, numbers, and hyphens' }
   validate :end_time_after_start_time
 
   scope :current, -> { where('start_time <= ? AND end_time >= ?', Time.current, Time.current) }
   scope :upcoming, -> { where('start_time > ?', Time.current) }
   scope :past, -> { where('end_time < ?', Time.current) }
   scope :by_type, ->(type) { where(event_type: type) if type.present? }
+
+  def banner_image_path
+    "images/events/#{slug}.png"
+  end
 
   def status
     now = Time.current
@@ -38,6 +45,10 @@ class Event < ApplicationRecord
   end
 
   private
+
+  def generate_slug
+    self.slug = name.parameterize if name.present?
+  end
 
   def end_time_after_start_time
     return unless start_time.present? && end_time.present?

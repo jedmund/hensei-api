@@ -53,12 +53,10 @@ module Api
         return render json: { error: 'No image data provided' }, status: :unprocessable_entity if image_data.blank?
 
         decoded_image = Base64.decode64(image_data)
-        s3_key = "images/events/#{@event.id}.png"
+        s3_key = "images/events/#{@event.slug}.png"
 
         aws = AwsService.new
         aws.upload_stream(StringIO.new(decoded_image), s3_key)
-
-        @event.update!(banner_image: s3_key)
 
         render json: { success: true, url: s3_key }
       end
@@ -70,7 +68,7 @@ module Api
       end
 
       def event_params
-        params.require(:event).permit(:name, :event_type, :start_time, :end_time, :element, :banner_image)
+        params.require(:event).permit(:name, :slug, :event_type, :start_time, :end_time, :element)
       end
 
       def ensure_editor_role

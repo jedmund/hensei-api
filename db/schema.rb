@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_02_010000) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_02_020100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -403,10 +403,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_010000) do
     t.datetime "start_time", null: false
     t.datetime "end_time", null: false
     t.integer "element"
-    t.string "banner_image"
+    t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_type"], name: "index_events_on_event_type"
+    t.index ["slug"], name: "index_events_on_slug", unique: true
     t.index ["start_time", "end_time"], name: "index_events_on_start_time_and_end_time"
     t.index ["start_time"], name: "index_events_on_start_time"
   end
@@ -877,6 +878,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_010000) do
     t.bigint "quest_id"
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
+    t.boolean "trackable", default: false, null: false
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1030,6 +1032,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_010000) do
     t.datetime "created_at", null: false
     t.index ["user_id", "edit_key"], name: "index_user_edit_keys_on_user_id_and_edit_key", unique: true
     t.index ["user_id"], name: "index_user_edit_keys_on_user_id"
+  end
+
+  create_table "user_raid_elements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "raid_id", null: false
+    t.integer "element", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["raid_id"], name: "index_user_raid_elements_on_raid_id"
+    t.index ["user_id", "raid_id", "element"], name: "index_user_raid_elements_unique", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1349,6 +1361,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_02_010000) do
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
   add_foreign_key "summons", "summon_series"
   add_foreign_key "user_edit_keys", "users"
+  add_foreign_key "user_raid_elements", "raids"
+  add_foreign_key "user_raid_elements", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"
