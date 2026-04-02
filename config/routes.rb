@@ -145,6 +145,16 @@ Rails.application.routes.draw do
     end
     get 'raids/groups', to: 'raids#groups' # Legacy endpoint
 
+    # User raid elements (trackable raid coverage)
+    resources :user_raid_elements, only: [:index] do
+      collection do
+        put :sync
+      end
+    end
+
+    # View another user's raid elements (in existing user scope pattern)
+    get 'users/:user_id/raid_elements', to: 'user_raid_elements#for_user', user_id: /[^\/]+/
+
     get 'weapon_keys', to: 'weapon_keys#all'
     get 'weapon_keys/skill_map', to: 'weapon_keys#skill_map'
     resources :bullets, only: %i[index show create update destroy] do
