@@ -97,7 +97,7 @@ class PartyQueryBuilder
   def build_filters
     {
       element: build_element_filter,
-      raid_id: @params[:raid],
+      raid_id: resolve_raid_id,
       created_at: build_date_range,
       full_auto: build_option(@params[:full_auto]),
       auto_guard: build_option(@params[:auto_guard]),
@@ -114,6 +114,18 @@ class PartyQueryBuilder
 
     values = @params[:element].to_s.split(',').map(&:to_i)
     values.length == 1 ? values.first : values
+  end
+
+  # Resolves the raid parameter to a UUID.
+  # Accepts either a UUID directly or a slug (e.g. "proto-bahamut-hl").
+  UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
+
+  def resolve_raid_id
+    value = @params[:raid]
+    return nil unless value.present?
+    return value if value.match?(UUID_REGEX)
+
+    Raid.find_by(slug: value)&.id
   end
 
   # Returns a date range based on the 'recency' parameter.
