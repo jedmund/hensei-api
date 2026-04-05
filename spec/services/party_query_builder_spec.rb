@@ -31,12 +31,25 @@ RSpec.describe PartyQueryBuilder, type: :model do
       let(:raid) { create(:raid) }
       let!(:matching_party) { create(:party, raid: raid, visibility: 1) }
       let!(:other_party) { create(:party, visibility: 1) }
-      let(:params) { { raid: raid.id } }
 
-      it 'returns only parties for the specified raid' do
-        results = subject.build
-        expect(results).to include(matching_party)
-        expect(results).not_to include(other_party)
+      context 'by UUID' do
+        let(:params) { { raid: raid.id } }
+
+        it 'returns only parties for the specified raid' do
+          results = subject.build
+          expect(results).to include(matching_party)
+          expect(results).not_to include(other_party)
+        end
+      end
+
+      context 'by slug' do
+        let(:params) { { raid: raid.slug } }
+
+        it 'resolves the slug and returns matching parties' do
+          results = subject.build
+          expect(results).to include(matching_party)
+          expect(results).not_to include(other_party)
+        end
       end
     end
 
