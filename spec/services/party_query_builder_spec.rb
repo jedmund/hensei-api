@@ -181,11 +181,33 @@ RSpec.describe PartyQueryBuilder, type: :model do
         create(:party_share, party: shared_party, shareable: crew, shared_by: shared_party.user)
       end
 
-      it 'returns public parties and crew-shared parties' do
+      it 'returns public parties and crew-shared parties from other users' do
         results = subject.build
         expect(results).to include(public_party)
         expect(results).to include(shared_party)
         expect(results).not_to include(private_party)
+      end
+    end
+
+    context 'when user has their own non-public parties shared with crew' do
+      let(:crew) { create(:crew) }
+      let(:current_user) { create(:user, crew: crew) }
+      let!(:own_private_party) { create(:party, user: current_user, visibility: 3) }
+      let!(:own_unlisted_party) { create(:party, user: current_user, visibility: 2) }
+      let!(:own_public_party) { create(:party, user: current_user, visibility: 1) }
+
+      before do
+        create(:crew_membership, crew: crew, user: current_user) unless crew.crew_memberships.exists?(user: current_user)
+        create(:party_share, party: own_private_party, shareable: crew, shared_by: current_user)
+        create(:party_share, party: own_unlisted_party, shareable: crew, shared_by: current_user)
+      end
+
+      it 'excludes own private and unlisted parties even when crew-shared' do
+        results = subject.build
+        expect(results).to include(public_party)
+        expect(results).to include(own_public_party)
+        expect(results).not_to include(own_private_party)
+        expect(results).not_to include(own_unlisted_party)
       end
     end
   end
