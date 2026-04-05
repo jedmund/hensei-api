@@ -77,14 +77,13 @@ class PartyQueryBuilder
 
     # Build conditions for what the user can see:
     # 1. Public parties (visibility = 1)
-    # 2. Parties shared with their crew (if they're in a crew)
+    # 2. Crew-shared parties from other users (excludes own non-public parties)
     if @current_user&.crew
-      # User is in a crew - include public parties OR parties shared with their crew
-      query.where(<<-SQL.squish, 1, 'Crew', @current_user.crew.id)
-        visibility = ? OR parties.id IN (
+      query.where(<<-SQL.squish, 1, @current_user.id, 'Crew', @current_user.crew.id)
+        visibility = ? OR (parties.user_id != ? AND parties.id IN (
           SELECT party_id FROM party_shares
           WHERE shareable_type = ? AND shareable_id = ?
-        )
+        ))
       SQL
     else
       # User is not in a crew - only show public parties
