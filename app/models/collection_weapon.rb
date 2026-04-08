@@ -21,14 +21,15 @@ class CollectionWeapon < ApplicationRecord
 
   before_destroy :orphan_grid_items
   before_validation :set_default_exorcism_level, on: :create
+  before_validation :reset_awakening_level_without_awakening
 
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
 
-  validates :uncap_level, inclusion: { in: 0..6 }
-  validates :transcendence_step, inclusion: { in: 0..10 }
-  validates :awakening_level, inclusion: { in: 1..20 }
-  validates :exorcism_level, inclusion: { in: 0..5 }, allow_nil: true
+  validates :uncap_level, inclusion: { in: 0..6, message: "must be between 0 and 6" }
+  validates :transcendence_step, inclusion: { in: 0..10, message: "must be between 0 and 10" }
+  validates :awakening_level, inclusion: { in: 1..20, message: "must be between 1 and 20" }, allow_nil: true
+  validates :exorcism_level, inclusion: { in: 0..5, message: "must be between 0 and 5" }, allow_nil: true
 
   validate :validate_weapon_keys
   validate :validate_ax_skills
@@ -85,6 +86,10 @@ class CollectionWeapon < ApplicationRecord
   end
 
   private
+
+  def reset_awakening_level_without_awakening
+    self.awakening_level = 1 if awakening_id.blank?
+  end
 
   def validate_weapon_keys
     return unless weapon.present?
