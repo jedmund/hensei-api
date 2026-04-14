@@ -316,6 +316,7 @@ Rails.application.routes.draw do
 
       # Unified GW score import from game data
       post 'import_gw_scores', to: 'gw_score_imports#create'
+      post 'preview_gw_phantoms', to: 'gw_score_imports#preview'
 
       # Member/phantom GW score history
       get 'memberships/:id/gw_scores', to: 'crew_memberships#gw_scores'

@@ -61,6 +61,32 @@ module Api
         }, status: errors.empty? ? :created : :multi_status
       end
 
+      # POST /crew/preview_gw_phantoms
+      # Params: { granblue_ids: ["12345", "67890", ...] }
+      def preview
+        membership_map = build_membership_map
+        phantom_map = build_phantom_map
+
+        existing_phantom_ids = []
+        new_phantom_ids = []
+
+        params[:granblue_ids].each do |gbf_id|
+          id = gbf_id.to_s
+          next if membership_map[id]
+
+          if phantom_map[id]
+            existing_phantom_ids << id
+          else
+            new_phantom_ids << id
+          end
+        end
+
+        render json: {
+          existing_phantom_ids: existing_phantom_ids,
+          new_phantom_ids: new_phantom_ids
+        }
+      end
+
       private
 
       def set_crew
