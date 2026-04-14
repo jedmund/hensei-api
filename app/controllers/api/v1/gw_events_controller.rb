@@ -7,6 +7,21 @@ module Api
       before_action :require_admin!, only: %i[create update]
       before_action :set_event, only: %i[show update]
 
+      # GET /gw_events/status
+      def status
+        upcoming = GwEvent.upcoming.first
+
+        today = Time.current.in_time_zone('Asia/Tokyo').to_date
+        recent = GwEvent.where('start_date <= ? AND end_date >= ?', today, today)
+                        .order(start_date: :desc).first
+        recent ||= GwEvent.recently_ended.first
+
+        render json: {
+          upcoming: upcoming ? GwEventBlueprint.render_as_hash(upcoming) : nil,
+          recent: recent ? GwEventBlueprint.render_as_hash(recent) : nil
+        }
+      end
+
       # GET /gw_events
       def index
         events = GwEvent.order(start_date: :desc)

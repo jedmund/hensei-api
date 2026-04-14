@@ -18,6 +18,11 @@ class GwEvent < ApplicationRecord
   scope :upcoming, -> { where('start_date > ?', Date.current).order(start_date: :asc) }
   scope :past, -> { where('end_date < ?', Date.current).order(start_date: :desc) }
   scope :current, -> { where('start_date <= ? AND end_date >= ?', Date.current, Date.current) }
+  scope :recently_ended, lambda { |days: 7|
+    today = Time.current.in_time_zone('Asia/Tokyo').to_date
+    cutoff = today - days.days
+    where('end_date >= ? AND end_date < ?', cutoff, today).order(start_date: :desc)
+  }
 
   def active?
     start_date <= Date.current && end_date >= Date.current

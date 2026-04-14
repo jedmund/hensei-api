@@ -290,6 +290,9 @@ Rails.application.routes.draw do
 
     # GW Events (public read, admin write)
     resources :gw_events, only: %i[index show create update] do
+      collection do
+        get :status
+      end
       member do
         post :participations, to: 'crew_gw_participations#create'
       end
