@@ -311,6 +311,9 @@ Rails.application.routes.draw do
       post 'gw_events/:gw_event_id/individual_scores', to: 'gw_individual_scores#create_by_event'
       post 'gw_events/:gw_event_id/individual_scores/batch', to: 'gw_individual_scores#batch_by_event'
 
+      # Unified GW score import from game data
+      post 'import_gw_scores', to: 'gw_score_imports#create'
+
       # Member/phantom GW score history
       get 'memberships/:id/gw_scores', to: 'crew_memberships#gw_scores'
       get 'phantom_players/:id/gw_scores', to: 'phantom_players#gw_scores'
