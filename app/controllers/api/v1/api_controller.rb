@@ -26,7 +26,6 @@ module Api
       rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response_without_object
       rescue_from ActiveRecord::RecordNotSaved, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotUnique, with: :render_unprocessable_entity_response
-      rescue_from Api::V1::SameFavoriteUserError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::FavoriteAlreadyExistsError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::NoJobProvidedError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::TooManySkillsOfTypeError, with: :render_unprocessable_entity_response
