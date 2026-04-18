@@ -288,6 +288,20 @@ Rails.application.routes.draw do
     # Pending phantom claims for current user (outside crew context)
     get :pending_phantom_claims, to: 'phantom_claims#index'
 
+    # User raid elements (self-service)
+    resources :user_raid_elements, only: [:index] do
+      collection do
+        put :sync
+      end
+    end
+
+    # Events (public read, editor write)
+    resources :events, only: %i[index show create update destroy] do
+      member do
+        post :upload_banner
+      end
+    end
+
     # GW Events (public read, admin write)
     resources :gw_events, only: %i[index show create update] do
       collection do
@@ -323,10 +337,11 @@ Rails.application.routes.draw do
       get 'phantom_players/:id/gw_scores', to: 'phantom_players#gw_scores'
     end
 
-    # Reading user parties and playlists - scoped to a user
+    # Reading user parties, playlists, and raid elements - scoped to a user
     scope 'users/:user_id', user_id: /[^\/]+/ do
       resources :parties, only: [:index], controller: '/api/v1/user_parties'
       resources :playlists, only: [:index, :show], controller: '/api/v1/playlists'
+      get 'raid_elements', to: 'user_raid_elements#for_user'
     end
 
     # Writing playlists - requires auth

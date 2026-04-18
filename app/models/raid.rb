@@ -2,6 +2,9 @@
 
 class Raid < ApplicationRecord
   belongs_to :group, class_name: 'RaidGroup', foreign_key: :group_id
+  has_many :user_raid_elements, dependent: :destroy
+
+  scope :trackable, -> { where(trackable: true) }
 
   # Validations
   validates :name_en, presence: true
