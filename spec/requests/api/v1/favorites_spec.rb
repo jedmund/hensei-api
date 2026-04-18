@@ -27,15 +27,18 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
       expect(json['party']['id']).to eq(party.id)
     end
 
-    it 'returns error when favoriting own party' do
+    it 'allows favoriting your own party' do
       party = create(:party, user: user)
       expect {
         post '/api/v1/favorites',
              params: { favorite: { party_id: party.id } }.to_json,
              headers: auth_headers
-      }.not_to change(Favorite, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body['code']).to eq('same_favorite_user')
+      }.to change(Favorite, :count).by(1)
+      expect(response).to have_http_status(:created)
+
+      json = response.parsed_body['favorite']
+      expect(json['user']['id']).to eq(user.id)
+      expect(json['party']['id']).to eq(party.id)
     end
 
     it 'returns error when favorite already exists' do

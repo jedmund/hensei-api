@@ -10,7 +10,6 @@ module Api
         party = Party.find(party_id)
 
         raise Api::V1::UnauthorizedError unless current_user
-        raise Api::V1::SameFavoriteUserError if party.user && current_user.id == party.user.id
         raise Api::V1::FavoriteAlreadyExistsError if Favorite.where(user_id: current_user.id,
                                                                     party_id: party_id).length.positive?
 
