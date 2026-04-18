@@ -184,6 +184,46 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'description' do
+    it 'allows nil description' do
+      user = build(:user, description: nil)
+      expect(user).to be_valid
+    end
+
+    it 'allows blank description' do
+      user = build(:user, description: '')
+      expect(user).to be_valid
+    end
+
+    it 'allows a normal description' do
+      user = build(:user, description: 'I love making fire teams with Siegfried.')
+      expect(user).to be_valid
+    end
+
+    it 'rejects descriptions over 140 characters' do
+      user = build(:user, description: 'a' * 141)
+      expect(user).not_to be_valid
+      expect(user.errors[:description].join).to match(/too long/)
+    end
+
+    it 'allows descriptions at exactly 140 characters' do
+      user = build(:user, description: 'a' * 140)
+      expect(user).to be_valid
+    end
+
+    it 'rejects descriptions containing offensive English words' do
+      user = build(:user, description: 'hello asshole world')
+      expect(user).not_to be_valid
+      expect(user.errors[:description]).to include('contains inappropriate language')
+    end
+
+    it 'rejects descriptions containing offensive Japanese words' do
+      user = build(:user, description: 'よろしく アナル です')
+      expect(user).not_to be_valid
+      expect(user.errors[:description]).to include('contains inappropriate language')
+    end
+  end
+
   describe '#display_name_or_username' do
     it 'returns display_name when present' do
       user = build(:user, username: 'jedmund', display_name: 'Jed')
