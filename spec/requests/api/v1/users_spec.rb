@@ -76,6 +76,37 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.reload.language).to eq('ja')
     end
+
+    it 'persists a valid description' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'Fire team enjoyer.' } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.description).to eq('Fire team enjoyer.')
+    end
+
+    it 'does not persist a description that fails profanity validation' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'hello asshole world' } }.to_json,
+          headers: auth_headers
+      expect(user.reload.description).to be_nil
+    end
+
+    it 'does not persist a description over 140 characters' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'a' * 141 } }.to_json,
+          headers: auth_headers
+      expect(user.reload.description).to be_nil
+    end
+  end
+
+  describe 'GET /api/v1/users/info/:id description field' do
+    it 'exposes description on the user info payload' do
+      user.update!(description: 'Hello world')
+      get "/api/v1/users/info/#{user.username}"
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['description']).to eq('Hello world')
+    end
   end
 
   describe 'X-Extension-Version capture' do

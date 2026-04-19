@@ -42,6 +42,12 @@ class User < ApplicationRecord
             allow_nil: true,
             allow_blank: true
 
+  validates :description,
+            length: { maximum: 140 },
+            profanity: { languages: [:en, :ja], tier: :strict, message: 'contains inappropriate language' },
+            allow_nil: true,
+            allow_blank: true
+
   validates :email,
             presence: true,
             uniqueness: true,
