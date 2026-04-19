@@ -371,10 +371,10 @@ module Api
       # Assigns an explicitly selected raid to the party.
       #
       # @param party [Party] the party record.
-      # @param raid_id [String] the raid ID from the request body.
+      # @param raid_identifier [String] the raid UUID or slug from the request body.
       # @return [void]
-      def assign_raid(party, raid_id)
-        raid = Raid.find_by(id: raid_id)
+      def assign_raid(party, raid_identifier)
+        raid = Raid.find_by(id: raid_identifier) || Raid.find_by(slug: raid_identifier)
         return unless raid
 
         party.update!(raid: raid, extra: raid.group.extra)
