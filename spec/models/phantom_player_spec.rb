@@ -145,6 +145,26 @@ RSpec.describe PhantomPlayer, type: :model do
         expect(phantom_score.phantom_player).to be_nil
       end
     end
+
+    context 'joined_at transfer' do
+      it "copies the phantom's joined_at to the membership when earlier" do
+        earlier = 1.year.ago
+        phantom.update!(joined_at: earlier)
+        membership.update!(joined_at: 1.day.ago)
+
+        phantom.confirm_claim!(member)
+        expect(membership.reload.joined_at).to be_within(1.second).of(earlier)
+      end
+
+      it 'does not overwrite a membership joined_at that is already earlier' do
+        phantom.update!(joined_at: 1.day.ago)
+        older = 2.years.ago
+        membership.update!(joined_at: older)
+
+        phantom.confirm_claim!(member)
+        expect(membership.reload.joined_at).to be_within(1.second).of(older)
+      end
+    end
   end
 
   describe '#unassign!' do

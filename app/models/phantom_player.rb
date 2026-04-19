@@ -47,7 +47,7 @@ class PhantomPlayer < ApplicationRecord
 
     self.claim_confirmed = true
     self.deleted_at = Time.current
-    transfer_scores_to_membership!
+    transfer_to_membership!
     save!
   end
 
@@ -87,16 +87,19 @@ class PhantomPlayer < ApplicationRecord
     errors.add(:claim_confirmed, 'requires a claimed_by user')
   end
 
-  def transfer_scores_to_membership!
+  def transfer_to_membership!
     return unless claimed_by.present?
 
     membership = claimed_by.active_crew_membership
     return unless membership
 
-    # Transfer all phantom scores to the user's membership
     gw_individual_scores.update_all(
       crew_membership_id: membership.id,
       phantom_player_id: nil
     )
+
+    if joined_at.present? && (membership.joined_at.nil? || joined_at < membership.joined_at)
+      membership.update_columns(joined_at: joined_at)
+    end
   end
 end
