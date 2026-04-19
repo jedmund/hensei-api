@@ -114,7 +114,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
 
     it 'is a no-op when unauthenticated' do
-      get '/api/v1/users/info/' + user.username, headers: { 'X-Extension-Version' => '42' }
+      get "/api/v1/users/info/#{user.username}", headers: { 'X-Extension-Version' => '42' }
       expect(user.reload.last_extension_version).to be_nil
     end
   end
