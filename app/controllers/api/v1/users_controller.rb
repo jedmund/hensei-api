@@ -295,8 +295,8 @@ module Api
       def user_params
         params.require(:user).permit(
           :username, :email, :password, :password_confirmation, :display_name,
-          :granblue_id, :picture, :element, :language, :gender, :private, :theme, :show_gamertag,
-          :wiki_profile, :youtube, :collection_privacy,
+          :description, :granblue_id, :picture, :element, :language, :gender, :private,
+          :theme, :show_gamertag, :wiki_profile, :youtube, :collection_privacy,
           :import_weapons, :default_import_visibility, :simple_portraits,
           :default_rep_view, :timezone
         )

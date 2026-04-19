@@ -15,7 +15,7 @@ module Api
       end
 
       view :minimal do
-        fields :username, :display_name, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :wiki_profile, :youtube, :simple_portraits, :default_rep_view, :timezone
+        fields :username, :display_name, :description, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :wiki_profile, :youtube, :simple_portraits, :default_rep_view, :timezone
         # Return collection_privacy as integer (enum returns string by default)
         field :collection_privacy do |user|
           User.collection_privacies[user.collection_privacy]
@@ -54,7 +54,8 @@ module Api
       # Settings view includes all user data + email (only for authenticated user viewing own settings)
       view :settings do
         include_view :minimal
-        fields :email, :email_verified, :import_weapons, :default_import_visibility
+        fields :email, :email_verified, :import_weapons, :default_import_visibility,
+               :last_extension_version, :last_extension_version_at
         field :has_crew do |user|
           user.crew.present?
         end

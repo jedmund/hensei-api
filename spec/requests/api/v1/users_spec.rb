@@ -76,6 +76,78 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.reload.language).to eq('ja')
     end
+
+    it 'persists a valid description' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'Fire team enjoyer.' } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.description).to eq('Fire team enjoyer.')
+    end
+
+    it 'does not persist a description that fails profanity validation' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'hello asshole world' } }.to_json,
+          headers: auth_headers
+      expect(user.reload.description).to be_nil
+    end
+
+    it 'does not persist a description over 140 characters' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'a' * 141 } }.to_json,
+          headers: auth_headers
+      expect(user.reload.description).to be_nil
+    end
+  end
+
+  describe 'GET /api/v1/users/info/:id description field' do
+    it 'exposes description on the user info payload' do
+      user.update!(description: 'Hello world')
+      get "/api/v1/users/info/#{user.username}"
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['description']).to eq('Hello world')
+    end
+  end
+
+  describe 'X-Extension-Version capture' do
+    let(:version_headers) { auth_headers.merge('X-Extension-Version' => '42') }
+
+    it 'records the version on the user when the header is present' do
+      get '/api/v1/users/me', headers: version_headers
+      expect(response).to have_http_status(:ok)
+      user.reload
+      expect(user.last_extension_version).to eq('42')
+      expect(user.last_extension_version_at).to be_within(5.seconds).of(Time.current)
+    end
+
+    it 'does not refresh the timestamp on a same-version request within an hour' do
+      get '/api/v1/users/me', headers: version_headers
+      original_at = user.reload.last_extension_version_at
+
+      travel 5.minutes do
+        get '/api/v1/users/me', headers: version_headers
+      end
+
+      expect(user.reload.last_extension_version_at).to be_within(1.second).of(original_at)
+    end
+
+    it 'updates immediately when the version changes' do
+      get '/api/v1/users/me', headers: version_headers
+      get '/api/v1/users/me', headers: auth_headers.merge('X-Extension-Version' => '43')
+
+      user.reload
+      expect(user.last_extension_version).to eq('43')
+    end
+
+    it 'is a no-op when the header is missing' do
+      get '/api/v1/users/me', headers: auth_headers
+      expect(user.reload.last_extension_version).to be_nil
+    end
+
+    it 'is a no-op when unauthenticated' do
+      get "/api/v1/users/info/#{user.username}", headers: { 'X-Extension-Version' => '42' }
+      expect(user.reload.last_extension_version).to be_nil
+    end
   end
 
   describe 'POST /api/v1/check/email' do
