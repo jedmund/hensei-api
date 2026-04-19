@@ -26,7 +26,6 @@ module Api
       rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response_without_object
       rescue_from ActiveRecord::RecordNotSaved, with: :render_unprocessable_entity_response
       rescue_from ActiveRecord::RecordNotUnique, with: :render_unprocessable_entity_response
-      rescue_from Api::V1::SameFavoriteUserError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::FavoriteAlreadyExistsError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::NoJobProvidedError, with: :render_unprocessable_entity_response
       rescue_from Api::V1::TooManySkillsOfTypeError, with: :render_unprocessable_entity_response
@@ -60,6 +59,7 @@ module Api
       ##### Hooks
       before_action :current_user
       before_action :default_content_type
+      before_action :record_extension_version
       around_action :n_plus_one_detection, if: -> { Rails.env.development? }
 
       ##### Responders
@@ -89,6 +89,27 @@ module Api
         @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
 
         @current_user
+      end
+
+      # Capture the X-Extension-Version header on each request and persist it
+      # as the user's last-seen extension version. Debounced so we only write
+      # when the version changes or the timestamp is more than an hour stale.
+      def record_extension_version
+        return unless current_user
+
+        version = request.headers['X-Extension-Version'].presence
+        return unless version
+
+        last_at = current_user.last_extension_version_at
+        return if current_user.last_extension_version == version &&
+                  last_at && last_at > 1.hour.ago
+
+        current_user.update_columns(
+          last_extension_version: version,
+          last_extension_version_at: Time.current
+        )
+      rescue StandardError => e
+        Rails.logger.warn "[record_extension_version] #{e.class}: #{e.message}"
       end
 
       def admin_mode

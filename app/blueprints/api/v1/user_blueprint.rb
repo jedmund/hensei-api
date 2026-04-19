@@ -54,7 +54,8 @@ module Api
       # Settings view includes all user data + email (only for authenticated user viewing own settings)
       view :settings do
         include_view :minimal
-        fields :email, :email_verified, :import_weapons, :default_import_visibility
+        fields :email, :email_verified, :import_weapons, :default_import_visibility,
+               :last_extension_version, :last_extension_version_at
         field :has_crew do |user|
           user.crew.present?
         end

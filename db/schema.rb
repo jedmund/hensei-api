@@ -1073,6 +1073,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_18_160058) do
     t.boolean "simple_portraits", default: false, null: false
     t.string "default_rep_view", default: "weapons", null: false
     t.string "timezone"
+    t.string "last_extension_version"
+    t.datetime "last_extension_version_at"
     t.string "description", limit: 140
     t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
