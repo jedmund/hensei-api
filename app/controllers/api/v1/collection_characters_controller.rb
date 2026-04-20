@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_character_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import check_updates]
       before_action :set_collection_character_for_write, only: %i[update destroy]
 
       def index
@@ -192,6 +192,24 @@ module Api
           skipped: result.skipped.size,
           errors: result.errors
         }, status: status
+      end
+
+      # POST /collection/characters/check_updates
+      # Returns field-level diffs for already-owned characters that differ from the
+      # state that the real import would apply. Accepts both the game inventory
+      # format and the extension stats format. Non-owned characters are skipped.
+      #
+      # @param data [Hash] Game data containing character list
+      # @return [JSON] { updates: [{ granblue_id, changes: [...] }, ...] }
+      def check_updates
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = CharacterImportService.new(current_user, game_data)
+        render json: { updates: service.preview_updates }
       end
 
       private

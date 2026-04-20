@@ -162,6 +162,18 @@ module Api
         render json: WeaponBlueprint.render(@weapon, view: :raw)
       end
 
+      # GET /weapons/element_variants
+      # Returns the variant-ID map for every element-changeable weapon.
+      # Consumed by the extension to fall back to base images when a game
+      # variant thumbnail is missing from the image bucket.
+      def element_variants
+        weapons = Weapon
+                  .joins(:weapon_series)
+                  .where(weapon_series: { element_changeable: true })
+                  .where.not(element_variant_ids: nil)
+        render json: WeaponBlueprint.render(weapons, view: :variants)
+      end
+
       # POST /weapons/batch_preview
       # Fetches wiki data and suggestions for multiple wiki page names
       def batch_preview

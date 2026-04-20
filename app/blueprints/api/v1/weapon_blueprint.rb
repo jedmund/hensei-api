@@ -67,6 +67,16 @@ module Api
                  :forge_order, :extra, :series, :promotion_names
       end
 
+      # Minimal view for the element-variant lookup endpoint.
+      # Retains only granblue_id and element_variant_ids — consumed by the
+      # extension to map variant game-ids back to base granblue_ids.
+      view :variants do
+        excludes :name, :element, :proficiency, :max_level, :max_skill_level,
+                 :max_awakening_level, :max_exorcism_level, :limit, :rarity,
+                 :gacha, :promotions, :forge_order, :extra, :series,
+                 :promotion_names, :uncap, :bullet_slots
+      end
+
       view :stats do
         field :hp do |w|
           {

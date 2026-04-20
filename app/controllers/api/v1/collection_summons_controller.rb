@@ -7,7 +7,7 @@ module Api
       before_action :set_collection_summon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts check_updates]
       before_action :set_collection_summon_for_write, only: %i[update destroy]
 
       def index
@@ -256,6 +256,23 @@ module Api
         end
 
         render json: { conflicts: conflicts }
+      end
+
+      # POST /collection/summons/check_updates
+      # Returns field-level diffs for already-owned summons that differ from the
+      # state that the real import would apply. Non-owned summons are skipped.
+      #
+      # @param data [Hash] Game data containing summon list
+      # @return [JSON] { updates: [{ game_id, granblue_id, changes: [...] }, ...] }
+      def check_updates
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = SummonImportService.new(current_user, game_data)
+        render json: { updates: service.preview_updates }
       end
 
       private
