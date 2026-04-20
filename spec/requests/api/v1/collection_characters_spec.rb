@@ -134,8 +134,24 @@ RSpec.describe 'Collection Characters API', type: :request do
       expect(returned_ids).not_to include(owned_char.id)
     end
 
-    it 'returns 403 when requesting another user\'s unowned characters' do
+    it 'returns unowned characters when requesting another user with public collection' do
+      owned_char = create(:character)
+      unowned_char = create(:character)
+      create(:collection_character, user: other_user, character: owned_char)
+
       get "/api/v1/users/#{other_user.id}/collection/characters", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(unowned_char.id)
+      expect(returned_ids).not_to include(owned_char.id)
+    end
+
+    it 'returns 403 when requesting unowned characters from a private collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+
+      get "/api/v1/users/#{private_user.id}/collection/characters", params: { unowned: true }, headers: headers
 
       expect(response).to have_http_status(:forbidden)
     end
