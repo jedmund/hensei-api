@@ -609,4 +609,91 @@ RSpec.describe CharacterImportService, type: :service do
       end
     end
   end
+
+  describe '#preview_updates' do
+    def game_item(granblue_id:, game_id:, evolution: '4', phase: '0', arousal_level: 1)
+      {
+        'master' => { 'id' => granblue_id },
+        'param' => {
+          'id' => game_id,
+          'evolution' => evolution,
+          'phase' => phase,
+          'arousal_level' => arousal_level
+        }
+      }
+    end
+
+    context 'game inventory format' do
+      it 'returns an empty array when the record is unchanged' do
+        described_class.new(user, { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 1, evolution: '4')] }).import
+
+        updates = described_class.new(
+          user,
+          { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 1, evolution: '4')] }
+        ).preview_updates
+
+        expect(updates).to be_empty
+      end
+
+      it 'surfaces an uncap_level change' do
+        described_class.new(user, { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 2, evolution: '3')] }).import
+
+        updates = described_class.new(
+          user,
+          { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 3, evolution: '5')] }
+        ).preview_updates
+
+        expect(updates.size).to eq(1)
+        entry = updates.first
+        expect(entry[:granblue_id]).to eq(standard_character.granblue_id)
+        uncap_change = entry[:changes].find { |c| c[:field] == 'uncap_level' }
+        expect(uncap_change[:before][:raw]).to eq(3)
+        expect(uncap_change[:after][:raw]).to eq(5)
+      end
+
+      it 'skips characters the user does not own' do
+        updates = described_class.new(
+          user,
+          { 'list' => [game_item(granblue_id: flb_character.granblue_id, game_id: 99)] }
+        ).preview_updates
+
+        expect(updates).to be_empty
+      end
+    end
+
+    context 'extension stats format' do
+      before do
+        # Seed an owned character
+        described_class.new(user, { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 10, evolution: '4')] }).import
+      end
+
+      it 'surfaces a ring change' do
+        stats_item = {
+          'granblue_id' => standard_character.granblue_id,
+          'ring1' => { 'modifier' => 5, 'strength' => 10 }
+        }
+
+        updates = described_class.new(user, { 'list' => [stats_item] }).preview_updates
+
+        expect(updates.size).to eq(1)
+        fields = updates.first[:changes].map { |c| c[:field] }
+        expect(fields).to include('ring1')
+      end
+
+      it 'surfaces a perpetuity change' do
+        stats_item = {
+          'granblue_id' => standard_character.granblue_id,
+          'perpetuity' => true
+        }
+
+        updates = described_class.new(user, { 'list' => [stats_item] }).preview_updates
+
+        expect(updates.size).to eq(1)
+        perp = updates.first[:changes].find { |c| c[:field] == 'perpetuity' }
+        expect(perp).to be_present
+        expect(perp[:before][:raw]).to be false
+        expect(perp[:after][:raw]).to be true
+      end
+    end
+  end
 end

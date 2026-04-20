@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
         post 'batch_preview'
+        get 'element_variants'
       end
       member do
         post 'download_image'
@@ -353,6 +354,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :check_updates
         end
       end
       resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons' do
@@ -362,6 +364,7 @@ Rails.application.routes.draw do
           post :import
           post :preview_sync
           post :check_conflicts
+          post :check_updates
         end
       end
       resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
@@ -371,6 +374,7 @@ Rails.application.routes.draw do
           post :import
           post :preview_sync
           post :check_conflicts
+          post :check_updates
         end
       end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',

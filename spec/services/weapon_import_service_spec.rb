@@ -902,4 +902,78 @@ RSpec.describe WeaponImportService, type: :service do
       end
     end
   end
+
+  describe '#preview_updates' do
+    def weapon_item(game_id:, image_id:, evolution: '5', phase: '0')
+      {
+        'param' => {
+          'id' => game_id.to_s,
+          'image_id' => image_id,
+          'evolution' => evolution,
+          'phase' => phase,
+          'arousal' => { 'is_arousal_weapon' => false },
+          'odiant' => { 'is_odiant_weapon' => false }
+        },
+        'master' => { 'id' => image_id }
+      }
+    end
+
+    it 'returns an empty array when the record is unchanged' do
+      described_class.new(user, { 'list' => [weapon_item(game_id: 'w1', image_id: standard_weapon.granblue_id, evolution: '4')] }).import
+
+      updates = described_class.new(
+        user,
+        { 'list' => [weapon_item(game_id: 'w1', image_id: standard_weapon.granblue_id, evolution: '4')] }
+      ).preview_updates
+
+      expect(updates).to be_empty
+    end
+
+    it 'surfaces an uncap_level change' do
+      described_class.new(user, { 'list' => [weapon_item(game_id: 'w2', image_id: standard_weapon.granblue_id, evolution: '3')] }).import
+
+      updates = described_class.new(
+        user,
+        { 'list' => [weapon_item(game_id: 'w2', image_id: standard_weapon.granblue_id, evolution: '5')] }
+      ).preview_updates
+
+      expect(updates.size).to eq(1)
+      entry = updates.first
+      expect(entry[:game_id]).to eq('w2')
+      expect(entry[:granblue_id]).to eq(standard_weapon.granblue_id)
+
+      uncap_change = entry[:changes].find { |c| c[:field] == 'uncap_level' }
+      expect(uncap_change).to be_present
+      expect(uncap_change[:label]).to eq('Uncap')
+      expect(uncap_change[:before][:raw]).to eq(3)
+      expect(uncap_change[:after][:raw]).to eq(5)
+    end
+
+    it 'skips items the user does not own' do
+      updates = described_class.new(
+        user,
+        { 'list' => [weapon_item(game_id: 'w3', image_id: standard_weapon.granblue_id)] }
+      ).preview_updates
+
+      expect(updates).to be_empty
+    end
+
+    it 'surfaces an awakening change' do
+      item_no_awakening = weapon_item(game_id: 'w4', image_id: awakened_weapon.granblue_id, evolution: '5')
+      described_class.new(user, { 'list' => [item_no_awakening] }).import
+
+      item_awakened = weapon_item(game_id: 'w4', image_id: awakened_weapon.granblue_id, evolution: '5')
+      item_awakened['param']['arousal'] = {
+        'is_arousal_weapon' => true,
+        'level' => 10,
+        'form' => 1
+      }
+
+      updates = described_class.new(user, { 'list' => [item_awakened] }).preview_updates
+
+      expect(updates.size).to eq(1)
+      fields = updates.first[:changes].map { |c| c[:field] }
+      expect(fields).to include('awakening_id', 'awakening_level')
+    end
+  end
 end

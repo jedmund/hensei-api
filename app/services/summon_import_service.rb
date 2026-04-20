@@ -99,6 +99,48 @@ class SummonImportService
     )
   end
 
+  ##
+  # Dry-run: returns the diff that `import` (with update_existing: true) would apply
+  # to each already-owned CollectionSummon. Non-owned summons are skipped.
+  #
+  # @return [Array<Hash>] one entry per changed record: { game_id:, granblue_id:, changes: [...] }
+  def preview_updates
+    items = extract_items
+    return [] if items.empty?
+
+    updates = []
+
+    items.each do |item|
+      param = item['param'] || {}
+      master = item['master'] || {}
+
+      game_id = param['id']
+      next unless game_id.present?
+
+      image_id = param['image_id'].to_s.split('_').first if param['image_id'].present?
+      granblue_id = image_id || master['id']
+      next unless granblue_id.present?
+
+      summon = find_summon(granblue_id)
+      next unless summon
+
+      existing = @user.collection_summons.find_by(game_id: game_id.to_s)
+      next unless existing
+
+      attrs = build_collection_summon_attrs(item, summon)
+      existing.assign_attributes(attrs)
+      next if existing.changes.empty?
+
+      updates << {
+        game_id: game_id.to_s,
+        granblue_id: summon.granblue_id,
+        changes: CollectionImport::ChangeFormatter.format(existing.changes)
+      }
+    end
+
+    updates
+  end
+
   private
 
   def extract_items
