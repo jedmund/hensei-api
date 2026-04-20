@@ -12,8 +12,6 @@ module Api
 
       def index
         if params[:unowned].present?
-          return head :forbidden unless current_user && @target_user.id == current_user.id
-
           owned_ids = @target_user.collection_weapons.select(:weapon_id).distinct
           @weapons = Weapon.where.not(id: owned_ids)
                            .includes(:weapon_series, :weapon_series_variant)

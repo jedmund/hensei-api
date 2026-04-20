@@ -106,8 +106,24 @@ RSpec.describe 'Collection Summons API', type: :request do
       expect(json['meta']['count']).to eq(0)
     end
 
-    it 'returns 403 when requesting another user\'s unowned summons' do
+    it 'returns unowned summons when requesting another user with public collection' do
+      owned_smn = create(:summon)
+      unowned_smn = create(:summon)
+      create(:collection_summon, user: other_user, summon: owned_smn)
+
       get "/api/v1/users/#{other_user.id}/collection/summons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).to include(unowned_smn.id)
+      expect(returned_ids).not_to include(owned_smn.id)
+    end
+
+    it 'returns 403 when requesting unowned summons from a private collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+
+      get "/api/v1/users/#{private_user.id}/collection/summons", params: { unowned: true }, headers: headers
 
       expect(response).to have_http_status(:forbidden)
     end
