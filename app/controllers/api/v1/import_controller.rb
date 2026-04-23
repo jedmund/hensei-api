@@ -115,7 +115,7 @@ module Api
         20 => 'robur'
       }.freeze
 
-      before_action :ensure_admin_role, only: %i[weapons summons characters]
+      before_action :ensure_editor_role, only: %i[weapons summons characters]
 
       ##
       # Processes an import request.
@@ -318,15 +318,15 @@ module Api
       end
 
       ##
-      # Ensures the current user has admin role (role 9).
-      # Renders an error if the user is not an admin.
+      # Ensures the current user has editor role (role >= 7).
+      # Renders an error if the user is not an editor.
       #
       # @return [void]
-      def ensure_admin_role
-        return if current_user&.role == 9
+      def ensure_editor_role
+        return if current_user&.role && current_user.role >= 7
 
-        Rails.logger.error "[IMPORT] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized' }, status: :unauthorized
+        Rails.logger.warn "[IMPORT] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
       end
 
       ##
