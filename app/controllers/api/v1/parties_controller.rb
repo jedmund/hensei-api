@@ -237,6 +237,7 @@ module Api
                                  remix: true }
         new_party.local_id = party_params[:local_id] if party_params
         new_party.last_updated = Time.current
+        new_party._source_party_for_remap = @party
         if new_party.save
           new_party.schedule_preview_generation
           render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
@@ -430,7 +431,11 @@ module Api
       def set_from_slug
         @party = Party.includes(
           :user, :job, { raid: :group },
-          { characters: [{ character: [:character_series_records, :style_swap_variants] }, :awakening, :grid_artifact, :collection_character] },
+          { characters: [
+            { character: [:character_series_records, :style_swap_variants] },
+            :awakening, :grid_artifact, :collection_character, :role,
+            { substitutions: :substitute_grid }
+          ] },
           { weapons: {
             weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character, :base_weapon, :forge_chain_weapons],
             collection_weapon: { collection_weapon_bullets: {} },
@@ -441,9 +446,11 @@ module Api
             ax_modifier1: {},
             ax_modifier2: {},
             befoulment_modifier: {},
-            grid_weapon_bullets: :bullet
+            grid_weapon_bullets: :bullet,
+            role: {},
+            substitutions: :substitute_grid
           } },
-          { summons: [{ summon: :summon_series }, :collection_summon] },
+          { summons: [{ summon: :summon_series }, :collection_summon, :role, { substitutions: :substitute_grid }] },
           :guidebook1, :guidebook2, :guidebook3,
           { source_party: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
           { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
