@@ -899,6 +899,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_000000) do
     t.integer "sort_order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "icon_key"
     t.index ["slot_type"], name: "index_roles_on_slot_type"
   end
 

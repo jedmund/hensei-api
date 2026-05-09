@@ -105,6 +105,10 @@ class User < ApplicationRecord
     role == 9
   end
 
+  def editor?
+    role.to_i >= 7
+  end
+
   def blueprint
     UserBlueprint
   end
