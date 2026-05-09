@@ -25,9 +25,15 @@ module Api
         raise CrewErrors::CannotInviteSelfError if user.id == current_user.id
         raise CrewErrors::AlreadyInCrewError if user.crew.present?
 
-        # Check for existing pending invitation
+        # Check for an existing pending invitation. Stale records still carry
+        # status :pending until something flips them, so transition expired ones
+        # before letting a fresh invite through.
         existing = @crew.crew_invitations.pending.find_by(user: user)
-        raise CrewErrors::UserAlreadyInvitedError if existing
+        if existing
+          raise CrewErrors::UserAlreadyInvitedError if existing.active?
+
+          existing.update!(status: :expired)
+        end
 
         invitation = @crew.crew_invitations.build(
           user: user,

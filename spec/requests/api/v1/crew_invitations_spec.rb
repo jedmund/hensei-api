@@ -108,6 +108,24 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
         expect(json['code']).to eq('user_already_invited')
       end
 
+      it 'allows a fresh invite when the previous one expired' do
+        stale = create(:crew_invitation,
+                       crew: crew,
+                       user: invitee,
+                       invited_by: user,
+                       status: :pending,
+                       expires_at: 1.day.ago)
+
+        expect {
+          post "/api/v1/crews/#{crew.id}/invitations",
+               params: { user_id: invitee.id },
+               headers: auth_headers
+        }.to change(CrewInvitation, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        expect(stale.reload.status).to eq('expired')
+      end
+
       context 'with phantom_player_id' do
         let!(:phantom) { create(:phantom_player, crew: crew) }
 
