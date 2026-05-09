@@ -56,7 +56,14 @@ Rails.application.routes.draw do
     end
     resources :favorites, only: [:create]
     resources :substitutions, only: %i[create update destroy]
-    get 'roles', to: 'roles#index'
+    resources :roles, only: %i[index show create update destroy] do
+      collection do
+        post 'reorder'
+      end
+      member do
+        post 'upload_icon'
+      end
+    end
 
     get 'version', to: 'api#version'
 
