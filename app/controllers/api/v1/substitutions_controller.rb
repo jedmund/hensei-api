@@ -16,10 +16,15 @@ module Api
         item_id = substitution_params[:item_id]
         position = substitution_params[:position] || next_position(grid_type, grid_id)
 
-        grid_item = grid_type.constantize.find(grid_id)
+        grid_class = grid_class_for(grid_type)
+        return render json: { error: "invalid grid_type: #{grid_type}" }, status: :unprocessable_entity unless grid_class
+
+        grid_item = grid_class.where(party: @party).find_by(id: grid_id)
+        return render_not_found_response('grid item') unless grid_item
+
         item_fk = item_foreign_key(grid_type)
 
-        substitute = grid_type.constantize.create!(
+        substitute = grid_class.create!(
           party: @party,
           item_fk => item_id,
           position: grid_item.position,
@@ -64,7 +69,9 @@ module Api
       end
 
       def set_substitution
-        @substitution = Substitution.find(params[:id])
+        @substitution = Substitution.find_by(id: params[:id])
+        # Treat cross-party access as not-found to avoid leaking which ids exist.
+        render_not_found_response('substitution') if @substitution.nil? || @substitution.grid&.party_id != @party.id
       end
 
       def substitution_params
@@ -85,6 +92,13 @@ module Api
 
       def item_foreign_key(grid_type)
         GRID_TYPE_FOREIGN_KEYS[grid_type]
+      end
+
+      # Allowlist gate so attacker-supplied grid_type can't load arbitrary classes.
+      def grid_class_for(grid_type)
+        return nil unless GRID_TYPE_FOREIGN_KEYS.key?(grid_type)
+
+        grid_type.constantize
       end
     end
   end

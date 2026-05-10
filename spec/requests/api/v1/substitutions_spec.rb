@@ -198,4 +198,67 @@ RSpec.describe 'Substitutions API', type: :request do
       expect(GridWeapon.exists?(grid_weapon.id)).to be true
     end
   end
+
+  describe 'cross-party access' do
+    let(:other_party) { create(:party, user: user) }
+    let(:foreign_grid_weapon) { create(:grid_weapon, party: other_party, weapon: weapon) }
+    let(:foreign_sub_weapon) { create(:grid_weapon, party: other_party, weapon: other_weapon, is_substitute: true) }
+    let(:foreign_substitution) do
+      create(:substitution, grid: foreign_grid_weapon, substitute_grid: foreign_sub_weapon, position: 0)
+    end
+
+    it 'rejects creating a substitution against a grid item from another party' do
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridWeapon',
+          grid_id: foreign_grid_weapon.id,
+          item_id: other_weapon.id
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'rejects updating a substitution that belongs to another party' do
+      put "/api/v1/substitutions/#{foreign_substitution.id}",
+          params: { substitution: { party_id: party.id, position: 5 } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'rejects destroying a substitution that belongs to another party' do
+      foreign_substitution # ensure created
+
+      expect do
+        delete "/api/v1/substitutions/#{foreign_substitution.id}",
+               params: { substitution: { party_id: party.id } }.to_json,
+               headers: headers
+      end.not_to change(Substitution, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'invalid grid_type' do
+    it 'returns 422 for an unrecognized grid_type' do
+      grid_weapon = create(:grid_weapon, party: party, weapon: weapon)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'Object',
+          grid_id: grid_weapon.id,
+          item_id: other_weapon.id
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end
