@@ -586,9 +586,9 @@ module Api
           :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,
           :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :awakening_id, :awakening_level,
-          :role_id, :substitution_note,
+          :role_id,
           bullets: [:position, :bullet_id]
-        )
+        ).then { |p| permit_substitution_note(p, params[:weapon]) }
       end
 
       ##

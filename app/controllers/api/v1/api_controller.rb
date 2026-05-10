@@ -198,6 +198,18 @@ module Api
         raise UnauthorizedError unless current_user
       end
 
+      # Strong params can't deeply permit arbitrary nested JSON, so accept the
+      # rich-text Tiptap doc by re-attaching the raw value (hash, string, or nil)
+      # after the standard `permit` call.
+      def permit_substitution_note(permitted, raw_params)
+        return permitted unless raw_params.is_a?(ActionController::Parameters) || raw_params.is_a?(Hash)
+        return permitted unless raw_params.key?(:substitution_note)
+
+        value = raw_params[:substitution_note]
+        permitted[:substitution_note] = value.is_a?(ActionController::Parameters) ? value.to_unsafe_h : value
+        permitted
+      end
+
       # Returns the requested page size within valid bounds
       # Falls back to default if not specified or invalid
       # Reads from X-Per-Page header

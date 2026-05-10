@@ -447,4 +447,32 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  describe 'rich-text substitution_note round-trip' do
+    let(:tiptap_doc) do
+      {
+        'type' => 'doc',
+        'content' => [
+          {
+            'type' => 'paragraph',
+            'content' => [
+              { 'type' => 'text', 'marks' => [{ 'type' => 'bold' }], 'text' => 'Swap' },
+              { 'type' => 'text', 'text' => ' for fire teams' }
+            ]
+          }
+        ]
+      }
+    end
+
+    it 'persists and reads back a Tiptap document on substitution_note' do
+      grid_character = create(:grid_character, party: party)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { substitution_note: tiptap_doc } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.substitution_note).to eq(tiptap_doc)
+    end
+  end
 end

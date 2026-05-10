@@ -579,11 +579,10 @@ module Api
           :transcendence_step,
           :perpetuity,
           :role_id,
-          :substitution_note,
           awakening: %i[id level],
           rings: %i[modifier strength],
           earring: %i[modifier strength]
-        )
+        ).then { |p| permit_substitution_note(p, params[:character]) }
       end
 
       ##

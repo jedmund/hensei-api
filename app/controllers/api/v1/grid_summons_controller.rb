@@ -521,10 +521,11 @@ module Api
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
-                                       :position, :main, :friend, :quick_summon,
-                                       :uncap_level, :transcendence_step,
-                                       :role_id, :substitution_note)
+        permitted = params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
+                                                   :position, :main, :friend, :quick_summon,
+                                                   :uncap_level, :transcendence_step,
+                                                   :role_id)
+        permit_substitution_note(permitted, params[:summon])
       end
 
       ##
