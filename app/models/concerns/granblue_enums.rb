@@ -40,7 +40,11 @@ module GranblueEnums
     Draph: 3,
     Harvin: 4,
     Primal: 5,
-    None: 6
+    None: 6,
+    Geonoid: 7,
+    Levleath: 8,
+    Grokkle: 9,
+    Wolvir: 10
   }.freeze
 
   # Character seasons - display disambiguation for seasonal variants (e.g., "Vane [Halloween]")
