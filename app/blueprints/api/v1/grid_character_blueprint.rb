@@ -52,7 +52,9 @@ module Api
       end
 
       view :mastery_bonuses do
-        field :awakening, if: ->(_field_name, gc, _options) { gc.association(:awakening).loaded? } do |gc|
+        # `.loaded?` is true even when the association resolved to nil, so it
+        # can't gate a render that calls `.id` on the value. Check presence.
+        field :awakening, if: ->(_field_name, gc, _options) { gc.awakening.present? } do |gc|
           {
             type: AwakeningBlueprint.render_as_hash(gc.awakening),
             level: gc.awakening_level.to_i
