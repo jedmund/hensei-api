@@ -85,20 +85,24 @@ class Character < ApplicationRecord
     GranblueEnums::CHARACTER_SEASONS.key(season)&.to_s
   end
 
-  def series_names
-    # Use new lookup table if available
-    if character_series_records.loaded? ? character_series_records.any? : character_series_records.exists?
-      if character_series_records.loaded?
-        character_series_records.sort_by(&:order).map(&:name_en)
-      else
-        character_series_records.ordered.pluck(:name_en)
-      end
-    elsif series.present?
-      # Legacy fallback
-      series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }
+  # Returns character_series_records sorted by `order`, reusing the loaded
+  # association when preloaded. Both the `series` and `series_names` blueprint
+  # fields read through here so a single query (or cache hit) feeds both.
+  def ordered_series_records
+    if character_series_records.loaded?
+      character_series_records.sort_by(&:order)
     else
-      []
+      character_series_records.ordered.to_a
     end
+  end
+
+  def series_names
+    records = ordered_series_records
+    return records.map(&:name_en) if records.any?
+    return [] unless series.present?
+
+    # Legacy fallback for rows that haven't been migrated to the lookup table.
+    series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }
   end
 
   def series_objects

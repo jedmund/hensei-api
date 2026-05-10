@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_10_015531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -397,20 +397,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.index ["name_en"], name: "index_effects_on_name_en"
   end
 
-  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "event_type", null: false
-    t.datetime "start_time", null: false
-    t.datetime "end_time", null: false
-    t.integer "element"
-    t.string "banner_image"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["event_type"], name: "index_events_on_event_type"
-    t.index ["start_time", "end_time"], name: "index_events_on_start_time_and_end_time"
-    t.index ["start_time"], name: "index_events_on_start_time"
-  end
-
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
@@ -466,6 +452,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.index ["orphaned"], name: "index_grid_artifacts_on_orphaned"
   end
 
+  create_table "grid_character_role_assignments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "grid_character_id", null: false
+    t.uuid "grid_character_role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["grid_character_id", "grid_character_role_id"], name: "idx_gc_role_assignments_unique", unique: true
+    t.index ["grid_character_id"], name: "index_grid_character_role_assignments_on_grid_character_id"
+    t.index ["grid_character_role_id"], name: "idx_on_grid_character_role_id_36d875e35b"
+  end
+
+  create_table "grid_character_roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.integer "sort_order"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "icon_key"
+  end
+
   create_table "grid_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id"
     t.uuid "character_id"
@@ -483,6 +488,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.uuid "awakening_id"
     t.integer "awakening_level", default: 1
     t.uuid "collection_character_id"
+    t.boolean "is_substitute", default: false, null: false
+    t.jsonb "description"
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
@@ -503,6 +510,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.boolean "quick_summon", default: false
     t.uuid "collection_summon_id"
     t.boolean "orphaned", default: false, null: false
+    t.boolean "is_substitute", default: false, null: false
+    t.jsonb "description"
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
@@ -546,6 +555,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.bigint "befoulment_modifier_id"
     t.float "befoulment_strength"
     t.integer "exorcism_level", default: 0
+    t.boolean "is_substitute", default: false, null: false
+    t.jsonb "description"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
@@ -877,7 +888,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.bigint "quest_id"
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
-    t.boolean "trackable", default: false, null: false
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -935,6 +945,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.string "target_memo"
     t.index ["target_type", "target_id"], name: "index_sparks_on_target"
     t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
+  end
+
+  create_table "substitutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "grid_type", null: false
+    t.uuid "grid_id", null: false
+    t.string "substitute_grid_type", null: false
+    t.uuid "substitute_grid_id", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["grid_type", "grid_id", "substitute_grid_type", "substitute_grid_id"], name: "index_substitutions_uniqueness", unique: true
+    t.index ["grid_type", "grid_id"], name: "index_substitutions_on_grid"
+    t.index ["substitute_grid_type", "substitute_grid_id"], name: "index_substitutions_on_substitute_grid"
   end
 
   create_table "summon_auras", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1031,16 +1054,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.datetime "created_at", null: false
     t.index ["user_id", "edit_key"], name: "index_user_edit_keys_on_user_id_and_edit_key", unique: true
     t.index ["user_id"], name: "index_user_edit_keys_on_user_id"
-  end
-
-  create_table "user_raid_elements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
-    t.uuid "raid_id", null: false
-    t.integer "element", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["raid_id"], name: "index_user_raid_elements_on_raid_id"
-    t.index ["user_id", "raid_id", "element"], name: "index_user_raid_elements_unique", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1310,6 +1323,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
   add_foreign_key "grid_artifacts", "artifacts"
   add_foreign_key "grid_artifacts", "collection_artifacts"
   add_foreign_key "grid_artifacts", "grid_characters"
+  add_foreign_key "grid_character_role_assignments", "grid_character_roles"
+  add_foreign_key "grid_character_role_assignments", "grid_characters"
   add_foreign_key "grid_characters", "awakenings"
   add_foreign_key "grid_characters", "characters"
   add_foreign_key "grid_characters", "collection_characters"
@@ -1363,8 +1378,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
   add_foreign_key "summons", "summon_series"
   add_foreign_key "user_edit_keys", "users"
-  add_foreign_key "user_raid_elements", "raids"
-  add_foreign_key "user_raid_elements", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"

@@ -13,6 +13,7 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
 
       before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync sync_to_collection duplicate]
       before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
@@ -504,8 +505,12 @@ module Api
       # @return [void]
       def find_grid_weapon
         grid_weapon_id = params[:id] || params.dig(:weapon, :id) || params.dig(:resolve, :conflicting)
-        @grid_weapon = GridWeapon.find_by(id: grid_weapon_id)
-        render_not_found_response('grid_weapon') unless @grid_weapon
+        @grid_weapon = GridWeapon
+                       .includes(*GridWeapon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                       .find_by(id: grid_weapon_id)
+        return render_not_found_response('grid_weapon') unless @grid_weapon
+
+        preload_substitute_grids!([@grid_weapon])
       end
 
       ##
@@ -587,7 +592,7 @@ module Api
           :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :awakening_id, :awakening_level,
           bullets: [:position, :bullet_id]
-        )
+        ).then { |p| permit_description(p, params[:weapon]) }
       end
 
       ##

@@ -29,9 +29,10 @@ class GridWeapon < ApplicationRecord
   belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
 
   belongs_to :party,
-             counter_cache: :weapons_count,
              inverse_of: :weapons
   validates_presence_of :party
+
+  has_many :substitutions, as: :grid, dependent: :destroy
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
@@ -48,6 +49,19 @@ class GridWeapon < ApplicationRecord
   has_many :grid_weapon_bullets, dependent: :destroy
   has_many :bullets, through: :grid_weapon_bullets
 
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening,
+    :weapon_key1, :weapon_key2, :weapon_key3,
+    :ax_modifier1, :ax_modifier2, :befoulment_modifier,
+    { grid_weapon_bullets: :bullet },
+    { collection_weapon: :collection_weapon_bullets },
+    { weapon: %i[awakenings weapon_series weapon_series_variant weapon_skills
+                 recruited_character base_weapon forge_chain_weapons] }
+  ].freeze
+
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }
@@ -57,15 +71,22 @@ class GridWeapon < ApplicationRecord
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
 
   validate :validate_transcendence_step
-  validate :compatible_with_position
-  validate :compatible_with_job_proficiency, on: :create
-  validate :no_conflicts, on: :create
+  validate :compatible_with_position, unless: :is_substitute?
+  validate :compatible_with_job_proficiency, on: :create, unless: :is_substitute?
+  validate :no_conflicts, on: :create, unless: :is_substitute?
   validate :no_duplicate_weapon_keys
   validate :no_duplicate_weapon_key_slots
 
   before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
   before_validation :set_default_exorcism_level, on: :create
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
+
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
 
   ##### Amoeba configuration
   amoeba do
@@ -76,6 +97,7 @@ class GridWeapon < ApplicationRecord
     nullify :befoulment_modifier_id
     nullify :befoulment_strength
     nullify :exorcism_level
+    nullify :description
   end
 
   ##
@@ -349,6 +371,14 @@ class GridWeapon < ApplicationRecord
   # @return [void]
   def set_default_uncap_level
     self.uncap_level ||= 0
+  end
+
+  def increment_party_counter
+    Party.increment_counter(:weapons_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:weapons_count, party_id)
   end
 
   def set_default_exorcism_level

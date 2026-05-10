@@ -13,6 +13,10 @@ module Api
       field :out_of_sync, if: ->(_field, gc, _options) { gc.collection_character_id.present? } do |gc|
         gc.out_of_sync?
       end
+      # Stamped by SubstituteGridPreloading when this is rendered as a
+      # substitute. Indicates whether current_user owns the underlying
+      # character in their collection.
+      field :owned, if: ->(_field, gc, _options) { !gc.owned.nil? }
 
       view :preview do
         association :character, blueprint: CharacterBlueprint, view: :preview
@@ -29,6 +33,13 @@ module Api
         association :character, blueprint: CharacterBlueprint, view: :full
         association :grid_artifact, blueprint: GridArtifactBlueprint, view: :nested,
                     if: ->(_field_name, gc, _options) { gc.grid_artifact.present? }
+
+        field :roles, if: ->(_field_name, gc, _options) { gc.grid_character_roles.any? } do |gc|
+          GridCharacterRoleBlueprint.render_as_hash(gc.grid_character_roles.sort_by(&:sort_order))
+        end
+        field :description, if: ->(_field_name, gc, _options) { gc.description.present? }
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_field_name, gc, _options) { !gc.is_substitute? && gc.substitutions.any? }
       end
 
       view :full do
@@ -46,7 +57,9 @@ module Api
       end
 
       view :mastery_bonuses do
-        field :awakening, if: ->(_field_name, gc, _options) { gc.association(:awakening).loaded? } do |gc|
+        # `.loaded?` is true even when the association resolved to nil, so it
+        # can't gate a render that calls `.id` on the value. Check presence.
+        field :awakening, if: ->(_field_name, gc, _options) { gc.awakening.present? } do |gc|
           {
             type: AwakeningBlueprint.render_as_hash(gc.awakening),
             level: gc.awakening_level.to_i

@@ -17,15 +17,29 @@
 #   @return [Party] the associated party record.
 #
 class GridCharacter < ApplicationRecord
+  ROLE_CAP = 3
+
   # Associations
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
-             counter_cache: :characters_count,
              inverse_of: :characters
   belongs_to :collection_character, optional: true
 
+  has_many :grid_character_role_assignments, dependent: :destroy
+  has_many :grid_character_roles, through: :grid_character_role_assignments
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+
   has_one :grid_artifact, dependent: :destroy
+
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening, :grid_artifact, :grid_character_roles, :collection_character,
+    { character: [:character_series_records, :style_swap_variants] }
+  ].freeze
 
   # Validations
   validates_presence_of :party
@@ -34,31 +48,45 @@ class GridCharacter < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
-  validate :validate_awakening_level, on: :update
-  validate :transcendence
-  validate :validate_over_mastery_values, on: :update
-  validate :validate_aetherial_mastery_value, on: :update
+  validate :validate_awakening_level, on: :update, unless: :is_substitute?
+  validate :transcendence, unless: :is_substitute?
+  validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
+  validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
+  validate :roles_within_cap
 
   # Virtual attributes
   attr_accessor :new_rings
   attr_accessor :new_awakening
+  # Set by the controller for substitute renders so the API can tell the
+  # client whether the substitute's underlying character is in current_user's
+  # collection. nil means "not stamped" (i.e., not a substitute render).
+  attr_accessor :owned
 
   ##### Amoeba configuration
   amoeba do
     enable
     include_association :grid_artifact
+    exclude_association :grid_character_role_assignments
     set ring1: { modifier: nil, strength: nil }
     set ring2: { modifier: nil, strength: nil }
     set ring3: { modifier: nil, strength: nil }
     set ring4: { modifier: nil, strength: nil }
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
+    nullify :description
   end
+
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
 
   # Hooks
   before_validation :apply_new_rings, if: -> { new_rings.present? }
   before_validation :apply_new_awakening, if: -> { new_awakening.present? }
-  before_save :add_awakening
+  before_save :add_awakening, unless: :is_substitute?
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
 
   ##
   # Validates the awakening level to ensure it falls within the allowed range.
@@ -259,6 +287,20 @@ class GridCharacter < ApplicationRecord
   end
 
   private
+
+  def increment_party_counter
+    Party.increment_counter(:characters_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:characters_count, party_id)
+  end
+
+  def roles_within_cap
+    return if grid_character_role_assignments.size <= ROLE_CAP
+
+    errors.add(:roles, "may have at most #{ROLE_CAP}")
+  end
 
   ##
   # Adds a default awakening to the character before saving if none is set.

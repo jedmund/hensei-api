@@ -14,10 +14,19 @@ class GridSummon < ApplicationRecord
   belongs_to :summon, foreign_key: :summon_id, primary_key: :id
 
   belongs_to :party,
-             counter_cache: :summons_count,
              inverse_of: :summons
   belongs_to :collection_summon, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
   validates_presence_of :party
+
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :collection_summon,
+    { summon: :summon_series }
+  ].freeze
 
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
@@ -25,7 +34,7 @@ class GridSummon < ApplicationRecord
 
   # Validate that position is provided.
   validates :position, presence: true
-  validate :compatible_with_position, on: :create
+  validate :compatible_with_position, on: :create, unless: :is_substitute?
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
@@ -34,11 +43,18 @@ class GridSummon < ApplicationRecord
   # Custom validation to enforce maximum uncap_level based on the associated Summon’s flags.
   validate :validate_uncap_level_based_on_summon_flags
 
-  validate :no_conflicts, on: :create
+  validate :no_conflicts, on: :create, unless: :is_substitute?
 
   before_validation :set_default_uncap_level, on: :create
 
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
+
   after_commit :recompute_party_boost!, on: %i[create update destroy]
+
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
 
   ##
   # Returns the blueprint for rendering the grid summon.
@@ -119,7 +135,16 @@ class GridSummon < ApplicationRecord
     self.uncap_level ||= 0
   end
 
+  def increment_party_counter
+    Party.increment_counter(:summons_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:summons_count, party_id)
+  end
+
   def recompute_party_boost!
+    return if is_substitute?
     return unless main? || friend?
 
     party.reload
