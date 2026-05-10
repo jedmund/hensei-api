@@ -36,6 +36,17 @@ module Api
         { mod: party.boost_mod, side: party.boost_side }
       end
 
+      field :difficulty do |party|
+        next nil unless party.difficulty_score.present?
+
+        {
+          tier: party.difficulty ? DifficultyBlueprint.render_as_hash(party.difficulty, view: :nested) : nil,
+          score: party.difficulty_score.to_f,
+          breakdown: party.difficulty_breakdown,
+          computed_at: party.difficulty_computed_at
+        }
+      end
+
       # Minimal view for embedding in grid item responses
       view :collection_source do
         field :collection_source_user_id

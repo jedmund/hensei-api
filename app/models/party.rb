@@ -104,6 +104,7 @@ class Party < ApplicationRecord
   belongs_to :collection_source_user, class_name: 'User', optional: true
   belongs_to :raid, optional: true
   belongs_to :job, optional: true
+  belongs_to :difficulty, optional: true
 
   belongs_to :accessory,
              foreign_key: 'accessory_id',
@@ -178,6 +179,7 @@ class Party < ApplicationRecord
 
   after_commit :update_element!, on: %i[create update]
   after_commit :update_extra!, on: %i[create update]
+  after_commit :enqueue_difficulty_recompute!, on: %i[create update]
 
   # Amoeba configuration
   amoeba do
@@ -188,6 +190,11 @@ class Party < ApplicationRecord
     nullify :description
     nullify :shortcode
     nullify :edit_key
+    nullify :difficulty_id
+    nullify :difficulty_score
+    nullify :difficulty_breakdown
+    nullify :difficulty_computed_at
+    nullify :difficulty_ruleset_version
 
     include_association :characters
     include_association :weapons
@@ -249,7 +256,19 @@ class Party < ApplicationRecord
   #
   # @return [Boolean] true if the update succeeded.
   def mark_updated!
-    update_column(:last_updated, Time.current)
+    result = update_column(:last_updated, Time.current)
+    enqueue_difficulty_recompute!
+    result
+  end
+
+  ##
+  # Enqueues a background job to recompute the party's difficulty score.
+  # Safe to call frequently — Sidekiq dedupes by argument is not used here, but
+  # the job is cheap and idempotent.
+  #
+  # @return [void]
+  def enqueue_difficulty_recompute!
+    PartyDifficulty::ScoreJob.perform_later(id) if id.present?
   end
 
   ##
