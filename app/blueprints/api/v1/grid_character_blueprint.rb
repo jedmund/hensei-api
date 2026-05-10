@@ -13,6 +13,10 @@ module Api
       field :out_of_sync, if: ->(_field, gc, _options) { gc.collection_character_id.present? } do |gc|
         gc.out_of_sync?
       end
+      # Stamped by SubstituteGridPreloading when this is rendered as a
+      # substitute. Indicates whether current_user owns the underlying
+      # character in their collection.
+      field :owned, if: ->(_field, gc, _options) { !gc.owned.nil? }
 
       view :preview do
         association :character, blueprint: CharacterBlueprint, view: :preview

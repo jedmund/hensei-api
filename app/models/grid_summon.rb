@@ -52,6 +52,10 @@ class GridSummon < ApplicationRecord
 
   after_commit :recompute_party_boost!, on: %i[create update destroy]
 
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
+
   ##
   # Returns the blueprint for rendering the grid summon.
   #

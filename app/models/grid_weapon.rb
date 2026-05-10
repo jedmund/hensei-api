@@ -84,6 +84,10 @@ class GridWeapon < ApplicationRecord
   after_create :increment_party_counter, unless: :is_substitute?
   after_destroy :decrement_party_counter, unless: :is_substitute?
 
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
+
   ##### Amoeba configuration
   amoeba do
     nullify :ax_modifier1_id

@@ -9,6 +9,7 @@ module Api
       field :out_of_sync, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
         gw.out_of_sync?
       end
+      field :owned, if: ->(_field, gw, _options) { !gw.owned.nil? }
 
       view :preview do
         association :weapon, blueprint: WeaponBlueprint, view: :preview

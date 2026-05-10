@@ -516,4 +516,29 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(grid_character.reload.grid_character_role_ids).to eq([])
     end
   end
+
+  describe 'substitute ownership flag' do
+    let(:slot) { create(:grid_character, party: party) }
+    let(:owned_character) { Character.where.not(id: slot.character_id).first }
+    let(:unowned_character) { Character.where.not(id: [slot.character_id, owned_character.id]).first }
+
+    it 'sets owned: true on substitutes the current_user has in their collection' do
+      create(:collection_character, user: user, character: owned_character)
+      owned_sub = create(:grid_character, party: party, character: owned_character, is_substitute: true)
+      unowned_sub = create(:grid_character, party: party, character: unowned_character, is_substitute: true)
+      create(:substitution, grid: slot, substitute_grid: owned_sub, position: 0)
+      create(:substitution, grid: slot, substitute_grid: unowned_sub, position: 1)
+
+      put "/api/v1/grid_characters/#{slot.id}",
+          params: { character: { uncap_level: slot.uncap_level } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      subs = body['grid_character']['substitutions']
+      expect(subs.size).to eq(2)
+      expect(subs.find { |s| s['position'] == 0 }['grid_character']['owned']).to be true
+      expect(subs.find { |s| s['position'] == 1 }['grid_character']['owned']).to be false
+    end
+  end
 end

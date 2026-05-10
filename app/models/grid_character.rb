@@ -57,6 +57,10 @@ class GridCharacter < ApplicationRecord
   # Virtual attributes
   attr_accessor :new_rings
   attr_accessor :new_awakening
+  # Set by the controller for substitute renders so the API can tell the
+  # client whether the substitute's underlying character is in current_user's
+  # collection. nil means "not stamped" (i.e., not a substitute render).
+  attr_accessor :owned
 
   ##### Amoeba configuration
   amoeba do

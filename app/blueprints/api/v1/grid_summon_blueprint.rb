@@ -9,6 +9,7 @@ module Api
       field :out_of_sync, if: ->(_field, gs, _options) { gs.collection_summon_id.present? } do |gs|
         gs.out_of_sync?
       end
+      field :owned, if: ->(_field, gs, _options) { !gs.owned.nil? }
 
       view :preview do
         association :summon, blueprint: SummonBlueprint, view: :preview
