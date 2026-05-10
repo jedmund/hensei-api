@@ -49,6 +49,9 @@ module Api
       def destroy
         @role.destroy
         head :no_content
+      rescue ActiveRecord::InvalidForeignKey
+        render json: { error: 'Cannot delete a role that is in use. Reassign affected items first.' },
+               status: :unprocessable_entity
       end
 
       # POST /roles/reorder
@@ -77,14 +80,19 @@ module Api
         return render json: { error: validation_error }, status: :unprocessable_entity if validation_error
 
         s3_key = "#{ICON_S3_PREFIX}/#{@role.id}.png"
-        AwsService.new.s3_client.put_object(
-          bucket: AwsService.new.bucket,
+        aws = AwsService.new
+        aws.s3_client.put_object(
+          bucket: aws.bucket,
           key: s3_key,
           body: StringIO.new(decoded),
           content_type: 'image/png',
           acl: 'public-read'
         )
 
+        # The S3 object key stays at a stable path so re-uploads overwrite cleanly.
+        # The stored icon_key carries a version query so the rendered URL changes on
+        # every upload — the next role.updated_at bumps below and read paths bake
+        # that timestamp into the public URL, busting browser/CDN cache.
         @role.update!(icon_key: s3_key)
         render json: RoleBlueprint.render(@role)
       end

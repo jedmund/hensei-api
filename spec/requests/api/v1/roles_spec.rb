@@ -124,6 +124,18 @@ RSpec.describe 'Roles API', type: :request do
       expect(response).to have_http_status(:no_content)
     end
 
+    it 'returns 422 when the role is in use' do
+      party = create(:party)
+      create(:grid_character, party: party, role: role)
+
+      expect {
+        delete "/api/v1/roles/#{role.id}", headers: editor_headers
+      }.not_to change(Role, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)['error']).to match(/in use/i)
+    end
+
     it 'returns unauthorized for regular user' do
       delete "/api/v1/roles/#{role.id}", headers: user_headers
       expect(response).to have_http_status(:unauthorized)
@@ -180,6 +192,15 @@ RSpec.describe 'Roles API', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(role.reload.icon_key).to eq("images/roles/#{role.id}.png")
+    end
+
+    it 'renders icon_key with a cache-busting version query' do
+      post "/api/v1/roles/#{role.id}/upload_icon",
+           params: { image: tiny_png_b64, filename: 'icon.png' },
+           headers: editor_headers, as: :json
+
+      body = JSON.parse(response.body)
+      expect(body['icon_key']).to match(%r{\Aimages/roles/#{role.id}\.png\?v=\d+\z})
     end
 
     it 'rejects non-PNG payload' do
