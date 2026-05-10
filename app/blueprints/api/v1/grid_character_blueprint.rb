@@ -46,7 +46,7 @@ module Api
       end
 
       view :mastery_bonuses do
-        field :awakening, if: ->(_field_name, gc, _options) { gc.association(:awakening).loaded? } do |gc|
+        field :awakening, if: ->(_field_name, gc, _options) { gc.awakening.present? } do |gc|
           {
             type: AwakeningBlueprint.render_as_hash(gc.awakening),
             level: gc.awakening_level.to_i
