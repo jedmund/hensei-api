@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_10_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -485,7 +485,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.uuid "collection_character_id"
     t.boolean "is_substitute", default: false, null: false
     t.uuid "role_id"
-    t.text "substitution_note"
+    t.jsonb "substitution_note"
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
@@ -509,7 +509,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.boolean "orphaned", default: false, null: false
     t.boolean "is_substitute", default: false, null: false
     t.uuid "role_id"
-    t.text "substitution_note"
+    t.jsonb "substitution_note"
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
@@ -556,7 +556,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_19_045519) do
     t.integer "exorcism_level", default: 0
     t.boolean "is_substitute", default: false, null: false
     t.uuid "role_id"
-    t.text "substitution_note"
+    t.jsonb "substitution_note"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
