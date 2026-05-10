@@ -9,6 +9,7 @@ module Api
       field :out_of_sync, if: ->(_field, gs, _options) { gs.collection_summon_id.present? } do |gs|
         gs.out_of_sync?
       end
+      field :owned, if: ->(_field, gs, _options) { !gs.owned.nil? }
 
       view :preview do
         association :summon, blueprint: SummonBlueprint, view: :preview
@@ -24,9 +25,7 @@ module Api
       view :nested do
         association :summon, blueprint: SummonBlueprint, view: :full
 
-        association :role, blueprint: RoleBlueprint,
-                    if: ->(_field_name, gs, _options) { gs.role.present? }
-        field :substitution_note, if: ->(_field_name, gs, _options) { gs.substitution_note.present? }
+        field :description, if: ->(_field_name, gs, _options) { gs.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
                     if: ->(_field_name, gs, _options) { !gs.is_substitute? && gs.substitutions.any? }
       end

@@ -13,6 +13,10 @@ module Api
       field :out_of_sync, if: ->(_field, gc, _options) { gc.collection_character_id.present? } do |gc|
         gc.out_of_sync?
       end
+      # Stamped by SubstituteGridPreloading when this is rendered as a
+      # substitute. Indicates whether current_user owns the underlying
+      # character in their collection.
+      field :owned, if: ->(_field, gc, _options) { !gc.owned.nil? }
 
       view :preview do
         association :character, blueprint: CharacterBlueprint, view: :preview
@@ -30,9 +34,10 @@ module Api
         association :grid_artifact, blueprint: GridArtifactBlueprint, view: :nested,
                     if: ->(_field_name, gc, _options) { gc.grid_artifact.present? }
 
-        association :role, blueprint: RoleBlueprint,
-                    if: ->(_field_name, gc, _options) { gc.role.present? }
-        field :substitution_note, if: ->(_field_name, gc, _options) { gc.substitution_note.present? }
+        field :roles, if: ->(_field_name, gc, _options) { gc.grid_character_roles.any? } do |gc|
+          GridCharacterRoleBlueprint.render_as_hash(gc.grid_character_roles.sort_by(&:sort_order))
+        end
+        field :description, if: ->(_field_name, gc, _options) { gc.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
                     if: ->(_field_name, gc, _options) { !gc.is_substitute? && gc.substitutions.any? }
       end

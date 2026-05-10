@@ -201,12 +201,12 @@ module Api
       # Strong params can't deeply permit arbitrary nested JSON, so accept the
       # rich-text Tiptap doc by re-attaching the raw value (hash, string, or nil)
       # after the standard `permit` call.
-      def permit_substitution_note(permitted, raw_params)
+      def permit_description(permitted, raw_params)
         return permitted unless raw_params.is_a?(ActionController::Parameters) || raw_params.is_a?(Hash)
-        return permitted unless raw_params.key?(:substitution_note)
+        return permitted unless raw_params.key?(:description)
 
-        value = raw_params[:substitution_note]
-        permitted[:substitution_note] = value.is_a?(ActionController::Parameters) ? value.to_unsafe_h : value
+        value = raw_params[:description]
+        permitted[:description] = value.is_a?(ActionController::Parameters) ? value.to_unsafe_h : value
         permitted
       end
 

@@ -9,6 +9,7 @@ module Api
       field :out_of_sync, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
         gw.out_of_sync?
       end
+      field :owned, if: ->(_field, gw, _options) { !gw.owned.nil? }
 
       view :preview do
         association :weapon, blueprint: WeaponBlueprint, view: :preview
@@ -70,9 +71,7 @@ module Api
           end
         end
 
-        association :role, blueprint: RoleBlueprint,
-                    if: ->(_field_name, gw, _options) { gw.role.present? }
-        field :substitution_note, if: ->(_field_name, gw, _options) { gw.substitution_note.present? }
+        field :description, if: ->(_field_name, gw, _options) { gw.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
                     if: ->(_field_name, gw, _options) { !gw.is_substitute? && gw.substitutions.any? }
       end

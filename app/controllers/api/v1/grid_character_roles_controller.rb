@@ -2,50 +2,47 @@
 
 module Api
   module V1
-    class RolesController < ApiController
+    class GridCharacterRolesController < ApiController
       ICON_MAX_DIMENSION = 128
-      ICON_S3_PREFIX = 'images/roles'
+      ICON_S3_PREFIX = 'images/grid_character_roles'
 
       before_action :doorkeeper_authorize!, only: %i[create update destroy reorder upload_icon]
       before_action :ensure_editor_role, only: %i[create update destroy reorder upload_icon]
       before_action :set_role, only: %i[show update destroy upload_icon]
 
-      # GET /roles
+      # GET /grid_character_roles
       def index
-        roles = Role.all
-        roles = roles.for_slot(params[:slot_type]) if params[:slot_type].present?
-        roles = roles.order(:sort_order, :name_en)
-
-        render json: RoleBlueprint.render(roles)
+        roles = GridCharacterRole.order(:sort_order, :name_en)
+        render json: GridCharacterRoleBlueprint.render(roles)
       end
 
-      # GET /roles/:id
+      # GET /grid_character_roles/:id
       def show
-        render json: RoleBlueprint.render(@role)
+        render json: GridCharacterRoleBlueprint.render(@role)
       end
 
-      # POST /roles
+      # POST /grid_character_roles
       def create
-        role = Role.new(role_params)
-        role.sort_order ||= next_sort_order(role.slot_type)
+        role = GridCharacterRole.new(role_params)
+        role.sort_order ||= next_sort_order
 
         if role.save
-          render json: RoleBlueprint.render(role), status: :created
+          render json: GridCharacterRoleBlueprint.render(role), status: :created
         else
           render_validation_error_response(role)
         end
       end
 
-      # PUT /roles/:id
+      # PUT /grid_character_roles/:id
       def update
         if @role.update(role_params)
-          render json: RoleBlueprint.render(@role)
+          render json: GridCharacterRoleBlueprint.render(@role)
         else
           render_validation_error_response(@role)
         end
       end
 
-      # DELETE /roles/:id
+      # DELETE /grid_character_roles/:id
       def destroy
         @role.destroy
         head :no_content
@@ -54,22 +51,22 @@ module Api
                status: :unprocessable_entity
       end
 
-      # POST /roles/reorder
+      # POST /grid_character_roles/reorder
       # Body: { roles: [{ id: <uuid>, sort_order: <int> }, ...] }
       def reorder
         entries = params[:roles]
         return render json: { error: 'roles array required' }, status: :unprocessable_entity if entries.blank?
 
-        Role.transaction do
+        GridCharacterRole.transaction do
           entries.each do |entry|
-            Role.find(entry[:id]).update!(sort_order: entry[:sort_order])
+            GridCharacterRole.find(entry[:id]).update!(sort_order: entry[:sort_order])
           end
         end
 
-        render json: RoleBlueprint.render(Role.order(:sort_order, :name_en))
+        render json: GridCharacterRoleBlueprint.render(GridCharacterRole.order(:sort_order, :name_en))
       end
 
-      # POST /roles/:id/upload_icon
+      # POST /grid_character_roles/:id/upload_icon
       # Body: { image: <base64-png>, filename: <string> }
       def upload_icon
         image_data = params[:image]
@@ -94,28 +91,28 @@ module Api
         # every upload — the next role.updated_at bumps below and read paths bake
         # that timestamp into the public URL, busting browser/CDN cache.
         @role.update!(icon_key: s3_key)
-        render json: RoleBlueprint.render(@role)
+        render json: GridCharacterRoleBlueprint.render(@role)
       end
 
       private
 
       def set_role
-        @role = Role.find_by(id: params[:id])
-        render_not_found_response('role') unless @role
+        @role = GridCharacterRole.find_by(id: params[:id])
+        render_not_found_response('grid_character_role') unless @role
       end
 
       def role_params
-        params.require(:role).permit(:name_en, :name_jp, :slot_type, :sort_order)
+        params.require(:grid_character_role).permit(:name_en, :name_jp, :sort_order)
       end
 
-      def next_sort_order(slot_type)
-        Role.for_slot(slot_type).maximum(:sort_order).to_i + 1
+      def next_sort_order
+        GridCharacterRole.maximum(:sort_order).to_i + 1
       end
 
       def ensure_editor_role
         return if current_user&.editor?
 
-        Rails.logger.warn "[ROLES] Unauthorized access attempt by user #{current_user&.id}"
+        Rails.logger.warn "[GRID_CHARACTER_ROLES] Unauthorized access attempt by user #{current_user&.id}"
         render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
       end
 
