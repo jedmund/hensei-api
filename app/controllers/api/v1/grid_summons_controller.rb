@@ -528,9 +528,8 @@ module Api
       def summon_params
         permitted = params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
                                                    :position, :main, :friend, :quick_summon,
-                                                   :uncap_level, :transcendence_step,
-                                                   :role_id)
-        permit_substitution_note(permitted, params[:summon])
+                                                   :uncap_level, :transcendence_step)
+        permit_description(permitted, params[:summon])
       end
 
       ##

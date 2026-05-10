@@ -16,7 +16,6 @@ class GridSummon < ApplicationRecord
   belongs_to :party,
              inverse_of: :summons
   belongs_to :collection_summon, optional: true
-  belongs_to :role, optional: true
 
   has_many :substitutions, as: :grid, dependent: :destroy
   validates_presence_of :party
@@ -25,7 +24,7 @@ class GridSummon < ApplicationRecord
   # polymorphic substitute-grid preloader so a single source of truth keeps
   # them in sync as the blueprint evolves.
   NESTED_BLUEPRINT_PRELOADS = [
-    :role, :collection_summon,
+    :collection_summon,
     { summon: :summon_series }
   ].freeze
 
@@ -45,7 +44,6 @@ class GridSummon < ApplicationRecord
   validate :validate_uncap_level_based_on_summon_flags
 
   validate :no_conflicts, on: :create, unless: :is_substitute?
-  validate :role_slot_type_matches
 
   before_validation :set_default_uncap_level, on: :create
 
@@ -139,12 +137,6 @@ class GridSummon < ApplicationRecord
 
   def decrement_party_counter
     Party.decrement_counter(:summons_count, party_id)
-  end
-
-  def role_slot_type_matches
-    return unless role.present?
-
-    errors.add(:role, 'slot type must be Summon') unless role.slot_type == 'Summon'
   end
 
   def recompute_party_boost!

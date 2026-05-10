@@ -448,7 +448,7 @@ RSpec.describe 'GridCharacters API', type: :request do
     end
   end
 
-  describe 'rich-text substitution_note round-trip' do
+  describe 'rich-text description round-trip' do
     let(:tiptap_doc) do
       {
         'type' => 'doc',
@@ -464,15 +464,56 @@ RSpec.describe 'GridCharacters API', type: :request do
       }
     end
 
-    it 'persists and reads back a Tiptap document on substitution_note' do
+    it 'persists and reads back a Tiptap document on description' do
       grid_character = create(:grid_character, party: party)
 
       put "/api/v1/grid_characters/#{grid_character.id}",
-          params: { character: { substitution_note: tiptap_doc } }.to_json,
+          params: { character: { description: tiptap_doc } }.to_json,
           headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(grid_character.reload.substitution_note).to eq(tiptap_doc)
+      expect(grid_character.reload.description).to eq(tiptap_doc)
+    end
+  end
+
+  describe 'role assignments via role_ids' do
+    let!(:role_a) { create(:grid_character_role, sort_order: 1) }
+    let!(:role_b) { create(:grid_character_role, sort_order: 2) }
+    let!(:role_c) { create(:grid_character_role, sort_order: 3) }
+    let!(:role_d) { create(:grid_character_role, sort_order: 4) }
+
+    let(:grid_character) { create(:grid_character, party: party) }
+
+    it 'assigns multiple roles via role_ids and renders them sorted' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_b.id, role_a.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      body = JSON.parse(response.body)
+      expect(body['grid_character']['roles'].map { |r| r['id'] }).to eq([role_a.id, role_b.id])
+    end
+
+    it 'rejects more than three roles' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_a.id, role_b.id, role_c.id, role_d.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'clears assignments when role_ids is empty' do
+      grid_character.grid_character_roles << [role_a, role_b]
+      expect(grid_character.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to eq([])
     end
   end
 end

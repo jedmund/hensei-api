@@ -70,9 +70,7 @@ module Api
           end
         end
 
-        association :role, blueprint: RoleBlueprint,
-                    if: ->(_field_name, gw, _options) { gw.role.present? }
-        field :substitution_note, if: ->(_field_name, gw, _options) { gw.substitution_note.present? }
+        field :description, if: ->(_field_name, gw, _options) { gw.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
                     if: ->(_field_name, gw, _options) { !gw.is_substitute? && gw.substitutions.any? }
       end

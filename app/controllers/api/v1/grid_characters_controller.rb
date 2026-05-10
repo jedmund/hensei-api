@@ -377,7 +377,17 @@ module Api
       def assign_raw_attributes(grid_character)
         grid_character.new_rings = character_params[:rings] if character_params[:rings].present?
         grid_character.new_awakening = character_params[:awakening] if character_params[:awakening].present?
-        grid_character.assign_attributes(character_params.except(:rings, :awakening, :character_id, :party_id))
+        # `role_ids` is the public param name; map it to the Rails-generated
+        # `grid_character_role_ids=` setter on the has_many :through association.
+        # Reset the through-association cache so the blueprint sees the new set
+        # (the cache was warmed by `find_grid_character`'s preload).
+        if character_params.key?(:role_ids)
+          grid_character.grid_character_role_ids = Array(character_params[:role_ids])
+          grid_character.grid_character_roles.reset
+        end
+        grid_character.assign_attributes(
+          character_params.except(:rings, :awakening, :character_id, :party_id, :role_ids)
+        )
       end
 
       ##
@@ -583,11 +593,11 @@ module Api
           :uncap_level,
           :transcendence_step,
           :perpetuity,
-          :role_id,
+          role_ids: [],
           awakening: %i[id level],
           rings: %i[modifier strength],
           earring: %i[modifier strength]
-        ).then { |p| permit_substitution_note(p, params[:character]) }
+        ).then { |p| permit_description(p, params[:character]) }
       end
 
       ##

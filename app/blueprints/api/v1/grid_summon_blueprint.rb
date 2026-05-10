@@ -24,9 +24,7 @@ module Api
       view :nested do
         association :summon, blueprint: SummonBlueprint, view: :full
 
-        association :role, blueprint: RoleBlueprint,
-                    if: ->(_field_name, gs, _options) { gs.role.present? }
-        field :substitution_note, if: ->(_field_name, gs, _options) { gs.substitution_note.present? }
+        field :description, if: ->(_field_name, gs, _options) { gs.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
                     if: ->(_field_name, gs, _options) { !gs.is_substitute? && gs.substitutions.any? }
       end

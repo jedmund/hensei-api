@@ -56,7 +56,7 @@ Rails.application.routes.draw do
     end
     resources :favorites, only: [:create]
     resources :substitutions, only: %i[create update destroy]
-    resources :roles, only: %i[index show create update destroy] do
+    resources :grid_character_roles, only: %i[index show create update destroy] do
       collection do
         post 'reorder'
       end

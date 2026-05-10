@@ -17,13 +17,17 @@
 #   @return [Party] the associated party record.
 #
 class GridCharacter < ApplicationRecord
+  ROLE_CAP = 3
+
   # Associations
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
              inverse_of: :characters
   belongs_to :collection_character, optional: true
-  belongs_to :role, optional: true
+
+  has_many :grid_character_role_assignments, dependent: :destroy
+  has_many :grid_character_roles, through: :grid_character_role_assignments
 
   has_many :substitutions, as: :grid, dependent: :destroy
 
@@ -33,7 +37,7 @@ class GridCharacter < ApplicationRecord
   # polymorphic substitute-grid preloader so a single source of truth keeps
   # them in sync as the blueprint evolves.
   NESTED_BLUEPRINT_PRELOADS = [
-    :awakening, :grid_artifact, :role, :collection_character,
+    :awakening, :grid_artifact, :grid_character_roles, :collection_character,
     { character: [:character_series_records, :style_swap_variants] }
   ].freeze
 
@@ -48,7 +52,7 @@ class GridCharacter < ApplicationRecord
   validate :transcendence, unless: :is_substitute?
   validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
   validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
-  validate :role_slot_type_matches
+  validate :roles_within_cap
 
   # Virtual attributes
   attr_accessor :new_rings
@@ -58,14 +62,14 @@ class GridCharacter < ApplicationRecord
   amoeba do
     enable
     include_association :grid_artifact
+    exclude_association :grid_character_role_assignments
     set ring1: { modifier: nil, strength: nil }
     set ring2: { modifier: nil, strength: nil }
     set ring3: { modifier: nil, strength: nil }
     set ring4: { modifier: nil, strength: nil }
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
-    nullify :role_id
-    nullify :substitution_note
+    nullify :description
   end
 
   # Orphan status scopes
@@ -288,10 +292,10 @@ class GridCharacter < ApplicationRecord
     Party.decrement_counter(:characters_count, party_id)
   end
 
-  def role_slot_type_matches
-    return unless role.present?
+  def roles_within_cap
+    return if grid_character_role_assignments.size <= ROLE_CAP
 
-    errors.add(:role, 'slot type must be Character') unless role.slot_type == 'Character'
+    errors.add(:roles, "may have at most #{ROLE_CAP}")
   end
 
   ##
