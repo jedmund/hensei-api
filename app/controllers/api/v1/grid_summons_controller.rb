@@ -13,6 +13,7 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
 
       attr_reader :party, :incoming_summon
 
@@ -419,8 +420,12 @@ module Api
       # @return [void]
       def find_grid_summon
         grid_summon_id = params[:id] || params.dig(:summon, :id) || params.dig(:resolve, :conflicting)
-        @grid_summon = GridSummon.find_by(id: grid_summon_id)
-        render_not_found_response('grid_summon') unless @grid_summon
+        @grid_summon = GridSummon
+                       .includes(*GridSummon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                       .find_by(id: grid_summon_id)
+        return render_not_found_response('grid_summon') unless @grid_summon
+
+        preload_substitute_grids!([@grid_summon])
       end
 
       ##
@@ -521,10 +526,10 @@ module Api
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
-                                       :position, :main, :friend, :quick_summon,
-                                       :uncap_level, :transcendence_step,
-                                       :role_id, :substitution_note)
+        permitted = params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
+                                                   :position, :main, :friend, :quick_summon,
+                                                   :uncap_level, :transcendence_step)
+        permit_description(permitted, params[:summon])
       end
 
       ##

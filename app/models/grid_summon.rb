@@ -16,10 +16,17 @@ class GridSummon < ApplicationRecord
   belongs_to :party,
              inverse_of: :summons
   belongs_to :collection_summon, optional: true
-  belongs_to :role, optional: true
 
   has_many :substitutions, as: :grid, dependent: :destroy
   validates_presence_of :party
+
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :collection_summon,
+    { summon: :summon_series }
+  ].freeze
 
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
@@ -37,7 +44,6 @@ class GridSummon < ApplicationRecord
   validate :validate_uncap_level_based_on_summon_flags
 
   validate :no_conflicts, on: :create, unless: :is_substitute?
-  validate :role_slot_type_matches
 
   before_validation :set_default_uncap_level, on: :create
 
@@ -45,6 +51,10 @@ class GridSummon < ApplicationRecord
   after_destroy :decrement_party_counter, unless: :is_substitute?
 
   after_commit :recompute_party_boost!, on: %i[create update destroy]
+
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
 
   ##
   # Returns the blueprint for rendering the grid summon.
@@ -131,12 +141,6 @@ class GridSummon < ApplicationRecord
 
   def decrement_party_counter
     Party.decrement_counter(:summons_count, party_id)
-  end
-
-  def role_slot_type_matches
-    return unless role.present?
-
-    errors.add(:role, 'slot type must be Summon') unless role.slot_type == 'Summon'
   end
 
   def recompute_party_boost!

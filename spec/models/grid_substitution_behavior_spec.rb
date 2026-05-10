@@ -110,58 +110,39 @@ RSpec.describe 'Grid model substitution behavior', type: :model do
     end
   end
 
-  describe 'role slot type matching' do
-    let(:char_role) { create(:role, slot_type: 'Character') }
-    let(:weapon_role) { create(:role, :weapon) }
+  describe 'character roles cap' do
+    let(:roles) { create_list(:grid_character_role, 4) }
 
-    it 'allows matching role for GridCharacter' do
-      gc = build(:grid_character, party: party, position: 0, role: char_role)
-      gc.valid?
-      expect(gc.errors[:role]).to be_empty
+    it 'accepts up to three roles per character' do
+      gc = create(:grid_character, party: party, position: 0)
+      gc.grid_character_roles = roles.first(3)
+      expect(gc).to be_valid
     end
 
-    it 'rejects mismatched role for GridCharacter' do
-      gc = build(:grid_character, party: party, position: 0, role: weapon_role)
-      gc.valid?
-      expect(gc.errors[:role]).to include('slot type must be Character')
-    end
-
-    it 'allows matching role for GridWeapon' do
-      gw = build(:grid_weapon, party: party, weapon: weapon, position: 0, role: weapon_role)
-      gw.valid?
-      expect(gw.errors[:role]).to be_empty
-    end
-
-    it 'rejects mismatched role for GridWeapon' do
-      gw = build(:grid_weapon, party: party, weapon: weapon, position: 0, role: char_role)
-      gw.valid?
-      expect(gw.errors[:role]).to include('slot type must be Weapon')
-    end
-
-    it 'allows nil role (optional)' do
-      gw = build(:grid_weapon, party: party, weapon: weapon, position: 0, role: nil)
-      gw.valid?
-      expect(gw.errors[:role]).to be_empty
+    it 'rejects a fourth role assignment' do
+      gc = create(:grid_character, party: party, position: 0)
+      gc.grid_character_roles = roles
+      expect(gc).not_to be_valid
+      expect(gc.errors[:roles]).to include(/at most/)
     end
   end
 
   describe 'amoeba duplication' do
-    it 'nullifies role_id and substitution_note on weapon duplication' do
-      role = create(:role, :weapon)
+    it 'nullifies description on weapon duplication' do
       gw = create(:grid_weapon, party: party, weapon: weapon, position: 0,
-                                role: role, substitution_note: 'Use this for fire teams')
+                                description: 'Use this for fire teams')
       dup = gw.amoeba_dup
-      expect(dup.role_id).to be_nil
-      expect(dup.substitution_note).to be_nil
+      expect(dup.description).to be_nil
     end
 
-    it 'nullifies role_id and substitution_note on character duplication' do
-      role = create(:role, slot_type: 'Character')
-      gc = create(:grid_character, party: party, position: 0,
-                                   role: role, substitution_note: 'Flex slot')
+    it 'nullifies description and excludes role assignments on character duplication' do
+      role = create(:grid_character_role)
+      gc = create(:grid_character, party: party, position: 0, description: 'Flex slot')
+      gc.grid_character_roles << role
+
       dup = gc.amoeba_dup
-      expect(dup.role_id).to be_nil
-      expect(dup.substitution_note).to be_nil
+      expect(dup.description).to be_nil
+      expect(dup.grid_character_role_assignments).to be_empty
     end
   end
 end

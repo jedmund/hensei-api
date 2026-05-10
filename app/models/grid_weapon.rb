@@ -32,7 +32,6 @@ class GridWeapon < ApplicationRecord
              inverse_of: :weapons
   validates_presence_of :party
 
-  belongs_to :role, optional: true
   has_many :substitutions, as: :grid, dependent: :destroy
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
@@ -50,6 +49,19 @@ class GridWeapon < ApplicationRecord
   has_many :grid_weapon_bullets, dependent: :destroy
   has_many :bullets, through: :grid_weapon_bullets
 
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening,
+    :weapon_key1, :weapon_key2, :weapon_key3,
+    :ax_modifier1, :ax_modifier2, :befoulment_modifier,
+    { grid_weapon_bullets: :bullet },
+    { collection_weapon: :collection_weapon_bullets },
+    { weapon: %i[awakenings weapon_series weapon_series_variant weapon_skills
+                 recruited_character base_weapon forge_chain_weapons] }
+  ].freeze
+
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }
@@ -64,7 +76,6 @@ class GridWeapon < ApplicationRecord
   validate :no_conflicts, on: :create, unless: :is_substitute?
   validate :no_duplicate_weapon_keys
   validate :no_duplicate_weapon_key_slots
-  validate :role_slot_type_matches
 
   before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
@@ -72,6 +83,10 @@ class GridWeapon < ApplicationRecord
 
   after_create :increment_party_counter, unless: :is_substitute?
   after_destroy :decrement_party_counter, unless: :is_substitute?
+
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
 
   ##### Amoeba configuration
   amoeba do
@@ -82,8 +97,7 @@ class GridWeapon < ApplicationRecord
     nullify :befoulment_modifier_id
     nullify :befoulment_strength
     nullify :exorcism_level
-    nullify :role_id
-    nullify :substitution_note
+    nullify :description
   end
 
   ##
@@ -365,12 +379,6 @@ class GridWeapon < ApplicationRecord
 
   def decrement_party_counter
     Party.decrement_counter(:weapons_count, party_id)
-  end
-
-  def role_slot_type_matches
-    return unless role.present?
-
-    errors.add(:role, 'slot type must be Weapon') unless role.slot_type == 'Weapon'
   end
 
   def set_default_exorcism_level
