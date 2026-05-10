@@ -184,6 +184,13 @@ class Party < ApplicationRecord
   has_many :party_shares, dependent: :destroy
   has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 
+  # Public-facing nested attributes target the filtered associations (no substitutes),
+  # matching the *_attributes keys the controller permits and pre-substitutions clients send.
+  accepts_nested_attributes_for :characters
+  accepts_nested_attributes_for :summons
+  accepts_nested_attributes_for :weapons
+
+  # Internal flows (e.g. remix re-mapping) need to write to the unfiltered scopes.
   accepts_nested_attributes_for :all_characters
   accepts_nested_attributes_for :all_summons
   accepts_nested_attributes_for :all_weapons
