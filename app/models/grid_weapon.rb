@@ -50,6 +50,19 @@ class GridWeapon < ApplicationRecord
   has_many :grid_weapon_bullets, dependent: :destroy
   has_many :bullets, through: :grid_weapon_bullets
 
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening, :role,
+    :weapon_key1, :weapon_key2, :weapon_key3,
+    :ax_modifier1, :ax_modifier2, :befoulment_modifier,
+    { grid_weapon_bullets: :bullet },
+    { collection_weapon: :collection_weapon_bullets },
+    { weapon: %i[awakenings weapon_series weapon_series_variant weapon_skills
+                 recruited_character base_weapon forge_chain_weapons] }
+  ].freeze
+
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }

@@ -8,6 +8,7 @@ module Api
       include PartyAuthorizationConcern
       include PartyQueryingConcern
       include PartyPreviewConcern
+      include SubstituteGridPreloading
 
       # Constants used for filtering validations.
 
@@ -431,26 +432,9 @@ module Api
       def set_from_slug
         @party = Party.includes(
           :user, :job, { raid: :group },
-          { characters: [
-            { character: [:character_series_records, :style_swap_variants] },
-            :awakening, :grid_artifact, :collection_character, :role,
-            { substitutions: :substitute_grid }
-          ] },
-          { weapons: {
-            weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character, :base_weapon, :forge_chain_weapons],
-            collection_weapon: { collection_weapon_bullets: {} },
-            awakening: {},
-            weapon_key1: {},
-            weapon_key2: {},
-            weapon_key3: {},
-            ax_modifier1: {},
-            ax_modifier2: {},
-            befoulment_modifier: {},
-            grid_weapon_bullets: :bullet,
-            role: {},
-            substitutions: :substitute_grid
-          } },
-          { summons: [{ summon: :summon_series }, :collection_summon, :role, { substitutions: :substitute_grid }] },
+          { characters: GridCharacter::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
+          { weapons: GridWeapon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
+          { summons: GridSummon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
           :guidebook1, :guidebook2, :guidebook3,
           { source_party: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
           { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
@@ -460,56 +444,7 @@ module Api
 
         return render_not_found_response('party') unless @party
 
-        preload_substitute_grids!(@party)
-      end
-
-      # The polymorphic `substitutions.substitute_grid` association can't carry
-      # nested preloads through `includes`, so each substitute renders as its own
-      # N+1 fan-out (character → series, weapon → keys, etc.). Group the
-      # already-loaded substitute_grid records by type and run a typed preload
-      # against each group so the nested-blueprint render is hot.
-      def preload_substitute_grids!(party)
-        all_substitutions = (party.characters + party.weapons + party.summons).flat_map(&:substitutions)
-        return if all_substitutions.empty?
-
-        char_subs = filter_substitute_grids(all_substitutions, GridCharacter)
-        weapon_subs = filter_substitute_grids(all_substitutions, GridWeapon)
-        summon_subs = filter_substitute_grids(all_substitutions, GridSummon)
-
-        if char_subs.any?
-          ActiveRecord::Associations::Preloader.new(
-            records: char_subs,
-            associations: [
-              { character: [:character_series_records, :style_swap_variants] },
-              :awakening, :grid_artifact, :role
-            ]
-          ).call
-        end
-
-        if weapon_subs.any?
-          ActiveRecord::Associations::Preloader.new(
-            records: weapon_subs,
-            associations: [
-              { weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character, :base_weapon, :forge_chain_weapons] },
-              :awakening, :weapon_key1, :weapon_key2, :weapon_key3,
-              :ax_modifier1, :ax_modifier2, :befoulment_modifier,
-              { grid_weapon_bullets: :bullet }, :role
-            ]
-          ).call
-        end
-
-        return unless summon_subs.any?
-
-        ActiveRecord::Associations::Preloader.new(
-          records: summon_subs,
-          associations: [{ summon: :summon_series }, :role]
-        ).call
-      end
-
-      def filter_substitute_grids(substitutions, klass)
-        substitutions
-          .select { |s| s.substitute_grid_type == klass.name }
-          .filter_map(&:substitute_grid)
+        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons)
       end
 
       # Loads the party by its id.

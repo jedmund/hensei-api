@@ -16,6 +16,7 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
 
       before_action :find_grid_character,
                     only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
@@ -506,8 +507,12 @@ module Api
       # @return [void]
       def find_grid_character
         grid_character_id = params[:id] || params.dig(:character, :id) || params.dig(:resolve, :conflicting)
-        @grid_character = GridCharacter.includes(:awakening).find_by(id: grid_character_id)
-        render_not_found_response('grid_character') unless @grid_character
+        @grid_character = GridCharacter
+                          .includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                          .find_by(id: grid_character_id)
+        return render_not_found_response('grid_character') unless @grid_character
+
+        preload_substitute_grids!([@grid_character])
       end
 
       ##

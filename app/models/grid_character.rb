@@ -29,6 +29,14 @@ class GridCharacter < ApplicationRecord
 
   has_one :grid_artifact, dependent: :destroy
 
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening, :grid_artifact, :role, :collection_character,
+    { character: [:character_series_records, :style_swap_variants] }
+  ].freeze
+
   # Validations
   validates_presence_of :party
 

@@ -21,6 +21,14 @@ class GridSummon < ApplicationRecord
   has_many :substitutions, as: :grid, dependent: :destroy
   validates_presence_of :party
 
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :role, :collection_summon,
+    { summon: :summon_series }
+  ].freeze
+
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }
