@@ -5,7 +5,7 @@ module Api
     class SubstitutionBlueprint < ApiBlueprint
       field :position
 
-      association :substitute_grid, blueprint: GridCharacterBlueprint, view: :nested,
+      association :substitute_grid, name: :grid_character, blueprint: GridCharacterBlueprint, view: :nested,
                   if: ->(_field_name, sub, _options) { sub.substitute_grid_type == 'GridCharacter' }
 
       association :substitute_grid, name: :grid_weapon, blueprint: GridWeaponBlueprint, view: :nested,

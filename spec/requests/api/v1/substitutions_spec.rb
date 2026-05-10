@@ -44,6 +44,29 @@ RSpec.describe 'Substitutions API', type: :request do
 
       body = JSON.parse(response.body)
       expect(body['position']).to eq(0)
+      # Polymorphic substitute_grid renders under the per-type key the frontend reads.
+      expect(body).to have_key('grid_weapon')
+    end
+
+    it 'renders a character substitute under the grid_character key' do
+      character = Character.first
+      other_character = Character.where.not(id: character.id).first
+      grid_character = create(:grid_character, party: party, character: character)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridCharacter',
+          grid_id: grid_character.id,
+          item_id: other_character.id,
+          position: 0
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+      body = JSON.parse(response.body)
+      expect(body).to have_key('grid_character')
+      expect(body).not_to have_key('substitute_grid')
     end
 
     it 'marks the created grid item as is_substitute' do
