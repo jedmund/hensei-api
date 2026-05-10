@@ -104,8 +104,9 @@ RSpec.describe 'Substitutions API', type: :request do
     end
 
     it 'auto-assigns next position when not provided' do
-      # Create one substitution at position 0
-      sw1 = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      # Create one substitution at position 0 (using a different weapon so the
+      # dup-prevention check doesn't reject the new add)
+      sw1 = create(:grid_weapon, party: party, weapon: weapon, is_substitute: true)
       create(:substitution, grid: grid_weapon, substitute_grid: sw1, position: 0)
 
       params = {
@@ -282,6 +283,33 @@ RSpec.describe 'Substitutions API', type: :request do
       post '/api/v1/substitutions', params: params.to_json, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  describe 'duplicate substitute for the same slot' do
+    let(:grid_weapon) { create(:grid_weapon, party: party, weapon: weapon) }
+
+    let(:add_params) do
+      {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridWeapon',
+          grid_id: grid_weapon.id,
+          item_id: other_weapon.id
+        }
+      }
+    end
+
+    it 'returns 422 on the second add of the same item' do
+      post '/api/v1/substitutions', params: add_params.to_json, headers: headers
+      expect(response).to have_http_status(:created)
+
+      expect do
+        post '/api/v1/substitutions', params: add_params.to_json, headers: headers
+      end.not_to change(Substitution, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)['error']).to match(/already a substitute/i)
     end
   end
 end

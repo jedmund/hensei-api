@@ -24,6 +24,10 @@ module Api
 
         item_fk = item_foreign_key(grid_type)
 
+        if substitute_already_present?(grid_type, grid_id, item_fk, item_id)
+          return render json: { error: 'item is already a substitute for this slot' }, status: :unprocessable_entity
+        end
+
         substitute = grid_class.create!(
           party: @party,
           item_fk => item_id,
@@ -99,6 +103,16 @@ module Api
         return nil unless GRID_TYPE_FOREIGN_KEYS.key?(grid_type)
 
         grid_type.constantize
+      end
+
+      # Reject if this item is already a substitute for the same parent slot.
+      # Substitutes per slot are bounded (the model caps at 10), so loading them
+      # all and comparing in Ruby is fine and avoids polymorphic-join gymnastics.
+      def substitute_already_present?(grid_type, grid_id, item_fk, item_id)
+        Substitution.where(grid_type: grid_type, grid_id: grid_id)
+                    .includes(:substitute_grid)
+                    .filter_map(&:substitute_grid)
+                    .any? { |sg| sg[item_fk] == item_id }
       end
     end
   end
