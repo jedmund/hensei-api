@@ -12,7 +12,7 @@ module Api
       end
 
       def show
-        difficulty = Difficulty.find_by(id: params[:id]) || Difficulty.find_by(slug: params[:id])
+        difficulty = find_difficulty(params[:id])
         return render_not_found_response('difficulty') unless difficulty
 
         render json: DifficultyBlueprint.render(difficulty, view: :list)
@@ -28,7 +28,7 @@ module Api
       end
 
       def update
-        difficulty = Difficulty.find_by(id: params[:id])
+        difficulty = find_difficulty(params[:id])
         return render_not_found_response('difficulty') unless difficulty
 
         if difficulty.update(difficulty_params)
@@ -39,7 +39,7 @@ module Api
       end
 
       def destroy
-        difficulty = Difficulty.find_by(id: params[:id])
+        difficulty = find_difficulty(params[:id])
         return render_not_found_response('difficulty') unless difficulty
 
         difficulty.destroy
@@ -47,6 +47,13 @@ module Api
       end
 
       private
+
+      # Looks up a Difficulty by UUID first and falls back to slug. Slug strings
+      # cast to nil for the UUID column, so find_by(id:) safely returns nil for
+      # slug-shaped identifiers rather than raising.
+      def find_difficulty(identifier)
+        Difficulty.find_by(id: identifier) || Difficulty.find_by(slug: identifier)
+      end
 
       def difficulty_params
         params.require(:difficulty).permit(:name, :slug, :description, :min_score, :max_score, :sort_order, :color)

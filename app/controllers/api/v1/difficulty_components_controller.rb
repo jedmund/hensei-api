@@ -12,14 +12,14 @@ module Api
       end
 
       def show
-        component = DifficultyComponent.find_by(id: params[:id]) || DifficultyComponent.find_by(name: params[:id])
+        component = find_component(params[:id])
         return render_not_found_response('difficulty_component') unless component
 
         render json: DifficultyComponentBlueprint.render(component)
       end
 
       def update
-        component = DifficultyComponent.find_by(id: params[:id]) || DifficultyComponent.find_by(name: params[:id])
+        component = find_component(params[:id])
         return render_not_found_response('difficulty_component') unless component
 
         if component.update(component_params)
@@ -30,6 +30,10 @@ module Api
       end
 
       private
+
+      def find_component(identifier)
+        DifficultyComponent.find_by(id: identifier) || DifficultyComponent.find_by(name: identifier)
+      end
 
       def component_params
         params.require(:difficulty_component).permit(:weight, :enabled, :min_count_to_score, :target_max)
