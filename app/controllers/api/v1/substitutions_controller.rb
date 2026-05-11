@@ -12,6 +12,11 @@ module Api
       before_action :authorize_party!
       before_action :set_substitution, only: %i[update destroy]
 
+      # Park value added to every row's position during the two-pass reorder.
+      # Has to be above the validated max (10) so the temporary slot never
+      # collides with a valid final position; 100 leaves plenty of headroom.
+      REORDER_PARK_OFFSET = 100
+
       def create
         grid_type = substitution_params[:grid_type]
         grid_id = substitution_params[:grid_id]
@@ -88,7 +93,85 @@ module Api
         head :no_content
       end
 
+      # POST /api/v1/substitutions/reorder
+      # Body: { party_id: <uuid>, substitutions: [{ id: <uuid>, position: <int> }, ...] }
+      #
+      # Reorders every substitution in a single slot in one transaction. The
+      # caller must include all of the slot's substitutions; partial batches
+      # are rejected so we never have to reconcile rows we didn't touch.
+      def reorder
+        raw_entries = params[:substitutions]
+        if raw_entries.blank?
+          return render json: { error: 'substitutions array required' },
+                        status: :unprocessable_entity
+        end
+
+        entries = raw_entries.map do |e|
+          e.is_a?(ActionController::Parameters) ? e.permit(:id, :position).to_h : e.to_h
+        end
+        ids = entries.map { |e| e['id'] || e[:id] }
+        positions = entries.map { |e| (e['position'] || e[:position]).to_i }
+
+        if (validation_error = validate_reorder_batch(ids, positions))
+          return render json: { error: validation_error }, status: :unprocessable_entity
+        end
+
+        substitutions = Substitution.where(id: ids).to_a
+        if substitutions.length != ids.length
+          return render json: { error: 'unknown substitution id(s)' },
+                        status: :unprocessable_entity
+        end
+
+        # Cross-party access is rendered as not-found rather than 403 to avoid
+        # leaking which ids exist in other parties — matches set_substitution.
+        if substitutions.any? { |s| s.grid&.party_id != @party.id }
+          return render_not_found_response('substitution')
+        end
+
+        slot_keys = substitutions.map { |s| [s.grid_type, s.grid_id] }.uniq
+        if slot_keys.length > 1
+          return render json: { error: 'all entries must belong to the same slot' },
+                        status: :unprocessable_entity
+        end
+
+        grid_type, grid_id = slot_keys.first
+        existing_ids = Substitution.where(grid_type: grid_type, grid_id: grid_id).pluck(:id)
+        if existing_ids.sort != ids.sort
+          return render json: { error: 'reorder batch must cover all substitutions in the slot' },
+                        status: :unprocessable_entity
+        end
+
+        ApplicationRecord.transaction do
+          # Two-pass write to dodge the unique index on
+          # (grid_type, grid_id, position): park every row at position+100
+          # (well above the validated max), then restamp the final positions.
+          # update_all bypasses validation so the temporary value is allowed;
+          # the second pass uses update! so the [0,9] validator still fires.
+          Substitution.where(id: ids).update_all("position = position + #{REORDER_PARK_OFFSET}")
+
+          by_id = Substitution.where(id: ids).index_by(&:id)
+          entries.each do |e|
+            id = e['id'] || e[:id]
+            by_id[id].update!(position: (e['position'] || e[:position]).to_i)
+          end
+          @party.mark_updated!
+        end
+
+        ordered = Substitution.where(grid_type: grid_type, grid_id: grid_id).order(:position)
+        render json: SubstitutionBlueprint.render(ordered)
+      rescue ActiveRecord::RecordNotUnique
+        render json: { error: 'position collision' }, status: :unprocessable_entity
+      end
+
       private
+
+      def validate_reorder_batch(ids, positions)
+        return 'duplicate ids in batch' if ids.length != ids.uniq.length
+        return 'duplicate positions in batch' if positions.length != positions.uniq.length
+        return 'position must be in [0, 10)' if positions.any? { |p| p.negative? || p >= 10 }
+
+        nil
+      end
 
       def set_party
         party_id = params[:party_id] || params.dig(:substitution, :party_id)
