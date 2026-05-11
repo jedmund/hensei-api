@@ -310,10 +310,20 @@ module PartyDifficulty
       []
     end
 
+    # The composite is a weighted average over only those components whose
+    # weighted_score is strictly positive. Components that are absent (no data)
+    # AND components that are present but fired zero rules are both excluded
+    # from the denominator. This is intentional: a team with a non-Origin job
+    # should not be penalized in the denominator just for having a job.
+    #
+    # NOTE — non-monotonic side effect: because zero-scoring components are
+    # excluded entirely, adding a rule that fires for the first time on a
+    # previously-empty component will *introduce* that component's weight to
+    # the denominator. If the new component's raw_score is below the current
+    # composite, the composite will *drop* even though investment grew. This
+    # is a calibrated trade-off — see DifficultyBlueprint and the difficulty
+    # scoring docs for the rationale.
     def composite_score(breakdowns)
-      # Skip components that aren't present (no data) OR that had data but
-      # fired no rules at all (raw_score == 0). A team with a non-Origin job
-      # shouldn't be penalized in the denominator just for having a job.
       contributing = breakdowns.select do |b|
         b[:weighted_score].present? && b[:weighted_score].positive?
       end

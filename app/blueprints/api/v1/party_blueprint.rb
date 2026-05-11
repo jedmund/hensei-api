@@ -36,6 +36,12 @@ module Api
         { mod: party.boost_mod, side: party.boost_side }
       end
 
+      # `score` is a weighted average over only those components whose
+      # weighted_score is strictly positive — components that are present but
+      # fired no rules are excluded from the denominator (see Calculator
+      # #composite_score). One consequence: adding a rule that fires for the
+      # first time on a previously-empty component can *lower* the score if
+      # that component's raw_score is below the existing composite.
       field :difficulty do |party|
         next nil unless party.difficulty_score.present?
 

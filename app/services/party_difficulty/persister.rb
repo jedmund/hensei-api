@@ -21,11 +21,14 @@ module PartyDifficulty
           difficulty_ruleset_version: result.ruleset_version
         )
       else
+        # Leave difficulty_computed_at nil so the daily sweep picks the party
+        # back up the moment it crosses the scoreability threshold (e.g. via a
+        # counter-cache update that bypassed the Party after_commit callback).
         party.update_columns(
           difficulty_id: nil,
           difficulty_score: nil,
           difficulty_breakdown: nil,
-          difficulty_computed_at: Time.current,
+          difficulty_computed_at: nil,
           difficulty_ruleset_version: result.ruleset_version
         )
       end
