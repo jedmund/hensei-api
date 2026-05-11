@@ -507,4 +507,192 @@ RSpec.describe 'Substitutions API', type: :request do
                                          .and change(GridSummon, :count).by(-1)
     end
   end
+
+  describe 'POST /api/v1/substitutions/reorder' do
+    let(:grid_weapon) { create(:grid_weapon, party: party, weapon: weapon) }
+    let(:sub_a) { create(:grid_weapon, party: party, weapon: Weapon.all[2], is_substitute: true) }
+    let(:sub_b) { create(:grid_weapon, party: party, weapon: Weapon.all[3], is_substitute: true) }
+    let(:sub_c) { create(:grid_weapon, party: party, weapon: Weapon.all[4], is_substitute: true) }
+
+    let!(:s_a) { create(:substitution, grid: grid_weapon, substitute_grid: sub_a, position: 0) }
+    let!(:s_b) { create(:substitution, grid: grid_weapon, substitute_grid: sub_b, position: 1) }
+    let!(:s_c) { create(:substitution, grid: grid_weapon, substitute_grid: sub_c, position: 2) }
+
+    it 'rewrites positions in one transaction' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 2 },
+          { id: s_b.id, position: 0 },
+          { id: s_c.id, position: 1 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(s_a.reload.position).to eq(2)
+      expect(s_b.reload.position).to eq(0)
+      expect(s_c.reload.position).to eq(1)
+    end
+
+    it 'returns the substitutions ordered by their new position' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 2 },
+          { id: s_b.id, position: 0 },
+          { id: s_c.id, position: 1 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      body = JSON.parse(response.body)
+      expect(body.map { |r| r['id'] }).to eq([s_b.id, s_c.id, s_a.id])
+    end
+
+    it 'bumps the party last_updated timestamp' do
+      original = party.reload.last_updated
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 1 },
+          { id: s_b.id, position: 0 },
+          { id: s_c.id, position: 2 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(party.reload.last_updated).not_to eq(original)
+    end
+
+    it 'rejects a batch with duplicate positions' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 0 },
+          { id: s_b.id, position: 0 },
+          { id: s_c.id, position: 1 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(s_a.reload.position).to eq(0)
+      expect(s_b.reload.position).to eq(1)
+    end
+
+    it 'rejects a batch with duplicate ids' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 0 },
+          { id: s_a.id, position: 1 },
+          { id: s_c.id, position: 2 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'rejects positions outside [0, 10)' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 10 },
+          { id: s_b.id, position: 0 },
+          { id: s_c.id, position: 1 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(s_a.reload.position).to eq(0)
+    end
+
+    it 'rejects a partial batch that does not cover the whole slot' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 1 },
+          { id: s_b.id, position: 0 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(s_a.reload.position).to eq(0)
+      expect(s_b.reload.position).to eq(1)
+    end
+
+    it 'rejects a batch that mixes substitutions from two slots' do
+      other_grid = create(:grid_weapon, party: party, weapon: Weapon.all[5])
+      other_sub_grid = create(:grid_weapon, party: party, weapon: Weapon.all[6], is_substitute: true)
+      foreign = create(:substitution, grid: other_grid, substitute_grid: other_sub_grid, position: 0)
+
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 0 },
+          { id: foreign.id, position: 1 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'returns 404 when any id belongs to another party' do
+      other_party = create(:party, user: user)
+      other_grid = create(:grid_weapon, party: other_party, weapon: weapon)
+      other_sub = create(:grid_weapon, party: other_party, weapon: other_weapon, is_substitute: true)
+      foreign = create(:substitution, grid: other_grid, substitute_grid: other_sub, position: 0)
+
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 0 },
+          { id: s_b.id, position: 1 },
+          { id: s_c.id, position: 2 },
+          { id: foreign.id, position: 3 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'returns 422 when an id does not exist' do
+      params = {
+        party_id: party.id,
+        substitutions: [
+          { id: s_a.id, position: 0 },
+          { id: s_b.id, position: 1 },
+          { id: s_c.id, position: 2 },
+          { id: SecureRandom.uuid, position: 3 }
+        ]
+      }
+
+      post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'requires the substitutions array' do
+      post '/api/v1/substitutions/reorder',
+           params: { party_id: party.id }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end
