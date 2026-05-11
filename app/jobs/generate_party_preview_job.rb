@@ -3,10 +3,17 @@ class GeneratePartyPreviewJob < ApplicationJob
   queue_as :previews
 
   # Configure retry behavior
-  retry_on StandardError, wait: :exponentially_longer, attempts: 3
+  retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   discard_on ActiveRecord::RecordNotFound do |job, error|
     Rails.logger.error("Party #{job.arguments.first} not found for preview generation")
+  end
+
+  # AWS isn't configured locally — drop these jobs cleanly instead of retrying.
+  discard_on AwsService::ConfigurationError do |job, error|
+    Rails.logger.warn(
+      "Skipping preview for party #{job.arguments.first}: AWS not configured (#{error.message})"
+    )
   end
 
   around_perform :track_timing
@@ -51,6 +58,9 @@ class GeneratePartyPreviewJob < ApplicationJob
         Rails.logger.error("Failed to generate preview for party #{party_id}")
         notify_failure(party)
       end
+    rescue AwsService::ConfigurationError
+      # Let discard_on handle this without dumping a full stack trace.
+      raise
     rescue => e
       Rails.logger.error("Error generating preview for party #{party_id}: #{e.message}")
       Rails.logger.error("Full error details:")

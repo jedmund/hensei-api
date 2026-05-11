@@ -22,7 +22,7 @@ module Api
         # current_version inside Calculator#initialize. See
         # docs/follow-ups/party-difficulty.md.
         eager = PartyDifficulty::Calculator.eager_load_party(party.id)
-        result = PartyDifficulty::Calculator.new(eager).call
+        result = PartyDifficulty::Calculator.new(eager, **calculator_overrides).call
 
         render json: {
           shortcode: shortcode,
@@ -30,8 +30,29 @@ module Api
           score: result.score,
           tier: result.difficulty ? DifficultyBlueprint.render_as_hash(result.difficulty, view: :nested) : nil,
           breakdown: result.breakdown,
-          ruleset_version: result.ruleset_version
+          ruleset_version: result.ruleset_version,
+          with_drafts: applying_drafts?
         }
+      end
+
+      private
+
+      def calculator_overrides
+        return {} unless applying_drafts?
+
+        ws = PartyDifficulty::DraftWorkspace.for(current_user)
+        {
+          rules: ws.merged_rules(only_active: true),
+          components: ws.merged_components,
+          difficulties: ws.merged_tiers
+        }
+      end
+
+      def applying_drafts?
+        return false unless current_user&.role && current_user.role >= 7
+        return false if params.key?(:with_drafts) && !ActiveModel::Type::Boolean.new.cast(params[:with_drafts])
+
+        PartyDifficulty::DraftWorkspace.for(current_user).pending_count.positive?
       end
     end
   end

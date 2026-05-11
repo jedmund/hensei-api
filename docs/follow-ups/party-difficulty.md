@@ -40,6 +40,34 @@ end
 
 ---
 
+## Reconcile `draft.id` ↔ canonical id after a create-draft commit
+
+**Status:** deferred during review of `jedmund/party-difficulty-drafts`.
+
+**Symptom.** `DraftWorkspace#build_created` assigns `record.id = draft.id` so the frontend can address a pending-creation row before it commits. After commit, `apply!` does `klass.create!(...)`, which generates a fresh UUID — the canonical id differs from the draft id the frontend just used.
+
+**Why not in the stack.** Verified that the Svelte frontend (`accra-v2` worktree) does not yet have a difficulty draft UI. There is currently no consumer that could observe the mismatch. The bug is latent.
+
+**What to do (when the UI is built).** Return a `{ draft_id => canonical_id }` map in the commit response. The frontend can reconcile any locally-cached references. Backwards-compatible — additive field on the existing JSON response. Sketch:
+
+```ruby
+# DraftWorkspace#commit!
+created_id_map = {}
+@drafts.each do |draft|
+  if draft.operation == 'create'
+    record = apply!(draft)
+    created_id_map[draft.id] = record.id
+  else
+    apply!(draft)
+  end
+end
+# include created_id_map in the return value alongside the change log
+```
+
+**When to revisit.** When the difficulty draft UI is added to `hensei-svelte`.
+
+---
+
 ## Request specs for the difficulty admin endpoints
 
 **Status:** deferred per the original review plan (R3 routing).
