@@ -9,6 +9,10 @@
 class DifficultyConfig < ApplicationRecord
   def self.instance
     first || create!(ruleset_version: 1)
+  rescue ActiveRecord::RecordNotUnique
+    # Two callers raced past the `first` check; one inserted, one lost the
+    # unique-index check. Re-read the winning row.
+    first
   end
 
   def self.current_version
