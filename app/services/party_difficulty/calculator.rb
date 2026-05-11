@@ -56,6 +56,12 @@ module PartyDifficulty
       end
     end
 
+    # Threshold check: the party must have at least min_count_to_score grid
+    # items for each *enabled* primary component. If a component has been
+    # disabled by an editor (comp.nil? because enabled_components_by_name
+    # filters disabled rows), its threshold doesn't apply — component_breakdowns
+    # likewise skips it, so the party can still receive a composite score from
+    # whichever components remain enabled.
     def scoreable?
       enabled = enabled_components_by_name
       %w[weapon character summon].all? do |name|
