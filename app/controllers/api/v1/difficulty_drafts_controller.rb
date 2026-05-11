@@ -56,6 +56,14 @@ module Api
           note: log.note,
           change_log_id: log.id
         }
+      rescue PartyDifficulty::StaleDraftError => e
+        render json: {
+          error: 'stale_draft',
+          message: e.message,
+          draft_id: e.draft_id,
+          target_type: e.target_type,
+          target_id: e.target_id
+        }, status: :conflict
       end
 
       private

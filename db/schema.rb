@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_11_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_11_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -433,6 +433,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_11_000000) do
     t.jsonb "attributes_payload", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "target_updated_at"
     t.index ["user_id", "target_type", "target_id"], name: "index_difficulty_drafts_per_target", unique: true, where: "(target_id IS NOT NULL)"
     t.index ["user_id", "target_type"], name: "index_difficulty_drafts_on_user_id_and_target_type"
     t.index ["user_id"], name: "index_difficulty_drafts_on_user_id"

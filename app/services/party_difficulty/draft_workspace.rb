@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 module PartyDifficulty
+  # Raised by DraftWorkspace#commit! when a staged update or destroy targets a
+  # record that another editor has changed since the draft was staged. The
+  # controller turns this into a 409 Conflict.
+  class StaleDraftError < StandardError
+    attr_reader :draft_id, :target_type, :target_id
+
+    def initialize(draft)
+      @draft_id = draft.id
+      @target_type = draft.target_type
+      @target_id = draft.target_id
+      super("Draft #{draft.id} is stale: target #{draft.target_type}/#{draft.target_id} changed after stage")
+    end
+  end
+
   ##
   # Per-editor staging layer for difficulty rules / tiers / components.
   # Editors mutate state here via the controllers, hit Preview to validate,
@@ -107,6 +121,9 @@ module PartyDifficulty
           attributes_payload: payload
         ).tap { |d| @drafts << d }
       else
+        # Snapshot the current target's updated_at so commit! can detect a
+        # concurrent edit by another editor.
+        target = target_type.constantize.find_by(id: target_id)
         draft = DifficultyDraft.find_or_initialize_by(
           user: @user,
           target_type: target_type,
@@ -114,6 +131,7 @@ module PartyDifficulty
         )
         draft.operation = operation
         draft.attributes_payload = operation == 'destroy' ? {} : payload
+        draft.target_updated_at = target&.updated_at
         draft.save!
         @drafts.reject! { |d| d.id == draft.id }
         @drafts << draft
@@ -206,7 +224,10 @@ module PartyDifficulty
           }
         when 'update'
           target = draft.target
-          next unless target
+          if target.nil?
+            updates << stale_entry(draft)
+            next
+          end
 
           field_diff = compute_field_diff(target, draft.attributes_payload, target_type)
           next if field_diff.empty?
@@ -215,22 +236,45 @@ module PartyDifficulty
             draft_id: draft.id,
             target_id: target.id,
             label: summary_label(target),
-            changes: field_diff
+            changes: field_diff,
+            stale: stale_against?(target, draft)
           }
         when 'destroy'
           target = draft.target
-          next unless target
+          if target.nil?
+            destroys << stale_entry(draft)
+            next
+          end
 
           destroys << {
             draft_id: draft.id,
             target_id: target.id,
             label: summary_label(target),
-            snapshot: target.attributes.slice(*SUMMARY_COLUMNS.fetch(target_type, []))
+            snapshot: target.attributes.slice(*SUMMARY_COLUMNS.fetch(target_type, [])),
+            stale: stale_against?(target, draft)
           }
         end
       end
 
       { creates: creates, updates: updates, destroys: destroys }
+    end
+
+    # Emitted for update/destroy drafts whose target has been deleted by
+    # another editor since the draft was staged. The frontend can prompt the
+    # editor to discard the stranded draft.
+    def stale_entry(draft)
+      {
+        draft_id: draft.id,
+        target_id: draft.target_id,
+        stale: true,
+        reason: 'target_missing'
+      }
+    end
+
+    def stale_against?(target, draft)
+      return false if draft.target_updated_at.nil?
+
+      target.updated_at != draft.target_updated_at
     end
 
     def compute_field_diff(record, proposed, target_type)
@@ -264,11 +308,25 @@ module PartyDifficulty
         klass = draft.target_class
         klass.create!(sanitize_attributes(draft.target_type, draft.attributes_payload))
       when 'update'
-        target = draft.target
+        target = lock_and_verify(draft)
         target&.update!(sanitize_attributes(draft.target_type, draft.attributes_payload))
       when 'destroy'
-        draft.target&.destroy!
+        target = lock_and_verify(draft)
+        target&.destroy!
       end
+    end
+
+    # Locks the target row for the rest of the commit transaction and raises
+    # StaleDraftError if the target's updated_at no longer matches the
+    # snapshot captured at stage time. Drafts without a snapshot (created
+    # before the optimistic-concurrency column existed) skip the check.
+    def lock_and_verify(draft)
+      target = draft.target&.lock!
+      return target if target.nil?
+      return target if draft.target_updated_at.nil?
+      return target if target.updated_at == draft.target_updated_at
+
+      raise StaleDraftError, draft
     end
   end
 end
