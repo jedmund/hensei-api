@@ -5,14 +5,16 @@ module Api
     class SubstitutionBlueprint < ApiBlueprint
       field :position
 
-      association :substitute_grid, name: :grid_character, blueprint: GridCharacterBlueprint, view: :nested,
-                  if: ->(_field_name, sub, _options) { sub.substitute_grid_type == 'GridCharacter' }
-
-      association :substitute_grid, name: :grid_weapon, blueprint: GridWeaponBlueprint, view: :nested,
-                  if: ->(_field_name, sub, _options) { sub.substitute_grid_type == 'GridWeapon' }
-
-      association :substitute_grid, name: :grid_summon, blueprint: GridSummonBlueprint, view: :nested,
-                  if: ->(_field_name, sub, _options) { sub.substitute_grid_type == 'GridSummon' }
+      # Keeps the wire shape stable (three discriminated keys) — clients pick
+      # the right one by checking which is present.
+      {
+        'GridCharacter' => [:grid_character, GridCharacterBlueprint],
+        'GridWeapon'    => [:grid_weapon,    GridWeaponBlueprint],
+        'GridSummon'    => [:grid_summon,    GridSummonBlueprint]
+      }.each do |type, (name, blueprint)|
+        association :substitute_grid, name: name, blueprint: blueprint, view: :nested,
+                    if: ->(_field_name, sub, _options) { sub.substitute_grid_type == type }
+      end
     end
   end
 end
