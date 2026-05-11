@@ -5,6 +5,18 @@ module Api
     class DifficultyBlueprint < ApiBlueprint
       fields :name, :slug, :description, :min_score, :max_score, :sort_order, :color
 
+      # Versioned with updated_at so the URL changes on every upload, busting
+      # any browser / CDN cache while the S3 object stays at a stable path.
+      field :image_key do |difficulty|
+        next nil if difficulty.image_key.blank?
+
+        if difficulty.respond_to?(:updated_at) && difficulty.updated_at
+          "#{difficulty.image_key}?v=#{difficulty.updated_at.to_i}"
+        else
+          difficulty.image_key
+        end
+      end
+
       field :pending do |obj|
         obj.respond_to?(:pending?) && obj.pending?
       end
