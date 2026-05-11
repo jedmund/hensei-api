@@ -212,6 +212,7 @@ module PartyDifficulty
       contribution_sum = fired.sum { |c| c[:contribution] }
       raw_score = (contribution_sum / max_weight).clamp(0.0, 1.0)
       weighted = raw_score * comp.weight.to_f
+      target_max_set = comp.respond_to?(:target_max) && comp.target_max.present? && comp.target_max.to_f.positive?
 
       {
         name: name,
@@ -219,6 +220,9 @@ module PartyDifficulty
         present: true,
         raw_score: raw_score.round(4),
         weighted_score: weighted.round(4),
+        contribution_sum: contribution_sum.round(2),
+        max_weight: max_weight.round(2),
+        target_max: target_max_set ? comp.target_max.to_f : nil,
         fired: fired.flat_map { |c| fired_entries_for(c) }
       }
     end
