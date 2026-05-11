@@ -33,6 +33,7 @@ class GridWeapon < ApplicationRecord
   validates_presence_of :party
 
   has_many :substitutions, as: :grid, dependent: :destroy
+  has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
 
   belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
   belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true

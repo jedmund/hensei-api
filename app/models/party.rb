@@ -160,10 +160,14 @@ class Party < ApplicationRecord
            class_name: 'GridSummon',
            inverse_of: :party
 
+  # Uses :destroy on all three so the grid items' own callbacks fire — most
+  # importantly `has_many :substitutions, ..., dependent: :destroy`. :delete_all
+  # would skip callbacks and leave orphan substitution rows pointing at deleted
+  # grid ids.
   has_many :all_characters,
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
-           dependent: :delete_all,
+           dependent: :destroy,
            inverse_of: :party
 
   has_many :all_weapons,
@@ -175,7 +179,7 @@ class Party < ApplicationRecord
   has_many :all_summons,
            foreign_key: 'party_id',
            class_name: 'GridSummon',
-           dependent: :delete_all,
+           dependent: :destroy,
            inverse_of: :party
 
   has_many :favorites, dependent: :destroy
@@ -276,6 +280,25 @@ class Party < ApplicationRecord
   # @return [Boolean] true if the update succeeded.
   def mark_updated!
     update_column(:last_updated, Time.current)
+  end
+
+  ##
+  # Returns true iff any grid item in this party has at least one substitution.
+  #
+  # Uses a single EXISTS query over substitutions, scoped by polymorphic
+  # (grid_type, grid_id) pairs. Most parties have zero substitutes, so this
+  # cheap predicate lets the read path skip the heavier preload_substitute_grids!
+  # work in SubstituteGridPreloading.
+  #
+  # @return [Boolean]
+  def has_substitutions?
+    return @has_substitutions if defined?(@has_substitutions)
+
+    @has_substitutions = Substitution
+                         .where(grid_type: 'GridCharacter', grid_id: GridCharacter.where(party_id: id).select(:id))
+                         .or(Substitution.where(grid_type: 'GridWeapon', grid_id: GridWeapon.where(party_id: id).select(:id)))
+                         .or(Substitution.where(grid_type: 'GridSummon', grid_id: GridSummon.where(party_id: id).select(:id)))
+                         .exists?
   end
 
   ##
@@ -587,24 +610,32 @@ class Party < ApplicationRecord
   end
 
   def remap_substitutions_for(grid_type, old_items, new_items, item_fk)
+    new_index = new_items.index_by { |ni| [ni.send(item_fk), ni.position, ni.is_substitute] }
+    old_by_id = old_items.index_by(&:id)
+
     old_items.each do |old_item|
       old_item.substitutions.each do |sub|
-        new_grid = new_items.detect do |ni|
-          ni.send(item_fk) == old_item.send(item_fk) &&
-            ni.position == old_item.position &&
-            ni.is_substitute == old_item.is_substitute
+        new_grid = new_index[[old_item.send(item_fk), old_item.position, old_item.is_substitute]]
+        old_sub_grid = old_by_id[sub.substitute_grid_id]
+
+        unless old_sub_grid
+          Rails.logger.warn(
+            "[Party#remap_substitutions_for] skip: substitute grid #{sub.substitute_grid_id} " \
+            "missing from source party=#{@_source_party_for_remap&.id} type=#{grid_type}"
+          )
+          next
         end
 
-        old_sub_grid = old_items.detect { |oi| oi.id == sub.substitute_grid_id }
-        next unless old_sub_grid
+        new_sub_grid = new_index[[old_sub_grid.send(item_fk), old_sub_grid.position, old_sub_grid.is_substitute]]
 
-        new_sub_grid = new_items.detect do |ni|
-          ni.send(item_fk) == old_sub_grid.send(item_fk) &&
-            ni.position == old_sub_grid.position &&
-            ni.is_substitute == old_sub_grid.is_substitute
+        unless new_grid && new_sub_grid
+          Rails.logger.warn(
+            "[Party#remap_substitutions_for] skip: no new mapping for sub=#{sub.id} " \
+            "source=#{@_source_party_for_remap&.id} target=#{id} type=#{grid_type} " \
+            "missing=#{new_grid.nil? ? 'new_grid' : 'new_sub_grid'}"
+          )
+          next
         end
-
-        next unless new_grid && new_sub_grid
 
         Substitution.create!(
           grid_type: grid_type,

@@ -26,10 +26,11 @@ class GridCharacter < ApplicationRecord
              inverse_of: :characters
   belongs_to :collection_character, optional: true
 
-  has_many :grid_character_role_assignments, dependent: :destroy
+  has_many :grid_character_role_assignments, dependent: :destroy, inverse_of: :grid_character
   has_many :grid_character_roles, through: :grid_character_role_assignments
 
   has_many :substitutions, as: :grid, dependent: :destroy
+  has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
 
   has_one :grid_artifact, dependent: :destroy
 
@@ -67,6 +68,12 @@ class GridCharacter < ApplicationRecord
     enable
     include_association :grid_artifact
     exclude_association :grid_character_role_assignments
+    # Substitutions are remapped explicitly by Party#create_remapped_substitutions
+    # so the polymorphic foreign keys point at the new grid items. Letting amoeba
+    # also clone them produces duplicate rows that violate the uniqueness index
+    # on (grid_type, grid_id, position).
+    exclude_association :substitutions
+    exclude_association :substitute_of
     set ring1: { modifier: nil, strength: nil }
     set ring2: { modifier: nil, strength: nil }
     set ring3: { modifier: nil, strength: nil }

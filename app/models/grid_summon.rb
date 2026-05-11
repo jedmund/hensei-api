@@ -18,6 +18,7 @@ class GridSummon < ApplicationRecord
   belongs_to :collection_summon, optional: true
 
   has_many :substitutions, as: :grid, dependent: :destroy
+  has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
   validates_presence_of :party
 
   # Associations the nested blueprint walks. Reused by controllers and the
