@@ -38,8 +38,13 @@ module PartyDifficulty
       merge_collection(Difficulty.ordered.to_a, 'Difficulty', sort_by: :sort_order)
     end
 
-    def merged_rules
-      merge_collection(DifficultyRule.order(:component, :name).to_a, 'DifficultyRule', sort_by: :name)
+    # When `only_active` is true, return only rules whose `active` flag is set
+    # (matching `DifficultyRule.active.to_a` in Calculator). The preview path
+    # needs this so a staged-but-inactive rule doesn't score differently than
+    # the canonical engine would after commit.
+    def merged_rules(only_active: false)
+      merged = merge_collection(DifficultyRule.order(:component, :name).to_a, 'DifficultyRule', sort_by: :name)
+      only_active ? merged.select(&:active) : merged
     end
 
     def merged_components
@@ -57,8 +62,11 @@ module PartyDifficulty
     def commit!(note: nil)
       ApplicationRecord.transaction do
         snapshot = diff
+        # Each apply! triggers the per-record after_save :bump_ruleset_version
+        # callback on Difficulty / DifficultyRule / DifficultyComponent, so the
+        # version increases by N. The log records the final post-apply version;
+        # we don't add an extra explicit bump here.
         @drafts.each { |draft| apply!(draft) }
-        DifficultyConfig.bump_version!
         log = DifficultyChangeLog.create!(
           user: @user,
           note: note.presence,
@@ -259,7 +267,7 @@ module PartyDifficulty
         target = draft.target
         target&.update!(sanitize_attributes(draft.target_type, draft.attributes_payload))
       when 'destroy'
-        draft.target&.destroy
+        draft.target&.destroy!
       end
     end
   end
