@@ -7,12 +7,18 @@ class BumpSummerYukataAndJobs < ActiveRecord::Migration[8.0]
     weight_changes.each do |name, weight|
       DifficultyRule.where(name: name).update_all(weight: weight)
     end
+
+    # update_all bypasses the after_save :bump_ruleset_version callback, so
+    # bump explicitly to invalidate already-scored parties under the old weights.
+    DifficultyConfig.bump_version! if defined?(DifficultyConfig)
   end
 
   def down
     revert_changes.each do |name, weight|
       DifficultyRule.where(name: name).update_all(weight: weight)
     end
+
+    DifficultyConfig.bump_version! if defined?(DifficultyConfig)
   end
 
   private
