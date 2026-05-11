@@ -39,6 +39,16 @@ module PartyDifficulty
         raise NotImplementedError
       end
 
+      ##
+      # Per-match contribution multipliers, one per matched item. Default is
+      # 1.0 for every match. Rules that want age-decay or other per-item
+      # scaling (e.g. weapon_seasonal_match) override this. The calculator
+      # multiplies these factors by the rule's weight and sums up to `max_count`
+      # of them to compute the contribution.
+      def match_factors(party)
+        Array.new(matching_count(party), 1.0)
+      end
+
       def min_count
         value = params[:min_count].to_i
         value.positive? ? value : 1
@@ -52,6 +62,19 @@ module PartyDifficulty
 
       def string_array_param(key)
         Array(params[key]).map(&:to_s)
+      end
+
+      ##
+      # Returns a decay multiplier in [floor, 1.0] for an item released
+      # `years_since(release_date)` years ago. Reads `decay_per_year` and
+      # `decay_floor` from the rule's params (defaults: 0 = no decay, floor 0.1).
+      def decay_factor_for(release_date)
+        rate = params[:decay_per_year].to_f
+        return 1.0 if rate <= 0 || release_date.nil?
+
+        years = (Date.current - release_date).to_f / 365.25
+        floor = params[:decay_floor].present? ? params[:decay_floor].to_f : 0.1
+        [1.0 - (rate * years), floor].max
       end
     end
   end

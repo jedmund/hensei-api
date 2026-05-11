@@ -16,7 +16,7 @@ module PartyDifficulty
     Result = Struct.new(:scoreable, :score, :difficulty, :breakdown, :ruleset_version, keyword_init: true)
 
     EAGER_LOAD = {
-      weapons: [:awakening, :grid_weapon_bullets, { weapon: :weapon_series }],
+      weapons: [:awakening, :grid_weapon_bullets, { weapon: %i[weapon_series recruited_character] }],
       characters: [{ character: :character_series_records }],
       summons: [{ summon: :summon_series }],
       job: [],
@@ -226,11 +226,13 @@ module PartyDifficulty
 
     ##
     # Returns the actual + max contribution for a single rule, taking the
-    # scale_by_count / max_count params into account when present.
+    # scale_by_count / max_count params and any per-match decay factors into
+    # account.
     def rule_contribution(rule)
       impl = rule.implementation
       params = (rule.params || {}).with_indifferent_access
-      count = safely_count(impl)
+      factors = safely_factors(impl)
+      count = factors.size
       min_count = impl.min_count
       weight = rule.weight.to_f
 
@@ -241,23 +243,29 @@ module PartyDifficulty
       max_value = scale ? weight * max_count : weight
 
       if count < min_count
-        { rule: rule, count: count, contribution: 0.0, max: max_value,
-          base_weight: weight, scale_by_count: scale }
-      elsif scale
-        effective = [count, max_count].min
-        { rule: rule, count: count, contribution: weight * effective, max: max_value,
-          base_weight: weight, scale_by_count: scale }
-      else
-        { rule: rule, count: count, contribution: weight, max: max_value,
-          base_weight: weight, scale_by_count: scale }
+        return { rule: rule, count: count, contribution: 0.0, max: max_value,
+                 base_weight: weight, scale_by_count: scale }
       end
+
+      effective_factors = scale ? factors.first(max_count) : factors.first(1)
+      contribution = weight * effective_factors.sum
+      base_contribution = weight * (effective_factors.first || 0)
+
+      {
+        rule: rule,
+        count: count,
+        contribution: contribution,
+        max: max_value,
+        base_weight: base_contribution,
+        scale_by_count: scale
+      }
     end
 
-    def safely_count(impl)
-      impl.matching_count(@party).to_i
+    def safely_factors(impl)
+      impl.match_factors(@party)
     rescue StandardError => e
       Rails.logger.warn("[PartyDifficulty::Calculator] rule raised: #{e.class}: #{e.message}")
-      0
+      []
     end
 
     def composite_score(breakdowns)

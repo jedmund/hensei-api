@@ -8,6 +8,7 @@ module PartyDifficulty
     # Order matters here only for the editor UI's grouping.
     REGISTRY = {
       'weapon_series_match'             => 'WeaponSeriesMatch',
+      'weapon_seasonal_match'           => 'WeaponSeasonalMatch',
       'weapon_specific_match'           => 'WeaponSpecificMatch',
       'weapon_awakening_at_least'       => 'WeaponAwakeningAtLeast',
       'weapon_transcendence_at_least'   => 'WeaponTranscendenceAtLeast',

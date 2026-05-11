@@ -51,7 +51,8 @@ RSpec.describe PartyDifficulty::Calculator do
     it 'normalises the contribution within its component and renormalises across present components' do
       rule = DifficultyRule.new(name: 'always', component: 'weapon', rule_type: 'weapon_uncap_at_least',
                                 weight: 1.0, active: true, params: { 'min_uncap_level' => 0, 'min_count' => 1 })
-      impl = instance_double(PartyDifficulty::Rules::WeaponUncapAtLeast, matching_count: 1, min_count: 1)
+      impl = instance_double(PartyDifficulty::Rules::WeaponUncapAtLeast,
+                             matching_count: 1, min_count: 1, match_factors: [1.0])
       allow(rule).to receive(:implementation).and_return(impl)
 
       party = build_stubbed(:party, weapons_count: 5, characters_count: 3, summons_count: 2)

@@ -23,13 +23,21 @@ module PartyDifficulty
       end
 
       def matching_count(party)
-        ids = resolved_series_ids
-        return 0 if ids.empty?
+        matching_weapons(party).size
+      end
 
-        party.weapons.count { |gw| gw.weapon && ids.include?(gw.weapon.weapon_series_id) }
+      def match_factors(party)
+        matching_weapons(party).map { |gw| decay_factor_for(gw.weapon&.release_date) }
       end
 
       private
+
+      def matching_weapons(party)
+        ids = resolved_series_ids
+        return [] if ids.empty?
+
+        party.weapons.select { |gw| gw.weapon && ids.include?(gw.weapon.weapon_series_id) }
+      end
 
       def resolved_series_ids
         @resolved_series_ids ||= begin
