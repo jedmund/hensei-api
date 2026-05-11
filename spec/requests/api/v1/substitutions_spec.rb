@@ -376,6 +376,66 @@ RSpec.describe 'Substitutions API', type: :request do
                  end
       expect(GridWeapon.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
     end
+
+    it 'matches the canonical character\'s max uncap (special branch)' do
+      character = Character.first
+      other_character = Character.where.not(id: character.id).first
+      grid_character = create(:grid_character, party: party, character: character)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridCharacter',
+          grid_id: grid_character.id,
+          item_id: other_character.id,
+          position: 0
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expected = if other_character.special
+                   if other_character.transcendence
+                     5
+                   else
+                     other_character.flb ? 4 : 3
+                   end
+                 elsif other_character.transcendence
+                   6
+                 else
+                   other_character.flb ? 5 : 4
+                 end
+      expect(GridCharacter.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
+    end
+
+    it 'matches the canonical summon\'s max uncap' do
+      summon = Summon.first
+      other_summon = Summon.where.not(id: summon.id).first
+      grid_summon = create(:grid_summon, party: party, summon: summon)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridSummon',
+          grid_id: grid_summon.id,
+          item_id: other_summon.id,
+          position: 0
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expected = if other_summon.transcendence
+                   6
+                 elsif other_summon.ulb
+                   5
+                 elsif other_summon.flb
+                   4
+                 else
+                   3
+                 end
+      expect(GridSummon.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
+    end
   end
 
   describe '11th substitute' do

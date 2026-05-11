@@ -56,4 +56,54 @@ RSpec.describe 'Party remix substitution remap', type: :model do
     new_party = remix(source_party)
     expect(Substitution.where(grid_id: new_party.all_weapons.pluck(:id)).count).to eq(1)
   end
+
+  it 'logs and skips when the old substitute grid id is missing from the source set' do
+    gw = create(:grid_weapon, party: source_party, weapon: weapon)
+    sw = create(:grid_weapon, party: source_party, weapon: other_weapon, is_substitute: true)
+    sub = create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+
+    # Force the "old substitute grid missing" branch by repointing the
+    # substitution at a non-existent uuid. The polymorphic column has no FK
+    # constraint so we can drop straight to update_columns.
+    sub.update_columns(substitute_grid_id: SecureRandom.uuid)
+
+    allow(Rails.logger).to receive(:warn)
+    new_party = remix(source_party)
+
+    expect(Rails.logger).to have_received(:warn).with(/substitute grid .* missing from source/)
+    expect(Substitution.where(grid_id: new_party.all_weapons.pluck(:id))).to be_empty
+  end
+end
+
+RSpec.describe 'Party#has_substitutions?', type: :model do
+  let(:party) { create(:party) }
+  let(:weapon) { Weapon.find_by!(granblue_id: '1040611300') }
+  let(:other_weapon) { Weapon.find_by!(granblue_id: '1040912100') }
+
+  it 'is false when the party has no substitutions' do
+    create(:grid_weapon, party: party, weapon: weapon)
+    expect(party.has_substitutions?).to be false
+  end
+
+  it 'is true once any grid type carries a substitution' do
+    gw = create(:grid_weapon, party: party, weapon: weapon)
+    sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+    create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+
+    expect(party.has_substitutions?).to be true
+  end
+
+  it 'memoizes per instance' do
+    gw = create(:grid_weapon, party: party, weapon: weapon)
+
+    expect(party.has_substitutions?).to be false
+
+    # A new substitution after the first call should not flip the cached value
+    # on the same instance — callers needing fresh state must re-fetch.
+    sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+    create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+
+    expect(party.has_substitutions?).to be false
+    expect(Party.find(party.id).has_substitutions?).to be true
+  end
 end
