@@ -192,7 +192,7 @@ Rails.application.routes.draw do
         get :types
       end
     end
-    post 'difficulty_previews', to: 'difficulty_previews#create'
+    resources :difficulty_previews, only: %i[create]
 
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
