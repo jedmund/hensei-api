@@ -110,12 +110,6 @@ module Api
         params.permit(:name_en, :name_jp, :effect_en, :effect_jp, :granblue_id,
                       :slug, :bullet_type, :atk, :hits_all, :order)
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

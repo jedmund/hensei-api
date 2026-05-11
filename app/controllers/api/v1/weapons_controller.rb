@@ -229,14 +229,6 @@ module Api
         render_not_found_response('weapon') unless @weapon
       end
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[WEAPONS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
-
       def weapon_params
         params.require(:weapon).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :new_series, :weapon_series_variant_id,

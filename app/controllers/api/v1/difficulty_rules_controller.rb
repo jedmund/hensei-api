@@ -81,12 +81,6 @@ module Api
           raise ActionController::BadRequest, 'difficulty_rule.params must be an object'
         end
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

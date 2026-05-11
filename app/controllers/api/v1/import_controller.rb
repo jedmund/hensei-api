@@ -318,18 +318,6 @@ module Api
       end
 
       ##
-      # Ensures the current user has editor role (role >= 7).
-      # Renders an error if the user is not an editor.
-      #
-      # @return [void]
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[IMPORT] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
-
-      ##
       # Reads and parses the raw JSON request body.
       #
       # @return [Hash] Parsed JSON data.

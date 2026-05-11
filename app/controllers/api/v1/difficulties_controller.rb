@@ -58,12 +58,6 @@ module Api
       def difficulty_params
         params.require(:difficulty).permit(:name, :slug, :description, :min_score, :max_score, :sort_order, :color)
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

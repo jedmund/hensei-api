@@ -17,6 +17,10 @@ module Api
         party = Party.find_by(shortcode: shortcode)
         return render_not_found_response('party') unless party
 
+        # TODO(party-difficulty-perf): cache DifficultyRule.active /
+        # DifficultyComponent.all / Difficulty.ordered by DifficultyConfig
+        # current_version inside Calculator#initialize. See
+        # docs/follow-ups/party-difficulty.md.
         eager = PartyDifficulty::Calculator.eager_load_party(party.id)
         result = PartyDifficulty::Calculator.new(eager).call
 
@@ -28,14 +32,6 @@ module Api
           breakdown: result.breakdown,
           ruleset_version: result.ruleset_version
         }
-      end
-
-      private
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
       end
     end
   end

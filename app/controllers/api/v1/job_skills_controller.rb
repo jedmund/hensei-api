@@ -95,13 +95,6 @@ module Api
         params.permit(:name_en, :name_jp, :slug, :color, :main, :base, :sub, :emp, :order,
                       :image_id, :action_id)
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[JOB_SKILLS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end
