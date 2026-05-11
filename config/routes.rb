@@ -193,6 +193,16 @@ Rails.application.routes.draw do
     resources :weapon_skill_data, only: %i[index show]
     resources :weapon_skill_boost_types, only: %i[index show]
 
+    # Party difficulty
+    resources :difficulties, only: %i[index show create update destroy]
+    resources :difficulty_components, only: %i[index show update]
+    resources :difficulty_rules, only: %i[index show create update destroy] do
+      collection do
+        get :types
+      end
+    end
+    resources :difficulty_previews, only: %i[create]
+
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
       member do
