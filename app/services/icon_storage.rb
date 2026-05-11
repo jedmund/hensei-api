@@ -63,8 +63,7 @@ class IconStorage
     if @backend == :s3
       aws.s3_client.delete_object(bucket: aws.bucket, key: key)
     else
-      path = local_path(key)
-      File.delete(path) if File.exist?(path)
+      FileUtils.rm_f(local_path(key))
     end
   end
 
