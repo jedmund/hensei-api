@@ -124,7 +124,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       expect {
         delete "/api/v1/grid_character_roles/#{role.id}", headers: editor_headers
       }.to change(GridCharacterRole, :count).by(-1)
-        .and change(GridCharacterRoleAssignment, :count).by(-1)
+                                            .and change(GridCharacterRoleAssignment, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
     end
@@ -152,6 +152,22 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
     it 'returns 422 when roles array missing' do
       post '/api/v1/grid_character_roles/reorder', params: {}, headers: editor_headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'returns 422 with the missing ids and rolls back when a role id is unknown' do
+      bogus = SecureRandom.uuid
+      original_sort_orders = [role1.sort_order, role2.sort_order]
+
+      post '/api/v1/grid_character_roles/reorder',
+           params: { roles: [{ id: role1.id, sort_order: 9 }, { id: bogus, sort_order: 1 }] },
+           headers: editor_headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body['ids']).to include(bogus)
+
+      # The valid update is rejected up front, not partially applied.
+      expect([role1.reload.sort_order, role2.reload.sort_order]).to eq(original_sort_orders)
     end
 
     it 'returns unauthorized for regular user' do

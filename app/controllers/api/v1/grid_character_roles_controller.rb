@@ -57,6 +57,17 @@ module Api
         entries = params[:roles]
         return render json: { error: 'roles array required' }, status: :unprocessable_entity if entries.blank?
 
+        # Validate the whole batch before opening the transaction so a bad id in
+        # entry N doesn't roll back the N-1 successful updates and leave the
+        # caller without a usable error.
+        requested_ids = entries.map { |e| e[:id] }
+        known_ids = GridCharacterRole.where(id: requested_ids).pluck(:id)
+        missing = requested_ids - known_ids
+        unless missing.empty?
+          return render json: { error: 'unknown role ids', ids: missing },
+                        status: :unprocessable_entity
+        end
+
         GridCharacterRole.transaction do
           entries.each do |entry|
             GridCharacterRole.find(entry[:id]).update!(sort_order: entry[:sort_order])
@@ -125,8 +136,9 @@ module Api
           tmp.write(decoded)
           tmp.flush
 
+          # The PNG magic-byte check above is already sufficient for type; this
+          # MiniMagick handle is here for the dimension check.
           image = MiniMagick::Image.open(tmp.path)
-          return 'Icon must be a PNG' unless image.type == 'PNG'
 
           if image.width > ICON_MAX_DIMENSION || image.height > ICON_MAX_DIMENSION
             return "Icon must be #{ICON_MAX_DIMENSION}x#{ICON_MAX_DIMENSION} or smaller"
