@@ -76,23 +76,31 @@ module PartyDifficulty
       end
 
       def matches_uncap?(grid_weapon)
-        min_level = params[:min_uncap_level].to_i
-        min_level.zero? || grid_weapon.uncap_level.to_i >= min_level
+        in_range?(grid_weapon.uncap_level.to_i, params[:min_uncap_level], params[:max_uncap_level])
       end
 
       def matches_transcendence?(grid_weapon)
-        min_step = params[:min_transcendence_step].to_i
-        min_step.zero? || grid_weapon.transcendence_step.to_i >= min_step
+        in_range?(grid_weapon.transcendence_step.to_i,
+                  params[:min_transcendence_step], params[:max_transcendence_step])
       end
 
       def matches_awakening?(grid_weapon)
-        min_level = params[:min_awakening_level].to_i
-        return true if min_level.zero?
-
         awakening_id = params[:awakening_id].presence&.to_s
         return false if awakening_id && grid_weapon.awakening_id.to_s != awakening_id
 
-        grid_weapon.awakening_level.to_i >= min_level
+        in_range?(grid_weapon.awakening_level.to_i,
+                  params[:min_awakening_level], params[:max_awakening_level])
+      end
+
+      def in_range?(value, min_param, max_param)
+        min = min_param.to_i
+        max_present = max_param.present?
+        max = max_param.to_i
+
+        return false if min.positive? && value < min
+        return false if max_present && value > max
+
+        true
       end
 
       def resolved_series_ids
