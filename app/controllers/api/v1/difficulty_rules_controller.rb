@@ -58,12 +58,28 @@ module Api
 
       private
 
+      # Rule `params` is an unstructured jsonb whose shape varies per rule_type,
+      # so strong-params can't enumerate keys generically — DifficultyRule's
+      # params_valid_for_rule_type validator constrains the payload after assignment.
+      # Reject non-hash params explicitly so callers get a 422 instead of having
+      # the field silently dropped.
       def rule_params
-        permitted = params.require(:difficulty_rule).permit(:name, :description, :component, :rule_type,
-                                                            :weight, :active, params: {})
-        raw_params = params.require(:difficulty_rule)[:params]
-        permitted[:params] = raw_params.to_unsafe_h if raw_params.is_a?(ActionController::Parameters)
-        permitted
+        permitted = params.require(:difficulty_rule).permit(:name, :description, :component,
+                                                            :rule_type, :weight, :active)
+        raw = params.require(:difficulty_rule)[:params]
+
+        case raw
+        when nil
+          permitted
+        when ActionController::Parameters
+          permitted[:params] = raw.to_unsafe_h
+          permitted
+        when Hash
+          permitted[:params] = raw
+          permitted
+        else
+          raise ActionController::BadRequest, 'difficulty_rule.params must be an object'
+        end
       end
 
       def ensure_editor_role
