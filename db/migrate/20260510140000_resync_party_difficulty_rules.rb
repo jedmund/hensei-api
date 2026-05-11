@@ -1,60 +1,32 @@
-class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
+class ResyncPartyDifficultyRules < ActiveRecord::Migration[8.0]
   disable_ddl_transaction!
 
+  # Replaces the rules seeded in 20260510130005 with a new set that uses
+  # scale_by_count for series/uncap rules and a gacha_filter to distinguish
+  # high-uncap gacha items from high-uncap free items. Safe to run on fresh
+  # installs (it just clears the table the seed migration just populated).
   def up
-    seed_components
-    seed_tiers
+    return unless ActiveRecord::Base.connection.table_exists?(:difficulty_rules)
+
+    DifficultyRule.delete_all
     seed_rules
-    DifficultyConfig.first || DifficultyConfig.create!(ruleset_version: 1)
   end
 
   def down
     DifficultyRule.delete_all
-    Difficulty.delete_all
-    DifficultyComponent.delete_all
-    DifficultyConfig.delete_all
   end
 
   private
 
-  def seed_components
-    components = [
-      { name: 'weapon',    weight: 3.0, enabled: true,  min_count_to_score: 5 },
-      { name: 'character', weight: 1.5, enabled: true,  min_count_to_score: 3 },
-      { name: 'summon',    weight: 3.5, enabled: true,  min_count_to_score: 2 },
-      { name: 'job',       weight: 1.0, enabled: true,  min_count_to_score: 0 },
-      { name: 'accessory', weight: 0.5, enabled: true,  min_count_to_score: 0 }
-    ]
-    components.each do |attrs|
-      DifficultyComponent.find_or_create_by!(name: attrs[:name]) do |c|
-        c.assign_attributes(attrs)
-      end
-    end
-  end
-
-  def seed_tiers
-    tiers = [
-      { slug: 'casual',  name: 'Casual',   color: '#86C5A8', min_score: 0,    max_score: 24.99,  sort_order: 0,
-        description: 'Beginner-friendly setups built primarily from accessible characters, weapons, and summons.' },
-      { slug: 'mid',     name: 'Mid',      color: '#7AB8E8', min_score: 25,   max_score: 49.99,  sort_order: 1,
-        description: 'Solid mid-game teams with some investment but no rare endgame items.' },
-      { slug: 'endgame', name: 'Endgame',  color: '#E2B16C', min_score: 50,   max_score: 79.99,  sort_order: 2,
-        description: 'Endgame teams featuring rare or recently released items, deep uncaps, or notable awakenings.' },
-      { slug: 'whale',   name: 'Whale',    color: '#D78EA0', min_score: 80,   max_score: 100.0,  sort_order: 3,
-        description: 'High-investment teams featuring multiple Grand/Providence units, Trans5 weapons, and perpetuity-ringed characters.' }
-    ]
-    tiers.each do |attrs|
-      Difficulty.find_or_create_by!(slug: attrs[:slug]) do |t|
-        t.assign_attributes(attrs)
-      end
-    end
-  end
-
   def seed_rules
-    rules = [
-      # Weapons -------------------------------------------------------------
-      # Series rules use scale_by_count so each additional matching weapon
-      # adds to the score, with a cap so the contribution doesn't run away.
+    rules.each do |attrs|
+      DifficultyRule.create!(attrs.merge(active: true))
+    end
+  end
+
+  def rules
+    [
+      # Weapons -----------------------------------------------------------
       { name: 'Grand series weapons',                  component: 'weapon',
         rule_type: 'weapon_series_match', weight: 2.0,
         params: { 'slugs' => ['grand'], 'min_count' => 1,
@@ -93,8 +65,6 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
       { name: 'Flash/Legend exclusive weapons',        component: 'weapon',
         rule_type: 'weapon_promotion_includes', weight: 1.5,
         params: { 'promotions' => %w[Flash Legend], 'min_count' => 2 } },
-      # Gacha weapons at high uncap weigh more than free ones at the same
-      # uncap, since they cost more to obtain.
       { name: 'High uncap on gacha weapons',           component: 'weapon',
         rule_type: 'weapon_uncap_at_least', weight: 1.5,
         params: { 'min_uncap_level' => 5, 'min_count' => 1,
@@ -106,7 +76,7 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
                   'gacha_filter' => 'free',
                   'scale_by_count' => true, 'max_count' => 5 } },
 
-      # Characters ----------------------------------------------------------
+      # Characters --------------------------------------------------------
       { name: 'Grand characters',                      component: 'character',
         rule_type: 'character_series_match', weight: 2.0,
         params: { 'slugs' => ['grand'], 'min_count' => 1,
@@ -132,9 +102,7 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
         rule_type: 'character_release_within_days', weight: 2.0,
         params: { 'days' => 180, 'min_count' => 1 } },
 
-      # Summons -------------------------------------------------------------
-      # Friend summons are excluded — they belong to the player joining the
-      # raid, not the party owner.
+      # Summons -----------------------------------------------------------
       { name: 'Providence summons',                    component: 'summon',
         rule_type: 'summon_series_match', weight: 3.0,
         params: { 'slugs' => ['providence'], 'min_count' => 1,
@@ -153,7 +121,7 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
         rule_type: 'summon_transcendence_at_least', weight: 4.0,
         params: { 'min_step' => 5, 'min_count' => 1 } },
 
-      # Job -----------------------------------------------------------------
+      # Job ---------------------------------------------------------------
       { name: 'Row V job',                             component: 'job',
         rule_type: 'job_row', weight: 2.0,
         params: { 'rows' => ['V'] } },
@@ -164,16 +132,10 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
         rule_type: 'job_row', weight: 1.5,
         params: { 'rows' => ['IV'], 'requires_ultimate_mastery' => true } },
 
-      # Accessory -----------------------------------------------------------
+      # Accessory ---------------------------------------------------------
       { name: 'Accessory equipped',                    component: 'accessory',
         rule_type: 'accessory_match', weight: 1.0,
         params: { 'accessory_types' => [1, 2] } }
     ]
-
-    rules.each do |attrs|
-      DifficultyRule.find_or_create_by!(name: attrs[:name]) do |r|
-        r.assign_attributes(attrs.merge(active: true))
-      end
-    end
   end
 end

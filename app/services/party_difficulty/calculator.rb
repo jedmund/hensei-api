@@ -92,9 +92,8 @@ module PartyDifficulty
 
     def breakdown_for_component(name, comp, rules)
       present = data_for?(name)
-      max_weight = rules.sum { |r| r.weight.to_f }
 
-      if !present || rules.empty? || max_weight.zero?
+      if !present || rules.empty?
         return {
           name: name,
           weight: comp.weight.to_f,
@@ -105,9 +104,23 @@ module PartyDifficulty
         }
       end
 
-      fired = rules.select { |r| safely_apply(r) }
-      contribution = fired.sum { |r| r.weight.to_f }
-      raw_score = contribution / max_weight
+      contributions = rules.map { |rule| rule_contribution(rule) }
+      max_weight = contributions.sum { |c| c[:max] }
+
+      if max_weight.zero?
+        return {
+          name: name,
+          weight: comp.weight.to_f,
+          present: present,
+          raw_score: nil,
+          weighted_score: nil,
+          fired: []
+        }
+      end
+
+      fired = contributions.select { |c| c[:contribution].positive? }
+      contribution_sum = fired.sum { |c| c[:contribution] }
+      raw_score = (contribution_sum / max_weight).clamp(0.0, 1.0)
       weighted = raw_score * comp.weight.to_f
 
       {
@@ -116,15 +129,49 @@ module PartyDifficulty
         present: true,
         raw_score: raw_score.round(4),
         weighted_score: weighted.round(4),
-        fired: fired.map { |r| { id: r.id, name: r.name, rule_type: r.rule_type, weight: r.weight.to_f } }
+        fired: fired.map { |c|
+          {
+            id: c[:rule].id,
+            name: c[:rule].name,
+            rule_type: c[:rule].rule_type,
+            weight: c[:contribution].round(2),
+            match_count: c[:count]
+          }
+        }
       }
     end
 
-    def safely_apply(rule)
-      rule.applies_to?(@party)
+    ##
+    # Returns the actual + max contribution for a single rule, taking the
+    # scale_by_count / max_count params into account when present.
+    def rule_contribution(rule)
+      impl = rule.implementation
+      params = (rule.params || {}).with_indifferent_access
+      count = safely_count(impl)
+      min_count = impl.min_count
+      weight = rule.weight.to_f
+
+      scale = [true, 'true'].include?(params[:scale_by_count])
+      max_count = params[:max_count].to_i
+      max_count = 1 if max_count <= 0
+
+      max_value = scale ? weight * max_count : weight
+
+      if count < min_count
+        { rule: rule, count: count, contribution: 0.0, max: max_value }
+      elsif scale
+        effective = [count, max_count].min
+        { rule: rule, count: count, contribution: weight * effective, max: max_value }
+      else
+        { rule: rule, count: count, contribution: weight, max: max_value }
+      end
+    end
+
+    def safely_count(impl)
+      impl.matching_count(@party).to_i
     rescue StandardError => e
-      Rails.logger.warn("[PartyDifficulty::Calculator] rule #{rule.id} (#{rule.rule_type}) raised: #{e.class}: #{e.message}")
-      false
+      Rails.logger.warn("[PartyDifficulty::Calculator] rule raised: #{e.class}: #{e.message}")
+      0
     end
 
     def composite_score(breakdowns)

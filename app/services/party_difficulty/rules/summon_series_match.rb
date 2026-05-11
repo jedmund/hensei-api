@@ -25,7 +25,9 @@ module PartyDifficulty
         ids = resolved_series_ids
         return 0 if ids.empty?
 
-        party.summons.count { |gs| gs.summon && ids.include?(gs.summon.summon_series_id) }
+        party.summons
+             .reject { |gs| gs.friend == true }
+             .count { |gs| gs.summon && ids.include?(gs.summon.summon_series_id) }
       end
 
       private

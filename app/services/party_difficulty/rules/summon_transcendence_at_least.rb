@@ -18,7 +18,9 @@ module PartyDifficulty
 
       def matching_count(party)
         min_step = params[:min_step].to_i
-        party.summons.count { |gs| gs.transcendence_step.to_i >= min_step }
+        party.summons
+             .reject { |gs| gs.friend == true }
+             .count { |gs| gs.transcendence_step.to_i >= min_step }
       end
     end
   end
