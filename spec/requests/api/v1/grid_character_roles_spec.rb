@@ -222,7 +222,9 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
     it 'rejects an oversized icon (>128x128)' do
       oversize_png = Tempfile.create(['oversize', '.png']) do |tmp|
         tmp.binmode
-        MiniMagick::Tool::Magick.new do |c|
+        # Use Convert (ImageMagick 6 binary, aliased in v7) so this works on the
+        # default ubuntu-latest runner where `magick` (v7-only) isn't installed.
+        MiniMagick::Tool::Convert.new do |c|
           c.size '200x200'
           c << 'xc:transparent'
           c << tmp.path
