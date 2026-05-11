@@ -5,8 +5,16 @@ module PartyDifficulty
     ##
     # Fires when at least min_count characters belong to one of the specified
     # character_series (by id or slug — e.g. "grand", "evoker", "eternal").
+    # When `single_series_only` is true, a character is only counted if its
+    # core series is the *only* one it belongs to — this filters out seasonal
+    # variants (e.g. a Summer Eternal won't fire the Eternal rule because the
+    # Summer/Yukata seasonal character rule will instead).
     #
-    # params: { "series_ids": ["uuid", ...], "slugs": ["grand", ...], "min_count": 2 }
+    # params: {
+    #   "slugs": ["eternal", "evoker"],
+    #   "min_count": 1,
+    #   "single_series_only": true
+    # }
     class CharacterSeriesMatch < Base
       def self.component
         'character'
@@ -25,8 +33,12 @@ module PartyDifficulty
         ids = resolved_series_ids
         return 0 if ids.empty?
 
+        single_only = params[:single_series_only] == true
+
         party.characters.count do |gc|
           memberships = gc.character&.character_series_records || []
+          next false if single_only && memberships.size > 1
+
           memberships.any? { |m| ids.include?(m.id) }
         end
       end
