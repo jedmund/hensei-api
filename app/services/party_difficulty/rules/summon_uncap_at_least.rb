@@ -5,10 +5,16 @@ module PartyDifficulty
     ##
     # Fires when at least min_count summons (main or sub — friend summons are
     # excluded since they belong to the player who joined the raid) have
-    # uncap_level >= min_uncap_level. Optionally filter by whether the summon
-    # is gacha ("gacha") or free ("free") using its promotions array.
+    # uncap_level in the range [min_uncap_level, max_uncap_level]. Optionally
+    # filter by whether the summon is gacha ("gacha") or free ("free") using
+    # its promotions array.
     #
-    # params: { "min_uncap_level": 5, "min_count": 1, "gacha_filter": "gacha"|"free"|"any" }
+    # params: {
+    #   "min_uncap_level": 3,
+    #   "max_uncap_level": 3,
+    #   "min_count": 1,
+    #   "gacha_filter": "gacha"|"free"|"any"
+    # }
     class SummonUncapAtLeast < Base
       def self.component
         'summon'
@@ -21,12 +27,20 @@ module PartyDifficulty
 
       def matching_count(party)
         min_level = params[:min_uncap_level].to_i
+        max_level_present = params[:max_uncap_level].present?
+        max_level = params[:max_uncap_level].to_i
         filter = params[:gacha_filter].to_s
 
         party.summons
              .reject { |gs| gs.friend == true }
              .select { |gs| matches_gacha_filter?(gs.summon, filter) }
-             .count { |gs| gs.uncap_level.to_i >= min_level }
+             .count do |gs|
+               level = gs.uncap_level.to_i
+               next false if level < min_level
+               next false if max_level_present && level > max_level
+
+               true
+             end
       end
 
       private
