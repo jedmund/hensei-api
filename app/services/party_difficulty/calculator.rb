@@ -168,6 +168,18 @@ module PartyDifficulty
       end
     end
 
+    ##
+    # Returns the denominator for a component's raw_score. If the component
+    # has a target_max set (an editor-defined upper bound for what a top team
+    # realistically scores), use that. Otherwise fall back to the sum of
+    # every rule's max possible contribution.
+    def component_max_weight(comp, contributions)
+      configured = comp.respond_to?(:target_max) ? comp.target_max : nil
+      return configured.to_f if configured.present? && configured.to_f.positive?
+
+      contributions.sum { |c| c[:max] }
+    end
+
     def breakdown_for_component(name, comp, rules)
       present = data_for?(name)
 
@@ -183,7 +195,7 @@ module PartyDifficulty
       end
 
       contributions = rules.map { |rule| rule_contribution(rule) }
-      max_weight = contributions.sum { |c| c[:max] }
+      max_weight = component_max_weight(comp, contributions)
 
       if max_weight.zero?
         return {
@@ -291,7 +303,12 @@ module PartyDifficulty
     end
 
     def composite_score(breakdowns)
-      contributing = breakdowns.select { |b| b[:weighted_score] }
+      # Skip components that aren't present (no data) OR that had data but
+      # fired no rules at all (raw_score == 0). A team with a non-Origin job
+      # shouldn't be penalized in the denominator just for having a job.
+      contributing = breakdowns.select do |b|
+        b[:weighted_score].present? && b[:weighted_score].positive?
+      end
       return 0 if contributing.empty?
 
       weight_sum = contributing.sum { |b| b[:weight] }

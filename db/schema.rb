@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_10_220000) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_10_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -402,6 +402,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_220000) do
     t.integer "min_count_to_score", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "target_max", precision: 8, scale: 2
     t.index ["name"], name: "index_difficulty_components_on_name", unique: true
   end
 
