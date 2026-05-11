@@ -29,13 +29,13 @@ class SeedRareAccessoryRules < ActiveRecord::Migration[8.0]
           9a063ae4-8aed-427a-b029-08fd0c1b0364
           a73e97e1-3e68-47ec-9c90-7b7fd1c2f29f
           17defece-d8d7-4108-95ca-504533dd0ac9
-        ] } },
+        ], 'min_count' => 1, 'scale_by_count' => true, 'max_count' => 4 } },
       { name: 'Mainhand: high-tier Expert Model bullet', component: 'accessory',
         rule_type: 'mainhand_bullet_match', weight: 3.5,
         params: { 'bullet_ids' => %w[
           9eb5962e-8a90-4734-8da6-49e8d3194212
           ba6e03ac-1eec-4bb6-9282-96d0a834836a
-        ] } },
+        ], 'min_count' => 1, 'scale_by_count' => true, 'max_count' => 4 } },
 
       # Manaturas ----------------------------------------------------------
       { name: 'Top-tier manatura',                       component: 'accessory',

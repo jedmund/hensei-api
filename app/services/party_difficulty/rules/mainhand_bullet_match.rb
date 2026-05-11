@@ -3,12 +3,14 @@
 module PartyDifficulty
   module Rules
     ##
-    # Fires when the party's mainhand weapon has any of the specified bullets
-    # slotted. Scores under the `accessory` component (alongside manaturas /
-    # shields) since rare bullets are gated like accessories rather than like
-    # weapon investment.
+    # Counts how many slotted bullets on the party's mainhand weapon match
+    # the configured bullet_ids. Scores under the `accessory` component
+    # (alongside manaturas / shields) since rare bullets are gated like
+    # accessories rather than like weapon investment. Combine with
+    # scale_by_count so a mainhand carrying multiple top-tier bullets scores
+    # more than one with a single match.
     #
-    # params: { "bullet_ids": ["uuid", ...] }
+    # params: { "bullet_ids": ["uuid", ...], "min_count": 1, "scale_by_count": true, "max_count": 4 }
     class MainhandBulletMatch < Base
       def self.component
         'accessory'
@@ -19,10 +21,6 @@ module PartyDifficulty
         params[:bullet_ids].present? ? [] : ['bullet_ids must be provided']
       end
 
-      def applies?(party)
-        matching_count(party).positive?
-      end
-
       def matching_count(party)
         ids = string_array_param(:bullet_ids)
         return 0 if ids.empty?
@@ -30,8 +28,7 @@ module PartyDifficulty
         mainhand = party.weapons.find(&:mainhand)
         return 0 unless mainhand
 
-        bullets = mainhand.grid_weapon_bullets.to_a
-        bullets.any? { |b| ids.include?(b.bullet_id.to_s) } ? 1 : 0
+        mainhand.grid_weapon_bullets.count { |b| ids.include?(b.bullet_id.to_s) }
       end
     end
   end

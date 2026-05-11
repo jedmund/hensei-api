@@ -91,7 +91,7 @@ class ResyncPartyDifficultyRules < ActiveRecord::Migration[8.0]
                   'scale_by_count' => true, 'max_count' => 4 } },
       { name: 'Perpetuity ring on any character',      component: 'character',
         rule_type: 'character_perpetuity_ringed', weight: 3.5,
-        params: { 'min_count' => 1 } },
+        params: { 'min_count' => 1, 'scale_by_count' => true, 'max_count' => 5 } },
       { name: 'Strong earring (>=15)',                 component: 'character',
         rule_type: 'character_earring_at_least', weight: 1.5,
         params: { 'min_strength' => 15, 'min_count' => 1 } },
