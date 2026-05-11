@@ -35,10 +35,20 @@ module PartyDifficulty
       def resolved_series_ids
         @resolved_series_ids ||= begin
           ids = string_array_param(:series_ids)
-          slug_ids = string_array_param(:slugs).then do |slugs|
-            slugs.empty? ? [] : SummonSeries.where(slug: slugs).pluck(:id)
-          end
+          slugs = string_array_param(:slugs)
+          slug_ids = resolve_slugs(slugs)
           (ids + slug_ids).uniq
+        end
+      end
+
+      def resolve_slugs(slugs)
+        return [] if slugs.empty?
+
+        cache = Thread.current[:pd_summon_series_cache]
+        if cache
+          slugs.filter_map { |s| cache[s] }
+        else
+          SummonSeries.where(slug: slugs).pluck(:id)
         end
       end
     end

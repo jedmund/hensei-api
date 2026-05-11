@@ -38,17 +38,22 @@ module PartyDifficulty
     def call
       return Result.new(scoreable: false, ruleset_version: @ruleset_version) unless scoreable?
 
-      breakdowns = component_breakdowns
-      composite = composite_score(breakdowns)
-      tier = find_tier(composite)
+      preload_series_caches!
+      begin
+        breakdowns = component_breakdowns
+        composite = composite_score(breakdowns)
+        tier = find_tier(composite)
 
-      Result.new(
-        scoreable: true,
-        score: composite,
-        difficulty: tier,
-        breakdown: { components: breakdowns, score: composite, tier_id: tier&.id },
-        ruleset_version: @ruleset_version
-      )
+        Result.new(
+          scoreable: true,
+          score: composite,
+          difficulty: tier,
+          breakdown: { components: breakdowns, score: composite, tier_id: tier&.id },
+          ruleset_version: @ruleset_version
+        )
+      ensure
+        clear_series_caches!
+      end
     end
 
     def scoreable?
@@ -60,6 +65,47 @@ module PartyDifficulty
     end
 
     private
+
+    SERIES_CACHE_KEYS = {
+      'weapon' => :pd_weapon_series_cache,
+      'character' => :pd_character_series_cache,
+      'summon' => :pd_summon_series_cache
+    }.freeze
+
+    SERIES_MODELS = {
+      'weapon' => 'WeaponSeries',
+      'character' => 'CharacterSeries',
+      'summon' => 'SummonSeries'
+    }.freeze
+
+    ##
+    # Batches slug → id lookups for every *_series_match rule into one query
+    # per series type, then stashes the results in thread-local storage so the
+    # individual rule instances can read them instead of hitting the DB
+    # separately. Cleared in `clear_series_caches!` after scoring completes.
+    def preload_series_caches!
+      %w[weapon character summon].each do |kind|
+        slugs = collect_series_slugs("#{kind}_series_match")
+        Thread.current[SERIES_CACHE_KEYS[kind]] = if slugs.empty?
+                                                    {}
+                                                  else
+                                                    SERIES_MODELS[kind].constantize.where(slug: slugs).pluck(:slug, :id).to_h
+                                                  end
+      end
+    end
+
+    def clear_series_caches!
+      SERIES_CACHE_KEYS.each_value { |key| Thread.current[key] = nil }
+    end
+
+    def collect_series_slugs(rule_type)
+      @rules
+        .select { |r| r.rule_type == rule_type }
+        .flat_map { |r| Array(r.params&.[]('slugs')) }
+        .map(&:to_s)
+        .reject(&:empty?)
+        .uniq
+    end
 
     def enabled_components_by_name
       @enabled_components_by_name ||= @components.select(&:enabled).index_by(&:name)
@@ -129,16 +175,43 @@ module PartyDifficulty
         present: true,
         raw_score: raw_score.round(4),
         weighted_score: weighted.round(4),
-        fired: fired.map { |c|
-          {
-            id: c[:rule].id,
-            name: c[:rule].name,
-            rule_type: c[:rule].rule_type,
-            weight: c[:contribution].round(2),
-            match_count: c[:count]
-          }
-        }
+        fired: fired.flat_map { |c| fired_entries_for(c) }
       }
+    end
+
+    ##
+    # Returns one or two fired entries for a rule that fired. Scaling rules
+    # with more than one match split into a "base" row plus an "additional"
+    # row so the UI can render them separately.
+    def fired_entries_for(contribution)
+      rule = contribution[:rule]
+      count = contribution[:count]
+      base = contribution[:base_weight]
+      total = contribution[:contribution]
+
+      base_entry = {
+        id: rule.id,
+        name: rule.name,
+        rule_type: rule.rule_type,
+        weight: base.round(2),
+        match_count: 1,
+        kind: 'base'
+      }
+
+      additional = total - base
+      return [base_entry] unless contribution[:scale_by_count] && additional.positive?
+
+      [
+        base_entry,
+        {
+          id: "#{rule.id}-additional",
+          name: rule.name,
+          rule_type: rule.rule_type,
+          weight: additional.round(2),
+          match_count: count - 1,
+          kind: 'additional'
+        }
+      ]
     end
 
     ##
@@ -158,12 +231,15 @@ module PartyDifficulty
       max_value = scale ? weight * max_count : weight
 
       if count < min_count
-        { rule: rule, count: count, contribution: 0.0, max: max_value }
+        { rule: rule, count: count, contribution: 0.0, max: max_value,
+          base_weight: weight, scale_by_count: scale }
       elsif scale
         effective = [count, max_count].min
-        { rule: rule, count: count, contribution: weight * effective, max: max_value }
+        { rule: rule, count: count, contribution: weight * effective, max: max_value,
+          base_weight: weight, scale_by_count: scale }
       else
-        { rule: rule, count: count, contribution: weight, max: max_value }
+        { rule: rule, count: count, contribution: weight, max: max_value,
+          base_weight: weight, scale_by_count: scale }
       end
     end
 
