@@ -9,6 +9,7 @@ module PartyDifficulty
     REGISTRY = {
       'weapon_series_match'             => 'WeaponSeriesMatch',
       'weapon_seasonal_match'           => 'WeaponSeasonalMatch',
+      'weapon_tier_match'               => 'WeaponTierMatch',
       'weapon_specific_match'           => 'WeaponSpecificMatch',
       'weapon_awakening_at_least'       => 'WeaponAwakeningAtLeast',
       'weapon_transcendence_at_least'   => 'WeaponTranscendenceAtLeast',

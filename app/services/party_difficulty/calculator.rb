@@ -83,9 +83,22 @@ module PartyDifficulty
     # per series type, then stashes the results in thread-local storage so the
     # individual rule instances can read them instead of hitting the DB
     # separately. Cleared in `clear_series_caches!` after scoring completes.
+    # Rule types that reference weapon series by slug, with the param key
+    # each uses. weapon_tier_match uses `series_slugs`; the existing
+    # *_series_match rules use `slugs`.
+    WEAPON_SERIES_SLUG_SOURCES = {
+      'weapon_series_match' => 'slugs',
+      'weapon_tier_match' => 'series_slugs'
+    }.freeze
+
     def preload_series_caches!
-      %w[weapon character summon].each do |kind|
-        slugs = collect_series_slugs("#{kind}_series_match")
+      slugs_by_kind = {
+        'weapon' => collect_weapon_series_slugs,
+        'character' => collect_simple_slugs('character_series_match'),
+        'summon' => collect_simple_slugs('summon_series_match')
+      }
+
+      slugs_by_kind.each do |kind, slugs|
         Thread.current[SERIES_CACHE_KEYS[kind]] = if slugs.empty?
                                                     {}
                                                   else
@@ -98,13 +111,22 @@ module PartyDifficulty
       SERIES_CACHE_KEYS.each_value { |key| Thread.current[key] = nil }
     end
 
-    def collect_series_slugs(rule_type)
+    def collect_simple_slugs(rule_type)
       @rules
         .select { |r| r.rule_type == rule_type }
         .flat_map { |r| Array(r.params&.[]('slugs')) }
         .map(&:to_s)
         .reject(&:empty?)
         .uniq
+    end
+
+    def collect_weapon_series_slugs
+      @rules.flat_map do |r|
+        param_key = WEAPON_SERIES_SLUG_SOURCES[r.rule_type]
+        next [] unless param_key
+
+        Array(r.params&.[](param_key))
+      end.map(&:to_s).reject(&:empty?).uniq
     end
 
     def enabled_components_by_name
