@@ -42,7 +42,7 @@ module Api
 
         ws = PartyDifficulty::DraftWorkspace.for(current_user)
         {
-          rules: ws.merged_rules,
+          rules: ws.merged_rules(only_active: true),
           components: ws.merged_components,
           difficulties: ws.merged_tiers
         }

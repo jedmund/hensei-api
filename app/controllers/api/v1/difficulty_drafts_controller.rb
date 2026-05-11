@@ -35,17 +35,16 @@ module Api
       end
 
       def destroy
-        if params[:id] == 'all'
-          discarded = @workspace.discard!
-          render json: { discarded: discarded }
-          return
-        end
-
         draft = DifficultyDraft.for_user(current_user).find_by(id: params[:id])
         return render_not_found_response('difficulty_draft') unless draft
 
         draft.destroy
         head :no_content
+      end
+
+      def discard_all
+        discarded = @workspace.discard!
+        render json: { discarded: discarded }
       end
 
       def commit
@@ -82,12 +81,6 @@ module Api
           created_at: draft.created_at,
           updated_at: draft.updated_at
         }
-      end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
       end
     end
   end
