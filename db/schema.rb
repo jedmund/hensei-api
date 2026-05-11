@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_10_015531) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_10_290000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -379,6 +379,53 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_015531) do
     t.string "filename", null: false
     t.datetime "imported_at", null: false
     t.index ["filename"], name: "index_data_versions_on_filename", unique: true
+  end
+
+  create_table "difficulties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "description"
+    t.decimal "min_score", precision: 5, scale: 2, default: "0.0", null: false
+    t.decimal "max_score", precision: 5, scale: 2, default: "100.0", null: false
+    t.integer "sort_order", default: 0, null: false
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_difficulties_on_slug", unique: true
+    t.index ["sort_order"], name: "index_difficulties_on_sort_order"
+  end
+
+  create_table "difficulty_components", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.decimal "weight", precision: 6, scale: 2, default: "1.0", null: false
+    t.boolean "enabled", default: true, null: false
+    t.integer "min_count_to_score", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "target_max", precision: 8, scale: 2
+    t.index ["name"], name: "index_difficulty_components_on_name", unique: true
+  end
+
+  create_table "difficulty_configs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "ruleset_version", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "(true)", name: "index_difficulty_configs_singleton", unique: true
+  end
+
+  create_table "difficulty_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "component", null: false
+    t.string "rule_type", null: false
+    t.jsonb "params", default: {}, null: false
+    t.decimal "weight", precision: 6, scale: 2, default: "1.0", null: false
+    t.boolean "active", default: true, null: false
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_difficulty_rules_on_active"
+    t.index ["component"], name: "index_difficulty_rules_on_component"
+    t.index ["rule_type"], name: "index_difficulty_rules_on_rule_type"
   end
 
   create_table "effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -755,10 +802,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_015531) do
     t.string "boost_side"
     t.boolean "solo", default: false, null: false
     t.datetime "last_updated"
+    t.uuid "difficulty_id"
+    t.decimal "difficulty_score", precision: 5, scale: 2
+    t.jsonb "difficulty_breakdown"
+    t.datetime "difficulty_computed_at"
+    t.integer "difficulty_ruleset_version"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
     t.index ["created_at"], name: "index_parties_on_created_at"
+    t.index ["difficulty_computed_at"], name: "index_parties_on_difficulty_computed_at"
+    t.index ["difficulty_id"], name: "index_parties_on_difficulty_id"
+    t.index ["difficulty_score"], name: "index_parties_on_difficulty_score"
     t.index ["element"], name: "index_parties_on_element"
     t.index ["guidebook1_id"], name: "index_parties_on_guidebook1_id"
     t.index ["guidebook2_id"], name: "index_parties_on_guidebook2_id"
@@ -1349,6 +1404,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_015531) do
   add_foreign_key "gw_individual_scores", "users", column: "recorded_by_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "parties", "difficulties"
   add_foreign_key "parties", "guidebooks", column: "guidebook1_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook2_id"
   add_foreign_key "parties", "guidebooks", column: "guidebook3_id"
