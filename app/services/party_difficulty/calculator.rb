@@ -27,6 +27,11 @@ module PartyDifficulty
       Party.includes(*EAGER_LOAD.keys.map { |k| EAGER_LOAD[k].any? ? { k => EAGER_LOAD[k] } : k }).find(party_id)
     end
 
+    # TODO(party-difficulty-perf): the four default reads below run on every
+    # ScoreJob, SweepJob, and preview-controller invocation. Wrap them in
+    # Rails.cache.fetch keyed by DifficultyConfig.current_version so the
+    # ruleset cache invalidates automatically on edits. See
+    # docs/follow-ups/party-difficulty.md.
     def initialize(party, rules: nil, components: nil, difficulties: nil, ruleset_version: nil)
       @party = party
       @rules = rules || DifficultyRule.active.to_a
