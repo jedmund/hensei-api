@@ -28,6 +28,7 @@ module PartyDifficulty
       'summon_series_match'             => 'SummonSeriesMatch',
       'summon_uncap_at_least'           => 'SummonUncapAtLeast',
       'summon_transcendence_at_least'   => 'SummonTranscendenceAtLeast',
+      'summon_release_within_days'      => 'SummonReleaseWithinDays',
       'job_row'                         => 'JobRow',
       'accessory_match'                 => 'AccessoryMatch',
       'mainhand_bullet_match'           => 'MainhandBulletMatch'

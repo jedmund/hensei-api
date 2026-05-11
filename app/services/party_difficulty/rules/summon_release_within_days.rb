@@ -3,14 +3,14 @@
 module PartyDifficulty
   module Rules
     ##
-    # Fires when at least min_count characters were released between
-    # `min_days_ago` (inclusive, default 0) and `days` (exclusive) days ago.
-    # The lower bound lets you build mutually exclusive age brackets.
+    # Fires when at least min_count summons (excluding friend summons) were
+    # released between `min_days_ago` (inclusive, default 0) and `days`
+    # (exclusive) days ago. Mirrors the weapon and character variants.
     #
     # params: { "days": 14, "min_days_ago": 0, "min_count": 1 }
-    class CharacterReleaseWithinDays < Base
+    class SummonReleaseWithinDays < Base
       def self.component
-        'character'
+        'summon'
       end
 
       def self.validate_params(params)
@@ -23,8 +23,10 @@ module PartyDifficulty
         lower_days = params[:min_days_ago].to_i
         lower = lower_days.positive? ? lower_days.days.ago.to_date : Date.current
 
-        party.characters.count do |gc|
-          release = gc.character&.release_date
+        party.summons
+             .reject { |gs| gs.friend == true }
+             .count do |gs|
+          release = gs.summon&.release_date
           release && release >= upper && release <= lower
         end
       end

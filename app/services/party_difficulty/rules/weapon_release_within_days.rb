@@ -3,11 +3,12 @@
 module PartyDifficulty
   module Rules
     ##
-    # Fires when at least min_count weapons were released within the last `days` days.
-    # This is the time-decay rule for weapons — recently released items make a
-    # team harder to assemble.
+    # Fires when at least min_count weapons were released between
+    # `min_days_ago` (inclusive, default 0) and `days` (exclusive) days ago.
+    # The lower bound lets you build mutually exclusive age brackets — e.g.
+    # `min_days_ago: 14, days: 30` matches weapons that are 14 to 30 days old.
     #
-    # params: { "days": 180, "min_count": 1 }
+    # params: { "days": 14, "min_days_ago": 0, "min_count": 1 }
     class WeaponReleaseWithinDays < Base
       def self.component
         'weapon'
@@ -19,8 +20,14 @@ module PartyDifficulty
       end
 
       def matching_count(party)
-        cutoff = params[:days].to_i.days.ago.to_date
-        party.weapons.count { |gw| gw.weapon&.release_date && gw.weapon.release_date >= cutoff }
+        upper = params[:days].to_i.days.ago.to_date
+        lower_days = params[:min_days_ago].to_i
+        lower = lower_days.positive? ? lower_days.days.ago.to_date : Date.current
+
+        party.weapons.count do |gw|
+          release = gw.weapon&.release_date
+          release && release >= upper && release <= lower
+        end
       end
     end
   end
