@@ -212,6 +212,9 @@ Rails.application.routes.draw do
         post :commit
         delete '', action: :discard_all
       end
+      member do
+        post :upload_image
+      end
     end
 
     # Grid artifacts

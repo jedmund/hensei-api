@@ -90,4 +90,90 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       expect { described_class.for(user).discard! }.to change { DifficultyDraft.for_user(user).count }.to(0)
     end
   end
+
+  describe '#attach_image!' do
+    # 1x1 transparent PNG, base64-encoded — passes signature + dimension checks.
+    let(:png_base64) do
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+    end
+
+    before do
+      allow(IconStorage).to receive(:put)
+      allow(IconStorage).to receive(:copy)
+      allow(IconStorage).to receive(:delete)
+    end
+
+    it 'stages the upload at the draft-scoped key and records image_key on attributes' do
+      draft = workspace.stage!(
+        target_type: 'Difficulty', target_id: tier.id, operation: 'update', attributes: { name: 'Renamed' }
+      )
+
+      workspace.attach_image!(draft, image_data: png_base64, filename: 'tier.png')
+
+      expected_key = "images/difficulties/_drafts/#{draft.id}.png"
+      expect(IconStorage).to have_received(:put).with(expected_key, kind_of(String))
+      expect(draft.reload.attributes_payload['image_key']).to eq(expected_key)
+      expect(draft.attributes_payload['image_filename']).to eq('tier.png')
+    end
+
+    it 'raises an ImageValidationError when bytes are not a PNG' do
+      draft = workspace.stage!(
+        target_type: 'Difficulty', target_id: tier.id, operation: 'update', attributes: { name: 'x' }
+      )
+      junk = Base64.strict_encode64('not an image')
+
+      expect { workspace.attach_image!(draft, image_data: junk) }
+        .to raise_error(described_class::ImageValidationError, /PNG/)
+    end
+  end
+
+  describe '#commit! with staged image' do
+    let(:png_base64) do
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+    end
+
+    before do
+      allow(IconStorage).to receive(:put)
+      allow(IconStorage).to receive(:copy)
+      allow(IconStorage).to receive(:delete)
+    end
+
+    it 'promotes the staged image to the canonical key and writes image_key on the tier' do
+      draft = workspace.stage!(
+        target_type: 'Difficulty', target_id: tier.id, operation: 'update', attributes: { name: 'New' }
+      )
+      workspace.attach_image!(draft, image_data: png_base64)
+      staged_key = "images/difficulties/_drafts/#{draft.id}.png"
+      final_key = "images/difficulties/#{tier.id}.png"
+
+      described_class.for(user).commit!
+
+      expect(IconStorage).to have_received(:copy).with(staged_key, final_key)
+      expect(IconStorage).to have_received(:delete).with(staged_key)
+      expect(tier.reload.image_key).to eq(final_key)
+    end
+  end
+
+  describe '#discard! with staged image' do
+    let(:png_base64) do
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+    end
+
+    before do
+      allow(IconStorage).to receive(:put)
+      allow(IconStorage).to receive(:delete)
+    end
+
+    it 'removes temp images from storage' do
+      draft = workspace.stage!(
+        target_type: 'Difficulty', target_id: tier.id, operation: 'update', attributes: { name: 'x' }
+      )
+      workspace.attach_image!(draft, image_data: png_base64)
+      staged_key = "images/difficulties/_drafts/#{draft.id}.png"
+
+      described_class.for(user).discard!
+
+      expect(IconStorage).to have_received(:delete).with(staged_key)
+    end
+  end
 end

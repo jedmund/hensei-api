@@ -38,13 +38,36 @@ module Api
         draft = DifficultyDraft.for_user(current_user).find_by(id: params[:id])
         return render_not_found_response('difficulty_draft') unless draft
 
-        draft.destroy
+        @workspace.delete_draft!(draft)
         head :no_content
       end
 
       def discard_all
         discarded = @workspace.discard!
         render json: { discarded: discarded }
+      end
+
+      # POST /difficulty_drafts/:id/upload_image
+      # Body: { image: <base64-png>, filename: <string?> }
+      #
+      # IconUploadValidator caps decoded bytes at 256KB; base64 expansion adds
+      # ~33%, so reject requests above 512KB on Content-Length before reading
+      # the body so a misbehaving client can't pin a worker on a huge payload.
+      UPLOAD_REQUEST_MAX_BYTES = 512 * 1024
+
+      def upload_image
+        if request.content_length.to_i > UPLOAD_REQUEST_MAX_BYTES
+          return render json: { error: "Request body exceeds #{UPLOAD_REQUEST_MAX_BYTES / 1024}KB" },
+                        status: :payload_too_large
+        end
+
+        draft = DifficultyDraft.for_user(current_user).find_by(id: params[:id])
+        return render_not_found_response('difficulty_draft') unless draft
+
+        @workspace.attach_image!(draft, image_data: params[:image], filename: params[:filename])
+        render json: serialize(draft.reload)
+      rescue ArgumentError, PartyDifficulty::DraftWorkspace::ImageValidationError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       def commit

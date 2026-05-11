@@ -4,6 +4,30 @@ Items surfaced during code review of the stacked `party-difficulty-*` PRs that w
 
 ---
 
+## Consolidate `IconStorage` / `IconUploadValidator` with `UploadedImageService`
+
+**Status:** deferred until after PR #414 (substitutions feature) merges. Tracked separately as a unification follow-up so both features get fixed before the consolidation happens.
+
+**What.** `-tier-images` introduced two service objects:
+
+- `app/services/icon_storage.rb` — S3 vs local backend branching, `put` / `copy` / `delete`, hardcoded `image/png` content type.
+- `app/services/icon_upload_validator.rb` — magic-byte PNG sniff, size cap, MiniMagick dimension check.
+
+PR #414 plans to introduce `UploadedImageService` (per `.context/attachments/pasted_text_2026-05-10_22-38-31.txt` — the R5 plan) covering the same surface: validate / store / delete for small PNG icons, configurable per-call.
+
+**What to do (after #414 lands).** Migrate `DraftWorkspace#attach_image!` / `promote_image_if_present` / `cleanup_canonical_image` / `remove_temp_images` to use `UploadedImageService` directly. Delete `IconStorage` and `IconUploadValidator`. Move the `_drafts/` prefix discipline into `DraftWorkspace` (the prefix is difficulty-specific; `UploadedImageService` should stay generic).
+
+**Why not consolidated upfront.** PR #414 isn't merged yet. Doing this stack first lets each feature land independently with its own review; unification is a follow-up PR off `main` after both ship.
+
+**Files to touch (later).**
+- Delete: `app/services/icon_storage.rb`, `app/services/icon_upload_validator.rb`.
+- Modify: `app/services/party_difficulty/draft_workspace.rb` (replace direct calls).
+- Add: `spec/services/uploaded_image_service_spec.rb` already in #414's plan; difficulty-side specs reuse it.
+
+**When to revisit.** When PR #414 merges to `main`.
+
+---
+
 ## Cache ruleset reads in `Calculator`
 
 **Status:** deferred during review of `jedmund/party-difficulty-admin`.
