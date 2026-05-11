@@ -84,6 +84,10 @@ module PartyDifficulty
                   params[:min_transcendence_step], params[:max_transcendence_step])
       end
 
+      # min_awakening_level / max_awakening_level apply to whichever awakening
+      # type the weapon currently has unless awakening_id is set. To require a
+      # specific type (e.g. ATK at level 5+), supply awakening_id alongside the
+      # level range.
       def matches_awakening?(grid_weapon)
         awakening_id = params[:awakening_id].presence&.to_s
         return false if awakening_id && grid_weapon.awakening_id.to_s != awakening_id
@@ -112,14 +116,7 @@ module PartyDifficulty
       end
 
       def resolve_slugs(slugs)
-        return [] if slugs.empty?
-
-        cache = Thread.current[:pd_weapon_series_cache]
-        if cache && slugs.all? { |s| cache.key?(s) }
-          slugs.filter_map { |s| cache[s] }
-        else
-          WeaponSeries.where(slug: slugs).pluck(:id)
-        end
+        resolve_slugs_via_cache(slugs, Thread.current[:pd_weapon_series_cache], WeaponSeries)
       end
     end
   end

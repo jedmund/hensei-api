@@ -54,14 +54,7 @@ module PartyDifficulty
       end
 
       def resolve_slugs(slugs)
-        return [] if slugs.empty?
-
-        cache = Thread.current[:pd_character_series_cache]
-        if cache
-          slugs.filter_map { |s| cache[s] }
-        else
-          CharacterSeries.where(slug: slugs).pluck(:id)
-        end
+        resolve_slugs_via_cache(slugs, Thread.current[:pd_character_series_cache], CharacterSeries)
       end
     end
   end

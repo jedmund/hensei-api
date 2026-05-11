@@ -65,6 +65,18 @@ module PartyDifficulty
       end
 
       ##
+      # Resolve a list of series slugs to ids, honoring a thread-local cache when
+      # complete and falling back to the DB on any miss. A partial cache hit
+      # would silently drop unrecognized slugs, so we require every slug to be
+      # present before trusting the cache.
+      def resolve_slugs_via_cache(slugs, cache, model)
+        return [] if slugs.empty?
+        return slugs.filter_map { |s| cache[s] } if cache && slugs.all? { |s| cache.key?(s) }
+
+        model.where(slug: slugs).pluck(:id)
+      end
+
+      ##
       # Returns a decay multiplier in [floor, 1.0] for an item released
       # `years_since(release_date)` years ago. Reads `decay_per_year` and
       # `decay_floor` from the rule's params (defaults: 0 = no decay, floor 0.1).
