@@ -9,3 +9,7 @@
     cron: '0 0 * * *'  # Daily at midnight
     class: CleanupPartyPreviewsJob
     queue: maintenance
+  party_difficulty_sweep:
+    cron: '0 4 * * *'  # Daily at 04:00
+    class: PartyDifficulty::SweepJob
+    queue: maintenance

@@ -245,14 +245,6 @@ module Api
         render_not_found_response('character') unless @character
       end
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[CHARACTERS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
-
       def character_params
         params.require(:character).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element,

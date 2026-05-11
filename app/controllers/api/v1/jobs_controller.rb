@@ -232,14 +232,6 @@ module Api
         render_not_found_response('job') unless @job
       end
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[JOBS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
-
       def job_update_params
         params.permit(
           :name_en, :name_jp, :granblue_id,
