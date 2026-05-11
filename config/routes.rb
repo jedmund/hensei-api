@@ -194,6 +194,15 @@ Rails.application.routes.draw do
     end
     resources :difficulty_previews, only: %i[create]
 
+    # Editor draft staging — `DELETE /difficulty_drafts/all` discards everything
+    # for the current user; the resourceful `destroy` handles single-draft drops.
+    resources :difficulty_drafts, only: %i[index create destroy] do
+      collection do
+        get :diff
+        post :commit
+      end
+    end
+
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
       member do

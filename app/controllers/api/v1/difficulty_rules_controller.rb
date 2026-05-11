@@ -7,9 +7,21 @@ module Api
       before_action :ensure_editor_role
 
       def index
-        rules = DifficultyRule.order(:component, :name)
-        rules = rules.where(component: params[:component]) if params[:component].present?
-        rules = rules.where(active: ActiveModel::Type::Boolean.new.cast(params[:active])) if params.key?(:active)
+        rules = if with_drafts?
+                  PartyDifficulty::DraftWorkspace.for(current_user).merged_rules
+                else
+                  DifficultyRule.order(:component, :name)
+                end
+
+        if params[:component].present?
+          rules = rules.respond_to?(:where) ? rules.where(component: params[:component]) : rules.select { |r| r.component == params[:component] }
+        end
+
+        if params.key?(:active)
+          active = ActiveModel::Type::Boolean.new.cast(params[:active])
+          rules = rules.respond_to?(:where) ? rules.where(active: active) : rules.select { |r| r.active == active }
+        end
+
         render json: DifficultyRuleBlueprint.render(rules)
       end
 
@@ -21,31 +33,32 @@ module Api
       end
 
       def create
-        rule = DifficultyRule.new(rule_params)
-        rule.component ||= PartyDifficulty::Rules.component_for(rule.rule_type)
-        if rule.save
-          render json: DifficultyRuleBlueprint.render(rule), status: :created
-        else
-          render_validation_error_response(rule)
-        end
+        attrs = rule_params.to_h
+        attrs[:component] ||= PartyDifficulty::Rules.component_for(attrs[:rule_type])
+
+        draft = PartyDifficulty::DraftWorkspace.for(current_user).stage!(
+          target_type: 'DifficultyRule', target_id: nil, operation: 'create', attributes: attrs
+        )
+        render json: draft_envelope(draft), status: :created
       end
 
       def update
         rule = DifficultyRule.find_by(id: params[:id])
         return render_not_found_response('difficulty_rule') unless rule
 
-        if rule.update(rule_params)
-          render json: DifficultyRuleBlueprint.render(rule)
-        else
-          render_validation_error_response(rule)
-        end
+        draft = PartyDifficulty::DraftWorkspace.for(current_user).stage!(
+          target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: rule_params
+        )
+        render json: draft_envelope(draft)
       end
 
       def destroy
         rule = DifficultyRule.find_by(id: params[:id])
         return render_not_found_response('difficulty_rule') unless rule
 
-        rule.destroy
+        PartyDifficulty::DraftWorkspace.for(current_user).stage!(
+          target_type: 'DifficultyRule', target_id: rule.id, operation: 'destroy', attributes: {}
+        )
         head :no_content
       end
 
@@ -80,6 +93,24 @@ module Api
         else
           raise ActionController::BadRequest, 'difficulty_rule.params must be an object'
         end
+      end
+
+      def with_drafts?
+        return false unless current_user&.role && current_user.role >= 7
+
+        ActiveModel::Type::Boolean.new.cast(params[:with_drafts])
+      end
+
+      def draft_envelope(draft)
+        {
+          draft: {
+            id: draft.id,
+            target_type: draft.target_type,
+            target_id: draft.target_id,
+            operation: draft.operation,
+            attributes: draft.attributes_payload
+          }
+        }
       end
     end
   end

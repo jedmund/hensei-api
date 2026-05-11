@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_10_290000) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_11_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -395,6 +395,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_290000) do
     t.index ["sort_order"], name: "index_difficulties_on_sort_order"
   end
 
+  create_table "difficulty_change_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.text "note"
+    t.jsonb "changes_payload", default: {}, null: false
+    t.integer "ruleset_version_after"
+    t.datetime "committed_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["committed_at"], name: "index_difficulty_change_logs_on_committed_at"
+    t.index ["user_id"], name: "index_difficulty_change_logs_on_user_id"
+  end
+
   create_table "difficulty_components", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.decimal "weight", precision: 6, scale: 2, default: "1.0", null: false
@@ -411,6 +423,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_290000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index "(true)", name: "index_difficulty_configs_singleton", unique: true
+  end
+
+  create_table "difficulty_drafts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "target_type", null: false
+    t.uuid "target_id"
+    t.string "operation", null: false
+    t.jsonb "attributes_payload", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "target_type", "target_id"], name: "index_difficulty_drafts_per_target", unique: true, where: "(target_id IS NOT NULL)"
+    t.index ["user_id", "target_type"], name: "index_difficulty_drafts_on_user_id_and_target_type"
+    t.index ["user_id"], name: "index_difficulty_drafts_on_user_id"
   end
 
   create_table "difficulty_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1372,6 +1397,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_290000) do
   add_foreign_key "crew_memberships", "users"
   add_foreign_key "crew_rosters", "crews"
   add_foreign_key "crew_rosters", "users", column: "created_by_id"
+  add_foreign_key "difficulty_change_logs", "users"
+  add_foreign_key "difficulty_drafts", "users"
   add_foreign_key "effects", "effects", column: "effect_family_id"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"

@@ -7,7 +7,11 @@ module Api
       before_action :ensure_editor_role, only: %i[create update destroy]
 
       def index
-        difficulties = Difficulty.ordered
+        difficulties = if with_drafts?
+                         PartyDifficulty::DraftWorkspace.for(current_user).merged_tiers
+                       else
+                         Difficulty.ordered
+                       end
         render json: DifficultyBlueprint.render(difficulties, view: :list)
       end
 
@@ -19,30 +23,29 @@ module Api
       end
 
       def create
-        difficulty = Difficulty.new(difficulty_params)
-        if difficulty.save
-          render json: DifficultyBlueprint.render(difficulty, view: :list), status: :created
-        else
-          render_validation_error_response(difficulty)
-        end
+        draft = PartyDifficulty::DraftWorkspace.for(current_user).stage!(
+          target_type: 'Difficulty', target_id: nil, operation: 'create', attributes: difficulty_params
+        )
+        render json: draft_envelope(draft), status: :created
       end
 
       def update
         difficulty = find_difficulty(params[:id])
         return render_not_found_response('difficulty') unless difficulty
 
-        if difficulty.update(difficulty_params)
-          render json: DifficultyBlueprint.render(difficulty, view: :list)
-        else
-          render_validation_error_response(difficulty)
-        end
+        draft = PartyDifficulty::DraftWorkspace.for(current_user).stage!(
+          target_type: 'Difficulty', target_id: difficulty.id, operation: 'update', attributes: difficulty_params
+        )
+        render json: draft_envelope(draft)
       end
 
       def destroy
         difficulty = find_difficulty(params[:id])
         return render_not_found_response('difficulty') unless difficulty
 
-        difficulty.destroy
+        PartyDifficulty::DraftWorkspace.for(current_user).stage!(
+          target_type: 'Difficulty', target_id: difficulty.id, operation: 'destroy', attributes: {}
+        )
         head :no_content
       end
 
@@ -57,6 +60,24 @@ module Api
 
       def difficulty_params
         params.require(:difficulty).permit(:name, :slug, :description, :min_score, :max_score, :sort_order, :color)
+      end
+
+      def with_drafts?
+        return false unless current_user&.role && current_user.role >= 7
+
+        ActiveModel::Type::Boolean.new.cast(params[:with_drafts])
+      end
+
+      def draft_envelope(draft)
+        {
+          draft: {
+            id: draft.id,
+            target_type: draft.target_type,
+            target_id: draft.target_id,
+            operation: draft.operation,
+            attributes: draft.attributes_payload
+          }
+        }
       end
     end
   end
