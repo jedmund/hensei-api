@@ -5,9 +5,11 @@ module Api
     class DifficultyBlueprint < ApiBlueprint
       fields :name, :slug, :description, :min_score, :max_score, :sort_order, :color
 
-      # Versioned with updated_at so the URL changes on every upload, busting
-      # any browser / CDN cache while the S3 object stays at a stable path.
-      field :image_key do |difficulty|
+      # Host-relative URL (i.e. <prefix>/<key>?v=<timestamp>), not a literal S3
+      # key. Versioned with updated_at so the URL changes on every upload,
+      # busting any browser / CDN cache while the S3 object stays at a stable
+      # path. Frontend prepends the configured S3/CDN host.
+      field :image_url do |difficulty|
         next nil if difficulty.image_key.blank?
 
         if difficulty.respond_to?(:updated_at) && difficulty.updated_at
