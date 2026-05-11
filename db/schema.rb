@@ -567,6 +567,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
+    t.index ["party_id", "position", "character_id"], name: "index_grid_characters_unique_substitute", unique: true, where: "is_substitute"
     t.index ["party_id", "position"], name: "index_grid_characters_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
@@ -588,6 +589,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
     t.jsonb "description"
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
+    t.index ["party_id", "position", "summon_id"], name: "index_grid_summons_unique_substitute", unique: true, where: "is_substitute"
     t.index ["party_id", "position"], name: "index_grid_summons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_summons_on_party_id"
     t.index ["summon_id"], name: "index_grid_summons_on_summon_id"
@@ -637,6 +639,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
     t.index ["befoulment_modifier_id"], name: "index_grid_weapons_on_befoulment_modifier_id"
     t.index ["collection_weapon_id"], name: "index_grid_weapons_on_collection_weapon_id"
     t.index ["orphaned"], name: "index_grid_weapons_on_orphaned"
+    t.index ["party_id", "position", "weapon_id"], name: "index_grid_weapons_unique_substitute", unique: true, where: "is_substitute"
     t.index ["party_id", "position"], name: "index_grid_weapons_on_party_id_and_position"
     t.index ["party_id"], name: "index_grid_weapons_on_party_id"
     t.index ["weapon_id"], name: "index_grid_weapons_on_weapon_id"
@@ -1037,7 +1040,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["grid_type", "grid_id", "substitute_grid_type", "substitute_grid_id"], name: "index_substitutions_uniqueness", unique: true
+    t.index ["grid_type", "grid_id", "position"], name: "index_substitutions_on_slot_position", unique: true
     t.index ["grid_type", "grid_id"], name: "index_substitutions_on_grid"
     t.index ["substitute_grid_type", "substitute_grid_id"], name: "index_substitutions_on_substitute_grid"
   end

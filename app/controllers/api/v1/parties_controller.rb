@@ -444,7 +444,9 @@ module Api
 
         return render_not_found_response('party') unless @party
 
-        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons)
+        # Most parties have zero substitutes; a single EXISTS lookup is far cheaper
+        # than the three collection-ownership queries `preload_substitute_grids!` runs.
+        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons) if @party.has_substitutions?
       end
 
       # Loads the party by its id.

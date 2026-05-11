@@ -15,6 +15,25 @@ RSpec.describe GridCharacterRole, type: :model do
     end
   end
 
+  describe 'attributes' do
+    it 'round-trips name_jp' do
+      role = create(:grid_character_role, name_en: 'Attacker', name_jp: 'アタッカー')
+      expect(role.reload.name_jp).to eq('アタッカー')
+    end
+
+    it 'persists sort_order when explicitly set' do
+      role = create(:grid_character_role, sort_order: 7)
+      expect(role.reload.sort_order).to eq(7)
+    end
+
+    it 'leaves sort_order nil when not assigned at the model level' do
+      # Controller is responsible for defaulting via next_sort_order; the model
+      # itself does not default sort_order. Lock that contract.
+      role = GridCharacterRole.create!(name_en: 'Sortless', name_jp: nil, sort_order: nil)
+      expect(role.sort_order).to be_nil
+    end
+  end
+
   describe 'associations' do
     it 'has many characters through assignments' do
       role = create(:grid_character_role)

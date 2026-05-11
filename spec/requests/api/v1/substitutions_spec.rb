@@ -312,4 +312,199 @@ RSpec.describe 'Substitutions API', type: :request do
       expect(JSON.parse(response.body)['error']).to match(/already a substitute/i)
     end
   end
+
+  describe 'invalid item_id' do
+    it 'returns 422 (not 500) when item_id does not exist' do
+      grid_weapon = create(:grid_weapon, party: party, weapon: weapon)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridWeapon',
+          grid_id: grid_weapon.id,
+          item_id: SecureRandom.uuid
+        }
+      }
+
+      expect do
+        post '/api/v1/substitutions', params: params.to_json, headers: headers
+      end.not_to change(Substitution, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)['error']).to match(/unknown item_id/i)
+    end
+  end
+
+  describe 'PUT with missing position' do
+    it 'returns 422 when position is nil' do
+      grid_weapon = create(:grid_weapon, party: party, weapon: weapon)
+      sub_weapon = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      substitution = create(:substitution, grid: grid_weapon, substitute_grid: sub_weapon, position: 0)
+
+      put "/api/v1/substitutions/#{substitution.id}",
+          params: { substitution: { party_id: party.id } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(substitution.reload.position).to eq(0)
+    end
+  end
+
+  describe 'substitute uncap_level' do
+    it 'matches the canonical weapon\'s max uncap' do
+      grid_weapon = create(:grid_weapon, party: party, weapon: weapon)
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridWeapon',
+          grid_id: grid_weapon.id,
+          item_id: other_weapon.id,
+          position: 0
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expected = if other_weapon.transcendence
+                   6
+                 elsif other_weapon.ulb
+                   5
+                 elsif other_weapon.flb
+                   4
+                 else
+                   3
+                 end
+      expect(GridWeapon.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
+    end
+
+    it 'matches the canonical character\'s max uncap (special branch)' do
+      character = Character.first
+      other_character = Character.where.not(id: character.id).first
+      grid_character = create(:grid_character, party: party, character: character)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridCharacter',
+          grid_id: grid_character.id,
+          item_id: other_character.id,
+          position: 0
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expected = if other_character.special
+                   if other_character.transcendence
+                     5
+                   else
+                     other_character.flb ? 4 : 3
+                   end
+                 elsif other_character.transcendence
+                   6
+                 else
+                   other_character.flb ? 5 : 4
+                 end
+      expect(GridCharacter.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
+    end
+
+    it 'matches the canonical summon\'s max uncap' do
+      summon = Summon.first
+      other_summon = Summon.where.not(id: summon.id).first
+      grid_summon = create(:grid_summon, party: party, summon: summon)
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridSummon',
+          grid_id: grid_summon.id,
+          item_id: other_summon.id,
+          position: 0
+        }
+      }
+
+      post '/api/v1/substitutions', params: params.to_json, headers: headers
+
+      expected = if other_summon.transcendence
+                   6
+                 elsif other_summon.ulb
+                   5
+                 elsif other_summon.flb
+                   4
+                 else
+                   3
+                 end
+      expect(GridSummon.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
+    end
+  end
+
+  describe '11th substitute' do
+    it 'returns 422 when the slot already has 10 substitutes' do
+      grid_weapon = create(:grid_weapon, party: party, weapon: weapon)
+
+      # 10 distinct canonical weapons (the unique-substitute index forbids
+      # repeating the same canonical weapon in the same slot).
+      filler_weapons = Weapon.where.not(id: weapon.id).limit(11).to_a
+      raise 'need 11 distinct weapons in test seeds' if filler_weapons.length < 11
+
+      filler_weapons.first(10).each_with_index do |w, i|
+        sw = create(:grid_weapon, party: party, weapon: w, is_substitute: true)
+        create(:substitution, grid: grid_weapon, substitute_grid: sw, position: i)
+      end
+
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridWeapon',
+          grid_id: grid_weapon.id,
+          item_id: filler_weapons.last.id
+        }
+      }
+
+      expect do
+        post '/api/v1/substitutions', params: params.to_json, headers: headers
+      end.not_to change(Substitution, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  describe 'GridSummon substitution flow' do
+    let(:summon) { Summon.first }
+    let(:other_summon) { Summon.where.not(id: summon.id).first }
+    let(:grid_summon) { create(:grid_summon, party: party, summon: summon) }
+
+    it 'creates a substitution and a substitute grid summon' do
+      params = {
+        substitution: {
+          party_id: party.id,
+          grid_type: 'GridSummon',
+          grid_id: grid_summon.id,
+          item_id: other_summon.id,
+          position: 0
+        }
+      }
+
+      expect do
+        post '/api/v1/substitutions', params: params.to_json, headers: headers
+      end.to change(Substitution, :count).by(1)
+                                         .and change(GridSummon, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+      body = JSON.parse(response.body)
+      expect(body).to have_key('grid_summon')
+    end
+
+    it 'destroys the substitute summon row on delete' do
+      sub_summon = create(:grid_summon, party: party, summon: other_summon, is_substitute: true)
+      substitution = create(:substitution, grid: grid_summon, substitute_grid: sub_summon, position: 0)
+
+      expect do
+        delete "/api/v1/substitutions/#{substitution.id}",
+               params: { substitution: { party_id: party.id } }.to_json,
+               headers: headers
+      end.to change(Substitution, :count).by(-1)
+                                         .and change(GridSummon, :count).by(-1)
+    end
+  end
 end

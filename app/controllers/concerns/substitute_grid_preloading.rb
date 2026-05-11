@@ -46,6 +46,14 @@ module SubstituteGridPreloading
 
   private
 
+  # (collection_class, fk-on-grid-row) for each grid type. The blueprint reads
+  # `owned` from the grid row, so the fk we look up is the one on the row.
+  OWNERSHIP_BY_GRID = {
+    GridCharacter => [CollectionCharacter, :character_id],
+    GridWeapon    => [CollectionWeapon, :weapon_id],
+    GridSummon    => [CollectionSummon, :summon_id]
+  }.freeze
+
   # Sets the virtual `owned` attribute on each substitute_grid so the
   # blueprint can render whether current_user has the underlying entity in
   # their collection.
@@ -55,29 +63,14 @@ module SubstituteGridPreloading
     substitute_grids = substitutions.filter_map(&:substitute_grid)
     return if substitute_grids.empty?
 
-    char_subs = substitute_grids.select { |s| s.is_a?(GridCharacter) }
-    weapon_subs = substitute_grids.select { |s| s.is_a?(GridWeapon) }
-    summon_subs = substitute_grids.select { |s| s.is_a?(GridSummon) }
+    substitute_grids.group_by(&:class).each do |klass, grids|
+      collection_class, fk = OWNERSHIP_BY_GRID[klass]
+      next unless collection_class
 
-    if char_subs.any?
-      owned = CollectionCharacter.where(user_id: current_user.id,
-                                        character_id: char_subs.map(&:character_id))
-                                 .pluck(:character_id).to_set
-      char_subs.each { |s| s.owned = owned.include?(s.character_id) }
+      owned = collection_class.where(user_id: current_user.id,
+                                     fk => grids.map(&fk))
+                              .pluck(fk).to_set
+      grids.each { |g| g.owned = owned.include?(g.send(fk)) }
     end
-
-    if weapon_subs.any?
-      owned = CollectionWeapon.where(user_id: current_user.id,
-                                     weapon_id: weapon_subs.map(&:weapon_id))
-                              .pluck(:weapon_id).to_set
-      weapon_subs.each { |s| s.owned = owned.include?(s.weapon_id) }
-    end
-
-    return if summon_subs.empty?
-
-    owned = CollectionSummon.where(user_id: current_user.id,
-                                   summon_id: summon_subs.map(&:summon_id))
-                            .pluck(:summon_id).to_set
-    summon_subs.each { |s| s.owned = owned.include?(s.summon_id) }
   end
 end

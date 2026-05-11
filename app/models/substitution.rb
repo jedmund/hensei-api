@@ -8,7 +8,7 @@ class Substitution < ApplicationRecord
                        numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than: 10 }
 
   validate :grid_types_must_match
-  validate :substitution_cap
+  validate :no_self_substitution
 
   private
 
@@ -20,14 +20,11 @@ class Substitution < ApplicationRecord
     end
   end
 
-  def substitution_cap
-    return unless grid.present?
+  def no_self_substitution
+    return if grid_id.blank? || substitute_grid_id.blank?
 
-    existing = Substitution.where(grid_type: grid_type, grid_id: grid_id)
-    existing = existing.where.not(id: id) if persisted?
-
-    if existing.count >= 10
-      errors.add(:base, 'maximum of 10 substitutions per slot')
+    if grid_type == substitute_grid_type && grid_id == substitute_grid_id
+      errors.add(:substitute_grid, 'cannot reference itself')
     end
   end
 end

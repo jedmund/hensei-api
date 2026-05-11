@@ -154,6 +154,22 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
+    it 'returns 422 with the missing ids and rolls back when a role id is unknown' do
+      bogus = SecureRandom.uuid
+      original_sort_orders = [role1.sort_order, role2.sort_order]
+
+      post '/api/v1/grid_character_roles/reorder',
+           params: { roles: [{ id: role1.id, sort_order: 9 }, { id: bogus, sort_order: 1 }] },
+           headers: editor_headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body['ids']).to include(bogus)
+
+      # The valid update is rejected up front, not partially applied.
+      expect([role1.reload.sort_order, role2.reload.sort_order]).to eq(original_sort_orders)
+    end
+
     it 'returns unauthorized for regular user' do
       post '/api/v1/grid_character_roles/reorder',
            params: { roles: [{ id: role1.id, sort_order: 9 }] },
@@ -201,6 +217,25 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { image: Base64.strict_encode64('hello world'), filename: 'icon.png' },
            headers: editor_headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'rejects an oversized icon (>128x128)' do
+      oversize_png = Tempfile.create(['oversize', '.png']) do |tmp|
+        tmp.binmode
+        MiniMagick::Tool::Magick.new do |c|
+          c.size '200x200'
+          c << 'xc:transparent'
+          c << tmp.path
+        end
+        File.binread(tmp.path)
+      end
+
+      post "/api/v1/grid_character_roles/#{role.id}/upload_icon",
+           params: { image: Base64.strict_encode64(oversize_png), filename: 'icon.png' },
+           headers: editor_headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)['error']).to match(/128x128 or smaller/)
     end
 
     it 'returns unauthorized for regular user' do

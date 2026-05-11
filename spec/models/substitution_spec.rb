@@ -53,27 +53,31 @@ RSpec.describe Substitution, type: :model do
       expect(sub).to be_valid
     end
 
-    it 'enforces uniqueness of grid + substitute_grid pair' do
+    it 'rejects self-substitution' do
       gw = create(:grid_weapon, party: party, weapon: weapon)
-      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
-      create(:substitution, grid: gw, substitute_grid: sw, position: 0)
-
-      duplicate = build(:substitution, grid: gw, substitute_grid: sw, position: 1)
-      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordNotUnique)
+      sub = build(:substitution, grid: gw, substitute_grid: gw, position: 0)
+      expect(sub).not_to be_valid
+      expect(sub.errors[:substitute_grid]).to include('cannot reference itself')
     end
 
-    it 'enforces 10-per-slot cap' do
+    it 'enforces uniqueness of position within a slot' do
       gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw1 = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sw2 = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true, position: 1)
+      create(:substitution, grid: gw, substitute_grid: sw1, position: 0)
 
-      10.times do |i|
-        sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
-        create(:substitution, grid: gw, substitute_grid: sw, position: i)
-      end
+      duplicate = build(:substitution, grid: gw, substitute_grid: sw2, position: 0)
+      expect { duplicate.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
 
-      extra = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
-      sub = build(:substitution, grid: gw, substitute_grid: extra, position: 0)
-      expect(sub).not_to be_valid
-      expect(sub.errors[:base]).to include('maximum of 10 substitutions per slot')
+    it 'allows the same position for different parent slots' do
+      gw1 = create(:grid_weapon, party: party, weapon: weapon)
+      gw2 = create(:grid_weapon, party: party, weapon: other_weapon, position: 1)
+      sw1 = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      sw2 = create(:grid_weapon, party: party, weapon: weapon, is_substitute: true, position: 1)
+
+      create(:substitution, grid: gw1, substitute_grid: sw1, position: 0)
+      expect { create(:substitution, grid: gw2, substitute_grid: sw2, position: 0) }.not_to raise_error
     end
   end
 
@@ -86,12 +90,22 @@ RSpec.describe Substitution, type: :model do
       expect { gw.destroy }.to change(Substitution, :count).by(-1)
     end
 
-    it 'does not destroy the substitute grid item when substitution is destroyed' do
+    it 'destroys substitutions when substitute grid item is destroyed' do
       gw = create(:grid_weapon, party: party, weapon: weapon)
       sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
-      sub = create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+      create(:substitution, grid: gw, substitute_grid: sw, position: 0)
 
-      expect { sub.destroy }.not_to change(GridWeapon, :count)
+      expect { sw.destroy }.to change(Substitution, :count).by(-1)
+    end
+
+    it 'destroys all substitutions and substitute rows when the party is destroyed' do
+      gw = create(:grid_weapon, party: party, weapon: weapon)
+      sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
+      create(:substitution, grid: gw, substitute_grid: sw, position: 0)
+
+      expect { party.destroy }
+        .to change(Substitution, :count).by(-1)
+        .and change(GridWeapon.where(is_substitute: true), :count).by(-1)
     end
   end
 end
