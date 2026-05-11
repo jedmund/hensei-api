@@ -27,7 +27,8 @@ module PartyDifficulty
       'summon_uncap_at_least'           => 'SummonUncapAtLeast',
       'summon_transcendence_at_least'   => 'SummonTranscendenceAtLeast',
       'job_row'                         => 'JobRow',
-      'accessory_match'                 => 'AccessoryMatch'
+      'accessory_match'                 => 'AccessoryMatch',
+      'mainhand_bullet_match'           => 'MainhandBulletMatch'
     }.freeze
 
     def self.registered_types

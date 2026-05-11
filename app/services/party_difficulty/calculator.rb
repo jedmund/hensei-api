@@ -124,9 +124,19 @@ module PartyDifficulty
       case component_name
       when 'weapon', 'character', 'summon' then party_count_for(component_name).positive?
       when 'job' then @party.job_id.present?
-      when 'accessory' then @party.accessory_id.present?
+      when 'accessory' then accessory_data?
       else false
       end
+    end
+
+    # The "accessory" component covers the party's JobAccessory (manatura /
+    # shield) plus rare bullets equipped on the mainhand, so the component is
+    # considered present if either side has data.
+    def accessory_data?
+      return true if @party.accessory_id.present?
+
+      mainhand = @party.weapons.to_a.find(&:mainhand)
+      mainhand&.grid_weapon_bullets&.any? || false
     end
 
     def component_breakdowns
