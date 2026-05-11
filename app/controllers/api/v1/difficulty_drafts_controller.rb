@@ -38,13 +38,27 @@ module Api
         draft = DifficultyDraft.for_user(current_user).find_by(id: params[:id])
         return render_not_found_response('difficulty_draft') unless draft
 
-        draft.destroy
+        @workspace.delete_draft!(draft)
         head :no_content
       end
 
       def discard_all
         discarded = @workspace.discard!
         render json: { discarded: discarded }
+      end
+
+      # POST /difficulty_drafts/:id/upload_image
+      # Body: { image: <base64-png>, filename: <string?> }
+      def upload_image
+        draft = DifficultyDraft.for_user(current_user).find_by(id: params[:id])
+        return render_not_found_response('difficulty_draft') unless draft
+
+        @workspace.attach_image!(draft, image_data: params[:image], filename: params[:filename])
+        render json: serialize(draft.reload)
+      rescue ArgumentError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue PartyDifficulty::DraftWorkspace::ImageValidationError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       def commit

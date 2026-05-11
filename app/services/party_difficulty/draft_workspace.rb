@@ -33,6 +33,11 @@ module PartyDifficulty
       'DifficultyComponent' => %w[name weight enabled min_count_to_score target_max]
     }.freeze
 
+    # Stable canonical prefix; the editor writes drafts under the `_drafts/`
+    # subkey so a per-draft temp file never collides with a live tier icon.
+    IMAGE_FINAL_PREFIX = 'images/difficulties'
+    IMAGE_DRAFT_PREFIX = 'images/difficulties/_drafts'
+
     def self.for(user)
       new(user)
     end
@@ -95,10 +100,45 @@ module PartyDifficulty
     end
 
     def discard!
+      remove_temp_images(@drafts)
       destroyed = DifficultyDraft.for_user(@user).destroy_all
       @drafts = []
       destroyed.size
     end
+
+    ##
+    # Drops a single draft, cleaning up any temp S3 object that was staged
+    # against it. Returns true if the draft was destroyed.
+    def delete_draft!(draft)
+      remove_temp_images([draft])
+      destroyed = draft.destroy
+      @drafts.reject! { |d| d.id == draft.id }
+      destroyed
+    end
+
+    ##
+    # Stages an icon image for a Difficulty draft. Uploads the bytes to a
+    # draft-scoped S3 key and records that key on the draft's attributes so
+    # commit! can promote it to the canonical key once the tier's id is known.
+    def attach_image!(draft, image_data:, filename: nil)
+      raise ArgumentError, 'attach_image! only supports Difficulty drafts' unless draft.target_type == 'Difficulty'
+
+      decoded = decode_image(image_data)
+      result = IconUploadValidator.call(decoded)
+      raise ImageValidationError, result.error unless result.valid?
+
+      key = "#{IMAGE_DRAFT_PREFIX}/#{draft.id}.png"
+      IconStorage.put(key, decoded)
+
+      payload = (draft.attributes_payload || {}).merge('image_key' => key)
+      payload['image_filename'] = filename if filename.present?
+      draft.update!(attributes_payload: payload)
+      draft
+    end
+
+    # Raised by attach_image! when the uploaded bytes fail validation. The
+    # controller maps this to a 422 with the validator's message.
+    class ImageValidationError < StandardError; end
 
     ##
     # Upserts a draft for the given target. Returns the saved DifficultyDraft.
@@ -306,12 +346,15 @@ module PartyDifficulty
       case draft.operation
       when 'create'
         klass = draft.target_class
-        klass.create!(sanitize_attributes(draft.target_type, draft.attributes_payload))
+        record = klass.create!(sanitize_attributes(draft.target_type, draft.attributes_payload))
+        promote_image_if_present(draft, record)
       when 'update'
         target = lock_and_verify(draft)
         target&.update!(sanitize_attributes(draft.target_type, draft.attributes_payload))
+        promote_image_if_present(draft, target) if target
       when 'destroy'
         target = lock_and_verify(draft)
+        cleanup_canonical_image(target) if target.is_a?(Difficulty)
         target&.destroy!
       end
     end
@@ -327,6 +370,64 @@ module PartyDifficulty
       return target if target.updated_at == draft.target_updated_at
 
       raise StaleDraftError, draft
+    end
+
+    # When a draft has a `_drafts/`-prefixed image_key in its attributes, copy
+    # the staged S3 object to the canonical key and write that key to the row.
+    #
+    # Ordering matters for retry safety: copy → update_column → best-effort
+    # delete. If the DB write fails, the canonical key exists but the row
+    # doesn't reference it (orphan, recoverable). If the delete fails, the
+    # staged copy lingers — that's intentionally non-fatal, the S3 lifecycle
+    # rule on the `_drafts/` prefix sweeps it.
+    def promote_image_if_present(draft, record)
+      return unless draft.target_type == 'Difficulty'
+
+      staged_key = draft.attributes_payload&.dig('image_key')
+      return unless staged_key.is_a?(String) && staged_key.start_with?("#{IMAGE_DRAFT_PREFIX}/")
+
+      final_key = "#{IMAGE_FINAL_PREFIX}/#{record.id}.png"
+      IconStorage.copy(staged_key, final_key)
+      record.update!(image_key: final_key)
+      begin
+        IconStorage.delete(staged_key)
+      rescue StandardError => e
+        Rails.logger.warn("[difficulty_drafts] orphaned staged image #{staged_key}: #{e.message}")
+      end
+    end
+
+    def cleanup_canonical_image(record)
+      return if record.image_key.blank?
+
+      IconStorage.delete(record.image_key)
+    rescue StandardError => e
+      # A missing canonical image shouldn't block destroying the row.
+      Rails.logger.warn("[difficulty_drafts] failed to delete canonical image #{record.image_key}: #{e.message}")
+    end
+
+    def remove_temp_images(drafts)
+      drafts.each do |draft|
+        next unless draft.target_type == 'Difficulty'
+
+        key = draft.attributes_payload&.dig('image_key')
+        next unless key.is_a?(String) && key.start_with?("#{IMAGE_DRAFT_PREFIX}/")
+
+        begin
+          IconStorage.delete(key)
+        rescue StandardError => e
+          Rails.logger.warn("[difficulty_drafts] failed to delete temp image #{key}: #{e.message}")
+        end
+      end
+    end
+
+    # Accepts a raw PNG byte string or a base64-encoded string. Base64 input
+    # always comes through JSON as UTF-8, so the byte-pattern fast-path below
+    # has to compare on the binary view to avoid Encoding::CompatibilityError.
+    def decode_image(image_data)
+      return '' if image_data.blank?
+      return image_data if image_data.is_a?(String) && image_data.b.start_with?(IconUploadValidator::PNG_SIGNATURE)
+
+      Base64.decode64(image_data.to_s)
     end
   end
 end
