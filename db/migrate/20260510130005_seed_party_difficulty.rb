@@ -43,10 +43,13 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
       { slug: 'whale',   name: 'Whale',    color: '#D78EA0', min_score: 80,   max_score: 100.0,  sort_order: 3,
         description: 'High-investment teams featuring multiple Grand/Providence units, Trans5 weapons, and perpetuity-ringed characters.' }
     ]
+    # Tiers are seeded with validation disabled because the strict
+    # tier_coverage_complete validation rejects partial coverage; the loop
+    # creates rows one at a time so we can't satisfy it until the last row.
     tiers.each do |attrs|
-      Difficulty.find_or_create_by!(slug: attrs[:slug]) do |t|
-        t.assign_attributes(attrs)
-      end
+      next if Difficulty.exists?(slug: attrs[:slug])
+
+      Difficulty.new(attrs).save(validate: false)
     end
   end
 
