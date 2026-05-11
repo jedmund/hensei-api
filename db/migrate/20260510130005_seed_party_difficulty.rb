@@ -156,13 +156,13 @@ class SeedPartyDifficulty < ActiveRecord::Migration[8.0]
       # Job -----------------------------------------------------------------
       { name: 'Row V job',                             component: 'job',
         rule_type: 'job_row', weight: 2.0,
-        params: { 'rows' => ['V'] } },
+        params: { 'rows' => ['5'] } },
       { name: 'Origin job',                            component: 'job',
         rule_type: 'job_row', weight: 3.0,
-        params: { 'rows' => ['Origin'] } },
+        params: { 'rows' => ['o1'] } },
       { name: 'Row IV with Ultimate Mastery',          component: 'job',
         rule_type: 'job_row', weight: 1.5,
-        params: { 'rows' => ['IV'], 'requires_ultimate_mastery' => true } },
+        params: { 'rows' => ['4'], 'requires_ultimate_mastery' => true } },
 
       # Accessory -----------------------------------------------------------
       { name: 'Accessory equipped',                    component: 'accessory',

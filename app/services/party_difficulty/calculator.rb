@@ -285,7 +285,11 @@ module PartyDifficulty
                  base_weight: weight, scale_by_count: scale }
       end
 
-      effective_factors = scale ? factors.first(max_count) : factors.first(1)
+      # Every match contributes its full weight × decay factor. The max_count
+      # only caps the denominator (max_value), not how many matches actually
+      # count. raw_score is still clamped to 1.0 to keep things sane when a
+      # team fires more matches than the cap.
+      effective_factors = scale ? factors : factors.first(1)
       contribution = weight * effective_factors.sum
       base_contribution = weight * (effective_factors.first || 0)
 
