@@ -279,18 +279,29 @@ class GridCharacter < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_character.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_character.uncap_level ||
-      transcendence_step != collection_character.transcendence_step ||
-      perpetuity != collection_character.perpetuity ||
-      ring1 != collection_character.ring1 ||
-      ring2 != collection_character.ring2 ||
-      ring3 != collection_character.ring3 ||
-      ring4 != collection_character.ring4 ||
-      earring != collection_character.earring ||
-      awakening_id != collection_character.awakening_id ||
-      awakening_level != collection_character.awakening_level
+  ##
+  # Returns the list of fields that differ from the linked collection character.
+  # Uses camelCase keys matching the frontend's grid item shape so the UI can
+  # mark exactly the sections/rows that drifted. Ring drift uses dotted keys
+  # (overMastery.0..3) so the corresponding ring rows can highlight individually.
+  def out_of_sync_fields
+    return [] unless collection_character.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_character.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_character.transcendence_step
+    fields << 'perpetuity' if perpetuity != collection_character.perpetuity
+    fields << 'overMastery.0' if ring1 != collection_character.ring1
+    fields << 'overMastery.1' if ring2 != collection_character.ring2
+    fields << 'overMastery.2' if ring3 != collection_character.ring3
+    fields << 'overMastery.3' if ring4 != collection_character.ring4
+    fields << 'aetherialMastery' if earring != collection_character.earring
+    fields << 'awakeningId' if awakening_id != collection_character.awakening_id
+    fields << 'awakeningLevel' if awakening_level != collection_character.awakening_level
+    fields
   end
 
   private

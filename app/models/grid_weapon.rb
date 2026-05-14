@@ -192,25 +192,38 @@ class GridWeapon < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_weapon.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_weapon.uncap_level ||
-      transcendence_step != collection_weapon.transcendence_step ||
-      element != collection_weapon.element ||
-      weapon_key1_id != collection_weapon.weapon_key1_id ||
-      weapon_key2_id != collection_weapon.weapon_key2_id ||
-      weapon_key3_id != collection_weapon.weapon_key3_id ||
-      weapon_key4_id != collection_weapon.weapon_key4_id ||
-      ax_modifier1_id != collection_weapon.ax_modifier1_id ||
-      ax_strength1 != collection_weapon.ax_strength1 ||
-      ax_modifier2_id != collection_weapon.ax_modifier2_id ||
-      ax_strength2 != collection_weapon.ax_strength2 ||
-      befoulment_modifier_id != collection_weapon.befoulment_modifier_id ||
-      befoulment_strength != collection_weapon.befoulment_strength ||
-      exorcism_level != collection_weapon.exorcism_level ||
-      awakening_id != collection_weapon.awakening_id ||
-      awakening_level != collection_weapon.awakening_level ||
-      bullets_out_of_sync?
+  ##
+  # Returns the list of fields that differ from the linked collection weapon.
+  # Uses camelCase keys for value fields (`uncapLevel`), `weaponKey{N}` for the
+  # 1-based weapon key slots, and dotted keys (`ax.0`/`ax.1`, `bullets.N` by
+  # position) for fields the UI renders as individual rows.
+  def out_of_sync_fields
+    return [] unless collection_weapon.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_weapon.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_weapon.transcendence_step
+    fields << 'element' if element != collection_weapon.element
+    fields << 'weaponKey1' if weapon_key1_id != collection_weapon.weapon_key1_id
+    fields << 'weaponKey2' if weapon_key2_id != collection_weapon.weapon_key2_id
+    fields << 'weaponKey3' if weapon_key3_id != collection_weapon.weapon_key3_id
+    fields << 'weaponKey4' if weapon_key4_id != collection_weapon.weapon_key4_id
+    if ax_modifier1_id != collection_weapon.ax_modifier1_id || ax_strength1 != collection_weapon.ax_strength1
+      fields << 'ax.0'
+    end
+    if ax_modifier2_id != collection_weapon.ax_modifier2_id || ax_strength2 != collection_weapon.ax_strength2
+      fields << 'ax.1'
+    end
+    fields << 'befoulmentModifier' if befoulment_modifier_id != collection_weapon.befoulment_modifier_id
+    fields << 'befoulmentStrength' if befoulment_strength != collection_weapon.befoulment_strength
+    fields << 'exorcismLevel' if exorcism_level != collection_weapon.exorcism_level
+    fields << 'awakeningId' if awakening_id != collection_weapon.awakening_id
+    fields << 'awakeningLevel' if awakening_level != collection_weapon.awakening_level
+    fields.concat(out_of_sync_bullet_positions.map { |position| "bullets.#{position}" })
+    fields
   end
 
   ##
@@ -354,12 +367,15 @@ class GridWeapon < ApplicationRecord
   # If the grid weapon's position is -1, sets the `mainhand` attribute to true.
   #
   # @return [void]
-  def bullets_out_of_sync?
-    return false unless collection_weapon.present?
+  def out_of_sync_bullet_positions
+    return [] unless collection_weapon.present?
 
-    grid_bullets = grid_weapon_bullets.sort_by(&:position).map { |b| [b.position, b.bullet_id] }
-    collection_bullets = collection_weapon.collection_weapon_bullets.sort_by(&:position).map { |b| [b.position, b.bullet_id] }
-    grid_bullets != collection_bullets
+    grid_by_pos = grid_weapon_bullets.index_by(&:position)
+    collection_by_pos = collection_weapon.collection_weapon_bullets.index_by(&:position)
+    positions = grid_by_pos.keys | collection_by_pos.keys
+    positions.sort.select do |position|
+      grid_by_pos[position]&.bullet_id != collection_by_pos[position]&.bullet_id
+    end
   end
 
   def assign_mainhand

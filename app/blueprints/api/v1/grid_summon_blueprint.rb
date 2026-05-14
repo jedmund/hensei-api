@@ -9,6 +9,9 @@ module Api
       field :out_of_sync, if: ->(_field, gs, _options) { gs.collection_summon_id.present? } do |gs|
         gs.out_of_sync?
       end
+      field :out_of_sync_fields, if: ->(_field, gs, _options) { gs.collection_summon_id.present? } do |gs|
+        gs.out_of_sync_fields
+      end
       field :owned, if: ->(_field, gs, _options) { !gs.owned.nil? }
 
       view :preview do
@@ -18,7 +21,7 @@ module Api
       # Minimal view for party list cards
       view :list do
         excludes :quick_summon,
-                 :orphaned, :collection_summon_id, :out_of_sync
+                 :orphaned, :collection_summon_id, :out_of_sync, :out_of_sync_fields
         association :summon, blueprint: SummonBlueprint, view: :list
       end
 

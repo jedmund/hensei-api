@@ -9,6 +9,9 @@ module Api
       field :out_of_sync, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
         gw.out_of_sync?
       end
+      field :out_of_sync_fields, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
+        gw.out_of_sync_fields
+      end
       field :owned, if: ->(_field, gw, _options) { !gw.owned.nil? }
 
       view :preview do
@@ -18,7 +21,7 @@ module Api
       # Minimal view for party list cards
       view :list do
         excludes :exorcism_level,
-                 :orphaned, :collection_weapon_id, :out_of_sync
+                 :orphaned, :collection_weapon_id, :out_of_sync, :out_of_sync_fields
         association :weapon, blueprint: WeaponBlueprint, view: :list
       end
 

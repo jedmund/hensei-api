@@ -106,10 +106,19 @@ class GridSummon < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_summon.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_summon.uncap_level ||
-      transcendence_step != collection_summon.transcendence_step
+  ##
+  # Returns the list of fields that differ from the linked collection summon.
+  # Uses camelCase keys matching the frontend's grid item shape.
+  def out_of_sync_fields
+    return [] unless collection_summon.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_summon.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_summon.transcendence_step
+    fields
   end
 
   ##

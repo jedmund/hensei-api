@@ -13,6 +13,9 @@ module Api
       field :out_of_sync, if: ->(_field, gc, _options) { gc.collection_character_id.present? } do |gc|
         gc.out_of_sync?
       end
+      field :out_of_sync_fields, if: ->(_field, gc, _options) { gc.collection_character_id.present? } do |gc|
+        gc.out_of_sync_fields
+      end
       # Stamped by SubstituteGridPreloading when this is rendered as a
       # substitute. Indicates whether current_user owns the underlying
       # character in their collection.
@@ -24,7 +27,7 @@ module Api
 
       # Minimal view for party list cards
       view :list do
-        excludes :perpetuity, :collection_character_id, :out_of_sync
+        excludes :perpetuity, :collection_character_id, :out_of_sync, :out_of_sync_fields
         association :character, blueprint: CharacterBlueprint, view: :list
       end
 
