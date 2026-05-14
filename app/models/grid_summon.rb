@@ -73,31 +73,42 @@ class GridSummon < ApplicationRecord
     update!(orphaned: true, collection_summon_id: nil)
   end
 
+  # Maps camelCase keys emitted by #out_of_sync_fields to column names so the
+  # frontend can sync individual sections instead of overwriting every field.
+  SYNC_FIELD_MAP = {
+    'uncapLevel' => %i[uncap_level],
+    'transcendenceStep' => %i[transcendence_step]
+  }.freeze
+
+  ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
+
   ##
   # Syncs customizations from the linked collection summon.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_from_collection!
+  def sync_from_collection!(fields: nil)
     return false unless collection_summon.present?
 
-    update!(
-      uncap_level: collection_summon.uncap_level,
-      transcendence_step: collection_summon.transcendence_step
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    update!(columns.index_with { |col| collection_summon.public_send(col) })
     true
   end
 
   ##
   # Syncs customizations from this grid summon to the linked collection summon.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_to_collection!
+  def sync_to_collection!(fields: nil)
     return false unless collection_summon.present?
 
-    collection_summon.update!(
-      uncap_level: uncap_level,
-      transcendence_step: transcendence_step
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    collection_summon.update!(columns.index_with { |col| public_send(col) })
     true
   end
 
@@ -106,10 +117,19 @@ class GridSummon < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_summon.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_summon.uncap_level ||
-      transcendence_step != collection_summon.transcendence_step
+  ##
+  # Returns the list of fields that differ from the linked collection summon.
+  # Uses camelCase keys matching the frontend's grid item shape.
+  def out_of_sync_fields
+    return [] unless collection_summon.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_summon.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_summon.transcendence_step
+    fields
   end
 
   ##
@@ -131,6 +151,12 @@ class GridSummon < ApplicationRecord
   end
 
   private
+
+  def sync_columns_for(fields)
+    return ALL_SYNC_COLUMNS if fields.blank?
+
+    fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
+  end
 
   def set_default_uncap_level
     self.uncap_level ||= 0

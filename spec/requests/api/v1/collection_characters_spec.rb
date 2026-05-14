@@ -317,7 +317,8 @@ RSpec.describe 'Collection Characters API', type: :request do
       json = response.parsed_body
       expect(json['uncap_level']).to eq(5)
       expect(json['transcendence_step']).to eq(3)
-      expect(json['ring1']['modifier']).to eq(1)
+      # ring1 is now serialized at over_mastery[0] in the unified shape.
+      expect(json['over_mastery'][0]['modifier']).to eq(1)
     end
 
     it 'returns not found for other user\'s character' do

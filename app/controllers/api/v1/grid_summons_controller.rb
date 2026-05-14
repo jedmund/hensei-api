@@ -71,9 +71,30 @@ module Api
       def update
         @grid_summon.attributes = summon_params
 
-        return render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon) if @grid_summon.save
+        sync_flag_change = nil
+        if summon_params.key?(:notes_synced)
+          sync_flag_change = ActiveModel::Type::Boolean.new.cast(summon_params[:notes_synced])
+        end
+        description_in_payload = summon_params.key?(:description)
 
-        render_validation_error_response(@grid_summon)
+        ActiveRecord::Base.transaction do
+          raise ActiveRecord::Rollback unless @grid_summon.save
+
+          if sync_flag_change == true
+            NotesSync.enable_sync!(@grid_summon)
+          elsif sync_flag_change == false
+            NotesSync.disable_sync!(@grid_summon)
+          elsif description_in_payload
+            NotesSync.propagate_description!(@grid_summon)
+          end
+        end
+
+        if @grid_summon.errors.empty?
+          @grid_summon.reload
+          render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon)
+        else
+          render_validation_error_response(@grid_summon)
+        end
       end
 
       ##
@@ -264,7 +285,7 @@ module Api
           )
         end
 
-        @grid_summon.sync_from_collection!
+        @grid_summon.sync_from_collection!(fields: sync_fields_param)
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,
                                                 view: :nested)
@@ -285,7 +306,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_summon.sync_to_collection!
+        @grid_summon.sync_to_collection!(fields: sync_fields_param)
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,
                                                 view: :nested)
@@ -364,6 +385,9 @@ module Api
 
         @party.mark_updated!
         summon.sync_from_collection! if summon.collection_summon_id.present?
+        # Auto-join an existing notes sync group when this is a duplicate of a
+        # summon already in a synced group.
+        NotesSync.adopt_for_new_item!(summon)
         summon.reload
         output = render_grid_summon_view(summon)
         render json: output, status: :created
@@ -392,6 +416,17 @@ module Api
       end
 
       private
+
+      ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
 
       ##
       # Finds the party based on the provided party_id parameter.
@@ -528,7 +563,7 @@ module Api
       def summon_params
         permitted = params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
                                                    :position, :main, :friend, :quick_summon,
-                                                   :uncap_level, :transcendence_step)
+                                                   :uncap_level, :transcendence_step, :notes_synced)
         permit_description(permitted, params[:summon])
       end
 

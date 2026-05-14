@@ -224,53 +224,58 @@ class GridCharacter < ApplicationRecord
     GridCharacterBlueprint
   end
 
+  # Maps the camelCase keys emitted by #out_of_sync_fields to the underlying
+  # column names. Used by the per-field sync flow so the frontend can target
+  # individual sections (Uncap & Transcendence, Awakening, a single ring)
+  # rather than overwriting every field on each sync.
+  SYNC_FIELD_MAP = {
+    'uncapLevel' => %i[uncap_level],
+    'transcendenceStep' => %i[transcendence_step],
+    'perpetuity' => %i[perpetuity],
+    'overMastery.0' => %i[ring1],
+    'overMastery.1' => %i[ring2],
+    'overMastery.2' => %i[ring3],
+    'overMastery.3' => %i[ring4],
+    'aetherialMastery' => %i[earring],
+    'awakeningId' => %i[awakening_id],
+    'awakeningLevel' => %i[awakening_level]
+  }.freeze
+
+  ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
+
   ##
   # Syncs customizations from the linked collection character.
   #
-  # Copies uncap level, transcendence, rings, earring, and awakening from the collection.
-  # No-op if no collection character is linked.
+  # When `fields:` is omitted, every tracked column is copied. When provided,
+  # only the columns mapped from those camelCase keys are touched, leaving
+  # other fields alone.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_from_collection!
+  def sync_from_collection!(fields: nil)
     return false unless collection_character.present?
 
-    update!(
-      uncap_level: collection_character.uncap_level,
-      transcendence_step: collection_character.transcendence_step,
-      perpetuity: collection_character.perpetuity,
-      ring1: collection_character.ring1,
-      ring2: collection_character.ring2,
-      ring3: collection_character.ring3,
-      ring4: collection_character.ring4,
-      earring: collection_character.earring,
-      awakening_id: collection_character.awakening_id,
-      awakening_level: collection_character.awakening_level
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    update!(columns.index_with { |col| collection_character.public_send(col) })
     true
   end
 
   ##
   # Syncs customizations from this grid character to the linked collection character.
   #
-  # Copies uncap level, transcendence, rings, earring, and awakening to the collection.
-  # No-op if no collection character is linked.
+  # Same field scoping as #sync_from_collection!.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_to_collection!
+  def sync_to_collection!(fields: nil)
     return false unless collection_character.present?
 
-    collection_character.update!(
-      uncap_level: uncap_level,
-      transcendence_step: transcendence_step,
-      perpetuity: perpetuity,
-      ring1: ring1,
-      ring2: ring2,
-      ring3: ring3,
-      ring4: ring4,
-      earring: earring,
-      awakening_id: awakening_id,
-      awakening_level: awakening_level
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    collection_character.update!(columns.index_with { |col| public_send(col) })
     true
   end
 
@@ -279,21 +284,38 @@ class GridCharacter < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_character.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_character.uncap_level ||
-      transcendence_step != collection_character.transcendence_step ||
-      perpetuity != collection_character.perpetuity ||
-      ring1 != collection_character.ring1 ||
-      ring2 != collection_character.ring2 ||
-      ring3 != collection_character.ring3 ||
-      ring4 != collection_character.ring4 ||
-      earring != collection_character.earring ||
-      awakening_id != collection_character.awakening_id ||
-      awakening_level != collection_character.awakening_level
+  ##
+  # Returns the list of fields that differ from the linked collection character.
+  # Uses camelCase keys matching the frontend's grid item shape so the UI can
+  # mark exactly the sections/rows that drifted. Ring drift uses dotted keys
+  # (overMastery.0..3) so the corresponding ring rows can highlight individually.
+  def out_of_sync_fields
+    return [] unless collection_character.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_character.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_character.transcendence_step
+    fields << 'perpetuity' if perpetuity != collection_character.perpetuity
+    fields << 'overMastery.0' if ring1 != collection_character.ring1
+    fields << 'overMastery.1' if ring2 != collection_character.ring2
+    fields << 'overMastery.2' if ring3 != collection_character.ring3
+    fields << 'overMastery.3' if ring4 != collection_character.ring4
+    fields << 'aetherialMastery' if earring != collection_character.earring
+    fields << 'awakeningId' if awakening_id != collection_character.awakening_id
+    fields << 'awakeningLevel' if awakening_level != collection_character.awakening_level
+    fields
   end
 
   private
+
+  def sync_columns_for(fields)
+    return ALL_SYNC_COLUMNS if fields.blank?
+
+    fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
+  end
 
   def increment_party_counter
     Party.increment_counter(:characters_count, party_id)

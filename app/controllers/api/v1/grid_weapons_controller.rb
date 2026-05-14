@@ -69,6 +69,12 @@ module Api
       def update
         normalize_ax_fields!
 
+        sync_flag_change = nil
+        if weapon_params.key?(:notes_synced)
+          sync_flag_change = ActiveModel::Type::Boolean.new.cast(weapon_params[:notes_synced])
+        end
+        description_in_payload = weapon_params.key?(:description)
+
         ActiveRecord::Base.transaction do
           unless @grid_weapon.update(weapon_params.except(:bullets))
             raise ActiveRecord::Rollback
@@ -76,6 +82,16 @@ module Api
 
           if params.dig(:weapon, :bullets).present?
             update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets])
+          end
+
+          # Fan out notes sync changes inside the same transaction so the
+          # group's description/flag can't drift if the rest of the request fails.
+          if sync_flag_change == true
+            NotesSync.enable_sync!(@grid_weapon)
+          elsif sync_flag_change == false
+            NotesSync.disable_sync!(@grid_weapon)
+          elsif description_in_payload
+            NotesSync.propagate_description!(@grid_weapon)
           end
         end
 
@@ -271,7 +287,7 @@ module Api
           )
         end
 
-        @grid_weapon.sync_from_collection!
+        @grid_weapon.sync_from_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
@@ -292,7 +308,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_weapon.sync_to_collection!
+        @grid_weapon.sync_to_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
@@ -345,6 +361,17 @@ module Api
       end
 
       private
+
+      ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
 
       ##
       # Computes the maximum uncap level for a given weapon based on its flags.
@@ -445,6 +472,10 @@ module Api
         if weapon.save
           @party.mark_updated!
           weapon.sync_from_collection! if weapon.collection_weapon_id.present?
+          # If another copy of this weapon in the party already runs a notes
+          # sync group, the new slot auto-joins so the user doesn't have to
+          # re-toggle the switch on it.
+          NotesSync.adopt_for_new_item!(weapon)
           weapon.reload
           output = GridWeaponBlueprint.render(weapon, view: :full, root: :grid_weapon)
           render json: output, status: :created
@@ -591,6 +622,7 @@ module Api
           :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,
           :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :awakening_id, :awakening_level,
+          :notes_synced,
           bullets: [:position, :bullet_id]
         ).then { |p| permit_description(p, params[:weapon]) }
       end

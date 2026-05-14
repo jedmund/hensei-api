@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_14_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -587,6 +587,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
     t.boolean "orphaned", default: false, null: false
     t.boolean "is_substitute", default: false, null: false
     t.jsonb "description"
+    t.boolean "notes_synced", default: false, null: false
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
     t.index ["party_id", "position", "summon_id"], name: "index_grid_summons_unique_substitute", unique: true, where: "is_substitute"
@@ -633,6 +634,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_12_000000) do
     t.integer "exorcism_level", default: 0
     t.boolean "is_substitute", default: false, null: false
     t.jsonb "description"
+    t.boolean "notes_synced", default: false, null: false
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
