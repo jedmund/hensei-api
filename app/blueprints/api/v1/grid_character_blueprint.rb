@@ -69,30 +69,19 @@ module Api
           }
         end
 
-        field :over_mastery, if: lambda { |_fn, obj, _opt|
-          obj.ring1.present? && obj.ring2.present? && !obj.ring1['modifier'].nil? && !obj.ring2['modifier'].nil?
-        } do |c|
-          mapped_rings = [c.ring1, c.ring2, c.ring3, c.ring4].each_with_object([]) do |ring, arr|
-            # Skip if the ring is nil or its modifier is blank.
-            next if ring.blank? || ring['modifier'].blank?
-
-            # Convert the string values to numbers.
-            mod = ring['modifier'].to_i
-
-            # Only include if modifier is non-zero.
-            next if mod.zero?
-
-            arr << { modifier: mod, strength: ring['strength'].to_i }
+        # Positional ring loadout shared with CollectionCharacterBlueprint —
+        # always emitted as a length-4 array. Empty slots are null so frontend
+        # readers can rely on positional access (overMastery[0] is ATK,
+        # overMastery[1] is HP, etc.).
+        field :over_mastery do |c|
+          [c.ring1, c.ring2, c.ring3, c.ring4].map do |ring|
+            CollectionCharacterBlueprint.serialize_ring(ring)
           end
-
-          mapped_rings
         end
 
-        field :aetherial_mastery, if: ->(_fn, obj, _opt) { obj.earring.present? && !obj.earring['modifier'].nil? } do |gc, _options|
-          {
-            modifier: gc.earring['modifier'].to_i,
-            strength: gc.earring['strength'].to_i
-          }
+        # Single earring slot or null. Same shape as CollectionCharacter.
+        field :aetherial_mastery do |gc, _options|
+          CollectionCharacterBlueprint.serialize_ring(gc.earring)
         end
       end
     end
