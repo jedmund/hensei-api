@@ -150,6 +150,52 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
   end
 
+  describe 'GET /api/v1/users/search' do
+    it 'returns users matched by username prefix' do
+      create(:user, username: 'jedmund', display_name: 'Justin')
+      get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).to include('jedmund')
+    end
+
+    it 'returns users matched by display_name prefix' do
+      create(:user, username: 'someguy', display_name: 'Konami')
+      get '/api/v1/users/search', params: { query: 'kona' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).to include('someguy')
+    end
+
+    it 'is case-insensitive on both columns' do
+      create(:user, username: 'Sandalphon', display_name: 'Cocytus')
+      get '/api/v1/users/search', params: { query: 'COC' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).to include('Sandalphon')
+    end
+
+    it 'excludes the current user from results' do
+      user.update!(username: 'jedmund', display_name: 'Justin')
+      get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).not_to include('jedmund')
+    end
+
+    it 'returns an empty array for queries shorter than 2 characters' do
+      create(:user, username: 'jedmund')
+      get '/api/v1/users/search', params: { query: 'j' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['users']).to eq([])
+    end
+  end
+
   describe 'POST /api/v1/check/email' do
     it 'checks email availability' do
       post '/api/v1/check/email', params: { email: 'available@example.com' }.to_json,

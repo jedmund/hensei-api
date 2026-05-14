@@ -67,7 +67,8 @@ module Api
         query = params[:query].to_s.strip
         return render json: { users: [] } if query.length < 2
 
-        users = User.where('lower(username) LIKE ?', "#{query.downcase}%")
+        q = "#{query.downcase}%"
+        users = User.where('LOWER(username) LIKE :q OR LOWER(display_name) LIKE :q', q: q)
                      .where.not(id: current_user.id)
                      .includes(active_crew_membership: :crew)
                      .limit(10)
