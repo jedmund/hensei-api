@@ -67,11 +67,13 @@ module Api
         query = params[:query].to_s.strip
         return render json: { users: [] } if query.length < 2
 
-        q = "#{query.downcase}%"
-        users = User.where('LOWER(username) LIKE :q OR LOWER(display_name) LIKE :q', q: q)
-                     .where.not(id: current_user.id)
-                     .includes(active_crew_membership: :crew)
-                     .limit(10)
+        escaped = query.downcase.gsub(/[\\%_]/) { |c| "\\#{c}" }
+        q = "#{escaped}%"
+        users = User
+                .where("LOWER(username) LIKE :q ESCAPE '\\' OR LOWER(display_name) LIKE :q ESCAPE '\\'", q: q)
+                .where.not(id: current_user.id)
+                .includes(active_crew_membership: :crew)
+                .limit(10)
         render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
       end
 
