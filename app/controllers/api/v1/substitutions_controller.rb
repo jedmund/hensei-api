@@ -43,13 +43,18 @@ module Api
             is_substitute: true
           )
 
-          Substitution.create!(
+          row = Substitution.create!(
             grid_type: grid_type,
             grid_id: grid_id,
             substitute_grid_type: grid_type,
             substitute_grid_id: substitute.id,
             position: substitution_params[:position].presence&.to_i || next_position(grid_type, grid_id)
           )
+
+          # Mirror the change to siblings if this slot belongs to a notes sync
+          # group. Reload to pick up the freshly-created row.
+          NotesSync.propagate_substitutions!(grid_item.reload)
+          row
         end
 
         @party.mark_updated!
@@ -74,6 +79,7 @@ module Api
         ApplicationRecord.transaction do
           @substitution.update!(position: substitution_params[:position])
           @party.mark_updated!
+          NotesSync.propagate_substitutions!(@substitution.grid)
         end
 
         render json: SubstitutionBlueprint.render(@substitution)
@@ -83,11 +89,13 @@ module Api
       end
 
       def destroy
+        primary = @substitution.grid
         ApplicationRecord.transaction do
           substitute = @substitution.substitute_grid
           @substitution.destroy!
           substitute&.destroy!
           @party.mark_updated!
+          NotesSync.propagate_substitutions!(primary)
         end
 
         head :no_content
@@ -155,6 +163,10 @@ module Api
             by_id[id].update!(position: (e['position'] || e[:position]).to_i)
           end
           @party.mark_updated!
+          # Reorder runs on a single primary slot — fan out the new order to
+          # any siblings sharing the notes sync group.
+          primary = grid_type.constantize.find_by(id: grid_id)
+          NotesSync.propagate_substitutions!(primary) if primary
         end
 
         ordered = Substitution.where(grid_type: grid_type, grid_id: grid_id).order(:position)

@@ -3,7 +3,8 @@
 module Api
   module V1
     class GridWeaponBlueprint < ApiBlueprint
-      fields :mainhand, :position, :uncap_level, :transcendence_step, :element, :exorcism_level, :orphaned
+      fields :mainhand, :position, :uncap_level, :transcendence_step, :element, :exorcism_level, :orphaned,
+             :notes_synced
 
       field :collection_weapon_id
       field :out_of_sync, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
@@ -21,7 +22,7 @@ module Api
       # Minimal view for party list cards
       view :list do
         excludes :exorcism_level,
-                 :orphaned, :collection_weapon_id, :out_of_sync, :out_of_sync_fields
+                 :orphaned, :collection_weapon_id, :out_of_sync, :out_of_sync_fields, :notes_synced
         association :weapon, blueprint: WeaponBlueprint, view: :list
       end
 
