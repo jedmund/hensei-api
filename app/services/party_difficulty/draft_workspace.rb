@@ -240,6 +240,7 @@ module PartyDifficulty
 
     def sanitize_attributes(target_type, attrs)
       allowed = EDITABLE_COLUMNS[target_type] || []
+      attrs = attrs.to_unsafe_h if attrs.respond_to?(:to_unsafe_h)
       (attrs || {}).each_with_object({}) do |(key, value), out|
         out[key.to_s] = value if allowed.include?(key.to_s)
       end
