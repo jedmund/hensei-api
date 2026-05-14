@@ -281,6 +281,45 @@ RSpec.describe GridCharacter, type: :model do
       end
     end
 
+    describe '#sync_from_collection! with fields' do
+      before do
+        character.update!(transcendence: true)
+        @grid_char = create(:grid_character,
+                            valid_attributes.merge(collection_character: collection_character))
+        # Start in sync, then drift simple value fields (no inter-field validators)
+        @grid_char.sync_from_collection!
+        @grid_char.update_columns(uncap_level: 3, perpetuity: false, awakening_level: 1)
+        @grid_char.reload
+      end
+
+      it 'only updates columns mapped from the supplied keys' do
+        @grid_char.sync_from_collection!(fields: ['uncapLevel'])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        # Other drifted fields stay drifted
+        expect(@grid_char.perpetuity).to be false
+        expect(@grid_char.awakening_level).to eq(1)
+      end
+
+      it 'handles multiple keys in one call' do
+        @grid_char.sync_from_collection!(fields: %w[uncapLevel perpetuity])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        expect(@grid_char.perpetuity).to eq(collection_character.perpetuity)
+        expect(@grid_char.awakening_level).to eq(1) # untouched
+      end
+
+      it 'is a no-op when no supplied key maps to a known field' do
+        @grid_char.sync_from_collection!(fields: ['bogus'])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(3)
+        expect(@grid_char.perpetuity).to be false
+      end
+    end
+
     describe '#out_of_sync_fields' do
       context 'when collection_character is linked' do
         before do

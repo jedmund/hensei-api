@@ -263,7 +263,7 @@ module Api
           )
         end
 
-        @grid_character.sync_from_collection!
+        @grid_character.sync_from_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
@@ -287,7 +287,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_character.sync_to_collection!
+        @grid_character.sync_to_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
@@ -323,6 +323,17 @@ module Api
       end
 
       private
+
+      ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
 
       ##
       # Builds a new grid character using the transformed parameters.

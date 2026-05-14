@@ -113,32 +113,43 @@ class GridWeapon < ApplicationRecord
   # Syncs customizations from the linked collection weapon.
   #
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_from_collection!
+  # Maps camelCase keys emitted by #out_of_sync_fields to the underlying
+  # column names. Bullets live in a join table and use the special `bullets.N`
+  # keys, handled separately from this map.
+  SYNC_FIELD_MAP = {
+    'uncapLevel' => %i[uncap_level],
+    'transcendenceStep' => %i[transcendence_step],
+    'element' => %i[element],
+    'weaponKey1' => %i[weapon_key1_id],
+    'weaponKey2' => %i[weapon_key2_id],
+    'weaponKey3' => %i[weapon_key3_id],
+    'weaponKey4' => %i[weapon_key4_id],
+    'ax.0' => %i[ax_modifier1_id ax_strength1],
+    'ax.1' => %i[ax_modifier2_id ax_strength2],
+    'befoulmentModifier' => %i[befoulment_modifier_id],
+    'befoulmentStrength' => %i[befoulment_strength],
+    'exorcismLevel' => %i[exorcism_level],
+    'awakeningId' => %i[awakening_id],
+    'awakeningLevel' => %i[awakening_level]
+  }.freeze
+
+  ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
+
+  def sync_from_collection!(fields: nil)
     return false unless collection_weapon.present?
 
-    update!(
-      uncap_level: collection_weapon.uncap_level,
-      transcendence_step: collection_weapon.transcendence_step,
-      element: collection_weapon.element,
-      weapon_key1_id: collection_weapon.weapon_key1_id,
-      weapon_key2_id: collection_weapon.weapon_key2_id,
-      weapon_key3_id: collection_weapon.weapon_key3_id,
-      weapon_key4_id: collection_weapon.weapon_key4_id,
-      ax_modifier1_id: collection_weapon.ax_modifier1_id,
-      ax_strength1: collection_weapon.ax_strength1,
-      ax_modifier2_id: collection_weapon.ax_modifier2_id,
-      ax_strength2: collection_weapon.ax_strength2,
-      befoulment_modifier_id: collection_weapon.befoulment_modifier_id,
-      befoulment_strength: collection_weapon.befoulment_strength,
-      exorcism_level: collection_weapon.exorcism_level,
-      awakening_id: collection_weapon.awakening_id,
-      awakening_level: collection_weapon.awakening_level
-    )
+    columns = sync_columns_for(fields)
+    bullet_positions = sync_bullet_positions_for(fields)
 
-    # Sync bullet loadout
-    grid_weapon_bullets.destroy_all
-    collection_weapon.collection_weapon_bullets.each do |cwb|
-      grid_weapon_bullets.create!(bullet_id: cwb.bullet_id, position: cwb.position)
+    update!(columns.index_with { |col| collection_weapon.public_send(col) }) if columns.any?
+
+    if bullet_positions == :all
+      grid_weapon_bullets.destroy_all
+      collection_weapon.collection_weapon_bullets.each do |cwb|
+        grid_weapon_bullets.create!(bullet_id: cwb.bullet_id, position: cwb.position)
+      end
+    elsif bullet_positions.is_a?(Array)
+      bullet_positions.each { |position| pull_bullet_position!(position) }
     end
 
     true
@@ -147,33 +158,23 @@ class GridWeapon < ApplicationRecord
   ##
   # Syncs customizations from this grid weapon to the linked collection weapon.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_to_collection!
+  def sync_to_collection!(fields: nil)
     return false unless collection_weapon.present?
 
-    collection_weapon.update!(
-      uncap_level: uncap_level,
-      transcendence_step: transcendence_step,
-      element: element,
-      weapon_key1_id: weapon_key1_id,
-      weapon_key2_id: weapon_key2_id,
-      weapon_key3_id: weapon_key3_id,
-      weapon_key4_id: weapon_key4_id,
-      ax_modifier1_id: ax_modifier1_id,
-      ax_strength1: ax_strength1,
-      ax_modifier2_id: ax_modifier2_id,
-      ax_strength2: ax_strength2,
-      befoulment_modifier_id: befoulment_modifier_id,
-      befoulment_strength: befoulment_strength,
-      exorcism_level: exorcism_level,
-      awakening_id: awakening_id,
-      awakening_level: awakening_level
-    )
+    columns = sync_columns_for(fields)
+    bullet_positions = sync_bullet_positions_for(fields)
 
-    # Sync bullet loadout
-    collection_weapon.collection_weapon_bullets.destroy_all
-    grid_weapon_bullets.each do |gwb|
-      collection_weapon.collection_weapon_bullets.create!(bullet_id: gwb.bullet_id, position: gwb.position)
+    collection_weapon.update!(columns.index_with { |col| public_send(col) }) if columns.any?
+
+    if bullet_positions == :all
+      collection_weapon.collection_weapon_bullets.destroy_all
+      grid_weapon_bullets.each do |gwb|
+        collection_weapon.collection_weapon_bullets.create!(bullet_id: gwb.bullet_id, position: gwb.position)
+      end
+    elsif bullet_positions.is_a?(Array)
+      bullet_positions.each { |position| push_bullet_position!(position) }
     end
 
     true
@@ -264,6 +265,53 @@ class GridWeapon < ApplicationRecord
   end
 
   private
+
+  def sync_columns_for(fields)
+    return ALL_SYNC_COLUMNS if fields.blank?
+
+    fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
+  end
+
+  # Returns :all (every bullet position) when fields is blank, an Array of
+  # positions when the caller scoped to specific `bullets.N` keys, or [] when
+  # the caller targeted some other section and bullets should stay put.
+  def sync_bullet_positions_for(fields)
+    return :all if fields.blank?
+
+    fields.filter_map do |key|
+      next unless key.start_with?('bullets.')
+
+      Integer(key.split('.', 2).last, 10)
+    rescue ArgumentError, TypeError
+      nil
+    end
+  end
+
+  def pull_bullet_position!(position)
+    collection_bullet = collection_weapon.collection_weapon_bullets.find_by(position: position)
+    grid_bullet = grid_weapon_bullets.find_by(position: position)
+
+    if collection_bullet.nil?
+      grid_bullet&.destroy!
+    elsif grid_bullet.nil?
+      grid_weapon_bullets.create!(bullet_id: collection_bullet.bullet_id, position: position)
+    else
+      grid_bullet.update!(bullet_id: collection_bullet.bullet_id)
+    end
+  end
+
+  def push_bullet_position!(position)
+    grid_bullet = grid_weapon_bullets.find_by(position: position)
+    collection_bullet = collection_weapon.collection_weapon_bullets.find_by(position: position)
+
+    if grid_bullet.nil?
+      collection_bullet&.destroy!
+    elsif collection_bullet.nil?
+      collection_weapon.collection_weapon_bullets.create!(bullet_id: grid_bullet.bullet_id, position: position)
+    else
+      collection_bullet.update!(bullet_id: grid_bullet.bullet_id)
+    end
+  end
 
   ##
   # Validates the transcendence step of the weapon.

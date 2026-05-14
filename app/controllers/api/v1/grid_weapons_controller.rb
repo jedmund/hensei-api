@@ -271,7 +271,7 @@ module Api
           )
         end
 
-        @grid_weapon.sync_from_collection!
+        @grid_weapon.sync_from_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
@@ -292,7 +292,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_weapon.sync_to_collection!
+        @grid_weapon.sync_to_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
@@ -345,6 +345,17 @@ module Api
       end
 
       private
+
+      ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
 
       ##
       # Computes the maximum uncap level for a given weapon based on its flags.
