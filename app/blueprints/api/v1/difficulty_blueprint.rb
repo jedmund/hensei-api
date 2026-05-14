@@ -3,7 +3,7 @@
 module Api
   module V1
     class DifficultyBlueprint < ApiBlueprint
-      fields :name, :slug, :description, :min_score, :max_score, :sort_order, :color
+      fields :name, :slug, :description, :min_score, :max_score, :sort_order
 
       # Host-relative URL (i.e. <prefix>/<key>?v=<timestamp>), not a literal S3
       # key. Versioned with updated_at so the URL changes on every upload,
@@ -30,7 +30,7 @@ module Api
       end
 
       view :nested do
-        fields :name, :slug, :color, :sort_order
+        fields :name, :slug, :sort_order
       end
 
       view :list do

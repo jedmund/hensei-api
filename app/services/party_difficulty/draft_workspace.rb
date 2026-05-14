@@ -22,13 +22,13 @@ module PartyDifficulty
   # background score sweep) keep reading the canonical tables.
   class DraftWorkspace
     EDITABLE_COLUMNS = {
-      'Difficulty' => %w[name slug description min_score max_score sort_order color].freeze,
+      'Difficulty' => %w[name slug description min_score max_score sort_order].freeze,
       'DifficultyRule' => %w[name description component rule_type params weight active].freeze,
       'DifficultyComponent' => %w[weight enabled min_count_to_score target_max].freeze
     }.freeze
 
     SUMMARY_COLUMNS = {
-      'Difficulty' => %w[name slug min_score max_score sort_order color],
+      'Difficulty' => %w[name slug min_score max_score sort_order],
       'DifficultyRule' => %w[name component rule_type weight active],
       'DifficultyComponent' => %w[name weight enabled min_count_to_score target_max]
     }.freeze
