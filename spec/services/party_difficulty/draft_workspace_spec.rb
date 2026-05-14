@@ -57,6 +57,17 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       reloaded = described_class.for(user)
       expect(reloaded.merged_rules.map(&:id)).not_to include(rule.id)
     end
+
+    it 'accepts ActionController::Parameters from controllers' do
+      params = ActionController::Parameters.new(name: 'Hard', sort_order: 5).permit(:name, :sort_order)
+
+      draft = workspace.stage!(
+        target_type: 'Difficulty', target_id: nil,
+        operation: 'create', attributes: params
+      )
+
+      expect(draft.attributes_payload).to eq('name' => 'Hard', 'sort_order' => 5)
+    end
   end
 
   describe '#diff' do
