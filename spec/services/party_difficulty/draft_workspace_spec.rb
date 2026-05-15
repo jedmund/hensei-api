@@ -78,6 +78,33 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       change = diff[:rules][:updates].first
       expect(change[:changes]['weight']).to include(new: 7.5)
     end
+
+    it 'batch-loads targets per section instead of one query per draft' do
+      extra_rules = Array.new(3) do |i|
+        DifficultyRule.create!(
+          name: "Spec rule #{i}", component: 'weapon', rule_type: 'weapon_uncap_at_least',
+          weight: 1.0, active: true,
+          params: { 'min_uncap_level' => 1, 'min_count' => 1 }
+        )
+      end
+      [rule, *extra_rules].each_with_index do |r, i|
+        workspace.stage!(target_type: 'DifficultyRule', target_id: r.id, operation: 'update', attributes: { weight: i + 10.0 })
+      end
+
+      reloaded = described_class.for(user)
+      rule_loads = 0
+      subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |_, _, _, _, payload|
+        next if payload[:name] == 'SCHEMA' || payload[:cached]
+        rule_loads += 1 if payload[:sql].include?('FROM "difficulty_rules"')
+      end
+      begin
+        reloaded.diff
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(rule_loads).to eq(1)
+    end
   end
 
   describe '#commit!' do
@@ -92,6 +119,86 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       expect(log.note).to eq('spec')
       expect(log.ruleset_version_after).to be > starting_version
       expect(DifficultyDraft.for_user(user).count).to eq(0)
+    end
+
+    context 'with multi-tier score boundary edits' do
+      # Seed a 4-tier layout that already tiles [0, 100] so we can stage edits
+      # against it. Seeding requires bypassing the per-row coverage check
+      # because no insertion order is individually valid against an empty DB.
+      let!(:tiers) do
+        Difficulty.delete_all
+        Difficulty.with_coverage_validation_skipped do
+          [
+            Difficulty.create!(name: 'Beginner', slug: 'beginner', min_score: 0.0, max_score: 24.99, sort_order: 0),
+            Difficulty.create!(name: 'Intermediate', slug: 'intermediate', min_score: 25.0, max_score: 49.99, sort_order: 1),
+            Difficulty.create!(name: 'Advanced', slug: 'advanced', min_score: 50.0, max_score: 84.99, sort_order: 2),
+            Difficulty.create!(name: 'Whale', slug: 'whale', min_score: 85.0, max_score: 100.0, sort_order: 3)
+          ]
+        end
+      end
+
+      it 'commits a valid multi-tier rebalance whose intermediate states would individually fail' do
+        intermediate = tiers[1]
+        advanced = tiers[2]
+        workspace.stage!(target_type: 'Difficulty', target_id: intermediate.id, operation: 'update',
+                         attributes: { max_score: 59.99 })
+        workspace.stage!(target_type: 'Difficulty', target_id: advanced.id, operation: 'update',
+                         attributes: { min_score: 60.0 })
+
+        described_class.for(user).commit!(note: 'rebalance')
+
+        expect(intermediate.reload.max_score.to_f).to eq(59.99)
+        expect(advanced.reload.min_score.to_f).to eq(60.0)
+      end
+
+      it 'raises CoverageError and rolls back when the final tier set has a real gap' do
+        intermediate = tiers[1]
+        workspace.stage!(target_type: 'Difficulty', target_id: intermediate.id, operation: 'update',
+                         attributes: { max_score: 40.0 })
+
+        expect do
+          described_class.for(user).commit!(note: 'broken')
+        end.to raise_error(PartyDifficulty::CoverageError, /coverage gap/)
+
+        expect(intermediate.reload.max_score.to_f).to eq(49.99)
+      end
+
+      it 'raises CoverageError when a staged draft inverts a tier bounds (max <= min)' do
+        intermediate = tiers[1]
+        workspace.stage!(target_type: 'Difficulty', target_id: intermediate.id, operation: 'update',
+                         attributes: { min_score: 60.0, max_score: 50.0 })
+
+        expect do
+          described_class.for(user).commit!(note: 'inverted')
+        end.to raise_error(PartyDifficulty::CoverageError, /max_score not greater than min_score/)
+
+        expect(intermediate.reload.min_score.to_f).to eq(25.0)
+        expect(intermediate.reload.max_score.to_f).to eq(49.99)
+      end
+    end
+  end
+
+  describe 'Difficulty.with_coverage_validation_skipped' do
+    let(:bad_tier) do
+      Difficulty.new(name: 'Bad', slug: 'bad', min_score: 0.0, max_score: 5.0, sort_order: 50)
+    end
+
+    it 'suppresses the per-row coverage check inside the block' do
+      Difficulty.with_coverage_validation_skipped do
+        expect(bad_tier).to be_valid
+      end
+    end
+
+    it 'restores per-row coverage validation after the block exits' do
+      Difficulty.with_coverage_validation_skipped { :noop }
+      expect(bad_tier).not_to be_valid
+      expect(bad_tier.errors[:base].join).to include('coverage')
+    end
+
+    it 'restores the flag even if the block raises' do
+      expect { Difficulty.with_coverage_validation_skipped { raise 'boom' } }.to raise_error('boom')
+      expect(Thread.current[:difficulty_skip_coverage_validation]).to be_falsey
+      expect(bad_tier).not_to be_valid
     end
   end
 

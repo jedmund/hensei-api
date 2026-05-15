@@ -87,6 +87,11 @@ module Api
           target_type: e.target_type,
           target_id: e.target_id
         }, status: :conflict
+      rescue PartyDifficulty::CoverageError => e
+        render json: {
+          error: 'invalid_coverage',
+          messages: e.messages
+        }, status: :unprocessable_entity
       end
 
       private

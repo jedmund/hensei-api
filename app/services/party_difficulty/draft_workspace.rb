@@ -15,6 +15,18 @@ module PartyDifficulty
     end
   end
 
+  # Raised by DraftWorkspace#commit! when the merged canonical+drafts tier set
+  # would leave [0, 100] partially uncovered or overlapping. The controller
+  # turns this into a 422 with the full list of aggregate messages.
+  class CoverageError < StandardError
+    attr_reader :messages
+
+    def initialize(messages)
+      @messages = Array(messages)
+      super(@messages.join('; '))
+    end
+  end
+
   ##
   # Per-editor staging layer for difficulty rules / tiers / components.
   # Editors mutate state here via the controllers, hit Preview to validate,
@@ -81,11 +93,19 @@ module PartyDifficulty
     def commit!(note: nil)
       ApplicationRecord.transaction do
         snapshot = diff
+        # Multi-tier boundary edits can't tile [0, 100] mid-save, so validate
+        # the aggregate post-commit set up front and suppress the per-row
+        # coverage check while we apply.
+        coverage_messages = Difficulty.coverage_errors_for(merged_tiers)
+        raise CoverageError, coverage_messages if coverage_messages.any?
+
         # Each apply! triggers the per-record after_save :bump_ruleset_version
         # callback on Difficulty / DifficultyRule / DifficultyComponent, so the
         # version increases by N. The log records the final post-apply version;
         # we don't add an extra explicit bump here.
-        @drafts.each { |draft| apply!(draft) }
+        Difficulty.with_coverage_validation_skipped do
+          @drafts.each { |draft| apply!(draft) }
+        end
         log = DifficultyChangeLog.create!(
           user: @user,
           note: note.presence,
@@ -256,6 +276,9 @@ module PartyDifficulty
       updates = []
       destroys = []
 
+      target_ids = drafts.filter_map { |d| d.target_id unless d.operation == 'create' }.uniq
+      targets_by_id = target_ids.any? ? target_type.constantize.where(id: target_ids).index_by(&:id) : {}
+
       drafts.each do |draft|
         case draft.operation
         when 'create'
@@ -264,7 +287,7 @@ module PartyDifficulty
             attributes: sanitize_attributes(target_type, draft.attributes_payload)
           }
         when 'update'
-          target = draft.target
+          target = targets_by_id[draft.target_id]
           if target.nil?
             updates << stale_entry(draft)
             next
@@ -281,7 +304,7 @@ module PartyDifficulty
             stale: stale_against?(target, draft)
           }
         when 'destroy'
-          target = draft.target
+          target = targets_by_id[draft.target_id]
           if target.nil?
             destroys << stale_entry(draft)
             next
