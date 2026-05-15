@@ -3,6 +3,7 @@ class CollectionSummon < ApplicationRecord
   belongs_to :summon
 
   has_many :grid_summons, dependent: :nullify
+  has_many :support_summons, dependent: :destroy
 
   before_destroy :orphan_grid_items
 
