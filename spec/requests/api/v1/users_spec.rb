@@ -50,6 +50,41 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(json['id']).to eq(user.id)
       expect(json['username']).to eq(user.username)
     end
+
+    context 'with check_collection=true' do
+      let(:private_user) { create(:user, collection_privacy: :private_collection) }
+
+      it 'returns 403 for a private collection when viewed by a stranger' do
+        get "/api/v1/users/info/#{private_user.username}", params: { check_collection: 'true' }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'returns 403 for a private collection when viewed unauthenticated' do
+        get "/api/v1/users/info/#{private_user.username}?check_collection=true"
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'allows the owner to view their own private collection' do
+        owner_token = Doorkeeper::AccessToken.create!(
+          resource_owner_id: private_user.id, expires_in: 30.days, scopes: 'public'
+        )
+        get "/api/v1/users/info/#{private_user.username}?check_collection=true",
+            headers: { 'Authorization' => "Bearer #{owner_token.token}" }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'allows public collections without authentication' do
+        public_user = create(:user, collection_privacy: :everyone)
+        get "/api/v1/users/info/#{public_user.username}?check_collection=true"
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it 'ignores the collection privacy without check_collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+      get "/api/v1/users/info/#{private_user.username}"
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   describe 'GET /api/v1/users/:id' do
