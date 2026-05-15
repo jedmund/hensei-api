@@ -60,7 +60,13 @@ module Api
       end
 
       def info
-        render json: UserBlueprint.render(@user, view: :minimal)
+        payload = UserBlueprint.render_as_hash(@user, view: :minimal)
+
+        if ActiveModel::Type::Boolean.new.cast(params[:check_collection])
+          payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
+        end
+
+        render json: payload
       end
 
       def search
