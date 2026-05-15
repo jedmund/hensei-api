@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_14_105320) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_14_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1175,7 +1175,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_105320) do
     t.string "last_extension_version"
     t.datetime "last_extension_version_at"
     t.string "description", limit: 140
-    t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
+    t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
+    t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
   end
 
