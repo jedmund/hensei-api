@@ -90,6 +90,40 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body).not_to have_key('collection_accessible')
     end
+
+    context 'with check_support_summons=true' do
+      it 'returns support_summons_accessible=false when private and viewed by a stranger' do
+        owner = create(:user, support_summons_public: false)
+        get "/api/v1/users/info/#{owner.username}?check_support_summons=true"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['support_summons_accessible']).to eq(false)
+      end
+
+      it 'returns support_summons_accessible=true for the owner' do
+        owner = create(:user, support_summons_public: false)
+        token = Doorkeeper::AccessToken.create!(
+          resource_owner_id: owner.id, expires_in: 30.days, scopes: 'public'
+        )
+        get "/api/v1/users/info/#{owner.username}?check_support_summons=true",
+            headers: { 'Authorization' => "Bearer #{token.token}" }
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['support_summons_accessible']).to eq(true)
+      end
+
+      it 'returns support_summons_accessible=true when public' do
+        owner = create(:user, support_summons_public: true)
+        get "/api/v1/users/info/#{owner.username}?check_support_summons=true"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['support_summons_accessible']).to eq(true)
+      end
+    end
+
+    it 'omits support_summons_accessible without check_support_summons' do
+      owner = create(:user, support_summons_public: false)
+      get "/api/v1/users/info/#{owner.username}"
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).not_to have_key('support_summons_accessible')
+    end
   end
 
   describe 'GET /api/v1/users/:id' do
