@@ -60,12 +60,13 @@ module Api
       end
 
       def info
-        if ActiveModel::Type::Boolean.new.cast(params[:check_collection]) &&
-           !@user.collection_viewable_by?(current_user)
-          return render_forbidden_response('This collection is private')
+        payload = UserBlueprint.render_as_hash(@user, view: :minimal)
+
+        if ActiveModel::Type::Boolean.new.cast(params[:check_collection])
+          payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
         end
 
-        render json: UserBlueprint.render(@user, view: :minimal)
+        render json: payload
       end
 
       def search

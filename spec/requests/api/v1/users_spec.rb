@@ -54,36 +54,41 @@ RSpec.describe 'Api::V1::Users', type: :request do
     context 'with check_collection=true' do
       let(:private_user) { create(:user, collection_privacy: :private_collection) }
 
-      it 'returns 403 for a private collection when viewed by a stranger' do
+      it 'returns collection_accessible=false for a private collection viewed by a stranger' do
         get "/api/v1/users/info/#{private_user.username}", params: { check_collection: 'true' }
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(false)
       end
 
-      it 'returns 403 for a private collection when viewed unauthenticated' do
+      it 'returns collection_accessible=false unauthenticated' do
         get "/api/v1/users/info/#{private_user.username}?check_collection=true"
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(false)
       end
 
-      it 'allows the owner to view their own private collection' do
+      it 'returns collection_accessible=true for the owner' do
         owner_token = Doorkeeper::AccessToken.create!(
           resource_owner_id: private_user.id, expires_in: 30.days, scopes: 'public'
         )
         get "/api/v1/users/info/#{private_user.username}?check_collection=true",
             headers: { 'Authorization' => "Bearer #{owner_token.token}" }
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(true)
       end
 
-      it 'allows public collections without authentication' do
+      it 'returns collection_accessible=true for a public collection unauthenticated' do
         public_user = create(:user, collection_privacy: :everyone)
         get "/api/v1/users/info/#{public_user.username}?check_collection=true"
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(true)
       end
     end
 
-    it 'ignores the collection privacy without check_collection' do
+    it 'omits collection_accessible without check_collection' do
       private_user = create(:user, collection_privacy: :private_collection)
       get "/api/v1/users/info/#{private_user.username}"
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).not_to have_key('collection_accessible')
     end
   end
 
