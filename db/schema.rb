@@ -1133,6 +1133,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_120100) do
     t.index ["summon_series_id"], name: "index_summons_on_summon_series_id"
   end
 
+  create_table "support_summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "collection_summon_id", null: false
+    t.integer "section", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collection_summon_id"], name: "index_support_summons_on_collection_summon_id"
+    t.index ["user_id", "section", "position"], name: "index_support_summons_on_user_id_and_section_and_position", unique: true
+    t.index ["user_id"], name: "index_support_summons_on_user_id"
+  end
+
   create_table "user_edit_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.string "edit_key", null: false
@@ -1175,6 +1187,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_120100) do
     t.string "last_extension_version"
     t.datetime "last_extension_version_at"
     t.string "description", limit: 140
+    t.boolean "support_summons_public", default: true, null: false
     t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
@@ -1467,6 +1480,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_14_120100) do
   add_foreign_key "summon_calls", "skills"
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
   add_foreign_key "summons", "summon_series"
+  add_foreign_key "support_summons", "collection_summons"
+  add_foreign_key "support_summons", "users"
   add_foreign_key "user_edit_keys", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
