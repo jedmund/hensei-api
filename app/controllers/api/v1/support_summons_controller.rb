@@ -91,7 +91,7 @@ module Api
       end
 
       def support_summon_params
-        params.require(:support_summon).permit(:collection_summon_id, :section, :position)
+        params.require(:support_summon).permit(:collection_summon_id, :section, :position, :required)
       end
 
       def import_params

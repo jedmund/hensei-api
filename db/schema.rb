@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_15_000002) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_15_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1107,7 +1107,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_000002) do
     t.boolean "subaura", default: false, null: false
     t.boolean "limit", default: false, null: false
     t.boolean "transcendence", default: false, null: false
-    t.boolean "support_eligible", default: true, null: false
     t.integer "max_atk_xlb"
     t.integer "max_hp_xlb"
     t.integer "summon_id"
@@ -1127,6 +1126,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_000002) do
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "summon_series_id"
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
+    t.boolean "support_eligible", default: true, null: false
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
@@ -1141,6 +1141,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_000002) do
     t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "required", default: false, null: false
     t.index ["collection_summon_id"], name: "index_support_summons_on_collection_summon_id"
     t.index ["user_id", "section", "position"], name: "index_support_summons_on_user_id_and_section_and_position", unique: true
     t.index ["user_id"], name: "index_support_summons_on_user_id"
