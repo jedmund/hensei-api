@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_15_000003) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -823,9 +823,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_000003) do
     t.boolean "auto_summon", default: false
     t.boolean "remix", default: false, null: false
     t.integer "visibility", default: 1, null: false
-    t.integer "preview_state", default: 0, null: false
-    t.datetime "preview_generated_at"
-    t.string "preview_s3_key"
     t.string "video_url", limit: 2048
     t.integer "summon_count"
     t.uuid "collection_source_user_id"
@@ -851,8 +848,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_15_000003) do
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["last_updated"], name: "index_parties_on_last_updated"
-    t.index ["preview_generated_at"], name: "index_parties_on_preview_generated_at"
-    t.index ["preview_state"], name: "index_parties_on_preview_state"
     t.index ["raid_id"], name: "index_parties_on_raid_id"
     t.index ["shortcode"], name: "index_parties_on_shortcode"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
