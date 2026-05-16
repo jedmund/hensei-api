@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :collection_summons, dependent: :destroy
   has_many :collection_job_accessories, dependent: :destroy
   has_many :collection_artifacts, dependent: :destroy
+  has_many :support_summons, dependent: :destroy
 
   # Crew associations
   has_many :crew_memberships, dependent: :destroy
@@ -127,6 +128,14 @@ class User < ApplicationRecord
     else
       false
     end
+  end
+
+  # Check if support summons are viewable by another user.
+  # Owners can always view their own; otherwise gated by a single public/private toggle.
+  def support_summons_viewable_by?(viewer)
+    return true if self == viewer
+
+    support_summons_public
   end
 
   # Check if user is in same crew as another user

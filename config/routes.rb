@@ -382,6 +382,8 @@ Rails.application.routes.draw do
         resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
         resources :artifacts, only: [:index, :show], controller: '/api/v1/collection_artifacts'
       end
+
+      resources :support_summons, only: [:index], controller: '/api/v1/support_summons'
     end
 
     # Writing to collections - requires auth, operates on current_user
@@ -423,6 +425,13 @@ Rails.application.routes.draw do
           post :import
           post :preview_sync
         end
+      end
+    end
+
+    # Writing support summons - requires auth, operates on current_user
+    resources :support_summons, only: [:create, :update, :destroy] do
+      collection do
+        post :import
       end
     end
   end

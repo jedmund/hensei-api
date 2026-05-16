@@ -61,9 +61,14 @@ module Api
 
       def info
         payload = UserBlueprint.render_as_hash(@user, view: :minimal)
+        cast_bool = ActiveModel::Type::Boolean.new
 
-        if ActiveModel::Type::Boolean.new.cast(params[:check_collection])
+        if cast_bool.cast(params[:check_collection])
           payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
+        end
+
+        if cast_bool.cast(params[:check_support_summons])
+          payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user)
         end
 
         render json: payload
