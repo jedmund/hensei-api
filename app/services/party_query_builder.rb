@@ -54,8 +54,26 @@ class PartyQueryBuilder
     query = apply_count_filters(query)
     query = apply_has_video_filter(query)
     query = apply_boost_mod_filter(query)
+    query = apply_difficulty_filter(query)
 
     query
+  end
+
+  # Filters by one or more difficulty tiers. Accepts a comma-separated list of
+  # UUIDs or slugs in the `difficulty` param.
+  def apply_difficulty_filter(query)
+    return query unless @params[:difficulty].present?
+
+    raw = @params[:difficulty].to_s.split(',').map(&:strip).reject(&:blank?)
+    return query if raw.empty?
+
+    uuids, slugs = raw.partition { |v| v.match?(UUID_REGEX) }
+    ids = uuids.dup
+    ids.concat(Difficulty.where(slug: slugs).pluck(:id)) if slugs.any?
+
+    return query.none if ids.empty?
+
+    query.where(difficulty_id: ids)
   end
 
   # Example callback method: if no explicit status filter is provided, we may want

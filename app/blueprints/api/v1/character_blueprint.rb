@@ -40,11 +40,9 @@ module Api
       end
 
       field :series do |c|
-        # Use new lookup table if available
-        records = c.character_series_records
-        if records.loaded? ? records.any? : records.exists?
-          sorted = records.loaded? ? records.sort_by(&:order) : records.ordered
-          sorted.map do |cs|
+        records = c.ordered_series_records
+        if records.any?
+          records.map do |cs|
             {
               id: cs.id,
               slug: cs.slug,
@@ -55,7 +53,7 @@ module Api
             }
           end
         else
-          # Legacy fallback - return integer array
+          # Legacy fallback for rows that haven't been migrated to the lookup table.
           c.series
         end
       end

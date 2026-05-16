@@ -9,10 +9,15 @@ module GranblueEnums
   # Internal: 0=Null, 1=Wind, 2=Fire, 3=Water, 4=Earth, 5=Dark, 6=Light
   # GBF:      0=Null, 1=Fire, 2=Water, 3=Earth, 4=Wind, 5=Light, 6=Dark
   INTERNAL_TO_GBF_ELEMENT = { 0 => 0, 1 => 4, 2 => 1, 3 => 2, 4 => 3, 5 => 6, 6 => 5 }.freeze
+  GBF_TO_INTERNAL_ELEMENT = INTERNAL_TO_GBF_ELEMENT.invert.freeze
 
   included do
     def self.to_granblue_element(internal_element)
       INTERNAL_TO_GBF_ELEMENT[internal_element] || internal_element
+    end
+
+    def self.to_internal_element(gbf_element)
+      GBF_TO_INTERNAL_ELEMENT[gbf_element] || gbf_element
     end
   end
   GENDERS = { Unknown: 0, Male: 1, Female: 2, "Male/Female": 3 }.freeze

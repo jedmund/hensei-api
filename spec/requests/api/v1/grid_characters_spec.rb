@@ -447,4 +447,98 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  describe 'rich-text description round-trip' do
+    let(:tiptap_doc) do
+      {
+        'type' => 'doc',
+        'content' => [
+          {
+            'type' => 'paragraph',
+            'content' => [
+              { 'type' => 'text', 'marks' => [{ 'type' => 'bold' }], 'text' => 'Swap' },
+              { 'type' => 'text', 'text' => ' for fire teams' }
+            ]
+          }
+        ]
+      }
+    end
+
+    it 'persists and reads back a Tiptap document on description' do
+      grid_character = create(:grid_character, party: party)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { description: tiptap_doc } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.description).to eq(tiptap_doc)
+    end
+  end
+
+  describe 'role assignments via role_ids' do
+    let!(:role_a) { create(:grid_character_role, sort_order: 1) }
+    let!(:role_b) { create(:grid_character_role, sort_order: 2) }
+    let!(:role_c) { create(:grid_character_role, sort_order: 3) }
+    let!(:role_d) { create(:grid_character_role, sort_order: 4) }
+
+    let(:grid_character) { create(:grid_character, party: party) }
+
+    it 'assigns multiple roles via role_ids and renders them sorted' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_b.id, role_a.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      body = JSON.parse(response.body)
+      expect(body['grid_character']['roles'].map { |r| r['id'] }).to eq([role_a.id, role_b.id])
+    end
+
+    it 'rejects more than three roles' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_a.id, role_b.id, role_c.id, role_d.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'clears assignments when role_ids is empty' do
+      grid_character.grid_character_roles << [role_a, role_b]
+      expect(grid_character.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to eq([])
+    end
+  end
+
+  describe 'substitute ownership flag' do
+    let(:slot) { create(:grid_character, party: party) }
+    let(:owned_character) { Character.where.not(id: slot.character_id).first }
+    let(:unowned_character) { Character.where.not(id: [slot.character_id, owned_character.id]).first }
+
+    it 'sets owned: true on substitutes the current_user has in their collection' do
+      create(:collection_character, user: user, character: owned_character)
+      owned_sub = create(:grid_character, party: party, character: owned_character, is_substitute: true)
+      unowned_sub = create(:grid_character, party: party, character: unowned_character, is_substitute: true)
+      create(:substitution, grid: slot, substitute_grid: owned_sub, position: 0)
+      create(:substitution, grid: slot, substitute_grid: unowned_sub, position: 1)
+
+      put "/api/v1/grid_characters/#{slot.id}",
+          params: { character: { uncap_level: slot.uncap_level } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      subs = body['grid_character']['substitutions']
+      expect(subs.size).to eq(2)
+      expect(subs.find { |s| s['position'] == 0 }['grid_character']['owned']).to be true
+      expect(subs.find { |s| s['position'] == 1 }['grid_character']['owned']).to be false
+    end
+  end
 end

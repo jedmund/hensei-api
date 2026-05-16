@@ -4,18 +4,11 @@
 # This file defines the Party model which represents a party in the application.
 # It encapsulates the logic for managing party records including associations with
 # characters, weapons, summons, and other related models. The Party model handles
-# validations, nested attributes, preview generation, and various business logic
+# validations, nested attributes, and various business logic
 # to ensure consistency and integrity of party data.
 #
 # @note The model uses ActiveRecord associations, enums, and custom validations.
 #
-# @!attribute [rw] preview_state
-#   @return [Integer] the current state of the preview, represented as an enum:
-#     - 0: pending
-#     - 1: queued
-#     - 2: in_progress
-#     - 3: generated
-#     - 4: failed
 # @!attribute [rw] element
 #   @return [Integer] the elemental type associated with the party.
 # @!attribute [rw] clear_time
@@ -84,10 +77,6 @@ class Party < ApplicationRecord
     'bellum' => 'odious'
   }.freeze
 
-  # Define preview_state as an enum.
-  attribute :preview_state, :integer
-  enum :preview_state, { pending: 0, queued: 1, in_progress: 2, generated: 3, failed: 4 }
-
   # ActiveRecord Associations
   belongs_to :source_party,
              class_name: 'Party',
@@ -104,6 +93,7 @@ class Party < ApplicationRecord
   belongs_to :collection_source_user, class_name: 'User', optional: true
   belongs_to :raid, optional: true
   belongs_to :job, optional: true
+  belongs_to :difficulty, optional: true
 
   belongs_to :accessory,
              foreign_key: 'accessory_id',
@@ -145,22 +135,41 @@ class Party < ApplicationRecord
              class_name: 'Guidebook',
              optional: true
 
-  has_many :characters,
+  has_many :characters, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
            class_name: 'GridCharacter',
-           dependent: :delete_all,
            inverse_of: :party
 
-  has_many :weapons,
+  has_many :weapons, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridWeapon',
+           inverse_of: :party
+
+  has_many :summons, -> { where(is_substitute: false) },
+           foreign_key: 'party_id',
+           class_name: 'GridSummon',
+           inverse_of: :party
+
+  # Uses :destroy on all three so the grid items' own callbacks fire — most
+  # importantly `has_many :substitutions, ..., dependent: :destroy`. :delete_all
+  # would skip callbacks and leave orphan substitution rows pointing at deleted
+  # grid ids.
+  has_many :all_characters,
+           foreign_key: 'party_id',
+           class_name: 'GridCharacter',
+           dependent: :destroy,
+           inverse_of: :party
+
+  has_many :all_weapons,
            foreign_key: 'party_id',
            class_name: 'GridWeapon',
            dependent: :destroy,
            inverse_of: :party
 
-  has_many :summons,
+  has_many :all_summons,
            foreign_key: 'party_id',
            class_name: 'GridSummon',
-           dependent: :delete_all,
+           dependent: :destroy,
            inverse_of: :party
 
   has_many :favorites, dependent: :destroy
@@ -169,15 +178,31 @@ class Party < ApplicationRecord
   has_many :party_shares, dependent: :destroy
   has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 
+  # Public-facing nested attributes target the filtered associations (no substitutes),
+  # matching the *_attributes keys the controller permits and pre-substitutions clients send.
   accepts_nested_attributes_for :characters
   accepts_nested_attributes_for :summons
   accepts_nested_attributes_for :weapons
+
+  # Internal flows (e.g. remix re-mapping) need to write to the unfiltered scopes.
+  accepts_nested_attributes_for :all_characters
+  accepts_nested_attributes_for :all_summons
+  accepts_nested_attributes_for :all_weapons
+
+  attr_writer :_source_party_for_remap
 
   before_create :set_shortcode
   before_create :set_edit_key
 
   after_commit :update_element!, on: %i[create update]
   after_commit :update_extra!, on: %i[create update]
+  after_commit :enqueue_difficulty_recompute_if_scoring_changed!, on: %i[create update]
+
+  # Columns whose value actually affects the difficulty score. Edits to other
+  # columns (description, shortcode, boost_mod, element, …) do not need to
+  # re-trigger the scoring engine, so the after_commit guard skips them.
+  SCORING_COLUMNS = %w[weapons_count characters_count summons_count job_id accessory_id
+                       ultimate_mastery].freeze
 
   # Amoeba configuration
   amoeba do
@@ -188,11 +213,18 @@ class Party < ApplicationRecord
     nullify :description
     nullify :shortcode
     nullify :edit_key
+    nullify :difficulty_id
+    nullify :difficulty_score
+    nullify :difficulty_breakdown
+    nullify :difficulty_computed_at
+    nullify :difficulty_ruleset_version
 
-    include_association :characters
-    include_association :weapons
-    include_association :summons
+    include_association :all_characters
+    include_association :all_weapons
+    include_association :all_summons
   end
+
+  after_create :create_remapped_substitutions
 
   # ActiveRecord Validations
   validate :skills_are_unique
@@ -237,8 +269,6 @@ class Party < ApplicationRecord
               message: 'must be 1 (Public), 2 (Unlisted), or 3 (Private)'
             }
 
-  after_commit :schedule_preview_generation, if: :should_generate_preview?
-
   #########################
   # Public API Methods
   #########################
@@ -249,7 +279,45 @@ class Party < ApplicationRecord
   #
   # @return [Boolean] true if the update succeeded.
   def mark_updated!
-    update_column(:last_updated, Time.current)
+    result = update_column(:last_updated, Time.current)
+    enqueue_difficulty_recompute!
+    result
+  end
+
+  ##
+  # Enqueues a background job to recompute the party's difficulty score.
+  # Callers that bypass callbacks (update_column, counter-cache writes) must
+  # invoke this directly; the after_commit hook on the model uses the guarded
+  # variant below to avoid recomputing on unrelated edits.
+  #
+  # @return [void]
+  def enqueue_difficulty_recompute!
+    PartyDifficulty::ScoreJob.perform_later(id) if id.present?
+  end
+
+  def enqueue_difficulty_recompute_if_scoring_changed!
+    return unless previously_new_record? || saved_changes.keys.intersect?(SCORING_COLUMNS)
+
+    enqueue_difficulty_recompute!
+  end
+
+  ##
+  # Returns true iff any grid item in this party has at least one substitution.
+  #
+  # Uses a single EXISTS query over substitutions, scoped by polymorphic
+  # (grid_type, grid_id) pairs. Most parties have zero substitutes, so this
+  # cheap predicate lets the read path skip the heavier preload_substitute_grids!
+  # work in SubstituteGridPreloading.
+  #
+  # @return [Boolean]
+  def has_substitutions?
+    return @has_substitutions if defined?(@has_substitutions)
+
+    @has_substitutions = Substitution
+                         .where(grid_type: 'GridCharacter', grid_id: GridCharacter.where(party_id: id).select(:id))
+                         .or(Substitution.where(grid_type: 'GridWeapon', grid_id: GridWeapon.where(party_id: id).select(:id)))
+                         .or(Substitution.where(grid_type: 'GridSummon', grid_id: GridSummon.where(party_id: id).select(:id)))
+                         .exists?
   end
 
   ##
@@ -387,105 +455,7 @@ class Party < ApplicationRecord
     end
   end
 
-  ##
-  # Determines if the party meets the minimum requirements for preview generation.
-  #
-  # The party must have at least one weapon, one character, and one summon.
-  #
-  # @return [Boolean] true if the party is ready for preview; false otherwise.
-  def ready_for_preview?
-    return false if weapons_count < 1 # At least 1 weapon
-    return false if characters_count < 1 # At least 1 character
-    return false if summons_count < 1 # At least 1 summon
-
-    true
-  end
-
-  ##
-  # Determines whether a new preview should be generated for the party.
-  #
-  # The method checks various conditions such as preview state, expiration, and content changes.
-  #
-  # @return [Boolean] true if a preview generation should be triggered; false otherwise.
-  def should_generate_preview?
-    return false unless ready_for_preview?
-
-    return true if preview_pending?
-    return true if preview_failed_and_stale?
-    return true if preview_generated_and_expired?
-    return true if preview_content_changed_and_stale?
-
-    false
-  end
-
-  ##
-  # Checks whether the current preview has expired based on a predefined expiry period.
-  #
-  # @return [Boolean] true if the preview is expired; false otherwise.
-  def preview_expired?
-    preview_generated_at.nil? ||
-      preview_generated_at < PreviewService::Coordinator::PREVIEW_EXPIRY.ago
-  end
-
-  ##
-  # Determines if the content relevant for preview generation has changed.
-  #
-  # @return [Boolean] true if any preview-relevant attributes have changed; false otherwise.
-  def preview_content_changed?
-    saved_changes.keys.any? { |attr| preview_relevant_attributes.include?(attr) }
-  end
-
-  ##
-  # Schedules the generation of a party preview if applicable.
-  #
-  # This method updates the preview state to 'queued' and enqueues a background job
-  # to generate the preview.
-  #
-  # @return [void]
-  def schedule_preview_generation
-    return if %w[queued in_progress].include?(preview_state.to_s)
-
-    update_column(:preview_state, self.class.preview_states[:queued])
-    GeneratePartyPreviewJob.perform_later(id)
-  end
-
   private
-
-  #########################
-  # Preview Generation Helpers
-  #########################
-
-  ##
-  # Checks if the preview is pending.
-  #
-  # @return [Boolean] true if preview_state is nil or 'pending'.
-  def preview_pending?
-    preview_state.nil? || preview_state == 'pending'
-  end
-
-  ##
-  # Checks if the preview generation failed and the preview is stale.
-  #
-  # @return [Boolean] true if preview_state is 'failed' and preview_generated_at is older than 5 minutes.
-  def preview_failed_and_stale?
-    preview_state == 'failed' && preview_generated_at < 5.minutes.ago
-  end
-
-  ##
-  # Checks if the generated preview is expired.
-  #
-  # @return [Boolean] true if preview_state is 'generated' and the preview is expired.
-  def preview_generated_and_expired?
-    preview_state == 'generated' && preview_expired?
-  end
-
-  ##
-  # Checks if the preview content has changed and the preview is stale.
-  #
-  # @return [Boolean] true if the preview content has changed and preview_generated_at is nil or older than 5 minutes.
-  def preview_content_changed_and_stale?
-    preview_content_changed? && (preview_generated_at.nil? || preview_generated_at < 5.minutes.ago)
-  end
 
   #########################
   # Uniqueness Validation Helpers
@@ -530,20 +500,63 @@ class Party < ApplicationRecord
                                         :guidebooks)
   end
 
-  ##
-  # Provides a list of attributes that are relevant for determining if the preview content has changed.
-  #
-  # @return [Array<String>] an array of attribute names.
-  def preview_relevant_attributes
-    %w[
-      name job_id element weapons_count characters_count summons_count
-      full_auto auto_guard charge_attack clear_time solo
-    ]
-  end
-
   #########################
   # Miscellaneous Helpers
   #########################
+
+  ##
+  # Recreates substitution join records after an amoeba remix.
+  #
+  # Maps old grid item IDs to new ones by matching on item FK + position + is_substitute,
+  # then creates Substitution records pointing to the new grid items.
+  #
+  # @return [void]
+  def create_remapped_substitutions
+    return unless @_source_party_for_remap
+
+    remap_substitutions_for('GridCharacter', @_source_party_for_remap.all_characters, all_characters, :character_id)
+    remap_substitutions_for('GridWeapon', @_source_party_for_remap.all_weapons, all_weapons, :weapon_id)
+    remap_substitutions_for('GridSummon', @_source_party_for_remap.all_summons, all_summons, :summon_id)
+  end
+
+  def remap_substitutions_for(grid_type, old_items, new_items, item_fk)
+    new_index = new_items.index_by { |ni| [ni.send(item_fk), ni.position, ni.is_substitute] }
+    old_by_id = old_items.index_by(&:id)
+
+    old_items.each do |old_item|
+      old_item.substitutions.each do |sub|
+        new_grid = new_index[[old_item.send(item_fk), old_item.position, old_item.is_substitute]]
+        old_sub_grid = old_by_id[sub.substitute_grid_id]
+
+        unless old_sub_grid
+          Rails.logger.warn(
+            "[Party#remap_substitutions_for] skip: substitute grid #{sub.substitute_grid_id} " \
+            "missing from source party=#{@_source_party_for_remap&.id} type=#{grid_type}"
+          )
+          next
+        end
+
+        new_sub_grid = new_index[[old_sub_grid.send(item_fk), old_sub_grid.position, old_sub_grid.is_substitute]]
+
+        unless new_grid && new_sub_grid
+          Rails.logger.warn(
+            "[Party#remap_substitutions_for] skip: no new mapping for sub=#{sub.id} " \
+            "source=#{@_source_party_for_remap&.id} target=#{id} type=#{grid_type} " \
+            "missing=#{new_grid.nil? ? 'new_grid' : 'new_sub_grid'}"
+          )
+          next
+        end
+
+        Substitution.create!(
+          grid_type: grid_type,
+          grid_id: new_grid.id,
+          substitute_grid_type: grid_type,
+          substitute_grid_id: new_sub_grid.id,
+          position: sub.position
+        )
+      end
+    end
+  end
 
   ##
   # Updates the party's element based on its main weapon.

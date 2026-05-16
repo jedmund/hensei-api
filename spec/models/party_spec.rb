@@ -103,20 +103,6 @@ RSpec.describe Party, type: :model do
       end
     end
 
-    context 'for preview_state' do
-      # Since preview_state is now an enum, we test valid enum keys.
-      it 'allows valid preview_state values via enum' do
-        %w[pending queued in_progress generated failed].each do |state|
-          party = build(:party, preview_state: state)
-          expect(party).to be_valid, "expected preview_state #{state} to be valid"
-        end
-      end
-
-      it 'is invalid when preview_state is non-numeric and not a valid enum key' do
-        expect { build(:party, preview_state: 'active') }
-          .to raise_error(ArgumentError, /'active' is not a valid preview_state/)
-      end
-    end
   end
 
   describe '#is_remix' do
@@ -434,145 +420,6 @@ RSpec.describe Party, type: :model do
     end
   end
 
-  describe '#ready_for_preview?' do
-    it 'returns false if weapons_count is less than 1' do
-      party = build(:party, weapons_count: 0, characters_count: 1, summons_count: 1)
-      expect(party.ready_for_preview?).to be false
-    end
-
-    it 'returns false if characters_count is less than 1' do
-      party = build(:party, weapons_count: 1, characters_count: 0, summons_count: 1)
-      expect(party.ready_for_preview?).to be false
-    end
-
-    it 'returns false if summons_count is less than 1' do
-      party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 0)
-      expect(party.ready_for_preview?).to be false
-    end
-
-    it 'returns true when all counts are at least 1' do
-      party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 1)
-      expect(party.ready_for_preview?).to be true
-    end
-  end
-
-  describe '#preview_expired?' do
-    it 'returns true if preview_generated_at is nil' do
-      party = build(:party, preview_generated_at: nil)
-      expect(party.preview_expired?).to be true
-    end
-
-    it 'returns true if preview_generated_at is older than the expiry period' do
-      expired_time = PreviewService::Coordinator::PREVIEW_EXPIRY.ago - 1.minute
-      party = build(:party, preview_generated_at: expired_time)
-      expect(party.preview_expired?).to be true
-    end
-
-    it 'returns false if preview_generated_at is recent' do
-      recent_time = Time.current - 1.hour
-      party = build(:party, preview_generated_at: recent_time)
-      expect(party.preview_expired?).to be false
-    end
-  end
-
-  describe '#preview_content_changed?' do
-    it 'returns true if saved_changes include a preview relevant attribute' do
-      party = build(:party)
-      # Stub saved_changes so that it includes a key from preview_relevant_attributes (e.g. "name")
-      allow(party).to receive(:saved_changes).and_return('name' => ['Old', 'New'])
-      expect(party.preview_content_changed?).to be true
-    end
-
-    it 'returns false if saved_changes do not include any preview relevant attributes' do
-      party = build(:party)
-      allow(party).to receive(:saved_changes).and_return('non_relevant' => ['A', 'B'])
-      expect(party.preview_content_changed?).to be false
-    end
-  end
-
-  describe '#should_generate_preview?' do
-    context 'when ready_for_preview? is false' do
-      it 'returns false regardless of preview_state' do
-        party = build(:party, weapons_count: 0, characters_count: 1, summons_count: 1, preview_state: 'pending')
-        expect(party.should_generate_preview?).to be false
-      end
-    end
-
-    context 'when preview_state is nil or pending' do
-      it 'returns true' do
-        party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 1, preview_state: nil)
-        expect(party.should_generate_preview?).to be true
-        party.preview_state = 'pending'
-        expect(party.should_generate_preview?).to be true
-      end
-    end
-
-    context "when preview_state is 'failed'" do
-      it 'returns true if preview_generated_at is more than 5 minutes ago' do
-        past_time = 6.minutes.ago
-        party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 1,
-                      preview_state: 'failed', preview_generated_at: past_time)
-        expect(party.should_generate_preview?).to be true
-      end
-    end
-
-    context "when preview_state is 'generated'" do
-      it 'returns true if preview is expired' do
-        expired_time = PreviewService::Coordinator::PREVIEW_EXPIRY.ago - 1.minute
-        party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 1,
-                      preview_state: 'generated', preview_generated_at: expired_time)
-        expect(party.should_generate_preview?).to be true
-      end
-
-      it 'returns false if preview is recent and no content change is detected' do
-        recent_time = Time.current - 1.minute
-        party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 1,
-                      preview_state: 'generated', preview_generated_at: recent_time)
-        allow(party).to receive(:saved_changes).and_return('non_relevant' => ['A', 'B'])
-        expect(party.should_generate_preview?).to be false
-      end
-
-      it 'returns true if content has changed and preview_generated_at is more than 5 minutes ago' do
-        old_time = 6.minutes.ago
-        party = build(:party, weapons_count: 1, characters_count: 1, summons_count: 1,
-                      preview_state: 'generated', preview_generated_at: old_time)
-        allow(party).to receive(:saved_changes).and_return('name' => ['Old', 'New'])
-        expect(party.should_generate_preview?).to be true
-      end
-    end
-  end
-
-  describe '#schedule_preview_generation' do
-    before(:all) do
-      ActiveJob::Base.queue_adapter = :test
-    end
-
-    it 'enqueues a GeneratePartyPreviewJob and sets preview_state to "queued" if not already queued or in_progress' do
-      # Create a party normally, then force its preview_state to "pending" (the integer value)
-      party = create(:party, weapons_count: 1, characters_count: 1, summons_count: 1)
-      party.update_column(:preview_state, Party.preview_states[:pending])
-
-      clear_enqueued_jobs
-      expect { party.schedule_preview_generation }
-        .to have_enqueued_job(GeneratePartyPreviewJob)
-              .with(party.id)
-      party.reload
-      expect(party.preview_state).to eq('queued')
-    end
-
-    it 'does nothing if preview_state is already "queued"' do
-      party = create(:party, weapons_count: 1, characters_count: 1, summons_count: 1, preview_state: 'queued')
-      clear_enqueued_jobs
-      expect { party.schedule_preview_generation }.not_to(change { enqueued_jobs.count })
-    end
-
-    it 'does nothing if preview_state is "in_progress"' do
-      party = create(:party, weapons_count: 1, characters_count: 1, summons_count: 1, preview_state: 'in_progress')
-      clear_enqueued_jobs
-      expect { party.schedule_preview_generation }.not_to(change { enqueued_jobs.count })
-    end
-  end
-
   describe '#update_element!' do
     it 'updates the party element if a main weapon (position -1) with a different element is present' do
       # Create a party with element 3 (Water) initially.
@@ -640,14 +487,6 @@ RSpec.describe Party, type: :model do
       str = party.send(:random_string)
       expect(str.length).to eq(6)
       expect(str).to match(/\A[a-zA-Z0-9]+\z/)
-    end
-  end
-
-  describe '#preview_relevant_attributes' do
-    it 'returns an array of expected attribute names' do
-      party = build(:party)
-      expected = %w[name job_id element weapons_count characters_count summons_count full_auto auto_guard charge_attack clear_time solo]
-      expect(party.send(:preview_relevant_attributes)).to match_array(expected)
     end
   end
 

@@ -58,9 +58,6 @@ gem 'redis'
 # Simple, efficient background processing for Ruby
 gem 'sidekiq'
 
-# scheduler for Ruby (at, in, cron and every jobs)
-gem 'rufus-scheduler'
-
 # Pagination library
 gem 'will_paginate', '~> 3.3'
 

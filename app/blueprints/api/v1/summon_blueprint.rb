@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :granblue_id, :element, :rarity, :max_level, :subaura, :limit, :promotions
+      fields :granblue_id, :element, :rarity, :max_level, :subaura, :limit, :support_eligible, :promotions
 
       field :promotion_names do |s|
         s.promotion_names
@@ -39,13 +39,13 @@ module Api
 
       view :preview do
         excludes :name, :element, :rarity, :max_level, :promotions,
-                 :promotion_names, :series, :uncap
+                 :promotion_names, :series, :uncap, :support_eligible
       end
 
       # Minimal view for party list cards — just enough for image rendering
       view :list do
         excludes :name, :element, :rarity, :max_level, :promotions,
-                 :promotion_names, :series, :uncap, :subaura, :limit
+                 :promotion_names, :series, :uncap, :subaura, :limit, :support_eligible
       end
 
       view :stats do

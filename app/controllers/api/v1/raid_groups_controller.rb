@@ -65,13 +65,6 @@ module Api
           :name_en, :name_jp, :difficulty, :order, :section, :extra, :hl, :guidebooks, :unlimited
         )
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[RAID_GROUPS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

@@ -13,6 +13,7 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
 
       attr_reader :party, :incoming_summon
 
@@ -70,9 +71,30 @@ module Api
       def update
         @grid_summon.attributes = summon_params
 
-        return render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon) if @grid_summon.save
+        sync_flag_change = nil
+        if summon_params.key?(:notes_synced)
+          sync_flag_change = ActiveModel::Type::Boolean.new.cast(summon_params[:notes_synced])
+        end
+        description_in_payload = summon_params.key?(:description)
 
-        render_validation_error_response(@grid_summon)
+        ActiveRecord::Base.transaction do
+          raise ActiveRecord::Rollback unless @grid_summon.save
+
+          if sync_flag_change == true
+            NotesSync.enable_sync!(@grid_summon)
+          elsif sync_flag_change == false
+            NotesSync.disable_sync!(@grid_summon)
+          elsif description_in_payload
+            NotesSync.propagate_description!(@grid_summon)
+          end
+        end
+
+        if @grid_summon.errors.empty?
+          @grid_summon.reload
+          render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon)
+        else
+          render_validation_error_response(@grid_summon)
+        end
       end
 
       ##
@@ -263,7 +285,7 @@ module Api
           )
         end
 
-        @grid_summon.sync_from_collection!
+        @grid_summon.sync_from_collection!(fields: sync_fields_param)
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,
                                                 view: :nested)
@@ -284,7 +306,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_summon.sync_to_collection!
+        @grid_summon.sync_to_collection!(fields: sync_fields_param)
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,
                                                 view: :nested)
@@ -363,6 +385,9 @@ module Api
 
         @party.mark_updated!
         summon.sync_from_collection! if summon.collection_summon_id.present?
+        # Auto-join an existing notes sync group when this is a duplicate of a
+        # summon already in a synced group.
+        NotesSync.adopt_for_new_item!(summon)
         summon.reload
         output = render_grid_summon_view(summon)
         render json: output, status: :created
@@ -393,6 +418,17 @@ module Api
       private
 
       ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
+
+      ##
       # Finds the party based on the provided party_id parameter.
       #
       # Sets the @party instance variable and renders an unauthorized response if the current
@@ -419,8 +455,12 @@ module Api
       # @return [void]
       def find_grid_summon
         grid_summon_id = params[:id] || params.dig(:summon, :id) || params.dig(:resolve, :conflicting)
-        @grid_summon = GridSummon.find_by(id: grid_summon_id)
-        render_not_found_response('grid_summon') unless @grid_summon
+        @grid_summon = GridSummon
+                       .includes(*GridSummon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                       .find_by(id: grid_summon_id)
+        return render_not_found_response('grid_summon') unless @grid_summon
+
+        preload_substitute_grids!([@grid_summon])
       end
 
       ##
@@ -521,9 +561,10 @@ module Api
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
-        params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
-                                       :position, :main, :friend, :quick_summon,
-                                       :uncap_level, :transcendence_step)
+        permitted = params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
+                                                   :position, :main, :friend, :quick_summon,
+                                                   :uncap_level, :transcendence_step, :notes_synced)
+        permit_description(permitted, params[:summon])
       end
 
       ##

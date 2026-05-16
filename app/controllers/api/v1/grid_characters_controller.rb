@@ -16,6 +16,7 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
 
       before_action :find_grid_character,
                     only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
@@ -262,7 +263,7 @@ module Api
           )
         end
 
-        @grid_character.sync_from_collection!
+        @grid_character.sync_from_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
@@ -286,7 +287,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_character.sync_to_collection!
+        @grid_character.sync_to_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
@@ -322,6 +323,17 @@ module Api
       end
 
       private
+
+      ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
 
       ##
       # Builds a new grid character using the transformed parameters.
@@ -376,7 +388,17 @@ module Api
       def assign_raw_attributes(grid_character)
         grid_character.new_rings = character_params[:rings] if character_params[:rings].present?
         grid_character.new_awakening = character_params[:awakening] if character_params[:awakening].present?
-        grid_character.assign_attributes(character_params.except(:rings, :awakening, :character_id, :party_id))
+        # `role_ids` is the public param name; map it to the Rails-generated
+        # `grid_character_role_ids=` setter on the has_many :through association.
+        # Reset the through-association cache so the blueprint sees the new set
+        # (the cache was warmed by `find_grid_character`'s preload).
+        if character_params.key?(:role_ids)
+          grid_character.grid_character_role_ids = Array(character_params[:role_ids])
+          grid_character.grid_character_roles.reset
+        end
+        grid_character.assign_attributes(
+          character_params.except(:rings, :awakening, :character_id, :party_id, :role_ids)
+        )
       end
 
       ##
@@ -506,8 +528,12 @@ module Api
       # @return [void]
       def find_grid_character
         grid_character_id = params[:id] || params.dig(:character, :id) || params.dig(:resolve, :conflicting)
-        @grid_character = GridCharacter.includes(:awakening).find_by(id: grid_character_id)
-        render_not_found_response('grid_character') unless @grid_character
+        @grid_character = GridCharacter
+                          .includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                          .find_by(id: grid_character_id)
+        return render_not_found_response('grid_character') unless @grid_character
+
+        preload_substitute_grids!([@grid_character])
       end
 
       ##
@@ -578,10 +604,11 @@ module Api
           :uncap_level,
           :transcendence_step,
           :perpetuity,
+          role_ids: [],
           awakening: %i[id level],
           rings: %i[modifier strength],
           earring: %i[modifier strength]
-        )
+        ).then { |p| permit_description(p, params[:character]) }
       end
 
       ##
