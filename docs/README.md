@@ -15,9 +15,6 @@ rake granblue:import_data
 
 # Fetch wiki data for all characters
 rake granblue:fetch_wiki_data type=Character
-
-# Generate party preview images
-rake previews:generate_all
 ```
 
 ## Documentation Structure
