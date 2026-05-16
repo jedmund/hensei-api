@@ -7,7 +7,6 @@ module Api
     class PartiesController < Api::V1::ApiController
       include PartyAuthorizationConcern
       include PartyQueryingConcern
-      include PartyPreviewConcern
       include SubstituteGridPreloading
 
       # Constants used for filtering validations.
@@ -62,7 +61,6 @@ module Api
         end
         party.last_updated = Time.current
         if party.save
-          party.schedule_preview_generation if party.ready_for_preview?
           render json: PartyBlueprint.render(party, view: :created, root: :party), status: :created
         else
           render_validation_error_response(party)
@@ -240,7 +238,6 @@ module Api
         new_party.last_updated = Time.current
         new_party._source_party_for_remap = @party
         if new_party.save
-          new_party.schedule_preview_generation
           render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
         else
           render_validation_error_response(new_party)
@@ -381,35 +378,6 @@ module Api
           root: :results,
           meta: pagination_meta(@parties)
         )
-      end
-
-      # Preview Management
-
-      # Serves the party's preview image
-      # @return [void]
-      # Serves the party's preview image.
-      def preview
-        party_preview(@party)
-      end
-
-      # Returns the current preview status of a party.
-      def preview_status
-        party = Party.find_by!(shortcode: params[:id])
-        render json: { state: party.preview_state, generated_at: party.preview_generated_at,
-                       ready_for_preview: party.ready_for_preview? }
-      end
-
-      # Forces regeneration of the party preview.
-      def regenerate_preview
-        party = Party.find_by!(shortcode: params[:id])
-        return render_unauthorized_response unless current_user && party.user_id == current_user.id
-
-        preview_service = PreviewService::Coordinator.new(party)
-        if preview_service.force_regenerate
-          render json: { status: 'Preview regeneration started' }
-        else
-          render json: { error: 'Preview regeneration failed' }, status: :unprocessable_entity
-        end
       end
 
       private
