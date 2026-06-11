@@ -224,7 +224,7 @@ module Api
       def resolve
         incoming = find_by_any_id(Weapon, resolve_params[:incoming])
         conflicting_ids = resolve_params[:conflicting]
-        conflicting_weapons = GridWeapon.where(id: conflicting_ids)
+        conflicting_weapons = GridWeapon.where(id: conflicting_ids, party_id: @party.id)
 
         # Destroy each conflicting weapon
         conflicting_weapons.each(&:destroy)

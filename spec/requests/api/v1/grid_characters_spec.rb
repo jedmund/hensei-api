@@ -323,6 +323,25 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(json_response['grid_character']).to include('position' => 4)
       expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it 'does not destroy conflicting character ids from another party' do
+      other_party = create(:party, user: create(:user))
+      other_conflicting_character = create(:grid_character,
+                                           party: other_party,
+                                           character: incoming_character,
+                                           position: 4,
+                                           uncap_level: 3)
+
+      resolve_params[:resolve][:conflicting] = [conflicting_character.id, other_conflicting_character.id]
+
+      expect do
+        post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
+      end.to change(GridCharacter, :count).by(0)
+
+      expect(response).to have_http_status(:created)
+      expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_conflicting_character.reload).to be_persisted
+    end
   end
 
   describe 'DELETE /api/v1/grid_characters (destroy action)' do

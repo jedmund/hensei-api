@@ -6,7 +6,7 @@ Hensei is a Ruby on Rails API for managing Granblue Fantasy party configurations
 
 ## Prerequisites
 
-- Ruby 3.3.7
+- Ruby 3.4.4
 - Rails 8.0.1
 - PostgreSQL
 - AWS S3 Account (for image storage)
@@ -30,11 +30,11 @@ cd hensei-api
 
 ### 2. Install Ruby
 
-Ensure you have Ruby 3.3.7 installed. If using rbenv:
+Ensure you have Ruby 3.4.4 installed. If using rbenv:
 
 ```bash
-rbenv install 3.3.7
-rbenv local 3.3.7
+rbenv install 3.4.4
+rbenv local 3.4.4
 ```
 
 ### 3. Install Dependencies

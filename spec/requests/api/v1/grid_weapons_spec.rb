@@ -277,6 +277,25 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(response.parsed_body['grid_weapon']).to include('uncap_level' => 4, 'position' => 5)
       expect { conflicting_weapon.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it 'does not destroy conflicting weapon ids from another party' do
+      other_party = create(:party, user: create(:user))
+      other_conflicting_weapon = create(:grid_weapon,
+                                        party: other_party,
+                                        weapon: weapon,
+                                        position: 5,
+                                        uncap_level: 3)
+
+      resolve_params[:resolve][:conflicting] = [conflicting_weapon.id, other_conflicting_weapon.id]
+
+      expect do
+        post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers
+      end.to change(GridWeapon, :count).by(0)
+
+      expect(response).to have_http_status(:created)
+      expect { conflicting_weapon.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_conflicting_weapon.reload).to be_persisted
+    end
   end
 
   describe 'DELETE /api/v1/grid_weapons/:id (destroy action)' do

@@ -206,7 +206,7 @@ module Api
         incoming = find_by_any_id(Character, resolve_params[:incoming])
         render_not_found_response('character') and return unless incoming
 
-        conflicting = resolve_params[:conflicting].map { |id| GridCharacter.find_by(id: id) }.compact
+        conflicting = GridCharacter.where(id: resolve_params[:conflicting], party_id: @party.id)
         conflicting.each(&:destroy)
 
         if (existing = GridCharacter.find_by(party_id: @party.id, position: resolve_params[:position]))
