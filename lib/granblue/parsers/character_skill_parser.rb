@@ -17,6 +17,14 @@ module Granblue
       # Level threshold => Transcendence stage (checked high to low).
       TRANSCENDENCE_STAGE_LEVELS = { 150 => 5, TRANSCENDENCE_MIN_LEVEL => 1 }.freeze
 
+      # Variant roles whose JP text comes from a transform row, not the base skill.
+      STATE_VARIANT_ROLES = %w[transform_alt form_alt option].freeze
+      # Template/wikilink delimiters that suppress top-level "|" splitting.
+      MARKUP_OPENERS = ['{{', '[['].freeze
+      MARKUP_CLOSERS = ['}}', ']]'].freeze
+      # When a clause yields no subject, default by effect type (the clear cases).
+      DEFAULT_TARGETS = { 'grant_status' => 'caster', 'inflict_status' => 'one_foe', 'field_effect' => 'field' }.freeze
+
       TYPE_COLORS = {
         'red' => 'damage',
         'green' => 'heal',
@@ -392,11 +400,21 @@ module Granblue
       def display_description(text)
         return if text.blank?
 
-        text.gsub(/\{\{(?:status|tt)\|([^|}]+)[^}]*\}\}/i, '\\1')
-            .gsub(/\{\{[^{}]*\}\}/, '')
-            .gsub(/[^\S\n]{2,}/, ' ')
-            .strip
-            .presence
+        result = text.gsub(/\[\[(?:[^\]|]*\|)?([^\]]+)\]\]/, '\\1') # [[Page|Text]] / [[Page]] -> Text/Page
+        # Collapse {{status|Name|…}} / {{tt|Display|…}} to their first arg,
+        # repeating so nested templates unwind innermost-first.
+        loop do
+          collapsed = result.gsub(/\{\{(?:status|tt)\|([^|{}]+)[^{}]*\}\}/i, '\\1')
+          break if collapsed == result
+
+          result = collapsed
+        end
+
+        result.gsub(/\{\{[^{}]*\}\}/, '') # drop any remaining flat template
+              .gsub(/[{}]{2,}/, '')       # orphaned braces from unbalanced nesting
+              .gsub(/[^\S\n]{2,}/, ' ')
+              .strip
+              .presence
       end
 
       # Fills name_jp/description_jp from the cached Japanese wiki (wiki_raw_jp),
@@ -438,7 +456,7 @@ module Granblue
         base = group.first
         transforms = group.drop(1)
         slot[:versions].each do |version|
-          alt = transforms.shift if %w[transform_alt form_alt option].include?(version[:attrs][:variant_role])
+          alt = transforms.shift if STATE_VARIANT_ROLES.include?(version[:attrs][:variant_role])
           set_jp(version, alt || base)
         end
       end
@@ -465,11 +483,12 @@ module Granblue
           status = find_status(name)
           @unmatched_statuses << name if status.nil?
           duration = duration_from_status(params['t'])
+          effect_type = effect_type_for_status(local_context(description, offset), status)
 
           effects << {
             ordinal: ordinal,
-            effect_type: effect_type_for_status(local_context(description, offset), status),
-            target: target_at(clauses, offset),
+            effect_type: effect_type,
+            target: target_at(clauses, offset) || DEFAULT_TARGETS[effect_type],
             status_id: status&.id,
             amount: params['a'],
             amount_max: params['am'],
@@ -874,13 +893,14 @@ module Granblue
         index = 0
 
         while index < text.length
-          if text[index, 2] == '{{'
+          pair = text[index, 2]
+          if MARKUP_OPENERS.include?(pair)
             depth += 1
-            buffer << '{{'
+            buffer << pair
             index += 2
-          elsif text[index, 2] == '}}'
+          elsif MARKUP_CLOSERS.include?(pair)
             depth -= 1 if depth.positive?
-            buffer << '}}'
+            buffer << pair
             index += 2
           elsif text[index] == '|' && depth.zero?
             parts << buffer
