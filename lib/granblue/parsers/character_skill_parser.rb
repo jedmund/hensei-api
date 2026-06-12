@@ -1,619 +1,802 @@
 # frozen_string_literal: true
 
+require 'bigdecimal/util'
+
 module Granblue
   module Parsers
+    # Parses character ability/ougi/support wiki params into the normalized graph.
     class CharacterSkillParser
-      require 'nokogiri'
+      TT_TEMPLATE = /\{\{tt\|([\d.]+)%\|[^}]+\}\}/i
 
-      def initialize(character)
+      # Window of surrounding text used to classify an individual effect clause.
+      CONTEXT_RADIUS = 80
+      CONTEXT_WIDTH = 180
+
+      # A skill relearned at or past this level is a Transcendence upgrade.
+      TRANSCENDENCE_MIN_LEVEL = 120
+      # Level threshold => Transcendence stage (checked high to low).
+      TRANSCENDENCE_STAGE_LEVELS = { 150 => 5, TRANSCENDENCE_MIN_LEVEL => 1 }.freeze
+
+      TYPE_COLORS = {
+        'red' => 'damage',
+        'green' => 'heal',
+        'yellow' => 'buff',
+        'blue' => 'debuff',
+        'purple' => 'field'
+      }.freeze
+
+      STACKING_FRAMES = {
+        'n' => 'normal',
+        'normal' => 'normal',
+        'smn' => 'summon',
+        'summon' => 'summon',
+        'u' => 'unique',
+        'us' => 'unique',
+        'unique' => 'unique',
+        'seraphic' => 'seraphic',
+        'ex' => 'ex',
+        'ass' => 'assassin',
+        'assassin' => 'assassin'
+      }.freeze
+
+      attr_reader :character
+
+      # status_lookup: an optional preloaded { by_name:, by_id: } index so a batch
+      # run resolves the Status catalog once instead of per character.
+      def initialize(character, status_lookup: nil)
         @character = character
-        @wiki_data = begin
-          # Don't try to parse as JSON - parse as MediaWiki format instead
-          extract_wiki_data(@character.wiki_raw)
+        @data = CharacterWikiData.new(character)
+        @status_lookup = status_lookup
+        @unmatched_statuses = Set.new
+        @missing_fields = []
+        @links = []
+        @version_keys = Set.new
+      end
+
+      def parse(persist: false)
+        graph = {
+          character_granblue_id: character.granblue_id,
+          slots: build_ability_slots + build_ougi_slots + build_support_slots,
+          links: []
+        }
+
+        graph[:links] = @links.select do |link|
+          @version_keys.include?(link[:from_version_key]) && @version_keys.include?(link[:to_version_key])
+        end
+
+        report = report_for(graph)
+        persist_graph!(graph) if persist
+        report
+      end
+
+      def self.persist_all(debug: false, overwrite: false)
+        characters = Character.where.not(wiki_raw: [nil, ''])
+        characters = characters.left_joins(:character_skills).where(character_skills: { id: nil }) unless overwrite
+
+        total = characters.count
+        processed = 0
+        errors = []
+        status_lookup = build_status_lookup
+
+        characters.find_each.with_index do |character, index|
+          if debug
+            percentage = total.zero? ? 100.0 : ((index + 1) / total.to_f * 100).round(1)
+            puts "#{percentage}%: Processing skills for #{character.name_en} (#{character.granblue_id})..."
+          end
+
+          new(character, status_lookup: status_lookup).parse(persist: true)
+          processed += 1
         rescue StandardError => e
-          Rails.logger.error "Error parsing wiki raw data: #{e.message}"
-          nil
+          errors << "#{character.granblue_id}: #{e.message}"
+          Rails.logger.error "[CHARACTER_SKILLS] Failed for #{character.granblue_id}: #{e.message}"
         end
-        @game_data = @character.game_raw_en
+
+        { processed: processed, skipped: total - processed - errors.size, errors: errors }
       end
 
-      def extract_wiki_data(wikitext)
-        return nil unless wikitext.present?
-
-        data = {}
-        # Extract basic character info from template
-        wikitext.scan(/\|(\w+)=([^\n|]+)/) do |key, value|
-          data[key] = value.strip
+      # Preloads the Status catalog into name/id indexes for O(1) lookups.
+      def self.build_status_lookup
+        Status.all.each_with_object({ by_name: {}, by_id: {} }) do |status, acc|
+          acc[:by_name][status.name_en.to_s.downcase] = status
+          acc[:by_id][status.id] = status
         end
-
-        # Extract ability count
-        if match = wikitext.match(/\|abilitycount=\s*(\d+)/)
-          data['abilitycount'] = match[1]
-        end
-
-        # Extract individual abilities
-        skill_count = data['abilitycount'].to_i
-        (1..skill_count).each do |position|
-          # Extract ability icon, name, cooldown, etc.
-          extract_skill_data(wikitext, position, data)
-        end
-
-        # Extract charge attack data
-        extract_ougi_data(wikitext, data)
-
-        data
-      end
-
-      def extract_skill_data(wikitext, position, data)
-        prefix = "a#{position}"
-
-        # Extract skill name
-        if match = wikitext.match(/\|#{prefix}_name=\s*([^\n|]+)/)
-          data["#{prefix}_name"] = match[1].strip
-        end
-
-        # Extract skill cooldown
-        if match = wikitext.match(/\|#{prefix}_cd=\s*\{\{InfoCd[^}]*cooldown=(\d+)[^}]*\}\}/)
-          data["#{prefix}_cd"] = match[1]
-        end
-
-        # Extract skill description using InfoDes template
-        if match = wikitext.match(/\|#{prefix}_effdesc=\s*\{\{InfoDes\|num=\d+\|des=([^|]+)(?:\|[^}]+)?\}\}/)
-          data["#{prefix}_effdesc"] = match[1].strip
-        end
-
-        # Check for alt version indicator
-        data["#{prefix}_option"] = 'alt' if wikitext.match(/\|#{prefix}_option=alt/)
-
-        # Extract obtained level
-        if (match = wikitext.match(/\|#{prefix}_oblevel=\s*\{\{InfoOb\|obtained=(\d+)(?:\|[^}]+)?\}\}/))
-          data["#{prefix}_oblevel"] = "obtained=#{match[1]}"
-        end
-
-        # Extract enhanced level if present
-        if (match = wikitext.match(/\|#{prefix}_oblevel=\s*\{\{InfoOb\|obtained=\d+\|enhanced=(\d+)(?:\|[^}]+)?\}\}/))
-          data["#{prefix}_oblevel"] += "|enhanced=#{match[1]}"
-        end
-      end
-
-      def extract_ougi_data(wikitext, data)
-        # Extract charge attack name
-        if (match = wikitext.match(/\|ougi_name=\s*([^\n|]+)/))
-          data['ougi_name'] = match[1].strip
-        end
-
-        # Extract charge attack description
-        if (match = wikitext.match(/\|ougi_desc=\s*([^\n|]+)/))
-          data['ougi_desc'] = match[1].strip
-        end
-
-        # Extract FLB/ULB charge attack details if present
-        if (match = wikitext.match(/\|ougi2_name=\s*([^\n|]+)/))
-          data['ougi2_name'] = match[1].strip
-        end
-
-        return unless (match = wikitext.match(/\|ougi2_desc=\s*([^\n|]+)/))
-
-        data['ougi2_desc'] = match[1].strip
-      end
-
-      def parse_and_save
-        return unless @wiki_data && @game_data
-
-        # Parse and save skills
-        parse_skills
-
-        # Parse and save charge attack
-        parse_charge_attack
-
-        # Return success status
-        true
-      rescue StandardError => e
-        Rails.logger.error "Error parsing skills for character #{@character.name_en}: #{e.message}"
-        Rails.logger.error e.backtrace.join("\n")
-        false
       end
 
       private
 
-      def parse_skills
-        # Get ability data from game data
-        game_abilities = @game_data['ability'] || {}
-        ap 'Game'
-        ap game_abilities
+      attr_reader :data
 
-        # Get skill count from wiki data
-        skill_count = @wiki_data['abilitycount'].to_i
-        ap 'Wiki'
-        ap skill_count
+      def wiki_params
+        data.params
+      end
 
-        # Process each skill
-        (1..skill_count).each do |position|
-          game_skill = game_abilities[position.to_s]
-          next unless game_skill
+      def status_lookup
+        @status_lookup ||= self.class.build_status_lookup
+      end
 
-          # Create or find skill
-          skill = Skill.find_or_initialize_by(
-            name_en: game_skill['name_en'] || game_skill['name'],
-            skill_type: Skill.skill_types[:character]
+      def build_ability_slots
+        count = wiki_params['abilitycount'].to_i
+        return [] if count.zero?
+
+        slots = (1..count).filter_map do |position|
+          build_ability_slot(position)
+        end
+
+        resolve_variants(slots)
+        slots
+      end
+
+      def build_ability_slot(position)
+        base_key = "a#{position}"
+        return if wiki_params["#{base_key}_name"].blank?
+
+        game = data.game_action(base_key)
+        slot = {
+          key: slot_key('ability', position),
+          attrs: {
+            character_granblue_id: character.granblue_id,
+            kind: 'ability',
+            position: position,
+            game_action_id: game&.dig('action_id')
+          },
+          versions: []
+        }
+
+        base_overrides = inline_base_overrides(base_key)
+        base_version = build_version(base_key, slot, role: base_role_for(base_key), ordinal: next_ordinal(slot), overrides: base_overrides)
+        slot[:versions] << base_version
+
+        build_enhanced_versions(base_key, slot, base_version).each { |version| slot[:versions] << version }
+        build_inline_transform_alt(base_key, slot, base_version)&.then { |version| slot[:versions] << version }
+
+        slot
+      end
+
+      def build_ougi_slots
+        ougi_keys = wiki_params.keys.grep(/\Aougi\d*_name\z/).sort_by { |key| key[/\d+/].to_i }
+        ougi_keys = ['ougi_name'] if ougi_keys.empty? && wiki_params['ougi_name'].present?
+        return [] if ougi_keys.none? { |key| wiki_params[key].present? }
+
+        slot = {
+          key: slot_key('ougi', 1),
+          attrs: {
+            character_granblue_id: character.granblue_id,
+            kind: 'ougi',
+            position: 1,
+            game_action_id: data.game_action('ougi')&.dig('action_id')
+          },
+          versions: []
+        }
+
+        ougi_keys.each do |name_key|
+          next if wiki_params[name_key].blank?
+
+          key = name_key.delete_suffix('_name')
+          role, min_uncap, transcendence_stage = ougi_progression_for(key)
+          slot[:versions] << build_version(
+            key,
+            slot,
+            role: role,
+            ordinal: next_ordinal(slot),
+            overrides: {
+              min_uncap: min_uncap,
+              transcendence_stage: transcendence_stage
+            }
           )
+        end
 
-          # Set skill attributes
-          skill.name_jp = game_skill['name'] if game_skill['name'].present?
-          skill.description_en = game_skill['comment_en'] || game_skill['comment']
-          skill.description_jp = game_skill['comment'] if game_skill['comment'].present?
-          skill.border_type = extract_border_type(game_skill)
-          skill.cooldown = game_skill['recast'].to_i if game_skill['recast'].present?
+        [slot]
+      end
 
-          # Save skill
-          skill.save!
+      def build_support_slots
+        count = wiki_params['s_abilitycount'].to_i
+        return [] if count.zero?
 
-          # Wiki data for skill
-          wiki_skill_key = "a#{position}"
-          wiki_skill = @wiki_data[wiki_skill_key] || {}
+        (1..count).filter_map do |position|
+          key = position == 1 ? 'sa' : "sa#{position}"
+          next if wiki_params["#{key}_name"].blank?
 
-          # Create character skill connection
-          character_skill = CharacterSkill.find_or_initialize_by(
-            character_granblue_id: @character.granblue_id,
-            position: position
-          )
+          slot = {
+            key: slot_key('support', position),
+            attrs: {
+              character_granblue_id: character.granblue_id,
+              kind: 'support',
+              position: position,
+              game_action_id: nil
+            },
+            versions: []
+          }
 
-          character_skill.skill = skill
-          character_skill.unlock_level = wiki_skill["a#{position}_oblevel"]&.match(/obtained=(\d+)/)&.captures&.first&.to_i || 1
-          character_skill.improve_level = wiki_skill["a#{position}_oblevel"]&.match(/enhanced=(\d+)/)&.captures&.first&.to_i
+          base_version = build_version(key, slot, role: 'base', ordinal: next_ordinal(slot))
+          slot[:versions] << base_version
+          build_enhanced_versions(key, slot, base_version, description_suffix: 'desc').each { |version| slot[:versions] << version }
+          slot
+        end
+      end
 
-          # Check for alt version
-          if game_skill['display_action_ability_info']&.dig('action_ability')&.any?
-            # Handle alt version of skill
-            alt_action = game_skill['display_action_ability_info']['action_ability'].first
+      def resolve_variants(slots)
+        variant_groups.each do |group|
+          (1..group[:count]).each do |index|
+            parent_position = group[:parent_position] || (group[:role] == 'form_alt' ? index : nil)
+            parent = slots.find { |slot| slot[:attrs][:kind] == 'ability' && slot[:attrs][:position] == parent_position }
+            next unless parent
 
-            alt_skill = Skill.find_or_initialize_by(
-              name_en: alt_action['name_en'] || alt_action['name'],
-              skill_type: Skill.skill_types[:character]
+            parent_version = option_parent_version(parent)
+            key = "a#{index}#{group[:suffix]}"
+            next if wiki_params["#{key}_name"].blank?
+
+            role = group[:role]
+            version = build_version(
+              key,
+              parent,
+              role: role,
+              ordinal: next_ordinal(parent),
+              overrides: trigger_for_group(group, parent)
             )
+            parent[:versions] << version
 
-            alt_skill.name_jp = alt_action['name'] if alt_action['name'].present?
-            alt_skill.description_en = alt_action['comment_en'] || alt_action['comment']
-            alt_skill.description_jp = alt_action['comment'] if alt_action['comment'].present?
-            alt_skill.border_type = extract_border_type(alt_action)
-            alt_skill.cooldown = alt_action['recast'].to_i if alt_action['recast'].present?
+            relation = relation_for_role(role)
+            add_link(parent_version[:key], version[:key], relation) if relation
+          end
+        end
+      end
 
-            alt_skill.save!
+      def variant_groups
+        groups = wiki_params.keys.grep(/\Aability(?:title|subtitle)_[a-z]\z/).filter_map do |key|
+          suffix = key[-1]
+          title = wiki_params["abilitytitle_#{suffix}"].to_s
+          subtitle = wiki_params["abilitysubtitle_#{suffix}"].to_s
+          parent_position = title[/CharacterSkill[2]?\|.*?\|(\d+)/, 1]&.to_i
+          count = wiki_params["abilitycount_#{suffix}"].to_i
+          next if count.zero?
+          next if parent_position.blank? && subtitle.blank?
 
-            character_skill.alt_skill = alt_skill
+          {
+            suffix: suffix,
+            parent_position: parent_position,
+            count: count,
+            role: group_role(title, subtitle),
+            title: title,
+            subtitle: subtitle
+          }
+        end
 
-            # Parse condition for alt version
-            if wiki_skill['alt_condition'].present?
-              character_skill.alt_condition = wiki_skill['alt_condition']
-            elsif game_skill['comment_en']&.include?('when')
-              # Try to extract condition from comment
-              if match = game_skill['comment_en'].match(/\(.*?when\s+(.*?)\s*(?::|$)/i)
-                character_skill.alt_condition = match[1]
+        groups.uniq { |group| group[:suffix] }
+      end
+
+      # A group's own subtitle marks a form set; otherwise the title flags an
+      # options menu, and everything else is a transform/alt set.
+      def group_role(title, subtitle)
+        if subtitle.present?
+          'form_alt'
+        elsif title.include?('Character/Skills/Options')
+          'option'
+        else
+          'transform_alt'
+        end
+      end
+
+      def build_inline_transform_alt(base_key, slot, base_version)
+        return unless inline_alt?(base_key)
+
+        names = split_name(wiki_params["#{base_key}_name"])
+        return if names.second.blank?
+
+        version = build_version(
+          base_key,
+          slot,
+          role: 'transform_alt',
+          ordinal: next_ordinal(slot),
+          overrides: {
+            name_en: names.second,
+            trigger_type: trigger_type_for_text(wiki_params["#{base_key}_effdesc"]),
+            trigger_value: trigger_value_for_text(wiki_params["#{base_key}_effdesc"])
+          }
+        )
+        add_link(base_version[:key], version[:key], 'transforms_to')
+        version
+      end
+
+      def inline_base_overrides(base_key)
+        return {} unless inline_alt?(base_key)
+
+        first_name = split_name(wiki_params["#{base_key}_name"]).first
+        first_name.present? ? { name_en: first_name } : {}
+      end
+
+      def inline_alt?(base_key)
+        wiki_params["#{base_key}_option"].to_s.include?('alt') ||
+          wiki_params["#{base_key}_option1"].to_s.include?('alt')
+      end
+
+      def build_enhanced_versions(base_key, slot, base_version, description_suffix: 'effdesc')
+        levels = parse_ob_levels(wiki_params["#{base_key}_oblevel"] || wiki_params["#{base_key}_level"])[:enhanced]
+        info_desc = parse_info_des(wiki_params["#{base_key}_#{description_suffix}"])
+        cooldowns = parse_cooldown(wiki_params["#{base_key}_cd"])
+
+        levels.each_with_index.filter_map do |level, index|
+          description = info_desc[:descriptions][index + 1]
+          cooldown = cooldowns[:enhanced][index]
+          next if description.blank? && cooldown.blank?
+
+          role = level >= TRANSCENDENCE_MIN_LEVEL ? 'transcendence_upgrade' : 'enhanced'
+          build_version(
+            base_key,
+            slot,
+            role: role,
+            ordinal: next_ordinal(slot),
+            overrides: {
+              **inline_base_overrides(base_key),
+              unlock_level: level,
+              enhance_levels: [level],
+              transcendence_stage: transcendence_stage_for_level(level),
+              description_en: description.presence || base_version[:attrs][:description_en],
+              cooldown: cooldown.presence || base_version[:attrs][:cooldown]
+            }
+          )
+        end
+      end
+
+      def build_version(key, slot, role:, ordinal:, overrides: {})
+        description = description_for(key)
+        game = data.game_action(key)
+        jp = data.game_action(key, lang: :jp)
+        ob_levels = parse_ob_levels(wiki_params["#{key}_oblevel"] || wiki_params["#{key}_level"])
+        info_desc = parse_info_des(wiki_params["#{key}_effdesc"] || wiki_params["#{key}_desc"])
+        cooldown = parse_cooldown(wiki_params["#{key}_cd"])
+        duration = parse_duration_value(wiki_params["#{key}_dur"])
+        attrs = {
+          name_en: clean_markup(overrides[:name_en] || wiki_params["#{key}_name"] || game&.dig('name_en') || game&.dig('name')),
+          name_jp: jp_name_for(jp),
+          description_en: clean_description(overrides[:description_en] || description || info_desc[:descriptions].first),
+          description_jp: clean_description(jp&.dig('comment')),
+          icon: first_icon(wiki_params["#{key}_icon"]),
+          type_color: TYPE_COLORS[wiki_params["#{key}_color"].to_s.strip.downcase],
+          cooldown: cooldown[:base],
+          initial_cooldown: cooldown[:initial],
+          duration_value: duration[:value],
+          duration_unit: duration[:unit],
+          variant_role: role,
+          ordinal: ordinal,
+          unlock_level: ob_levels[:obtained],
+          enhance_levels: ob_levels[:enhanced],
+          min_uncap: 4,
+          transcendence_stage: nil,
+          trigger_type: 'none',
+          trigger_value: nil,
+          cant_recast: cant_recast?(description),
+          one_time_use: one_time_use?(description),
+          auto_activate: auto_activate?(description),
+          mimicable: wiki_params["#{key}_mimic"].to_s.strip == 'y',
+          targets_all: targets_all?(description),
+          game_action_id: game&.dig('action_id')
+        }.merge(overrides.except(:name_en, :description_en))
+
+        version_key = version_key(slot, key, role, ordinal)
+        @version_keys << version_key
+
+        {
+          key: version_key,
+          source_key: key,
+          attrs: attrs.compact,
+          effects: parse_effects(attrs[:description_en])
+        }
+      end
+
+      def parse_effects(effdesc)
+        description = effdesc.to_s
+        effects = []
+        ordinal = 0
+
+        scan_with_offsets(description, CharacterWikiData::STATUS_TEMPLATE).each do |inner, offset|
+          ordinal += 1
+          raw = "{{status|#{inner}}}"
+          parts = inner.split('|')
+          name = clean_status_name(parts.shift)
+          params = template_params(parts)
+          status = find_status(name)
+          @unmatched_statuses << name if status.nil?
+          context = local_context(description, offset)
+          duration = duration_from_status(params['t'])
+
+          effects << {
+            ordinal: ordinal,
+            effect_type: effect_type_for_status(context, status),
+            target: target_for_text(context),
+            status_id: status&.id,
+            amount: params['a'],
+            amount_max: params['am'],
+            duration_value: duration[:value],
+            duration_unit: duration[:unit],
+            accuracy: params['acc'],
+            stacking_frame: STACKING_FRAMES[params['s'].to_s.downcase],
+            raw: raw
+          }.compact
+        end
+
+        scan_with_offsets(description, TT_TEMPLATE).each do |pct, offset|
+          ordinal += 1
+          context = local_context(description, offset)
+          effects << {
+            ordinal: ordinal,
+            effect_type: 'deal_damage',
+            target: target_for_text(context),
+            damage_pct: pct.to_d,
+            damage_cap: damage_cap(context),
+            hit_count: hit_count(context),
+            raw: pct
+          }.compact
+        end
+
+        # NOTE: heal/dispel are coarse whole-description heuristics — at most one
+        # of each per version. Refine to per-clause parsing if fidelity demands it.
+        effects << other_effect(description, ordinal + 1, 'dispel', /remove \d+ buff/i)
+        effects << other_effect(description, ordinal + 2, 'heal', /restore .*hp|healing cap/i)
+        effects.compact
+      end
+
+      def cross_validate_statuses(graph)
+        graph[:slots].flat_map do |slot|
+          slot[:versions].filter_map do |version|
+            game_ids = data.csv(data.game_action(version[:source_key])&.dig('ailment'))
+            parsed_ids = version[:effects].filter_map { |effect| effect[:status_id] && status_ailment_id(effect[:status_id]) }
+            missing = game_ids - parsed_ids
+            next if missing.empty?
+
+            {
+              slot: slot[:attrs].slice(:kind, :position),
+              version: version[:attrs][:name_en],
+              missing_game_ailment_ids: missing
+            }
+          end
+        end
+      end
+
+      def persist_graph!(graph)
+        ActiveRecord::Base.transaction do
+          CharacterSkill.where(character_granblue_id: character.granblue_id).destroy_all
+
+          versions_by_key = {}
+          graph[:slots].each do |slot_hash|
+            slot = CharacterSkill.create!(permitted_attrs(CharacterSkill, slot_hash[:attrs]))
+            slot_hash[:versions].each do |version_hash|
+              version_attrs = permitted_attrs(CharacterSkillVersion, version_hash[:attrs]).merge(character_skill_id: slot.id)
+              version = CharacterSkillVersion.create!(version_attrs)
+              versions_by_key[version_hash[:key]] = version
+
+              version_hash[:effects].each do |effect_hash|
+                effect_attrs = permitted_attrs(SkillEffect, effect_hash).merge(character_skill_version_id: version.id)
+                SkillEffect.create!(effect_attrs)
               end
             end
           end
 
-          character_skill.save!
+          graph[:links].each do |link_hash|
+            from_version = versions_by_key[link_hash[:from_version_key]]
+            to_version = versions_by_key[link_hash[:to_version_key]]
+            next if from_version.blank? || to_version.blank?
 
-          # Parse and save effects
-          parse_effects_for_skill(skill, game_skill)
-
-          # If alt skill exists, parse its effects too
-          if character_skill.alt_skill
-            alt_action = game_skill['display_action_ability_info']['action_ability'].first
-            parse_effects_for_skill(character_skill.alt_skill, alt_action)
+            CharacterSkillVersionLink.create!(
+              from_version_id: from_version.id,
+              to_version_id: to_version.id,
+              relation: link_hash[:relation]
+            )
           end
         end
       end
 
-      def parse_charge_attack
-        ap 'Parsing charge attack...'
-        # Get charge attack data from wiki and game
-        wiki_ougi = {
-          'name' => @wiki_data['ougi_name'],
-          'desc' => @wiki_data['ougi_desc']
+      def report_for(graph)
+        {
+          character_granblue_id: character.granblue_id,
+          counts: {
+            slots: graph[:slots].size,
+            versions: graph[:slots].sum { |slot| slot[:versions].size },
+            effects: graph[:slots].sum { |slot| slot[:versions].sum { |version| version[:effects].size } },
+            links: graph[:links].size
+          },
+          unmatched_statuses: @unmatched_statuses.to_a.sort,
+          missing_fields: @missing_fields.uniq,
+          cross_validation: cross_validate_statuses(graph),
+          slots: graph[:slots],
+          links: graph[:links]
         }
-
-        # ap @game_data
-        game_ougi = @game_data['special_skill']
-        ap 'Game ougi:'
-        ap game_ougi
-        return unless game_ougi
-
-        puts 'Wiki'
-        puts wiki_ougi
-        puts 'Game'
-        puts game_ougi
-
-        # Create skill for charge attack
-        skill = Skill.find_or_initialize_by(
-          name_en: wiki_ougi['name'] || game_ougi['name'],
-          skill_type: Skill.skill_types[:charge_attack]
-        )
-
-        skill.name_jp = game_ougi['name'] if game_ougi['name'].present?
-        skill.description_en = wiki_ougi['desc'] || game_ougi['comment']
-        skill.description_jp = game_ougi['comment'] if game_ougi['comment'].present?
-        skill.save!
-
-        # Create charge attack record
-        charge_attack = ChargeAttack.find_or_initialize_by(
-          owner_id: @character.granblue_id,
-          owner_type: 'character',
-          uncap_level: 0
-        )
-
-        charge_attack.skill = skill
-        charge_attack.save!
-
-        # Parse effects for charge attack
-        parse_effects_for_charge_attack(skill, wiki_ougi['desc'], game_ougi)
-
-        # If there are uncapped charge attacks
-        return unless @wiki_data['ougi2_name'].present?
-
-        # Process 5* uncap charge attack
-        alt_skill = Skill.find_or_initialize_by(
-          name_en: @wiki_data['ougi2_name'],
-          skill_type: Skill.skill_types[:charge_attack]
-        )
-
-        alt_skill.description_en = @wiki_data['ougi2_desc']
-        alt_skill.save!
-
-        # Create alt charge attack record
-        alt_charge_attack = ChargeAttack.find_or_initialize_by(
-          owner_id: @character.granblue_id,
-          owner_type: 'character',
-          uncap_level: 4 # 5* uncap
-        )
-
-        alt_charge_attack.skill = alt_skill
-        alt_charge_attack.save!
-
-        # Parse effects for alt charge attack
-        parse_effects_for_charge_attack(alt_skill, @wiki_data['ougi2_desc'], nil)
       end
 
-      def parse_effects_for_skill(skill, game_skill)
-        # Look for buff/debuff details
-        if game_skill['ability_detail'].present?
-          # Process buffs
-          if game_skill['ability_detail']['buff'].present?
-            game_skill['ability_detail']['buff'].each do |buff_data|
-              create_effect_from_game_data(skill, buff_data, :buff)
-            end
-          end
+      def permitted_attrs(model, attrs)
+        attrs.slice(*model.column_names.map(&:to_sym))
+      end
 
-          # Process debuffs
-          if game_skill['ability_detail']['debuff'].present?
-            game_skill['ability_detail']['debuff'].each do |debuff_data|
-              create_effect_from_game_data(skill, debuff_data, :debuff)
-            end
-          end
+      def description_for(key)
+        parsed = parse_info_des(wiki_params["#{key}_effdesc"] || wiki_params["#{key}_desc"])
+        parsed[:descriptions].first.presence || wiki_params["#{key}_desc"]
+      end
+
+      def parse_info_des(value)
+        text = value.to_s
+        inner = text.sub(/\A\{\{InfoDes\|/i, '').delete_suffix('}}')
+        params = split_top_level(inner).each_with_object({}) do |part, result|
+          key, param_value = part.split('=', 2)
+          result[key.to_s.strip] = param_value if key.present? && param_value
         end
 
-        # Also try to extract effects from description
-        extract_effects_from_description(skill, game_skill['comment_en'] || game_skill['comment'])
-      end
-
-      def parse_effects_for_charge_attack(skill, description, game_ougi)
-        # Extract effects from charge attack description
-        extract_effects_from_description(skill, description)
-
-        # If we have game data, try to extract more details
-        return unless game_ougi && game_ougi['comment'].present?
-
-        extract_effects_from_description(skill, game_ougi['comment'])
-      end
-
-      def create_effect_from_game_data(skill, effect_data, effect_type)
-        # Extract effect name and status code
-        status = effect_data['status']
-        detail = effect_data['detail']
-        effect_duration = effect_data['effect']
-
-        # Get effect class (normalized type) from the detail
-        effect_class = normalize_effect_class(detail)
-
-        # Create or find effect
-        effect = Effect.find_or_initialize_by(
-          name_en: detail,
-          effect_type: Effect.effect_types[effect_type]
-        )
-
-        effect.effect_class = effect_class
-        effect.save!
-
-        # Create skill effect connection
-        skill_effect = SkillEffect.find_or_initialize_by(
-          skill: skill,
-          effect: effect
-        )
-
-        # Figure out target type
-        target_type = determine_target_type(skill, detail)
-        skill_effect.target_type = target_type
-
-        # Figure out duration
-        duration_info = parse_duration(effect_duration)
-        skill_effect.duration_type = duration_info[:type]
-        skill_effect.duration_value = duration_info[:value]
-
-        # Other attributes
-        skill_effect.value = extract_value_from_detail(detail)
-        skill_effect.cap = extract_cap_from_detail(detail)
-        skill_effect.permanent = effect_duration.blank? || effect_duration.downcase == 'permanent'
-        skill_effect.undispellable = detail.include?("Can't be removed")
-
-        skill_effect.save!
-      end
-
-      def extract_effects_from_description(skill, description)
-        return unless description.present?
-
-        # Look for status effects in the description with complex pattern matching
-        status_pattern = /\{\{status\|([^|}]+)(?:\|([^}]+))?\}\}/
-
-        description.scan(status_pattern).each do |matches|
-          status_name = matches[0].strip
-          attrs_text = matches[1]
-
-          # Create effect
-          effect = Effect.find_or_initialize_by(
-            name_en: status_name,
-            effect_type: determine_effect_type(status_name)
-          )
-
-          effect.effect_class = normalize_effect_class(status_name)
-          effect.save!
-
-          # Create skill effect with attributes
-          skill_effect = SkillEffect.find_or_initialize_by(
-            skill: skill,
-            effect: effect
-          )
-
-          # Parse attributes from the status tag
-          if attrs_text.present?
-            attrs = {}
-
-            # Extract duration (t=X)
-            if duration_match = attrs_text.match(/t=([^|]+)/)
-              attrs[:duration] = duration_match[1]
-            end
-
-            # Extract value (a=X)
-            if value_match = attrs_text.match(/a=([^|%]+)/)
-              attrs[:value] = value_match[1]
-            end
-
-            # Extract cap
-            if cap_match = attrs_text.match(/cap=(\d+)/)
-              attrs[:cap] = cap_match[1]
-            end
-
-            # Apply extracted attributes
-            skill_effect.target_type = determine_target_type(skill, status_name)
-            skill_effect.value = attrs[:value].to_f if attrs[:value].present?
-            skill_effect.cap = attrs[:cap].to_i if attrs[:cap].present?
-
-            # Parse duration
-            if attrs[:duration].present?
-              duration_info = parse_duration(attrs[:duration])
-              skill_effect.duration_type = duration_info[:type]
-              skill_effect.duration_value = duration_info[:value]
-            end
-
-            skill_effect.undispellable = attrs_text.include?("can't be removed")
-          end
-
-          skill_effect.save!
+        descriptions = [params['des']]
+        params.keys.grep(/\Ades\d+\z/).sort_by { |key| key[/\d+/].to_i }.each do |key|
+          descriptions << params[key]
         end
+
+        { descriptions: descriptions.map { |description| clean_description(description) } }
       end
 
-      def extract_border_type(skill_data)
-        # Map class_name to border type
-        class_name = skill_data['class_name']
-
-        if class_name.nil?
-          nil
-        elsif class_name.end_with?('_1')
-          Skill.border_types[:damage]
-        elsif class_name.end_with?('_2')
-          Skill.border_types[:healing]
-        elsif class_name.end_with?('_3')
-          Skill.border_types[:buff]
-        elsif class_name.end_with?('_4')
-          Skill.border_types[:debuff]
-        elsif class_name.end_with?('_5')
-          Skill.border_types[:field]
-        else
-          nil
-        end
-      end
-
-      def normalize_effect_class(detail)
-        # Map common effect descriptions to standardized classes
-        return nil unless detail.present?
-
-        detail = detail.downcase
-
-        if detail.include?("can't attack") || detail.include?("can't act") || detail.include?('actions for') || detail.include?('actions are sealed')
-          'cant_act'
-        elsif detail.include?('hp is lowered on every turn') && !detail.include?('putrefied')
-          'poison'
-        elsif detail.include?('putrefied') || detail.include?('hp is lowered on every turn based on')
-          'poison_strong'
-        elsif detail.include?('atk is boosted based on how low hp is') || detail.include?('jammed')
-          'jammed'
-        elsif detail.include?('veil') || detail.include?('debuffs will be nullified')
-          'veil'
-        elsif detail.include?('mirror') || detail.include?('next attack will miss')
-          'mirror_image'
-        elsif detail.match?(/dodge.+hit|taking less dmg/i)
-          'repel'
-        elsif detail.include?('shield') || detail.include?('ineffective for a fixed amount')
-          'shield'
-        elsif detail.include?('counter') && detail.include?('dodge')
-          'counter_on_dodge'
-        elsif detail.include?('counter') && detail.include?('dmg')
-          'counter_on_damage'
-        elsif detail.include?('boost to triple attack') || detail.include?('triple attack rate')
-          'ta_up'
-        elsif detail.include?('boost to double attack') || detail.include?('double attack rate')
-          'da_up'
-        elsif detail.include?('boost to charge bar') || detail.include?('charge boost')
-          'charge_bar_boost'
-        elsif detail.include?('drain') || detail.include?('absorbed to hp')
-          'drain'
-        elsif detail.include?('bonus') && detail.include?('dmg')
-          'echo'
-        elsif detail.match?(/atk is (?:sharply )?boosted/i) && !detail.include?('based on')
-          'atk_up'
-        elsif detail.match?(/def is (?:sharply )?boosted/i) && !detail.include?('based on')
-          'def_up'
-        else
-          # Create a slug from the first few words
-          detail.split(/\s+/).first(3).join('_').gsub(/[^a-z0-9_]/i, '').downcase
-        end
-      end
-
-      def determine_effect_type(name)
-        name = name.downcase
-
-        if name.include?('down') || name.include?('lower') || name.include?('hit') || name.include?('reduced') ||
-           name.include?('blind') || name.include?('petrif') || name.include?('paralyze') || name.include?('stun') ||
-           name.include?('charm') || name.include?('poison') || name.include?('putrefied') || name.include?('sleep') ||
-           name.include?('fear') || name.include?('delay')
-          Effect.effect_types[:debuff]
-        else
-          Effect.effect_types[:buff]
-        end
-      end
-
-      def determine_target_type(skill, detail)
-        # Try to determine target type from skill and detail
-        if detail.downcase.include?('all allies')
-          SkillEffect.target_types[:all_allies]
-        elsif detail.downcase.include?('all foes')
-          SkillEffect.target_types[:all_enemies]
-        elsif detail.downcase.include?('caster') || detail.downcase.include?('own ')
-          SkillEffect.target_types[:self]
-        elsif skill.border_type == Skill.border_types[:buff] || detail.downcase.include?('allies') || detail.downcase.include?('party')
-          SkillEffect.target_types[:ally]
-        elsif skill.border_type == Skill.border_types[:debuff] || detail.downcase.include?('foe') || detail.downcase.include?('enemy')
-          SkillEffect.target_types[:enemy]
-        elsif determine_effect_type(detail) == Effect.effect_types[:buff]
-          # Default
-          SkillEffect.target_types[:self]
-        else
-          SkillEffect.target_types[:enemy]
-        end
-      end
-
-      def parse_duration(duration_text)
-        return { type: SkillEffect.duration_types[:indefinite], value: nil } unless duration_text.present?
-
-        duration_text = duration_text.downcase
-
-        if duration_text.include?('turn')
-          # Parse turns
-          turns = duration_text.scan(/(\d+(?:\.\d+)?)(?:\s*-)?\s*turn/).flatten.first
-          {
-            type: SkillEffect.duration_types[:turns],
-            value: turns.to_f
-          }
-        elsif duration_text.include?('sec')
-          # Parse seconds
-          seconds = duration_text.scan(/(\d+)(?:\s*-)?\s*sec/).flatten.first
-          {
-            type: SkillEffect.duration_types[:seconds],
-            value: seconds.to_i
-          }
-        elsif duration_text.include?('time') || duration_text.include?('hit')
-          # Parse one-time
-          { type: SkillEffect.duration_types[:one_time], value: nil }
-        else
-          # Default to indefinite
-          { type: SkillEffect.duration_types[:indefinite], value: nil }
-        end
-      end
-
-      def parse_status_attributes(attr_string)
-        result = {
-          value: nil,
-          cap: nil,
-          duration: nil,
-          chance: 100, # Default
-          options: []
+      def parse_cooldown(value)
+        text = value.to_s
+        {
+          base: text[/cooldown=(\d+)/, 1]&.to_i,
+          enhanced: text.scan(/cooldown\d+=(\d+)/).flatten.map(&:to_i),
+          initial: text[/ReadyIn\|(\d+)/, 1]&.to_i
         }
+      end
 
-        # Split attributes
-        attrs = attr_string.split('|')
+      def parse_duration_value(value)
+        text = value.to_s
+        if (match = text.match(/InfoDur\|type=([ts])\|duration=([\d.]+)/))
+          { value: match[2].to_i, unit: match[1] == 's' ? 'seconds' : 'turns' }
+        elsif text.strip == '-'
+          { value: nil, unit: 'none' }
+        else
+          { value: nil, unit: nil }
+        end
+      end
 
-        attrs.each do |attr|
-          if attr.include?('=')
-            key, value = attr.split('=', 2)
-            key = key.strip
-            value = value.strip
+      def duration_from_status(value)
+        text = value.to_s
+        case text
+        when /\A(\d+)T\z/i then { value: Regexp.last_match(1).to_i, unit: 'turns' }
+        when /\A(\d+)s\z/i then { value: Regexp.last_match(1).to_i, unit: 'seconds' }
+        when 'i' then { value: nil, unit: 'indefinite' }
+        when '' then { value: nil, unit: nil }
+        else { value: nil, unit: text.match?(/time/i) ? 'one_time' : nil }
+        end
+      end
 
-            case key
-            when 'a'
-              # Value (amount)
-              result[:value] = if value.end_with?('%')
-                                 value.delete('%').to_f
-                               else
-                                 value
-                               end
-            when 'cap'
-              # Cap
-              result[:cap] = value.gsub(/[^\d]/, '').to_i
-            when 't'
-              # Duration
-              result[:duration] = value
-            when 'acc'
-              # Accuracy
-              result[:chance] = if value == 'Guaranteed'
-                                  100
-                                else
-                                  value.delete('%').to_i
-                                end
-            else
-              # Other options
-              result[:options] << "#{key}=#{value}"
-            end
-          elsif attr == 'i'
-            # Simple attributes like "n=1" or just "i"
-            result[:duration] = 'indefinite'
-          elsif attr.start_with?('n=')
-            # Number of hits/times
-            # Store in options
-            result[:options] << attr.strip
+      def parse_ob_levels(value)
+        text = value.to_s
+        {
+          obtained: text[/obtained=(\d+)/, 1]&.to_i,
+          enhanced: text.scan(/enhanced\d*=(\d+)/).flatten.map(&:to_i)
+        }
+      end
+
+      def ougi_progression_for(key)
+        return ['base', 4, nil] if key == 'ougi'
+
+        label = wiki_params["#{key}_label"].to_s
+        if (stage = label[/Stage (\d+) Transcendence/i, 1])
+          ['transcendence_upgrade', 6, stage.to_i]
+        elsif label.include?('uncap=5') || label.match?(/5★|After 5/i)
+          ['uncap_upgrade', 5, nil]
+        elsif label.match?(/Sword form/i)
+          ['form_alt', 4, nil]
+        else
+          ['base', 4, nil]
+        end
+      end
+
+      def base_role_for(key)
+        text = wiki_params["#{key}_effdesc"].to_s
+        return 'conditional' if text.match?(/effect changes based/i) && wiki_params["#{key}_option"].to_s.exclude?('options')
+
+        'base'
+      end
+
+      def trigger_for_group(group, parent)
+        case group[:role]
+        when 'option'
+          { trigger_type: 'menu_select' }
+        when 'form_alt'
+          { trigger_type: 'form_state', trigger_value: group[:subtitle].presence || group[:title] }
+        else
+          parent_text = parent[:versions].first&.dig(:attrs, :description_en)
+          { trigger_type: trigger_type_for_text(parent_text), trigger_value: trigger_value_for_text(parent_text) }
+        end
+      end
+
+      def trigger_type_for_text(text)
+        normalized = trigger_text(text).downcase
+        return 'stack_threshold' if normalized.match?(/when .* (?:is|reaches) \d|at \d/)
+        return 'field_effect' if normalized.include?('utopia')
+        return 'on_cast_toggle' if normalized.include?('changes to') || normalized.include?('upon casting')
+
+        'contextual'
+      end
+
+      def trigger_value_for_text(text)
+        plain_text = trigger_text(text)
+        return 'Utopia active' if plain_text.match?(/Utopia/i)
+
+        if (match = plain_text.match(/When ([^:<]+?) (?:is|reaches) (\d+)/i))
+          return "#{match[1].strip} >= #{match[2]}"
+        end
+
+        nil
+      end
+
+      def trigger_text(text)
+        clean_markup(text).gsub(/\{\{status\|([^|}]+).*?\}\}/i, '\\1')
+      end
+
+      def transcendence_stage_for_level(level)
+        TRANSCENDENCE_STAGE_LEVELS.each { |threshold, stage| return stage if level >= threshold }
+
+        nil
+      end
+
+      def option_parent_version(slot)
+        slot[:versions].reverse.find { |version| version[:attrs][:variant_role] == 'transform_alt' } || slot[:versions].first
+      end
+
+      def relation_for_role(role)
+        {
+          'option' => 'option_of',
+          'form_alt' => 'form_counterpart',
+          'transform_alt' => 'transforms_to'
+        }[role]
+      end
+
+      def add_link(from_key, to_key, relation)
+        @links << { from_version_key: from_key, to_version_key: to_key, relation: relation }
+      end
+
+      def next_ordinal(slot)
+        slot[:versions].size + 1
+      end
+
+      def slot_key(kind, position)
+        "#{kind}:#{position}"
+      end
+
+      def version_key(slot, key, role, ordinal)
+        "#{slot[:key]}:#{key}:#{role}:#{ordinal}"
+      end
+
+      def split_name(name)
+        name.to_s.split('/').map { |part| clean_markup(part) }
+      end
+
+      def jp_name_for(game_action)
+        return if game_action.blank?
+        return if game_action['name_en'].present? && game_action['name'] == game_action['name_en']
+
+        game_action['name']
+      end
+
+      def first_icon(value)
+        value.to_s.split(',').first&.strip.presence
+      end
+
+      def clean_description(value)
+        clean_markup(value).presence
+      end
+
+      def clean_markup(value)
+        value.to_s.strip
+             .gsub(%r{<br\s*/?>}i, "\n")
+             .gsub(%r{<ref[^>]*/>|<ref[^>]*>.*?</ref>}m, '')
+             .gsub(/'{2,}/, '')
+             .strip
+      end
+
+      def cant_recast?(text)
+        text.to_s.match?(/Can't recast/i)
+      end
+
+      def one_time_use?(text)
+        text.to_s.match?(/one[- ]time|can't be reactivated/i)
+      end
+
+      def auto_activate?(text)
+        text.to_s.match?(/auto-activates|activates every/i)
+      end
+
+      def targets_all?(text)
+        text.to_s.match?(/all allies|all foes|all .+ allies/i)
+      end
+
+      def clean_status_name(name)
+        name.to_s.strip
+      end
+
+      def template_params(parts)
+        parts.each_with_object({}) do |part, params|
+          key, value = part.split('=', 2)
+          params[key.to_s.strip.downcase] = value.to_s.strip if value
+        end
+      end
+
+      def find_status(name)
+        status_lookup[:by_name][name.to_s.downcase]
+      end
+
+      def status_ailment_id(status_id)
+        status_lookup[:by_id][status_id]&.game_ailment_id
+      end
+
+      def effect_type_for_status(context, status)
+        return 'field_effect' if status&.category == 'field'
+
+        normalized = context.to_s.downcase
+        if status&.category == 'debuff' || normalized.match?(/inflict|foe|enemy|lowered|delay/)
+          'inflict_status'
+        else
+          'grant_status'
+        end
+      end
+
+      def scan_with_offsets(text, regex)
+        text.to_enum(:scan, regex).map { [Regexp.last_match(1), Regexp.last_match.begin(0)] }
+      end
+
+      def local_context(description, offset)
+        start = [offset - CONTEXT_RADIUS, 0].max
+        description[start, CONTEXT_WIDTH].to_s
+      end
+
+      def target_for_text(text)
+        normalized = text.to_s.downcase
+        return 'all_allies' if normalized.match?(/all (?:[a-z]+ )?allies/)
+        return 'all_foes' if normalized.match?(/all foes|all enemies/)
+        return 'one_ally' if normalized.match?(/an(?:other)? .*ally|one ally/)
+        return 'one_foe' if normalized.match?(/a foe|one foe|an enemy/)
+        return 'caster' if normalized.match?(/caster|own /)
+
+        nil
+      end
+
+      def damage_cap(text)
+        text.to_s[/Damage cap:\s*~?([\d,]+)/i, 1]&.delete(',')&.to_i
+      end
+
+      def hit_count(text)
+        text.to_s[/(\d+)-hit/i, 1]&.to_i
+      end
+
+      def other_effect(description, ordinal, effect_type, matcher)
+        return unless description.match?(matcher)
+
+        {
+          ordinal: ordinal,
+          effect_type: effect_type,
+          target: target_for_text(description),
+          raw: description[matcher]
+        }.compact
+      end
+
+      def split_top_level(text)
+        parts = []
+        buffer = +''
+        depth = 0
+        index = 0
+
+        while index < text.length
+          if text[index, 2] == '{{'
+            depth += 1
+            buffer << '{{'
+            index += 2
+          elsif text[index, 2] == '}}'
+            depth -= 1 if depth.positive?
+            buffer << '}}'
+            index += 2
+          elsif text[index] == '|' && depth.zero?
+            parts << buffer
+            buffer = +''
+            index += 1
           else
-            result[:options] << attr.strip
+            buffer << text[index]
+            index += 1
           end
         end
 
-        result
-      end
-
-      def extract_value_from_detail(detail)
-        # Extract numeric value from detail text
-        if match = detail.match(/(\d+(?:\.\d+)?)%/)
-          match[1].to_f
-        else
-          nil
-        end
-      end
-
-      def extract_cap_from_detail(detail)
-        # Extract cap from detail text
-        if match = detail.match(/cap(?:ped)?\s*(?:at|:)\s*(\d+(?:,\d+)*)/)
-          match[1].gsub(',', '').to_i
-        else
-          nil
-        end
+        parts << buffer
+        parts
       end
     end
   end
