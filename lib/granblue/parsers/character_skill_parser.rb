@@ -44,7 +44,7 @@ module Granblue
         end
 
         report = report_for(graph)
-        persist_graph!(graph) if persist
+        CharacterSkills::Persister.new(character).persist(graph) if persist
         report
       end
 
@@ -388,39 +388,6 @@ module Granblue
         end
       end
 
-      def persist_graph!(graph)
-        ActiveRecord::Base.transaction do
-          CharacterSkill.where(character_granblue_id: character.granblue_id).destroy_all
-
-          versions_by_key = {}
-          graph[:slots].each do |slot_hash|
-            slot = CharacterSkill.create!(permitted_attrs(CharacterSkill, slot_hash[:attrs]))
-            slot_hash[:versions].each do |version_hash|
-              version_attrs = permitted_attrs(CharacterSkillVersion, version_hash[:attrs]).merge(character_skill_id: slot.id)
-              version = CharacterSkillVersion.create!(version_attrs)
-              versions_by_key[version_hash[:key]] = version
-
-              version_hash[:effects].each do |effect_hash|
-                effect_attrs = permitted_attrs(SkillEffect, effect_hash).merge(character_skill_version_id: version.id)
-                SkillEffect.create!(effect_attrs)
-              end
-            end
-          end
-
-          graph[:links].each do |link_hash|
-            from_version = versions_by_key[link_hash[:from_version_key]]
-            to_version = versions_by_key[link_hash[:to_version_key]]
-            next if from_version.blank? || to_version.blank?
-
-            CharacterSkillVersionLink.create!(
-              from_version_id: from_version.id,
-              to_version_id: to_version.id,
-              relation: link_hash[:relation]
-            )
-          end
-        end
-      end
-
       def report_for(graph)
         {
           character_granblue_id: character.granblue_id,
@@ -436,10 +403,6 @@ module Granblue
           slots: graph[:slots],
           links: graph[:links]
         }
-      end
-
-      def permitted_attrs(model, attrs)
-        attrs.slice(*model.column_names.map(&:to_sym))
       end
 
       def description_for(key)
