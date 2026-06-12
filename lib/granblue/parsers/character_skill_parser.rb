@@ -345,11 +345,12 @@ module Granblue
         info_desc = parse_info_des(wiki_params["#{key}_effdesc"] || wiki_params["#{key}_desc"])
         cooldown = parse_cooldown(wiki_params["#{key}_cd"])
         duration = parse_duration_value(wiki_params["#{key}_dur"])
+        raw_description_en = clean_description(overrides[:description_en] || description || info_desc[:descriptions].first)
         attrs = {
           name_en: clean_markup(overrides[:name_en] || wiki_params["#{key}_name"] || game&.dig('name_en') || game&.dig('name')),
           name_jp: jp_name_for(jp),
-          description_en: clean_description(overrides[:description_en] || description || info_desc[:descriptions].first),
-          description_jp: clean_description(jp&.dig('comment')),
+          description_en: display_description(raw_description_en),
+          description_jp: display_description(clean_description(jp&.dig('comment'))),
           icon: first_icon(wiki_params["#{key}_icon"]),
           type_color: TYPE_COLORS[wiki_params["#{key}_color"].to_s.strip.downcase],
           cooldown: cooldown[:base],
@@ -379,12 +380,26 @@ module Granblue
           key: version_key,
           source_key: key,
           attrs: attrs.compact,
-          effects: parse_effects(attrs[:description_en])
+          effects: parse_effects(raw_description_en)
         }
+      end
+
+      # Display form of a description: turns wiki templates into readable text
+      # ({{status|Name|…}} → Name, {{tt|shown|tip}} → shown) and drops any other
+      # leftover {{…}} markup. Effects are parsed from the raw text, not this.
+      def display_description(text)
+        return if text.blank?
+
+        text.gsub(/\{\{(?:status|tt)\|([^|}]+)[^}]*\}\}/i, '\\1')
+            .gsub(/\{\{[^{}]*\}\}/, '')
+            .gsub(/[^\S\n]{2,}/, ' ')
+            .strip
+            .presence
       end
 
       def parse_effects(effdesc)
         description = effdesc.to_s
+        clauses = clause_targets(description)
         effects = []
         ordinal = 0
 
@@ -396,13 +411,12 @@ module Granblue
           params = template_params(parts)
           status = find_status(name)
           @unmatched_statuses << name if status.nil?
-          context = local_context(description, offset)
           duration = duration_from_status(params['t'])
 
           effects << {
             ordinal: ordinal,
-            effect_type: effect_type_for_status(context, status),
-            target: target_for_text(context),
+            effect_type: effect_type_for_status(local_context(description, offset), status),
+            target: target_at(clauses, offset),
             status_id: status&.id,
             amount: params['a'],
             amount_max: params['am'],
@@ -420,7 +434,7 @@ module Granblue
           effects << {
             ordinal: ordinal,
             effect_type: 'deal_damage',
-            target: target_for_text(context),
+            target: target_at(clauses, offset),
             damage_pct: pct.to_d,
             damage_cap: damage_cap(context),
             hit_count: hit_count(context),
@@ -429,10 +443,42 @@ module Granblue
         end
 
         # NOTE: heal/dispel are coarse whole-description heuristics — at most one
-        # of each per version. Refine to per-clause parsing if fidelity demands it.
-        effects << other_effect(description, ordinal + 1, 'dispel', /remove \d+ buff/i)
-        effects << other_effect(description, ordinal + 2, 'heal', /restore .*hp|healing cap/i)
+        # of each per version. Refine to multi-instance parsing if fidelity demands it.
+        effects << other_effect(description, clauses, ordinal + 1, 'dispel', /remove \d+ buff/i)
+        effects << other_effect(description, clauses, ordinal + 2, 'heal', /restore .*hp|healing cap/i)
         effects.compact
+      end
+
+      # A clause (≈ one line) has a single subject that governs every effect in it,
+      # whether the subject leads ("All allies gain …") or trails ("inflict … on a
+      # foe"). Subject-less continuation lines inherit the previous clause's subject.
+      def clause_targets(description)
+        position = 0
+        last = nil
+        description.split(/(\n)/).filter_map do |segment|
+          range = position...(position + segment.length)
+          position += segment.length
+          next if segment == "\n"
+
+          target = subject_in_clause(segment) || last
+          last = target if target
+          [range, target]
+        end
+      end
+
+      def subject_in_clause(text)
+        normalized = text.downcase
+        return 'all_allies' if normalized.match?(/all (?:[a-z]+ )?allies/)
+        return 'all_foes' if normalized.match?(/all foes|all enemies/)
+        return 'one_ally' if normalized.match?(/\b(?:an|another|one) (?:[a-z]+ )?ally\b/)
+        return 'one_foe' if normalized.match?(/\b(?:a|one) foe\b|\ban enemy\b|on the foe/)
+        return 'caster' if normalized.match?(/\bgain\b|\bcaster\b|\bown\b/)
+
+        nil
+      end
+
+      def target_at(clauses, offset)
+        clauses.find { |range, _| range.cover?(offset) }&.last
       end
 
       def cross_validate_statuses(graph)
@@ -593,7 +639,7 @@ module Granblue
         when 'option'
           { trigger_type: 'menu_select' }
         when 'form_alt'
-          { trigger_type: 'form_state', trigger_value: group[:subtitle].presence || group[:title] }
+          { trigger_type: 'form_state', trigger_value: clean_trigger_value(group[:subtitle].presence || group[:title]) }
         else
           parent_text = parent[:versions].first&.dig(:attrs, :description_en)
           { trigger_type: trigger_type_for_text(parent_text), trigger_value: trigger_value_for_text(parent_text) }
@@ -740,15 +786,12 @@ module Granblue
         description[start, CONTEXT_WIDTH].to_s
       end
 
-      def target_for_text(text)
-        normalized = text.to_s.downcase
-        return 'all_allies' if normalized.match?(/all (?:[a-z]+ )?allies/)
-        return 'all_foes' if normalized.match?(/all foes|all enemies/)
-        return 'one_ally' if normalized.match?(/an(?:other)? .*ally|one ally/)
-        return 'one_foe' if normalized.match?(/a foe|one foe|an enemy/)
-        return 'caster' if normalized.match?(/caster|own /)
-
-        nil
+      def clean_trigger_value(text)
+        clean_markup(text.to_s)
+          .gsub(/\{\{tt\|([^|}]+)\|[^}]*\}\}/i, '\\1')
+          .delete('()')
+          .strip
+          .presence
       end
 
       def damage_cap(text)
@@ -759,14 +802,15 @@ module Granblue
         text.to_s[/(\d+)-hit/i, 1]&.to_i
       end
 
-      def other_effect(description, ordinal, effect_type, matcher)
-        return unless description.match?(matcher)
+      def other_effect(description, clauses, ordinal, effect_type, matcher)
+        match = matcher.match(description)
+        return unless match
 
         {
           ordinal: ordinal,
           effect_type: effect_type,
-          target: target_for_text(description),
-          raw: description[matcher]
+          target: target_at(clauses, match.begin(0)),
+          raw: match[0]
         }.compact
       end
 
