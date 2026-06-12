@@ -1,0 +1,522 @@
+{
+  "slots": [
+    {
+      "kind": "ability",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Ravenous Drain",
+          "name_jp": "スターヴィングドレイン",
+          "description_en": "I'm hungry... (Pick one I can chow down on.)",
+          "description_jp": "ワム、おなか空いた……◆選んだやつ、いっぱい吸い込む",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "debuff",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        },
+        {
+          "name_en": "Ravenous Drain",
+          "name_jp": "スターヴィングドレイン",
+          "description_en": "I'm hungry... (Pick one I can chow down on.)",
+          "description_jp": "ワム、おなか空いた……◆選んだやつ、いっぱい吸い込む",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "debuff",
+          "cooldown": 6,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 55,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        },
+        {
+          "name_en": "Ambient Drain",
+          "name_jp": "スターヴィングドレイン",
+          "description_en": "Absorb up to 15% of other allies' charge bar and transfer to caster's charge bar (Max: 180%).\nGain Fated Chain Bar and Tentakernel.\nInflict Delay (Special) on a foe. If successful, gain Charged.",
+          "description_jp": "ワム、おなか空いた……◆選んだやつ、いっぱい吸い込む",
+          "variant_role": "option",
+          "ordinal": 3,
+          "type_color": "debuff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Fated Chain Bar",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Tentakernel",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Delay (Special)",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Charged",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Attractor Vortex",
+          "name_jp": "スターヴィングドレイン",
+          "description_en": "Remove all buffs from all other allies and foes.\nGain Tentaforce.",
+          "description_jp": "ワム、おなか空いた……◆選んだやつ、いっぱい吸い込む",
+          "variant_role": "option",
+          "ordinal": 4,
+          "type_color": "debuff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Tentaforce",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Innocence Toxin",
+          "name_jp": "イノセントトキシン",
+          "description_en": "6-hit, 150% Water damage to a foe (Damage cap: ~108,000 per hit).\nInflict Paralyzed 2 and Poisoned.\nRaise foe's Toxicosis lvl by 1 (Max: 10).\n(Auto-activates upon taking damage.)",
+          "description_jp": "敵に6回水属性ダメージ/麻痺効果/毒効果/劇毒Lvが1上昇(最大10)◆被ダメージ時に自動発動",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            2,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "auto_activate",
+            "mimicable"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Paralyzed 2",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                2,
+                "turns"
+              ],
+              "accuracy": "90%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Poisoned",
+              "amount": "5000",
+              "amount_max": null,
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Toxicosis",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "g",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Innocence Toxin",
+          "name_jp": "イノセントトキシン",
+          "description_en": "6-hit, 150% Water damage to a foe (Damage cap: ~108,000 per hit).\nInflict Paralyzed 2 and Poisoned.\nRaise foe's Toxicosis lvl by 1 (Max: 10).\n(Auto-activates upon taking damage.)",
+          "description_jp": "敵に6回水属性ダメージ/麻痺効果/毒効果/劇毒Lvが1上昇(最大10)◆被ダメージ時に自動発動",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 6,
+          "initial_cooldown": null,
+          "duration": [
+            2,
+            "turns"
+          ],
+          "unlock_level": 75,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "auto_activate",
+            "mimicable"
+          ],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "The Azure's Halo",
+          "name_jp": "『碧』の月暈(　　へき　　　　げつうん)",
+          "description_en": "Gain The Azure's Halo.\n(Can't recast.)",
+          "description_jp": "自分に『碧』の月暈効果",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "cant_recast"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "The Azure's Halo",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ougi",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Hydrozoa",
+          "name_jp": "ヒドロゾア",
+          "description_en": "1250% Water damage to a foe (Damage cap: ~2,900,000).\nAll Water allies gain DMG Mitigation.",
+          "description_jp": "水属性ダメージ(極大)/水属性キャラが1ターンの間被ダメージ減少(5000)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "all_allies",
+              "status": "DMG Mitigation",
+              "amount": "5000",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "1250.0",
+              "hit_count": null,
+              "damage_cap": 2900000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Joys of Hard Work",
+          "name_jp": "ろーどーのよろこび",
+          "description_en": "50% boost to max HP and 25% hit to charge bar gain.\nHas a maximum charge bar limit of 200%.\n(Can only use charge attack when charge bar is at 200%.)",
+          "description_jp": "最大HPが高いが、奥義ゲージが溜まりにくい/奥義ゲージ最大値200◆奥義ゲージが200%の時のみ奥義使用可能",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Limitless Azure",
+          "name_jp": "理外の『碧』",
+          "description_en": "All Water allies gain DMG Mitigation upon activating a Fated Chain.",
+          "description_jp": "フェイタルチェイン発動時、水属性キャラが1ターンの間被ダメージ減少(10000)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DMG Mitigation",
+              "amount": "10000",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    [
+      "ability1:Ravenous Drain",
+      "option_of",
+      "ability1:Ambient Drain"
+    ],
+    [
+      "ability1:Ravenous Drain",
+      "option_of",
+      "ability1:Attractor Vortex"
+    ]
+  ]
+}
