@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_12_000005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -100,20 +100,58 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
     t.index ["character_series_id"], name: "index_character_series_memberships_on_character_series_id"
   end
 
-  create_table "character_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "character_granblue_id", null: false
-    t.uuid "skill_id", null: false
-    t.integer "position", null: false
-    t.integer "unlock_level"
-    t.integer "improve_level"
-    t.uuid "alt_skill_id"
-    t.text "alt_condition"
+  create_table "character_skill_version_links", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "from_version_id", null: false
+    t.uuid "to_version_id", null: false
+    t.string "relation", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["alt_skill_id"], name: "index_character_skills_on_alt_skill_id"
-    t.index ["character_granblue_id", "position"], name: "index_character_skills_on_character_granblue_id_and_position"
+    t.index ["from_version_id", "to_version_id", "relation"], name: "idx_character_skill_version_links_unique", unique: true
+    t.index ["from_version_id"], name: "index_character_skill_version_links_on_from_version_id"
+    t.index ["to_version_id"], name: "index_character_skill_version_links_on_to_version_id"
+  end
+
+  create_table "character_skill_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "character_skill_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.text "description_en"
+    t.text "description_jp"
+    t.string "icon"
+    t.string "type_color"
+    t.integer "cooldown"
+    t.integer "initial_cooldown"
+    t.integer "duration_value"
+    t.string "duration_unit"
+    t.string "variant_role", null: false
+    t.integer "ordinal", null: false
+    t.integer "unlock_level"
+    t.integer "enhance_levels", default: [], null: false, array: true
+    t.integer "min_uncap"
+    t.integer "transcendence_stage"
+    t.string "trigger_type", default: "none", null: false
+    t.string "trigger_value"
+    t.boolean "cant_recast", default: false, null: false
+    t.boolean "one_time_use", default: false, null: false
+    t.boolean "auto_activate", default: false, null: false
+    t.boolean "mimicable", default: false, null: false
+    t.boolean "targets_all", default: false, null: false
+    t.string "game_action_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_skill_id", "ordinal"], name: "idx_character_skill_versions_on_skill_and_ordinal"
+    t.index ["character_skill_id"], name: "index_character_skill_versions_on_character_skill_id"
+  end
+
+  create_table "character_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "character_granblue_id", null: false
+    t.string "kind", null: false
+    t.integer "position", null: false
+    t.string "game_action_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_granblue_id", "kind", "position"], name: "idx_character_skills_unique_slot", unique: true
     t.index ["character_granblue_id"], name: "index_character_skills_on_character_granblue_id"
-    t.index ["skill_id"], name: "index_character_skills_on_skill_id"
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -972,23 +1010,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "skill_id", null: false
-    t.uuid "effect_id", null: false
-    t.integer "target_type"
-    t.integer "duration_type"
+    t.uuid "character_skill_version_id", null: false
+    t.uuid "status_id"
+    t.integer "ordinal", null: false
+    t.string "effect_type", null: false
+    t.string "target"
+    t.string "amount"
+    t.string "amount_max"
     t.integer "duration_value"
-    t.text "condition"
-    t.integer "chance"
-    t.decimal "value"
-    t.decimal "cap"
-    t.boolean "local", default: true
-    t.boolean "permanent", default: false
-    t.boolean "undispellable", default: false
+    t.string "duration_unit"
+    t.string "accuracy"
+    t.string "stacking_frame"
+    t.decimal "damage_pct", precision: 10, scale: 2
+    t.integer "hit_count"
+    t.integer "damage_cap"
+    t.string "damage_element"
+    t.decimal "heal_pct", precision: 10, scale: 2
+    t.integer "heal_cap"
+    t.text "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["effect_id"], name: "index_skill_effects_on_effect_id"
-    t.index ["skill_id", "effect_id", "target_type"], name: "index_skill_effects_on_skill_id_and_effect_id_and_target_type"
-    t.index ["skill_id"], name: "index_skill_effects_on_skill_id"
+    t.index ["character_skill_version_id"], name: "index_skill_effects_on_character_skill_version_id"
+    t.index ["effect_type"], name: "index_skill_effects_on_effect_type"
+    t.index ["status_id"], name: "index_skill_effects_on_status_id"
   end
 
   create_table "skill_values", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1026,6 +1070,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
     t.string "target_memo"
     t.index ["target_type", "target_id"], name: "index_sparks_on_target"
     t.index ["user_id"], name: "index_sparks_on_user_id", unique: true
+  end
+
+  create_table "statuses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "game_ailment_id"
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.string "family"
+    t.integer "level"
+    t.string "category", null: false
+    t.string "icon"
+    t.string "wiki_slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["family"], name: "index_statuses_on_family"
+    t.index ["game_ailment_id"], name: "index_statuses_on_game_ailment_id", unique: true, where: "(game_ailment_id IS NOT NULL)"
+    t.index ["name_en"], name: "index_statuses_on_name_en"
   end
 
   create_table "substitutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1379,8 +1439,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
 
   add_foreign_key "character_series_memberships", "character_series"
   add_foreign_key "character_series_memberships", "characters"
-  add_foreign_key "character_skills", "skills"
-  add_foreign_key "character_skills", "skills", column: "alt_skill_id"
+  add_foreign_key "character_skill_version_links", "character_skill_versions", column: "from_version_id"
+  add_foreign_key "character_skill_version_links", "character_skill_versions", column: "to_version_id"
+  add_foreign_key "character_skill_versions", "character_skills"
   add_foreign_key "charge_attacks", "skills"
   add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"
   add_foreign_key "collection_artifacts", "artifacts"
@@ -1471,8 +1532,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_16_000000) do
   add_foreign_key "playlist_parties", "playlists"
   add_foreign_key "playlists", "users"
   add_foreign_key "raids", "raid_groups", column: "group_id", name: "raids_group_id_fkey"
-  add_foreign_key "skill_effects", "effects", name: "fk_skill_effects_effects"
-  add_foreign_key "skill_effects", "skills", name: "fk_skill_effects_skills"
+  add_foreign_key "skill_effects", "character_skill_versions"
+  add_foreign_key "skill_effects", "statuses"
   add_foreign_key "skill_values", "skills"
   add_foreign_key "summon_calls", "skills"
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
