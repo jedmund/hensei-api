@@ -122,15 +122,33 @@ RSpec.describe Granblue::Parsers::CharacterSkillParser do
   # Builds each sample character, populates the Status catalog through the real
   # production builder, then parses — so "0 unmatched statuses" exercises the same
   # catalog path as the rake tasks rather than a test-only seed.
+  context 'with cached Japanese wiki data' do
+    it 'aligns JP names and descriptions onto the EN graph by position (Vikala)' do
+      character, = parse_sample(:vikala)
+      slot2 = character.character_skills.find_by(kind: 'ability', position: 2)
+      versions = slot2.character_skill_versions
+
+      aggregate_failures do
+        expect(versions.find_by(variant_role: 'base').name_jp).to eq('エンチャンテッド・ドリーム')
+        expect(versions.find_by(variant_role: 'transform_alt').name_jp).to eq('エキセントリックパレード')
+        expect(versions.find_by(variant_role: 'base').description_jp).to be_present
+        expect(slot2.character_skill_versions.where(variant_role: 'enhanced').first&.name_jp)
+          .to eq('エンチャンテッド・ドリーム')
+      end
+    end
+  end
+
   def parse_sample(key)
     sample = samples.fetch(key)
+    jp_path = fixture_dir.join("character-#{key}-jpwiki.html")
     character = create(
       :character,
       granblue_id: sample.fetch(:granblue_id),
       name_en: sample.fetch(:name),
       wiki_raw: File.read(fixture_dir.join(sample.fetch(:wiki))),
       game_raw_en: JSON.parse(File.read(fixture_dir.join(sample.fetch(:game)))),
-      game_raw_jp: nil
+      game_raw_jp: nil,
+      wiki_raw_jp: (File.read(jp_path) if File.exist?(jp_path))
     )
 
     Granblue::Parsers::StatusCatalogBuilder.build_all
