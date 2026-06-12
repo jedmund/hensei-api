@@ -43,7 +43,10 @@ module Granblue
           @version_keys.include?(link[:from_version_key]) && @version_keys.include?(link[:to_version_key])
         end
 
-        report = report_for(graph)
+        report = CharacterSkills::Reporter.new(data: data, status_lookup: status_lookup)
+                                          .report_for(graph,
+                                                      unmatched_statuses: effect_parser.unmatched_statuses,
+                                                      missing_fields: @missing_fields)
         CharacterSkills::Persister.new(character).persist(graph) if persist
         report
       end
@@ -371,40 +374,6 @@ module Granblue
         CharacterSkills::FieldParser.display_description(text)
       end
 
-      def cross_validate_statuses(graph)
-        graph[:slots].flat_map do |slot|
-          slot[:versions].filter_map do |version|
-            game_ids = data.csv(data.game_action(version[:source_key])&.dig('ailment'))
-            parsed_ids = version[:effects].filter_map { |effect| effect[:status_id] && status_ailment_id(effect[:status_id]) }
-            missing = game_ids - parsed_ids
-            next if missing.empty?
-
-            {
-              slot: slot[:attrs].slice(:kind, :position),
-              version: version[:attrs][:name_en],
-              missing_game_ailment_ids: missing
-            }
-          end
-        end
-      end
-
-      def report_for(graph)
-        {
-          character_granblue_id: character.granblue_id,
-          counts: {
-            slots: graph[:slots].size,
-            versions: graph[:slots].sum { |slot| slot[:versions].size },
-            effects: graph[:slots].sum { |slot| slot[:versions].sum { |version| version[:effects].size } },
-            links: graph[:links].size
-          },
-          unmatched_statuses: effect_parser.unmatched_statuses.to_a.sort,
-          missing_fields: @missing_fields.uniq,
-          cross_validation: cross_validate_statuses(graph),
-          slots: graph[:slots],
-          links: graph[:links]
-        }
-      end
-
       def description_for(key)
         parsed = parse_info_des(wiki_params["#{key}_effdesc"] || wiki_params["#{key}_desc"])
         parsed[:descriptions].first.presence || wiki_params["#{key}_desc"]
@@ -552,10 +521,6 @@ module Granblue
 
       def targets_all?(text)
         text.to_s.match?(/all allies|all foes|all .+ allies/i)
-      end
-
-      def status_ailment_id(status_id)
-        status_lookup[:by_id][status_id]&.game_ailment_id
       end
 
       def clean_trigger_value(text)
