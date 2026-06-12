@@ -1,0 +1,1393 @@
+{
+  "slots": [
+    {
+      "kind": "ability",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Vorpal Rage",
+          "name_jp": "ヴォーパルレイジ",
+          "description_en": "350%-400% Earth damage to a foe (Damage cap: ~630,000).\nGain Jammed, DMG Amplified, and Drain.",
+          "description_jp": "敵に土属性ダメージ/自分に逆境効果斧：吸収効果剣：通常の与ダメ―ジUP",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "cooldown": 6,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Jammed",
+              "amount": "30%-90%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "DMG Amplified",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Drain",
+              "amount": "(Healing cap: 3333)",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "heal",
+              "target": "caster",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Vorpal Rage",
+          "name_jp": "ヴォーパルレイジ",
+          "description_en": "3-hit, 350%-400% Earth damage to a foe (Damage cap: ~630,000 per hit).\nGain Jammed and DMG Amplified.",
+          "description_jp": "敵に土属性ダメージ/自分に逆境効果斧：吸収効果剣：通常の与ダメ―ジUP",
+          "variant_role": "form_alt",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 6,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "form_state",
+            "Sword Form"
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Jammed",
+              "amount": "30%-90%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "DMG Amplified",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Berserk Forge",
+          "name_jp": "ベルセルクフォージ",
+          "description_en": "Gain Counters on Dodge/DMG.",
+          "description_jp": "(++で効果中自分が必ずトリプルアタック)斧：カウンター効果(回避･被ダメージ/3回)(++で/敵対心UP)剣：ターン経過なしで通常攻撃を実行(++で/土属性追撃効果(30%))",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75,
+            85
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Counters on Dodge/DMG",
+              "amount": "200%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Berserk Forge",
+          "name_jp": "ベルセルクフォージ",
+          "description_en": "Also gain Guaranteed TA, Bonus Earth DMG, and Full Hostility (Can't be removed).",
+          "description_jp": "(++で効果中自分が必ずトリプルアタック)斧：カウンター効果(回避･被ダメージ/3回)(++で/敵対心UP)剣：ターン経過なしで通常攻撃を実行(++で/土属性追撃効果(30%))",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 6,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 75,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Guaranteed TA",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Bonus Earth DMG",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Full Hostility (Can't be removed)",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Berserk Forge",
+          "name_jp": "ベルセルクフォージ",
+          "description_en": "Instantly perform a normal attack without using up a turn.",
+          "description_jp": "(++で効果中自分が必ずトリプルアタック)斧：カウンター効果(回避･被ダメージ/3回)(++で/敵対心UP)剣：ターン経過なしで通常攻撃を実行(++で/土属性追撃効果(30%))",
+          "variant_role": "form_alt",
+          "ordinal": 3,
+          "type_color": "damage",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75,
+            85
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "form_state",
+            "Sword Form"
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "Ground Zero",
+          "name_jp": "グラウンドゼロ",
+          "description_en": "Sacrifice 99% of caster's current HP to deal plain damage to all foes (Damage cap: ~820,000).\nDamage dealt is based on HP consumed.\nGain Shield.",
+          "description_jp": "自分のHPを犠牲にして敵全体に無属性ダメージ(消費HPの100(++で300)倍)/自分にバリア効果(3000)(+で/土属性防御DOWN(25%))(++で/瀕死状態の場合、ターン進行時に攻撃行動を3回行う効果)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [
+            95,
+            130
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Shield",
+              "amount": "3000",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Ground Zero",
+          "name_jp": "グラウンドゼロ",
+          "description_en": "Damage cap increased to ~1,230,000.\nAlso inflict Earth DEF Lowered.",
+          "description_jp": "自分のHPを犠牲にして敵全体に無属性ダメージ(消費HPの100(++で300)倍)/自分にバリア効果(3000)(+で/土属性防御DOWN(25%))(++で/瀕死状態の場合、ターン進行時に攻撃行動を3回行う効果)",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 95,
+          "enhance_levels": [
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Earth DEF Lowered",
+              "amount": "25%",
+              "amount_max": null,
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "≥100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Ground Zero",
+          "name_jp": "グラウンドゼロ",
+          "description_en": "Damage increased and damage cap increased to ~2,040,000.\nShield endurance increased to Shield.\n(When HP is below 25%: Also gain Tri-Slash.)",
+          "description_jp": "自分のHPを犠牲にして敵全体に無属性ダメージ(消費HPの100(++で300)倍)/自分にバリア効果(3000)(+で/土属性防御DOWN(25%))(++で/瀕死状態の場合、ターン進行時に攻撃行動を3回行う効果)",
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 6,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 130,
+          "enhance_levels": [
+            130
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": 1,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Shield",
+              "amount": "15,000",
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Tri-Slash",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Ground Zero",
+          "name_jp": "グラウンドゼロ",
+          "description_en": "Sacrifice 99% of caster's current HP to deal plain damage to all foes (Damage cap: ~820,000).\nDamage dealt is based on HP consumed.\nGain Shield.",
+          "description_jp": "自分のHPを犠牲にして敵全体に無属性ダメージ(消費HPの100(++で300)倍)/自分にバリア効果(3000)(+で/土属性防御DOWN(25%))(++で/瀕死状態の場合、ターン進行時に攻撃行動を3回行う効果)",
+          "variant_role": "form_alt",
+          "ordinal": 4,
+          "type_color": "damage",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [
+            95,
+            130
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "form_state",
+            "Sword Form"
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Shield",
+              "amount": "3000",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 4,
+      "versions": [
+        {
+          "name_en": "Three-Tiger's Blessing",
+          "name_jp": "三寅の祝福",
+          "description_en": "Gain C.A. Instant Standby, Autoignition (Can't be removed), and Tiger's Blessing.\nEnd cooldown for other skills.\n(Can't recast.)",
+          "description_jp": "自分が即座に奥義発動可能/効果時間中ターン終了時に奥義ゲージを100%にする/攻撃大幅UP使用可能：10ターン後",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": 10,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "cant_recast"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "C.A. Instant Standby",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Autoignition (Can't be removed)",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Tiger's Blessing",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Three-Tiger's Blessing",
+          "name_jp": "三寅の祝福",
+          "description_en": "Can now be recast.",
+          "description_jp": "自分が即座に奥義発動可能/効果時間中ターン終了時に奥義ゲージを100%にする/攻撃大幅UP使用可能：10ターン後",
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 2,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": 10,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 150,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": 5,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "cant_recast"
+          ],
+          "effects": []
+        },
+        {
+          "name_en": "Three-Tiger's Blessing",
+          "name_jp": "三寅の祝福",
+          "description_en": "Gain C.A. Instant Standby, Autoignition (Can't be removed), and Tiger's Blessing.\nEnd cooldown for other skills.\n(Can't recast.)",
+          "description_jp": "自分が即座に奥義発動可能/効果時間中ターン終了時に奥義ゲージを100%にする/攻撃大幅UP使用可能：10ターン後",
+          "variant_role": "form_alt",
+          "ordinal": 3,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": 10,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "form_state",
+            "Sword Form"
+          ],
+          "flags": [
+            "cant_recast"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "C.A. Instant Standby",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Autoignition (Can't be removed)",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Tiger's Blessing",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ougi",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Astro Divergence",
+          "name_jp": "アストロ・スプレション(斧)",
+          "description_en": "450% Earth damage to a foe.\nSwap to Sword form.",
+          "description_jp": "土属性ダメージ(特大)/フォームチェンジ(斧→剣)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "450.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Meteor Thrust",
+          "name_jp": "メテオ・スラスト(剣)",
+          "description_en": "450% Earth damage to a foe.\nBonus Plain damage (Damage cap: 999,999).\nSwap to Axe form.",
+          "description_jp": "土属性ダメージ(特大)/無属性追加ダメージ(999,999)/フォームチェンジ(剣→斧)",
+          "variant_role": "form_alt",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "450.0",
+              "hit_count": null,
+              "damage_cap": 999999
+            }
+          ]
+        },
+        {
+          "name_en": "Astro Destruction",
+          "name_jp": "アストロ・デストラクション(斧)(最終解放後に習得)",
+          "description_en": "500% Earth damage to a foe (Damage cap: ~2,020,000).\nGain Earth ATK Up.\nSwap to Sword form.",
+          "description_jp": "土属性ダメージ(特大)/自分の土属性攻撃力UP(20%/1+3T)/フォームチェンジ(斧→剣)",
+          "variant_role": "uncap_upgrade",
+          "ordinal": 3,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 5,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Earth ATK Up",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "500.0",
+              "hit_count": null,
+              "damage_cap": 2020000
+            }
+          ]
+        },
+        {
+          "name_en": "Annihilation Nova",
+          "name_jp": "アニヒレイション・ノヴァ(剣)(最終解放後に習得)",
+          "description_en": "500% Earth damage to a foe (Damage cap: ~2,020,000).\n2-hit Bonus Plain damage (Damage cap: 999,999 per hit).\nSwap to Axe form.",
+          "description_jp": "土属性ダメージ(特大)/無属性追加ダメージ(999,999×2)/フォームチェンジ(剣→斧)",
+          "variant_role": "uncap_upgrade",
+          "ordinal": 4,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 5,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "500.0",
+              "hit_count": 2,
+              "damage_cap": 2020000
+            }
+          ]
+        },
+        {
+          "name_en": "Origin Breaker",
+          "name_jp": "オリジン・ブレイカー(斧)(限界超越後に習得)",
+          "description_en": "550% Earth damage to a foe (Damage cap: ~2,300,000) and remove 1 buff.\nGain Earth ATK Up.\nSwap to Sword form.",
+          "description_jp": "土属性ダメージ(特大)/強化効果を1つ無効化/自分の土属性攻撃力UP(20%/1+3T)/フォームチェンジ(斧→剣)",
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 5,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 6,
+          "transcendence_stage": 1,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Earth ATK Up",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "550.0",
+              "hit_count": null,
+              "damage_cap": 2300000
+            },
+            {
+              "type": "dispel",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Regression to Zero",
+          "name_jp": "ゼロ・リグレッション(剣)(限界超越後に習得)",
+          "description_en": "550% Earth damage to a foe (Damage cap: ~2,300,000).\n3-hit Bonus Plain damage (Damage cap: 999,999 per hit).\nSwap to Axe form.",
+          "description_jp": "土属性ダメージ(特大)/無属性追加ダメージ(999,999×3)/フォームチェンジ(剣→斧)",
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 6,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 6,
+          "transcendence_stage": 1,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "550.0",
+              "hit_count": 3,
+              "damage_cap": 2300000
+            }
+          ]
+        },
+        {
+          "name_en": "Origin Breaker +",
+          "name_jp": null,
+          "description_en": "1350% Earth damage to a foe (Damage cap: ~3,400,000) and remove 1 buff.\nGain Earth ATK Up.\nSwap to Sword form.",
+          "description_jp": null,
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 7,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 6,
+          "transcendence_stage": 5,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Earth ATK Up",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "1350.0",
+              "hit_count": null,
+              "damage_cap": 3400000
+            },
+            {
+              "type": "dispel",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Regression to Zero +",
+          "name_jp": null,
+          "description_en": "1350% Earth damage to a foe (Damage cap: ~3,400,000).\n3-hit Bonus Plain damage (Damage cap: 999,999 per hit)\nSwap to Axe form.",
+          "description_jp": null,
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 8,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 6,
+          "transcendence_stage": 5,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "1350.0",
+              "hit_count": 3,
+              "damage_cap": 3400000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Supernatural",
+          "name_jp": "怪力乱神",
+          "description_en": "Starts battle with Undying (Can't be removed) 3.",
+          "description_jp": "バトル開始時に不死身効果(3回)(+で/トリプルアタック発動時に3回目の攻撃の与ダメージ上昇(最大300,000))",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Undying (Can't be removed) 3",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Supernatural",
+          "name_jp": "怪力乱神",
+          "description_en": "Also supplement damage dealt by third hit of triple attacks (Damage cap: 300,000).\nUpon triple attacks:\n400% Earth damage to a foe (Damage cap: ~635,000).\nInflict ATK Lowered 2 and DEF Lowered 2.",
+          "description_jp": "バトル開始時に不死身効果(3回)(+で/トリプルアタック発動時に3回目の攻撃の与ダメージ上昇(最大300,000))",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 90,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "ATK Lowered 2",
+              "amount": "25%",
+              "amount_max": null,
+              "duration": [
+                2,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "DEF Lowered 2",
+              "amount": "25%",
+              "amount_max": null,
+              "duration": [
+                2,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Ferox Tigris",
+          "name_jp": "暴虎",
+          "description_en": "damage against Water foes by 20%.",
+          "description_jp": "水属性の敵に対して与ダメージUP(20%)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 95,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        },
+        {
+          "name_en": "Ferox Tigris",
+          "name_jp": "暴虎",
+          "description_en": "When Threo is below 25% HP at end of turn:\n1-turn cut to 's skill standby.",
+          "description_jp": "水属性の敵に対して与ダメージUP(20%)",
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 150,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": 5,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "Start Strong, End Strongest",
+          "name_jp": "虎頭龍尾",
+          "description_en": "When attacking while HP is below 25%:\nGuaranteed triple attacks and 30% Bonus Earth DMG effect.",
+          "description_jp": "自分が瀕死状態の場合、必ずトリプルアタック/土属性追撃効果(30%)(+で/弱体効果無効/敵から受ける水属性ダメージの最大値を3333に固定する)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 120,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        },
+        {
+          "name_en": "Start Strong, End Strongest",
+          "name_jp": "虎頭龍尾",
+          "description_en": "30% boost to max HP.\nWhen attacking while HP is below 25%:\nAlso gain debuff immunity, buffs can't be removed, and cap Water damage taken at 3,333 per hit.",
+          "description_jp": "自分が瀕死状態の場合、必ずトリプルアタック/土属性追撃効果(30%)(+で/弱体効果無効/敵から受ける水属性ダメージの最大値を3333に固定する)",
+          "variant_role": "transcendence_upgrade",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 150,
+          "enhance_levels": [
+            150
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": 5,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    }
+  ],
+  "links": [
+    [
+      "ability1:Vorpal Rage",
+      "form_counterpart",
+      "ability1:Vorpal Rage"
+    ],
+    [
+      "ability2:Berserk Forge",
+      "form_counterpart",
+      "ability2:Berserk Forge"
+    ],
+    [
+      "ability3:Ground Zero",
+      "form_counterpart",
+      "ability3:Ground Zero"
+    ],
+    [
+      "ability4:Three-Tiger's Blessing",
+      "form_counterpart",
+      "ability4:Three-Tiger's Blessing"
+    ]
+  ]
+}
