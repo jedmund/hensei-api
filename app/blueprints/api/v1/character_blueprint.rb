@@ -141,6 +141,12 @@ module Api
             }
           end
         end
+
+        field :skills do |c|
+          CharacterSkillBlueprint.render_as_hash(
+            c.character_skills.includes(character_skill_versions: { skill_effects: :status })
+          )
+        end
       end
 
       # Separate view for recruitment info - only include when needed (e.g., character detail page)
