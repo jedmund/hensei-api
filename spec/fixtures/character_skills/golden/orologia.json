@@ -1,0 +1,913 @@
+{
+  "slots": [
+    {
+      "kind": "ability",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Mysticus Candor",
+          "name_jp": null,
+          "description_en": "All Dark allies gain Mysticus Candor and Veil.\n(While Mysticus Candor is in effect:\nBoost to attack specs based on Orologia's Causal Intervention.)",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 11,
+          "initial_cooldown": null,
+          "duration": [
+            5,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Mysticus Candor",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                5,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Veil",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Mysticus Candor",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Mysticus Candor",
+          "name_jp": null,
+          "description_en": "All Dark allies gain Mysticus Candor and Veil.\n(While Mysticus Candor is in effect:\nBoost to attack specs based on Orologia's Causal Intervention.)",
+          "description_jp": null,
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "buff",
+          "cooldown": 10,
+          "initial_cooldown": null,
+          "duration": [
+            5,
+            "turns"
+          ],
+          "unlock_level": 55,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Nunc Distorqueo",
+          "name_jp": null,
+          "description_en": "800% Dark damage to a foe (Damage cap: ~820,000).\nInflict ATK Lowered (Stackable).\nRemove 1 buff.",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "mimicable"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "ATK Lowered (Stackable)",
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "dispel",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Nunc Distorqueo",
+          "name_jp": null,
+          "description_en": "800% Dark damage to a foe (Damage cap: ~820,000).\nInflict ATK Lowered (Stackable).\nRemove 1 buff.",
+          "description_jp": null,
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 75,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "mimicable"
+          ],
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "Causa Temporis",
+          "name_jp": null,
+          "description_en": "Causa Temporis:\n1-turn cut to Dark allies' skill cooldowns.\nAll Dark allies gain ATK Boosted (Stackable) and DEF Boosted (Stackable).\n(When Causal Intervention is 4:\nSkill changes to Victoriae Calculus.)\nVictoriae Calculus:\nGive causality a quick tweak for good blessings.\n(The choice is yours! Can't recast.)",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 5,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "cant_recast",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "ATK Boosted (Stackable)",
+              "amount": "10%",
+              "amount_max": "30%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DEF Boosted (Stackable)",
+              "amount": "10%",
+              "amount_max": "30%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Victoriae Calculus",
+          "name_jp": null,
+          "description_en": "Causa Temporis:\n1-turn cut to Dark allies' skill cooldowns.\nAll Dark allies gain ATK Boosted (Stackable) and DEF Boosted (Stackable).\n(When Causal Intervention is 4:\nSkill changes to Victoriae Calculus.)\nVictoriae Calculus:\nGive causality a quick tweak for good blessings.\n(The choice is yours! Can't recast.)",
+          "description_jp": null,
+          "variant_role": "transform_alt",
+          "ordinal": 2,
+          "type_color": "buff",
+          "cooldown": 5,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "stack_threshold",
+            "Causal Intervention >= 4"
+          ],
+          "flags": [
+            "cant_recast",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "ATK Boosted (Stackable)",
+              "amount": "10%",
+              "amount_max": "30%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DEF Boosted (Stackable)",
+              "amount": "10%",
+              "amount_max": "30%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Sapiens Motus",
+          "name_jp": null,
+          "description_en": "End cooldown for another Dark ally's skills and grant Instant Recast.",
+          "description_jp": null,
+          "variant_role": "option",
+          "ordinal": 3,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "Instant Recast",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Fortis Motus",
+          "name_jp": null,
+          "description_en": "Grant another Dark ally Triple Strike and TA Up.",
+          "description_jp": null,
+          "variant_role": "option",
+          "ordinal": 4,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "Triple Strike",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "TA Up",
+              "amount": "100%",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Certus Motus",
+          "name_jp": null,
+          "description_en": "Grant another Dark ally Instant Charge, C.A. Reactivation (1 time), C.A. DMG Boosted (1 time), and C.A. DMG Cap Boosted (1 time).",
+          "description_jp": null,
+          "variant_role": "option",
+          "ordinal": 5,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "Instant Charge",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "C.A. Reactivation (1 time)",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "C.A. DMG Boosted (1 time)",
+              "amount": "50%",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "one_ally",
+              "status": "C.A. DMG Cap Boosted (1 time)",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ougi",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Acies Falcis",
+          "name_jp": null,
+          "description_en": "450% Dark damage to a foe. (When Causal Intervention is 4: 50% boost to C.A. damage and 30% boost to C.A. damage cap.)\nExtend all allies' Mysticus Candor duration by 1 turn.",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Mysticus Candor",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "450.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Wedge of Time and Causality",
+          "name_jp": null,
+          "description_en": "Upon using buff skills: Causal Intervention rises by 1 (Max: 4).\n(Gain effects in order based on Causal Intervention:\n1: 30% boost to .\n2: Guaranteed triple attacks.\n3: 20% Bonus Dark DMG effect upon triple attacks.\n4: 20% boost to dodge rate.)",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Cras Es Noster",
+          "name_jp": null,
+          "description_en": "When Causal Intervention reaches 4:\nEnd cooldown for .\nWhen Causal Intervention is 4:\n activates every 5 turns.",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "auto_activate"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Causal Intervention",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "Living Our Best Lives, Together",
+          "name_jp": null,
+          "description_en": "20% hit to max HP and 20% hit to debuff resistance.\nUpon MC's normal attacks while Mysticus Candor is in effect:\nActivate .\nWhen an ally is below 25% HP at end of turn:\nSet Dark allies' HP to full and remove all debuffs.\n All Dark allies gain DEF Boosted (Can't be removed).\n(Consumes Living Our Best Lives, Together.)",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Mysticus Candor",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DEF Boosted (Can't be removed)",
+              "amount": "50%",
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Living Our Best Lives, Together",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    [
+      "ability3:Causa Temporis",
+      "transforms_to",
+      "ability3:Victoriae Calculus"
+    ],
+    [
+      "ability3:Victoriae Calculus",
+      "option_of",
+      "ability3:Sapiens Motus"
+    ],
+    [
+      "ability3:Victoriae Calculus",
+      "option_of",
+      "ability3:Fortis Motus"
+    ],
+    [
+      "ability3:Victoriae Calculus",
+      "option_of",
+      "ability3:Certus Motus"
+    ]
+  ]
+}

@@ -5,6 +5,8 @@ class Character < ApplicationRecord
 
   has_many :character_series_memberships, dependent: :destroy
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
+  has_many :character_skills, -> { order(:position) },
+           primary_key: :granblue_id, foreign_key: :character_granblue_id, inverse_of: :character
   has_many :style_swap_variants, -> { where(style_swap: true) },
            class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id
 

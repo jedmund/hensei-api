@@ -41,6 +41,7 @@ Rails.application.routes.draw do
         post 'fetch_wiki'
       end
     end
+    resources :statuses, only: %i[index show]
     resources :summons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate

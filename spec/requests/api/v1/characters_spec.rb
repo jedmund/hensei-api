@@ -39,6 +39,124 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       expect(response.parsed_body['id']).to eq(character.id)
     end
 
+    it 'returns nested skills in the full character view' do
+      status = Status.create!(
+        name_en: 'Utopia',
+        name_jp: 'ユートピア',
+        family: 'Utopia',
+        category: 'field',
+        icon: 'status_utopia.png'
+      )
+      skill = CharacterSkill.create!(
+        character: character,
+        character_granblue_id: character.granblue_id,
+        kind: 'ability',
+        position: 2,
+        game_action_id: '234800'
+      )
+      version = CharacterSkillVersion.create!(
+        character_skill: skill,
+        game_action_id: '234811',
+        name_en: 'Dazzling Dreams',
+        name_jp: 'ドリーム',
+        description_en: 'Deploy Utopia.',
+        description_jp: 'ユートピアを展開。',
+        icon: 'ability_2.png',
+        type_color: 'field',
+        cooldown: 8,
+        initial_cooldown: 3,
+        duration_value: 3,
+        duration_unit: 'turns',
+        variant_role: 'transform_alt',
+        ordinal: 1,
+        unlock_level: 95,
+        enhance_levels: [95],
+        min_uncap: 5,
+        transcendence_stage: 0,
+        trigger_type: 'field_effect',
+        trigger_value: 'Utopia active',
+        auto_activate: true,
+        mimicable: true,
+        targets_all: true
+      )
+      SkillEffect.create!(
+        character_skill_version: version,
+        status: status,
+        ordinal: 0,
+        effect_type: 'grant_status',
+        target: 'all_allies',
+        amount: '30%',
+        amount_max: '50%',
+        duration_value: 3,
+        duration_unit: 'turns',
+        accuracy: 'g',
+        stacking_frame: 'unique',
+        damage_pct: 125.5,
+        hit_count: 2,
+        damage_cap: 630_000,
+        damage_element: 'dark',
+        heal_pct: 10.5,
+        heal_cap: 2_000
+      )
+
+      get "/api/v1/characters/#{character.id}"
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['skills'].length).to eq(1)
+      expect(json['skills'].first).to include(
+        'kind' => 'ability',
+        'position' => 2
+      )
+
+      version_json = json.dig('skills', 0, 'versions', 0)
+      expect(version_json).to include(
+        'name' => { 'en' => 'Dazzling Dreams', 'ja' => 'ドリーム' },
+        'description' => { 'en' => 'Deploy Utopia.', 'ja' => 'ユートピアを展開。' },
+        'icon' => 'ability_2.png',
+        'type_color' => 'field',
+        'cooldown' => 8,
+        'initial_cooldown' => 3,
+        'duration_value' => 3,
+        'duration_unit' => 'turns',
+        'variant_role' => 'transform_alt',
+        'ordinal' => 1,
+        'unlock_level' => 95,
+        'enhance_levels' => [95],
+        'min_uncap' => 5,
+        'transcendence_stage' => 0,
+        'trigger_type' => 'field_effect',
+        'trigger_value' => 'Utopia active',
+        'auto_activate' => true,
+        'mimicable' => true,
+        'targets_all' => true
+      )
+
+      effect_json = version_json['skill_effects'].first
+      expect(effect_json).to include(
+        'ordinal' => 0,
+        'effect_type' => 'grant_status',
+        'target' => 'all_allies',
+        'amount' => '30%',
+        'amount_max' => '50%',
+        'duration_value' => 3,
+        'duration_unit' => 'turns',
+        'accuracy' => 'g',
+        'stacking_frame' => 'unique',
+        'hit_count' => 2,
+        'damage_cap' => 630_000,
+        'damage_element' => 'dark',
+        'heal_cap' => 2_000
+      )
+      expect(effect_json['status']).to include(
+        'id' => status.id,
+        'name' => { 'en' => 'Utopia', 'ja' => 'ユートピア' },
+        'family' => 'Utopia',
+        'category' => 'field',
+        'icon' => 'status_utopia.png'
+      )
+    end
+
     it 'returns 404 for non-existent id' do
       get '/api/v1/characters/00000000-0000-0000-0000-000000000000'
       expect(response).to have_http_status(:not_found)

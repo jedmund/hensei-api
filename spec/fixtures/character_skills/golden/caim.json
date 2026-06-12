@@ -1,0 +1,1360 @@
+{
+  "slots": [
+    {
+      "kind": "ability",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Double Deal",
+          "name_jp": "ダブルディール",
+          "description_en": "All Earth allies gain Double Deal.\n(Can't recast.)",
+          "description_jp": "土属性キャラの次に使用したアビリティが再度使用可能になる使用可能：4(+で3)ターン後",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": 4,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "cant_recast",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Double Deal",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Beginning of Joker",
+          "name_jp": "ビギニング・オブ・ジョーカー",
+          "description_en": "Beginning of Joker:\nCopy an ally's skill.\n(Skill changes to End of Joker upon casting.)\nEnd of Joker:\nAll Earth allies gain ATK Up, DEF Up, TA Up, Revitalize, Shield, DMG Cap Boosted, Uplift, Hype, and Veil.\n(Skill changes to Beginning of Joker upon casting.)",
+          "description_jp": "仲間のアビリティを模倣する◆次のこのアビリティが「エンド・オブ・ジョーカー」に変化",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "ATK Up",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DEF Up",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "TA Up",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Revitalize",
+              "amount": "500 HP or 10% charge bar",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Shield",
+              "amount": "2000",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DMG Cap Boosted",
+              "amount": "10%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Uplift",
+              "amount": "15%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Hype",
+              "amount": "1-4 stacks",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Veil",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Beginning of Joker",
+          "name_jp": "ビギニング・オブ・ジョーカー",
+          "description_en": "Beginning of Joker:\nCopy an ally's skill.\n(Skill changes to End of Joker upon casting.)\nEnd of Joker:\nAll Earth allies gain ATK Up, DEF Up, TA Up, Revitalize, Shield, DMG Cap Boosted, Uplift, Hype, and Veil.\n(Skill changes to Beginning of Joker upon casting.)",
+          "description_jp": "仲間のアビリティを模倣する◆次のこのアビリティが「エンド・オブ・ジョーカー」に変化",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "buff",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 75,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": []
+        },
+        {
+          "name_en": "End of Joker",
+          "name_jp": "エンド・オブ・ジョーカー",
+          "description_en": "Beginning of Joker:\nCopy an ally's skill.\n(Skill changes to End of Joker upon casting.)\nEnd of Joker:\nAll Earth allies gain ATK Up, DEF Up, TA Up, Revitalize, Shield, DMG Cap Boosted, Uplift, Hype, and Veil.\n(Skill changes to Beginning of Joker upon casting.)",
+          "description_jp": "土属性キャラにさまざまな強化効果◆次のこのアビリティが「ビギニング・オブ・ジョーカー」に変化",
+          "variant_role": "transform_alt",
+          "ordinal": 3,
+          "type_color": "buff",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            3,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "on_cast_toggle",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "ATK Up",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DEF Up",
+              "amount": "30%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "TA Up",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Revitalize",
+              "amount": "500 HP or 10% charge bar",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Shield",
+              "amount": "2000",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DMG Cap Boosted",
+              "amount": "10%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": "summon",
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Uplift",
+              "amount": "15%",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Hype",
+              "amount": "1-4 stacks",
+              "amount_max": null,
+              "duration": [
+                3,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Veil",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "Blank Face",
+          "name_jp": "ブランクフェイス",
+          "description_en": "Skill effect changes based on the type of skill that is first used by a main ally.",
+          "description_jp": "バトルメンバーが最初に使用したアビリティの種類に応じてアビリティ内容が変化",
+          "variant_role": "conditional",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 5,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        },
+        {
+          "name_en": "Spade Trick",
+          "name_jp": "ブランクフェイス",
+          "description_en": "Instantly perform a normal attack without using up a turn.\nRaise caster's Spade Rank by 1 (Max: 4).",
+          "description_jp": "バトルメンバーが最初に使用したアビリティの種類に応じてアビリティ内容が変化",
+          "variant_role": "transform_alt",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "contextual",
+            null
+          ],
+          "flags": [
+            "mimicable"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Spade",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Heart Trick",
+          "name_jp": "ブランクフェイス",
+          "description_en": "Restore 20% of all allies' HP (Healing cap: 2000).\nRaise caster's Heart Rank by 1 (Max: 4).",
+          "description_jp": "バトルメンバーが最初に使用したアビリティの種類に応じてアビリティ内容が変化",
+          "variant_role": "transform_alt",
+          "ordinal": 3,
+          "type_color": "heal",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "contextual",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Heart",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "heal",
+              "target": "all_allies",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Diamond Trick",
+          "name_jp": "ブランクフェイス",
+          "description_en": "All allies gain Charge Boost.\nRaise caster's Diamond Rank by 1 (Max: 4).",
+          "description_jp": "バトルメンバーが最初に使用したアビリティの種類に応じてアビリティ内容が変化",
+          "variant_role": "transform_alt",
+          "ordinal": 4,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "contextual",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Charge Boost",
+              "amount": "15%",
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Diamond",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Club Trick",
+          "name_jp": "ブランクフェイス",
+          "description_en": "Inflict Delay, ATK Lowered (Stackable), and DEF Lowered (Stackable) on all foes.\nRaise caster's Club Rank by 1 (Max: 4).",
+          "description_jp": "バトルメンバーが最初に使用したアビリティの種類に応じてアビリティ内容が変化",
+          "variant_role": "transform_alt",
+          "ordinal": 5,
+          "type_color": "debuff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "contextual",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "all_foes",
+              "status": "Delay",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "all_foes",
+              "status": "ATK Lowered (Stackable)",
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "all_foes",
+              "status": "DEF Lowered (Stackable)",
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Club",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 4,
+      "versions": [
+        {
+          "name_en": "Secret Hands",
+          "name_jp": "シークレットハンズ",
+          "description_en": "Skill effect changes based on the card selected.\n(Can only be used after activates.)",
+          "description_jp": "選択した手札に応じてアビリティ内容が変化◆「愚者の正位置」発動後のみ使用可能",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        },
+        {
+          "name_en": "Beatdown",
+          "name_jp": "シークレットハンズ",
+          "description_en": "850% Earth damage to all foes (Damage cap: ~1,200,000).\nGain ATK Sharply Boosted and Guaranteed TA.",
+          "description_jp": "選択した手札に応じてアビリティ内容が変化◆「愚者の正位置」発動後のみ使用可能",
+          "variant_role": "option",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "ATK Sharply Boosted",
+              "amount": "50%",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Guaranteed TA",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Life Gain",
+          "name_jp": "シークレットハンズ",
+          "description_en": "Create 1 green potion.\nRemove 1 debuff from all allies.",
+          "description_jp": "選択した手札に応じてアビリティ内容が変化◆「愚者の正位置」発動後のみ使用可能",
+          "variant_role": "option",
+          "ordinal": 3,
+          "type_color": "heal",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [
+            "mimicable",
+            "targets_all"
+          ],
+          "effects": []
+        },
+        {
+          "name_en": "Extra Turn",
+          "name_jp": "シークレットハンズ",
+          "description_en": "End cooldown for other skills.",
+          "description_jp": "選択した手札に応じてアビリティ内容が変化◆「愚者の正位置」発動後のみ使用可能",
+          "variant_role": "option",
+          "ordinal": 4,
+          "type_color": "buff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [
+            "mimicable"
+          ],
+          "effects": []
+        },
+        {
+          "name_en": "Delay Act",
+          "name_jp": "シークレットハンズ",
+          "description_en": "Progress battle turn by 2 at end of turn.",
+          "description_jp": "選択した手札に応じてアビリティ内容が変化◆「愚者の正位置」発動後のみ使用可能",
+          "variant_role": "option",
+          "ordinal": 5,
+          "type_color": "debuff",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "menu_select",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "ougi",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Golden Dawn",
+          "name_jp": "ゴールデンドーン",
+          "description_en": "450% Earth damage to a foe.\nCaim's third skill resets to .\nEnd cooldown for .",
+          "description_jp": "土属性ダメージ(特大)/自分の3番目のアビリティがブランクフェイスに変化",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "450.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Golden Twilight",
+          "name_jp": "ゴールデントワイライト(最終上限解放で習得)",
+          "description_en": "500% Earth damage to a foe (Damage cap: ~2,020,000).\nCaim's third skill resets to .\nEnd cooldown for .\nRandomly raise one of Spade, Heart, Diamond, or Club rank by 1 for all Earth allies.",
+          "description_jp": "土属性ダメージ(特大)/自分の3番目のアビリティがブランクフェイスに変化/土属性キャラのスートランクいずれか1つが1上昇(最大4)",
+          "variant_role": "uncap_upgrade",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 5,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Spade",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Heart",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Diamond",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Club",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "500.0",
+              "hit_count": null,
+              "damage_cap": 2020000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Wild Card",
+          "name_jp": "ワイルドカード",
+          "description_en": "Subject to all specialty weapon-, style-, and race-related weapon skills.",
+          "description_jp": "武器スキルの得意武器/タイプ/種族の発動条件を全て満たす",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "The Hanged Man's Charity",
+          "name_jp": "刑死者の奉仕",
+          "description_en": "When an Earth ally has 12 or more buffs at end of turn:\nRemove 1 debuff from that ally.",
+          "description_jp": "ターン終了時、強化効果が12個以上ある土属性キャラの弱体効果を1つ回復",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 90,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "The Hanged Man Reversed",
+          "name_jp": "刑死者の逆位置",
+          "description_en": "When Sub Ally:\nWhen all equipped weapons are different, 20% boost to Earth allies' , 50% boost to DEF, and 10% boost to damage cap.",
+          "description_jp": "★サブメンバー時装備している武器が全て異なる時、土属性キャラの攻撃UP/防御UP/ダメージ上限UP(+で/与ダメージ上昇)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": []
+        },
+        {
+          "name_en": "The Hanged Man Reversed",
+          "name_jp": "刑死者の逆位置",
+          "description_en": "Also supplement Earth allies' damage (Damage cap: 20,000).",
+          "description_jp": "★サブメンバー時装備している武器が全て異なる時、土属性キャラの攻撃UP/防御UP/ダメージ上限UP(+で/与ダメージ上昇)",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 95,
+          "enhance_levels": [
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 4,
+      "versions": [
+        {
+          "name_en": "The Fool Upright",
+          "name_jp": "愚者の正位置",
+          "description_en": "When Switching to Main Ally:\nCaim's Spade, Heart, Diamond, and Club ranks all rise by a random number (Max: 4).\n(Can't be reactivated.)",
+          "description_jp": "★バトル登場時(+で/土属性キャラの)スペードランク、ハートランク、ダイヤランク、クラブランクがランダムで上昇◆再発動不可",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "one_time_use"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Spade",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Heart",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Diamond",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "caster",
+              "status": "Club",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "The Fool Upright",
+          "name_jp": "愚者の正位置",
+          "description_en": "Now affects all Earth allies.",
+          "description_jp": "★バトル登場時(+で/土属性キャラの)スペードランク、ハートランク、ダイヤランク、クラブランクがランダムで上昇◆再発動不可",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 95,
+          "enhance_levels": [
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "one_time_use"
+          ],
+          "effects": []
+        }
+      ]
+    }
+  ],
+  "links": [
+    [
+      "ability2:Beginning of Joker",
+      "transforms_to",
+      "ability2:End of Joker"
+    ],
+    [
+      "ability3:Blank Face",
+      "transforms_to",
+      "ability3:Spade Trick"
+    ],
+    [
+      "ability3:Spade Trick",
+      "transforms_to",
+      "ability3:Heart Trick"
+    ],
+    [
+      "ability3:Heart Trick",
+      "transforms_to",
+      "ability3:Diamond Trick"
+    ],
+    [
+      "ability3:Diamond Trick",
+      "transforms_to",
+      "ability3:Club Trick"
+    ],
+    [
+      "ability4:Secret Hands",
+      "option_of",
+      "ability4:Beatdown"
+    ],
+    [
+      "ability4:Secret Hands",
+      "option_of",
+      "ability4:Life Gain"
+    ],
+    [
+      "ability4:Secret Hands",
+      "option_of",
+      "ability4:Extra Turn"
+    ],
+    [
+      "ability4:Secret Hands",
+      "option_of",
+      "ability4:Delay Act"
+    ]
+  ]
+}
