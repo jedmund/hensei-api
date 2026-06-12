@@ -23,6 +23,28 @@ namespace :granblue do
     puts "Report: #{report_path}"
   end
 
+  desc <<~DESC
+    Render the parsed skill shape for the most structurally complex characters
+    (or specific ids), to evaluate parser extraction by eye. No persistence.
+    Usage:
+      rake granblue:character_skill_shapes               # top 15 by complexity
+      rake granblue:character_skill_shapes count=20
+      rake granblue:character_skill_shapes ids=3040252000,3040164000
+  DESC
+  task character_skill_shapes: :environment do
+    rows = if ENV['ids'].present?
+             Granblue::Reports::CharacterSkillShape.for_ids(ENV['ids'].split(','))
+           else
+             Granblue::Reports::CharacterSkillShape.most_complex(limit: (ENV['count'] || 15).to_i)
+           end
+
+    output = Granblue::Reports::CharacterSkillShape.render(rows)
+    report_path = Rails.root.join('tmp', 'character_skill_shapes.md')
+    File.write(report_path, output)
+    puts "Wrote: #{report_path}"
+    puts "Selected ids: #{rows.map { |row| row[:character].granblue_id }.join(',')}"
+  end
+
   desc 'Dry-run report on character skill parsing quality (no persistence).'
   task character_skill_report: :environment do
     chars = Character.where.not(wiki_raw: [nil, ''])
