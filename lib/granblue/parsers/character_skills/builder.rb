@@ -4,15 +4,10 @@ module Granblue
   module Parsers
     module CharacterSkills
       # Builds the normalized skill graph (slots → versions → links) from a
-      # character's wiki/game data. This is the heuristic core: slot/version
-      # assembly plus role/trigger/progression inference. Effects are delegated to
-      # the injected EffectParser; field text to FieldParser.
+      # character's wiki/game data. Assembles slots/versions and wires variant
+      # links; classification heuristics are delegated to InferenceRules, effects
+      # to the injected EffectParser, and field text to FieldParser.
       class Builder
-        # A skill relearned at or past this level is a Transcendence upgrade.
-        TRANSCENDENCE_MIN_LEVEL = 120
-        # Level threshold => Transcendence stage (checked high to low).
-        TRANSCENDENCE_STAGE_LEVELS = { 150 => 5, TRANSCENDENCE_MIN_LEVEL => 1 }.freeze
-
         TYPE_COLORS = {
           'red' => 'damage',
           'green' => 'heal',
@@ -76,8 +71,8 @@ module Granblue
             versions: []
           }
 
-          base_overrides = inline_base_overrides(base_key)
-          base_version = build_version(base_key, slot, role: base_role_for(base_key), ordinal: next_ordinal(slot), overrides: base_overrides)
+          role = InferenceRules.base_role(wiki_params["#{base_key}_effdesc"], wiki_params["#{base_key}_option"])
+          base_version = build_version(base_key, slot, role: role, ordinal: next_ordinal(slot), overrides: inline_base_overrides(base_key))
           slot[:versions] << base_version
 
           build_enhanced_versions(base_key, slot, base_version).each { |version| slot[:versions] << version }
@@ -106,7 +101,7 @@ module Granblue
             next if wiki_params[name_key].blank?
 
             key = name_key.delete_suffix('_name')
-            role, min_uncap, transcendence_stage = ougi_progression_for(key)
+            role, min_uncap, transcendence_stage = InferenceRules.ougi_progression(key, wiki_params["#{key}_label"])
             slot[:versions] << build_version(
               key, slot, role: role, ordinal: next_ordinal(slot),
               overrides: { min_uncap: min_uncap, transcendence_stage: transcendence_stage }
@@ -148,11 +143,10 @@ module Granblue
               key = "a#{index}#{group[:suffix]}"
               next if wiki_params["#{key}_name"].blank?
 
-              role = group[:role]
-              version = build_version(key, parent, role: role, ordinal: next_ordinal(parent), overrides: trigger_for_group(group, parent))
+              version = build_version(key, parent, role: group[:role], ordinal: next_ordinal(parent), overrides: trigger_for_group(group, parent))
               parent[:versions] << version
 
-              relation = relation_for_role(role)
+              relation = InferenceRules.relation_for_role(group[:role])
               add_link(parent_version[:key], version[:key], relation) if relation
             end
           end
@@ -168,22 +162,11 @@ module Granblue
             next if count.zero?
             next if parent_position.blank? && subtitle.blank?
 
-            { suffix: suffix, parent_position: parent_position, count: count, role: group_role(title, subtitle), title: title, subtitle: subtitle }
+            { suffix: suffix, parent_position: parent_position, count: count, role: InferenceRules.group_role(title, subtitle), title: title,
+subtitle: subtitle }
           end
 
           groups.uniq { |group| group[:suffix] }
-        end
-
-        # A group's own subtitle marks a form set; otherwise the title flags an
-        # options menu, and everything else is a transform/alt set.
-        def group_role(title, subtitle)
-          if subtitle.present?
-            'form_alt'
-          elsif title.include?('Character/Skills/Options')
-            'option'
-          else
-            'transform_alt'
-          end
         end
 
         def build_inline_transform_alt(base_key, slot, base_version)
@@ -196,8 +179,8 @@ module Granblue
             base_key, slot, role: 'transform_alt', ordinal: next_ordinal(slot),
             overrides: {
               name_en: names.second,
-              trigger_type: trigger_type_for_text(wiki_params["#{base_key}_effdesc"]),
-              trigger_value: trigger_value_for_text(wiki_params["#{base_key}_effdesc"])
+              trigger_type: InferenceRules.trigger_type_for_text(wiki_params["#{base_key}_effdesc"]),
+              trigger_value: InferenceRules.trigger_value_for_text(wiki_params["#{base_key}_effdesc"])
             }
           )
           add_link(base_version[:key], version[:key], 'transforms_to')
@@ -226,14 +209,13 @@ module Granblue
             cooldown = cooldowns[:enhanced][index]
             next if description.blank? && cooldown.blank?
 
-            role = level >= TRANSCENDENCE_MIN_LEVEL ? 'transcendence_upgrade' : 'enhanced'
             build_version(
-              base_key, slot, role: role, ordinal: next_ordinal(slot),
+              base_key, slot, role: InferenceRules.enhanced_role(level), ordinal: next_ordinal(slot),
               overrides: {
                 **inline_base_overrides(base_key),
                 unlock_level: level,
                 enhance_levels: [level],
-                transcendence_stage: transcendence_stage_for_level(level),
+                transcendence_stage: InferenceRules.transcendence_stage(level),
                 description_en: description.presence || base_version[:attrs][:description_en],
                 cooldown: cooldown.presence || base_version[:attrs][:cooldown]
               }
@@ -280,11 +262,11 @@ module Granblue
             transcendence_stage: nil,
             trigger_type: 'none',
             trigger_value: nil,
-            cant_recast: cant_recast?(description),
-            one_time_use: one_time_use?(description),
-            auto_activate: auto_activate?(description),
+            cant_recast: InferenceRules.cant_recast?(description),
+            one_time_use: InferenceRules.one_time_use?(description),
+            auto_activate: InferenceRules.auto_activate?(description),
             mimicable: wiki_params["#{key}_mimic"].to_s.strip == 'y',
-            targets_all: targets_all?(description),
+            targets_all: InferenceRules.targets_all?(description),
             game_action_id: game&.dig('action_id')
           }.merge(overrides.except(:name_en, :description_en))
         end
@@ -292,28 +274,6 @@ module Granblue
         def description_for(key)
           parsed = FieldParser.parse_info_des(wiki_params["#{key}_effdesc"] || wiki_params["#{key}_desc"])
           parsed[:descriptions].first.presence || wiki_params["#{key}_desc"]
-        end
-
-        def ougi_progression_for(key)
-          return ['base', 4, nil] if key == 'ougi'
-
-          label = wiki_params["#{key}_label"].to_s
-          if (stage = label[/Stage (\d+) Transcendence/i, 1])
-            ['transcendence_upgrade', 6, stage.to_i]
-          elsif label.include?('uncap=5') || label.match?(/5★|After 5/i)
-            ['uncap_upgrade', 5, nil]
-          elsif label.match?(/Sword form/i)
-            ['form_alt', 4, nil]
-          else
-            ['base', 4, nil]
-          end
-        end
-
-        def base_role_for(key)
-          text = wiki_params["#{key}_effdesc"].to_s
-          return 'conditional' if text.match?(/effect changes based/i) && wiki_params["#{key}_option"].to_s.exclude?('options')
-
-          'base'
         end
 
         def trigger_for_group(group, parent)
@@ -324,46 +284,12 @@ module Granblue
             { trigger_type: 'form_state', trigger_value: FieldParser.clean_trigger_value(group[:subtitle].presence || group[:title]) }
           else
             parent_text = parent[:versions].first&.dig(:attrs, :description_en)
-            { trigger_type: trigger_type_for_text(parent_text), trigger_value: trigger_value_for_text(parent_text) }
+            { trigger_type: InferenceRules.trigger_type_for_text(parent_text), trigger_value: InferenceRules.trigger_value_for_text(parent_text) }
           end
-        end
-
-        def trigger_type_for_text(text)
-          normalized = trigger_text(text).downcase
-          return 'stack_threshold' if normalized.match?(/when .* (?:is|reaches) \d|at \d/)
-          return 'field_effect' if normalized.include?('utopia')
-          return 'on_cast_toggle' if normalized.include?('changes to') || normalized.include?('upon casting')
-
-          'contextual'
-        end
-
-        def trigger_value_for_text(text)
-          plain_text = trigger_text(text)
-          return 'Utopia active' if plain_text.match?(/Utopia/i)
-
-          if (match = plain_text.match(/When ([^:<]+?) (?:is|reaches) (\d+)/i))
-            return "#{match[1].strip} >= #{match[2]}"
-          end
-
-          nil
-        end
-
-        def trigger_text(text)
-          FieldParser.clean_markup(text).gsub(/\{\{status\|([^|}]+).*?\}\}/i, '\\1')
-        end
-
-        def transcendence_stage_for_level(level)
-          TRANSCENDENCE_STAGE_LEVELS.each { |threshold, stage| return stage if level >= threshold }
-
-          nil
         end
 
         def option_parent_version(slot)
           slot[:versions].reverse.find { |version| version[:attrs][:variant_role] == 'transform_alt' } || slot[:versions].first
-        end
-
-        def relation_for_role(role)
-          { 'option' => 'option_of', 'form_alt' => 'form_counterpart', 'transform_alt' => 'transforms_to' }[role]
         end
 
         def add_link(from_key, to_key, relation)
@@ -380,22 +306,6 @@ module Granblue
 
         def version_key(slot, key, role, ordinal)
           "#{slot[:key]}:#{key}:#{role}:#{ordinal}"
-        end
-
-        def cant_recast?(text)
-          text.to_s.match?(/Can't recast/i)
-        end
-
-        def one_time_use?(text)
-          text.to_s.match?(/one[- ]time|can't be reactivated/i)
-        end
-
-        def auto_activate?(text)
-          text.to_s.match?(/auto-activates|activates every/i)
-        end
-
-        def targets_all?(text)
-          text.to_s.match?(/all allies|all foes|all .+ allies/i)
         end
       end
     end
