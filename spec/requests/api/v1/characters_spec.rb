@@ -157,6 +157,21 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       )
     end
 
+    it 'returns skill_links edges between versions in the full character view' do
+      skill = create(:character_skill, character: character, kind: 'ability', position: 1)
+      base = create(:character_skill_version, character_skill: skill, name_en: 'Base', ordinal: 1)
+      alt = create(:character_skill_version, :transform_alt, character_skill: skill, name_en: 'Alt', ordinal: 2)
+      create(:character_skill_version_link, from_version: base, to_version: alt, relation: 'transforms_to')
+
+      get "/api/v1/characters/#{character.id}"
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['skill_links']).to eq(
+        [{ 'from' => base.id, 'to' => alt.id, 'relation' => 'transforms_to' }]
+      )
+    end
+
     it 'returns 404 for non-existent id' do
       get '/api/v1/characters/00000000-0000-0000-0000-000000000000'
       expect(response).to have_http_status(:not_found)

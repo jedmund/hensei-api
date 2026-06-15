@@ -147,6 +147,23 @@ module Api
             c.character_skills.includes(character_skill_versions: { skill_effects: :status })
           )
         end
+
+        # Edges between the skill versions serialized above (transforms_to /
+        # option_of / form_counterpart). Kept as a flat list rather than nested
+        # under each skill because form_counterpart links cross slots; `from`
+        # and `to` reference version ids in the `skills` graph.
+        field :skill_links do |c|
+          version_ids = CharacterSkillVersion
+                        .joins(:character_skill)
+                        .where(character_skills: { character_granblue_id: c.granblue_id })
+                        .select(:id)
+
+          CharacterSkillVersionLink
+            .where(from_version_id: version_ids)
+            .order(:relation, :from_version_id, :to_version_id)
+            .pluck(:from_version_id, :to_version_id, :relation)
+            .map { |from, to, relation| { from: from, to: to, relation: relation } }
+        end
       end
 
       # Separate view for recruitment info - only include when needed (e.g., character detail page)
