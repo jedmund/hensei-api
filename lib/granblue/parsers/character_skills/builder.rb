@@ -16,6 +16,12 @@ module Granblue
           'purple' => 'field'
         }.freeze
 
+        # Game ability icon stem "{id}_{N}" (N = border color); the asset lives at
+        # .../ui/icon/ability/m/{stem}.png. gbf.wiki stores the same stem as
+        # "Ability_m_{id}_{N}.png", used as a fallback when game data lacks it.
+        ICON_STEM = /\A\d+_\d+\z/
+        WIKI_ICON_STEM = /\AAbility_m_(\d+_\d+)\.png\z/i
+
         attr_reader :effect_parser
 
         def initialize(character, data:, effect_parser:)
@@ -249,6 +255,7 @@ subtitle: subtitle }
             description_en: FieldParser.display_description(raw_description_en),
             description_jp: FieldParser.display_description(FieldParser.clean_description(jp&.dig('comment'))),
             icon: FieldParser.first_icon(wiki_params["#{key}_icon"]),
+            game_icon: game_icon_for(key, game),
             type_color: TYPE_COLORS[wiki_params["#{key}_color"].to_s.strip.downcase],
             cooldown: cooldown[:base],
             initial_cooldown: cooldown[:initial],
@@ -269,6 +276,15 @@ subtitle: subtitle }
             targets_all: InferenceRules.targets_all?(description),
             game_action_id: game&.dig('action_id')
           }.merge(overrides.except(:name_en, :description_en))
+        end
+
+        # The game asset stem for this version's icon. Prefers game-data
+        # class_name ("625_4"); falls back to a wiki icon already in stem form.
+        def game_icon_for(key, game)
+          class_name = game&.dig('class_name').to_s.strip
+          return class_name if class_name.match?(ICON_STEM)
+
+          FieldParser.first_icon(wiki_params["#{key}_icon"]).to_s[WIKI_ICON_STEM, 1]
         end
 
         def description_for(key)
