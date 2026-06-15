@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_12_000010) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_15_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -139,6 +139,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_12_000010) do
     t.string "game_action_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_icon"
     t.index ["character_skill_id", "ordinal"], name: "idx_character_skill_versions_on_skill_and_ordinal"
     t.index ["character_skill_id"], name: "index_character_skill_versions_on_character_skill_id"
   end
