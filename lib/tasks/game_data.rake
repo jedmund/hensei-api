@@ -8,11 +8,14 @@ namespace :granblue do
     game.granbluefantasy.jp browser session (cookies) and pass as env vars:
       ACCESS_TOKEN  -> the access_gbtk cookie
       WING          -> the wing cookie
-      MIDSHIP       -> the midship cookie
+      MIDSHIP       -> the midship cookie (rotates each request — paste a FRESH
+                       one and run immediately; the task then follows rotation)
       T             -> the t cookie (optional, defaults to 'dummy')
+      GAME_UID      -> the logged-in account's player id (window userId)
+      GAME_VERSION  -> the current game build (window version)
 
-    Usage:
-      ACCESS_TOKEN=... WING=... MIDSHIP=... rake granblue:fetch_game_data
+    Usage (GAME_UID is named to avoid the shell's reserved UID variable):
+      ACCESS_TOKEN=... WING=... MIDSHIP=... GAME_UID=... GAME_VERSION=... rake granblue:fetch_game_data
       ... rake granblue:fetch_game_data type=Weapon          # Weapon | Summon | Character (default)
       ... rake granblue:fetch_game_data force=true           # re-fetch all, not just rows missing game_raw_en
       ... rake granblue:fetch_game_data debug=true           # verbose logging
@@ -41,6 +44,8 @@ namespace :granblue do
       wing: required['WING'],
       midship: required['MIDSHIP'],
       t: ENV['T'].presence || 'dummy',
+      user_id: ENV['GAME_UID'].presence || Dataminer::BOT_UID,
+      game_version: ENV['GAME_VERSION'].presence || Dataminer::GAME_VERSION,
       debug: ENV['debug'] == 'true'
     )
 
