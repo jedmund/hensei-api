@@ -555,5 +555,4 @@ RSpec.describe 'Parties API', type: :request do
       expect(results.first).to include('shortcode' => party.shortcode)
     end
   end
-
 end

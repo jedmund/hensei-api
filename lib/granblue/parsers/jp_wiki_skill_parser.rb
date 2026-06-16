@@ -118,7 +118,7 @@ module Granblue
       end
 
       def skill_image_id(images)
-        images.map { |alt| alt[/\A(\d+_\d+)\.png\z/, 1] }.compact.first
+        images.filter_map { |alt| alt[/\A(\d+_\d+)\.png\z/, 1] }.first
       end
 
       def level_value(text)
