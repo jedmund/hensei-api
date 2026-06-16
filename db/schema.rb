@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_12_000010) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_16_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -139,6 +139,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_12_000010) do
     t.string "game_action_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_icon"
     t.index ["character_skill_id", "ordinal"], name: "idx_character_skill_versions_on_skill_and_ordinal"
     t.index ["character_skill_id"], name: "index_character_skill_versions_on_character_skill_id"
   end
@@ -602,6 +603,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_12_000010) do
     t.uuid "collection_character_id"
     t.boolean "is_substitute", default: false, null: false
     t.jsonb "description"
+    t.jsonb "full_auto_skills", default: {}, null: false
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"

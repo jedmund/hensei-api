@@ -62,6 +62,7 @@ RSpec.describe 'Api::V1::Characters', type: :request do
         description_en: 'Deploy Utopia.',
         description_jp: 'ユートピアを展開。',
         icon: 'ability_2.png',
+        game_icon: '234_5',
         type_color: 'field',
         cooldown: 8,
         initial_cooldown: 3,
@@ -114,6 +115,7 @@ RSpec.describe 'Api::V1::Characters', type: :request do
         'name' => { 'en' => 'Dazzling Dreams', 'ja' => 'ドリーム' },
         'description' => { 'en' => 'Deploy Utopia.', 'ja' => 'ユートピアを展開。' },
         'icon' => 'ability_2.png',
+        'game_icon' => '234_5',
         'type_color' => 'field',
         'cooldown' => 8,
         'initial_cooldown' => 3,
@@ -154,6 +156,21 @@ RSpec.describe 'Api::V1::Characters', type: :request do
         'family' => 'Utopia',
         'category' => 'field',
         'icon' => 'status_utopia.png'
+      )
+    end
+
+    it 'returns skill_links edges between versions in the full character view' do
+      skill = create(:character_skill, character: character, kind: 'ability', position: 1)
+      base = create(:character_skill_version, character_skill: skill, name_en: 'Base', ordinal: 1)
+      alt = create(:character_skill_version, :transform_alt, character_skill: skill, name_en: 'Alt', ordinal: 2)
+      create(:character_skill_version_link, from_version: base, to_version: alt, relation: 'transforms_to')
+
+      get "/api/v1/characters/#{character.id}"
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      expect(json['skill_links']).to eq(
+        [{ 'from' => base.id, 'to' => alt.id, 'relation' => 'transforms_to' }]
       )
     end
 

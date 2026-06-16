@@ -142,10 +142,23 @@ module Api
           end
         end
 
+        # Reads the preloaded association (see Character::SKILL_GRAPH_PRELOAD);
+        # callers rendering this view must preload to avoid N+1s.
         field :skills do |c|
-          CharacterSkillBlueprint.render_as_hash(
-            c.character_skills.includes(character_skill_versions: { skill_effects: :status })
-          )
+          CharacterSkillBlueprint.render_as_hash(c.character_skills)
+        end
+
+        # Edges between the skill versions serialized above (transforms_to /
+        # option_of / form_counterpart). Kept as a flat list rather than nested
+        # under each skill because form_counterpart links cross slots; `from`
+        # and `to` reference version ids in the `skills` graph. Built from the
+        # preloaded version `outgoing_links` (no per-character query).
+        field :skill_links do |c|
+          c.character_skills
+           .flat_map(&:character_skill_versions)
+           .flat_map(&:outgoing_links)
+           .sort_by { |link| [link.relation, link.from_version_id, link.to_version_id] }
+           .map { |link| { from: link.from_version_id, to: link.to_version_id, relation: link.relation } }
         end
       end
 
