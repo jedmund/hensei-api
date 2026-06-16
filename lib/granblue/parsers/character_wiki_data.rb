@@ -67,7 +67,11 @@ module Granblue
       def extract_template_params(wikitext)
         data = {}
 
-        wikitext.each_line do |line|
+        # Strip HTML comments first: commented-out text can mention section
+        # names like "Gameplay Notes" (e.g. in the |gender= field) and would
+        # otherwise terminate parsing before the ability params, or leak into
+        # values.
+        wikitext.gsub(/<!--.*?-->/m, '').each_line do |line|
           break if line.include?('Gameplay Notes')
           next unless line.start_with?('|')
 
