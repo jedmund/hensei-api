@@ -54,6 +54,7 @@ class GridCharacter < ApplicationRecord
   validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
   validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
   validate :roles_within_cap
+  validate :validate_full_auto_skills
 
   # Virtual attributes
   attr_accessor :new_rings
@@ -329,6 +330,25 @@ class GridCharacter < ApplicationRecord
     return if grid_character_role_assignments.size <= ROLE_CAP
 
     errors.add(:roles, "may have at most #{ROLE_CAP}")
+  end
+
+  # full_auto_skills maps an ability slot ("1".."4") to whether it is used in
+  # Full Auto. Reject unknown slots or non-boolean values.
+  FULL_AUTO_SLOTS = %w[1 2 3 4].freeze
+  FULL_AUTO_VALUES = [true, false].freeze
+
+  def validate_full_auto_skills
+    return if full_auto_skills.blank?
+
+    unless full_auto_skills.is_a?(Hash)
+      errors.add(:full_auto_skills, 'must be an object')
+      return
+    end
+
+    full_auto_skills.each do |slot, value|
+      errors.add(:full_auto_skills, "invalid slot #{slot}") unless FULL_AUTO_SLOTS.include?(slot.to_s)
+      errors.add(:full_auto_skills, "invalid value for slot #{slot}") unless FULL_AUTO_VALUES.include?(value)
+    end
   end
 
   ##

@@ -41,6 +41,7 @@ module Api
           GridCharacterRoleBlueprint.render_as_hash(gc.grid_character_roles.sort_by(&:sort_order))
         end
         field :description, if: ->(_field_name, gc, _options) { gc.description.present? }
+        field :full_auto_skills, if: ->(_field_name, gc, _options) { gc.full_auto_skills.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
                     if: ->(_field_name, gc, _options) { !gc.is_substitute? && gc.substitutions.any? }
       end

@@ -84,6 +84,35 @@ RSpec.describe 'GridCharacters API', type: :request do
         expect(json_response['grid_character']).to include('uncap_level' => 4, 'transcendence_step' => 1)
       end
 
+      it 'persists and serializes per-slot full_auto_skills' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '2' => false, '3' => true }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['grid_character']['full_auto_skills']).to eq('2' => false, '3' => true)
+      end
+
+      it 'rejects full_auto_skills with a non-boolean value' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '1' => 'maybe' }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
       it 'allows the owner to update the uncap level and transcendence step' do
         grid_character = create(:grid_character,
                                 party: party,
