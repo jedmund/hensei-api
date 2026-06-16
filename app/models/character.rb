@@ -10,6 +10,13 @@ class Character < ApplicationRecord
   has_many :style_swap_variants, -> { where(style_swap: true) },
            class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id
 
+  # Eager-load spec for the serialized skill graph (CharacterBlueprint :full
+  # `skills` + `skill_links`). Preload this wherever :full is rendered to avoid
+  # N+1s on character_skills / versions / effects / statuses / version links.
+  SKILL_GRAPH_PRELOAD = {
+    character_skills: { character_skill_versions: [{ skill_effects: :status }, :outgoing_links] }
+  }.freeze
+
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |character|
                     {

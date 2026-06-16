@@ -242,7 +242,12 @@ module Api
         else
           @character = find_by_any_id(Character, params[:id])
         end
-        render_not_found_response('character') unless @character
+        return render_not_found_response('character') unless @character
+
+        # Preload the skill graph so the :full view's skills/skill_links don't N+1.
+        ActiveRecord::Associations::Preloader.new(
+          records: [@character], associations: Character::SKILL_GRAPH_PRELOAD
+        ).call
       end
 
       def character_params

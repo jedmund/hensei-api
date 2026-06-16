@@ -57,7 +57,9 @@ module Api
           if grid_character.save
             @party.mark_updated!
             grid_character.sync_from_collection! if grid_character.collection_character_id.present?
-            grid_character.reload
+            # Re-fetch with blueprint preloads so the :full render avoids N+1s.
+            grid_character = GridCharacter.includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                                          .find(grid_character.id)
             render json: GridCharacterBlueprint.render(grid_character,
                                                        root: :grid_character,
                                                        view: :full), status: :created

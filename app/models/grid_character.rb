@@ -39,7 +39,7 @@ class GridCharacter < ApplicationRecord
   # them in sync as the blueprint evolves.
   NESTED_BLUEPRINT_PRELOADS = [
     :awakening, :grid_artifact, :grid_character_roles, :collection_character,
-    { character: [:character_series_records, :style_swap_variants] }
+    { character: [:character_series_records, :style_swap_variants, Character::SKILL_GRAPH_PRELOAD] }
   ].freeze
 
   # Validations
