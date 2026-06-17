@@ -33,7 +33,7 @@ OLD_PREFIXES=(
 	accessory-square accessory-grid artifact-square artifact-wide bullet-square
 	job-icons job-portraits job-wide job-zoom
 	raid-thumbnail
-	ability-icons job-skills elements proficiencies rarity awakening mastery ax
+	ability-icons job-skills weapon-skill-icons elements proficiencies rarity awakening mastery ax
 	fonts placeholders external media
 )
 
