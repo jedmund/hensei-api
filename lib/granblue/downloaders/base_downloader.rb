@@ -206,12 +206,20 @@ module Granblue
         "#{Rails.root}/download/#{object_type}-#{size}"
       end
 
+      # S3 prefix for this object type. Defaults to the pluralized object_type
+      # (character -> characters); override where pluralization differs (e.g. accessory).
+      # See the bucket layout in hensei-api/docs/follow-ups/image-bucket-reorg.md.
+      # @return [String] S3 prefix (no trailing slash)
+      def bucket_directory
+        "#{object_type}s"
+      end
+
       # Build S3 key for an image
       # @param size [String] Image size variant
       # @param filename [String] Image filename
       # @return [String] Complete S3 key
       def build_s3_key(size, filename)
-        "#{object_type}-#{size}/#{filename}"
+        "#{bucket_directory}/#{size}/#{filename}"
       end
 
       # Log informational message if verbose
