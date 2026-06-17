@@ -21,13 +21,13 @@ path) **and** the S3 bucket simultaneously.
 
 ```
 characters/{main,grid,square,detail}/        # was character-{main,grid,square,detail}
-weapons/{main,grid,square,base,raw}/          # was weapon-{main,grid,square,base,raw}
+weapons/{main,grid,square,base}/              # was weapon-{main,grid,square,base}; weapon-raw REMOVED (orphan)
 summons/{main,grid,square,detail,tall,wide}/  # was summon-{…}
 accessories/{square,grid}/                    # was accessory-{square,grid}
 artifacts/{square,wide}/                       # was artifact-{square,wide}
 bullets/square/                                # was bullet-square
 jobs/{icon,portrait,wide,zoom,full}/           # was job-icons, job-portraits, job-wide, job-zoom, jobs
-raids/{icon,thumbnail,lobby,background,full}/  # was raid-{icon,thumbnail,lobby,background}, raids
+raids/{icon,thumbnail,lobby,background,full}/  # was raid-{icon,thumbnail,lobby,background}, raids; raid-square DROPPED
 guidebooks/                                    # unchanged
 
 icons/abilities/        # was ability-icons
@@ -38,7 +38,7 @@ icons/rarity/           # was rarity
 icons/awakening/        # was awakening
 icons/mastery/          # was mastery
 icons/ax-skills/        # was ax              (rename: clarify cryptic "ax")
-icons/weapon-keys/      # was weapon-keys
+weapon-keys/            # unchanged (stays top-level)
 labels/{element,proficiency,race,gender}/     # unchanged (already grouped)
 
 app/fonts/              # was fonts
@@ -50,29 +50,27 @@ app/marketing/          # was loose root files: about-hero.jpg, about-hero2.jpg,
 favicon.png             # stays at root (served as site favicon)
 
 previews/               # UNCHANGED (og:image; externally cached)
-profile/                # UNCHANGED for now — see open question
-updates/                # UNCHANGED for now — see open question
+profile/                # UNCHANGED
+updates/                # UNCHANGED
 ```
 
-## Open questions (confirm before executing)
+## Decisions (confirmed)
 
-1. **`profile/`** (84 files) — `getProfileIcon()` builds `profile/{slug}`. Doc-comment says
-   "site-brand icons (gamewith/kamigame)" but those live in `external/`, and the dir has 84
-   files. Leave as `profile/` (safe) or fold somewhere? **Default: leave.**
-2. **`updates/`** (60 files) — changelog images. Move to `app/updates/` or leave? **Default: leave.**
-3. **`raid-square/`** (1 file) — looks vestigial; `getRaidImage` builds icon/thumbnail/lobby/
-   background, not square. Drop it or map to `raids/square/`? **Default: drop (verify the 1 file).**
-4. **`weapon-base` vs `weapon-raw`** — keep both names under `weapons/` (`base`, `raw`) or
-   rename for clarity? **Default: keep `base`/`raw`.**
-5. **`weapon-keys`** → `icons/weapon-keys` (grouped as an icon set) vs keep top-level. **Default: icons/weapon-keys.**
+1. **`profile/`** — keep as-is.
+2. **`updates/`** — keep as-is.
+3. **`raid-square/`** — **drop.** Aspirational; no source for the images. (Single stray file.)
+4. **`weapon-raw/`** — **remove entirely.** Duplicate of `weapon-base` (same image); orphan with
+   no producer (API) and no consumer (app), so removal is a pure S3 delete — no code changes.
+   `weapon-base` is the live one → `weapons/base`.
+5. **`weapon-keys/`** — keep top-level (not moved under `icons/`).
 
 ## Read-path inventory (hensei-svelte)
 
 | File | What to change |
 |---|---|
-| `src/lib/utils/images.ts` | The hub. `getImageDirectory`, placeholders, accessory/artifact/bullet/awakening/weapon-key/ax/mastery/elements/labels/profile/guidebook/raid builders → new prefixes. **Do NOT change** `GAME_CDN_BASE`, `RAID_*_CDN`. |
+| `src/lib/utils/images.ts` | The hub. `getImageDirectory`, placeholders, accessory/artifact/bullet/awakening/ax/mastery/elements/labels/guidebook/raid builders → new prefixes. `weapon-keys`, `profile`, `guidebooks` stay top-level. **Do NOT change** `GAME_CDN_BASE`, `RAID_*_CDN`. |
 | `src/lib/utils/jobUtils.ts` | `job-icons`, `job-portraits`, `job-wide`, `job-zoom` → `jobs/{icon,portrait,wide,zoom}`. |
-| `src/lib/utils/modifiers.ts` | `weapon-keys` → `icons/weapon-keys`; `awakening` → `icons/awakening`. |
+| `src/lib/utils/modifiers.ts` | `awakening` → `icons/awakening` (weapon-keys stays top-level — unchanged). |
 | `src/lib/components/edra/extensions/entity-mention/mentions/helpers.ts` | `character-square`/`{type}-square` → `characters/square` etc.; `ability-icons` → `icons/abilities`. |
 | `src/lib/features/database/weapons/AwakeningModal.svelte` | inline `awakening/` → `icons/awakening/` (or route through `getAwakeningImage`). |
 | Tests | `images.test.ts`, `jobUtils.test.ts`, `modifiers.test.ts`, mention `helpers.test.ts`/`normalize.test.ts` — update asserted paths. |
@@ -110,7 +108,7 @@ MAP=(
   "character-main:characters/main" "character-grid:characters/grid"
   "character-square:characters/square" "character-detail:characters/detail"
   "weapon-main:weapons/main" "weapon-grid:weapons/grid" "weapon-square:weapons/square"
-  "weapon-base:weapons/base" "weapon-raw:weapons/raw"
+  "weapon-base:weapons/base"   # weapon-raw intentionally omitted (removed, not migrated)
   "summon-main:summons/main" "summon-grid:summons/grid" "summon-square:summons/square"
   "summon-detail:summons/detail" "summon-tall:summons/tall" "summon-wide:summons/wide"
   "accessory-square:accessories/square" "accessory-grid:accessories/grid"
@@ -122,9 +120,9 @@ MAP=(
   "ability-icons:icons/abilities" "job-skills:icons/job-skills"
   "elements:icons/elements" "proficiencies:icons/proficiencies" "rarity:icons/rarity"
   "awakening:icons/awakening" "mastery:icons/mastery" "ax:icons/ax-skills"
-  "weapon-keys:icons/weapon-keys"
   "fonts:app/fonts" "placeholders:app/placeholders" "external:app/external" "media:app/media"
 )
+# Unchanged (NOT migrated): weapon-keys/ profile/ updates/ guidebooks/ labels/ previews/ favicon.png
 for pair in "${MAP[@]}"; do
   old="${pair%%:*}"; new="${pair##*:}"
   echo "==> $old/ -> $new/"
@@ -138,6 +136,8 @@ echo "Copy complete. Deploy repos, soak, then run the --delete pass."
 ```
 
 A second script (post-soak) does `aws s3 rm "$BUCKET/$old/" --recursive` per old prefix.
+The same delete pass also removes the orphans that were never migrated:
+`weapon-raw/`, `raid-square/`, the duplicate nested `images/media/`, and stray `.DS_Store`.
 
 ## Cutover order (zero-downtime)
 
@@ -148,4 +148,3 @@ A second script (post-soak) does `aws s3 rm "$BUCKET/$old/" --recursive` per old
 4. Soak (e.g. 1–2 weeks); watch for image 404s.
 5. Run delete script → remove old prefixes. Also remove the duplicate `media/extension.mp4`
    nested copy and stray `.DS_Store`.
-```
