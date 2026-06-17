@@ -21,7 +21,7 @@
 #   @return [Integer, nil] the chain count, if applicable.
 # @!attribute [rw] turn_count
 #   @return [Integer, nil] the turn count, if applicable.
-# @!attribute [rw] ultimate_mastery
+# @!attribute [rw] ultimate_mastery_level
 #   @return [Integer, nil] the ultimate mastery level, if applicable.
 # @!attribute [rw] visibility
 #   @return [Integer] the visibility of the party:
@@ -69,6 +69,8 @@
 #   @return [Array<Favorite>] the favorites that include this party.
 class Party < ApplicationRecord
   include GranblueEnums
+
+  alias_attribute :ultimate_mastery, :ultimate_mastery_level
 
   SUMMON_SERIES_MOD = {
     'magna' => 'omega',
@@ -202,7 +204,7 @@ class Party < ApplicationRecord
   # columns (description, shortcode, boost_mod, element, …) do not need to
   # re-trigger the scoring engine, so the after_commit guard skips them.
   SCORING_COLUMNS = %w[weapons_count characters_count summons_count job_id accessory_id
-                       ultimate_mastery].freeze
+                       ultimate_mastery_level].freeze
 
   # Amoeba configuration
   amoeba do
@@ -255,7 +257,7 @@ class Party < ApplicationRecord
   validates :chain_count, numericality: { only_integer: true }, allow_nil: true
   validates :turn_count, numericality: { only_integer: true }, allow_nil: true
   validates :summon_count, numericality: { only_integer: true }, allow_nil: true
-  validates :ultimate_mastery, numericality: { only_integer: true }, allow_nil: true
+  validates :ultimate_mastery_level, numericality: { only_integer: true }, allow_nil: true
 
   # YouTube URL validation regex
   YOUTUBE_REGEX = %r{\A(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]+}

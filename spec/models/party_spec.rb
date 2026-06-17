@@ -74,12 +74,18 @@ RSpec.describe Party, type: :model do
       end
     end
 
-    context 'for ultimate_mastery' do
-      it { should validate_numericality_of(:ultimate_mastery).only_integer.allow_nil }
-      it 'is invalid when ultimate_mastery is non-integer' do
-        party = build(:party, ultimate_mastery: 'max')
+    context 'for ultimate_mastery_level' do
+      it { should validate_numericality_of(:ultimate_mastery_level).only_integer.allow_nil }
+      it 'is invalid when ultimate_mastery_level is non-integer' do
+        party = build(:party, ultimate_mastery_level: 'max')
         expect(party).not_to be_valid
-        expect(party.errors[:ultimate_mastery]).to include(/is not a number/)
+        expect(party.errors[:ultimate_mastery_level]).to include(/is not a number/)
+      end
+
+      it 'keeps ultimate_mastery as a compatibility alias' do
+        party = build(:party, ultimate_mastery: 1)
+        expect(party.ultimate_mastery_level).to eq(1)
+        expect(party.ultimate_mastery).to eq(1)
       end
     end
 

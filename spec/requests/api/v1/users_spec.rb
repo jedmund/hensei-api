@@ -159,6 +159,15 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(user.reload.description).to eq('Fire team enjoyer.')
     end
 
+    it 'updates the support summon privacy setting' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { support_summons_public: false } }.to_json,
+          headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.support_summons_public).to be(false)
+    end
+
     it 'does not persist a description that fails profanity validation' do
       put "/api/v1/users/#{user.id}",
           params: { user: { description: 'hello asshole world' } }.to_json,

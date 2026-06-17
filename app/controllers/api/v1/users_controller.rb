@@ -312,7 +312,7 @@ module Api
           :description, :granblue_id, :picture, :element, :language, :gender, :private,
           :theme, :show_gamertag, :wiki_profile, :youtube, :collection_privacy,
           :import_weapons, :default_import_visibility, :simple_portraits,
-          :default_rep_view, :timezone
+          :default_rep_view, :timezone, :support_summons_public
         )
       end
     end

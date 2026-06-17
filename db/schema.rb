@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_16_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -857,7 +857,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_16_000000) do
     t.integer "summons_count", default: 0
     t.string "edit_key"
     t.uuid "local_id"
-    t.integer "ultimate_mastery"
+    t.integer "ultimate_mastery_level"
     t.uuid "guidebook3_id"
     t.uuid "guidebook1_id"
     t.uuid "guidebook2_id"
