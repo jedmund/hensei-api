@@ -73,7 +73,16 @@ RSpec.describe Granblue::Parsers::WeaponParser do
   end
 
   describe '#persist_skills' do
-    before { parser.send(:persist_skills, skills) }
+    before do
+      WeaponSkillDatum.find_or_create_by!(modifier: 'Enmity', boost_type: 'atk', series: 'normal', size: 'big') do |datum|
+        datum.formula_type = 'enmity'
+        datum.sl1 = 1.0
+        datum.sl10 = 10.0
+        datum.sl15 = 15.0
+      end
+
+      parser.send(:persist_skills, skills)
+    end
 
     it 'creates one slot per occupied position and ordered version tiers' do
       weapon.reload
@@ -90,6 +99,33 @@ RSpec.describe Granblue::Parsers::WeaponParser do
       savage = weapon.weapon_skills.find_by(position: 0).weapon_skill_versions.order(:ordinal).first
       expect(savage.skill_modifier).to be_nil
       expect(savage.scales_with_skill_level).to be false
+    end
+
+    it 'does not mark recognized modifiers as scaling when no lookup data exists' do
+      WeaponSkillDatum.where(modifier: 'Abandon').delete_all
+      skill_data = [{
+        position: 0,
+        versions: [{
+          ordinal: 0,
+          name_en: 'Abandon Test',
+          description_en: 'A known modifier without seeded skill data',
+          icon: nil,
+          unlock_level: nil,
+          min_uncap: 3,
+          transcendence_stage: 0,
+          main_hand_only: false,
+          mc_only: false,
+          modifier: 'Abandon',
+          series: 'normal',
+          size: 'big'
+        }]
+      }]
+
+      parser.send(:persist_skills, skill_data)
+
+      version = weapon.reload.weapon_skill_versions.find_by(skill_modifier: 'Abandon')
+      expect(version.scales_with_skill_level).to be false
+      expect(version.weapon_skill_data).to be_empty
     end
 
     it 'is idempotent across re-parses' do
