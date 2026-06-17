@@ -50,7 +50,7 @@ module Granblue
 
       # Stem is the storage key; no size subdirectory.
       def build_s3_key(_size, filename)
-        "#{object_type}/#{filename}"
+        "icons/abilities/#{filename}"
       end
 
       def download_path(_size)
