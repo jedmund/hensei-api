@@ -3,8 +3,9 @@
 # migrate-image-bucket.sh — STEP 1 of the image bucket reorganization.
 #
 # Copies every old prefix to its new home (additive; old keys stay live so nothing
-# 404s mid-migration). Run this BEFORE deploying hensei-web / hensei-api. After a
-# soak, run migrate-image-bucket-cleanup.sh to delete the old prefixes + orphans.
+# 404s mid-migration). Run this BEFORE promoting staging -> main (the deploy that
+# serves new-path code). Merging the PRs into staging is safe without it (staging
+# isn't deployed). After a prod soak, run migrate-image-bucket-cleanup.sh.
 #
 # See docs/follow-ups/image-bucket-reorg.md.
 #

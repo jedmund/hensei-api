@@ -147,10 +147,19 @@ The same delete pass also removes the orphans that were never migrated:
 
 ## Cutover order (zero-downtime)
 
+Deploy topology: `staging` is an integration branch and is **not deployed**; CI/CD deploys
+from `main`. Staging and prod read images from the same bucket (`siero-img`), but since
+staging isn't served, the only deploy that reads new-path code is the one from `main`. So
+the copy gates on the **staging → main** promotion, not on merging into staging.
+
 1. Confirm mapping (this doc).
-2. Run copy script → old + new prefixes both exist in S3.
-3. Merge + deploy `hensei-api` (downloaders write to new prefixes) and `hensei-svelte`
-   (reads from new prefixes). Both old and new work, so order doesn't matter.
-4. Soak (e.g. 1–2 weeks); watch for image 404s.
-5. Run delete script → remove old prefixes. Also remove the duplicate `media/extension.mp4`
-   nested copy and stray `.DS_Store`.
+2. Merge both PRs into `staging` — safe (integration only, no deploy).
+3. Run the **copy** pass (`bin/migrate-image-bucket.sh APPLY=1`) → old + new prefixes both
+   exist. Additive; changes nothing live. Required before the `main` deploy.
+4. Promote `staging → main`. CI/CD deploys: the API writes to new prefixes and the web reads
+   from them — and the keys now exist. Old keys remain as a rollback safety net.
+5. Soak (e.g. 1–2 weeks); watch for image 404s. Rollback = revert the deploy (old keys still
+   present), no bucket changes needed.
+6. Run the **delete** pass (`bin/migrate-image-bucket-cleanup.sh APPLY=1`) → remove old
+   prefixes + orphans (`weapon-raw/`, `raid-square/`, duplicate nested `images/media/`,
+   `.DS_Store`). Destructive — only after prod has soaked.
