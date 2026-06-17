@@ -19,14 +19,12 @@ module NotesSync
   # @param item [GridWeapon, GridSummon]
   # @return [ActiveRecord::Relation<GridWeapon, GridSummon>]
   def siblings(item)
+    # GridCharacter and anything else aren't part of any sync group (returns nil).
     case item
     when GridWeapon
       item.party.weapons.where(weapon_id: item.weapon_id).where.not(id: item.id)
     when GridSummon
       item.party.summons.where(summon_id: item.summon_id).where.not(id: item.id)
-    else
-      # GridCharacter and anything else aren't part of any sync group.
-      nil
     end
   end
 

@@ -102,7 +102,6 @@ RSpec.describe Party, type: :model do
         expect(party.errors[:visibility]).to include(/is not a number/)
       end
     end
-
   end
 
   describe '#is_remix' do

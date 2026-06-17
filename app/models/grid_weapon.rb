@@ -421,8 +421,8 @@ class GridWeapon < ApplicationRecord
     grid_by_pos = grid_weapon_bullets.index_by(&:position)
     collection_by_pos = collection_weapon.collection_weapon_bullets.index_by(&:position)
     positions = grid_by_pos.keys | collection_by_pos.keys
-    positions.sort.select do |position|
-      grid_by_pos[position]&.bullet_id != collection_by_pos[position]&.bullet_id
+    positions.sort.reject do |position|
+      grid_by_pos[position]&.bullet_id == collection_by_pos[position]&.bullet_id
     end
   end
 
