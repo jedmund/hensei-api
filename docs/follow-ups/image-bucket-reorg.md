@@ -64,6 +64,12 @@ updates/                # UNCHANGED
    `weapon-base` is the live one → `weapons/base`.
 5. **`weapon-keys/`** — keep top-level (not moved under `icons/`).
 
+**Editor-uploaded icons are unaffected.** Grid-character-role icons (`grid_character_roles/`)
+and difficulty images (`images/difficulties/`, incl. `_drafts/`) are written by `IconStorage`
+with their own prefixes and stored as `icon_key`/`image_key` on records, then rendered via the
+generic `buildEntityIconUrl`. None of these prefixes are in the migration MAP, so stored keys
+keep resolving — no data migration needed for them.
+
 ## Read-path inventory (hensei-svelte)
 
 | File | What to change |
