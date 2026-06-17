@@ -24,14 +24,15 @@ run() {
 	fi
 }
 
-# Old prefixes that were copied to new homes in the copy pass.
+# Old prefixes that were copied to new homes in the copy pass. Safe to recursively
+# delete because none nests under a new group prefix.
 OLD_PREFIXES=(
 	character-main character-grid character-square character-detail
 	weapon-main weapon-grid weapon-square weapon-base
 	summon-main summon-grid summon-square summon-detail summon-tall summon-wide
 	accessory-square accessory-grid artifact-square artifact-wide bullet-square
-	job-icons job-portraits job-wide job-zoom jobs
-	raid-thumbnail raids
+	job-icons job-portraits job-wide job-zoom
+	raid-thumbnail
 	ability-icons job-skills elements proficiencies rarity awakening mastery ax
 	fonts placeholders external media
 )
@@ -43,6 +44,15 @@ ORPHAN_PREFIXES=(weapon-raw raid-square images/media)
 for p in "${OLD_PREFIXES[@]}" "${ORPHAN_PREFIXES[@]}"; do
 	echo "==> rm $p/"
 	run rm "$BUCKET/$p/" --recursive
+done
+
+# `jobs/` and `raids/` are special: the OLD assets sit directly under the prefix
+# (e.g. jobs/100101.jpg), but the NEW structure ALSO nests under them (jobs/full/,
+# jobs/icon/, raids/thumbnail/, …). Delete ONLY the old direct children — `--exclude
+# "*/*"` keeps anything in a subdirectory — so the migrated content survives.
+for p in jobs raids; do
+	echo "==> rm $p/ (direct children only; preserving $p/<new-subdirs>/)"
+	run rm "$BUCKET/$p/" --recursive --exclude "*/*"
 done
 
 # Loose marketing files now live under app/marketing/.
