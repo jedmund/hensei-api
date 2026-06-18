@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_18_000003) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_19_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1106,17 +1106,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000003) do
 
   create_table "summon_auras", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "summon_granblue_id", null: false
+    t.string "slot", default: "main", null: false
+    t.string "target", null: false
+    t.string "element"
+    t.decimal "value"
+    t.integer "uncap_level", default: 0, null: false
+    t.integer "transcendence_stage", default: 0, null: false
+    t.text "condition"
     t.text "description_en"
     t.text "description_jp"
-    t.integer "aura_type"
-    t.integer "boost_type"
-    t.string "boost_target"
-    t.decimal "boost_value"
-    t.integer "uncap_level"
-    t.text "condition"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["summon_granblue_id", "aura_type", "uncap_level"], name: "idx_on_summon_granblue_id_aura_type_uncap_level_631fc8f523"
+    t.index ["summon_granblue_id", "slot", "uncap_level", "transcendence_stage"], name: "index_summon_auras_on_summon_tier"
     t.index ["summon_granblue_id"], name: "index_summon_auras_on_summon_granblue_id"
   end
 
