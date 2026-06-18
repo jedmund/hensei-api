@@ -307,9 +307,12 @@ module Granblue
         nil
       end
 
-      # Tolerate a trailing "." mismatch (e.g. "Od DMG Amp" vs key name "Od DMG Amp.").
+      # Tolerate a trailing "." ("Od DMG Amp" vs "Od DMG Amp.") and a status-style
+      # " Up"/" Down" suffix ("ATK Up" -> "ATK", "DEF Up" -> "DEF").
       def lookup_key(name)
-        [name, name.chomp("."), "#{name}."].each { |n| return @key_by_name[n] if @key_by_name[n] }
+        [name, name.chomp("."), "#{name}.", name.sub(/\s+(Up|Down)\z/i, "")].each do |n|
+          return @key_by_name[n] if @key_by_name[n]
+        end
         nil
       end
 
