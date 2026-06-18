@@ -1,0 +1,1014 @@
+{
+  "Aegis": [
+    {
+      "pattern": "ws_skill_hp_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_hp_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_hp_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_hp_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_hp_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_hp_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_hp_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_hp_a_*_1.png",
+      "series": "ex",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_hp_a_*_2.png",
+      "series": "ex",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_hp_a_*_2.png",
+      "series": "ex",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_hp_a_*_3.png",
+      "series": "ex",
+      "size": "big"
+    }
+  ],
+  "Apotheosis": [
+    {
+      "pattern": "Ws_skill_atk_hp_rise_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_atk_hp_rise_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    }
+  ],
+  "Auspice": [
+    {
+      "pattern": "Ws_skill_hp_heal_limit_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "Ws_skill_hp_heal_limit_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_hp_heal_limit_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_hp_heal_limit_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    }
+  ],
+  "Bastion": [
+    {
+      "pattern": "Ws_skill_stronghold_k_*_3.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Bladeshield": [
+    {
+      "pattern": "ws_skill_jinkai_*_1.png",
+      "series": "normal",
+      "size": "small"
+    }
+  ],
+  "Bloodrage": [
+    {
+      "pattern": "Ws_skill_blood_rage_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    }
+  ],
+  "Bloodshed": [
+    {
+      "pattern": "Ws_skill_tyrant_*.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_tyrant_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    }
+  ],
+  "Celere": [
+    {
+      "pattern": "ws_skill_moment_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_moment_*.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_moment_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_hp_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_moment_m_*.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_moment_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_moment_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "Ws_skill_moment_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    }
+  ],
+  "Clarity": [
+    {
+      "pattern": "ws_skill_counter_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_counter_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_counter_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_counter_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_counter_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    }
+  ],
+  "Crux": [
+    {
+      "pattern": "ws_skill_secret_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_secret_k_*_3.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Deathstrike": [
+    {
+      "pattern": "Ws_skill_concurrent_attack_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_concurrent_attack_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Demolishment": [
+    {
+      "pattern": "ws_skill_normal_rise_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Devastation": [
+    {
+      "pattern": "ws_skill_ta_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    }
+  ],
+  "Dual-Edge": [
+    {
+      "pattern": "ws_skill_da_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_da_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_da_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Empowerment": [
+    {
+      "pattern": "Ws_skill_rise_k_*_3.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Encouragement": [
+    {
+      "pattern": "ws_skill_hp_ta_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Enmity": [
+    {
+      "pattern": "ws_skill_backwater_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_backwater_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_backwater_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_backwater_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_backwater_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_backwater_*_4.png",
+      "series": "normal",
+      "size": "massive"
+    }
+  ],
+  "Essence": [
+    {
+      "pattern": "Ws_skill_primal_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_primal_m_*.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Excelsior": [
+    {
+      "pattern": "ws_skill_sp_limit_*.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Fandango": [
+    {
+      "pattern": "ws_skill_ranbu_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_ranbu_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_ranbu_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_ranbu_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_ranbu_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_ranbu_k_*_3.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Garrison": [
+    {
+      "pattern": "ws_skill_guard_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_guard_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_guard_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_guard_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_guard_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_guard_k_*_3.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Glory": [
+    {
+      "pattern": "ws_skill_hero_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_hero_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_hero_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_hero_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    }
+  ],
+  "Grace": [
+    {
+      "pattern": "ws_skill_grace_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_grace_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_grace_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    }
+  ],
+  "Haunt": [
+    {
+      "pattern": "Ws_skill_nirrti_*.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_nirrti_m_*.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Healing": [
+    {
+      "pattern": "ws_skill_heal_limit_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_heal_limit_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_heal_limit_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_heal_limit_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_heal_limit_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Heroism": [
+    {
+      "pattern": "Ws_skill_wargod_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Impalement": [
+    {
+      "pattern": "Ws_skill_penetrate_defense_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Insignia": [
+    {
+      "pattern": "ws_skill_noroi_1.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_noroi_m_3_3.png",
+      "series": "omega",
+      "size": "big"
+    }
+  ],
+  "Majesty": [
+    {
+      "pattern": "ws_skill_god_*.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_god_m_*.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_god_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_god_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_god_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_god_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_god_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_god_m_*_4.png",
+      "series": "omega",
+      "size": "big_ii"
+    }
+  ],
+  "Might": [
+    {
+      "pattern": "ws_skill_atk_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_atk_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_atk_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_atk_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_atk_*_4_3.png",
+      "series": "normal",
+      "size": "massive"
+    },
+    {
+      "pattern": "ws_skill_atk_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_atk_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_1.png",
+      "series": "ex",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_2.png",
+      "series": "ex",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_3.png",
+      "series": "ex",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_4.png",
+      "series": "ex",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_5.png",
+      "series": "ex",
+      "size": "massive"
+    },
+    {
+      "pattern": "Ws_skill_atk_*_4.png",
+      "series": "normal",
+      "size": "ancestral"
+    },
+    {
+      "pattern": "ws_skill_atk_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_4.png",
+      "series": "ex",
+      "size": "massive"
+    },
+    {
+      "pattern": "ws_skill_atk_a_*_5.png",
+      "series": "ex",
+      "size": "unworldly"
+    }
+  ],
+  "Mystery": [
+    {
+      "pattern": "ws_skill_sp_atk_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_sp_atk_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_sp_atk_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_sp_atk_*_4.png",
+      "series": "normal",
+      "size": "massive"
+    }
+  ],
+  "Onslaught": [
+    {
+      "pattern": "Ws_skill_special_skill_concurrent_attack_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Precocity": [
+    {
+      "pattern": "Ws_skill_tec_heal_limit_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_tec_heal_limit_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_tec_heal_limit_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    }
+  ],
+  "Primacy": [
+    {
+      "pattern": "ws_skill_musou_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_musou_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_musou_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_musou_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Progression": [
+    {
+      "pattern": "ws_skill_job_weapon.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_job_weapon.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_job_weapon.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_job_weapon.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Refuge": [
+    {
+      "pattern": "ws_skill_resist_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_resist_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    }
+  ],
+  "Resolve": [
+    {
+      "pattern": "Ws_skill_will_m_5_1.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Restraint": [
+    {
+      "pattern": "Ws_skill_coki_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "Ws_skill_coki_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "Ws_skill_coki_*.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_coki_m_*.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Rigor": [
+    {
+      "pattern": "Ws_skill_rigor_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Sapience": [
+    {
+      "pattern": "ws_skill_ta_heal_limit_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_ta_heal_limit_k_*_1.png",
+      "series": "taboo",
+      "size": "small"
+    }
+  ],
+  "Sentence": [
+    {
+      "pattern": "ws_skill_deadly_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_deadly_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_deadly_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_deadly_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    }
+  ],
+  "Sephira Soul": [
+    {
+      "pattern": "ws_skill_hp_arcarum_*_3.png",
+      "series": "sephira",
+      "size": "big"
+    }
+  ],
+  "Sephira Tek": [
+    {
+      "pattern": "ws_skill_tec_arcarum_*_4.png",
+      "series": "sephira",
+      "size": "massive"
+    }
+  ],
+  "Sovereign": [
+    {
+      "pattern": "ws_skill_atk_a_*_5.png",
+      "series": "ex",
+      "size": "unworldly"
+    }
+  ],
+  "Spearhead": [
+    {
+      "pattern": "ws_skill_ta_tec_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_ta_tec_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    }
+  ],
+  "Stratagem": [
+    {
+      "pattern": "Ws_skill_tec_rise_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_tec_rise_*_3.png",
+      "series": "normal",
+      "size": "big"
+    }
+  ],
+  "Supremacy": [
+    {
+      "pattern": "Ws_skill_atk_a_*_4.png",
+      "series": "ex",
+      "size": "massive"
+    }
+  ],
+  "Supremacy: Decimation": [
+    {
+      "pattern": "Ws_skill_exo_*_4.png",
+      "series": "ex",
+      "size": "massive"
+    }
+  ],
+  "Sweep": [
+    {
+      "pattern": "ws_skill_wa_m_3_1.png",
+      "series": "omega",
+      "size": "big"
+    }
+  ],
+  "Tempering": [
+    {
+      "pattern": "ws_skill_train_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_train_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_train_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_train_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_train_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    }
+  ],
+  "Trium": [
+    {
+      "pattern": "ws_skill_ta_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_ta_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_ta_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_ta_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_ta_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_ta_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_ta_*_3.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_ta_m_*_3.png",
+      "series": "omega",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_ta_*_4.png",
+      "series": "normal",
+      "size": "massive"
+    },
+    {
+      "pattern": "ws_skill_ta_k_*_1.png",
+      "series": "taboo",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_ta_k_*_2.png",
+      "series": "taboo",
+      "size": "medium"
+    }
+  ],
+  "Truce": [
+    {
+      "pattern": "ws_skill_fullcut_m_*.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "Ws_skill_fullcut_m_3.png",
+      "series": "omega",
+      "size": "small"
+    }
+  ],
+  "True Supremacy": [
+    {
+      "pattern": "Ws_skill_xeno_*_4.png",
+      "series": "ex",
+      "size": "massive"
+    }
+  ],
+  "Tyranny": [
+    {
+      "pattern": "ws_skill_tyrant_*.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_tyrant_*_2.png",
+      "series": "normal",
+      "size": "massive"
+    },
+    {
+      "pattern": "ws_skill_tyrant_m_*.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_tyrant_k_*.png",
+      "series": "taboo",
+      "size": "big"
+    }
+  ],
+  "Verity": [
+    {
+      "pattern": "ws_skill_tec_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_tec_m_*_1.png",
+      "series": "omega",
+      "size": "small"
+    },
+    {
+      "pattern": "ws_skill_tec_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "ws_skill_tec_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "ws_skill_tec_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_tec_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "ws_skill_tec_*_4.png",
+      "series": "normal",
+      "size": "massive"
+    }
+  ],
+  "Verve": [
+    {
+      "pattern": "Ws_skill_hp_whole_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    }
+  ]
+}

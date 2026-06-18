@@ -58,4 +58,57 @@ namespace :granblue do
     pruned.each(&:destroy)
     puts "Loaded #{records.size} rows; pruned #{pruned.size}; total #{WeaponSkillDatum.count}."
   end
+
+  desc "Grid-resolution proof: select each grid weapon's active skill version and resolve it to data/effects. party=<shortcode> for one party, else aggregate over all grid weapons."
+  task weapon_skill_resolution: :environment do
+    scope = if ENV["party"]
+              p = Party.find_by!(shortcode: ENV["party"])
+              p.grid_weapons.includes(weapon: { weapon_skills: { weapon_skill_versions: :skill } })
+            else
+              GridWeapon.includes(weapon: { weapon_skills: { weapon_skill_versions: :skill } })
+            end
+
+    total = 0; standard = 0; resolved_data = 0; resolved_effects = 0; unresolved = []
+    scope.find_each do |gw|
+      next unless gw.weapon
+      gw.weapon.weapon_skills.each do |ws|
+        v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
+        next unless v
+        total += 1
+        next if v.skill_modifier.blank? # unique/unrecognized — no scaling expected
+        standard += 1
+        if v.weapon_skill_data.exists? then resolved_data += 1
+        elsif v.weapon_skill_effects.exists? then resolved_effects += 1
+        else unresolved << v.skill_modifier end
+      end
+    end
+    pct = standard.zero? ? 0 : (100.0 * (resolved_data + resolved_effects) / standard).round(1)
+    puts "active versions=#{total}  standard=#{standard}  ->data=#{resolved_data}  ->effects=#{resolved_effects}  resolved=#{pct}%"
+    puts "unresolved (job/unique): #{unresolved.tally.sort_by { |_, c| -c }.first(15).to_h}" if unresolved.any?
+  end
+
+  desc "Build icon->(series,size) map from wiki-source -> data/weapon_skill_icon_map.json"
+  task extract_weapon_skill_icon_map: :environment do
+    require Rails.root.join("lib/granblue/extractors/weapon_skill_data_extractor")
+    skill_dir = wiki_source_dir.join("weapon-skill-types")
+    wpn_dir   = wiki_source_dir.join("wpnskill-templates")
+    ex = Granblue::Extractors::WeaponSkillDataExtractor.new
+    map = {}
+    Dir[skill_dir.join("*.wikitext")].sort.each do |f|
+      name = File.basename(f, ".wikitext").tr("_", " ")
+      text = File.read(f)
+      if (m = text.match(/\{\{(WpnSkill[A-Za-z0-9]+)/))
+        sub = wpn_dir.join("#{m[1]}.wikitext")
+        text += "\n" + File.read(sub) if File.exist?(sub)
+      end
+      entries = begin
+        ex.icon_entries(text, name: name)
+      rescue
+        []
+      end
+      map[name] = entries unless entries.empty?
+    end
+    File.write(Rails.root.join("data", "weapon_skill_icon_map.json"), JSON.pretty_generate(map) + "\n")
+    puts "icon map: #{map.size} modifiers, #{map.values.sum(&:size)} entries"
+  end
 end

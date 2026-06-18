@@ -21,4 +21,7 @@ class WeaponSkillEffect < ApplicationRecord
   validates :stacking, inclusion: { in: STACKINGS }
   validates :applies_to, inclusion: { in: APPLIES_TO }
   validates :modifier, uniqueness: { scope: [:boost_type, :scaling_kind] }
+
+  # Conditional/fixed effects for a weapon-skill version, keyed by modifier.
+  scope :for_skill, ->(modifier:) { where(modifier: modifier) }
 end

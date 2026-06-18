@@ -23,16 +23,32 @@ class WeaponSkillDatum < ApplicationRecord
   # When size is nil (skills without numerals), also omits the size filter.
   # When series is "normal" or "omega" and no results found, falls back to
   # "normal_omega" — these modifiers share SL values across both series.
+  # Resolve a weapon-skill version (modifier/series/size) to its scaling rows,
+  # cascading through fallbacks (most-specific first):
+  #   1. exact (modifier [+ series] [+ size])
+  #   2. normal/omega/odious share a combined "normal_omega" row
+  #   3. series-agnostic (modifier + size) — sizeless data or series drift
+  #   4. modifier-only (last resort)
   scope :for_skill, ->(modifier:, series: nil, size: nil) {
-    q = where(modifier: modifier)
-    q = q.where(series: series) if series
-    q = q.where(size: size) if size
+    base = where(modifier: modifier)
+    return base unless base.exists? # unknown modifier → empty relation
 
-    if series.in?(%w[normal omega]) && !q.exists?
-      q = where(modifier: modifier, series: "normal_omega")
-      q = q.where(size: size) if size
+    exact = base
+    exact = exact.where(series: series) if series
+    exact = exact.where(size: size) if size
+    return exact if exact.exists?
+
+    if series.present?
+      combined = base.where(series: "normal_omega")
+      combined = combined.where(size: size) if size
+      return combined if combined.exists?
     end
 
-    q
+    if size
+      sized = base.where(size: size)
+      return sized if sized.exists?
+    end
+
+    base
   }
 end

@@ -325,6 +325,19 @@ module Granblue
         parsed = Granblue::Parsers::WeaponSkillParser.parse(raw_name)
         tier = tier_for(unlock_level)
 
+        # Normalize element-variant modifiers to their base ("Strike: Fire" → "Strike").
+        modifier = parsed[:modifier]
+        modifier = modifier.sub(/:\s*(Fire|Water|Earth|Wind|Light|Dark)\z/, "") if modifier
+
+        # The icon is the most reliable source of (series, size); derive from it and
+        # override the name-based parse when it resolves (see docs/damage/08).
+        series = parsed[:series]
+        size = parsed[:size]
+        if (derived = Granblue::Parsers::WeaponSkillParser.derive_from_icon(modifier, icon))
+          series = derived[:series]
+          size = derived[:size]
+        end
+
         {
           name_en: name,
           description_en: description,
@@ -334,9 +347,9 @@ module Granblue
           transcendence_stage: tier[:transcendence_stage],
           main_hand_only: description.to_s.match?(/when main weapon/i),
           mc_only: description.to_s.match?(/\(mc only\)/i),
-          modifier: parsed[:modifier],
-          series: parsed[:series],
-          size: parsed[:size],
+          modifier: modifier,
+          series: series,
+          size: size,
           aura: parsed[:aura]
         }
       end

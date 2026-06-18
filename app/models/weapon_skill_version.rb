@@ -43,6 +43,14 @@ class WeaponSkillVersion < ApplicationRecord
     WeaponSkillDatum.for_skill(modifier: skill_modifier, series: skill_series, size: skill_size)
   end
 
+  # Conditional/fixed grid mechanics for this skill type (Pact, Charge, etc.),
+  # keyed by modifier. Empty for unique/unrecognized skills.
+  def weapon_skill_effects
+    return WeaponSkillEffect.none if skill_modifier.blank?
+
+    WeaponSkillEffect.for_skill(modifier: skill_modifier)
+  end
+
   # Normalized icon stem using OUR INTERNAL element numbering — the name files
   # are stored under and the frontend recreates (e.g. "skill_atk_4_4"). Nil when
   # the wiki icon is missing or can't be resolved. See WeaponSkillIconDownloader.
