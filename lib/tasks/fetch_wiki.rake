@@ -59,8 +59,11 @@ namespace :granblue do
         end
         puts wiki_text
 
-        # 3) Save raw wiki text in the object record
-        object.update!(wiki_raw: wiki_text)
+        # 3) Save raw wiki text in the object record (stamp fetch time on
+        #    types that track it — currently only Weapon).
+        attrs = { wiki_raw: wiki_text }
+        attrs[:wiki_raw_fetched_at] = Time.current if object.respond_to?(:wiki_raw_fetched_at)
+        object.update!(attrs)
         puts "Saved wiki data for #{object.name_en} (#{object.id})"
         count += 1
       rescue StandardError => e
@@ -75,5 +78,54 @@ namespace :granblue do
     else
       puts "Wiki data fetch complete for #{count} #{type.pluralize} with no errors!"
     end
+  end
+
+  desc <<~DESC
+    Re-fetch wiki_raw for Weapons that are missing it or stale — i.e. the wiki
+    page likely changed since we last fetched (new uncap/transcendence). Stale =
+    wiki_raw blank, never stamped, or latest_date newer than wiki_raw_fetched_at.
+
+    Usage:
+      rake granblue:refresh_stale_wiki_data            # all missing/stale weapons
+      rake granblue:refresh_stale_wiki_data days=30    # also any weapon updated in last 30 days
+      rake granblue:refresh_stale_wiki_data limit=50   # cap the batch
+      rake granblue:refresh_stale_wiki_data delay=1.0  # seconds between requests (default 0.5)
+  DESC
+  task refresh_stale_wiki_data: :environment do
+    days  = ENV['days'].presence&.to_i
+    limit = ENV['limit'].presence&.to_i
+    delay = (ENV['delay'].presence || '0.5').to_f
+
+    base = Weapon.where.not(wiki_en: [nil, ''])
+    stale = base.where(
+      "wiki_raw IS NULL OR wiki_raw = '' OR wiki_raw_fetched_at IS NULL OR latest_date > wiki_raw_fetched_at"
+    )
+    stale = stale.or(base.where('latest_date > ?', days.days.ago.to_date)) if days
+
+    weapons = (limit ? stale.limit(limit) : stale).to_a
+    total = weapons.size
+    puts "Refreshing wiki_raw for #{total} weapons (#{delay}s between requests)..."
+
+    errors = []
+    count = 0
+    weapons.each_with_index do |weapon, i|
+      begin
+        wiki_text = Granblue::Parsers::Wiki.new.fetch(weapon.wiki_en)
+        if (redirect = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/))
+          weapon.update!(wiki_en: redirect[1])
+          wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect[1])
+        end
+        weapon.update!(wiki_raw: wiki_text, wiki_raw_fetched_at: Time.current)
+        count += 1
+        puts "  (#{i + 1}/#{total}) #{weapon.name_en}"
+      rescue StandardError => e
+        errors << "#{weapon.granblue_id} (#{weapon.name_en}): #{e.message}"
+        puts "  (#{i + 1}/#{total}) ERROR #{weapon.name_en}: #{e.message}"
+      end
+      sleep delay
+    end
+
+    puts "Refreshed #{count}/#{total} weapons. Errors: #{errors.size}"
+    errors.each { |e| puts "  - #{e}" }
   end
 end

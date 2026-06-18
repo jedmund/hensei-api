@@ -80,15 +80,17 @@ namespace :granblue do
       # Check for skills with unparseable names (nil modifier means parser didn't recognize it)
       bad_skills = []
       skill_data.each do |slot|
-        [slot[:base], slot[:upgrade]].compact.each do |entry|
-          if entry[:modifier].nil?
-            bad_skills << {
-              name: entry[:name_en],
-              modifier: entry[:modifier],
-              series: entry[:series],
-              size: entry[:size]
-            }
-          end
+        slot[:versions].each do |entry|
+          next unless entry[:modifier].nil?
+
+          bad_skills << {
+            name: entry[:name_en],
+            modifier: entry[:modifier],
+            series: entry[:series],
+            size: entry[:size],
+            uncap_level: entry[:min_uncap],
+            transcendence_stage: entry[:transcendence_stage]
+          }
         end
       end
 

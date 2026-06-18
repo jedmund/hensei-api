@@ -59,8 +59,9 @@ class GridWeapon < ApplicationRecord
     :ax_modifier1, :ax_modifier2, :befoulment_modifier,
     { grid_weapon_bullets: :bullet },
     { collection_weapon: :collection_weapon_bullets },
-    { weapon: %i[awakenings weapon_series weapon_series_variant weapon_skills
-                 recruited_character base_weapon forge_chain_weapons] }
+    { weapon: [:awakenings, :weapon_series, :weapon_series_variant,
+               :recruited_character, :base_weapon, :forge_chain_weapons,
+               { weapon_skills: { weapon_skill_versions: :skill } }] }
   ].freeze
 
   # Orphan status scopes

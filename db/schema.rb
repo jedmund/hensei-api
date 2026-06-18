@@ -1344,20 +1344,34 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
     t.index ["series"], name: "index_weapon_skill_data_on_series"
   end
 
-  create_table "weapon_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "weapon_granblue_id", null: false
+  create_table "weapon_skill_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "weapon_skill_id", null: false
     t.uuid "skill_id", null: false
-    t.integer "position", null: false
+    t.integer "ordinal", null: false
+    t.integer "unlock_level"
+    t.integer "min_uncap"
+    t.integer "transcendence_stage", default: 0, null: false
+    t.string "icon"
     t.string "skill_modifier"
     t.string "skill_series"
     t.string "skill_size"
-    t.integer "unlock_level"
+    t.boolean "main_hand_only", default: false, null: false
+    t.boolean "mc_only", default: false, null: false
+    t.boolean "scales_with_skill_level", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "uncap_level", default: 0, null: false
-    t.index ["skill_id"], name: "index_weapon_skills_on_skill_id"
-    t.index ["skill_series"], name: "index_weapon_skills_on_skill_series"
-    t.index ["weapon_granblue_id", "position", "uncap_level"], name: "index_weapon_skills_on_weapon_position_uncap", unique: true
+    t.index ["skill_id"], name: "index_weapon_skill_versions_on_skill_id"
+    t.index ["skill_series"], name: "index_weapon_skill_versions_on_skill_series"
+    t.index ["weapon_skill_id", "ordinal"], name: "idx_weapon_skill_versions_on_skill_and_ordinal", unique: true
+    t.index ["weapon_skill_id"], name: "index_weapon_skill_versions_on_weapon_skill_id"
+  end
+
+  create_table "weapon_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "weapon_granblue_id", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["weapon_granblue_id", "position"], name: "index_weapon_skills_on_weapon_position", unique: true
     t.index ["weapon_granblue_id"], name: "index_weapon_skills_on_weapon_granblue_id"
   end
 
@@ -1429,6 +1443,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
     t.jsonb "element_variant_ids"
     t.integer "bullet_slots", default: [], null: false, array: true
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
+    t.datetime "wiki_raw_fetched_at"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
@@ -1439,6 +1454,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
     t.index ["recruits"], name: "index_weapons_on_recruits"
     t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
     t.index ["weapon_series_variant_id"], name: "index_weapons_on_weapon_series_variant_id"
+    t.index ["wiki_raw_fetched_at"], name: "index_weapons_on_wiki_raw_fetched_at"
   end
 
   add_foreign_key "character_series_memberships", "character_series"
@@ -1550,7 +1566,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
   add_foreign_key "weapon_key_series", "weapon_keys"
   add_foreign_key "weapon_key_series", "weapon_series"
   add_foreign_key "weapon_series_variants", "weapon_series"
-  add_foreign_key "weapon_skills", "skills"
+  add_foreign_key "weapon_skill_versions", "skills"
+  add_foreign_key "weapon_skill_versions", "weapon_skills"
   add_foreign_key "weapons", "weapon_series"
   add_foreign_key "weapons", "weapon_series_variants"
 end

@@ -37,7 +37,8 @@ class Weapon < ApplicationRecord
   has_many :weapon_awakenings
   has_many :awakenings, through: :weapon_awakenings
   has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
-  has_many :skills, through: :weapon_skills
+  has_many :weapon_skill_versions, through: :weapon_skills
+  has_many :skills, through: :weapon_skill_versions
   belongs_to :weapon_series, optional: true
   belongs_to :weapon_series_variant, optional: true
   belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
