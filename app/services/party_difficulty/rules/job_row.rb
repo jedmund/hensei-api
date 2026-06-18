@@ -4,7 +4,7 @@ module PartyDifficulty
   module Rules
     ##
     # Fires when the party's job belongs to the specified row, optionally
-    # requiring ultimate_mastery to be enabled on the party.
+    # requiring the party's job ultimate mastery level to be set.
     #
     # params: { "rows": ["IV", "V", "Origin"], "requires_ultimate_mastery": false }
     class JobRow < Base
@@ -23,7 +23,7 @@ module PartyDifficulty
         rows = string_array_param(:rows)
         return false unless rows.include?(party.job.row.to_s)
 
-        params[:requires_ultimate_mastery] == true ? party.ultimate_mastery == true : true
+        params[:requires_ultimate_mastery] == true ? party.ultimate_mastery_level.to_i.positive? : true
       end
 
       def matching_count(party)
