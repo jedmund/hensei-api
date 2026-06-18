@@ -10,7 +10,7 @@ class WeaponSkillDatum < ApplicationRecord
   validates :modifier, presence: true
   validates :boost_type, presence: true
   validates :series, inclusion: { in: SERIES_VALUES }, allow_nil: true
-  validates :size, presence: true, inclusion: { in: SIZE_VALUES }
+  validates :size, inclusion: { in: SIZE_VALUES }, allow_nil: true # nil = sizeless (Shape B)
   validates :formula_type, presence: true, inclusion: { in: FORMULA_TYPES }
 
   validates :modifier, uniqueness: { scope: [:boost_type, :series, :size] }

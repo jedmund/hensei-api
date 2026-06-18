@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_18_000002) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_18_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1328,7 +1328,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000002) do
     t.string "modifier", null: false
     t.string "boost_type", null: false
     t.string "series"
-    t.string "size", null: false
+    t.string "size"
     t.string "formula_type", default: "flat", null: false
     t.decimal "sl1", precision: 10, scale: 4
     t.decimal "sl10", precision: 10, scale: 4

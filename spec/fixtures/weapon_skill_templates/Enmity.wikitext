@@ -1,0 +1,125 @@
+{{WsBox
+|name=Enmity 
+|desc=[{{wsSize}}] boost to [element] allies' ATK based on how low HP is
+|aura_boostable=yes
+|color=red
+|boost1=Enmity
+|boost2=Omega Enmity
+|boost3=EX Enmity
+
+|icon=ws_skill_backwater_*_1.png
+
+|small=
+|medium=
+|big=
+|big2=
+|massive=
+|unworldly=
+
+|o_small=
+|o_medium=
+|o_big=
+|o_big2=
+|o_massive=
+|o_unworldly=
+
+|ex_small=
+|ex_medium=
+|ex_big=
+|ex_big2=
+|ex_massive=
+|ex_unworldly=
+}}
+*Boosts ATK in proportion to the percentage of the ally's missing HP.
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="8" class="wsmod-title" | {{icon|normal aura}} {{icon|omega aura}} Normal & Omega
+|-
+! class="wsmod-icon" | Icon
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20 !! 25
+|-
+! class="wsmod-icon" |
+{{WeaponSkillIconLink|icon=ws_skill_backwater_*_1.png|size=50|category=Enmity}}{{WeaponSkillIconLink|icon=ws_skill_backwater_m_*_1.png|size=50|category=Enmity}}
+! class="wsmod-tier" | Small{{ #ifeq: {{PAGENAME}}|Weapon Skills|<ref name="GameWith Tiamat Bolt SL20" />}}
+! class="wsmod-stat" rowspan="4" | {{Label|Enmity}}
+| 0.5% || 6.0% || 7.0% || 7.5% || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_backwater_*_2.png|size=50|category=Enmity}}
+! class="wsmod-tier" | Medium
+| 0.66% || 8.0% || 10.0% || - || -
+|-
+! class="wsmod-icon" |
+{{WeaponSkillIconLink|icon=ws_skill_backwater_*_3.png|size=50|category=Enmity}}{{WeaponSkillIconLink|icon=ws_skill_backwater_m_*_3.png|size=50|category=Enmity}}
+! class="wsmod-tier" | Big<ref name="GameWith Celeste Horn SL20">https://twitter.com/Hecate_mk2/status/981761219446038528</ref>
+| 0.83% || 10.0% || 12.5% || 13.5% || 14.5%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_backwater_*_4.png|size=50|category=Enmity}}
+! class="wsmod-tier" | Massive
+|  ||  || 18.75% || - || -
+|}
+</div>
+
+Formula for calculating Enmity:
+
+<pre>
+HP Ratio = 1 - (Current HP / Max HP)
+Enmity Strength = Modifier * ((1 + 2 * HP Ratio) * HP Ratio)
+
+Example 1:
+7% * ((1 + 2 * 50%) * 50%) = 7%
+
+Example 2:
+7% * ((1 + 2 * 100%) * 100%) = 21%
+</pre>
+<dl><dd><table class="wikitable">
+  <tr>
+    <th colspan=11>Normal & Omega</th>
+  </tr>
+  <tr>
+    <th rowspan=3>HP</th>
+    <th colspan=3>{{WeaponSkillIconLink|icon=ws_skill_backwater_*_1.png|size=50|category=Enmity}}{{WeaponSkillIconLink|icon=ws_skill_backwater_m_*_1.png|size=50|category=Enmity}}</th>
+    <th colspan=2>{{WeaponSkillIconLink|icon=ws_skill_backwater_*_2.png|size=50|category=Enmity}}</th>
+    <th colspan=4>{{WeaponSkillIconLink|icon=ws_skill_backwater_*_3.png|size=50|category=Enmity}}{{WeaponSkillIconLink|icon=ws_skill_backwater_m_*_3.png|size=50|category=Enmity}}</th>
+    <th colspan=1>{{WeaponSkillIconLink|icon=ws_skill_backwater_*_4.png|size=50|category=Enmity}}</th>
+  </tr>
+  <tr>
+    <th colspan=3>Small</th>
+    <th colspan=2>Medium</th>
+    <th colspan=4>Big</th>
+    <th colspan=1>Massive</th>
+  </tr>
+  <tr>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL25</th>
+    <th>SL15</th>
+  </tr>
+{{#vardefine: hp | 100 }}
+{{#while:
+  | {{ #ifexpr: {{ #var: hp }} >= 0 | true}}
+  | {{ #vardefine: hp_ratio | {{ #expr: 1 - {{ #var: hp }} / 100 }} }}
+  <tr style="text-align: right;">
+    <th>{{ #ifeq: {{ #var: hp}} | 0 | 1HP | {{ #var: hp}}% }}</th>
+    <td>{{ #expr: 6 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 7 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 7.5 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 8 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 10 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 10 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 12.5 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 13.5 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 14.5 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+    <td>{{ #expr: 18.75 * ((1 + 2 * {{ #var: hp_ratio }}) * {{ #var: hp_ratio }}) round 2 }}%</td>
+  </tr>{{
+  #vardefine: hp | {{ #expr: {{ #var: hp}} - 5 }}
+  }}
+}}
+</table></dd></dl><noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>
