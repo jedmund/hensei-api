@@ -157,11 +157,12 @@ module Granblue
 
             # When a row owns a size cell the boost is carried via the rowspanned
             # stat label (Shape A); otherwise the row owns its boost label (Shape
-            # B / boost-per-row). Garrison-style plain tables fall back to WsBox.
-            use = raw_size ? (current_labels || []) : labels
-            use = box_boosts if use.empty?
-            use.each do |label|
-              boost = boost_key(label) or next
+            # B). Fall back to plain-text stat cells, then to the WsBox boosts.
+            names = raw_size ? (current_labels || []) : labels
+            boosts = names.filter_map { |l| boost_key(l) }
+            boosts = plain_boosts(r).filter_map { |l| boost_key(l) } if boosts.empty?
+            boosts = box_boosts.filter_map { |l| boost_key(l) } if boosts.empty?
+            boosts.uniq.each do |boost|
               out << base_row(modifier, boost, series, size, aura).merge(
                 formula_type: formula_for(modifier, boost),
                 sl1: sl[1], sl10: sl[10], sl15: sl[15], sl20: sl[20], sl25: sl[25],
@@ -176,7 +177,8 @@ module Granblue
       # Transposed flat table: SL values down the rows, the boost(s) in the header
       # column (e.g. Strike: "Skill Level | N.A. DMG Cap"). Sizeless.
       def transposed_rows(rows_raw, header, modifier, aura, series, box_boosts)
-        boosts = header.scan(/\{\{Label\|([^}|]+)/).flatten.map(&:strip)
+        boosts = row_labels(header)
+        boosts = plain_boosts(header) if boosts.empty?
         boosts = box_boosts if boosts.empty?
         data = {} # sl level => [value per boost]
         rows_raw.each do |r|
@@ -207,8 +209,9 @@ module Granblue
       # Series from the table's title line (aura icons / wsmod-title / a wide-colspan
       # title like "Taboo"); falls back to the WsBox boosts for title-less Shape B.
       def table_series(tbl, box_boosts)
-        line = tbl.split("\n").find { |l| l =~ /aura\}\}/ || l.include?("wsmod-title") }
-        line ||= tbl.split("\n").find { |l| l.start_with?("!") && l =~ /colspan="?\d{2,}/ }
+        lines = tbl.split("\n")
+        line = lines.find { |l| l =~ /aura\}\}/ || l.include?("wsmod-title") }
+        line ||= lines.find { |l| l.start_with?("!") && l.include?("colspan") && self.class.series_for_title(l) }
         line ? self.class.series_for_title(line) : default_series(box_boosts)
       end
 
@@ -263,9 +266,22 @@ module Granblue
         nil
       end
 
-      # Boost labels = every {{Label|X}} in the row (the stat cell(s)).
+      # Boost labels from the stat cell(s): {{Label|X}} and {{status|X|...}} (e.g.
+      # Preemptive's {{status|Shield}}).
       def row_labels(r)
-        r.scan(/\{\{Label\|([^}|]+)/).flatten.map(&:strip)
+        (r.scan(/\{\{Label\|([^}|]+)/).flatten + r.scan(/\{\{status\|([^}|]+)/i).flatten).map(&:strip)
+      end
+
+      # Plain-text boost names in `!` cells (no Label/status template), e.g.
+      # Betrayal's bare "ATK" stat. Excludes icon and size cells.
+      def plain_boosts(r)
+        r.split("\n").filter_map do |ln|
+          next unless ln.start_with?("!")
+          next if ln =~ /WeaponSkillIconLink|\[\[File:/
+          c = cell_content(ln.sub(/^!\s*/, ""))
+          next if c.empty? || normalize_size(c) || c =~ /Skill Level/i || c =~ /\AIcons?\z/i
+          c
+        end
       end
 
       # All data (`|`) cells in a row, in order, with attributes stripped.
@@ -281,13 +297,19 @@ module Granblue
 
       def boost_key(label)
         name = label.strip
-        return @key_by_name[name] if @key_by_name[name]
+        key = lookup_key(name)
+        return key if key
         SERIES_PREFIXES.each do |p|
-          if name.start_with?(p)
-            base = name[p.length..]
-            return @key_by_name[base] if @key_by_name[base]
-          end
+          next unless name.start_with?(p)
+          key = lookup_key(name[p.length..].strip)
+          return key if key
         end
+        nil
+      end
+
+      # Tolerate a trailing "." mismatch (e.g. "Od DMG Amp" vs key name "Od DMG Amp.").
+      def lookup_key(name)
+        [name, name.chomp("."), "#{name}."].each { |n| return @key_by_name[n] if @key_by_name[n] }
         nil
       end
 

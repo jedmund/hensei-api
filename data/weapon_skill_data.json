@@ -545,6 +545,21 @@
     "aura_boostable": true
   },
   {
+    "modifier": "Betrayal",
+    "boost_type": "atk",
+    "series": "normal_omega",
+    "size": null,
+    "formula_type": "flat",
+    "sl1": 3.0,
+    "sl10": 8.0,
+    "sl15": 10.0,
+    "sl20": null,
+    "sl25": null,
+    "coefficient": null,
+    "max_value": null,
+    "aura_boostable": true
+  },
+  {
     "modifier": "Bladeshield",
     "boost_type": "critical",
     "series": "normal",
@@ -1141,7 +1156,7 @@
   {
     "modifier": "Empowerment",
     "boost_type": "od_dmg_amp",
-    "series": "odious",
+    "series": "taboo",
     "size": "big",
     "formula_type": "flat",
     "sl1": 0.12,
@@ -1150,6 +1165,7 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": true
   },
   {
@@ -3318,15 +3334,16 @@
   {
     "modifier": "Preemptive Barrier",
     "boost_type": "shield",
-    "series": null,
-    "size": "big",
+    "series": "normal",
+    "size": null,
     "formula_type": "flat",
-    "sl1": 300,
-    "sl10": 900,
-    "sl15": 1350,
+    "sl1": 300.0,
+    "sl10": 900.0,
+    "sl15": 1350.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": false
   },
   {
