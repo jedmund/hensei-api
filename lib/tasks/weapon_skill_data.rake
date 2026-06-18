@@ -15,9 +15,16 @@ namespace :granblue do
     wpn_dir   = wiki_source_dir.join("wpnskill-templates")
     ex = Granblue::Extractors::WeaponSkillDataExtractor.new
 
+    # Skills whose wiki table the standard SL-column parser can't read (e.g. Abandon's
+    # "per Turn / After 10 Turns" two-column layout). Their rows in
+    # data/weapon_skill_data.json are hand-curated and kept, not regenerated.
+    manual = %w[Abandon].freeze
+
     gen = []
     Dir[skill_dir.join("*.wikitext")].sort.each do |f|
       name = File.basename(f, ".wikitext").tr("_", " ")
+      next if manual.include?(name)
+
       text = File.read(f)
       # follow a {{WpnSkill<Name>}} delegation: append the sub-template so its
       # table is parsed under this subpage's WsBox (name + boosts).
