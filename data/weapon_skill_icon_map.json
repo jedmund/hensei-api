@@ -468,18 +468,6 @@
       "size": "big"
     }
   ],
-  "Insignia": [
-    {
-      "pattern": "ws_skill_noroi_1.png",
-      "series": "normal",
-      "size": "big"
-    },
-    {
-      "pattern": "Ws_skill_noroi_m_3_3.png",
-      "series": "omega",
-      "size": "big"
-    }
-  ],
   "Majesty": [
     {
       "pattern": "ws_skill_god_*.png",
@@ -672,28 +660,6 @@
       "size": "medium"
     }
   ],
-  "Progression": [
-    {
-      "pattern": "ws_skill_job_weapon.png",
-      "series": "normal",
-      "size": "small"
-    },
-    {
-      "pattern": "ws_skill_job_weapon.png",
-      "series": "normal",
-      "size": "medium"
-    },
-    {
-      "pattern": "ws_skill_job_weapon.png",
-      "series": "normal",
-      "size": "big"
-    },
-    {
-      "pattern": "ws_skill_job_weapon.png",
-      "series": "taboo",
-      "size": "big"
-    }
-  ],
   "Refuge": [
     {
       "pattern": "ws_skill_resist_*_1.png",
@@ -703,13 +669,6 @@
     {
       "pattern": "ws_skill_resist_*_2.png",
       "series": "normal",
-      "size": "medium"
-    }
-  ],
-  "Resolve": [
-    {
-      "pattern": "Ws_skill_will_m_5_1.png",
-      "series": "omega",
       "size": "medium"
     }
   ],
@@ -809,6 +768,48 @@
       "size": "small"
     }
   ],
+  "Stamina": [
+    {
+      "pattern": "Ws_skill_whole_*_1.png",
+      "series": "normal",
+      "size": "small"
+    },
+    {
+      "pattern": "Ws_skill_whole_*_2.png",
+      "series": "normal",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_whole_*_3.png",
+      "series": "normal",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_whole_*_3_2.png",
+      "series": "normal",
+      "size": "big_ii"
+    },
+    {
+      "pattern": "Ws_skill_whole_*_4.png",
+      "series": "normal",
+      "size": "ancestral"
+    },
+    {
+      "pattern": "Ws_skill_whole_m_*_2.png",
+      "series": "omega",
+      "size": "medium"
+    },
+    {
+      "pattern": "Ws_skill_whole_m_*_3.png",
+      "series": "omega",
+      "size": "big"
+    },
+    {
+      "pattern": "Ws_skill_whole_k_*_3.png",
+      "series": "odious",
+      "size": "big"
+    }
+  ],
   "Stratagem": [
     {
       "pattern": "Ws_skill_tec_rise_*_2.png",
@@ -833,13 +834,6 @@
       "pattern": "Ws_skill_exo_*_4.png",
       "series": "ex",
       "size": "massive"
-    }
-  ],
-  "Sweep": [
-    {
-      "pattern": "ws_skill_wa_m_3_1.png",
-      "series": "omega",
-      "size": "big"
     }
   ],
   "Tempering": [
@@ -929,11 +923,6 @@
   "Truce": [
     {
       "pattern": "ws_skill_fullcut_m_*.png",
-      "series": "omega",
-      "size": "small"
-    },
-    {
-      "pattern": "Ws_skill_fullcut_m_3.png",
       "series": "omega",
       "size": "small"
     }

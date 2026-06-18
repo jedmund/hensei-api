@@ -462,7 +462,7 @@ module Granblue
         norm = icon.sub(/\A\{\{WeaponSkillIcon\|/, "").sub(/\}\}\z/, "").strip
         entries.each do |e|
           parts = e["pattern"].split("*").map { |p| Regexp.escape(p) }
-          re = Regexp.new("\\A#{parts.join('[\dx*]+')}\\z")
+          re = Regexp.new("\\A#{parts.join('[\dx*]+')}\\z", Regexp::IGNORECASE)
           return { series: e["series"], size: e["size"] } if norm.match?(re)
         end
         nil
