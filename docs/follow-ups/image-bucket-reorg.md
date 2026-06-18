@@ -32,6 +32,7 @@ guidebooks/                                    # unchanged
 
 icons/abilities/        # was ability-icons
 icons/job-skills/       # was job-skills
+icons/weapon-skills/    # was weapon-skill-icons
 icons/elements/         # was elements
 icons/proficiencies/    # was proficiencies
 icons/rarity/           # was rarity
@@ -124,6 +125,7 @@ MAP=(
   "job-zoom:jobs/zoom" "jobs:jobs/full"
   "raid-thumbnail:raids/thumbnail" "raids:raids/full"
   "ability-icons:icons/abilities" "job-skills:icons/job-skills"
+  "weapon-skill-icons:icons/weapon-skills"
   "elements:icons/elements" "proficiencies:icons/proficiencies" "rarity:icons/rarity"
   "awakening:icons/awakening" "mastery:icons/mastery" "ax:icons/ax-skills"
   "fonts:app/fonts" "placeholders:app/placeholders" "external:app/external" "media:app/media"
