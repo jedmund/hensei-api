@@ -2103,7 +2103,7 @@
     "modifier": "Omega Exalto",
     "boost_type": "omega_exalto",
     "series": "omega",
-    "size": "big",
+    "size": null,
     "formula_type": "flat",
     "sl1": 20.0,
     "sl10": 20.0,
@@ -2111,7 +2111,8 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
-    "aura_boostable": false
+    "aura_boostable": false,
+    "notes": "Meta-amplifier: fixed per-copy boost to the Optimus/Omega-series weapon mods (additive across copies, capped via boost_type grid_cap). Not SL-scaled; sizeless."
   },
   {
     "modifier": "Onslaught",
@@ -2132,7 +2133,7 @@
     "modifier": "Optimus Exalto",
     "boost_type": "optimus_exalto",
     "series": "normal",
-    "size": "big",
+    "size": null,
     "formula_type": "flat",
     "sl1": 30.0,
     "sl10": 30.0,
@@ -2140,7 +2141,8 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
-    "aura_boostable": false
+    "aura_boostable": false,
+    "notes": "Meta-amplifier: fixed per-copy boost to the Optimus/Omega-series weapon mods (additive across copies, capped via boost_type grid_cap). Not SL-scaled; sizeless."
   },
   {
     "modifier": "Parity",
