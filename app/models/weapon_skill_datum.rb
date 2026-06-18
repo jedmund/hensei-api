@@ -3,9 +3,9 @@
 class WeaponSkillDatum < ApplicationRecord
   self.table_name = "weapon_skill_data"
 
-  SERIES_VALUES = %w[normal omega ex odious normal_omega sephira unique].freeze
+  SERIES_VALUES = %w[normal omega ex odious normal_omega sephira unique taboo].freeze
   SIZE_VALUES = %w[small medium big big_ii massive unworldly ancestral].freeze
-  FORMULA_TYPES = %w[flat enmity stamina garrison].freeze
+  FORMULA_TYPES = %w[flat enmity stamina garrison progression].freeze
 
   validates :modifier, presence: true
   validates :boost_type, presence: true
