@@ -8,7 +8,7 @@ RSpec.describe Granblue::Extractors::WeaponSkillDataExtractor do
   KEY_MAP = {
     "Might" => "atk", "HP" => "hp", "DA Rate" => "da", "TA Rate" => "ta",
     "Enmity" => "enmity", "Stamina" => "stamina", "E. ATK (Prog.)" => "e_atk_prog",
-    "DEF" => "def", "Critical" => "critical"
+    "DEF" => "def", "Critical" => "critical", "N.A. DMG Cap" => "na_dmg_cap"
   }.freeze
 
   let(:extractor) { described_class.new(boost_key_by_name: KEY_MAP) }
@@ -95,6 +95,22 @@ RSpec.describe Granblue::Extractors::WeaponSkillDataExtractor do
       expect(find_row(rows, boost_type: "atk", series: "ex", size: nil)).to include(sl10: 15.0)
       expect(find_row(rows, boost_type: "hp", series: "ex", size: nil)).to include(sl10: 10.0)
       expect(find_row(rows, boost_type: "critical", series: "ex", size: nil)).to include(sl10: 15.0)
+    end
+  end
+
+  describe "transposed flat table (Strike: SL in rows)" do
+    it "reads the boost from the header and SL from the rows" do
+      expect(find_row(rows_for("Strike"), boost_type: "na_dmg_cap", size: nil))
+        .to include(sl1: 2.75, sl10: 5.0, sl15: 7.5)
+    end
+  end
+
+  describe "rowspanned size carried across boost rows (Bloodrage)" do
+    let(:rows) { rows_for("Bloodrage") }
+
+    it "applies the Medium size to every boost row, not just the first" do
+      expect(find_row(rows, boost_type: "atk", series: "normal", size: "medium")).to include(sl1: 3.0)
+      expect(find_row(rows, boost_type: "critical", series: "normal", size: "medium")).to include(sl1: 3.2)
     end
   end
 end

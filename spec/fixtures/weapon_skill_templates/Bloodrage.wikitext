@@ -1,0 +1,32 @@
+{{WsBox
+|name=Bloodrage 
+|desc=[{{WsSize}}] boost to [element] allies' ATK and critical hit rate / -10% DEF
+|aura_boostable=yes
+|color=
+|boost1=Might
+|boost2=Critical
+|boost3=Hit to DEF
+|icon=Ws_skill_blood_rage_*_2.png
+}}
+{{WpnSkillBloodrage|categories=no}}
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="6" class="wsmod-title" | {{icon|normal aura}} Normal
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15
+|-
+! class="wsmod-icon" rowspan="3" | {{WeaponSkillIconLink|icon=Ws_skill_blood_rage_*_2.png|size=50|category=Bloodrage}}
+! class="wsmod-tier" rowspan="3" | Medium<ref name="Gamewith, Heldenhymne">GameWith, Heldenhymne. https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/501192</ref>
+! class="wsmod-stat" | {{Label|Might}}
+| 3.0% || 12.0% || 14.5%
+|-
+! class="wsmod-stat" | {{Label|Critical}}
+| 3.2% || 5.0% || 6.5%
+|-
+! class="wsmod-stat" | {{Label|Hit to DEF}}
+| colspan="3" | -10%
+|}
+</div><noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

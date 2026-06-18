@@ -130,12 +130,18 @@ module Granblue
           next unless series
           header = rows_raw.find { |r| r.include?("Skill Level") } or next
           sl_levels, has_max = parse_header(header)
-          next if sl_levels.empty?
+          if sl_levels.empty? # transposed table (SL in rows), e.g. Strike
+            out.concat(transposed_rows(rows_raw, header, modifier, aura, series, box_boosts))
+            next
+          end
 
           current_labels = nil
+          current_size = nil
           rows_raw.each do |r|
             next if r.include?("Skill Level") || r.include?("wsmod-title")
-            size = row_size(r)            # nil for Shape B (boost-per-row)
+            raw_size = row_size(r)               # nil for Shape B / rowspanned size
+            current_size = raw_size if raw_size  # carry a rowspanned size (e.g. Bloodrage)
+            size = raw_size || current_size
             labels = row_labels(r)
             current_labels = labels if labels.any?
             nums = row_values(r).map { |v| parse_num(v) }
@@ -149,9 +155,10 @@ module Granblue
             sl = sl_levels.zip(nums).to_h
             next if sl.values.all?(&:nil?) && max.nil?
 
-            # Shape A/A': boost carried via rowspan stat label; Shape B: per-row
-            # label; Garrison-style plain tables: fall back to the WsBox boosts.
-            use = size ? (current_labels || []) : labels
+            # When a row owns a size cell the boost is carried via the rowspanned
+            # stat label (Shape A); otherwise the row owns its boost label (Shape
+            # B / boost-per-row). Garrison-style plain tables fall back to WsBox.
+            use = raw_size ? (current_labels || []) : labels
             use = box_boosts if use.empty?
             use.each do |label|
               boost = boost_key(label) or next
@@ -164,6 +171,32 @@ module Granblue
           end
         end
         out
+      end
+
+      # Transposed flat table: SL values down the rows, the boost(s) in the header
+      # column (e.g. Strike: "Skill Level | N.A. DMG Cap"). Sizeless.
+      def transposed_rows(rows_raw, header, modifier, aura, series, box_boosts)
+        boosts = header.scan(/\{\{Label\|([^}|]+)/).flatten.map(&:strip)
+        boosts = box_boosts if boosts.empty?
+        data = {} # sl level => [value per boost]
+        rows_raw.each do |r|
+          next if r.equal?(header) || r.include?("Skill Level")
+          head_cell = r.split("\n").find { |ln| ln.start_with?("!") } or next
+          lvl = cell_content(head_cell.sub(/^!\s*/, ""))[/\d+/]&.to_i or next
+          vals = row_values(r).map { |v| parse_num(v) }
+          data[lvl] = vals unless vals.empty?
+        end
+        return [] if data.empty?
+
+        boosts.each_with_index.filter_map do |label, bi|
+          boost = boost_key(label) or next
+          sl = { 1 => nil, 10 => nil, 15 => nil, 20 => nil, 25 => nil }
+          data.each { |lvl, vals| sl[lvl] = vals[bi] if sl.key?(lvl) }
+          base_row(modifier, boost, series, nil, aura).merge(
+            formula_type: formula_for(modifier, boost),
+            sl1: sl[1], sl10: sl[10], sl15: sl[15], sl20: sl[20], sl25: sl[25]
+          )
+        end
       end
 
       # Every `{| ... |}` table that looks like a skill table (has the SL header).

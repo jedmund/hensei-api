@@ -40,6 +40,9 @@
     { "modifier": "Vitality", "boost_type": "def", "scaling_kind": "ally_hp_scaled", "value": 0.025, "value_unit": "percent_ally_max_hp", "per_copy_cap": 25, "depends_on": ["ally_max_hp"], "notes": "DEF = maxHP x 0.025% (cap 25%/copy)." },
     { "modifier": "Vitality", "boost_type": "dmg_cap_sp", "scaling_kind": "ally_hp_scaled", "value": 0.01, "value_unit": "percent_ally_max_hp", "per_copy_cap": 7, "total_cap": 20, "depends_on": ["ally_max_hp"], "notes": "Sp. DMG Cap = maxHP x 0.01% (cap 7%/copy, 20% total)." },
 
+    { "modifier": "Surge", "boost_type": "da", "scaling_kind": "current_hp_scaled", "value": 5.0, "value_unit": "percent", "total_cap": 35.0, "depends_on": ["hp_percent"], "applies_to": "element_allies", "notes": "DA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP: 30%*((maxhp-curhp)/maxhp)+5%. value=floor, total_cap=ceiling." },
+    { "modifier": "Surge", "boost_type": "ta", "scaling_kind": "current_hp_scaled", "value": 5.0, "value_unit": "percent", "total_cap": 35.0, "depends_on": ["hp_percent"], "applies_to": "element_allies", "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA." },
+
     { "modifier": "Hunt", "boost_type": "bonus_elem_dmg", "scaling_kind": "bonus_dmg", "value": 10, "value_unit": "percent", "condition": { "type": "foe_status", "status": "Bounty" }, "stacking": "highest_only", "depends_on": ["foe_status"], "notes": "10% bonus elem DMG vs foes with any Bounty lvl; A-sided, highest-only." },
     { "modifier": "Blow", "boost_type": "bonus_elem_dmg", "scaling_kind": "bonus_dmg", "value": null, "value_unit": "percent", "stacking": "highest_only", "notes": "VERIFY: A-sided bonus damage, value/frame not in prose (on weapon); highest-only." },
 

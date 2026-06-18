@@ -5,7 +5,7 @@
 # both. See docs/damage/08-scaling-data-pipeline.md, 09-calculator-mvp.md.
 class WeaponSkillEffect < ApplicationRecord
   SCALING_KINDS = %w[foe_hp_supplemental per_grid_count conditional_flat
-                     ally_hp_scaled bonus_dmg flat static].freeze
+                     ally_hp_scaled current_hp_scaled bonus_dmg flat static].freeze
   VALUE_UNITS = %w[percent percent_foe_max_hp percent_ally_max_hp flat].freeze
   SERIES_VALUES = %w[normal omega ex].freeze
   TARGET_INSTANCES = %w[all normal_attack charge_attack skill critical].freeze
