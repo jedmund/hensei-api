@@ -57,8 +57,9 @@ module Granblue
         aura = box[:aura_boostable] == "yes" || box[:aura_boostable] == "both"
 
         rows = []
+        box_boosts = [box[:boost1], box[:boost2], box[:boost3]].compact.map(&:strip).reject(&:empty?)
         rows.concat(stamina_rows(wikitext, modifier, aura))
-        rows.concat(grid_rows(wikitext, modifier, aura))
+        rows.concat(grid_rows(wikitext, modifier, aura, box_boosts))
         # de-dupe on the uniqueness key, last wins
         rows.uniq! { |r| [r[:modifier], r[:boost_type], r[:series], r[:size]] }
         rows
@@ -119,20 +120,22 @@ module Granblue
         cols
       end
 
-      # ---- wsmod grids (flat / enmity / progression) -----------------------
-      def grid_rows(text, modifier, aura)
+      # ---- size x SL grids: wsmod (A), plain wikitable (A', e.g. Garrison),
+      #      and boost-per-row single-size (B, e.g. Ars/Ultio) ----------------
+      def grid_rows(text, modifier, aura, box_boosts)
         out = []
-        text.scan(/\{\|\s*class="wikitable wsmod".*?\n\|\}/m).each do |tbl|
+        tables(text).each do |tbl|
           rows_raw = split_rows(tbl)
-          title = rows_raw.find { |r| r.include?("wsmod-title") } or next
-          series = self.class.series_for_title(title) or next
+          series = table_series(tbl, box_boosts)
+          next unless series
           header = rows_raw.find { |r| r.include?("Skill Level") } or next
           sl_levels, has_max = parse_header(header)
+          next if sl_levels.empty?
 
           current_labels = nil
           rows_raw.each do |r|
-            next unless r.include?("wsmod-tier") && !r.include?("Skill Level")
-            size = row_size(r) or next
+            next if r.include?("Skill Level") || r.include?("wsmod-title")
+            size = row_size(r)            # nil for Shape B (boost-per-row)
             labels = row_labels(r)
             current_labels = labels if labels.any?
             nums = row_values(r).map { |v| parse_num(v) }
@@ -143,14 +146,17 @@ module Granblue
               max = nums.last
               nums = nums[0...-1]
             end
-            sl = sl_levels.zip(nums).to_h # {1=>v, 10=>v, ...}
+            sl = sl_levels.zip(nums).to_h
             next if sl.values.all?(&:nil?) && max.nil?
 
-            (current_labels || []).each do |label|
+            # Shape A/A': boost carried via rowspan stat label; Shape B: per-row
+            # label; Garrison-style plain tables: fall back to the WsBox boosts.
+            use = size ? (current_labels || []) : labels
+            use = box_boosts if use.empty?
+            use.each do |label|
               boost = boost_key(label) or next
-              formula = FORMULA_BY_BOOST.fetch(boost, "flat")
               out << base_row(modifier, boost, series, size, aura).merge(
-                formula_type: formula,
+                formula_type: formula_for(modifier, boost),
                 sl1: sl[1], sl10: sl[10], sl15: sl[15], sl20: sl[20], sl25: sl[25],
                 max_value: max
               )
@@ -158,6 +164,33 @@ module Granblue
           end
         end
         out
+      end
+
+      # Every `{| ... |}` table that looks like a skill table (has the SL header).
+      def tables(text)
+        text.scan(/\{\|.*?\n\|\}/m).select { |t| t.include?("Skill Level") }
+      end
+
+      # Series from the table's title line (aura icons / wsmod-title / a wide-colspan
+      # title like "Taboo"); falls back to the WsBox boosts for title-less Shape B.
+      def table_series(tbl, box_boosts)
+        line = tbl.split("\n").find { |l| l =~ /aura\}\}/ || l.include?("wsmod-title") }
+        line ||= tbl.split("\n").find { |l| l.start_with?("!") && l =~ /colspan="?\d{2,}/ }
+        line ? self.class.series_for_title(line) : default_series(box_boosts)
+      end
+
+      # Series for a table with no title row (Shape B), inferred from the WsBox boosts.
+      def default_series(boosts)
+        joined = boosts.join(" ")
+        return "ex" if joined.include?("EX ")
+        return "omega" if joined.include?("Omega ")
+        return "odious" if joined.include?("Od ")
+        "normal"
+      end
+
+      def formula_for(modifier, boost)
+        return "garrison" if modifier == "Garrison"
+        FORMULA_BY_BOOST.fetch(boost, "flat")
       end
 
       # ---- helpers ---------------------------------------------------------
@@ -176,8 +209,9 @@ module Granblue
       end
 
       # SL column labels from the header row (drop Icon(s)/Skill Level cells).
+      # Header cells split on both !! and || (plain tables like Garrison use ||).
       def parse_header(header)
-        cells = header.split("\n").flat_map { |ln| ln.start_with?("!") ? ln.sub(/^!/, "").split("!!") : [] }
+        cells = header.split("\n").flat_map { |ln| ln.start_with?("!") ? ln.sub(/^!/, "").split(/!!|\|\|/) : [] }
         labels = cells.map { |c| cell_content(c) }.reject(&:empty?)
         labels.reject! { |l| l =~ /\AIcons?\z/i || l =~ /Skill Level/i }
         has_max = labels.any? { |l| l =~ /Max/i }
@@ -185,23 +219,29 @@ module Granblue
         [levels, has_max]
       end
 
+      # Size from any `!` cell whose content is a size word (class-agnostic, so it
+      # works for wsmod and plain `style=`-attr tables). nil = no size (Shape B).
       def row_size(r)
-        line = r.split("\n").find { |ln| ln.include?("wsmod-tier") && ln !~ /Skill Level/ }
-        line && normalize_size(cell_content(line))
+        r.split("\n").each do |ln|
+          next unless ln.start_with?("!")
+          s = normalize_size(cell_content(ln.sub(/^!\s*/, "")))
+          return s if s
+        end
+        nil
       end
 
+      # Boost labels = every {{Label|X}} in the row (the stat cell(s)).
       def row_labels(r)
-        line = r.split("\n").find { |ln| ln.include?("wsmod-stat") } or return []
-        line.scan(/\{\{Label\|([^}|]+)/).flatten.map(&:strip)
+        r.scan(/\{\{Label\|([^}|]+)/).flatten.map(&:strip)
       end
 
-      # All data (`|`) cells in a row, in order, cleaned.
+      # All data (`|`) cells in a row, in order, with attributes stripped.
       def row_values(r)
         vals = []
         r.split("\n").each do |ln|
           next unless ln.start_with?("|")
           next if ln.start_with?("|-") || ln.start_with?("|}")
-          ln.sub(/^\|/, "").split("||").each { |c| vals << clean(c) }
+          ln.sub(/^\|/, "").split("||").each { |c| vals << cell_content(c) }
         end
         vals
       end
