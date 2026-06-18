@@ -9,7 +9,12 @@ module Api
       field(:name) { |version| { en: version.name_en, ja: version.name_jp } }
       field(:description) { |version| { en: version.description_en, ja: version.description_jp } }
 
-      fields :icon, :ordinal, :unlock_level, :min_uncap, :transcendence_stage,
+      # Normalized CDN icon stem (internal element numbering) — the frontend
+      # builds /weapon-skill-icons/{locale}/{stem}.png from it. The raw wiki
+      # icon name is intentionally not exposed.
+      field :icon_stem
+
+      fields :ordinal, :unlock_level, :min_uncap, :transcendence_stage,
              :skill_modifier, :skill_series, :skill_size,
              :main_hand_only, :mc_only, :scales_with_skill_level
 
