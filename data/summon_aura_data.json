@@ -1034,6 +1034,39 @@
     "description_en": "60% boost to Dark and Earth Elemental ATK."
   },
   {
+    "summon_granblue_id": "2040002000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 50.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040002000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 80.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040002000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 80.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Water Elemental ATK.<br />20% boost to Water allies' HP."
+  },
+  {
     "summon_granblue_id": "2040003000",
     "slot": "main",
     "target": "elemental_atk",
@@ -1364,6 +1397,72 @@
     "description_en": "50% boost to Wind Elemental ATK."
   },
   {
+    "summon_granblue_id": "2040012000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water,dark",
+    "value": 40.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Dark and Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040012000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water,dark",
+    "value": 60.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "60% boost to Dark and Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040012000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water,dark",
+    "value": 60.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "60% boost to Dark and Water Elemental ATK.<br />20% boost to Dark and Water HP.<br />30% boost to Normal ATK and 10% boost to charge bar gain if both Dark and Water allies are in the front line."
+  },
+  {
+    "summon_granblue_id": "2040013000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth,light",
+    "value": 40.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Earth and Light Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040013000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth,light",
+    "value": 60.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "60% boost to Earth and Light Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040013000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth,light",
+    "value": 70.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "70% boost to Earth and Light Elemental ATK. 25% Boost to Earth and Light HP."
+  },
+  {
     "summon_granblue_id": "2040014000",
     "slot": "main",
     "target": "elemental_atk",
@@ -1615,6 +1714,39 @@
     "transcendence_stage": 6,
     "condition": null,
     "description_en": "10% boost to Wind allies' Normal ATK and DEF."
+  },
+  {
+    "summon_granblue_id": "2040021000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 50.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040021000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 80.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040021000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 80.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Fire Elemental ATK.<br />20% boost to Fire allies' HP."
   },
   {
     "summon_granblue_id": "2040022000",
@@ -2024,6 +2156,39 @@
     "description_en": "60% boost to Wind Elemental ATK."
   },
   {
+    "summon_granblue_id": "2040032000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire,dark",
+    "value": 25.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "25% boost to Dark and Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040032000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire,dark",
+    "value": 40.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Dark and Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040032000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire,dark",
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Dark and Fire Elemental ATK. Dark and Fire allies gain 3% increased triple attack rate.<ref>http://hiroxgbf.blog.fc2.com/blog-entry-4.html</ref>"
+  },
+  {
     "summon_granblue_id": "2040033000",
     "slot": "main",
     "target": "elemental_atk",
@@ -2211,6 +2376,39 @@
     "description_en": "Refresh effect to all Earth allies (Healing cap: 400).<br />60% boost to Earth allies' Normal ATK.<br />20% boost to Earth allies' HP.<br />1-turn cut to Earth allies' debuff durations."
   },
   {
+    "summon_granblue_id": "2040037000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Water allies' Normal ATK. 20% boost to healing."
+  },
+  {
+    "summon_granblue_id": "2040037000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 25.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "25% boost to Water allies' Normal ATK. 25% boost to healing."
+  },
+  {
+    "summon_granblue_id": "2040037000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Water allies' Normal ATK. 25% boost to healing."
+  },
+  {
     "summon_granblue_id": "2040038000",
     "slot": "main",
     "target": "other",
@@ -2275,6 +2473,39 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "20% boost to Dark Elemental ATK.<br />Gain an additional blue potion."
+  },
+  {
+    "summon_granblue_id": "2040042000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire,wind",
+    "value": 40.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Wind and Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040042000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire,wind",
+    "value": 60.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "60% boost to Wind and Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040042000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire,wind",
+    "value": 70.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "70% boost to Wind and Fire Elemental ATK. 25% boost to Wind and Fire HP."
   },
   {
     "summon_granblue_id": "2040043000",
@@ -2563,6 +2794,28 @@
     "description_en": "10% boost to Light allies' Normal ATK and DEF.<ref name=\"GameWith\" />"
   },
   {
+    "summon_granblue_id": "2040048000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Fire allies' Normal ATK.<br />20% boost to healing."
+  },
+  {
+    "summon_granblue_id": "2040048000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 25.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "25% boost to Fire allies' Normal ATK.<br />25% boost to healing."
+  },
+  {
     "summon_granblue_id": "2040049000",
     "slot": "main",
     "target": "normal_atk",
@@ -2616,6 +2869,39 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "25% boost to Light allies' HP.<br />Slight chance to take a lethal hit without being knocked out when HP is 30% or above (Leaves 1 HP)."
+  },
+  {
+    "summon_granblue_id": "2040053000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 30.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "30% boost to Fire allies' Normal ATK.<br />Refresh effect to all Fire allies (Healing cap: 300)."
+  },
+  {
+    "summon_granblue_id": "2040053000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Fire allies' Normal ATK.<br />Refresh effect to all Fire allies (Healing cap: 400)."
+  },
+  {
+    "summon_granblue_id": "2040053000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 50.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to Fire allies' Normal ATK.<br />Refresh effect to all Fire allies (Healing cap: 600)."
   },
   {
     "summon_granblue_id": "2040055000",
@@ -2750,6 +3036,39 @@
     "description_en": "30% boost to healing specs."
   },
   {
+    "summon_granblue_id": "2040057000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 30.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "30% boost to all elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040057000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 50.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to all elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040057000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 66.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "66% boost to all elemental ATK. Revel at the unbridled power of my cohorts!"
+  },
+  {
     "summon_granblue_id": "2040058000",
     "slot": "main",
     "target": "other",
@@ -2770,6 +3089,39 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "20% boost to HP."
+  },
+  {
+    "summon_granblue_id": "2040059000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 50.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to Earth Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040059000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 80.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Earth Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040059000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 80.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Earth Elemental ATK. 20% boost to Earth allies HP."
   },
   {
     "summon_granblue_id": "2040060000",
@@ -2858,6 +3210,28 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "60% boost to Fire and Water allies' HP.<br />5% chance to counter.<br />60% boost to Fire and Water Normal ATK.<br />{{crit|boost to critical hit rate|5|25}} if main allies include at least 2 different elements.<ref name=\"GBF-Wiki\">GBF-Wiki, Twin Elements. http://gbf-wiki.com/index.php?%BE%A4%B4%AD%C0%D0%2F%A5%D5%A5%E9%A5%E0%A1%E1%A5%B0%A5%E9%A5%B9%20%28SSR%29</ref>"
+  },
+  {
+    "summon_granblue_id": "2040064000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 25.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "25% boost to Light allies' Normal ATK.<br />Boost to charge bar gain."
+  },
+  {
+    "summon_granblue_id": "2040064000",
+    "slot": "main",
+    "target": "normal_atk",
+    "element": null,
+    "value": 30.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "30% boost to Light allies' Normal ATK.<br />20% boost to charge bar gain."
   },
   {
     "summon_granblue_id": "2040065000",
@@ -3916,6 +4290,50 @@
     "description_en": "50% boost to Water Elemental ATK."
   },
   {
+    "summon_granblue_id": "2040114000",
+    "slot": "main",
+    "target": "atk",
+    "element": null,
+    "value": null,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "All allies start battle with {{Status|Autorevived|t=i}}.<br />Boost to main allies' double attack rate based on how low their HP is.<br />20% boost to item drop rate."
+  },
+  {
+    "summon_granblue_id": "2040114000",
+    "slot": "main",
+    "target": "atk",
+    "element": null,
+    "value": null,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "All allies start battle with {{Status|Autorevived|t=i}}.<br />Boost to main allies' double attack rate based on how low their HP is.<br />25% boost to item drop rate."
+  },
+  {
+    "summon_granblue_id": "2040114000",
+    "slot": "main",
+    "target": "multiattack",
+    "element": null,
+    "value": 50.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "All allies start battle with {{Status|Autorevived|t=i}}.<br />50% boost to main allies' double attack rate and 25% boost to main allies' triple attack rate.<ref name=\"mido_kaguya\">Midokuni, Kaguya https://gbf.wiki/User:Midokuni/data/Multiattack_Logs/Kaguya</ref><br />30% boost to item drop rate and 30% boost to EXP."
+  },
+  {
+    "summon_granblue_id": "2040114000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to EXP."
+  },
+  {
     "summon_granblue_id": "2040115000",
     "slot": "main",
     "target": "elemental_atk",
@@ -3936,6 +4354,39 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "40% boost to Wind Elemental ATK.<br />10% boost to allies' DEF."
+  },
+  {
+    "summon_granblue_id": "2040122000",
+    "slot": "main",
+    "target": "other",
+    "element": null,
+    "value": null,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "Boost wind attack critical hit rate / 30% boost to Debuff Resistance."
+  },
+  {
+    "summon_granblue_id": "2040122000",
+    "slot": "main",
+    "target": "other",
+    "element": null,
+    "value": null,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "Boost wind attack critical hit rate / 40% boost to Debuff Resistance."
+  },
+  {
+    "summon_granblue_id": "2040122000",
+    "slot": "main",
+    "target": "other",
+    "element": null,
+    "value": null,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "Boost wind attack critical hit rate (effect increased) / 40% boost to Debuff Resistance.<ref>zekasyuz https://twitter.com/zekasyuz/status/912221327116734470</ref>"
   },
   {
     "summon_granblue_id": "2040123000",
@@ -4642,6 +5093,39 @@
     "description_en": "150% boost to chain burst damage."
   },
   {
+    "summon_granblue_id": "2040185000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 120.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040185000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 140.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040185000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 160.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "160% boost to Fire Elemental ATK."
+  },
+  {
     "summon_granblue_id": "2040188000",
     "slot": "main",
     "target": "elemental_atk",
@@ -4675,6 +5159,28 @@
     "description_en": "50% boost to Light allies' ATK / Slight chance to deal critical hits with big DMG for foes weak against Light."
   },
   {
+    "summon_granblue_id": "2040189000",
+    "slot": "main",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to all allies' DEF."
+  },
+  {
+    "summon_granblue_id": "2040189000",
+    "slot": "main",
+    "target": "other",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to all allies' DEF."
+  },
+  {
     "summon_granblue_id": "2040192000",
     "slot": "main",
     "target": "other",
@@ -4697,6 +5203,50 @@
     "description_en": "30% boost to Light allies' HP."
   },
   {
+    "summon_granblue_id": "2040195000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "light",
+    "value": 50.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to Light Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040195000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "light",
+    "value": 70.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "70% boost to Light Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040195000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to Light allies' HP."
+  },
+  {
+    "summon_granblue_id": "2040195000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Light allies' HP."
+  },
+  {
     "summon_granblue_id": "2040198000",
     "slot": "main",
     "target": "elemental_atk",
@@ -4717,6 +5267,138 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "40% boost to all Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040202000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Wind Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040202000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Wind Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040202000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Wind Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040202000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to Wind allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040202000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Wind allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040202000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 15.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "15% boost to Wind allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040203000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Earth Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040203000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Earth Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040203000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Earth Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040203000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to Earth allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040203000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Earth allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040203000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 15.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "15% boost to Earth allies' damage cap."
   },
   {
     "summon_granblue_id": "2040205000",
@@ -4948,6 +5630,39 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "40% boost to Fire Elemental ATK. 20% boost to DEF."
+  },
+  {
+    "summon_granblue_id": "2040225000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 120.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040225000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 140.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040225000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 160.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "160% boost to Water Elemental ATK."
   },
   {
     "summon_granblue_id": "2040229000",
@@ -5863,6 +6578,61 @@
     "description_en": "40% boost to Fire and Dark Elemental ATK.<br />15% boost to Fire and Dark HP."
   },
   {
+    "summon_granblue_id": "2040261000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 120.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Wind Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040261000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 140.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Wind Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040261000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 160.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "160% boost to Wind Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040263000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": null,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "Boost to Dark Elemental ATK based on number of main allies' races (Up to 80%)."
+  },
+  {
+    "summon_granblue_id": "2040263000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": null,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "Boost to Dark Elemental ATK based on number of main allies' races (Up to 100%)."
+  },
+  {
     "summon_granblue_id": "2040269000",
     "slot": "main",
     "target": "normal_frame",
@@ -6061,6 +6831,72 @@
     "description_en": "130% boost to Dark's, Hatred's, and Oblivion's weapon skills."
   },
   {
+    "summon_granblue_id": "2040275000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 30.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "30% boost to all Elemental ATK.<br />20% boost to double attack rate."
+  },
+  {
+    "summon_granblue_id": "2040275000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 40.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to all Elemental ATK.<br />30% boost to double attack rate."
+  },
+  {
+    "summon_granblue_id": "2040275000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 50.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to all Elemental ATK.<br />50% boost to double attack rate."
+  },
+  {
+    "summon_granblue_id": "2040275000",
+    "slot": "sub",
+    "target": "atk",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to double attack rate."
+  },
+  {
+    "summon_granblue_id": "2040275000",
+    "slot": "sub",
+    "target": "atk",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to double attack rate."
+  },
+  {
+    "summon_granblue_id": "2040275000",
+    "slot": "sub",
+    "target": "atk",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to double attack rate. 10% boost to triple attack rate."
+  },
+  {
     "summon_granblue_id": "2040279000",
     "slot": "main",
     "target": "elemental_atk",
@@ -6081,6 +6917,39 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "50% boost to Light ATK. <br /> 15% boost to Light allies' C.A. DMG."
+  },
+  {
+    "summon_granblue_id": "2040281000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 40.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Wind Elemental ATK.<br/>Refresh effect to all Wind allies (Healing cap: 300)."
+  },
+  {
+    "summon_granblue_id": "2040281000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 60.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "60% boost to Wind Elemental ATK.<br/>Refresh effect to all Wind allies (Healing cap: 400)."
+  },
+  {
+    "summon_granblue_id": "2040281000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 80.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "80% boost to Wind Elemental ATK.<br/>Refresh effect to all Wind allies (Healing cap: 400)."
   },
   {
     "summon_granblue_id": "2040282000",
@@ -6136,6 +7005,28 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "110% boost to Earth Elemental ATK.<br />All allies start battle with {{status|Banana|t=Indefinite}}."
+  },
+  {
+    "summon_granblue_id": "2040286000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 40.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Dark Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040286000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 50.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "50% boost to Dark Elemental ATK."
   },
   {
     "summon_granblue_id": "2040288000",
@@ -6567,6 +7458,72 @@
     "description_en": "120% boost to Dark Elemental ATK."
   },
   {
+    "summon_granblue_id": "2040306000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040306000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040306000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Fire Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040306000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to Fire allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040306000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Fire allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040306000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 15.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "15% boost to Fire allies' damage cap."
+  },
+  {
     "summon_granblue_id": "2040309000",
     "slot": "main",
     "target": "elemental_atk",
@@ -6609,6 +7566,72 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "120% boost to Light Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040311000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040311000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040311000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Water Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040311000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to Water allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040311000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Water allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040311000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 15.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "15% boost to Water allies' damage cap."
   },
   {
     "summon_granblue_id": "2040312000",
@@ -6708,6 +7731,72 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "Boost to Wind Elemental ATK based on number of Wind summons equipped (Up to 130%). Boost to main allies' double attack rate based on how low HP is."
+  },
+  {
+    "summon_granblue_id": "2040327000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Dark Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040327000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Dark Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040327000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Dark Elemental ATK."
+  },
+  {
+    "summon_granblue_id": "2040327000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 5.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "5% boost to Dark allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040327000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Dark allies' damage cap."
+  },
+  {
+    "summon_granblue_id": "2040327000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": 15.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "15% boost to Dark allies' damage cap."
   },
   {
     "summon_granblue_id": "2040328000",
@@ -9053,6 +10142,72 @@
     "description_en": "50% boost to Light ATK.<br />{{crit|boost to Light attack critical hit rate|20|30}}.<ref name=\"GameWith\" />"
   },
   {
+    "summon_granblue_id": "2040398000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Fire ATK."
+  },
+  {
+    "summon_granblue_id": "2040398000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Fire ATK."
+  },
+  {
+    "summon_granblue_id": "2040398000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Fire ATK."
+  },
+  {
+    "summon_granblue_id": "2040398000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Fire's, Hellfire's, and Inferno's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040398000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Fire's, Hellfire's, and Inferno's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040398000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Fire's, Hellfire's, and Inferno's weapon skills."
+  },
+  {
     "summon_granblue_id": "2040399000",
     "slot": "main",
     "target": "elemental_atk",
@@ -9106,6 +10261,72 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "50% boost to Earth Elemental ATK. <br /> 20% boost to Earth allies' C.A. damage."
+  },
+  {
+    "summon_granblue_id": "2040401000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Earth ATK."
+  },
+  {
+    "summon_granblue_id": "2040401000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Earth ATK."
+  },
+  {
+    "summon_granblue_id": "2040401000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "earth",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Earth ATK."
+  },
+  {
+    "summon_granblue_id": "2040401000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Earth's, Mountain's, and Terra's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040401000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Earth's, Mountain's, and Terra's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040401000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Earth's, Mountain's, and Terra's weapon skills."
   },
   {
     "summon_granblue_id": "2040402000",
@@ -9339,6 +10560,72 @@
     "description_en": "Yorozuya starts battle with {{status|Veil|t=i}}, {{status|ATK Up|t=5T|a=30%}}, and {{status|Guaranteed TA|t=1T}}."
   },
   {
+    "summon_granblue_id": "2040406000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Wind ATK."
+  },
+  {
+    "summon_granblue_id": "2040406000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Wind ATK."
+  },
+  {
+    "summon_granblue_id": "2040406000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Wind ATK."
+  },
+  {
+    "summon_granblue_id": "2040406000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Wind's, Whirlwind's, and Ventosus's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040406000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Wind's, Whirlwind's, and Ventosus's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040406000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Wind's, Whirlwind's, and Ventosus's weapon skills."
+  },
+  {
     "summon_granblue_id": "2040407000",
     "slot": "main",
     "target": "elemental_atk",
@@ -9425,6 +10712,72 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "'''When MC uses a charge attack:'''<br />Raise MC's {{status|Trance (MC)|t=i}} lvl by 1 (Max: 3). (Boost to multiattack rate based on lvl. Sharp boost to stats at lvl 3.)"
+  },
+  {
+    "summon_granblue_id": "2040409000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "light",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Light ATK."
+  },
+  {
+    "summon_granblue_id": "2040409000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "light",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Light ATK."
+  },
+  {
+    "summon_granblue_id": "2040409000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "light",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Light ATK."
+  },
+  {
+    "summon_granblue_id": "2040409000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Light's, Thunder's, and Zion's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040409000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Light's, Thunder's, and Zion's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040409000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Light's, Thunder's, and Zion's weapon skills."
   },
   {
     "summon_granblue_id": "2040410000",
@@ -9581,6 +10934,72 @@
     "description_en": "Dark allies start battle with {{status|Armored|t=3T|a=50%|p=100%}} and {{status|Veil|t=i}}.<ref name=\"GameWith\">GameWith, Sleepyhead (Summer). https://グランブルーファンタジー.gamewith.jp/article/show/359334</ref>"
   },
   {
+    "summon_granblue_id": "2040413000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Water ATK."
+  },
+  {
+    "summon_granblue_id": "2040413000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Water ATK."
+  },
+  {
+    "summon_granblue_id": "2040413000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "water",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Water ATK."
+  },
+  {
+    "summon_granblue_id": "2040413000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Water's, Tsunami's, and Hoarfrost's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040413000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Water's, Tsunami's, and Hoarfrost's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040413000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Water's, Tsunami's, and Hoarfrost's weapon skills."
+  },
+  {
     "summon_granblue_id": "2040414000",
     "slot": "main",
     "target": "elemental_atk",
@@ -9645,6 +11064,160 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "50% boost to all allies' ATK. <br /> 20% boost to HP. <br /> 20% boost to DEF."
+  },
+  {
+    "summon_granblue_id": "2040416000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Fire ATK."
+  },
+  {
+    "summon_granblue_id": "2040416000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Fire ATK."
+  },
+  {
+    "summon_granblue_id": "2040416000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 130.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "130% boost to Fire ATK. <br /> {{status|Hekate's Embrace|t=i}} to Fire MC at battle start. (Deals 700% Fire damage to all foes every 3 turns [Damage cap: ~1,160,000].)<ref name=\"GameWith\">GameWith, Hekate. https://グランブルーファンタジー.gamewith.jp/article/show/366174</ref>"
+  },
+  {
+    "summon_granblue_id": "2040416000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": null,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "{{status|Hekate's Embrace|t=i}} to Fire MC at battle start. (Deals 700% Fire damage to all foes every 3 turns [Damage cap: ~1,160,000].)<ref name=\"GameWith\" />"
+  },
+  {
+    "summon_granblue_id": "2040417000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to all Elemental ATK"
+  },
+  {
+    "summon_granblue_id": "2040417000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to all Elemental ATK"
+  },
+  {
+    "summon_granblue_id": "2040417000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "all",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to all Elemental ATK"
+  },
+  {
+    "summon_granblue_id": "2040417000",
+    "slot": "sub",
+    "target": "other",
+    "element": null,
+    "value": null,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "Can call 2 summons per turn."
+  },
+  {
+    "summon_granblue_id": "2040418000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Dark ATK."
+  },
+  {
+    "summon_granblue_id": "2040418000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Dark ATK."
+  },
+  {
+    "summon_granblue_id": "2040418000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "dark",
+    "value": 140.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "140% boost to Dark ATK."
+  },
+  {
+    "summon_granblue_id": "2040418000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 10.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "10% boost to Dark's, Hatred's, and Oblivion's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040418000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 20.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "20% boost to Dark's, Hatred's, and Oblivion's weapon skills."
+  },
+  {
+    "summon_granblue_id": "2040418000",
+    "slot": "sub",
+    "target": "normal_frame",
+    "element": null,
+    "value": 40.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Dark's, Hatred's, and Oblivion's weapon skills."
   },
   {
     "summon_granblue_id": "2040419000",
@@ -9909,6 +11482,50 @@
     "transcendence_stage": 0,
     "condition": null,
     "description_en": "Water allies start battle with {{Status|C.A. DMG Boosted (1 time)|a=30%|t=i}} and {{Status|C.A. DMG Cap Boosted (1 time)|a=15%|t=i}}. <br /> Water MC also starts battle with {{Status|C.A. Reactivation (1 time)|t=i}}.<ref name=\"GameWith, Tyrannosaurus (Summer)\" />"
+  },
+  {
+    "summon_granblue_id": "2040424000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 100.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "100% boost to Wind ATK."
+  },
+  {
+    "summon_granblue_id": "2040424000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 120.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Wind ATK."
+  },
+  {
+    "summon_granblue_id": "2040424000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": 130.0,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "130% boost to Wind ATK.<br />{{status|Maddened Eyes|t=i}} to Wind MC at battle start.<br />('''At end of every 3 turns:''' MC gains {{status|Triple Attack Rate Boosted (1 time)|a=100%|t=1T}} and {{status|Bonus Wind DMG (1 time)|a=50%|t=1T}}.)<ref name=\"GameWith\">GameWith, Noire. https://グランブルーファンタジー.gamewith.jp/article/show/423748</ref>"
+  },
+  {
+    "summon_granblue_id": "2040424000",
+    "slot": "sub",
+    "target": "elemental_atk",
+    "element": "wind",
+    "value": null,
+    "uncap_level": 4,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "{{status|Maddened Eyes|t=i}} to Wind MC at battle start.<br />('''At end of every 3 turns:''' MC gains {{status|Triple Attack Rate Boosted (1 time)|a=100%|t=1T}} and {{status|Bonus Wind DMG (1 time)|a=50%|t=1T}}.)"
   },
   {
     "summon_granblue_id": "2040425000",
