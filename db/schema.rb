@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_19_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_19_030000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1033,6 +1033,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_19_000001) do
     t.text "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "frame"
+    t.string "element"
     t.index ["character_skill_version_id"], name: "index_skill_effects_on_character_skill_version_id"
     t.index ["effect_type"], name: "index_skill_effects_on_effect_type"
     t.index ["status_id"], name: "index_skill_effects_on_status_id"
