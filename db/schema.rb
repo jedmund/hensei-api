@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_18_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_18_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1343,6 +1343,34 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000001) do
     t.index ["modifier", "boost_type", "series", "size"], name: "index_weapon_skill_data_uniqueness", unique: true
     t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
     t.index ["series"], name: "index_weapon_skill_data_on_series"
+  end
+
+  create_table "weapon_skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "modifier", null: false
+    t.string "boost_type", null: false
+    t.string "series"
+    t.string "scaling_kind", null: false
+    t.decimal "value", precision: 12, scale: 4
+    t.string "value_unit"
+    t.decimal "per_copy_cap", precision: 14, scale: 4
+    t.decimal "total_cap", precision: 14, scale: 4
+    t.string "shared_cap_group"
+    t.string "cap_formula"
+    t.string "count_basis"
+    t.integer "count_cap"
+    t.jsonb "condition", default: {}, null: false
+    t.string "target_instance"
+    t.string "depends_on", default: [], null: false, array: true
+    t.boolean "aura_boostable", default: false, null: false
+    t.boolean "seraphic_affected", default: false, null: false
+    t.string "stacking", default: "additive", null: false
+    t.string "applies_to", default: "element_allies", null: false
+    t.boolean "battle_interaction", default: false, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["modifier", "boost_type", "scaling_kind"], name: "index_weapon_skill_effects_uniqueness", unique: true
+    t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
   end
 
   create_table "weapon_skill_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
