@@ -23,6 +23,7 @@ class FixDualEntitySummonWikiEn < ActiveRecord::Migration[8.0]
     "2040114000" => "Kaguya (Summon)",
     "2040189000" => "Levin Sisters (Summon)",
     "2040012000" => "Lich (Summon)",
+    "2040228000" => "Lonesome Dragoness (Summon)", # wiki_en pointed at the event/story page
     "2040409000" => "Lu Woh (Summon)",
     "2040286000" => "Lunalu (Summon)",
     "2040002000" => "Macula Marius (Summon)",

@@ -5665,6 +5665,28 @@
     "description_en": "160% boost to Water Elemental ATK."
   },
   {
+    "summon_granblue_id": "2040228000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 40.0,
+    "uncap_level": 0,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Fire Elemental ATK. <br /> Hit to DEF."
+  },
+  {
+    "summon_granblue_id": "2040228000",
+    "slot": "main",
+    "target": "elemental_atk",
+    "element": "fire",
+    "value": 40.0,
+    "uncap_level": 3,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "40% boost to Fire Elemental ATK. <br /> Boost to double attack rate."
+  },
+  {
     "summon_granblue_id": "2040229000",
     "slot": "main",
     "target": "elemental_atk",
