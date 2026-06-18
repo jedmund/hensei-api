@@ -87,6 +87,42 @@ namespace :granblue do
     puts "unresolved (job/unique): #{unresolved.tally.sort_by { |_, c| -c }.first(15).to_h}" if unresolved.any?
   end
 
+  desc "Backfill null weapon-skill version sizes from the (deduped) skill description (order-independent)"
+  task backfill_weapon_skill_sizes: :environment do
+    re = /\b(unworldly|massive|big|medium|small)\b/i
+    n = 0
+    WeaponSkillVersion.where(skill_size: nil).where.not(skill_modifier: nil).includes(:skill).find_each do |v|
+      name = v.skill&.name_en.to_s
+      sz = v.skill&.description_en.to_s[re, 1]&.downcase or next
+      sz = "big_ii" if sz == "big" && name =~ /\bII\b/ && name !~ /\bIII\b/
+      v.update_column(:skill_size, sz)
+      n += 1
+    end
+    puts "backfilled #{n} version sizes from skill descriptions"
+  end
+
+  desc "Validate each weapon skill version's derived size against its description's stated keyword"
+  task validate_weapon_skill_sizes: :environment do
+    re = /\b(unworldly|massive|big|medium|small)\b/i
+    norm = ->(x) { x.to_s == "big_ii" ? "big" : x.to_s } # the description says "Big" for big_ii
+    total = 0
+    ok = 0
+    mismatch = Hash.new(0)
+    WeaponSkillVersion.where.not(skill_modifier: nil).includes(:skill).find_each do |v|
+      ds = v.skill&.description_en.to_s[re, 1]&.downcase
+      next unless ds
+      total += 1
+      if norm.call(v.skill_size) == ds
+        ok += 1
+      else
+        mismatch["#{v.skill_modifier}: size=#{v.skill_size || 'nil'} desc=#{ds}"] += 1
+      end
+    end
+    pct = total.zero? ? 0 : (100.0 * ok / total).round(1)
+    puts "versions whose description states a size: #{total}; derived matches: #{ok} (#{pct}%); mismatch: #{mismatch.values.sum}"
+    mismatch.sort_by { |_, c| -c }.first(15).each { |k, c| puts "  #{k} (#{c})" }
+  end
+
   desc "Build icon->(series,size) map from wiki-source -> data/weapon_skill_icon_map.json"
   task extract_weapon_skill_icon_map: :environment do
     require Rails.root.join("lib/granblue/extractors/weapon_skill_data_extractor")

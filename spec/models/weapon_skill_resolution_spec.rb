@@ -81,4 +81,20 @@ RSpec.describe "Weapon skill resolution" do
       expect(build(:weapon_skill_version, skill_modifier: nil).weapon_skill_effects).to be_empty
     end
   end
+
+  describe Granblue::Parsers::WeaponParser, "size from the description (ground truth)" do
+    let(:parser) { described_class.allocate }
+
+    it "reads the stated size keyword" do
+      expect(parser.send(:size_from_description, "Big boost to Fire allies' ATK")).to eq("big")
+      expect(parser.send(:size_from_description, "Medium boost to ATK based on how low HP is")).to eq("medium")
+      expect(parser.send(:size_from_description, "Massive boost to allies' ATK")).to eq("massive")
+    end
+
+    it "returns nil for sizeless or template-form descriptions" do
+      expect(parser.send(:size_from_description, "Boost to skill DMG cap")).to be_nil
+      expect(parser.send(:size_from_description, "[{{wsSize}}] boost to allies' ATK")).to be_nil
+      expect(parser.send(:size_from_description, nil)).to be_nil
+    end
+  end
 end
