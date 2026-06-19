@@ -20,10 +20,10 @@ module GridDamage
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
           next unless v && v.skill_modifier
 
-          # The frame is the weapon's series (normal/omega/ex/…), defaulting to normal when
-          # the name has no aura-word (e.g. Dark Opus "Majesty"). Never use the data row's
-          # shared `normal_omega` designation as a frame.
-          frame = v.skill_series.presence || "normal"
+          # The frame is the weapon's series (normal/omega/ex/…); for aura-word-less special
+          # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the
+          # data row's shared `normal_omega` designation as a frame.
+          frame = FrameResolver.frame_for(w, v)
           v.weapon_skill_data.each do |d|
             value = Scaling.value(d, skill_level: skill_level, hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
