@@ -312,8 +312,10 @@ module Granblue
         raw_name = hash["#{prefix}_name"]
         return nil unless raw_name.present?
 
-        # Clean wiki template syntax and HTML comments from skill name
+        # Clean wiki template syntax and HTML comments from skill name; resolve the
+        # Dark-Opus {{#ifeq:…|Majesty III|Majesty}} name templates to a parseable name.
         name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, '').gsub(/<!--.*?-->/, '').strip
+        name = resolve_ifeq_name(name)
 
         # Description: prefer English-specific field, fall back to generic
         description = hash["#{en_prefix}_desc"].presence || hash["#{prefix}_desc"]
@@ -321,8 +323,8 @@ module Granblue
         icon = hash["#{prefix}_icon"]
         unlock_level = hash["#{prefix}_lvl"].presence&.to_i
 
-        # Parse the raw name (with template) for structured components
-        parsed = Granblue::Parsers::WeaponSkillParser.parse(raw_name)
+        # Parse the cleaned name for structured components
+        parsed = Granblue::Parsers::WeaponSkillParser.parse(name)
         tier = tier_for(unlock_level)
 
         # Normalize element-variant modifiers to their base ("Strike: Fire" → "Strike").
@@ -358,6 +360,15 @@ module Granblue
           size: size,
           aura: parsed[:aura]
         }
+      end
+
+      # Resolve {{ #ifeq: cond | value | THEN | ELSE }} skill-name templates (Dark Opus
+      # "Majesty III"/"Majesty", "Apotheosis") to a parseable name — both branches share
+      # the modifier, so we take the ELSE (last) branch.
+      def resolve_ifeq_name(name)
+        return name if name.blank? || !name.include?("#ifeq")
+
+        name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
       end
 
       SIZE_KEYWORD = /\b(unworldly|massive|big|medium|small)\b/i

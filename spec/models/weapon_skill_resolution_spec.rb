@@ -97,4 +97,19 @@ RSpec.describe "Weapon skill resolution" do
       expect(parser.send(:size_from_description, nil)).to be_nil
     end
   end
+
+  describe Granblue::Parsers::WeaponParser, "#ifeq skill-name resolution (Dark Opus)" do
+    let(:parser) { described_class.allocate }
+
+    it "resolves {{#ifeq:…|Majesty III|Majesty}} to a parseable name" do
+      expect(parser.send(:resolve_ifeq_name, "{{ #ifeq: {{#var: wpn_opus_version}} | omega | Majesty III | Majesty}}"))
+        .to eq("Majesty")
+      expect(parser.send(:resolve_ifeq_name, "{{ #ifeq: {{#var: wpn_opus_version}} | omega | Apotheosis | Apotheosis}}"))
+        .to eq("Apotheosis")
+    end
+
+    it "leaves non-#ifeq names unchanged" do
+      expect(parser.send(:resolve_ifeq_name, "Inferno's Might")).to eq("Inferno's Might")
+    end
+  end
 end
