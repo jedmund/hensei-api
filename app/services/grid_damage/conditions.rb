@@ -26,7 +26,11 @@ module GridDamage
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))
-      when "boost_level"        then false # self-referential (depends on the frame total); resolved in a 2-pass
+      when "boost_level"
+        # self-referential: needs the per-frame enhancement totals, supplied by the
+        # calculator's 2nd pass via state[:enhancements] (false in the 1st pass).
+        enh = state[:enhancements] || {}
+        [enh[:optimus], enh[:omega], enh[:taboo]].compact.map(&:to_f).max.to_f >= gte
       else false                          # unknown condition ⇒ conservatively not met
       end
     end

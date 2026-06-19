@@ -20,8 +20,12 @@ class WeaponSkillEffect < ApplicationRecord
   validates :target_instance, inclusion: { in: TARGET_INSTANCES }, allow_nil: true
   validates :stacking, inclusion: { in: STACKINGS }
   validates :applies_to, inclusion: { in: APPLIES_TO }
-  validates :modifier, uniqueness: { scope: [:boost_type, :scaling_kind] }
+  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug] }
 
   # Conditional/fixed effects for a weapon-skill version, keyed by modifier.
   scope :for_skill, ->(modifier:) { where(modifier: modifier) }
+  # Effects granted by an equipped weapon key (Dark Opus pendulum/teluma, Draconic teluma,
+  # Destroyer anklet); base-weapon effects have key_slug = nil.
+  scope :for_key, ->(slug) { where(key_slug: slug) }
+  scope :base_effects, -> { where(key_slug: nil) }
 end

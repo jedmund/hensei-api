@@ -48,7 +48,7 @@ class WeaponSkillVersion < ApplicationRecord
   def weapon_skill_effects
     return WeaponSkillEffect.none if skill_modifier.blank?
 
-    WeaponSkillEffect.for_skill(modifier: skill_modifier)
+    WeaponSkillEffect.for_skill(modifier: skill_modifier).base_effects
   end
 
   # Normalized icon stem using OUR INTERNAL element numbering — the name files

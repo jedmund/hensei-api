@@ -41,7 +41,13 @@ RSpec.describe GridDamage::Conditions do
     expect(described_class.met?({ "type" => "foe_status", "status" => "Bounty" }, state:)).to be(true)
   end
 
-  it "defers boost_level (self-referential) to false in the single pass" do
+  it "defers boost_level when no enhancements are supplied (1st pass)" do
     expect(described_class.met?({ "type" => "boost_level", "gte" => 280 })).to be(false)
+  end
+
+  it "evaluates boost_level against the supplied per-frame enhancements (2nd pass)" do
+    cond = { "type" => "boost_level", "gte" => 280 }
+    expect(described_class.met?(cond, state: { enhancements: { optimus: 420, omega: 20 } })).to be(true)
+    expect(described_class.met?(cond, state: { enhancements: { optimus: 200, omega: 20 } })).to be(false)
   end
 end

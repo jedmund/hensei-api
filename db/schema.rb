@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_19_030000) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_19_040000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1372,6 +1372,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_19_030000) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "key_slug"
+    t.string "frame_rule"
+    t.index ["key_slug"], name: "index_weapon_skill_effects_on_key_slug"
     t.index ["modifier", "boost_type", "scaling_kind"], name: "index_weapon_skill_effects_uniqueness", unique: true
     t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
   end
