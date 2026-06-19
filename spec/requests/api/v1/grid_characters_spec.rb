@@ -84,6 +84,35 @@ RSpec.describe 'GridCharacters API', type: :request do
         expect(json_response['grid_character']).to include('uncap_level' => 4, 'transcendence_step' => 1)
       end
 
+      it 'persists and serializes per-slot full_auto_skills' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '2' => false, '3' => true }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['grid_character']['full_auto_skills']).to eq('2' => false, '3' => true)
+      end
+
+      it 'rejects full_auto_skills with a non-boolean value' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '1' => 'maybe' }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
       it 'allows the owner to update the uncap level and transcendence step' do
         grid_character = create(:grid_character,
                                 party: party,
@@ -323,6 +352,25 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(json_response['grid_character']).to include('position' => 4)
       expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it 'does not destroy conflicting character ids from another party' do
+      other_party = create(:party, user: create(:user))
+      other_conflicting_character = create(:grid_character,
+                                           party: other_party,
+                                           character: incoming_character,
+                                           position: 4,
+                                           uncap_level: 3)
+
+      resolve_params[:resolve][:conflicting] = [conflicting_character.id, other_conflicting_character.id]
+
+      expect do
+        post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
+      end.to change(GridCharacter, :count).by(0)
+
+      expect(response).to have_http_status(:created)
+      expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(other_conflicting_character.reload).to be_persisted
+    end
   end
 
   describe 'DELETE /api/v1/grid_characters (destroy action)' do
@@ -445,6 +493,100 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       expect(response).to have_http_status(:created)
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe 'rich-text description round-trip' do
+    let(:tiptap_doc) do
+      {
+        'type' => 'doc',
+        'content' => [
+          {
+            'type' => 'paragraph',
+            'content' => [
+              { 'type' => 'text', 'marks' => [{ 'type' => 'bold' }], 'text' => 'Swap' },
+              { 'type' => 'text', 'text' => ' for fire teams' }
+            ]
+          }
+        ]
+      }
+    end
+
+    it 'persists and reads back a Tiptap document on description' do
+      grid_character = create(:grid_character, party: party)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { description: tiptap_doc } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.description).to eq(tiptap_doc)
+    end
+  end
+
+  describe 'role assignments via role_ids' do
+    let!(:role_a) { create(:grid_character_role, sort_order: 1) }
+    let!(:role_b) { create(:grid_character_role, sort_order: 2) }
+    let!(:role_c) { create(:grid_character_role, sort_order: 3) }
+    let!(:role_d) { create(:grid_character_role, sort_order: 4) }
+
+    let(:grid_character) { create(:grid_character, party: party) }
+
+    it 'assigns multiple roles via role_ids and renders them sorted' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_b.id, role_a.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      body = JSON.parse(response.body)
+      expect(body['grid_character']['roles'].map { |r| r['id'] }).to eq([role_a.id, role_b.id])
+    end
+
+    it 'rejects more than three roles' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_a.id, role_b.id, role_c.id, role_d.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'clears assignments when role_ids is empty' do
+      grid_character.grid_character_roles << [role_a, role_b]
+      expect(grid_character.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to eq([])
+    end
+  end
+
+  describe 'substitute ownership flag' do
+    let(:slot) { create(:grid_character, party: party) }
+    let(:owned_character) { Character.where.not(id: slot.character_id).first }
+    let(:unowned_character) { Character.where.not(id: [slot.character_id, owned_character.id]).first }
+
+    it 'sets owned: true on substitutes the current_user has in their collection' do
+      create(:collection_character, user: user, character: owned_character)
+      owned_sub = create(:grid_character, party: party, character: owned_character, is_substitute: true)
+      unowned_sub = create(:grid_character, party: party, character: unowned_character, is_substitute: true)
+      create(:substitution, grid: slot, substitute_grid: owned_sub, position: 0)
+      create(:substitution, grid: slot, substitute_grid: unowned_sub, position: 1)
+
+      put "/api/v1/grid_characters/#{slot.id}",
+          params: { character: { uncap_level: slot.uncap_level } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      subs = body['grid_character']['substitutions']
+      expect(subs.size).to eq(2)
+      expect(subs.find { |s| s['position'] == 0 }['grid_character']['owned']).to be true
+      expect(subs.find { |s| s['position'] == 1 }['grid_character']['owned']).to be false
     end
   end
 end

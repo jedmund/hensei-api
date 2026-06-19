@@ -13,6 +13,7 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
 
       before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync sync_to_collection duplicate]
       before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
@@ -68,6 +69,12 @@ module Api
       def update
         normalize_ax_fields!
 
+        sync_flag_change = nil
+        if weapon_params.key?(:notes_synced)
+          sync_flag_change = ActiveModel::Type::Boolean.new.cast(weapon_params[:notes_synced])
+        end
+        description_in_payload = weapon_params.key?(:description)
+
         ActiveRecord::Base.transaction do
           unless @grid_weapon.update(weapon_params.except(:bullets))
             raise ActiveRecord::Rollback
@@ -75,6 +82,16 @@ module Api
 
           if params.dig(:weapon, :bullets).present?
             update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets])
+          end
+
+          # Fan out notes sync changes inside the same transaction so the
+          # group's description/flag can't drift if the rest of the request fails.
+          if sync_flag_change == true
+            NotesSync.enable_sync!(@grid_weapon)
+          elsif sync_flag_change == false
+            NotesSync.disable_sync!(@grid_weapon)
+          elsif description_in_payload
+            NotesSync.propagate_description!(@grid_weapon)
           end
         end
 
@@ -207,7 +224,7 @@ module Api
       def resolve
         incoming = find_by_any_id(Weapon, resolve_params[:incoming])
         conflicting_ids = resolve_params[:conflicting]
-        conflicting_weapons = GridWeapon.where(id: conflicting_ids)
+        conflicting_weapons = GridWeapon.where(id: conflicting_ids, party_id: @party.id)
 
         # Destroy each conflicting weapon
         conflicting_weapons.each(&:destroy)
@@ -270,7 +287,7 @@ module Api
           )
         end
 
-        @grid_weapon.sync_from_collection!
+        @grid_weapon.sync_from_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
@@ -291,7 +308,7 @@ module Api
           return render_unauthorized_response
         end
 
-        @grid_weapon.sync_to_collection!
+        @grid_weapon.sync_to_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
                                                 view: :full)
@@ -344,6 +361,17 @@ module Api
       end
 
       private
+
+      ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
 
       ##
       # Computes the maximum uncap level for a given weapon based on its flags.
@@ -444,6 +472,10 @@ module Api
         if weapon.save
           @party.mark_updated!
           weapon.sync_from_collection! if weapon.collection_weapon_id.present?
+          # If another copy of this weapon in the party already runs a notes
+          # sync group, the new slot auto-joins so the user doesn't have to
+          # re-toggle the switch on it.
+          NotesSync.adopt_for_new_item!(weapon)
           weapon.reload
           output = GridWeaponBlueprint.render(weapon, view: :full, root: :grid_weapon)
           render json: output, status: :created
@@ -504,8 +536,12 @@ module Api
       # @return [void]
       def find_grid_weapon
         grid_weapon_id = params[:id] || params.dig(:weapon, :id) || params.dig(:resolve, :conflicting)
-        @grid_weapon = GridWeapon.find_by(id: grid_weapon_id)
-        render_not_found_response('grid_weapon') unless @grid_weapon
+        @grid_weapon = GridWeapon
+                       .includes(*GridWeapon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                       .find_by(id: grid_weapon_id)
+        return render_not_found_response('grid_weapon') unless @grid_weapon
+
+        preload_substitute_grids!([@grid_weapon])
       end
 
       ##
@@ -586,8 +622,9 @@ module Api
           :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,
           :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
           :awakening_id, :awakening_level,
+          :notes_synced,
           bullets: [:position, :bullet_id]
-        )
+        ).then { |p| permit_description(p, params[:weapon]) }
       end
 
       ##

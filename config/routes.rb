@@ -41,6 +41,7 @@ Rails.application.routes.draw do
         post 'fetch_wiki'
       end
     end
+    resources :statuses, only: %i[index show]
     resources :summons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
@@ -55,6 +56,19 @@ Rails.application.routes.draw do
       end
     end
     resources :favorites, only: [:create]
+    resources :substitutions, only: %i[create update destroy] do
+      collection do
+        post 'reorder'
+      end
+    end
+    resources :grid_character_roles, only: %i[index show create update destroy] do
+      collection do
+        post 'reorder'
+      end
+      member do
+        post 'upload_icon'
+      end
+    end
 
     get 'version', to: 'api#version'
 
@@ -71,9 +85,6 @@ Rails.application.routes.draw do
     post 'parties/preview_migrate', to: 'parties#preview_migrate'
     get 'parties/favorites', to: 'parties#favorites'
     get 'parties/:id', to: 'parties#show'
-    get 'parties/:id/preview', to: 'parties#preview'
-    get 'parties/:id/preview_status', to: 'parties#preview_status'
-    post 'parties/:id/regenerate_preview', to: 'parties#regenerate_preview'
     post 'parties/:id/remix', to: 'parties#remix'
 
     # Party shares
@@ -183,6 +194,30 @@ Rails.application.routes.draw do
     end
     resources :weapon_skill_data, only: %i[index show]
     resources :weapon_skill_boost_types, only: %i[index show]
+
+    # Party difficulty
+    resources :difficulties, only: %i[index show create update destroy]
+    resources :difficulty_components, only: %i[index show update]
+    resources :difficulty_rules, only: %i[index show create update destroy] do
+      collection do
+        get :types
+      end
+    end
+    resources :difficulty_previews, only: %i[create]
+
+    # Editor draft staging — `DELETE /difficulty_drafts` (collection) discards
+    # everything for the current user; the resourceful `destroy` handles
+    # single-draft drops.
+    resources :difficulty_drafts, only: %i[index create destroy] do
+      collection do
+        get :diff
+        post :commit
+        delete '', action: :discard_all
+      end
+      member do
+        post :upload_image
+      end
+    end
 
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
@@ -345,6 +380,8 @@ Rails.application.routes.draw do
         resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
         resources :artifacts, only: [:index, :show], controller: '/api/v1/collection_artifacts'
       end
+
+      resources :support_summons, only: [:index], controller: '/api/v1/support_summons'
     end
 
     # Writing to collections - requires auth, operates on current_user
@@ -388,21 +425,13 @@ Rails.application.routes.draw do
         end
       end
     end
-  end
 
-  if Rails.env.development?
-    get '/party-previews/*filename', to: proc { |env|
-      filename = env['action_dispatch.request.path_parameters'][:filename]
-      path = Rails.root.join('storage', 'party-previews', filename)
-
-      if File.exist?(path)
-        [200, {
-          'Content-Type' => 'image/png',
-          'Cache-Control' => 'no-cache' # Prevent caching during development
-        }, [File.read(path)]]
-      else
-        [404, { 'Content-Type' => 'text/plain' }, ['Preview not found']]
+    # Writing support summons - requires auth, operates on current_user
+    resources :support_summons, only: [:create, :update, :destroy] do
+      collection do
+        post :import
       end
-    }
+    end
   end
+
 end

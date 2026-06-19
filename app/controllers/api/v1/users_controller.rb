@@ -60,17 +60,31 @@ module Api
       end
 
       def info
-        render json: UserBlueprint.render(@user, view: :minimal)
+        payload = UserBlueprint.render_as_hash(@user, view: :minimal)
+        cast_bool = ActiveModel::Type::Boolean.new
+
+        if cast_bool.cast(params[:check_collection])
+          payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
+        end
+
+        if cast_bool.cast(params[:check_support_summons])
+          payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user)
+        end
+
+        render json: payload
       end
 
       def search
         query = params[:query].to_s.strip
         return render json: { users: [] } if query.length < 2
 
-        users = User.where('lower(username) LIKE ?', "#{query.downcase}%")
-                     .where.not(id: current_user.id)
-                     .includes(active_crew_membership: :crew)
-                     .limit(10)
+        escaped = query.downcase.gsub(/[\\%_]/) { |c| "\\#{c}" }
+        q = "#{escaped}%"
+        users = User
+                .where("LOWER(username) LIKE :q ESCAPE '\\' OR LOWER(display_name) LIKE :q ESCAPE '\\'", q: q)
+                .where.not(id: current_user.id)
+                .includes(active_crew_membership: :crew)
+                .limit(10)
         render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
       end
 
@@ -298,7 +312,7 @@ module Api
           :description, :granblue_id, :picture, :element, :language, :gender, :private,
           :theme, :show_gamertag, :wiki_profile, :youtube, :collection_privacy,
           :import_weapons, :default_import_visibility, :simple_portraits,
-          :default_rep_view, :timezone
+          :default_rep_view, :timezone, :support_summons_public
         )
       end
     end

@@ -40,11 +40,9 @@ module Api
       end
 
       field :series do |c|
-        # Use new lookup table if available
-        records = c.character_series_records
-        if records.loaded? ? records.any? : records.exists?
-          sorted = records.loaded? ? records.sort_by(&:order) : records.ordered
-          sorted.map do |cs|
+        records = c.ordered_series_records
+        if records.any?
+          records.map do |cs|
             {
               id: cs.id,
               slug: cs.slug,
@@ -55,7 +53,7 @@ module Api
             }
           end
         else
-          # Legacy fallback - return integer array
+          # Legacy fallback for rows that haven't been migrated to the lookup table.
           c.series
         end
       end
@@ -142,6 +140,25 @@ module Api
               }
             }
           end
+        end
+
+        # Reads the preloaded association (see Character::SKILL_GRAPH_PRELOAD);
+        # callers rendering this view must preload to avoid N+1s.
+        field :skills do |c|
+          CharacterSkillBlueprint.render_as_hash(c.character_skills)
+        end
+
+        # Edges between the skill versions serialized above (transforms_to /
+        # option_of / form_counterpart). Kept as a flat list rather than nested
+        # under each skill because form_counterpart links cross slots; `from`
+        # and `to` reference version ids in the `skills` graph. Built from the
+        # preloaded version `outgoing_links` (no per-character query).
+        field :skill_links do |c|
+          c.character_skills
+           .flat_map(&:character_skill_versions)
+           .flat_map(&:outgoing_links)
+           .sort_by { |link| [link.relation, link.from_version_id, link.to_version_id] }
+           .map { |link| { from: link.from_version_id, to: link.to_version_id, relation: link.relation } }
         end
       end
 

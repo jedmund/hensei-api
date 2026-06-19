@@ -170,13 +170,6 @@ module Api
       def filter_params
         params.except(:controller, :action, :format, :raid).permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks)
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[RAIDS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

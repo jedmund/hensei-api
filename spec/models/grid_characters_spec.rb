@@ -280,5 +280,92 @@ RSpec.describe GridCharacter, type: :model do
         end
       end
     end
+
+    describe '#sync_from_collection! with fields' do
+      before do
+        character.update!(transcendence: true)
+        @grid_char = create(:grid_character,
+                            valid_attributes.merge(collection_character: collection_character))
+        # Start in sync, then drift simple value fields (no inter-field validators)
+        @grid_char.sync_from_collection!
+        @grid_char.update_columns(uncap_level: 3, perpetuity: false, awakening_level: 1)
+        @grid_char.reload
+      end
+
+      it 'only updates columns mapped from the supplied keys' do
+        @grid_char.sync_from_collection!(fields: ['uncapLevel'])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        # Other drifted fields stay drifted
+        expect(@grid_char.perpetuity).to be false
+        expect(@grid_char.awakening_level).to eq(1)
+      end
+
+      it 'handles multiple keys in one call' do
+        @grid_char.sync_from_collection!(fields: %w[uncapLevel perpetuity])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        expect(@grid_char.perpetuity).to eq(collection_character.perpetuity)
+        expect(@grid_char.awakening_level).to eq(1) # untouched
+      end
+
+      it 'is a no-op when no supplied key maps to a known field' do
+        @grid_char.sync_from_collection!(fields: ['bogus'])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(3)
+        expect(@grid_char.perpetuity).to be false
+      end
+    end
+
+    describe '#out_of_sync_fields' do
+      context 'when collection_character is linked' do
+        before do
+          character.update!(transcendence: true)
+          @grid_char = create(:grid_character,
+                              valid_attributes.merge(collection_character: collection_character))
+          @grid_char.sync_from_collection!
+          @grid_char.reload
+        end
+
+        it 'returns [] when everything matches' do
+          expect(@grid_char.out_of_sync_fields).to eq([])
+        end
+
+        it 'reports a single value drift by camelCase key' do
+          @grid_char.update!(uncap_level: 4)
+          expect(@grid_char.out_of_sync_fields).to eq(['uncapLevel'])
+        end
+
+        it 'reports multiple drifts together' do
+          @grid_char.update!(uncap_level: 4, perpetuity: false)
+          expect(@grid_char.out_of_sync_fields).to include('uncapLevel', 'perpetuity')
+        end
+
+        it 'reports ring drift with dotted overMastery keys' do
+          # Skip validations: we only care about field drift detection here, not
+          # the over-mastery ratio rule.
+          @grid_char.update_columns(ring2: { 'modifier' => '2', 'strength' => 1 })
+          expect(@grid_char.reload.out_of_sync_fields).to eq(['overMastery.1'])
+        end
+
+        it 'reports earring drift as aetherialMastery' do
+          @grid_char.update_columns(earring: { 'modifier' => '3', 'strength' => 1 })
+          expect(@grid_char.reload.out_of_sync_fields).to eq(['aetherialMastery'])
+        end
+      end
+
+      context 'when no collection_character is linked' do
+        before do
+          @grid_char = create(:grid_character, valid_attributes)
+        end
+
+        it 'returns []' do
+          expect(@grid_char.out_of_sync_fields).to eq([])
+        end
+      end
+    end
   end
 end

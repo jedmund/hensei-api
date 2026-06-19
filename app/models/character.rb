@@ -5,8 +5,17 @@ class Character < ApplicationRecord
 
   has_many :character_series_memberships, dependent: :destroy
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
+  has_many :character_skills, -> { order(:position) },
+           primary_key: :granblue_id, foreign_key: :character_granblue_id, inverse_of: :character
   has_many :style_swap_variants, -> { where(style_swap: true) },
            class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id
+
+  # Eager-load spec for the serialized skill graph (CharacterBlueprint :full
+  # `skills` + `skill_links`). Preload this wherever :full is rendered to avoid
+  # N+1s on character_skills / versions / effects / statuses / version links.
+  SKILL_GRAPH_PRELOAD = {
+    character_skills: { character_skill_versions: [{ skill_effects: :status }, :outgoing_links] }
+  }.freeze
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |character|
@@ -85,20 +94,24 @@ class Character < ApplicationRecord
     GranblueEnums::CHARACTER_SEASONS.key(season)&.to_s
   end
 
-  def series_names
-    # Use new lookup table if available
-    if character_series_records.loaded? ? character_series_records.any? : character_series_records.exists?
-      if character_series_records.loaded?
-        character_series_records.sort_by(&:order).map(&:name_en)
-      else
-        character_series_records.ordered.pluck(:name_en)
-      end
-    elsif series.present?
-      # Legacy fallback
-      series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }
+  # Returns character_series_records sorted by `order`, reusing the loaded
+  # association when preloaded. Both the `series` and `series_names` blueprint
+  # fields read through here so a single query (or cache hit) feeds both.
+  def ordered_series_records
+    if character_series_records.loaded?
+      character_series_records.sort_by(&:order)
     else
-      []
+      character_series_records.ordered.to_a
     end
+  end
+
+  def series_names
+    records = ordered_series_records
+    return records.map(&:name_en) if records.any?
+    return [] unless series.present?
+
+    # Legacy fallback for rows that haven't been migrated to the lookup table.
+    series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }
   end
 
   def series_objects

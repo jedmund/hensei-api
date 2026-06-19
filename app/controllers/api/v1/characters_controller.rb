@@ -242,15 +242,12 @@ module Api
         else
           @character = find_by_any_id(Character, params[:id])
         end
-        render_not_found_response('character') unless @character
-      end
+        return render_not_found_response('character') unless @character
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[CHARACTERS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+        # Preload the skill graph so the :full view's skills/skill_links don't N+1.
+        ActiveRecord::Associations::Preloader.new(
+          records: [@character], associations: Character::SKILL_GRAPH_PRELOAD
+        ).call
       end
 
       def character_params

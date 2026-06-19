@@ -21,9 +21,14 @@ class Dataminer
     'X-Requested-With' => 'XMLHttpRequest'
   }.freeze
 
-  attr_reader :page, :cookies, :logger, :debug
+  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version
 
-  def initialize(page:, access_token:, wing:, midship:, t: 'dummy', debug: false)
+  # user_id and game_version default to the baked-in constants but should be
+  # overridden per session: uid is the logged-in account's player id and
+  # game_version is the current game build (both change over time).
+  # rubocop:disable Metrics/ParameterLists
+  def initialize(page:, access_token:, wing:, midship:, t: 'dummy',
+                 user_id: BOT_UID, game_version: GAME_VERSION, debug: false)
     @page = page
     @cookies = {
       access_gbtk: access_token,
@@ -31,17 +36,20 @@ class Dataminer
       t: t,
       midship: midship
     }
+    @user_id = user_id
+    @game_version = game_version
     @debug = debug
     setup_logger
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def fetch
     timestamp = Time.now.to_i * 1000
     response = self.class.post(
-      "/#{page}?_=#{timestamp}&t=#{timestamp}&uid=#{BOT_UID}",
+      "/#{page}?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}",
       headers: HEADERS.merge(
         'Cookie' => format_cookies,
-        'X-VERSION' => GAME_VERSION
+        'X-VERSION' => game_version
       )
     )
 
@@ -52,10 +60,10 @@ class Dataminer
 
   def fetch_character(granblue_id)
     timestamp = Time.now.to_i * 1000
-    url = "/archive/npc_detail?_=#{timestamp}&t=#{timestamp}&uid=#{BOT_UID}"
+    url = "/archive/npc_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
     body = {
       special_token: nil,
-      user_id: BOT_UID,
+      user_id: user_id,
       kind_name: '0',
       attribute: '0',
       event_id: nil,
@@ -71,10 +79,10 @@ class Dataminer
 
   def fetch_weapon(granblue_id)
     timestamp = Time.now.to_i * 1000
-    url = "/archive/weapon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{BOT_UID}"
+    url = "/archive/weapon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
     body = {
       special_token: nil,
-      user_id: BOT_UID,
+      user_id: user_id,
       kind_name: '0',
       attribute: '0',
       event_id: nil,
@@ -89,10 +97,10 @@ class Dataminer
 
   def fetch_summon(granblue_id)
     timestamp = Time.now.to_i * 1000
-    url = "/archive/summon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{BOT_UID}"
+    url = "/archive/summon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
     body = {
       special_token: nil,
-      user_id: BOT_UID,
+      user_id: user_id,
       kind_name: '0',
       attribute: '0',
       event_id: nil,
@@ -122,6 +130,16 @@ class Dataminer
 
   def format_cookies
     cookies.map { |k, v| "#{k}=#{v}" }.join('; ')
+  end
+
+  # Follow the server's rotating `midship` token by reading it back out of the
+  # response Set-Cookie header and storing it for the next request.
+  def rotate_midship!(response)
+    set_cookie = response.headers['set-cookie']
+    return if set_cookie.blank?
+
+    midship = Array(set_cookie).join('; ')[/midship=([^;,\s]+)/, 1]
+    @cookies[:midship] = midship if midship.present?
   end
 
   def auth_failed?(response)
@@ -159,7 +177,7 @@ class Dataminer
     logger.debug 'Headers:'
     logger.debug HEADERS.merge(
       'Cookie' => format_cookies,
-      'X-VERSION' => GAME_VERSION
+      'X-VERSION' => game_version
     ).inspect
     logger.debug 'Body:'
     logger.debug body.to_json
@@ -169,10 +187,14 @@ class Dataminer
       url,
       headers: HEADERS.merge(
         'Cookie' => format_cookies,
-        'X-VERSION' => GAME_VERSION
+        'X-VERSION' => game_version
       ),
       body: body.to_json
     )
+
+    # The server rotates the `midship` token on every response; follow it so a
+    # batch keeps a live session instead of dying after the first request.
+    rotate_midship!(response)
 
     logger.debug "\n=== Response Details ==="
     logger.debug "Response code: #{response.code}"

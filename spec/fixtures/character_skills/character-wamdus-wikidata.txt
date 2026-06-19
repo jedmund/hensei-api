@@ -1,0 +1,204 @@
+{{About|the recruitable character|the summon stone|Wamdus (Summon)|the solo quest|Six-Dragon Advent#Azure|the 18-man raid|Wamdus (Raid)}}
+{{CharacterTabs|base={{BASENAME}}}}
+{{Character
+|id= 3040419000
+|charid=3211
+|series= grand
+|jpname=ワムデュス
+|jptitle=六竜の『碧』
+|jpva=長縄まりあ
+|name= Wamdus
+|release_date=2022-08-17
+|link_gamewith=355006
+|link_jpwiki=%A5%EF%A5%E0%A5%C7%A5%E5%A5%B9%20%28SSR%29
+|link_kamigame=SSR/リミテッドワムデュス
+|gender=o
+|obtain=premium,grand,flash
+|title=Azure of the Six Dragons
+|title_source=
+|5star=
+|5star_date=
+|base_evo= 4
+|max_evo= 4
+|uncap_type= SSR,rainbow
+|blush_value=
+|base_da=7
+|base_ta=3
+|art1= {{PAGENAME}} A.png
+|art2= {{PAGENAME}} B.png
+|art3=
+|art_story1= {{PAGENAME}} ST.png
+|sprite1= {{PAGENAME}} SDA.png
+|sprite2= {{PAGENAME}} SDB.png
+|sprite3=
+|rarity= SSR
+|element= Water
+|type= Defense
+|race= Harvin
+|va= Maria Naganawa
+|join= [[Flash Gala]]
+|join_weapon= Calamitous Aquashade
+|weapon= Staff,Axe
+|min_atk=
+|max_atk= 5925
+|flb_atk=
+|bonus_atk=
+|min_hp=
+|max_hp= 2055
+|flb_hp=
+|bonus_hp=
+|ougi_count= 1
+|ougi_name= Hydrozoa
+|ougi_desc= {{tt|1250%|Unworldly}} Water damage to a foe (Damage cap: ~2,900,000).<ref name="GameWith">GameWith, Wamdus. https://グランブルーファンタジー.gamewith.jp/article/show/355006</ref><br />All Water allies gain {{status|DMG Mitigation|a=5000|t=0.5T}}.
+|ougi2_name= 
+|ougi2_desc= 
+|ougi3_name= 
+|ougi3_desc= 
+|ougi4_name= 
+|ougi4_desc= 
+|abilitysubtitle=
+|abilitycount= 3
+|a1_icon= Ability_m_1822_4.png
+|a1_color=blue
+|a1_name= Ravenous Drain
+|a1_cd= {{InfoCd|num=1|cooldown=7|cooldown1=6|level1=55}}
+|a1_dur= {{InfoDur|type=t|duration=1}}
+|a1_oblevel= {{InfoOb|obtained=1|enhanced=55}}
+|a1_effdesc= {{InfoDes|num=0|des=I'm hungry... ([[Wamdus#Ravenous Drain|Pick one I can chow down on.]])}}
+|a1_option=options
+|a2_icon= Ability_m_1823_1.png
+|a2_color=red
+|a2_name= Innocence Toxin
+|a2_cd= {{InfoCd|num=1|cooldown=7|cooldown1=6|level1=75}}
+|a2_dur= {{InfoDur|type=t|duration=2}} /<br />{{InfoDur|type=s|duration=180}}
+|a2_oblevel= {{InfoOb|obtained=1|enhanced=75}}
+|a2_effdesc= {{InfoDes|num=0|des=6-hit, 150% Water damage to a foe (Damage cap: ~108,000 per hit).<br />Inflict {{status|Paralyzed 2|t=2T|acc=90%}} and {{status|Poisoned|a=5000|t=180s|acc=100%}}.<br />Raise foe's {{status|Toxicosis|t=180s|acc=g}} lvl by 1 (Max: 10).<ref name="GameWith" /><br />(Auto-activates upon taking damage.)}}
+|a3_icon= Ability_m_1824_3.png
+|a3_color=yellow
+|a3_name= The Azure's Halo
+|a3_cd= -
+|a3_dur= -
+|a3_oblevel= {{InfoOb|obtained=45}}
+|a3_effdesc= {{InfoDes|num=0|des=Gain {{status|The Azure's Halo|t=i}}.<br />(Can't recast.)}}
+|a4_icon= 
+|a4_color=
+|a4_name= 
+|a4_cd= {{InfoCd|num=0|cooldown=}}
+|a4_dur= {{InfoDur|type=t|duration=}}
+|a4_oblevel= {{InfoOb|obtained=}}
+|a4_effdesc= {{InfoDes|num=0|des=}}
+|abilitytitle_a={{CharacterSkill|{{PAGENAME}}|1}} {{Character/Skills/Options}}
+|abilitycount_a= 2
+|a1a_icon= Ability_s_5_1.jpg
+|a1a_color=blue
+|a1a_name= Ambient Drain
+|a1a_cd= -
+|a1a_dur= -
+|a1a_oblevel= {{InfoOb|obtained=1}}
+|a1a_effdesc= {{InfoDes|num=0|des=Absorb up to 15% of other allies' charge bar and transfer to caster's charge bar (Max: 180%).<br />Gain {{status|Fated Chain Bar|a=20%}} and {{status|Tentakernel|t=i}}.<br />Inflict {{status|Delay (Special)}} on a foe. If successful, gain {{status|Charged|a=30%}}.<ref name="GameWith" /> }}
+|a2a_icon= Ability_s_5_2.jpg
+|a2a_color=blue
+|a2a_name= Attractor Vortex
+|a2a_cd= -
+|a2a_dur= {{InfoDur|type=t|duration=1}}
+|a2a_oblevel= {{InfoOb|obtained=1}}
+|a2a_effdesc= {{InfoDes|num=0|des=Remove all buffs from all other allies and foes.<br />Gain {{status|Tentaforce|t=1T}}.}}
+|s_abilitycount= 2
+|sa_name= Joys of Hard Work
+|sa_level= {{InfoOb|obtained=1}}
+|sa_desc= 50% boost to max HP and 25% hit to charge bar gain.<ref name="GameWith" /><br />Has a maximum charge bar limit of 200%.<br />(Can only use charge attack when charge bar is at 200%.) 
+|sa2_name= Limitless Azure
+|sa2_level= {{InfoOb|obtained=1}}
+|sa2_desc= All Water allies gain {{status|DMG Mitigation|a=10000|t=1T}} upon activating a Fated Chain.<ref name="GameWith" />
+|sa_emp_desc=Chance to gain {{status|Double Strike|t=1T}} upon using {{CharacterSkill2|Wamdus|1}}.
+|perk7=DEF
+|perk8=HP
+|perk11=HP
+|perk12=HP
+|perk13=Skill DMG Cap
+|perk14=C.A. DMG Cap
+|perk15=Support Skill
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=y
+|a2_mimic_notes=
+|a3_mimic=n
+|a3_mimic_notes=
+|a4_mimic=
+|a4_mimic_notes=
+|a1a_mimic_hide=y
+|a2a_mimic_hide=y
+|profile=Water personified—the dragon who takes on the title of Wamdus the Azure. With a dislike for solitude, she takes an interest in "resorts"—places by the water that mortals have created to relax at. She is touched by the lively atmospheres these retreats offer and takes the time to appreciate the nature of the Sky Realm—open and free like the water.
+}}
+
+== Gameplay Notes ==
+=== Ravenous Drain ===
+* When this skill is selected, a new window appears which provides the option of selecting either {{CharacterSkill|{{PAGENAME}}|1a}} or {{CharacterSkill|{{PAGENAME}}|2a}}.
+** Either selection counts as a debuff skill (blue border).
+* This skill is not used in [[Full Auto]].
+==== Ambient Drain ====
+* Drain up to 15% charge bar from each other ally and gain {{status|Charged|a=4%}} for each 1% charge bar absorbed, up to a maximum of {{status|Charged|a=180%}}.
+* {{status|Tentakernel|t=i}} grants the following effects:
+** '''Upon using a charge attack:''' All Water allies gain {{status|Unchallenged|t=0.5T}}. (Consumes {{status|Tentakernel}}.)
+
+==== Attractor Vortex ====
+* {{status|Dispel Cancel}} and similar effects can prevent this skill's buff removal.
+* {{status|Tentaforce|t=1T}} grants the following effects:<ref name="GameWith" />
+** 50% {{tt|DMG Amplified|Seraphic modifier}}
+** Guaranteed TA
+** Normal attacks deal 4-hit damage to random foes
+* While {{status|Tentaforce|t=1T}} is in effect, Wamdus' normal attack is counted as 4 separate damage instances.
+** Effects such as {{status|Bonus Water DMG}}, {{status|Supplemental DMG}}, and {{status|Keen}} are applied to each damage instance.
+** {{Status|Attack All}} has no effect on normal attacks.
+** Counter attacks also deal 4-hit damage to random foes.
+
+=== Innocence Toxin ===
+{{Autoskill|2|upon taking damage.}}
+** Can only auto-activate once per turn.
+{{Toxicosis}}
+
+=== The Azure's Halo ===
+* {{status|The Azure's Halo|t=i}} grants the following effects:<ref name="GameWith" />
+** 300% DEF Up
+** Debuff immunity
+** 200% boost to charge bar gained upon taking damage
+** Restore HP based on 10% of normal attack and charge attack damage dealt (Healing cap: 1000)
+
+=== Extended Mastery Support Skill ===
+{| class="wikitable" style="text-align: center;"
+! Rank || Chance<ref name="GameWith" />
+|-
+! 1★ 
+| ?%
+|-
+! 2★ 
+| ?%
+|-
+! 3★ 
+| ~100%
+|}
+
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{#var: character_template_bottom | }}
+
+== Outfits ==
+=== Abyssal Chironex ===
+{{CharSkin
+|id=3710210000
+|char=Wamdus
+|art= Abyssal Chironex (Wamdus).png
+|sd= Abyssal Chironex (Wamdus) SD.png
+|desc=Abyssal Chironex
+|obtain= Abyssal Chironex Outfit Set<br />([[Shop#Outfit Sets|In-game purchase]])
+|release_date=2023-10-18
+|voice=Yes
+|sprite=Yes
+|ougi=Hydrozoa
+|music= 
+|flavor=At the request of Wamdus, the children of Stardust Town created this Halloween dress inspired by the terror of the fathomless seas. The costume's design—a juxtaposition of cute and creepy—succeeded in drawing high praise from its recipient.
+|notes=
+}}
+
+==References==
+<references />
+
+[[Category:200% Charge Bar Characters]]

@@ -65,3 +65,6 @@ config/application.yml
 codebase.md
 mise.toml
 public/assets
+
+# Dev-only uploaded icons (live in S3 in production)
+public/images/difficulties/

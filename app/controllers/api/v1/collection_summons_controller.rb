@@ -19,6 +19,9 @@ module Api
           @summons = @summons.where(element: array_param(:element)) if params[:element]
           @summons = @summons.where(rarity: array_param(:rarity)) if params[:rarity]
           @summons = @summons.where(summon_series_id: array_param(:series)) if params[:series]
+          if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
+            @summons = @summons.where(support_eligible: true)
+          end
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
             @summons = @summons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
@@ -46,6 +49,9 @@ module Api
         @collection_summons = @collection_summons.by_rarity(array_param(:rarity)) if params[:rarity]
         @collection_summons = @collection_summons.by_series(array_param(:series)) if params[:series]
         @collection_summons = @collection_summons.by_name(params[:search]) if params[:search].present?
+        if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
+          @collection_summons = @collection_summons.support_eligible
+        end
 
         @collection_summons = @collection_summons.sorted_by(params[:sort], current_user&.language || 'en')
 

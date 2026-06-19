@@ -4,10 +4,8 @@ module Api
   module V1
     class WeaponSkillBlueprint < ApiBlueprint
       field :position
-      field :uncap_level
-      fields :skill_modifier, :skill_series, :skill_size, :unlock_level
 
-      association :skill, blueprint: SkillBlueprint
+      association :weapon_skill_versions, blueprint: WeaponSkillVersionBlueprint, name: :versions
     end
   end
 end

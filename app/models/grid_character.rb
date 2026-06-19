@@ -17,15 +17,30 @@
 #   @return [Party] the associated party record.
 #
 class GridCharacter < ApplicationRecord
+  ROLE_CAP = 3
+
   # Associations
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
-             counter_cache: :characters_count,
              inverse_of: :characters
   belongs_to :collection_character, optional: true
 
+  has_many :grid_character_role_assignments, dependent: :destroy, inverse_of: :grid_character
+  has_many :grid_character_roles, through: :grid_character_role_assignments
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+  has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
+
   has_one :grid_artifact, dependent: :destroy
+
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening, :grid_artifact, :grid_character_roles, :collection_character,
+    { character: [:character_series_records, :style_swap_variants, Character::SKILL_GRAPH_PRELOAD] }
+  ].freeze
 
   # Validations
   validates_presence_of :party
@@ -34,31 +49,52 @@ class GridCharacter < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
-  validate :validate_awakening_level, on: :update
-  validate :transcendence
-  validate :validate_over_mastery_values, on: :update
-  validate :validate_aetherial_mastery_value, on: :update
+  validate :validate_awakening_level, on: :update, unless: :is_substitute?
+  validate :transcendence, unless: :is_substitute?
+  validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
+  validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
+  validate :roles_within_cap
+  validate :validate_full_auto_skills
 
   # Virtual attributes
   attr_accessor :new_rings
   attr_accessor :new_awakening
+  # Set by the controller for substitute renders so the API can tell the
+  # client whether the substitute's underlying character is in current_user's
+  # collection. nil means "not stamped" (i.e., not a substitute render).
+  attr_accessor :owned
 
   ##### Amoeba configuration
   amoeba do
     enable
     include_association :grid_artifact
+    exclude_association :grid_character_role_assignments
+    # Substitutions are remapped explicitly by Party#create_remapped_substitutions
+    # so the polymorphic foreign keys point at the new grid items. Letting amoeba
+    # also clone them produces duplicate rows that violate the uniqueness index
+    # on (grid_type, grid_id, position).
+    exclude_association :substitutions
+    exclude_association :substitute_of
     set ring1: { modifier: nil, strength: nil }
     set ring2: { modifier: nil, strength: nil }
     set ring3: { modifier: nil, strength: nil }
     set ring4: { modifier: nil, strength: nil }
     set earring: { modifier: nil, strength: nil }
     set perpetuity: false
+    nullify :description
   end
+
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
 
   # Hooks
   before_validation :apply_new_rings, if: -> { new_rings.present? }
   before_validation :apply_new_awakening, if: -> { new_awakening.present? }
-  before_save :add_awakening
+  before_save :add_awakening, unless: :is_substitute?
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
 
   ##
   # Validates the awakening level to ensure it falls within the allowed range.
@@ -189,53 +225,58 @@ class GridCharacter < ApplicationRecord
     GridCharacterBlueprint
   end
 
+  # Maps the camelCase keys emitted by #out_of_sync_fields to the underlying
+  # column names. Used by the per-field sync flow so the frontend can target
+  # individual sections (Uncap & Transcendence, Awakening, a single ring)
+  # rather than overwriting every field on each sync.
+  SYNC_FIELD_MAP = {
+    'uncapLevel' => %i[uncap_level],
+    'transcendenceStep' => %i[transcendence_step],
+    'perpetuity' => %i[perpetuity],
+    'overMastery.0' => %i[ring1],
+    'overMastery.1' => %i[ring2],
+    'overMastery.2' => %i[ring3],
+    'overMastery.3' => %i[ring4],
+    'aetherialMastery' => %i[earring],
+    'awakeningId' => %i[awakening_id],
+    'awakeningLevel' => %i[awakening_level]
+  }.freeze
+
+  ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
+
   ##
   # Syncs customizations from the linked collection character.
   #
-  # Copies uncap level, transcendence, rings, earring, and awakening from the collection.
-  # No-op if no collection character is linked.
+  # When `fields:` is omitted, every tracked column is copied. When provided,
+  # only the columns mapped from those camelCase keys are touched, leaving
+  # other fields alone.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_from_collection!
+  def sync_from_collection!(fields: nil)
     return false unless collection_character.present?
 
-    update!(
-      uncap_level: collection_character.uncap_level,
-      transcendence_step: collection_character.transcendence_step,
-      perpetuity: collection_character.perpetuity,
-      ring1: collection_character.ring1,
-      ring2: collection_character.ring2,
-      ring3: collection_character.ring3,
-      ring4: collection_character.ring4,
-      earring: collection_character.earring,
-      awakening_id: collection_character.awakening_id,
-      awakening_level: collection_character.awakening_level
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    update!(columns.index_with { |col| collection_character.public_send(col) })
     true
   end
 
   ##
   # Syncs customizations from this grid character to the linked collection character.
   #
-  # Copies uncap level, transcendence, rings, earring, and awakening to the collection.
-  # No-op if no collection character is linked.
+  # Same field scoping as #sync_from_collection!.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_to_collection!
+  def sync_to_collection!(fields: nil)
     return false unless collection_character.present?
 
-    collection_character.update!(
-      uncap_level: uncap_level,
-      transcendence_step: transcendence_step,
-      perpetuity: perpetuity,
-      ring1: ring1,
-      ring2: ring2,
-      ring3: ring3,
-      ring4: ring4,
-      earring: earring,
-      awakening_id: awakening_id,
-      awakening_level: awakening_level
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    collection_character.update!(columns.index_with { |col| public_send(col) })
     true
   end
 
@@ -244,21 +285,71 @@ class GridCharacter < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_character.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_character.uncap_level ||
-      transcendence_step != collection_character.transcendence_step ||
-      perpetuity != collection_character.perpetuity ||
-      ring1 != collection_character.ring1 ||
-      ring2 != collection_character.ring2 ||
-      ring3 != collection_character.ring3 ||
-      ring4 != collection_character.ring4 ||
-      earring != collection_character.earring ||
-      awakening_id != collection_character.awakening_id ||
-      awakening_level != collection_character.awakening_level
+  ##
+  # Returns the list of fields that differ from the linked collection character.
+  # Uses camelCase keys matching the frontend's grid item shape so the UI can
+  # mark exactly the sections/rows that drifted. Ring drift uses dotted keys
+  # (overMastery.0..3) so the corresponding ring rows can highlight individually.
+  def out_of_sync_fields
+    return [] unless collection_character.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_character.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_character.transcendence_step
+    fields << 'perpetuity' if perpetuity != collection_character.perpetuity
+    fields << 'overMastery.0' if ring1 != collection_character.ring1
+    fields << 'overMastery.1' if ring2 != collection_character.ring2
+    fields << 'overMastery.2' if ring3 != collection_character.ring3
+    fields << 'overMastery.3' if ring4 != collection_character.ring4
+    fields << 'aetherialMastery' if earring != collection_character.earring
+    fields << 'awakeningId' if awakening_id != collection_character.awakening_id
+    fields << 'awakeningLevel' if awakening_level != collection_character.awakening_level
+    fields
   end
 
   private
+
+  def sync_columns_for(fields)
+    return ALL_SYNC_COLUMNS if fields.blank?
+
+    fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
+  end
+
+  def increment_party_counter
+    Party.increment_counter(:characters_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:characters_count, party_id)
+  end
+
+  def roles_within_cap
+    return if grid_character_role_assignments.size <= ROLE_CAP
+
+    errors.add(:roles, "may have at most #{ROLE_CAP}")
+  end
+
+  # full_auto_skills maps an ability slot ("1".."4") to whether it is used in
+  # Full Auto. Reject unknown slots or non-boolean values.
+  FULL_AUTO_SLOTS = %w[1 2 3 4].freeze
+  FULL_AUTO_VALUES = [true, false].freeze
+
+  def validate_full_auto_skills
+    return if full_auto_skills.blank?
+
+    unless full_auto_skills.is_a?(Hash)
+      errors.add(:full_auto_skills, 'must be an object')
+      return
+    end
+
+    full_auto_skills.each do |slot, value|
+      errors.add(:full_auto_skills, "invalid slot #{slot}") unless FULL_AUTO_SLOTS.include?(slot.to_s)
+      errors.add(:full_auto_skills, "invalid value for slot #{slot}") unless FULL_AUTO_VALUES.include?(value)
+    end
+  end
 
   ##
   # Adds a default awakening to the character before saving if none is set.

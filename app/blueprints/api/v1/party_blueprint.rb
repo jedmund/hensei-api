@@ -36,6 +36,23 @@ module Api
         { mod: party.boost_mod, side: party.boost_side }
       end
 
+      # `score` is a weighted average over only those components whose
+      # weighted_score is strictly positive — components that are present but
+      # fired no rules are excluded from the denominator (see Calculator
+      # #composite_score). One consequence: adding a rule that fires for the
+      # first time on a previously-empty component can *lower* the score if
+      # that component's raw_score is below the existing composite.
+      field :difficulty do |party|
+        next nil unless party.difficulty_score.present?
+
+        {
+          tier: party.difficulty ? DifficultyBlueprint.render_as_hash(party.difficulty, view: :nested) : nil,
+          score: party.difficulty_score.to_f,
+          breakdown: party.difficulty_breakdown,
+          computed_at: party.difficulty_computed_at
+        }
+      end
+
       # Minimal view for embedding in grid item responses
       view :collection_source do
         field :collection_source_user_id

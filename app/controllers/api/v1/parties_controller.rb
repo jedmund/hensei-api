@@ -7,7 +7,7 @@ module Api
     class PartiesController < Api::V1::ApiController
       include PartyAuthorizationConcern
       include PartyQueryingConcern
-      include PartyPreviewConcern
+      include SubstituteGridPreloading
 
       # Constants used for filtering validations.
 
@@ -61,7 +61,6 @@ module Api
         end
         party.last_updated = Time.current
         if party.save
-          party.schedule_preview_generation if party.ready_for_preview?
           render json: PartyBlueprint.render(party, view: :created, root: :party), status: :created
         else
           render_validation_error_response(party)
@@ -237,8 +236,8 @@ module Api
                                  remix: true }
         new_party.local_id = party_params[:local_id] if party_params
         new_party.last_updated = Time.current
+        new_party._source_party_for_remap = @party
         if new_party.save
-          new_party.schedule_preview_generation
           render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
         else
           render_validation_error_response(new_party)
@@ -381,35 +380,6 @@ module Api
         )
       end
 
-      # Preview Management
-
-      # Serves the party's preview image
-      # @return [void]
-      # Serves the party's preview image.
-      def preview
-        party_preview(@party)
-      end
-
-      # Returns the current preview status of a party.
-      def preview_status
-        party = Party.find_by!(shortcode: params[:id])
-        render json: { state: party.preview_state, generated_at: party.preview_generated_at,
-                       ready_for_preview: party.ready_for_preview? }
-      end
-
-      # Forces regeneration of the party preview.
-      def regenerate_preview
-        party = Party.find_by!(shortcode: params[:id])
-        return render_unauthorized_response unless current_user && party.user_id == current_user.id
-
-        preview_service = PreviewService::Coordinator.new(party)
-        if preview_service.force_regenerate
-          render json: { status: 'Preview regeneration started' }
-        else
-          render json: { error: 'Preview regeneration failed' }, status: :unprocessable_entity
-        end
-      end
-
       private
 
       # Resolves edit key entries from params or the current user's deposited keys.
@@ -430,27 +400,21 @@ module Api
       def set_from_slug
         @party = Party.includes(
           :user, :job, { raid: :group },
-          { characters: [{ character: [:character_series_records, :style_swap_variants] }, :awakening, :grid_artifact, :collection_character] },
-          { weapons: {
-            weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character, :base_weapon, :forge_chain_weapons],
-            collection_weapon: { collection_weapon_bullets: {} },
-            awakening: {},
-            weapon_key1: {},
-            weapon_key2: {},
-            weapon_key3: {},
-            ax_modifier1: {},
-            ax_modifier2: {},
-            befoulment_modifier: {},
-            grid_weapon_bullets: :bullet
-          } },
-          { summons: [{ summon: :summon_series }, :collection_summon] },
+          { characters: GridCharacter::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
+          { weapons: GridWeapon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
+          { summons: GridSummon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
           :guidebook1, :guidebook2, :guidebook3,
           { source_party: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
           { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
           :skill0, :skill1, :skill2, :skill3, :accessory,
           { party_shares: :shareable }
         ).find_by(shortcode: params[:id])
-        render_not_found_response('party') unless @party
+
+        return render_not_found_response('party') unless @party
+
+        # Most parties have zero substitutes; a single EXISTS lookup is far cheaper
+        # than the three collection-ownership queries `preload_substitute_grids!` runs.
+        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons) if @party.has_substitutions?
       end
 
       # Loads the party by its id.
@@ -466,7 +430,8 @@ module Api
           :user_id, :local_id, :edit_key, :extra, :name, :description, :raid_id, :job_id, :visibility,
           :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
           :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :solo, :clear_time, :button_count,
-          :turn_count, :chain_count, :summon_count, :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
+          :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,
+          :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
           characters_attributes: [:id, :party_id, :character_id, :position, :uncap_level,
                                   :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
                                   { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],

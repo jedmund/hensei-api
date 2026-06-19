@@ -185,6 +185,16 @@ module Api
                status: :unauthorized
       end
 
+      # Shared editor-role gate. Use as a before_action in any controller that
+      # exposes editor-only actions; logs the controller name and user id on
+      # rejection so unauthorized attempts are auditable.
+      def ensure_editor_role
+        return if current_user&.role && current_user.role >= 7
+
+        Rails.logger.warn "[#{controller_name.upcase}] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+      end
+
       def render_forbidden_response(message = 'Forbidden')
         render json: ErrorBlueprint.render(nil, error: {
           message: message,
@@ -196,6 +206,18 @@ module Api
 
       def restrict_access
         raise UnauthorizedError unless current_user
+      end
+
+      # Strong params can't deeply permit arbitrary nested JSON, so accept the
+      # rich-text Tiptap doc by re-attaching the raw value (hash, string, or nil)
+      # after the standard `permit` call.
+      def permit_description(permitted, raw_params)
+        return permitted unless raw_params.is_a?(ActionController::Parameters) || raw_params.is_a?(Hash)
+        return permitted unless raw_params.key?(:description)
+
+        value = raw_params[:description]
+        permitted[:description] = value.is_a?(ActionController::Parameters) ? value.to_unsafe_h : value
+        permitted
       end
 
       # Returns the requested page size within valid bounds

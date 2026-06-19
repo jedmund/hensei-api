@@ -1,0 +1,794 @@
+{
+  "slots": [
+    {
+      "kind": "ability",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Ring the Dormouse",
+          "name_jp": "グリーティング・ドーマウス",
+          "description_en": "5-hit, 100% Dark damage to a foe (Damage cap: ~110,000 per hit).\nSic Dorrie on a foe.\n(When the foe uses a special attack: The trap is sprung. 999,999 Plain damage to all foes and inflict Caught 2.)",
+          "description_jp": "敵に5回闇属性ダメージ/ドーちゃんをけしかける◆敵が特殊技を使用時にトラップが起動し敵全体に無属性ダメージ/捕獲効果",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "cooldown": 11,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Dorrie",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": "g",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "all_foes",
+              "status": "Caught 2",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": "120%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Ring the Dormouse",
+          "name_jp": "グリーティング・ドーマウス",
+          "description_en": "5-hit, 100% Dark damage to a foe (Damage cap: ~110,000 per hit).\nSic Dorrie on a foe.\n(When the foe uses a special attack: The trap is sprung. 999,999 Plain damage to all foes and inflict Caught 2.)",
+          "description_jp": "敵に5回闇属性ダメージ/ドーちゃんをけしかける◆敵が特殊技を使用時にトラップが起動し敵全体に無属性ダメージ/捕獲効果",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "damage",
+          "cooldown": 10,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 55,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": []
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Dazzling Dreams",
+          "name_jp": "エンチャンテッド・ドリーム",
+          "description_en": "Dazzling Dreams:\nRazzle, dazzle, dream! Welcome to Utopia!\n(Utopia to the field.)",
+          "description_jp": "さぁ、夢とキラキラのゆ〜とぴあへ！(++で◆「ゆ〜とぴあ」発生時、このアビリティが「エキセントリックパレード」に変化)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "field",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            5,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75,
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "field_effect",
+              "target": "field",
+              "status": "Utopia",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                5,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Dazzling Dreams",
+          "name_jp": "エンチャンテッド・ドリーム",
+          "description_en": "Utopia upgraded to Utopia+. (Foes' ATK is no longer boosted.)\n(When Utopia is active: Skill changes to Eccentric Parade.)\nEccentric Parade:\nAll Dark allies gain Bonus Dark DMG (1 time) and DMG Mitigation.\nRestore 10% of all Dark allies' HP (Healing cap: 2020).",
+          "description_jp": "さぁ、夢とキラキラのゆ〜とぴあへ！(++で◆「ゆ〜とぴあ」発生時、このアビリティが「エキセントリックパレード」に変化)",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": "field",
+          "cooldown": 7,
+          "initial_cooldown": null,
+          "duration": [
+            5,
+            "turns"
+          ],
+          "unlock_level": 75,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "field_effect",
+              "target": "field",
+              "status": "Utopia",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                5,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "target": "one_foe",
+              "status": "Utopia+",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                5,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Bonus Dark DMG (1 time)",
+              "amount": "20%",
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "DMG Mitigation",
+              "amount": "2020",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "heal",
+              "target": "all_allies",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Eccentric Parade",
+          "name_jp": "エキセントリックパレード",
+          "description_en": "Dazzling Dreams:\nRazzle, dazzle, dream! Welcome to Utopia!\n(Utopia to the field.)",
+          "description_jp": "闇属性キャラに闇属性追撃効果(1回)/被ダメージ減少効果/HPを回復",
+          "variant_role": "transform_alt",
+          "ordinal": 3,
+          "type_color": "field",
+          "cooldown": 8,
+          "initial_cooldown": null,
+          "duration": [
+            5,
+            "turns"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75,
+            95
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "field_effect",
+            "Utopia active"
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "field_effect",
+              "target": "field",
+              "status": "Utopia",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                5,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 3,
+      "versions": [
+        {
+          "name_en": "Fantasy Festival",
+          "name_jp": "一子之夢(いちねのゆめ)",
+          "description_en": "All Dark allies gain Fantasy Festival 2.\n(Ends upon taking damage 2 times.)",
+          "description_jp": "闇属性キャラの奥義ゲージ上昇量UP/奥義性能UP/回避率UP◆2回被ダメージで解除",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 10,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Fantasy Festival 2",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 4,
+      "versions": [
+        {
+          "name_en": "Rat Shine and Rainbows",
+          "name_jp": "陽鼠虹城(ようそこうじょう)",
+          "description_en": "All Dark allies gain Dodge All 1 and Double Strike.\n(Can only be used when all allies' Hype is 4.)",
+          "description_jp": "闇属性キャラが敵の全ての攻撃を回避(1回)/ターン進行時に攻撃行動を2回行う◆味方全体のテンションが4の時のみ使用可能",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "cooldown": 12,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Dodge All 1",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Double Strike",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Hype",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ougi",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Gilded Heaven Strike",
+          "name_jp": "金牙神然",
+          "description_en": "500% Dark damage to a foe.\nGain Other Self 1.",
+          "description_jp": "闇属性ダメージ(特大)/敵の全ての攻撃を回避(1回)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Other Self 1",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "500.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Pandemousium",
+          "name_jp": "百子夜行(ひゃくしやこう)(最終上限解放で習得)",
+          "description_en": "550% Dark damage to a foe.\nGain Other Self 1.\nActivate second-slot skill.",
+          "description_jp": "闇属性ダメージ(特大)/敵の全ての攻撃を回避(1回)/2番目のアビリティが発動",
+          "variant_role": "uncap_upgrade",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 5,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "target": "caster",
+              "status": "Other Self 1",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "target": "one_foe",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "550.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 1,
+      "versions": [
+        {
+          "name_en": "Queen of Rats",
+          "name_jp": "鼠神宮の主",
+          "description_en": "When Utopia is in effect before attacking:\nGuaranteed triple attacks, +30 boost to hostility, and 50% boost to dodge rate.\nAll allies gain Hype upon Vikala's charge attack.",
+          "description_jp": "フィールド効果「ゆ〜とぴあ」発生中自分が必ずトリプルアタック/敵対心UP/回避率UP/奥義発動時に味方全体のテンションUP(+で/ディスペルガード効果(1回))",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "field_effect",
+              "target": "field",
+              "status": "Utopia",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Hype",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Queen of Rats",
+          "name_jp": "鼠神宮の主",
+          "description_en": "All allies also gain Dispel Cancel upon Vikala's charge attack.",
+          "description_jp": "フィールド効果「ゆ〜とぴあ」発生中自分が必ずトリプルアタック/敵対心UP/回避率UP/奥義発動時に味方全体のテンションUP(+で/ディスペルガード効果(1回))",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 90,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Dispel Cancel",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 2,
+      "versions": [
+        {
+          "name_en": "Rodent Rhythm",
+          "name_jp": "ビート・ザ・マウス",
+          "description_en": "Upon dodging:\n500% Dark damage to all foes (Damage cap: ~635,000) and remove 1 buff.",
+          "description_jp": "回避時に敵全体に闇属性ダメージ/強化効果を1つ無効化(+で/味方全体のテンションを1ターン延長◆自分のテンションが4の時、2回発動)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "dispel",
+              "target": "all_foes",
+              "status": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Rodent Rhythm",
+          "name_jp": "ビート・ザ・マウス",
+          "description_en": "Extends all allies' Hype by 1 turn.\n(Activates twice when Vikala's Hype is 4.)",
+          "description_jp": "回避時に敵全体に闇属性ダメージ/強化効果を1つ無効化(+で/味方全体のテンションを1ターン延長◆自分のテンションが4の時、2回発動)",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 90,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [
+            "targets_all"
+          ],
+          "effects": [
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Hype",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "target": "all_allies",
+              "status": "Hype",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    [
+      "ability2:Dazzling Dreams",
+      "transforms_to",
+      "ability2:Eccentric Parade"
+    ]
+  ]
+}
