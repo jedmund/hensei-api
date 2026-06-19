@@ -86,4 +86,20 @@ RSpec.describe GridDamage::Aggregator do
     r = agg([contrib(boost_type: "da", value: nil), contrib(boost_type: "da", value: 7)])["da"]
     expect(r.total).to eq(7.0)
   end
+
+  describe "shared_cap_group" do
+    def shared(value)
+      C.new(boost_type: "atk", series: "ex", value:, shared_cap_group: "g", cap: 80.0, mainhand: false)
+    end
+
+    it "pools group members and caps the total at the group cap" do
+      r = agg([shared(60), shared(40)])["atk"] # 100 -> capped 80
+      expect(r.by_series["ex"]).to eq(80.0)
+    end
+
+    it "leaves a group under its cap untouched" do
+      r = agg([shared(15), shared(20)])["atk"]
+      expect(r.by_series["ex"]).to eq(35.0)
+    end
+  end
 end

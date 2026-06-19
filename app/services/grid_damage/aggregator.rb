@@ -16,9 +16,11 @@ module GridDamage
   module Aggregator
     module_function
 
-    # One skill's resolved contribution to the grid.
+    # One skill's resolved contribution to the grid. `shared_cap_group`/`cap` are set by
+    # effect contributions that share a ceiling across skills (e.g. voltage_wrath_grandepic
+    # 80%, dmg_supp_shared 100k).
     Contribution = Struct.new(:boost_type, :series, :value, :main_hand_only, :mainhand,
-                              keyword_init: true)
+                              :shared_cap_group, :cap, keyword_init: true)
 
     # An aggregated boost_type. `by_series` is set only for multiplicative_by_series;
     # otherwise `total` is the (capped) value. `raw` is the pre-cap amount.
@@ -33,10 +35,29 @@ module GridDamage
       active = contributions.reject do |c|
         c.value.nil? || (c.main_hand_only && !c.mainhand)
       end
+      active = apply_shared_caps(active)
 
       active.group_by(&:boost_type).transform_values do |group|
         build_result(group, boost_types[group.first.boost_type])
       end
+    end
+
+    # Collapse each shared_cap_group's members to a single contribution capped at the
+    # group's ceiling (e.g. Voltage+Wrath+Grand Epic share 80%). Members of one group
+    # share a boost_type/series, so the capped total stands in for them.
+    def apply_shared_caps(contributions)
+      grouped, ungrouped = contributions.partition { |c| c.shared_cap_group.present? }
+      pooled = grouped.group_by(&:shared_cap_group).flat_map do |_group, members|
+        cap = members.filter_map(&:cap).min
+        total = members.sum { |c| c.value.to_f }
+        if cap && total > cap
+          [Contribution.new(boost_type: members.first.boost_type, series: members.first.series,
+                            value: cap, mainhand: true)]
+        else
+          members
+        end
+      end
+      ungrouped + pooled
     end
 
     def build_result(group, meta)
