@@ -84,13 +84,16 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 gem 'stackprof'
 
+# Loaded in all environments: the granblue parsers call `ap` in debug/error
+# branches that run via rake tasks and Sidekiq jobs in production.
+gem 'amazing_print'
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
 end
 
 group :development, :test do
-  gem 'amazing_print'
   gem 'dotenv-rails'
   gem 'prosopite'
   gem 'pry'
