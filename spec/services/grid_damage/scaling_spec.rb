@@ -4,7 +4,7 @@ require "rails_helper"
 
 # Phase 1 — scaling-value evaluators, validated against the gbf.wiki formulas.
 RSpec.describe GridDamage::Scaling do
-  Datum = Struct.new(:formula_type, :sl1, :sl10, :sl15, :sl20, :sl25, :coefficient, :max_value,
+  Datum = Struct.new(:formula_type, :sl1, :sl10, :sl15, :sl20, :sl25, :coefficient, :max_value, :size,
                      keyword_init: true)
 
   def datum(**attrs) = Datum.new(**attrs)
@@ -48,11 +48,12 @@ RSpec.describe GridDamage::Scaling do
     end
   end
 
-  describe "stamina (stronger at high HP): (HP%/denom)^2.9 + 2.1" do
-    let(:d) { datum(formula_type: "stamina", sl15: 17.79) }
+  describe "stamina (coefficient curve): (HP%/(Coef−SLadj))^2.9 + 2.1" do
+    # big_ii Coefficient 53.7; at SL15 the adjustment is 15 -> denom 38.7.
+    let(:d) { datum(formula_type: "stamina", coefficient: 53.7, size: "big_ii") }
 
-    it "returns the stored value at 100% HP" do
-      expect(described_class.value(d, skill_level: 15, hp_percent: 100)).to be_within(1e-6).of(17.79)
+    it "computes the SL15/100%-HP value from the coefficient" do
+      expect(described_class.value(d, skill_level: 15, hp_percent: 100)).to be_within(0.01).of(17.79)
     end
 
     it "drops off as HP falls (reproduces the wiki curve)" do

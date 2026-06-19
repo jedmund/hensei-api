@@ -56,16 +56,29 @@ module GridDamage
       modifier * ((1 + 2 * r) * r)
     end
 
-    # Stamina: stronger at high HP. The stored SL value is the strength at 100% HP; the
-    # curve is strength(h) = (h / denom)^2.9 + 2.1, so denom is recovered from that anchor
-    # (algebraically identical to the wiki's (HP% / (Coefficient − SL-adjustment)) form).
+    # Stamina: stronger at high HP. Per the wiki, strength = (HP% / (Coefficient −
+    # SL-adjustment))^2.9 + 2.1, with HP% floored at 25%. The data stores `coefficient`
+    # (per size/series); the SL-adjustment grows with skill level (piecewise, and
+    # size-dependent for Small at SL 11–15).
     def stamina(datum, skill_level, hp_percent)
-      v100 = flat(datum, skill_level)
-      return v100 if v100.nil? || v100 <= STAMINA_OFFSET
+      coef = datum.coefficient&.to_f
+      return flat(datum, skill_level) if coef.nil? || coef <= 0 # non-coefficient fallback
 
-      denom = 100.0 / ((v100 - STAMINA_OFFSET)**(1.0 / STAMINA_EXP))
+      denom = coef - stamina_adjustment(skill_level, small: datum.size == "small")
+      return nil if denom <= 0
+
       h = hp_percent.to_f.clamp(STAMINA_HP_FLOOR, 100)
       (h / denom)**STAMINA_EXP + STAMINA_OFFSET
+    end
+
+    # The amount subtracted from the Coefficient at a given skill level (gbf.wiki).
+    def stamina_adjustment(skill_level, small: false)
+      sl = skill_level
+      if small && sl > 10 then 10 + 2 * (sl - 10)
+      elsif sl <= 15 then sl
+      elsif sl <= 20 then 15 + 0.4 * (sl - 15)
+      else (17 + 0.34 * (sl - 20)).floor(1) # trunc to 1 decimal (SL 25 -> 18.7)
+      end
     end
 
     # Progression: Elemental ATK accrued per turn, capped at the skill's individual
