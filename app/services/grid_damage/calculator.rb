@@ -10,6 +10,9 @@ module GridDamage
 
     ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
     BOOST_LEVEL_THRESHOLD = 280.0
+    # In-game caps on the displayed multiattack rates (the panel shows them orange at the cap).
+    # A "100% hit to multiattack" penalty (−100 DA) can still push the post-cap DA negative.
+    RATE_CAPS = { "da" => 75.0, "ta" => 75.0 }.freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
@@ -17,9 +20,23 @@ module GridDamage
       agg = aggregate_pass(party, state, composition)
 
       enh = enhancements(party, agg)
-      return agg if enh.values.max.to_f < BOOST_LEVEL_THRESHOLD # no ≥280 effects can fire
+      if enh.values.max.to_f >= BOOST_LEVEL_THRESHOLD # ≥280 effects can fire — second pass
+        agg = aggregate_pass(party, state.merge(enhancements: enh), composition)
+      end
+      apply_rate_caps(agg)
+    end
 
-      aggregate_pass(party, state.merge(enhancements: enh), composition)
+    # Clamp DA/TA totals to their in-game cap (upper bound only — DA may be negative).
+    def apply_rate_caps(agg)
+      RATE_CAPS.each do |boost_type, cap|
+        r = agg[boost_type]
+        next unless r && r.total > cap
+
+        r.raw = r.total
+        r.total = cap
+        r.capped = true
+      end
+      agg
     end
 
     # Per-frame enhancement totals (summon + character auras + Exalto) — what `boost_level`

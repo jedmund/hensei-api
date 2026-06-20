@@ -12,7 +12,8 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(r[:main_hand_only]).to be(true)
     expect(boost(r, "dmg_supp")).to include(value: 100_000.0)
     expect(boost(r, "dmg_cap")).to include(value: 10.0)
-    expect(boost(r, "multiattack")).to include(value: 100.0)
+    # "100% hit to multiattack rate" ≈ −100% DA (guaranteed-multiattack penalty)
+    expect(boost(r, "da")).to include(value: -100.0)
   end
 
   it "parses a main-weapon bonus-DMG skill (Hraesvelgr Einar)" do

@@ -90,8 +90,15 @@ module Granblue
           last_size = size if frag.match?(SIZE_KEYWORD)
           boosts_for(frag).each do |boost, formula|
             boost = "od_dmg_amp" if boost == "dmg_amp" && series0 == "odious"
+            value = value_for(frag, boost)
+            # "X% hit to multiattack rate" guarantees multiattack ≈ −X% DA (it pushes the DA
+            # rate down/negative; the freed rate becomes triple attacks).
+            if boost == "multiattack"
+              boost = "da"
+              value = -value if value
+            end
             clauses << {
-              boost_type: boost, value: value_for(frag, boost), size: (size unless explicit?(frag)),
+              boost_type: boost, value: value, size: (size unless explicit?(frag)),
               series: series0, formula_type: formula, condition: condition_for(frag)
             }
           end
