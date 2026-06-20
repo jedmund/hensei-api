@@ -17,13 +17,21 @@ module Granblue
         stats = Hash.new(0)
         @weapon_cache = {}
         WeaponSkillVersion.includes(:skill, :weapon_skill).find_each do |v|
-          next if canonical?(v)
-
           skill = v.skill
           desc = full_description(v).presence || skill&.description_en
           next if desc.blank?
 
-          parsed = Parser.parse(desc, name: skill.name_en)
+          # 1. Re-attribute the frame from the description (never the icon), for EVERY version.
+          series = Parser.series_for(desc, skill&.name_en)
+          if v.skill_series != series
+            v.update_columns(skill_series: series) unless dry_run
+            stats[:reattributed_series] += 1
+          end
+
+          # 2. Resolve versions with no canonical modifier-keyed curve via version-linked rows.
+          next if canonical?(v)
+
+          parsed = Parser.parse(desc, name: skill&.name_en)
           if parsed[:clauses].empty?
             stats[parsed[:skip] ? "skip_#{parsed[:skip]}".to_sym : :no_clause] += 1
             next

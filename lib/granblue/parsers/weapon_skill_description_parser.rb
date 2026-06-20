@@ -218,7 +218,7 @@ module Granblue
       end
 
       private_class_method :skip_reason, :split_clauses, :boosts_for, :scale_boost, :scaling_for,
-                           :boost_consume, :explicit?, :value_for, :series_for, :condition_for,
+                           :boost_consume, :explicit?, :value_for, :condition_for,
                            :clean, :blank_result
     end
   end

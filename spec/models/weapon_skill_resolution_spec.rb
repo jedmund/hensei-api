@@ -5,23 +5,6 @@ require Rails.root.join("lib/granblue/parsers/weapon_skill_parser")
 
 # Step #2 — the version↔data/effects resolution layer.
 RSpec.describe "Weapon skill resolution" do
-  describe Granblue::Parsers::WeaponSkillParser, ".derive_from_icon" do
-    it "derives (series, size) from the version icon via the catalog" do
-      expect(described_class.derive_from_icon("Enmity", "ws_skill_backwater_5_2.png"))
-        .to eq(series: "normal", size: "medium")
-      expect(described_class.derive_from_icon("Enmity", "ws_skill_backwater_m_3_3.png"))
-        .to eq(series: "omega", size: "big")
-      # template-wrapped, wildcard element
-      expect(described_class.derive_from_icon("Might", "{{WeaponSkillIcon|ws_skill_atk_*_4_3.png}}"))
-        .to eq(series: "normal", size: "massive")
-    end
-
-    it "returns nil for an unknown modifier or a non-matching icon" do
-      expect(described_class.derive_from_icon("Nonexistent", "ws_skill_atk_1_1.png")).to be_nil
-      expect(described_class.derive_from_icon("Might", "ws_skill_unrelated_9_9.png")).to be_nil
-    end
-  end
-
   describe WeaponSkill, "#active_version" do
     let(:ws) { create(:weapon_skill) }
     let!(:base) { create(:weapon_skill_version, weapon_skill: ws, ordinal: 0, min_uncap: 3, transcendence_stage: 0) }

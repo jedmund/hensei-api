@@ -129,29 +129,4 @@ namespace :granblue do
     puts "versions whose description states a size: #{total}; derived matches: #{ok} (#{pct}%); mismatch: #{mismatch.values.sum}"
     mismatch.sort_by { |_, c| -c }.first(15).each { |k, c| puts "  #{k} (#{c})" }
   end
-
-  desc "Build icon->(series,size) map from wiki-source -> data/weapon_skill_icon_map.json"
-  task extract_weapon_skill_icon_map: :environment do
-    require Rails.root.join("lib/granblue/extractors/weapon_skill_data_extractor")
-    skill_dir = wiki_source_dir.join("weapon-skill-types")
-    wpn_dir   = wiki_source_dir.join("wpnskill-templates")
-    ex = Granblue::Extractors::WeaponSkillDataExtractor.new
-    map = {}
-    Dir[skill_dir.join("*.wikitext")].sort.each do |f|
-      name = File.basename(f, ".wikitext").tr("_", " ")
-      text = File.read(f)
-      if (m = text.match(/\{\{(WpnSkill[A-Za-z0-9]+)/))
-        sub = wpn_dir.join("#{m[1]}.wikitext")
-        text += "\n" + File.read(sub) if File.exist?(sub)
-      end
-      entries = begin
-        ex.icon_entries(text, name: name)
-      rescue
-        []
-      end
-      map[name] = entries unless entries.empty?
-    end
-    File.write(Rails.root.join("data", "weapon_skill_icon_map.json"), JSON.pretty_generate(map) + "\n")
-    puts "icon map: #{map.size} modifiers, #{map.values.sum(&:size)} entries"
-  end
 end

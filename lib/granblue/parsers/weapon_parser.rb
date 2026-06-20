@@ -331,19 +331,13 @@ module Granblue
         modifier = parsed[:modifier]
         modifier = modifier.sub(/:\s*(Fire|Water|Earth|Wind|Light|Dark)\z/, "") if modifier
 
-        # Size: the description states it ("Big boost to …") — the ground truth (see
-        # docs/damage/08). A "big" skill named with a II numeral is the rebalanced
-        # big_ii tier. Icon/aura are fallbacks for the rare sized skill whose
-        # description omits the keyword (mostly genuinely sizeless skills).
-        series = parsed[:series]
+        # Series & size come from the SKILL ITSELF — never the icon. Series: the aura-word in
+        # the name, else aura-boostability (no aura ⇒ EX); see WeaponSkillDescriptionParser.
+        # Size: the description states it ("Big boost to …"); a "big" skill named with a II
+        # numeral is the rebalanced big_ii tier; the name numeral is the last-resort fallback.
+        series = Granblue::Parsers::WeaponSkillDescriptionParser.series_for(description, name)
         size = size_from_description(description)
         size = "big_ii" if size == "big" && raw_name =~ /\bII\b/ && raw_name !~ /\bIII\b/
-        if size.nil? || series.nil?
-          if (derived = Granblue::Parsers::WeaponSkillParser.derive_from_icon(modifier, icon))
-            size ||= derived[:size]
-            series ||= derived[:series]
-          end
-        end
         size ||= parsed[:size] # name numeral as a last resort
 
         {

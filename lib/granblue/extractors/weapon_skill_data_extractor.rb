@@ -65,74 +65,7 @@ module Granblue
         rows
       end
 
-      # WsBox size-param name → (series, size) — used to invert the icon params.
-      ICON_PARAMS = {
-        small: ["normal", "small"], medium: ["normal", "medium"], big: ["normal", "big"],
-        big2: ["normal", "big_ii"], massive: ["normal", "massive"], unworldly: ["normal", "unworldly"],
-        o_small: ["omega", "small"], o_medium: ["omega", "medium"], o_big: ["omega", "big"],
-        o_big2: ["omega", "big_ii"], o_massive: ["omega", "massive"], o_unworldly: ["omega", "unworldly"],
-        ex_small: ["ex", "small"], ex_medium: ["ex", "medium"], ex_big: ["ex", "big"],
-        ex_big2: ["ex", "big_ii"], ex_massive: ["ex", "massive"], ex_unworldly: ["ex", "unworldly"]
-      }.freeze
-
-      # Per-modifier icon→(series,size) entries, from WsBox size params + table-row
-      # icons. Patterns keep the `*` element wildcard. Used to derive a weapon-skill
-      # version's (series, size) from its stored icon. See docs/damage/08.
-      def icon_entries(wikitext, name:)
-        wikitext = wikitext.gsub(/<!--.*?-->/m, "")
-        box = parse_box(wikitext)
-        entries = []
-        ICON_PARAMS.each do |param, (series, size)|
-          v = box[param]
-          entries << { pattern: v.strip, series: series, size: size } if v && v.include?(".png")
-        end
-        tables(wikitext).each do |tbl|
-          tseries = table_series(tbl, [])
-          split_rows(tbl).each do |r|
-            next if r.include?("Skill Level") || r.include?("wsmod-title")
-            size = row_size(r) or next
-            r.scan(/icon=([^|}\s]+\.png)/i).flatten.each do |pat|
-              entries << { pattern: pat, series: icon_series(pat, tseries), size: size }
-            end
-          end
-        end
-        entries.concat(stamina_icon_entries(wikitext))
-        # Keep only element-encoding patterns (a `*`); drop generic placeholders
-        # like ws_skill_job_weapon.png (Progression) that don't distinguish size.
-        entries.select { |e| e[:pattern].include?("*") && e[:series] && e[:size] }.uniq
-      end
-
       private
-
-      # Series from an icon pattern's infix (m_=omega, a_=ex, k_=taboo); else the
-      # table's series (normal_omega tables resolve the no-infix icon to normal).
-      def icon_series(pattern, table_series)
-        return "omega" if pattern =~ /_m_/
-        return "ex" if pattern =~ /_a_/
-        return "taboo" if pattern =~ /_k_/
-        table_series == "normal_omega" ? "normal" : (table_series || "normal")
-      end
-
-      # Icons from the transposed Stamina/Garrison coefficient table: the icon-header
-      # row's icons align column-wise with the size row and series columns.
-      def stamina_icon_entries(wikitext)
-        tbl = wikitext[/\{\|\s*class="wikitable"[^\n]*\n(.*?)\n\|\}/m, 1]
-        return [] unless tbl && tbl.include?("Coefficient")
-
-        rows_raw = split_rows(tbl)
-        series_cols = expand_series_columns(rows_raw)
-        size_row = rows_raw.find { |r| r =~ /^!\s*(Small|Medium|Big|Massive|Ancestral|Unworldly)/ }
-        size_cols = expand_cells(size_row)
-        icon_row = rows_raw.find { |r| r.scan(/WeaponSkillIconLink/).size > 1 }
-        return [] unless icon_row
-
-        icons = icon_row.scan(/icon=([^|}\s]+\.png)/i).flatten
-        icons.each_index.filter_map do |i|
-          sz = normalize_size(size_cols[i].to_s)
-          series = series_cols[i]
-          { pattern: icons[i], series: series, size: sz } if series && sz
-        end
-      end
 
       # ---- WsBox params ----------------------------------------------------
       def parse_box(text)
