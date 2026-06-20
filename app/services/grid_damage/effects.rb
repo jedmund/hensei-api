@@ -18,14 +18,15 @@ module GridDamage
 
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
-          next unless v && v.skill_modifier
+          next unless v # description-derived versions carry version-linked effects (no modifier)
 
           v.weapon_skill_effects.each do |e|
             value = value_for(e, weapon: w, state: state, composition: composition)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
-              boost_type: e.boost_type, series: e.series, value: value, mainhand: gw.mainhand,
+              boost_type: e.boost_type, series: e.series, value: value,
+              main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
               shared_cap_group: cap_group(e), cap: e.total_cap&.to_f
             )
           end

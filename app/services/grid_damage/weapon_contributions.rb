@@ -18,7 +18,7 @@ module GridDamage
         skill_level = w.max_skill_level || 15
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
-          next unless v && v.skill_modifier
+          next unless v # description-derived versions resolve via version-linked data (no modifier needed)
 
           # The frame is the weapon's series (normal/omega/ex/…); for aura-word-less special
           # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the

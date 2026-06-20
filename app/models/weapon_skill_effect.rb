@@ -12,6 +12,9 @@ class WeaponSkillEffect < ApplicationRecord
   STACKINGS = %w[additive highest_only].freeze
   APPLIES_TO = %w[element_allies all_allies mc_only].freeze
 
+  # Per-version rows (description-driven extraction) link straight to the version.
+  belongs_to :weapon_skill_version, optional: true
+
   validates :modifier, presence: true
   validates :boost_type, presence: true
   validates :scaling_kind, inclusion: { in: SCALING_KINDS }
@@ -20,12 +23,13 @@ class WeaponSkillEffect < ApplicationRecord
   validates :target_instance, inclusion: { in: TARGET_INSTANCES }, allow_nil: true
   validates :stacking, inclusion: { in: STACKINGS }
   validates :applies_to, inclusion: { in: APPLIES_TO }
-  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug] }
+  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug weapon_skill_version_id] }
 
   # Conditional/fixed effects for a weapon-skill version, keyed by modifier.
   scope :for_skill, ->(modifier:) { where(modifier: modifier) }
   # Effects granted by an equipped weapon key (Dark Opus pendulum/teluma, Draconic teluma,
   # Destroyer anklet); base-weapon effects have key_slug = nil.
   scope :for_key, ->(slug) { where(key_slug: slug) }
-  scope :base_effects, -> { where(key_slug: nil) }
+  # Canonical modifier-keyed effects (not key- or version-scoped).
+  scope :base_effects, -> { where(key_slug: nil, weapon_skill_version_id: nil) }
 end

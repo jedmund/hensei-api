@@ -37,18 +37,21 @@ class WeaponSkillVersion < ApplicationRecord
 
   delegate :name_en, :name_jp, :description_en, :description_jp, to: :skill, allow_nil: true
 
-  # Standard-modifier skills scale with skill level via the lookup table.
-  # Unique/fixed-effect skills (nil modifier) return nothing here.
+  # SL-scaled data for this version. Description-derived per-version rows (linked directly)
+  # take precedence; otherwise fall back to the canonical modifier/series/size lookup.
   def weapon_skill_data
+    linked = WeaponSkillDatum.where(weapon_skill_version_id: id)
+    return linked if linked.exists?
+
     WeaponSkillDatum.for_skill(modifier: skill_modifier, series: skill_series, size: skill_size)
   end
 
-  # Conditional/fixed grid mechanics for this skill type (Pact, Charge, etc.),
-  # keyed by modifier. Empty for unique/unrecognized skills.
+  # Conditional/fixed grid mechanics for this version: description-derived per-version effects
+  # plus the canonical modifier-keyed effects (Pact, Charge, …).
   def weapon_skill_effects
-    return WeaponSkillEffect.none if skill_modifier.blank?
-
-    WeaponSkillEffect.for_skill(modifier: skill_modifier).base_effects
+    ids = WeaponSkillEffect.where(weapon_skill_version_id: id).ids
+    ids += WeaponSkillEffect.for_skill(modifier: skill_modifier).base_effects.ids if skill_modifier.present?
+    WeaponSkillEffect.where(id: ids)
   end
 
   # Normalized icon stem using OUR INTERNAL element numbering — the name files

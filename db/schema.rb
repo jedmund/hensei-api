@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_19_040000) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_20_123000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1343,9 +1343,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_19_040000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "max_value", precision: 10, scale: 4
-    t.index ["modifier", "boost_type", "series", "size"], name: "index_weapon_skill_data_uniqueness", unique: true
+    t.uuid "weapon_skill_version_id"
+    t.index ["modifier", "boost_type", "series", "size"], name: "index_wsd_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
     t.index ["series"], name: "index_weapon_skill_data_on_series"
+    t.index ["weapon_skill_version_id", "boost_type", "series", "size"], name: "index_wsd_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
+    t.index ["weapon_skill_version_id"], name: "index_weapon_skill_data_on_weapon_skill_version_id"
   end
 
   create_table "weapon_skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1374,9 +1377,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_19_040000) do
     t.datetime "updated_at", null: false
     t.string "key_slug"
     t.string "frame_rule"
+    t.uuid "weapon_skill_version_id"
     t.index ["key_slug"], name: "index_weapon_skill_effects_on_key_slug"
-    t.index ["modifier", "boost_type", "scaling_kind"], name: "index_weapon_skill_effects_uniqueness", unique: true
+    t.index ["modifier", "boost_type", "scaling_kind", "key_slug"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
+    t.index ["weapon_skill_version_id", "boost_type", "scaling_kind"], name: "index_wse_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
+    t.index ["weapon_skill_version_id"], name: "index_weapon_skill_effects_on_weapon_skill_version_id"
   end
 
   create_table "weapon_skill_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
