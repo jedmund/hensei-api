@@ -144,6 +144,19 @@ module Granblue
         handle_response(response, page)
       end
 
+      # Expand the templates in a chunk of wikitext (action=expandtemplates) — resolves the
+      # {{Weapon/Common/<Series>}} wrapper so series-template skills (Bahamut/Xeno/Militis/…)
+      # render their skill rows. Returns the expanded wikitext/HTML, or nil on error.
+      def expand(text)
+        response = HTTParty.post(base_uri,
+                                 body: { action: 'expandtemplates', format: 'json',
+                                         prop: 'wikitext', text: text },
+                                 headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
+        return nil unless response.code == 200
+
+        JSON.parse(response.body).dig('expandtemplates', 'wikitext')
+      end
+
       private
 
       def handle_response(response, page)

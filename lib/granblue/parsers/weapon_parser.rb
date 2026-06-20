@@ -478,7 +478,7 @@ module Granblue
       # filtered in persist). Unique/fixed-effect skills have a nil modifier and
       # do not scale.
       def scales_with_skill_level?(version)
-        version.skill_modifier.present? && version.weapon_skill_data.exists?
+        version.skill_modifier.present? && version.weapon_skill_data.any?
       end
 
       # Process-wide cache of fetched wikitext, keyed by page title.
