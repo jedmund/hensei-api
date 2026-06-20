@@ -48,7 +48,8 @@ module Granblue
         [/supplement/i,                                      "dmg_supp"],
         [/bonus.*(?:charge attack|c\.?a\.?)/i,               "bonus_ca"],
         [/bonus.*(?:dmg|damage)/i,                           "bonus_elem_dmg"],
-        [/hit to (?:multiattack|double attack|triple attack)|multiattack rate/i, "multiattack"],
+        [/hit to (?:multiattack|double attack|triple attack)/i, "multiattack"], # → −DA (guarantee)
+        [/multiattack rate/i,                               %w[da ta]],        # +DA and +TA
         [/double attack rate|\bda rate\b/i,                  "da"],
         [/triple attack rate|\bta rate\b/i,                  "ta"],
         [/critical/i,                                        "critical"],
