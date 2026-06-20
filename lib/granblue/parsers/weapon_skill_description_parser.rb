@@ -25,17 +25,22 @@ module Granblue
         "nuke_only"       => /\bdeal[s]? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
       }.freeze
 
-      # Ordered (specific → general) phrase → boost_type. Within a clause we match-and-consume
-      # so a specific phrase ("skill DMG cap") prevents the general one ("DMG cap") re-matching.
+      # Ordered (specific → general) phrase → boost_type (or array for "specs" bundles).
+      # Within a clause we match-and-consume so a specific phrase ("skill DMG cap") prevents
+      # the general one ("DMG cap") re-matching.
       BOOST_PATTERNS = [
+        [/(?:charge attack|c\.?a\.?) specs/i,               %w[ca_dmg ca_dmg_cap]],
+        [/chain ?burst specs/i,                             %w[cb_dmg cb_dmg_cap]],
         [/skill (?:dmg|damage) cap/i,                        "skill_dmg_cap"],
         [/(?:normal attack|n\.?a\.?) (?:dmg|damage) cap/i,   "na_dmg_cap"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i,   "ca_dmg_cap"],
+        [/chain ?burst (?:dmg|damage) cap/i,                 "cb_dmg_cap"],
+        [/healing cap|boost to healing/i,                    "heal_cap"],
         [/(?:dmg|damage) cap/i,                              "dmg_cap"],
-        [/amplify (?:normal attack|n\.?a\.?)/i,              "na_amp"],
-        [/amplify (?:charge attack|c\.?a\.?)/i,              "ca_amp_sp"],
-        [/amplify skill/i,                                   "skill_amp_sp"],
-        [/(?:elemental .*amplif|amplify elemental)/i,        "elem_amplify"],
+        [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, "na_amp"],
+        [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp_sp"],
+        [/amplif\w*.*skill|skill.*amplif/i,                  "skill_amp_sp"],
+        [/elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, "elem_amplify"],
         [/amplif/i,                                          "dmg_amp"],
         [/supplement.*(?:charge attack|c\.?a\.?)/i,          "ca_supp"],
         [/supplement.*skill/i,                               "skill_dmg_supp"],
@@ -47,9 +52,16 @@ module Granblue
         [/double attack rate|\bda rate\b/i,                  "da"],
         [/triple attack rate|\bta rate\b/i,                  "ta"],
         [/critical/i,                                        "critical"],
+        [/counter/i,                                         "counter_dmg"],
+        [/gain shield|\bshield\b/i,                          "shield"],
+        [/debuff res/i,                                      "debuff_res"],
         [/boost to charge bar gain|charge bar gain (?:boost|up)/i, "charge_gain"],
-        [/(?:dmg|damage) (?:cut|reduc)/i,                    "elem_reduc"],
+        [/(?:dmg|damage) (?:cut|reduc)|lessen .*(?:dmg|damage)/i, "elem_reduc"],
+        [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
+        [/ignore .*\bdef/i,                                  "def_ignore"],
+        [/cut to .*max hp|% cut to/i,                        "hp_cut"],
+        [/take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
         [/\bdef(?:ense)?\b/i,                                "def"],
         [/max hp|\bhp\b/i,                                   "hp"],
         [/\batk\b/i,                                         "atk"]
@@ -61,6 +73,13 @@ module Granblue
         desc = clean(description)
         return blank_result if desc.blank?
 
+        if name =~ /\b(Optimus|Omega) Exalto\b/i # frame-amplifier ("boost to …'s weapon skills")
+          ex = "#{Regexp.last_match(1).downcase}_exalto"
+          return blank_result.merge(clauses: [{ boost_type: ex, value: value_for(desc, ex), size: nil,
+                                                series: (ex == "omega_exalto" ? "omega" : "normal"),
+                                                formula_type: "flat", condition: nil }])
+        end
+
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
         series0 = series_for(desc, name)
 
@@ -69,8 +88,8 @@ module Granblue
         split_clauses(body).each do |frag|
           size = frag[SIZE_KEYWORD, 1]&.downcase || last_size
           last_size = size if frag.match?(SIZE_KEYWORD)
-          formula = formula_for(frag)
-          boost_consume(frag).each do |boost|
+          boosts_for(frag).each do |boost, formula|
+            boost = "od_dmg_amp" if boost == "dmg_amp" && series0 == "odious"
             clauses << {
               boost_type: boost, value: value_for(frag, boost), size: (size unless explicit?(frag)),
               series: series0, formula_type: formula, condition: condition_for(frag)
@@ -99,6 +118,33 @@ module Granblue
         body.split(%r{\s*/\s*|,\s+|\s+and\s+|\s+plus\s+}i).map(&:strip).reject(&:empty?)
       end
 
+      # [boost_type, formula] pairs for a fragment. A HP-/turn-scaling phrase converts the base
+      # stat to its scaling boost (ATK→enmity/stamina/e_atk_prog, DEF→Garrison), and the "HP"
+      # mentioned in the condition is dropped (it's the scaling basis, not a boost target).
+      def self.boosts_for(frag)
+        scaling = scaling_for(frag)
+        boosts = boost_consume(frag)
+        return boosts.map { |b| [b, "flat"] } unless scaling
+
+        (boosts - ["hp"]).map { |b| scale_boost(b, scaling) }
+      end
+
+      def self.scale_boost(boost, scaling)
+        return ["enmity", "enmity"] if boost == "atk" && scaling == :low_hp
+        return ["stamina", "stamina"] if boost == "atk" && scaling == :high_hp
+        return ["e_atk_prog", "progression"] if boost == "atk" && scaling == :turns
+        return ["def", "garrison"] if boost == "def" && scaling == :low_hp
+
+        [boost, "flat"]
+      end
+
+      def self.scaling_for(frag)
+        return :low_hp if frag.match?(/based on how low .*hp|the lower .*hp/i)
+        return :high_hp if frag.match?(/based on how high .*hp|the higher .*hp/i)
+        return :turns if frag.match?(/number of turns|each turn|every turn|per turn|turns? (?:passed|elapsed)/i)
+        nil
+      end
+
       # All boost_types in a fragment, matched specific→general with consumption.
       def self.boost_consume(frag)
         rest = " #{frag} "
@@ -106,7 +152,7 @@ module Granblue
         BOOST_PATTERNS.each do |re, key|
           next unless rest =~ re
 
-          found << key
+          found.concat(Array(key))
           rest = rest.sub(re, " ")
         end
         found.uniq
@@ -124,20 +170,19 @@ module Granblue
         (m = frag[/(\d+(?:\.\d+)?)\s*%/, 1]) ? m.to_f : nil
       end
 
-      def self.formula_for(frag)
-        return "enmity" if frag.match?(/based on how low .*hp|the lower .*hp/i)
-        return "stamina" if frag.match?(/based on how high .*hp|the higher .*hp/i)
-        return "progression" if frag.match?(/each turn|every turn|per turn/i)
-        "flat"
-      end
-
-      # Series from an aura-word in the name/description, an explicit "EX/Omega modifier"
-      # annotation, else normal. (Never the icon.)
+      # Series from an aura-word in the skill NAME (possessive "Inferno's", leading "Amber Arts",
+      # or multi-word "Taboo Allowater's …"), an explicit "EX/Omega modifier" annotation, else
+      # normal. (Never the icon.)
       def self.series_for(desc, name)
-        text = "#{name} #{desc}"
-        return "ex" if text.match?(/\bex modifier\b/i)
-        return "omega" if text.match?(/\bomega modifier\b/i)
-        AURA_TO_SERIES.each { |aura, ser| return ser.to_s if text.match?(/\b#{Regexp.escape(aura)}'s\b/) }
+        return "ex" if "#{name} #{desc}".match?(/\bex modifier\b/i)
+        return "omega" if "#{name} #{desc}".match?(/\bomega modifier\b/i)
+        if name.present?
+          words = name.split(/'s|\s+/).reject(&:empty?)
+          [2, 1].each do |n|
+            ser = AURA_TO_SERIES[words.first(n).join(" ")]
+            return ser.to_s if ser
+          end
+        end
         "normal"
       end
 
@@ -165,8 +210,9 @@ module Granblue
         { main_hand_only: false, mc_only: false, skip: nil, clauses: [] }
       end
 
-      private_class_method :skip_reason, :split_clauses, :boost_consume, :explicit?, :value_for,
-                           :formula_for, :series_for, :condition_for, :clean, :blank_result
+      private_class_method :skip_reason, :split_clauses, :boosts_for, :scale_boost, :scaling_for,
+                           :boost_consume, :explicit?, :value_for, :series_for, :condition_for,
+                           :clean, :blank_result
     end
   end
 end

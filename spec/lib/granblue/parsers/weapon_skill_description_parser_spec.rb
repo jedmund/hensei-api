@@ -46,10 +46,22 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "atk")[:series]).to eq("omega")
   end
 
-  it "detects enmity formula and mc_only" do
+  it "maps an enmity skill to the enmity boost_type (not atk+hp from the condition phrase)" do
     r = parse("Boost to ATK based on how low HP is (MC only).")
     expect(r[:mc_only]).to be(true)
-    expect(boost(r, "atk")).to include(formula_type: "enmity")
+    expect(boost(r, "enmity")).to include(formula_type: "enmity")
+    expect(boost(r, "atk")).to be_nil
+    expect(boost(r, "hp")).to be_nil
+  end
+
+  it "maps a progression skill to e_atk_prog" do
+    r = parse("Medium boost to wind allies' ATK based on number of turns passed")
+    expect(boost(r, "e_atk_prog")).to include(formula_type: "progression", size: "medium")
+  end
+
+  it "derives ex series from a leading EX aura-word (Amber Arts)" do
+    r = parse("Boost to fire allies' C.A. DMG and C.A. DMG cap", name: "Amber Arts")
+    expect(r[:clauses].first[:series]).to eq("ex")
   end
 
   it "prefers the specific cap over the general one (skill DMG cap)" do
