@@ -7,7 +7,7 @@ class WeaponSkillEffect < ApplicationRecord
   SCALING_KINDS = %w[foe_hp_supplemental per_grid_count conditional_flat
                      ally_hp_scaled current_hp_scaled bonus_dmg flat static].freeze
   VALUE_UNITS = %w[percent percent_foe_max_hp percent_ally_max_hp flat].freeze
-  SERIES_VALUES = %w[normal omega ex].freeze
+  SERIES_VALUES = %w[normal omega ex odious].freeze
   TARGET_INSTANCES = %w[all normal_attack charge_attack skill critical].freeze
   STACKINGS = %w[additive highest_only].freeze
   APPLIES_TO = %w[element_allies all_allies mc_only].freeze

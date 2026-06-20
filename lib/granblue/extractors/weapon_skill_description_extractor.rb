@@ -28,26 +28,30 @@ module Granblue
             stats[:reattributed_series] += 1
           end
 
-          # 2. Resolve versions with no canonical modifier-keyed curve via version-linked rows.
-          next if canonical?(v)
-
+          # 2. For EVERY version, write version-linked rows for the boost_types the canonical
+          #    modifier-keyed data/effects DON'T already cover. Fully unmodeled skills get all
+          #    their boosts; composite skills (e.g. Restraint = DA canonical + Critical missing)
+          #    get just the missing halves.
           parsed = Parser.parse(desc, name: skill&.name_en)
           if parsed[:clauses].empty?
             stats[parsed[:skip] ? "skip_#{parsed[:skip]}".to_sym : :no_clause] += 1
             next
           end
 
-          apply(v, skill, parsed, stats) unless dry_run
-          stats[:resolved] += 1
+          covered = canonical_boost_types(v)
+          apply(v, skill, parsed, covered, stats) unless dry_run
+          stats[covered.empty? ? :resolved : :completed] += 1
         end
         stats
       end
 
-      def self.canonical?(version)
-        WeaponSkillDatum.for_skill(modifier: version.skill_modifier, series: version.skill_series,
-                                   size: version.skill_size).exists? ||
-          (version.skill_modifier.present? &&
-            WeaponSkillEffect.for_skill(modifier: version.skill_modifier).base_effects.exists?)
+      # boost_types the canonical (modifier-keyed) data/effects already provide for this version.
+      def self.canonical_boost_types(version)
+        data = WeaponSkillDatum.for_skill(modifier: version.skill_modifier, series: version.skill_series,
+                                          size: version.skill_size).pluck(:boost_type)
+        effects = version.skill_modifier.present? ?
+          WeaponSkillEffect.for_skill(modifier: version.skill_modifier).base_effects.pluck(:boost_type) : []
+        (data + effects).to_set
       end
 
       # The FULL skill description from the weapon's wiki_raw (sN_desc) — it carries the numeric
@@ -76,7 +80,7 @@ module Granblue
         raw[/\|#{Regexp.escape(field)}=(.*?)(?:\n\||\z)/m, 1]&.strip
       end
 
-      def self.apply(version, skill, parsed, stats)
+      def self.apply(version, skill, parsed, covered, stats)
         WeaponSkillDatum.where(weapon_skill_version_id: version.id).delete_all
         WeaponSkillEffect.where(weapon_skill_version_id: version.id).delete_all
 
@@ -84,6 +88,8 @@ module Granblue
         version.update_columns(skill_series: series) if version.skill_series != series
 
         parsed[:clauses].each do |c|
+          next if covered.include?(c[:boost_type]) # canonical data/effects already provide this
+
           if sl_scaled?(c) && write_data(version, skill, c)
             stats[:data_rows] += 1
           elsif c[:value]
@@ -94,6 +100,9 @@ module Granblue
           end
         rescue ActiveRecord::RecordNotUnique
           stats[:dup_clause] += 1 # two clauses collapse to the same (boost_type, …) for this version
+        rescue ActiveRecord::RecordInvalid => e
+          stats[:invalid] += 1 # log + skip rather than halt the whole run
+          Rails.logger.warn("desc-extract invalid (#{skill.name_en}): #{e.message}")
         end
       end
 
@@ -130,7 +139,7 @@ module Granblue
         )
       end
 
-      private_class_method :canonical?, :full_description, :weapon_wiki_raw, :wiki_field,
+      private_class_method :canonical_boost_types, :full_description, :weapon_wiki_raw, :wiki_field,
                            :apply, :sl_scaled?, :write_data, :write_effect
     end
   end

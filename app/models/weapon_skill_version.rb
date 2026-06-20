@@ -37,13 +37,17 @@ class WeaponSkillVersion < ApplicationRecord
 
   delegate :name_en, :name_jp, :description_en, :description_jp, to: :skill, allow_nil: true
 
-  # SL-scaled data for this version. Description-derived per-version rows (linked directly)
-  # take precedence; otherwise fall back to the canonical modifier/series/size lookup.
+  # SL-scaled data for this version: the canonical modifier/series/size rows PLUS any
+  # description-derived per-version rows that fill boost_types the canonical data is missing
+  # (composite skills — e.g. Restraint's DA is canonical, its Critical half is version-linked).
+  # Fully unmodeled skills resolve entirely through the version-linked rows.
   def weapon_skill_data
-    linked = WeaponSkillDatum.where(weapon_skill_version_id: id)
-    return linked if linked.exists?
+    canonical = WeaponSkillDatum.for_skill(modifier: skill_modifier, series: skill_series, size: skill_size).to_a
+    linked = WeaponSkillDatum.where(weapon_skill_version_id: id).to_a
+    return linked if canonical.empty?
 
-    WeaponSkillDatum.for_skill(modifier: skill_modifier, series: skill_series, size: skill_size)
+    have = canonical.map(&:boost_type).to_set
+    canonical + linked.reject { |d| have.include?(d.boost_type) }
   end
 
   # Conditional/fixed grid mechanics for this version: description-derived per-version effects
