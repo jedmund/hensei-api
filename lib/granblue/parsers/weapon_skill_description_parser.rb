@@ -174,19 +174,23 @@ module Granblue
       # or multi-word "Taboo Allowater's …"), an explicit "EX/Omega modifier" annotation, else
       # normal. (Never the icon.)
       def self.series_for(desc, name)
+        text = "#{name} #{desc}"
         # Odious skills are NAMED "Taboo <element>'s …"; match Taboo in the NAME only — the word
         # also appears in ≥280 condition prose ("…wind Taboo… weapon skills") on EX skills.
         return "odious" if name.to_s.match?(/\btaboo\b/i)
-        return "ex" if "#{name} #{desc}".match?(/\bex modifier\b/i)
-        return "omega" if "#{name} #{desc}".match?(/\bomega modifier\b/i)
-        if name.present?
-          words = name.split(/'s|\s+/).reject(&:empty?)
-          [2, 1].each do |n|
-            ser = AURA_TO_SERIES[words.first(n).join(" ")]
-            return ser.to_s if ser
-          end
-        end
-        "normal"
+        return "omega" if text.match?(/\bomega modifier\b/i)
+        return "ex" if text.match?(/\bex modifier\b/i)
+
+        parsed = name.present? ? WeaponSkillParser.parse(name) : {}
+        return parsed[:series] if parsed[:series] # core element aura-word → normal/omega/ex/odious
+
+        # No core element aura-word. A BARE aura-boostable modifier (no aura prefix — e.g.
+        # "Tyranny", "Celere" on Optimus grid weapons, element templated away) is Normal.
+        # Everything else — flavor names ("Psycho's Might"), non-core auras (Ultima, Militis,
+        # Astral, …), and flat/unknown modifiers — is NOT aura-boosted ⇒ EX.
+        return "normal" if parsed[:aura].nil? && WeaponSkillParser::BOOSTABLE_MODIFIERS.include?(parsed[:modifier])
+
+        "ex"
       end
 
       # Light structured condition from common phrasings (extended as needed).

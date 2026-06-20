@@ -35,10 +35,25 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "def")).to include(value: 5.0)
   end
 
-  it "parses a plain size-tier ATK boost (no explicit value)" do
+  it "frames a plain elemental boost (no aura-word) as EX, not normal" do
     r = parse("Big boost to wind allies' ATK")
     atk = boost(r, "atk")
-    expect(atk).to include(size: "big", value: nil, series: "normal")
+    expect(atk).to include(size: "big", value: nil, series: "ex")
+  end
+
+  it "still frames an aura-word skill by its aura (Inferno's = normal)" do
+    r = parse("Big boost to fire allies' ATK", name: "Inferno's Might")
+    expect(boost(r, "atk")[:series]).to eq("normal")
+  end
+
+  it "frames non-core auras (Ultima, Militis) as EX (unboostable)" do
+    expect(parse("Boost to fire allies' C.A. DMG cap", name: "Arsus Excelsior")[:clauses].first[:series]).to eq("ex")
+    expect(parse("Supplement light allies' C.A. DMG", name: "Glimmer's Crux")[:clauses].first[:series]).to eq("ex")
+  end
+
+  it "frames a bare aura-boostable modifier (no aura prefix) as normal" do
+    r = parse("Big boost to wind allies' ATK and 10% cut to wind allies' max HP", name: "Tyranny")
+    expect(boost(r, "atk")[:series]).to eq("normal")
   end
 
   it "derives omega series from an aura-word in the name" do
