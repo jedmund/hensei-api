@@ -174,10 +174,11 @@ module Granblue
       # or multi-word "Taboo Allowater's …"), an explicit "EX/Omega modifier" annotation, else
       # normal. (Never the icon.)
       def self.series_for(desc, name)
-        text = "#{name} #{desc}"
-        return "odious" if text.match?(/\btaboo\b/i) # Odious weapons' skills are "Taboo …"
-        return "ex" if text.match?(/\bex modifier\b/i)
-        return "omega" if text.match?(/\bomega modifier\b/i)
+        # Odious skills are NAMED "Taboo <element>'s …"; match Taboo in the NAME only — the word
+        # also appears in ≥280 condition prose ("…wind Taboo… weapon skills") on EX skills.
+        return "odious" if name.to_s.match?(/\btaboo\b/i)
+        return "ex" if "#{name} #{desc}".match?(/\bex modifier\b/i)
+        return "omega" if "#{name} #{desc}".match?(/\bomega modifier\b/i)
         if name.present?
           words = name.split(/'s|\s+/).reject(&:empty?)
           [2, 1].each do |n|
