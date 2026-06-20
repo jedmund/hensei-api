@@ -10,6 +10,7 @@ module PartyQueryingConcern
     Party.includes(
       { raid: :group },
       :job,
+      :difficulty,
       { user: { active_crew_membership: :crew } },
       { characters: [:character, :awakening] },
       { weapons: [:weapon, :awakening] },
