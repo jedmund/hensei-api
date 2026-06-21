@@ -44,14 +44,18 @@ module Granblue
 
       # skill prose → key-scoped effect attribute hashes (explicit % or size-curve value).
       def self.clause_effects(slug, name, skill_text)
+        # Some keys (Destroyer anklets) gate the whole skill on "…280% or above" inline.
+        gate = { "type" => "boost_level", "gte" => 280 } if skill_text.to_s =~ /280%\s*or above/i
+
         DescParser.parse(skill_text, name: name)[:clauses].filter_map do |c|
           value = c[:value] || curve_value(c)
           next unless value
 
+          condition = c[:condition] || gate || {}
           { key_slug: slug, modifier: name, boost_type: c[:boost_type], series: c[:series],
-            value: value, scaling_kind: c[:condition] ? "conditional_flat" : "static",
+            value: value, scaling_kind: condition.present? ? "conditional_flat" : "static",
             value_unit: SUPP_BOOSTS.include?(c[:boost_type]) ? "flat" : "percent",
-            condition: c[:condition] || {}, applies_to: "element_allies", stacking: "additive" }
+            condition: condition, applies_to: "element_allies", stacking: "additive" }
         end
       end
 

@@ -40,7 +40,7 @@ module Granblue
         [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, "na_amp"],
         [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp_sp"],
         [/amplif\w*.*skill|skill.*amplif/i,                  "skill_amp_sp"],
-        [/elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, "elem_amplify"],
+        [/amplif\w*.*elemental|elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, "elem_amplify"],
         [/amplif/i,                                          "dmg_amp"],
         [/supplement.*(?:charge attack|c\.?a\.?)/i,          "ca_supp"],
         [/supplement.*skill/i,                               "skill_dmg_supp"],
