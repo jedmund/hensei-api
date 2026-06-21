@@ -55,6 +55,7 @@ module Granblue
             next
           end
           persist(w, skills, stats)
+          apply_gameplay_notes(w, expanded, stats)
           stats[:weapons] += 1
           sleep throttle if throttle.positive?
         end
@@ -116,6 +117,43 @@ module Granblue
         cleanup_garbled(weapon, stats)
       end
 
+      # Parse the expanded "Gameplay Notes" prose (where community-computed values live) and write
+      # version-linked effects for the skills that have them — per-count (Voltage), per-specialty
+      # (Cloud), flat. These carry the numbers the skill blurbs omit.
+      def self.apply_gameplay_notes(weapon, expanded, stats)
+        notes = Granblue::Parsers::GameplayNotesParser.parse(expanded)
+        return if notes.empty?
+
+        by_name = weapon.weapon_skills.includes(weapon_skill_versions: :skill)
+                        .flat_map(&:weapon_skill_versions).index_by { |v| v.skill&.name_en }
+        notes.each do |skill_name, info|
+          v = by_name[skill_name] or next
+          WeaponSkillEffect.where(weapon_skill_version_id: v.id,
+                                  scaling_kind: %w[per_grid_count specialty_scaled]).delete_all
+          info[:clauses].each { |c| create_notes_effect(v, skill_name, info[:frame], c, stats) }
+        end
+      end
+
+      def self.create_notes_effect(version, skill_name, frame, clause, stats)
+        attrs = { weapon_skill_version_id: version.id, modifier: skill_name, boost_type: clause[:boost_type],
+                  series: frame, value_unit: "percent", applies_to: "element_allies", stacking: "additive" }
+        case clause[:scaling]
+        when :per_count
+          WeaponSkillEffect.create!(attrs.merge(scaling_kind: "per_grid_count", value: clause[:value],
+                                                count_basis: "weapon_type", total_cap: clause[:max],
+                                                shared_cap_group: clause[:shared_cap]))
+        when :per_specialty
+          WeaponSkillEffect.create!(attrs.merge(scaling_kind: "specialty_scaled",
+                                                condition: { "specialties" => clause[:by_specialty] }))
+        when :flat
+          WeaponSkillEffect.create!(attrs.merge(scaling_kind: "static", value: clause[:value]))
+        end
+        stats[:notes_effects] += 1
+      rescue ActiveRecord::RecordInvalid => e
+        stats[:notes_invalid] += 1
+        Rails.logger.warn("gameplay-notes effect invalid (#{skill_name}/#{clause[:boost_type]}): #{e.message}")
+      end
+
       # Drop stale versions whose skill name still holds an unresolved {{…}} template (the
       # pre-expansion import artifact) now that the resolved skills have been written.
       def self.cleanup_garbled(weapon, stats)
@@ -142,7 +180,7 @@ module Granblue
         s.gsub(/\s+/, " ").strip
       end
 
-      private_class_method :parse_skills, :persist, :cleanup_garbled, :clean
+      private_class_method :parse_skills, :persist, :apply_gameplay_notes, :create_notes_effect, :cleanup_garbled, :clean
     end
   end
 end

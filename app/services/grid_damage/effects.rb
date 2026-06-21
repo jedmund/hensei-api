@@ -53,7 +53,18 @@ module GridDamage
         effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
       when "ally_hp_scaled", "current_hp_scaled"
         effect.value&.to_f # TODO: HP curve (small set) — placeholder
+      when "specialty_scaled"
+        specialty_value(effect, composition: composition)
       end
+    end
+
+    # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon
+    # specialty. The panel reflects the MC's specialty; allies of that specialty get the larger
+    # boost, everyone else the "other" row.
+    def specialty_value(effect, composition:)
+      table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
+      spec = composition && composition[:mc_specialty]
+      (table[spec] || table["other"])&.to_f
     end
 
     def per_grid_count(effect, weapon:, composition:)

@@ -10,6 +10,10 @@ module GridDamage
   module GridComposition
     module_function
 
+    # Weapon-type proficiency id → specialty name (matches Cloud-style per-specialty tables).
+    PROFICIENCY_NAME = { 1 => "sabre", 2 => "dagger", 3 => "axe", 4 => "spear", 5 => "bow",
+                         6 => "staff", 7 => "melee", 8 => "harp", 9 => "gun", 10 => "katana" }.freeze
+
     def for_party(party)
       entries = party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).filter_map do |gw|
         w = gw.weapon
@@ -26,7 +30,10 @@ module GridDamage
         end
         { proficiency: w.proficiency, granblue_id: w.granblue_id, modifiers: modifiers, omega: omega }
       end
-      summarize(entries)
+      # The MC's weapon specialty (job proficiency) — selects the row of per-specialty skills
+      # (e.g. Cloud of Howling Twilight). Allies of that specialty get the larger boosts.
+      mc_specialty = PROFICIENCY_NAME[party.try(:job)&.proficiency1]
+      summarize(entries).merge(mc_specialty: mc_specialty)
     end
 
     # Pure: entries = [{ proficiency:, granblue_id:, modifiers: [..], omega: bool }, …]
