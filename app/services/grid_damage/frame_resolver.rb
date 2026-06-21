@@ -14,6 +14,10 @@ module GridDamage
     module_function
 
     def frame_for(weapon, version)
+      # The wiki "Multiplier:" annotation (captured at expansion) is authoritative when present.
+      authoritative = version.try(:multiplier_frame).presence
+      return authoritative if authoritative
+
       explicit = version.skill_series.presence
       return explicit if explicit
 

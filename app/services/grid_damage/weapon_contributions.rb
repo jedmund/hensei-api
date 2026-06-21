@@ -7,6 +7,10 @@ module GridDamage
   module WeaponContributions
     module_function
 
+    # Series that are Normal-frame but NOT boosted by summons (gbf.wiki/Weapon_Skills): their
+    # skills land on the panel flat, like EX. Their contributions are non-amplifiable.
+    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial].freeze
+
     def for_party(party, state: {})
       hp = state.fetch(:hp_percent, 100).to_f
       turn = state.fetch(:turn, 1).to_i
@@ -16,6 +20,7 @@ module GridDamage
         next unless w
 
         skill_level = w.max_skill_level || 15
+        amplifiable = !NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
           next unless v # description-derived versions resolve via version-linked data (no modifier needed)
@@ -28,7 +33,8 @@ module GridDamage
             value = Scaling.value(d, skill_level: skill_level, hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,
-              value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand
+              value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
+              amplifiable: amplifiable
             )
           end
         end

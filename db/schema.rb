@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_20_123000) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_21_123123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1401,6 +1401,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_20_123000) do
     t.boolean "scales_with_skill_level", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "multiplier_frame"
     t.index ["skill_id"], name: "index_weapon_skill_versions_on_skill_id"
     t.index ["skill_series"], name: "index_weapon_skill_versions_on_skill_series"
     t.index ["weapon_skill_id", "ordinal"], name: "idx_weapon_skill_versions_on_skill_and_ordinal", unique: true

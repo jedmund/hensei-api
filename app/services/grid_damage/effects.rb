@@ -16,18 +16,23 @@ module GridDamage
         w = gw.weapon
         next unless w
 
+        # Non-summon-boosted series (Bahamut/Celestial) land on the panel flat, like EX.
+        amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
           next unless v # description-derived versions carry version-linked effects (no modifier)
 
+          # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
+          # skill; otherwise fall back to the effect's heuristic series.
+          frame = v.try(:multiplier_frame).presence
           v.weapon_skill_effects.each do |e|
             value = value_for(e, weapon: w, state: state, composition: composition)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
-              boost_type: e.boost_type, series: e.series, value: value,
+              boost_type: e.boost_type, series: frame || e.series, value: value,
               main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f
+              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f, amplifiable: amplifiable
             )
           end
         end

@@ -11,6 +11,9 @@ module Granblue
     # skills are handled by the key→skill resolver, and the expanded HTML lists every key option.
     class ExpandedWeaponSkillImporter
       SKIP_SERIES = %w[dark-opus draconic draconic-providence ultima destroyer].freeze
+      # Aura-word-less special series re-expanded even when complete, to capture the wiki
+      # Multiplier frame (the heuristic can't infer it). Start with the non-summon-boosted ones.
+      SPECIAL_SERIES = %w[bahamut celestial].freeze
       FRAME = { "normal" => "normal", "ex" => "ex", "omega" => "omega", "od" => "odious" }.freeze
 
       def self.run(limit: nil, throttle: 0.2)
@@ -22,9 +25,13 @@ module Granblue
         garbled_ids = WeaponSkill.joins(weapon_skill_versions: :skill)
                                  .where("skills.name_en LIKE ?", "%{{%")
                                  .distinct.pluck(:weapon_granblue_id)
+        # Special series whose skills lack aura-words (so the frame heuristic is unreliable) and
+        # need the wiki Multiplier captured even when already complete — e.g. Celestial/Bahamut.
+        special_series_ids = WeaponSeries.where(slug: SPECIAL_SERIES).select(:id)
         scope = Weapon.includes(:weapon_series)
-                      .where("(wiki_raw IS NOT NULL AND wiki_raw <> '' AND wiki_raw NOT ILIKE ?) OR granblue_id IN (?)",
-                             "%s1_desc=%", garbled_ids)
+                      .where("(wiki_raw IS NOT NULL AND wiki_raw <> '' AND wiki_raw NOT ILIKE ?) " \
+                             "OR granblue_id IN (?) OR weapon_series_id IN (?)",
+                             "%s1_desc=%", garbled_ids, special_series_ids)
         scope = scope.limit(limit) if limit
 
         scope.find_each do |w|
@@ -88,7 +95,8 @@ module Granblue
         skills.each do |s|
           if (v = by_name[s[:name]])
             v.skill.update!(description_en: s[:description]) if s[:description].present?
-            v.update_columns(skill_series: s[:series]) if s[:series].present? && v.skill_series != s[:series]
+            # multiplier_frame is the authoritative wiki frame; skill_series stays the heuristic.
+            v.update_columns(multiplier_frame: s[:series]) if s[:series].present? && v.multiplier_frame != s[:series]
             stats[:updated] += 1
           else
             ws = WeaponSkill.find_or_create_by!(weapon_granblue_id: weapon.granblue_id, position: next_pos)
@@ -97,7 +105,7 @@ module Granblue
             skill.description_en = s[:description]
             skill.save!
             ws.weapon_skill_versions.create!(
-              skill: skill, ordinal: 0, min_uncap: 3, skill_series: s[:series],
+              skill: skill, ordinal: 0, min_uncap: 3, skill_series: s[:series], multiplier_frame: s[:series],
               main_hand_only: s[:description].match?(/when main weapon/i),
               mc_only: s[:description].match?(/\(mc only\)/i)
             )
