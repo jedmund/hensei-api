@@ -10,19 +10,23 @@ module GridDamage
 
     ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
     BOOST_LEVEL_THRESHOLD = 280.0
-    # In-game caps on the displayed multiattack rates (the panel shows them orange at the cap).
+    # In-game caps on the displayed boost rates (the panel shows them orange at the cap).
     # A "100% hit to multiattack" penalty (−100 DA) can still push the post-cap DA negative.
-    RATE_CAPS = { "da" => 75.0, "ta" => 75.0 }.freeze
+    RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0 }.freeze
+
+    # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
+    # the offensive ATK-family + rate boosts. Caps/supplementals/DEF/HP are not amplified here.
+    AMPLIFIED_BOOSTS = %w[atk stamina enmity e_atk_prog critical da ta].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
       composition = GridComposition.for_party(party)
-      agg = aggregate_pass(party, state, composition)
+      agg = aggregate_pass(party, state, composition) # pass 1 (raw) — to read the Exalto totals
 
       enh = enhancements(party, agg)
-      if enh.values.max.to_f >= BOOST_LEVEL_THRESHOLD # ≥280 effects can fire — second pass
-        agg = aggregate_pass(party, state.merge(enhancements: enh), composition)
-      end
+      # Pass 2: amplify each contribution by its frame's enhancement before aggregating, and
+      # feed the enhancements in so boost_level (≥280) effects can fire too.
+      agg = aggregate_pass(party, state.merge(enhancements: enh), composition, amplify_enh: enh)
       apply_rate_caps(agg)
     end
 
@@ -51,11 +55,25 @@ module GridDamage
       }
     end
 
-    def aggregate_pass(party, state, composition)
+    def aggregate_pass(party, state, composition, amplify_enh: nil)
       contributions = WeaponContributions.for_party(party, state: state) +
                       Effects.contributions(party, state: state, composition: composition) +
                       KeySkills.contributions(party, state: state, composition: composition)
+      contributions = amplify_contributions(contributions, amplify_enh) if amplify_enh
       Aggregator.aggregate(contributions)
+    end
+
+    # Multiply each amplifiable contribution by its frame's enhancement (Optimus/Omega aura +
+    # Exalto; EX/odious-without-Taboo unaffected) BEFORE aggregating, so per-series sums (ATK)
+    # and additive sums (crit/DA/TA) are both correctly amplified.
+    def amplify_contributions(contributions, enh)
+      factor = { "normal" => 1 + enh[:optimus].to_f / 100, "omega" => 1 + enh[:omega].to_f / 100,
+                 "ex" => 1.0, "odious" => 1 + enh[:taboo].to_f / 100 }
+      contributions.map do |c|
+        next c unless c.value && AMPLIFIED_BOOSTS.include?(c.boost_type)
+
+        c.class.new(**c.to_h.merge(value: c.value * (factor[c.series] || 1.0)))
+      end
     end
 
     def grid_element(party)
@@ -64,6 +82,6 @@ module GridDamage
       ELEMENT_WORD[id]
     end
 
-    private_class_method :enhancements, :aggregate_pass, :grid_element
+    private_class_method :enhancements, :aggregate_pass, :grid_element, :amplify_contributions
   end
 end
