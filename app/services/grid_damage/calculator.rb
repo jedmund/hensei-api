@@ -12,7 +12,7 @@ module GridDamage
     BOOST_LEVEL_THRESHOLD = 280.0
     # In-game caps on the displayed boost rates (the panel shows them orange at the cap).
     # A "100% hit to multiattack" penalty (−100 DA) can still push the post-cap DA negative.
-    RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0 }.freeze
+    RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0, "skill_dmg_cap" => 50.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
     # the offensive ATK-family, the rate boosts, and the amplify-family. Caps, supplementals,
