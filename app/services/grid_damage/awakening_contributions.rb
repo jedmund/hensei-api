@@ -10,6 +10,11 @@ module GridDamage
 
     # Cumulative bonus by Awakening slug → level → { boost_type => value }. Levels run 1–4 on
     # regular weapons (1 = awakened, no bonus). Heal/Special types add nothing to the damage panel.
+    #
+    # NOTE: awakening *cap* bonuses (Attack's "DMG Cap +5%", Skill DMG's "Skill DMG Cap +%",
+    # C.A.'s "C.A. DMG Cap +%") do NOT surface on the "Weapon Skill Boosts" panel — confirmed
+    # by the Galilei screenshots (DMG Cap stayed 20) and Twinpain (Skill DMG Cap stayed 50). They
+    # apply to damage but aren't displayed here, so they're omitted until the damage phase.
     BONUS = {
       "weapon-atk" => {
         2 => { "atk" => 15.0 }, 3 => { "atk" => 15.0 }, 4 => { "atk" => 40.0 }
@@ -18,17 +23,15 @@ module GridDamage
         2 => { "hp" => 15.0 }, 3 => { "hp" => 15.0, "def" => 20.0 }, 4 => { "hp" => 40.0, "def" => 20.0 }
       },
       "weapon-skill" => {
-        2 => { "skill_dmg_cap" => 10.0 },
-        3 => { "skill_dmg_cap" => 10.0, "skill_dmg" => 20.0 },
-        4 => { "skill_dmg_cap" => 25.0, "skill_dmg" => 20.0 }
+        2 => {}, 3 => { "skill_dmg" => 20.0 }, 4 => { "skill_dmg" => 20.0 }
       },
       "weapon-multi" => {
         2 => { "ta" => 5.0 }, 3 => { "da" => 20.0, "ta" => 5.0 }, 4 => { "da" => 20.0, "ta" => 10.0 }
       },
       "weapon-ca" => {
         2 => { "ca_dmg" => 20.0 },
-        3 => { "ca_dmg" => 20.0, "ca_dmg_cap" => 10.0 },
-        4 => { "ca_dmg" => 20.0, "ca_dmg_cap" => 10.0, "ca_supp" => 100_000.0 }
+        3 => { "ca_dmg" => 20.0 },
+        4 => { "ca_dmg" => 20.0, "ca_supp" => 100_000.0 }
       }
     }.freeze
 
