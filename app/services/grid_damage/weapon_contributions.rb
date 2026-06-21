@@ -7,9 +7,9 @@ module GridDamage
   module WeaponContributions
     module_function
 
-    # Series that are Normal-frame but NOT boosted by summons (gbf.wiki/Weapon_Skills): their
-    # skills land on the panel flat, like EX. Their contributions are non-amplifiable.
-    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial].freeze
+    # Series NOT boosted by summons (gbf.wiki/Weapon_Skills + in-game): their skills land on the
+    # panel flat, like EX. Their contributions are non-amplifiable.
+    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer].freeze
 
     def for_party(party, state: {})
       hp = state.fetch(:hp_percent, 100).to_f
