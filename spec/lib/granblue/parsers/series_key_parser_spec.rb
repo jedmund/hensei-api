@@ -26,8 +26,9 @@ RSpec.describe Granblue::Parsers::SeriesKeyParser do
     result = described_class.parse(wikitext)
 
     expect(result).to contain_exactly(
-      { name: "β Pendulum", skill_text: "50% boost to skill DMG cap" },
-      { name: "Pendulum of Strength", skill_text: "Big boost to weapon element allies' ATK based on how high HP is." }
+      a_hash_including(name: "β Pendulum", skill_text: "50% boost to skill DMG cap"),
+      a_hash_including(name: "Pendulum of Strength",
+                       skill_text: "Big boost to weapon element allies' ATK based on how high HP is.")
     )
   end
 

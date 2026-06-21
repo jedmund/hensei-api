@@ -16,6 +16,7 @@ module Granblue
                       "Draconic Weapons Provenance", "Ultima Weapons"].freeze
       Parser = Granblue::Parsers::SeriesKeyParser
       DescParser = Granblue::Parsers::WeaponSkillDescriptionParser
+      GameplayNotesParser = Granblue::Parsers::GameplayNotesParser
       SUPP_BOOSTS = WeaponSkillDescriptionExtractor::SUPP_BOOSTS
 
       def self.run(dry_run: false)
@@ -30,6 +31,7 @@ module Granblue
             next stats[:unmatched_key] += 1 unless key
 
             effects = clause_effects(key.slug, entry[:name], entry[:skill_text])
+            effects = boost_level_effects(key.slug, entry[:name], entry[:effect_text]) if effects.empty?
             next stats[:no_value] += 1 if effects.empty?
 
             preview << { slug: key.slug, name: entry[:name],
@@ -50,6 +52,19 @@ module Granblue
             value: value, scaling_kind: c[:condition] ? "conditional_flat" : "static",
             value_unit: SUPP_BOOSTS.include?(c[:boost_type]) ? "flat" : "percent",
             condition: c[:condition] || {}, applies_to: "element_allies", stacking: "additive" }
+        end
+      end
+
+      # The ≥280% Effect cell (Extremity/Sagacity/Supremacy …) → conditional key effects. The
+      # generic "Skill:" prose has no values; the Effect column carries them + the boost_level gate.
+      def self.boost_level_effects(slug, name, effect_text)
+        return [] if effect_text.blank?
+
+        GameplayNotesParser.inline_boosts(effect_text).map do |b|
+          { key_slug: slug, modifier: name, boost_type: b[:boost_type], series: b[:series],
+            value: b[:value], scaling_kind: "conditional_flat",
+            value_unit: SUPP_BOOSTS.include?(b[:boost_type]) ? "flat" : "percent",
+            condition: { "type" => "boost_level", "gte" => 280 }, applies_to: "element_allies", stacking: "additive" }
         end
       end
 
@@ -75,7 +90,7 @@ module Granblue
         nil
       end
 
-      private_class_method :clause_effects, :curve_value, :persist, :fetch
+      private_class_method :clause_effects, :boost_level_effects, :curve_value, :persist, :fetch
     end
   end
 end

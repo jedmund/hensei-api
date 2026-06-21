@@ -16,8 +16,9 @@ module Granblue
         "ex might" => "atk", "omega might" => "atk", "might" => "atk", "atk" => "atk",
         "e. atk" => "e_atk", "e.atk" => "e_atk", "elemental atk" => "e_atk",
         "stamina" => "stamina", "enmity" => "enmity",
-        "da rate" => "da", "da" => "da", "double attack" => "da",
-        "ta rate" => "ta", "ta" => "ta", "triple attack" => "ta",
+        "da rate" => "da", "da" => "da", "double attack" => "da", "double attack rate" => "da",
+        "ta rate" => "ta", "ta" => "ta", "triple attack" => "ta", "triple attack rate" => "ta",
+        "na dmg cap" => "na_dmg_cap", "normal attack damage cap" => "na_dmg_cap",
         "critical" => "critical", "critical hit rate" => "critical",
         "c.a. dmg" => "ca_dmg", "c.a. specs" => "ca_dmg", "charge attack dmg" => "ca_dmg",
         "c.a. dmg cap" => "ca_dmg_cap", "dmg cap" => "dmg_cap", "damage cap" => "dmg_cap",
@@ -123,6 +124,29 @@ module Granblue
         table.split(/\|-/).filter_map do |row|
           cells = row.split(/\|\||\n\s*[!|]/).map { |c| clean(c) }.reject(&:empty?)
           cells if cells.size > 1 && cells.first !~ /wikitable|style=/
+        end
+      end
+
+      # Inline "N% boost to <stat>" pairs from prose where the stat is a `data-label` icon (kept
+      # as text) or plain words — e.g. a Dark Opus ≥280 Effect cell. → [{boost_type, value, series}]
+      # (series inferred from the ATK label: EX Might → ex, Omega Might → omega, Might → normal).
+      def self.inline_boosts(text)
+        labeled = text.to_s
+                      # {{atkmod|ATK|m=ex}} → "EX Might" (carries the boost AND the frame)
+                      .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*ex[^}]*\}\}/i, " EX Might ")
+                      .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*omega[^}]*\}\}/i, " Omega Might ")
+                      .gsub(/\{\{\s*atkmod\s*\|[^}]*\}\}/i, " Might ")
+                      .gsub(/<span[^>]*data-label="([^"]+)"[^>]*>(?:\s*<\/span>)?/i, ' \1 ')
+                      .gsub(/<[^>]+>/, " ")
+        labeled.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*([A-Za-z.][A-Za-z. ]*?)(?=\s*\d|,|\.|\/|\z)/).filter_map do |value, stat|
+          bt = boost_for(stat) or next
+
+          series = case stat.downcase
+                   when /\bex\b/ then "ex"
+                   when /omega/ then "omega"
+                   when /\bmight\b/ then "normal"
+                   end
+          { boost_type: bt, value: value.to_f, series: series }
         end
       end
 
