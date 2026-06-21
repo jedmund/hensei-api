@@ -127,7 +127,9 @@ module Granblue
       # Split into fine clauses on separators and "and"/"plus". Split on comma only when
       # followed by a space, so digit-grouping commas ("100,000") stay intact.
       def self.split_clauses(body)
-        body.split(%r{\s*/\s*|,\s+|\s+and\s+|\s+plus\s+}i).map(&:strip).reject(&:empty?)
+        # <br/> first so it isn't mistaken for the "/" clause separator; it separates the stat
+        # clauses in tiered skills (e.g. "…max HP.<br/>10% Bonus Destruction C.A. DMG").
+        body.split(%r{<br\s*/?>|\s*/\s*|,\s+|\s+and\s+|\s+plus\s+}i).map(&:strip).reject(&:empty?)
       end
 
       # [boost_type, formula] pairs for a fragment. A HP-/turn-scaling phrase converts the base
@@ -221,6 +223,7 @@ module Granblue
         s.gsub!(/\{\{status\|([^|}]+)[^}]*\}\}/i, '\1')
         s.gsub!(/\{\{[^{}]*\}\}/m, "")
         s.gsub!(/'''|''/, "")
+        s.gsub!(%r{<br\s*/?>}i, " / ") # clause separator in tiered skills — keep it, don't blank it
         s.gsub!(/<[^>]+>/, " ")
         s.gsub(/\s+/, " ").strip
       end
