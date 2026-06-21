@@ -62,13 +62,20 @@ module Granblue
         stats
       end
 
-      # Rendered skill rows → [{name, description, series}] (one per distinct skill; highest tier
-      # wins). Skips charge-attack/ougi and key-placeholder rows.
+      # A skill row whose desc is one of these placeholders marks a KEY SLOT — every skill row
+      # AFTER it lists that slot's key options (Dark Opus pendulum/teluma, Destroyer anklet),
+      # which are equipped-key-determined, NOT always-on base skills. Captures the key type.
+      KEY_SLOT = /granted power with (?:an? |a )?(anklet|pendulum|teluma)|empowered by a chosen (pendulum|teluma)/i
+
+      # Rendered skill rows → [{name, description, series, key_type}] (one per distinct skill;
+      # highest tier wins). key_type is nil for base skills, else "anklet"/"pendulum"/"teluma"
+      # for skills listed under a key-slot placeholder. Skips charge-attack/ougi rows.
       def self.parse_skills(html)
         out = {}
         # Only the "Weapon Skills" table — exclude the charge-attack/ougi table above it, whose
         # skill-name row has no skill-desc and would shift the name/desc pairing.
         section = html[%r{weapon-skills.*}m] || html
+        key_type = nil
         section.scan(%r{<td class="skill-name"[^>]*>(.*?)</td>.*?<td class="skill-desc"[^>]*>(.*?)</td>}m).each do |name_html, desc_html|
           name = clean(name_html)
           next if name.blank?
@@ -79,9 +86,13 @@ module Granblue
           stripped = desc_html.gsub(%r{'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .\-]+?)(?=[,.]|<|\z)}i, " ")
           desc = clean(stripped)
           next if desc.blank?
-          next if desc.match?(/granted power with (an?|a) (anklet|pendulum|teluma)|empowered by a chosen/i)
 
-          out[name] = { name: name, description: desc, series: FRAME[frame] }
+          if (m = desc.match(KEY_SLOT)) # the placeholder itself — skip, but every later row is a key
+            key_type = (m[1] || m[2]).downcase
+            next
+          end
+
+          out[name] = { name: name, description: desc, series: FRAME[frame], key_type: key_type }
         end
         out.values
       end
@@ -94,6 +105,8 @@ module Granblue
         next_pos = (weapon.weapon_skills.maximum(:position) || -1) + 1
 
         skills.each do |s|
+          next if s[:key_type] # key options are equipped-key-determined, not base versions
+
           if (v = by_name[s[:name]])
             v.skill.update!(description_en: s[:description]) if s[:description].present?
             # multiplier_frame is the authoritative wiki frame; skill_series stays the heuristic.
