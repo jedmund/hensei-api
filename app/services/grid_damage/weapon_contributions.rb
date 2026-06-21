@@ -19,9 +19,9 @@ module GridDamage
         w = gw.weapon
         next unless w
 
-        # Transcendence raises the skill level past the base max (+1 per stage): a fully
-        # transcended Dark Opus reads "Lvl 25" in-game (max 20 + 5), so its curves use SL25.
-        skill_level = (w.max_skill_level || 15) + gw.transcendence_step.to_i
+        # Skill level is the ULB max (e.g. SL20) through transcendence stages 0–4, then jumps
+        # +5 only at the FINAL stage (transc 5 → SL25). It is not raised per-stage.
+        skill_level = (w.max_skill_level || 15) + (gw.transcendence_step.to_i >= 5 ? 5 : 0)
         amplifiable = !NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
