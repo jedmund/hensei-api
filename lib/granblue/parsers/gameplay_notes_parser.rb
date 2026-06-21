@@ -49,6 +49,8 @@ module Granblue
         clauses = []
         clauses.concat(per_count_clauses(skill, body))
         clauses.concat(specialty_clauses(body))
+        clauses.concat(progression_clauses(body))
+        clauses.concat(tier_clauses(body))
         clauses
       end
 
@@ -62,25 +64,65 @@ module Granblue
         end
       end
 
-      # A {| wikitable with a "Specialty" header → per-specialty values per stat column.
+      SPECIALTIES = %w[gun other sabre dagger spear axe bow staff melee harp katana].freeze
+
+      # A {| wikitable with specialty-named rows → per-specialty values per stat column.
       def self.specialty_clauses(body)
         table = body[/\{\|.*?\|\}/m] or return []
         labels = table.scan(/data-label="([^"]+)"/).flatten.map { |l| boost_for(l) }
         return [] if labels.compact.empty?
 
-        rows = table.split(/\|-/).filter_map do |row|
-          cells = row.split(/\|\||\n\s*\|/).map { |c| clean(c) }.reject(&:empty?)
-          next unless cells.first && %w[gun other sabre dagger spear axe bow staff melee harp katana].include?(cells.first.downcase)
-
-          [cells.first.downcase, cells[1..]]
-        end
+        rows = data_rows(table).select { |c| SPECIALTIES.include?(c.first.to_s.downcase) }
         return [] if rows.empty?
 
         labels.each_with_index.filter_map do |bt, col|
           next unless bt
 
-          by_spec = rows.to_h { |spec, vals| [spec, pct(vals[col])] }.compact
+          by_spec = rows.to_h { |c| [c.first.downcase, pct(c[col + 1])] }.compact
           { boost_type: bt, scaling: :per_specialty, by_specialty: by_spec } if by_spec.any?
+        end
+      end
+
+      # A "Skill Level | per Turn | Max | …" table → a progression boost (value grows per turn).
+      def self.progression_clauses(body)
+        table = body[/\{\|.*?\|\}/m] or return []
+        return [] unless table =~ /per Turn/i
+
+        bt = boost_for(table.scan(/data-label="([^"]+)"/).flatten.first.to_s) || "atk"
+        rows = data_rows(table).select { |c| c.first.to_s =~ /\A\d+\z/ } # Skill Level rows
+        by_level = rows.to_h { |c| [c.first.to_i, pct(c[1])] }.compact
+        return [] if by_level.empty?
+
+        max = rows.filter_map { |c| pct(c[2]) }.max
+        [{ boost_type: bt, scaling: :progression, by_level: by_level, max: max }]
+      end
+
+      # A "Skill Tier | [Affects] | <stat> | <stat>" table (e.g. Godblade I/II/III) → per-tier
+      # values, indexed by tier ordinal (1 = lowest uncap, last = highest).
+      def self.tier_clauses(body)
+        table = body[/\{\|.*?\|\}/m] or return []
+        labels = table.scan(/data-label="([^"]+)"/).flatten.map { |l| boost_for(l) }
+        return [] if labels.compact.empty?
+
+        rows = data_rows(table).select { |c| c.first.to_s =~ /\b[IVX]+\z/ } # "<Name> III"
+        return [] if rows.empty?
+
+        labels.each_with_index.filter_map do |bt, idx|
+          next unless bt
+
+          by_tier = rows.each_with_index.to_h do |c, tier_i|
+            nums = c.drop(1).filter_map { |x| pct(x) } # skip name + any non-numeric "Affects"
+            [tier_i + 1, nums[idx]]
+          end.compact
+          { boost_type: bt, scaling: :tier, by_tier: by_tier } if by_tier.any?
+        end
+      end
+
+      # Wikitable → array of data-row cell arrays (header/style rows excluded).
+      def self.data_rows(table)
+        table.split(/\|-/).filter_map do |row|
+          cells = row.split(/\|\||\n\s*[!|]/).map { |c| clean(c) }.reject(&:empty?)
+          cells if cells.size > 1 && cells.first !~ /wikitable|style=/
         end
       end
 
@@ -111,7 +153,7 @@ module Granblue
             .gsub(/<ref[^>]*>.*?<\/ref>/m, "").gsub(/'''|''|[{}!]/, "").gsub(/\s+/, " ").strip
       end
 
-      private_class_method :parse_section, :per_count_clauses, :specialty_clauses, :boost_for,
+      private_class_method :parse_section, :per_count_clauses, :specialty_clauses, :progression_clauses, :tier_clauses, :data_rows, :boost_for,
                            :frame_of, :shared_cap_of, :pct, :clean
     end
   end
