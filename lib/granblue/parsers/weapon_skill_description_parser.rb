@@ -46,6 +46,10 @@ module Granblue
         [/supplement.*skill/i,                               "skill_dmg_supp"],
         [/supplement.*(?:normal attack|n\.?a\.?)/i,          "na_supp"],
         [/supplement/i,                                      "dmg_supp"],
+        # Destruction (Destroyer weapons) is a damage TYPE, not an element — keep it off the
+        # elemental "Bonus Water DMG" line. Must precede the generic bonus patterns.
+        [/(?:bonus )?destruction.*?(?:charge attack|c\.?a\.?).*?(?:dmg|damage)/i, "bonus_des_ca"],
+        [/(?:bonus )?destruction.*?(?:dmg|damage)/i,         "bonus_des_dmg"],
         [/bonus.*(?:charge attack|c\.?a\.?)/i,               "bonus_ca"],
         [/bonus.*(?:dmg|damage)/i,                           "bonus_elem_dmg"],
         [/hit to (?:multiattack|double attack|triple attack)/i, "multiattack"], # → −DA (guarantee)
