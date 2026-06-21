@@ -10,9 +10,12 @@ module GridDamage
 
     ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
     BOOST_LEVEL_THRESHOLD = 280.0
-    # In-game caps on the displayed boost rates (the panel shows them orange at the cap).
-    # A "100% hit to multiattack" penalty (−100 DA) can still push the post-cap DA negative.
-    RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0, "skill_dmg_cap" => 100.0 }.freeze
+    # Confirmed weapon-skill display caps (gbf.wiki/Weapon_Skills#Weapon_Skill_Caps). The panel
+    # shows a boost orange once it reaches its cap. A "100% hit to multiattack" penalty (−100 DA)
+    # can still push the post-cap DA negative.
+    RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0,
+                  "dmg_cap" => 20.0, "na_dmg_cap" => 20.0, "ca_dmg_cap" => 100.0,
+                  "skill_dmg_cap" => 100.0, "heal_cap" => 100.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
     # the offensive ATK-family, the rate boosts, and the amplify-family. Caps, supplementals,
