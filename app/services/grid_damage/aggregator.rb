@@ -19,8 +19,10 @@ module GridDamage
     # One skill's resolved contribution to the grid. `shared_cap_group`/`cap` are set by
     # effect contributions that share a ceiling across skills (e.g. voltage_wrath_grandepic
     # 80%, dmg_supp_shared 100k).
+    # `amplifiable` is false for sources the summon-aura enhancement does NOT scale (weapon
+    # awakenings are flat panel bonuses); nil/true means the enhancement applies.
     Contribution = Struct.new(:boost_type, :series, :value, :main_hand_only, :mainhand,
-                              :shared_cap_group, :cap, keyword_init: true)
+                              :shared_cap_group, :cap, :amplifiable, keyword_init: true)
 
     # An aggregated boost_type. `by_series` is set only for multiplicative_by_series;
     # otherwise `total` is the (capped) value. `raw` is the pre-cap amount.

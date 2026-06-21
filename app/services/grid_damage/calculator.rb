@@ -60,7 +60,8 @@ module GridDamage
     def aggregate_pass(party, state, composition, amplify_enh: nil)
       contributions = WeaponContributions.for_party(party, state: state) +
                       Effects.contributions(party, state: state, composition: composition) +
-                      KeySkills.contributions(party, state: state, composition: composition)
+                      KeySkills.contributions(party, state: state, composition: composition) +
+                      AwakeningContributions.for_party(party)
       contributions = amplify_contributions(contributions, amplify_enh) if amplify_enh
       Aggregator.aggregate(contributions)
     end
@@ -72,6 +73,7 @@ module GridDamage
       factor = { "normal" => 1 + enh[:optimus].to_f / 100, "omega" => 1 + enh[:omega].to_f / 100,
                  "ex" => 1.0, "odious" => 1 + enh[:taboo].to_f / 100 }
       contributions.map do |c|
+        next c if c.amplifiable == false # flat sources (weapon awakenings) aren't enhanced
         next c unless c.value && AMPLIFIED_BOOSTS.include?(c.boost_type)
 
         c.class.new(**c.to_h.merge(value: c.value * (factor[c.series] || 1.0)))
