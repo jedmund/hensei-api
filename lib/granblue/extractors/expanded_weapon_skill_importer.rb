@@ -16,8 +16,15 @@ module Granblue
       def self.run(limit: nil, throttle: 0.2)
         wiki = Granblue::Parsers::Wiki.new
         stats = Hash.new(0)
+        # Weapons needing repair: series-template weapons that are either incomplete (no skill
+        # descriptions) OR carry garbled skills (unresolved {{WeaponElement}}/{{ #var }} templates
+        # the original parser stored verbatim). Expanding resolves both.
+        garbled_ids = WeaponSkill.joins(weapon_skill_versions: :skill)
+                                 .where("skills.name_en LIKE ?", "%{{%")
+                                 .distinct.pluck(:weapon_granblue_id)
         scope = Weapon.includes(:weapon_series)
-                      .where("wiki_raw IS NOT NULL AND wiki_raw <> '' AND wiki_raw NOT ILIKE ?", "%s1_desc=%")
+                      .where("(wiki_raw IS NOT NULL AND wiki_raw <> '' AND wiki_raw NOT ILIKE ?) OR granblue_id IN (?)",
+                             "%s1_desc=%", garbled_ids)
         scope = scope.limit(limit) if limit
 
         scope.find_each do |w|
@@ -97,6 +104,24 @@ module Granblue
             stats[:created] += 1
           end
         end
+
+        cleanup_garbled(weapon, stats)
+      end
+
+      # Drop stale versions whose skill name still holds an unresolved {{…}} template (the
+      # pre-expansion import artifact) now that the resolved skills have been written.
+      def self.cleanup_garbled(weapon, stats)
+        weapon.weapon_skills.includes(weapon_skill_versions: :skill).each do |ws|
+          ws.weapon_skill_versions.each do |v|
+            next unless v.skill&.name_en&.include?("{{")
+
+            WeaponSkillDatum.where(weapon_skill_version_id: v.id).delete_all
+            WeaponSkillEffect.where(weapon_skill_version_id: v.id).delete_all
+            v.destroy
+            stats[:garbled_removed] += 1
+          end
+          ws.destroy if ws.weapon_skill_versions.reload.empty?
+        end
       end
 
       def self.clean(html)
@@ -109,7 +134,7 @@ module Granblue
         s.gsub(/\s+/, " ").strip
       end
 
-      private_class_method :parse_skills, :persist, :clean
+      private_class_method :parse_skills, :persist, :cleanup_garbled, :clean
     end
   end
 end
