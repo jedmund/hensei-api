@@ -20,7 +20,7 @@ module GridDamage
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
     # the offensive ATK-family, the rate boosts, and the amplify-family. Caps, supplementals,
     # DEF, HP, and bonus-DMG are NOT amplified.
-    AMPLIFIED_BOOSTS = %w[atk stamina enmity e_atk_prog critical da ta
+    AMPLIFIED_BOOSTS = %w[atk hp stamina enmity e_atk_prog critical da ta
                           dmg_amp crit_amp elem_amplify od_dmg_amp].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
