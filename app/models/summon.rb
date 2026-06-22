@@ -4,6 +4,8 @@ class Summon < ApplicationRecord
   include PgSearch::Model
 
   belongs_to :summon_series, optional: true
+  has_many :auras, class_name: "SummonAura", foreign_key: :summon_granblue_id,
+                   primary_key: :granblue_id, inverse_of: :summon, dependent: :destroy
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |summon|

@@ -1,0 +1,1491 @@
+{
+  "_generated": "Hand-extracted by AI from gbf.wiki Template:WpnSkill* / Weapon Skills prose (2026-06-18). Each record is a semantic reading of a conditional/fixed grid mechanic. See docs/damage/08-scaling-data-pipeline.md and 09-calculator-mvp.md. value=null means the per-copy magnitude is not stated in prose (lives in the skill's table) and is flagged for verification.",
+  "effects": [
+    {
+      "modifier": "Pact",
+      "boost_type": "dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 50000,
+      "total_cap": 100000,
+      "shared_cap_group": "dmg_supp_shared",
+      "target_instance": "all",
+      "depends_on": [
+        "foe_max_hp"
+      ],
+      "seraphic_affected": true,
+      "applies_to": "element_allies",
+      "notes": "Supplemental = 1% of foe max HP; shares 100k cap with Hollowsky."
+    },
+    {
+      "modifier": "Spectacle",
+      "boost_type": "skill_dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 100000,
+      "total_cap": 200000,
+      "target_instance": "skill",
+      "depends_on": [
+        "foe_max_hp"
+      ],
+      "seraphic_affected": true
+    },
+    {
+      "modifier": "Maneuver",
+      "boost_type": "na_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 50000,
+      "total_cap": 100000,
+      "target_instance": "normal_attack",
+      "depends_on": [
+        "foe_max_hp"
+      ],
+      "seraphic_affected": false,
+      "notes": "N.A. Supp. is unaffected by damage amplification."
+    },
+    {
+      "modifier": "Craft",
+      "boost_type": "dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 20000,
+      "total_cap": 100000,
+      "shared_cap_group": "dmg_supp_shared",
+      "target_instance": "critical",
+      "condition": {
+        "type": "mc_crit_rate",
+        "gte": 100
+      },
+      "depends_on": [
+        "foe_max_hp",
+        "mc_crit_rate"
+      ],
+      "seraphic_affected": true,
+      "notes": "Only on critical hits; shares cap with Hollowsky/Fortitude/Frailty/Pact/Persistence."
+    },
+    {
+      "modifier": "Frailty",
+      "boost_type": "dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 20000,
+      "total_cap": 100000,
+      "shared_cap_group": "dmg_supp_shared",
+      "target_instance": "all",
+      "condition": {
+        "type": "foe_debuff_count",
+        "gte": 5
+      },
+      "depends_on": [
+        "foe_max_hp",
+        "foe_debuff_count"
+      ],
+      "seraphic_affected": true,
+      "notes": "Against foes with 5+ debuffs."
+    },
+    {
+      "modifier": "Fortitude",
+      "boost_type": "dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "cap_formula": "50000*((maxhp-curhp)/maxhp)+10000",
+      "total_cap": 100000,
+      "shared_cap_group": "dmg_supp_shared",
+      "target_instance": "all",
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "seraphic_affected": true,
+      "notes": "Enmity-style per-copy cap 10k-60k by HP."
+    },
+    {
+      "modifier": "Persistence",
+      "boost_type": "dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "cap_formula": "20000*(curhp/maxhp)+10000",
+      "total_cap": 100000,
+      "shared_cap_group": "dmg_supp_shared",
+      "target_instance": "all",
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "seraphic_affected": true,
+      "notes": "Stamina-style per-copy cap 10k-30k by HP."
+    },
+    {
+      "modifier": "Initiation",
+      "boost_type": "ca_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 5.0,
+      "value_unit": "percent_foe_max_hp",
+      "cap_formula": "500000*((maxhp-curhp)/maxhp)+100000",
+      "total_cap": 1000000,
+      "target_instance": "charge_attack",
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "seraphic_affected": true,
+      "notes": "Enmity-style per-copy cap 100k-600k by HP."
+    },
+    {
+      "modifier": "Quenching",
+      "boost_type": "ca_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": 5.0,
+      "value_unit": "percent_foe_max_hp",
+      "cap_formula": "500000*(curhp/maxhp)+100000",
+      "total_cap": 1000000,
+      "target_instance": "charge_attack",
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "seraphic_affected": true,
+      "notes": "Stamina-style per-copy cap 100k-600k by HP."
+    },
+    {
+      "modifier": "Marvel",
+      "boost_type": "skill_dmg_supp",
+      "scaling_kind": "foe_hp_supplemental",
+      "value": null,
+      "value_unit": "percent_foe_max_hp",
+      "cap_formula": "100000*((maxhp-curhp)/maxhp)+50000",
+      "total_cap": 200000,
+      "target_instance": "skill",
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "seraphic_affected": true,
+      "notes": "VERIFY: supplemental strength % not stated in prose; cap 50k-150k by HP."
+    },
+    {
+      "modifier": "Charge",
+      "boost_type": "ca_dmg",
+      "scaling_kind": "per_grid_count",
+      "value": 5.0,
+      "value_unit": "percent",
+      "count_basis": "weapon_type",
+      "count_cap": 5,
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "Per same-weapon-type in grid (any element), max 5; copies stack."
+    },
+    {
+      "modifier": "Charge",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "per_grid_count",
+      "value": 3.0,
+      "value_unit": "percent",
+      "count_basis": "weapon_type",
+      "count_cap": 5,
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Charge",
+      "boost_type": "sp_ca_cap",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "weapon_type",
+      "count_cap": 5,
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Fortified",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20,
+      "count_basis": "weapon_type",
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "+4% DEF per same-type weapon (max 20% per copy)."
+    },
+    {
+      "modifier": "Grand Epic",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "total_cap": 80,
+      "shared_cap_group": "voltage_wrath_grandepic",
+      "count_basis": "epic",
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "+4% EX ATK per Epic weapon; shares 80% cap with Voltage/Wrath."
+    },
+    {
+      "modifier": "Wrath",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "total_cap": 80,
+      "shared_cap_group": "voltage_wrath_grandepic",
+      "count_basis": "weapon_type",
+      "count_cap": 10,
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Wrath",
+      "boost_type": "hp",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "weapon_type",
+      "count_cap": 10,
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Wrath",
+      "boost_type": "ta",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "weapon_type",
+      "count_cap": 10,
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Trituration",
+      "boost_type": "atk",
+      "series": "omega",
+      "scaling_kind": "per_grid_count",
+      "value": 23.0,
+      "value_unit": "percent",
+      "per_copy_cap": 46,
+      "count_basis": "militis",
+      "aura_boostable": true,
+      "applies_to": "element_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "+23% Omega ATK per Militis weapon (max 46% per copy); aura-boosted."
+    },
+    {
+      "modifier": "Vivification",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "omega_skill",
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "Per weapon with an Omega-series skill in grid."
+    },
+    {
+      "modifier": "Vivification",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "count_basis": "omega_skill",
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Convergence",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 40,
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_group_count",
+        "gte": 4
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "When 4+ weapons of the same weapon group are equipped."
+    },
+    {
+      "modifier": "Convergence",
+      "boost_type": "def",
+      "scaling_kind": "conditional_flat",
+      "value": 25,
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_group_count",
+        "gte": 4
+      },
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Convergence",
+      "boost_type": "dmg_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 7,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "condition": {
+        "type": "weapon_group_count",
+        "gte": 4
+      },
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Resonator",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 40,
+      "value_unit": "percent",
+      "condition": {
+        "type": "same_id_count",
+        "gte": 3
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "When 3+ equipped weapons share the same ID."
+    },
+    {
+      "modifier": "Resonator",
+      "boost_type": "def",
+      "scaling_kind": "conditional_flat",
+      "value": 25,
+      "value_unit": "percent",
+      "condition": {
+        "type": "same_id_count",
+        "gte": 3
+      },
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Resonator",
+      "boost_type": "dmg_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 7,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "condition": {
+        "type": "same_id_count",
+        "gte": 3
+      },
+      "depends_on": [
+        "grid_count"
+      ]
+    },
+    {
+      "modifier": "Valuables",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 40,
+      "value_unit": "percent",
+      "condition": {
+        "type": "skill_type_count",
+        "gte": 15
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "grid_skill_type_count"
+      ],
+      "notes": "When 15+ weapon skill types active; the skill itself counts (14 others needed)."
+    },
+    {
+      "modifier": "Valuables",
+      "boost_type": "def",
+      "scaling_kind": "conditional_flat",
+      "value": 25,
+      "value_unit": "percent",
+      "condition": {
+        "type": "skill_type_count",
+        "gte": 15
+      },
+      "depends_on": [
+        "grid_skill_type_count"
+      ]
+    },
+    {
+      "modifier": "Valuables",
+      "boost_type": "dmg_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 7,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "condition": {
+        "type": "skill_type_count",
+        "gte": 15
+      },
+      "depends_on": [
+        "grid_skill_type_count"
+      ]
+    },
+    {
+      "modifier": "Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "When element Omega/Taboo/Optimus skill boost >= 280%; not affected by SL/auras."
+    },
+    {
+      "modifier": "Enforcement",
+      "boost_type": "def",
+      "scaling_kind": "conditional_flat",
+      "value": 15,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Vitality",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "ally_hp_scaled",
+      "value": 0.045,
+      "value_unit": "percent_ally_max_hp",
+      "per_copy_cap": 40,
+      "applies_to": "element_allies",
+      "depends_on": [
+        "ally_max_hp"
+      ],
+      "notes": "EX ATK = maxHP x 0.045% (cap 40%/copy, ~89k HP to cap); per-ally start-of-battle max HP."
+    },
+    {
+      "modifier": "Vitality",
+      "boost_type": "def",
+      "scaling_kind": "ally_hp_scaled",
+      "value": 0.025,
+      "value_unit": "percent_ally_max_hp",
+      "per_copy_cap": 25,
+      "depends_on": [
+        "ally_max_hp"
+      ],
+      "notes": "DEF = maxHP x 0.025% (cap 25%/copy)."
+    },
+    {
+      "modifier": "Vitality",
+      "boost_type": "dmg_cap_sp",
+      "scaling_kind": "ally_hp_scaled",
+      "value": 0.01,
+      "value_unit": "percent_ally_max_hp",
+      "per_copy_cap": 7,
+      "total_cap": 20,
+      "depends_on": [
+        "ally_max_hp"
+      ],
+      "notes": "Sp. DMG Cap = maxHP x 0.01% (cap 7%/copy, 20% total)."
+    },
+    {
+      "modifier": "Surge",
+      "boost_type": "da",
+      "scaling_kind": "current_hp_scaled",
+      "value": 5.0,
+      "value_unit": "percent",
+      "total_cap": 35.0,
+      "depends_on": [
+        "hp_percent"
+      ],
+      "applies_to": "element_allies",
+      "notes": "DA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP: 30%*((maxhp-curhp)/maxhp)+5%. value=floor, total_cap=ceiling."
+    },
+    {
+      "modifier": "Surge",
+      "boost_type": "ta",
+      "scaling_kind": "current_hp_scaled",
+      "value": 5.0,
+      "value_unit": "percent",
+      "total_cap": 35.0,
+      "depends_on": [
+        "hp_percent"
+      ],
+      "applies_to": "element_allies",
+      "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA."
+    },
+    {
+      "modifier": "Hunt",
+      "boost_type": "bonus_elem_dmg",
+      "scaling_kind": "bonus_dmg",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "foe_status",
+        "status": "Bounty"
+      },
+      "stacking": "highest_only",
+      "depends_on": [
+        "foe_status"
+      ],
+      "notes": "10% bonus elem DMG vs foes with any Bounty lvl; A-sided, highest-only."
+    },
+    {
+      "modifier": "Blow",
+      "boost_type": "bonus_elem_dmg",
+      "scaling_kind": "bonus_dmg",
+      "value": null,
+      "value_unit": "percent",
+      "stacking": "highest_only",
+      "notes": "VERIFY: A-sided bonus damage, value/frame not in prose (on weapon); highest-only."
+    },
+    {
+      "modifier": "Ascendancy",
+      "boost_type": "sp_ca_cap",
+      "scaling_kind": "flat",
+      "value": null,
+      "value_unit": "percent",
+      "total_cap": 30,
+      "notes": "VERIFY: per-copy value not in prose; Sp. C.A. DMG Cap Up stacks to 30%."
+    },
+    {
+      "modifier": "Beast Essence",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "flat",
+      "value": 10,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "condition": {
+        "type": "skill_level",
+        "gte": 20
+      },
+      "notes": "10% general DMG cap at SL20; stacks additively to 20% with other weapon-skill cap sources."
+    },
+    {
+      "modifier": "Bloodrage",
+      "boost_type": "def",
+      "scaling_kind": "static",
+      "value": -10,
+      "value_unit": "percent",
+      "stacking": "additive",
+      "notes": "Static -10% DEF (multiplicative on final DEF, unaffected by SL/auras). ATK/Critical scaling lives in weapon_skill_data."
+    },
+    {
+      "modifier": "Bloodshed",
+      "boost_type": "hp_dmg",
+      "scaling_kind": "static",
+      "value": null,
+      "value_unit": "percent",
+      "total_cap": 40,
+      "battle_interaction": true,
+      "notes": "All element allies take unpreventable damage at battle start; lowers HP (synergizes enmity). HP DMG stacks to 40%. ATK scaling in weapon_skill_data."
+    },
+    {
+      "modifier": "Insignia",
+      "boost_type": "turn_dmg",
+      "scaling_kind": "per_grid_count",
+      "value": null,
+      "value_unit": "flat",
+      "depends_on": [
+        "turn"
+      ],
+      "battle_interaction": true,
+      "notes": "Per-turn damage; per-SL value lives in weapon_skill_data (turn_dmg). Interactions (consumes Mirror Image, absorbed by Shield, ignores Unchallenged/Death's Grace) excluded from core damage number."
+    },
+    {
+      "modifier": "Essence",
+      "boost_type": "atk",
+      "scaling_kind": "static",
+      "value": null,
+      "applies_to": "mc_only",
+      "notes": "Targeting modifier: MC is also affected by Essence skills; does not affect non-MC Other-race characters. Scaling values in weapon_skill_data."
+    },
+    {
+      "modifier": "Godblade",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 35,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "notes": "EX Might. Tier I/II/III = 25(MC only)/25/35%; highest-tier recorded. TIER nuance not modeled."
+    },
+    {
+      "modifier": "Godblade",
+      "boost_type": "bonus_des_dmg",
+      "scaling_kind": "static",
+      "value": 20,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "notes": "Bonus Destruction DMG echo. Tier I/II/III = 15/15/20%; highest recorded."
+    },
+    {
+      "modifier": "Godshield",
+      "boost_type": "hp",
+      "scaling_kind": "static",
+      "value": 30,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "notes": "Tier I/II/III = 20(MC only)/20/30%; highest recorded."
+    },
+    {
+      "modifier": "Godshield",
+      "boost_type": "bonus_des_dmg_ca",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "notes": "Bonus Destruction DMG on C.A. Tier I/II/III = 5/5/10%; highest recorded."
+    },
+    {
+      "modifier": "Godflair",
+      "boost_type": "skill_dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 50,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Activates when element Omega/Taboo/Optimus skill boost >= 280%."
+    },
+    {
+      "modifier": "Godflair",
+      "boost_type": "skill_dmg_supp",
+      "scaling_kind": "flat",
+      "value": 30000,
+      "value_unit": "flat",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "seraphic_affected": true,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Skill Supp. (Sp.) flat +30,000 per copy (not foe-HP based)."
+    },
+    {
+      "modifier": "Godflair",
+      "boost_type": "elem_amplify",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "stacking": "highest_only",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Amplify superior-element DMG 30%; highest-only with other Elem. Amplify."
+    },
+    {
+      "modifier": "Godflair",
+      "boost_type": "elem_reduc",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "battle_interaction": true,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Defensive (DMG taken from superior element); excluded from core damage."
+    },
+    {
+      "modifier": "Godheart",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 50,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Activates at boost >= 280%."
+    },
+    {
+      "modifier": "Godheart",
+      "boost_type": "ca_supp",
+      "scaling_kind": "flat",
+      "value": 300000,
+      "value_unit": "flat",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "seraphic_affected": true,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "C.A. Supp. (Sp.) flat +300,000 per copy."
+    },
+    {
+      "modifier": "Godheart",
+      "boost_type": "elem_amplify",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "stacking": "highest_only",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Highest-only with other Elem. Amplify."
+    },
+    {
+      "modifier": "Godheart",
+      "boost_type": "elem_reduc",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "battle_interaction": true,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Defensive; excluded from core damage."
+    },
+    {
+      "modifier": "Godstrike",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Activates at boost >= 280%."
+    },
+    {
+      "modifier": "Godstrike",
+      "boost_type": "na_supp",
+      "scaling_kind": "flat",
+      "value": 20000,
+      "value_unit": "flat",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "seraphic_affected": true,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "N.A. Supp. (Sp.) flat +20,000 per copy; this Sp. variant IS seraphic-amplified."
+    },
+    {
+      "modifier": "Godstrike",
+      "boost_type": "elem_amplify",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "stacking": "highest_only",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Highest-only with other Elem. Amplify."
+    },
+    {
+      "modifier": "Godstrike",
+      "boost_type": "elem_reduc",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "aura_boostable": false,
+      "battle_interaction": true,
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Defensive; excluded from core damage."
+    },
+    {
+      "modifier": "Draconic Barrier",
+      "boost_type": "elem_reduc",
+      "scaling_kind": "static",
+      "value": 30,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "applies_to": "all_allies",
+      "battle_interaction": true,
+      "notes": "Teluma: 30% [element] DMG reduction. Defensive."
+    },
+    {
+      "modifier": "Draconic Fortitude",
+      "boost_type": "hp_fixed",
+      "scaling_kind": "flat",
+      "value": 10000,
+      "value_unit": "flat",
+      "aura_boostable": false,
+      "applies_to": "element_allies",
+      "notes": "Salvation Teluma: +10,000 fixed HP."
+    },
+    {
+      "modifier": "Draconic Magnitude",
+      "boost_type": "dmg_amp_non_elem",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "applies_to": "element_allies",
+      "condition": {
+        "type": "foe_element",
+        "is": "non_elemental"
+      },
+      "battle_interaction": true,
+      "depends_on": [
+        "foe_element"
+      ],
+      "notes": "Oblivion Teluma: +10% DMG vs non-elemental foes."
+    },
+    {
+      "modifier": "Fulgor Elatio",
+      "boost_type": "charge_gain",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "10% Charge Gain to all allies."
+    },
+    {
+      "modifier": "Fulgor Fortis",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "WsBox boost1='DMG Cap' but desc = normal-attack DMG cap -> na_dmg_cap."
+    },
+    {
+      "modifier": "Fulgor Impetus",
+      "boost_type": "elem_amplify",
+      "scaling_kind": "static",
+      "value": 25,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "stacking": "highest_only",
+      "notes": "Amplify superior-element DMG 25%; highest-only with other Elem. Amplify."
+    },
+    {
+      "modifier": "Fulgor Sanatio",
+      "boost_type": "heal_cap",
+      "scaling_kind": "static",
+      "value": 50,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "50% Heal Cap to all allies."
+    },
+    {
+      "modifier": "Aramis",
+      "boost_type": "skill_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "total_cap": 60,
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Musketeer main-hand-only. 15% below 280% boost, 30% at >=280%. Caps 60%."
+    },
+    {
+      "modifier": "Aramis",
+      "boost_type": "skill_amp_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "5% below 280%, 10% at >=280%. Caps 20%."
+    },
+    {
+      "modifier": "Athos",
+      "boost_type": "da",
+      "scaling_kind": "conditional_flat",
+      "value": 12.5,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "6.25% below 280%, 12.5% at >=280%."
+    },
+    {
+      "modifier": "Athos",
+      "boost_type": "ta",
+      "scaling_kind": "conditional_flat",
+      "value": 12.5,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "6.25% below 280%, 12.5% at >=280%."
+    },
+    {
+      "modifier": "Athos",
+      "boost_type": "na_amp_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Main-hand-only. 5% below 280%, 10% at >=280%. VERIFY: no cap stated."
+    },
+    {
+      "modifier": "Porthos",
+      "boost_type": "cb_amp",
+      "scaling_kind": "conditional_flat",
+      "value": 50,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "25% below 280%, 50% at >=280%."
+    },
+    {
+      "modifier": "Porthos",
+      "boost_type": "fc_amp",
+      "scaling_kind": "conditional_flat",
+      "value": 50,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "25% below 280%, 50% at >=280%."
+    },
+    {
+      "modifier": "Porthos",
+      "boost_type": "ca_amp_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Main-hand-only. 5% below 280%, 10% at >=280%. VERIFY: no cap stated."
+    },
+    {
+      "modifier": "Voltage",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "total_cap": 80,
+      "shared_cap_group": "voltage_wrath_grandepic",
+      "count_basis": "weapon_group",
+      "applies_to": "all_allies",
+      "depends_on": [
+        "grid_count"
+      ],
+      "notes": "EX Might Sp. +4% per same weapon-group weapon (Voltage II tier = 8%); shares 80% cap with Wrath/Grand Epic."
+    },
+    {
+      "modifier": "Striking Art",
+      "boost_type": "skill_dmg_cap",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "notes": "+10% skill DMG cap."
+    },
+    {
+      "modifier": "Striking Art",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "static",
+      "value": 5,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "notes": "+5% normal-attack DMG cap."
+    },
+    {
+      "modifier": "Zenith Art",
+      "boost_type": "skill_dmg_cap",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "notes": "+10% skill DMG cap."
+    },
+    {
+      "modifier": "Zenith Art",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "notes": "+10% C.A. DMG cap."
+    },
+    {
+      "modifier": "Zenith Strike",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "notes": "+10% C.A. DMG cap."
+    },
+    {
+      "modifier": "Zenith Strike",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "static",
+      "value": 5,
+      "value_unit": "percent",
+      "applies_to": "element_allies",
+      "notes": "+5% normal-attack DMG cap."
+    },
+    {
+      "modifier": "Sephira Maxi",
+      "boost_type": "dmg_cap_arc",
+      "scaling_kind": "conditional_flat",
+      "value": 20,
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true
+      },
+      "applies_to": "element_allies",
+      "stacking": "highest_only",
+      "depends_on": [
+        "arcarum"
+      ],
+      "notes": "+20% DMG cap only in Arcarum/Replicard; same-element Sephira Maxi do not stack."
+    },
+    {
+      "modifier": "Sephira Maxi",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 5,
+      "value_unit": "percent",
+      "total_cap": 20,
+      "condition": {
+        "type": "weapon_level",
+        "gte": 200
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "weapon_level"
+      ],
+      "notes": "At weapon lvl 200, +5% general DMG cap; stacks to 20% with other WS cap sources."
+    },
+    {
+      "modifier": "Exertion",
+      "boost_type": "da",
+      "scaling_kind": "current_hp_scaled",
+      "value": 5.0,
+      "value_unit": "percent",
+      "total_cap": 20.0,
+      "applies_to": "element_allies",
+      "depends_on": [
+        "hp_percent"
+      ],
+      "notes": "DA = 15%*(curHP/maxHP)+5%; 20% full HP -> 5% at 1 HP. value=floor, total_cap=ceiling."
+    },
+    {
+      "modifier": "Exertion",
+      "boost_type": "ta",
+      "scaling_kind": "current_hp_scaled",
+      "value": 5.0,
+      "value_unit": "percent",
+      "total_cap": 20.0,
+      "applies_to": "element_allies",
+      "depends_on": [
+        "hp_percent"
+      ],
+      "notes": "TA, same curve as DA."
+    },
+    {
+      "modifier": "Fathoms",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 40,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Activates at boost >= 280%."
+    },
+    {
+      "modifier": "Fathoms",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Fathoms",
+      "boost_type": "cb_amp",
+      "scaling_kind": "conditional_flat",
+      "value": 100,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Fathoms",
+      "boost_type": "fc_amp",
+      "scaling_kind": "conditional_flat",
+      "value": 100,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Fathoms",
+      "boost_type": "ca_amp_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Honing",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 40,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Activates at boost >= 280%."
+    },
+    {
+      "modifier": "Honing",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Honing",
+      "boost_type": "skill_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 30,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Honing",
+      "boost_type": "skill_amp_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Ruination",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 40,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ],
+      "notes": "Activates at boost >= 280%."
+    },
+    {
+      "modifier": "Ruination",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Ruination",
+      "boost_type": "da",
+      "scaling_kind": "conditional_flat",
+      "value": 25,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Ruination",
+      "boost_type": "ta",
+      "scaling_kind": "conditional_flat",
+      "value": 25,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Ruination",
+      "boost_type": "na_amp_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 10,
+      "value_unit": "percent",
+      "condition": {
+        "type": "boost_level",
+        "gte": 280
+      },
+      "applies_to": "element_allies",
+      "depends_on": [
+        "boost_level"
+      ]
+    },
+    {
+      "modifier": "Scandere Aggressio",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "static",
+      "value": 10,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "+10% N.A. DMG cap to all allies."
+    },
+    {
+      "modifier": "Scandere Arcanum",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "static",
+      "value": 50,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "+50% C.A. DMG cap to all allies."
+    },
+    {
+      "modifier": "Scandere Catena",
+      "boost_type": "cb_dmg_cap",
+      "scaling_kind": "static",
+      "value": 50,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "+50% C.B. DMG cap to all allies."
+    },
+    {
+      "modifier": "Scandere Facultas",
+      "boost_type": "skill_dmg_cap",
+      "scaling_kind": "static",
+      "value": 50,
+      "value_unit": "percent",
+      "applies_to": "all_allies",
+      "notes": "+50% Skill DMG cap to all allies."
+    }
+  ]
+}

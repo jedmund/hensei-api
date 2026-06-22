@@ -1,0 +1,32 @@
+{{WsBox
+|name=Ars
+|desc= Big boost to [weapon group]-specialty allies' ATK and max HP / Big boost to [weapon group]-specialty allies' critical hit rate when superior element
+|aura_boostable=no
+|color=
+|boost1=EX Might
+|boost2=HP
+|boost3=Critical
+
+|icon=Ws_skill_weapon_tech_*.png
+|include=78910
+}}
+
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" | Skill Level
+! 1 !! 10 !! 15 !! 20 
+|-
+! class="wsmod-icon" rowspan="5" |
+  {{WeaponSkillIconLink|icon=Ws_skill_weapon_backwater_*.png|size=50|category=Ultio|include=78910}}
+! class="wsmod-stat" | {{Label|EX Might}}
+| - || 15.0% || 20.0% || 25.0% 
+|-
+! class="wsmod-stat" | {{Label|HP}}
+| - || 10.0% || 15.0% || 20.0% 
+|-
+! class="wsmod-stat" | {{Label|Critical}}
+| - || {{crit|2=15.0|3=50}} || {{crit|2=17.5|3=50}} || {{crit|2=20.0|3=50}}
+|}
+</div><noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

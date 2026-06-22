@@ -14,6 +14,7 @@ namespace :granblue do
     type = (ENV['type'] || 'Character').classify
     id = ENV['id']
     force = ENV['force'] == 'true'
+    delay = (ENV['delay'].presence || '0.5').to_f # be respectful: throttle between wiki requests
 
     # Validate object type
     valid_types = %w[Character Weapon Summon]
@@ -70,6 +71,8 @@ namespace :granblue do
         errors << { object_id: object.id, type: type, error: e.message }
         puts "Error fetching data for #{object.name_en}: #{e.message}"
       end
+
+      sleep(delay)
     end
 
     if errors.any?

@@ -41,6 +41,10 @@ namespace :granblue do
     puts "Errors: #{result[:errors].size}"
     puts "No skills after parse: #{no_skills.size}"
     puts "Report: #{report_path}"
+
+    # Order-independent: backfill any version whose size stayed nil (its own desc was
+    # empty) from the deduped skill description, now that all skills are finalized.
+    Rake::Task["granblue:backfill_weapon_skill_sizes"].invoke
   end
 
   desc <<~DESC
