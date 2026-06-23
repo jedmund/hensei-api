@@ -235,6 +235,10 @@ module Api
           }
         end
 
+        field :full_auto_skills do |party|
+          party.full_auto_skills
+        end
+
         field :guidebooks, cache: true do |party|
           {
             '1' => party.guidebook1 ? GuidebookBlueprint.render_as_hash(party.guidebook1) : nil,

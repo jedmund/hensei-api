@@ -231,6 +231,7 @@ class Party < ApplicationRecord
   # ActiveRecord Validations
   validate :skills_are_unique
   validate :guidebooks_are_unique
+  validate :validate_full_auto_skills
 
   validates :name,
             profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
@@ -500,6 +501,29 @@ class Party < ApplicationRecord
     validate_uniqueness_of_associations([guidebook1, guidebook2, guidebook3],
                                         %i[guidebook1 guidebook2 guidebook3],
                                         :guidebooks)
+  end
+
+  # full_auto_skills maps an MC ability slot ("0".."3") to whether it is used in
+  # Full Auto. Reject unknown slots or non-boolean values.
+  FULL_AUTO_SLOTS = %w[0 1 2 3].freeze
+  FULL_AUTO_VALUES = [true, false].freeze
+
+  ##
+  # Validates the per-slot MC Full Auto toggles.
+  #
+  # @return [void]
+  def validate_full_auto_skills
+    return if full_auto_skills.blank?
+
+    unless full_auto_skills.is_a?(Hash)
+      errors.add(:full_auto_skills, 'must be an object')
+      return
+    end
+
+    full_auto_skills.each do |slot, value|
+      errors.add(:full_auto_skills, "invalid slot #{slot}") unless FULL_AUTO_SLOTS.include?(slot.to_s)
+      errors.add(:full_auto_skills, "invalid value for slot #{slot}") unless FULL_AUTO_VALUES.include?(value)
+    end
   end
 
   #########################

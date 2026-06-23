@@ -264,6 +264,33 @@ RSpec.describe 'Parties API', type: :request do
       expect(response).to have_http_status(:unauthorized)
       expect(party.reload.name).to eq('Old Name')
     end
+
+    it 'persists and serializes per-slot MC full_auto_skills' do
+      update_params = { party: { full_auto_skills: { '0' => false, '2' => true } } }
+
+      put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['party']['full_auto_skills']).to eq('0' => false, '2' => true)
+      expect(party.reload.full_auto_skills).to eq('0' => false, '2' => true)
+    end
+
+    it 'rejects MC full_auto_skills with a non-boolean value' do
+      update_params = { party: { full_auto_skills: { '0' => 'maybe' } } }
+
+      put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'filters out-of-range MC full_auto_skills slots' do
+      update_params = { party: { full_auto_skills: { '3' => true, '4' => false } } }
+
+      put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(party.reload.full_auto_skills).to eq('3' => true)
+    end
   end
 
   describe 'DELETE /api/v1/parties/:id' do

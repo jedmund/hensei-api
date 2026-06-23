@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -876,6 +876,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_17_010000) do
     t.jsonb "difficulty_breakdown"
     t.datetime "difficulty_computed_at"
     t.integer "difficulty_ruleset_version"
+    t.jsonb "full_auto_skills", default: {}, null: false
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"

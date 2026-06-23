@@ -432,6 +432,7 @@ module Api
           :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :solo, :clear_time, :button_count,
           :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,
           :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
+          full_auto_skills: %w[0 1 2 3],
           characters_attributes: [:id, :party_id, :character_id, :position, :uncap_level,
                                   :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
                                   { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
