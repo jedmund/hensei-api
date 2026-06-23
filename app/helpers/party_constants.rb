@@ -5,7 +5,8 @@
 #
 module PartyConstants
   COLLECTION_PER_PAGE = 15
-  DEFAULT_MIN_CHARACTERS = 3
+  # 0 so MC-only teams (no characters) appear in the Gallery by default.
+  DEFAULT_MIN_CHARACTERS = 0
   DEFAULT_MIN_SUMMONS = 2
   DEFAULT_MIN_WEAPONS = 5
   MAX_CHARACTERS = 5

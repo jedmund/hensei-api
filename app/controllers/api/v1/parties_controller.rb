@@ -20,8 +20,9 @@ module Api
       # Maximum number of weapons allowed in a party
       MAX_WEAPONS = 13
 
-      # Default minimum number of characters required for filtering
-      DEFAULT_MIN_CHARACTERS = 3
+      # Default minimum number of characters required for filtering.
+      # 0 so MC-only teams (no characters) appear in the Gallery by default.
+      DEFAULT_MIN_CHARACTERS = 0
 
       # Default minimum number of summons required for filtering
       DEFAULT_MIN_SUMMONS = 2

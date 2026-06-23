@@ -548,6 +548,9 @@ RSpec.describe 'Parties API', type: :request do
       let!(:bad_party) do
         create(:party, user: user, weapons_count: 2, characters_count: 2, summons_count: 1, visibility: 1)
       end
+      let!(:mc_only_party) do
+        create(:party, user: user, weapons_count: 5, characters_count: 0, summons_count: 2, visibility: 1)
+      end
 
       it 'returns only parties meeting the default thresholds' do
         get '/api/v1/parties', headers: headers
@@ -556,6 +559,14 @@ RSpec.describe 'Parties API', type: :request do
         party_ids = response.parsed_body['results'].map { |p| p['id'] }
         expect(party_ids).to include(good_party.id)
         expect(party_ids).not_to include(bad_party.id)
+      end
+
+      it 'includes MC-only teams with no characters' do
+        get '/api/v1/parties', headers: headers
+        expect(response).to have_http_status(:ok)
+
+        party_ids = response.parsed_body['results'].map { |p| p['id'] }
+        expect(party_ids).to include(mc_only_party.id)
       end
     end
   end
