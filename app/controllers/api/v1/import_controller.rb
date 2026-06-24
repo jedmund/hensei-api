@@ -174,6 +174,7 @@ module Api
       rescue StandardError => e
         Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
+        report_unexpected_exception(e, phase: 'import_create')
         render json: { error: 'Import failed due to an unexpected error. Please try again.' }, status: :unprocessable_content
       end
 
@@ -216,6 +217,7 @@ module Api
           render json: { message: 'Weapon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
           Rails.logger.error "[IMPORT] Failed to update weapon gamedata: #{e.message}"
+          report_unexpected_exception(e, phase: 'gamedata_update')
           render json: { error: e.message }, status: :unprocessable_content
         end
       end
@@ -259,6 +261,7 @@ module Api
           render json: { message: 'Summon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
           Rails.logger.error "[IMPORT] Failed to update summon gamedata: #{e.message}"
+          report_unexpected_exception(e, phase: 'gamedata_update')
           render json: { error: e.message }, status: :unprocessable_content
         end
       end
@@ -306,6 +309,7 @@ module Api
           render json: { message: 'Character gamedata updated successfully' }, status: :ok
         rescue StandardError => e
           Rails.logger.error "[IMPORT] Failed to update character gamedata: #{e.message}"
+          report_unexpected_exception(e, phase: 'gamedata_update')
           render json: { error: e.message }, status: :unprocessable_content
         end
       end

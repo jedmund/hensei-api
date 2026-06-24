@@ -33,12 +33,21 @@ module Processors
     attr_reader :party, :data, :options
 
     ##
-    # Logs a message to Rails.logger.
+    # Logs a message to Rails.logger, and records it as a Sentry breadcrumb when
+    # Sentry is active. Breadcrumbs add zero standalone noise — they only ship
+    # attached to an exception that actually gets captured — but give the full
+    # processor step trail for the next unexpected import failure.
     #
     # @param message [String] the message to log.
     # @return [void]
     def log(message)
       Rails.logger.info "[PROCESSOR][#{self.class.name}] #{message}"
+
+      return unless defined?(Sentry) && Sentry.initialized?
+
+      Sentry.add_breadcrumb(
+        Sentry::Breadcrumb.new(category: 'processor', message: "[#{self.class.name}] #{message}", level: 'info')
+      )
     end
   end
 end
