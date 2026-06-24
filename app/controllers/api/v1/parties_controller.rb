@@ -104,7 +104,7 @@ module Api
         end
         @party.last_updated = Time.current
         if @party.save
-          render json: PartyBlueprint.render(@party, view: :full, root: :party)
+          render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party)
         else
           render_validation_error_response(@party)
         end
@@ -273,7 +273,7 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           operations_applied: changes.count,
           changes: changes
         }, status: :ok
@@ -399,7 +399,20 @@ module Api
 
       # Loads the party by its shortcode.
       def set_from_slug
-        @party = Party.includes(
+        @party = Party.includes(full_party_preloads).find_by(shortcode: params[:id])
+
+        return render_not_found_response('party') unless @party
+
+        # Most parties have zero substitutes; a single EXISTS lookup is far cheaper
+        # than the three collection-ownership queries `preload_substitute_grids!` runs.
+        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons) if @party.has_substitutions?
+      end
+
+      # Associations the PartyBlueprint :full view touches. Eager-loaded by every
+      # action that serializes a full party (show / update / grid_update) so the
+      # response renders without N+1 queries over the grid items.
+      def full_party_preloads
+        [
           :user, :job, { raid: :group },
           { characters: GridCharacter::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
           { weapons: GridWeapon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
@@ -409,13 +422,19 @@ module Api
           { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
           :skill0, :skill1, :skill2, :skill3, :accessory,
           { party_shares: :shareable }
-        ).find_by(shortcode: params[:id])
+        ]
+      end
 
-        return render_not_found_response('party') unless @party
+      # Re-fetches a party by id with all blueprint associations (and substitute
+      # collection data) preloaded, for rendering a full-view response without
+      # N+1s. The mutating actions (update, grid_update) hold a non-eager-loaded
+      # @party, so they round-trip through this before serializing.
+      def load_full_party(id)
+        party = Party.includes(full_party_preloads).find_by(id: id)
+        return party unless party&.has_substitutions?
 
-        # Most parties have zero substitutes; a single EXISTS lookup is far cheaper
-        # than the three collection-ownership queries `preload_substitute_grids!` runs.
-        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons) if @party.has_substitutions?
+        preload_substitute_grids!(party.characters + party.weapons + party.summons)
+        party
       end
 
       # Loads the party by its id.
