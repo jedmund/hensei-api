@@ -232,58 +232,28 @@ module Api
           end
         end
 
-        # Perform the query
-        skills = if search_params[:query].present? && search_params[:query].length >= 2
-                   JobSkill.joins(:job)
-                           .method("#{locale}_search").call(search_params[:query])
-                           .where(conditions)
-                           .where(job: job.id, main: false)
-                           .or(
-                             JobSkill.joins(:job)
-                                     .method("#{locale}_search").call(search_params[:query])
-                                     .where(conditions)
-                                     .where(sub: true)
-                                     .where.not(job: job.id)
-                           )
-                           .or(
-                             JobSkill.joins(:job)
-                                     .method("#{locale}_search").call(search_params[:query])
-                                     .where(conditions)
-                                     .where(job: { base_job: job.base_job.id }, emp: true)
-                                     .where.not(job: job.id)
-                           )
-                           .or(
-                             JobSkill.joins(:job)
-                                     .method("#{locale}_search").call(search_params[:query])
-                                     .where(conditions)
-                                     .where(job: { base_job: job.base_job.id }, base: true)
-                                     .where.not(job: job.id)
-                           )
-                 else
-                   JobSkill.all
-                           .joins(:job)
-                           .where(conditions)
-                           .where(job: job.id, main: false)
-                           .or(
-                             JobSkill.all
-                                     .where(conditions)
-                                     .where(sub: true)
-                                     .where.not(job: job.id)
-                           )
-                           .or(
-                             JobSkill.all
-                                     .where(conditions)
-                                     .where(job: job.base_job.id, base: true)
-                                     .where.not(job: job.id)
-                           )
-                           .or(
-                             JobSkill.all
-                                     .where(conditions)
-                                     .joins(:job)
-                                     .where(job: { base_job: job.base_job.id }, emp: true)
-                                     .where.not(job: job.id)
-                           )
-                 end
+        # Perform the query. The base_job clauses only apply when the job has a
+        # base job; base jobs themselves have none (job.base_job is nil), so they
+        # drop out via compact instead of dereferencing job.base_job.id (was a 500).
+        relations =
+          if search_params[:query].present? && search_params[:query].length >= 2
+            base = JobSkill.joins(:job).method("#{locale}_search").call(search_params[:query]).where(conditions)
+            [
+              base.where(job: job.id, main: false),
+              base.where(sub: true).where.not(job: job.id),
+              job.base_job && base.where(job: { base_job: job.base_job.id }, emp: true).where.not(job: job.id),
+              job.base_job && base.where(job: { base_job: job.base_job.id }, base: true).where.not(job: job.id)
+            ]
+          else
+            [
+              JobSkill.all.joins(:job).where(conditions).where(job: job.id, main: false),
+              JobSkill.all.where(conditions).where(sub: true).where.not(job: job.id),
+              job.base_job && JobSkill.all.where(conditions).where(job: job.base_job.id, base: true).where.not(job: job.id),
+              job.base_job && JobSkill.all.where(conditions).joins(:job).where(job: { base_job: job.base_job.id }, emp: true).where.not(job: job.id)
+            ]
+          end
+
+        skills = relations.compact.reduce(:or)
 
         count = skills.length
         paginated = skills.paginate(page: search_params[:page], per_page: search_page_size)
