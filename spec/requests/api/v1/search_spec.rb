@@ -121,6 +121,28 @@ RSpec.describe 'Api::V1::Search', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['results']).to be_an(Array)
     end
+
+    # Regression: a job with no base_job (e.g. a base job itself) made the query
+    # dereference job.base_job.id on nil -> 500 NoMethodError. Both branches.
+    it 'does not error for a job without a base_job (empty query)' do
+      job = create(:job, base_job: nil)
+      create(:job_skill, job: job)
+      post '/api/v1/search/job_skills',
+           params: { search: { job: job.id, locale: 'en', query: '' } }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results']).to be_an(Array)
+    end
+
+    it 'does not error for a job without a base_job (with query)' do
+      job = create(:job, base_job: nil)
+      create(:job_skill, job: job)
+      post '/api/v1/search/job_skills',
+           params: { search: { job: job.id, locale: 'en', query: 'skill' } }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results']).to be_an(Array)
+    end
   end
 
   describe 'POST /api/v1/search/guidebooks' do
