@@ -20,7 +20,7 @@ module Api
       }.freeze
 
       def all
-        locale = search_params[:locale] || 'en'
+        locale = search_locale
 
         case locale
         when 'en'
@@ -57,7 +57,7 @@ module Api
 
       def characters
         filters = search_params[:filters]
-        locale = search_params[:locale] || 'en'
+        locale = search_locale
         exclude = search_params[:exclude]
         conditions = {}
 
@@ -119,7 +119,7 @@ module Api
 
       def weapons
         filters = search_params[:filters]
-        locale = search_params[:locale] || 'en'
+        locale = search_locale
         conditions = {}
 
         if filters
@@ -167,7 +167,7 @@ module Api
 
       def summons
         filters = search_params[:filters]
-        locale = search_params[:locale] || 'en'
+        locale = search_locale
         conditions = {}
 
         if filters
@@ -214,7 +214,7 @@ module Api
 
         # Set up basic parameters we'll use
         job = Job.find(search_params[:job])
-        locale = search_params[:locale] || 'en'
+        locale = search_locale
 
         # Set the conditions based on the group requested
         conditions = {}
@@ -295,7 +295,7 @@ module Api
 
       def jobs
         filters = search_params[:filters]
-        locale = search_params[:locale] || 'en'
+        locale = search_locale
         conditions = {}
 
         if filters
@@ -390,13 +390,20 @@ module Api
         params.require(:search).permit!
       end
 
+      # Normalizes the requested locale to a supported search scope. Clients send
+      # either "ja" or "jp" for Japanese; the models define en_search / ja_search
+      # and name_en / name_jp. Anything else falls back to English.
+      def search_locale
+        %w[ja jp].include?(search_params[:locale].to_s) ? 'ja' : 'en'
+      end
+
       # Apply sorting based on column name and order
       def apply_sort(scope, column, order, locale)
         sort_dir = order == 'desc' ? :desc : :asc
 
         case column
         when 'name'
-          name_col = locale == 'ja' ? :name_ja : :name_en
+          name_col = locale == 'ja' ? :name_jp : :name_en
           scope.order(name_col => sort_dir, id: :asc)
         when 'element'
           scope.order(element: sort_dir, id: :asc)
@@ -415,7 +422,7 @@ module Api
 
         case column
         when 'name'
-          name_col = locale == 'ja' ? :name_ja : :name_en
+          name_col = locale == 'ja' ? :name_jp : :name_en
           scope.order(name_col => sort_dir, id: :asc)
         when 'row'
           scope.order(row: sort_dir, order: :asc, id: :asc)
