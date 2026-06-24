@@ -5,7 +5,10 @@ module Api
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
-      before_action :set, except: %w[create check_email check_username me search deposit_edit_keys]
+      # update looks the user up by id (set_by_id); the rest look up by username
+      # (set). update must be excluded from set so its id isn't treated as a
+      # username (which now 404s on miss).
+      before_action :set, except: %w[create check_email check_username me search deposit_edit_keys update]
       before_action :set_by_id, only: %w[update]
       before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys]
 
@@ -293,9 +296,12 @@ module Api
         'visibility = 1' if current_user != @user
       end
 
-      # Specify whitelisted properties that can be modified.
+      # Loads the user named in the path. 404s for unknown usernames so bot
+      # probes (sitemap.xml, favicon.ico, ...) don't render a nil user through
+      # the blueprint and 500.
       def set
         @user = User.includes(active_crew_membership: :crew).find_by('lower(username) = ?', params[:id].downcase)
+        render_not_found_response('user') unless @user
       end
 
       def set_by_id
@@ -304,6 +310,7 @@ module Api
         else
           @user = User.includes(active_crew_membership: :crew).find_by('id = ?', params[:id])
         end
+        render_not_found_response('user') unless @user
       end
 
       def user_params
