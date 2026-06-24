@@ -188,6 +188,36 @@ RSpec.describe 'Collection Characters API', type: :request do
       expect(returned_ids).not_to include(other_char.id)
     end
 
+    it 'sorts by name while filtering by series in unowned mode' do
+      grand_series = create(:character_series, :grand)
+      grand_char = create(:character)
+      create(:character_series_membership, character: grand_char, character_series: grand_series)
+
+      # Both name sort and the series join reference name_en/name_jp; without
+      # qualifying the column this 500s with PG::AmbiguousColumn.
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, series: grand_series.id, sort: 'name_asc' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(grand_char.id)
+    end
+
+    it 'searches by name while filtering by series in unowned mode' do
+      grand_series = create(:character_series, :grand)
+      matching_char = create(:character, name_en: 'Zeta Unique Name')
+      create(:character_series_membership, character: matching_char, character_series: grand_series)
+
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, series: grand_series.id, search: 'Unique' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(matching_char.id)
+    end
+
     it 'does not return a character the user owns when requesting unowned' do
       owned_char = create(:character)
       create(:collection_character, user: user, character: owned_char)
