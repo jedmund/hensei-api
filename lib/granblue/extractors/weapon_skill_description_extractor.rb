@@ -33,6 +33,13 @@ module Granblue
           #    their boosts; composite skills (e.g. Restraint = DA canonical + Critical missing)
           #    get just the missing halves.
           parsed = Parser.parse(desc, name: skill&.name_en)
+
+          # 2a. Backfill the standard-family identity from the skill NAME for versions imported
+          #     without one (series-template-injected skills like "Water's Majesty"): with the
+          #     modifier set, the family's own canonical SL-curves resolve, instead of the
+          #     family-blind size-bucket fallback below (which picks the wrong family's value).
+          stats[:family_backfilled] += 1 if backfill_family(v, skill, parsed, dry_run: dry_run)
+
           if parsed[:clauses].empty?
             stats[parsed[:skip] ? "skip_#{parsed[:skip]}".to_sym : :no_clause] += 1
             next
@@ -43,6 +50,25 @@ module Granblue
           stats[covered.empty? ? :resolved : :completed] += 1
         end
         stats
+      end
+
+      # Derive (skill_modifier, skill_size) from the skill name when the version has none and
+      # the name resolves to a family with canonical data ("Water's Majesty" → Majesty; the
+      # possessive word is the element/aura, the tail is the family). Size comes from the name's
+      # numeral (Majesty III → big) or, failing that, the description's size word.
+      def self.backfill_family(version, skill, parsed, dry_run:)
+        return false if version.skill_modifier.present?
+
+        name = Granblue::Parsers::WeaponSkillParser.parse(skill&.name_en.to_s)
+        family = name[:modifier]
+        return false unless family && WeaponSkillVersion::VALID_MODIFIERS.include?(family) &&
+                            WeaponSkillDatum.canonical.exists?(modifier: family)
+
+        updates = { skill_modifier: family }
+        size = name[:size] || parsed[:clauses].filter_map { |c| c[:size] }.first
+        updates[:skill_size] = size if version.skill_size.blank? && size
+        version.update_columns(**updates) unless dry_run
+        true
       end
 
       # boost_types the canonical (modifier-keyed) data/effects already provide for this version.
@@ -115,8 +141,22 @@ module Granblue
         clause[:size].present? && clause[:value].nil?
       end
 
+      # The version's own family curve for this clause, when it has one — the true per-skill
+      # value. The cross-family canonical_curve (strongest row for the size) is a last resort
+      # for skills with no standard family.
+      def self.family_curve(version, clause)
+        return nil unless version.skill_modifier.present?
+
+        WeaponSkillDatum.for_skill(modifier: version.skill_modifier,
+                                   series: clause[:series] || version.skill_series,
+                                   size: clause[:size])
+                        .find do |d|
+          d.boost_type == clause[:boost_type] && d.formula_type == (clause[:formula_type] || "flat")
+        end
+      end
+
       def self.write_data(version, skill, clause)
-        curve = WeaponSkillDatum.canonical_curve(
+        curve = family_curve(version, clause) || WeaponSkillDatum.canonical_curve(
           boost_type: clause[:boost_type], size: clause[:size],
           formula_type: clause[:formula_type] || "flat"
         )
@@ -143,8 +183,9 @@ module Granblue
         )
       end
 
-      private_class_method :canonical_boost_types, :full_description, :weapon_wiki_raw, :wiki_field,
-                           :apply, :sl_scaled?, :write_data, :write_effect
+      private_class_method :backfill_family, :canonical_boost_types, :full_description,
+                           :weapon_wiki_raw, :wiki_field, :apply, :sl_scaled?, :family_curve,
+                           :write_data, :write_effect
     end
   end
 end
