@@ -9,9 +9,9 @@ module GridDamage
   module SummonAuras
     module_function
 
-    # → { optimus:, omega:, elemental: } percent totals.
+    # → { optimus:, omega:, taboo:, elemental: } percent totals.
     def for_party(party, element:)
-      totals = { optimus: 0.0, omega: 0.0, elemental: 0.0 }
+      totals = { optimus: 0.0, omega: 0.0, taboo: 0.0, elemental: 0.0 }
       party.summons.includes(:summon).each do |gs|
         slot = slot_for(gs)
         next unless slot && gs.summon
@@ -21,6 +21,10 @@ module GridDamage
         t = gs.transcendence_step.to_i
         totals[:optimus]   += aura(gid, slot, "normal_frame", u, t)
         totals[:omega]     += aura(gid, slot, "omega_frame", u, t)
+        # Odious summons' base aura. Exorcism-level scaling (base → the aura's [Max]
+        # via equipped Odious weapons' exorcism lvls) is undocumented on the wiki — the
+        # per-level increment needs in-game ground truth before it can be modeled.
+        totals[:taboo]     += aura(gid, slot, "odious_frame", u, t)
         totals[:elemental] += aura(gid, slot, "elemental_atk", u, t, element: element)
       end
       totals

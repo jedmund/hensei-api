@@ -7,11 +7,12 @@ class SummonAura < ApplicationRecord
   SLOTS = %w[main sub].freeze
   # How the aura enters the damage formula:
   #   normal_frame / omega_frame — multiplies the weapon mods in that frame (Optimus/Magna)
+  #   odious_frame               — multiplies the Odious frame ("boost to Taboo X's weapon skills")
   #   elemental_atk              — additive to the Elemental boost category
   #   normal_atk / omega_atk     — additive within the frame (e.g. Grand Order)
   #   multiattack                — DA/TA up (not an ATK frame)
   #   other                      — charge bar / call / cap / etc. (not modeled in the MVP)
-  TARGETS = %w[normal_frame omega_frame elemental_atk normal_atk omega_atk atk multiattack other].freeze
+  TARGETS = %w[normal_frame omega_frame odious_frame elemental_atk normal_atk omega_atk atk multiattack other].freeze
 
   belongs_to :summon, foreign_key: :summon_granblue_id, primary_key: :granblue_id,
                       inverse_of: :auras, optional: true

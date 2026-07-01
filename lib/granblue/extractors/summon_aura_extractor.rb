@@ -59,7 +59,7 @@ module Granblue
       end
 
       # Most grid-relevant first — multi-clause auras keep the highest-priority clause.
-      TARGET_PRIORITY = %w[normal_frame omega_frame elemental_atk normal_atk omega_atk multiattack atk other].freeze
+      TARGET_PRIORITY = %w[normal_frame omega_frame odious_frame elemental_atk normal_atk omega_atk multiattack atk other].freeze
 
       def build(text, slot:, uncap_level:, transcendence_stage:, series:, summon_element:, granblue_id:)
         return nil if text.blank?
@@ -111,6 +111,8 @@ module Granblue
       def classify(phrase, series:, summon_element:)
         p = phrase.downcase
         if p.include?("weapon skill")
+          # Odious summons boost "Taboo <X>'s weapon skills" — the Odious frame, not Optimus.
+          return ["odious_frame", nil] if p.include?("taboo") || series == "odious"
           return ["omega_frame", nil] if OMEGA_WORDS.any? { |w| p.include?(w) } || series == "magna"
           return ["normal_frame", nil]
         end

@@ -7,13 +7,14 @@ module GridDamage
   module Auras
     module_function
 
-    # → { optimus:, omega:, elemental: } percent totals.
+    # → { optimus:, omega:, taboo:, elemental: } percent totals.
     def for_party(party, element:)
       summon = SummonAuras.for_party(party, element: element)
       character = CharacterAuras.for_party(party, element: element)
       {
         optimus: summon[:optimus] + character[:optimus],
         omega: summon[:omega] + character[:omega],
+        taboo: summon[:taboo],
         elemental: summon[:elemental]
       }
     end

@@ -12520,7 +12520,7 @@
   {
     "summon_granblue_id": "2040446000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 40.0,
     "uncap_level": 0,
@@ -12531,7 +12531,7 @@
   {
     "summon_granblue_id": "2040446000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 80.0,
     "uncap_level": 3,
@@ -12542,7 +12542,7 @@
   {
     "summon_granblue_id": "2040446000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 100.0,
     "uncap_level": 4,
@@ -12553,7 +12553,7 @@
   {
     "summon_granblue_id": "2040447000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 40.0,
     "uncap_level": 0,
@@ -12564,7 +12564,7 @@
   {
     "summon_granblue_id": "2040447000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 80.0,
     "uncap_level": 3,
@@ -12575,7 +12575,7 @@
   {
     "summon_granblue_id": "2040447000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 100.0,
     "uncap_level": 4,
@@ -12740,7 +12740,7 @@
   {
     "summon_granblue_id": "2040451000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 40.0,
     "uncap_level": 0,
@@ -12751,7 +12751,7 @@
   {
     "summon_granblue_id": "2040451000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 80.0,
     "uncap_level": 3,
@@ -12762,7 +12762,7 @@
   {
     "summon_granblue_id": "2040451000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 100.0,
     "uncap_level": 4,
@@ -12773,7 +12773,7 @@
   {
     "summon_granblue_id": "2040452000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 40.0,
     "uncap_level": 0,
@@ -12784,7 +12784,7 @@
   {
     "summon_granblue_id": "2040452000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 80.0,
     "uncap_level": 3,
@@ -12795,7 +12795,7 @@
   {
     "summon_granblue_id": "2040452000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 100.0,
     "uncap_level": 4,
@@ -12806,7 +12806,7 @@
   {
     "summon_granblue_id": "2040453000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 40.0,
     "uncap_level": 0,
@@ -12817,7 +12817,7 @@
   {
     "summon_granblue_id": "2040453000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 80.0,
     "uncap_level": 3,
@@ -12828,7 +12828,7 @@
   {
     "summon_granblue_id": "2040453000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 100.0,
     "uncap_level": 4,
@@ -12839,7 +12839,7 @@
   {
     "summon_granblue_id": "2040454000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 40.0,
     "uncap_level": 0,
@@ -12850,7 +12850,7 @@
   {
     "summon_granblue_id": "2040454000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 80.0,
     "uncap_level": 3,
@@ -12861,7 +12861,7 @@
   {
     "summon_granblue_id": "2040454000",
     "slot": "main",
-    "target": "normal_frame",
+    "target": "odious_frame",
     "element": null,
     "value": 100.0,
     "uncap_level": 4,
