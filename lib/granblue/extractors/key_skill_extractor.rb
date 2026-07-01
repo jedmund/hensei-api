@@ -43,11 +43,13 @@ module Granblue
       end
 
       # skill prose → key-scoped effect attribute hashes (explicit % or size-curve value).
+      # A boost stated twice (the series tables repeat the skill prose next to a concrete
+      # "20% ATK Up" trade column) keeps the EXPLICIT value — it's the authoritative SL20 number.
       def self.clause_effects(slug, name, skill_text)
         # Some keys (Destroyer anklets) gate the whole skill on "…280% or above" inline.
         gate = { "type" => "boost_level", "gte" => 280 } if skill_text.to_s =~ /280%\s*or above/i
 
-        DescParser.parse(skill_text, name: name)[:clauses].filter_map do |c|
+        effects = DescParser.parse(skill_text, name: name)[:clauses].filter_map do |c|
           value = c[:value] || curve_value(c)
           next unless value
 
@@ -55,8 +57,12 @@ module Granblue
           { key_slug: slug, modifier: name, boost_type: c[:boost_type], series: c[:series],
             value: value, scaling_kind: condition.present? ? "conditional_flat" : "static",
             value_unit: SUPP_BOOSTS.include?(c[:boost_type]) ? "flat" : "percent",
-            condition: condition, applies_to: "element_allies", stacking: "additive" }
+            condition: condition, applies_to: "element_allies", stacking: "additive",
+            explicit: !c[:value].nil? }
         end
+        effects.group_by { |e| [e[:boost_type], e[:scaling_kind]] }
+               .map { |_, group| group.find { |e| e[:explicit] } || group.first }
+               .each { |e| e.delete(:explicit) }
       end
 
       # The ≥280% Effect cell (Extremity/Sagacity/Supremacy …) → conditional key effects. The
@@ -64,7 +70,9 @@ module Granblue
       def self.boost_level_effects(slug, name, effect_text)
         return [] if effect_text.blank?
 
-        GameplayNotesParser.inline_boosts(effect_text).map do |b|
+        GameplayNotesParser.inline_boosts(effect_text)
+                           .uniq { |b| [b[:boost_type], b[:value]] } # tiered cells repeat a clause verbatim
+                           .map do |b|
           { key_slug: slug, modifier: name, boost_type: b[:boost_type], series: b[:series],
             value: b[:value], scaling_kind: "conditional_flat",
             value_unit: SUPP_BOOSTS.include?(b[:boost_type]) ? "flat" : "percent",

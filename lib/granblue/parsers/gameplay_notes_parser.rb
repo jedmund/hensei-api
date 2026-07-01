@@ -130,15 +130,26 @@ module Granblue
       # Inline "N% boost to <stat>" pairs from prose where the stat is a `data-label` icon (kept
       # as text) or plain words — e.g. a Dark Opus ≥280 Effect cell. → [{boost_type, value, series}]
       # (series inferred from the ATK label: EX Might → ex, Omega Might → omega, Might → normal).
+      # "Amplify <target> DMG by N%" targets → amp boost keys.
+      AMPLIFY_TARGETS = [
+        [/normal attack|n\.?a\.?/i, "na_amp"],
+        [/c\.?a\.?|charge attack/i, "ca_amp"],
+        [/skill/i, "skill_amp"]
+      ].freeze
+
       def self.inline_boosts(text)
         labeled = text.to_s
                       # {{atkmod|ATK|m=ex}} → "EX Might" (carries the boost AND the frame)
                       .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*ex[^}]*\}\}/i, " EX Might ")
                       .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*omega[^}]*\}\}/i, " Omega Might ")
                       .gsub(/\{\{\s*atkmod\s*\|[^}]*\}\}/i, " Might ")
+                      # {{tt|Amplify|'''Stacking:''' Special}} → "Amplify(Sp.)" — the tooltip marks
+                      # the panel's second-stack "(Sp.)" instance (e.g. Extremity's N.A. Amp (Sp.)).
+                      .gsub(/\{\{\s*tt\s*\|\s*([^|}]+?)\s*\|[^}]*Special[^}]*\}\}/i, ' \1(Sp.) ')
+                      .gsub(/\{\{\s*tt\s*\|\s*([^|}]+?)\s*\|[^}]*\}\}/i, ' \1 ')
                       .gsub(/<span[^>]*data-label="([^"]+)"[^>]*>(?:\s*<\/span>)?/i, ' \1 ')
                       .gsub(/<[^>]+>/, " ")
-        labeled.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*([A-Za-z.][A-Za-z. ]*?)(?=\s*\d|,|\.|\/|\z)/).filter_map do |value, stat|
+        boosts = labeled.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*([A-Za-z.][A-Za-z. ]*?)(?=\s*\d|,|\.|\/|\z)/).filter_map do |value, stat|
           bt = boost_for(stat) or next
 
           series = case stat.downcase
@@ -147,6 +158,15 @@ module Granblue
                    when /\bmight\b/ then "normal"
                    end
           { boost_type: bt, value: value.to_f, series: series }
+        end
+        boosts + amplify_boosts(labeled)
+      end
+
+      # "Amplify normal attack DMG by 10%" ((Sp.)-stacked or not) → amp boost entries.
+      def self.amplify_boosts(labeled)
+        labeled.scan(/Amplify(\(Sp\.\))?\s+([A-Za-z. ]+?)\s+by\s+(\d+(?:\.\d+)?)%/i).filter_map do |sp, target, value|
+          base = AMPLIFY_TARGETS.find { |re, _| target =~ re }&.last || "dmg_amp"
+          { boost_type: sp ? "#{base}_sp" : base, value: value.to_f, series: nil }
         end
       end
 
@@ -178,7 +198,7 @@ module Granblue
       end
 
       private_class_method :parse_section, :per_count_clauses, :specialty_clauses, :progression_clauses, :tier_clauses, :data_rows, :boost_for,
-                           :frame_of, :shared_cap_of, :pct, :clean
+                           :amplify_boosts, :frame_of, :shared_cap_of, :pct, :clean
     end
   end
 end
