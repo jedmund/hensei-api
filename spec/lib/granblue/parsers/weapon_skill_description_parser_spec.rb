@@ -16,10 +16,13 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "da")).to include(value: -100.0)
   end
 
-  it "parses a main-weapon bonus-DMG skill (Hraesvelgr Einar)" do
+  it "routes single-attack bonus DMG off the elemental Bonus DMG line (Hraesvelgr Einar)" do
     r = parse("When main weapon: 80% Bonus Water DMG effect to Water allies' single attacks.")
     expect(r[:main_hand_only]).to be(true)
-    expect(boost(r, "bonus_elem_dmg")).to include(value: 80.0)
+    # Single-attack-only bonus is its own mechanic — NOT on the panel's Bonus DMG line
+    # (5JPIJg panel: Bonus Water DMG 46.8 = Deathstrike only, Einar's 80 absent).
+    expect(boost(r, "bonus_elem_dmg")).to be_nil
+    expect(boost(r, "bonus_elem_dmg_single")).to include(value: 80.0)
   end
 
   it "parses NA amp from an MC-only main-weapon skill, ignoring the nuke clause (Geisa Ari)" do

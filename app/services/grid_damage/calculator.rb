@@ -18,10 +18,11 @@ module GridDamage
                   "skill_dmg_cap" => 100.0, "heal_cap" => 100.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
-    # the offensive ATK-family, the rate boosts, and the amplify-family. Caps, supplementals,
-    # DEF, HP, and bonus-DMG are NOT amplified.
+    # the offensive ATK-family, the rate boosts, the amplify-family, and elemental Bonus DMG
+    # (5JPIJg: Deathstrike 4.5×2 × 5.2 = 46.8 = the panel's Bonus Water DMG, exactly). Caps,
+    # supplementals, and DEF are NOT amplified.
     AMPLIFIED_BOOSTS = %w[atk hp stamina enmity e_atk_prog critical da ta
-                          dmg_amp crit_amp elem_amplify od_dmg_amp].freeze
+                          dmg_amp crit_amp elem_amplify od_dmg_amp bonus_elem_dmg].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
@@ -56,7 +57,9 @@ module GridDamage
       {
         optimus: auras[:optimus] + [agg["optimus_exalto"]&.total.to_f || 0.0, 90].min,
         omega: auras[:omega] + [agg["omega_exalto"]&.total.to_f || 0.0, 100].min,
-        taboo: 0.0 # Odious/Taboo enhancement — wired when the odious frame is modeled
+        # Odious summons' base aura. The exorcism-level scaling on top (aura base → its
+        # [Max] via equipped Odious weapons' exorcism lvls) still needs in-game ground truth.
+        taboo: auras[:taboo]
       }
     end
 

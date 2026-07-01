@@ -51,6 +51,10 @@ module Granblue
         [/(?:bonus )?destruction.*?(?:charge attack|c\.?a\.?).*?(?:dmg|damage)/i, "bonus_des_ca"],
         [/(?:bonus )?destruction.*?(?:dmg|damage)/i,         "bonus_des_dmg"],
         [/bonus.*(?:charge attack|c\.?a\.?)/i,               "bonus_ca"],
+        # Single-attack-only bonus DMG (Hraesvelgr's Einar) is its own mechanic — it does NOT
+        # appear on the panel's elemental "Bonus DMG" line (5JPIJg: panel shows only the
+        # always-on Deathstrike bonus). Must precede the generic elemental bonus pattern.
+        [/bonus.*(?:dmg|damage).*single attacks?|single attacks?.*bonus.*(?:dmg|damage)/i, "bonus_elem_dmg_single"],
         [/bonus.*(?:dmg|damage)/i,                           "bonus_elem_dmg"],
         [/hit to (?:multiattack|double attack|triple attack)/i, "multiattack"], # → −DA (guarantee)
         [/multiattack rate/i,                               %w[da ta]],        # +DA and +TA
