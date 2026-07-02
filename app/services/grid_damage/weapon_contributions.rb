@@ -19,9 +19,7 @@ module GridDamage
         w = gw.weapon
         next unless w
 
-        # Skill level is the ULB max (e.g. SL20) through transcendence stages 0–4, then jumps
-        # +5 only at the FINAL stage (transc 5 → SL25). It is not raised per-stage.
-        skill_level = (w.max_skill_level || 15) + (gw.transcendence_step.to_i >= 5 ? 5 : 0)
+        skill_level = skill_level_for(w, gw)
         amplifiable = !NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
@@ -42,6 +40,21 @@ module GridDamage
         end
       end
       out
+    end
+
+    # The skill level of THIS grid copy, assuming it's leveled to its uncap's cap (the
+    # calculator convention): SL10 below MLB, SL15 at 3–4★, SL20 at ULB. Transcendence
+    # stages 1–4 don't raise it; the FINAL stage (5) jumps +5 → SL25. Clamped to the
+    # weapon's own maximum, so an FLB copy of an ULB-capable weapon reads SL15, not SL20.
+    def skill_level_for(weapon, grid_weapon)
+      uncap = grid_weapon.uncap_level.to_i
+      transcended = grid_weapon.transcendence_step.to_i >= 5
+      cap = if uncap >= 5 then 20
+            elsif uncap >= 3 then 15
+            else 10
+            end
+      cap += 5 if transcended
+      [cap, (weapon.max_skill_level || 15) + (transcended ? 5 : 0)].min
     end
   end
 end
