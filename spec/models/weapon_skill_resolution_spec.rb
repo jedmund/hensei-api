@@ -36,15 +36,15 @@ RSpec.describe "Weapon skill resolution" do
     end
 
     it "resolves an exact match" do
-      expect(described_class.for_skill(modifier: "Might", series: "normal", size: "big").pluck(:sl10)).to eq([15])
+      expect(described_class.for_skill(modifier: "Might", series: "normal", size: "big").map(&:sl10)).to eq([15])
     end
 
     it "falls back from omega to the combined normal_omega row" do
-      expect(described_class.for_skill(modifier: "Enmity", series: "omega", size: "big")).to exist
+      expect(described_class.for_skill(modifier: "Enmity", series: "omega", size: "big")).to be_present
     end
 
     it "resolves sizeless data regardless of the requested size" do
-      expect(described_class.for_skill(modifier: "Arts", series: "normal", size: "big")).to exist
+      expect(described_class.for_skill(modifier: "Arts", series: "normal", size: "big")).to be_present
     end
 
     it "returns an empty relation for an unknown modifier" do

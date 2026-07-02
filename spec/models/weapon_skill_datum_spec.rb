@@ -8,7 +8,6 @@ RSpec.describe WeaponSkillDatum, type: :model do
 
     it { is_expected.to validate_presence_of(:modifier) }
     it { is_expected.to validate_presence_of(:boost_type) }
-    it { is_expected.to validate_presence_of(:size) }
     it { is_expected.to validate_presence_of(:formula_type) }
 
     context 'series validation' do
@@ -43,9 +42,9 @@ RSpec.describe WeaponSkillDatum, type: :model do
         expect(datum).not_to be_valid
       end
 
-      it 'does not allow nil size' do
+      it 'allows nil size (sizeless Shape-B data)' do
         datum = build(:weapon_skill_datum, size: nil)
-        expect(datum).not_to be_valid
+        expect(datum).to be_valid
       end
     end
 
@@ -138,12 +137,19 @@ RSpec.describe WeaponSkillDatum, type: :model do
         expect(results).to include(normal_omega_datum)
       end
 
-      it 'does NOT fall back when direct normal match exists' do
+      it 'prefers a direct normal match over the fallback for the same boost_type' do
         direct = create(:weapon_skill_datum, modifier: 'FallbackMod', series: 'normal', size: 'big',
-                                             boost_type: 'hp')
+                                             boost_type: normal_omega_datum.boost_type)
         results = described_class.for_skill(modifier: 'FallbackMod', series: 'normal', size: 'big')
         expect(results).to include(direct)
         expect(results).not_to include(normal_omega_datum)
+      end
+
+      it 'resolves each boost_type independently (direct hp + fallback atk both apply)' do
+        direct = create(:weapon_skill_datum, modifier: 'FallbackMod', series: 'normal', size: 'big',
+                                             boost_type: 'hp')
+        results = described_class.for_skill(modifier: 'FallbackMod', series: 'normal', size: 'big')
+        expect(results).to contain_exactly(direct, normal_omega_datum)
       end
 
       it 'applies size filter to the fallback query' do
@@ -185,18 +191,34 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'no fallback for nil series' do
+    context 'nil series (series-agnostic lookup)' do
       let!(:normal_omega_datum) do
-        create(:weapon_skill_datum, modifier: 'NilNoFB', series: 'normal_omega', size: 'big')
+        create(:weapon_skill_datum, modifier: 'NilNoFB', series: 'normal_omega', size: 'big',
+                                    boost_type: 'atk')
       end
       let!(:nil_datum) do
-        create(:weapon_skill_datum, modifier: 'NilNoFB', series: nil, size: 'big')
+        create(:weapon_skill_datum, modifier: 'NilNoFB', series: nil, size: 'big',
+                                    boost_type: 'hp')
       end
 
-      it 'returns the nil-series record without falling back' do
+      it 'matches any series, one row per boost_type' do
         results = described_class.for_skill(modifier: 'NilNoFB')
-        expect(results).to include(nil_datum)
-        expect(results).to include(normal_omega_datum)
+        expect(results).to contain_exactly(nil_datum, normal_omega_datum)
+      end
+    end
+
+    context 'one row per boost_type (the double-count guard)' do
+      it 'never returns multiple sizes of one boost for a sizeless lookup' do
+        %w[small medium big].each do |size|
+          create(:weapon_skill_datum, modifier: 'MultiSize', series: 'normal', size: size)
+        end
+        # Ambiguous — a sizeless skill borrowing a multi-size family word must not guess.
+        expect(described_class.for_skill(modifier: 'MultiSize', series: 'normal')).to be_empty
+      end
+
+      it 'resolves a sizeless lookup when the family has a single size (Sephira/unique)' do
+        datum = create(:weapon_skill_datum, modifier: 'OneSize', series: nil, size: 'big')
+        expect(described_class.for_skill(modifier: 'OneSize')).to contain_exactly(datum)
       end
     end
   end

@@ -29,40 +29,54 @@ class WeaponSkillDatum < ApplicationRecord
              .max_by { |d| d.sl15.to_f }
   end
 
-  # Look up all data rows for a given weapon skill's modifier/series/size.
-  # Returns the boost types and their SL values for damage calculation.
+  # Series a version's series also matches in the data: normal and omega share combined
+  # "normal_omega" rows; "odious" and "taboo" are the same frame under two names.
+  SERIES_FALLBACK = {
+    "normal" => %w[normal normal_omega], "omega" => %w[omega normal_omega],
+    "odious" => %w[odious taboo], "taboo" => %w[taboo odious]
+  }.freeze
+
+  # Resolve a weapon-skill version's (modifier, series, size) to its canonical scaling
+  # rows — AT MOST ONE row per boost_type (a version is one skill; multiple rows of one
+  # boost would double-count in the calculator; e.g. "Dragon-Knight's Might" used to pull
+  # every size of the Might family).
   #
-  # When series is nil (non-standard skills like Sephira, unique), looks up
-  # by modifier only — these modifiers exist in only one series each.
-  # When size is nil (skills without numerals), also omits the size filter.
-  # When series is "normal" or "omega" and no results found, falls back to
-  # "normal_omega" — these modifiers share SL values across both series.
-  # Resolve a weapon-skill version (modifier/series/size) to its scaling rows,
-  # cascading through fallbacks (most-specific first):
-  #   1. exact (modifier [+ series] [+ size])
-  #   2. normal/omega/odious share a combined "normal_omega" row
-  #   3. series-agnostic (modifier + size) — sizeless data or series drift
-  #   4. modifier-only (last resort)
-  scope :for_skill, ->(modifier:, series: nil, size: nil) {
-    base = where(modifier: modifier)
-    return base unless base.exists? # unknown modifier → empty relation
+  # Size rules: a SIZED skill matches rows of that size or the family's sizeless rows
+  # (size-independent curves like Arts) — never a DIFFERENT explicit size. A SIZELESS
+  # skill is size-agnostic only when the family is unambiguous (one distinct size per
+  # boost, e.g. Sephira/unique modifiers); a multi-size family can't be guessed, so the
+  # boost resolves to nothing and the description-extraction track fills (or logs) the
+  # gap. Series cascades through SERIES_FALLBACK per boost, preferring the exact series;
+  # nil series is series-agnostic. Returns an Array.
+  def self.for_skill(modifier:, series: nil, size: nil)
+    rows = canonical.where(modifier: modifier)
+    rows = rows.where(size: [size, nil]) if size
+    compatible = SERIES_FALLBACK.fetch(series, [series])
 
-    exact = base
-    exact = exact.where(series: series) if series
-    exact = exact.where(size: size) if size
-    return exact if exact.exists?
+    rows.group_by(&:boost_type).values.filter_map do |group|
+      group = series_matched(group, series, compatible) if series.present?
+      next if group.empty?
+      next if size.nil? && group.map(&:size).compact.uniq.many? # ambiguous — don't guess
 
-    if series.present?
-      combined = base.where(series: "normal_omega")
-      combined = combined.where(size: size) if size
-      return combined if combined.exists?
+      # Prefer the exact size over sizeless; the exact series over the shared fallback
+      # over tolerated drift; then the strongest curve (the old canonical_curve tie-break).
+      group.max_by do |d|
+        [d.size == size ? 1 : 0, -(compatible.index(d.series) || compatible.size), d.sl15.to_f]
+      end
     end
+  end
 
-    if size
-      sized = base.where(size: size)
-      return sized if sized.exists?
-    end
+  # Rows a series-bearing skill may use: its own/shared series (or series-less data), else —
+  # when the family stores exactly ONE series — tolerate the drift (a single-series family's
+  # series is often an import default, not a real frame claim; e.g. Strike's "normal").
+  # "normal_omega" IS an explicit frame claim (the Normal/Omega shared curve), so it never
+  # crosses to EX/Odious skills.
+  def self.series_matched(group, series, compatible)
+    matched = group.select { |d| d.series.nil? || compatible.include?(d.series) }
+    return matched if matched.any?
 
-    base
-  }
+    lone = group.map(&:series).uniq
+    lone.size == 1 && lone.first != "normal_omega" ? group : []
+  end
+  private_class_method :series_matched
 end

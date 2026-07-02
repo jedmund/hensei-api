@@ -74,7 +74,7 @@ module Granblue
       # boost_types the canonical (modifier-keyed) data/effects already provide for this version.
       def self.canonical_boost_types(version)
         data = WeaponSkillDatum.for_skill(modifier: version.skill_modifier, series: version.skill_series,
-                                          size: version.skill_size).pluck(:boost_type)
+                                          size: version.skill_size).map(&:boost_type)
         effects = version.skill_modifier.present? ?
           WeaponSkillEffect.for_skill(modifier: version.skill_modifier).base_effects.pluck(:boost_type) : []
         (data + effects).to_set
