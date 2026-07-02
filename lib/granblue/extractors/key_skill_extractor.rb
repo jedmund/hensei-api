@@ -18,6 +18,9 @@ module Granblue
       DescParser = Granblue::Parsers::WeaponSkillDescriptionParser
       GameplayNotesParser = Granblue::Parsers::GameplayNotesParser
       SUPP_BOOSTS = WeaponSkillDescriptionExtractor::SUPP_BOOSTS
+      # Key-granted supplements land on the panel's second-stack "(Sp.)" lines.
+      KEY_SUPP_SP = { "na_supp" => "na_supp_sp", "ca_supp" => "ca_supp_sp",
+                      "skill_dmg_supp" => "skill_supp_sp" }.freeze
 
       def self.run(dry_run: false)
         wiki = Granblue::Parsers::Wiki.new
@@ -50,11 +53,19 @@ module Granblue
         gate = { "type" => "boost_level", "gte" => 280 } if skill_text.to_s =~ /280%\s*or above/i
 
         effects = DescParser.parse(skill_text, name: name)[:clauses].filter_map do |c|
+          boost = c[:boost_type]
           value = c[:value] || curve_value(c)
+          if value.nil? && SUPP_BOOSTS.include?(boost)
+            # "supplement … damage (Damage cap: 20,000)" — the cap is the panel value
+            value = skill_text[/damage cap:\s*([\d,]+)/i, 1]&.delete(",")&.to_f
+          end
           next unless value
 
+          # Key-granted supplements are the panel's Special stack — "N.A. Supp. (Sp.)"
+          # (5JPIJg: the anklet's +20,000 shows on its own line, outside Maneuver's 100k cap).
+          boost = KEY_SUPP_SP.fetch(boost, boost)
           condition = c[:condition] || gate || {}
-          { key_slug: slug, modifier: name, boost_type: c[:boost_type], series: c[:series],
+          { key_slug: slug, modifier: name, boost_type: boost, series: c[:series],
             value: value, scaling_kind: condition.present? ? "conditional_flat" : "static",
             value_unit: SUPP_BOOSTS.include?(c[:boost_type]) ? "flat" : "percent",
             condition: condition, applies_to: "element_allies", stacking: "additive",
