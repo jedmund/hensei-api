@@ -23,7 +23,7 @@ module GridDamage
           # skill; otherwise fall back to the effect's heuristic series.
           frame = v.try(:multiplier_frame).presence
           v.weapon_skill_effects.each do |e|
-            value = value_for(e, weapon: w, state: state, composition: composition)
+            value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
@@ -38,12 +38,14 @@ module GridDamage
     end
 
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
-    def value_for(effect, weapon:, state:, composition:)
+    def value_for(effect, weapon:, state:, composition:, grid_weapon: nil)
       case effect.scaling_kind
       when "static", "flat"
         effect.value&.to_f
       when "conditional_flat", "bonus_dmg"
-        Conditions.met?(effect.condition, state: state, composition: composition, weapon: weapon) ? effect.value&.to_f : nil
+        met = Conditions.met?(effect.condition, state: state, composition: composition,
+                              weapon: weapon, grid_weapon: grid_weapon)
+        met ? effect.value&.to_f : nil
       when "per_grid_count"
         per_grid_count(effect, weapon: weapon, composition: composition)
       when "foe_hp_supplemental"

@@ -11,7 +11,8 @@ module GridDamage
     # state:       BattleState-like Hash (debuff_count, mc_crit_rate, foe_element, …).
     # composition: GridComposition.for_party result.
     # weapon:      the Weapon bearing the effect (for skill/weapon level, same-id count).
-    def met?(condition, state: {}, composition: {}, weapon: nil)
+    # grid_weapon: the GridWeapon copy (for per-copy state like transcendence).
+    def met?(condition, state: {}, composition: {}, weapon: nil, grid_weapon: nil)
       return true if condition.blank?
 
       gte = condition["gte"]
@@ -23,6 +24,8 @@ module GridDamage
       when "mc_crit_rate"       then state[:mc_crit_rate].to_i >= gte
       when "skill_level"        then weapon&.max_skill_level.to_i >= gte
       when "weapon_level"       then weapon&.max_level.to_i >= gte
+      # key-skill upgrades tied to the copy's transcendence (α Pendulum's lvl-240 DA/TA)
+      when "transcendence_step" then grid_weapon && grid_weapon.transcendence_step.to_i >= gte
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))

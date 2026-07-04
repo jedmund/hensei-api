@@ -25,7 +25,7 @@ module GridDamage
         amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
         equipped_key_slugs(gw).each do |slug|
           Array(by_slug[slug]).each do |e|
-            value = Effects.value_for(e, weapon: w, state: state, composition: composition)
+            value = Effects.value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
