@@ -8,7 +8,7 @@ RSpec.describe GridDamage::Aggregator do
   Meta = Struct.new(:stacking_rule, :grid_cap, :cap_is_flat, keyword_init: true)
 
   def contrib(boost_type:, value:, series: "normal", main_hand_only: false, mainhand: false)
-    C.new(boost_type:, series:, value:, main_hand_only:, mainhand:)
+    C.new(boost_type: boost_type, series: series, value: value, main_hand_only: main_hand_only, mainhand: mainhand)
   end
 
   let(:boost_types) do
@@ -21,7 +21,7 @@ RSpec.describe GridDamage::Aggregator do
     }
   end
 
-  def agg(contribs) = described_class.aggregate(contribs, boost_types:)
+  def agg(contribs) = described_class.aggregate(contribs, boost_types: boost_types)
 
   describe "additive" do
     it "sums contributions of the same boost_type" do
@@ -89,7 +89,7 @@ RSpec.describe GridDamage::Aggregator do
 
   describe "shared_cap_group" do
     def shared(value)
-      C.new(boost_type: "atk", series: "ex", value:, shared_cap_group: "g", cap: 80.0, mainhand: false)
+      C.new(boost_type: "atk", series: "ex", value: value, shared_cap_group: "g", cap: 80.0, mainhand: false)
     end
 
     it "pools group members and caps the total at the group cap" do

@@ -15,30 +15,30 @@ RSpec.describe GridDamage::Conditions do
   end
 
   it "evaluates composition counts (weapon_group_count, skill_type_count)" do
-    expect(described_class.met?({ "type" => "weapon_group_count", "gte" => 4 }, composition:)).to be(true)
-    expect(described_class.met?({ "type" => "weapon_group_count", "gte" => 5 }, composition:)).to be(false)
-    expect(described_class.met?({ "type" => "skill_type_count", "gte" => 15 }, composition:)).to be(true)
+    expect(described_class.met?({ "type" => "weapon_group_count", "gte" => 4 }, composition: composition)).to be(true)
+    expect(described_class.met?({ "type" => "weapon_group_count", "gte" => 5 }, composition: composition)).to be(false)
+    expect(described_class.met?({ "type" => "skill_type_count", "gte" => 15 }, composition: composition)).to be(true)
   end
 
   it "evaluates same_id_count against the bearing weapon's copies" do
-    expect(described_class.met?({ "type" => "same_id_count", "gte" => 3 }, composition:, weapon:)).to be(true)
-    expect(described_class.met?({ "type" => "same_id_count", "gte" => 4 }, composition:, weapon:)).to be(false)
+    expect(described_class.met?({ "type" => "same_id_count", "gte" => 3 }, composition: composition, weapon: weapon)).to be(true)
+    expect(described_class.met?({ "type" => "same_id_count", "gte" => 4 }, composition: composition, weapon: weapon)).to be(false)
   end
 
   it "evaluates state counts (foe_debuff_count, mc_crit_rate)" do
-    expect(described_class.met?({ "type" => "foe_debuff_count", "gte" => 5 }, state:)).to be(true)
-    expect(described_class.met?({ "type" => "mc_crit_rate", "gte" => 100 }, state:)).to be(true)
-    expect(described_class.met?({ "type" => "foe_debuff_count", "gte" => 6 }, state:)).to be(false)
+    expect(described_class.met?({ "type" => "foe_debuff_count", "gte" => 5 }, state: state)).to be(true)
+    expect(described_class.met?({ "type" => "mc_crit_rate", "gte" => 100 }, state: state)).to be(true)
+    expect(described_class.met?({ "type" => "foe_debuff_count", "gte" => 6 }, state: state)).to be(false)
   end
 
   it "evaluates per-weapon level conditions" do
-    expect(described_class.met?({ "type" => "skill_level", "gte" => 20 }, weapon:)).to be(true)
-    expect(described_class.met?({ "type" => "weapon_level", "gte" => 250 }, weapon:)).to be(false)
+    expect(described_class.met?({ "type" => "skill_level", "gte" => 20 }, weapon: weapon)).to be(true)
+    expect(described_class.met?({ "type" => "weapon_level", "gte" => 250 }, weapon: weapon)).to be(false)
   end
 
   it "evaluates foe element/status" do
-    expect(described_class.met?({ "type" => "foe_element", "is" => "non_elemental" }, state:)).to be(true)
-    expect(described_class.met?({ "type" => "foe_status", "status" => "Bounty" }, state:)).to be(true)
+    expect(described_class.met?({ "type" => "foe_element", "is" => "non_elemental" }, state: state)).to be(true)
+    expect(described_class.met?({ "type" => "foe_status", "status" => "Bounty" }, state: state)).to be(true)
   end
 
   it "defers boost_level when no enhancements are supplied (1st pass)" do

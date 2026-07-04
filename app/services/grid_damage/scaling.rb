@@ -42,7 +42,7 @@ module GridDamage
       return left.last if left.first == right.first
 
       t = (skill_level - left.first).to_f / (right.first - left.first)
-      left.last + (right.last - left.last) * t
+      left.last + ((right.last - left.last) * t)
     end
 
     # Enmity: stronger as HP drops. Modifier = the SL value; r = missing-HP fraction.
@@ -53,7 +53,7 @@ module GridDamage
 
       r = 1.0 - (hp_percent.to_f / 100.0)
       r = r.clamp(0.0, 1.0)
-      modifier * ((1 + 2 * r) * r)
+      modifier * ((1 + (2 * r)) * r)
     end
 
     # Stamina: stronger at high HP. Per the wiki, strength = (HP% / (Coefficient −
@@ -68,16 +68,17 @@ module GridDamage
       return nil if denom <= 0
 
       h = hp_percent.to_f.clamp(STAMINA_HP_FLOOR, 100)
-      (h / denom)**STAMINA_EXP + STAMINA_OFFSET
+      ((h / denom)**STAMINA_EXP) + STAMINA_OFFSET
     end
 
     # The amount subtracted from the Coefficient at a given skill level (gbf.wiki).
     def stamina_adjustment(skill_level, small: false)
       sl = skill_level
-      if small && sl > 10 then 10 + 2 * (sl - 10)
+      if small && sl > 10 then 10 + (2 * (sl - 10))
       elsif sl <= 15 then sl
-      elsif sl <= 20 then 15 + 0.4 * (sl - 15)
-      else (17 + 0.34 * (sl - 20)).floor(1) # trunc to 1 decimal (SL 25 -> 18.7)
+      elsif sl <= 20 then 15 + (0.4 * (sl - 15))
+      else
+        (17 + (0.34 * (sl - 20))).floor(1) # trunc to 1 decimal (SL 25 -> 18.7)
       end
     end
 
@@ -93,7 +94,7 @@ module GridDamage
     end
 
     def anchor(datum, skill_level)
-      v = datum.public_send("sl#{skill_level}")
+      v = datum.public_send(:"sl#{skill_level}")
       v&.to_f
     end
     private_class_method :anchor

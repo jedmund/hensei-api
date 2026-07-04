@@ -48,17 +48,17 @@ module GridDamage
     # (aura + Exalto) that multiplies the weapon mods; `extra_atk` is added directly
     # (NormSummon/Bahamut/Ultima), only on the Normal frame.
     def frame(mods, amp_pct, extra_atk: 0.0)
-      amp = 1.0 + amp_pct / 100.0
-      atk     = 1.0 + (mods[:atk].to_f / 100.0) * amp + extra_atk / 100.0
-      enmity  = 1.0 + (mods[:enmity].to_f / 100.0) * amp
-      stamina = 1.0 + (mods[:stamina].to_f / 100.0) * amp
+      amp = 1.0 + (amp_pct / 100.0)
+      atk     = 1.0 + ((mods[:atk].to_f / 100.0) * amp) + (extra_atk / 100.0)
+      enmity  = 1.0 + ((mods[:enmity].to_f / 100.0) * amp)
+      stamina = 1.0 + ((mods[:stamina].to_f / 100.0) * amp)
       { atk: atk, enmity: enmity, stamina: stamina, product: atk * enmity * stamina }
     end
 
     def elemental_boost(elemental_aura_pct, advantage, progression_pct)
       superiority = SUPERIORITY.fetch(advantage, 0.0)
       prog = [progression_pct.to_f, PROGRESSION_CAP].min
-      1.0 + (superiority + elemental_aura_pct.to_f + prog) / 100.0
+      1.0 + ((superiority + elemental_aura_pct.to_f + prog) / 100.0)
     end
 
     # Convenience: per-frame "Enhancement %" the in-game panel shows = (ATK boost − 1)×100.

@@ -31,7 +31,7 @@ module GridDamage
         # calculator's 2nd pass via state[:enhancements] (false in the 1st pass).
         enh = state[:enhancements] || {}
         [enh[:optimus], enh[:omega], enh[:taboo]].compact.map(&:to_f).max.to_f >= gte
-      else false                          # unknown condition ⇒ conservatively not met
+      else false # unknown condition ⇒ conservatively not met
       end
     end
   end

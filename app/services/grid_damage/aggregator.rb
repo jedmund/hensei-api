@@ -71,7 +71,7 @@ module GridDamage
       case rule
       when "multiplicative_by_series"
         by_series = group.group_by(&:series).transform_values { |g| sum(g) }
-        Result.new(boost_type:, rule:, by_series:, total: by_series.values.sum,
+        Result.new(boost_type: boost_type, rule: rule, by_series: by_series, total: by_series.values.sum,
                    raw: by_series.values.sum, cap: nil, cap_is_flat: flat, capped: false)
       when "highest_only"
         capped(boost_type, rule, group.map(&:value).max, cap, flat)
@@ -82,7 +82,7 @@ module GridDamage
 
     def capped(boost_type, rule, raw, cap, flat)
       total = cap ? [raw, cap].min : raw
-      Result.new(boost_type:, rule:, total:, by_series: nil, raw:, cap:,
+      Result.new(boost_type: boost_type, rule: rule, total: total, by_series: nil, raw: raw, cap: cap,
                  cap_is_flat: flat, capped: !cap.nil? && raw > cap)
     end
 
