@@ -18,16 +18,22 @@ module GridDamage
       authoritative = version.try(:multiplier_frame).presence
       return authoritative if authoritative
 
-      explicit = version.skill_series.presence
-      return explicit if explicit
+      # Identity-framed series come BEFORE the version's own series: their skills are
+      # injected from a shared series template whose skill_series is an import default,
+      # not a frame claim (dAV5ds: Scythe of Renunciation's Apotheosis lands on the Ω
+      # panel lines despite skill_series "normal").
+      identity = identity_frame(weapon)
+      return identity if identity
 
+      version.skill_series.presence || "normal"
+    end
+
+    def identity_frame(weapon)
       case weapon.weapon_series&.slug
       when "dark-opus"
         weapon.name_en.to_s.include?("Renunciation") ? "omega" : "normal"
       when "draconic", "draconic-providence"
         "ex"
-      else
-        "normal"
       end
     end
   end

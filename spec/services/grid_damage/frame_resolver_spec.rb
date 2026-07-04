@@ -12,8 +12,16 @@ RSpec.describe GridDamage::FrameResolver do
   end
 
   it "uses the explicit aura-word series when the skill has one" do
-    expect(described_class.frame_for(weapon(slug: "dark-opus", name: "x"), version("omega"))).to eq("omega")
+    expect(described_class.frame_for(weapon(slug: "magna", name: "x"), version("omega"))).to eq("omega")
     expect(described_class.frame_for(weapon(slug: nil, name: "x"), version("ex"))).to eq("ex")
+  end
+
+  it "prefers the weapon identity over the version's template series (Dark Opus)" do
+    # Opus versions inherit skill_series from the shared series template — it's an import
+    # default, not a frame claim. dAV5ds: Scythe of Renunciation's Apotheosis is Ω on the
+    # panel despite skill_series "normal".
+    w_ren = weapon(slug: "dark-opus", name: "Scythe of Renunciation")
+    expect(described_class.frame_for(w_ren, version("normal"))).to eq("omega")
   end
 
   it "frames Dark Opus by weapon identity" do

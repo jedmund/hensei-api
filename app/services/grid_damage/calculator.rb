@@ -15,13 +15,15 @@ module GridDamage
     # can still push the post-cap DA negative.
     RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0,
                   "dmg_cap" => 20.0, "na_dmg_cap" => 20.0, "ca_dmg_cap" => 100.0,
-                  "skill_dmg_cap" => 100.0, "heal_cap" => 100.0 }.freeze
+                  "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
+                  "ex_atk_sp" => 80.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
-    # the offensive ATK-family, the rate boosts, the amplify-family, and elemental Bonus DMG
-    # (5JPIJg: Deathstrike 4.5×2 × 5.2 = 46.8 = the panel's Bonus Water DMG, exactly). Caps,
-    # supplementals, and DEF are NOT amplified.
-    AMPLIFIED_BOOSTS = %w[atk hp stamina enmity e_atk_prog critical da ta
+    # the offensive ATK-family, the rate boosts, the amplify-family, elemental Bonus DMG
+    # (5JPIJg: Deathstrike 4.5×2 × 5.2 = 46.8 = the panel's Bonus Water DMG, exactly), and
+    # DEF Ignore (dAV5ds: Impalement 2×2 × 2.5 = 10, exactly). Caps, supplementals, and
+    # DEF are NOT amplified.
+    AMPLIFIED_BOOSTS = %w[atk hp stamina enmity e_atk_prog critical da ta def_ignore
                           dmg_amp crit_amp elem_amplify od_dmg_amp bonus_elem_dmg].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
@@ -76,13 +78,13 @@ module GridDamage
     # Exalto; EX/odious-without-Taboo unaffected) BEFORE aggregating, so per-series sums (ATK)
     # and additive sums (crit/DA/TA) are both correctly amplified.
     def amplify_contributions(contributions, enh)
-      factor = { "normal" => 1 + enh[:optimus].to_f / 100, "omega" => 1 + enh[:omega].to_f / 100,
-                 "ex" => 1.0, "odious" => 1 + enh[:taboo].to_f / 100 }
+      factor = { "normal" => 1 + (enh[:optimus].to_f / 100), "omega" => 1 + (enh[:omega].to_f / 100),
+                 "ex" => 1.0, "odious" => 1 + (enh[:taboo].to_f / 100) }
       contributions.map do |c|
         next c if c.amplifiable == false # flat sources (weapon awakenings) aren't enhanced
         next c unless c.value && AMPLIFIED_BOOSTS.include?(c.boost_type)
 
-        c.class.new(**c.to_h.merge(value: c.value * (factor[c.series] || 1.0)))
+        c.class.new(**c.to_h, value: c.value * (factor[c.series] || 1.0))
       end
     end
 
