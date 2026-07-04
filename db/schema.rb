@@ -876,6 +876,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_21_123123) do
     t.jsonb "difficulty_breakdown"
     t.datetime "difficulty_computed_at"
     t.integer "difficulty_ruleset_version"
+    t.jsonb "full_auto_skills", default: {}, null: false
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
