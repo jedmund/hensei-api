@@ -54,9 +54,9 @@ class WeaponSkillDatum < ApplicationRecord
     compatible = SERIES_FALLBACK.fetch(series, [series])
 
     rows.group_by(&:boost_type).values.filter_map do |group|
-      group = series_matched(group, series, compatible) if series.present?
+      group = series_matched(group, compatible) if series.present?
       next if group.empty?
-      next if size.nil? && group.map(&:size).compact.uniq.many? # ambiguous — don't guess
+      next if size.nil? && group.filter_map(&:size).uniq.many? # ambiguous — don't guess
 
       # Prefer the exact size over sizeless; the exact series over the shared fallback
       # over tolerated drift; then the strongest curve (the old canonical_curve tie-break).
@@ -71,7 +71,7 @@ class WeaponSkillDatum < ApplicationRecord
   # series is often an import default, not a real frame claim; e.g. Strike's "normal").
   # "normal_omega" IS an explicit frame claim (the Normal/Omega shared curve), so it never
   # crosses to EX/Odious skills.
-  def self.series_matched(group, series, compatible)
+  def self.series_matched(group, compatible)
     matched = group.select { |d| d.series.nil? || compatible.include?(d.series) }
     return matched if matched.any?
 
