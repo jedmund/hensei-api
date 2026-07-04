@@ -18,10 +18,7 @@ module GridDamage
 
         # Non-summon-boosted series (Bahamut/Celestial) land on the panel flat, like EX.
         amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
-        w.weapon_skills.each do |ws|
-          v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
-          next unless v # description-derived versions carry version-linked effects (no modifier)
-
+        WeaponContributions.active_versions(w, gw).each do |v|
           # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
           # skill; otherwise fall back to the effect's heuristic series.
           frame = v.try(:multiplier_frame).presence
@@ -59,12 +56,13 @@ module GridDamage
     end
 
     # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon
-    # specialty. The panel reflects the MC's specialty; allies of that specialty get the larger
-    # boost, everyone else the "other" row.
+    # specialty. The panel reflects the MC's specialties (either job proficiency counts);
+    # allies of that specialty get the larger boost, everyone else the "other" row.
     def specialty_value(effect, composition:)
       table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
-      spec = composition && composition[:mc_specialty]
-      (table[spec] || table["other"])&.to_f
+      specs = Array(composition && (composition[:mc_specialties] || composition[:mc_specialty]))
+      matched = specs.filter_map { |s| table[s] }.max
+      (matched || table["other"])&.to_f
     end
 
     def per_grid_count(effect, weapon:, composition:)
@@ -86,7 +84,7 @@ module GridDamage
       when "weapon_type"  then composition.dig(:weapon_type_counts, weapon.proficiency).to_i
       when "weapon_group" then composition[:weapon_group_count].to_i
       when "omega_skill"  then composition[:omega_skill_count].to_i
-      # "epic"/"militis" need weapon-group tags we don't store — documented gap.
+        # "epic"/"militis" need weapon-group tags we don't store — documented gap.
       end
     end
 

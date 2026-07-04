@@ -3,6 +3,22 @@
 require "rails_helper"
 
 RSpec.describe GridDamage::WeaponContributions do
+  describe ".active_versions" do
+    def slot(name)
+      version = double(skill: double(name_en: name))
+      [double(active_version: version), version]
+    end
+
+    it "keeps only the highest variant of an upgraded skill pair (X vs X II)" do
+      s1, = slot("Sephirath Brogue")
+      s2, v2 = slot("Sephirath Brogue II")
+      s3, v3 = slot("Tidings of the New World")
+      weapon = double(weapon_skills: [s1, s2, s3])
+      gw = double(uncap_level: 4, transcendence_step: 0)
+      expect(described_class.active_versions(weapon, gw)).to contain_exactly(v2, v3)
+    end
+  end
+
   describe ".skill_level_for" do
     def sl(weapon_max:, uncap:, transc: 0)
       weapon = instance_double(Weapon, max_skill_level: weapon_max)
