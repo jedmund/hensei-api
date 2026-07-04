@@ -8,30 +8,35 @@ module GridDamage
   module AwakeningContributions
     module_function
 
-    # Cumulative bonus by Awakening slug → level → { boost_type => value }. Levels run 1–4 on
-    # regular weapons (1 = awakened, no bonus). Heal/Special types add nothing to the damage panel.
-    #
-    # NOTE: awakening *cap* bonuses (Attack's "DMG Cap +5%", Skill DMG's "Skill DMG Cap +%",
-    # C.A.'s "C.A. DMG Cap +%") do NOT surface on the "Weapon Skill Boosts" panel — confirmed
-    # by the Galilei screenshots (DMG Cap stayed 20) and Twinpain (Skill DMG Cap stayed 50). They
-    # apply to damage but aren't displayed here, so they're omitted until the damage phase.
+    # Cumulative bonus by Awakening slug → level → { boost_type => value }, per the Grand
+    # table (gbf.wiki/Weapon_Awakening). Levels run 1–4 on regular weapons (1 = awakened,
+    # no bonus). Cap bonuses DO surface on the panel (dAV5ds: Skill DMG Cap 95 needs Fist
+    # of Destruction's +25) — the earlier "caps don't show" observations (Galilei, DMG Cap
+    # stayed 20) were lines already sitting at their shared display cap.
     BONUS = {
       "weapon-atk" => {
-        2 => { "atk" => 15.0 }, 3 => { "atk" => 15.0 }, 4 => { "atk" => 40.0 }
+        2 => { "atk" => 15.0 },
+        3 => { "atk" => 15.0, "dmg_cap" => 5.0 },
+        4 => { "atk" => 40.0, "dmg_cap" => 5.0 }
       },
       "weapon-def" => {
         2 => { "hp" => 15.0 }, 3 => { "hp" => 15.0, "def" => 20.0 }, 4 => { "hp" => 40.0, "def" => 20.0 }
       },
       "weapon-skill" => {
-        2 => {}, 3 => { "skill_dmg" => 20.0 }, 4 => { "skill_dmg" => 20.0 }
+        2 => { "skill_dmg_cap" => 10.0 },
+        3 => { "skill_dmg_cap" => 10.0, "skill_dmg" => 20.0 },
+        4 => { "skill_dmg_cap" => 25.0, "skill_dmg" => 20.0 }
       },
       "weapon-multi" => {
         2 => { "ta" => 5.0 }, 3 => { "da" => 20.0, "ta" => 5.0 }, 4 => { "da" => 20.0, "ta" => 10.0 }
       },
       "weapon-ca" => {
         2 => { "ca_dmg" => 20.0 },
-        3 => { "ca_dmg" => 20.0 },
-        4 => { "ca_dmg" => 20.0, "ca_supp" => 100_000.0 }
+        3 => { "ca_dmg" => 20.0, "ca_dmg_cap" => 10.0 },
+        4 => { "ca_dmg" => 20.0, "ca_dmg_cap" => 10.0, "ca_supp" => 100_000.0 }
+      },
+      "weapon-heal" => {
+        2 => { "heal_cap" => 10.0 }, 3 => { "heal_cap" => 10.0 }, 4 => { "heal_cap" => 30.0 }
       }
     }.freeze
 
@@ -47,6 +52,19 @@ module GridDamage
       "weapon-skill" => { 4 => { "skill_dmg_cap" => 10.0 }, 5 => { "skill_dmg_supp" => 20_000.0 } }
     }.freeze
 
+    # World weapons run a 10-level PER-WEAPON table ({{Weapon/Awakening/<weapon>}}, keyed
+    # here by name). Increments accumulate like the Celestial table. Aetos (Skill DMG):
+    # lv10 totals Skill DMG Cap +20 / EX Might +10 / HP +10 — restricted to the weapon's
+    # two specialties on the wiki, but the panel shows the full values (dAV5ds).
+    WORLD_BY_WEAPON = {
+      "Worldstorming Aetos" => {
+        2 => { "skill_dmg_cap" => 4.0 }, 3 => { "ex_atk" => 5.0 }, 4 => { "hp" => 5.0 },
+        5 => { "skill_dmg_cap" => 4.0 }, 6 => { "ex_atk" => 5.0 }, 7 => { "hp" => 5.0 },
+        8 => { "skill_dmg_cap" => 4.0 }, 9 => { "skill_dmg_cap" => 4.0 },
+        10 => { "skill_dmg_cap" => 4.0 }
+      }
+    }.freeze
+
     # ATK awakening lands in the Normal frame (it sits on the "Might" line); the rest are
     # frame-agnostic additive lines.
     FRAME = { "atk" => "normal" }.freeze
@@ -55,15 +73,15 @@ module GridDamage
       slugs = Awakening.where(id: party.weapons.filter_map(&:awakening_id)).pluck(:id, :slug).to_h
       party.weapons.flat_map do |gw|
         slug = slugs[gw.awakening_id] or next []
-        bonus = if gw.weapon&.weapon_series&.slug == "celestial"
-                  celestial_bonus(slug, gw.awakening_level.to_i)
-                else
-                  BONUS.dig(slug, gw.awakening_level.to_i)
+        bonus = case gw.weapon&.weapon_series&.slug
+                when "celestial" then celestial_bonus(slug, gw.awakening_level.to_i)
+                when "world" then accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
+                else BONUS.dig(slug, gw.awakening_level.to_i)
                 end
         next [] unless bonus
 
         bonus.map do |boost_type, value|
-          bt, frame = boost_type == "ex_atk" ? ["atk", "ex"] : [boost_type, FRAME[boost_type]]
+          bt, frame = boost_type == "ex_atk" ? %w[atk ex] : [boost_type, FRAME[boost_type]]
           Aggregator::Contribution.new(
             boost_type: bt, series: frame, value: value,
             main_hand_only: false, mainhand: gw.mainhand, amplifiable: false
@@ -80,6 +98,15 @@ module GridDamage
         acc.merge!(CELESTIAL_SHARED[l] || {})
         acc.merge!(CELESTIAL_BY_TYPE.dig(slug, l) || {})
       end
+    end
+
+    # Sum per-level increment tables (World) up to the current level.
+    def accumulate(increments, level)
+      return nil unless increments && level >= 2
+
+      (2..level).each_with_object(Hash.new(0.0)) do |l, acc|
+        (increments[l] || {}).each { |k, v| acc[k] += v }
+      end.presence
     end
   end
 end

@@ -30,10 +30,13 @@ module GridDamage
         end
         { proficiency: w.proficiency, granblue_id: w.granblue_id, modifiers: modifiers, omega: omega }
       end
-      # The MC's weapon specialty (job proficiency) — selects the row of per-specialty skills
-      # (e.g. Cloud of Howling Twilight). Allies of that specialty get the larger boosts.
-      mc_specialty = PROFICIENCY_NAME[party.try(:job)&.proficiency1]
-      summarize(entries).merge(mc_specialty: mc_specialty)
+      # The MC's weapon specialties (BOTH job proficiencies) — select the row of
+      # per-specialty skills (e.g. Cloud of Howling Twilight). A job matching on either
+      # proficiency gets the specialty tier (dAV5ds: Lancer Origin is spear+axe; the
+      # panel shows Pillar-Smasher's Conviction at the axe values).
+      job = party.try(:job)
+      mc_specialties = [job&.proficiency1, job&.proficiency2].filter_map { |p| PROFICIENCY_NAME[p] }
+      summarize(entries).merge(mc_specialty: mc_specialties.first, mc_specialties: mc_specialties)
     end
 
     # Pure: entries = [{ proficiency:, granblue_id:, modifiers: [..], omega: bool }, …]

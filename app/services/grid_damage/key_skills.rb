@@ -20,6 +20,9 @@ module GridDamage
         w = gw.weapon
         next unless w
 
+        # Key-granted skills on non-summon-boosted series (Ultima gauphs) land flat,
+        # like the weapon's own skills (dAV5ds: Gauph Key of Strength's Stamina 20.4).
+        amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
         equipped_key_slugs(gw).each do |slug|
           Array(by_slug[slug]).each do |e|
             value = Effects.value_for(e, weapon: w, state: state, composition: composition)
@@ -27,7 +30,8 @@ module GridDamage
 
             out << Aggregator::Contribution.new(
               boost_type: e.boost_type, series: frame_for(e, w, gw), value: value,
-              mainhand: gw.mainhand, shared_cap_group: e.shared_cap_group, cap: e.total_cap&.to_f
+              mainhand: gw.mainhand, shared_cap_group: e.shared_cap_group, cap: e.total_cap&.to_f,
+              amplifiable: amplifiable
             )
           end
         end
