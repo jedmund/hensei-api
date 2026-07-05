@@ -49,7 +49,7 @@ module Granblue
       # rebuilding its skills from the rendered rows. Also used by EntityReparser,
       # where a raw structural parse would regress the expansion repair.
       def self.repair_weapon(weapon, wiki: Granblue::Parsers::Wiki.new, stats: Hash.new(0), force: false)
-        return :not_template unless force || weapon.wiki_raw.to_s =~ %r{\{\{Weapon/Common/}
+        return :not_template unless force || weapon.wiki_raw.to_s.include?('{{Weapon/Common/')
 
         expanded = wiki.expand(weapon.wiki_raw)
         return :expand_failed if expanded.blank?
@@ -79,7 +79,7 @@ module Granblue
         out = {}
         # Only the "Weapon Skills" table — exclude the charge-attack/ougi table above it, whose
         # skill-name row has no skill-desc and would shift the name/desc pairing.
-        section = html[%r{weapon-skills.*}m] || html
+        section = html[/weapon-skills.*/m] || html
         key_type = nil
         section.scan(%r{<td class="skill-name"[^>]*>(.*?)</td>.*?<td class="skill-desc"[^>]*>(.*?)</td>}m).each do |name_html, desc_html|
           name = clean(name_html)
@@ -88,7 +88,7 @@ module Granblue
           frame = desc_html[/Multiplier:[^.]*?\b(Normal|EX|Omega|Od)\b/i, 1]&.downcase
           # Strip the "Multiplier:" annotation in both forms — linked ('''Multiplier:''' [[…]])
           # and plain ("Multiplier: Normal") — up to the next clause separator.
-          stripped = desc_html.gsub(%r{'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .\-]+?)(?=[,.]|<|\z)}i, " ")
+          stripped = desc_html.gsub(/'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .\-]+?)(?=[,.]|<|\z)/i, " ")
           desc = clean(stripped)
           next if desc.blank?
 

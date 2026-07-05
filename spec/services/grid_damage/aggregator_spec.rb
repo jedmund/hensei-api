@@ -4,8 +4,8 @@ require "rails_helper"
 
 # Phase 2 — per-boost_type aggregation (stacking rules, caps, main-hand gating).
 RSpec.describe GridDamage::Aggregator do
-  C = GridDamage::Aggregator::Contribution
-  Meta = Struct.new(:stacking_rule, :grid_cap, :cap_is_flat, keyword_init: true)
+  C = GridDamage::Aggregator::Contribution # rubocop:disable Lint/ConstantDefinitionInBlock
+  Meta = Struct.new(:stacking_rule, :grid_cap, :cap_is_flat, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
 
   def contrib(boost_type:, value:, series: "normal", main_hand_only: false, mainhand: false)
     C.new(boost_type: boost_type, series: series, value: value, main_hand_only: main_hand_only, mainhand: mainhand)

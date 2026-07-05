@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 namespace :granblue do
-  ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
-  AURA_KEYS = %w[summon_granblue_id slot target element value uncap_level transcendence_stage condition description_en].freeze
+  ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze # rubocop:disable Lint/ConstantDefinitionInBlock
+  AURA_KEYS = %w[summon_granblue_id slot target element value uncap_level transcendence_stage condition description_en].freeze # rubocop:disable Lint/ConstantDefinitionInBlock
 
   desc "Extract summon auras from summons.wiki_raw -> data/summon_aura_data.json"
   task extract_summon_aura_data: :environment do
@@ -19,7 +19,7 @@ namespace :granblue do
 
     rows = rows.map { |r| r.transform_keys(&:to_s) }
                .sort_by { |r| [r["summon_granblue_id"], r["slot"], r["uncap_level"], r["transcendence_stage"]] }
-    File.write(Rails.root.join("data", "summon_aura_data.json"), JSON.pretty_generate(rows) + "\n")
+    File.write(Rails.root.join("data", "summon_aura_data.json"), "#{JSON.pretty_generate(rows)}\n")
     puts "Extracted #{rows.size} aura rows from #{Summon.where.not(wiki_raw: [nil, '']).count - no_aura.size} summons " \
          "(#{no_aura.size} have no passive aura — call-only)."
   end
@@ -27,7 +27,7 @@ namespace :granblue do
   desc "Sync summon_auras table from data/summon_aura_data.json (upsert + prune)"
   task load_summon_aura_data: :environment do
     records = JSON.parse(File.read(Rails.root.join("data", "summon_aura_data.json")))
-    keys = records.map { |r| r.values_at("summon_granblue_id", "slot", "uncap_level", "transcendence_stage") }.to_set
+    keys = records.to_set { |r| r.values_at("summon_granblue_id", "slot", "uncap_level", "transcendence_stage") }
 
     records.each do |r|
       a = SummonAura.find_or_initialize_by(

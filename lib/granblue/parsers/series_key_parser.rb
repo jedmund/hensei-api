@@ -18,7 +18,7 @@ module Granblue
       end
 
       def self.rows(table)
-        table.split(/\|-/).filter_map do |row|
+        table.split('|-').filter_map do |row|
           name = row[/\{\{\s*itm\s*\|\s*([^|}]+?)\s*[|}]/, 1] or next
           skill = skill_text(row)
           effect = boost_level_effect(row)
@@ -31,7 +31,7 @@ module Granblue
       # The "≥280%" Effect-column prose, kept RAW (data-label icons intact) so the boost values —
       # which the generic "Skill:" prose omits for Extremity/Sagacity/Supremacy — can be parsed.
       def self.boost_level_effect(row)
-        return nil unless row =~ /280%\s*or above/i
+        return nil unless /280%\s*or above/i.match?(row)
 
         row[/280%\s*or above[:\s]*(.+?)(?=\n\s*\||\z)/mi, 1]
       end

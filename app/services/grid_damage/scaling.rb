@@ -37,7 +37,7 @@ module GridDamage
       return lo.last if skill_level <= lo.first
       return hi.last if skill_level >= hi.first
 
-      left = points.select { |(sl, _)| sl <= skill_level }.last
+      left = points.reverse.find { |(sl, _)| sl <= skill_level }
       right = points.find { |(sl, _)| sl >= skill_level }
       return left.last if left.first == right.first
 

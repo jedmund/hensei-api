@@ -53,8 +53,8 @@ module GridDamage
         per_grid_count(effect, weapon: weapon, composition: composition)
       when "foe_hp_supplemental"
         effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
-      when "ally_hp_scaled", "current_hp_scaled"
-        effect.value&.to_f # TODO: HP curve (small set) — placeholder
+      when "ally_hp_scaled", "current_hp_scaled" # rubocop:disable Lint/DuplicateBranch -- TODO: HP curve placeholder
+        effect.value&.to_f
       when "specialty_scaled"
         specialty_value(effect, composition: composition)
       end

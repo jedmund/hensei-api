@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe GridDamage::SummonAuras do
-  Row = Struct.new(:uncap_level, :transcendence_stage, :value, :element, keyword_init: true)
+  Row = Struct.new(:uncap_level, :transcendence_stage, :value, :element, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
   # Varuna's normal_frame tiers: base 0/3/4/5 = 80/120/140/150; transcendence stages = 160/160/170.
   def varuna
     [[0, 0, 80], [3, 0, 120], [4, 0, 140], [5, 0, 150], [5, 4, 160], [5, 5, 160], [5, 6, 170]]

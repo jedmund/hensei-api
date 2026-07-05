@@ -46,7 +46,7 @@ class WeaponSkillVersion < ApplicationRecord
     linked = WeaponSkillDatum.where(weapon_skill_version_id: id).to_a
     return linked if canonical.empty?
 
-    have = canonical.map(&:boost_type).to_set
+    have = canonical.to_set(&:boost_type)
     canonical + linked.reject { |d| have.include?(d.boost_type) }
   end
 

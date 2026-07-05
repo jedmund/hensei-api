@@ -11,7 +11,7 @@ RSpec.describe Granblue::Extractors::SummonAuraExtractor do
   end
 
   def summon(fields)
-    "{{Summon\n" + fields.map { |k, v| "|#{k}=#{v}" }.join("\n") + "\n}}"
+    "{{Summon\n#{fields.map { |k, v| "|#{k}=#{v}" }.join("\n")}\n}}"
   end
 
   it "classifies an Optimus aura as a normal-frame multiplier (element implied)" do

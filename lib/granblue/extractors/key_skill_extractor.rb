@@ -28,7 +28,8 @@ module Granblue
         preview = []
 
         SERIES_PAGES.each do |page|
-          wikitext = fetch(wiki, page) or (stats[:fetch_failed] += 1; next)
+          wikitext = fetch(wiki, page) or (stats[:fetch_failed] += 1
+                                           next)
           Parser.parse(wikitext).each do |entry|
             key = WeaponKey.where("lower(name_en) = ?", entry[:name].downcase).first
             next stats[:unmatched_key] += 1 unless key
@@ -50,7 +51,7 @@ module Granblue
       # "20% ATK Up" trade column) keeps the EXPLICIT value — it's the authoritative SL20 number.
       def self.clause_effects(slug, name, skill_text)
         # Some keys (Destroyer anklets) gate the whole skill on "…280% or above" inline.
-        gate = { "type" => "boost_level", "gte" => 280 } if skill_text.to_s =~ /280%\s*or above/i
+        gate = { "type" => "boost_level", "gte" => 280 } if /280%\s*or above/i.match?(skill_text.to_s)
 
         effects = DescParser.parse(skill_text, name: name)[:clauses].filter_map do |c|
           boost = c[:boost_type]

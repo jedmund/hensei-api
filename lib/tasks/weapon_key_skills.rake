@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 namespace :granblue do
+  # rubocop:disable Lint/ConstantDefinitionInBlock
   KEY_SKILL_COLS = %w[modifier boost_type series scaling_kind value value_unit condition
                       frame_rule stacking applies_to total_cap per_copy_cap count_basis count_cap].freeze
+  # rubocop:enable Lint/ConstantDefinitionInBlock
 
   desc "Sync key-granted weapon skills (Dark Opus pendulum/teluma etc.) from data/weapon_key_skills.json into weapon_skill_effects"
   task load_weapon_key_skills: :environment do
     records = JSON.parse(File.read(Rails.root.join("data", "weapon_key_skills.json")))
-    keys = records.map { |r| r.values_at("key_slug", "modifier", "boost_type", "scaling_kind") }.to_set
+    keys = records.to_set { |r| r.values_at("key_slug", "modifier", "boost_type", "scaling_kind") }
 
     records.each do |r|
       e = WeaponSkillEffect.find_or_initialize_by(

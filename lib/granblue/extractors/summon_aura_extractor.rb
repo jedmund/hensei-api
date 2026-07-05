@@ -32,14 +32,14 @@ module Granblue
         [["", "main"], ["sub", "sub"]].each do |prefix, slot|
           BASE_TIER.each do |n, uncap|
             txt = fields["#{prefix}aura#{n}"]
-            rec = build(txt, slot:, uncap_level: uncap, transcendence_stage: 0,
-                        series:, summon_element: element, granblue_id:)
+            rec = build(txt, slot: slot, uncap_level: uncap, transcendence_stage: 0,
+                        series: series, summon_element: element, granblue_id: granblue_id)
             records << rec if rec
           end
           (0..5).each do |n|
             txt = fields["#{prefix}aurat#{n}"]
-            rec = build(txt, slot:, uncap_level: 5, transcendence_stage: n + 1,
-                        series:, summon_element: element, granblue_id:)
+            rec = build(txt, slot: slot, uncap_level: 5, transcendence_stage: n + 1,
+                        series: series, summon_element: element, granblue_id: granblue_id)
             records << rec if rec
           end
         end
@@ -61,7 +61,7 @@ module Granblue
       # Most grid-relevant first — multi-clause auras keep the highest-priority clause.
       TARGET_PRIORITY = %w[normal_frame omega_frame odious_frame elemental_atk normal_atk omega_atk multiattack atk other].freeze
 
-      def build(text, slot:, uncap_level:, transcendence_stage:, series:, summon_element:, granblue_id:)
+      def build(text, slot:, uncap_level:, transcendence_stage:, series:, summon_element:, granblue_id:) # rubocop:disable Metrics/ParameterLists
         return nil if text.blank?
 
         clean = strip_markup(text)
@@ -71,12 +71,12 @@ module Granblue
         # each and keep the most grid-relevant (frame > elemental > … > other).
         clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).reject(&:blank?)
         clauses = [clean] if clauses.empty?
-        best = clauses.map { |c| parse_clause(c, series:, summon_element:) }
+        best = clauses.map { |c| parse_clause(c, series: series, summon_element: summon_element) }
                       .min_by { |pc| TARGET_PRIORITY.index(pc[:target]) }
 
         {
-          summon_granblue_id: granblue_id, slot:, target: best[:target], element: best[:element],
-          value: best[:value], uncap_level:, transcendence_stage:,
+          summon_granblue_id: granblue_id, slot: slot, target: best[:target], element: best[:element],
+          value: best[:value], uncap_level: uncap_level, transcendence_stage: transcendence_stage,
           condition: best[:condition], description_en: clean.strip
         }
       end
@@ -95,9 +95,9 @@ module Granblue
           phrase = clause
         end
 
-        target, element = classify(phrase, series:, summon_element:)
+        target, element = classify(phrase, series: series, summon_element: summon_element)
         condition ||= detect_condition(clause)
-        { target:, element:, value:, condition: }
+        { target: target, element: element, value: value, condition: condition }
       end
 
       def strip_markup(text)
@@ -137,7 +137,7 @@ module Granblue
 
       # "Dark and Earth" -> "dark,earth"; "all" -> "all"; else nil.
       def elements_in(phrase)
-        return "all" if phrase =~ /\ball\b/
+        return "all" if /\ball\b/.match?(phrase)
         found = ELEMENTS.select { |e| phrase.include?(e) }
         found.any? ? found.join(",") : nil
       end

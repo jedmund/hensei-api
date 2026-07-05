@@ -5,7 +5,7 @@ require Rails.root.join("lib/granblue/extractors/weapon_skill_data_extractor")
 
 RSpec.describe Granblue::Extractors::WeaponSkillDataExtractor do
   # Fixed boost-name → key map so these golden tests don't depend on the DB.
-  KEY_MAP = {
+  KEY_MAP = { # rubocop:disable Lint/ConstantDefinitionInBlock
     "Might" => "atk", "HP" => "hp", "DA Rate" => "da", "TA Rate" => "ta",
     "Enmity" => "enmity", "Stamina" => "stamina", "E. ATK (Prog.)" => "e_atk_prog",
     "DEF" => "def", "Critical" => "critical", "N.A. DMG Cap" => "na_dmg_cap"

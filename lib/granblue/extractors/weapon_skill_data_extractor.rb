@@ -34,7 +34,7 @@ module Granblue
         return "normal_omega" if has_normal && has_omega
         return "odious" if t.include?("odious")
         return "omega" if has_omega
-        return "ex" if t =~ /\bex\b/
+        return "ex" if /\bex\b/.match?(t)
         return "normal" if has_normal
         nil
       end
@@ -54,7 +54,7 @@ module Granblue
         wikitext = wikitext.gsub(/<!--.*?-->/m, "") # strip multi-line comments first
         box = parse_box(wikitext)
         modifier = (box[:name] || name).strip
-        aura = box[:aura_boostable] == "yes" || box[:aura_boostable] == "both"
+        aura = %w[yes both].include?(box[:aura_boostable])
 
         rows = []
         box_boosts = [box[:boost1], box[:boost2], box[:boost3]].compact.map(&:strip).reject(&:empty?)
@@ -71,7 +71,7 @@ module Granblue
       def parse_box(text)
         body = text[/\{\{WsBox(.*?)\n\}\}/m, 1] or return {}
         params = {}
-        body.split(/\n\|/).each do |chunk|
+        body.split("\n|").each do |chunk|
           k, v = chunk.split("=", 2)
           next unless v
           params[k.strip.to_sym] = v.strip
@@ -84,7 +84,7 @@ module Granblue
       # the value per column.
       def stamina_rows(text, modifier, aura)
         tbl = text[/\{\|\s*class="wikitable"[^\n]*\n(.*?)\n\|\}/m, 1]
-        return [] unless tbl && tbl.include?("Coefficient")
+        return [] unless tbl&.include?("Coefficient")
 
         rows_raw = split_rows(tbl)
         # series header: a row of cells each like "{{icon|X aura}} <Series>" spanning columns
@@ -107,11 +107,11 @@ module Granblue
       # The series-header row uses colspans (cells without one span 1, e.g. the
       # single "Odious" column); expand into one series per column.
       def expand_series_columns(rows_raw)
-        row = find_row(rows_raw) { |r| r =~ /aura\}\}/ } or return []
+        row = find_row(rows_raw) { |r| r.include?('aura}}') } or return []
         cols = []
         cells = row.split("\n").flat_map { |ln| ln.start_with?("!") ? ln.sub(/^!/, "").split("!!") : [] }
         cells.each do |cell|
-          next unless cell =~ /aura\}\}/ || cell =~ /\b(Normal|Omega|Odious|EX|Taboo)\b/i
+          next unless cell.include?('aura}}') || cell =~ /\b(Normal|Omega|Odious|EX|Taboo)\b/i
           span = cell[/colspan="?(\d+)"?/, 1]&.to_i || 1
           label = cell.include?("|") ? cell.split("|", 2).last : cell
           series = self.class.series_for_title(label) or next
@@ -210,7 +210,7 @@ module Granblue
       # title like "Taboo"); falls back to the WsBox boosts for title-less Shape B.
       def table_series(tbl, box_boosts)
         lines = tbl.split("\n")
-        line = lines.find { |l| l =~ /aura\}\}/ || l.include?("wsmod-title") }
+        line = lines.find { |l| l.include?('aura}}') || l.include?("wsmod-title") }
         line ||= lines.find { |l| l.start_with?("!") && l.include?("colspan") && self.class.series_for_title(l) }
         line ? self.class.series_for_title(line) : default_series(box_boosts)
       end
@@ -240,8 +240,8 @@ module Granblue
         tbl.split(/\n\|-+/).map(&:strip)
       end
 
-      def find_row(rows)
-        rows.find { |r| yield r }
+      def find_row(rows, &)
+        rows.find(&)
       end
 
       # SL column labels from the header row (drop Icon(s)/Skill Level cells).
@@ -251,13 +251,13 @@ module Granblue
         labels = cells.map { |c| cell_content(c) }.reject(&:empty?)
         labels.reject! { |l| l =~ /\AIcons?\z/i || l =~ /Skill Level/i }
         has_max = labels.any? { |l| l =~ /Max/i }
-        levels = labels.map { |l| l[/\d+/]&.to_i }.compact
+        levels = labels.filter_map { |l| l[/\d+/]&.to_i }
         [levels, has_max]
       end
 
       # Size from any `!` cell whose content is a size word (class-agnostic, so it
       # works for wsmod and plain `style=`-attr tables). nil = no size (Shape B).
-      def row_size(r)
+      def row_size(r) # rubocop:disable Naming/MethodParameterName
         r.split("\n").each do |ln|
           next unless ln.start_with?("!")
           s = normalize_size(cell_content(ln.sub(/^!\s*/, "")))
@@ -268,16 +268,16 @@ module Granblue
 
       # Boost labels from the stat cell(s): {{Label|X}} and {{status|X|...}} (e.g.
       # Preemptive's {{status|Shield}}).
-      def row_labels(r)
+      def row_labels(r) # rubocop:disable Naming/MethodParameterName
         (r.scan(/\{\{Label\|([^}|]+)/).flatten + r.scan(/\{\{status\|([^}|]+)/i).flatten).map(&:strip)
       end
 
       # Plain-text boost names in `!` cells (no Label/status template), e.g.
       # Betrayal's bare "ATK" stat. Excludes icon and size cells.
-      def plain_boosts(r)
+      def plain_boosts(r) # rubocop:disable Naming/MethodParameterName
         r.split("\n").filter_map do |ln|
           next unless ln.start_with?("!")
-          next if ln =~ /WeaponSkillIconLink|\[\[File:/
+          next if /WeaponSkillIconLink|\[\[File:/.match?(ln)
           c = cell_content(ln.sub(/^!\s*/, ""))
           next if c.empty? || normalize_size(c) || c =~ /Skill Level/i || c =~ /\AIcons?\z/i
           c
@@ -285,11 +285,11 @@ module Granblue
       end
 
       # All data (`|`) cells in a row, in order, with attributes stripped.
-      def row_values(r)
+      def row_values(r) # rubocop:disable Naming/MethodParameterName
         vals = []
         r.split("\n").each do |ln|
           next unless ln.start_with?("|")
-          next if ln.start_with?("|-") || ln.start_with?("|}")
+          next if ln.start_with?("|-", "|}")
           ln.sub(/^\|/, "").split("||").each { |c| vals << cell_content(c) }
         end
         vals
@@ -331,16 +331,16 @@ module Granblue
         clean(s)
       end
 
-      def clean(s)
+      def clean(s) # rubocop:disable Naming/MethodParameterName
         s = s.dup
-        s.gsub!(/<ref[^>]*\/>/, "")
-        s.gsub!(/<ref[^>]*>.*?<\/ref>/m, "")
+        s.gsub!(%r{<ref[^>]*/>}, "")
+        s.gsub!(%r{<ref[^>]*>.*?</ref>}m, "")
         s.gsub!(/<!--.*?-->/m, "")
         s.gsub!(/\{\{\s*#[^{}]*\}\}/m, "") # parser functions {{ #ifeq:... }}
         s.gsub!(/\{\{Label\|([^}|]+)[^}]*\}\}/, '\1')
         s.gsub!(/\{\{verify\|([^}|]+)\}\}/, '\1')      # {{verify|0.4%}} → 0.4%
         s.gsub!(/\{\{crit\|2=([^}|]+)[^}]*\}\}/, '\1') # {{crit|2=15.0|3=50}} → 15.0
-        s.gsub!(/\{\{[^{}]*\}\}/m, "")     # remaining templates
+        s.gsub!(/\{\{[^{}]*\}\}/m, "") # remaining templates
         s.gsub!(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/, '\1') # [[a|b]] → b
         s.gsub!(/<[^>]+>/, "")
         s.gsub!(/rowspan="?\d+"?/, "")
@@ -365,11 +365,15 @@ module Granblue
         cells.map { |c| cell_content(c) }
       end
 
-      def parse_num(s)
+      def parse_num(s) # rubocop:disable Naming/MethodParameterName
         return nil if s.nil?
         t = s.to_s.gsub(/[%,\s]/, "")
         return nil if t.empty? || t == "-"
-        Float(t) rescue nil
+        begin
+          Float(t)
+        rescue StandardError
+          nil
+        end
       end
     end
   end

@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe GridDamage::Effects do
-  EffStruct = Struct.new(:scaling_kind, :boost_type, :series, :value, :condition, :count_basis,
+  EffStruct = Struct.new(:scaling_kind, :boost_type, :series, :value, :condition, :count_basis, # rubocop:disable Lint/ConstantDefinitionInBlock
                          :count_cap, :per_copy_cap, :total_cap, :shared_cap_group, :modifier,
                          keyword_init: true)
-  WepStruct = Struct.new(:proficiency, :granblue_id, :max_skill_level, :max_level, keyword_init: true)
+  WepStruct = Struct.new(:proficiency, :granblue_id, :max_skill_level, :max_level, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
 
   let(:weapon) { WepStruct.new(proficiency: 1, granblue_id: "A", max_skill_level: 15, max_level: 200) }
   let(:composition) { { weapon_type_counts: { 1 => 3 }, weapon_group_count: 6, omega_skill_count: 2 } }

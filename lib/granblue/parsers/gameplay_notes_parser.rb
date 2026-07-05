@@ -57,7 +57,7 @@ module Granblue
 
       # "N% boost to STAT (Max: M%) ... per <unit> weapon" → a per-grid-count clause.
       def self.per_count_clauses(skill, body)
-        body.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*(.+?)\s*\(Max:\s*(\d+(?:\.\d+)?)%\).*?per\s*(?:\[\[[^\]|]*\|)?([A-Za-z][A-Za-z .]*?)\b/im).filter_map do |val, stat, max, unit|
+        body.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*(.+?)\s*\(Max:\s*(\d+(?:\.\d+)?)%\).*?per\s*(?:\[\[[^\]|]*\|)?([A-Za-z][A-Za-z .]*?)\b/im).filter_map do |val, stat, max, unit| # rubocop:disable Layout/LineLength
           bt = boost_for(stat) or next
           bt = "ex_atk_sp" if bt == "atk" && SP_ATK_MODIFIERS.any? { |re| skill =~ re }
           { boost_type: bt, scaling: :per_count, value: val.to_f, max: max.to_f,
@@ -87,7 +87,7 @@ module Granblue
       # A "Skill Level | per Turn | Max | …" table → a progression boost (value grows per turn).
       def self.progression_clauses(body)
         table = body[/\{\|.*?\|\}/m] or return []
-        return [] unless table =~ /per Turn/i
+        return [] unless /per Turn/i.match?(table)
 
         bt = boost_for(table.scan(/data-label="([^"]+)"/).flatten.first.to_s) || "atk"
         rows = data_rows(table).select { |c| c.first.to_s =~ /\A\d+\z/ } # Skill Level rows
@@ -121,7 +121,7 @@ module Granblue
 
       # Wikitable → array of data-row cell arrays (header/style rows excluded).
       def self.data_rows(table)
-        table.split(/\|-/).filter_map do |row|
+        table.split('|-').filter_map do |row|
           cells = row.split(/\|\||\n\s*[!|]/).map { |c| clean(c) }.reject(&:empty?)
           cells if cells.size > 1 && cells.first !~ /wikitable|style=/
         end
@@ -147,9 +147,9 @@ module Granblue
                       # the panel's second-stack "(Sp.)" instance (e.g. Extremity's N.A. Amp (Sp.)).
                       .gsub(/\{\{\s*tt\s*\|\s*([^|}]+?)\s*\|[^}]*Special[^}]*\}\}/i, ' \1(Sp.) ')
                       .gsub(/\{\{\s*tt\s*\|\s*([^|}]+?)\s*\|[^}]*\}\}/i, ' \1 ')
-                      .gsub(/<span[^>]*data-label="([^"]+)"[^>]*>(?:\s*<\/span>)?/i, ' \1 ')
+                      .gsub(%r{<span[^>]*data-label="([^"]+)"[^>]*>(?:\s*</span>)?}i, ' \1 ')
                       .gsub(/<[^>]+>/, " ")
-        boosts = labeled.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*([A-Za-z.][A-Za-z. ]*?)(?=\s*\d|,|\.|\/|\z)/).filter_map do |value, stat|
+        boosts = labeled.scan(%r{(\d+(?:\.\d+)?)%\s*boost to\s*([A-Za-z.][A-Za-z. ]*?)(?=\s*\d|,|\.|/|\z)}).filter_map do |value, stat|
           bt = boost_for(stat) or next
 
           series = case stat.downcase
@@ -180,7 +180,7 @@ module Granblue
       end
 
       def self.shared_cap_of(body)
-        return nil unless body =~ /share the same cap/i
+        return nil unless /share the same cap/i.match?(body)
 
         names = body.scan(/''([A-Za-z .]+?)''/).flatten.map { |n| n.strip.downcase.gsub(/[^a-z]+/, "_") }
         names.reject(&:empty?).uniq.join("_").presence
@@ -194,7 +194,7 @@ module Granblue
 
       def self.clean(html)
         html.to_s.gsub(/<[^>]+>/, "").gsub(/\[\[[^\]|]*\|?([^\]]*)\]\]/, '\1')
-            .gsub(/<ref[^>]*>.*?<\/ref>/m, "").gsub(/'''|''|[{}!]/, "").gsub(/\s+/, " ").strip
+            .gsub(%r{<ref[^>]*>.*?</ref>}m, "").gsub(/'''|''|[{}!]/, "").gsub(/\s+/, " ").strip
       end
 
       private_class_method :parse_section, :per_count_clauses, :specialty_clauses, :progression_clauses, :tier_clauses, :data_rows, :boost_for,

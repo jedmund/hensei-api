@@ -27,7 +27,7 @@ module GridDamage
     # advantage: :superior | :inferior | :neutral. progression: total e_atk_prog %.
     # Returns per-frame boosts, the NormalOmegaEX composite, the Elemental boost, and
     # their product (the grid's damage multiplier vs base ATK).
-    def compute(normal: {}, omega: {}, ex: {}, auras: {}, exalto: {},
+    def compute(normal: {}, omega: {}, ex: {}, auras: {}, exalto: {}, # rubocop:disable Metrics/ParameterLists, Naming/MethodParameterName
                 advantage: :neutral, progression: 0.0, fixed_atk: 0.0)
       n = frame(normal, auras[:optimus].to_f + exalto[:optimus].to_f, extra_atk: auras[:normal_summon].to_f)
       o = frame(omega, auras[:omega].to_f + exalto[:omega].to_f)

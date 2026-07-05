@@ -39,7 +39,7 @@ module Granblue
         [/(?:dmg|damage) cap/i,                              "dmg_cap"],
         [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, "na_amp"],
         [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp_sp"],
-        [/amplif\w*.*skill|skill.*amplif/i,                  "skill_amp_sp"],
+        [/amplif\w*.*skill|skill.*amplif/i, "skill_amp_sp"],
         [/amplif\w*.*elemental|elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, "elem_amplify"],
         [/amplif/i,                                          "dmg_amp"],
         [/supplement.*(?:charge attack|c\.?a\.?)/i,          "ca_supp"],
@@ -55,9 +55,9 @@ module Granblue
         # appear on the panel's elemental "Bonus DMG" line (5JPIJg: panel shows only the
         # always-on Deathstrike bonus). Must precede the generic elemental bonus pattern.
         [/bonus.*(?:dmg|damage).*single attacks?|single attacks?.*bonus.*(?:dmg|damage)/i, "bonus_elem_dmg_single"],
-        [/bonus.*(?:dmg|damage)/i,                           "bonus_elem_dmg"],
+        [/bonus.*(?:dmg|damage)/i, "bonus_elem_dmg"],
         [/hit to (?:multiattack|double attack|triple attack)/i, "multiattack"], # → −DA (guarantee)
-        [/multiattack rate/i,                               %w[da ta]],        # +DA and +TA
+        [/multiattack rate/i, %w[da ta]], # +DA and +TA
         [/double attack rate|\bda rate\b/i,                  "da"],
         [/triple attack rate|\bta rate\b/i,                  "ta"],
         [/critical/i,                                        "critical"],
@@ -148,10 +148,10 @@ module Granblue
       end
 
       def self.scale_boost(boost, scaling)
-        return ["enmity", "enmity"] if boost == "atk" && scaling == :low_hp
-        return ["stamina", "stamina"] if boost == "atk" && scaling == :high_hp
-        return ["e_atk_prog", "progression"] if boost == "atk" && scaling == :turns
-        return ["def", "garrison"] if boost == "def" && scaling == :low_hp
+        return %w[enmity enmity] if boost == "atk" && scaling == :low_hp
+        return %w[stamina stamina] if boost == "atk" && scaling == :high_hp
+        return %w[e_atk_prog progression] if boost == "atk" && scaling == :turns
+        return %w[def garrison] if boost == "def" && scaling == :low_hp
 
         [boost, "flat"]
       end
@@ -168,7 +168,7 @@ module Granblue
         rest = " #{frag} "
         found = []
         BOOST_PATTERNS.each do |re, key|
-          next unless rest =~ re
+          next unless rest&.match?(re)
 
           found.concat(Array(key))
           rest = rest.sub(re, " ")
@@ -221,8 +221,8 @@ module Granblue
         return "" if text.blank?
 
         s = text.dup
-        s.gsub!(/<ref[^>]*>.*?<\/ref>/m, "")
-        s.gsub!(/<ref[^>]*\/>/, "")
+        s.gsub!(%r{<ref[^>]*>.*?</ref>}m, "")
+        s.gsub!(%r{<ref[^>]*/>}, "")
         s.gsub!(/\{\{tt\|([^|}]+)\|[^}]*\}\}/i, '\1') # {{tt|text|tooltip}} → text
         s.gsub!(/\{\{status\|([^|}]+)[^}]*\}\}/i, '\1')
         s.gsub!(/\{\{[^{}]*\}\}/m, "")

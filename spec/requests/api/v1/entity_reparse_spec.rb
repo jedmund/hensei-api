@@ -8,8 +8,8 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
   let(:editor_headers) { auth_headers(editor) }
   let(:user_headers) { auth_headers(user) }
 
-  def auth_headers(u)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: u.id, expires_in: 30.days, scopes: 'public')
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
   end
 

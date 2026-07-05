@@ -43,7 +43,7 @@ module Granblue
           stats[:family_backfilled] += 1 if backfill_family(v, skill, parsed, dry_run: dry_run)
 
           if parsed[:clauses].empty?
-            stats[parsed[:skip] ? "skip_#{parsed[:skip]}".to_sym : :no_clause] += 1
+            stats[parsed[:skip] ? :"skip_#{parsed[:skip]}" : :no_clause] += 1
             next
           end
 
@@ -77,8 +77,11 @@ module Granblue
       def self.canonical_boost_types(version)
         data = WeaponSkillDatum.for_skill(modifier: version.skill_modifier, series: version.skill_series,
                                           size: version.skill_size).map(&:boost_type)
-        effects = version.skill_modifier.present? ?
-          WeaponSkillEffect.for_skill(modifier: version.skill_modifier).base_effects.pluck(:boost_type) : []
+        effects = if version.skill_modifier.present?
+                    WeaponSkillEffect.for_skill(modifier: version.skill_modifier).base_effects.pluck(:boost_type)
+                  else
+                    []
+                  end
         (data + effects).to_set
       end
 
