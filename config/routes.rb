@@ -161,6 +161,7 @@ Rails.application.routes.draw do
     end
     get 'raids/groups', to: 'raids#groups' # Legacy endpoint
 
+    patch 'weapon_keys/:id', to: 'weapon_keys#update'
     get 'weapon_keys', to: 'weapon_keys#all'
     get 'weapon_keys/skill_map', to: 'weapon_keys#skill_map'
     resources :bullets, only: %i[index show create update destroy] do
@@ -196,7 +197,12 @@ Rails.application.routes.draw do
         post :upload_image
       end
     end
-    resources :weapon_skill_data, only: %i[index show]
+    resources :weapon_skill_data, only: %i[index show create update destroy]
+    resources :weapon_skill_effects, only: %i[index create update destroy]
+    resources :weapon_skill_versions, only: %i[update]
+    resources :skills, only: %i[update]
+    get 'weapon_skill_families', to: 'weapon_skill_families#index'
+    get 'weapon_skill_families/*modifier', to: 'weapon_skill_families#show', format: false
     resources :weapon_skill_boost_types, only: %i[index show]
 
     # Party difficulty

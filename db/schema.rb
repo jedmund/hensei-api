@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_21_123123) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_05_133001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1345,6 +1345,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_21_123123) do
     t.datetime "updated_at", null: false
     t.decimal "max_value", precision: 10, scale: 4
     t.uuid "weapon_skill_version_id"
+    t.datetime "manually_edited_at"
     t.index ["modifier", "boost_type", "series", "size"], name: "index_wsd_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
     t.index ["series"], name: "index_weapon_skill_data_on_series"
@@ -1379,6 +1380,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_21_123123) do
     t.string "key_slug"
     t.string "frame_rule"
     t.uuid "weapon_skill_version_id"
+    t.datetime "manually_edited_at"
     t.index ["key_slug"], name: "index_weapon_skill_effects_on_key_slug"
     t.index ["modifier", "boost_type", "scaling_kind", "key_slug"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
