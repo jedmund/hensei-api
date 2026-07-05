@@ -23,15 +23,16 @@ module GridDamage
         # Key-granted skills on non-summon-boosted series (Ultima gauphs) land flat,
         # like the weapon's own skills (dAV5ds: Gauph Key of Strength's Stamina 20.4).
         amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
-        equipped_key_slugs(gw).each do |slug|
-          Array(by_slug[slug]).each do |e|
+        equipped_keys(gw).each do |key|
+          Array(by_slug[key.slug]).each do |e|
             value = Effects.value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
               boost_type: e.boost_type, series: frame_for(e, w, gw), value: value,
               mainhand: gw.mainhand, shared_cap_group: e.shared_cap_group, cap: e.total_cap&.to_f,
-              amplifiable: amplifiable, source_ids: [gw.id]
+              amplifiable: amplifiable, source_ids: [gw.id],
+              source_label: { en: key.name_en, ja: key.name_jp }
             )
           end
         end
@@ -43,12 +44,16 @@ module GridDamage
       WeaponSkillEffect.where.not(key_slug: nil).group_by(&:key_slug)
     end
 
-    def equipped_key_slugs(grid_weapon)
+    def equipped_keys(grid_weapon)
       ids = [grid_weapon.weapon_key1_id, grid_weapon.weapon_key2_id,
              grid_weapon.weapon_key3_id, grid_weapon.weapon_key4_id].compact
       return [] if ids.empty?
 
-      WeaponKey.where(id: ids).pluck(:slug)
+      WeaponKey.where(id: ids)
+    end
+
+    def equipped_key_slugs(grid_weapon)
+      equipped_keys(grid_weapon).map(&:slug)
     end
 
     def frame_for(effect, weapon, grid_weapon)
@@ -71,6 +76,6 @@ module GridDamage
       "normal"
     end
 
-    private_class_method :effects_by_slug, :equipped_key_slugs, :frame_for, :teluma_frame
+    private_class_method :effects_by_slug, :equipped_keys, :equipped_key_slugs, :frame_for, :teluma_frame
   end
 end

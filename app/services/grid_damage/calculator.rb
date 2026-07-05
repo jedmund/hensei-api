@@ -28,15 +28,24 @@ module GridDamage
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
+      panel(party, state: state)[:agg]
+    end
+
+    # Full panel computation: the aggregate PLUS the final (amplified) contribution list
+    # that produced it — the per-line breakdown the UI explains the math with.
+    def panel(party, state: {})
       composition = GridComposition.for_party(party)
       agg = aggregate_pass(party, state, composition) # pass 1 (raw) — to read the Exalto totals
 
       enh = enhancements(party, agg)
       # Pass 2: amplify each contribution by its frame's enhancement before aggregating, and
       # feed the enhancements in so boost_level (≥280) effects can fire too.
-      agg = aggregate_pass(party, state.merge(enhancements: enh), composition, amplify_enh: enh)
+      contributions = collect_contributions(party, state.merge(enhancements: enh), composition)
+      contributions = amplify_contributions(contributions, enh)
+      agg = Aggregator.aggregate(contributions)
       apply_rate_caps(agg)
       add_overskills(agg)
+      { agg: agg, contributions: contributions, enhancements: enh }
     end
 
     # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.
@@ -101,13 +110,17 @@ module GridDamage
     end
 
     def aggregate_pass(party, state, composition, amplify_enh: nil)
-      contributions = WeaponContributions.for_party(party, state: state) +
-                      Effects.contributions(party, state: state, composition: composition) +
-                      KeySkills.contributions(party, state: state, composition: composition) +
-                      AwakeningContributions.for_party(party) +
-                      AxContributions.for_party(party)
+      contributions = collect_contributions(party, state, composition)
       contributions = amplify_contributions(contributions, amplify_enh) if amplify_enh
       Aggregator.aggregate(contributions)
+    end
+
+    def collect_contributions(party, state, composition)
+      WeaponContributions.for_party(party, state: state) +
+        Effects.contributions(party, state: state, composition: composition) +
+        KeySkills.contributions(party, state: state, composition: composition) +
+        AwakeningContributions.for_party(party) +
+        AxContributions.for_party(party)
     end
 
     # Multiply each amplifiable contribution by its frame's enhancement (Optimus/Omega aura +
@@ -120,7 +133,10 @@ module GridDamage
         next c if c.amplifiable == false # flat sources (weapon awakenings) aren't enhanced
         next c unless c.value && AMPLIFIED_BOOSTS.include?(c.boost_type)
 
-        c.class.new(**c.to_h, value: c.value * (factor[c.series] || 1.0))
+        f = factor[c.series] || 1.0
+        next c if (f - 1.0).abs < Float::EPSILON
+
+        c.class.new(**c.to_h, value: c.value * f, base_value: c.value, multiplier: f)
       end
     end
 
@@ -130,6 +146,7 @@ module GridDamage
       ELEMENT_WORD[id]
     end
 
-    private_class_method :enhancements, :aggregate_pass, :grid_element, :amplify_contributions
+    private_class_method :enhancements, :aggregate_pass, :collect_contributions, :grid_element,
+                         :amplify_contributions
   end
 end

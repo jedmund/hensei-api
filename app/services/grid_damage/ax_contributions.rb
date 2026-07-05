@@ -22,10 +22,13 @@ module GridDamage
           value = display_value(mod, strength.to_f)
           next if value.zero?
 
+          shown = strength.to_f
+          shown = shown.to_i if shown == shown.round
           Aggregator::Contribution.new(
             boost_type: "#{mod.stat}_ax", series: nil, value: value,
             main_hand_only: false, mainhand: gw.mainhand, amplifiable: false,
-            source_ids: [gw.id]
+            source_ids: [gw.id],
+            source_label: { en: "AX: #{mod.name_en} +#{shown}", ja: "AX: #{mod.name_jp} +#{shown}" }
           )
         end
       end

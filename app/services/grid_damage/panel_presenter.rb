@@ -98,16 +98,17 @@ module GridDamage
     # → { enhancements: {optimus:, omega:, taboo:}, lines: [{key, series, label,
     #    label_slug, group, value, display, capped}] } for the party at the given state.
     def present(party, state: {})
-      agg = Calculator.boost_list(party, state: state)
-      enh = Calculator.send(:enhancements, party, agg)
+      computed = Calculator.panel(party, state: state)
+      agg = computed[:agg]
+      contributions = active_contributions(computed[:contributions])
       element = Calculator.send(:grid_element, party)
 
-      lines = LINES.filter_map { |spec| line_for(agg, spec, element) }
-      lines += leftover_lines(agg)
-      { enhancements: enh.transform_values { |v| v.to_f.round(2) }, lines: lines }
+      lines = LINES.filter_map { |spec| line_for(agg, contributions, spec, element) }
+      lines += leftover_lines(agg, contributions)
+      { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(2) }, lines: lines }
     end
 
-    def line_for(agg, spec, element)
+    def line_for(agg, contributions, spec, element)
       key, series, label, slug, group = spec
       result = agg[key] or return nil
       value = series ? result.by_series&.dig(series)&.to_f : result.total.to_f
@@ -121,8 +122,53 @@ module GridDamage
         value: value.round(2),
         display: display_value(key, value),
         capped: series.nil? && result.capped == true,
-        sources: line_sources(result, series)
+        sources: line_sources(result, series),
+        breakdown: breakdown_for(agg, contributions, key, series)
       }
+    end
+
+    # The same activity filter the aggregator applies (main-hand gating, nil values).
+    def active_contributions(contributions)
+      contributions.reject { |c| c.value.nil? || (c.main_hand_only && !c.mainhand) }
+    end
+
+    OVERSKILL_FEEDS = {
+      "crit_dmg" => [["Critical", "クリティカル確率", "critical", 0.5]],
+      "dmg_cap_pen" => [["DMG Cap", "ダメージ上限", "dmg_cap", 0.5], ["DMG Cap (Sp.)", "ダメージ上限(特殊)", "dmg_cap_sp", 0.5]],
+      "added_hit" => [["DA Rate", "DA確率", "da", 0.4], ["TA Rate", "TA確率", "ta", 0.6]]
+    }.freeze
+
+    # Per-line contribution entries: [{name:{en,ja}, icon, value, base, multiplier,
+    # count}], identical skills coalesced (count > 1 ⇒ value is per copy). Overskill
+    # lines synthesize their over-cap conversion instead.
+    def breakdown_for(agg, contributions, key, series)
+      feeds = OVERSKILL_FEEDS[key]
+      return overskill_breakdown(agg, feeds) if feeds
+
+      matching = contributions.select { |c| c.boost_type == key && (series.nil? || c.series == series) }
+      matching.group_by { |c| [c.source_label, c.source_icon, c.value.to_f.round(2)] }
+              .map do |(label, icon, value), group|
+        first = group.first
+        {
+          name: label || { en: key.tr("_", " "), ja: nil },
+          icon: icon,
+          value: value,
+          base: first.base_value&.to_f&.round(2),
+          multiplier: first.multiplier&.to_f&.round(2),
+          count: group.size
+        }
+      end
+    end
+
+    # "Critical 45.6% over the 100% cap × 0.5" style entries for the derived lines.
+    def overskill_breakdown(agg, feeds)
+      feeds.filter_map do |label_en, label_ja, source_key, rate|
+        over = Calculator.send(:excess, agg, source_key)
+        next if over.zero?
+
+        { name: { en: "#{label_en} over cap", ja: "#{label_ja}の上限超過分" }, icon: nil,
+          value: (over * rate).round(2), base: over.round(2), multiplier: rate, count: 1 }
+      end
     end
 
     # Exalto and elemental Bonus DMG badges are element-specific in game; fall back to
@@ -151,7 +197,7 @@ module GridDamage
     end
 
     # Boost types not in the ordered map still render, so nothing is silently hidden.
-    def leftover_lines(agg)
+    def leftover_lines(agg, contributions)
       known = LINES.to_set(&:first)
       agg.except(*known).filter_map do |key, result|
         value = result.total.to_f
@@ -159,7 +205,8 @@ module GridDamage
 
         { key: key, series: nil, label: key.tr("_", " "), label_slug: nil, group: "other",
           value: value.round(2), display: display_value(key, value),
-          capped: result.capped == true, sources: line_sources(result, nil) }
+          capped: result.capped == true, sources: line_sources(result, nil),
+          breakdown: breakdown_for(agg, contributions, key, nil) }
       end
     end
   end

@@ -70,9 +70,10 @@ module GridDamage
     FRAME = { "atk" => "normal" }.freeze
 
     def for_party(party)
-      slugs = Awakening.where(id: party.weapons.filter_map(&:awakening_id)).pluck(:id, :slug).to_h
+      awakenings = Awakening.where(id: party.weapons.filter_map(&:awakening_id)).index_by(&:id)
       party.weapons.flat_map do |gw|
-        slug = slugs[gw.awakening_id] or next []
+        awakening = awakenings[gw.awakening_id] or next []
+        slug = awakening.slug
         bonus = case gw.weapon&.weapon_series&.slug
                 when "celestial" then celestial_bonus(slug, gw.awakening_level.to_i)
                 when "world" then accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
@@ -85,7 +86,9 @@ module GridDamage
           Aggregator::Contribution.new(
             boost_type: bt, series: frame, value: value,
             main_hand_only: false, mainhand: gw.mainhand, amplifiable: false,
-            source_ids: [gw.id]
+            source_ids: [gw.id],
+            source_label: { en: "#{awakening.name_en} Awakening Lv#{gw.awakening_level}",
+                            ja: "#{awakening.name_jp}覚醒 Lv#{gw.awakening_level}" }
           )
         end
       end

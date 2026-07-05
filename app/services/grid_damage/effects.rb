@@ -30,7 +30,9 @@ module GridDamage
               boost_type: e.boost_type, series: frame || e.series, value: value,
               main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
               shared_cap_group: cap_group(e), cap: e.total_cap&.to_f, amplifiable: amplifiable,
-              source_ids: [gw.id]
+              source_ids: [gw.id],
+              source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
+              source_icon: v.icon_stem
             )
           end
         end

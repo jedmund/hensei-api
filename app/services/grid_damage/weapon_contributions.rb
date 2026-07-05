@@ -31,7 +31,9 @@ module GridDamage
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,
               value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              amplifiable: amplifiable, source_ids: [gw.id]
+              amplifiable: amplifiable, source_ids: [gw.id],
+              source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
+              source_icon: v.icon_stem
             )
           end
         end
