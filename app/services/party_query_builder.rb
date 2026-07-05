@@ -369,7 +369,8 @@ class PartyQueryBuilder
   end
 
   def default_characters_count
-    @options[:default_characters_count] || 3
+    # Defaults to 0 so MC-only teams (no characters) appear in the Gallery.
+    @options[:default_characters_count] || 0
   end
 
   def default_summons_count

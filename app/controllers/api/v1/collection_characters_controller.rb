@@ -30,7 +30,7 @@ module Api
           @characters = @characters.by_series(array_param(:series)) if params[:series]
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
-            @characters = @characters.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+            @characters = @characters.where("characters.name_en ILIKE :q OR characters.name_jp ILIKE :q", q: q)
           end
 
           lang = current_user&.language || 'en'
@@ -280,9 +280,9 @@ module Api
         name_col = locale == 'ja' ? 'name_jp' : 'name_en'
         case sort_key
         when 'name_asc'
-          scope.order(Arel.sql("#{name_col} ASC NULLS LAST"))
+          scope.order(Arel.sql("characters.#{name_col} ASC NULLS LAST"))
         when 'name_desc'
-          scope.order(Arel.sql("#{name_col} DESC NULLS LAST"))
+          scope.order(Arel.sql("characters.#{name_col} DESC NULLS LAST"))
         when 'element_asc'
           scope.order(element: :asc)
         when 'element_desc'

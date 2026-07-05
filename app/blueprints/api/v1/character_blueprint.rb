@@ -83,9 +83,11 @@ module Api
                  :style_swap, :style_name, :base_character
       end
 
-      # Minimal view for party list cards — just enough for image rendering
+      # Minimal view for party list cards — just enough for image rendering.
+      # Keep :element: null-element characters (e.g. Lyria, Gran/Djeeta) need it to
+      # build the element-suffixed image filename in grid reps.
       view :list do
-        excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
+        excludes :name, :character_id, :rarity, :gender, :special, :season,
                  :season_name, :series, :series_names, :uncap, :race, :proficiency,
                  :style_name, :base_character
       end

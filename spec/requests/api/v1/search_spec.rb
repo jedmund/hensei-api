@@ -28,6 +28,16 @@ RSpec.describe 'Api::V1::Search', type: :request do
       expect(response.parsed_body['results']).to be_an(Array)
     end
 
+    # Regression: sorting by name in a Japanese locale must order by the real
+    # name_jp column (was a 500: PG undefined column name_ja).
+    it 'does not error when sorting by name in ja locale' do
+      create(:character)
+      post '/api/v1/search/characters',
+           params: { search: { page: 1, locale: 'ja', sort: 'name', order: 'asc' } }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+    end
+
     it 'filters by element and returns only matching results' do
       post '/api/v1/search/characters',
            params: { search: { filters: { element: [1] }, page: 1 } }.to_json,
@@ -96,6 +106,42 @@ RSpec.describe 'Api::V1::Search', type: :request do
            params: { search: { page: 1 } }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    # Regression: clients send "jp" for Japanese, but the search scope is
+    # ja_search. The locale must normalize so it doesn't call a missing
+    # jp_search scope (was a 500: NameError undefined method 'jp_search').
+    it 'does not error when given a jp locale with a query' do
+      base = create(:job)
+      job = create(:job, base_job: base)
+      create(:job_skill, job: job)
+      post '/api/v1/search/job_skills',
+           params: { search: { job: job.id, locale: 'jp', query: 'skill' } }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results']).to be_an(Array)
+    end
+
+    # Regression: a job with no base_job (e.g. a base job itself) made the query
+    # dereference job.base_job.id on nil -> 500 NoMethodError. Both branches.
+    it 'does not error for a job without a base_job (empty query)' do
+      job = create(:job, base_job: nil)
+      create(:job_skill, job: job)
+      post '/api/v1/search/job_skills',
+           params: { search: { job: job.id, locale: 'en', query: '' } }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results']).to be_an(Array)
+    end
+
+    it 'does not error for a job without a base_job (with query)' do
+      job = create(:job, base_job: nil)
+      create(:job_skill, job: job)
+      post '/api/v1/search/job_skills',
+           params: { search: { job: job.id, locale: 'en', query: 'skill' } }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results']).to be_an(Array)
     end
   end
 

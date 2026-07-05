@@ -6,6 +6,9 @@ module Api
       ##### Doorkeeper
       include Doorkeeper::Rails::Helpers
 
+      ##### Error reporting
+      include SentryReportable
+
       ##### Constants
       COLLECTION_PER_PAGE = 15
       SEARCH_PER_PAGE = 10
@@ -18,6 +21,7 @@ module Api
       rescue_from StandardError do |e|
         Rails.logger.error "[500 Error] #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(20)&.join("\n")
+        report_unexpected_exception(e)
         render json: { error: 'Internal Server Error', message: e.message }, status: :internal_server_error
       end
 

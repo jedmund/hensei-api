@@ -610,7 +610,7 @@ module Api
           awakening: %i[id level],
           rings: %i[modifier strength],
           earring: %i[modifier strength],
-          full_auto_skills: %w[1 2 3 4]
+          full_auto_skills: %w[0 1 2 3]
         ).then { |p| permit_description(p, params[:character]) }
       end
 

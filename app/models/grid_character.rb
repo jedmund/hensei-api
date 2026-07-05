@@ -332,9 +332,9 @@ class GridCharacter < ApplicationRecord
     errors.add(:roles, "may have at most #{ROLE_CAP}")
   end
 
-  # full_auto_skills maps an ability slot ("1".."4") to whether it is used in
+  # full_auto_skills maps an ability slot ("0".."3") to whether it is used in
   # Full Auto. Reject unknown slots or non-boolean values.
-  FULL_AUTO_SLOTS = %w[1 2 3 4].freeze
+  FULL_AUTO_SLOTS = %w[0 1 2 3].freeze
   FULL_AUTO_VALUES = [true, false].freeze
 
   def validate_full_auto_skills
