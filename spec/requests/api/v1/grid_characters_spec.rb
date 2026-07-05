@@ -89,14 +89,14 @@ RSpec.describe 'GridCharacters API', type: :request do
         update_params = {
           character: {
             id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
-            position: 2, full_auto_skills: { '2' => false, '3' => true }
+            position: 2, full_auto_skills: { '1' => false, '2' => true }
           }
         }
 
         put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['grid_character']['full_auto_skills']).to eq('2' => false, '3' => true)
+        expect(response.parsed_body['grid_character']['full_auto_skills']).to eq('1' => false, '2' => true)
       end
 
       it 'rejects full_auto_skills with a non-boolean value' do
@@ -104,13 +104,28 @@ RSpec.describe 'GridCharacters API', type: :request do
         update_params = {
           character: {
             id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
-            position: 2, full_auto_skills: { '1' => 'maybe' }
+            position: 2, full_auto_skills: { '0' => 'maybe' }
           }
         }
 
         put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'filters out-of-range full_auto_skills slots' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '3' => true, '4' => false }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(grid_character.reload.full_auto_skills).to eq('3' => true)
       end
 
       it 'allows the owner to update the uncap level and transcendence step' do

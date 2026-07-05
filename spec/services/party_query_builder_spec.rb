@@ -271,6 +271,7 @@ RSpec.describe PartyQueryBuilder, type: :model do
   describe 'count filters' do
     let!(:stacked_party) { create(:party, weapons_count: 10, characters_count: 5, summons_count: 4, visibility: 1) }
     let!(:light_party) { create(:party, weapons_count: 1, characters_count: 1, summons_count: 1, visibility: 1) }
+    let!(:mc_only_party) { create(:party, weapons_count: 5, characters_count: 0, summons_count: 2, visibility: 1) }
 
     context 'with apply_defaults option' do
       let(:options) { { apply_defaults: true } }
@@ -279,6 +280,11 @@ RSpec.describe PartyQueryBuilder, type: :model do
         results = subject.build
         expect(results).to include(stacked_party)
         expect(results).not_to include(light_party)
+      end
+
+      it 'includes MC-only teams with no characters' do
+        results = subject.build
+        expect(results).to include(mc_only_party)
       end
     end
 
