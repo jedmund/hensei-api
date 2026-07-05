@@ -11,12 +11,6 @@ module GridDamage
     # panel flat, like EX. Their contributions are non-amplifiable.
     NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer].freeze
 
-    # A weapon at FINAL transcendence contributes DMG Cap Penetration 5.5% — empirical,
-    # exact on both T5 panels (5JPIJg: two T5 weapons = 11; 9JtcHY: one = 5.5). The wiki
-    # doesn't document the perk; whether it's per-T5-weapon or Extremity/Mikill-sourced
-    # is not yet distinguishable (both grids carry those too).
-    T5_DMG_CAP_PEN = 5.5
-
     def for_party(party, state: {})
       hp = state.fetch(:hp_percent, 100).to_f
       turn = state.fetch(:turn, 1).to_i
@@ -24,12 +18,6 @@ module GridDamage
       party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
         w = gw.weapon
         next unless w
-
-        if gw.transcendence_step.to_i >= 5
-          out << Aggregator::Contribution.new(boost_type: "dmg_cap_pen", series: nil,
-                                              value: T5_DMG_CAP_PEN, main_hand_only: false,
-                                              mainhand: gw.mainhand, amplifiable: false)
-        end
 
         skill_level = skill_level_for(w, gw)
         amplifiable = !NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)

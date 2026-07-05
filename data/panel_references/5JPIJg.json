@@ -158,14 +158,14 @@
       "label": "DMG Cap Pen.",
       "boost": "dmg_cap_pen",
       "value": 11
+    },
+    {
+      "label": "Crit. DMG",
+      "boost": "crit_dmg",
+      "value": 15
     }
   ],
   "unmodeled": [
-    {
-      "label": "Crit. DMG",
-      "value": 15,
-      "why": "source unknown — 9JtcHY shows 22.8 with the identical staff config; not summon transcendence, not per-T5-weapon. Task #56."
-    },
     {
       "label": "Added Hit",
       "value": 39.58,

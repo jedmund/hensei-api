@@ -139,13 +139,12 @@
       "label": "DMG Cap Pen.",
       "boost": "dmg_cap_pen",
       "value": 5.5
-    }
-  ],
-  "unmodeled": [
+    },
     {
       "label": "Crit. DMG",
-      "value": 22.8,
-      "why": "source unknown — 5JPIJg shows 15 with the identical staff config; not summon transcendence (auras/calls only per wiki), not per-T5-weapon (values inconsistent). Task #56."
+      "boost": "crit_dmg",
+      "value": 22.8
     }
-  ]
+  ],
+  "unmodeled": []
 }
