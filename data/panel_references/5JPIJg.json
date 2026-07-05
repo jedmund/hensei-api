@@ -158,11 +158,6 @@
       "label": "DMG Cap Pen.",
       "boost": "dmg_cap_pen",
       "value": 11
-    },
-    {
-      "label": "Crit. DMG",
-      "boost": "crit_dmg",
-      "value": 15
     }
   ],
   "unmodeled": [
@@ -175,6 +170,11 @@
       "label": "Fire Reduc.",
       "value": 30,
       "why": "defensive line (anklet ≥280) — not in the offensive panel model"
+    },
+    {
+      "label": "Crit. DMG",
+      "value": 15,
+      "why": "source unconfirmed — the empirical Extremity-15.2/Provenance-7.6 fit was removed at the user's direction (no wiki backing). Task #56."
     }
   ]
 }
