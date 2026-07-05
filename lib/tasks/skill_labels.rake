@@ -3,27 +3,25 @@
 namespace :granblue do
   desc <<~DESC
     Download the in-game weapon-skill label badges (the "Weapon Skill Boosts" panel
-    tags) from the game CDN, in English and Japanese, into hensei-svelte's bundled
-    assets. gbf.wiki's label gadget CSS maps display labels to the game filenames;
-    labels the wiki hosts under renamed files use the hand-recovered map below.
+    tags) from the game CDN, in English and Japanese, to S3/local storage alongside
+    the rest of our images (icons/skill-labels/{en,ja}/<slug>.png). gbf.wiki's label
+    gadget CSS maps display labels to the game filenames; labels the wiki hosts under
+    renamed files use the hand-recovered map below.
     Usage:
-      rake granblue:download_skill_labels                        # missing files, en+ja
-      rake granblue:download_skill_labels langs=ja force=true
+      rake granblue:download_skill_labels                        # storage=both
+      rake granblue:download_skill_labels storage=s3 force=true
       rake granblue:download_skill_labels all_labels=true        # every label in the gadget
-      rake granblue:download_skill_labels css=tmp/labels.css out=/path/to/skill-labels
+      rake granblue:download_skill_labels css=tmp/labels.css only=might,ex-might
   DESC
   task download_skill_labels: :environment do
     require 'net/http'
 
-    langs = (ENV['langs'] || 'en,ja').split(',')
+    storage = (ENV['storage'] || 'both').to_sym
     force = ENV['force'] == 'true'
     throttle = (ENV['throttle'] || '0.4').to_f
     all_labels = ENV['all_labels'] == 'true'
-    out_root = Pathname.new(ENV['out'] || Rails.root.join('../hensei-svelte/src/assets/skill-labels'))
 
     wiki_css_url = 'https://gbf.wiki/MediaWiki:Gadget-common-label-images.css?action=raw'
-    cdn = 'https://prd-game-a-granbluefantasy.akamaized.net/%<assets>s/img/sp/ui/icon/weapon_skill_label/%<file>s'
-    assets_dir = { 'en' => 'assets_en', 'ja' => 'assets' }
     user_agent = Rails.application.credentials.wiki_user_agent
 
     # The wiki hosts some labels under renamed files (Book_bonus_label_l_N.png /
@@ -49,8 +47,7 @@ namespace :granblue do
     end
 
     fetch = lambda do |url|
-      uri = URI(url)
-      res = Net::HTTP.get_response(uri, { 'User-Agent' => user_agent })
+      res = Net::HTTP.get_response(URI(url), { 'User-Agent' => user_agent })
       raise "#{res.code} for #{url}" unless res.is_a?(Net::HTTPSuccess)
 
       res.body
@@ -68,34 +65,42 @@ namespace :granblue do
     end
     # Wiki-renamed files aren't game filenames — the manual map overrides them.
     mapping = mapping.reject { |_, f| f.match?(/\A(Book_bonus_label|Bonus_)/) }.merge(manual)
-    puts "#{mapping.size} labels known"
 
-    slugs = all_labels ? mapping.keys.sort : out_root.join('en').glob('*.png').map { |p| p.basename('.png').to_s }.sort
+    # Default scope: the slugs the panel presenter actually renders (with element
+    # placeholders expanded) plus the hand-recovered extras; all_labels=true takes
+    # everything the wiki gadget knows; only= takes an explicit list.
+    elements = %w[fire water earth wind light dark]
+    slugs = if ENV['only']
+              ENV['only'].split(',')
+            elsif all_labels
+              mapping.keys.sort
+            else
+              # extras: badges beyond today's LINES that the panel may grow into
+              # (odious frame lines, per-element reductions, spare AX labels).
+              extras = %w[ex-stamina ex-enmity od-might od-stamina od-enmity bonus-elem-dmg
+                          ax-exp-gain ax-rupie-gain ax-heal-cap ELEMENT-reduc]
+              GridDamage::PanelPresenter::LINES.filter_map { |(_, _, _, slug, _)| slug } + manual.keys + extras
+            end
+    slugs = slugs.flat_map do |slug|
+      slug.include?('ELEMENT') ? elements.map { |el| slug.sub('ELEMENT', el) } : [slug]
+    end.uniq.sort
     unknown = slugs - mapping.keys
     puts "WARNING: no filename for: #{unknown.join(', ')}" if unknown.any?
     slugs &= mapping.keys
 
+    puts "#{slugs.size} labels (storage=#{storage}, force=#{force})"
     failures = []
-    langs.each do |lang|
-      dir = out_root.join(lang)
-      dir.mkpath
-      todo = slugs.select { |s| force || !dir.join("#{s}.png").exist? }
-      puts "[#{lang}] #{todo.size} to download (#{slugs.size - todo.size} already present)"
-      todo.each do |slug|
-        url = format(cdn, assets: assets_dir.fetch(lang), file: mapping.fetch(slug))
-        begin
-          data = fetch.call(url)
-          dir.join("#{slug}.png").binwrite(data)
-          puts "  #{slug} <- #{mapping[slug]} (#{data.bytesize} bytes)"
-        rescue StandardError => e
-          failures << [lang, slug, e.message]
-          warn "  FAILED #{slug}: #{e.message}"
-        end
-        sleep(throttle) if throttle.positive?
+    slugs.each do |slug|
+      results = Granblue::Downloaders::SkillLabelDownloader.new(
+        slug, source_filename: mapping.fetch(slug), storage: storage, force: force
+      ).download
+      results.each do |lang, r|
+        failures << [slug, lang, r[:error]] unless r[:success]
       end
+      sleep(throttle) if throttle.positive? && results.values.any? { |r| !r[:skipped] }
     end
 
-    puts failures.any? ? "#{failures.size} failure(s)" : 'done'
+    puts failures.any? ? "#{failures.size} failure(s): #{failures.first(10).inspect}" : 'done'
     exit(1) if failures.any?
   end
 end
