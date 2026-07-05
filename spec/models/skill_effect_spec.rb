@@ -20,6 +20,7 @@ RSpec.describe SkillEffect, type: :model do
         'charge_manip' => 'charge_manip',
         'field_effect' => 'field_effect',
         'summon_object' => 'summon_object',
+        'weapon_skill_boost' => 'weapon_skill_boost',
         'other' => 'other'
       )
     end
