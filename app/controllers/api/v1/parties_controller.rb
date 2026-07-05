@@ -70,6 +70,16 @@ module Api
       # Shows a specific party.
       # Uses viewable_by? to check visibility including crew sharing.
       # Also allows access via edit_key for anonymous parties.
+      # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
+      # GridDamage::Calculator and shaped for display.
+      def skill_boosts
+        unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
+          return render_unauthorized_response
+        end
+
+        render json: GridDamage::PanelPresenter.present(@party)
+      end
+
       def show
         unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
           return render_unauthorized_response

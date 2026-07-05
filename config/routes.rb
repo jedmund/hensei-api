@@ -84,6 +84,7 @@ Rails.application.routes.draw do
     post 'parties/migrate', to: 'parties#migrate'
     post 'parties/preview_migrate', to: 'parties#preview_migrate'
     get 'parties/favorites', to: 'parties#favorites'
+    get 'parties/:id/skill_boosts', to: 'parties#skill_boosts'
     get 'parties/:id', to: 'parties#show'
     post 'parties/:id/remix', to: 'parties#remix'
 
