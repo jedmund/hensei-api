@@ -39,22 +39,34 @@ module GridDamage
       out
     end
 
-    # An upgraded skill ("Sephirath Brogue II") imported as a SEPARATE slot replaces its
-    # base ("Sephirath Brogue") in-game — both being active would double-count. Group the
-    # slots' active versions by name stem and keep the highest variant.
+    # An upgraded skill imported as a SEPARATE slot replaces its base in-game — both
+    # being active would double-count. Upgrades come as a Roman suffix ("Sephirath
+    # Brogue II") or a "True" prefix (Xeno: "True Solaris's Supremacy" supersedes
+    # "Solaris's Supremacy"). Group the slots' active versions by name stem and keep
+    # the highest variant.
     ROMAN_SUFFIX = /\s+(II|III|IV)\z/
     ROMAN_RANK = { nil => 1, "II" => 2, "III" => 3, "IV" => 4 }.freeze
+    TRUE_PREFIX = /\ATrue\s+/
 
     def active_versions(weapon, grid_weapon)
       active = weapon.weapon_skills.filter_map do |ws|
         ws.active_version(uncap_level: grid_weapon.uncap_level.to_i,
                           transcendence_step: grid_weapon.transcendence_step.to_i)
       end
-      active.group_by { |v| skill_name(v).sub(ROMAN_SUFFIX, "") }.flat_map do |stem, group|
+      active.group_by { |v| skill_stem(v) }.flat_map do |stem, group|
         next group if group.size == 1 || stem.blank?
 
-        [group.max_by { |v| ROMAN_RANK[skill_name(v)[ROMAN_SUFFIX, 1]] || 1 }]
+        [group.max_by { |v| variant_rank(skill_name(v)) }]
       end
+    end
+
+    def skill_stem(version)
+      skill_name(version).sub(TRUE_PREFIX, "").sub(ROMAN_SUFFIX, "")
+    end
+
+    def variant_rank(name)
+      rank = ROMAN_RANK[name[ROMAN_SUFFIX, 1]] || 1
+      name.match?(TRUE_PREFIX) ? rank + 10 : rank
     end
 
     def skill_name(version)

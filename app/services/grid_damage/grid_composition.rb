@@ -23,10 +23,15 @@ module GridDamage
         omega = false
         w.weapon_skills.each do |ws|
           v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
-          next unless v && v.skill_modifier
+          next unless v
+
+          # omega-skill counters (Vivification) go by the RESOLVED frame — a Dark Opus
+          # Renunciation's s1 counts as an omega skill despite its template series
+          # (mcwZet: Vivification counts 7, incl. the opus).
+          omega ||= FrameResolver.frame_for(w, v) == "omega"
+          next unless v.skill_modifier
 
           modifiers << v.skill_modifier
-          omega ||= v.skill_series == "omega"
         end
         { proficiency: w.proficiency, granblue_id: w.granblue_id, modifiers: modifiers, omega: omega }
       end

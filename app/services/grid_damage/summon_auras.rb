@@ -30,12 +30,12 @@ module GridDamage
       totals
     end
 
-    # Main summon + support/friend supply their main aura; positions 4–5 their sub aura.
+    # Main summon + support/friend supply their main aura; every other slot (the four
+    # regular subs AND the two extra slots) supplies its sub aura — mcwZet: Lu Woh's 40%
+    # Light-weapon-skill sub aura applies from a regular sub slot. Summons whose frame
+    # boost is main-only (The Moon) simply have no sub-slot rows.
     def slot_for(grid_summon)
-      return "main" if grid_summon.main? || grid_summon.friend?
-      return "sub" if [4, 5].include?(grid_summon.position)
-
-      nil
+      grid_summon.main? || grid_summon.friend? ? "main" : "sub"
     end
 
     def aura(granblue_id, slot, target, uncap, transcendence_step, element: nil)

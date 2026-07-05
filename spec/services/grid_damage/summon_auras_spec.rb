@@ -39,9 +39,10 @@ RSpec.describe GridDamage::SummonAuras do
       expect(described_class.slot_for(double(main?: false, friend?: true, position: 6))).to eq("main")
     end
 
-    it "treats slots 4-5 as sub-aura sources, others as none" do
+    it "treats every non-main slot as a sub-aura source (regular subs AND extras)" do
+      # mcwZet: Lu Woh's 40% Light-weapon-skill sub aura applies from a regular sub slot.
       expect(described_class.slot_for(double(main?: false, friend?: false, position: 4))).to eq("sub")
-      expect(described_class.slot_for(double(main?: false, friend?: false, position: 1))).to be_nil
+      expect(described_class.slot_for(double(main?: false, friend?: false, position: 1))).to eq("sub")
     end
   end
 end

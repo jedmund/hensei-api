@@ -13,12 +13,14 @@ namespace :granblue do
     puts "All #{refs.size} panel reference(s) match."
   end
 
-  # The panel floors displayed integers (HP 249.8 shows 249), so an integer reference
-  # matches when our floored value equals it; decimal references must match to 0.005.
+  # The panel floors displayed integers (HP 249.8 shows 249) and rounds decimals to two
+  # places (Ω DMG Amp 5.775 shows 5.78), so an integer reference matches when our floored
+  # value equals it; decimal references must match to half a display cent (with a hair of
+  # float headroom).
   def panel_value_matches?(ours, ref)
     return false if ours.nil?
 
-    (ours - ref).abs <= 0.005 || (ref == ref.floor && ours.floor == ref)
+    (ours - ref).abs <= 0.00501 || (ref == ref.floor && ours.floor == ref)
   end
 
   def validate_panel_reference(ref)
