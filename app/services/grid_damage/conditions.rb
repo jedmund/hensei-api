@@ -26,6 +26,10 @@ module GridDamage
       when "weapon_level"       then weapon&.max_level.to_i >= gte
       # key-skill upgrades tied to the copy's transcendence (α Pendulum's lvl-240 DA/TA)
       when "transcendence_step" then grid_weapon && grid_weapon.transcendence_step.to_i >= gte
+      # key-skill values that scale with the COPY's skill level (telumas: Inferno 25→30 at SL20)
+      when "copy_skill_level"
+        grid_weapon && weapon &&
+          WeaponContributions.skill_level_for(weapon, grid_weapon) >= gte
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))

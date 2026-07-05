@@ -16,7 +16,7 @@ module GridDamage
     RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0,
                   "dmg_cap" => 20.0, "na_dmg_cap" => 20.0, "ca_dmg_cap" => 100.0,
                   "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
-                  "ex_atk_sp" => 80.0 }.freeze
+                  "ex_atk_sp" => 80.0, "crit_amp" => 20.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
     # the offensive ATK-family, the rate boosts, the amplify-family, elemental Bonus DMG
