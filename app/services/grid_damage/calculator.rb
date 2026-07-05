@@ -38,11 +38,12 @@ module GridDamage
       apply_rate_caps(agg)
     end
 
-    # Clamp DA/TA totals to their in-game cap (upper bound only — DA may be negative).
+    # Clamp totals to their in-game cap (upper bound only — DA may be negative). The
+    # panel shows a value orange AT its cap too, so exactly-at-cap flags as capped.
     def apply_rate_caps(agg)
       RATE_CAPS.each do |boost_type, cap|
         r = agg[boost_type]
-        next unless r && r.total > cap
+        next unless r && r.total >= cap
 
         r.raw = r.total
         r.total = cap
