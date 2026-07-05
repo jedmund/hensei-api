@@ -42,4 +42,9 @@ RSpec.describe 'Party skill boosts battle state', type: :request do
     expect(state['turn']).to eq(1)
     expect(state['foe_element']).not_to eq('moon')
   end
+
+  it 'accepts null as an explicit foe element' do
+    get "/api/v1/parties/#{party.shortcode}/skill_boosts", params: { foe_element: 'null' }
+    expect(response.parsed_body['state']['foe_element']).to eq('null')
+  end
 end

@@ -404,7 +404,8 @@ module Api
         hp = params[:hp_percent].presence&.to_f&.clamp(0, 100) || 100.0
         turn = params[:turn].presence&.to_i&.clamp(1, 999) || 1
         foe = params[:foe_element].presence&.downcase
-        foe = nil unless GridDamage::Calculator::ELEMENT_WORD.value?(foe)
+        # "null" is a real foe element (element-less foes) — advantaged effects turn off.
+        foe = nil unless foe == "null" || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
         foe ||= ADVANTAGED_FOE[GridDamage::Calculator.send(:grid_element, @party)]
         { hp_percent: hp, turn: turn, foe_element: foe }.compact
       end
