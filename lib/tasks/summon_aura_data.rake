@@ -60,7 +60,8 @@ namespace :granblue do
       next unless gs.summon
       total += 1
       if aura_ids.include?(gs.summon.granblue_id) then resolved += 1
-      else unresolved[gs.summon.name_en] += 1 end
+      else
+        unresolved[gs.summon.name_en] += 1 end
     end
     pct = total.zero? ? 0 : (100.0 * resolved / total).round(1)
     puts "equipped aura-slot summons resolving to aura data: #{resolved}/#{total} (#{pct}%)"

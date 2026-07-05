@@ -113,8 +113,9 @@ module Granblue
       NOTES_KINDS = %w[per_grid_count specialty_scaled].freeze
 
       def self.apply(version, skill, parsed, covered, stats)
-        WeaponSkillDatum.where(weapon_skill_version_id: version.id).delete_all
-        WeaponSkillEffect.where(weapon_skill_version_id: version.id).where.not(scaling_kind: NOTES_KINDS).delete_all
+        WeaponSkillDatum.where(weapon_skill_version_id: version.id, manually_edited_at: nil).delete_all
+        WeaponSkillEffect.where(weapon_skill_version_id: version.id, manually_edited_at: nil)
+                         .where.not(scaling_kind: NOTES_KINDS).delete_all
 
         series = parsed[:clauses].filter_map { |c| c[:series] }.first || "ex"
         version.update_columns(skill_series: series) if version.skill_series != series

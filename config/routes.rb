@@ -201,6 +201,7 @@ Rails.application.routes.draw do
     resources :weapon_skill_effects, only: %i[index create update destroy]
     resources :weapon_skill_versions, only: %i[update]
     resources :skills, only: %i[update]
+    post 'calculator/validate_panels', to: 'calculator#validate_panels'
     get 'weapon_skill_families', to: 'weapon_skill_families#index'
     get 'weapon_skill_families/*modifier', to: 'weapon_skill_families#show', format: false
     resources :weapon_skill_boost_types, only: %i[index show]

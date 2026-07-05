@@ -36,30 +36,35 @@ module Granblue
 
         scope.find_each do |w|
           next if SKIP_SERIES.include?(w.weapon_series&.slug)
-          next unless w.wiki_raw.to_s =~ %r{\{\{Weapon/Common/}
 
-          expanded = wiki.expand(w.wiki_raw)
-          if expanded.blank?
-            stats[:expand_failed] += 1
-            next
-          end
-          # Key-determined weapons (anklet/pendulum/teluma) list every key option when expanded;
-          # leave them to the key→skill resolver rather than creating all options as skills.
-          if expanded.match?(/granted power with (an?|a) (anklet|pendulum|teluma|chain)|empowered by a chosen/i)
-            stats[:key_determined] += 1
-            next
-          end
-          skills = parse_skills(expanded)
-          if skills.empty?
-            stats[:no_skills] += 1
-            next
-          end
-          persist(w, skills, stats)
-          apply_gameplay_notes(w, expanded, stats)
-          stats[:weapons] += 1
-          sleep throttle if throttle.positive?
+          result = repair_weapon(w, wiki: wiki, stats: stats)
+          stats[result] += 1 unless result == :repaired
+          stats[:weapons] += 1 if result == :repaired
+          sleep throttle if result == :repaired && throttle.positive?
         end
         stats
+      end
+
+      # Repair ONE series-template weapon by expanding its wiki_raw (network) and
+      # rebuilding its skills from the rendered rows. Also used by EntityReparser,
+      # where a raw structural parse would regress the expansion repair.
+      def self.repair_weapon(weapon, wiki: Granblue::Parsers::Wiki.new, stats: Hash.new(0), force: false)
+        return :not_template unless force || weapon.wiki_raw.to_s =~ %r{\{\{Weapon/Common/}
+
+        expanded = wiki.expand(weapon.wiki_raw)
+        return :expand_failed if expanded.blank?
+        # Key-determined weapons (anklet/pendulum/teluma) list every key option when expanded;
+        # leave them to the key→skill resolver rather than creating all options as skills.
+        if expanded.match?(/granted power with (an?|a) (anklet|pendulum|teluma|chain)|empowered by a chosen/i)
+          return :key_determined
+        end
+
+        skills = parse_skills(expanded)
+        return :no_skills if skills.empty?
+
+        persist(weapon, skills, stats)
+        apply_gameplay_notes(weapon, expanded, stats)
+        :repaired
       end
 
       # A skill row whose desc is one of these placeholders marks a KEY SLOT — every skill row
