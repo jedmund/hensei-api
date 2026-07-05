@@ -139,13 +139,12 @@
       "label": "DMG Cap Pen.",
       "boost": "dmg_cap_pen",
       "value": 5.5
-    }
-  ],
-  "unmodeled": [
+    },
     {
       "label": "Crit. DMG",
-      "value": 22.8,
-      "why": "source unconfirmed — the empirical Extremity-15.2/Provenance-7.6 fit was removed at the user's direction (no wiki backing). Task #56."
+      "boost": "crit_dmg",
+      "value": 22.8
     }
-  ]
+  ],
+  "unmodeled": []
 }

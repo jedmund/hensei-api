@@ -14,8 +14,8 @@ module GridDamage
     # shows a boost orange once it reaches its cap. A "100% hit to multiattack" penalty (−100 DA)
     # can still push the post-cap DA negative.
     RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0,
-                  "dmg_cap" => 20.0, "na_dmg_cap" => 20.0, "ca_dmg_cap" => 100.0,
-                  "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
+                  "dmg_cap" => 20.0, "dmg_cap_sp" => 20.0, "na_dmg_cap" => 20.0,
+                  "ca_dmg_cap" => 100.0, "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
                   "ex_atk_sp" => 80.0, "crit_amp" => 20.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
@@ -36,6 +36,35 @@ module GridDamage
       # feed the enhancements in so boost_level (≥280) effects can fire too.
       agg = aggregate_pass(party, state.merge(enhancements: enh), composition, amplify_enh: enh)
       apply_rate_caps(agg)
+      add_overskills(agg)
+    end
+
+    # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.
+    # Panel-exact on all goldens — 9JtcHY: Critical raw 145.6 → Crit. DMG 22.8; DMG Cap
+    # raw 31 → Pen. 5.5; dAV5ds raw 24 → 2; 5JPIJg raw 42 → 11.
+    OVERSKILL_CAPS = { "crit_dmg" => 100.0, "dmg_cap_pen" => 20.0, "added_hit" => 100.0 }.freeze
+
+    def add_overskills(agg)
+      crit = excess(agg, "critical") * 0.5
+      cap_excess = excess(agg, "dmg_cap") + excess(agg, "dmg_cap_sp")
+      pen = cap_excess >= 2 ? cap_excess * 0.5 : 0.0 # 2% minimum excess to activate
+      hit = (excess(agg, "da") * 0.4) + (excess(agg, "ta") * 0.6)
+
+      { "crit_dmg" => crit, "dmg_cap_pen" => pen, "added_hit" => hit }.each do |key, value|
+        next unless value.positive?
+
+        cap = OVERSKILL_CAPS.fetch(key)
+        agg[key] = Aggregator::Result.new(boost_type: key, total: [value, cap].min,
+                                          raw: value, capped: value >= cap)
+      end
+      agg
+    end
+
+    def excess(agg, boost_type)
+      r = agg[boost_type]
+      return 0.0 unless r&.capped && r.raw
+
+      [r.raw.to_f - r.total.to_f, 0.0].max
     end
 
     # Clamp totals to their in-game cap (upper bound only — DA may be negative). The
@@ -45,7 +74,8 @@ module GridDamage
         r = agg[boost_type]
         next unless r && r.total >= cap
 
-        r.raw = r.total
+        # keep the aggregator's pre-cap raw (Overskills convert the over-cap excess)
+        r.raw = [r.raw.to_f, r.total.to_f].max
         r.total = cap
         r.capped = true
       end
