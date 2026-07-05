@@ -312,8 +312,10 @@ module Granblue
         raw_name = hash["#{prefix}_name"]
         return nil unless raw_name.present?
 
-        # Clean wiki template syntax and HTML comments from skill name
+        # Clean wiki template syntax and HTML comments from skill name; resolve the
+        # Dark-Opus {{#ifeq:…|Majesty III|Majesty}} name templates to a parseable name.
         name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, '').gsub(/<!--.*?-->/, '').strip
+        name = resolve_ifeq_name(name)
 
         # Description: prefer English-specific field, fall back to generic
         description = hash["#{en_prefix}_desc"].presence || hash["#{prefix}_desc"]
@@ -321,9 +323,22 @@ module Granblue
         icon = hash["#{prefix}_icon"]
         unlock_level = hash["#{prefix}_lvl"].presence&.to_i
 
-        # Parse the raw name (with template) for structured components
-        parsed = Granblue::Parsers::WeaponSkillParser.parse(raw_name)
+        # Parse the cleaned name for structured components
+        parsed = Granblue::Parsers::WeaponSkillParser.parse(name)
         tier = tier_for(unlock_level)
+
+        # Normalize element-variant modifiers to their base ("Strike: Fire" → "Strike").
+        modifier = parsed[:modifier]
+        modifier = modifier.sub(/:\s*(Fire|Water|Earth|Wind|Light|Dark)\z/, "") if modifier
+
+        # Series & size come from the SKILL ITSELF — never the icon. Series: the aura-word in
+        # the name, else aura-boostability (no aura ⇒ EX); see WeaponSkillDescriptionParser.
+        # Size: the description states it ("Big boost to …"); a "big" skill named with a II
+        # numeral is the rebalanced big_ii tier; the name numeral is the last-resort fallback.
+        series = Granblue::Parsers::WeaponSkillDescriptionParser.series_for(description, name)
+        size = size_from_description(description)
+        size = "big_ii" if size == "big" && raw_name =~ /\bII\b/ && raw_name !~ /\bIII\b/
+        size ||= parsed[:size] # name numeral as a last resort
 
         {
           name_en: name,
@@ -334,11 +349,31 @@ module Granblue
           transcendence_stage: tier[:transcendence_stage],
           main_hand_only: description.to_s.match?(/when main weapon/i),
           mc_only: description.to_s.match?(/\(mc only\)/i),
-          modifier: parsed[:modifier],
-          series: parsed[:series],
-          size: parsed[:size],
+          modifier: modifier,
+          series: series,
+          size: size,
           aura: parsed[:aura]
         }
+      end
+
+      # Resolve {{ #ifeq: cond | value | THEN | ELSE }} skill-name templates (Dark Opus
+      # "Majesty III"/"Majesty", "Apotheosis") to a parseable name — both branches share
+      # the modifier, so we take the ELSE (last) branch.
+      def resolve_ifeq_name(name)
+        return name if name.blank? || !name.include?("#ifeq")
+
+        name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
+      end
+
+      SIZE_KEYWORD = /\b(unworldly|massive|big|medium|small)\b/i
+
+      # The size a weapon-skill description states ("Big boost to …"). nil when the
+      # description has no size word (genuinely sizeless skills, or template-form).
+      def size_from_description(description)
+        return nil if description.blank?
+
+        m = description.match(SIZE_KEYWORD) or return nil
+        m[1].downcase
       end
 
       # Saves select fields to the database
@@ -412,7 +447,9 @@ module Granblue
           modifier = entry[:modifier]
           version.skill_modifier = WeaponSkillVersion::VALID_MODIFIERS.include?(modifier) ? modifier : nil
           version.skill_series = entry[:series]
-          version.skill_size = entry[:size]
+          # Fall back to the canonical (deduped) skill description when this
+          # version's own description was empty (a sibling version populated it).
+          version.skill_size = entry[:size] || size_from_description(skill.description_en)
           version.unlock_level = entry[:unlock_level]
           version.min_uncap = entry[:min_uncap]
           version.transcendence_stage = entry[:transcendence_stage]
@@ -441,7 +478,7 @@ module Granblue
       # filtered in persist). Unique/fixed-effect skills have a nil modifier and
       # do not scale.
       def scales_with_skill_level?(version)
-        version.skill_modifier.present? && version.weapon_skill_data.exists?
+        version.skill_modifier.present? && version.weapon_skill_data.any?
       end
 
       # Process-wide cache of fetched wikitext, keyed by page title.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_05_133001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1034,6 +1034,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
     t.text "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "frame"
+    t.string "element"
     t.index ["character_skill_version_id"], name: "index_skill_effects_on_character_skill_version_id"
     t.index ["effect_type"], name: "index_skill_effects_on_effect_type"
     t.index ["status_id"], name: "index_skill_effects_on_status_id"
@@ -1107,17 +1109,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
 
   create_table "summon_auras", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "summon_granblue_id", null: false
+    t.string "slot", default: "main", null: false
+    t.string "target", null: false
+    t.string "element"
+    t.decimal "value"
+    t.integer "uncap_level", default: 0, null: false
+    t.integer "transcendence_stage", default: 0, null: false
+    t.text "condition"
     t.text "description_en"
     t.text "description_jp"
-    t.integer "aura_type"
-    t.integer "boost_type"
-    t.string "boost_target"
-    t.decimal "boost_value"
-    t.integer "uncap_level"
-    t.text "condition"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["summon_granblue_id", "aura_type", "uncap_level"], name: "idx_on_summon_granblue_id_aura_type_uncap_level_631fc8f523"
+    t.index ["summon_granblue_id", "slot", "uncap_level", "transcendence_stage"], name: "index_summon_auras_on_summon_tier"
     t.index ["summon_granblue_id"], name: "index_summon_auras_on_summon_granblue_id"
   end
 
@@ -1329,7 +1332,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
     t.string "modifier", null: false
     t.string "boost_type", null: false
     t.string "series"
-    t.string "size", null: false
+    t.string "size"
     t.string "formula_type", default: "flat", null: false
     t.decimal "sl1", precision: 10, scale: 4
     t.decimal "sl10", precision: 10, scale: 4
@@ -1340,9 +1343,49 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
     t.boolean "aura_boostable", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["modifier", "boost_type", "series", "size"], name: "index_weapon_skill_data_uniqueness", unique: true
+    t.decimal "max_value", precision: 10, scale: 4
+    t.uuid "weapon_skill_version_id"
+    t.datetime "manually_edited_at"
+    t.index ["modifier", "boost_type", "series", "size"], name: "index_wsd_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
     t.index ["series"], name: "index_weapon_skill_data_on_series"
+    t.index ["weapon_skill_version_id", "boost_type", "series", "size"], name: "index_wsd_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
+    t.index ["weapon_skill_version_id"], name: "index_weapon_skill_data_on_weapon_skill_version_id"
+  end
+
+  create_table "weapon_skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "modifier", null: false
+    t.string "boost_type", null: false
+    t.string "series"
+    t.string "scaling_kind", null: false
+    t.decimal "value", precision: 12, scale: 4
+    t.string "value_unit"
+    t.decimal "per_copy_cap", precision: 14, scale: 4
+    t.decimal "total_cap", precision: 14, scale: 4
+    t.string "shared_cap_group"
+    t.string "cap_formula"
+    t.string "count_basis"
+    t.integer "count_cap"
+    t.jsonb "condition", default: {}, null: false
+    t.string "target_instance"
+    t.string "depends_on", default: [], null: false, array: true
+    t.boolean "aura_boostable", default: false, null: false
+    t.boolean "seraphic_affected", default: false, null: false
+    t.string "stacking", default: "additive", null: false
+    t.string "applies_to", default: "element_allies", null: false
+    t.boolean "battle_interaction", default: false, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "key_slug"
+    t.string "frame_rule"
+    t.uuid "weapon_skill_version_id"
+    t.datetime "manually_edited_at"
+    t.index ["key_slug"], name: "index_weapon_skill_effects_on_key_slug"
+    t.index ["modifier", "boost_type", "scaling_kind", "key_slug"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
+    t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
+    t.index ["weapon_skill_version_id", "boost_type", "scaling_kind"], name: "index_wse_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
+    t.index ["weapon_skill_version_id"], name: "index_weapon_skill_effects_on_weapon_skill_version_id"
   end
 
   create_table "weapon_skill_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1361,6 +1404,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_06_18_000000) do
     t.boolean "scales_with_skill_level", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "multiplier_frame"
     t.index ["skill_id"], name: "index_weapon_skill_versions_on_skill_id"
     t.index ["skill_series"], name: "index_weapon_skill_versions_on_skill_series"
     t.index ["weapon_skill_id", "ordinal"], name: "idx_weapon_skill_versions_on_skill_and_ordinal", unique: true

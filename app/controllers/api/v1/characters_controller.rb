@@ -6,8 +6,8 @@ module Api
       include IdResolvable
       include BatchPreviewable
 
-      before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki batch_preview]
+      before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview]
 
       # GET /characters/:id
       def show
@@ -214,17 +214,7 @@ module Api
         end
 
         begin
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(@character.wiki_en)
-
-          # Handle redirects
-          redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-          if redirect_match
-            redirect_target = redirect_match[1]
-            @character.update!(wiki_en: redirect_target)
-            wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect_target)
-          end
-
-          @character.update!(wiki_raw: wiki_text)
+          Granblue::WikiFetcher.new.fetch_and_store(@character)
           render json: CharacterBlueprint.render(@character, view: :raw)
         rescue Granblue::WikiError => e
           render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
@@ -232,6 +222,20 @@ module Api
           Rails.logger.error "[CHARACTERS] Wiki fetch error for #{@character.id}: #{e.message}"
           render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         end
+      end
+
+      # POST /characters/:id/reparse
+      # Re-parses the stored wikitext into structured rows; refetch=true fetches fresh wikitext first.
+      def reparse
+        Granblue::EntityReparser.new(@character, refetch: params[:refetch] == 'true').reparse
+        render json: CharacterBlueprint.render(@character.reload, view: :full)
+      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiError => e
+        render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+      rescue StandardError => e
+        Rails.logger.error "[CHARACTERS] Reparse error for #{@character.id}: #{e.message}"
+        render json: { error: "Failed to re-parse: #{e.message}" }, status: :internal_server_error
       end
 
       private

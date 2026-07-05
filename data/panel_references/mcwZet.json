@@ -1,0 +1,26 @@
+{
+  "party": "mcwZet",
+  "captured_on": "2026-07-04",
+  "notes": "Light Magna (M3) grid. True Purity Sunblade MH (Xeno ULB), Luminiera Bolt Credo x3 (M3 FLB), Pillar of Flame x3 (M2 FLB), Rhongomyniad ULB, Ultima Sword ULB (gauph: Strife + alpha + Tria, user-confirmed), Sword of Renunciation. Summons: main Luminiera Omega 250, friend Lucifer 250, subs Metatron/Halluel and Malluel/Lu Woh 4*/Belial/The Star/Mars (Summer). Optimus enhancement 40 = Lu Woh's SUB aura (Six-Dragon sub auras apply from regular sub slots). Panel: DMG Cap 20 orange (capped; Vivification 1% x 7 omega-skill weapons x 3 counts the opus's omega s1). Sword of Renunciation lvl 230 (transcendence 3, SL20: omega Might 76x3.3=250.8, omega DMG Amp 1.75x3.3=5.775) with beta Pendulum + Chain of Temptation (all user-confirmed). Skill DMG Cap 50 = beta 50 + Astral Pierce II 50 in the shared same-cap key group (cap-boosting keys do not stack per the Ultima wiki note). Purple lines = the Sunblade's AX skills (HP +8, Stamina +3 -> displays 5%). Sunveil's Radiance (Xeno MH Normal-stamina, Eden curve 15 at 100% HP, not summon-boosted) does NOT appear on the panel's weapon-skill lines.",
+  "state": { "turn": 1, "hp_percent": 100, "foe_element": "dark" },
+  "enhancements": { "optimus": 40, "omega": 230 },
+  "lines": [
+    { "label": "Ω Might", "boost": "atk", "series": "omega", "value": 250 },
+    { "label": "EX Might", "boost": "atk", "series": "ex", "value": 129 },
+    { "label": "Ω Stamina", "boost": "stamina", "series": "omega", "value": 118 },
+    { "label": "Critical", "boost": "critical", "value": 99 },
+    { "label": "DA Rate", "boost": "da", "value": 25 },
+    { "label": "TA Rate", "boost": "ta", "value": 25 },
+    { "label": "Light Omega (Exalto)", "boost": "omega_exalto", "value": 60 },
+    { "label": "HP", "boost": "hp", "value": 108 },
+    { "label": "HP Cut", "boost": "hp_cut", "value": -30 },
+    { "label": "DMG Cap", "boost": "dmg_cap", "value": 20 },
+    { "label": "Ω DMG Amp.", "boost": "dmg_amp", "series": "omega", "value": 5.78 },
+    { "label": "Elem. Amplify", "boost": "elem_amplify", "value": 25 },
+    { "label": "N.A. DMG Cap", "boost": "na_dmg_cap", "value": 10 },
+    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 50 },
+    { "label": "Stamina (AX)", "boost": "stamina_ax", "value": 5 },
+    { "label": "HP (AX)", "boost": "hp_ax", "value": 8 }
+  ],
+  "unmodeled": []
+}

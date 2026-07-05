@@ -6,8 +6,8 @@ module Api
       include IdResolvable
       include BatchPreviewable
 
-      before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki batch_preview]
+      before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview]
 
       # GET /weapons/:id
       def show
@@ -202,17 +202,7 @@ module Api
         end
 
         begin
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(@weapon.wiki_en)
-
-          # Handle redirects
-          redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-          if redirect_match
-            redirect_target = redirect_match[1]
-            @weapon.update!(wiki_en: redirect_target)
-            wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect_target)
-          end
-
-          @weapon.update!(wiki_raw: wiki_text)
+          Granblue::WikiFetcher.new.fetch_and_store(@weapon)
           render json: WeaponBlueprint.render(@weapon, view: :raw)
         rescue Granblue::WikiError => e
           render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
@@ -220,6 +210,20 @@ module Api
           Rails.logger.error "[WEAPONS] Wiki fetch error for #{@weapon.id}: #{e.message}"
           render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         end
+      end
+
+      # POST /weapons/:id/reparse
+      # Re-parses the stored wikitext into structured rows; refetch=true fetches fresh wikitext first.
+      def reparse
+        Granblue::EntityReparser.new(@weapon, refetch: params[:refetch] == 'true').reparse
+        render json: WeaponBlueprint.render(@weapon.reload, view: :full)
+      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiError => e
+        render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+      rescue StandardError => e
+        Rails.logger.error "[WEAPONS] Reparse error for #{@weapon.id}: #{e.message}"
+        render json: { error: "Failed to re-parse: #{e.message}" }, status: :internal_server_error
       end
 
       private

@@ -96,6 +96,11 @@ module Api
         end
 
         fields :gamewith, :kamigame
+
+        # Structured per-tier auras (the calculator's source), main then sub.
+        association :auras, blueprint: SummonAuraBlueprint, name: :summon_auras do |s|
+          s.auras.sort_by { |a| [a.slot == 'main' ? 0 : 1, a.uncap_level, a.transcendence_stage] }
+        end
       end
 
       # Separate view for raw data - only used by dedicated endpoint
