@@ -69,7 +69,8 @@ module GridDamage
       contributions = WeaponContributions.for_party(party, state: state) +
                       Effects.contributions(party, state: state, composition: composition) +
                       KeySkills.contributions(party, state: state, composition: composition) +
-                      AwakeningContributions.for_party(party)
+                      AwakeningContributions.for_party(party) +
+                      AxContributions.for_party(party)
       contributions = amplify_contributions(contributions, amplify_enh) if amplify_enh
       Aggregator.aggregate(contributions)
     end

@@ -1,7 +1,7 @@
 {
   "party": "mcwZet",
   "captured_on": "2026-07-04",
-  "notes": "Light Magna (M3) grid. True Purity Sunblade MH (Xeno ULB), Luminiera Bolt Credo x3 (M3 FLB), Pillar of Flame x3 (M2 FLB), Rhongomyniad ULB, Ultima Sword ULB (gauph: Strife + alpha + Tria, user-confirmed), Sword of Renunciation. Summons: main Luminiera Omega 250, friend Lucifer 250, subs Metatron/Halluel and Malluel/Lu Woh 4*/Belial/The Star/Mars (Summer). Optimus enhancement 40 = Lu Woh's SUB aura (Six-Dragon sub auras apply from regular sub slots). Panel: DMG Cap 20 orange (capped; Vivification 1% x 7 omega-skill weapons x 3 counts the opus's omega s1). GRID CORRECTIONS (panel-derived, pending user confirmation): sword transcendence 5 -> 4 (Apotheosis reads SL20: omega Might 76x3.3=250.8, omega DMG Amp 1.75x3.3=5.775); sword pendulum set to Extremity as a placeholder - the panel shows no pendulum line at enhancement 230, so it is NOT beta (Skill DMG Cap 50 = Astral Pierce II alone); actual pendulum needs user confirmation (gamma/delta/Extremity/Sagacity/Supremacy all invisible here). Sunveil's Radiance (Xeno MH Normal-stamina, Eden curve 15 at 100% HP, not summon-boosted) does NOT appear on the panel's stamina lines.",
+  "notes": "Light Magna (M3) grid. True Purity Sunblade MH (Xeno ULB), Luminiera Bolt Credo x3 (M3 FLB), Pillar of Flame x3 (M2 FLB), Rhongomyniad ULB, Ultima Sword ULB (gauph: Strife + alpha + Tria, user-confirmed), Sword of Renunciation. Summons: main Luminiera Omega 250, friend Lucifer 250, subs Metatron/Halluel and Malluel/Lu Woh 4*/Belial/The Star/Mars (Summer). Optimus enhancement 40 = Lu Woh's SUB aura (Six-Dragon sub auras apply from regular sub slots). Panel: DMG Cap 20 orange (capped; Vivification 1% x 7 omega-skill weapons x 3 counts the opus's omega s1). Sword of Renunciation lvl 230 (transcendence 3, SL20: omega Might 76x3.3=250.8, omega DMG Amp 1.75x3.3=5.775) with beta Pendulum + Chain of Temptation (all user-confirmed). Skill DMG Cap 50 = beta 50 + Astral Pierce II 50 in the shared same-cap key group (cap-boosting keys do not stack per the Ultima wiki note). Purple lines = the Sunblade's AX skills (HP +8, Stamina +3 -> displays 5%). Sunveil's Radiance (Xeno MH Normal-stamina, Eden curve 15 at 100% HP, not summon-boosted) does NOT appear on the panel's weapon-skill lines.",
   "state": { "turn": 1, "hp_percent": 100, "foe_element": "dark" },
   "enhancements": { "optimus": 40, "omega": 230 },
   "lines": [
@@ -18,10 +18,9 @@
     { "label": "Ω DMG Amp.", "boost": "dmg_amp", "series": "omega", "value": 5.78 },
     { "label": "Elem. Amplify", "boost": "elem_amplify", "value": 25 },
     { "label": "N.A. DMG Cap", "boost": "na_dmg_cap", "value": 10 },
-    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 50 }
+    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 50 },
+    { "label": "Stamina (AX)", "boost": "stamina_ax", "value": 5 },
+    { "label": "HP (AX)", "boost": "hp_ax", "value": 8 }
   ],
-  "unmodeled": [
-    { "label": "Stamina (purple)", "value": 5, "why": "unknown source — purple badge pair with HP 8; no grid skill produces 5/8 (Sunveil is 15 at full HP). Ask: in-game tooltip?" },
-    { "label": "HP (purple)", "value": 8, "why": "unknown source — see Stamina (purple)" }
-  ]
+  "unmodeled": []
 }
