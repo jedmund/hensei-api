@@ -455,15 +455,14 @@
     "series": null,
     "size": null,
     "formula_type": "flat",
-    "sl1": 10,
-    "sl10": 20,
-    "sl15": 23,
+    "sl1": 10.0,
+    "sl10": 20.0,
+    "sl15": 23.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "Bloodrage",
@@ -2127,8 +2126,8 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
-    "aura_boostable": false,
-    "notes": "Meta-amplifier: fixed per-copy boost to the Optimus/Omega-series weapon mods (additive across copies, capped via boost_type grid_cap). Not SL-scaled; sizeless."
+    "max_value": null,
+    "aura_boostable": false
   },
   {
     "modifier": "Onslaught",
@@ -2157,8 +2156,8 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
-    "aura_boostable": false,
-    "notes": "Meta-amplifier: fixed per-copy boost to the Optimus/Omega-series weapon mods (additive across copies, capped via boost_type grid_cap). Not SL-scaled; sizeless."
+    "max_value": null,
+    "aura_boostable": false
   },
   {
     "modifier": "Parity",
@@ -2907,6 +2906,7 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": false
   },
   {
@@ -2921,6 +2921,7 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": false
   },
   {
@@ -2935,6 +2936,7 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": false
   },
   {
@@ -2949,6 +2951,7 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": false
   },
   {
@@ -2993,6 +2996,7 @@
     "sl20": null,
     "sl25": null,
     "coefficient": null,
+    "max_value": null,
     "aura_boostable": false
   },
   {
@@ -3946,15 +3950,14 @@
     "series": null,
     "size": null,
     "formula_type": "flat",
-    "sl1": 50,
-    "sl10": 50,
-    "sl15": 50,
+    "sl1": 50.0,
+    "sl10": 50.0,
+    "sl15": 50.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "Δ Revelation",
@@ -3963,14 +3966,13 @@
     "size": null,
     "formula_type": "flat",
     "sl1": null,
-    "sl10": 10,
-    "sl15": 20,
+    "sl10": 10.0,
+    "sl15": 20.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "α Revelation",
@@ -3980,13 +3982,12 @@
     "formula_type": "flat",
     "sl1": null,
     "sl10": 2.5,
-    "sl15": 5,
+    "sl15": 5.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "α Revelation",
@@ -3994,15 +3995,14 @@
     "series": null,
     "size": null,
     "formula_type": "flat",
-    "sl1": 10,
-    "sl10": 10,
-    "sl15": 10,
+    "sl1": 10.0,
+    "sl10": 10.0,
+    "sl15": 10.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "α Revelation",
@@ -4012,13 +4012,12 @@
     "formula_type": "flat",
     "sl1": null,
     "sl10": 2.5,
-    "sl15": 5,
+    "sl15": 5.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "β Revelation",
@@ -4026,15 +4025,14 @@
     "series": null,
     "size": null,
     "formula_type": "flat",
-    "sl1": 50,
-    "sl10": 50,
-    "sl15": 50,
+    "sl1": 50.0,
+    "sl10": 50.0,
+    "sl15": 50.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "γ Revelation",
@@ -4042,15 +4040,14 @@
     "series": null,
     "size": null,
     "formula_type": "flat",
-    "sl1": 50,
-    "sl10": 50,
-    "sl15": 50,
+    "sl1": 50.0,
+    "sl10": 50.0,
+    "sl15": 50.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   },
   {
     "modifier": "γ Revelation",
@@ -4060,12 +4057,11 @@
     "formula_type": "flat",
     "sl1": null,
     "sl10": 2.5,
-    "sl15": 5,
+    "sl15": 5.0,
     "sl20": null,
     "sl25": null,
     "coefficient": null,
     "max_value": null,
-    "aura_boostable": false,
-    "notes": "sl1/sl10/sl15 = uncap tiers (base/+1/+2), not skill levels."
+    "aura_boostable": false
   }
 ]
