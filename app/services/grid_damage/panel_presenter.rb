@@ -120,7 +120,8 @@ module GridDamage
         group: group,
         value: value.round(2),
         display: display_value(key, value),
-        capped: series.nil? && result.capped == true
+        capped: series.nil? && result.capped == true,
+        sources: line_sources(result, series)
       }
     end
 
@@ -131,6 +132,13 @@ module GridDamage
       return text.gsub("ELEMENT", element) if element
 
       text.gsub("bonus-ELEMENT-dmg", "bonus-elem-dmg").gsub(/\s*ELEMENT\s*/, " ").strip
+    end
+
+    # Grid weapon ids contributing to this line (per-frame for series-split lines).
+    def line_sources(result, series)
+      map = result.try(:source_map) || {}
+      ids = series ? Array(map[series]) : map.values.flatten
+      ids.uniq
     end
 
     # Supplements are flat counts (+100,000); everything else is a percent.
@@ -151,7 +159,7 @@ module GridDamage
 
         { key: key, series: nil, label: key.tr("_", " "), label_slug: nil, group: "other",
           value: value.round(2), display: display_value(key, value),
-          capped: result.capped == true }
+          capped: result.capped == true, sources: line_sources(result, nil) }
       end
     end
   end

@@ -21,13 +21,16 @@ module GridDamage
     # 80%, dmg_supp_shared 100k).
     # `amplifiable` is false for sources the summon-aura enhancement does NOT scale (weapon
     # awakenings are flat panel bonuses); nil/true means the enhancement applies.
+    # `source_ids` names the grid weapons a contribution came from (UI highlighting).
     Contribution = Struct.new(:boost_type, :series, :value, :main_hand_only, :mainhand,
-                              :shared_cap_group, :cap, :amplifiable, keyword_init: true)
+                              :shared_cap_group, :cap, :amplifiable, :source_ids,
+                              keyword_init: true)
 
     # An aggregated boost_type. `by_series` is set only for multiplicative_by_series;
-    # otherwise `total` is the (capped) value. `raw` is the pre-cap amount.
+    # otherwise `total` is the (capped) value. `raw` is the pre-cap amount. `source_map`
+    # maps series (nil for seriesless) → contributing grid weapon ids.
     Result = Struct.new(:boost_type, :rule, :total, :by_series, :raw, :cap, :cap_is_flat, :capped,
-                        keyword_init: true)
+                        :source_map, keyword_init: true)
 
     # contributions: Array<Contribution>
     # boost_types:   { key => metadata } where metadata responds to
@@ -54,7 +57,8 @@ module GridDamage
         total = members.sum { |c| c.value.to_f }
         if cap && total > cap
           [Contribution.new(boost_type: members.first.boost_type, series: members.first.series,
-                            value: cap, mainhand: true)]
+                            value: cap, mainhand: true,
+                            source_ids: members.flat_map { |c| Array(c.source_ids) }.uniq)]
         else
           members
         end
@@ -67,23 +71,31 @@ module GridDamage
       rule = meta&.stacking_rule || "additive"
       cap = meta&.grid_cap&.to_f
       flat = meta&.cap_is_flat || false
+      sources = source_map(group)
 
       case rule
       when "multiplicative_by_series"
         by_series = group.group_by(&:series).transform_values { |g| sum(g) }
         Result.new(boost_type: boost_type, rule: rule, by_series: by_series, total: by_series.values.sum,
-                   raw: by_series.values.sum, cap: nil, cap_is_flat: flat, capped: false)
+                   raw: by_series.values.sum, cap: nil, cap_is_flat: flat, capped: false,
+                   source_map: sources)
       when "highest_only"
-        capped(boost_type, rule, group.map(&:value).max, cap, flat)
+        capped(boost_type, rule, group.map(&:value).max, cap, flat, sources)
       else
-        capped(boost_type, rule, sum(group), cap, flat)
+        capped(boost_type, rule, sum(group), cap, flat, sources)
       end
     end
 
-    def capped(boost_type, rule, raw, cap, flat)
+    def capped(boost_type, rule, raw, cap, flat, sources = {})
       total = cap ? [raw, cap].min : raw
       Result.new(boost_type: boost_type, rule: rule, total: total, by_series: nil, raw: raw, cap: cap,
-                 cap_is_flat: flat, capped: !cap.nil? && raw > cap)
+                 cap_is_flat: flat, capped: !cap.nil? && raw > cap, source_map: sources)
+    end
+
+    def source_map(group)
+      group.group_by(&:series).transform_values do |g|
+        g.flat_map { |c| Array(c.source_ids) }.uniq
+      end
     end
 
     def sum(group)
@@ -94,6 +106,6 @@ module GridDamage
       WeaponSkillBoostType.all.index_by(&:key)
     end
 
-    private_class_method :build_result, :capped, :sum, :load_boost_types
+    private_class_method :build_result, :capped, :sum, :source_map, :load_boost_types
   end
 end

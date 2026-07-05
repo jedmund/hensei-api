@@ -50,12 +50,16 @@ module GridDamage
       pen = cap_excess >= 2 ? cap_excess * 0.5 : 0.0 # 2% minimum excess to activate
       hit = (excess(agg, "da") * 0.4) + (excess(agg, "ta") * 0.6)
 
+      overskill_sources = { "crit_dmg" => %w[critical], "dmg_cap_pen" => %w[dmg_cap dmg_cap_sp],
+                            "added_hit" => %w[da ta] }
       { "crit_dmg" => crit, "dmg_cap_pen" => pen, "added_hit" => hit }.each do |key, value|
         next unless value.positive?
 
         cap = OVERSKILL_CAPS.fetch(key)
+        sources = overskill_sources[key].flat_map { |k| (agg[k]&.source_map || {}).values.flatten }.uniq
         agg[key] = Aggregator::Result.new(boost_type: key, total: [value, cap].min,
-                                          raw: value, capped: value >= cap)
+                                          raw: value, capped: value >= cap,
+                                          source_map: { nil => sources })
       end
       agg
     end

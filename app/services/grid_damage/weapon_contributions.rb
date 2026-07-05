@@ -31,7 +31,7 @@ module GridDamage
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,
               value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              amplifiable: amplifiable
+              amplifiable: amplifiable, source_ids: [gw.id]
             )
           end
         end

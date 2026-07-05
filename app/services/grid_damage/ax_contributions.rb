@@ -24,7 +24,8 @@ module GridDamage
 
           Aggregator::Contribution.new(
             boost_type: "#{mod.stat}_ax", series: nil, value: value,
-            main_hand_only: false, mainhand: gw.mainhand, amplifiable: false
+            main_hand_only: false, mainhand: gw.mainhand, amplifiable: false,
+            source_ids: [gw.id]
           )
         end
       end

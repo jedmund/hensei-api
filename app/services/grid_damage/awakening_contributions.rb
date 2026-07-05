@@ -84,7 +84,8 @@ module GridDamage
           bt, frame = boost_type == "ex_atk" ? %w[atk ex] : [boost_type, FRAME[boost_type]]
           Aggregator::Contribution.new(
             boost_type: bt, series: frame, value: value,
-            main_hand_only: false, mainhand: gw.mainhand, amplifiable: false
+            main_hand_only: false, mainhand: gw.mainhand, amplifiable: false,
+            source_ids: [gw.id]
           )
         end
       end
