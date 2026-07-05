@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         get 'download_status'
         get 'raw'
         post 'fetch_wiki'
+        post 'reparse'
       end
     end
     resources :characters, only: %i[show create update] do
@@ -39,6 +40,7 @@ Rails.application.routes.draw do
         get 'download_status'
         get 'raw'
         post 'fetch_wiki'
+        post 'reparse'
       end
     end
     resources :statuses, only: %i[index show]
@@ -53,6 +55,7 @@ Rails.application.routes.draw do
         get 'download_status'
         get 'raw'
         post 'fetch_wiki'
+        post 'reparse'
       end
     end
     resources :favorites, only: [:create]
