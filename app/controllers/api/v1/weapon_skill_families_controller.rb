@@ -32,7 +32,7 @@ module Api
           weapon_skill_family: {
             modifier: modifier,
             display_name: display_name(versions),
-            icon_stem: versions.filter_map(&:icon_stem).first,
+            icon_stems: versions.filter_map(&:icon_stem).uniq,
             data: WeaponSkillDatumBlueprint.render_as_hash(data),
             effects: WeaponSkillEffectBlueprint.render_as_hash(all_effects),
             versions: versions_payload(versions),
@@ -58,6 +58,7 @@ module Api
                                                  Arel.sql('COUNT(DISTINCT weapon_skills.weapon_granblue_id)'))
                                           .to_h { |mod, versions, weapons| [mod, { versions: versions, weapons: weapons }] }
         names = family_display_names
+        icon_stems = family_icon_stems
 
         modifiers = (data_rows.map(&:modifier) + effect_rows.map(&:modifier) + version_stats.keys).compact.uniq
         modifiers.map do |mod|
@@ -67,6 +68,7 @@ module Api
           {
             modifier: mod,
             display_name: names[mod],
+            icon_stems: icon_stems[mod] || [],
             boost_types: (d.map(&:boost_type) + e.map(&:boost_type)).uniq.sort,
             series: (d.filter_map(&:series) + e.filter_map(&:series)).uniq.sort,
             sizes: d.filter_map(&:size).uniq.sort,
@@ -78,15 +80,35 @@ module Api
         end
       end
 
-      # Most common linked skill name per family (fallback: the modifier itself).
+      # Linked skill name per family, but only when every version agrees on one —
+      # names like "Tsunami's Aegis" / "Mountain's Aegis" are per-weapon flavor
+      # text for the same mechanical family, so a family spanning several of
+      # them has no single true name (falls back to the modifier instead).
       def family_display_names
         rows = WeaponSkillVersion.joins(:skill)
                                  .where.not(skill_modifier: [nil, ''])
                                  .group(:skill_modifier, 'skills.name_en', 'skills.name_jp')
-                                 .order(Arel.sql('COUNT(*) DESC'))
                                  .pluck(:skill_modifier, 'skills.name_en', 'skills.name_jp')
-        rows.each_with_object({}) do |(mod, en, ja), out|
-          out[mod] ||= { en: en, ja: ja }
+        rows.group_by { |mod, _, _| mod }.each_with_object({}) do |(mod, entries), out|
+          next unless entries.size == 1
+
+          (_, en, ja) = entries.first
+          out[mod] = { en: en, ja: ja }
+        end
+      end
+
+      # All distinct resolvable icon stems per family — a family can carry more than
+      # one when versions resolve to different element/type art (e.g. Aegis's
+      # per-element icons), and the frontend cycles through them for those.
+      def family_icon_stems
+        versions = WeaponSkillVersion.joins(weapon_skill: :weapon)
+                                     .where.not(skill_modifier: [nil, ''])
+                                     .includes(weapon_skill: :weapon)
+        versions.each_with_object(Hash.new { |h, k| h[k] = [] }) do |v, out|
+          stem = v.icon_stem
+          next if stem.blank?
+
+          out[v.skill_modifier] << stem unless out[v.skill_modifier].include?(stem)
         end
       end
 
@@ -106,10 +128,13 @@ module Api
         families
       end
 
+      # Same "only when every version agrees" rule as family_display_names,
+      # applied to one family's already-loaded versions.
       def display_name(versions)
-        counts = versions.group_by { |v| [v.name_en, v.name_jp] }
-                         .transform_values(&:size)
-        (en, ja) = counts.max_by { |_, c| c }&.first
+        distinct = versions.map { |v| [v.name_en, v.name_jp] }.uniq
+        return { en: params[:modifier], ja: nil } unless distinct.size == 1
+
+        (en, ja) = distinct.first
         { en: en || params[:modifier], ja: ja }
       end
 
@@ -120,7 +145,10 @@ module Api
             id: v.id,
             skill_id: v.skill_id,
             weapon: weapon && { granblue_id: weapon.granblue_id, name_en: weapon.name_en,
-                                element: weapon.element }
+                                element: weapon.element, rarity: weapon.rarity,
+                                proficiency: weapon.proficiency,
+                                weapon_series_id: weapon.weapon_series_id,
+                                latest_date: weapon.latest_date }
           )
         end
       end
