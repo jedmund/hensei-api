@@ -30,6 +30,12 @@ module GridDamage
       when "copy_skill_level"
         grid_weapon && weapon &&
           WeaponContributions.skill_level_for(weapon, grid_weapon) >= gte
+      # Ultima base skills / gauph stat keys boost "<weapon>-specialty allies" — on the
+      # panel (the MC's view) they show only when the MC's job wields this weapon's type
+      # (K4UydX: Rising Force hides Baculum Rubell and Gauph Strength on an Ultima Staff).
+      when "weapon_specialty"
+        specialty = GridComposition::PROFICIENCY_NAME[weapon&.proficiency]
+        specialty.present? && Array(composition[:mc_specialties]).include?(specialty)
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))

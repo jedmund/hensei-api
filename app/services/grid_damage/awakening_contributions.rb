@@ -69,13 +69,25 @@ module GridDamage
     # frame-agnostic additive lines.
     FRAME = { "atk" => "normal" }.freeze
 
-    def for_party(party)
+    def for_party(party, composition: nil)
+      composition ||= GridComposition.for_party(party)
       awakenings = Awakening.where(id: party.weapons.filter_map(&:awakening_id)).index_by(&:id)
       party.weapons.flat_map do |gw|
         awakening = awakenings[gw.awakening_id] or next []
+        # Character awakenings can end up attached to grid weapons (frontend data quirk)
+        # — they are not weapon awakenings and contribute nothing to the panel.
+        next [] unless awakening.object_type == "Weapon"
+
         slug = awakening.slug
         bonus = case gw.weapon&.weapon_series&.slug
-                when "celestial" then celestial_bonus(slug, gw.awakening_level.to_i)
+                when "celestial"
+                  # Celestial bonuses follow the weapon's specialty, like the weapon's own
+                  # per-specialty skills (9JtcHY: Altruism weapon-atk lv5 shows with a
+                  # staff MC; K4UydX: hidden for harp/melee Rising Force).
+                  specialty = GridComposition::PROFICIENCY_NAME[gw.weapon.proficiency]
+                  next [] unless Array(composition[:mc_specialties]).include?(specialty)
+
+                  celestial_bonus(slug, gw.awakening_level.to_i)
                 when "world" then accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
                 else BONUS.dig(slug, gw.awakening_level.to_i)
                 end
