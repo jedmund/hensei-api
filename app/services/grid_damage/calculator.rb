@@ -9,6 +9,10 @@ module GridDamage
     module_function
 
     ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
+    # What each grid element is strong against — the default foe, and the element named
+    # by the panel's reduction line ("Wind Reduc." on a fire grid).
+    ADVANTAGED_FOE = { "fire" => "wind", "water" => "fire", "earth" => "water",
+                       "wind" => "earth", "light" => "dark", "dark" => "light" }.freeze
     BOOST_LEVEL_THRESHOLD = 280.0
     # Confirmed weapon-skill display caps (gbf.wiki/Weapon_Skills#Weapon_Skill_Caps). The panel
     # shows a boost orange once it reaches its cap. A "100% hit to multiattack" penalty (−100 DA)

@@ -32,12 +32,18 @@ module GridDamage
       ["ta", nil, "TA Rate", "ta-rate", "attack"],
       ["optimus_exalto", nil, "ELEMENT Optimus", "ELEMENT-optimus", "attack"],
       ["omega_exalto", nil, "ELEMENT Omega", "ELEMENT-omega", "attack"],
-      # HP (green labels)
+      # Bonus DMG closes out the red group (SRiNSO panel order)
+      ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "attack"],
+      ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "attack"],
+      ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "attack"],
+      # HP (green labels) — Heal Cap sits with HP in-game
       ["hp", nil, "HP", "hp", "hp"],
+      ["heal_cap", nil, "Heal Cap", "heal-cap", "hp"],
       ["hp_cut", nil, "HP Cut", "hp-cut", "hp"],
-      # Defense (blue labels)
+      # Defense (blue labels) — reduction is labeled with the foe's element ("Wind Reduc."
+      # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],
-      ["elem_reduc", nil, "Elem. Reduc.", "elem-reduc", "defense"],
+      ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
       # Special (yellow labels)
       ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
       ["dmg_amp", "normal", "DMG Amp.", "dmg-amp", "special"],
@@ -65,10 +71,6 @@ module GridDamage
       ["skill_supp_sp", nil, "Skill Supp. (Sp.)", "skill-supp-sp", "special"],
       ["charge_gain", nil, "Charge Gain", "charge-gain", "special"],
       ["def_ignore", nil, "DEF Ignore", "def-ignore", "special"],
-      ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "special"],
-      ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "special"],
-      ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "special"],
-      ["heal_cap", nil, "Heal Cap", "heal-cap", "special"],
       # Overskill (teal labels)
       ["crit_dmg", nil, "Crit. DMG", "crit-dmg", "overskill"],
       ["added_hit", nil, "Added Hit", "added-hit", "overskill"],
@@ -175,6 +177,16 @@ module GridDamage
     # the generic form when the grid element can't be determined.
     def resolve_element(text, element)
       return text unless text.include?("ELEMENT")
+
+      # FOE_ELEMENT first — it contains "ELEMENT" as a substring. The foe's element is
+      # what the grid's element is strong against (fire grid → "Wind Reduc.").
+      if text.include?("FOE_ELEMENT")
+        foe = element && Calculator::ADVANTAGED_FOE[element.downcase]
+        return text.gsub("FOE_ELEMENT-reduc", "elem-reduc").gsub(/FOE_ELEMENT\s*/, "Elem. ").strip if foe.nil?
+
+        foe = foe.capitalize if element.match?(/\A[A-Z]/)
+        return text.gsub("FOE_ELEMENT", foe)
+      end
       return text.gsub("ELEMENT", element) if element
 
       text.gsub("bonus-ELEMENT-dmg", "bonus-elem-dmg").gsub(/\s*ELEMENT\s*/, " ").strip

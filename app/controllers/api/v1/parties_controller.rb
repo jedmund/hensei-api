@@ -398,8 +398,6 @@ module Api
 
       # Sanitized battle state for skill_boosts: clamp HP/turn, whitelist the foe
       # element, and default the foe to what the grid element is strong against.
-      ADVANTAGED_FOE = { "fire" => "wind", "water" => "fire", "earth" => "water",
-                         "wind" => "earth", "light" => "dark", "dark" => "light" }.freeze
 
       def skill_boost_state
         hp = params[:hp_percent].presence&.to_f&.clamp(0, 100) || 100.0
@@ -407,7 +405,7 @@ module Api
         foe = params[:foe_element].presence&.downcase
         # "null" is a real foe element (element-less foes) — advantaged effects turn off.
         foe = nil unless foe == "null" || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
-        foe ||= ADVANTAGED_FOE[GridDamage::Calculator.send(:grid_element, @party)]
+        foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::Calculator.send(:grid_element, @party)]
         { hp_percent: hp, turn: turn, foe_element: foe }.compact
       end
 
