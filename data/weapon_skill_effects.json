@@ -1307,33 +1307,6 @@
       "key_slug": "gauph-gamma"
     },
     {
-      "modifier": "Godblade",
-      "boost_type": "atk",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 35.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "EX Might. Tier I/II/III = 25(MC only)/25/35%; highest-tier recorded. TIER nuance not modeled."
-    },
-    {
-      "modifier": "Godblade",
-      "boost_type": "bonus_des_dmg",
-      "scaling_kind": "static",
-      "value": 20.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Bonus Destruction DMG echo. Tier I/II/III = 15/15/20%; highest recorded."
-    },
-    {
       "modifier": "Godflair",
       "boost_type": "elem_amplify",
       "scaling_kind": "conditional_flat",
@@ -1492,32 +1465,6 @@
       "applies_to": "element_allies",
       "battle_interaction": true,
       "notes": "Defensive; excluded from core damage."
-    },
-    {
-      "modifier": "Godshield",
-      "boost_type": "bonus_des_ca",
-      "scaling_kind": "static",
-      "value": 10.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Bonus Destruction DMG on C.A. Tier I/II/III = 5/5/10%; highest recorded."
-    },
-    {
-      "modifier": "Godshield",
-      "boost_type": "hp",
-      "scaling_kind": "static",
-      "value": 30.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Tier I/II/III = 20(MC only)/20/30%; highest recorded."
     },
     {
       "modifier": "Godstrike",
