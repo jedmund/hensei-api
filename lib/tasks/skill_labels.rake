@@ -42,6 +42,8 @@ namespace :granblue do
       'cb-dmg' => '04_icon_cb_dmg.png',
       'cb-amp' => '04_icon_cb_dmg_amplify.png',
       'fc-amp' => '04_icon_fc_dmg_amplify.png',
+      'debuff-res' => '02_icon_debuff_res.png',
+      'added-hp' => '06_icon_hp.png', # overskill (teal) HP
       # Destroyer weapons' Destruction bonus damage (game files say "genesis")
       'bonus-des-dmg' => '01_icon_genesis_concurrent_attack.png',
       'bonus-des-dmg-ca' => '01_icon_genesis_special_skill_concurrent_attack.png'

@@ -62,7 +62,21 @@ module GridDamage
         5 => { "skill_dmg_cap" => 4.0 }, 6 => { "ex_atk" => 5.0 }, 7 => { "hp" => 5.0 },
         8 => { "skill_dmg_cap" => 4.0 }, 9 => { "skill_dmg_cap" => 4.0 },
         10 => { "skill_dmg_cap" => 4.0 }
+      },
+      "Worldvexing Angelos" => {
+        2 => { "na_dmg_cap" => 2.0 }, 3 => { "ex_atk" => 5.0 }, 4 => { "hp" => 5.0 },
+        5 => { "na_dmg_cap" => 2.0 }, 6 => { "ex_atk" => 5.0 }, 7 => { "hp" => 5.0 },
+        8 => { "na_dmg_cap" => 2.0 }, 9 => { "na_dmg_cap" => 2.0 },
+        10 => { "na_dmg_cap" => 2.0 }
       }
+    }.freeze
+
+    # World awakening bonuses name an arbitrary specialty PAIR per weapon (the wiki
+    # template's Label icons) — not the weapon's own type. They apply when the MC's
+    # job wields either (SPhnLB: Angelos axe/staff matches Lancer Origin's axe).
+    WORLD_SPECIALTIES = {
+      "Worldstorming Aetos" => %w[dagger spear],
+      "Worldvexing Angelos" => %w[axe staff]
     }.freeze
 
     # ATK awakening lands in the Normal frame (it sits on the "Might" line); the rest are
@@ -88,7 +102,11 @@ module GridDamage
                   next [] unless Array(composition[:mc_specialties]).include?(specialty)
 
                   celestial_bonus(slug, gw.awakening_level.to_i)
-                when "world" then accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
+                when "world"
+                  pair = WORLD_SPECIALTIES[gw.weapon.name_en]
+                  next [] if pair && !pair.intersect?(Array(composition[:mc_specialties]))
+
+                  accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
                 else BONUS.dig(slug, gw.awakening_level.to_i)
                 end
         next [] unless bonus
