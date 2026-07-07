@@ -2685,36 +2685,6 @@
     "aura_boostable": true
   },
   {
-    "modifier": "Rubell",
-    "boost_type": "atk",
-    "series": "ex",
-    "size": null,
-    "formula_type": "flat",
-    "sl1": null,
-    "sl10": 15.0,
-    "sl15": 20.0,
-    "sl20": 25.0,
-    "sl25": null,
-    "coefficient": null,
-    "max_value": null,
-    "aura_boostable": false
-  },
-  {
-    "modifier": "Rubell",
-    "boost_type": "hp",
-    "series": "ex",
-    "size": null,
-    "formula_type": "flat",
-    "sl1": null,
-    "sl10": 10.0,
-    "sl15": 15.0,
-    "sl20": 20.0,
-    "sl25": null,
-    "coefficient": null,
-    "max_value": null,
-    "aura_boostable": false
-  },
-  {
     "modifier": "Sapience",
     "boost_type": "heal_cap",
     "series": "omega",

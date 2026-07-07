@@ -190,6 +190,8 @@
       "scaling_kind": "conditional_flat",
       "value": 10.0,
       "value_unit": "percent",
+      "total_cap": 10.0,
+      "shared_cap_group": "key_na_cap",
       "condition": {
         "gte": 280,
         "type": "boost_level"
@@ -1199,9 +1201,12 @@
       "modifier": "Gauph Key of Strength",
       "boost_type": "stamina",
       "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "conditional_flat",
       "value": 20.4,
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
@@ -1819,7 +1824,7 @@
     },
     {
       "modifier": "Oblivion Teluma",
-      "boost_type": "elem_amplify",
+      "boost_type": "plain_amp",
       "series": "ex",
       "scaling_kind": "static",
       "value": 10.0,
@@ -2549,6 +2554,38 @@
       "depends_on": [
         "grid_count"
       ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false
+    },
+    {
+      "modifier": "Rubell",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false
+    },
+    {
+      "modifier": "Rubell",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
