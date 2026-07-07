@@ -276,7 +276,10 @@ module Granblue
         suffixes = []
         suffixes << nil if hash["s#{slot}_name"].present?
         hash.each_key do |key|
-          next unless key.to_s =~ /\As#{slot}_(\d+s)_name\z/
+          # _4s/_5s enumerate uncap tiers; _u1/_u2 enumerate in-place upgrades
+          # (Illustrious "Disease Demon II" at lvl 210). Either way the real tier
+          # comes from the entry's unlock level, not the suffix.
+          next unless key.to_s =~ /\As#{slot}_(\d+s|u\d+)_name\z/
           next unless hash[key].present?
 
           suffixes << Regexp.last_match(1)
