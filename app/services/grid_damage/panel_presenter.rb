@@ -35,6 +35,7 @@ module GridDamage
       # Bonus DMG closes out the red group (SRiNSO panel order)
       ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "attack"],
       ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "attack"],
+      ["bonus_ca", nil, "Bonus ELEMENT C.A.", "bonus-ELEMENT-ca", "attack"],
       ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "attack"],
       # HP (green labels) — Heal Cap sits with HP in-game
       ["hp", nil, "HP", "hp", "hp"],
@@ -52,6 +53,7 @@ module GridDamage
       ["dmg_amp", "ex", "DMG Amp.", "dmg-amp", "special"],
       ["od_dmg_amp", nil, "Od DMG Amp.", "od-dmg-amp", "special"],
       ["elem_amplify", nil, "Elem. Amplify", "elem-amplify", "special"],
+      ["plain_amp", nil, "DMG Amp. (Non-elem. Foe)", "plain-amp", "special"],
       ["na_dmg_cap", nil, "N.A. DMG Cap", "na-dmg-cap", "special"],
       ["na_amp", nil, "N.A. Amp.", "na-amp", "special"],
       ["na_amp_sp", nil, "N.A. Amp. (Sp.)", "na-amp-sp", "special"],
@@ -62,8 +64,12 @@ module GridDamage
       ["skill_amp_sp", nil, "Skill Amp. (Sp.)", "skill-amp-sp", "special"],
       ["ca_dmg", nil, "C.A. DMG", "ca-dmg", "special"],
       ["ca_dmg_cap", nil, "C.A. DMG Cap", "ca-dmg-cap", "special"],
+      ["ca_amp_sp", nil, "C.A. Amp. (Sp.)", "ca-amp-sp", "special"],
       ["sp_ca_cap", nil, "Sp. C.A. Cap", "sp-ca-cap", "special"],
+      ["cb_dmg", nil, "C.B. DMG", "cb-dmg", "special"],
       ["cb_dmg_cap", nil, "C.B. DMG Cap", "cb-dmg-cap", "special"],
+      ["cb_amp", nil, "C.B. Amp.", "cb-amp", "special"],
+      ["fc_amp", nil, "FC Amp.", "fc-amp", "special"],
       ["crit_amp", nil, "Crit. Amp.", "crit-amp", "special"],
       ["dmg_supp", nil, "DMG Supp.", "dmg-supp", "special"],
       ["na_supp", nil, "N.A. Supp.", "na-supp", "special"],

@@ -38,6 +38,10 @@ namespace :granblue do
       'sp-ca-cap' => '04_icon_ca_dmg_cap_ded.png',
       'na-supp' => '04_icon_normal_dmg_supp.png',
       'dmg-cap-sp' => '04_icon_dmg_cap_other.png',
+      'ca-amp-sp' => '04_icon_ca_dmg_amplify_other.png',
+      'cb-dmg' => '04_icon_cb_dmg.png',
+      'cb-amp' => '04_icon_cb_dmg_amplify.png',
+      'fc-amp' => '04_icon_fc_dmg_amplify.png',
       # Destroyer weapons' Destruction bonus damage (game files say "genesis")
       'bonus-des-dmg' => '01_icon_genesis_concurrent_attack.png',
       'bonus-des-dmg-ca' => '01_icon_genesis_special_skill_concurrent_attack.png'
@@ -45,6 +49,8 @@ namespace :granblue do
     frames = %w[optimus omega]
     %w[fire water earth wind light dark].each do |el|
       frames.each { |frame| manual["#{el}-#{frame}"] = "01_icon_#{el}#{frame}.png" }
+      # elemental Bonus C.A. DMG badges ("Bonus Earth C.A.")
+      manual["bonus-#{el}-ca"] = "01_icon_#{el}_special_skill_concurrent_attack.png"
     end
 
     fetch = lambda do |url|
