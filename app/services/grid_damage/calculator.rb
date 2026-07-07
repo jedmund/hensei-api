@@ -30,8 +30,9 @@ module GridDamage
                   # K4UydX: C.A. Amp. (Sp.) orange at 20; Exalto lines orange at their
                   # enhancement contribution caps.
                   "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0,
-                  # SPhnLB: Debuff Res. orange at 30
-                  "debuff_res" => 30.0 }.freeze
+                  # SPhnLB: Debuff Res. orange at 30; qBOvon: Charge Gain orange at 50,
+                  # C.A. Supp. orange at 1,000,000
+                  "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0 }.freeze
 
     # The summon-aura/Exalto "Weapon Skill Enhancement" amplifies EVERY boost an
     # aura-boosted skill grants — caps, amps, and supplementals included (K4UydX: Terra's
@@ -140,7 +141,8 @@ module GridDamage
         Effects.contributions(party, state: state, composition: composition) +
         KeySkills.contributions(party, state: state, composition: composition) +
         AwakeningContributions.for_party(party, composition: composition) +
-        AxContributions.for_party(party)
+        AxContributions.for_party(party) +
+        BefoulmentContributions.for_party(party)
     end
 
     # Multiply each amplifiable contribution by its frame's enhancement (Optimus/Omega aura +

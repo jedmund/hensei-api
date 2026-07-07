@@ -1,0 +1,45 @@
+{
+  "party": "qBOvon",
+  "captured_on": "2026-07-07",
+  "notes": "Fire Odious/Taboo grid — the last frame. Belmervolk 4★ main+friend (100→150 each via 4 Odious weapons at exorcision 5 = taboo 300), Colossus Cane Ira x3 (omega-rebirth), 2x Demonspear + 2x Deathcannon of Prosperity Verboten (befoulments: ATK -9.9/-7.6, skill DMG -17, DA/TA -9.5 — the Hit lines, exact), Scythe of Renunciation tr5 (β + Sagacity), Unsigned Kaneshige MH (Kengo's Nature charge 50; Emblem of Devilry is panel-inert), Mortality Bow Mk II (Enforcement + Striking Art), Worldforging Moros, Heat of The Sun, Doombringer Sword (Anklet of Oblivion). FOUR LINES OMITTED pending in-game confirmation: Ω Might (game 152 vs our 156 — scythe skill level 20 vs 25?), Ω DMG Amp. (3.5 vs 4.0, same question), EX Might (game 177 vs 187.5), HP (game 358 vs 297 — likely the bow's misimported unique skill; need Mortality Bow Mk II's three in-game skill descriptions). Estimated DMG 474226 / to Wind 867816 / Max HP 116662.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 100,
+    "taboo": 300
+  },
+  "absent": ["crit_dmg", "added_hit", "added_hp"],
+  "lines": [
+    { "label": "Might", "boost": "atk", "series": "normal", "value": 12.5 },
+    { "label": "Od Might", "boost": "atk", "series": "odious", "value": 192 },
+    { "label": "Fire Omega", "boost": "omega_exalto", "value": 60 },
+    { "label": "Bonus Des. DMG", "boost": "bonus_des_dmg", "value": 20 },
+    { "label": "Bonus Des. DMG C.A.", "boost": "bonus_des_ca", "value": 10 },
+    { "label": "DEF", "boost": "def", "value": 30 },
+    { "label": "Wind Reduc.", "boost": "elem_reduc", "value": 30, "capped": true },
+    { "label": "DMG Cap", "boost": "dmg_cap", "value": 20, "capped": true },
+    { "label": "Od DMG Amp.", "boost": "od_dmg_amp", "value": 14.4 },
+    { "label": "Elem. Amplify", "boost": "elem_amplify", "value": 30 },
+    { "label": "N.A. DMG Cap", "boost": "na_dmg_cap", "value": 15 },
+    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 60 },
+    { "label": "Skill Cap (Sp.)", "boost": "skill_cap_sp", "value": 30 },
+    { "label": "Skill Amp. (Sp.)", "boost": "skill_amp_sp", "value": 10 },
+    { "label": "C.A. DMG", "boost": "ca_dmg", "value": 91.2 },
+    { "label": "C.A. DMG Cap", "boost": "ca_dmg_cap", "value": 68 },
+    { "label": "C.A. Amp.", "boost": "ca_amp_sp", "value": 10 },
+    { "label": "C.B. DMG", "boost": "cb_dmg", "value": 105 },
+    { "label": "C.B. DMG Cap", "boost": "cb_dmg_cap", "value": 48 },
+    { "label": "N.A. Supp. (Sp.)", "boost": "na_supp_sp", "value": 20000 },
+    { "label": "C.A. Supp.", "boost": "ca_supp", "value": 1000000, "capped": true },
+    { "label": "Charge Gain", "boost": "charge_gain", "value": 50, "capped": true },
+    { "label": "DMG Cap Pen.", "boost": "dmg_cap_pen", "value": 2 },
+    { "label": "ATK Hit", "boost": "atk_hit", "value": -17.5 },
+    { "label": "DA Rate Hit", "boost": "da_hit", "value": -9.5 },
+    { "label": "TA Rate Hit", "boost": "ta_hit", "value": -9.5 },
+    { "label": "Skill DMG Hit", "boost": "skill_dmg_hit", "value": -17 }
+  ]
+}

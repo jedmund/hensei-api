@@ -17,6 +17,7 @@ module GridDamage
       # Attack family (red labels)
       ["atk", "normal", "Might", "might", "attack"],
       ["atk", "omega", "Ω Might", "omega-might", "attack"],
+      ["atk", "odious", "Od Might", "od-might", "attack"],
       ["atk", "ex", "EX Might", "ex-might", "attack"],
       ["ex_atk_sp", nil, "EX Might Sp.", "ex-might-sp", "attack"],
       ["stamina", "normal", "Stamina", "stamina", "attack"],
@@ -72,6 +73,7 @@ module GridDamage
       ["cb_amp", nil, "C.B. Amp.", "cb-amp", "special"],
       ["fc_amp", nil, "FC Amp.", "fc-amp", "special"],
       ["crit_amp", nil, "Crit. Amp.", "crit-amp", "special"],
+      ["ca_supp", nil, "C.A. Supp.", "ca-supp", "special"],
       ["dmg_supp", nil, "DMG Supp.", "dmg-supp", "special"],
       ["na_supp", nil, "N.A. Supp.", "na-supp", "special"],
       ["na_supp_sp", nil, "N.A. Supp. (Sp.)", "na-supp-sp", "special"],
@@ -84,6 +86,16 @@ module GridDamage
       ["added_hit", nil, "Added Hit", "added-hit", "overskill"],
       ["dmg_cap_pen", nil, "DMG Cap Pen.", "dmg-cap-pen", "overskill"],
       ["added_hp", nil, "HP", "added-hp", "overskill"],
+      # Befoulments (Odious weapons' negative skills)
+      ["atk_hit", nil, "ATK Hit", "bf-atk", "befoulment"],
+      ["da_hit", nil, "DA Rate Hit", "bf-da-rate", "befoulment"],
+      ["ta_hit", nil, "TA Rate Hit", "bf-ta-rate", "befoulment"],
+      ["skill_dmg_hit", nil, "Skill DMG Hit", "bf-skill-dmg", "befoulment"],
+      ["ca_dmg_hit", nil, "C.A. DMG Hit", "bf-ca-dmg", "befoulment"],
+      ["hp_hit", nil, "HP Hit", "bf-hp", "befoulment"],
+      ["def_hit", nil, "DEF Hit", "bf-def", "befoulment"],
+      ["debuff_hit", nil, "Debuff Hit", "bf-debuff", "befoulment"],
+      ["turn_dmg_hit", nil, "Turn DMG", "bf-turn-dmg", "befoulment"],
       # AX skills (purple labels)
       ["hp_ax", nil, "HP (AX)", "ax-hp", "ax"],
       ["atk_ax", nil, "ATK (AX)", "ax-atk", "ax"],

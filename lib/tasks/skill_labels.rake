@@ -44,6 +44,16 @@ namespace :granblue do
       'fc-amp' => '04_icon_fc_dmg_amplify.png',
       'debuff-res' => '02_icon_debuff_res.png',
       'added-hp' => '06_icon_hp.png', # overskill (teal) HP
+      # Befoulment "Hit" lines (no game file found for the debuff one - text fallback)
+      'bf-atk' => '05_icon_atk_down.png',
+      'bf-da-rate' => '05_icon_da_rate_down.png',
+      'bf-ta-rate' => '05_icon_ta_rate_down.png',
+      'bf-skill-dmg' => '05_icon_skill_dmg_down.png',
+      'bf-ca-dmg' => '05_icon_ca_dmg_down.png',
+      'bf-hp' => '05_icon_hp_down.png',
+      'bf-def' => '05_icon_def_down.png',
+      'bf-turn-dmg' => '05_icon_turn_dmg.png',
+      'ca-supp' => '04_icon_ca_supp.png',
       # Destroyer weapons' Destruction bonus damage (game files say "genesis")
       'bonus-des-dmg' => '01_icon_genesis_concurrent_attack.png',
       'bonus-des-dmg-ca' => '01_icon_genesis_special_skill_concurrent_attack.png'
