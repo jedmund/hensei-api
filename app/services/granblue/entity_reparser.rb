@@ -45,7 +45,8 @@ module Granblue
         # versions (cascading away version-linked curation). Repair matches by
         # name and is idempotent, so it runs alone.
         repair = Extractors::ExpandedWeaponSkillImporter.repair_weapon(@entity)
-        raise WikiError, 'Template expansion failed' if repair == :expand_failed
+        # WikiError's initializer is keyword-only — `raise WikiError, '…'` would ArgumentError.
+        raise WikiError.new(message: 'Template expansion failed') if repair == :expand_failed
       else
         Parsers::WeaponParser.new(granblue_id: @entity.granblue_id).persist_skills_from_wiki_raw
         # Weapons with inline template artifacts in their skill NAMES (e.g.
