@@ -2034,6 +2034,23 @@
       "key_slug": "pendulum-sagacity"
     },
     {
+      "modifier": "Pendulum of Sagacity",
+      "boost_type": "skill_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 30.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-sagacity"
+    },
+    {
       "modifier": "Pendulum of Strife",
       "boost_type": "da",
       "series": "ex",
