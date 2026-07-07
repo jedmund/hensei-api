@@ -46,6 +46,10 @@ class CollectionSummon < ApplicationRecord
       joins(:summon).order(uncap_level: :asc)
                     .order(Arel.sql('summons.transcendence ASC'))
                     .order(transcendence_step: :asc)
+    when 'release_date_desc'
+      joins(:summon).order(Arel.sql('summons.latest_date DESC NULLS LAST'))
+    when 'release_date_asc'
+      joins(:summon).order(Arel.sql('summons.latest_date ASC NULLS LAST'))
     else
       order(created_at: :desc)
     end

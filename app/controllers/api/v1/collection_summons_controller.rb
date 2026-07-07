@@ -348,6 +348,10 @@ module Api
           scope.order(element: :asc)
         when 'element_desc'
           scope.order(element: :desc)
+        when 'release_date_desc'
+          scope.order(Arel.sql('latest_date DESC NULLS LAST'), id: :asc)
+        when 'release_date_asc'
+          scope.order(Arel.sql('latest_date ASC NULLS LAST'), id: :asc)
         else
           scope.order(latest_date: :desc, id: :asc)
         end

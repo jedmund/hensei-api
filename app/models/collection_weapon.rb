@@ -71,6 +71,10 @@ class CollectionWeapon < ApplicationRecord
       joins(:weapon).order('weapons.proficiency ASC')
     when 'proficiency_desc'
       joins(:weapon).order('weapons.proficiency DESC')
+    when 'release_date_desc'
+      joins(:weapon).order(Arel.sql('weapons.latest_date DESC NULLS LAST'))
+    when 'release_date_asc'
+      joins(:weapon).order(Arel.sql('weapons.latest_date ASC NULLS LAST'))
     else
       order(created_at: :desc)
     end

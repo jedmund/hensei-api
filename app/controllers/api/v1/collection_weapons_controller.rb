@@ -362,6 +362,10 @@ module Api
           scope.order(proficiency: :asc)
         when 'proficiency_desc'
           scope.order(proficiency: :desc)
+        when 'release_date_desc'
+          scope.order(Arel.sql('latest_date DESC NULLS LAST'), id: :asc)
+        when 'release_date_asc'
+          scope.order(Arel.sql('latest_date ASC NULLS LAST'), id: :asc)
         else
           scope.order(latest_date: :desc, id: :asc)
         end

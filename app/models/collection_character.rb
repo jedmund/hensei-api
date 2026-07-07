@@ -52,6 +52,10 @@ class CollectionCharacter < ApplicationRecord
       joins(:character).order('characters.proficiency1 ASC')
     when 'proficiency_desc'
       joins(:character).order('characters.proficiency1 DESC')
+    when 'release_date_desc'
+      joins(:character).order(Arel.sql('characters.latest_date DESC NULLS LAST'))
+    when 'release_date_asc'
+      joins(:character).order(Arel.sql('characters.latest_date ASC NULLS LAST'))
     else
       order(created_at: :desc) # Default: newest first
     end
