@@ -26,15 +26,19 @@ module GridDamage
                   "bonus_elem_dmg" => 50.0,
                   "skill_cap_sp" => 60.0, "skill_amp_sp" => 20.0,
                   "dmg_supp" => 100_000.0, "na_supp" => 100_000.0,
-                  "skill_dmg_supp" => 200_000.0 }.freeze
+                  "skill_dmg_supp" => 200_000.0,
+                  # K4UydX: C.A. Amp. (Sp.) orange at 20; Exalto lines orange at their
+                  # enhancement contribution caps.
+                  "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0 }.freeze
 
-    # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
-    # the offensive ATK-family, the rate boosts, the amplify-family, elemental Bonus DMG
-    # (5JPIJg: Deathstrike 4.5×2 × 5.2 = 46.8 = the panel's Bonus Water DMG, exactly),
-    # DEF Ignore (dAV5ds: Impalement 2×2 × 2.5 = 10, exactly), and Heal Cap (SRiNSO:
-    # Precocity 15 × 5.3 = 79.5, exactly). DMG caps, supplementals, and DEF are NOT amplified.
-    AMPLIFIED_BOOSTS = %w[atk hp stamina enmity e_atk_prog critical da ta def_ignore
-                          dmg_amp crit_amp elem_amplify od_dmg_amp bonus_elem_dmg heal_cap].freeze
+    # The summon-aura/Exalto "Weapon Skill Enhancement" amplifies EVERY boost an
+    # aura-boosted skill grants — caps, amps, and supplementals included (K4UydX: Terra's
+    # Glory 14.5×4 = C.A. DMG 58, Tempering 5.5×2×4 = Skill DMG Cap 44 and 25k×2×4 =
+    # Skill Supp 200k, Demolishment 3×3×4 = N.A. Amp 36, all exact). The earlier
+    # "caps/supplementals aren't amplified" reads came from key/EX sources, whose frame
+    # factor is 1.0 anyway. Only the Exalto totals themselves are excluded — they ARE the
+    # enhancement, and amplifying them would feed back into itself.
+    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
@@ -129,7 +133,7 @@ module GridDamage
       WeaponContributions.for_party(party, state: state) +
         Effects.contributions(party, state: state, composition: composition) +
         KeySkills.contributions(party, state: state, composition: composition) +
-        AwakeningContributions.for_party(party) +
+        AwakeningContributions.for_party(party, composition: composition) +
         AxContributions.for_party(party)
     end
 
@@ -140,8 +144,8 @@ module GridDamage
       factor = { "normal" => 1 + (enh[:optimus].to_f / 100), "omega" => 1 + (enh[:omega].to_f / 100),
                  "ex" => 1.0, "odious" => 1 + (enh[:taboo].to_f / 100) }
       contributions.map do |c|
-        next c if c.amplifiable == false # flat sources (weapon awakenings) aren't enhanced
-        next c unless c.value && AMPLIFIED_BOOSTS.include?(c.boost_type)
+        next c if c.amplifiable == false # flat sources (weapon awakenings, AX) aren't enhanced
+        next c unless c.value && !NON_AMPLIFIED_BOOSTS.include?(c.boost_type)
 
         f = factor[c.series] || 1.0
         next c if (f - 1.0).abs < Float::EPSILON
