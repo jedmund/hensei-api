@@ -46,6 +46,7 @@ module GridDamage
       ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
       # Special (yellow labels)
       ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
+      ["dmg_cap_sp", nil, "DMG Cap (Sp.)", "dmg-cap-sp", "special"],
       ["dmg_amp", "normal", "DMG Amp.", "dmg-amp", "special"],
       ["dmg_amp", "omega", "Ω DMG Amp.", "omega-dmg-amp", "special"],
       ["dmg_amp", "ex", "DMG Amp.", "dmg-amp", "special"],

@@ -37,6 +37,7 @@ namespace :granblue do
       'plain-amp' => '04_icon_plain_amplify.png', # not in the wiki gadget at all
       'sp-ca-cap' => '04_icon_ca_dmg_cap_ded.png',
       'na-supp' => '04_icon_normal_dmg_supp.png',
+      'dmg-cap-sp' => '04_icon_dmg_cap_other.png',
       # Destroyer weapons' Destruction bonus damage (game files say "genesis")
       'bonus-des-dmg' => '01_icon_genesis_concurrent_attack.png',
       'bonus-des-dmg-ca' => '01_icon_genesis_special_skill_concurrent_attack.png'

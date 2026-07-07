@@ -21,8 +21,8 @@ module GridDamage
                   "dmg_cap" => 20.0, "dmg_cap_sp" => 20.0, "na_dmg_cap" => 20.0,
                   "ca_dmg_cap" => 100.0, "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
                   "ex_atk_sp" => 80.0, "crit_amp" => 20.0,
-                  # SRiNSO panel (2026-07-06): these show orange at the values below.
-                  "elem_reduc" => 30.0, "na_amp_sp" => 20.0,
+                  # SRiNSO/R1ckYi panels (2026-07-06): these show orange at the values below.
+                  "elem_reduc" => 30.0, "na_amp" => 30.0, "na_amp_sp" => 20.0,
                   "skill_cap_sp" => 60.0, "skill_amp_sp" => 20.0,
                   "dmg_supp" => 100_000.0, "na_supp" => 100_000.0,
                   "skill_dmg_supp" => 200_000.0 }.freeze
