@@ -88,7 +88,7 @@ RSpec.describe GridDamage::Scaling do
 
     it "uses the enmity curve as HP drops" do
       d = datum(formula_type: "garrison", sl1: 3.6, sl10: 12.0, sl15: 15.0)
-      expect(described_class.value(d, skill_level: 15, hp_percent: 50)).to eq(15.0 * ((1 + 2 * 0.5) * 0.5))
+      expect(described_class.value(d, skill_level: 15, hp_percent: 50)).to eq(15.0 * ((1 + (2 * 0.5)) * 0.5))
     end
   end
 end
