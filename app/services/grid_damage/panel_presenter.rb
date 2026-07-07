@@ -231,8 +231,11 @@ module GridDamage
     end
 
     # Boost types not in the ordered map still render, so nothing is silently hidden.
+    # Enhancement-only boosts appear in the header, never as lines.
+    HIDDEN_KEYS = %w[elemental_enhance].freeze
+
     def leftover_lines(agg, contributions)
-      known = LINES.to_set(&:first)
+      known = LINES.to_set(&:first) + HIDDEN_KEYS
       agg.except(*known).filter_map do |key, result|
         value = result.total.to_f
         next if value.zero?

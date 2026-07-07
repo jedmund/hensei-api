@@ -121,9 +121,13 @@ module GridDamage
     def enhancements(party, agg)
       element = grid_element(party)
       auras = Auras.for_party(party, element: element)
+      # Line-less "+N% to [element]'s weapon skills" skills (astral weapons) boost the
+      # Optimus AND Omega frames — XJZZmv's astral 20 appears in both header numbers
+      # and nowhere on the panel. The Od header stayed 0, so taboo is excluded.
+      elemental = agg["elemental_enhance"]&.total.to_f
       {
-        optimus: auras[:optimus] + [agg["optimus_exalto"]&.total.to_f || 0.0, 90].min,
-        omega: auras[:omega] + [agg["omega_exalto"]&.total.to_f || 0.0, 100].min,
+        optimus: auras[:optimus] + [agg["optimus_exalto"]&.total.to_f || 0.0, 90].min + elemental,
+        omega: auras[:omega] + [agg["omega_exalto"]&.total.to_f || 0.0, 100].min + elemental,
         # Odious summons' base aura. The exorcism-level scaling on top (aura base → its
         # [Max] via equipped Odious weapons' exorcism lvls) still needs in-game ground truth.
         taboo: auras[:taboo]
@@ -154,6 +158,7 @@ module GridDamage
       contributions.map do |c|
         next c if c.amplifiable == false # flat sources (weapon awakenings, AX) aren't enhanced
         next c unless c.value && !NON_AMPLIFIED_BOOSTS.include?(c.boost_type)
+        next c if c.value.negative? # demerits ride flat (XJZZmv: Tyranny's HP cut -10, not -12)
 
         f = factor[c.series] || 1.0
         next c if (f - 1.0).abs < Float::EPSILON

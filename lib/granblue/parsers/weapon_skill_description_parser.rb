@@ -83,7 +83,7 @@ module Granblue
         [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
         [/ignore .*\bdef/i,                                  "def_ignore"],
-        [/cut to .*max hp|% cut to/i,                        "hp_cut"],
+        [/% cut to .*max hp|cut to .*max hp|% cut to/i,      "hp_cut"],
         [/take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
         [/\bdef(?:ense)?\b/i,                                "def"],
         [/max hp|\bhp\b/i,                                   "hp"],
@@ -120,10 +120,11 @@ module Granblue
           boosts_for(frag).each do |boost, formula|
             boost = "od_dmg_amp" if boost == "dmg_amp" && series0 == "odious"
             value = value_for(frag, boost)
-            # "X% hit to <boost>" is a demerit — Ereshkigal's "200% hit to charge bar
-            # gain" shows -200% on the panel; "hit to multiattack rate" pushes the DA
-            # rate down/negative (the freed rate becomes triple attacks).
-            value = -value if value && frag.match?(/\bhit to\b/i)
+            # "X% hit to <boost>" and "X% cut to <boost>" are demerits — Ereshkigal's
+            # "200% hit to charge bar gain" shows -200%, Zion's Tyranny II's "10% cut
+            # to max HP" shows on HP Cut as -10; "hit to multiattack rate" pushes the
+            # DA rate down/negative (the freed rate becomes triple attacks).
+            value = -value if value && frag.match?(/\b(?:hit|cut) to\b/i)
             boost = "da" if boost == "multiattack"
             clauses << {
               boost_type: boost, value: value, size: (size unless explicit?(frag)),

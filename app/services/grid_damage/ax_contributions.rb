@@ -13,6 +13,9 @@ module GridDamage
     # Only the panel-proven point is encoded (strength 3 → 5% at full HP); unknown
     # strengths fall back to the raw value until another golden panel pins them.
     STAMINA_DISPLAY = { 3 => 5.0 }.freeze
+    # Supplemental AX augments display flat damage per strength point (XJZZmv:
+    # Skill DMG Supp. strength 3 shows +2,000 — the only proven point).
+    SUPP_DISPLAY = { 3 => 2000.0 }.freeze
 
     def for_party(party)
       mods = WeaponStatModifier.where(category: "ax").index_by(&:id)
@@ -36,6 +39,7 @@ module GridDamage
 
     def display_value(mod, strength)
       return STAMINA_DISPLAY.fetch(strength.to_i, strength) if %w[stamina enmity].include?(mod.stat)
+      return SUPP_DISPLAY.fetch(strength.to_i, strength) if %w[skill_supp ca_supp].include?(mod.stat)
 
       strength
     end
