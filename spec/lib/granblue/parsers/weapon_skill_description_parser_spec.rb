@@ -94,4 +94,25 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(r[:clauses]).to be_empty
     expect(r[:skip]).to eq("key_placeholder")
   end
+
+  it "skips event-triggered battle effects — proc text is not a passive boost (Flame of the Godrender)" do
+    r = parse("'''When main weapon (MC only):'''<br />'''When MC's HP is 50% or above after normal attacks:''' " \
+              "<br /> 6-hit, 100% Fire damage to a foe (Damage cap: ~140,000 per hit). <br /> Raise foe's Singed lvl by 1.")
+    expect(r[:clauses]).to be_empty
+    expect(r[:skip]).to eq("triggered_effect")
+  end
+
+  it "skips end-of-turn procs (Prayer of the Phoenix)" do
+    r = parse("When main weapon (MC only): At end of turn when a foe's Singed lvl is 7 or above: " \
+              "Restore 10% of Fire allies' HP (Healing cap: 500). All Fire allies gain Charge Bar 10%.")
+    expect(r[:clauses]).to be_empty
+    expect(r[:skip]).to eq("triggered_effect")
+  end
+
+  it "still parses grid-state conditions as passives (Enforcement ≥280)" do
+    r = parse("When any of Fire Omega, Fire Taboo, or Fire Optimus weapon skills have a boost of 280% or above: " \
+              "/ 20% ATK boost to Fire allies' ATK and 15% boost to Fire allies' DEF.")
+    expect(boost(r, "atk")).to include(value: 20.0)
+    expect(boost(r, "def")).to include(value: 15.0)
+  end
 end

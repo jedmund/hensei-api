@@ -25,6 +25,20 @@ module Granblue
         "nuke_only"       => /\bdeal[s]? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
       }.freeze
 
+      # A leading EVENT trigger makes everything after it a battle proc (nuke, heal,
+      # status/crest raise) — never a passive grid boost. Only event phrasings count:
+      # grid-state conditions ("When any … weapon skills have a boost of 280% or
+      # above:", "When at least 4 weapons … are equipped:") still parse as passives.
+      EVENT_TRIGGER = %r{
+        \A[\s/]*
+        (?: at\ (?:the\ )?(?:end|start)\ of
+          | upon\b
+          | when\b [^:]* (?: after\ normal\ attacks | attack(?:s|ing)\b | us(?:es|ing)\b
+                           | activat | drain | removes?\b | chain\ burst | end\ of\ turn )
+        )
+        [^:]* :
+      }xi
+
       # Ordered (specific → general) phrase → boost_type (or array for "specs" bundles).
       # Within a clause we match-and-consume so a specific phrase ("skill DMG cap") prevents
       # the general one ("DMG cap") re-matching.
@@ -90,6 +104,12 @@ module Granblue
         end
 
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
+        if body.match?(EVENT_TRIGGER)
+          return { main_hand_only: desc.match?(/when main weapon/i),
+                   mc_only: desc.match?(/\(mc only\)/i),
+                   skip: "triggered_effect", clauses: [] }
+        end
+
         series0 = series_for(desc, name)
 
         clauses = []
