@@ -1489,7 +1489,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.integer "bullet_slots", default: [], null: false, array: true
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.datetime "wiki_raw_fetched_at"
-    t.text "wiki_raw_jp", comment: "Raw HTML from gbf-wiki.com (Japanese)"
+    t.text "wiki_raw_jp"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
