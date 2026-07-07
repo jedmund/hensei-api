@@ -45,6 +45,7 @@ module GridDamage
       # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],
       ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
+      ["debuff_res", nil, "Debuff Res.", "debuff-res", "defense"],
       # Special (yellow labels)
       ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
       ["dmg_cap_sp", nil, "DMG Cap (Sp.)", "dmg-cap-sp", "special"],
@@ -82,6 +83,7 @@ module GridDamage
       ["crit_dmg", nil, "Crit. DMG", "crit-dmg", "overskill"],
       ["added_hit", nil, "Added Hit", "added-hit", "overskill"],
       ["dmg_cap_pen", nil, "DMG Cap Pen.", "dmg-cap-pen", "overskill"],
+      ["added_hp", nil, "HP", "added-hp", "overskill"],
       # AX skills (purple labels)
       ["hp_ax", nil, "HP (AX)", "ax-hp", "ax"],
       ["atk_ax", nil, "ATK (AX)", "ax-atk", "ax"],
@@ -144,7 +146,8 @@ module GridDamage
     OVERSKILL_FEEDS = {
       "crit_dmg" => [["Critical", "クリティカル確率", "critical", 0.5]],
       "dmg_cap_pen" => [["DMG Cap", "ダメージ上限", "dmg_cap", 0.5], ["DMG Cap (Sp.)", "ダメージ上限(特殊)", "dmg_cap_sp", 0.5]],
-      "added_hit" => [["DA Rate", "DA確率", "da", 0.4], ["TA Rate", "TA確率", "ta", 0.6]]
+      "added_hit" => [["DA Rate", "DA確率", "da", 0.4], ["TA Rate", "TA確率", "ta", 0.6]],
+      "added_hp" => [["HP", "HP", "hp", 0.05]]
     }.freeze
 
     # Per-line contribution entries: [{name:{en,ja}, icon, value, base, multiplier,

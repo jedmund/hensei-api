@@ -29,7 +29,9 @@ module GridDamage
                   "skill_dmg_supp" => 200_000.0,
                   # K4UydX: C.A. Amp. (Sp.) orange at 20; Exalto lines orange at their
                   # enhancement contribution caps.
-                  "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0 }.freeze
+                  "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0,
+                  # SPhnLB: Debuff Res. orange at 30
+                  "debuff_res" => 30.0 }.freeze
 
     # The summon-aura/Exalto "Weapon Skill Enhancement" amplifies EVERY boost an
     # aura-boosted skill grants — caps, amps, and supplementals included (K4UydX: Terra's
@@ -65,17 +67,21 @@ module GridDamage
     # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.
     # Panel-exact on all goldens — 9JtcHY: Critical raw 145.6 → Crit. DMG 22.8; DMG Cap
     # raw 31 → Pen. 5.5; dAV5ds raw 24 → 2; 5JPIJg raw 42 → 11.
-    OVERSKILL_CAPS = { "crit_dmg" => 100.0, "dmg_cap_pen" => 20.0, "added_hit" => 100.0 }.freeze
+    OVERSKILL_CAPS = { "crit_dmg" => 100.0, "dmg_cap_pen" => 20.0, "added_hit" => 100.0,
+                       "added_hp" => 100.0 }.freeze
 
     def add_overskills(agg)
-      crit = excess(agg, "critical") * 0.5
+      crit_excess = excess(agg, "critical")
+      crit = crit_excess >= 2 ? crit_excess * 0.5 : 0.0 # 2% minimum excess to activate
       cap_excess = excess(agg, "dmg_cap") + excess(agg, "dmg_cap_sp")
-      pen = cap_excess >= 2 ? cap_excess * 0.5 : 0.0 # 2% minimum excess to activate
+      pen = cap_excess >= 2 ? cap_excess * 0.5 : 0.0
       hit = (excess(agg, "da") * 0.4) + (excess(agg, "ta") * 0.6)
+      # HP over its 400% grid cap converts at 5% (SPhnLB: (494.6-400) x 0.05 = 4.73 exact)
+      hp = (excess(agg, "hp") * 0.05).round(4) # float noise: 494.4999 raw must show 4.73, not 4.72
 
       overskill_sources = { "crit_dmg" => %w[critical], "dmg_cap_pen" => %w[dmg_cap dmg_cap_sp],
-                            "added_hit" => %w[da ta] }
-      { "crit_dmg" => crit, "dmg_cap_pen" => pen, "added_hit" => hit }.each do |key, value|
+                            "added_hit" => %w[da ta], "added_hp" => %w[hp] }
+      { "crit_dmg" => crit, "dmg_cap_pen" => pen, "added_hit" => hit, "added_hp" => hp }.each do |key, value|
         next unless value.positive?
 
         cap = OVERSKILL_CAPS.fetch(key)
