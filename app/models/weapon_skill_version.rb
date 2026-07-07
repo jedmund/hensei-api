@@ -51,11 +51,18 @@ class WeaponSkillVersion < ApplicationRecord
   end
 
   # Conditional/fixed grid mechanics for this version: description-derived per-version effects
-  # plus the canonical modifier-keyed effects (Pact, Charge, …).
+  # plus the canonical modifier-keyed effects (Pact, Charge, …). A version-linked row is
+  # skill-specific curation (Axe Voltage II's 8%/axe), so per boost_type it REPLACES the
+  # family fallback (Voltage's 4%) instead of stacking with it — the mirror of
+  # weapon_skill_data, where the canonical curve wins and linked rows only fill gaps.
   def weapon_skill_effects
-    ids = WeaponSkillEffect.where(weapon_skill_version_id: id).ids
-    ids += WeaponSkillEffect.for_skill(modifier: skill_modifier).base_effects.ids if skill_modifier.present?
-    WeaponSkillEffect.where(id: ids)
+    linked = WeaponSkillEffect.where(weapon_skill_version_id: id)
+    return linked if skill_modifier.blank?
+
+    have = linked.pluck(:boost_type).to_set
+    canonical_ids = WeaponSkillEffect.for_skill(modifier: skill_modifier).base_effects
+                                     .reject { |e| have.include?(e.boost_type) }.map(&:id)
+    WeaponSkillEffect.where(id: linked.ids + canonical_ids)
   end
 
   # Normalized icon stem using OUR INTERNAL element numbering — the name files
