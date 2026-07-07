@@ -44,6 +44,8 @@
       "scaling_kind": "conditional_flat",
       "value": 50.0,
       "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_skill_cap",
       "condition": {
         "gte": 280,
         "type": "boost_level"
@@ -223,7 +225,6 @@
       "scaling_kind": "static",
       "value": 10.0,
       "value_unit": "percent",
-      "total_cap": 10.0,
       "depends_on": [
         "boost_level"
       ],
@@ -240,7 +241,6 @@
       "scaling_kind": "static",
       "value": 30.0,
       "value_unit": "percent",
-      "total_cap": 30.0,
       "depends_on": [
         "boost_level"
       ],
@@ -1490,7 +1490,7 @@
     },
     {
       "modifier": "Godshield",
-      "boost_type": "bonus_des_dmg_ca",
+      "boost_type": "bonus_des_ca",
       "scaling_kind": "static",
       "value": 10.0,
       "value_unit": "percent",
