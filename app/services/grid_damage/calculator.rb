@@ -16,15 +16,20 @@ module GridDamage
     RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0,
                   "dmg_cap" => 20.0, "dmg_cap_sp" => 20.0, "na_dmg_cap" => 20.0,
                   "ca_dmg_cap" => 100.0, "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
-                  "ex_atk_sp" => 80.0, "crit_amp" => 20.0 }.freeze
+                  "ex_atk_sp" => 80.0, "crit_amp" => 20.0,
+                  # SRiNSO panel (2026-07-06): these show orange at the values below.
+                  "elem_reduc" => 30.0, "na_amp_sp" => 20.0,
+                  "skill_cap_sp" => 60.0, "skill_amp_sp" => 20.0,
+                  "dmg_supp" => 100_000.0, "na_supp" => 100_000.0,
+                  "skill_dmg_supp" => 200_000.0 }.freeze
 
     # Boosts that the summon-aura/Exalto "Weapon Skill Enhancement" amplifies (per frame):
     # the offensive ATK-family, the rate boosts, the amplify-family, elemental Bonus DMG
-    # (5JPIJg: Deathstrike 4.5×2 × 5.2 = 46.8 = the panel's Bonus Water DMG, exactly), and
-    # DEF Ignore (dAV5ds: Impalement 2×2 × 2.5 = 10, exactly). Caps, supplementals, and
-    # DEF are NOT amplified.
+    # (5JPIJg: Deathstrike 4.5×2 × 5.2 = 46.8 = the panel's Bonus Water DMG, exactly),
+    # DEF Ignore (dAV5ds: Impalement 2×2 × 2.5 = 10, exactly), and Heal Cap (SRiNSO:
+    # Precocity 15 × 5.3 = 79.5, exactly). DMG caps, supplementals, and DEF are NOT amplified.
     AMPLIFIED_BOOSTS = %w[atk hp stamina enmity e_atk_prog critical da ta def_ignore
-                          dmg_amp crit_amp elem_amplify od_dmg_amp bonus_elem_dmg].freeze
+                          dmg_amp crit_amp elem_amplify od_dmg_amp bonus_elem_dmg heal_cap].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
