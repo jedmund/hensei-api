@@ -80,10 +80,15 @@ RSpec.describe GridDamage::Scaling do
     end
   end
 
-  describe "garrison (flat DEF — SL-interpolated, no HP curve)" do
-    it "interpolates its SL anchors like flat" do
+  describe "garrison (DEF mirror of enmity — scales with missing HP)" do
+    it "contributes nothing at full HP (HoEE8b: the panel's DEF line excludes Garrison)" do
       d = datum(formula_type: "garrison", sl1: 3.6, sl10: 12.0, sl15: 15.0)
-      expect(described_class.value(d, skill_level: 15)).to eq(15.0)
+      expect(described_class.value(d, skill_level: 15, hp_percent: 100)).to eq(0.0)
+    end
+
+    it "uses the enmity curve as HP drops" do
+      d = datum(formula_type: "garrison", sl1: 3.6, sl10: 12.0, sl15: 15.0)
+      expect(described_class.value(d, skill_level: 15, hp_percent: 50)).to eq(15.0 * ((1 + 2 * 0.5) * 0.5))
     end
   end
 end

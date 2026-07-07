@@ -21,9 +21,12 @@ module GridDamage
     def value(datum, skill_level:, hp_percent: 100.0, turn: 1)
       case datum.formula_type
       when "enmity"      then enmity(datum, skill_level, hp_percent)
+      # Garrison is the DEF mirror of Enmity — same missing-HP curve, so 0 at full
+      # HP (HoEE8b: the panel's DEF line shows no Garrison contribution at 100%).
+      when "garrison"    then enmity(datum, skill_level, hp_percent)
       when "stamina"     then stamina(datum, skill_level, hp_percent)
       when "progression" then progression(datum, skill_level, turn)
-      else                    flat(datum, skill_level) # "flat", "garrison" (flat DEF), nil
+      else                    flat(datum, skill_level) # "flat", nil
       end
     end
 
