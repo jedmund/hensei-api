@@ -27,6 +27,7 @@ module Api
         {
           modifier: WeaponStatModifierBlueprint.render_as_hash(obj.befoulment_modifier),
           strength: obj.befoulment_strength,
+            permeation: obj.befoulment_permeation,
           exorcism_level: obj.exorcism_level
         }
       end

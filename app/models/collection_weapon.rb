@@ -29,6 +29,7 @@ class CollectionWeapon < ApplicationRecord
   validates :transcendence_step, inclusion: { in: 0..10 }
   validates :awakening_level, inclusion: { in: 1..20 }
   validates :exorcism_level, inclusion: { in: 0..5 }, allow_nil: true
+  validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
 
   validate :validate_weapon_keys
   validate :validate_ax_skills
