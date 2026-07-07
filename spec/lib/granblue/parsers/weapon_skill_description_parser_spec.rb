@@ -115,4 +115,29 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "atk")).to include(value: 20.0)
     expect(boost(r, "def")).to include(value: 15.0)
   end
+
+  it "splits sentences and negates 'hit to' demerits (Gugalanna)" do
+    r = parse("'''When main weapon:'''<br />Amplify Dark allies' normal attack damage by 30%. " \
+              "200% hit to Dark allies' charge bar gain.")
+    expect(boost(r, "na_amp")).to include(value: 30.0)
+    expect(boost(r, "charge_gain")).to include(value: -200.0)
+  end
+
+  it "negates a cap demerit (Disease Demon)" do
+    r = parse("'''When main weapon:'''<br />20% boost to Dark allies' normal attack damage cap. " \
+              "40% hit to Dark allies' skill damage cap.")
+    expect(boost(r, "na_dmg_cap")).to include(value: 20.0)
+    expect(boost(r, "skill_dmg_cap")).to include(value: -40.0)
+  end
+
+  it "never reads a value out of a parenthetical aside (Athos ≥280 condition)" do
+    r = parse("Boost to dark allies' multiattack rate / Amplify normal attack DMG (Boost to specs " \
+              "when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)")
+    expect(boost(r, "na_amp")).to include(value: nil)
+  end
+
+  it "does not split sentences after abbreviation dots (C.A. DMG)" do
+    r = parse("20% boost to Water allies' C.A. DMG.")
+    expect(boost(r, "ca_dmg")).to include(value: 20.0)
+  end
 end

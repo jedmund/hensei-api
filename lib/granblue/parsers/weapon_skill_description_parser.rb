@@ -78,7 +78,7 @@ module Granblue
         [/counter/i,                                         "counter_dmg"],
         [/gain shield|\bshield\b/i,                          "shield"],
         [/debuff res/i,                                      "debuff_res"],
-        [/boost to charge bar gain|charge bar gain (?:boost|up)/i, "charge_gain"],
+        [/boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
         [/(?:dmg|damage) (?:cut|reduc)|lessen .*(?:dmg|damage)/i, "elem_reduc"],
         [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
@@ -120,12 +120,11 @@ module Granblue
           boosts_for(frag).each do |boost, formula|
             boost = "od_dmg_amp" if boost == "dmg_amp" && series0 == "odious"
             value = value_for(frag, boost)
-            # "X% hit to multiattack rate" guarantees multiattack ≈ −X% DA (it pushes the DA
-            # rate down/negative; the freed rate becomes triple attacks).
-            if boost == "multiattack"
-              boost = "da"
-              value = -value if value
-            end
+            # "X% hit to <boost>" is a demerit — Ereshkigal's "200% hit to charge bar
+            # gain" shows -200% on the panel; "hit to multiattack rate" pushes the DA
+            # rate down/negative (the freed rate becomes triple attacks).
+            value = -value if value && frag.match?(/\bhit to\b/i)
+            boost = "da" if boost == "multiattack"
             clauses << {
               boost_type: boost, value: value, size: (size unless explicit?(frag)),
               series: series0, formula_type: formula, condition: condition_for(frag)
@@ -149,11 +148,15 @@ module Granblue
       end
 
       # Split into fine clauses on separators and "and"/"plus". Split on comma only when
-      # followed by a space, so digit-grouping commas ("100,000") stay intact.
+      # followed by a space, so digit-grouping commas ("100,000") stay intact. Sentences
+      # are separate clauses too ("…damage by 30%. 200% hit to charge bar gain." would
+      # otherwise hand the first % to both boosts) — but never split after an
+      # abbreviation dot ("C.A. DMG"), so the lookbehind requires a non-capital.
       def self.split_clauses(body)
         # <br/> first so it isn't mistaken for the "/" clause separator; it separates the stat
         # clauses in tiered skills (e.g. "…max HP.<br/>10% Bonus Destruction C.A. DMG").
-        body.split(%r{<br\s*/?>|\s*/\s*|,\s+|\s+and\s+|\s+plus\s+}i).map(&:strip).reject(&:empty?)
+        body.split(%r{<br\s*/?>|\s*/\s*|(?-i:(?<=[a-z0-9%)])\.\s+(?=[A-Z0-9]))|,\s+|\s+and\s+|\s+plus\s+}i)
+            .map(&:strip).reject(&:empty?)
       end
 
       # [boost_type, formula] pairs for a fragment. A HP-/turn-scaling phrase converts the base
@@ -200,8 +203,11 @@ module Granblue
         frag.match?(/\d/) # a number present ⇒ flat value, not an SL-scaled size tier
       end
 
-      # Explicit value: a percentage, or a "by 100,000" supplement amount.
+      # Explicit value: a percentage, or a "by 100,000" supplement amount. Parenthetical
+      # asides never carry the value — they hold conditions ("(Boost to specs when …
+      # 280% or above)") and caps ("(Max: 45%)") whose numbers must not be read as it.
       def self.value_for(frag, boost)
+        frag = frag.gsub(/\([^)]*\)/, "")
         if %w[dmg_supp na_supp ca_supp skill_dmg_supp].include?(boost) && (m = frag[/by\s+([\d,]+)/i, 1])
           return m.delete(",").to_f
         end
