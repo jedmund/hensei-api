@@ -52,13 +52,32 @@ module Granblue
         URI.encode_www_form_component(title)
       end
 
+      # gbf-wiki.com sometimes returns a 200 with a "Runtime error" HTML page
+      # (NG word filter, IP restriction, etc.). Detect and reject it so the
+      # caller treats it as an error rather than caching garbage HTML.
+      RUNTIME_ERROR_MARKERS = [
+        '<h1 class="title">Runtime error</h1>',
+        '<title>Runtime error'
+      ].freeze
+
       def handle_response(response, title)
         case response.code
-        when 200 then response.body
+        when 200
+          body = response.body
+          if runtime_error?(body)
+            raise WikiError.new(code: 200, message: 'Runtime error page returned', page: title)
+          end
+
+          body
         when 404 then raise WikiError.new(code: 404, message: 'Page not found', page: title)
         when 500...600 then raise WikiError.new(code: response.code, message: 'Server error', page: title)
         else raise WikiError.new(code: response.code, message: 'Unexpected response', page: title)
         end
+      end
+
+      def runtime_error?(body)
+        text = body.to_s
+        RUNTIME_ERROR_MARKERS.any? { |marker| text.include?(marker) }
       end
     end
   end
