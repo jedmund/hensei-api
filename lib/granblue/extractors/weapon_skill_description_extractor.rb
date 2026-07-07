@@ -43,6 +43,9 @@ module Granblue
           stats[:family_backfilled] += 1 if backfill_family(v, skill, parsed, dry_run: dry_run)
 
           if parsed[:clauses].empty?
+            # a parse that now yields nothing must also purge rows a previous
+            # (buggier) parse created — otherwise stale boosts survive reparse
+            purge_generated_rows(v) unless dry_run
             stats[parsed[:skip] ? :"skip_#{parsed[:skip]}" : :no_clause] += 1
             next
           end
@@ -52,6 +55,12 @@ module Granblue
           stats[covered.empty? ? :resolved : :completed] += 1
         end
         stats
+      end
+
+      def self.purge_generated_rows(version)
+        WeaponSkillDatum.where(weapon_skill_version_id: version.id, manually_edited_at: nil).delete_all
+        WeaponSkillEffect.where(weapon_skill_version_id: version.id, manually_edited_at: nil)
+                         .where.not(scaling_kind: NOTES_KINDS).delete_all
       end
 
       # Derive (skill_modifier, skill_size) from the skill name when the version has none and
@@ -116,9 +125,7 @@ module Granblue
       NOTES_KINDS = %w[per_grid_count specialty_scaled].freeze
 
       def self.apply(version, skill, parsed, covered, stats)
-        WeaponSkillDatum.where(weapon_skill_version_id: version.id, manually_edited_at: nil).delete_all
-        WeaponSkillEffect.where(weapon_skill_version_id: version.id, manually_edited_at: nil)
-                         .where.not(scaling_kind: NOTES_KINDS).delete_all
+        purge_generated_rows(version)
 
         series = parsed[:clauses].filter_map { |c| c[:series] }.first || "ex"
         version.update_columns(skill_series: series) if version.skill_series != series

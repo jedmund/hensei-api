@@ -41,7 +41,7 @@ module GridDamage
     # "caps/supplementals aren't amplified" reads came from key/EX sources, whose frame
     # factor is 1.0 anyway. Only the Exalto totals themselves are excluded — they ARE the
     # enhancement, and amplifying them would feed back into itself.
-    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto].freeze
+    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto hp_dmg].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})

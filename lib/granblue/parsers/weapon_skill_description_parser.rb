@@ -32,9 +32,11 @@ module Granblue
       EVENT_TRIGGER = %r{
         \A[\s/]*
         (?: at\ (?:the\ )?(?:end|start)\ of
+          | for\ every\b
           | upon\b
           | when\b [^:]* (?: after\ normal\ attacks | attack(?:s|ing)\b | us(?:es|ing)\b
-                           | activat | drain | removes?\b | chain\ burst | end\ of\ turn )
+                           | activat | drain | removes?\b | chain\ burst | end\ of\ turn
+                           | granted )
         )
         [^:]* :
       }xi
@@ -84,7 +86,7 @@ module Granblue
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
         [/ignore .*\bdef/i,                                  "def_ignore"],
         [/% cut to .*max hp|cut to .*max hp|% cut to/i,      "hp_cut"],
-        [/take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
+        [/take (?:dmg|damage) worth .*? of max hp|take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
         [/\bdef(?:ense)?\b/i,                                "def"],
         [/max hp|\bhp\b/i,                                   "hp"],
         [/\batk\b/i,                                         "atk"]
@@ -104,6 +106,9 @@ module Granblue
         end
 
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
+        # parenthetical proc blocks ("(For every 3 skills used: … allies gain 10%…)")
+        # describe triggered effects, not passive boosts
+        body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^)]*\)/i, "")
         if body.match?(EVENT_TRIGGER)
           return { main_hand_only: desc.match?(/when main weapon/i),
                    mc_only: desc.match?(/\(mc only\)/i),

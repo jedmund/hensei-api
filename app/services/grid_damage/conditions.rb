@@ -36,6 +36,10 @@ module GridDamage
       when "weapon_specialty"
         specialty = GridComposition::PROFICIENCY_NAME[weapon&.proficiency]
         specialty.present? && Array(composition[:mc_specialties]).include?(specialty)
+      # epic weapons' "when all equipped weapons are different" (Absolute Equality)
+      when "all_weapons_unique"
+        counts = composition.fetch(:id_counts, {})
+        counts.any? && counts.values.all? { |n| n <= 1 }
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))

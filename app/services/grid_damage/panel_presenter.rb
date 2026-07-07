@@ -112,7 +112,9 @@ module GridDamage
       ["skill_supp_ax", nil, "Skill DMG Supp. (AX)", "ax-skill-dmg-supp", "ax"],
       ["na_cap_ax", nil, "N.A. DMG Cap (AX)", "ax-na-dmg-cap", "ax"],
       ["healing_ax", nil, "Healing (AX)", "ax-heal", "ax"],
-      ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"]
+      ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"],
+      ["exp_ax", nil, "EXP Gain", "ax-exp-gain", "ax"],
+      ["rupie_ax", nil, "Rupie Gain", "ax-rupie-gain", "ax"]
     ].freeze
 
     SUPPLEMENT_KEYS = %w[dmg_supp na_supp na_supp_sp skill_dmg_supp skill_supp_sp ca_supp
