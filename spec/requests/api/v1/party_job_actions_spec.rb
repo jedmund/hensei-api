@@ -73,6 +73,21 @@ RSpec.describe 'Party Job Actions API', type: :request do
       expect(body['job_skills']['1']['id']).to eq(sub_skill.id)
     end
 
+    it "equips another job's subskill on a job with no base job (Origin rows)" do
+      # Lancer Origin / Rising Force have no base_job; a cross-job subskill
+      # (e.g. Mystic's Splitting Spirit) must not evaluate base_job.id on either side.
+      origin_job = create(:job, row: 'o1', base_job: nil)
+      cross_skill = create(:job_skill, :sub_skill, job: create(:job), main: true)
+      party.update!(job: origin_job, skill1_id: nil)
+
+      put "/api/v1/parties/#{party.shortcode}/job_skills",
+          params: { party: { skill1_id: cross_skill.id } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['job_skills']['1']['id']).to eq(cross_skill.id)
+    end
+
     it 'returns unauthorized when party belongs to a different user' do
       other_party = create(:party, user: create(:user), job: job)
 
