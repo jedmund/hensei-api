@@ -51,6 +51,13 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(json['username']).to eq(user.username)
     end
 
+    # Regression: unknown usernames (bot probes like sitemap/favicon.ico) used
+    # to render a nil user through the blueprint -> 500. Now they 404.
+    it 'returns 404 for an unknown username instead of 500' do
+      get '/api/v1/users/info/sitemap', params: { check_collection: 'true', check_support_summons: 'true' }
+      expect(response).to have_http_status(:not_found)
+    end
+
     context 'with check_collection=true' do
       let(:private_user) { create(:user, collection_privacy: :private_collection) }
 
