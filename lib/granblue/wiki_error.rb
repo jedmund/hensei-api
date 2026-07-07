@@ -2,18 +2,19 @@
 
 module Granblue
   class WikiError < StandardError
+    attr_reader :code, :page
+
     def initialize(code: nil, page: nil, message: nil)
-      super
+      super(message)
       @code = code
       @page = page
-      @message = message
     end
 
     def to_hash
       {
-        message: @message,
-        code: @code,
-        page: @page
+        message: message,
+        code: code,
+        page: page
       }
     end
   end
