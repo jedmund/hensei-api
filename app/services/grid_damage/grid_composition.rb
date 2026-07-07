@@ -39,8 +39,15 @@ module GridDamage
       # per-specialty skills (e.g. Cloud of Howling Twilight). A job matching on either
       # proficiency gets the specialty tier (dAV5ds: Lancer Origin is spear+axe; the
       # panel shows Pillar-Smasher's Conviction at the axe values).
+      # A party without a job still implies one specialty: the mainhand weapon's type
+      # is always among the wielding job's proficiencies (HoEE8b: axe MH resolves
+      # Pillar-Smasher's Conviction at the axe tier even with no job saved).
       job = party.try(:job)
       mc_specialties = [job&.proficiency1, job&.proficiency2].filter_map { |p| PROFICIENCY_NAME[p] }
+      if mc_specialties.empty?
+        mh = party.weapons.find { |gw| gw.mainhand }&.weapon
+        mc_specialties = [PROFICIENCY_NAME[mh&.proficiency]].compact
+      end
       summarize(entries).merge(mc_specialty: mc_specialties.first, mc_specialties: mc_specialties)
     end
 
