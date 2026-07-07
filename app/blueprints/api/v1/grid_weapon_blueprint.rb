@@ -44,6 +44,8 @@ module Api
           skills
         end
 
+        field :skill_level, if: ->(_field_name, w, _options) { w.skill_level.present? }, &:skill_level
+
         field :befoulment, if: ->(_field_name, w, _options) { w.befoulment_modifier.present? } do |w|
           {
             modifier: WeaponStatModifierBlueprint.render_as_hash(w.befoulment_modifier),

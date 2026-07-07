@@ -80,6 +80,10 @@ module GridDamage
     # stages 1–4 don't raise it; the FINAL stage (5) jumps +5 → SL25. Clamped to the
     # weapon's own maximum, so an FLB copy of an ULB-capable weapon reads SL15, not SL20.
     def skill_level_for(weapon, grid_weapon)
+      # an explicit skill level wins — players don't always feed fodder to the max
+      explicit = grid_weapon.try(:skill_level)
+      return explicit.to_i if explicit.present?
+
       uncap = grid_weapon.uncap_level.to_i
       transcended = grid_weapon.transcendence_step.to_i >= 5
       cap = if uncap >= 5 then 20

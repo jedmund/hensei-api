@@ -72,6 +72,7 @@ class GridWeapon < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
+  validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true
 
   validate :validate_transcendence_step
   validate :compatible_with_position, unless: :is_substitute?
@@ -101,6 +102,7 @@ class GridWeapon < ApplicationRecord
     nullify :befoulment_strength
     nullify :befoulment_permeation
     nullify :exorcism_level
+    nullify :skill_level
     nullify :description
   end
 
@@ -133,6 +135,7 @@ class GridWeapon < ApplicationRecord
     'befoulmentStrength' => %i[befoulment_strength],
     'befoulmentPermeation' => %i[befoulment_permeation],
     'exorcismLevel' => %i[exorcism_level],
+    'skillLevel' => %i[skill_level],
     'awakeningId' => %i[awakening_id],
     'awakeningLevel' => %i[awakening_level]
   }.freeze
@@ -226,6 +229,7 @@ class GridWeapon < ApplicationRecord
     fields << 'befoulmentStrength' if befoulment_strength != collection_weapon.befoulment_strength
     fields << 'befoulmentPermeation' if befoulment_permeation != collection_weapon.befoulment_permeation
     fields << 'exorcismLevel' if exorcism_level != collection_weapon.exorcism_level
+    fields << 'skillLevel' if skill_level != collection_weapon.skill_level
     fields << 'awakeningId' if awakening_id != collection_weapon.awakening_id
     fields << 'awakeningLevel' if awakening_level != collection_weapon.awakening_level
     fields.concat(out_of_sync_bullet_positions.map { |position| "bullets.#{position}" })

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_07_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_07_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -329,6 +329,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_000001) do
     t.float "befoulment_strength"
     t.integer "exorcism_level", default: 0
     t.integer "befoulment_permeation"
+    t.integer "skill_level"
     t.index ["awakening_id"], name: "index_collection_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_collection_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_collection_weapons_on_ax_modifier2_id"
@@ -677,6 +678,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_000001) do
     t.jsonb "description"
     t.boolean "notes_synced", default: false, null: false
     t.integer "befoulment_permeation"
+    t.integer "skill_level"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"

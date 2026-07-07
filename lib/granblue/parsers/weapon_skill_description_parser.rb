@@ -108,7 +108,7 @@ module Granblue
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
         # parenthetical proc blocks ("(For every 3 skills used: … allies gain 10%…)")
         # describe triggered effects, not passive boosts
-        body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^)]*\)/i, "")
+        body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, "")
         if body.match?(EVENT_TRIGGER)
           return { main_hand_only: desc.match?(/when main weapon/i),
                    mc_only: desc.match?(/\(mc only\)/i),
@@ -120,6 +120,13 @@ module Granblue
         clauses = []
         last_size = nil
         split_clauses(body).each do |frag|
+          # a mid-body event trigger ("When a Dark chain burst activates: …") turns
+          # the rest of the description into battle procs — GBF lists procs last
+          break if frag.match?(EVENT_TRIGGER)
+          # crest/status-scaled values ("by 4% per their number of Oblivion Crest")
+          # are battle-dynamic, not passive grid boosts
+          next if frag.match?(/(?:per|based on) their number of/i)
+
           size = frag[SIZE_KEYWORD, 1]&.downcase || last_size
           last_size = size if frag.match?(SIZE_KEYWORD)
           boosts_for(frag).each do |boost, formula|

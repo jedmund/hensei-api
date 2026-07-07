@@ -620,7 +620,7 @@ module Api
           :position, :mainhand, :uncap_level, :transcendence_step, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
           :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,
-          :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level,
+          :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level, :skill_level,
           :awakening_id, :awakening_level,
           :notes_synced,
           bullets: [:position, :bullet_id]
