@@ -11,6 +11,9 @@ module GridDamage
     # panel flat, like EX. Their contributions are non-amplifiable.
     NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer].freeze
 
+    # frames whose enhancement the WsBox aura_boostable flag governs
+    AURA_BOOSTED_FRAMES = %w[normal omega].freeze
+
     def for_party(party, state: {})
       hp = state.fetch(:hp_percent, 100).to_f
       turn = state.fetch(:turn, 1).to_i
@@ -41,7 +44,7 @@ module GridDamage
           # reaches the 1M cap only when enhanced). Ex frames are already factor-1.
           version_amplifiable = amplifiable &&
                                 !(unboostable_families.include?(v.resolved_modifier) &&
-                                  %w[normal omega].include?(frame))
+                                  AURA_BOOSTED_FRAMES.include?(frame))
           v.weapon_skill_data.each do |d|
             value = Scaling.value(d, skill_level: skill_level, hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
