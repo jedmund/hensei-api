@@ -8,7 +8,7 @@ namespace :granblue do
   task durability_check: :environment do
     refetch = ENV["refetch"] == "true"
     references = Rails.root.glob("data/panel_references/*.json")
-                     .map { |f| JSON.parse(File.read(f)) }
+                      .map { |f| JSON.parse(File.read(f)) }
     parties = references.filter_map { |r| Party.find_by(shortcode: r["party"]) }
     abort "no golden parties found" if parties.empty?
 
@@ -27,7 +27,7 @@ namespace :granblue do
       results = Granblue::PanelValidator.run
       failed = results.any? { |r| !r.ok }
       results.each do |r|
-        puts format("  %-8s %s", r.party, r.ok ? "ok" : "FAIL")
+        puts format("  %<party>-8s %<status>s", party: r.party, status: r.ok ? "ok" : "FAIL")
         next if r.ok
 
         r.mismatches.first(8).each do |m|
