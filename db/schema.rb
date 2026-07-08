@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_08_200001) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_08_300001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1477,6 +1477,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_08_200001) do
     t.datetime "updated_at", null: false
     t.float "reduction_step"
     t.string "ax_group"
+    t.decimal "secondary_min", precision: 8, scale: 2
+    t.decimal "secondary_max", precision: 8, scale: 2
+    t.jsonb "ax_secondaries", default: {}, null: false
     t.index ["category"], name: "index_weapon_stat_modifiers_on_category"
     t.index ["game_skill_id"], name: "index_weapon_stat_modifiers_on_game_skill_id", unique: true
     t.index ["slug"], name: "index_weapon_stat_modifiers_on_slug", unique: true

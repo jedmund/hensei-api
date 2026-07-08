@@ -156,7 +156,7 @@ module GridDamage
         Effects.contributions(party, state: state, composition: composition) +
         KeySkills.contributions(party, state: state, composition: composition) +
         AwakeningContributions.for_party(party, composition: composition) +
-        AxContributions.for_party(party) +
+        AxContributions.for_party(party, state: state) +
         BefoulmentContributions.for_party(party)
     end
 
