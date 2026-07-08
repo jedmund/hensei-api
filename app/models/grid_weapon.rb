@@ -74,7 +74,6 @@ class GridWeapon < ApplicationRecord
   validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
   validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true
 
-
   validate :validate_transcendence_step
   validate :compatible_with_position, unless: :is_substitute?
   validate :compatible_with_job_proficiency, on: :create, unless: :is_substitute?
