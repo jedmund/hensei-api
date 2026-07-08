@@ -48,7 +48,11 @@ module GridDamage
         mh = party.weapons.find { |gw| gw.mainhand }&.weapon
         mc_specialties = [PROFICIENCY_NAME[mh&.proficiency]].compact
       end
-      summarize(entries).merge(mc_specialty: mc_specialties.first, mc_specialties: mc_specialties)
+      summarize(entries).merge(
+        mc_specialty: mc_specialties.first, mc_specialties: mc_specialties,
+        # crew races incl. the MC (Gran/Djeeta are Human) — bahamut count basis
+        character_races: [1] + party.characters.filter_map { |gc| gc.character&.race1&.to_i }
+      )
     end
 
     # Pure: entries = [{ proficiency:, granblue_id:, modifiers: [..], omega: bool }, …]

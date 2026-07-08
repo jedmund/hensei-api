@@ -42,6 +42,7 @@ module GridDamage
       ["hp", nil, "HP", "hp", "hp"],
       ["heal_cap", nil, "Heal Cap", "heal-cap", "hp"],
       ["hp_cut", nil, "HP Cut", "hp-cut", "hp"],
+      ["hp_dmg", nil, "HP DMG", "hp-dmg", "hp"],
       # Defense (blue labels) — reduction is labeled with the foe's element ("Wind Reduc."
       # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],

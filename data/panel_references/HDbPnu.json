@@ -1,0 +1,35 @@
+{
+  "party": "HDbPnu",
+  "captured_on": "2026-07-07",
+  "notes": "Dark rarities grid (no job) — malice, epic, exo, revans, regalia, vintage primal, bahamut coda, xeno, astral, illustrious MH. Decoded via remove-and-diff (Coda/Agastia/Cortana/Hamartia screenshots): the panel display drops decimals at >=100% (Might true 117.4, Ω 180.95, HP 136.55 all display floored) — the validator's integer-floor rule covers it. Awakenings are real contributors: Agastia Attack lv20 = Might +35 flat + EX Might +10 (Revans table), Hamartia 'Special' lv10 = Might +20 / HP +20 flat (Exo Might/HP column; the other column is all main-only). Coda = Concrio 35/21 at SL20 + Vita 2%/matching character (5 here: MC+Zeta human, Sariel primal, Koku+Orologia other; Wamdus harvin excluded) — normal-frame flat. Cortana SL1 (Tyranny 6.0 + Trium 1.2 skill_level field), Advocatus SL15 (True Phantom 23; its HP half provably absent from the panel). E. ATK 15 OMITTED: survives removal of Coda/Agastia/Cortana/Hamartia — source among Zosimos/Majestas/Scales/Spine/Advocatus/Claws, needs one more removal (suggest Scales of Dominion, then Claws of Terror). TA attribution note: the game kept TA 5.64 when Cortana was removed, so Trium III may be DA-only at SL1 with another TA source hiding — values match either way. Estimated DMG 191824 / to Light 287588 / Max HP 36319.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 20,
+    "omega": 370,
+    "taboo": 0
+  },
+  "absent": ["crit_dmg", "added_hit", "added_hp", "dmg_cap_pen", "heal_cap", "skill_amp_sp", "skill_dmg"],
+  "lines": [
+    { "label": "Might", "boost": "atk", "series": "normal", "value": 117 },
+    { "label": "Ω Might", "boost": "atk", "series": "omega", "value": 180 },
+    { "label": "EX Might", "boost": "atk", "series": "ex", "value": 113 },
+    { "label": "Critical", "boost": "critical", "value": 30.55 },
+    { "label": "DA Rate", "boost": "da", "value": 29.14 },
+    { "label": "TA Rate", "boost": "ta", "value": 5.64 },
+    { "label": "HP", "boost": "hp", "value": 136 },
+    { "label": "HP Cut", "boost": "hp_cut", "value": -10 },
+    { "label": "HP DMG", "boost": "hp_dmg", "value": 20 },
+    { "label": "DMG Cap", "boost": "dmg_cap", "value": 10 },
+    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 15 },
+    { "label": "C.A. DMG", "boost": "ca_dmg", "value": 44.65 },
+    { "label": "C.A. DMG Cap", "boost": "ca_dmg_cap", "value": 44.65 },
+    { "label": "DA Rate (AX)", "boost": "da_ax", "value": 2.5 },
+    { "label": "TA Rate (AX)", "boost": "ta_ax", "value": 2.5 },
+    { "label": "C.A. Supp. (AX)", "boost": "ca_supp_ax", "value": 30000 },
+    { "label": "EXP Gain", "boost": "exp_ax", "value": 10 }
+  ]
+}

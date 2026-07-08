@@ -72,7 +72,7 @@ module GridDamage
 
     def per_grid_count(effect, weapon:, composition:)
       base = effect.value&.to_f
-      count = grid_count(effect.count_basis, weapon: weapon, composition: composition)
+      count = grid_count(effect.count_basis, effect: effect, weapon: weapon, composition: composition)
       return nil if base.nil? || count.nil?
 
       count = [count, effect.count_cap.to_i].min if effect.count_cap
@@ -84,11 +84,16 @@ module GridDamage
       total
     end
 
-    def grid_count(basis, weapon:, composition:)
+    def grid_count(basis, weapon:, composition:, effect: nil)
       case basis
       when "weapon_type"  then composition.dig(:weapon_type_counts, weapon.proficiency).to_i
       when "weapon_group" then composition[:weapon_group_count].to_i
       when "omega_skill"  then composition[:omega_skill_count].to_i
+        # characters (incl. MC) whose race is in the effect's condition list — bahamut
+        # weapons' Vita family counts crew, not weapons (HDbPnu: 2% x 5 matching)
+      when "crew_races"
+        races = Array(effect.condition&.dig("races")).map(&:to_i)
+        composition.fetch(:character_races, []).count { |r| races.include?(r.to_i) }
         # "epic"/"militis" need weapon-group tags we don't store — documented gap.
       end
     end

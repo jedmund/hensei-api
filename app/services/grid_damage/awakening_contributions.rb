@@ -83,6 +83,46 @@ module GridDamage
     # frame-agnostic additive lines.
     FRAME = { "atk" => "normal" }.freeze
 
+    # Revans weapons run the 20-level {{Weapon/Awakening/revansmkII}} table (Mk II reaches
+    # 20; base weapons stop at 15). Per-level increments; flat weapon-stat bonuses
+    # (ATK +100/+300/+500, HP +10/+15) and the lv16/18/20 weapon-stat ATK% never surface
+    # on the panel — HDbPnu's Attack lv20 Agastia measures exactly Might +35 (flat, normal
+    # line) and EX Might +10 via remove-and-diff.
+    REVANS_BY_TYPE = {
+      "weapon-atk" => {
+        2 => { "atk" => 2.0 }, 3 => { "atk" => 2.0 }, 4 => { "atk" => 2.0 },
+        6 => { "atk" => 3.0 }, 7 => { "atk" => 3.0 }, 8 => { "atk" => 3.0 }, 9 => { "atk" => 3.0 },
+        11 => { "atk" => 4.0 }, 12 => { "atk" => 4.0 }, 13 => { "atk" => 4.0 }, 14 => { "atk" => 5.0 },
+        17 => { "ex_atk" => 5.0 }, 19 => { "ex_atk" => 5.0 }
+      },
+      "weapon-def" => {
+        2 => { "hp" => 3.0 }, 3 => { "def" => 3.0 }, 4 => { "hp" => 4.0 }, 5 => { "hp" => 4.0 },
+        6 => { "def" => 3.0 }, 7 => { "hp" => 6.0 }, 8 => { "hp" => 6.0 }, 9 => { "def" => 3.0 },
+        10 => { "hp" => 8.0 }, 11 => { "hp" => 8.0 }, 12 => { "def" => 3.0 }, 13 => { "hp" => 8.0 },
+        14 => { "hp" => 8.0 }, 15 => { "def" => 3.0 }, 16 => { "debuff_res" => 2.0 },
+        17 => { "elem_reduc" => 2.0 }, 18 => { "debuff_res" => 3.0 }, 19 => { "elem_reduc" => 3.0 },
+        20 => { "heal_cap" => 5.0 }
+      },
+      "weapon-special" => {
+        4 => { "ca_dmg_cap" => 2.0 }, 5 => { "dmg_cap" => 1.0 }, 9 => { "ca_dmg_cap" => 3.0 },
+        10 => { "dmg_cap" => 2.0 }, 14 => { "ca_dmg_cap" => 2.0 }, 15 => { "dmg_cap" => 2.0 },
+        16 => { "ca_dmg_cap" => 3.0 }, 17 => { "skill_dmg_cap" => 2.0 }, 18 => { "na_dmg_cap" => 2.0 },
+        19 => { "skill_dmg_cap" => 3.0 }, 20 => { "na_dmg_cap" => 2.0 }
+      }
+    }.freeze
+
+    # Exo weapons ({{Weapon/Awakening/Exo}}, 10 levels). The type the game calls Special
+    # is the Might/HP column — HDbPnu's Hamartia lv10 measures Might +20 / HP +20 flat.
+    # The other column's bonuses are all main-weapon-only (EX Might/DMG Cap/DMG Supp
+    # (Main)) and stay unmodeled until a golden carries an Exo mainhand.
+    EXO_BY_TYPE = {
+      "weapon-special" => {
+        2 => { "atk" => 5.0 }, 3 => { "hp" => 4.0 }, 4 => { "hp" => 4.0 }, 5 => { "atk" => 5.0 },
+        6 => { "atk" => 5.0 }, 7 => { "hp" => 4.0 }, 8 => { "hp" => 4.0 }, 9 => { "atk" => 5.0 },
+        10 => { "hp" => 4.0 }
+      }
+    }.freeze
+
     def for_party(party, composition: nil)
       composition ||= GridComposition.for_party(party)
       awakenings = Awakening.where(id: party.weapons.filter_map(&:awakening_id)).index_by(&:id)
@@ -107,6 +147,10 @@ module GridDamage
                   next [] if pair && !pair.intersect?(Array(composition[:mc_specialties]))
 
                   accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
+                when "revans"
+                  accumulate(REVANS_BY_TYPE[slug], gw.awakening_level.to_i)
+                when "exo"
+                  accumulate(EXO_BY_TYPE[slug], gw.awakening_level.to_i)
                 else BONUS.dig(slug, gw.awakening_level.to_i)
                 end
         next [] unless bonus
