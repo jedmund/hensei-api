@@ -85,15 +85,16 @@ module GridDamage
 
     # Revans weapons run the 20-level {{Weapon/Awakening/revansmkII}} table (Mk II reaches
     # 20; base weapons stop at 15). Per-level increments; flat weapon-stat bonuses
-    # (ATK +100/+300/+500, HP +10/+15) and the lv16/18/20 weapon-stat ATK% never surface
-    # on the panel — HDbPnu's Attack lv20 Agastia measures exactly Might +35 (flat, normal
-    # line) and EX Might +10 via remove-and-diff.
+    # (ATK +100/+300/+500, HP +10/+15) never surface on the panel. HDbPnu's Attack lv20
+    # Agastia measures Might +35 (flat, normal line), EX Might +10, AND E. ATK +15 —
+    # the wiki's lv16/18/20 "ATK +N%" entries are Elemental ATK (all via remove-and-diff).
     REVANS_BY_TYPE = {
       "weapon-atk" => {
         2 => { "atk" => 2.0 }, 3 => { "atk" => 2.0 }, 4 => { "atk" => 2.0 },
         6 => { "atk" => 3.0 }, 7 => { "atk" => 3.0 }, 8 => { "atk" => 3.0 }, 9 => { "atk" => 3.0 },
         11 => { "atk" => 4.0 }, 12 => { "atk" => 4.0 }, 13 => { "atk" => 4.0 }, 14 => { "atk" => 5.0 },
-        17 => { "ex_atk" => 5.0 }, 19 => { "ex_atk" => 5.0 }
+        16 => { "e_atk" => 2.0 }, 17 => { "ex_atk" => 5.0 }, 18 => { "e_atk" => 3.0 },
+        19 => { "ex_atk" => 5.0 }, 20 => { "e_atk" => 10.0 }
       },
       "weapon-def" => {
         2 => { "hp" => 3.0 }, 3 => { "def" => 3.0 }, 4 => { "hp" => 4.0 }, 5 => { "hp" => 4.0 },
