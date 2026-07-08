@@ -1,22 +1,12 @@
 {
   "party": "54hHKY",
   "captured_on": "2026-07-08",
-  "notes": "Fire Odious replica of qBOvon on a controlled account (different Opus keys: alpha Pendulum + Chain of Temptation; different befoulments). Vindicates the model for every line qBOvon left open: Ironflame 18 + Apotheosis 24/2.0@SL25 (Omega Might 156, Omega Amp 4), single Enforcement (DEF 15), and Glory taboo C.A. cap at the wiki 6.0 (58 = 6x2x4 + alpha 10). First coverage of C.A. DMG Hit and Debuff S. Hit befoulments. CRITICAL: captured OUTSIDE extra-slot content — positions 9-11 (Moros/Heat/Doombringer) contribute NOTHING here (state.extra_slots=false), unlike XJZZmv/K4UydX whose panels included extra slots. Estimated 268956 / to Wind 414440 / Max HP 53739.",
+  "notes": "Fire Odious replica of qBOvon on a controlled account, in a 10-weapon raid slot (different Opus keys: alpha Pendulum + Chain of Temptation; different befoulments). Vindicates the model for every line qBOvon left open: Ironflame 18 + Apotheosis 24/2.0@SL25 (Omega Might 156, Omega Amp 4), single Enforcement (DEF 15), and Glory taboo C.A. cap at the wiki 6.0 (58 = 6x2x4 + alpha 10 — the qBOvon-derived 8.5 was overfit to that submitter's account and is reverted). First coverage of C.A. DMG Hit and Debuff S. Hit befoulments. NOTE: raids determine the weapon-slot count (10 vs 13); the party data mirrors the raid, so the calculator needs no slot filtering — an earlier extra-slots state flag from a remix-holdover data mismatch was reverted. Estimated 268956 / to Wind 414440 / Max HP 53739.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
-    "foe_element": "wind",
-    "extra_slots": false
+    "foe_element": "wind"
   },
-  "absent": [
-    "bonus_des_dmg",
-    "bonus_des_ca",
-    "elem_reduc",
-    "elem_amplify",
-    "ca_amp_sp",
-    "na_supp_sp",
-    "dmg_cap_pen"
-  ],
   "lines": [
     {
       "label": "Ω Might",
@@ -139,5 +129,10 @@
       "boost": "debuff_hit",
       "value": -10.2
     }
+  ],
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp"
   ]
 }
