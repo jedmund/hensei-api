@@ -103,8 +103,19 @@ module GridDamage
 
     # Clamp totals to their in-game cap (upper bound only — DA may be negative). The
     # panel shows a value orange AT its cap too, so exactly-at-cap flags as capped.
+    # Registry rows override the code defaults (#62: new caps are data entry).
+    def effective_rate_caps
+      db = WeaponSkillBoostType.where.not(display_cap: nil).pluck(:key, :display_cap)
+                               .to_h.transform_values(&:to_f)
+      RATE_CAPS.merge(db)
+    end
+
+    def non_amplified_boosts
+      NON_AMPLIFIED_BOOSTS | WeaponSkillBoostType.where(amplifiable: false).pluck(:key)
+    end
+
     def apply_rate_caps(agg)
-      RATE_CAPS.each do |boost_type, cap|
+      effective_rate_caps.each do |boost_type, cap|
         r = agg[boost_type]
         next unless r && r.total >= cap
 
@@ -155,9 +166,10 @@ module GridDamage
     def amplify_contributions(contributions, enh)
       factor = { "normal" => 1 + (enh[:optimus].to_f / 100), "omega" => 1 + (enh[:omega].to_f / 100),
                  "ex" => 1.0, "odious" => 1 + (enh[:taboo].to_f / 100) }
+      non_amplified = non_amplified_boosts
       contributions.map do |c|
         next c if c.amplifiable == false # flat sources (weapon awakenings, AX) aren't enhanced
-        next c unless c.value && !NON_AMPLIFIED_BOOSTS.include?(c.boost_type)
+        next c unless c.value && !non_amplified.include?(c.boost_type)
         next c if c.value.negative? # demerits ride flat (XJZZmv: Tyranny's HP cut -10, not -12)
 
         f = factor[c.series] || 1.0

@@ -41,3 +41,27 @@ namespace :granblue do
     exit(1) if failed
   end
 end
+
+namespace :granblue do
+  desc "Export the boost-type registry (panel lines, caps, flags) to data/boost_registry.json"
+  task export_boost_registry: :environment do
+    payload = {
+      "panel_lines" => PanelLine.order(:position).map do |l|
+        { "boost_type" => l.boost_type, "series" => l.series, "label_en" => l.label_en,
+          "slug" => l.slug, "group" => l.group_name, "position" => l.position }.compact
+      end,
+      "boost_types" => WeaponSkillBoostType.order(:key).filter_map do |b|
+        row = { "key" => b.key }
+        row["display_cap"] = b.display_cap.to_f if b.display_cap
+        row["amplifiable"] = b.amplifiable unless b.amplifiable.nil?
+        row["hidden"] = true if b.hidden
+        row.size > 1 ? row : nil
+      end,
+      "series_summon_boosted" => WeaponSeries.where(summon_boosted: false).order(:slug).pluck(:slug)
+    }
+    path = Rails.root.join("data/boost_registry.json")
+    File.write(path, "#{JSON.pretty_generate(payload)}\n")
+    puts "Exported boost registry: #{payload['panel_lines'].size} lines, " \
+         "#{payload['boost_types'].size} boost-type rows"
+  end
+end

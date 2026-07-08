@@ -1,0 +1,790 @@
+{
+  "panel_lines": [
+    {
+      "boost_type": "atk",
+      "series": "normal",
+      "label_en": "Might",
+      "slug": "might",
+      "group": "attack",
+      "position": 0
+    },
+    {
+      "boost_type": "atk",
+      "series": "omega",
+      "label_en": "Ω Might",
+      "slug": "omega-might",
+      "group": "attack",
+      "position": 1
+    },
+    {
+      "boost_type": "atk",
+      "series": "odious",
+      "label_en": "Od Might",
+      "slug": "od-might",
+      "group": "attack",
+      "position": 2
+    },
+    {
+      "boost_type": "atk",
+      "series": "ex",
+      "label_en": "EX Might",
+      "slug": "ex-might",
+      "group": "attack",
+      "position": 3
+    },
+    {
+      "boost_type": "ex_atk_sp",
+      "label_en": "EX Might Sp.",
+      "slug": "ex-might-sp",
+      "group": "attack",
+      "position": 4
+    },
+    {
+      "boost_type": "stamina",
+      "series": "normal",
+      "label_en": "Stamina",
+      "slug": "stamina",
+      "group": "attack",
+      "position": 5
+    },
+    {
+      "boost_type": "stamina",
+      "series": "omega",
+      "label_en": "Ω Stamina",
+      "slug": "omega-stamina",
+      "group": "attack",
+      "position": 6
+    },
+    {
+      "boost_type": "stamina",
+      "series": "ex",
+      "label_en": "Stamina",
+      "slug": "stamina",
+      "group": "attack",
+      "position": 7
+    },
+    {
+      "boost_type": "enmity",
+      "series": "normal",
+      "label_en": "Enmity",
+      "slug": "enmity",
+      "group": "attack",
+      "position": 8
+    },
+    {
+      "boost_type": "enmity",
+      "series": "omega",
+      "label_en": "Ω Enmity",
+      "slug": "omega-enmity",
+      "group": "attack",
+      "position": 9
+    },
+    {
+      "boost_type": "enmity",
+      "series": "ex",
+      "label_en": "Enmity",
+      "slug": "enmity",
+      "group": "attack",
+      "position": 10
+    },
+    {
+      "boost_type": "e_atk",
+      "label_en": "E. ATK",
+      "slug": "e-atk",
+      "group": "attack",
+      "position": 11
+    },
+    {
+      "boost_type": "e_atk_prog",
+      "label_en": "E. ATK (Prog.)",
+      "slug": "e-atk-prog",
+      "group": "attack",
+      "position": 12
+    },
+    {
+      "boost_type": "critical",
+      "label_en": "Critical",
+      "slug": "critical",
+      "group": "attack",
+      "position": 13
+    },
+    {
+      "boost_type": "da",
+      "label_en": "DA Rate",
+      "slug": "da-rate",
+      "group": "attack",
+      "position": 14
+    },
+    {
+      "boost_type": "ta",
+      "label_en": "TA Rate",
+      "slug": "ta-rate",
+      "group": "attack",
+      "position": 15
+    },
+    {
+      "boost_type": "optimus_exalto",
+      "label_en": "ELEMENT Optimus",
+      "slug": "ELEMENT-optimus",
+      "group": "attack",
+      "position": 16
+    },
+    {
+      "boost_type": "omega_exalto",
+      "label_en": "ELEMENT Omega",
+      "slug": "ELEMENT-omega",
+      "group": "attack",
+      "position": 17
+    },
+    {
+      "boost_type": "bonus_elem_dmg",
+      "label_en": "Bonus ELEMENT DMG",
+      "slug": "bonus-ELEMENT-dmg",
+      "group": "attack",
+      "position": 18
+    },
+    {
+      "boost_type": "bonus_des_dmg",
+      "label_en": "Bonus Des. DMG",
+      "slug": "bonus-des-dmg",
+      "group": "attack",
+      "position": 19
+    },
+    {
+      "boost_type": "bonus_ca",
+      "label_en": "Bonus ELEMENT C.A.",
+      "slug": "bonus-ELEMENT-ca",
+      "group": "attack",
+      "position": 20
+    },
+    {
+      "boost_type": "bonus_des_ca",
+      "label_en": "Bonus Des. DMG C.A.",
+      "slug": "bonus-des-dmg-ca",
+      "group": "attack",
+      "position": 21
+    },
+    {
+      "boost_type": "hp",
+      "label_en": "HP",
+      "slug": "hp",
+      "group": "hp",
+      "position": 22
+    },
+    {
+      "boost_type": "heal_cap",
+      "label_en": "Heal Cap",
+      "slug": "heal-cap",
+      "group": "hp",
+      "position": 23
+    },
+    {
+      "boost_type": "hp_cut",
+      "label_en": "HP Cut",
+      "slug": "hp-cut",
+      "group": "hp",
+      "position": 24
+    },
+    {
+      "boost_type": "hp_dmg",
+      "label_en": "HP DMG",
+      "slug": "hp-dmg",
+      "group": "hp",
+      "position": 25
+    },
+    {
+      "boost_type": "def",
+      "label_en": "DEF",
+      "slug": "def",
+      "group": "defense",
+      "position": 26
+    },
+    {
+      "boost_type": "elem_reduc",
+      "label_en": "FOE_ELEMENT Reduc.",
+      "slug": "FOE_ELEMENT-reduc",
+      "group": "defense",
+      "position": 27
+    },
+    {
+      "boost_type": "debuff_res",
+      "label_en": "Debuff Res.",
+      "slug": "debuff-res",
+      "group": "defense",
+      "position": 28
+    },
+    {
+      "boost_type": "dmg_cap",
+      "label_en": "DMG Cap",
+      "slug": "dmg-cap",
+      "group": "special",
+      "position": 29
+    },
+    {
+      "boost_type": "dmg_cap_sp",
+      "label_en": "DMG Cap (Sp.)",
+      "slug": "dmg-cap-sp",
+      "group": "special",
+      "position": 30
+    },
+    {
+      "boost_type": "dmg_amp",
+      "series": "normal",
+      "label_en": "DMG Amp.",
+      "slug": "dmg-amp",
+      "group": "special",
+      "position": 31
+    },
+    {
+      "boost_type": "dmg_amp",
+      "series": "omega",
+      "label_en": "Ω DMG Amp.",
+      "slug": "omega-dmg-amp",
+      "group": "special",
+      "position": 32
+    },
+    {
+      "boost_type": "dmg_amp",
+      "series": "ex",
+      "label_en": "DMG Amp.",
+      "slug": "dmg-amp",
+      "group": "special",
+      "position": 33
+    },
+    {
+      "boost_type": "od_dmg_amp",
+      "label_en": "Od DMG Amp.",
+      "slug": "od-dmg-amp",
+      "group": "special",
+      "position": 34
+    },
+    {
+      "boost_type": "elem_amplify",
+      "label_en": "Elem. Amplify",
+      "slug": "elem-amplify",
+      "group": "special",
+      "position": 35
+    },
+    {
+      "boost_type": "plain_amp",
+      "label_en": "DMG Amp. (Non-elem. Foe)",
+      "slug": "plain-amp",
+      "group": "special",
+      "position": 36
+    },
+    {
+      "boost_type": "na_dmg_cap",
+      "label_en": "N.A. DMG Cap",
+      "slug": "na-dmg-cap",
+      "group": "special",
+      "position": 37
+    },
+    {
+      "boost_type": "na_amp",
+      "label_en": "N.A. Amp.",
+      "slug": "na-amp",
+      "group": "special",
+      "position": 38
+    },
+    {
+      "boost_type": "na_amp_sp",
+      "label_en": "N.A. Amp. (Sp.)",
+      "slug": "na-amp-sp",
+      "group": "special",
+      "position": 39
+    },
+    {
+      "boost_type": "skill_dmg",
+      "label_en": "Skill DMG",
+      "slug": "skill-dmg",
+      "group": "special",
+      "position": 40
+    },
+    {
+      "boost_type": "skill_dmg_cap",
+      "label_en": "Skill DMG Cap",
+      "slug": "skill-dmg-cap",
+      "group": "special",
+      "position": 41
+    },
+    {
+      "boost_type": "skill_cap_sp",
+      "label_en": "Skill Cap (Sp.)",
+      "slug": "skill-cap-sp",
+      "group": "special",
+      "position": 42
+    },
+    {
+      "boost_type": "skill_amp",
+      "label_en": "Skill Amp.",
+      "slug": "skill-amp",
+      "group": "special",
+      "position": 43
+    },
+    {
+      "boost_type": "skill_amp_sp",
+      "label_en": "Skill Amp. (Sp.)",
+      "slug": "skill-amp-sp",
+      "group": "special",
+      "position": 44
+    },
+    {
+      "boost_type": "ca_dmg",
+      "label_en": "C.A. DMG",
+      "slug": "ca-dmg",
+      "group": "special",
+      "position": 45
+    },
+    {
+      "boost_type": "ca_dmg_cap",
+      "label_en": "C.A. DMG Cap",
+      "slug": "ca-dmg-cap",
+      "group": "special",
+      "position": 46
+    },
+    {
+      "boost_type": "ca_amp_sp",
+      "label_en": "C.A. Amp. (Sp.)",
+      "slug": "ca-amp-sp",
+      "group": "special",
+      "position": 47
+    },
+    {
+      "boost_type": "sp_ca_cap",
+      "label_en": "Sp. C.A. Cap",
+      "slug": "sp-ca-cap",
+      "group": "special",
+      "position": 48
+    },
+    {
+      "boost_type": "cb_dmg",
+      "label_en": "C.B. DMG",
+      "slug": "cb-dmg",
+      "group": "special",
+      "position": 49
+    },
+    {
+      "boost_type": "cb_dmg_cap",
+      "label_en": "C.B. DMG Cap",
+      "slug": "cb-dmg-cap",
+      "group": "special",
+      "position": 50
+    },
+    {
+      "boost_type": "cb_amp",
+      "label_en": "C.B. Amp.",
+      "slug": "cb-amp",
+      "group": "special",
+      "position": 51
+    },
+    {
+      "boost_type": "fc_amp",
+      "label_en": "FC Amp.",
+      "slug": "fc-amp",
+      "group": "special",
+      "position": 52
+    },
+    {
+      "boost_type": "crit_amp",
+      "label_en": "Crit. Amp.",
+      "slug": "crit-amp",
+      "group": "special",
+      "position": 53
+    },
+    {
+      "boost_type": "ca_supp",
+      "label_en": "C.A. Supp.",
+      "slug": "ca-supp",
+      "group": "special",
+      "position": 54
+    },
+    {
+      "boost_type": "dmg_supp",
+      "label_en": "DMG Supp.",
+      "slug": "dmg-supp",
+      "group": "special",
+      "position": 55
+    },
+    {
+      "boost_type": "na_supp",
+      "label_en": "N.A. Supp.",
+      "slug": "na-supp",
+      "group": "special",
+      "position": 56
+    },
+    {
+      "boost_type": "na_supp_sp",
+      "label_en": "N.A. Supp. (Sp.)",
+      "slug": "na-supp-sp",
+      "group": "special",
+      "position": 57
+    },
+    {
+      "boost_type": "skill_dmg_supp",
+      "label_en": "Skill DMG Supp.",
+      "slug": "skill-dmg-supp",
+      "group": "special",
+      "position": 58
+    },
+    {
+      "boost_type": "skill_supp_sp",
+      "label_en": "Skill Supp. (Sp.)",
+      "slug": "skill-supp-sp",
+      "group": "special",
+      "position": 59
+    },
+    {
+      "boost_type": "charge_gain",
+      "label_en": "Charge Gain",
+      "slug": "charge-gain",
+      "group": "special",
+      "position": 60
+    },
+    {
+      "boost_type": "def_ignore",
+      "label_en": "DEF Ignore",
+      "slug": "def-ignore",
+      "group": "special",
+      "position": 61
+    },
+    {
+      "boost_type": "crit_dmg",
+      "label_en": "Crit. DMG",
+      "slug": "crit-dmg",
+      "group": "overskill",
+      "position": 62
+    },
+    {
+      "boost_type": "added_hit",
+      "label_en": "Added Hit",
+      "slug": "added-hit",
+      "group": "overskill",
+      "position": 63
+    },
+    {
+      "boost_type": "dmg_cap_pen",
+      "label_en": "DMG Cap Pen.",
+      "slug": "dmg-cap-pen",
+      "group": "overskill",
+      "position": 64
+    },
+    {
+      "boost_type": "added_hp",
+      "label_en": "HP",
+      "slug": "added-hp",
+      "group": "overskill",
+      "position": 65
+    },
+    {
+      "boost_type": "atk_hit",
+      "label_en": "ATK Hit",
+      "slug": "bf-atk",
+      "group": "befoulment",
+      "position": 66
+    },
+    {
+      "boost_type": "da_hit",
+      "label_en": "DA Rate Hit",
+      "slug": "bf-da-rate",
+      "group": "befoulment",
+      "position": 67
+    },
+    {
+      "boost_type": "ta_hit",
+      "label_en": "TA Rate Hit",
+      "slug": "bf-ta-rate",
+      "group": "befoulment",
+      "position": 68
+    },
+    {
+      "boost_type": "skill_dmg_hit",
+      "label_en": "Skill DMG Hit",
+      "slug": "bf-skill-dmg",
+      "group": "befoulment",
+      "position": 69
+    },
+    {
+      "boost_type": "ca_dmg_hit",
+      "label_en": "C.A. DMG Hit",
+      "slug": "bf-ca-dmg",
+      "group": "befoulment",
+      "position": 70
+    },
+    {
+      "boost_type": "hp_hit",
+      "label_en": "HP Hit",
+      "slug": "bf-hp",
+      "group": "befoulment",
+      "position": 71
+    },
+    {
+      "boost_type": "def_hit",
+      "label_en": "DEF Hit",
+      "slug": "bf-def",
+      "group": "befoulment",
+      "position": 72
+    },
+    {
+      "boost_type": "debuff_hit",
+      "label_en": "Debuff Hit",
+      "slug": "bf-debuff",
+      "group": "befoulment",
+      "position": 73
+    },
+    {
+      "boost_type": "turn_dmg_hit",
+      "label_en": "Turn DMG",
+      "slug": "bf-turn-dmg",
+      "group": "befoulment",
+      "position": 74
+    },
+    {
+      "boost_type": "hp_ax",
+      "label_en": "HP (AX)",
+      "slug": "ax-hp",
+      "group": "ax",
+      "position": 75
+    },
+    {
+      "boost_type": "atk_ax",
+      "label_en": "ATK (AX)",
+      "slug": "ax-atk",
+      "group": "ax",
+      "position": 76
+    },
+    {
+      "boost_type": "stamina_ax",
+      "label_en": "Stamina (AX)",
+      "slug": "ax-stamina",
+      "group": "ax",
+      "position": 77
+    },
+    {
+      "boost_type": "enmity_ax",
+      "label_en": "Enmity (AX)",
+      "slug": "ax-enmity",
+      "group": "ax",
+      "position": 78
+    },
+    {
+      "boost_type": "def_ax",
+      "label_en": "DEF (AX)",
+      "slug": "ax-def",
+      "group": "ax",
+      "position": 79
+    },
+    {
+      "boost_type": "da_ax",
+      "label_en": "DA Rate (AX)",
+      "slug": "ax-da-rate",
+      "group": "ax",
+      "position": 80
+    },
+    {
+      "boost_type": "ta_ax",
+      "label_en": "TA Rate (AX)",
+      "slug": "ax-ta-rate",
+      "group": "ax",
+      "position": 81
+    },
+    {
+      "boost_type": "ele_atk_ax",
+      "label_en": "Elemental ATK (AX)",
+      "slug": "ax-ele-atk",
+      "group": "ax",
+      "position": 82
+    },
+    {
+      "boost_type": "ele_dmg_red_ax",
+      "label_en": "Elemental Reduc. (AX)",
+      "slug": "ax-ele-reduc",
+      "group": "ax",
+      "position": 83
+    },
+    {
+      "boost_type": "ca_dmg_ax",
+      "label_en": "C.A. DMG (AX)",
+      "slug": "ax-ca-dmg",
+      "group": "ax",
+      "position": 84
+    },
+    {
+      "boost_type": "ca_cap_ax",
+      "label_en": "C.A. DMG Cap (AX)",
+      "slug": "ax-ca-dmg-cap",
+      "group": "ax",
+      "position": 85
+    },
+    {
+      "boost_type": "ca_supp_ax",
+      "label_en": "C.A. Supp. (AX)",
+      "slug": "ax-ca-supp",
+      "group": "ax",
+      "position": 86
+    },
+    {
+      "boost_type": "skill_supp_ax",
+      "label_en": "Skill DMG Supp. (AX)",
+      "slug": "ax-skill-dmg-supp",
+      "group": "ax",
+      "position": 87
+    },
+    {
+      "boost_type": "na_cap_ax",
+      "label_en": "N.A. DMG Cap (AX)",
+      "slug": "ax-na-dmg-cap",
+      "group": "ax",
+      "position": 88
+    },
+    {
+      "boost_type": "healing_ax",
+      "label_en": "Healing (AX)",
+      "slug": "ax-heal",
+      "group": "ax",
+      "position": 89
+    },
+    {
+      "boost_type": "debuff_res_ax",
+      "label_en": "Debuff Res. (AX)",
+      "slug": "ax-debuff-res",
+      "group": "ax",
+      "position": 90
+    },
+    {
+      "boost_type": "exp_ax",
+      "label_en": "EXP Gain",
+      "slug": "ax-exp-gain",
+      "group": "ax",
+      "position": 91
+    },
+    {
+      "boost_type": "rupie_ax",
+      "label_en": "Rupie Gain",
+      "slug": "ax-rupie-gain",
+      "group": "ax",
+      "position": 92
+    }
+  ],
+  "boost_types": [
+    {
+      "key": "bonus_elem_dmg",
+      "display_cap": 50.0
+    },
+    {
+      "key": "ca_amp_sp",
+      "display_cap": 20.0
+    },
+    {
+      "key": "ca_dmg_cap",
+      "display_cap": 100.0
+    },
+    {
+      "key": "ca_supp",
+      "display_cap": 1000000.0
+    },
+    {
+      "key": "charge_gain",
+      "display_cap": 50.0
+    },
+    {
+      "key": "crit_amp",
+      "display_cap": 20.0
+    },
+    {
+      "key": "critical",
+      "display_cap": 100.0
+    },
+    {
+      "key": "da",
+      "display_cap": 75.0
+    },
+    {
+      "key": "debuff_res",
+      "display_cap": 30.0
+    },
+    {
+      "key": "dmg_cap",
+      "display_cap": 20.0
+    },
+    {
+      "key": "dmg_cap_sp",
+      "display_cap": 20.0
+    },
+    {
+      "key": "dmg_supp",
+      "display_cap": 100000.0
+    },
+    {
+      "key": "elem_reduc",
+      "display_cap": 30.0
+    },
+    {
+      "key": "elemental_enhance",
+      "hidden": true
+    },
+    {
+      "key": "ex_atk_sp",
+      "display_cap": 80.0
+    },
+    {
+      "key": "heal_cap",
+      "display_cap": 100.0
+    },
+    {
+      "key": "hp_dmg",
+      "amplifiable": false
+    },
+    {
+      "key": "na_amp",
+      "display_cap": 30.0
+    },
+    {
+      "key": "na_amp_sp",
+      "display_cap": 20.0
+    },
+    {
+      "key": "na_dmg_cap",
+      "display_cap": 20.0
+    },
+    {
+      "key": "na_supp",
+      "display_cap": 100000.0
+    },
+    {
+      "key": "omega_exalto",
+      "display_cap": 100.0,
+      "amplifiable": false
+    },
+    {
+      "key": "optimus_exalto",
+      "display_cap": 90.0,
+      "amplifiable": false
+    },
+    {
+      "key": "skill_amp_sp",
+      "display_cap": 20.0
+    },
+    {
+      "key": "skill_cap_sp",
+      "display_cap": 60.0
+    },
+    {
+      "key": "skill_dmg_cap",
+      "display_cap": 100.0
+    },
+    {
+      "key": "skill_dmg_supp",
+      "display_cap": 200000.0
+    },
+    {
+      "key": "ta",
+      "display_cap": 75.0
+    }
+  ],
+  "series_summon_boosted": [
+    "bahamut",
+    "celestial",
+    "destroyer",
+    "ultima"
+  ]
+}

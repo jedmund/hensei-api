@@ -20,7 +20,14 @@ module GridDamage
         next unless w
 
         skill_level = skill_level_for(w, gw)
-        amplifiable = !NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
+        series = w.weapon_series
+        amplifiable = if series.nil?
+                        true
+                      elsif series.summon_boosted.nil? # registry unseeded — code default
+                        !NON_SUMMON_BOOSTED_SERIES.include?(series.slug)
+                      else
+                        series.summon_boosted
+                      end
         active_versions(w, gw).each do |v|
           # The frame is the weapon's series (normal/omega/ex/…); for aura-word-less special
           # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the

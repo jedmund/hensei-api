@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_08_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_08_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -831,6 +831,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_08_000001) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "panel_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "boost_type", null: false
+    t.string "series"
+    t.string "label_en", null: false
+    t.string "slug", null: false
+    t.string "group_name", null: false
+    t.integer "position", null: false
+    t.datetime "manually_edited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["boost_type", "series"], name: "index_panel_lines_on_boost_type_and_series", unique: true
+    t.index ["position"], name: "index_panel_lines_on_position"
+  end
+
   create_table "parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.string "shortcode"
@@ -1299,6 +1313,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_08_000001) do
     t.boolean "has_awakening", default: false, null: false
     t.integer "augment_type", default: 0, null: false
     t.integer "num_weapon_keys"
+    t.boolean "summon_boosted"
     t.index ["order"], name: "index_weapon_series_on_order"
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
@@ -1328,6 +1343,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_08_000001) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "display_cap", precision: 12, scale: 2
+    t.boolean "amplifiable"
+    t.boolean "hidden", default: false, null: false
     t.index ["category"], name: "index_weapon_skill_boost_types_on_category"
     t.index ["key"], name: "index_weapon_skill_boost_types_on_key", unique: true
   end

@@ -129,7 +129,7 @@ module GridDamage
       contributions = active_contributions(computed[:contributions])
       element = Calculator.send(:grid_element, party)
 
-      lines = LINES.filter_map { |spec| line_for(agg, contributions, spec, element) }
+      lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
       lines += leftover_lines(agg, contributions)
       { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(2) }, lines: lines }
     end
@@ -237,8 +237,20 @@ module GridDamage
     # Enhancement-only boosts appear in the header, never as lines.
     HIDDEN_KEYS = %w[elemental_enhance].freeze
 
+    # Registry rows override the code defaults (#62): a populated panel_lines table
+    # IS the panel — order, labels, badges, grouping. Empty table (tests, bare DBs)
+    # falls back to LINES.
+    def effective_lines
+      rows = PanelLine.order(:position).pluck(:boost_type, :series, :label_en, :slug, :group_name)
+      rows.presence || LINES
+    end
+
+    def hidden_keys
+      HIDDEN_KEYS | WeaponSkillBoostType.where(hidden: true).pluck(:key)
+    end
+
     def leftover_lines(agg, contributions)
-      known = LINES.to_set(&:first) + HIDDEN_KEYS
+      known = effective_lines.to_set(&:first) + hidden_keys
       agg.except(*known).filter_map do |key, result|
         value = result.total.to_f
         next if value.zero?
