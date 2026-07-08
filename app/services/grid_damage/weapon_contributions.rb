@@ -14,6 +14,9 @@ module GridDamage
     def for_party(party, state: {})
       hp = state.fetch(:hp_percent, 100).to_f
       turn = state.fetch(:turn, 1).to_i
+      # family-level amplifiability from the wiki WsBox header (aura_boostable=no
+      # families land flat regardless of series) — nil/unknown means boostable
+      unboostable_families = WeaponSkillFamily.where(aura_boostable: false).pluck(:name).to_set
       out = []
       party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
         w = gw.weapon
@@ -33,12 +36,18 @@ module GridDamage
           # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the
           # data row's shared `normal_omega` designation as a frame.
           frame = FrameResolver.frame_for(w, v)
+          # The WsBox aura_boostable=no flag describes the optimus/omega auras only —
+          # taboo variants of "flat" families DO amplify (qBOvon: Crux x2 taboo supp
+          # reaches the 1M cap only when enhanced). Ex frames are already factor-1.
+          version_amplifiable = amplifiable &&
+                                !(unboostable_families.include?(v.resolved_modifier) &&
+                                  %w[normal omega].include?(frame))
           v.weapon_skill_data.each do |d|
             value = Scaling.value(d, skill_level: skill_level, hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,
               value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              amplifiable: amplifiable, source_ids: [gw.id],
+              amplifiable: version_amplifiable, source_ids: [gw.id],
               source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
               source_icon: v.icon_stem
             )

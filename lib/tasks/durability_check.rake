@@ -65,3 +65,24 @@ namespace :granblue do
          "#{payload['boost_types'].size} boost-type rows"
   end
 end
+
+namespace :granblue do
+  desc "Import {{Weapon Skills/*}} family templates: registry header always upserts; " \
+       "curves fill gaps only with apply=true. Mismatches are reported, never applied."
+  task import_family_templates: :environment do
+    apply = ENV["apply"] == "true"
+    names = ENV["only"].presence&.split(",") || Granblue::Extractors::FamilyTemplateImporter::NAV_FAMILIES
+    results = Granblue::Extractors::FamilyTemplateImporter.import(names, apply: apply)
+    results.each do |r|
+      flags = []
+      flags << "missing=#{r.missing.size}" if r.missing.any?
+      flags << "MISMATCH=#{r.mismatches.size}" if r.mismatches.any?
+      flags << "skipped=#{r.skipped.size}" if r.skipped.any?
+      puts format("%<f>-28s %<s>-12s %<x>s", f: r.family, s: r.status, x: flags.join(" "))
+      r.mismatches.each { |m| puts "    #{m[:series]}/#{m[:size]}/#{m[:boost_type]}: #{m[:diffs].join('; ')}" }
+    end
+    puts "TOTAL: #{results.count { |r| r.status == 'ok' }}/#{results.size} ok, " \
+         "#{results.sum { |r| r.missing.size }} missing rows, " \
+         "#{results.sum { |r| r.mismatches.size }} mismatches"
+  end
+end
