@@ -37,12 +37,29 @@ class WeaponSkillVersion < ApplicationRecord
 
   delegate :name_en, :name_jp, :description_en, :description_jp, to: :skill, allow_nil: true
 
+  # Classification overrides are curation: reparse rewrites the derived skill_modifier/
+  # skill_series/skill_size, never these. Resolution goes through resolved_* everywhere.
+  # modifier_override "none" pins "no family": canonical fallback must not fire
+  # (Rhomphaia's tail-word collisions were curated by nulling the modifier, which
+  # reparse re-derived — the sentinel survives).
+  def resolved_modifier
+    return nil if modifier_override == "none"
+
+    modifier_override.presence || skill_modifier
+  end
+
+  def resolved_series   = series_override.presence || skill_series
+  def resolved_size     = size_override.presence || skill_size
+
   # SL-scaled data for this version: the canonical modifier/series/size rows PLUS any
   # description-derived per-version rows that fill boost_types the canonical data is missing
   # (composite skills — e.g. Restraint's DA is canonical, its Critical half is version-linked).
   # Fully unmodeled skills resolve entirely through the version-linked rows.
+  # (suppressed_boosts acts at EXTRACTION time — a suppressed boost_type never
+  # gets a derived row, so resolution stays filter-free.)
   def weapon_skill_data
-    canonical = WeaponSkillDatum.for_skill(modifier: skill_modifier, series: skill_series, size: skill_size).to_a
+    canonical = WeaponSkillDatum.for_skill(modifier: resolved_modifier, series: resolved_series,
+                                           size: resolved_size).to_a
     linked = WeaponSkillDatum.where(weapon_skill_version_id: id).to_a
     return linked if canonical.empty?
 
@@ -57,10 +74,10 @@ class WeaponSkillVersion < ApplicationRecord
   # weapon_skill_data, where the canonical curve wins and linked rows only fill gaps.
   def weapon_skill_effects
     linked = WeaponSkillEffect.where(weapon_skill_version_id: id)
-    return linked if skill_modifier.blank?
+    return linked if resolved_modifier.blank?
 
     have = linked.pluck(:boost_type).to_set
-    canonical_ids = WeaponSkillEffect.for_skill(modifier: skill_modifier).base_effects
+    canonical_ids = WeaponSkillEffect.for_skill(modifier: resolved_modifier).base_effects
                                      .reject { |e| have.include?(e.boost_type) }.map(&:id)
     WeaponSkillEffect.where(id: linked.ids + canonical_ids)
   end

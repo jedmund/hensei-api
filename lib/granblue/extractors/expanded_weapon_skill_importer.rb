@@ -55,7 +55,8 @@ module Granblue
         return :expand_failed if expanded.blank?
         # Key-determined weapons (anklet/pendulum/teluma) list every key option when expanded;
         # leave them to the key→skill resolver rather than creating all options as skills.
-        if expanded.match?(/granted power with (an?|a) (anklet|pendulum|teluma|chain)|empowered by a chosen/i)
+        if expanded.match?(/granted power with (an?|a) (anklet|pendulum|teluma|chain)|empowered by a chosen/i) &&
+           !expanded.match?(KEY_SLOT) # pure key pages bail; mixed pages persist base skills and skip key rows
           return :key_determined
         end
 
@@ -70,7 +71,9 @@ module Granblue
       # A skill row whose desc is one of these placeholders marks a KEY SLOT — every skill row
       # AFTER it lists that slot's key options (Dark Opus pendulum/teluma, Destroyer anklet),
       # which are equipped-key-determined, NOT always-on base skills. Captures the key type.
-      KEY_SLOT = /granted power with (?:an? |a )?(anklet|pendulum|teluma)|empowered by a chosen (pendulum|teluma)/i
+      KEY_SLOT = /granted power with (?:an? |a )?(anklet|pendulum|teluma)
+                  |empowered by a chosen (pendulum|teluma)
+                  |a (gate) to the summits|(?:locked|sealed) within (ultima)/xi
 
       # Rendered skill rows → [{name, description, series, key_type}] (one per distinct skill;
       # highest tier wins). key_type is nil for base skills, else "anklet"/"pendulum"/"teluma"
@@ -81,7 +84,16 @@ module Granblue
         # skill-name row has no skill-desc and would shift the name/desc pairing.
         section = html[/weapon-skills.*/m] || html
         key_type = nil
-        section.scan(%r{<td class="skill-name"[^>]*>(.*?)</td>.*?<td class="skill-desc"[^>]*>(.*?)</td>}m).each do |name_html, desc_html|
+        row_re = %r{<td class="skill-name"[^>]*>(.*?)</td>.*?<td class="skill-desc"[^>]*>(.*?)</td>}m
+        prev_end = 0
+        section.enum_for(:scan, row_re).each do
+          match = Regexp.last_match
+          name_html = match[1]
+          desc_html = match[2]
+          # "Alternate skill N" labels between rows mark equipped-key options (Ultima
+          # gauph slots list options BEFORE their placeholder row — order can't be trusted)
+          alternate = section[prev_end...match.begin(0)].to_s.match?(/Alternate skill/i)
+          prev_end = match.end(0)
           name = clean(name_html)
           next if name.blank?
 
@@ -93,11 +105,12 @@ module Granblue
           next if desc.blank?
 
           if (m = desc.match(KEY_SLOT)) # the placeholder itself — skip, but every later row is a key
-            key_type = (m[1] || m[2]).downcase
+            key_type = m.captures.compact.first.to_s.downcase
             next
           end
 
-          out[name] = { name: name, description: desc, series: FRAME[frame], key_type: key_type }
+          out[name] = { name: name, description: desc, series: FRAME[frame],
+                        key_type: alternate ? (key_type || "key") : key_type }
         end
         out.values
       end

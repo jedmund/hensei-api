@@ -29,9 +29,9 @@ module GridDamage
           # Renunciation's s1 counts as an omega skill despite its template series
           # (mcwZet: Vivification counts 7, incl. the opus).
           omega ||= FrameResolver.frame_for(w, v) == "omega"
-          next unless v.skill_modifier
+          next unless v.resolved_modifier
 
-          modifiers << v.skill_modifier
+          modifiers << v.resolved_modifier
         end
         { proficiency: w.proficiency, granblue_id: w.granblue_id, modifiers: modifiers, omega: omega }
       end
