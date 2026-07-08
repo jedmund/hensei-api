@@ -22,7 +22,8 @@ module GridDamage
       case datum.formula_type
       # Garrison is the DEF mirror of Enmity — same missing-HP curve, so 0 at full
       # HP (HoEE8b: the panel's DEF line shows no Garrison contribution at 100%).
-      when "enmity", "garrison" then enmity(datum, skill_level, hp_percent)
+      when "enmity" then enmity(datum, skill_level, hp_percent)
+      when "garrison" then garrison(datum, skill_level, hp_percent)
       when "stamina"     then stamina(datum, skill_level, hp_percent)
       when "progression" then progression(datum, skill_level, turn)
       else                    flat(datum, skill_level) # "flat", nil
@@ -49,6 +50,17 @@ module GridDamage
 
     # Enmity: stronger as HP drops. Modifier = the SL value; r = missing-HP fraction.
     #   strength = Modifier × ((1 + 2r) × r)    (0 at full HP, 3×Modifier near 0 HP)
+    # Garrison rises on its own curve (gbf.wiki {{Weapon Skills/Garrison}}):
+    # DEF = modifier x (-(1-ratio)^3 + 4(1-ratio)). QJ9736 validates all five
+    # anchors with the big SL20 modifier 13.5 (50/116/176/224/252).
+    def garrison(datum, skill_level, hp_percent)
+      modifier = flat(datum, skill_level)
+      return nil if modifier.nil?
+
+      r = (1.0 - (hp_percent.to_f / 100.0)).clamp(0.0, 1.0)
+      modifier * ((-r**3) + (4 * r))
+    end
+
     def enmity(datum, skill_level, hp_percent)
       modifier = flat(datum, skill_level)
       return nil if modifier.nil?
@@ -69,8 +81,12 @@ module GridDamage
       denom = coef - stamina_adjustment(skill_level, small: datum.size == "small")
       return nil if denom <= 0
 
-      h = hp_percent.to_f.clamp(STAMINA_HP_FLOOR, 100)
-      ((h / denom)**STAMINA_EXP) + STAMINA_OFFSET
+      # "Stamina does not confer an ATK boost when HP is below 25%" — the panel
+      # drops the line entirely (QJ9736/OlFQ2a sweeps; present AT 25, gone below).
+      h = hp_percent.to_f
+      return nil if h < STAMINA_HP_FLOOR
+
+      ((h.clamp(STAMINA_HP_FLOOR, 100.0) / denom)**STAMINA_EXP) + STAMINA_OFFSET
     end
 
     # The amount subtracted from the Coefficient at a given skill level (gbf.wiki).

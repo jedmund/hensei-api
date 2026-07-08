@@ -397,6 +397,20 @@
       "key_slug": "chain-depravity"
     },
     {
+      "modifier": "Chain of Falsehood",
+      "boost_type": "charge_gain",
+      "series": "omega",
+      "scaling_kind": "static",
+      "value": -100.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "chain-falsehood"
+    },
+    {
       "modifier": "Chain of Glorification",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -2099,8 +2113,8 @@
     {
       "modifier": "Persistence",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
-      "value": 1.0,
+      "scaling_kind": "persistence_supp",
+      "value": 30000.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 100000.0,
       "shared_cap_group": "dmg_supp_shared",

@@ -675,6 +675,10 @@
       "display_cap": 20.0
     },
     {
+      "key": "ca_dmg",
+      "display_cap": 120.0
+    },
+    {
       "key": "ca_dmg_cap",
       "display_cap": 100.0
     },
@@ -782,6 +786,7 @@
     }
   ],
   "series_summon_boosted": [
+    "ancestral",
     "bahamut",
     "celestial",
     "destroyer",

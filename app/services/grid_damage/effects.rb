@@ -51,6 +51,15 @@ module GridDamage
         met ? effect.value&.to_f : nil
       when "per_grid_count"
         per_grid_count(effect, weapon: weapon, composition: composition)
+      # Persistence supplements scale with current HP: value x (1 + 2*hp/100)/3
+      # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
+      when "persistence_supp"
+        effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
+      # "Up to N%" linear-in-HP boosts with the stamina-style sub-25 cutoff
+      # (Rightway Pathfinder: 120 x hp/100 -> 120/90/60/30, gone below 25)
+      when "hp_linear_cutoff"
+        hp = state.fetch(:hp_percent, 100).to_f
+        hp < 25 ? nil : effect.value.to_f * hp / 100.0
       when "foe_hp_supplemental"
         effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
       when "ally_hp_scaled", "current_hp_scaled" # rubocop:disable Lint/DuplicateBranch -- TODO: HP curve placeholder

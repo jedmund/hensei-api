@@ -1,0 +1,119 @@
+{
+  "party": "OlFQ2a",
+  "captured_on": "2026-07-07",
+  "notes": "Dark Omega HP sweep. Validates: mixed-source stamina (Excalibur normal x1.6 + Fediel ancestral unamplified, exact at 100/75/50/25), omega enmity (1+2r)r (exact at 75/50/25; the 1-percent anchor reads 377 vs 371.73 — omitted), the ancestral no-summon-boost frame, AX stamina level tables, and Chain of Falsehood's -100 charge. State hp_percent=50.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 50,
+    "foe_element": "light"
+  },
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "value": 694,
+      "series": "omega"
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "value": 42.0,
+      "series": "ex"
+    },
+    {
+      "label": "Stamina",
+      "boost": "stamina",
+      "value": 14.81,
+      "series": "normal"
+    },
+    {
+      "label": "Ω Enmity",
+      "boost": "enmity",
+      "value": 126,
+      "series": "omega"
+    },
+    {
+      "label": "Dark Omega",
+      "boost": "omega_exalto",
+      "value": 60.0
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 123
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 40.5
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20.0,
+      "capped": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "value": 9.8,
+      "series": "omega"
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50.0
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 60.0
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 30.0
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": -100.0
+    },
+    {
+      "label": "HP (AX)",
+      "boost": "hp_ax",
+      "value": 9.0
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 2.5
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 8.0
+    },
+    {
+      "label": "Elemental ATK (AX)",
+      "boost": "ele_atk_ax",
+      "value": 2.0
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 6.0
+    },
+    {
+      "label": "skill cap ax",
+      "boost": "skill_cap_ax",
+      "value": 1.0
+    }
+  ]
+}

@@ -3092,6 +3092,21 @@
   {
     "modifier": "Stamina",
     "boost_type": "stamina",
+    "series": "normal_omega",
+    "size": "massive",
+    "formula_type": "stamina",
+    "sl1": null,
+    "sl10": null,
+    "sl15": null,
+    "sl20": null,
+    "sl25": null,
+    "coefficient": 50.4,
+    "max_value": null,
+    "aura_boostable": false
+  },
+  {
+    "modifier": "Stamina",
+    "boost_type": "stamina",
     "series": "odious",
     "size": "big",
     "formula_type": "stamina",
