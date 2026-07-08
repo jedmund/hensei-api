@@ -74,6 +74,12 @@ class GridWeapon < ApplicationRecord
   validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
   validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true
 
+  # The standard grid: mainhand (-1) + nine slots. Positions 9-11 are the EXTRA
+  # slots (Arcarum/sandbox content) — their weapon skills do NOT apply to the
+  # Estimated Damage panel (54hHKY: Moros/Heat/Doombringer in extra slots
+  # contribute nothing to any line).
+  scope :main_grid, -> { where(position: -1..8) }
+
   validate :validate_transcendence_step
   validate :compatible_with_position, unless: :is_substitute?
   validate :compatible_with_job_proficiency, on: :create, unless: :is_substitute?

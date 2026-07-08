@@ -51,6 +51,7 @@ module GridDamage
     # Full panel computation: the aggregate PLUS the final (amplified) contribution list
     # that produced it — the per-line breakdown the UI explains the math with.
     def panel(party, state: {})
+      party = scoped_party(party, state)
       composition = GridComposition.for_party(party)
       agg = aggregate_pass(party, state, composition) # pass 1 (raw) — to read the Exalto totals
 
@@ -149,6 +150,18 @@ module GridDamage
       contributions = collect_contributions(party, state, composition)
       contributions = amplify_contributions(contributions, amplify_enh) if amplify_enh
       Aggregator.aggregate(contributions)
+    end
+
+    # Extra grid slots (positions 9-11) only apply in specific content (sandbox
+    # et al.) — the in-game panel includes them only there. state[:extra_slots]
+    # false filters the party to the standard MH+9 grid (54hHKY vs XJZZmv/K4UydX:
+    # same slots, different content context, opposite panel behavior).
+    class MainGridView < SimpleDelegator
+      def weapons = __getobj__.weapons.main_grid
+    end
+
+    def scoped_party(party, state)
+      state[:extra_slots] == false ? MainGridView.new(party) : party
     end
 
     def collect_contributions(party, state, composition)
