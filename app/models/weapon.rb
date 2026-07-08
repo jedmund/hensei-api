@@ -122,6 +122,15 @@ class Weapon < ApplicationRecord
     weapon_series&.augment_type || 'no_augment'
   end
 
+  # AX slot rules: 'standard' = slot 1 primary pool, slot 2 secondary/extended;
+  # 'utility' = one slot, EXP/Rupie (Ancient weapons). Explicit column wins;
+  # any other AX-capable weapon defaults to standard.
+  def effective_ax_type
+    return ax_type if ax_type.present?
+
+    'standard' if effective_augment_type == 'ax'
+  end
+
   # Promotion scopes
   scope :by_promotion, ->(promotion) { where('? = ANY(promotions)', promotion) }
   scope :in_premium, -> { by_promotion(GranblueEnums::PROMOTIONS[:Premium]) }

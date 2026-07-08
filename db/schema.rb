@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_07_100001) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_07_200001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1438,6 +1438,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_100001) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "reduction_step"
+    t.string "ax_group"
     t.index ["category"], name: "index_weapon_stat_modifiers_on_category"
     t.index ["game_skill_id"], name: "index_weapon_stat_modifiers_on_game_skill_id", unique: true
     t.index ["slug"], name: "index_weapon_stat_modifiers_on_slug", unique: true
@@ -1495,6 +1496,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_07_100001) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.datetime "wiki_raw_fetched_at"
     t.text "wiki_raw_jp"
+    t.string "ax_type"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"
