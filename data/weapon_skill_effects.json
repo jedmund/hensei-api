@@ -1212,6 +1212,19 @@
       "key_slug": "gauph-tria"
     },
     {
+      "modifier": "Gauph Key of Courage",
+      "boost_type": "critical",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "gauph-courage"
+    },
+    {
       "modifier": "Gauph Key of Strength",
       "boost_type": "stamina",
       "series": "ex",
@@ -2081,7 +2094,7 @@
     },
     {
       "modifier": "Pendulum of Supremacy",
-      "boost_type": "dmg_amp",
+      "boost_type": "cb_amp",
       "scaling_kind": "conditional_flat",
       "value": 100.0,
       "value_unit": "percent",
@@ -2089,6 +2102,53 @@
         "gte": 280,
         "type": "boost_level"
       },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-supremacy"
+    },
+    {
+      "modifier": "Pendulum of Supremacy",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-supremacy"
+    },
+    {
+      "modifier": "Pendulum of Supremacy",
+      "boost_type": "fc_amp",
+      "scaling_kind": "conditional_flat",
+      "value": 100.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-supremacy"
+    },
+    {
+      "modifier": "Pendulum of Supremacy",
+      "boost_type": "skill_dmg_cap",
+      "scaling_kind": "static",
+      "value": 60.0,
+      "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",

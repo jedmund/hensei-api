@@ -1,0 +1,149 @@
+{
+  "party": "NEKVvF",
+  "captured_on": "2026-07-08",
+  "notes": "Dark capture team (Monk MC): the >=280 pendulum golden. A/B pair (friend Celeste 6* vs T5 Bahamut: omega 360 vs 190) isolates the Pendulum of Supremacy: ungated base Skill DMG Cap 60 (NOT in the key_skill_cap pool: 75 = 60 + Animus melee 15), gated >=280 package = EX 40 + CB Amp 100 + FC Amp 100 + C.A. Amp (Sp.) 10 + DMG Cap 7. Also validates: the Exo MAIN-ONLY awakening column (Attack type on MH Hamartia lv10 = EX +20, DMG Cap +10, DMG Supp +30,000 — the Special type stays Might/HP for non-MH), Gauph Courage = Critical 20, Gauntlet Voltage II 8 x 2 melee = EX Sp 16, Realm-Breaker Animus II celestial specialty table at melee (Monk), Fediel ancestral stamina 22.42 = formula x1.0 UNAMPLIFIED even with a Fediel sub present, Black Covenant CA supp 600k, Armed Shadow 20. Estimated 118215 / 190516 / 42030 (B-state: 169885 / 241161 / 35846).",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp",
+    "e_atk"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "value": 30.0,
+      "series": "normal"
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "value": 101,
+      "series": "omega"
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "value": 168,
+      "series": "ex"
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 16.0
+    },
+    {
+      "label": "Stamina",
+      "boost": "stamina",
+      "value": 22.42,
+      "series": "normal"
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 20.0
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 15.0
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 10.0
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 151
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 25.0
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20.0,
+      "capped": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "value": 8.05,
+      "series": "omega"
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 25.0
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10.0
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 75.0
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20.0
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 15.0
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10.0
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 100
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 100
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 600000
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 30000
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 5.0
+    },
+    {
+      "label": "HP (AX)",
+      "boost": "hp_ax",
+      "value": 3.0
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 5.0
+    }
+  ]
+}

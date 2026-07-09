@@ -112,15 +112,25 @@ module GridDamage
       }
     }.freeze
 
-    # Exo weapons ({{Weapon/Awakening/Exo}}, 10 levels). The type the game calls Special
-    # is the Might/HP column — HDbPnu's Hamartia lv10 measures Might +20 / HP +20 flat.
-    # The other column's bonuses are all main-weapon-only (EX Might/DMG Cap/DMG Supp
-    # (Main)) and stay unmodeled until a golden carries an Exo mainhand.
+    # Exo weapons ({{Weapon/Awakening/Exo}}, 10 levels, two types). "Special" is the
+    # Might/HP column — HDbPnu's non-MH Hamartia lv10 measures +20/+20 flat. "Attack"
+    # is the MAIN-WEAPON-ONLY column (EX Might/DMG Cap/DMG Supp, all "(Main)") —
+    # NEKVvF's MH Hamartia lv10 measures EX +20, DMG Cap +10, DMG Supp +30,000, and
+    # nothing when the weapon isn't the mainhand. The lv3/6/9 slot is per-weapon-group
+    # (Hamartia's group rolls DMG Supp; others roll NA/Skill/CA caps — extend as
+    # goldens cover them).
     EXO_BY_TYPE = {
       "weapon-special" => {
         2 => { "atk" => 5.0 }, 3 => { "hp" => 4.0 }, 4 => { "hp" => 4.0 }, 5 => { "atk" => 5.0 },
         6 => { "atk" => 5.0 }, 7 => { "hp" => 4.0 }, 8 => { "hp" => 4.0 }, 9 => { "atk" => 5.0 },
         10 => { "hp" => 4.0 }
+      }
+    }.freeze
+    EXO_MAIN_BY_TYPE = {
+      "weapon-atk" => {
+        2 => { "ex_atk" => 5.0 }, 3 => { "dmg_supp" => 10_000.0 }, 4 => { "dmg_cap" => 5.0 },
+        5 => { "ex_atk" => 5.0 }, 6 => { "dmg_supp" => 10_000.0 }, 7 => { "ex_atk" => 5.0 },
+        8 => { "ex_atk" => 5.0 }, 9 => { "dmg_supp" => 10_000.0 }, 10 => { "dmg_cap" => 5.0 }
       }
     }.freeze
 
@@ -151,7 +161,9 @@ module GridDamage
                 when "revans"
                   accumulate(REVANS_BY_TYPE[slug], gw.awakening_level.to_i)
                 when "exo"
-                  accumulate(EXO_BY_TYPE[slug], gw.awakening_level.to_i)
+                  table = EXO_BY_TYPE[slug]
+                  table = EXO_MAIN_BY_TYPE[slug] if table.nil? && gw.mainhand
+                  accumulate(table, gw.awakening_level.to_i)
                 else BONUS.dig(slug, gw.awakening_level.to_i)
                 end
         next [] unless bonus
