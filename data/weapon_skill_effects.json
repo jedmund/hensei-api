@@ -1611,7 +1611,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "notes": "EX Might Sp. by mechanic-class symmetry: Voltage (NEKVvF) and Wrath (JBDMhV) are golden-proven on that line and share this 80% pool; no Grand Epic capture yet."
+      "notes": "EX Might Sp. +4% per Epic-series weapon. User capture with 1/2/3 Chains of Caucasus under Agni/Agni shows 4/16/36 displayed, matching 4/8/12 raw through 340% aura. Shares the 80% pool with Voltage (NEKVvF) and Wrath (JBDMhV)."
     },
     {
       "modifier": "Honing",
