@@ -65,14 +65,18 @@ module GridDamage
       when "ally_hp_scaled", "current_hp_scaled" # rubocop:disable Lint/DuplicateBranch -- TODO: HP curve placeholder
         effect.value&.to_f
       when "specialty_scaled"
-        specialty_value(effect, composition: composition)
+        specialty_value(effect, composition: composition, state: state)
       end
     end
 
     # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon
     # specialty. The panel reflects the MC's specialties (either job proficiency counts);
     # allies of that specialty get the larger boost, everyone else the "other" row.
-    def specialty_value(effect, composition:)
+    # An "arcarum" flag in the condition venue-gates the row (Sephirath skills apply
+    # only in Arcarum: The World Beyond / Replicard Sandbox).
+    def specialty_value(effect, composition:, state: {})
+      return nil if effect.condition["arcarum"] && !state[:arcarum]
+
       table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
       specs = Array(composition && (composition[:mc_specialties] || composition[:mc_specialty]))
       matched = specs.filter_map { |s| table[s] }.max

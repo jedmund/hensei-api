@@ -71,6 +71,7 @@ module GridDamage
       ["sp_ca_cap", nil, "Sp. C.A. Cap", "sp-ca-cap", "special"],
       ["cb_dmg", nil, "C.B. DMG", "cb-dmg", "special"],
       ["cb_dmg_cap", nil, "C.B. DMG Cap", "cb-dmg-cap", "special"],
+      ["fc_dmg_cap", nil, "FC DMG Cap", "fc-dmg-cap", "special"],
       ["cb_amp", nil, "C.B. Amp.", "cb-amp", "special"],
       ["fc_amp", nil, "FC Amp.", "fc-amp", "special"],
       ["crit_amp", nil, "Crit. Amp.", "crit-amp", "special"],
