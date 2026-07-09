@@ -1,7 +1,7 @@
 {
   "party": "qBOvon",
   "captured_on": "2026-07-07",
-  "notes": "Fire Odious/Taboo grid — the last frame. Belmervolk 4★ main+friend (100→150 each via 4 Odious weapons at exorcision 5 = taboo 300), Colossus Cane Ira x3 (omega-rebirth), 2x Demonspear + 2x Deathcannon of Prosperity Verboten (befoulments: ATK -9.9/-7.6, skill DMG -17, DA/TA -9.5 — the Hit lines, exact), Scythe of Renunciation tr5 (β + Sagacity), Unsigned Kaneshige MH (Kengo's Nature charge 50; Emblem of Devilry is panel-inert), Mortality Bow Mk II (Enforcement + Striking Art), Worldforging Moros, Heat of The Sun, Doombringer Sword (Anklet of Oblivion). SIX LINES OMITTED as submitter-account variance (54hHKY, a controlled replica, validates the model for all of them — the submitter's skill levels/awakenings/Moros state differ from the party data): C.A. DMG Cap (68 here vs Glory-wiki 48+alpha; the 8.5 Glory correction was overfit to this account and is reverted), Ω Might (152 vs our 156) and Ω DMG Amp. (3.5 vs 4.0) — scythe confirmed SL25, so Ironflame's Might III's value is suspect; EX Might (177 vs 167.5), DEF (30 vs 15), HP (358 vs 297) — profile matches the Mortality Bow Mk II's Revans awakening, unset in the party data (need its in-game type and level; Revans awakening tables also uncurated). Estimated DMG 474226 / to Wind 867816 / Max HP 116662.",
+  "notes": "Fire Odious/Taboo grid — the last frame. Belmervolk 4★ main+friend (100→150 each via 4 Odious weapons at exorcision 5 = taboo 300), Colossus Cane Ira x3 (omega-rebirth), 2x Demonspear + 2x Deathcannon of Prosperity Verboten (befoulments: ATK -9.9/-7.6, skill DMG -17, DA/TA -9.5 — the Hit lines, exact), Scythe of Renunciation tr5 (β + Sagacity), Unsigned Kaneshige MH (Kengo's Nature charge 50; Emblem of Devilry is panel-inert), Mortality Bow Mk II (Enforcement + Striking Art), Worldforging Moros, Heat of The Sun, Doombringer Sword (Anklet of Oblivion). SEVEN LINES OMITTED as submitter-account variance (54hHKY, a controlled replica, validates the model for all of them — the submitter's skill levels/awakenings/Moros state differ from the party data): C.A. Amp. (10 from Moros's Sephirath Eparc II, which the wiki gates to sabre/bow-specialty allies — the party data has no job, and hbeZ3N's own-account capture confirms the panel hides Sephirath II for a non-matching MC, so the submitter's class was presumably sabre- or bow-specialty); C.A. DMG Cap (68 here vs Glory-wiki 48+alpha; the 8.5 Glory correction was overfit to this account and is reverted), Ω Might (152 vs our 156) and Ω DMG Amp. (3.5 vs 4.0) — scythe confirmed SL25, so Ironflame's Might III's value is suspect; EX Might (177 vs 167.5), DEF (30 vs 15), HP (358 vs 297) — profile matches the Mortality Bow Mk II's Revans awakening, unset in the party data (need its in-game type and level; Revans awakening tables also uncurated). Estimated DMG 474226 / to Wind 867816 / Max HP 116662.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -91,11 +91,6 @@
       "label": "C.A. DMG",
       "boost": "ca_dmg",
       "value": 91.2
-    },
-    {
-      "label": "C.A. Amp.",
-      "boost": "ca_amp_sp",
-      "value": 10
     },
     {
       "label": "C.B. DMG",

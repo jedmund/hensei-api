@@ -1,0 +1,111 @@
+{
+  "party": "hbeZ3N",
+  "captured_on": "2026-07-06",
+  "notes": "Water golden (user's own account, Bandit Tycoon MC = dagger/gun): first capture of the Δ Pendulum package on Staff of Renunciation tr5 — C.B. DMG Cap 50 (base skill) + FC DMG Cap 20 (the lv210 +10% Fated Chain cap upgraded to 20% at lv240; modeled as two additive +10 rows gated on transcendence_step 1/4, per gbf.wiki Dark Opus Weapons). FC DMG Cap is a NEW boost type + panel line (fc_dmg_cap, after C.B. DMG Cap — the in-game order here). Also locks the Sephirath specialty gate: Worldbreaking Tauros 4★ carries Sephirath Corant II (amplify skill DMG 10% for melee/harp-specialty allies) and the panel shows NOTHING for this dagger/gun MC — skill_amp_sp is in the absent list. (Contrast qBOvon, where the submitter's unknown class presumably matched Eparc II's sabre/bow.) Sephirath base skills are Arcarum/Sandbox-only (arcarum condition flag). TWO LINES OMITTED pending remove-and-diff captures: EX Might (capture 98 vs our 84.6 = Armed Flood SL20 unknown — no wiki table; Clarion unc5 resolves SL20 but the datum only has sl15 21.6 — plus Tidings of the New World 23 and Dualblade Flash's Bond II dagger-tier 40) and E. ATK (our Bond II dagger-tier e_atk 10 shows, capture shows none — dagger MC should match; needs the Twinfall removal capture to decide). Estimated 147248 / 217845 / 41435.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 40,
+    "omega": 340,
+    "taboo": 0
+  },
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp",
+    "skill_amp_sp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "value": 30.0,
+      "series": "normal"
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "value": 369,
+      "series": "omega"
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 24.0
+    },
+    {
+      "label": "E. ATK (Prog.)",
+      "boost": "e_atk_prog",
+      "value": 6.6
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 15.0
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 10.0
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 150
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 25.0
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 10.0
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "value": 8.8,
+      "series": "omega"
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 20.0
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20.0
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 15.0
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 50.0
+    },
+    {
+      "label": "FC DMG Cap",
+      "boost": "fc_dmg_cap",
+      "value": 20.0
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": -100.0
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 6.0
+    }
+  ]
+}

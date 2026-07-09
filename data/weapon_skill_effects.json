@@ -3425,6 +3425,61 @@
       "notes": "+5% normal-attack DMG cap."
     },
     {
+      "modifier": "Δ Pendulum",
+      "boost_type": "cb_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 50.0,
+      "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_cb_cap",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Dark Opus Weapons: 50% boost to chain burst DMG cap. Golden hbeZ3N (tr5 Staff of Renunciation) shows 50.",
+      "key_slug": "pendulum-delta"
+    },
+    {
+      "modifier": "Δ Pendulum",
+      "boost_type": "fc_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv210 upgrade adds 10% Fated Chain DMG cap.",
+      "key_slug": "pendulum-delta"
+    },
+    {
+      "modifier": "Δ Pendulum (lv240)",
+      "boost_type": "fc_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 4,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades Fated Chain DMG cap to 20% (additive +10 on top of the lv210 row; distinct modifier for the uniqueness scope).",
+      "key_slug": "pendulum-delta"
+    },
+    {
       "modifier": "α Pendulum",
       "boost_type": "da",
       "series": "ex",
