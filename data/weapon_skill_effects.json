@@ -2918,7 +2918,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "+23% Omega ATK per Militis weapon (max 46% per copy); aura-boosted."
+      "notes": "+23% Omega ATK per Militis weapon (max 46% per copy); aura-boosted. User capture with Sacred Flame Militis under Luminiera/Luminiera proves Militis-series count and per-copy cap: 1 Militis displays Ω Might 101%, 2 displays 202%, and 3/4 remain 202% under 340% omega aura."
     },
     {
       "modifier": "Ultimate Wisdom's Shine",

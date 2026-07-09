@@ -153,6 +153,19 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
           end
         end
       end
+
+      context 'Militis aura with known modifier' do
+        let(:input) { "Knightcode's Trituration" }
+
+        it 'keeps the known modifier for canonical family backfill' do
+          aggregate_failures do
+            expect(result[:aura]).to eq('Knightcode')
+            expect(result[:modifier]).to eq('Trituration')
+            expect(result[:series]).to eq('omega')
+            expect(result[:size]).to be_nil
+          end
+        end
+      end
     end
 
     # --- Possessive format with known aura, unknown modifier ---
