@@ -1,7 +1,7 @@
 {
   "party": "hbeZ3N",
   "captured_on": "2026-07-06",
-  "notes": "Water golden (user's own account, Bandit Tycoon MC = dagger/gun): first capture of the Δ Pendulum package on Staff of Renunciation tr5 — C.B. DMG Cap 50 (base skill) + FC DMG Cap 20 (the lv210 +10% Fated Chain cap upgraded to 20% at lv240; modeled as two additive +10 rows gated on transcendence_step 1/4, per gbf.wiki Dark Opus Weapons). FC DMG Cap is a NEW boost type + panel line (fc_dmg_cap, after C.B. DMG Cap — the in-game order here). Also locks the Sephirath specialty gate: Worldbreaking Tauros 4★ carries Sephirath Corant II (amplify skill DMG 10% for melee/harp-specialty allies) and the panel shows NOTHING for this dagger/gun MC — skill_amp_sp is in the absent list. (Contrast qBOvon, where the submitter's unknown class presumably matched Eparc II's sabre/bow.) Sephirath base skills are Arcarum/Sandbox-only (arcarum condition flag). TWO LINES OMITTED pending remove-and-diff captures: EX Might (capture 98 vs our 84.6 = Armed Flood SL20 unknown — no wiki table; Clarion unc5 resolves SL20 but the datum only has sl15 21.6 — plus Tidings of the New World 23 and Dualblade Flash's Bond II dagger-tier 40) and E. ATK (our Bond II dagger-tier e_atk 10 shows, capture shows none — dagger MC should match; needs the Twinfall removal capture to decide). Estimated 147248 / 217845 / 41435.",
+  "notes": "Water golden (user's own account, Bandit Tycoon MC = dagger/gun), LINE-COMPLETE (18/18): first capture of the Δ Pendulum package on Staff of Renunciation tr5 — C.B. DMG Cap 50 (base skill) + FC DMG Cap 20 (the lv210 +10% Fated Chain cap upgraded to 20% at lv240; modeled as two additive +10 rows gated on transcendence_step 1/4, per gbf.wiki Dark Opus Weapons). FC DMG Cap is a NEW boost type + panel line (fc_dmg_cap, after C.B. DMG Cap — the in-game order here). Locks the Sephirath specialty gate: Worldbreaking Tauros 4★ carries Sephirath Corant II (amplify skill DMG 10% for melee/harp-specialty allies) and the panel shows NOTHING for this dagger/gun MC — skill_amp_sp is in the absent list. (Contrast qBOvon, where the submitter's unknown class presumably matched Eparc II's sabre/bow.) Sephirath base skills are Arcarum/Sandbox-only (arcarum condition flag). Remove-and-diff pair closed the EX ledger exactly: no-Twinfall capture (EX 58, Might/EX Sp/DA/TA/DEF/DMG Cap/C.A. DMG/C.A. Cap gone, HP 120; Estimated 74617/110392/35470) proves Dualblade Flash's Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. DMG 20 + C.A. Cap 15 + DMG Cap 10 and Guiding Star's Splendor = Might 30/HP 30/DEF 25; no-Clarion capture (Kris of Hypnos MH: EX 63, Might 50.3 = 30 + Primacy 14.5x1.4, DA 22 = 15 + Primacy 5x1.4, EX Sp 32 = Voltage II 8x4 daggers, C.A. Cap 30 = 15 + Excelsior 15; Estimated 144498/213777/41557) proves Kris adds no EX atk. Both give Armed Flood SL20 = 35 (98 = 35+23+40 and 58 = 35+23), pinned golden:hbeZ3N on Clarion's version datum. Bond II's EN-wiki '(Boost to elemental ATK...)' clause is a phantom — no E. ATK line in any of the three captures and the EX ledger closes without it; the JP text has no elemental-ATK clause. e_atk row deleted, e_atk in the absent list (E. ATK and E. ATK (Prog.) are distinct stats — the Prog 6.6 here is Aquamarine Hatchet's Oceansoul's Progression III, 1.5x4.4). Estimated 147248 / 217845 / 41435.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -16,7 +16,8 @@
     "crit_dmg",
     "added_hit",
     "added_hp",
-    "skill_amp_sp"
+    "skill_amp_sp",
+    "e_atk"
   ],
   "lines": [
     {
@@ -30,6 +31,12 @@
       "boost": "atk",
       "value": 369,
       "series": "omega"
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "value": 98,
+      "series": "ex"
     },
     {
       "label": "EX Might Sp.",
