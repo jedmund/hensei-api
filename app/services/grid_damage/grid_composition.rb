@@ -2,11 +2,8 @@
 
 module GridDamage
   # Counts the grid needs for per_grid_count effects and count-based conditions:
-  # distinct weapon types/groups, per-id copies, distinct skill types, omega-skill count.
-  #
-  # NOTE: count bases that need weapon-GROUP tags we don't store cleanly (`epic`,
-  # `militis`) aren't computed here — a documented data gap; `weapon_group` is approximated
-  # by weapon TYPE (proficiency).
+  # weapon-type/proficiency copies, weapon-series copies, per-id copies, distinct
+  # skill types, omega-skill count, and max same-type count.
   module GridComposition
     module_function
 
@@ -15,7 +12,7 @@ module GridDamage
                          6 => "staff", 7 => "melee", 8 => "harp", 9 => "gun", 10 => "katana" }.freeze
 
     def for_party(party)
-      entries = party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).filter_map do |gw|
+      entries = party.weapons.includes(weapon: [:weapon_series, { weapon_skills: :weapon_skill_versions }]).filter_map do |gw|
         w = gw.weapon
         next unless w
 
@@ -33,7 +30,13 @@ module GridDamage
 
           modifiers << v.resolved_modifier
         end
-        { proficiency: w.proficiency, granblue_id: w.granblue_id, modifiers: modifiers, omega: omega }
+        {
+          proficiency: w.proficiency,
+          series_slug: w.weapon_series&.slug,
+          granblue_id: w.granblue_id,
+          modifiers: modifiers,
+          omega: omega
+        }
       end
       # The MC's weapon specialties (BOTH job proficiencies) — select the row of
       # per-specialty skills (e.g. Cloud of Howling Twilight). A job matching on either
@@ -55,22 +58,26 @@ module GridDamage
       )
     end
 
-    # Pure: entries = [{ proficiency:, granblue_id:, modifiers: [..], omega: bool }, …]
+    # Pure: entries = [{ proficiency:, series_slug:, granblue_id:, modifiers: [..], omega: bool }, …]
     def summarize(entries)
       types = Hash.new(0)
+      series = Hash.new(0)
       ids = Hash.new(0)
       modifiers = Set.new
       omega = 0
       entries.each do |e|
         types[e[:proficiency]] += 1
+        series[e[:series_slug]] += 1 if e[:series_slug].present?
         ids[e[:granblue_id]] += 1
         e[:modifiers].each { |m| modifiers << m }
         omega += 1 if e[:omega]
       end
       {
         weapon_type_counts: types,
+        weapon_series_counts: series,
         id_counts: ids,
         weapon_group_count: types.size,
+        max_weapon_type_count: types.values.max.to_i,
         skill_type_count: modifiers.size,
         omega_skill_count: omega
       }

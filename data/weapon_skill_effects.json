@@ -728,7 +728,7 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "type": "weapon_group_count"
+        "type": "same_weapon_type_count"
       },
       "depends_on": [
         "grid_count"
@@ -748,7 +748,7 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "type": "weapon_group_count"
+        "type": "same_weapon_type_count"
       },
       "depends_on": [
         "grid_count"
@@ -768,7 +768,7 @@
       "total_cap": 20.0,
       "condition": {
         "gte": 4,
-        "type": "weapon_group_count"
+        "type": "same_weapon_type_count"
       },
       "depends_on": [
         "grid_count"

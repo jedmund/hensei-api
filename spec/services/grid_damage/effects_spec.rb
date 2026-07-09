@@ -10,7 +10,10 @@ RSpec.describe GridDamage::Effects do
   WepStruct = Struct.new(:proficiency, :granblue_id, :max_skill_level, :max_level, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
 
   let(:weapon) { WepStruct.new(proficiency: 1, granblue_id: "A", max_skill_level: 15, max_level: 200) }
-  let(:composition) { { weapon_type_counts: { 1 => 3 }, weapon_group_count: 6, omega_skill_count: 2 } }
+  let(:composition) do
+    { weapon_type_counts: { 1 => 3 }, weapon_series_counts: { "epic" => 2, "militis" => 4 },
+      weapon_group_count: 6, omega_skill_count: 2 }
+  end
 
   def val(effect, state: {})
     described_class.value_for(effect, weapon: weapon, state: state, composition: composition)
@@ -104,7 +107,9 @@ RSpec.describe GridDamage::Effects do
     expect(val(effect, state: { ally_max_hp: 100_000 })).to eq(40.0)
   end
 
-  it "returns nil for count bases needing weapon-group tags we lack (epic/militis)" do
-    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "epic"))).to be_nil
+  it "per_grid_count can count weapon series such as epic and militis" do
+    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "epic"))).to eq(8.0)
+    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 23, count_basis: "militis",
+                             per_copy_cap: 46))).to eq(46.0)
   end
 end
