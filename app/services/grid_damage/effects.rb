@@ -76,7 +76,9 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: true)
       when "supplemental_cap"
         supplemental_cap(effect, state: state)
-      when "ally_hp_scaled", "current_hp_scaled" # TODO: remaining max-HP placeholder; see docs/damage/18-gap-backlog.md
+      when "ally_max_hp_scaled"
+        ally_max_hp_scaled(effect, state: state)
+      when "ally_hp_scaled", "current_hp_scaled" # Legacy placeholders; avoid new rows.
         effect.value&.to_f
       when "specialty_scaled"
         specialty_value(effect, composition: composition, state: state)
@@ -94,6 +96,16 @@ module GridDamage
       current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
       ratio = missing ? 1.0 - current_ratio : current_ratio
       floor + ((ceiling - floor) * ratio)
+    end
+
+    def ally_max_hp_scaled(effect, state:)
+      max_hp = state[:ally_max_hp]&.to_f
+      coefficient = effect.value&.to_f
+      return nil if max_hp.nil? || max_hp <= 0 || coefficient.nil?
+
+      value = max_hp * coefficient / 100.0
+      cap = effect.per_copy_cap&.to_f
+      cap ? [value, cap].min : value
     end
 
     def supplemental_cap(effect, state:)

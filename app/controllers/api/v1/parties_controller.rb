@@ -73,8 +73,9 @@ module Api
       # Also allows access via edit_key for anonymous parties.
       # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
       # GridDamage::Calculator and shaped for display. Battle-state params (the game's
-      # "Calculator Conditions"): hp_percent (0–100), turn (1+), foe_element; the foe
-      # defaults to the grid element's advantaged target, like the in-game estimate.
+      # "Calculator Conditions"): hp_percent (0–100), turn (1+), foe_element, and
+      # ally_max_hp for max-HP-scaled effects; the foe defaults to the grid element's
+      # advantaged target, like the in-game estimate.
       def skill_boosts
         unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
           return render_unauthorized_response
@@ -396,17 +397,18 @@ module Api
 
       private
 
-      # Sanitized battle state for skill_boosts: clamp HP/turn, whitelist the foe
-      # element, and default the foe to what the grid element is strong against.
+      # Sanitized battle state for skill_boosts: clamp HP/turn/max HP, whitelist the
+      # foe element, and default the foe to what the grid element is strong against.
 
       def skill_boost_state
         hp = params[:hp_percent].presence&.to_f&.clamp(0, 100) || 100.0
+        ally_max_hp = params[:ally_max_hp].presence&.to_f&.clamp(0, 999_999)
         turn = params[:turn].presence&.to_i&.clamp(1, 999) || 1
         foe = params[:foe_element].presence&.downcase
         # "null" is a real foe element (element-less foes) — advantaged effects turn off.
         foe = nil unless foe == "null" || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
         foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::Calculator.send(:grid_element, @party)]
-        { hp_percent: hp, turn: turn, foe_element: foe }.compact
+        { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe }.compact
       end
 
       # Resolves edit key entries from params or the current user's deposited keys.

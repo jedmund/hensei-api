@@ -3232,7 +3232,7 @@
       "modifier": "Vitality",
       "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "ally_hp_scaled",
+      "scaling_kind": "ally_max_hp_scaled",
       "value": 0.045,
       "value_unit": "percent_ally_max_hp",
       "per_copy_cap": 40.0,
@@ -3249,7 +3249,7 @@
     {
       "modifier": "Vitality",
       "boost_type": "def",
-      "scaling_kind": "ally_hp_scaled",
+      "scaling_kind": "ally_max_hp_scaled",
       "value": 0.025,
       "value_unit": "percent_ally_max_hp",
       "per_copy_cap": 25.0,
@@ -3266,7 +3266,7 @@
     {
       "modifier": "Vitality",
       "boost_type": "dmg_cap_sp",
-      "scaling_kind": "ally_hp_scaled",
+      "scaling_kind": "ally_max_hp_scaled",
       "value": 0.01,
       "value_unit": "percent_ally_max_hp",
       "per_copy_cap": 7.0,

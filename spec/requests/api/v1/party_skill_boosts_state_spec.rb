@@ -36,9 +36,10 @@ RSpec.describe 'Party skill boosts battle state', type: :request do
 
   it 'clamps and echoes the applied state' do
     get "/api/v1/parties/#{party.shortcode}/skill_boosts",
-        params: { hp_percent: 250, turn: -3, foe_element: 'MOON' }
+        params: { hp_percent: 250, ally_max_hp: 2_000_000, turn: -3, foe_element: 'MOON' }
     state = response.parsed_body['state']
     expect(state['hp_percent']).to eq(100.0)
+    expect(state['ally_max_hp']).to eq(999_999.0)
     expect(state['turn']).to eq(1)
     expect(state['foe_element']).not_to eq('moon')
   end

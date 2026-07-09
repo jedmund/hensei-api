@@ -96,6 +96,14 @@ RSpec.describe GridDamage::Effects do
     expect(val(effect, state: { hp_percent: 1 })).to eq(35.0)
   end
 
+  it "ally_max_hp_scaled scales by explicit ally max HP and applies the per-copy cap" do
+    effect = EffStruct.new(scaling_kind: "ally_max_hp_scaled", value: 0.045, per_copy_cap: 40.0)
+
+    expect(val(effect)).to be_nil
+    expect(val(effect, state: { ally_max_hp: 25_425 })).to be_within(1e-9).of(11.44125)
+    expect(val(effect, state: { ally_max_hp: 100_000 })).to eq(40.0)
+  end
+
   it "returns nil for count bases needing weapon-group tags we lack (epic/militis)" do
     expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "epic"))).to be_nil
   end
