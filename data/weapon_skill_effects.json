@@ -738,7 +738,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "When 4+ weapons of the same weapon group are equipped."
+      "notes": "When 4+ weapons of the same weapon group are equipped. User capture with Lord of Flames + Extinction Blade Mk II under Agni/Agni proves this is a same-proficiency threshold: 1+2 sabres shows no EX Might/DMG Cap (Sp.); 1+3 sabres adds EX Might 40, DEF +25, and DMG Cap (Sp.) 7."
     },
     {
       "modifier": "Convergence",
@@ -757,7 +757,8 @@
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
-      "battle_interaction": false
+      "battle_interaction": false,
+      "notes": "Validated by Lord of Flames + Extinction Blade Mk II threshold capture: DEF rises from 30 at 3 sabres to 70 at 4 sabres, matching +25 Convergence plus the third Mk II DEF source."
     },
     {
       "modifier": "Convergence",
@@ -777,7 +778,8 @@
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
-      "battle_interaction": false
+      "battle_interaction": false,
+      "notes": "Validated by Lord of Flames + Extinction Blade Mk II threshold capture: DMG Cap (Sp.) is absent at 3 sabres and appears as 7% at 4 sabres."
     },
     {
       "modifier": "Craft",
