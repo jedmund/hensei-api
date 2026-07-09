@@ -133,12 +133,14 @@ module GridDamage
       element = grid_element(party)
       auras = Auras.for_party(party, element: element)
       # Line-less "+N% to [element]'s weapon skills" skills (astral weapons) boost the
-      # Optimus AND Omega frames — XJZZmv's astral 20 appears in both header numbers
-      # and nowhere on the panel. The Od header stayed 0, so taboo is excluded.
+      # OPTIMUS frame only — the XJZZmv Sandalphon A/B pair isolates it: without
+      # Selas the omega header is exactly Lumi 340 + Wedges 30 + Pijiu 10, with no
+      # astral contribution (the earlier both-frames reading came from a capture
+      # whose in-game crew didn't match the party data).
       elemental = agg["elemental_enhance"]&.total.to_f
       {
         optimus: auras[:optimus] + [agg["optimus_exalto"]&.total.to_f || 0.0, 90].min + elemental,
-        omega: auras[:omega] + [agg["omega_exalto"]&.total.to_f || 0.0, 100].min + elemental,
+        omega: auras[:omega] + [agg["omega_exalto"]&.total.to_f || 0.0, 100].min,
         # Odious summons' base aura. The exorcism-level scaling on top (aura base → its
         # [Max] via equipped Odious weapons' exorcism lvls) still needs in-game ground truth.
         taboo: auras[:taboo]

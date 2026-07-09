@@ -1,34 +1,107 @@
 {
   "party": "XJZZmv",
-  "captured_on": "2026-07-07",
-  "notes": "Light Omega AX grid (Nighthound). Luminiera Omega 6★ tr5 main+friend (170 each) + Wedges sub 30 + Pijiu support 10 + astral 20 = Ω 400; the astral enhancement (Rhongomyniad's series-stub s1, '+20% to Light's weapon skills') boosts Optimus AND Omega headers with no panel line. Lumi Sword Omega x4, Flamma Orbis MH (Sunveil's Crown: Skill DMG 50 + skill cap 30 while MC undebuffed), True Purity Sunblade, Huanglong Katana (Zion's Tyranny II: HP Cut -10, demerits ride flat), Sword of Renunciation tr3 = SL20 (β + Chain of Temptation -30), Cosmic Sword (weapon-stat 30/50% rows are NOT weapon-skill boosts; Azure Discipline = DMG cap 1%/sabre = 7). Seven AX lines incl. Skill DMG Supp. strength 3 → +2,000. Estimated DMG 353637 / to Dark 576391 / Max HP 63527.",
+  "captured_on": "2026-07-08",
+  "notes": "Light Omega AX grid (Nighthound), recaptured 2026-07-08 with the corrected crew/summons (Grand Sandalphon in backline; one Metatron replaced by Lu Woh 3-star). The Sandalphon A/B pair (with: 60/400, without: 40/380) proves THREE mechanisms: Selas Arche = +20 normal AND +20 omega (character Arche supports hit both frames), the six-dragon sub-aura channel (Lu Woh sub = +20 to the normal enhancement, tiers 10/20/40 by uncap), and the astral weapons' elemental_enhance is OPTIMUS-ONLY (omega without Selas = exactly Lumi 340 + Wedges 30 + Pijiu 10). Omega x5.0: Might 124 = base 77.5 x 1.6. Lumi Sword Omega x4, Flamma Orbis MH (Sunveil's Crown), True Purity Sunblade, Huanglong Katana, Sword of Renunciation tr3 = SL20 (β + Temptation), Cosmic Sword (Azure Discipline = DMG cap 1%/sabre). Seven AX lines incl. Skill DMG Supp. lv3 = +2,000. Estimated DMG 397455 / to Dark 598150 / Max HP 63932.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
     "foe_element": "dark"
   },
   "enhancements": {
-    "optimus": 20,
+    "optimus": 60,
     "omega": 400,
     "taboo": 0
   },
-  "absent": ["crit_dmg", "added_hit", "added_hp", "dmg_cap_pen"],
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp",
+    "dmg_cap_pen"
+  ],
   "lines": [
-    { "label": "Might", "boost": "atk", "series": "normal", "value": 93 },
-    { "label": "Ω Might", "boost": "atk", "series": "omega", "value": 360 },
-    { "label": "EX Might", "boost": "atk", "series": "ex", "value": 88 },
-    { "label": "HP", "boost": "hp", "value": 392 },
-    { "label": "HP Cut", "boost": "hp_cut", "value": -40 },
-    { "label": "DMG Cap", "boost": "dmg_cap", "value": 7 },
-    { "label": "Ω DMG Amp.", "boost": "dmg_amp", "series": "omega", "value": 8.75 },
-    { "label": "Skill DMG", "boost": "skill_dmg", "value": 50 },
-    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 80 },
-    { "label": "ATK (AX)", "boost": "atk_ax", "value": 3 },
-    { "label": "Stamina (AX)", "boost": "stamina_ax", "value": 10 },
-    { "label": "HP (AX)", "boost": "hp_ax", "value": 16 },
-    { "label": "DEF (AX)", "boost": "def_ax", "value": 10.5 },
-    { "label": "Debuff Res. (AX)", "boost": "debuff_res_ax", "value": 2 },
-    { "label": "C.A. DMG (AX)", "boost": "ca_dmg_ax", "value": 5.5 },
-    { "label": "Skill DMG Supp. (AX)", "boost": "skill_supp_ax", "value": 2000 }
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 124
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 360
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 88
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 392
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -40
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 7
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 8.75
+    },
+    {
+      "label": "Skill DMG",
+      "boost": "skill_dmg",
+      "value": 50
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 80
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 3
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 10
+    },
+    {
+      "label": "HP (AX)",
+      "boost": "hp_ax",
+      "value": 16
+    },
+    {
+      "label": "DEF (AX)",
+      "boost": "def_ax",
+      "value": 10.5
+    },
+    {
+      "label": "Debuff Res. (AX)",
+      "boost": "debuff_res_ax",
+      "value": 2
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 5.5
+    },
+    {
+      "label": "Skill DMG Supp. (AX)",
+      "boost": "skill_supp_ax",
+      "value": 2000
+    }
   ]
 }
