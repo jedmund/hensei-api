@@ -38,6 +38,18 @@ namespace :granblue do
       puts failed ? "\nDURABILITY: RED — reparse destroys curations" : "\nDURABILITY: GREEN"
       raise ActiveRecord::Rollback # never persist the experiment
     end
+
+    # panel_lines is the authoritative panel; LINES is its bare-DB fallback snapshot.
+    # They must stay in lockstep until LINES is retired — a new line added to only one
+    # of them renders differently in tests/fresh environments than in dev/prod.
+    db_lines = PanelLine.order(:position).pluck(:boost_type, :series, :label_en, :slug, :group_name)
+    if db_lines.present? && db_lines != GridDamage::PanelPresenter::LINES
+      code = GridDamage::PanelPresenter::LINES
+      (code - db_lines).each { |r| puts "  LINES drift (code-only): #{r.inspect}" }
+      (db_lines - code).each { |r| puts "  LINES drift (db-only):   #{r.inspect}" }
+      puts "DURABILITY: RED — panel_lines and PanelPresenter::LINES have drifted"
+      failed = true
+    end
     exit(1) if failed
   end
 end
