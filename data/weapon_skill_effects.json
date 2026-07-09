@@ -471,27 +471,30 @@
       "boost_type": "atk",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 17.4,
+      "value": 15.5,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-restoration"
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
+      "key_slug": "chain-restoration",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Restoration",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 20.4,
+      "value": 15.5,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
       "key_slug": "chain-restoration"
     },
     {
@@ -499,27 +502,30 @@
       "boost_type": "atk",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 17.4,
+      "value": 16.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-temperament"
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
+      "key_slug": "chain-temperament",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Temperament",
       "boost_type": "critical",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 7.8,
+      "value": 7.5,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
       "key_slug": "chain-temperament"
     },
     {
@@ -3320,13 +3326,10 @@
     },
     {
       "modifier": "Wrath",
-      "boost_type": "atk",
-      "series": "ex",
+      "boost_type": "da",
       "scaling_kind": "per_grid_count",
-      "value": 2.0,
+      "value": 1.0,
       "value_unit": "percent",
-      "total_cap": 80.0,
-      "shared_cap_group": "voltage_wrath_grandepic",
       "count_basis": "weapon_type",
       "count_cap": 10,
       "depends_on": [
@@ -3336,7 +3339,29 @@
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
-      "battle_interaction": false
+      "battle_interaction": false,
+      "notes": "Wrath's 'multiattack rate' is DA and TA (JBDMhV: DA 16 = TA 16 from 4 Settes)."
+    },
+    {
+      "modifier": "Wrath",
+      "boost_type": "ex_atk_sp",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "total_cap": 80.0,
+      "shared_cap_group": "voltage_wrath_grand_epic",
+      "count_basis": "weapon_type",
+      "count_cap": 10,
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "EX Might Sp. line (JBDMhV: 32 = 2 x 4 sabres x 4 Settes), same as Voltage. Pool key unified with Voltage/Grand Epic."
     },
     {
       "modifier": "Wrath",
@@ -3561,6 +3586,44 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "key_slug": "pendulum-gamma"
+    },
+    {
+      "modifier": "γ Pendulum",
+      "boost_type": "sp_ca_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv210 upgrade adds 2.5% special C.A. DMG cap (JBDMhV tr3: 18.5 = 16 + 2.5).",
+      "key_slug": "pendulum-gamma"
+    },
+    {
+      "modifier": "γ Pendulum (lv240)",
+      "boost_type": "sp_ca_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 4,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades special C.A. DMG cap to 5% (additive +2.5 on the lv210 row).",
       "key_slug": "pendulum-gamma"
     }
   ]

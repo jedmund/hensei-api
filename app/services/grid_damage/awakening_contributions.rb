@@ -36,7 +36,9 @@ module GridDamage
         4 => { "ca_dmg" => 20.0, "ca_dmg_cap" => 10.0, "ca_supp" => 100_000.0 }
       },
       "weapon-heal" => {
-        2 => { "heal_cap" => 10.0 }, 3 => { "heal_cap" => 10.0 }, 4 => { "heal_cap" => 30.0 }
+        2 => { "heal_cap" => 10.0 },
+        3 => { "heal_cap" => 10.0, "debuff_res" => 10.0 },
+        4 => { "heal_cap" => 30.0, "debuff_res" => 10.0 }
       }
     }.freeze
 
