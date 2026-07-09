@@ -1581,13 +1581,13 @@
     },
     {
       "modifier": "Grand Epic",
-      "boost_type": "atk",
+      "boost_type": "ex_atk_sp",
       "series": "ex",
       "scaling_kind": "per_grid_count",
       "value": 4.0,
       "value_unit": "percent",
       "total_cap": 80.0,
-      "shared_cap_group": "voltage_wrath_grandepic",
+      "shared_cap_group": "voltage_wrath_grand_epic",
       "count_basis": "epic",
       "depends_on": [
         "grid_count"
@@ -1597,7 +1597,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "notes": "+4% EX ATK per Epic weapon; shares 80% cap with Voltage/Wrath."
+      "notes": "EX Might Sp. by mechanic-class symmetry: Voltage (NEKVvF) and Wrath (JBDMhV) are golden-proven on that line and share this 80% pool; no Grand Epic capture yet."
     },
     {
       "modifier": "Honing",
@@ -3486,7 +3486,7 @@
       "key_slug": "pendulum-delta"
     },
     {
-      "modifier": "Δ Pendulum (lv240)",
+      "modifier": "Δ Pendulum",
       "boost_type": "fc_dmg_cap",
       "series": "ex",
       "scaling_kind": "conditional_flat",
@@ -3596,25 +3596,6 @@
       "value": 2.5,
       "value_unit": "percent",
       "condition": {
-        "gte": 1,
-        "type": "transcendence_step"
-      },
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki: lv210 upgrade adds 2.5% special C.A. DMG cap (JBDMhV tr3: 18.5 = 16 + 2.5).",
-      "key_slug": "pendulum-gamma"
-    },
-    {
-      "modifier": "γ Pendulum (lv240)",
-      "boost_type": "sp_ca_cap",
-      "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 2.5,
-      "value_unit": "percent",
-      "condition": {
         "gte": 4,
         "type": "transcendence_step"
       },
@@ -3624,6 +3605,25 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "gbf.wiki: lv240 upgrades special C.A. DMG cap to 5% (additive +2.5 on the lv210 row).",
+      "key_slug": "pendulum-gamma"
+    },
+    {
+      "modifier": "γ Pendulum",
+      "boost_type": "sp_ca_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv210 upgrade adds 2.5% special C.A. DMG cap (JBDMhV tr3: 18.5 = 16 + 2.5).",
       "key_slug": "pendulum-gamma"
     }
   ]

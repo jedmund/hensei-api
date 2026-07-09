@@ -24,7 +24,9 @@ class WeaponSkillEffect < ApplicationRecord
   validates :target_instance, inclusion: { in: TARGET_INSTANCES }, allow_nil: true
   validates :stacking, inclusion: { in: STACKINGS }
   validates :applies_to, inclusion: { in: APPLIES_TO }
-  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug weapon_skill_version_id] }
+  # condition is in the scope so tiered key upgrades (Δ/γ Pendulum at transcendence
+  # steps 1/4) can coexist as separate rows under one modifier.
+  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug weapon_skill_version_id condition] }
 
   # Conditional/fixed effects for a weapon-skill version, keyed by modifier.
   scope :for_skill, ->(modifier:) { where(modifier: modifier) }

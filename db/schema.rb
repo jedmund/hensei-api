@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_08_300001) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_09_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1406,9 +1406,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_08_300001) do
     t.datetime "manually_edited_at"
     t.string "provenance"
     t.index ["key_slug"], name: "index_weapon_skill_effects_on_key_slug"
-    t.index ["modifier", "boost_type", "scaling_kind", "key_slug"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
+    t.index ["modifier", "boost_type", "scaling_kind", "key_slug", "condition"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
-    t.index ["weapon_skill_version_id", "boost_type", "scaling_kind"], name: "index_wse_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
+    t.index ["weapon_skill_version_id", "boost_type", "scaling_kind", "condition"], name: "index_wse_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
     t.index ["weapon_skill_version_id"], name: "index_weapon_skill_effects_on_weapon_skill_version_id"
   end
 
