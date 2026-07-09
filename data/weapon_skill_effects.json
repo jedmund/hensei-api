@@ -1163,6 +1163,19 @@
       "notes": "50% Heal Cap to all allies."
     },
     {
+      "modifier": "Heed",
+      "boost_type": "counter_dmg",
+      "scaling_kind": "static",
+      "value": 3.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "White Hawk SL10 Varuna/Varuna, Phantasmas SL15 Hades/Hades, and Abyss Striker SL15 Celeste/Celeste show Counter Rate 3%, so this line is not summon-aura amplified."
+    },
+    {
       "modifier": "Gauph Key Dio",
       "boost_type": "heal_cap",
       "series": "ex",

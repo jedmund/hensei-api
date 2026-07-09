@@ -203,6 +203,7 @@
     "category": "utility",
     "grid_cap": 20.0,
     "cap_is_flat": false,
+    "amplifiable": false,
     "stacking_rule": "additive",
     "notes": "Chance to dodge and counter. Dodge chance caps at 20% total. Multiple weapons stack additively."
   },
