@@ -42,6 +42,7 @@ namespace :granblue do
       'cb-dmg' => '04_icon_cb_dmg.png',
       'cb-amp' => '04_icon_cb_dmg_amplify.png',
       'fc-amp' => '04_icon_fc_dmg_amplify.png',
+      'fc-dmg-cap' => '04_icon_fc_dmg_cap.png',
       'debuff-res' => '02_icon_debuff_res.png',
       'added-hp' => '06_icon_hp.png', # overskill (teal) HP
       # Befoulment "Hit" lines (no game file found for the debuff one - text fallback)
