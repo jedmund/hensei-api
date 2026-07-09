@@ -96,7 +96,7 @@ module GridDamage
       ["ca_dmg_hit", nil, "C.A. DMG Hit", "bf-ca-dmg", "befoulment"],
       ["hp_hit", nil, "HP Hit", "bf-hp", "befoulment"],
       ["def_hit", nil, "DEF Hit", "bf-def", "befoulment"],
-      ["debuff_hit", nil, "Debuff Hit", "bf-debuff", "befoulment"],
+      ["debuff_hit", nil, "Debuff S. Hit", "bf-debuff", "befoulment"],
       ["turn_dmg_hit", nil, "Turn DMG", "bf-turn-dmg", "befoulment"],
       # AX skills (purple labels)
       ["hp_ax", nil, "HP (AX)", "ax-hp", "ax"],

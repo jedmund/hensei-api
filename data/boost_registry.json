@@ -533,7 +533,7 @@
     },
     {
       "boost_type": "debuff_hit",
-      "label_en": "Debuff Hit",
+      "label_en": "Debuff S. Hit",
       "slug": "bf-debuff",
       "group": "befoulment",
       "position": 74
