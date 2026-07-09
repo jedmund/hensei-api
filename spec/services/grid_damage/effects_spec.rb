@@ -35,13 +35,13 @@ RSpec.describe GridDamage::Effects do
     expect(val(e)).to eq(4.0) # 2 × min(3, 2)
   end
 
-  it "foe_hp_supplemental → the per-copy cap (assumes max foe HP)" do
-    expect(val(EffStruct.new(scaling_kind: "foe_hp_supplemental", per_copy_cap: 50_000))).to eq(50_000.0)
+  it "supplemental_cap → the per-copy cap when raw damage reaches cap" do
+    expect(val(EffStruct.new(scaling_kind: "supplemental_cap", per_copy_cap: 50_000))).to eq(50_000.0)
   end
 
-  it "foe_hp_supplemental evaluates missing-HP cap formulas" do
+  it "supplemental_cap evaluates missing-HP cap formulas" do
     effect = EffStruct.new(
-      scaling_kind: "foe_hp_supplemental",
+      scaling_kind: "supplemental_cap",
       cap_formula: "50000*((maxhp-curhp)/maxhp)+10000"
     )
 
@@ -52,9 +52,9 @@ RSpec.describe GridDamage::Effects do
     expect(val(effect, state: { hp_percent: 1 })).to eq(60_000.0)
   end
 
-  it "foe_hp_supplemental matches Marvel's HP cap anchors" do
+  it "supplemental_cap evaluates Marvel's ally-HP cap anchors" do
     effect = EffStruct.new(
-      scaling_kind: "foe_hp_supplemental",
+      scaling_kind: "supplemental_cap",
       cap_formula: "100000*((maxhp-curhp)/maxhp)+50000"
     )
 
@@ -65,9 +65,9 @@ RSpec.describe GridDamage::Effects do
     expect(val(effect, state: { hp_percent: 1 })).to eq(150_000.0)
   end
 
-  it "foe_hp_supplemental evaluates current-HP cap formulas" do
+  it "supplemental_cap evaluates current-HP cap formulas" do
     effect = EffStruct.new(
-      scaling_kind: "foe_hp_supplemental",
+      scaling_kind: "supplemental_cap",
       cap_formula: "500000*(curhp/maxhp)+100000"
     )
 

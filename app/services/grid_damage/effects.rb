@@ -4,7 +4,7 @@ module GridDamage
   # Phase 5: evaluates the grid's weapon_skill_effects (the conditional/special track) at a
   # battle state into Aggregator::Contributions, to merge with the Phase 1/2 data
   # contributions. Covers static/flat, conditional_flat, per_grid_count,
-  # foe_hp_supplemental, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
+  # supplemental_cap, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
     CAP_FORMULA_PATTERN = %r{
@@ -74,7 +74,7 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: false)
       when "hp_missing_linear"
         hp_linear_value(effect, state: state, missing: true)
-      when "foe_hp_supplemental"
+      when "supplemental_cap"
         supplemental_cap(effect, state: state)
       when "ally_hp_scaled", "current_hp_scaled" # TODO: remaining max-HP placeholder; see docs/damage/18-gap-backlog.md
         effect.value&.to_f

@@ -4,7 +4,7 @@
 # Complements WeaponSkillDatum (SL-grid scaling): a skill type may have rows in
 # both. See docs/damage/08-scaling-data-pipeline.md, 09-calculator-mvp.md.
 class WeaponSkillEffect < ApplicationRecord
-  SCALING_KINDS = %w[foe_hp_supplemental per_grid_count conditional_flat
+  SCALING_KINDS = %w[supplemental_cap per_grid_count conditional_flat
                      ally_hp_scaled current_hp_scaled bonus_dmg flat static
                      specialty_scaled persistence_supp hp_linear_cutoff
                      hp_current_linear hp_missing_linear].freeze

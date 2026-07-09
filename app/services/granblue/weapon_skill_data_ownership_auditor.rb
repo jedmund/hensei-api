@@ -17,7 +17,7 @@ module Granblue
       ["Blow", "bonus_elem_dmg", "bonus_dmg", nil] => "source_gap",
       ["Essence", "atk", "static", nil] => "targeting_rule",
       ["Insignia", "turn_dmg", "per_grid_count", nil] => "duplicate_metadata",
-      ["Marvel", "skill_dmg_supp", "foe_hp_supplemental", nil] => "source_gap"
+      ["Marvel", "skill_dmg_supp", "supplemental_cap", nil] => "cap_formula_only"
     }.freeze
 
     TABLE_VALUED_SCALING_KINDS = %w[specialty_scaled].freeze

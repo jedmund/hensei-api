@@ -48,7 +48,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
         row(modifier: "Blow", boost_type: "bonus_elem_dmg", scaling_kind: "bonus_dmg"),
         row(modifier: "Essence", boost_type: "atk", scaling_kind: "static"),
         row(modifier: "Insignia", boost_type: "turn_dmg", scaling_kind: "per_grid_count"),
-        row(modifier: "Marvel", boost_type: "skill_dmg_supp", scaling_kind: "foe_hp_supplemental")
+        row(modifier: "Marvel", boost_type: "skill_dmg_supp", scaling_kind: "supplemental_cap")
       ],
       boost_types: [
         boost_type("hp_dmg", grid_cap: 40.0),

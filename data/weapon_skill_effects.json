@@ -782,7 +782,7 @@
     {
       "modifier": "Craft",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 20000.0,
@@ -1067,7 +1067,7 @@
     {
       "modifier": "Fortitude",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 100000.0,
@@ -1088,7 +1088,7 @@
     {
       "modifier": "Frailty",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 20000.0,
@@ -1733,7 +1733,7 @@
     {
       "modifier": "Initiation",
       "boost_type": "ca_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 5.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 1000000.0,
@@ -1768,7 +1768,7 @@
     {
       "modifier": "Maneuver",
       "boost_type": "na_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 50000.0,
@@ -1787,13 +1787,11 @@
     {
       "modifier": "Marvel",
       "boost_type": "skill_dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
-      "value_unit": "percent_foe_max_hp",
+      "scaling_kind": "supplemental_cap",
       "total_cap": 200000.0,
       "cap_formula": "100000*((maxhp-curhp)/maxhp)+50000",
       "target_instance": "skill",
       "depends_on": [
-        "foe_max_hp",
         "hp_percent"
       ],
       "aura_boostable": false,
@@ -1801,7 +1799,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "VERIFY: supplemental strength % not stated in prose. Cap 50k-150k by HP validated by Wilhelm Militis HP sweep."
+      "notes": "Cap 50k-150k scales from water allies' current HP and is validated by Wilhelm Militis HP sweep. Raw damage-strength modeling is out of scope for the boost panel."
     },
     {
       "modifier": "Oblivion Teluma",
@@ -1850,7 +1848,7 @@
     {
       "modifier": "Pact",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 50000.0,
@@ -2511,7 +2509,7 @@
     {
       "modifier": "Quenching",
       "boost_type": "ca_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 5.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 1000000.0,
@@ -2813,7 +2811,7 @@
     {
       "modifier": "Spectacle",
       "boost_type": "skill_dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 100000.0,
