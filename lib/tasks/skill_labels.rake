@@ -45,8 +45,9 @@ namespace :granblue do
       'fc-dmg-cap' => '04_icon_fc_dmg_cap.png',
       'debuff-res' => '02_icon_debuff_res.png',
       'added-hp' => '06_icon_hp.png', # overskill (teal) HP
-      # Befoulment "Hit" lines (no game file found for the debuff one - text fallback)
+      # Befoulment "Hit" lines
       'bf-atk' => '05_icon_atk_down.png',
+      'bf-debuff' => '05_icon_debuff_suc_down.png',
       'bf-da-rate' => '05_icon_da_rate_down.png',
       'bf-ta-rate' => '05_icon_ta_rate_down.png',
       'bf-skill-dmg' => '05_icon_skill_dmg_down.png',
