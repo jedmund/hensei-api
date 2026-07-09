@@ -180,6 +180,15 @@
     "notes": "Amplify all damage types."
   },
   {
+    "key": "plain_amp",
+    "name_en": "DMG Amp. (Non-elem. Foe)",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Amplify damage against non-elemental foes."
+  },
+  {
     "key": "heal_cap",
     "name_en": "Heal Cap",
     "category": "utility",
@@ -261,6 +270,15 @@
     "notes": null
   },
   {
+    "key": "e_atk",
+    "name_en": "E. ATK",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Elemental ATK boost that is not turn-based Progression."
+  },
+  {
     "key": "e_atk_prog",
     "name_en": "E. ATK (Prog.)",
     "category": "offensive",
@@ -336,10 +354,10 @@
     "key": "hp_dmg",
     "name_en": "HP DMG",
     "category": "offensive",
-    "grid_cap": null,
+    "grid_cap": 40.0,
     "cap_is_flat": false,
     "stacking_rule": "additive",
-    "notes": "Damage based on current HP (Bloodshed)."
+    "notes": "Damage based on current HP (Bloodshed); Bloodshed HP DMG stacks to 40%."
   },
   {
     "key": "turn_dmg",

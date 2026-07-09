@@ -38,6 +38,26 @@ RSpec.describe GridDamage::Effects do
     expect(val(EffStruct.new(scaling_kind: "foe_hp_supplemental", per_copy_cap: 50_000))).to eq(50_000.0)
   end
 
+  it "hp_current_linear scales floor to cap with current HP and treats 1 as the endpoint" do
+    effect = EffStruct.new(scaling_kind: "hp_current_linear", value: 5.0, total_cap: 20.0)
+
+    expect(val(effect, state: { hp_percent: 100 })).to eq(20.0)
+    expect(val(effect, state: { hp_percent: 75 })).to eq(16.25)
+    expect(val(effect, state: { hp_percent: 50 })).to eq(12.5)
+    expect(val(effect, state: { hp_percent: 25 })).to eq(8.75)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(5.0)
+  end
+
+  it "hp_missing_linear scales floor to cap with missing HP and treats 1 as the endpoint" do
+    effect = EffStruct.new(scaling_kind: "hp_missing_linear", value: 5.0, total_cap: 35.0)
+
+    expect(val(effect, state: { hp_percent: 100 })).to eq(5.0)
+    expect(val(effect, state: { hp_percent: 75 })).to eq(12.5)
+    expect(val(effect, state: { hp_percent: 50 })).to eq(20.0)
+    expect(val(effect, state: { hp_percent: 25 })).to eq(27.5)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(35.0)
+  end
+
   it "returns nil for count bases needing weapon-group tags we lack (epic/militis)" do
     expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "epic"))).to be_nil
   end

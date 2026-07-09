@@ -257,6 +257,7 @@
       "modifier": "Ascendancy",
       "boost_type": "sp_ca_cap",
       "scaling_kind": "flat",
+      "value": 10.0,
       "value_unit": "percent",
       "total_cap": 30.0,
       "aura_boostable": false,
@@ -264,7 +265,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "VERIFY: per-copy value not in prose; Sp. C.A. DMG Cap Up stacks to 30%."
+      "notes": "10% Special C.A. DMG Cap from family template; WpnSkillAscendancy states it stacks to 30%."
     },
     {
       "modifier": "Athos",
@@ -917,7 +918,7 @@
     {
       "modifier": "Exertion",
       "boost_type": "da",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_current_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 20.0,
@@ -929,12 +930,12 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "DA = 15%*(curHP/maxHP)+5%; 20% full HP -> 5% at 1 HP. value=floor, total_cap=ceiling."
+      "notes": "DA = 15%*(curHP/maxHP)+5%; 20% full HP -> 5% at 1 HP. value=floor, total_cap=ceiling. Validated by Plume of Suparna Militis HP sweep."
     },
     {
       "modifier": "Exertion",
       "boost_type": "ta",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_current_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 20.0,
@@ -946,7 +947,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "TA, same curve as DA."
+      "notes": "TA, same curve as DA. Validated by Plume of Suparna Militis HP sweep."
     },
     {
       "modifier": "Fathoms",
@@ -2856,7 +2857,7 @@
     {
       "modifier": "Surge",
       "boost_type": "da",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_missing_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 35.0,
@@ -2868,12 +2869,12 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "DA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP: 30%*((maxhp-curhp)/maxhp)+5%. value=floor, total_cap=ceiling."
+      "notes": "DA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP: 30%*((maxhp-curhp)/maxhp)+5%. value=floor, total_cap=ceiling. Validated by Tatjenen HP sweep."
     },
     {
       "modifier": "Surge",
       "boost_type": "ta",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_missing_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 35.0,
@@ -2885,7 +2886,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA."
+      "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA. Validated by Tatjenen HP sweep."
     },
     {
       "modifier": "Trituration",

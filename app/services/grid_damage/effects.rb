@@ -60,13 +60,30 @@ module GridDamage
       when "hp_linear_cutoff"
         hp = state.fetch(:hp_percent, 100).to_f
         hp < 25 ? nil : effect.value.to_f * hp / 100.0
+      when "hp_current_linear"
+        hp_linear_value(effect, state: state, missing: false)
+      when "hp_missing_linear"
+        hp_linear_value(effect, state: state, missing: true)
       when "foe_hp_supplemental"
         effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
-      when "ally_hp_scaled", "current_hp_scaled" # rubocop:disable Lint/DuplicateBranch -- TODO: HP curve placeholder
+      when "ally_hp_scaled", "current_hp_scaled" # TODO: remaining max-HP placeholder; see docs/damage/18-gap-backlog.md
         effect.value&.to_f
       when "specialty_scaled"
         specialty_value(effect, composition: composition, state: state)
       end
+    end
+
+    def hp_linear_value(effect, state:, missing:)
+      floor = effect.value&.to_f
+      ceiling = effect.total_cap&.to_f
+      return nil if floor.nil? || ceiling.nil?
+
+      # The in-game calculator's "1%" anchor behaves as the 1-HP endpoint for these
+      # linear MA skills: Exertion shows 5%, Surge shows 35%.
+      hp = state.fetch(:hp_percent, 100).to_f
+      current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
+      ratio = missing ? 1.0 - current_ratio : current_ratio
+      floor + ((ceiling - floor) * ratio)
     end
 
     # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon
