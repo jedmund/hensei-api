@@ -7,6 +7,16 @@ module GridDamage
   # foe_hp_supplemental, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
+    CAP_FORMULA_PATTERN = %r{
+      \A
+      (?<slope>\d+(?:\.\d+)?)
+      \*
+      (?<ratio>\(\(maxhp-curhp\)/maxhp\)|\(curhp/maxhp\))
+      \+
+      (?<base>\d+(?:\.\d+)?)
+      \z
+    }x.freeze
+
     module_function
 
     def contributions(party, state: {}, composition: nil)
@@ -65,7 +75,7 @@ module GridDamage
       when "hp_missing_linear"
         hp_linear_value(effect, state: state, missing: true)
       when "foe_hp_supplemental"
-        effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
+        supplemental_cap(effect, state: state)
       when "ally_hp_scaled", "current_hp_scaled" # TODO: remaining max-HP placeholder; see docs/damage/18-gap-backlog.md
         effect.value&.to_f
       when "specialty_scaled"
@@ -84,6 +94,22 @@ module GridDamage
       current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
       ratio = missing ? 1.0 - current_ratio : current_ratio
       floor + ((ceiling - floor) * ratio)
+    end
+
+    def supplemental_cap(effect, state:)
+      return cap_formula_value(effect.cap_formula, state: state) if effect.cap_formula.present?
+
+      effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
+    end
+
+    def cap_formula_value(formula, state:)
+      match = formula.to_s.delete(" ").match(CAP_FORMULA_PATTERN)
+      return nil unless match
+
+      hp = state.fetch(:hp_percent, 100).to_f
+      current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
+      ratio = match[:ratio].include?("maxhp-curhp") ? 1.0 - current_ratio : current_ratio
+      match[:base].to_f + (match[:slope].to_f * ratio)
     end
 
     # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon

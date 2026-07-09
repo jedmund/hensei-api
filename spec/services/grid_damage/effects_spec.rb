@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe GridDamage::Effects do
   EffStruct = Struct.new(:scaling_kind, :boost_type, :series, :value, :condition, :count_basis, # rubocop:disable Lint/ConstantDefinitionInBlock
                          :count_cap, :per_copy_cap, :total_cap, :shared_cap_group, :modifier,
+                         :cap_formula,
                          keyword_init: true)
   WepStruct = Struct.new(:proficiency, :granblue_id, :max_skill_level, :max_level, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
 
@@ -36,6 +37,43 @@ RSpec.describe GridDamage::Effects do
 
   it "foe_hp_supplemental → the per-copy cap (assumes max foe HP)" do
     expect(val(EffStruct.new(scaling_kind: "foe_hp_supplemental", per_copy_cap: 50_000))).to eq(50_000.0)
+  end
+
+  it "foe_hp_supplemental evaluates missing-HP cap formulas" do
+    effect = EffStruct.new(
+      scaling_kind: "foe_hp_supplemental",
+      cap_formula: "50000*((maxhp-curhp)/maxhp)+10000"
+    )
+
+    expect(val(effect, state: { hp_percent: 100 })).to eq(10_000.0)
+    expect(val(effect, state: { hp_percent: 75 })).to eq(22_500.0)
+    expect(val(effect, state: { hp_percent: 50 })).to eq(35_000.0)
+    expect(val(effect, state: { hp_percent: 25 })).to eq(47_500.0)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(60_000.0)
+  end
+
+  it "foe_hp_supplemental matches Marvel's HP cap anchors" do
+    effect = EffStruct.new(
+      scaling_kind: "foe_hp_supplemental",
+      cap_formula: "100000*((maxhp-curhp)/maxhp)+50000"
+    )
+
+    expect(val(effect, state: { hp_percent: 100 })).to eq(50_000.0)
+    expect(val(effect, state: { hp_percent: 75 })).to eq(75_000.0)
+    expect(val(effect, state: { hp_percent: 50 })).to eq(100_000.0)
+    expect(val(effect, state: { hp_percent: 25 })).to eq(125_000.0)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(150_000.0)
+  end
+
+  it "foe_hp_supplemental evaluates current-HP cap formulas" do
+    effect = EffStruct.new(
+      scaling_kind: "foe_hp_supplemental",
+      cap_formula: "500000*(curhp/maxhp)+100000"
+    )
+
+    expect(val(effect, state: { hp_percent: 100 })).to eq(600_000.0)
+    expect(val(effect, state: { hp_percent: 50 })).to eq(350_000.0)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(100_000.0)
   end
 
   it "hp_current_linear scales floor to cap with current HP and treats 1 as the endpoint" do

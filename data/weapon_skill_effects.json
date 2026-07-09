@@ -1801,7 +1801,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "VERIFY: supplemental strength % not stated in prose; cap 50k-150k by HP."
+      "notes": "VERIFY: supplemental strength % not stated in prose. Cap 50k-150k by HP validated by Wilhelm Militis HP sweep."
     },
     {
       "modifier": "Oblivion Teluma",
