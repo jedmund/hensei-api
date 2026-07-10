@@ -2824,6 +2824,66 @@
       "notes": "+20% DMG cap only in Arcarum/Replicard; same-element Sephira Maxi do not stack."
     },
     {
+      "modifier": "Sephira Manus",
+      "boost_type": "da",
+      "scaling_kind": "conditional_flat",
+      "value": 54.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Wilhelm Militis with Arcarum ON/OFF shows DA 60% vs 6%; this row is the +54% Arcarum delta."
+    },
+    {
+      "modifier": "Sephira Manus",
+      "boost_type": "ta",
+      "scaling_kind": "conditional_flat",
+      "value": 54.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Wilhelm Militis with Arcarum ON/OFF shows TA 60% vs 6%; this row is the +54% Arcarum delta."
+    },
+    {
+      "modifier": "Sephira Salire",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Koukouvagia Militis with Arcarum ON/OFF shows N.A. DMG Cap 10% vs 3%; this row is the +7% Arcarum delta."
+    },
+    {
       "modifier": "Spectacle",
       "boost_type": "skill_dmg_supp",
       "scaling_kind": "supplemental_cap",

@@ -107,6 +107,7 @@ module Granblue
       @effect_rows.each do |effect|
         next if effect["value"].nil?
         next unless @data_keys.include?([effect.fetch("modifier"), effect.fetch("boost_type")])
+        next if conditional_delta_effect?(effect)
 
         add(:error, "duplicate_numeric_owner",
             "Same modifier/boost_type has numeric rows in both weapon_skill_data and weapon_skill_effects.",
@@ -122,6 +123,10 @@ module Granblue
       DOCUMENTATION_SCALING_KINDS.include?(effect["scaling_kind"])
     end
 
+    def conditional_delta_effect?(effect)
+      effect["scaling_kind"] == "conditional_flat" && effect["condition"].present?
+    end
+
     def effect_key(effect)
       [effect.fetch("modifier"), effect.fetch("boost_type"), effect.fetch("scaling_kind"), effect["key_slug"]]
     end
@@ -131,7 +136,8 @@ module Granblue
         modifier: effect["modifier"],
         boost_type: effect["boost_type"],
         scaling_kind: effect["scaling_kind"],
-        key_slug: effect["key_slug"]
+        key_slug: effect["key_slug"],
+        condition: effect["condition"]
       }.compact
     end
 

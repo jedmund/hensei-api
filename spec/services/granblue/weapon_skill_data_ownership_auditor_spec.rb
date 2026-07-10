@@ -78,6 +78,27 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
     expect(result).to be_ok
   end
 
+  it "allows conditional effect deltas on top of baseline data rows" do
+    write_dataset(
+      root: @root,
+      data: [row(modifier: "Sephira Manus", boost_type: "da")],
+      effects: [
+        row(
+          modifier: "Sephira Manus",
+          boost_type: "da",
+          scaling_kind: "conditional_flat",
+          value: 54.0,
+          condition: { "type" => "arcarum", "eq" => true }
+        )
+      ],
+      boost_types: [boost_type("da")]
+    )
+
+    result = described_class.run(root: @root)
+
+    expect(result).to be_ok
+  end
+
   it "fails an unclassified scalar-like null effect row" do
     write_dataset(
       root: @root,
