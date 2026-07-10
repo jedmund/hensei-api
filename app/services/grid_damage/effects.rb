@@ -82,6 +82,8 @@ module GridDamage
         effect.value&.to_f
       when "specialty_scaled"
         specialty_value(effect, composition: composition, state: state)
+      when "documentation"
+        nil
       end
     end
 

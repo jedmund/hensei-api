@@ -13,14 +13,12 @@ module Granblue
     end
 
     INTENTIONAL_NULL_EFFECTS = {
-      ["Bloodshed", "hp_dmg", "static", nil] => "duplicate_metadata",
       ["Blow", "bonus_elem_dmg", "bonus_dmg", nil] => "source_gap",
-      ["Essence", "atk", "static", nil] => "targeting_rule",
-      ["Insignia", "turn_dmg", "per_grid_count", nil] => "duplicate_metadata",
       ["Marvel", "skill_dmg_supp", "supplemental_cap", nil] => "cap_formula_only"
     }.freeze
 
     TABLE_VALUED_SCALING_KINDS = %w[specialty_scaled].freeze
+    DOCUMENTATION_SCALING_KINDS = %w[documentation].freeze
 
     def self.run(root: Rails.root)
       new(root: root).run
@@ -67,6 +65,7 @@ module Granblue
           check_table_valued_effect(effect)
           next
         end
+        next if documentation_effect?(effect)
 
         next unless effect["value"].nil?
 
@@ -117,6 +116,10 @@ module Granblue
 
     def table_valued_effect?(effect)
       TABLE_VALUED_SCALING_KINDS.include?(effect["scaling_kind"])
+    end
+
+    def documentation_effect?(effect)
+      DOCUMENTATION_SCALING_KINDS.include?(effect["scaling_kind"])
     end
 
     def effect_key(effect)

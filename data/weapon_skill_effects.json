@@ -361,7 +361,7 @@
     {
       "modifier": "Bloodshed",
       "boost_type": "hp_dmg",
-      "scaling_kind": "static",
+      "scaling_kind": "documentation",
       "value_unit": "percent",
       "total_cap": 40.0,
       "aura_boostable": false,
@@ -909,7 +909,7 @@
     {
       "modifier": "Essence",
       "boost_type": "atk",
-      "scaling_kind": "static",
+      "scaling_kind": "documentation",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
@@ -1768,7 +1768,7 @@
     {
       "modifier": "Insignia",
       "boost_type": "turn_dmg",
-      "scaling_kind": "per_grid_count",
+      "scaling_kind": "documentation",
       "value_unit": "flat",
       "depends_on": [
         "turn"

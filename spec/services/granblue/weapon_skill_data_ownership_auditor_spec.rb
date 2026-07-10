@@ -39,15 +39,15 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
     end
   end
 
-  it "passes when null effect rows are explicitly classified and caps live on the numeric owner" do
+  it "passes when null effect rows are documentation or explicitly classified gaps" do
     write_dataset(
       root: @root,
       data: [row(modifier: "Bloodshed", boost_type: "hp_dmg")],
       effects: [
-        row(modifier: "Bloodshed", boost_type: "hp_dmg", scaling_kind: "static", total_cap: 40.0),
+        row(modifier: "Bloodshed", boost_type: "hp_dmg", scaling_kind: "documentation", total_cap: 40.0),
         row(modifier: "Blow", boost_type: "bonus_elem_dmg", scaling_kind: "bonus_dmg"),
-        row(modifier: "Essence", boost_type: "atk", scaling_kind: "static"),
-        row(modifier: "Insignia", boost_type: "turn_dmg", scaling_kind: "per_grid_count"),
+        row(modifier: "Essence", boost_type: "atk", scaling_kind: "documentation"),
+        row(modifier: "Insignia", boost_type: "turn_dmg", scaling_kind: "documentation"),
         row(modifier: "Marvel", boost_type: "skill_dmg_supp", scaling_kind: "supplemental_cap")
       ],
       boost_types: [
@@ -63,6 +63,19 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
 
     expect(result).to be_ok
     expect(result.findings).to be_empty
+  end
+
+  it "allows documentation rows without treating them as numeric owners" do
+    write_dataset(
+      root: @root,
+      data: [row(modifier: "Essence", boost_type: "atk")],
+      effects: [row(modifier: "Essence", boost_type: "atk", scaling_kind: "documentation")],
+      boost_types: [boost_type("atk")]
+    )
+
+    result = described_class.run(root: @root)
+
+    expect(result).to be_ok
   end
 
   it "fails an unclassified scalar-like null effect row" do

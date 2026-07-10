@@ -7,7 +7,7 @@ class WeaponSkillEffect < ApplicationRecord
   SCALING_KINDS = %w[supplemental_cap per_grid_count conditional_flat
                      ally_hp_scaled ally_max_hp_scaled current_hp_scaled bonus_dmg flat static
                      specialty_scaled persistence_supp hp_linear_cutoff
-                     hp_current_linear hp_missing_linear].freeze
+                     hp_current_linear hp_missing_linear documentation].freeze
   VALUE_UNITS = %w[percent percent_foe_max_hp percent_ally_max_hp flat].freeze
   SERIES_VALUES = %w[normal omega ex odious].freeze
   TARGET_INSTANCES = %w[all normal_attack charge_attack skill critical].freeze
