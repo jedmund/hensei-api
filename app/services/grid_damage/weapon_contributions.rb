@@ -9,7 +9,7 @@ module GridDamage
 
     # Series NOT boosted by summons (gbf.wiki/Weapon_Skills + in-game): their skills land on the
     # panel flat, like EX. Their contributions are non-amplifiable.
-    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer].freeze
+    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer ancestral].freeze
 
     # frames whose enhancement the WsBox aura_boostable flag governs
     AURA_BOOSTED_FRAMES = %w[normal omega].freeze
@@ -26,14 +26,7 @@ module GridDamage
         next unless w
 
         skill_level = skill_level_for(w, gw)
-        series = w.weapon_series
-        amplifiable = if series.nil?
-                        true
-                      elsif series.summon_boosted.nil? # registry unseeded — code default
-                        !NON_SUMMON_BOOSTED_SERIES.include?(series.slug)
-                      else
-                        series.summon_boosted
-                      end
+        amplifiable = series_summon_boosted?(w.weapon_series)
         active_versions(w, gw).each do |v|
           # The frame is the weapon's series (normal/omega/ex/…); for aura-word-less special
           # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the
@@ -88,6 +81,13 @@ module GridDamage
     def variant_rank(name)
       rank = ROMAN_RANK[name[ROMAN_SUFFIX, 1]] || 1
       name.match?(TRUE_PREFIX) ? rank + 10 : rank
+    end
+
+    def series_summon_boosted?(series)
+      return true if series.nil?
+      return series.summon_boosted unless series.summon_boosted.nil?
+
+      !NON_SUMMON_BOOSTED_SERIES.include?(series.slug)
     end
 
     def skill_name(version)

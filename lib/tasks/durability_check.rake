@@ -69,7 +69,7 @@ namespace :granblue do
         row["hidden"] = true if b.hidden
         row.size > 1 ? row : nil
       end,
-      "series_summon_boosted" => WeaponSeries.where(summon_boosted: false).order(:slug).pluck(:slug)
+      "series_non_summon_boosted" => WeaponSeries.where(summon_boosted: false).order(:slug).pluck(:slug)
     }
     path = Rails.root.join("data/boost_registry.json")
     File.write(path, "#{JSON.pretty_generate(payload)}\n")

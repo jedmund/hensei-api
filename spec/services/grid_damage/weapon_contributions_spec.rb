@@ -53,4 +53,18 @@ RSpec.describe GridDamage::WeaponContributions do
       expect(sl(weapon_max: nil, uncap: 5)).to eq(15)
     end
   end
+
+  describe ".series_summon_boosted?" do
+    it "keeps ancestral weapons flat before registry data is seeded" do
+      series = instance_double(WeaponSeries, slug: "ancestral", summon_boosted: nil)
+
+      expect(described_class.series_summon_boosted?(series)).to be(false)
+    end
+
+    it "honors the registry flag when present" do
+      series = instance_double(WeaponSeries, slug: "ancestral", summon_boosted: false)
+
+      expect(described_class.series_summon_boosted?(series)).to be(false)
+    end
+  end
 end

@@ -26,8 +26,8 @@ module GridDamage
         w = gw.weapon
         next unless w
 
-        # Non-summon-boosted series (Bahamut/Celestial) land on the panel flat, like EX.
-        amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
+        # Non-summon-boosted series land on the panel flat, like EX.
+        amplifiable = WeaponContributions.series_summon_boosted?(w.weapon_series)
         WeaponContributions.active_versions(w, gw).each do |v|
           # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
           # skill; otherwise fall back to the effect's heuristic series.

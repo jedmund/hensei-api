@@ -20,7 +20,8 @@ RSpec.describe GridDamage::Calculator do
   # SL-curve for `boosts` (sl15 values). max_skill_level 15 + uncap 4 ⇒ evaluates at SL15.
   # Extra opts: `main_hand_only:` for the version; the rest go to the grid weapon.
   def add_weapon(modifier:, series:, position:, boosts:, size: "big", **opts)
-    weapon = create(:weapon, max_skill_level: 15)
+    weapon_series = opts.delete(:weapon_series)
+    weapon = create(:weapon, max_skill_level: 15, weapon_series: weapon_series)
     ws = create(:weapon_skill, weapon: weapon)
     create(:weapon_skill_version, weapon_skill: ws, skill_modifier: modifier,
                                   skill_series: series, skill_size: size,
@@ -81,6 +82,14 @@ RSpec.describe GridDamage::Calculator do
       add_weapon(modifier: "Celere", series: "ex", position: 3, main_hand_only: true,
                  boosts: { "atk" => 12.0 })
       expect(described_class.boost_list(party, state: state)["atk"].by_series["ex"]).to eq(30.0)
+    end
+
+    it "does not amplify Ancestral weapon skills with summon auras" do
+      ancestral = create(:weapon_series, slug: "ancestral", summon_boosted: false)
+      add_weapon(modifier: "Fandango", series: "normal", position: 3,
+                 boosts: { "atk" => 33.0 }, size: "ancestral", weapon_series: ancestral)
+
+      expect(described_class.boost_list(party, state: state)["atk"].by_series["normal"]).to eq(73.0)
     end
   end
 

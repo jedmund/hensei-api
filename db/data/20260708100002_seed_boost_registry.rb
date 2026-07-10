@@ -5,7 +5,7 @@
 # per-series summon-boost flag. From here the DB rows are the truth; the
 # constants remain only as bare-database defaults.
 class SeedBoostRegistry < ActiveRecord::Migration[8.0]
-  NON_SUMMON_BOOSTED = %w[bahamut celestial ultima destroyer].freeze
+  NON_SUMMON_BOOSTED = %w[bahamut celestial ultima destroyer ancestral].freeze
 
   def up
     GridDamage::PanelPresenter::LINES.each_with_index do |(key, series, label, slug, group), i|
