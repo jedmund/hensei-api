@@ -34,6 +34,8 @@ module Granblue
         check(mismatches, "#{frame.capitalize} Enh", enh[frame.to_sym], expected)
       end
       @ref.fetch('lines').each do |line|
+        next if line['skip']
+
         result = agg[line.fetch('boost')]
         ours = if line['series']
                  result&.by_series&.dig(line['series'])&.to_f # rubocop:disable Style/SafeNavigationChainLength
