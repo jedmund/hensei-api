@@ -111,7 +111,7 @@ namespace :granblue do
         total += 1
         next if v.skill_modifier.blank? # unique/unrecognized — no scaling expected
         standard += 1
-        if v.weapon_skill_data.exists? then resolved_data += 1
+        if v.weapon_skill_data.any? then resolved_data += 1
         elsif v.weapon_skill_effects.exists? then resolved_effects += 1
         else
           unresolved << v.skill_modifier end

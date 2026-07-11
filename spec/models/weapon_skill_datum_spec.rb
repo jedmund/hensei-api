@@ -180,6 +180,25 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
+    context 'EX Crux' do
+      let!(:normal_crux) do
+        create(:weapon_skill_datum, modifier: 'Crux', boost_type: 'ca_supp',
+                                    series: 'normal', size: 'big', sl15: 105_000)
+      end
+      let!(:unboostable_crux) do
+        create(:weapon_skill_datum, modifier: 'Crux', boost_type: 'ca_supp',
+                                    series: 'ex', size: 'big', sl15: 400_000,
+                                    aura_boostable: false)
+      end
+
+      it 'uses the unboostable EX row instead of boostable normal Crux' do
+        results = described_class.for_skill(modifier: 'Crux', series: 'ex', size: 'big')
+
+        expect(results).to contain_exactly(unboostable_crux)
+        expect(results).not_to include(normal_crux)
+      end
+    end
+
     context 'no fallback for odious series' do
       let!(:normal_omega_datum) do
         create(:weapon_skill_datum, modifier: 'OdiousNoFB', series: 'normal_omega', size: 'big')

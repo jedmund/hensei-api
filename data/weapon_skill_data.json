@@ -737,6 +737,21 @@
   {
     "modifier": "Crux",
     "boost_type": "ca_supp",
+    "series": "ex",
+    "size": "big",
+    "formula_type": "flat",
+    "sl1": 400000.0,
+    "sl10": 400000.0,
+    "sl15": 400000.0,
+    "sl20": 400000.0,
+    "sl25": null,
+    "coefficient": null,
+    "max_value": null,
+    "aura_boostable": false
+  },
+  {
+    "modifier": "Crux",
+    "boost_type": "ca_supp",
     "series": "normal",
     "size": "big",
     "formula_type": "flat",
