@@ -199,6 +199,7 @@ Rails.application.routes.draw do
     end
     resources :weapon_skill_data, only: %i[index show create update destroy]
     resources :weapon_skill_effects, only: %i[index create update destroy]
+    resources :weapon_count_groups, only: %i[index show create update destroy]
     resources :weapon_skill_versions, only: %i[update]
     resources :skills, only: %i[update]
     post 'calculator/validate_panels', to: 'calculator#validate_panels'
