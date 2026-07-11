@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_10_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_11_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1283,6 +1283,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_10_120000) do
     t.index ["weapon_id"], name: "index_weapon_awakenings_on_weapon_id"
   end
 
+  create_table "weapon_count_group_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "weapon_count_group_id", null: false
+    t.uuid "weapon_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["weapon_count_group_id", "weapon_id"], name: "index_wcgm_on_group_and_weapon", unique: true
+    t.index ["weapon_count_group_id"], name: "index_wcgm_on_weapon_count_group_id"
+    t.index ["weapon_id"], name: "index_weapon_count_group_memberships_on_weapon_id"
+  end
+
+  create_table "weapon_count_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "slug", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_weapon_count_groups_on_slug", unique: true
+  end
+
   create_table "weapon_key_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "weapon_key_id", null: false
     t.uuid "weapon_series_id", null: false
@@ -1657,6 +1677,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_10_120000) do
   add_foreign_key "user_edit_keys", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
+  add_foreign_key "weapon_count_group_memberships", "weapon_count_groups"
+  add_foreign_key "weapon_count_group_memberships", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"
   add_foreign_key "weapon_key_series", "weapon_series"
   add_foreign_key "weapon_series_variants", "weapon_series"

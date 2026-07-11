@@ -17,8 +17,8 @@ module GridDamage
 
       gte = condition["gte"]
       case condition["type"]
-      when "weapon_group_count" then composition[:weapon_group_count].to_i >= gte
-      when "same_weapon_type_count" then composition[:max_weapon_type_count].to_i >= gte
+      when "count_basis_gte"
+        GridComposition.count_for_basis(condition["basis"], weapon: weapon, composition: composition) >= gte
       when "same_id_count"      then composition.fetch(:id_counts, {}).fetch(weapon&.granblue_id, 0) >= gte
       when "skill_type_count"   then composition[:skill_type_count].to_i >= gte
       when "foe_debuff_count"   then state[:debuff_count].to_i >= gte

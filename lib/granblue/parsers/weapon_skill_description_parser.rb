@@ -252,7 +252,10 @@ module Granblue
 
       # Light structured condition from common phrasings (extended as needed).
       def self.condition_for(frag)
-        return { "type" => "weapon_group_count", "gte" => 0, "all" => true } if frag.match?(/all weapon groups/i)
+        if frag.match?(/all weapon groups/i)
+          return { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 0, "all" => true }
+        end
+
         nil
       end
 

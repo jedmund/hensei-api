@@ -548,7 +548,7 @@
       "scaling_kind": "per_grid_count",
       "value": 5.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 5,
       "depends_on": [
         "grid_count"
@@ -566,7 +566,7 @@
       "scaling_kind": "per_grid_count",
       "value": 3.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 5,
       "depends_on": [
         "grid_count"
@@ -583,7 +583,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 5,
       "depends_on": [
         "grid_count"
@@ -728,7 +728,8 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "type": "same_weapon_type_count"
+        "basis": "max_same_weapon_type",
+        "type": "count_basis_gte"
       },
       "depends_on": [
         "grid_count"
@@ -748,7 +749,8 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "type": "same_weapon_type_count"
+        "basis": "max_same_weapon_type",
+        "type": "count_basis_gte"
       },
       "depends_on": [
         "grid_count"
@@ -769,7 +771,8 @@
       "total_cap": 20.0,
       "condition": {
         "gte": 4,
-        "type": "same_weapon_type_count"
+        "basis": "max_same_weapon_type",
+        "type": "count_basis_gte"
       },
       "depends_on": [
         "grid_count"
@@ -1055,7 +1058,7 @@
       "value": 4.0,
       "value_unit": "percent",
       "per_copy_cap": 20.0,
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "depends_on": [
         "grid_count"
       ],
@@ -1604,7 +1607,7 @@
       "value_unit": "percent",
       "total_cap": 80.0,
       "shared_cap_group": "voltage_wrath_grand_epic",
-      "count_basis": "epic",
+      "count_basis": "series:epic",
       "depends_on": [
         "grid_count"
       ],
@@ -2969,7 +2972,7 @@
       "value": 23.0,
       "value_unit": "percent",
       "per_copy_cap": 46.0,
-      "count_basis": "militis",
+      "count_basis": "series:militis",
       "depends_on": [
         "grid_count"
       ],
@@ -3387,7 +3390,7 @@
       "value_unit": "percent",
       "total_cap": 80.0,
       "shared_cap_group": "voltage_wrath_grand_epic",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "depends_on": [
         "grid_count"
       ],
@@ -3404,7 +3407,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"
@@ -3425,7 +3428,7 @@
       "value_unit": "percent",
       "total_cap": 80.0,
       "shared_cap_group": "voltage_wrath_grand_epic",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"
@@ -3443,7 +3446,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"
@@ -3460,7 +3463,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"

@@ -25,6 +25,7 @@ class WeaponSkillEffect < ApplicationRecord
   validates :target_instance, inclusion: { in: TARGET_INSTANCES }, allow_nil: true
   validates :stacking, inclusion: { in: STACKINGS }
   validates :applies_to, inclusion: { in: APPLIES_TO }
+  validate :count_basis_is_canonical
   # condition is in the scope so tiered key upgrades (Δ/γ Pendulum at transcendence
   # steps 1/4) can coexist as separate rows under one modifier.
   validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug weapon_skill_version_id condition] }
@@ -36,4 +37,13 @@ class WeaponSkillEffect < ApplicationRecord
   scope :for_key, ->(slug) { where(key_slug: slug) }
   # Canonical modifier-keyed effects (not key- or version-scoped).
   scope :base_effects, -> { where(key_slug: nil, weapon_skill_version_id: nil) }
+
+  private
+
+  def count_basis_is_canonical
+    return if count_basis.blank?
+    return if GridDamage::GridComposition.valid_count_basis?(count_basis)
+
+    errors.add(:count_basis, "must be a canonical GridComposition count basis")
+  end
 end

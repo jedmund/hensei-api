@@ -35,6 +35,8 @@ class Weapon < ApplicationRecord
                   }
 
   has_many :weapon_awakenings
+  has_many :weapon_count_group_memberships, dependent: :destroy
+  has_many :weapon_count_groups, through: :weapon_count_group_memberships
   has_many :awakenings, through: :weapon_awakenings
   has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
   has_many :weapon_skill_versions, through: :weapon_skills

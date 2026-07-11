@@ -171,7 +171,7 @@ module Granblue
         case clause[:scaling]
         when :per_count
           WeaponSkillEffect.create!(attrs.merge(scaling_kind: "per_grid_count", value: clause[:value],
-                                                count_basis: "weapon_type", total_cap: clause[:max],
+                                                count_basis: "same_weapon_type", total_cap: clause[:max],
                                                 shared_cap_group: clause[:shared_cap]))
         when :per_specialty
           WeaponSkillEffect.create!(attrs.merge(scaling_kind: "specialty_scaled",

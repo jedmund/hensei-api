@@ -12,7 +12,7 @@ RSpec.describe GridDamage::Effects do
   let(:weapon) { WepStruct.new(proficiency: 1, granblue_id: "A", max_skill_level: 15, max_level: 200) }
   let(:composition) do
     { weapon_type_counts: { 1 => 3 }, weapon_series_counts: { "epic" => 2, "militis" => 4 },
-      weapon_group_count: 6, omega_skill_count: 2 }
+      distinct_weapon_type_count: 6, omega_skill_count: 2 }
   end
 
   def val(effect, state: {})
@@ -25,16 +25,18 @@ RSpec.describe GridDamage::Effects do
 
   it "conditional_flat → value when the condition is met, nil otherwise" do
     base = { scaling_kind: "conditional_flat", value: 40 }
-    expect(val(EffStruct.new(**base, condition: { "type" => "weapon_group_count", "gte" => 4 }))).to eq(40.0)
-    expect(val(EffStruct.new(**base, condition: { "type" => "weapon_group_count", "gte" => 8 }))).to be_nil
+    met = { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 4 }
+    unmet = { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 8 }
+    expect(val(EffStruct.new(**base, condition: met))).to eq(40.0)
+    expect(val(EffStruct.new(**base, condition: unmet))).to be_nil
   end
 
   it "per_grid_count → value × count(basis)" do
-    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "weapon_group"))).to eq(24.0)
+    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "distinct_weapon_types"))).to eq(24.0)
   end
 
   it "per_grid_count caps the copies at count_cap" do
-    e = EffStruct.new(scaling_kind: "per_grid_count", value: 2, count_basis: "weapon_type", count_cap: 2)
+    e = EffStruct.new(scaling_kind: "per_grid_count", value: 2, count_basis: "same_weapon_type", count_cap: 2)
     expect(val(e)).to eq(4.0) # 2 × min(3, 2)
   end
 
@@ -108,8 +110,14 @@ RSpec.describe GridDamage::Effects do
   end
 
   it "per_grid_count can count weapon series such as epic and militis" do
-    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "epic"))).to eq(8.0)
-    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 23, count_basis: "militis",
+    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "series:epic"))).to eq(8.0)
+    expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 23, count_basis: "series:militis",
                              per_copy_cap: 46))).to eq(46.0)
+  end
+
+  it "rejects legacy count_basis values" do
+    effect = EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "weapon_type")
+
+    expect { val(effect) }.to raise_error(ArgumentError, /Unknown count_basis/)
   end
 end

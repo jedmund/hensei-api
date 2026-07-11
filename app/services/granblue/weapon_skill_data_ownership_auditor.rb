@@ -32,6 +32,7 @@ module Granblue
     def run
       load_rows
       check_boost_type_registry
+      check_count_bases
       check_effect_value_ownership
       check_duplicate_numeric_owners
       Result.new(ok: errors.empty?, findings: @findings)
@@ -77,6 +78,68 @@ module Granblue
         end
 
         check_stranded_null_cap(effect)
+      end
+    end
+
+    def check_count_bases
+      group_slugs = Set.new
+
+      @effect_rows.each do |effect|
+        basis = effect["count_basis"]
+        if basis.present? && !GridDamage::GridComposition.valid_count_basis?(basis)
+          add(:error, "invalid_count_basis",
+              "Effect count_basis must use canonical GridComposition count semantics.",
+              context_for(effect).merge(count_basis: basis))
+        end
+        add_group_slug(group_slugs, basis)
+
+        condition = effect["condition"]
+        next unless condition.is_a?(Hash) && condition["type"] == "count_basis_gte"
+
+        condition_basis = condition["basis"]
+        if GridDamage::GridComposition.valid_count_basis?(condition_basis)
+          add_group_slug(group_slugs, condition_basis)
+          next
+        end
+
+        add(:error, "invalid_condition_count_basis",
+            "count_basis_gte condition must use a canonical GridComposition count basis.",
+            context_for(effect).merge(count_basis: condition_basis))
+      end
+
+      check_weapon_count_groups(group_slugs)
+    end
+
+    def add_group_slug(slugs, basis)
+      return unless basis.to_s.start_with?("group:")
+
+      slugs << basis.split(":", 2).last
+    end
+
+    def check_weapon_count_groups(slugs)
+      return if slugs.empty?
+
+      groups = WeaponCountGroup
+               .left_outer_joins(:weapon_count_group_memberships)
+               .where(slug: slugs.to_a)
+               .group("weapon_count_groups.id")
+               .select("weapon_count_groups.*, COUNT(weapon_count_group_memberships.id) AS memberships_count")
+               .index_by(&:slug)
+
+      slugs.sort.each do |slug|
+        group = groups[slug]
+        unless group
+          add(:error, "missing_weapon_count_group",
+              "group:<slug> count basis must refer to an editable weapon_count_groups DB row.",
+              count_basis: "group:#{slug}")
+          next
+        end
+
+        next unless group.memberships_count.to_i.zero?
+
+        add(:warning, "empty_weapon_count_group",
+            "group:<slug> count basis points at a DB group with no weapon memberships.",
+            count_basis: "group:#{slug}", name_en: group.name_en)
       end
     end
 

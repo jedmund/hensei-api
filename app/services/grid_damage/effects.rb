@@ -155,20 +155,7 @@ module GridDamage
     end
 
     def grid_count(basis, weapon:, composition:, effect: nil)
-      case basis
-      when "weapon_type"  then composition.dig(:weapon_type_counts, weapon.proficiency).to_i
-      when "weapon_group" then composition[:weapon_group_count].to_i
-      when "weapon_series"
-        composition.dig(:weapon_series_counts, weapon.weapon_series&.slug).to_i
-      when "epic", "militis", "grand"
-        composition.dig(:weapon_series_counts, basis).to_i
-      when "omega_skill"  then composition[:omega_skill_count].to_i
-        # characters (incl. MC) whose race is in the effect's condition list — bahamut
-        # weapons' Vita family counts crew, not weapons (HDbPnu: 2% x 5 matching)
-      when "crew_races"
-        races = Array(effect.condition&.dig("races")).map(&:to_i)
-        composition.fetch(:character_races, []).count { |r| races.include?(r.to_i) }
-      end
+      GridComposition.count_for_basis(basis, weapon: weapon, composition: composition, effect: effect)
     end
 
     # Cap-group key: an explicit shared group, else a per-modifier group when the effect
