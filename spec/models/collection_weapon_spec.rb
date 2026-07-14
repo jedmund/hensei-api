@@ -18,9 +18,31 @@ RSpec.describe CollectionWeapon, type: :model do
     subject { build(:collection_weapon, user: user, weapon: weapon) }
 
     describe 'basic validations' do
-      it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
-      it { should validate_inclusion_of(:transcendence_step).in_range(0..10) }
-      it { should validate_inclusion_of(:awakening_level).in_range(1..20) }
+      it { should validate_inclusion_of(:uncap_level).in_range(0..6).with_message('must be between 0 and 6') }
+      it { should validate_inclusion_of(:transcendence_step).in_range(0..10).with_message('must be between 0 and 10') }
+      # awakening_level has allow_nil and a before_validation callback resets it to 1 when awakening_id is blank,
+      # so shoulda's inclusion matcher can't trigger the failure. Test manually instead.
+      it 'rejects awakening_level outside 1..20 when awakening is present' do
+        awakening = create(:awakening, object_type: 'Weapon')
+        cw = build(:collection_weapon, awakening: awakening, awakening_level: 0)
+        expect(cw).not_to be_valid
+        expect(cw.errors[:awakening_level]).to include('must be between 1 and 20')
+      end
+    end
+
+    describe 'descriptive validation messages' do
+      it 'includes descriptive message for invalid uncap_level' do
+        cw = build(:collection_weapon, uncap_level: 7)
+        cw.validate
+        expect(cw.errors[:uncap_level]).to include('must be between 0 and 6')
+      end
+
+      it 'includes descriptive message for invalid awakening_level' do
+        awakening = create(:awakening, object_type: 'Weapon')
+        cw = build(:collection_weapon, awakening: awakening, awakening_level: 21)
+        cw.validate
+        expect(cw.errors[:awakening_level]).to include('must be between 1 and 20')
+      end
     end
 
     describe 'transcendence validations' do
@@ -67,11 +89,34 @@ RSpec.describe CollectionWeapon, type: :model do
       end
 
       context 'when awakening_level > 1 without awakening' do
-        it 'is invalid' do
+        it 'resets awakening_level to 1 via callback, preventing the validation error' do
           collection_weapon = build(:collection_weapon, awakening: nil, awakening_level: 5)
-          expect(collection_weapon).not_to be_valid
-          expect(collection_weapon.errors[:awakening_level]).to include('cannot be set without an awakening')
+          collection_weapon.validate
+          expect(collection_weapon.awakening_level).to eq(1)
+          expect(collection_weapon.errors[:awakening_level]).to be_empty
         end
+      end
+    end
+
+    describe 'awakening_level reset callback' do
+      it 'resets awakening_level to 1 when awakening_id is cleared' do
+        awakening = create(:awakening, object_type: 'Weapon')
+        cw = create(:collection_weapon, awakening: awakening, awakening_level: 5)
+        cw.update!(awakening_id: nil, awakening_level: nil)
+        expect(cw.reload.awakening_level).to eq(1)
+      end
+
+      it 'preserves awakening_level when awakening_id is present' do
+        awakening = create(:awakening, object_type: 'Weapon')
+        cw = create(:collection_weapon, awakening: awakening, awakening_level: 7)
+        cw.update!(awakening_level: 9)
+        expect(cw.reload.awakening_level).to eq(9)
+      end
+
+      it 'allows updating only uncap_level on a weapon without awakening' do
+        cw = create(:collection_weapon, awakening: nil)
+        expect { cw.update!(uncap_level: 4) }.not_to raise_error
+        expect(cw.reload.uncap_level).to eq(4)
       end
     end
 
