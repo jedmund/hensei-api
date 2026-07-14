@@ -20,7 +20,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
         127.0.0.1:1234
         game.granbluefantasy.jp
         chrome-extension://ahacbogimbikgiodaahmacboojcpdfpf
-      ]
+      ] + [/\Ahttps?:\/\/192\.168\.\d+\.\d+:(5173|5174)\z/]
     end
 
     resource '*',
