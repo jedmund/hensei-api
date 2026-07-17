@@ -123,10 +123,11 @@ module Granblue
 
       boost_type = @boost_types[effect.fetch("boost_type")]
       registry_cap = boost_type && boost_type["grid_cap"]
-      return if registry_cap.to_f == cap.to_f
+      return if registry_cap && BigDecimal(registry_cap.to_s) == BigDecimal(cap.to_s)
 
       add(:error, "stranded_null_effect_cap",
-          "Null effect row carries a cap, but the numeric owner is weapon_skill_data. Put the cap on weapon_skill_boost_types or move the value into weapon_skill_effects.",
+          "Null effect row carries a cap, but the numeric owner is weapon_skill_data. " \
+          "Put the cap on weapon_skill_boost_types or move the value into weapon_skill_effects.",
           context_for(effect).merge(effect_total_cap: cap, registry_grid_cap: registry_cap))
     end
 
