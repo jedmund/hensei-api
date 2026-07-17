@@ -122,6 +122,21 @@ class Weapon < ApplicationRecord
     weapon_series&.augment_type || 'no_augment'
   end
 
+  # AX slot rules (gbf.wiki/AX_Skills): 'standard' (Omega/Ancestral — per-primary
+  # secondary pools), 'xeno' (different pools incl. supplementals), 'primal'
+  # (standard pools + EXP/Rupie primaries), 'utility' (Ancient weapons: one
+  # EXP/Rupie slot). Explicit column wins.
+  def effective_ax_type
+    return ax_type if ax_type.present?
+    return unless effective_augment_type == 'ax'
+
+    case weapon_series&.slug
+    when 'xeno' then 'xeno'
+    when 'primal', 'olden-primal' then 'primal'
+    else 'standard'
+    end
+  end
+
   # Promotion scopes
   scope :by_promotion, ->(promotion) { where('? = ANY(promotions)', promotion) }
   scope :in_premium, -> { by_promotion(GranblueEnums::PROMOTIONS[:Premium]) }

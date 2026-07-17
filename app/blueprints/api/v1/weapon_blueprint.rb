@@ -32,6 +32,7 @@ module Api
           has_weapon_keys: w.effective_has_weapon_keys,
           has_awakening: w.effective_has_awakening,
           augment_type: w.effective_augment_type,
+          ax_type: w.effective_ax_type,
           num_weapon_keys: w.effective_num_weapon_keys,
           extra: w.effective_extra,
           element_changeable: w.effective_element_changeable,

@@ -9,29 +9,41 @@ module GridDamage
 
     # Series NOT boosted by summons (gbf.wiki/Weapon_Skills + in-game): their skills land on the
     # panel flat, like EX. Their contributions are non-amplifiable.
-    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer].freeze
+    NON_SUMMON_BOOSTED_SERIES = %w[bahamut celestial ultima destroyer ancestral].freeze
+
+    # frames whose enhancement the WsBox aura_boostable flag governs
+    AURA_BOOSTED_FRAMES = %w[normal omega].freeze
 
     def for_party(party, state: {})
       hp = state.fetch(:hp_percent, 100).to_f
       turn = state.fetch(:turn, 1).to_i
+      # family-level amplifiability from the wiki WsBox header (aura_boostable=no
+      # families land flat regardless of series) — nil/unknown means boostable
+      unboostable_families = WeaponSkillFamily.where(aura_boostable: false).pluck(:name).to_set
       out = []
       party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
         w = gw.weapon
         next unless w
 
         skill_level = skill_level_for(w, gw)
-        amplifiable = !NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
+        amplifiable = series_summon_boosted?(w.weapon_series)
         active_versions(w, gw).each do |v|
           # The frame is the weapon's series (normal/omega/ex/…); for aura-word-less special
           # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the
           # data row's shared `normal_omega` designation as a frame.
           frame = FrameResolver.frame_for(w, v)
+          # The WsBox aura_boostable=no flag describes the optimus/omega auras only —
+          # taboo variants of "flat" families DO amplify (qBOvon: Crux x2 taboo supp
+          # reaches the 1M cap only when enhanced). Ex frames are already factor-1.
+          version_amplifiable = amplifiable &&
+                                !(unboostable_families.include?(v.resolved_modifier) &&
+                                  AURA_BOOSTED_FRAMES.include?(frame))
           v.weapon_skill_data.each do |d|
             value = Scaling.value(d, skill_level: skill_level, hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,
               value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              amplifiable: amplifiable, source_ids: [gw.id],
+              amplifiable: version_amplifiable, source_ids: [gw.id],
               source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
               source_icon: v.icon_stem
             )
@@ -71,6 +83,13 @@ module GridDamage
       name.match?(TRUE_PREFIX) ? rank + 10 : rank
     end
 
+    def series_summon_boosted?(series)
+      return true if series.nil?
+      return series.summon_boosted unless series.summon_boosted.nil?
+
+      !NON_SUMMON_BOOSTED_SERIES.include?(series.slug)
+    end
+
     def skill_name(version)
       version.skill&.name_en.to_s
     end
@@ -80,6 +99,10 @@ module GridDamage
     # stages 1–4 don't raise it; the FINAL stage (5) jumps +5 → SL25. Clamped to the
     # weapon's own maximum, so an FLB copy of an ULB-capable weapon reads SL15, not SL20.
     def skill_level_for(weapon, grid_weapon)
+      # an explicit skill level wins — players don't always feed fodder to the max
+      explicit = grid_weapon.try(:skill_level)
+      return explicit.to_i if explicit.present?
+
       uncap = grid_weapon.uncap_level.to_i
       transcended = grid_weapon.transcendence_step.to_i >= 5
       cap = if uncap >= 5 then 20

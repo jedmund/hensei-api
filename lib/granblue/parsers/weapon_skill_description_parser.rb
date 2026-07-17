@@ -25,6 +25,22 @@ module Granblue
         "nuke_only"       => /\bdeal[s]? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
       }.freeze
 
+      # A leading EVENT trigger makes everything after it a battle proc (nuke, heal,
+      # status/crest raise) — never a passive grid boost. Only event phrasings count:
+      # grid-state conditions ("When any … weapon skills have a boost of 280% or
+      # above:", "When at least 4 weapons … are equipped:") still parse as passives.
+      EVENT_TRIGGER = %r{
+        \A[\s/]*
+        (?: at\ (?:the\ )?(?:end|start)\ of
+          | for\ every\b
+          | upon\b
+          | when\b [^:]* (?: after\ normal\ attacks | attack(?:s|ing)\b | us(?:es|ing)\b
+                           | activat | drain | removes?\b | chain\ burst | end\ of\ turn
+                           | granted )
+        )
+        [^:]* :
+      }xi
+
       # Ordered (specific → general) phrase → boost_type (or array for "specs" bundles).
       # Within a clause we match-and-consume so a specific phrase ("skill DMG cap") prevents
       # the general one ("DMG cap") re-matching.
@@ -64,13 +80,13 @@ module Granblue
         [/counter/i,                                         "counter_dmg"],
         [/gain shield|\bshield\b/i,                          "shield"],
         [/debuff res/i,                                      "debuff_res"],
-        [/boost to charge bar gain|charge bar gain (?:boost|up)/i, "charge_gain"],
+        [/boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
         [/(?:dmg|damage) (?:cut|reduc)|lessen .*(?:dmg|damage)/i, "elem_reduc"],
         [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
         [/ignore .*\bdef/i,                                  "def_ignore"],
-        [/cut to .*max hp|% cut to/i,                        "hp_cut"],
-        [/take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
+        [/% cut to .*max hp|cut to .*max hp|% cut to/i,      "hp_cut"],
+        [/take (?:dmg|damage) worth .*? of max hp|take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
         [/\bdef(?:ense)?\b/i,                                "def"],
         [/max hp|\bhp\b/i,                                   "hp"],
         [/\batk\b/i,                                         "atk"]
@@ -90,25 +106,43 @@ module Granblue
         end
 
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
+        # parenthetical proc blocks ("(For every 3 skills used: … allies gain 10%…)")
+        # describe triggered effects, not passive boosts
+        body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, "")
+        if body.match?(EVENT_TRIGGER)
+          return { main_hand_only: desc.match?(/when main weapon/i),
+                   mc_only: desc.match?(/\(mc only\)/i),
+                   skip: "triggered_effect", clauses: [] }
+        end
+
         series0 = series_for(desc, name)
+        whole_skill_condition = condition_for(body)
 
         clauses = []
         last_size = nil
         split_clauses(body).each do |frag|
+          # a mid-body event trigger ("When a Dark chain burst activates: …") turns
+          # the rest of the description into battle procs — GBF lists procs last
+          break if frag.match?(EVENT_TRIGGER)
+          # crest/status-scaled values ("by 4% per their number of Oblivion Crest")
+          # are battle-dynamic, not passive grid boosts
+          next if frag.match?(/(?:per|based on) their number of/i)
+
           size = frag[SIZE_KEYWORD, 1]&.downcase || last_size
           last_size = size if frag.match?(SIZE_KEYWORD)
           boosts_for(frag).each do |boost, formula|
             boost = "od_dmg_amp" if boost == "dmg_amp" && series0 == "odious"
             value = value_for(frag, boost)
-            # "X% hit to multiattack rate" guarantees multiattack ≈ −X% DA (it pushes the DA
-            # rate down/negative; the freed rate becomes triple attacks).
-            if boost == "multiattack"
-              boost = "da"
-              value = -value if value
-            end
+            # "X% hit to <boost>" and "X% cut to <boost>" are demerits — Ereshkigal's
+            # "200% hit to charge bar gain" shows -200%, Zion's Tyranny II's "10% cut
+            # to max HP" shows on HP Cut as -10; "hit to multiattack rate" pushes the
+            # DA rate down/negative (the freed rate becomes triple attacks).
+            value = -value if value && frag.match?(/\b(?:hit|cut) to\b/i)
+            boost = "da" if boost == "multiattack"
             clauses << {
               boost_type: boost, value: value, size: (size unless explicit?(frag)),
-              series: series0, formula_type: formula, condition: condition_for(frag)
+              series: series0, formula_type: formula,
+              condition: condition_for(frag) || whole_skill_condition
             }
           end
         end
@@ -129,11 +163,15 @@ module Granblue
       end
 
       # Split into fine clauses on separators and "and"/"plus". Split on comma only when
-      # followed by a space, so digit-grouping commas ("100,000") stay intact.
+      # followed by a space, so digit-grouping commas ("100,000") stay intact. Sentences
+      # are separate clauses too ("…damage by 30%. 200% hit to charge bar gain." would
+      # otherwise hand the first % to both boosts) — but never split after an
+      # abbreviation dot ("C.A. DMG"), so the lookbehind requires a non-capital.
       def self.split_clauses(body)
         # <br/> first so it isn't mistaken for the "/" clause separator; it separates the stat
         # clauses in tiered skills (e.g. "…max HP.<br/>10% Bonus Destruction C.A. DMG").
-        body.split(%r{<br\s*/?>|\s*/\s*|,\s+|\s+and\s+|\s+plus\s+}i).map(&:strip).reject(&:empty?)
+        body.split(%r{<br\s*/?>|\s*/\s*|(?-i:(?<=[a-z0-9%)])\.\s+(?=[A-Z0-9]))|,\s+|\s+and\s+|\s+plus\s+}i)
+            .map(&:strip).reject(&:empty?)
       end
 
       # [boost_type, formula] pairs for a fragment. A HP-/turn-scaling phrase converts the base
@@ -180,8 +218,11 @@ module Granblue
         frag.match?(/\d/) # a number present ⇒ flat value, not an SL-scaled size tier
       end
 
-      # Explicit value: a percentage, or a "by 100,000" supplement amount.
+      # Explicit value: a percentage, or a "by 100,000" supplement amount. Parenthetical
+      # asides never carry the value — they hold conditions ("(Boost to specs when …
+      # 280% or above)") and caps ("(Max: 45%)") whose numbers must not be read as it.
       def self.value_for(frag, boost)
+        frag = frag.gsub(/\([^)]*\)/, "")
         if %w[dmg_supp na_supp ca_supp skill_dmg_supp].include?(boost) && (m = frag[/by\s+([\d,]+)/i, 1])
           return m.delete(",").to_f
         end
@@ -213,7 +254,14 @@ module Granblue
 
       # Light structured condition from common phrasings (extended as needed).
       def self.condition_for(frag)
-        return { "type" => "weapon_group_count", "gte" => 0, "all" => true } if frag.match?(/all weapon groups/i)
+        if frag.match?(/all weapon groups/i)
+          return {
+            "type" => "count_basis_gte",
+            "basis" => "distinct_weapon_types",
+            "gte" => GridDamage::GridComposition::ALL_WEAPON_TYPE_COUNT
+          }
+        end
+
         nil
       end
 

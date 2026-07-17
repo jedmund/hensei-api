@@ -3,7 +3,7 @@ module Api
     class CollectionWeaponBlueprint < ApiBlueprint
       identifier :id
 
-      fields :uncap_level, :transcendence_step, :element, :exorcism_level,
+      fields :uncap_level, :transcendence_step, :element, :exorcism_level, :skill_level,
              :created_at, :updated_at
 
       field :ax, if: ->(_, obj, _) { obj.ax_modifier1.present? } do |obj|
@@ -27,6 +27,7 @@ module Api
         {
           modifier: WeaponStatModifierBlueprint.render_as_hash(obj.befoulment_modifier),
           strength: obj.befoulment_strength,
+            permeation: obj.befoulment_permeation,
           exorcism_level: obj.exorcism_level
         }
       end

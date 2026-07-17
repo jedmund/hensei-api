@@ -55,7 +55,7 @@ RSpec.describe "Weapon skill resolution" do
   describe WeaponSkillVersion, "#weapon_skill_effects" do
     it "resolves conditional effects by modifier" do
       WeaponSkillEffect.create!(modifier: "Pact", boost_type: "dmg_supp",
-                                scaling_kind: "foe_hp_supplemental", value: 1)
+                                scaling_kind: "supplemental_cap", value: 1)
       v = build(:weapon_skill_version, skill_modifier: "Pact")
       expect(v.weapon_skill_effects.pluck(:boost_type)).to include("dmg_supp")
     end

@@ -20,6 +20,10 @@ module Granblue
         scope = scope.joins(:weapon_skill).where(weapon_skills: { weapon_granblue_id: weapon.granblue_id }) if weapon
         scope.find_each do |v|
           skill = v.skill
+          # unexpanded template garbage ("{{ #vardefineecho…") is never a real skill —
+          # its raw text parses into phantom boosts
+          next if skill&.name_en.to_s.match?(/[{}]/)
+
           desc = full_description(v).presence || skill&.description_en
           next if desc.blank?
 
@@ -43,6 +47,9 @@ module Granblue
           stats[:family_backfilled] += 1 if backfill_family(v, skill, parsed, dry_run: dry_run)
 
           if parsed[:clauses].empty?
+            # a parse that now yields nothing must also purge rows a previous
+            # (buggier) parse created — otherwise stale boosts survive reparse
+            purge_generated_rows(v) unless dry_run
             stats[parsed[:skip] ? :"skip_#{parsed[:skip]}" : :no_clause] += 1
             next
           end
@@ -54,6 +61,12 @@ module Granblue
         stats
       end
 
+      def self.purge_generated_rows(version)
+        WeaponSkillDatum.where(weapon_skill_version_id: version.id, manually_edited_at: nil).delete_all
+        WeaponSkillEffect.where(weapon_skill_version_id: version.id, manually_edited_at: nil)
+                         .where.not(scaling_kind: NOTES_KINDS).delete_all
+      end
+
       # Derive (skill_modifier, skill_size) from the skill name when the version has none and
       # the name resolves to a family with canonical data ("Water's Majesty" → Majesty; the
       # possessive word is the element/aura, the tail is the family). Size comes from the name's
@@ -61,10 +74,21 @@ module Granblue
       def self.backfill_family(version, skill, parsed, dry_run:)
         return false if version.skill_modifier.present?
 
-        name = Granblue::Parsers::WeaponSkillParser.parse(skill&.name_en.to_s)
+        # Full-name-keyed families first: curated canonical rows for weapon-unique
+        # skills use the whole skill name as the modifier ("Pillar-Smasher's
+        # Conviction", "Bastion") — the game-of-exceptions escape hatch.
+        full = skill&.name_en.to_s
+        if full.present? && canonical_family?(full)
+          version.update_columns(skill_modifier: full) unless dry_run
+          return true
+        end
+
+        name = Granblue::Parsers::WeaponSkillParser.parse(full)
         family = name[:modifier]
-        return false unless family && WeaponSkillVersion::VALID_MODIFIERS.include?(family) &&
-                            WeaponSkillDatum.canonical.exists?(modifier: family)
+        return false unless family && WeaponSkillVersion::VALID_MODIFIERS.include?(family)
+        # effect-only families count too (Rubell — conditional canonical effects
+        # with no SL curve); requiring a datum silently orphaned them
+        return false unless canonical_family?(family)
 
         updates = { skill_modifier: family }
         size = name[:size] || parsed[:clauses].filter_map { |c| c[:size] }.first
@@ -73,16 +97,31 @@ module Granblue
         true
       end
 
-      # boost_types the canonical (modifier-keyed) data/effects already provide for this version.
+      def self.canonical_family?(modifier)
+        WeaponSkillDatum.canonical.exists?(modifier: modifier) ||
+          WeaponSkillEffect.where(weapon_skill_version_id: nil, key_slug: nil).exists?(modifier: modifier)
+      end
+
+      # boost_types this version already has authoritative rows for: the canonical
+      # (modifier-keyed) family data/effects PLUS manually-curated version-linked rows
+      # (curation outranks re-derivation — a manual row must never gain a derived twin)
+      # PLUS the version's suppressed_boosts ("*" suppresses extraction entirely —
+      # slots whose simplified wiki text misdescribes a curated mechanic).
       def self.canonical_boost_types(version)
-        data = WeaponSkillDatum.for_skill(modifier: version.skill_modifier, series: version.skill_series,
-                                          size: version.skill_size).map(&:boost_type)
-        effects = if version.skill_modifier.present?
-                    WeaponSkillEffect.for_skill(modifier: version.skill_modifier).base_effects.pluck(:boost_type)
+        return Set.new(["*"]) if Array(version.suppressed_boosts).include?("*")
+
+        data = WeaponSkillDatum.for_skill(modifier: version.resolved_modifier, series: version.resolved_series,
+                                          size: version.resolved_size).map(&:boost_type)
+        effects = if version.resolved_modifier.present?
+                    WeaponSkillEffect.for_skill(modifier: version.resolved_modifier).base_effects.pluck(:boost_type)
                   else
                     []
                   end
-        (data + effects).to_set
+        manual = WeaponSkillDatum.where(weapon_skill_version_id: version.id).where.not(manually_edited_at: nil)
+                                 .pluck(:boost_type) +
+                 WeaponSkillEffect.where(weapon_skill_version_id: version.id).where.not(manually_edited_at: nil)
+                                  .pluck(:boost_type)
+        (data + effects + manual + Array(version.suppressed_boosts)).to_set
       end
 
       # The FULL skill description from the weapon's wiki_raw (sN_desc) — it carries the numeric
@@ -96,7 +135,7 @@ module Granblue
 
         pos = ws.position.to_i + 1
         name = version.skill&.name_en
-        ["", "4s", "5s"].each do |tier|
+        ["", "4s", "5s", "u1", "u2", "u3"].each do |tier|
           field = "s#{pos}#{tier.empty? ? '' : "_#{tier}"}"
           return wiki_field(raw, "#{field}_desc") if wiki_field(raw, "#{field}_name") == name
         end
@@ -116,15 +155,15 @@ module Granblue
       NOTES_KINDS = %w[per_grid_count specialty_scaled].freeze
 
       def self.apply(version, skill, parsed, covered, stats)
-        WeaponSkillDatum.where(weapon_skill_version_id: version.id, manually_edited_at: nil).delete_all
-        WeaponSkillEffect.where(weapon_skill_version_id: version.id, manually_edited_at: nil)
-                         .where.not(scaling_kind: NOTES_KINDS).delete_all
+        purge_generated_rows(version)
 
         series = parsed[:clauses].filter_map { |c| c[:series] }.first || "ex"
         version.update_columns(skill_series: series) if version.skill_series != series
 
+        return if covered.include?("*") # extraction fully suppressed for this version
+
         parsed[:clauses].each do |c|
-          next if covered.include?(c[:boost_type]) # canonical data/effects already provide this
+          next if covered.include?(c[:boost_type]) # canonical/manual/suppressed already decide this
 
           if sl_scaled?(c) && write_data(version, skill, c)
             stats[:data_rows] += 1

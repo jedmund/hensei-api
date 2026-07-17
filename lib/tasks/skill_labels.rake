@@ -37,6 +37,40 @@ namespace :granblue do
       'plain-amp' => '04_icon_plain_amplify.png', # not in the wiki gadget at all
       'sp-ca-cap' => '04_icon_ca_dmg_cap_ded.png',
       'na-supp' => '04_icon_normal_dmg_supp.png',
+      'dmg-cap-sp' => '04_icon_dmg_cap_other.png',
+      'ca-amp-sp' => '04_icon_ca_dmg_amplify_other.png',
+      'cb-dmg' => '04_icon_cb_dmg.png',
+      'cb-amp' => '04_icon_cb_dmg_amplify.png',
+      'fc-amp' => '04_icon_fc_dmg_amplify.png',
+      'fc-dmg-cap' => '04_icon_fc_dmg_cap.png',
+      'debuff-res' => '02_icon_debuff_res.png',
+      'added-hp' => '06_icon_hp.png', # overskill (teal) HP
+      # Befoulment "Hit" lines
+      'bf-atk' => '05_icon_atk_down.png',
+      'bf-debuff' => '05_icon_debuff_suc_down.png',
+      'bf-da-rate' => '05_icon_da_rate_down.png',
+      'bf-ta-rate' => '05_icon_ta_rate_down.png',
+      'bf-skill-dmg' => '05_icon_skill_dmg_down.png',
+      'bf-ca-dmg' => '05_icon_ca_dmg_down.png',
+      'bf-hp' => '05_icon_hp_down.png',
+      'bf-def' => '05_icon_def_down.png',
+      'bf-turn-dmg' => '05_icon_turn_dmg.png',
+      'ca-supp' => '04_icon_ca_supp.png',
+      # AX augment labels (purple)
+      'ax-atk' => '05_icon_atk.png',
+      'ax-hp' => '05_icon_hp.png',
+      'ax-stamina' => '05_icon_stamina.png',
+      'ax-enmity' => '05_icon_enmity.png',
+      'ax-def' => '05_icon_def.png',
+      'ax-da-rate' => '05_icon_da_rate.png',
+      'ax-ta-rate' => '05_icon_ta_rate.png',
+      'ax-ca-dmg' => '05_icon_ca_dmg.png',
+      'ax-ca-dmg-cap' => '05_icon_ca_dmg_cap.png',
+      'ax-ca-supp' => '05_icon_ca_supp.png',
+      'ax-skill-dmg-supp' => '05_icon_skill_dmg_supp.png',
+      'ax-na-dmg-cap' => '05_icon_na_dmg_cap.png',
+      'ax-debuff-res' => '05_icon_debuff_res.png',
+      'ax-exp-gain' => '05_icon_exp.png',
       # Destroyer weapons' Destruction bonus damage (game files say "genesis")
       'bonus-des-dmg' => '01_icon_genesis_concurrent_attack.png',
       'bonus-des-dmg-ca' => '01_icon_genesis_special_skill_concurrent_attack.png'
@@ -44,6 +78,8 @@ namespace :granblue do
     frames = %w[optimus omega]
     %w[fire water earth wind light dark].each do |el|
       frames.each { |frame| manual["#{el}-#{frame}"] = "01_icon_#{el}#{frame}.png" }
+      # elemental Bonus C.A. DMG badges ("Bonus Earth C.A.")
+      manual["bonus-#{el}-ca"] = "01_icon_#{el}_special_skill_concurrent_attack.png"
     end
 
     fetch = lambda do |url|

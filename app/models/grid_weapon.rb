@@ -71,6 +71,8 @@ class GridWeapon < ApplicationRecord
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
+  validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
+  validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true
 
   validate :validate_transcendence_step
   validate :compatible_with_position, unless: :is_substitute?
@@ -98,7 +100,9 @@ class GridWeapon < ApplicationRecord
     nullify :ax_strength2
     nullify :befoulment_modifier_id
     nullify :befoulment_strength
+    nullify :befoulment_permeation
     nullify :exorcism_level
+    nullify :skill_level
     nullify :description
   end
 
@@ -129,7 +133,9 @@ class GridWeapon < ApplicationRecord
     'ax.1' => %i[ax_modifier2_id ax_strength2],
     'befoulmentModifier' => %i[befoulment_modifier_id],
     'befoulmentStrength' => %i[befoulment_strength],
+    'befoulmentPermeation' => %i[befoulment_permeation],
     'exorcismLevel' => %i[exorcism_level],
+    'skillLevel' => %i[skill_level],
     'awakeningId' => %i[awakening_id],
     'awakeningLevel' => %i[awakening_level]
   }.freeze
@@ -221,7 +227,9 @@ class GridWeapon < ApplicationRecord
     end
     fields << 'befoulmentModifier' if befoulment_modifier_id != collection_weapon.befoulment_modifier_id
     fields << 'befoulmentStrength' if befoulment_strength != collection_weapon.befoulment_strength
+    fields << 'befoulmentPermeation' if befoulment_permeation != collection_weapon.befoulment_permeation
     fields << 'exorcismLevel' if exorcism_level != collection_weapon.exorcism_level
+    fields << 'skillLevel' if skill_level != collection_weapon.skill_level
     fields << 'awakeningId' if awakening_id != collection_weapon.awakening_id
     fields << 'awakeningLevel' if awakening_level != collection_weapon.awakening_level
     fields.concat(out_of_sync_bullet_positions.map { |position| "bullets.#{position}" })

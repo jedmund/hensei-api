@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_09_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -328,6 +328,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.bigint "befoulment_modifier_id"
     t.float "befoulment_strength"
     t.integer "exorcism_level", default: 0
+    t.integer "befoulment_permeation"
+    t.integer "skill_level"
     t.index ["awakening_id"], name: "index_collection_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_collection_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_collection_weapons_on_ax_modifier2_id"
@@ -675,6 +677,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.boolean "is_substitute", default: false, null: false
     t.jsonb "description"
     t.boolean "notes_synced", default: false, null: false
+    t.integer "befoulment_permeation"
+    t.integer "skill_level"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
@@ -825,6 +829,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "panel_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "boost_type", null: false
+    t.string "series"
+    t.string "label_en", null: false
+    t.string "slug", null: false
+    t.string "group_name", null: false
+    t.integer "position", null: false
+    t.datetime "manually_edited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["boost_type", "series"], name: "index_panel_lines_on_boost_type_and_series", unique: true
+    t.index ["position"], name: "index_panel_lines_on_position"
   end
 
   create_table "parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1295,6 +1313,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.boolean "has_awakening", default: false, null: false
     t.integer "augment_type", default: 0, null: false
     t.integer "num_weapon_keys"
+    t.boolean "summon_boosted"
     t.index ["order"], name: "index_weapon_series_on_order"
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
   end
@@ -1324,6 +1343,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "display_cap", precision: 12, scale: 2
+    t.boolean "amplifiable"
+    t.boolean "hidden", default: false, null: false
     t.index ["category"], name: "index_weapon_skill_boost_types_on_category"
     t.index ["key"], name: "index_weapon_skill_boost_types_on_key", unique: true
   end
@@ -1346,6 +1368,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.decimal "max_value", precision: 10, scale: 4
     t.uuid "weapon_skill_version_id"
     t.datetime "manually_edited_at"
+    t.string "provenance"
     t.index ["modifier", "boost_type", "series", "size"], name: "index_wsd_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
     t.index ["series"], name: "index_weapon_skill_data_on_series"
@@ -1381,11 +1404,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.string "frame_rule"
     t.uuid "weapon_skill_version_id"
     t.datetime "manually_edited_at"
+    t.string "provenance"
     t.index ["key_slug"], name: "index_weapon_skill_effects_on_key_slug"
-    t.index ["modifier", "boost_type", "scaling_kind", "key_slug"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
+    t.index ["modifier", "boost_type", "scaling_kind", "key_slug", "condition"], name: "index_wse_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_effects_on_modifier"
-    t.index ["weapon_skill_version_id", "boost_type", "scaling_kind"], name: "index_wse_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
+    t.index ["weapon_skill_version_id", "boost_type", "scaling_kind", "condition"], name: "index_wse_versioned_uniqueness", unique: true, where: "(weapon_skill_version_id IS NOT NULL)"
     t.index ["weapon_skill_version_id"], name: "index_weapon_skill_effects_on_weapon_skill_version_id"
+  end
+
+  create_table "weapon_skill_families", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "aura_boostable"
+    t.jsonb "boosts", default: [], null: false
+    t.jsonb "icon_stems", default: {}, null: false
+    t.string "color"
+    t.datetime "imported_at"
+    t.datetime "manually_edited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_weapon_skill_families_on_name", unique: true
   end
 
   create_table "weapon_skill_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1405,6 +1442,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "multiplier_frame"
+    t.string "modifier_override"
+    t.string "series_override"
+    t.string "size_override"
+    t.jsonb "suppressed_boosts", default: [], null: false
+    t.datetime "overrides_edited_at"
     t.index ["skill_id"], name: "index_weapon_skill_versions_on_skill_id"
     t.index ["skill_series"], name: "index_weapon_skill_versions_on_skill_series"
     t.index ["weapon_skill_id", "ordinal"], name: "idx_weapon_skill_versions_on_skill_and_ordinal", unique: true
@@ -1433,6 +1475,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.integer "game_skill_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "reduction_step"
+    t.string "ax_group"
+    t.decimal "secondary_min", precision: 8, scale: 2
+    t.decimal "secondary_max", precision: 8, scale: 2
+    t.jsonb "ax_secondaries", default: {}, null: false
     t.index ["category"], name: "index_weapon_stat_modifiers_on_category"
     t.index ["game_skill_id"], name: "index_weapon_stat_modifiers_on_game_skill_id", unique: true
     t.index ["slug"], name: "index_weapon_stat_modifiers_on_slug", unique: true
@@ -1489,7 +1536,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_06_000000) do
     t.integer "bullet_slots", default: [], null: false, array: true
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.datetime "wiki_raw_fetched_at"
-    t.text "wiki_raw_jp", comment: "Raw HTML from gbf-wiki.com (Japanese)"
+    t.text "wiki_raw_jp"
+    t.string "ax_type"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["gacha"], name: "index_weapons_on_gacha"

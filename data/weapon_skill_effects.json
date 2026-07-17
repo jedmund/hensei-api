@@ -44,6 +44,8 @@
       "scaling_kind": "conditional_flat",
       "value": 50.0,
       "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_skill_cap",
       "condition": {
         "gte": 280,
         "type": "boost_level"
@@ -188,6 +190,8 @@
       "scaling_kind": "conditional_flat",
       "value": 10.0,
       "value_unit": "percent",
+      "total_cap": 10.0,
+      "shared_cap_group": "key_na_cap",
       "condition": {
         "gte": 280,
         "type": "boost_level"
@@ -223,7 +227,6 @@
       "scaling_kind": "static",
       "value": 10.0,
       "value_unit": "percent",
-      "total_cap": 10.0,
       "depends_on": [
         "boost_level"
       ],
@@ -240,7 +243,6 @@
       "scaling_kind": "static",
       "value": 30.0,
       "value_unit": "percent",
-      "total_cap": 30.0,
       "depends_on": [
         "boost_level"
       ],
@@ -255,6 +257,7 @@
       "modifier": "Ascendancy",
       "boost_type": "sp_ca_cap",
       "scaling_kind": "flat",
+      "value": 10.0,
       "value_unit": "percent",
       "total_cap": 30.0,
       "aura_boostable": false,
@@ -262,7 +265,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "VERIFY: per-copy value not in prose; Sp. C.A. DMG Cap Up stacks to 30%."
+      "notes": "10% Special C.A. DMG Cap from family template; WpnSkillAscendancy states it stacks to 30%."
     },
     {
       "modifier": "Athos",
@@ -358,7 +361,7 @@
     {
       "modifier": "Bloodshed",
       "boost_type": "hp_dmg",
-      "scaling_kind": "static",
+      "scaling_kind": "documentation",
       "value_unit": "percent",
       "total_cap": 40.0,
       "aura_boostable": false,
@@ -393,6 +396,20 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "key_slug": "chain-depravity"
+    },
+    {
+      "modifier": "Chain of Falsehood",
+      "boost_type": "charge_gain",
+      "series": "omega",
+      "scaling_kind": "static",
+      "value": -100.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "chain-falsehood"
     },
     {
       "modifier": "Chain of Glorification",
@@ -455,27 +472,30 @@
       "boost_type": "atk",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 17.4,
+      "value": 15.5,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-restoration"
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
+      "key_slug": "chain-restoration",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Restoration",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 20.4,
+      "value": 15.5,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
       "key_slug": "chain-restoration"
     },
     {
@@ -483,27 +503,30 @@
       "boost_type": "atk",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 17.4,
+      "value": 16.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-temperament"
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
+      "key_slug": "chain-temperament",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Temperament",
       "boost_type": "critical",
       "series": "ex",
       "scaling_kind": "static",
-      "value": 7.8,
+      "value": 7.5,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
       "key_slug": "chain-temperament"
     },
     {
@@ -525,7 +548,7 @@
       "scaling_kind": "per_grid_count",
       "value": 5.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 5,
       "depends_on": [
         "grid_count"
@@ -543,7 +566,7 @@
       "scaling_kind": "per_grid_count",
       "value": 3.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 5,
       "depends_on": [
         "grid_count"
@@ -560,7 +583,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 5,
       "depends_on": [
         "grid_count"
@@ -705,7 +728,8 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "type": "weapon_group_count"
+        "basis": "max_same_weapon_type",
+        "type": "count_basis_gte"
       },
       "depends_on": [
         "grid_count"
@@ -715,7 +739,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "When 4+ weapons of the same weapon group are equipped."
+      "notes": "When 4+ weapons of the same weapon group are equipped. User capture with Lord of Flames + Extinction Blade Mk II under Agni/Agni proves this is a same-proficiency threshold: 1+2 sabres shows no EX Might/DMG Cap (Sp.); 1+3 sabres adds EX Might 40, DEF +25, and DMG Cap (Sp.) 7."
     },
     {
       "modifier": "Convergence",
@@ -725,7 +749,8 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "type": "weapon_group_count"
+        "basis": "max_same_weapon_type",
+        "type": "count_basis_gte"
       },
       "depends_on": [
         "grid_count"
@@ -734,7 +759,8 @@
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
-      "battle_interaction": false
+      "battle_interaction": false,
+      "notes": "Validated by Lord of Flames + Extinction Blade Mk II threshold capture: DEF rises from 30 at 3 sabres to 70 at 4 sabres, matching +25 Convergence plus the third Mk II DEF source."
     },
     {
       "modifier": "Convergence",
@@ -745,7 +771,8 @@
       "total_cap": 20.0,
       "condition": {
         "gte": 4,
-        "type": "weapon_group_count"
+        "basis": "max_same_weapon_type",
+        "type": "count_basis_gte"
       },
       "depends_on": [
         "grid_count"
@@ -754,12 +781,13 @@
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
-      "battle_interaction": false
+      "battle_interaction": false,
+      "notes": "Validated by Lord of Flames + Extinction Blade Mk II threshold capture: DMG Cap (Sp.) is absent at 3 sabres and appears as 7% at 4 sabres."
     },
     {
       "modifier": "Craft",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 20000.0,
@@ -884,7 +912,7 @@
     {
       "modifier": "Essence",
       "boost_type": "atk",
-      "scaling_kind": "static",
+      "scaling_kind": "documentation",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
@@ -895,7 +923,7 @@
     {
       "modifier": "Exertion",
       "boost_type": "da",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_current_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 20.0,
@@ -907,12 +935,12 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "DA = 15%*(curHP/maxHP)+5%; 20% full HP -> 5% at 1 HP. value=floor, total_cap=ceiling."
+      "notes": "DA = 15%*(curHP/maxHP)+5%; 20% full HP -> 5% at 1 HP. value=floor, total_cap=ceiling. Validated by Plume of Suparna Militis HP sweep."
     },
     {
       "modifier": "Exertion",
       "boost_type": "ta",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_current_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 20.0,
@@ -924,7 +952,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "TA, same curve as DA."
+      "notes": "TA, same curve as DA. Validated by Plume of Suparna Militis HP sweep."
     },
     {
       "modifier": "Fathoms",
@@ -1030,7 +1058,7 @@
       "value": 4.0,
       "value_unit": "percent",
       "per_copy_cap": 20.0,
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "depends_on": [
         "grid_count"
       ],
@@ -1042,9 +1070,81 @@
       "notes": "+4% DEF per same-type weapon (max 20% per copy)."
     },
     {
+      "modifier": "Fortified Blade",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Fortified Blade counts katanas."
+    },
+    {
+      "modifier": "Fortified Gauntlet",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Arkab Prior Militis captures under Zephyrus/Zephyrus show 4/8/12/16/20 DEF at 1/2/3/4/5 melee weapons."
+    },
+    {
+      "modifier": "Fortified Harp",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Fortified Harp counts harps."
+    },
+    {
+      "modifier": "Fortified Staff",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Fortified Staff counts staffs."
+    },
+    {
       "modifier": "Fortitude",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 100000.0,
@@ -1065,7 +1165,7 @@
     {
       "modifier": "Frailty",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 20000.0,
@@ -1140,6 +1240,32 @@
       "notes": "50% Heal Cap to all allies."
     },
     {
+      "modifier": "Clarity",
+      "boost_type": "counter_dmg",
+      "scaling_kind": "static",
+      "value": 3.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Clarity template states a flat 3% chance to dodge and counter for small, medium, and big. Skill level and auras do not raise the chance; the Counter DMG table is counterattack damage, not the Weapon Skill Boosts Counter Rate line."
+    },
+    {
+      "modifier": "Heed",
+      "boost_type": "counter_dmg",
+      "scaling_kind": "static",
+      "value": 3.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "White Hawk SL10 Varuna/Varuna, Phantasmas SL15 Hades/Hades, and Abyss Striker SL15 Celeste/Celeste show Counter Rate 3%, so this line is not summon-aura amplified."
+    },
+    {
       "modifier": "Gauph Key Dio",
       "boost_type": "heal_cap",
       "series": "ex",
@@ -1196,12 +1322,28 @@
       "key_slug": "gauph-tria"
     },
     {
+      "modifier": "Gauph Key of Courage",
+      "boost_type": "critical",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "gauph-courage"
+    },
+    {
       "modifier": "Gauph Key of Strength",
       "boost_type": "stamina",
       "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "conditional_flat",
       "value": 20.4,
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
@@ -1300,33 +1442,6 @@
       "applies_to": "all_allies",
       "battle_interaction": false,
       "key_slug": "gauph-gamma"
-    },
-    {
-      "modifier": "Godblade",
-      "boost_type": "atk",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 35.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "EX Might. Tier I/II/III = 25(MC only)/25/35%; highest-tier recorded. TIER nuance not modeled."
-    },
-    {
-      "modifier": "Godblade",
-      "boost_type": "bonus_des_dmg",
-      "scaling_kind": "static",
-      "value": 20.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Bonus Destruction DMG echo. Tier I/II/III = 15/15/20%; highest recorded."
     },
     {
       "modifier": "Godflair",
@@ -1489,32 +1604,6 @@
       "notes": "Defensive; excluded from core damage."
     },
     {
-      "modifier": "Godshield",
-      "boost_type": "bonus_des_dmg_ca",
-      "scaling_kind": "static",
-      "value": 10.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Bonus Destruction DMG on C.A. Tier I/II/III = 5/5/10%; highest recorded."
-    },
-    {
-      "modifier": "Godshield",
-      "boost_type": "hp",
-      "scaling_kind": "static",
-      "value": 30.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Tier I/II/III = 20(MC only)/20/30%; highest recorded."
-    },
-    {
       "modifier": "Godstrike",
       "boost_type": "elem_amplify",
       "scaling_kind": "conditional_flat",
@@ -1596,14 +1685,14 @@
     },
     {
       "modifier": "Grand Epic",
-      "boost_type": "atk",
+      "boost_type": "ex_atk_sp",
       "series": "ex",
       "scaling_kind": "per_grid_count",
       "value": 4.0,
       "value_unit": "percent",
       "total_cap": 80.0,
-      "shared_cap_group": "voltage_wrath_grandepic",
-      "count_basis": "epic",
+      "shared_cap_group": "voltage_wrath_grand_epic",
+      "count_basis": "series:epic",
       "depends_on": [
         "grid_count"
       ],
@@ -1612,7 +1701,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "notes": "+4% EX ATK per Epic weapon; shares 80% cap with Voltage/Wrath."
+      "notes": "EX Might Sp. +4% per Epic-series weapon. User capture with 1/2/3 Chains of Caucasus under Agni/Agni shows 4/16/36 displayed, matching 4/8/12 raw through 340% aura. Shares the 80% pool with Voltage (NEKVvF) and Wrath (JBDMhV)."
     },
     {
       "modifier": "Honing",
@@ -1747,7 +1836,7 @@
     {
       "modifier": "Initiation",
       "boost_type": "ca_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 5.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 1000000.0,
@@ -1767,7 +1856,7 @@
     {
       "modifier": "Insignia",
       "boost_type": "turn_dmg",
-      "scaling_kind": "per_grid_count",
+      "scaling_kind": "documentation",
       "value_unit": "flat",
       "depends_on": [
         "turn"
@@ -1782,7 +1871,7 @@
     {
       "modifier": "Maneuver",
       "boost_type": "na_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 50000.0,
@@ -1801,13 +1890,11 @@
     {
       "modifier": "Marvel",
       "boost_type": "skill_dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
-      "value_unit": "percent_foe_max_hp",
+      "scaling_kind": "supplemental_cap",
       "total_cap": 200000.0,
       "cap_formula": "100000*((maxhp-curhp)/maxhp)+50000",
       "target_instance": "skill",
       "depends_on": [
-        "foe_max_hp",
         "hp_percent"
       ],
       "aura_boostable": false,
@@ -1815,11 +1902,11 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "VERIFY: supplemental strength % not stated in prose; cap 50k-150k by HP."
+      "notes": "Cap 50k-150k scales from water allies' current HP and is validated by Wilhelm Militis HP sweep. Raw damage-strength modeling is out of scope for the boost panel."
     },
     {
       "modifier": "Oblivion Teluma",
-      "boost_type": "elem_amplify",
+      "boost_type": "plain_amp",
       "series": "ex",
       "scaling_kind": "static",
       "value": 10.0,
@@ -1864,7 +1951,7 @@
     {
       "modifier": "Pact",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 50000.0,
@@ -2034,6 +2121,23 @@
       "key_slug": "pendulum-sagacity"
     },
     {
+      "modifier": "Pendulum of Sagacity",
+      "boost_type": "skill_cap_sp",
+      "scaling_kind": "conditional_flat",
+      "value": 30.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-sagacity"
+    },
+    {
       "modifier": "Pendulum of Strife",
       "boost_type": "da",
       "series": "ex",
@@ -2098,7 +2202,7 @@
     },
     {
       "modifier": "Pendulum of Supremacy",
-      "boost_type": "dmg_amp",
+      "boost_type": "cb_amp",
       "scaling_kind": "conditional_flat",
       "value": 100.0,
       "value_unit": "percent",
@@ -2106,6 +2210,53 @@
         "gte": 280,
         "type": "boost_level"
       },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-supremacy"
+    },
+    {
+      "modifier": "Pendulum of Supremacy",
+      "boost_type": "dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-supremacy"
+    },
+    {
+      "modifier": "Pendulum of Supremacy",
+      "boost_type": "fc_amp",
+      "scaling_kind": "conditional_flat",
+      "value": 100.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-supremacy"
+    },
+    {
+      "modifier": "Pendulum of Supremacy",
+      "boost_type": "skill_dmg_cap",
+      "scaling_kind": "static",
+      "value": 60.0,
+      "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
@@ -2130,8 +2281,8 @@
     {
       "modifier": "Persistence",
       "boost_type": "dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
-      "value": 1.0,
+      "scaling_kind": "persistence_supp",
+      "value": 30000.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 100000.0,
       "shared_cap_group": "dmg_supp_shared",
@@ -2461,7 +2612,7 @@
     {
       "modifier": "Quenching",
       "boost_type": "ca_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 5.0,
       "value_unit": "percent_foe_max_hp",
       "total_cap": 1000000.0,
@@ -2532,6 +2683,38 @@
       "depends_on": [
         "grid_count"
       ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false
+    },
+    {
+      "modifier": "Rubell",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false
+    },
+    {
+      "modifier": "Rubell",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
@@ -2729,9 +2912,69 @@
       "notes": "+20% DMG cap only in Arcarum/Replicard; same-element Sephira Maxi do not stack."
     },
     {
+      "modifier": "Sephira Manus",
+      "boost_type": "da",
+      "scaling_kind": "conditional_flat",
+      "value": 54.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Wilhelm Militis with Arcarum ON/OFF shows DA 60% vs 6%; this row is the +54% Arcarum delta."
+    },
+    {
+      "modifier": "Sephira Manus",
+      "boost_type": "ta",
+      "scaling_kind": "conditional_flat",
+      "value": 54.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Wilhelm Militis with Arcarum ON/OFF shows TA 60% vs 6%; this row is the +54% Arcarum delta."
+    },
+    {
+      "modifier": "Sephira Salire",
+      "boost_type": "na_dmg_cap",
+      "scaling_kind": "conditional_flat",
+      "value": 7.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Koukouvagia Militis with Arcarum ON/OFF shows N.A. DMG Cap 10% vs 3%; this row is the +7% Arcarum delta."
+    },
+    {
       "modifier": "Spectacle",
       "boost_type": "skill_dmg_supp",
-      "scaling_kind": "foe_hp_supplemental",
+      "scaling_kind": "supplemental_cap",
       "value": 1.0,
       "value_unit": "percent_foe_max_hp",
       "per_copy_cap": 100000.0,
@@ -2775,7 +3018,7 @@
     {
       "modifier": "Surge",
       "boost_type": "da",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_missing_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 35.0,
@@ -2787,12 +3030,12 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "DA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP: 30%*((maxhp-curhp)/maxhp)+5%. value=floor, total_cap=ceiling."
+      "notes": "DA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP: 30%*((maxhp-curhp)/maxhp)+5%. value=floor, total_cap=ceiling. Validated by Tatjenen HP sweep."
     },
     {
       "modifier": "Surge",
       "boost_type": "ta",
-      "scaling_kind": "current_hp_scaled",
+      "scaling_kind": "hp_missing_linear",
       "value": 5.0,
       "value_unit": "percent",
       "total_cap": 35.0,
@@ -2804,7 +3047,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA."
+      "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA. Validated by Tatjenen HP sweep."
     },
     {
       "modifier": "Trituration",
@@ -2814,7 +3057,7 @@
       "value": 23.0,
       "value_unit": "percent",
       "per_copy_cap": 46.0,
-      "count_basis": "militis",
+      "count_basis": "series:militis",
       "depends_on": [
         "grid_count"
       ],
@@ -2823,7 +3066,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "+23% Omega ATK per Militis weapon (max 46% per copy); aura-boosted."
+      "notes": "+23% Omega ATK per Militis weapon (max 46% per copy); aura-boosted. User capture with Sacred Flame Militis under Luminiera/Luminiera proves Militis-series count and per-copy cap: 1 Militis displays Ω Might 101%, 2 displays 202%, and 3/4 remain 202% under 340% omega aura."
     },
     {
       "modifier": "Ultimate Wisdom's Shine",
@@ -3139,7 +3382,7 @@
       "modifier": "Vitality",
       "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "ally_hp_scaled",
+      "scaling_kind": "ally_max_hp_scaled",
       "value": 0.045,
       "value_unit": "percent_ally_max_hp",
       "per_copy_cap": 40.0,
@@ -3156,7 +3399,7 @@
     {
       "modifier": "Vitality",
       "boost_type": "def",
-      "scaling_kind": "ally_hp_scaled",
+      "scaling_kind": "ally_max_hp_scaled",
       "value": 0.025,
       "value_unit": "percent_ally_max_hp",
       "per_copy_cap": 25.0,
@@ -3173,7 +3416,7 @@
     {
       "modifier": "Vitality",
       "boost_type": "dmg_cap_sp",
-      "scaling_kind": "ally_hp_scaled",
+      "scaling_kind": "ally_max_hp_scaled",
       "value": 0.01,
       "value_unit": "percent_ally_max_hp",
       "per_copy_cap": 7.0,
@@ -3232,7 +3475,7 @@
       "value_unit": "percent",
       "total_cap": 80.0,
       "shared_cap_group": "voltage_wrath_grand_epic",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "depends_on": [
         "grid_count"
       ],
@@ -3245,14 +3488,11 @@
     },
     {
       "modifier": "Wrath",
-      "boost_type": "atk",
-      "series": "ex",
+      "boost_type": "da",
       "scaling_kind": "per_grid_count",
-      "value": 2.0,
+      "value": 1.0,
       "value_unit": "percent",
-      "total_cap": 80.0,
-      "shared_cap_group": "voltage_wrath_grandepic",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"
@@ -3261,7 +3501,29 @@
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
-      "battle_interaction": false
+      "battle_interaction": false,
+      "notes": "Wrath's 'multiattack rate' is DA and TA (JBDMhV: DA 16 = TA 16 from 4 Settes)."
+    },
+    {
+      "modifier": "Wrath",
+      "boost_type": "ex_atk_sp",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "total_cap": 80.0,
+      "shared_cap_group": "voltage_wrath_grand_epic",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "EX Might Sp. line (JBDMhV: 32 = 2 x 4 sabres x 4 Settes), same as Voltage. Pool key unified with Voltage/Grand Epic."
     },
     {
       "modifier": "Wrath",
@@ -3269,7 +3531,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"
@@ -3286,7 +3548,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
-      "count_basis": "weapon_type",
+      "count_basis": "same_weapon_type",
       "count_cap": 10,
       "depends_on": [
         "grid_count"
@@ -3348,6 +3610,61 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "+5% normal-attack DMG cap."
+    },
+    {
+      "modifier": "Δ Pendulum",
+      "boost_type": "cb_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 50.0,
+      "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_cb_cap",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Dark Opus Weapons: 50% boost to chain burst DMG cap. Golden hbeZ3N (tr5 Staff of Renunciation) shows 50.",
+      "key_slug": "pendulum-delta"
+    },
+    {
+      "modifier": "Δ Pendulum",
+      "boost_type": "fc_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv210 upgrade adds 10% Fated Chain DMG cap.",
+      "key_slug": "pendulum-delta"
+    },
+    {
+      "modifier": "Δ Pendulum",
+      "boost_type": "fc_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 4,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades Fated Chain DMG cap to 20% (additive +10 on top of the lv210 row; distinct modifier for the uniqueness scope).",
+      "key_slug": "pendulum-delta"
     },
     {
       "modifier": "α Pendulum",
@@ -3431,6 +3748,44 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "key_slug": "pendulum-gamma"
+    },
+    {
+      "modifier": "γ Pendulum",
+      "boost_type": "sp_ca_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 4,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades special C.A. DMG cap to 5% (additive +2.5 on the lv210 row).",
+      "key_slug": "pendulum-gamma"
+    },
+    {
+      "modifier": "γ Pendulum",
+      "boost_type": "sp_ca_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv210 upgrade adds 2.5% special C.A. DMG cap (JBDMhV tr3: 18.5 = 16 + 2.5).",
       "key_slug": "pendulum-gamma"
     }
   ]

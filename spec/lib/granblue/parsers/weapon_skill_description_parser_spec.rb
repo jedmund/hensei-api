@@ -39,6 +39,14 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "def")).to include(value: 5.0)
   end
 
+  it "gates every Heroic Tale boost on all ten weapon types" do
+    result = parse("Boost to ATK and damage cap when all weapon groups are equipped", name: "Heroic Tale")
+    condition = { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 10 }
+
+    expect(boost(result, "atk")).to include(value: nil, condition: condition)
+    expect(boost(result, "dmg_cap")).to include(value: nil, condition: condition)
+  end
+
   it "frames a plain elemental boost (no aura-word) as EX, not normal" do
     r = parse("Big boost to wind allies' ATK")
     atk = boost(r, "atk")
@@ -93,5 +101,51 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     r = parse("A symbol of apocalyptic corruption. Empowered by a chosen pendulum.")
     expect(r[:clauses]).to be_empty
     expect(r[:skip]).to eq("key_placeholder")
+  end
+
+  it "skips event-triggered battle effects — proc text is not a passive boost (Flame of the Godrender)" do
+    r = parse("'''When main weapon (MC only):'''<br />'''When MC's HP is 50% or above after normal attacks:''' " \
+              "<br /> 6-hit, 100% Fire damage to a foe (Damage cap: ~140,000 per hit). <br /> Raise foe's Singed lvl by 1.")
+    expect(r[:clauses]).to be_empty
+    expect(r[:skip]).to eq("triggered_effect")
+  end
+
+  it "skips end-of-turn procs (Prayer of the Phoenix)" do
+    r = parse("When main weapon (MC only): At end of turn when a foe's Singed lvl is 7 or above: " \
+              "Restore 10% of Fire allies' HP (Healing cap: 500). All Fire allies gain Charge Bar 10%.")
+    expect(r[:clauses]).to be_empty
+    expect(r[:skip]).to eq("triggered_effect")
+  end
+
+  it "still parses grid-state conditions as passives (Enforcement ≥280)" do
+    r = parse("When any of Fire Omega, Fire Taboo, or Fire Optimus weapon skills have a boost of 280% or above: " \
+              "/ 20% ATK boost to Fire allies' ATK and 15% boost to Fire allies' DEF.")
+    expect(boost(r, "atk")).to include(value: 20.0)
+    expect(boost(r, "def")).to include(value: 15.0)
+  end
+
+  it "splits sentences and negates 'hit to' demerits (Gugalanna)" do
+    r = parse("'''When main weapon:'''<br />Amplify Dark allies' normal attack damage by 30%. " \
+              "200% hit to Dark allies' charge bar gain.")
+    expect(boost(r, "na_amp")).to include(value: 30.0)
+    expect(boost(r, "charge_gain")).to include(value: -200.0)
+  end
+
+  it "negates a cap demerit (Disease Demon)" do
+    r = parse("'''When main weapon:'''<br />20% boost to Dark allies' normal attack damage cap. " \
+              "40% hit to Dark allies' skill damage cap.")
+    expect(boost(r, "na_dmg_cap")).to include(value: 20.0)
+    expect(boost(r, "skill_dmg_cap")).to include(value: -40.0)
+  end
+
+  it "never reads a value out of a parenthetical aside (Athos ≥280 condition)" do
+    r = parse("Boost to dark allies' multiattack rate / Amplify normal attack DMG (Boost to specs " \
+              "when either dark Omega or dark Optimus weapon skills have a boost of 280% or above)")
+    expect(boost(r, "na_amp")).to include(value: nil)
+  end
+
+  it "does not split sentences after abbreviation dots (C.A. DMG)" do
+    r = parse("20% boost to Water allies' C.A. DMG.")
+    expect(boost(r, "ca_dmg")).to include(value: 20.0)
   end
 end

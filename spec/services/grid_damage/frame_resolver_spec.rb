@@ -8,7 +8,7 @@ RSpec.describe GridDamage::FrameResolver do
   end
 
   def version(series)
-    double(skill_series: series)
+    double(skill_series: series, resolved_series: series)
   end
 
   it "uses the explicit aura-word series when the skill has one" do

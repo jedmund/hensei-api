@@ -17,6 +17,7 @@ module GridDamage
       # Attack family (red labels)
       ["atk", "normal", "Might", "might", "attack"],
       ["atk", "omega", "Ω Might", "omega-might", "attack"],
+      ["atk", "odious", "Od Might", "od-might", "attack"],
       ["atk", "ex", "EX Might", "ex-might", "attack"],
       ["ex_atk_sp", nil, "EX Might Sp.", "ex-might-sp", "attack"],
       ["stamina", "normal", "Stamina", "stamina", "attack"],
@@ -32,19 +33,30 @@ module GridDamage
       ["ta", nil, "TA Rate", "ta-rate", "attack"],
       ["optimus_exalto", nil, "ELEMENT Optimus", "ELEMENT-optimus", "attack"],
       ["omega_exalto", nil, "ELEMENT Omega", "ELEMENT-omega", "attack"],
-      # HP (green labels)
+      # Bonus DMG closes out the red group (SRiNSO panel order)
+      ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "attack"],
+      ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "attack"],
+      ["bonus_ca", nil, "Bonus ELEMENT C.A.", "bonus-ELEMENT-ca", "attack"],
+      ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "attack"],
+      # HP (green labels) — Heal Cap sits with HP in-game
       ["hp", nil, "HP", "hp", "hp"],
+      ["heal_cap", nil, "Heal Cap", "heal-cap", "hp"],
       ["hp_cut", nil, "HP Cut", "hp-cut", "hp"],
-      # Defense (blue labels)
+      ["hp_dmg", nil, "HP DMG", "hp-dmg", "hp"],
+      # Defense (blue labels) — reduction is labeled with the foe's element ("Wind Reduc."
+      # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],
-      ["elem_reduc", nil, "Elem. Reduc.", "elem-reduc", "defense"],
+      ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
+      ["debuff_res", nil, "Debuff Res.", "debuff-res", "defense"],
       # Special (yellow labels)
       ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
+      ["dmg_cap_sp", nil, "DMG Cap (Sp.)", "dmg-cap-sp", "special"],
       ["dmg_amp", "normal", "DMG Amp.", "dmg-amp", "special"],
       ["dmg_amp", "omega", "Ω DMG Amp.", "omega-dmg-amp", "special"],
       ["dmg_amp", "ex", "DMG Amp.", "dmg-amp", "special"],
       ["od_dmg_amp", nil, "Od DMG Amp.", "od-dmg-amp", "special"],
       ["elem_amplify", nil, "Elem. Amplify", "elem-amplify", "special"],
+      ["plain_amp", nil, "DMG Amp. (Non-elem. Foe)", "plain-amp", "special"],
       ["na_dmg_cap", nil, "N.A. DMG Cap", "na-dmg-cap", "special"],
       ["na_amp", nil, "N.A. Amp.", "na-amp", "special"],
       ["na_amp_sp", nil, "N.A. Amp. (Sp.)", "na-amp-sp", "special"],
@@ -55,9 +67,15 @@ module GridDamage
       ["skill_amp_sp", nil, "Skill Amp. (Sp.)", "skill-amp-sp", "special"],
       ["ca_dmg", nil, "C.A. DMG", "ca-dmg", "special"],
       ["ca_dmg_cap", nil, "C.A. DMG Cap", "ca-dmg-cap", "special"],
+      ["ca_amp_sp", nil, "C.A. Amp. (Sp.)", "ca-amp-sp", "special"],
       ["sp_ca_cap", nil, "Sp. C.A. Cap", "sp-ca-cap", "special"],
+      ["cb_dmg", nil, "C.B. DMG", "cb-dmg", "special"],
       ["cb_dmg_cap", nil, "C.B. DMG Cap", "cb-dmg-cap", "special"],
+      ["fc_dmg_cap", nil, "FC DMG Cap", "fc-dmg-cap", "special"],
+      ["cb_amp", nil, "C.B. Amp.", "cb-amp", "special"],
+      ["fc_amp", nil, "FC Amp.", "fc-amp", "special"],
       ["crit_amp", nil, "Crit. Amp.", "crit-amp", "special"],
+      ["ca_supp", nil, "C.A. Supp.", "ca-supp", "special"],
       ["dmg_supp", nil, "DMG Supp.", "dmg-supp", "special"],
       ["na_supp", nil, "N.A. Supp.", "na-supp", "special"],
       ["na_supp_sp", nil, "N.A. Supp. (Sp.)", "na-supp-sp", "special"],
@@ -65,14 +83,21 @@ module GridDamage
       ["skill_supp_sp", nil, "Skill Supp. (Sp.)", "skill-supp-sp", "special"],
       ["charge_gain", nil, "Charge Gain", "charge-gain", "special"],
       ["def_ignore", nil, "DEF Ignore", "def-ignore", "special"],
-      ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "special"],
-      ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "special"],
-      ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "special"],
-      ["heal_cap", nil, "Heal Cap", "heal-cap", "special"],
       # Overskill (teal labels)
       ["crit_dmg", nil, "Crit. DMG", "crit-dmg", "overskill"],
       ["added_hit", nil, "Added Hit", "added-hit", "overskill"],
       ["dmg_cap_pen", nil, "DMG Cap Pen.", "dmg-cap-pen", "overskill"],
+      ["added_hp", nil, "HP", "added-hp", "overskill"],
+      # Befoulments (Odious weapons' negative skills)
+      ["atk_hit", nil, "ATK Hit", "bf-atk", "befoulment"],
+      ["da_hit", nil, "DA Rate Hit", "bf-da-rate", "befoulment"],
+      ["ta_hit", nil, "TA Rate Hit", "bf-ta-rate", "befoulment"],
+      ["skill_dmg_hit", nil, "Skill DMG Hit", "bf-skill-dmg", "befoulment"],
+      ["ca_dmg_hit", nil, "C.A. DMG Hit", "bf-ca-dmg", "befoulment"],
+      ["hp_hit", nil, "HP Hit", "bf-hp", "befoulment"],
+      ["def_hit", nil, "DEF Hit", "bf-def", "befoulment"],
+      ["debuff_hit", nil, "Debuff S. Hit", "bf-debuff", "befoulment"],
+      ["turn_dmg_hit", nil, "Turn DMG", "bf-turn-dmg", "befoulment"],
       # AX skills (purple labels)
       ["hp_ax", nil, "HP (AX)", "ax-hp", "ax"],
       ["atk_ax", nil, "ATK (AX)", "ax-atk", "ax"],
@@ -89,7 +114,9 @@ module GridDamage
       ["skill_supp_ax", nil, "Skill DMG Supp. (AX)", "ax-skill-dmg-supp", "ax"],
       ["na_cap_ax", nil, "N.A. DMG Cap (AX)", "ax-na-dmg-cap", "ax"],
       ["healing_ax", nil, "Healing (AX)", "ax-heal", "ax"],
-      ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"]
+      ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"],
+      ["exp_ax", nil, "EXP Gain", "ax-exp-gain", "ax"],
+      ["rupie_ax", nil, "Rupie Gain", "ax-rupie-gain", "ax"]
     ].freeze
 
     SUPPLEMENT_KEYS = %w[dmg_supp na_supp na_supp_sp skill_dmg_supp skill_supp_sp ca_supp
@@ -103,7 +130,7 @@ module GridDamage
       contributions = active_contributions(computed[:contributions])
       element = Calculator.send(:grid_element, party)
 
-      lines = LINES.filter_map { |spec| line_for(agg, contributions, spec, element) }
+      lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
       lines += leftover_lines(agg, contributions)
       { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(2) }, lines: lines }
     end
@@ -135,7 +162,8 @@ module GridDamage
     OVERSKILL_FEEDS = {
       "crit_dmg" => [["Critical", "クリティカル確率", "critical", 0.5]],
       "dmg_cap_pen" => [["DMG Cap", "ダメージ上限", "dmg_cap", 0.5], ["DMG Cap (Sp.)", "ダメージ上限(特殊)", "dmg_cap_sp", 0.5]],
-      "added_hit" => [["DA Rate", "DA確率", "da", 0.4], ["TA Rate", "TA確率", "ta", 0.6]]
+      "added_hit" => [["DA Rate", "DA確率", "da", 0.4], ["TA Rate", "TA確率", "ta", 0.6]],
+      "added_hp" => [["HP", "HP", "hp", 0.05]]
     }.freeze
 
     # Per-line contribution entries: [{name:{en,ja}, icon, value, base, multiplier,
@@ -175,6 +203,16 @@ module GridDamage
     # the generic form when the grid element can't be determined.
     def resolve_element(text, element)
       return text unless text.include?("ELEMENT")
+
+      # FOE_ELEMENT first — it contains "ELEMENT" as a substring. The foe's element is
+      # what the grid's element is strong against (fire grid → "Wind Reduc.").
+      if text.include?("FOE_ELEMENT")
+        foe = element && Calculator::ADVANTAGED_FOE[element.downcase]
+        return text.gsub("FOE_ELEMENT-reduc", "elem-reduc").gsub(/FOE_ELEMENT\s*/, "Elem. ").strip if foe.nil?
+
+        foe = foe.capitalize if element.match?(/\A[A-Z]/)
+        return text.gsub("FOE_ELEMENT", foe)
+      end
       return text.gsub("ELEMENT", element) if element
 
       text.gsub("bonus-ELEMENT-dmg", "bonus-elem-dmg").gsub(/\s*ELEMENT\s*/, " ").strip
@@ -197,8 +235,23 @@ module GridDamage
     end
 
     # Boost types not in the ordered map still render, so nothing is silently hidden.
+    # Enhancement-only boosts appear in the header, never as lines.
+    HIDDEN_KEYS = %w[elemental_enhance].freeze
+
+    # Registry rows override the code defaults (#62): a populated panel_lines table
+    # IS the panel — order, labels, badges, grouping. Empty table (tests, bare DBs)
+    # falls back to LINES.
+    def effective_lines
+      rows = PanelLine.order(:position).pluck(:boost_type, :series, :label_en, :slug, :group_name)
+      rows.presence || LINES
+    end
+
+    def hidden_keys
+      HIDDEN_KEYS | WeaponSkillBoostType.where(hidden: true).pluck(:key)
+    end
+
     def leftover_lines(agg, contributions)
-      known = LINES.to_set(&:first)
+      known = effective_lines.to_set(&:first) + hidden_keys
       agg.except(*known).filter_map do |key, result|
         value = result.total.to_f
         next if value.zero?

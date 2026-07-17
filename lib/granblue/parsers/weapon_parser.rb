@@ -276,7 +276,10 @@ module Granblue
         suffixes = []
         suffixes << nil if hash["s#{slot}_name"].present?
         hash.each_key do |key|
-          next unless key.to_s =~ /\As#{slot}_(\d+s)_name\z/
+          # _4s/_5s enumerate uncap tiers; _u1/_u2 enumerate in-place upgrades
+          # (Illustrious "Disease Demon II" at lvl 210). Either way the real tier
+          # comes from the entry's unlock level, not the suffix.
+          next unless key.to_s =~ /\As#{slot}_(\d+s|u\d+)_name\z/
           next unless hash[key].present?
 
           suffixes << Regexp.last_match(1)
@@ -417,8 +420,18 @@ module Granblue
           persist_single_skill(slot)
         end
 
-        # Remove slots no longer present in wiki data (cascades to their versions)
-        @weapon.weapon_skills.where.not(position: occupied_positions).destroy_all
+        # Remove slots no longer present in wiki data (cascades to their versions) —
+        # except slots whose versions carry curation (overrides or manual rows):
+        # old-shape slots the modern parse doesn't emit still hold calculator truth.
+        @weapon.weapon_skills.where.not(position: occupied_positions).find_each do |stale_slot|
+          version_ids = stale_slot.weapon_skill_versions.ids
+          curated = stale_slot.weapon_skill_versions.where.not(overrides_edited_at: nil).exists? ||
+                    WeaponSkillDatum.where(weapon_skill_version_id: version_ids)
+                                    .where.not(manually_edited_at: nil).exists? ||
+                    WeaponSkillEffect.where(weapon_skill_version_id: version_ids)
+                                     .where.not(manually_edited_at: nil).exists?
+          stale_slot.destroy unless curated
+        end
 
         persisted
       end
@@ -435,6 +448,10 @@ module Granblue
 
         seen_ordinals = []
         slot[:versions].each do |entry|
+          # unexpanded template garbage from broken pages ("}}} Enforcement",
+          # "{{ #vardefineecho: …") must never become versions
+          next if entry[:name_en].to_s.match?(/[{}]/)
+
           # Canonical content lives on the shared Skill catalog (deduped by name).
           skill = Skill.find_or_initialize_by(name_en: entry[:name_en], skill_type: :weapon)
           skill.description_en = entry[:description_en] if entry[:description_en].present?
@@ -467,8 +484,19 @@ module Granblue
              "#{entry[:name_en]} (#{entry[:series]} #{entry[:modifier]} #{entry[:size]})"
         end
 
-        # Remove stale version tiers (e.g. a tier removed from the wiki)
-        weapon_skill.weapon_skill_versions.where.not(ordinal: seen_ordinals).destroy_all
+        # Remove stale version tiers (e.g. a tier removed from the wiki) — but never
+        # versions carrying curation: classification overrides or manually-edited
+        # rows mark a version as hand-maintained (old-shape slots the modern parse
+        # doesn't emit still hold the calculator's truth).
+        weapon_skill.weapon_skill_versions.where.not(ordinal: seen_ordinals).find_each do |stale|
+          next if stale.overrides_edited_at.present?
+          next if WeaponSkillDatum.where(weapon_skill_version_id: stale.id)
+                                  .where.not(manually_edited_at: nil).exists?
+          next if WeaponSkillEffect.where(weapon_skill_version_id: stale.id)
+                                   .where.not(manually_edited_at: nil).exists?
+
+          stale.destroy
+        end
 
         weapon_skill
       end

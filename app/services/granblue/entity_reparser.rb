@@ -45,7 +45,8 @@ module Granblue
         # versions (cascading away version-linked curation). Repair matches by
         # name and is idempotent, so it runs alone.
         repair = Extractors::ExpandedWeaponSkillImporter.repair_weapon(@entity)
-        raise WikiError, 'Template expansion failed' if repair == :expand_failed
+        # WikiError's initializer is keyword-only — `raise WikiError, '…'` would ArgumentError.
+        raise WikiError.new(message: 'Template expansion failed') if repair == :expand_failed
       else
         Parsers::WeaponParser.new(granblue_id: @entity.granblue_id).persist_skills_from_wiki_raw
         # Weapons with inline template artifacts in their skill NAMES (e.g.
@@ -80,19 +81,34 @@ module Granblue
 
     # Version-linked rows with manual curation die with their version when the
     # pipeline rebuilds slots. Snapshot them before, re-attach after — keyed by
-    # the row's modifier, which is the owning skill's name.
+    # the OWNING SKILL's name captured at snapshot time (a row's modifier often
+    # differs from the skill name — "Concrio" on "Concrio Ignis" — and keying on
+    # it silently dropped curation).
     def snapshot_manual_rows
+      meta = WeaponSkillVersion.where(id: weapon_versions.select(:id))
+                               .includes(:skill, :weapon_skill).index_by(&:id)
       [WeaponSkillDatum, WeaponSkillEffect].flat_map do |model|
         model.where(weapon_skill_version_id: weapon_versions.select(:id))
              .where.not(manually_edited_at: nil)
-             .map { |row| { model: model, attrs: row.attributes.except(*MANUAL_ROW_COLUMNS_EXCLUDED) } }
+             .map do |row|
+          v = meta[row.weapon_skill_version_id]
+          { model: model, skill_name: v&.skill&.name_en,
+            position: v&.weapon_skill&.position, ordinal: v&.ordinal,
+            attrs: row.attributes.except(*MANUAL_ROW_COLUMNS_EXCLUDED) }
+        end
       end
     end
 
+    # Reattach by the owning skill's name; when repair RENAMED the skill (garbled
+    # template imports gaining their real names), fall back to the slot position +
+    # ordinal — the version identity that survives every rename.
     def restore_manual_rows(saved)
       versions_by_name = weapon_versions.includes(:skill).group_by { |v| v.skill&.name_en }
+      versions_by_slot = weapon_versions.includes(:weapon_skill)
+                                        .index_by { |v| [v.weapon_skill.position, v.ordinal] }
       saved.sum do |entry|
-        targets = versions_by_name[entry[:attrs]['modifier']] || []
+        targets = versions_by_name[entry[:skill_name]] || []
+        targets = [versions_by_slot[[entry[:position], entry[:ordinal]]]].compact if targets.empty?
         targets.count do |version|
           scope = entry[:model].where(weapon_skill_version_id: version.id,
                                       boost_type: entry[:attrs]['boost_type'])

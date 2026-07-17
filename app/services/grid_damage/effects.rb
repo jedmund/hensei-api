@@ -4,9 +4,19 @@ module GridDamage
   # Phase 5: evaluates the grid's weapon_skill_effects (the conditional/special track) at a
   # battle state into Aggregator::Contributions, to merge with the Phase 1/2 data
   # contributions. Covers static/flat, conditional_flat, per_grid_count,
-  # foe_hp_supplemental, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
+  # supplemental_cap, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
+    CAP_FORMULA_PATTERN = %r{
+      \A
+      (?<slope>\d+(?:\.\d+)?)
+      \*
+      (?<ratio>\(\(maxhp-curhp\)/maxhp\)|\(curhp/maxhp\))
+      \+
+      (?<base>\d+(?:\.\d+)?)
+      \z
+    }x
+
     module_function
 
     def contributions(party, state: {}, composition: nil)
@@ -16,8 +26,8 @@ module GridDamage
         w = gw.weapon
         next unless w
 
-        # Non-summon-boosted series (Bahamut/Celestial) land on the panel flat, like EX.
-        amplifiable = !WeaponContributions::NON_SUMMON_BOOSTED_SERIES.include?(w.weapon_series&.slug)
+        # Non-summon-boosted series land on the panel flat, like EX.
+        amplifiable = WeaponContributions.series_summon_boosted?(w.weapon_series)
         WeaponContributions.active_versions(w, gw).each do |v|
           # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
           # skill; otherwise fall back to the effect's heuristic series.
@@ -43,7 +53,8 @@ module GridDamage
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
     def value_for(effect, weapon:, state:, composition:, grid_weapon: nil)
       case effect.scaling_kind
-      when "static", "flat"
+      when "static", "flat", "ally_hp_scaled", "current_hp_scaled"
+        # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
         effect.value&.to_f
       when "conditional_flat", "bonus_dmg"
         met = Conditions.met?(effect.condition, state: state, composition: composition,
@@ -51,19 +62,77 @@ module GridDamage
         met ? effect.value&.to_f : nil
       when "per_grid_count"
         per_grid_count(effect, weapon: weapon, composition: composition)
-      when "foe_hp_supplemental"
-        effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
-      when "ally_hp_scaled", "current_hp_scaled" # rubocop:disable Lint/DuplicateBranch -- TODO: HP curve placeholder
-        effect.value&.to_f
+      # Persistence supplements scale with current HP: value x (1 + 2*hp/100)/3
+      # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
+      when "persistence_supp"
+        effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
+      # "Up to N%" linear-in-HP boosts with the stamina-style sub-25 cutoff
+      # (Rightway Pathfinder: 120 x hp/100 -> 120/90/60/30, gone below 25)
+      when "hp_linear_cutoff"
+        hp = state.fetch(:hp_percent, 100).to_f
+        hp < 25 ? nil : effect.value.to_f * hp / 100.0
+      when "hp_current_linear"
+        hp_linear_value(effect, state: state, missing: false)
+      when "hp_missing_linear"
+        hp_linear_value(effect, state: state, missing: true)
+      when "supplemental_cap"
+        supplemental_cap(effect, state: state)
+      when "ally_max_hp_scaled"
+        ally_max_hp_scaled(effect, state: state)
       when "specialty_scaled"
-        specialty_value(effect, composition: composition)
+        specialty_value(effect, composition: composition, state: state)
+      when "documentation"
+        nil
       end
+    end
+
+    def hp_linear_value(effect, state:, missing:)
+      floor = effect.value&.to_f
+      ceiling = effect.total_cap&.to_f
+      return nil if floor.nil? || ceiling.nil?
+
+      # The in-game calculator's "1%" anchor behaves as the 1-HP endpoint for these
+      # linear MA skills: Exertion shows 5%, Surge shows 35%.
+      hp = state.fetch(:hp_percent, 100).to_f
+      current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
+      ratio = missing ? 1.0 - current_ratio : current_ratio
+      floor + ((ceiling - floor) * ratio)
+    end
+
+    def ally_max_hp_scaled(effect, state:)
+      max_hp = state[:ally_max_hp]&.to_f
+      coefficient = effect.value&.to_f
+      return nil if max_hp.nil? || max_hp <= 0 || coefficient.nil?
+
+      value = max_hp * coefficient / 100.0
+      cap = effect.per_copy_cap&.to_f
+      cap ? [value, cap].min : value
+    end
+
+    def supplemental_cap(effect, state:)
+      return cap_formula_value(effect.cap_formula, state: state) if effect.cap_formula.present?
+
+      effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
+    end
+
+    def cap_formula_value(formula, state:)
+      match = formula.to_s.delete(" ").match(CAP_FORMULA_PATTERN)
+      return nil unless match
+
+      hp = state.fetch(:hp_percent, 100).to_f
+      current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
+      ratio = match[:ratio].include?("maxhp-curhp") ? 1.0 - current_ratio : current_ratio
+      match[:base].to_f + (match[:slope].to_f * ratio)
     end
 
     # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon
     # specialty. The panel reflects the MC's specialties (either job proficiency counts);
     # allies of that specialty get the larger boost, everyone else the "other" row.
-    def specialty_value(effect, composition:)
+    # An "arcarum" flag in the condition venue-gates the row (Sephirath skills apply
+    # only in Arcarum: The World Beyond / Replicard Sandbox).
+    def specialty_value(effect, composition:, state: {})
+      return nil if effect.condition["arcarum"] && !state[:arcarum]
+
       table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
       specs = Array(composition && (composition[:mc_specialties] || composition[:mc_specialty]))
       matched = specs.filter_map { |s| table[s] }.max
@@ -72,7 +141,7 @@ module GridDamage
 
     def per_grid_count(effect, weapon:, composition:)
       base = effect.value&.to_f
-      count = grid_count(effect.count_basis, weapon: weapon, composition: composition)
+      count = grid_count(effect.count_basis, effect: effect, weapon: weapon, composition: composition)
       return nil if base.nil? || count.nil?
 
       count = [count, effect.count_cap.to_i].min if effect.count_cap
@@ -84,13 +153,8 @@ module GridDamage
       total
     end
 
-    def grid_count(basis, weapon:, composition:)
-      case basis
-      when "weapon_type"  then composition.dig(:weapon_type_counts, weapon.proficiency).to_i
-      when "weapon_group" then composition[:weapon_group_count].to_i
-      when "omega_skill"  then composition[:omega_skill_count].to_i
-        # "epic"/"militis" need weapon-group tags we don't store — documented gap.
-      end
+    def grid_count(basis, weapon:, composition:, effect: nil)
+      GridComposition.count_for_basis(basis, weapon: weapon, composition: composition, effect: effect)
     end
 
     # Cap-group key: an explicit shared group, else a per-modifier group when the effect

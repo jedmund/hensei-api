@@ -17,9 +17,11 @@ RSpec.describe Granblue::WikiError do
     end
   end
 
-  it 'defaults all fields to nil' do
+  it 'defaults code and page to nil, message to the exception default' do
     error = described_class.new
-    expect(error.to_hash).to eq({ message: nil, code: nil, page: nil })
+    # message flows through Exception (super(message)), so a bare new reports the
+    # class name — standard Ruby exception semantics.
+    expect(error.to_hash).to eq({ message: 'Granblue::WikiError', code: nil, page: nil })
   end
 
   it 'can be raised and rescued' do

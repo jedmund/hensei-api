@@ -205,9 +205,12 @@ module Api
       end
 
       def mismatched_skill(job, skill)
+        # Origin-row jobs (Lancer Origin, Rising Force) have no base_job — compare
+        # base jobs nil-safely, and let the skill-kind flag short-circuit first
+        # (equipping a cross-job subskill must not evaluate the EMP comparison).
         mismatched_main = (skill.job.id != job.id) && skill.main && !skill.sub
-        mismatched_emp = (skill.job.id != job.id && skill.job.base_job.id != job.base_job.id) && skill.emp
-        mismatched_base = skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
+        mismatched_emp = skill.emp && skill.job.id != job.id && skill.job.base_job&.id != job.base_job&.id
+        mismatched_base = skill.base && skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job&.id)
 
         if %w[4 5 ex2].include?(job.row)
           if skill.base && !mismatched_base

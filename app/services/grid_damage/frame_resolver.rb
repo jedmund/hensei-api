@@ -25,7 +25,7 @@ module GridDamage
       identity = identity_frame(weapon)
       return identity if identity
 
-      version.skill_series.presence || "normal"
+      version.resolved_series.presence || "normal"
     end
 
     def identity_frame(weapon)

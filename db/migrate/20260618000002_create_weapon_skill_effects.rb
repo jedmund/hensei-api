@@ -10,7 +10,7 @@ class CreateWeaponSkillEffects < ActiveRecord::Migration[8.0]
       t.string  :modifier, null: false          # skill type name (join key), e.g. "Pact"
       t.string  :boost_type, null: false         # weapon_skill_boost_types key
       t.string  :series                          # ATK frame for atk effects: normal/omega/ex; null otherwise
-      t.string  :scaling_kind, null: false       # foe_hp_supplemental|per_grid_count|conditional_flat|ally_hp_scaled|bonus_dmg|flat|static
+      t.string  :scaling_kind, null: false       # supplemental_cap|per_grid_count|conditional_flat|ally_hp_scaled|bonus_dmg|flat|static
 
       t.decimal :value, precision: 12, scale: 4         # per-unit/percent/factor
       t.string  :value_unit                             # percent|percent_foe_max_hp|percent_ally_max_hp|flat

@@ -17,7 +17,10 @@ module GridDamage
 
       gte = condition["gte"]
       case condition["type"]
-      when "weapon_group_count" then composition[:weapon_group_count].to_i >= gte
+      when "count_basis_gte"
+        return false unless GridComposition.valid_count_condition?(condition)
+
+        GridComposition.count_for_basis(condition["basis"], weapon: weapon, composition: composition) >= gte
       when "same_id_count"      then composition.fetch(:id_counts, {}).fetch(weapon&.granblue_id, 0) >= gte
       when "skill_type_count"   then composition[:skill_type_count].to_i >= gte
       when "foe_debuff_count"   then state[:debuff_count].to_i >= gte
@@ -30,6 +33,16 @@ module GridDamage
       when "copy_skill_level"
         grid_weapon && weapon &&
           WeaponContributions.skill_level_for(weapon, grid_weapon) >= gte
+      # Ultima base skills / gauph stat keys boost "<weapon>-specialty allies" — on the
+      # panel (the MC's view) they show only when the MC's job wields this weapon's type
+      # (K4UydX: Rising Force hides Baculum Rubell and Gauph Strength on an Ultima Staff).
+      when "weapon_specialty"
+        specialty = GridComposition::PROFICIENCY_NAME[weapon&.proficiency]
+        specialty.present? && Array(composition[:mc_specialties]).include?(specialty)
+      # epic weapons' "when all equipped weapons are different" (Absolute Equality)
+      when "all_weapons_unique"
+        counts = composition.fetch(:id_counts, {})
+        counts.any? && counts.values.all? { |n| n <= 1 }
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))

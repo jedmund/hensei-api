@@ -34,6 +34,8 @@ module Granblue
         check(mismatches, "#{frame.capitalize} Enh", enh[frame.to_sym], expected)
       end
       @ref.fetch('lines').each do |line|
+        next if line['skip']
+
         result = agg[line.fetch('boost')]
         ours = if line['series']
                  result&.by_series&.dig(line['series'])&.to_f # rubocop:disable Style/SafeNavigationChainLength
@@ -41,6 +43,18 @@ module Granblue
                  result&.total&.to_f
                end
         check(mismatches, line.fetch('label'), ours, line.fetch('value').to_f)
+        next if line['capped'].nil?
+
+        # capped:true = the game renders the line orange (at its display cap)
+        ours_capped = result ? result.capped == true : false
+        unless ours_capped == line['capped']
+          mismatches << { label: "#{line.fetch('label')} capped", ours: ours_capped, expected: line['capped'] }
+        end
+      end
+      # Boosts the game does NOT show (e.g. a phantom overskill line) must stay absent.
+      Array(@ref['absent']).each do |key|
+        total = agg[key]&.total.to_f
+        mismatches << { label: "#{key} (must be absent)", ours: total, expected: nil } if total.positive?
       end
 
       Result.new(party: @ref['party'], captured_on: @ref['captured_on'],

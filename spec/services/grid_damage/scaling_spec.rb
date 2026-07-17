@@ -60,9 +60,9 @@ RSpec.describe GridDamage::Scaling do
       expect(described_class.value(d, skill_level: 15, hp_percent: 50)).to be_within(0.02).of(4.20)
     end
 
-    it "is constant below the 25% HP floor" do
-      at25 = described_class.value(d, skill_level: 15, hp_percent: 25)
-      expect(described_class.value(d, skill_level: 15, hp_percent: 5)).to be_within(1e-9).of(at25)
+    it "confers nothing below 25% HP (QJ9736: the panel drops the line)" do
+      expect(described_class.value(d, skill_level: 15, hp_percent: 25)).to be > 0
+      expect(described_class.value(d, skill_level: 15, hp_percent: 24.9)).to be_nil
     end
   end
 
@@ -80,10 +80,18 @@ RSpec.describe GridDamage::Scaling do
     end
   end
 
-  describe "garrison (flat DEF — SL-interpolated, no HP curve)" do
-    it "interpolates its SL anchors like flat" do
+  describe "garrison (its own low-HP curve, not enmity's)" do
+    it "contributes nothing at full HP (HoEE8b: the panel's DEF line excludes Garrison)" do
       d = datum(formula_type: "garrison", sl1: 3.6, sl10: 12.0, sl15: 15.0)
-      expect(described_class.value(d, skill_level: 15)).to eq(15.0)
+      expect(described_class.value(d, skill_level: 15, hp_percent: 100)).to eq(0.0)
+    end
+
+    it "rises on its own curve: modifier x (-(1-ratio)^3 + 4(1-ratio)) (QJ9736 x5 anchors)" do
+      d = datum(formula_type: "garrison", sl1: 3.6, sl10: 12.0, sl15: 13.5)
+      expect(described_class.value(d, skill_level: 15, hp_percent: 50))
+        .to be_within(1e-9).of(13.5 * ((-0.5**3) + (4 * 0.5)))
+      expect(described_class.value(d, skill_level: 15, hp_percent: 25))
+        .to be_within(0.01).of(34.80)
     end
   end
 end

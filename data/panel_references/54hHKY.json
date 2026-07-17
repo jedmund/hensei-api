@@ -1,0 +1,138 @@
+{
+  "party": "54hHKY",
+  "captured_on": "2026-07-08",
+  "notes": "Fire Odious replica of qBOvon on a controlled account, in a 10-weapon raid slot (different Opus keys: alpha Pendulum + Chain of Temptation; different befoulments). Vindicates the model for every line qBOvon left open: Ironflame 18 + Apotheosis 24/2.0@SL25 (Omega Might 156, Omega Amp 4), single Enforcement (DEF 15), and Glory taboo C.A. cap at the wiki 6.0 (58 = 6x2x4 + alpha 10 — the qBOvon-derived 8.5 was overfit to that submitter's account and is reverted). First coverage of C.A. DMG Hit and Debuff S. Hit befoulments. NOTE: raids determine the weapon-slot count (10 vs 13); the party data mirrors the raid, so the calculator needs no slot filtering — an earlier extra-slots state flag from a remix-holdover data mismatch was reverted. Estimated 268956 / to Wind 414440 / Max HP 53739.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "value": 156,
+      "series": "omega"
+    },
+    {
+      "label": "Od Might",
+      "boost": "atk",
+      "value": 192,
+      "series": "odious"
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "value": 44.0,
+      "series": "ex"
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 5.0
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 5.0
+    },
+    {
+      "label": "Fire Omega",
+      "boost": "omega_exalto",
+      "value": 60.0
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 240
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -30.0
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 15.0
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 17.0
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "value": 4.0,
+      "series": "omega"
+    },
+    {
+      "label": "Od DMG Amp.",
+      "boost": "od_dmg_amp",
+      "value": 14.4
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 19.0
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 15.0
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 91.2
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 58.0
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 105
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 48.0
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": 50.0,
+      "capped": true
+    },
+    {
+      "label": "ATK Hit",
+      "boost": "atk_hit",
+      "value": -14.1
+    },
+    {
+      "label": "C.A. DMG Hit",
+      "boost": "ca_dmg_hit",
+      "value": -19.0
+    },
+    {
+      "label": "Debuff S. Hit",
+      "boost": "debuff_hit",
+      "value": -10.2
+    }
+  ],
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp"
+  ]
+}

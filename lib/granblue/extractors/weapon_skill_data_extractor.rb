@@ -136,6 +136,7 @@ module Granblue
           end
 
           current_labels = nil
+          current_plain_labels = nil
           current_size = nil
           rows_raw.each do |r|
             next if r.include?("Skill Level") || r.include?("wsmod-title")
@@ -144,6 +145,8 @@ module Granblue
             size = raw_size || current_size
             labels = row_labels(r)
             current_labels = labels if labels.any?
+            explicit_plain_names = plain_boosts(r)
+            current_plain_labels = explicit_plain_names if explicit_plain_names.any?
             nums = row_values(r).map { |v| parse_num(v) }
             next if nums.empty?
 
@@ -160,7 +163,13 @@ module Granblue
             # B). Fall back to plain-text stat cells, then to the WsBox boosts.
             names = raw_size ? (current_labels || []) : labels
             boosts = names.filter_map { |l| boost_key(l) }
-            boosts = plain_boosts(r).filter_map { |l| boost_key(l) } if boosts.empty?
+            plain_names = raw_size ? (current_plain_labels || []) : explicit_plain_names
+            if boosts.empty? && names.any?
+              next
+            elsif boosts.empty? && plain_names.any?
+              next if side_table_metric?(plain_names)
+              boosts = plain_names.filter_map { |l| boost_key(l) }
+            end
             boosts = box_boosts.filter_map { |l| boost_key(l) } if boosts.empty?
             boosts.uniq.each do |boost|
               out << base_row(modifier, boost, series, size, aura).merge(
@@ -222,6 +231,10 @@ module Granblue
         return "omega" if joined.include?("Omega ")
         return "odious" if joined.include?("Od ")
         "normal"
+      end
+
+      def side_table_metric?(labels)
+        labels.any? { |label| label.strip.casecmp("Counter DMG").zero? }
       end
 
       def formula_for(modifier, boost)

@@ -312,7 +312,7 @@ module Api
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id, :weapon_key4_id,
           :awakening_id, :awakening_level,
           :ax_modifier1_id, :ax_strength1, :ax_modifier2_id, :ax_strength2,
-          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
+          :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level, :skill_level,
           :element
         )
       end
@@ -323,7 +323,7 @@ module Api
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id, :weapon_key4_id,
           :awakening_id, :awakening_level,
           :ax_modifier1_id, :ax_strength1, :ax_modifier2_id, :ax_strength2,
-          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
+          :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level, :skill_level,
           :element
         ])
       end
