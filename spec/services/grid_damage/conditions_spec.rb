@@ -52,6 +52,14 @@ RSpec.describe GridDamage::Conditions do
     expect(described_class.met?({ "type" => "foe_status", "status" => "Bounty" }, state: state)).to be(true)
   end
 
+  it "evaluates Arcarum venue conditions only when the state is explicit" do
+    condition = { "type" => "arcarum", "eq" => true }
+
+    expect(described_class.met?(condition, state: { arcarum: true })).to be(true)
+    expect(described_class.met?(condition, state: { arcarum: false })).to be(false)
+    expect(described_class.met?(condition, state: {})).to be(false)
+  end
+
   it "defers boost_level when no enhancements are supplied (1st pass)" do
     expect(described_class.met?({ "type" => "boost_level", "gte" => 280 })).to be(false)
   end
