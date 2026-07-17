@@ -18,6 +18,10 @@ module Granblue
       DescParser = Granblue::Parsers::WeaponSkillDescriptionParser
       GameplayNotesParser = Granblue::Parsers::GameplayNotesParser
       SUPP_BOOSTS = WeaponSkillDescriptionExtractor::SUPP_BOOSTS
+      # Dark Opus keys need curated handling for skill-level curves, transcendence
+      # tiers, and effects that only trigger during battle. The generic extractor
+      # cannot represent those distinctions safely, but may still preview them.
+      DARK_OPUS_KEY_PREFIXES = %w[chain- pendulum-].freeze
       # Key-granted supplements land on the panel's second-stack "(Sp.)" lines.
       KEY_SUPP_SP = { "na_supp" => "na_supp_sp", "ca_supp" => "ca_supp_sp",
                       "skill_dmg_supp" => "skill_supp_sp" }.freeze
@@ -102,6 +106,11 @@ module Granblue
       end
 
       def self.persist(slug, effects, stats)
+        if DARK_OPUS_KEY_PREFIXES.any? { |prefix| slug.start_with?(prefix) }
+          stats[:curated_skipped] += 1
+          return
+        end
+
         WeaponSkillEffect.for_key(slug).delete_all # idempotent — re-derive from the wiki
         effects.each { |attrs| WeaponSkillEffect.create!(attrs) }
         stats[:keys] += 1

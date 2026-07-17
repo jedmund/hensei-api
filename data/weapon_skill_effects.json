@@ -384,97 +384,155 @@
       "notes": "VERIFY: A-sided bonus damage, value/frame not in prose (on weapon); highest-only."
     },
     {
-      "modifier": "Chain of Depravity",
-      "boost_type": "hp",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 50.0,
+      "modifier": "Chain of Falsehood",
+      "boost_type": "bonus_elem_dmg",
+      "scaling_kind": "bonus_dmg",
+      "value": 20.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "chain-depravity"
+      "key_slug": "chain-falsehood"
     },
     {
       "modifier": "Chain of Falsehood",
       "boost_type": "charge_gain",
-      "series": "omega",
       "scaling_kind": "static",
       "value": -100.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "key_slug": "chain-falsehood"
     },
     {
-      "modifier": "Chain of Glorification",
+      "modifier": "Chain of Forbiddance",
       "boost_type": "ca_dmg",
-      "series": "ex",
       "scaling_kind": "static",
-      "value": 14.5,
+      "value": 100.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "chain-forbiddance"
+    },
+    {
+      "modifier": "Chain of Forbiddance",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "static",
+      "value": 30.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "chain-forbiddance"
+    },
+    {
+      "modifier": "Chain of Glorification",
+      "boost_type": "ca_dmg",
+      "scaling_kind": "weapon_skill_curve",
+      "value": 14.5,
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Glorification",
       "boost_type": "ca_dmg_cap",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 7.8,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Glorification",
       "boost_type": "cb_dmg",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 16.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Glorification",
       "boost_type": "cb_dmg_cap",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 7.8,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Restoration",
       "boost_type": "atk",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 15.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
@@ -486,26 +544,39 @@
     {
       "modifier": "Chain of Restoration",
       "boost_type": "hp",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 15.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
-      "key_slug": "chain-restoration"
+      "key_slug": "chain-restoration",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Temperament",
       "boost_type": "atk",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 16.0,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Might",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
@@ -517,17 +588,24 @@
     {
       "modifier": "Chain of Temperament",
       "boost_type": "critical",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 7.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Verity",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
-      "key_slug": "chain-temperament"
+      "key_slug": "chain-temperament",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Temptation",
@@ -2057,16 +2135,23 @@
     {
       "modifier": "Pendulum of Prosperity",
       "boost_type": "e_atk_prog",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 1.44,
+      "scaling_kind": "weapon_skill_curve",
+      "value": 1.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Progression",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-prosperity"
+      "key_slug": "pendulum-prosperity",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Pendulum of Sagacity",
@@ -2138,32 +2223,67 @@
       "key_slug": "pendulum-sagacity"
     },
     {
-      "modifier": "Pendulum of Strife",
-      "boost_type": "da",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 6.0,
+      "modifier": "Pendulum of Strength",
+      "boost_type": "stamina",
+      "scaling_kind": "weapon_skill_curve",
+      "value": 17.0,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Stamina",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-strife"
+      "key_slug": "pendulum-strength",
+      "frame_rule": "weapon_identity"
+    },
+    {
+      "modifier": "Pendulum of Strife",
+      "boost_type": "da",
+      "scaling_kind": "weapon_skill_curve",
+      "value": 6.0,
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Trium",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-strife",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Pendulum of Strife",
       "boost_type": "ta",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 6.0,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Trium",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-strife"
+      "key_slug": "pendulum-strife",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Pendulum of Supremacy",
@@ -2267,16 +2387,23 @@
     {
       "modifier": "Pendulum of Zeal",
       "boost_type": "enmity",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 15.0,
+      "scaling_kind": "weapon_skill_curve",
+      "value": 13.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Enmity",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-zeal"
+      "key_slug": "pendulum-zeal",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Persistence",
@@ -3671,7 +3798,25 @@
       "boost_type": "da",
       "series": "ex",
       "scaling_kind": "conditional_flat",
-      "value": 5.0,
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-alpha"
+    },
+    {
+      "modifier": "α Pendulum",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
       "value_unit": "percent",
       "condition": {
         "gte": 4,
@@ -3682,6 +3827,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 DA boost from 2.5% to 5%.",
       "key_slug": "pendulum-alpha"
     },
     {
@@ -3705,7 +3851,25 @@
       "boost_type": "ta",
       "series": "ex",
       "scaling_kind": "conditional_flat",
-      "value": 5.0,
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-alpha"
+    },
+    {
+      "modifier": "α Pendulum",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
       "value_unit": "percent",
       "condition": {
         "gte": 4,
@@ -3716,6 +3880,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 TA boost from 2.5% to 5%.",
       "key_slug": "pendulum-alpha"
     },
     {
@@ -3732,6 +3897,43 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "key_slug": "pendulum-beta"
+    },
+    {
+      "modifier": "β Pendulum",
+      "boost_type": "skill_hit",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-beta"
+    },
+    {
+      "modifier": "β Pendulum",
+      "boost_type": "skill_hit",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 4,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 skill hit-count boost from 5% to 10%.",
       "key_slug": "pendulum-beta"
     },
     {

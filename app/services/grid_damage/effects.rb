@@ -75,6 +75,8 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: false)
       when "hp_missing_linear"
         hp_linear_value(effect, state: state, missing: true)
+      when "weapon_skill_curve"
+        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state)
       when "supplemental_cap"
         supplemental_cap(effect, state: state)
       when "ally_max_hp_scaled"
@@ -84,6 +86,28 @@ module GridDamage
       when "documentation"
         nil
       end
+    end
+
+    # Key-granted legacy skills (Dark Opus pendulums/chains) use the same SL/HP/turn
+    # curves as ordinary weapon skills. The effect owns the key relationship while the
+    # curve descriptor points at the canonical WeaponSkillDatum row.
+    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:)
+      curve = effect.condition.to_h["curve"] || effect.condition.to_h[:curve]
+      return nil unless curve
+
+      config = curve.with_indifferent_access
+      datum = WeaponSkillDatum.for_skill(
+        modifier: config[:modifier], series: config[:series], size: config[:size]
+      ).find { |row| row.boost_type == effect.boost_type }
+      return nil unless datum
+
+      skill_level = WeaponContributions.skill_level_for(weapon, grid_weapon)
+      Scaling.value(
+        datum,
+        skill_level: skill_level,
+        hp_percent: state.fetch(:hp_percent, 100),
+        turn: state.fetch(:turn, 1)
+      )
     end
 
     def hp_linear_value(effect, state:, missing:)
