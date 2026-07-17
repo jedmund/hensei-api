@@ -113,4 +113,15 @@ RSpec.describe Granblue::Extractors::WeaponSkillDataExtractor do
       expect(find_row(rows, boost_type: "critical", series: "normal", size: "medium")).to include(sl1: 3.2)
     end
   end
+
+  describe "counterattack damage side tables" do
+    let(:extractor) { described_class.new(boost_key_by_name: KEY_MAP.merge("Counter Rate" => "counter_dmg")) }
+
+    it "does not import Clarity's Counter DMG table as Counter Rate panel data" do
+      templates = JSON.parse(File.read(Rails.root.join("data/weapon_skill_templates/weapon_skill_templates.json")))
+      rows = extractor.extract(templates.fetch("Clarity"), name: "Clarity")
+
+      expect(rows).not_to include(hash_including(modifier: "Clarity", boost_type: "counter_dmg"))
+    end
+  end
 end

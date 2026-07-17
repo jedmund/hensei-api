@@ -1168,6 +1168,19 @@
       "notes": "50% Heal Cap to all allies."
     },
     {
+      "modifier": "Clarity",
+      "boost_type": "counter_dmg",
+      "scaling_kind": "static",
+      "value": 3.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Clarity template states a flat 3% chance to dodge and counter for small, medium, and big. Skill level and auras do not raise the chance; the Counter DMG table is counterattack damage, not the Weapon Skill Boosts Counter Rate line."
+    },
+    {
       "modifier": "Heed",
       "boost_type": "counter_dmg",
       "scaling_kind": "static",

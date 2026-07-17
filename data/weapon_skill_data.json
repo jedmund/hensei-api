@@ -705,36 +705,6 @@
     "aura_boostable": false
   },
   {
-    "modifier": "Clarity",
-    "boost_type": "counter_dmg",
-    "series": "normal_omega",
-    "size": "medium",
-    "formula_type": "flat",
-    "sl1": 3.2,
-    "sl10": 16.0,
-    "sl15": 23.5,
-    "sl20": null,
-    "sl25": null,
-    "coefficient": null,
-    "max_value": null,
-    "aura_boostable": true
-  },
-  {
-    "modifier": "Clarity",
-    "boost_type": "counter_dmg",
-    "series": "normal_omega",
-    "size": "small",
-    "formula_type": "flat",
-    "sl1": null,
-    "sl10": null,
-    "sl15": 20.0,
-    "sl20": null,
-    "sl25": null,
-    "coefficient": null,
-    "max_value": null,
-    "aura_boostable": true
-  },
-  {
     "modifier": "Crux",
     "boost_type": "ca_supp",
     "series": "ex",
