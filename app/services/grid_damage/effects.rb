@@ -15,7 +15,7 @@ module GridDamage
       \+
       (?<base>\d+(?:\.\d+)?)
       \z
-    }x.freeze
+    }x
 
     module_function
 
@@ -53,7 +53,8 @@ module GridDamage
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
     def value_for(effect, weapon:, state:, composition:, grid_weapon: nil)
       case effect.scaling_kind
-      when "static", "flat"
+      when "static", "flat", "ally_hp_scaled", "current_hp_scaled"
+        # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
         effect.value&.to_f
       when "conditional_flat", "bonus_dmg"
         met = Conditions.met?(effect.condition, state: state, composition: composition,
@@ -78,8 +79,6 @@ module GridDamage
         supplemental_cap(effect, state: state)
       when "ally_max_hp_scaled"
         ally_max_hp_scaled(effect, state: state)
-      when "ally_hp_scaled", "current_hp_scaled" # Legacy placeholders; avoid new rows.
-        effect.value&.to_f
       when "specialty_scaled"
         specialty_value(effect, composition: composition, state: state)
       when "documentation"

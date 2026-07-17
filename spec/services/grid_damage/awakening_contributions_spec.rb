@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe GridDamage::AwakeningContributions do
-  def add_awakened_weapon(party:, name:, series_slug:, awakening_slug:, level:, mainhand: false, proficiency: 1)
+  def add_awakened_weapon(party:, name:, series_slug:, awakening_slug:, level:, mainhand: false)
     series = WeaponSeries.find_or_create_by!(slug: series_slug) do |weapon_series|
       weapon_series.name_en = series_slug.titleize
       weapon_series.name_jp = series_slug
@@ -13,7 +13,7 @@ RSpec.describe GridDamage::AwakeningContributions do
       record.name_en = "Test Awakening"
       record.name_jp = "覚醒"
     end
-    weapon = create(:weapon, name_en: name, weapon_series: series, proficiency: proficiency)
+    weapon = create(:weapon, name_en: name, weapon_series: series, proficiency: 1)
     position = mainhand ? -1 : party.weapons.count
     create(:grid_weapon, party: party, weapon: weapon, awakening: awakening,
                          awakening_level: level, position: position)
@@ -111,8 +111,8 @@ RSpec.describe GridDamage::AwakeningContributions do
 
   it "maps every Exo attack variant named by the wiki template" do
     expected_groups = {
-      "ca_supp" => %w[Exo\ Ashavan Exo\ Ephialtes],
-      "dmg_supp" => %w[Exo\ Antaeus Exo\ Hamartia Exo\ Heliocentrum],
+      "ca_supp" => ["Exo Ashavan", "Exo Ephialtes"],
+      "dmg_supp" => ["Exo Antaeus", "Exo Hamartia", "Exo Heliocentrum"],
       "na_dmg_cap" => ["Exo Kshathra", "Exo Maitrah Karuna", "Exo Pelion"],
       "skill_dmg_cap" => ["Exo Australis", "Exo Aristarchus", "Exo Krodha", "Exo Evilenes"]
     }
