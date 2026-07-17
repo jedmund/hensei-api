@@ -325,17 +325,17 @@ module Granblue
           modifier = words.last
           if KNOWN_MODIFIERS.include?(modifier) && !FLAT_MULTI_WORD_MODIFIERS.include?(modifier)
             aura = words[0..-2].join(' ')
-            unless ALL_KNOWN_AURAS.include?(aura) || ANY_PREFIX_FAMILIES.include?(modifier)
-              return empty_result(skill_name)
+            if ALL_KNOWN_AURAS.include?(aura) || ANY_PREFIX_FAMILIES.include?(modifier)
+              return {
+                aura: aura,
+                modifier: modifier,
+                series: AURA_TO_SERIES[aura]&.to_s,
+                size: NUMERAL_TO_SIZE[numeral],
+                skill_name: skill_name
+              }
             end
 
-            return {
-              aura: aura,
-              modifier: modifier,
-              series: AURA_TO_SERIES[aura]&.to_s,
-              size: NUMERAL_TO_SIZE[numeral],
-              skill_name: skill_name
-            }
+            return empty_result(skill_name) unless KNOWN_MODIFIERS.include?(base_name)
           end
         end
 

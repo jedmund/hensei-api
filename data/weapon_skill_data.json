@@ -2745,6 +2745,21 @@
     "aura_boostable": true
   },
   {
+    "modifier": "Seduction",
+    "boost_type": "atk",
+    "series": "ex",
+    "size": "massive",
+    "formula_type": "flat",
+    "sl1": 9.0,
+    "sl10": 18.0,
+    "sl15": 23.0,
+    "sl20": 25.5,
+    "sl25": null,
+    "coefficient": null,
+    "max_value": null,
+    "aura_boostable": true
+  },
+  {
     "modifier": "Sentence",
     "boost_type": "ca_dmg",
     "series": "normal",
