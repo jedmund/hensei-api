@@ -179,14 +179,13 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
     let!(:ax_atk_modifier) do
       WeaponStatModifier.find_by(game_skill_id: 1589) ||
-        create(:weapon_stat_modifier,
-               slug: 'ax_atk',
-               name_en: 'ATK',
-               category: 'ax',
-               stat: 'atk',
-               polarity: 1,
-               suffix: '%',
-               game_skill_id: 1589)
+        create(:weapon_stat_modifier, :ax_atk)
+    end
+
+    let!(:ax_weapon) do
+      weapon = Weapon.find_by!(granblue_id: '1040301400')
+      weapon.update!(weapon_series: create(:weapon_series, :with_ax_skills))
+      weapon
     end
 
     subject { described_class.new(party, deck_data) }

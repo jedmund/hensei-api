@@ -76,6 +76,7 @@ RSpec.describe CollectionWeapon, type: :model do
     end
 
     describe 'AX skill validations' do
+      let(:ax_weapon) { create(:weapon, :with_ax) }
       let(:ax_modifier) do
         WeaponStatModifier.find_by(slug: 'ax_atk') ||
           create(:weapon_stat_modifier, :ax_atk)
@@ -83,7 +84,7 @@ RSpec.describe CollectionWeapon, type: :model do
 
       context 'when AX skill has only modifier' do
         it 'is invalid' do
-          collection_weapon = build(:collection_weapon, ax_modifier1: ax_modifier, ax_strength1: nil)
+          collection_weapon = build(:collection_weapon, weapon: ax_weapon, ax_modifier1: ax_modifier, ax_strength1: nil)
           expect(collection_weapon).not_to be_valid
           expect(collection_weapon.errors[:base]).to include('AX skill 1 must have both modifier and strength')
         end
@@ -91,7 +92,7 @@ RSpec.describe CollectionWeapon, type: :model do
 
       context 'when AX skill has only strength' do
         it 'is invalid' do
-          collection_weapon = build(:collection_weapon, ax_modifier2: nil, ax_strength2: 10.5)
+          collection_weapon = build(:collection_weapon, weapon: ax_weapon, ax_modifier2: nil, ax_strength2: 10.5)
           expect(collection_weapon).not_to be_valid
           expect(collection_weapon.errors[:base]).to include('AX skill 2 must have both modifier and strength')
         end
@@ -99,7 +100,7 @@ RSpec.describe CollectionWeapon, type: :model do
 
       context 'when AX skill has both modifier and strength' do
         it 'is valid' do
-          collection_weapon = build(:collection_weapon, ax_modifier1: ax_modifier, ax_strength1: 3.5)
+          collection_weapon = build(:collection_weapon, weapon: ax_weapon, ax_modifier1: ax_modifier, ax_strength1: 3.5)
           expect(collection_weapon).to be_valid
         end
       end
@@ -295,8 +296,8 @@ RSpec.describe CollectionWeapon, type: :model do
           expect(ax_weapon.ax_modifier1.slug).to eq('ax_atk')
           expect(ax_weapon.ax_strength1).to eq(3.5)
           expect(ax_weapon.ax_modifier2).to be_a(WeaponStatModifier)
-          expect(ax_weapon.ax_modifier2.slug).to eq('ax_hp')
-          expect(ax_weapon.ax_strength2).to eq(10.0)
+          expect(ax_weapon.ax_modifier2.slug).to eq('ax_ca_dmg')
+          expect(ax_weapon.ax_strength2).to eq(4.0)
         end
       end
     end

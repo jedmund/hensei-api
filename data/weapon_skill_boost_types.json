@@ -162,6 +162,15 @@
     "notes": "Stacks additively with other skill damage cap boosts, up to 100%."
   },
   {
+    "key": "skill_hit",
+    "name_en": "Skill Hit",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to skill hit count."
+  },
+  {
     "key": "dmg_cap",
     "name_en": "DMG Cap",
     "category": "cap",

@@ -32,7 +32,9 @@ module GridDamage
                   "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0,
                   # SPhnLB: Debuff Res. orange at 30; qBOvon: Charge Gain orange at 50,
                   # C.A. Supp. orange at 1,000,000
-                  "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0 }.freeze
+                  "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0,
+                  # gbf.wiki/AX_Skills: utility AX boosts cap across the whole grid.
+                  "exp_ax" => 30.0, "rupie_ax" => 50.0 }.freeze
 
     # The summon-aura/Exalto "Weapon Skill Enhancement" amplifies EVERY boost an
     # aura-boosted skill grants — caps, amps, and supplementals included (K4UydX: Terra's

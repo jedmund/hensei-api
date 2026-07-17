@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module GridDamage
+  # rubocop:disable Metrics/ModuleLength -- the in-game panel order is intentionally explicit
   # Shapes Calculator.boost_list into the in-game "Weapon Skill Boosts" panel: display
   # lines in the game's group order (attack → HP → defense → special → overskill → AX)
   # with panel labels, in-game label-image slugs (the gbf.wiki/game texture names, EN/JA
@@ -62,6 +63,7 @@ module GridDamage
       ["na_amp_sp", nil, "N.A. Amp. (Sp.)", "na-amp-sp", "special"],
       ["skill_dmg", nil, "Skill DMG", "skill-dmg", "special"],
       ["skill_dmg_cap", nil, "Skill DMG Cap", "skill-dmg-cap", "special"],
+      ["skill_hit", nil, "Skill Hit", "skill-hit", "special"],
       ["skill_cap_sp", nil, "Skill Cap (Sp.)", "skill-cap-sp", "special"],
       ["skill_amp", nil, "Skill Amp.", "skill-amp", "special"],
       ["skill_amp_sp", nil, "Skill Amp. (Sp.)", "skill-amp-sp", "special"],
@@ -112,6 +114,7 @@ module GridDamage
       ["ca_cap_ax", nil, "C.A. DMG Cap (AX)", "ax-ca-dmg-cap", "ax"],
       ["ca_supp_ax", nil, "C.A. Supp. (AX)", "ax-ca-supp", "ax"],
       ["skill_supp_ax", nil, "Skill DMG Supp. (AX)", "ax-skill-dmg-supp", "ax"],
+      ["skill_cap_ax", nil, "Skill DMG Cap (AX)", "ax-skill-dmg-cap", "ax"],
       ["na_cap_ax", nil, "N.A. DMG Cap (AX)", "ax-na-dmg-cap", "ax"],
       ["healing_ax", nil, "Healing (AX)", "ax-heal", "ax"],
       ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"],
@@ -263,4 +266,5 @@ module GridDamage
       end
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end
