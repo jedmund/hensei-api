@@ -505,6 +505,42 @@
     "notes": "Reduce damage taken from superior element (God-series, Draconic Barrier)."
   },
   {
+    "key": "fire_reduc",
+    "name_en": "Fire Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce fire damage taken."
+  },
+  {
+    "key": "water_reduc",
+    "name_en": "Water Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce water damage taken."
+  },
+  {
+    "key": "earth_reduc",
+    "name_en": "Earth Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce earth damage taken."
+  },
+  {
+    "key": "wind_reduc",
+    "name_en": "Wind Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce wind damage taken."
+  },
+  {
     "key": "hp_fixed",
     "name_en": "HP (Fixed)",
     "category": "defensive",

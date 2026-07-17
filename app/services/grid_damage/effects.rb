@@ -7,6 +7,8 @@ module GridDamage
   # supplemental_cap, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
+    REDUCTION_ELEMENTS = %w[fire water earth wind].freeze
+
     CAP_FORMULA_PATTERN = %r{
       \A
       (?<slope>\d+(?:\.\d+)?)
@@ -37,7 +39,7 @@ module GridDamage
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
-              boost_type: e.boost_type, series: frame || e.series, value: value,
+              boost_type: contribution_boost_type(e), series: frame || e.series, value: value,
               main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
               shared_cap_group: cap_group(e), cap: e.total_cap&.to_f, amplifiable: amplifiable,
               source_ids: [gw.id],
@@ -48,6 +50,16 @@ module GridDamage
         end
       end
       out
+    end
+
+    # Most reduction skills protect against the grid's default superior-element foe,
+    # so they use the generic elem_reduc line. Rose Crystal skills name a different
+    # protected element explicitly; preserve it as a distinct panel/cap bucket.
+    def contribution_boost_type(effect)
+      return effect.boost_type unless effect.boost_type == "elem_reduc"
+
+      element = effect.condition.to_h["reduced_element"].to_s.downcase
+      REDUCTION_ELEMENTS.include?(element) ? "#{element}_reduc" : effect.boost_type
     end
 
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).

@@ -48,6 +48,10 @@ module GridDamage
       # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],
       ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
+      ["fire_reduc", nil, "Fire Reduc.", "fire-reduc", "defense"],
+      ["water_reduc", nil, "Water Reduc.", "water-reduc", "defense"],
+      ["earth_reduc", nil, "Earth Reduc.", "earth-reduc", "defense"],
+      ["wind_reduc", nil, "Wind Reduc.", "wind-reduc", "defense"],
       ["debuff_res", nil, "Debuff Res.", "debuff-res", "defense"],
       # Special (yellow labels)
       ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
