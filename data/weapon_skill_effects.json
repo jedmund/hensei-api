@@ -1070,6 +1070,78 @@
       "notes": "+4% DEF per same-type weapon (max 20% per copy)."
     },
     {
+      "modifier": "Fortified Blade",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Fortified Blade counts katanas."
+    },
+    {
+      "modifier": "Fortified Gauntlet",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Arkab Prior Militis captures under Zephyrus/Zephyrus show 4/8/12/16/20 DEF at 1/2/3/4/5 melee weapons."
+    },
+    {
+      "modifier": "Fortified Harp",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Fortified Harp counts harps."
+    },
+    {
+      "modifier": "Fortified Staff",
+      "boost_type": "def",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "per_copy_cap": 20.0,
+      "count_basis": "same_weapon_type",
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "+4% DEF per matching weapon type (max 20% per copy). Fortified Staff counts staffs."
+    },
+    {
       "modifier": "Fortitude",
       "boost_type": "dmg_supp",
       "scaling_kind": "supplemental_cap",

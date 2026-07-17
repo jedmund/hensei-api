@@ -301,6 +301,17 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
+      context 'Fortified Gauntlet' do
+        let(:input) { 'Fortified Gauntlet' }
+
+        it 'keeps the Fortified variant instead of classifying as Gauntlet' do
+          aggregate_failures do
+            expect(result[:modifier]).to eq('Fortified Gauntlet')
+            expect(result[:aura]).to be_nil
+          end
+        end
+      end
+
       context 'Synchronized Artistry (special skill)' do
         let(:input) { 'Synchronized Artistry' }
 

@@ -191,7 +191,7 @@ module Granblue
       # Multi-word special modifiers
       SPECIAL_MULTI_WORD_MODIFIERS = [
         'Covert Artistry',
-        'First Dash', 'Fortified Blade', 'Fortified Harp', 'Fortified Staff',
+        'First Dash', 'Fortified Blade', 'Fortified Gauntlet', 'Fortified Harp', 'Fortified Staff',
         'Fourth Pursuit',
         'Frost Blade', 'Light Blade',
         'Mysterious ATK', 'Mysterious VIT',
