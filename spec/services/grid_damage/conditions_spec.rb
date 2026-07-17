@@ -31,6 +31,13 @@ RSpec.describe GridDamage::Conditions do
                                 composition: composition)).to be(false)
   end
 
+  it "requires all ten distinct weapon types for Heroic Tale" do
+    condition = { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 10 }
+
+    expect(described_class.met?(condition, composition: { distinct_weapon_type_count: 9 })).to be(false)
+    expect(described_class.met?(condition, composition: { distinct_weapon_type_count: 10 })).to be(true)
+  end
+
   it "evaluates same_id_count against the bearing weapon's copies" do
     expect(described_class.met?({ "type" => "same_id_count", "gte" => 3 }, composition: composition, weapon: weapon)).to be(true)
     expect(described_class.met?({ "type" => "same_id_count", "gte" => 4 }, composition: composition, weapon: weapon)).to be(false)

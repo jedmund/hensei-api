@@ -3,13 +3,14 @@
 module GridDamage
   # Counts the grid needs for per_grid_count effects and count-based conditions.
   # Count-basis names are intentionally explicit: "weapon group" in game text can
-  # mean same proficiency, distinct proficiencies, series membership, or a named group.
+  # mean same proficiency, distinct proficiencies, or series membership.
   module GridComposition
     module_function
 
     # Weapon-type proficiency id → specialty name (matches Cloud-style per-specialty tables).
     PROFICIENCY_NAME = { 1 => "sabre", 2 => "dagger", 3 => "axe", 4 => "spear", 5 => "bow",
                          6 => "staff", 7 => "melee", 8 => "harp", 9 => "gun", 10 => "katana" }.freeze
+    ALL_WEAPON_TYPE_COUNT = PROFICIENCY_NAME.size
 
     CANONICAL_COUNT_BASES = %w[
       same_weapon_type
@@ -20,14 +21,26 @@ module GridDamage
       crew_races
     ].freeze
 
-    PREFIXED_COUNT_BASIS_PATTERN = /\A(?:series|group):[a-z0-9][a-z0-9_-]*\z/.freeze
+    PREFIXED_COUNT_BASIS_PATTERN = /\Aseries:[a-z0-9][a-z0-9_-]*\z/
 
     def valid_count_basis?(basis)
       CANONICAL_COUNT_BASES.include?(basis.to_s) || basis.to_s.match?(PREFIXED_COUNT_BASIS_PATTERN)
     end
 
+    def valid_count_condition?(condition)
+      return true unless condition.is_a?(Hash)
+
+      type = condition["type"]
+      return false if %w[weapon_group_count same_weapon_type_count].include?(type)
+      return true unless type == "count_basis_gte"
+      return false if condition.key?("all")
+
+      threshold = Integer(condition["gte"], exception: false)
+      valid_count_basis?(condition["basis"]) && threshold&.positive?
+    end
+
     def for_party(party)
-      entries = party.weapons.includes(weapon: [:weapon_series, :weapon_count_groups, { weapon_skills: :weapon_skill_versions }]).filter_map do |gw|
+      entries = party.weapons.includes(weapon: [:weapon_series, { weapon_skills: :weapon_skill_versions }]).filter_map do |gw|
         w = gw.weapon
         next unless w
 
@@ -48,7 +61,6 @@ module GridDamage
         {
           proficiency: w.proficiency,
           series_slug: w.weapon_series&.slug,
-          group_slugs: w.weapon_count_groups.map(&:slug),
           granblue_id: w.granblue_id,
           modifiers: modifiers,
           omega: omega
@@ -74,18 +86,16 @@ module GridDamage
       )
     end
 
-    # Pure: entries = [{ proficiency:, series_slug:, group_slugs:, granblue_id:, modifiers: [..], omega: bool }, …]
+    # Pure: entries = [{ proficiency:, series_slug:, granblue_id:, modifiers: [..], omega: bool }, …]
     def summarize(entries)
       types = Hash.new(0)
       series = Hash.new(0)
-      groups = Hash.new(0)
       ids = Hash.new(0)
       modifiers = Set.new
       omega = 0
       entries.each do |e|
         types[e[:proficiency]] += 1
         series[e[:series_slug]] += 1 if e[:series_slug].present?
-        Array(e[:group_slugs]).each { |slug| groups[slug] += 1 if slug.present? }
         ids[e[:granblue_id]] += 1
         e[:modifiers].each { |m| modifiers << m }
         omega += 1 if e[:omega]
@@ -93,7 +103,6 @@ module GridDamage
       {
         weapon_type_counts: types,
         weapon_series_counts: series,
-        weapon_count_group_counts: groups,
         id_counts: ids,
         distinct_weapon_type_count: types.size,
         max_weapon_type_count: types.values.max.to_i,
@@ -120,18 +129,8 @@ module GridDamage
         races = Array(effect&.condition&.dig("races")).map(&:to_i)
         composition.fetch(:character_races, []).count { |r| races.include?(r.to_i) }
       else
-        prefixed_count(basis, composition)
+        composition.dig(:weapon_series_counts, basis.split(":", 2).last).to_i
       end
     end
-
-    def prefixed_count(basis, composition)
-      prefix, slug = basis.split(":", 2)
-      case prefix
-      when "series" then composition.dig(:weapon_series_counts, slug).to_i
-      when "group" then composition.dig(:weapon_count_group_counts, slug).to_i
-      end
-    end
-
-    private_class_method :prefixed_count
   end
 end

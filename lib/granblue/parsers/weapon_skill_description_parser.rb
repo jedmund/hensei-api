@@ -116,6 +116,7 @@ module Granblue
         end
 
         series0 = series_for(desc, name)
+        whole_skill_condition = condition_for(body)
 
         clauses = []
         last_size = nil
@@ -140,7 +141,8 @@ module Granblue
             boost = "da" if boost == "multiattack"
             clauses << {
               boost_type: boost, value: value, size: (size unless explicit?(frag)),
-              series: series0, formula_type: formula, condition: condition_for(frag)
+              series: series0, formula_type: formula,
+              condition: condition_for(frag) || whole_skill_condition
             }
           end
         end
@@ -253,7 +255,11 @@ module Granblue
       # Light structured condition from common phrasings (extended as needed).
       def self.condition_for(frag)
         if frag.match?(/all weapon groups/i)
-          return { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 0, "all" => true }
+          return {
+            "type" => "count_basis_gte",
+            "basis" => "distinct_weapon_types",
+            "gte" => GridDamage::GridComposition::ALL_WEAPON_TYPE_COUNT
+          }
         end
 
         nil

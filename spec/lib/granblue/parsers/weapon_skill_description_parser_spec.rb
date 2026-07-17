@@ -39,6 +39,14 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "def")).to include(value: 5.0)
   end
 
+  it "gates every Heroic Tale boost on all ten weapon types" do
+    result = parse("Boost to ATK and damage cap when all weapon groups are equipped", name: "Heroic Tale")
+    condition = { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 10 }
+
+    expect(boost(result, "atk")).to include(value: nil, condition: condition)
+    expect(boost(result, "dmg_cap")).to include(value: nil, condition: condition)
+  end
+
   it "frames a plain elemental boost (no aura-word) as EX, not normal" do
     r = parse("Big boost to wind allies' ATK")
     atk = boost(r, "atk")

@@ -164,6 +164,8 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       effects: [
         row(modifier: "Voltage", boost_type: "ex_atk_sp", scaling_kind: "per_grid_count",
             value: 4.0, count_basis: "weapon_type"),
+        row(modifier: "Future Group", boost_type: "atk", scaling_kind: "per_grid_count",
+            value: 4.0, count_basis: "group:arbitrary"),
         row(modifier: "Convergence", boost_type: "atk", scaling_kind: "conditional_flat",
             value: 40.0, condition: { "type" => "count_basis_gte", "basis" => "weapon_group", "gte" => 4 })
       ],
@@ -176,36 +178,22 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
     expect(result.findings.map(&:code)).to include("invalid_count_basis", "invalid_condition_count_basis")
   end
 
-  it "fails group count bases without DB-owned group rows" do
+  it "fails legacy or tautological count conditions" do
     write_dataset(
       root: @root,
       effects: [
-        row(modifier: "Convergence", boost_type: "atk", scaling_kind: "per_grid_count",
-            value: 4.0, count_basis: "group:missing")
+        row(modifier: "Heroic Tale", boost_type: "atk", scaling_kind: "conditional_flat",
+            value: 20.0, condition: { "type" => "weapon_group_count", "gte" => 0, "all" => true }),
+        row(modifier: "Heroic Tale", boost_type: "dmg_cap", scaling_kind: "conditional_flat",
+            value: 10.0,
+            condition: { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 0 })
       ],
-      boost_types: [boost_type("atk")]
+      boost_types: [boost_type("atk"), boost_type("dmg_cap")]
     )
 
     result = described_class.run(root: @root)
 
     expect(result).not_to be_ok
-    expect(result.findings.map(&:code)).to include("missing_weapon_count_group")
-  end
-
-  it "warns when group count bases point at empty DB groups" do
-    WeaponCountGroup.create!(slug: "empty-group", name_en: "Empty Group")
-    write_dataset(
-      root: @root,
-      effects: [
-        row(modifier: "Convergence", boost_type: "atk", scaling_kind: "per_grid_count",
-            value: 4.0, count_basis: "group:empty-group")
-      ],
-      boost_types: [boost_type("atk")]
-    )
-
-    result = described_class.run(root: @root)
-
-    expect(result).to be_ok
-    expect(result.findings.map(&:code)).to include("empty_weapon_count_group")
+    expect(result.findings.count { |finding| finding.code == "invalid_count_condition" }).to eq(2)
   end
 end
