@@ -9,6 +9,7 @@ module Granblue
     # (provenance "wiki_template"); disagreements with existing rows are reported, never
     # applied — golden/manual provenance always wins (#62 phase 4/5).
     class FamilyTemplateImporter
+      EFFECT_OWNED_FAMILIES = ["Betrayal", "Preemptive Blade", "Preemptive Wall"].freeze
       NAV_FAMILIES = [
         "Abandon", "Aegis", "Apotheosis", "Aramis", "Ars",
         "Arts", "Ascendancy", "Athos", "Auspice", "Bastion",
@@ -87,6 +88,7 @@ module Granblue
 
           upsert_family(name, raw)
           candidates, skipped = parse_curves(raw)
+          candidates = [] if EFFECT_OWNED_FAMILIES.include?(name)
           diff(name, candidates, skipped, apply: apply)
         end
 

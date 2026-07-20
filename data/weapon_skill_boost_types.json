@@ -153,6 +153,15 @@
     "notes": "Amplify normal attack damage."
   },
   {
+    "key": "skill_dmg",
+    "name_en": "Skill DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to skill damage."
+  },
+  {
     "key": "skill_dmg_cap",
     "name_en": "Skill DMG Cap",
     "category": "cap",

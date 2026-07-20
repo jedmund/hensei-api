@@ -53,6 +53,53 @@ RSpec.describe GridDamage::Effects do
     expect(val(effect, state: { hp_percent: 0 }, grid_weapon: grid_weapon)).to eq(40.5)
   end
 
+  it "weapon_skill_curve interpolates documented inline anchors" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "critical",
+      condition: { "curve" => { "formula_type" => "flat", "sl10" => 15, "sl15" => 17.5, "sl20" => 20 } }
+    )
+
+    expect(val(effect, grid_weapon: GridStruct.new(skill_level: 12))).to eq(16.0)
+    expect(val(effect, grid_weapon: GridStruct.new(skill_level: 20))).to eq(20.0)
+  end
+
+  it "weapon_skill_curve honors an inclusive turn limit" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "atk",
+      condition: {
+        "type" => "turn_lte", "lte" => 8,
+        "curve" => { "formula_type" => "flat", "sl10" => 15 }
+      }
+    )
+    grid_weapon = GridStruct.new(skill_level: 10)
+
+    expect(val(effect, state: { turn: 8 }, grid_weapon: grid_weapon)).to eq(15.0)
+    expect(val(effect, state: { turn: 9 }, grid_weapon: grid_weapon)).to be_nil
+  end
+
+  it "weapon_skill_curve also honors an Ultima weapon-specialty gate" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "atk",
+      condition: {
+        "type" => "weapon_specialty",
+        "curve" => { "formula_type" => "flat", "sl10" => 15, "sl15" => 20, "sl20" => 25 }
+      }
+    )
+    grid_weapon = GridStruct.new(skill_level: 15)
+
+    expect(described_class.value_for(effect, weapon: weapon, state: {}, grid_weapon: grid_weapon,
+                                             composition: composition.merge(mc_specialties: ["sabre"]))).to eq(20.0)
+    expect(val(effect, grid_weapon: grid_weapon)).to be_nil
+  end
+
+  it "gives Light and Dark reductions their own panel buckets" do
+    light = EffStruct.new(boost_type: "elem_reduc", condition: { "reduced_element" => "light" })
+    dark = EffStruct.new(boost_type: "elem_reduc", condition: { "reduced_element" => "dark" })
+
+    expect(described_class.contribution_boost_type(light)).to eq("light_reduc")
+    expect(described_class.contribution_boost_type(dark)).to eq("dark_reduc")
+  end
+
   it "conditional_flat → value when the condition is met, nil otherwise" do
     base = { scaling_kind: "conditional_flat", value: 40 }
     met = { "type" => "count_basis_gte", "basis" => "distinct_weapon_types", "gte" => 4 }

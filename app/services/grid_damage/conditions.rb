@@ -33,6 +33,9 @@ module GridDamage
       when "copy_skill_level"
         grid_weapon && weapon &&
           WeaponContributions.skill_level_for(weapon, grid_weapon) >= gte
+      # Preemptive/Betrayal-family skills apply through the end of the named turn.
+      # Missing turn state means the calculator's default panel state: turn 1.
+      when "turn_lte" then state.fetch(:turn, 1).to_i <= condition["lte"].to_i
       # Ultima base skills / gauph stat keys boost "<weapon>-specialty allies" — on the
       # panel (the MC's view) they show only when the MC's job wields this weapon's type
       # (K4UydX: Rising Force hides Baculum Rubell and Gauph Strength on an Ultima Staff).

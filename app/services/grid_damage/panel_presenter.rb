@@ -165,7 +165,8 @@ module GridDamage
 
     # The same activity filter the aggregator applies (main-hand gating, nil values).
     def active_contributions(contributions)
-      contributions.reject { |c| c.value.nil? || (c.main_hand_only && !c.mainhand) }
+      active = contributions.reject { |c| c.value.nil? || (c.main_hand_only && !c.mainhand) }
+      Aggregator.apply_stacking_groups(active)
     end
 
     OVERSKILL_FEEDS = {

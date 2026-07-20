@@ -2,6 +2,161 @@
   "_generated": "Exported from the hensei DB (source of truth) by rake granblue:export_weapon_skill_effects.",
   "effects": [
     {
+      "modifier": "Betrayal",
+      "boost_type": "atk",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 3.0,
+          "sl10": 8.0,
+          "sl15": 10.0
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Applies for the first 8 turns; copies of the same named skill do not stack."
+    },
+    {
+      "modifier": "Covert Artistry",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "notes": "When main weapon (MC only): 20% boost to C.A. damage."
+    },
+    {
+      "modifier": "Preemptive Blade",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 5.0,
+          "sl10": 15.0,
+          "sl15": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Unboostable ATK for the first 8 turns."
+    },
+    {
+      "modifier": "Preemptive Wall",
+      "boost_type": "def",
+      "series": "normal",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 10.0,
+          "sl10": 28.0,
+          "sl15": 33.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Unboostable DEF for the first 8 turns."
+    },
+    {
+      "modifier": "Rose's Refuge",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 10.0,
+          "sl10": 28.0,
+          "sl15": 33.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "DEF applies for the first 8 turns. The main-hand Poison reduction clause is not a calculator effect."
+    },
+    {
+      "modifier": "Staff Resonance",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "1% DA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
+    },
+    {
+      "modifier": "Staff Resonance",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "1% TA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
+    },
+    {
+      "modifier": "Technical Artistry",
+      "boost_type": "skill_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "notes": "When main weapon (MC only): 20% boost to skill damage."
+    },
+    {
       "modifier": "Anklet of Ascendance",
       "boost_type": "elem_amplify",
       "series": "ex",

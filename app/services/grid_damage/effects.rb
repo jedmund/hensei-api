@@ -35,23 +35,35 @@ module GridDamage
         WeaponContributions.active_versions(w, gw).each do |v|
           # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
           # skill; otherwise fall back to the effect's heuristic series.
-          frame = v.try(:multiplier_frame).presence
           v.weapon_skill_effects.each do |e|
+            frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
             value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
               boost_type: contribution_boost_type(e), series: frame || e.series, value: value,
               main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f, amplifiable: amplifiable,
+              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f,
+              amplifiable: amplifiable && e.aura_boostable != false,
               source_ids: [gw.id],
               source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
-              source_icon: v.icon_stem
+              source_icon: v.icon_stem,
+              stacking_group: stacking_group(e, v)
             )
           end
         end
       end
       out
+    end
+
+    # Effect-level highest_only is narrower than the boost registry's global
+    # highest_only rule: copies of one named family do not stack, but separately
+    # named Betrayal skills do. Include the boost type because composite families
+    # can independently contribute several panel lines.
+    def stacking_group(effect, version)
+      return unless effect.stacking == "highest_only"
+
+      "effect|#{effect.boost_type}|#{version.skill&.name_en || effect.modifier}"
     end
 
     # Most reduction skills protect against the grid's default superior-element foe,
