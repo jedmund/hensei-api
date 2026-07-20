@@ -541,6 +541,24 @@
     "notes": "Reduce wind damage taken."
   },
   {
+    "key": "light_reduc",
+    "name_en": "Light Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce light damage taken."
+  },
+  {
+    "key": "dark_reduc",
+    "name_en": "Dark Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce dark damage taken."
+  },
+  {
     "key": "hp_fixed",
     "name_en": "HP (Fixed)",
     "category": "defensive",

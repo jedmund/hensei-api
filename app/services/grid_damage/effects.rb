@@ -7,7 +7,9 @@ module GridDamage
   # supplemental_cap, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
-    REDUCTION_ELEMENTS = %w[fire water earth wind].freeze
+    REDUCTION_ELEMENTS = %w[fire water earth wind light dark].freeze
+    InlineCurve = Data.define(:formula_type, :size, :sl1, :sl10, :sl15, :sl20, :sl25,
+                              :coefficient, :max_value)
 
     CAP_FORMULA_PATTERN = %r{
       \A
@@ -88,7 +90,8 @@ module GridDamage
       when "hp_missing_linear"
         hp_linear_value(effect, state: state, missing: true)
       when "weapon_skill_curve"
-        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state)
+        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
+                           composition: composition)
       when "supplemental_cap"
         supplemental_cap(effect, state: state)
       when "ally_max_hp_scaled"
@@ -100,17 +103,24 @@ module GridDamage
       end
     end
 
-    # Key-granted legacy skills (Dark Opus pendulums/chains) use the same SL/HP/turn
-    # curves as ordinary weapon skills. The effect owns the key relationship while the
-    # curve descriptor points at the canonical WeaponSkillDatum row.
-    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:)
-      curve = effect.condition.to_h["curve"] || effect.condition.to_h[:curve]
+    # Key-granted skills use the same SL/HP/turn evaluator as ordinary weapon skills.
+    # Most curve descriptors point at a canonical WeaponSkillDatum row; series-specific
+    # key tables (Ultima Rubell/Strife/Courage and elemental Telumas) may carry their
+    # documented anchors inline instead. A condition type beside the curve remains an
+    # ordinary gate (for example, Ultima's weapon-specialty restriction).
+    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:)
+      condition = effect.condition.to_h.with_indifferent_access
+      if condition[:type].present? &&
+         !Conditions.met?(condition, state: state, composition: composition,
+                                     weapon: weapon, grid_weapon: grid_weapon)
+        return nil
+      end
+
+      curve = condition[:curve]
       return nil unless curve
 
       config = curve.with_indifferent_access
-      datum = WeaponSkillDatum.for_skill(
-        modifier: config[:modifier], series: config[:series], size: config[:size]
-      ).find { |row| row.boost_type == effect.boost_type }
+      datum = curve_datum(config, effect.boost_type)
       return nil unless datum
 
       skill_level = WeaponContributions.skill_level_for(weapon, grid_weapon)
@@ -121,6 +131,19 @@ module GridDamage
         turn: state.fetch(:turn, 1)
       )
     end
+
+    def curve_datum(config, boost_type)
+      if config[:modifier].present?
+        return WeaponSkillDatum.for_skill(
+          modifier: config[:modifier], series: config[:series], size: config[:size]
+        ).find { |row| row.boost_type == boost_type }
+      end
+
+      fields = InlineCurve.members.index_with { |field| config[field] }
+      fields[:formula_type] ||= "flat"
+      InlineCurve.new(**fields)
+    end
+    private_class_method :curve_datum
 
     def hp_linear_value(effect, state:, missing:)
       floor = effect.value&.to_f

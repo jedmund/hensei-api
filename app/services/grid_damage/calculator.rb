@@ -24,6 +24,7 @@ module GridDamage
                   # SRiNSO/R1ckYi/HoEE8b panels (2026-07-06): orange at the values below.
                   "elem_reduc" => 30.0, "fire_reduc" => 30.0, "water_reduc" => 30.0,
                   "earth_reduc" => 30.0, "wind_reduc" => 30.0,
+                  "light_reduc" => 30.0, "dark_reduc" => 30.0,
                   "na_amp" => 30.0, "na_amp_sp" => 20.0,
                   "bonus_elem_dmg" => 50.0,
                   "skill_cap_sp" => 60.0, "skill_amp_sp" => 20.0,

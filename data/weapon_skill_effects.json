@@ -937,14 +937,23 @@
       "modifier": "Endurance Teluma",
       "boost_type": "def",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 15.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "True Dragon Barrier",
+          "series": "normal"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 10%/15%/20% DEF at SL10/15/20.",
       "key_slug": "teluma-endurance"
     },
     {
@@ -1402,22 +1411,113 @@
     {
       "modifier": "Gauph Key of Courage",
       "boost_type": "critical",
-      "scaling_kind": "static",
-      "value": 20.0,
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 15.0,
+          "sl15": 17.5,
+          "sl20": 20.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: 15%/17.5%/20% critical rate at SL10/15/20; specialty-gated.",
       "key_slug": "gauph-courage"
     },
     {
       "modifier": "Gauph Key of Strength",
       "boost_type": "stamina",
       "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "modifier": "Stamina",
+          "series": "normal",
+          "size": "big_ii"
+        }
+      },
+      "depends_on": [
+        "hp_percent",
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: normal Stamina curve, 13%/17.79%/20.40% maximum at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-strength"
+    },
+    {
+      "modifier": "Gauph Key of Strife",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 20.0,
+          "sl15": 22.5,
+          "sl20": 25.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: 20%/22.5%/25% DA at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-strife"
+    },
+    {
+      "modifier": "Gauph Key of Strife",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 20.0,
+          "sl15": 22.5,
+          "sl20": 25.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: 20%/22.5%/25% TA at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-strife"
+    },
+    {
+      "modifier": "Gauph Key of Vitality",
+      "boost_type": "hp",
+      "series": "ex",
       "scaling_kind": "conditional_flat",
-      "value": 20.4,
+      "value": 10.0,
       "value_unit": "percent",
       "condition": {
         "type": "weapon_specialty"
@@ -1427,35 +1527,52 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "gauph-strength"
+      "notes": "gbf.wiki Ultima Weapons: fixed 10% HP; specialty-gated.",
+      "key_slug": "gauph-vitality"
     },
     {
-      "modifier": "Gauph Key of Strife",
-      "boost_type": "da",
+      "modifier": "Gauph Key of Will",
+      "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 25.0,
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "gauph-strife"
+      "notes": "gbf.wiki Ultima Weapons: fixed 10% EX ATK; specialty-gated.",
+      "key_slug": "gauph-will"
     },
     {
-      "modifier": "Gauph Key of Strife",
-      "boost_type": "ta",
+      "modifier": "Gauph Key of Zeal",
+      "boost_type": "enmity",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 25.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "modifier": "Enmity",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "hp_percent",
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "gauph-strife"
+      "notes": "gbf.wiki Ultima Weapons: normal Enmity curve, about 30%/37.5%/40.5% maximum at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-zeal"
     },
     {
       "modifier": "Gauph Key Δ",
@@ -1880,35 +1997,153 @@
       "notes": "10% bonus elem DMG vs foes with any Bounty lvl; A-sided, highest-only."
     },
     {
-      "modifier": "Inferno Teluma",
+      "modifier": "Abyss Teluma",
       "boost_type": "elem_reduc",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 5.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "gte": 20,
-        "type": "copy_skill_level"
+        "reduced_element": "water",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "teluma-inferno"
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces water damage.",
+      "key_slug": "teluma-abyss"
+    },
+    {
+      "modifier": "Crag Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "earth",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces earth damage.",
+      "key_slug": "teluma-crag"
+    },
+    {
+      "modifier": "Tempest Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "wind",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces wind damage.",
+      "key_slug": "teluma-tempest"
+    },
+    {
+      "modifier": "Aureole Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "light",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces light damage.",
+      "key_slug": "teluma-aureole"
+    },
+    {
+      "modifier": "Malice Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "dark",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces dark damage.",
+      "key_slug": "teluma-malice"
     },
     {
       "modifier": "Inferno Teluma",
       "boost_type": "elem_reduc",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 25.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "reduced_element": "fire",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces fire damage.",
       "key_slug": "teluma-inferno"
     },
     {
@@ -1997,17 +2232,77 @@
       "key_slug": "teluma-oblivion"
     },
     {
-      "modifier": "Optimus Teluma",
+      "modifier": "Omega Teluma",
       "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 20.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "omega",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Omega frame.",
+      "key_slug": "teluma-omega",
+      "frame_rule": "teluma"
+    },
+    {
+      "modifier": "Omega Teluma",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "omega",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Omega frame.",
+      "key_slug": "teluma-omega",
+      "frame_rule": "teluma"
+    },
+    {
+      "modifier": "Optimus Teluma",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Optimus frame.",
       "key_slug": "teluma-optimus",
       "frame_rule": "teluma"
     },
@@ -2015,16 +2310,41 @@
       "modifier": "Optimus Teluma",
       "boost_type": "hp",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 20.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Optimus frame.",
+      "key_slug": "teluma-optimus",
+      "frame_rule": "teluma"
+    },
+    {
+      "modifier": "Salvation Teluma",
+      "boost_type": "hp_fixed",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10000.0,
+      "value_unit": "flat",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "teluma-optimus",
-      "frame_rule": "teluma"
+      "notes": "gbf.wiki Draconic Weapons Provenance: adds 10,000 HP to weapon-element allies.",
+      "key_slug": "teluma-salvation"
     },
     {
       "modifier": "Pact",
@@ -2820,33 +3140,51 @@
       "modifier": "Rubell",
       "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 25.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "type": "weapon_specialty"
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 15.0,
+          "sl15": 20.0,
+          "sl20": 25.0
+        }
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Rubell: 15%/20%/25% EX ATK at SL10/15/20; specialty-gated."
     },
     {
       "modifier": "Rubell",
       "boost_type": "hp",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 20.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "type": "weapon_specialty"
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 10.0,
+          "sl15": 15.0,
+          "sl20": 20.0
+        }
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Rubell: 10%/15%/20% HP at SL10/15/20; specialty-gated."
     },
     {
       "modifier": "Ruination",
