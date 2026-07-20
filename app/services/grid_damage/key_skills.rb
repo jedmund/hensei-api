@@ -29,7 +29,8 @@ module GridDamage
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
-              boost_type: e.boost_type, series: frame_for(e, w, gw), value: value,
+              boost_type: Effects.contribution_boost_type(e),
+              series: frame_for(e, w, gw), value: value,
               mainhand: gw.mainhand, shared_cap_group: e.shared_cap_group, cap: e.total_cap&.to_f,
               amplifiable: amplifiable, source_ids: [gw.id],
               source_label: { en: key.name_en, ja: key.name_jp }

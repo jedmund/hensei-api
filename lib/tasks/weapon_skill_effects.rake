@@ -15,7 +15,7 @@ namespace :granblue do
 
     cols = %w[series value value_unit per_copy_cap total_cap shared_cap_group
               cap_formula count_basis count_cap condition target_instance depends_on
-              aura_boostable seraphic_affected stacking applies_to battle_interaction notes]
+              aura_boostable seraphic_affected stacking applies_to battle_interaction notes frame_rule]
 
     created = 0
     updated = 0

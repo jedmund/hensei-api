@@ -350,7 +350,7 @@ module Granblue
           unlock_level: unlock_level,
           min_uncap: tier[:min_uncap],
           transcendence_stage: tier[:transcendence_stage],
-          main_hand_only: description.to_s.match?(/when main weapon/i),
+          main_hand_only: main_hand_only_description?(description),
           mc_only: description.to_s.match?(/\(mc only\)/i),
           modifier: modifier,
           series: series,
@@ -377,6 +377,14 @@ module Granblue
 
         m = description.match(SIZE_KEYWORD) or return nil
         m[1].downcase
+      end
+
+      # A later main-hand-only clause does not make an earlier always-on clause
+      # main-hand-only (Rose's Refuge is the known mixed-clause example).
+      def main_hand_only_description?(description)
+        text = description.to_s
+        clauses = text.split(%r{<br\s*/?>}i)
+        (clauses.length > 1 ? clauses.first : text).match?(/when main weapon/i)
       end
 
       # Saves select fields to the database
@@ -501,12 +509,17 @@ module Granblue
         weapon_skill
       end
 
-      # A version scales with skill level when it maps to a recognized standard
-      # grid modifier (one of WeaponSkillVersion::VALID_MODIFIERS, already
-      # filtered in persist). Unique/fixed-effect skills have a nil modifier and
-      # do not scale.
+      # A version scales with skill level when its canonical owner is ordinary
+      # curve data or a condition-gated weapon_skill_curve effect. Unique and
+      # genuinely fixed-effect families do not scale.
       def scales_with_skill_level?(version)
-        version.skill_modifier.present? && version.weapon_skill_data.any?
+        modifier = version.resolved_modifier
+        return false if modifier.blank?
+
+        WeaponSkillDatum.for_skill(modifier: modifier, series: version.resolved_series,
+                                   size: version.resolved_size).any? ||
+          WeaponSkillEffect.for_skill(modifier: modifier).base_effects
+                           .where(scaling_kind: "weapon_skill_curve").exists?
       end
 
       # Process-wide cache of fetched wikitext, keyed by page title.

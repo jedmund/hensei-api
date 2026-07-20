@@ -22,7 +22,10 @@ module GridDamage
                   "ca_dmg_cap" => 100.0, "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
                   "ex_atk_sp" => 80.0, "crit_amp" => 20.0,
                   # SRiNSO/R1ckYi/HoEE8b panels (2026-07-06): orange at the values below.
-                  "elem_reduc" => 30.0, "na_amp" => 30.0, "na_amp_sp" => 20.0,
+                  "elem_reduc" => 30.0, "fire_reduc" => 30.0, "water_reduc" => 30.0,
+                  "earth_reduc" => 30.0, "wind_reduc" => 30.0,
+                  "light_reduc" => 30.0, "dark_reduc" => 30.0,
+                  "na_amp" => 30.0, "na_amp_sp" => 20.0,
                   "bonus_elem_dmg" => 50.0,
                   "skill_cap_sp" => 60.0, "skill_amp_sp" => 20.0,
                   "dmg_supp" => 100_000.0, "na_supp" => 100_000.0,
@@ -32,7 +35,9 @@ module GridDamage
                   "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0,
                   # SPhnLB: Debuff Res. orange at 30; qBOvon: Charge Gain orange at 50,
                   # C.A. Supp. orange at 1,000,000
-                  "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0 }.freeze
+                  "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0,
+                  # gbf.wiki/AX_Skills: utility AX boosts cap across the whole grid.
+                  "exp_ax" => 30.0, "rupie_ax" => 50.0 }.freeze
 
     # The summon-aura/Exalto "Weapon Skill Enhancement" amplifies EVERY boost an
     # aura-boosted skill grants — caps, amps, and supplementals included (K4UydX: Terra's

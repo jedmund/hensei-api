@@ -22,8 +22,10 @@ RSpec.describe WeaponImportService, type: :service do
   end
 
   let(:ax_weapon) do
-    Weapon.find_by(granblue_id: '1040213900') ||
-      create(:weapon, granblue_id: '1040213900', name_en: 'Celeste Claw Omega')
+    weapon = Weapon.find_by(granblue_id: '1040213900') ||
+             create(:weapon, granblue_id: '1040213900', name_en: 'Celeste Claw Omega')
+    weapon.update!(weapon_series: create(:weapon_series, :with_ax_skills))
+    weapon
   end
 
   # Create weapon awakenings
@@ -63,21 +65,9 @@ RSpec.describe WeaponImportService, type: :service do
       create(:weapon_stat_modifier, :ax_atk)
   end
 
-  let!(:ax_hp_modifier) do
-    WeaponStatModifier.find_by(slug: 'ax_hp') ||
-      create(:weapon_stat_modifier, :ax_hp)
-  end
-
   let!(:ax_ca_dmg_modifier) do
     WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
-      create(:weapon_stat_modifier,
-             slug: 'ax_ca_dmg',
-             name_en: 'C.A. DMG',
-             category: 'ax',
-             stat: 'ca_dmg',
-             polarity: 1,
-             suffix: '%',
-             game_skill_id: 1591)
+      create(:weapon_stat_modifier, :ax_ca_dmg)
   end
 
   before do
@@ -303,11 +293,11 @@ RSpec.describe WeaponImportService, type: :service do
                   [
                     {
                       'skill_id' => 1589,  # ATK modifier
-                      'effect_value' => '7',
-                      'show_value' => '7%'
+                      'effect_value' => '3.5',
+                      'show_value' => '3.5%'
                     },
                     {
-                      'skill_id' => 1588,  # HP modifier
+                      'skill_id' => 1591,  # C.A. DMG modifier
                       'effect_value' => '2_4',
                       'show_value' => '4%'
                     }
@@ -326,7 +316,7 @@ RSpec.describe WeaponImportService, type: :service do
 
         weapon = result.created.first
         expect(weapon.ax_modifier1).to eq(ax_atk_modifier)
-        expect(weapon.ax_strength1).to eq(7.0)
+        expect(weapon.ax_strength1).to eq(3.5)
       end
 
       it 'parses second AX skill with underscore format' do
@@ -334,7 +324,7 @@ RSpec.describe WeaponImportService, type: :service do
         result = service.import
 
         weapon = result.created.first
-        expect(weapon.ax_modifier2).to eq(ax_hp_modifier)
+        expect(weapon.ax_modifier2).to eq(ax_ca_dmg_modifier)
         expect(weapon.ax_strength2).to eq(4.0)
       end
     end

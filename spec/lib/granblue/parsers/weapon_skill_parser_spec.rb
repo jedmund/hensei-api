@@ -480,6 +480,32 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
           expect(result[:modifier]).to eq('Preemptive Barrier')
         end
       end
+
+      %w[Frost Light Shadow Terra].each do |element|
+        context "Preemptive #{element} Blade" do
+          let(:input) { "Preemptive #{element} Blade" }
+
+          it 'normalizes to Preemptive Blade' do
+            expect(result[:modifier]).to eq('Preemptive Blade')
+          end
+        end
+
+        context "Mutiny's #{element} Blade" do
+          let(:input) { "Mutiny's #{element} Blade" }
+
+          it 'does not misclassify Mutiny as a preemptive family' do
+            expect(result[:modifier]).to be_nil
+          end
+        end
+      end
+    end
+
+    context "with Rose's Refuge" do
+      let(:input) { "Rose's Refuge" }
+
+      it 'recognizes the complete possessive family name' do
+        expect(result).to include(aura: nil, modifier: "Rose's Refuge")
+      end
     end
 
     # --- Element-suffixed modifiers ---

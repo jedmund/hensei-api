@@ -36,6 +36,8 @@ base_min: 1, base_max: 2, game_skill_id: 1599 },
 base_min: 1, base_max: 3, game_skill_id: 1600 },
   { slug: 'ax_enmity', ax_group: 'secondary', name_en: 'Enmity', name_jp: '背水', category: 'ax', stat: 'enmity', polarity: 1, suffix: nil,
 base_min: 1, base_max: 3, game_skill_id: 1601 },
+  { slug: 'ax_skill_cap', ax_group: 'secondary', name_en: 'Skill DMG Cap', name_jp: 'アビダメ上限', category: 'ax', stat: 'skill_cap', polarity: 1,
+suffix: '%', base_min: 1, base_max: 2 },
 
   # Extended AX Skills (axType 2)
   { slug: 'ax_skill_supp', ax_group: 'extended', name_en: 'Supplemental Skill DMG', name_jp: 'アビ与ダメ上昇', category: 'ax', stat: 'skill_supp',
@@ -78,6 +80,13 @@ base_min: 6, base_max: 16, game_skill_id: 2881 }
   modifier = WeaponStatModifier.find_or_initialize_by(slug: attrs[:slug])
   modifier.assign_attributes(attrs)
   modifier.save!
+end
+
+WeaponStatModifier::AX_SECONDARY_RANGES.each do |slug, (min, max)|
+  WeaponStatModifier.find_by(slug: slug)&.update!(secondary_min: min, secondary_max: max)
+end
+WeaponStatModifier::AX_SECONDARY_POOLS.each do |slug, pools|
+  WeaponStatModifier.find_by(slug: slug)&.update!(ax_secondaries: pools)
 end
 
 puts "Created/updated #{WeaponStatModifier.count} weapon stat modifiers"

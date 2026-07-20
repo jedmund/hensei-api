@@ -269,17 +269,19 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'creates weapon with AX skills' do
+      ax_weapon = create(:weapon, :with_ax)
       ax_atk = WeaponStatModifier.find_by(slug: 'ax_atk') ||
                create(:weapon_stat_modifier, :ax_atk)
-      ax_hp = WeaponStatModifier.find_by(slug: 'ax_hp') ||
-              create(:weapon_stat_modifier, :ax_hp)
+      ax_ca_dmg = WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
+                  create(:weapon_stat_modifier, :ax_ca_dmg)
 
       ax_attributes = valid_attributes.deep_merge(
         collection_weapon: {
+          weapon_id: ax_weapon.id,
           ax_modifier1_id: ax_atk.id,
           ax_strength1: 3.5,
-          ax_modifier2_id: ax_hp.id,
-          ax_strength2: 2.0
+          ax_modifier2_id: ax_ca_dmg.id,
+          ax_strength2: 4.0
         }
       )
 
@@ -293,11 +295,13 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'returns error with incomplete AX skills' do
+      ax_weapon = create(:weapon, :with_ax)
       ax_atk = WeaponStatModifier.find_by(slug: 'ax_atk') ||
                create(:weapon_stat_modifier, :ax_atk)
 
       invalid_ax = valid_attributes.deep_merge(
         collection_weapon: {
+          weapon_id: ax_weapon.id,
           ax_modifier1_id: ax_atk.id
           # Missing ax_strength1
         }
