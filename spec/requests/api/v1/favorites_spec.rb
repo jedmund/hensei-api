@@ -27,6 +27,22 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
       expect(json['party']['id']).to eq(party.id)
     end
 
+    it 'includes the special flag needed for story ULB artwork in the party preview' do
+      party = create(:party, user: other_user)
+      character = create(:character, :special_ulb)
+      create(:grid_character, party: party, character: character, uncap_level: 5)
+
+      post '/api/v1/favorites',
+           params: { favorite: { party_id: party.id } }.to_json,
+           headers: auth_headers
+
+      expect(response).to have_http_status(:created)
+      preview_character = response.parsed_body.dig(
+        'favorite', 'party', 'characters', 0, 'character'
+      )
+      expect(preview_character['special']).to be true
+    end
+
     it 'allows favoriting your own party' do
       party = create(:party, user: user)
       expect {

@@ -80,7 +80,7 @@ module Api
       end
 
       view :preview do
-        excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
+        excludes :name, :character_id, :rarity, :element, :gender, :season,
                  :season_name, :series, :series_names, :uncap, :race, :proficiency,
                  :style_swap, :style_name, :base_character
       end
