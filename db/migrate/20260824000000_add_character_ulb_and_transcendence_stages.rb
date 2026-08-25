@@ -45,6 +45,8 @@ class AddCharacterUlbAndTranscendenceStages < ActiveRecord::Migration[8.0]
       WHERE character_id IN (SELECT id FROM characters WHERE ulb = TRUE)
     SQL
 
+    clamp_legacy_collection_transcendence_stages
+
     rebuild_latest_date('greatest(release_date, flb_date, ulb_date, transcendence_date)')
   end
 
@@ -68,6 +70,17 @@ class AddCharacterUlbAndTranscendenceStages < ActiveRecord::Migration[8.0]
   end
 
   private
+
+  # Collections previously accepted stages through 10. Clamp those legacy
+  # values to the new global 0..5 stage domain while preserving values below
+  # 5 even when an individual character currently has a lower release cap.
+  def clamp_legacy_collection_transcendence_stages
+    execute <<~SQL.squish
+      UPDATE collection_characters
+      SET transcendence_step = 5
+      WHERE transcendence_step > 5
+    SQL
+  end
 
   def rebuild_latest_date(expression)
     remove_index :characters, name: LATEST_DATE_INDEX, if_exists: true
