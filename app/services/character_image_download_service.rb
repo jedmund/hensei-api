@@ -66,7 +66,7 @@ class CharacterImageDownloadService
   def build_variants
     poses = %w[01 02]
     poses << '03' if @character.flb
-    poses << '04' if @character.transcendence
+    poses << '04' if @character.ulb || @character.transcendence
 
     variants = poses.map { |pose| "#{@character.granblue_id}_#{pose}" }
 
