@@ -7,24 +7,37 @@ namespace :granblue do
     ex = Granblue::Extractors::CharacterGridEffectExtractor.new
 
     versions = CharacterSkillVersion
-               .joins(:character_skill)
+               .joins(character_skill: :character)
+               .left_joins(:skill_effects)
                .where(character_skills: { kind: "support" })
-               .where("character_skill_versions.description_en ILIKE ?", "%weapon skills%")
+               .where(
+                 "character_skill_versions.description_en ILIKE :weapon OR " \
+                 "character_skill_versions.description_en ILIKE :effects OR " \
+                 "skill_effects.effect_type = :effect_type",
+                 weapon: "%weapon skills%", effects: "%skill effects%",
+                 effect_type: "weapon_skill_boost"
+               )
+               .distinct
 
     created = 0
-    skills = 0
+    matched = 0
     versions.find_each do |v|
-      effects = ex.extract(v.description_en)
-      next if effects.empty?
+      element = Granblue::Extractors::CharacterGridEffectExtractor::CHARACTER_ELEMENT_BY_ID[
+        v.character_skill.character.element
+      ]
+      effects = element.present? ? ex.extract(v.description_en, element: element) : []
 
-      skills += 1
       # idempotent: replace this version's weapon_skill_boost rows
       v.skill_effects.effect_weapon_skill_boost.destroy_all
+      next if effects.empty?
+
+      matched += 1
+      next_ordinal = v.skill_effects.maximum(:ordinal).to_i
       effects.each_with_index do |attrs, i|
-        v.skill_effects.create!(attrs.merge(ordinal: 1000 + i, raw: v.description_en.to_s[0, 240]))
+        v.skill_effects.create!(attrs.merge(ordinal: next_ordinal + i + 1, raw: v.description_en.to_s[0, 240]))
         created += 1
       end
     end
-    puts "weapon_skill_boost effects: #{created} rows across #{skills} support skills"
+    puts "weapon_skill_boost effects: #{created} rows across #{matched} support skills"
   end
 end
