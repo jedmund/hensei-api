@@ -268,6 +268,69 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
         expect(result[:transcendence]).to be false
       end
     end
+
+    it 'classifies the story uncap type as three base stars followed by FLB and ULB' do
+      wiki_text = <<~WIKI
+        |name = Katalina
+        |rarity = SR
+        |uncap_type = story
+        |max_evo = 5
+        |5star_date = 2019-08-22
+      WIKI
+
+      result = described_class.parse_character(wiki_text)
+
+      aggregate_failures do
+        expect(result[:flb]).to be true
+        expect(result[:special]).to be true
+        expect(result[:ulb]).to be true
+        expect(result[:transcendence]).to be false
+        expect(result[:ulb_date]).to eq(Date.new(2019, 8, 22))
+        expect(result).not_to have_key(:flb_date)
+        expect(result).not_to have_key(:transcendence_date)
+      end
+    end
+
+    it 'accepts the legacy six-star date shape for a story ULB character' do
+      wiki_text = <<~WIKI
+        |name = Katalina
+        |rarity = SR
+        |uncap_type = story
+        |max_evo = 6
+        |5star_date = 2019-08-22
+        |6star_date = 2026-08-01
+      WIKI
+
+      result = described_class.parse_character(wiki_text)
+
+      aggregate_failures do
+        expect(result[:special]).to be true
+        expect(result[:ulb]).to be true
+        expect(result[:transcendence]).to be false
+        expect(result[:flb_date]).to eq(Date.new(2019, 8, 22))
+        expect(result[:ulb_date]).to eq(Date.new(2026, 8, 1))
+        expect(result).not_to have_key(:transcendence_date)
+      end
+    end
+
+    it 'keeps an SSR max_evo 6 character on the transcendence progression' do
+      wiki_text = <<~WIKI
+        |name = Threo
+        |rarity = SSR
+        |max_evo = 6
+        |6star_date = 2020-12-21
+      WIKI
+
+      result = described_class.parse_character(wiki_text)
+
+      aggregate_failures do
+        expect(result[:special]).to be false
+        expect(result[:ulb]).to be false
+        expect(result[:transcendence]).to be true
+        expect(result[:transcendence_date]).to eq(Date.new(2020, 12, 21))
+        expect(result).not_to have_key(:ulb_date)
+      end
+    end
   end
 
   describe '.parse_weapon' do
