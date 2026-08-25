@@ -14,7 +14,11 @@ module Api
         if params[:unowned].present?
           owned_ids = @target_user.collection_weapons.select(:weapon_id).distinct
           @weapons = Weapon.where.not(id: owned_ids)
-                           .includes(:weapon_series, :weapon_series_variant)
+                           .includes(
+                             :weapon_series,
+                             :weapon_series_variant,
+                             recruited_character: :character_series_records
+                           )
 
           @weapons = @weapons.where(element: array_param(:element)) if params[:element]
           @weapons = @weapons.where(rarity: array_param(:rarity)) if params[:rarity]

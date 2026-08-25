@@ -40,6 +40,48 @@ RSpec.describe 'Weapons API', type: :request do
       json = response.parsed_body
       expect(json['max_exorcism_level']).to be_nil
     end
+
+    it 'returns recruit metadata needed to distinguish character variants' do
+      recruited_character = create(:character, element: 5, season: 4, style_swap: true)
+      character_series = create(:character_series, :grand)
+      create(:character_series_membership,
+             character: recruited_character,
+             character_series: character_series)
+      weapon.update!(recruits: recruited_character.granblue_id)
+
+      get "/api/v1/weapons/#{weapon.id}"
+
+      expect(response).to have_http_status(:ok)
+      recruit = response.parsed_body['recruits']
+      expect(recruit).to include(
+        'id' => recruited_character.id,
+        'granblue_id' => recruited_character.granblue_id,
+        'name' => {
+          'en' => recruited_character.name_en,
+          'ja' => recruited_character.name_jp
+        },
+        'element' => 5,
+        'season' => 4,
+        'style_swap' => true
+      )
+      expect(recruit['series']).to contain_exactly(
+        {
+          'id' => character_series.id,
+          'slug' => character_series.slug,
+          'name' => {
+            'en' => character_series.name_en,
+            'ja' => character_series.name_jp
+          }
+        }
+      )
+    end
+
+    it 'returns a null recruit when the weapon does not recruit a character' do
+      get "/api/v1/weapons/#{weapon.id}"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['recruits']).to be_nil
+    end
   end
 
   describe 'POST /api/v1/weapons' do
