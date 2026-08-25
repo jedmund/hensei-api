@@ -10,22 +10,7 @@ class AddCharacterUlbAndTranscendenceStages < ActiveRecord::Migration[8.0]
     add_column :characters, :ulb_date, :date
     add_column :characters, :max_transcendence_stage, :integer, default: 0, null: false
 
-    # The original ULB columns were renamed to transcendence columns. Restore
-    # special-character ULB data before reserving transcendence for real staged
-    # transcendence.
-    execute <<~SQL.squish
-      UPDATE characters
-      SET ulb = TRUE,
-          max_hp_ulb = max_hp_transcendence,
-          max_atk_ulb = max_atk_transcendence,
-          ulb_date = transcendence_date,
-          transcendence = FALSE,
-          max_hp_transcendence = NULL,
-          max_atk_transcendence = NULL,
-          transcendence_date = NULL,
-          max_transcendence_stage = 0
-      WHERE special = TRUE AND transcendence = TRUE
-    SQL
+    reclassify_story_ulb_characters
 
     execute <<~SQL.squish
       UPDATE characters
@@ -70,6 +55,28 @@ class AddCharacterUlbAndTranscendenceStages < ActiveRecord::Migration[8.0]
   end
 
   private
+
+  # The original ULB columns were renamed to transcendence columns. Restore
+  # special-character ULB data before reserving transcendence for real staged
+  # transcendence. Current story pages use max_evo=5 and historically stored
+  # their final uncap date in flb_date, while legacy max_evo=6 pages stored a
+  # real FLB date plus the final uncap date in transcendence_date.
+  def reclassify_story_ulb_characters
+    execute <<~SQL.squish
+      UPDATE characters
+      SET ulb = TRUE,
+          max_hp_ulb = max_hp_transcendence,
+          max_atk_ulb = max_atk_transcendence,
+          ulb_date = COALESCE(transcendence_date, flb_date),
+          flb_date = CASE WHEN transcendence_date IS NULL THEN NULL ELSE flb_date END,
+          transcendence = FALSE,
+          max_hp_transcendence = NULL,
+          max_atk_transcendence = NULL,
+          transcendence_date = NULL,
+          max_transcendence_stage = 0
+      WHERE special = TRUE AND transcendence = TRUE
+    SQL
+  end
 
   # Collections previously accepted stages through 10. Clamp those legacy
   # values to the new global 0..5 stage domain while preserving values below
