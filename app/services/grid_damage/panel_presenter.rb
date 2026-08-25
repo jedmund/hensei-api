@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module GridDamage
+  # rubocop:disable Metrics/ModuleLength -- the in-game panel order is intentionally explicit
   # Shapes Calculator.boost_list into the in-game "Weapon Skill Boosts" panel: display
   # lines in the game's group order (attack → HP → defense → special → overskill → AX)
   # with panel labels, in-game label-image slugs (the gbf.wiki/game texture names, EN/JA
@@ -47,6 +48,12 @@ module GridDamage
       # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],
       ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
+      ["fire_reduc", nil, "Fire Reduc.", "fire-reduc", "defense"],
+      ["water_reduc", nil, "Water Reduc.", "water-reduc", "defense"],
+      ["earth_reduc", nil, "Earth Reduc.", "earth-reduc", "defense"],
+      ["wind_reduc", nil, "Wind Reduc.", "wind-reduc", "defense"],
+      ["light_reduc", nil, "Light Reduc.", "light-reduc", "defense"],
+      ["dark_reduc", nil, "Dark Reduc.", "dark-reduc", "defense"],
       ["debuff_res", nil, "Debuff Res.", "debuff-res", "defense"],
       # Special (yellow labels)
       ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
@@ -62,6 +69,7 @@ module GridDamage
       ["na_amp_sp", nil, "N.A. Amp. (Sp.)", "na-amp-sp", "special"],
       ["skill_dmg", nil, "Skill DMG", "skill-dmg", "special"],
       ["skill_dmg_cap", nil, "Skill DMG Cap", "skill-dmg-cap", "special"],
+      ["skill_hit", nil, "Skill Hit", "skill-hit", "special"],
       ["skill_cap_sp", nil, "Skill Cap (Sp.)", "skill-cap-sp", "special"],
       ["skill_amp", nil, "Skill Amp.", "skill-amp", "special"],
       ["skill_amp_sp", nil, "Skill Amp. (Sp.)", "skill-amp-sp", "special"],
@@ -112,6 +120,7 @@ module GridDamage
       ["ca_cap_ax", nil, "C.A. DMG Cap (AX)", "ax-ca-dmg-cap", "ax"],
       ["ca_supp_ax", nil, "C.A. Supp. (AX)", "ax-ca-supp", "ax"],
       ["skill_supp_ax", nil, "Skill DMG Supp. (AX)", "ax-skill-dmg-supp", "ax"],
+      ["skill_cap_ax", nil, "Skill DMG Cap (AX)", "ax-skill-dmg-cap", "ax"],
       ["na_cap_ax", nil, "N.A. DMG Cap (AX)", "ax-na-dmg-cap", "ax"],
       ["healing_ax", nil, "Healing (AX)", "ax-heal", "ax"],
       ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"],
@@ -156,7 +165,8 @@ module GridDamage
 
     # The same activity filter the aggregator applies (main-hand gating, nil values).
     def active_contributions(contributions)
-      contributions.reject { |c| c.value.nil? || (c.main_hand_only && !c.mainhand) }
+      active = contributions.reject { |c| c.value.nil? || (c.main_hand_only && !c.mainhand) }
+      Aggregator.apply_stacking_groups(active)
     end
 
     OVERSKILL_FEEDS = {
@@ -263,4 +273,5 @@ module GridDamage
       end
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end

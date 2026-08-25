@@ -7,8 +7,10 @@ RSpec.describe GridDamage::Aggregator do
   C = GridDamage::Aggregator::Contribution # rubocop:disable Lint/ConstantDefinitionInBlock
   Meta = Struct.new(:stacking_rule, :grid_cap, :cap_is_flat, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
 
-  def contrib(boost_type:, value:, series: "normal", main_hand_only: false, mainhand: false)
-    C.new(boost_type: boost_type, series: series, value: value, main_hand_only: main_hand_only, mainhand: mainhand)
+  def contrib(boost_type:, value:, series: "normal", main_hand_only: false, mainhand: false,
+              stacking_group: nil)
+    C.new(boost_type: boost_type, series: series, value: value, main_hand_only: main_hand_only,
+          mainhand: mainhand, stacking_group: stacking_group)
   end
 
   let(:boost_types) do
@@ -55,6 +57,26 @@ RSpec.describe GridDamage::Aggregator do
     it "keeps only the largest contribution" do
       r = agg([contrib(boost_type: "elem_amplify", value: 15), contrib(boost_type: "elem_amplify", value: 20)])["elem_amplify"]
       expect(r.total).to eq(20.0)
+    end
+  end
+
+  describe "effect stacking groups" do
+    it "keeps only the largest copy within one named effect family" do
+      r = agg([
+        contrib(boost_type: "da", value: 4, stacking_group: "effect|da|Staff Resonance"),
+        contrib(boost_type: "da", value: 6, stacking_group: "effect|da|Staff Resonance")
+      ])["da"]
+
+      expect(r.total).to eq(6.0)
+    end
+
+    it "still adds differently named families" do
+      r = agg([
+        contrib(boost_type: "da", value: 4, stacking_group: "effect|da|One Resonance"),
+        contrib(boost_type: "da", value: 6, stacking_group: "effect|da|Another Resonance")
+      ])["da"]
+
+      expect(r.total).to eq(10.0)
     end
   end
 

@@ -17,6 +17,7 @@ namespace :granblue do
     # "per Turn / After 10 Turns" two-column layout). Their rows in
     # data/weapon_skill_data.json are hand-curated and kept, not regenerated.
     manual = %w[Abandon].freeze
+    effect_owned = Granblue::Extractors::FamilyTemplateImporter::EFFECT_OWNED_FAMILIES
 
     gen = []
     Dir[skill_dir.join("*.wikitext")].each do |f|
@@ -32,7 +33,8 @@ namespace :granblue do
       end
       gen.concat(ex.extract(text, name: name))
     end
-    gen_modifiers = gen.map { |r| r[:modifier] }.uniq
+    gen.reject! { |row| effect_owned.include?(row[:modifier]) }
+    gen_modifiers = gen.map { |r| r[:modifier] }.uniq | effect_owned
 
     file = Rails.root.join("data", "weapon_skill_data.json")
     existing = JSON.parse(File.read(file))

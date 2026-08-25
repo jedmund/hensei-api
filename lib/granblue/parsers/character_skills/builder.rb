@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require Rails.root.join("lib/granblue/extractors/character_grid_effect_extractor")
+
 module Granblue
   module Parsers
     module CharacterSkills
@@ -22,12 +24,14 @@ module Granblue
         ICON_STEM = /\A\d+_\d+\z/
         WIKI_ICON_STEM = /\AAbility_m_(\d+_\d+)\.png\z/i
 
-        attr_reader :effect_parser
+        attr_reader :effect_parser, :grid_effect_extractor
 
-        def initialize(character, data:, effect_parser:)
+        def initialize(character, data:, effect_parser:,
+                       grid_effect_extractor: Extractors::CharacterGridEffectExtractor.new)
           @character = character
           @data = data
           @effect_parser = effect_parser
+          @grid_effect_extractor = grid_effect_extractor
           @links = []
           @version_keys = Set.new
         end
@@ -238,8 +242,22 @@ subtitle: subtitle }
             key: version_key,
             source_key: key,
             attrs: version_attrs(key, role: role, ordinal: ordinal, raw_description_en: raw_description_en, overrides: overrides).compact,
-            effects: effect_parser.parse(raw_description_en)
+            effects: effects_for(slot, raw_description_en)
           }
+        end
+
+        def effects_for(slot, description)
+          effects = effect_parser.parse(description)
+          return effects unless slot.dig(:attrs, :kind) == "support"
+
+          element = Extractors::CharacterGridEffectExtractor::CHARACTER_ELEMENT_BY_ID[character.element]
+          return effects if element.blank?
+
+          next_ordinal = effects.filter_map { |effect| effect[:ordinal] }.max.to_i
+          grid_effect_extractor.extract(description, element: element).each_with_index do |effect, index|
+            effects << effect.merge(ordinal: next_ordinal + index + 1, raw: description.to_s[0, 240])
+          end
+          effects
         end
 
         def version_attrs(key, role:, ordinal:, raw_description_en:, overrides:)

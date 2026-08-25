@@ -28,6 +28,7 @@ module GridDamage
     Contribution = Struct.new(:boost_type, :series, :value, :main_hand_only, :mainhand,
                               :shared_cap_group, :cap, :amplifiable, :source_ids,
                               :source_label, :source_icon, :base_value, :multiplier,
+                              :stacking_group,
                               keyword_init: true)
 
     # An aggregated boost_type. `by_series` is set only for multiplicative_by_series;
@@ -44,11 +45,26 @@ module GridDamage
       active = contributions.reject do |c|
         c.value.nil? || (c.main_hand_only && !c.mainhand)
       end
+      active = apply_stacking_groups(active)
       active = apply_shared_caps(active)
 
       active.group_by(&:boost_type).transform_values do |group|
         build_result(group, boost_types[group.first.boost_type])
       end
+    end
+
+    # Some effect families are highest-only within the SAME named skill, while
+    # differently named skills remain additive (for example, Betrayal variants).
+    # Collapse only explicitly tagged members and preserve their source metadata.
+    def apply_stacking_groups(contributions)
+      grouped, ungrouped = contributions.partition { |c| c.stacking_group.present? }
+      collapsed = grouped.group_by(&:stacking_group).map do |_group, members|
+        winner = members.max_by { |c| c.value.to_f }
+        winner.dup.tap do |contribution|
+          contribution.source_ids = members.flat_map { |c| Array(c.source_ids) }.uniq
+        end
+      end
+      ungrouped + collapsed
     end
 
     # Collapse each shared_cap_group's members to a single contribution capped at the

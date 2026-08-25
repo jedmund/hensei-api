@@ -153,6 +153,15 @@
     "notes": "Amplify normal attack damage."
   },
   {
+    "key": "skill_dmg",
+    "name_en": "Skill DMG",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to skill damage."
+  },
+  {
     "key": "skill_dmg_cap",
     "name_en": "Skill DMG Cap",
     "category": "cap",
@@ -160,6 +169,15 @@
     "cap_is_flat": false,
     "stacking_rule": "additive",
     "notes": "Stacks additively with other skill damage cap boosts, up to 100%."
+  },
+  {
+    "key": "skill_hit",
+    "name_en": "Skill Hit",
+    "category": "offensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Boost to skill hit count."
   },
   {
     "key": "dmg_cap",
@@ -494,6 +512,60 @@
     "cap_is_flat": false,
     "stacking_rule": "additive",
     "notes": "Reduce damage taken from superior element (God-series, Draconic Barrier)."
+  },
+  {
+    "key": "fire_reduc",
+    "name_en": "Fire Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce fire damage taken."
+  },
+  {
+    "key": "water_reduc",
+    "name_en": "Water Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce water damage taken."
+  },
+  {
+    "key": "earth_reduc",
+    "name_en": "Earth Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce earth damage taken."
+  },
+  {
+    "key": "wind_reduc",
+    "name_en": "Wind Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce wind damage taken."
+  },
+  {
+    "key": "light_reduc",
+    "name_en": "Light Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce light damage taken."
+  },
+  {
+    "key": "dark_reduc",
+    "name_en": "Dark Reduc.",
+    "category": "defensive",
+    "grid_cap": null,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Reduce dark damage taken."
   },
   {
     "key": "hp_fixed",

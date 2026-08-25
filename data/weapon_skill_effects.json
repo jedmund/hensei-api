@@ -2,6 +2,161 @@
   "_generated": "Exported from the hensei DB (source of truth) by rake granblue:export_weapon_skill_effects.",
   "effects": [
     {
+      "modifier": "Betrayal",
+      "boost_type": "atk",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 3.0,
+          "sl10": 8.0,
+          "sl15": 10.0
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Applies for the first 8 turns; copies of the same named skill do not stack."
+    },
+    {
+      "modifier": "Covert Artistry",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "notes": "When main weapon (MC only): 20% boost to C.A. damage."
+    },
+    {
+      "modifier": "Preemptive Blade",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 5.0,
+          "sl10": 15.0,
+          "sl15": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Unboostable ATK for the first 8 turns."
+    },
+    {
+      "modifier": "Preemptive Wall",
+      "boost_type": "def",
+      "series": "normal",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 10.0,
+          "sl10": 28.0,
+          "sl15": 33.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Unboostable DEF for the first 8 turns."
+    },
+    {
+      "modifier": "Rose's Refuge",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "turn_lte",
+        "lte": 8,
+        "curve": {
+          "formula_type": "flat",
+          "sl1": 10.0,
+          "sl10": 28.0,
+          "sl15": 33.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "DEF applies for the first 8 turns. The main-hand Poison reduction clause is not a calculator effect."
+    },
+    {
+      "modifier": "Staff Resonance",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "1% DA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
+    },
+    {
+      "modifier": "Staff Resonance",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "1% TA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
+    },
+    {
+      "modifier": "Technical Artistry",
+      "boost_type": "skill_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "notes": "When main weapon (MC only): 20% boost to skill damage."
+    },
+    {
       "modifier": "Anklet of Ascendance",
       "boost_type": "elem_amplify",
       "series": "ex",
@@ -384,97 +539,155 @@
       "notes": "VERIFY: A-sided bonus damage, value/frame not in prose (on weapon); highest-only."
     },
     {
-      "modifier": "Chain of Depravity",
-      "boost_type": "hp",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 50.0,
+      "modifier": "Chain of Falsehood",
+      "boost_type": "bonus_elem_dmg",
+      "scaling_kind": "bonus_dmg",
+      "value": 20.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "chain-depravity"
+      "key_slug": "chain-falsehood"
     },
     {
       "modifier": "Chain of Falsehood",
       "boost_type": "charge_gain",
-      "series": "omega",
       "scaling_kind": "static",
       "value": -100.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "key_slug": "chain-falsehood"
     },
     {
-      "modifier": "Chain of Glorification",
+      "modifier": "Chain of Forbiddance",
       "boost_type": "ca_dmg",
-      "series": "ex",
       "scaling_kind": "static",
-      "value": 14.5,
+      "value": 100.0,
       "value_unit": "percent",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "chain-forbiddance"
+    },
+    {
+      "modifier": "Chain of Forbiddance",
+      "boost_type": "ca_dmg_cap",
+      "scaling_kind": "static",
+      "value": 30.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "chain-forbiddance"
+    },
+    {
+      "modifier": "Chain of Glorification",
+      "boost_type": "ca_dmg",
+      "scaling_kind": "weapon_skill_curve",
+      "value": 14.5,
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Glorification",
       "boost_type": "ca_dmg_cap",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 7.8,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Glorification",
       "boost_type": "cb_dmg",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 16.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Glorification",
       "boost_type": "cb_dmg_cap",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 7.8,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Glory",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "chain-glorification"
+      "key_slug": "chain-glorification",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Restoration",
       "boost_type": "atk",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 15.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
@@ -486,26 +699,39 @@
     {
       "modifier": "Chain of Restoration",
       "boost_type": "hp",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 15.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
-      "key_slug": "chain-restoration"
+      "key_slug": "chain-restoration",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Temperament",
       "boost_type": "atk",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 16.0,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Might",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
@@ -517,17 +743,24 @@
     {
       "modifier": "Chain of Temperament",
       "boost_type": "critical",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 7.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Verity",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "gbf.wiki Dark Opus chains value column. ATK rides the opus identity frame (Renunciation=omega, Repudiation=normal) — proven by JBDMhV (Omega Might 37.5 = Apotheosis 22 + 15.5).",
-      "key_slug": "chain-temperament"
+      "key_slug": "chain-temperament",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Chain of Temptation",
@@ -859,14 +1092,23 @@
       "modifier": "Endurance Teluma",
       "boost_type": "def",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 15.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "True Dragon Barrier",
+          "series": "normal"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 10%/15%/20% DEF at SL10/15/20.",
       "key_slug": "teluma-endurance"
     },
     {
@@ -1324,22 +1566,113 @@
     {
       "modifier": "Gauph Key of Courage",
       "boost_type": "critical",
-      "scaling_kind": "static",
-      "value": 20.0,
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 15.0,
+          "sl15": 17.5,
+          "sl20": 20.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: 15%/17.5%/20% critical rate at SL10/15/20; specialty-gated.",
       "key_slug": "gauph-courage"
     },
     {
       "modifier": "Gauph Key of Strength",
       "boost_type": "stamina",
       "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "modifier": "Stamina",
+          "series": "normal",
+          "size": "big_ii"
+        }
+      },
+      "depends_on": [
+        "hp_percent",
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: normal Stamina curve, 13%/17.79%/20.40% maximum at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-strength"
+    },
+    {
+      "modifier": "Gauph Key of Strife",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 20.0,
+          "sl15": 22.5,
+          "sl20": 25.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: 20%/22.5%/25% DA at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-strife"
+    },
+    {
+      "modifier": "Gauph Key of Strife",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 20.0,
+          "sl15": 22.5,
+          "sl20": 25.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Ultima Weapons: 20%/22.5%/25% TA at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-strife"
+    },
+    {
+      "modifier": "Gauph Key of Vitality",
+      "boost_type": "hp",
+      "series": "ex",
       "scaling_kind": "conditional_flat",
-      "value": 20.4,
+      "value": 10.0,
       "value_unit": "percent",
       "condition": {
         "type": "weapon_specialty"
@@ -1349,35 +1682,52 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "gauph-strength"
+      "notes": "gbf.wiki Ultima Weapons: fixed 10% HP; specialty-gated.",
+      "key_slug": "gauph-vitality"
     },
     {
-      "modifier": "Gauph Key of Strife",
-      "boost_type": "da",
+      "modifier": "Gauph Key of Will",
+      "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 25.0,
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty"
+      },
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "gauph-strife"
+      "notes": "gbf.wiki Ultima Weapons: fixed 10% EX ATK; specialty-gated.",
+      "key_slug": "gauph-will"
     },
     {
-      "modifier": "Gauph Key of Strife",
-      "boost_type": "ta",
+      "modifier": "Gauph Key of Zeal",
+      "boost_type": "enmity",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 25.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "type": "weapon_specialty",
+        "curve": {
+          "modifier": "Enmity",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "hp_percent",
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "gauph-strife"
+      "notes": "gbf.wiki Ultima Weapons: normal Enmity curve, about 30%/37.5%/40.5% maximum at SL10/15/20; specialty-gated.",
+      "key_slug": "gauph-zeal"
     },
     {
       "modifier": "Gauph Key Δ",
@@ -1802,35 +2152,153 @@
       "notes": "10% bonus elem DMG vs foes with any Bounty lvl; A-sided, highest-only."
     },
     {
-      "modifier": "Inferno Teluma",
+      "modifier": "Abyss Teluma",
       "boost_type": "elem_reduc",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 5.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "gte": 20,
-        "type": "copy_skill_level"
+        "reduced_element": "water",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "teluma-inferno"
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces water damage.",
+      "key_slug": "teluma-abyss"
+    },
+    {
+      "modifier": "Crag Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "earth",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces earth damage.",
+      "key_slug": "teluma-crag"
+    },
+    {
+      "modifier": "Tempest Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "wind",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces wind damage.",
+      "key_slug": "teluma-tempest"
+    },
+    {
+      "modifier": "Aureole Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "light",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces light damage.",
+      "key_slug": "teluma-aureole"
+    },
+    {
+      "modifier": "Malice Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "reduced_element": "dark",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces dark damage.",
+      "key_slug": "teluma-malice"
     },
     {
       "modifier": "Inferno Teluma",
       "boost_type": "elem_reduc",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 25.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "reduced_element": "fire",
+        "curve": {
+          "formula_type": "flat",
+          "sl15": 25.0,
+          "sl20": 30.0
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces fire damage.",
       "key_slug": "teluma-inferno"
     },
     {
@@ -1919,17 +2387,77 @@
       "key_slug": "teluma-oblivion"
     },
     {
-      "modifier": "Optimus Teluma",
+      "modifier": "Omega Teluma",
       "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 20.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "omega",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Omega frame.",
+      "key_slug": "teluma-omega",
+      "frame_rule": "teluma"
+    },
+    {
+      "modifier": "Omega Teluma",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "omega",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Omega frame.",
+      "key_slug": "teluma-omega",
+      "frame_rule": "teluma"
+    },
+    {
+      "modifier": "Optimus Teluma",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Optimus frame.",
       "key_slug": "teluma-optimus",
       "frame_rule": "teluma"
     },
@@ -1937,16 +2465,41 @@
       "modifier": "Optimus Teluma",
       "boost_type": "hp",
       "series": "ex",
-      "scaling_kind": "static",
-      "value": 20.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Majesty",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Optimus frame.",
+      "key_slug": "teluma-optimus",
+      "frame_rule": "teluma"
+    },
+    {
+      "modifier": "Salvation Teluma",
+      "boost_type": "hp_fixed",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10000.0,
+      "value_unit": "flat",
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "teluma-optimus",
-      "frame_rule": "teluma"
+      "notes": "gbf.wiki Draconic Weapons Provenance: adds 10,000 HP to weapon-element allies.",
+      "key_slug": "teluma-salvation"
     },
     {
       "modifier": "Pact",
@@ -2057,16 +2610,23 @@
     {
       "modifier": "Pendulum of Prosperity",
       "boost_type": "e_atk_prog",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 1.44,
+      "scaling_kind": "weapon_skill_curve",
+      "value": 1.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Progression",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-prosperity"
+      "key_slug": "pendulum-prosperity",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Pendulum of Sagacity",
@@ -2138,32 +2698,67 @@
       "key_slug": "pendulum-sagacity"
     },
     {
-      "modifier": "Pendulum of Strife",
-      "boost_type": "da",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 6.0,
+      "modifier": "Pendulum of Strength",
+      "boost_type": "stamina",
+      "scaling_kind": "weapon_skill_curve",
+      "value": 17.0,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Stamina",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-strife"
+      "key_slug": "pendulum-strength",
+      "frame_rule": "weapon_identity"
+    },
+    {
+      "modifier": "Pendulum of Strife",
+      "boost_type": "da",
+      "scaling_kind": "weapon_skill_curve",
+      "value": 6.0,
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "modifier": "Trium",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-strife",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Pendulum of Strife",
       "boost_type": "ta",
-      "series": "ex",
-      "scaling_kind": "static",
+      "scaling_kind": "weapon_skill_curve",
       "value": 6.0,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Trium",
+          "series": "normal",
+          "size": "medium"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-strife"
+      "key_slug": "pendulum-strife",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Pendulum of Supremacy",
@@ -2267,16 +2862,23 @@
     {
       "modifier": "Pendulum of Zeal",
       "boost_type": "enmity",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 15.0,
+      "scaling_kind": "weapon_skill_curve",
+      "value": 13.5,
       "value_unit": "percent",
-      "aura_boostable": false,
+      "condition": {
+        "curve": {
+          "modifier": "Enmity",
+          "series": "normal",
+          "size": "big"
+        }
+      },
+      "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "key_slug": "pendulum-zeal"
+      "key_slug": "pendulum-zeal",
+      "frame_rule": "weapon_identity"
     },
     {
       "modifier": "Persistence",
@@ -2693,33 +3295,51 @@
       "modifier": "Rubell",
       "boost_type": "atk",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 25.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "type": "weapon_specialty"
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 15.0,
+          "sl15": 20.0,
+          "sl20": 25.0
+        }
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Rubell: 15%/20%/25% EX ATK at SL10/15/20; specialty-gated."
     },
     {
       "modifier": "Rubell",
       "boost_type": "hp",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 20.0,
+      "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "type": "weapon_specialty"
+        "type": "weapon_specialty",
+        "curve": {
+          "formula_type": "flat",
+          "sl10": 10.0,
+          "sl15": 15.0,
+          "sl20": 20.0
+        }
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Rubell: 10%/15%/20% HP at SL10/15/20; specialty-gated."
     },
     {
       "modifier": "Ruination",
@@ -3671,7 +4291,25 @@
       "boost_type": "da",
       "series": "ex",
       "scaling_kind": "conditional_flat",
-      "value": 5.0,
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-alpha"
+    },
+    {
+      "modifier": "α Pendulum",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
       "value_unit": "percent",
       "condition": {
         "gte": 4,
@@ -3682,6 +4320,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 DA boost from 2.5% to 5%.",
       "key_slug": "pendulum-alpha"
     },
     {
@@ -3705,7 +4344,25 @@
       "boost_type": "ta",
       "series": "ex",
       "scaling_kind": "conditional_flat",
-      "value": 5.0,
+      "value": 2.5,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-alpha"
+    },
+    {
+      "modifier": "α Pendulum",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 2.5,
       "value_unit": "percent",
       "condition": {
         "gte": 4,
@@ -3716,6 +4373,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 TA boost from 2.5% to 5%.",
       "key_slug": "pendulum-alpha"
     },
     {
@@ -3732,6 +4390,43 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
+      "key_slug": "pendulum-beta"
+    },
+    {
+      "modifier": "β Pendulum",
+      "boost_type": "skill_hit",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 1,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-beta"
+    },
+    {
+      "modifier": "β Pendulum",
+      "boost_type": "skill_hit",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 4,
+        "type": "transcendence_step"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 skill hit-count boost from 5% to 10%.",
       "key_slug": "pendulum-beta"
     },
     {

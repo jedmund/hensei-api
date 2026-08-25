@@ -24,6 +24,33 @@ RSpec.describe Granblue::Parsers::WeaponParser do
     end
   end
 
+  describe '#main_hand_only_description?' do
+    it 'does not gate an always-on first clause when only a later clause requires main hand' do
+      description = "Boost to DEF for the first 8 turns<br>When main weapon: Reduce Poison damage"
+
+      expect(parser.send(:main_hand_only_description?, description)).to be(false)
+    end
+
+    it 'keeps a first-clause main-hand restriction' do
+      description = "When main weapon (MC only): Boost to skill damage<br>Another effect"
+
+      expect(parser.send(:main_hand_only_description?, description)).to be(true)
+    end
+  end
+
+  describe '#scales_with_skill_level?' do
+    it 'recognizes a condition-gated canonical curve effect' do
+      WeaponSkillEffect.create!(
+        modifier: 'Preemptive Blade', boost_type: 'atk', scaling_kind: 'weapon_skill_curve',
+        condition: { 'type' => 'turn_lte', 'lte' => 8,
+                     'curve' => { 'formula_type' => 'flat', 'sl10' => 15 } }
+      )
+      version = build(:weapon_skill_version, skill_modifier: 'Preemptive Blade', skill_series: 'normal')
+
+      expect(parser.send(:scales_with_skill_level?, version)).to be(true)
+    end
+  end
+
   describe '#extract_weapon_skills' do
     it 'extracts all 4 slots' do
       expect(skills.map { |s| s[:position] }).to eq([0, 1, 2, 3])

@@ -22,6 +22,7 @@
 #   @return [Awakening, nil] the associated awakening, if any.
 class GridWeapon < ApplicationRecord
   include WeaponCapabilityResolution
+  include AxSkillValidation
 
   # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze

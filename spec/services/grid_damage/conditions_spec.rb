@@ -76,4 +76,16 @@ RSpec.describe GridDamage::Conditions do
     expect(described_class.met?(cond, state: { enhancements: { optimus: 420, omega: 20 } })).to be(true)
     expect(described_class.met?(cond, state: { enhancements: { optimus: 200, omega: 20 } })).to be(false)
   end
+
+  it "includes the final turn of a turn_lte condition" do
+    expect(described_class.met?({ "type" => "turn_lte", "lte" => 8 }, state: { turn: 8 })).to be(true)
+  end
+
+  it "stops applying a turn_lte condition on the following turn" do
+    expect(described_class.met?({ "type" => "turn_lte", "lte" => 8 }, state: { turn: 9 })).to be(false)
+  end
+
+  it "uses turn 1 when a turn_lte panel state omits the turn" do
+    expect(described_class.met?({ "type" => "turn_lte", "lte" => 8 }, state: {})).to be(true)
+  end
 end

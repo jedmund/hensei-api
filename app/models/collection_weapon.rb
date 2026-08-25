@@ -1,5 +1,6 @@
 class CollectionWeapon < ApplicationRecord
   include WeaponCapabilityResolution
+  include AxSkillValidation
 
   belongs_to :user
   belongs_to :weapon
@@ -33,7 +34,6 @@ class CollectionWeapon < ApplicationRecord
   validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true
 
   validate :validate_weapon_keys
-  validate :validate_ax_skills
   validate :validate_befoulment
   validate :validate_element_change
   validate :validate_awakening_compatibility
@@ -116,28 +116,6 @@ class CollectionWeapon < ApplicationRecord
     slots = weapon_keys.map(&:slot)
     if slots.length != slots.uniq.length
       errors.add(:weapon_keys, "cannot have multiple keys for the same slot")
-    end
-  end
-
-  def validate_ax_skills
-    # AX skill 1: must have both modifier and strength
-    if (ax_modifier1.present? && ax_strength1.blank?) ||
-       (ax_modifier1.blank? && ax_strength1.present?)
-      errors.add(:base, "AX skill 1 must have both modifier and strength")
-    end
-
-    # AX skill 2: must have both modifier and strength
-    if (ax_modifier2.present? && ax_strength2.blank?) ||
-       (ax_modifier2.blank? && ax_strength2.present?)
-      errors.add(:base, "AX skill 2 must have both modifier and strength")
-    end
-
-    # Validate category is 'ax'
-    if ax_modifier1.present? && ax_modifier1.category != 'ax'
-      errors.add(:ax_modifier1, "must be an AX skill modifier")
-    end
-    if ax_modifier2.present? && ax_modifier2.category != 'ax'
-      errors.add(:ax_modifier2, "must be an AX skill modifier")
     end
   end
 

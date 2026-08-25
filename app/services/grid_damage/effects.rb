@@ -7,6 +7,10 @@ module GridDamage
   # supplemental_cap, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
+    REDUCTION_ELEMENTS = %w[fire water earth wind light dark].freeze
+    InlineCurve = Data.define(:formula_type, :size, :sl1, :sl10, :sl15, :sl20, :sl25,
+                              :coefficient, :max_value)
+
     CAP_FORMULA_PATTERN = %r{
       \A
       (?<slope>\d+(?:\.\d+)?)
@@ -31,23 +35,45 @@ module GridDamage
         WeaponContributions.active_versions(w, gw).each do |v|
           # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
           # skill; otherwise fall back to the effect's heuristic series.
-          frame = v.try(:multiplier_frame).presence
           v.weapon_skill_effects.each do |e|
+            frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
             value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
-              boost_type: e.boost_type, series: frame || e.series, value: value,
+              boost_type: contribution_boost_type(e), series: frame || e.series, value: value,
               main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f, amplifiable: amplifiable,
+              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f,
+              amplifiable: amplifiable && e.aura_boostable != false,
               source_ids: [gw.id],
               source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
-              source_icon: v.icon_stem
+              source_icon: v.icon_stem,
+              stacking_group: stacking_group(e, v)
             )
           end
         end
       end
       out
+    end
+
+    # Effect-level highest_only is narrower than the boost registry's global
+    # highest_only rule: copies of one named family do not stack, but separately
+    # named Betrayal skills do. Include the boost type because composite families
+    # can independently contribute several panel lines.
+    def stacking_group(effect, version)
+      return unless effect.stacking == "highest_only"
+
+      "effect|#{effect.boost_type}|#{version.skill&.name_en || effect.modifier}"
+    end
+
+    # Most reduction skills protect against the grid's default superior-element foe,
+    # so they use the generic elem_reduc line. Rose Crystal skills name a different
+    # protected element explicitly; preserve it as a distinct panel/cap bucket.
+    def contribution_boost_type(effect)
+      return effect.boost_type unless effect.boost_type == "elem_reduc"
+
+      element = effect.condition.to_h["reduced_element"].to_s.downcase
+      REDUCTION_ELEMENTS.include?(element) ? "#{element}_reduc" : effect.boost_type
     end
 
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
@@ -75,6 +101,9 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: false)
       when "hp_missing_linear"
         hp_linear_value(effect, state: state, missing: true)
+      when "weapon_skill_curve"
+        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
+                           composition: composition)
       when "supplemental_cap"
         supplemental_cap(effect, state: state)
       when "ally_max_hp_scaled"
@@ -85,6 +114,48 @@ module GridDamage
         nil
       end
     end
+
+    # Key-granted skills use the same SL/HP/turn evaluator as ordinary weapon skills.
+    # Most curve descriptors point at a canonical WeaponSkillDatum row; series-specific
+    # key tables (Ultima Rubell/Strife/Courage and elemental Telumas) may carry their
+    # documented anchors inline instead. A condition type beside the curve remains an
+    # ordinary gate (for example, Ultima's weapon-specialty restriction).
+    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:)
+      condition = effect.condition.to_h.with_indifferent_access
+      if condition[:type].present? &&
+         !Conditions.met?(condition, state: state, composition: composition,
+                                     weapon: weapon, grid_weapon: grid_weapon)
+        return nil
+      end
+
+      curve = condition[:curve]
+      return nil unless curve
+
+      config = curve.with_indifferent_access
+      datum = curve_datum(config, effect.boost_type)
+      return nil unless datum
+
+      skill_level = WeaponContributions.skill_level_for(weapon, grid_weapon)
+      Scaling.value(
+        datum,
+        skill_level: skill_level,
+        hp_percent: state.fetch(:hp_percent, 100),
+        turn: state.fetch(:turn, 1)
+      )
+    end
+
+    def curve_datum(config, boost_type)
+      if config[:modifier].present?
+        return WeaponSkillDatum.for_skill(
+          modifier: config[:modifier], series: config[:series], size: config[:size]
+        ).find { |row| row.boost_type == boost_type }
+      end
+
+      fields = InlineCurve.members.index_with { |field| config[field] }
+      fields[:formula_type] ||= "flat"
+      InlineCurve.new(**fields)
+    end
+    private_class_method :curve_datum
 
     def hp_linear_value(effect, state:, missing:)
       floor = effect.value&.to_f

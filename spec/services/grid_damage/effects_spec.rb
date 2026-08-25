@@ -8,6 +8,7 @@ RSpec.describe GridDamage::Effects do
                          :cap_formula,
                          keyword_init: true)
   WepStruct = Struct.new(:proficiency, :granblue_id, :max_skill_level, :max_level, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
+  GridStruct = Struct.new(:skill_level, :uncap_level, :transcendence_step, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
 
   let(:weapon) { WepStruct.new(proficiency: 1, granblue_id: "A", max_skill_level: 15, max_level: 200) }
   let(:composition) do
@@ -15,12 +16,88 @@ RSpec.describe GridDamage::Effects do
       distinct_weapon_type_count: 6, omega_skill_count: 2 }
   end
 
-  def val(effect, state: {})
-    described_class.value_for(effect, weapon: weapon, state: state, composition: composition)
+  def val(effect, state: {}, grid_weapon: nil)
+    described_class.value_for(effect, weapon: weapon, state: state, composition: composition,
+                                      grid_weapon: grid_weapon)
   end
 
   it "static → the value" do
     expect(val(EffStruct.new(scaling_kind: "static", value: 35))).to eq(35.0)
+  end
+
+  it "weapon_skill_curve reuses the canonical SL and turn scaling" do
+    create(:weapon_skill_datum, modifier: "Progression", boost_type: "e_atk_prog",
+                                series: "normal_omega", size: "big", formula_type: "progression",
+                                sl1: 0.55, sl10: 1, sl15: 1.2, sl20: 1.5, max_value: 15)
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "e_atk_prog",
+      condition: { "curve" => { "modifier" => "Progression", "series" => "normal", "size" => "big" } }
+    )
+    grid_weapon = GridStruct.new(skill_level: 20, uncap_level: 5, transcendence_step: 0)
+
+    expect(val(effect, state: { turn: 5 }, grid_weapon: grid_weapon)).to eq(7.5)
+    expect(val(effect, state: { turn: 20 }, grid_weapon: grid_weapon)).to eq(15.0)
+  end
+
+  it "weapon_skill_curve passes HP through to canonical Enmity scaling" do
+    create(:weapon_skill_datum, modifier: "Enmity", boost_type: "enmity",
+                                series: "normal_omega", size: "big", formula_type: "enmity",
+                                sl1: 0.83, sl10: 10, sl15: 12.5, sl20: 13.5)
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "enmity",
+      condition: { "curve" => { "modifier" => "Enmity", "series" => "normal", "size" => "big" } }
+    )
+    grid_weapon = GridStruct.new(skill_level: 20, uncap_level: 5, transcendence_step: 0)
+
+    expect(val(effect, state: { hp_percent: 100 }, grid_weapon: grid_weapon)).to eq(0.0)
+    expect(val(effect, state: { hp_percent: 0 }, grid_weapon: grid_weapon)).to eq(40.5)
+  end
+
+  it "weapon_skill_curve interpolates documented inline anchors" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "critical",
+      condition: { "curve" => { "formula_type" => "flat", "sl10" => 15, "sl15" => 17.5, "sl20" => 20 } }
+    )
+
+    expect(val(effect, grid_weapon: GridStruct.new(skill_level: 12))).to eq(16.0)
+    expect(val(effect, grid_weapon: GridStruct.new(skill_level: 20))).to eq(20.0)
+  end
+
+  it "weapon_skill_curve honors an inclusive turn limit" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "atk",
+      condition: {
+        "type" => "turn_lte", "lte" => 8,
+        "curve" => { "formula_type" => "flat", "sl10" => 15 }
+      }
+    )
+    grid_weapon = GridStruct.new(skill_level: 10)
+
+    expect(val(effect, state: { turn: 8 }, grid_weapon: grid_weapon)).to eq(15.0)
+    expect(val(effect, state: { turn: 9 }, grid_weapon: grid_weapon)).to be_nil
+  end
+
+  it "weapon_skill_curve also honors an Ultima weapon-specialty gate" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "atk",
+      condition: {
+        "type" => "weapon_specialty",
+        "curve" => { "formula_type" => "flat", "sl10" => 15, "sl15" => 20, "sl20" => 25 }
+      }
+    )
+    grid_weapon = GridStruct.new(skill_level: 15)
+
+    expect(described_class.value_for(effect, weapon: weapon, state: {}, grid_weapon: grid_weapon,
+                                             composition: composition.merge(mc_specialties: ["sabre"]))).to eq(20.0)
+    expect(val(effect, grid_weapon: grid_weapon)).to be_nil
+  end
+
+  it "gives Light and Dark reductions their own panel buckets" do
+    light = EffStruct.new(boost_type: "elem_reduc", condition: { "reduced_element" => "light" })
+    dark = EffStruct.new(boost_type: "elem_reduc", condition: { "reduced_element" => "dark" })
+
+    expect(described_class.contribution_boost_type(light)).to eq("light_reduc")
+    expect(described_class.contribution_boost_type(dark)).to eq("dark_reduc")
   end
 
   it "conditional_flat → value when the condition is met, nil otherwise" do

@@ -14,6 +14,7 @@ module Granblue
       # Aura-word-less special series re-expanded even when complete, to capture the wiki
       # Multiplier frame (the heuristic can't infer it). Start with the non-summon-boosted ones.
       SPECIAL_SERIES = %w[bahamut celestial].freeze
+      CANONICAL_NOTES_FAMILIES = ["Staff Resonance"].freeze
       FRAME = { "normal" => "normal", "ex" => "ex", "omega" => "omega", "od" => "odious" }.freeze
 
       def self.run(limit: nil, throttle: 0.2)
@@ -138,7 +139,7 @@ module Granblue
             skill.save!
             ws.weapon_skill_versions.create!(
               skill: skill, ordinal: 0, min_uncap: 3, skill_series: s[:series], multiplier_frame: s[:series],
-              main_hand_only: s[:description].match?(/when main weapon/i),
+              main_hand_only: main_hand_only_description?(s[:description]),
               mc_only: s[:description].match?(/\(mc only\)/i)
             )
             stats[:created] += 1
@@ -158,6 +159,8 @@ module Granblue
         by_name = weapon.weapon_skills.includes(weapon_skill_versions: :skill)
                         .flat_map(&:weapon_skill_versions).index_by { |v| v.skill&.name_en }
         notes.each do |skill_name, info|
+          next if CANONICAL_NOTES_FAMILIES.include?(skill_name)
+
           v = by_name[skill_name] or next
           WeaponSkillEffect.where(weapon_skill_version_id: v.id,
                                   scaling_kind: %w[per_grid_count specialty_scaled]).delete_all
@@ -211,7 +214,14 @@ module Granblue
         s.gsub(/\s+/, " ").strip
       end
 
-      private_class_method :parse_skills, :persist, :apply_gameplay_notes, :create_notes_effect, :cleanup_garbled, :clean
+      def self.main_hand_only_description?(description)
+        text = description.to_s
+        clauses = text.split(%r{\s+/\s+})
+        (clauses.length > 1 ? clauses.first : text).match?(/when main weapon/i)
+      end
+
+      private_class_method :parse_skills, :persist, :apply_gameplay_notes, :create_notes_effect,
+                           :cleanup_garbled, :clean, :main_hand_only_description?
     end
   end
 end

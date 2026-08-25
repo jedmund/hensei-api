@@ -66,6 +66,7 @@ module Granblue
           check_table_valued_effect(effect)
           next
         end
+        next if curve_valued_effect?(effect)
         next if documentation_effect?(effect)
 
         next unless effect["value"].nil?
@@ -145,6 +146,10 @@ module Granblue
 
     def table_valued_effect?(effect)
       TABLE_VALUED_SCALING_KINDS.include?(effect["scaling_kind"])
+    end
+
+    def curve_valued_effect?(effect)
+      effect["scaling_kind"] == "weapon_skill_curve" && effect.dig("condition", "curve").is_a?(Hash)
     end
 
     def documentation_effect?(effect)

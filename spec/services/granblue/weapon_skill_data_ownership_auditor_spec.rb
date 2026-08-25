@@ -99,6 +99,28 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
     expect(result).to be_ok
   end
 
+  it "allows a null scalar value when an inline weapon-skill curve owns the values" do
+    write_dataset(
+      root: @root,
+      effects: [
+        row(
+          modifier: "Preemptive Blade",
+          boost_type: "atk",
+          scaling_kind: "weapon_skill_curve",
+          condition: {
+            "type" => "turn_lte", "lte" => 8,
+            "curve" => { "formula_type" => "flat", "sl1" => 5.0, "sl10" => 15.0 }
+          }
+        )
+      ],
+      boost_types: [boost_type("atk")]
+    )
+
+    result = described_class.run(root: @root)
+
+    expect(result).to be_ok
+  end
+
   it "fails an unclassified scalar-like null effect row" do
     write_dataset(
       root: @root,

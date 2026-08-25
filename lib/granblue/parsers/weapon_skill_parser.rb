@@ -193,15 +193,13 @@ module Granblue
         'Covert Artistry',
         'First Dash', 'Fortified Blade', 'Fortified Gauntlet', 'Fortified Harp', 'Fortified Staff',
         'Fourth Pursuit',
-        'Frost Blade', 'Light Blade',
         'Mysterious ATK', 'Mysterious VIT',
-        'Saw of Death', 'Second Insignia', 'Shadow Blade',
+        "Rose's Refuge", 'Saw of Death', 'Second Insignia',
         'Staff Resonance',
         'Strike: Dark', 'Strike: Earth', 'Strike: Fire',
         'Strike: Light', 'Strike: Water', 'Strike: Wind',
         'Synchronized Artistry',
-        'Technical Artistry',
-        'Terra Blade', 'Third Spur'
+        'Technical Artistry', 'Third Spur'
       ].freeze
 
       KNOWN_MODIFIERS = (
@@ -251,7 +249,12 @@ module Granblue
       LATIN_ELEMENT_WORDS = Set.new(%w[Caliginis Aeros Luminis Aquae Terrae Ardendi]).freeze
 
       # Element words used in Preemptive element-specific patterns.
-      PREEMPTIVE_ELEMENT_WORDS = Set.new(%w[Fire Rock Shadow Ice Gale Silver Azure Amber Cloud]).freeze
+      PREEMPTIVE_ELEMENT_WORDS = Set.new(
+        %w[Fire Rock Shadow Ice Gale Silver Azure Amber Cloud Frost Light Terra]
+      ).freeze
+      PREEMPTIVE_BLADE_TAILS = Set.new(
+        ["Frost Blade", "Light Blade", "Shadow Blade", "Terra Blade"]
+      ).freeze
 
       # Modifiers that appear with element word suffixes (e.g. "Clawed Shadow" → "Clawed").
       ELEMENT_SUFFIXED_MODIFIERS = Set.new(%w[Armed Clawed Resilient Willed]).freeze
@@ -279,10 +282,27 @@ module Granblue
           base_name = clean_name.sub(NUMERAL_PATTERN, '')
         end
 
+        # A few complete family names are themselves possessive (Rose's Refuge).
+        # Resolve exact known names before interpreting the possessive as aura + tail.
+        if KNOWN_MODIFIERS.include?(base_name)
+          return {
+            aura: nil,
+            modifier: base_name,
+            series: nil,
+            size: NUMERAL_TO_SIZE[numeral],
+            skill_name: skill_name
+          }
+        end
+
         # Try possessive format: "Aura's Modifier" or "Multi Word Aura's Modifier"
         if (match = base_name.match(/^(.+?)'s\s+(.+)$/))
           aura = match[1]
           modifier = match[2]
+
+          # These names are Preemptive element aliases only when the full skill
+          # starts with "Preemptive". Mutiny uses the same tails for unrelated,
+          # unmodeled skills and must not acquire the Preemptive curve.
+          return empty_result(skill_name) if PREEMPTIVE_BLADE_TAILS.include?(modifier)
 
           # Accept if modifier is known, OR if aura is a known prefix
           # (weapon-specific skills use known auras with unique modifiers)

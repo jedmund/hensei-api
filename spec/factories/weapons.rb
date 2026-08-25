@@ -89,5 +89,9 @@ FactoryBot.define do
       weapon_series { WeaponSeries.find_by(slug: 'odiant') || create(:weapon_series, :odiant) }
       max_exorcism_level { 5 }
     end
+
+    trait :with_ax do
+      association :weapon_series, factory: [:weapon_series, :with_ax_skills]
+    end
   end
 end
