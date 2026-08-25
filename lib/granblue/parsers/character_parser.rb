@@ -160,10 +160,11 @@ module Granblue
         info[:id] = hash['id']
         info[:charid] = hash['charid'].scan(/\b\d{4}\b/)
 
-        info[:flb] = Granblue::Parsers::Wiki.boolean.fetch(hash['5star'], false)
-        final_uncap = hash['max_evo'].to_i == 6
-        info[:ulb] = final_uncap && @character.special?
-        info[:transcendence] = final_uncap && !@character.special?
+        uncap = WikiDataParser.parse_character_uncap(hash)
+        info[:flb] = uncap.fetch(:flb) { Granblue::Parsers::Wiki.boolean.fetch(hash['5star'], false) }
+        info[:special] = uncap.fetch(:special, @character.special?)
+        info[:ulb] = uncap.fetch(:ulb, false)
+        info[:transcendence] = uncap.fetch(:transcendence, false)
 
         info[:rarity] = Granblue::Parsers::Wiki.rarities.fetch(hash['rarity'], 0)
         info[:element] = Granblue::Parsers::Wiki.elements.fetch(hash['element'], 0)
@@ -186,9 +187,9 @@ module Granblue
 
         info[:dates] = {
           release_date: parse_date(hash['release_date']),
-          flb_date: parse_date(hash['5star_date']),
-          ulb_date: @character.special? ? parse_date(hash['6star_date']) : nil,
-          transcendence_date: @character.special? ? nil : parse_date(hash['6star_date'])
+          flb_date: uncap[:flb_date],
+          ulb_date: uncap[:ulb_date],
+          transcendence_date: uncap[:transcendence_date]
         }
 
         info[:links] = {

@@ -56,12 +56,7 @@ module Granblue
         suggestions[:max_atk] = data['max_atk'].to_i if data['max_atk'].present?
         suggestions[:max_atk_flb] = data['flb_atk'].to_i if data['flb_atk'].present?
 
-        # Story characters have three base stars and use max_evo 4/5 for
-        # FLB/ULB; regular characters use max_evo 5/6 for FLB/transcendence.
-        if data['max_evo'].present?
-          evo = data['max_evo'].to_i
-          suggestions.merge!(character_uncap_classification(data['uncap_type'], evo))
-        end
+        suggestions.merge!(parse_character_uncap(data))
         # Fallback to legacy 5star field if max_evo not present
         suggestions[:flb] ||= Wiki.boolean.fetch(data['5star'], false) if data['5star'].present?
 
@@ -75,20 +70,6 @@ module Granblue
 
         # Dates
         suggestions[:release_date] = parse_date(data['release_date']) if data['release_date'].present?
-        if suggestions[:special]
-          # Current story-character pages use max_evo=5 and 5star_date for
-          # their second blue star. Also accept the older 6star_date shape.
-          final_uncap_date = data['6star_date'].presence || data['5star_date'].presence
-          suggestions[:ulb_date] = parse_date(final_uncap_date) if suggestions[:ulb] && final_uncap_date
-          if data['6star_date'].present? && data['5star_date'].present?
-            suggestions[:flb_date] = parse_date(data['5star_date'])
-          end
-        else
-          suggestions[:flb_date] = parse_date(data['5star_date']) if data['5star_date'].present?
-          if data['6star_date'].present?
-            suggestions[:transcendence_date] = parse_date(data['6star_date'])
-          end
-        end
 
         # External links - parse URLs to extract values
         suggestions[:gamewith] = parse_gamewith_url(data['link_gamewith']) if data['link_gamewith'].present?
@@ -106,6 +87,34 @@ module Granblue
         suggestions[:promotions] = promotions if promotions.any?
 
         suggestions.compact
+      end
+
+      # Classify a character's uncap progression and route its uncap dates.
+      # Story characters have three base stars and use max_evo 4/5 for
+      # FLB/ULB; regular characters use max_evo 5/6 for FLB/transcendence.
+      def self.parse_character_uncap(data)
+        suggestions = {}
+
+        if data['max_evo'].present?
+          suggestions.merge!(character_uncap_classification(data['uncap_type'], data['max_evo'].to_i))
+        end
+
+        if suggestions[:special]
+          # Current story-character pages use max_evo=5 and 5star_date for
+          # their second blue star. Also accept the older 6star_date shape.
+          final_uncap_date = data['6star_date'].presence || data['5star_date'].presence
+          suggestions[:ulb_date] = parse_date(final_uncap_date) if suggestions[:ulb] && final_uncap_date
+          if data['6star_date'].present? && data['5star_date'].present?
+            suggestions[:flb_date] = parse_date(data['5star_date'])
+          end
+        else
+          suggestions[:flb_date] = parse_date(data['5star_date']) if data['5star_date'].present?
+          if data['6star_date'].present?
+            suggestions[:transcendence_date] = parse_date(data['6star_date'])
+          end
+        end
+
+        suggestions
       end
 
       def self.character_uncap_classification(uncap_type, max_evo)
