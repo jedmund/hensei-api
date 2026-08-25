@@ -130,13 +130,33 @@ module Api
           character = w.recruited_character
           next nil unless character
 
+          series_records = character.ordered_series_records
+          series = if series_records.any?
+                     series_records.map do |record|
+                       {
+                         id: record.id,
+                         slug: record.slug,
+                         name: {
+                           en: record.name_en,
+                           ja: record.name_jp
+                         }
+                       }
+                     end
+                   else
+                     character.series
+                   end
+
           {
             id: character.id,
             granblue_id: character.granblue_id,
             name: {
               en: character.name_en,
               ja: character.name_jp
-            }
+            },
+            element: character.element,
+            season: character.season,
+            series: series,
+            style_swap: character.style_swap
           }
         end
       end
