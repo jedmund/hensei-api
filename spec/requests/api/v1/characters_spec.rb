@@ -39,6 +39,19 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       expect(response.parsed_body['id']).to eq(character.id)
     end
 
+    it 'serializes distinct ULB and released transcendence-stage capabilities' do
+      character.update!(transcendence: true, max_transcendence_stage: 1)
+
+      get "/api/v1/characters/#{character.id}"
+
+      expect(response.parsed_body['uncap']).to include(
+        'flb' => true,
+        'ulb' => false,
+        'transcendence' => true,
+        'max_transcendence_stage' => 1
+      )
+    end
+
     it 'returns nested skills in the full character view' do
       status = Status.create!(
         name_en: 'Utopia',

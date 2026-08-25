@@ -57,12 +57,19 @@ class Character < ApplicationRecord
 
 
   # Validations
+  before_validation :normalize_max_transcendence_stage
+
   validates :season,
             numericality: { only_integer: true },
             inclusion: { in: GranblueEnums::CHARACTER_SEASONS.values },
             allow_nil: true
 
+  validates :max_transcendence_stage,
+            numericality: { only_integer: true },
+            inclusion: { in: 0..5 }
+
   validate :validate_series_values
+  validate :validate_uncap_capabilities
 
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
@@ -92,6 +99,20 @@ class Character < ApplicationRecord
     return nil if season.nil?
 
     GranblueEnums::CHARACTER_SEASONS.key(season)&.to_s
+  end
+
+  def max_uncap_level
+    if special?
+      return 5 if ulb?
+      return 4 if flb?
+
+      3
+    else
+      return 6 if transcendence?
+      return 5 if flb?
+
+      4
+    end
   end
 
   # Returns character_series_records sorted by `order`, reusing the loaded
@@ -190,6 +211,20 @@ class Character < ApplicationRecord
   end
 
   private
+
+  def normalize_max_transcendence_stage
+    self.max_transcendence_stage = 0 unless transcendence?
+  end
+
+  def validate_uncap_capabilities
+    if transcendence? && max_transcendence_stage.to_i.zero?
+      errors.add(:max_transcendence_stage, 'must be between 1 and 5 when transcendence is enabled')
+    end
+
+    errors.add(:transcendence, 'is not supported for special characters') if special? && transcendence?
+    errors.add(:ulb, 'is only supported for special characters') if ulb? && !special?
+    errors.add(:ulb, 'requires FLB') if ulb? && !flb?
+  end
 
   def validate_series_values
     return if series.blank?

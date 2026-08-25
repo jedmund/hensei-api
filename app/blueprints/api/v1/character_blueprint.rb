@@ -65,7 +65,9 @@ module Api
       field :uncap do |c|
         {
           flb: c.flb,
-          transcendence: c.transcendence
+          ulb: c.ulb,
+          transcendence: c.transcendence,
+          max_transcendence_stage: c.max_transcendence_stage
         }
       end
 
@@ -207,7 +209,9 @@ module Api
           {
             min_hp: c.min_hp,
             max_hp: c.max_hp,
-            max_hp_flb: c.max_hp_flb
+            max_hp_flb: c.max_hp_flb,
+            max_hp_ulb: c.max_hp_ulb,
+            max_hp_transcendence: c.max_hp_transcendence
           }
         end
 
@@ -215,7 +219,9 @@ module Api
           {
             min_atk: c.min_atk,
             max_atk: c.max_atk,
-            max_atk_flb: c.max_atk_flb
+            max_atk_flb: c.max_atk_flb,
+            max_atk_ulb: c.max_atk_ulb,
+            max_atk_transcendence: c.max_atk_transcendence
           }
         end
       end
@@ -234,6 +240,7 @@ module Api
       view :dates do
         field :release_date
         field :flb_date
+        field :ulb_date
         field :transcendence_date
       end
     end

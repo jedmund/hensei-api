@@ -161,7 +161,9 @@ module Granblue
         info[:charid] = hash['charid'].scan(/\b\d{4}\b/)
 
         info[:flb] = Granblue::Parsers::Wiki.boolean.fetch(hash['5star'], false)
-        info[:transcendence] = hash['max_evo'].to_i == 6
+        final_uncap = hash['max_evo'].to_i == 6
+        info[:ulb] = final_uncap && @character.special?
+        info[:transcendence] = final_uncap && !@character.special?
 
         info[:rarity] = Granblue::Parsers::Wiki.rarities.fetch(hash['rarity'], 0)
         info[:element] = Granblue::Parsers::Wiki.elements.fetch(hash['element'], 0)
@@ -185,7 +187,8 @@ module Granblue
         info[:dates] = {
           release_date: parse_date(hash['release_date']),
           flb_date: parse_date(hash['5star_date']),
-          transcendence_date: parse_date(hash['6star_date'])
+          ulb_date: @character.special? ? parse_date(hash['6star_date']) : nil,
+          transcendence_date: @character.special? ? nil : parse_date(hash['6star_date'])
         }
 
         info[:links] = {
@@ -204,6 +207,7 @@ module Granblue
       def persist(hash)
         @character.release_date = hash[:dates][:release_date]
         @character.flb_date = hash[:dates][:flb_date] if hash[:dates].key?(:flb_date)
+        @character.ulb_date = hash[:dates][:ulb_date] if hash[:dates].key?(:ulb_date)
         @character.transcendence_date = hash[:dates][:transcendence_date] if hash[:dates].key?(:transcendence_date)
 
         @character.wiki_ja = hash[:links][:wiki][:ja] if hash[:links].key?(:wiki) && hash[:links][:wiki].key?(:ja)

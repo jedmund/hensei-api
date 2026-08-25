@@ -68,7 +68,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'with items' do
-      let(:character) { create(:character, element: 2, flb: true, transcendence: true, special: false) }
+      let(:character) { create(:character, element: 2, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
       let(:weapon) { create(:weapon, element: 2, flb: true, ulb: true, transcendence: false) }
       let(:summon) { create(:summon, element: 2, flb: true, ulb: false, transcendence: false) }
 
@@ -114,7 +114,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'with member collection data' do
-      let(:character) { create(:character, element: 2, flb: true, transcendence: true, special: false) }
+      let(:character) { create(:character, element: 2, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
       let(:weapon) { create(:weapon, element: 2, flb: true, ulb: true, transcendence: true) }
 
       let!(:roster) do
