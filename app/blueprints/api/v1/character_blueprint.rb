@@ -89,7 +89,7 @@ module Api
       # Keep :element: null-element characters (e.g. Lyria, Gran/Djeeta) need it to
       # build the element-suffixed image filename in grid reps.
       view :list do
-        excludes :name, :character_id, :rarity, :gender, :special, :season,
+        excludes :name, :character_id, :rarity, :gender, :season,
                  :season_name, :series, :series_names, :uncap, :race, :proficiency,
                  :style_name, :base_character
       end

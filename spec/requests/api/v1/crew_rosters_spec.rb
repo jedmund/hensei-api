@@ -88,6 +88,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         char_item = items.find { |i| i['type'] == 'Character' }
         expect(char_item['granblue_id']).to eq(character.granblue_id)
         expect(char_item['uncap']['flb']).to be true
+        expect(char_item['uncap']['ulb']).to be false
         expect(char_item['uncap']['transcendence']).to be true
         expect(char_item['special']).to be false
 
@@ -115,11 +116,12 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
 
     context 'with member collection data' do
       let(:character) { create(:character, element: 2, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
+      let(:story_character) { create(:character, :special_ulb, element: 2) }
       let(:weapon) { create(:weapon, element: 2, flb: true, ulb: true, transcendence: true) }
 
       let!(:roster) do
         create(:crew_roster, :with_items, crew: crew, created_by: user, element: 2, name: 'Fire',
-                                          characters: [character], weapons: [weapon])
+                                          characters: [character, story_character], weapons: [weapon])
       end
 
       let(:member_user) { create(:user) }
@@ -132,6 +134,10 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
       let!(:collection_wpn) do
         create(:collection_weapon, user: member_user, weapon: weapon,
                                    uncap_level: 4, transcendence_step: 0)
+      end
+      let!(:story_collection_char) do
+        create(:collection_character, user: member_user, character: story_character,
+                                      uncap_level: 5, transcendence_step: 0)
       end
 
       it 'returns member ownership with uncap data from both entity and collection' do
@@ -147,8 +153,17 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         expect(char_ownership['uncap_level']).to eq(5)
         expect(char_ownership['transcendence_step']).to eq(3)
         expect(char_ownership['flb']).to be true
+        expect(char_ownership['ulb']).to be false
         expect(char_ownership['transcendence']).to be true
         expect(char_ownership['special']).to be false
+
+        story_ownership = member['characters'].find { |c| c['id'] == story_character.id }
+        expect(story_ownership['uncap_level']).to eq(5)
+        expect(story_ownership['transcendence_step']).to eq(0)
+        expect(story_ownership['flb']).to be true
+        expect(story_ownership['ulb']).to be true
+        expect(story_ownership['transcendence']).to be false
+        expect(story_ownership['special']).to be true
 
         wpn_ownership = member['weapons'].find { |w| w['id'] == weapon.id }
         expect(wpn_ownership['uncap_level']).to eq(4)

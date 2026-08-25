@@ -377,9 +377,9 @@ RSpec.describe 'Substitutions API', type: :request do
       expect(GridWeapon.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
     end
 
-    it 'matches the canonical character\'s max uncap (special branch)' do
+    it 'creates a story ULB character at its canonical max uncap' do
       character = Character.first
-      other_character = Character.where.not(id: character.id).first
+      other_character = create(:character, :special_ulb)
       grid_character = create(:grid_character, party: party, character: character)
 
       params = {
@@ -394,18 +394,9 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions', params: params.to_json, headers: headers
 
-      expected = if other_character.special
-                   if other_character.transcendence
-                     5
-                   else
-                     other_character.flb ? 4 : 3
-                   end
-                 elsif other_character.transcendence
-                   6
-                 else
-                   other_character.flb ? 5 : 4
-                 end
-      expect(GridCharacter.find(Substitution.last.substitute_grid_id).uncap_level).to eq(expected)
+      expect(response).to have_http_status(:created)
+      substitute = GridCharacter.find(Substitution.last.substitute_grid_id)
+      expect(substitute.uncap_level).to eq(other_character.max_uncap_level).and eq(5)
     end
 
     it 'matches the canonical summon\'s max uncap' do
