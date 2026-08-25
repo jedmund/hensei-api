@@ -10,7 +10,7 @@ RSpec.describe 'Collection Characters API', type: :request do
     { 'Authorization' => "Bearer #{access_token.token}", 'Content-Type' => 'application/json' }
   end
 
-  let(:character) { create(:character) }
+  let(:character) { create(:character, :transcendable) }
   let(:awakening) { create(:awakening, object_type: 'Character') }
 
   describe 'GET /api/v1/users/:user_id/collection/characters' do

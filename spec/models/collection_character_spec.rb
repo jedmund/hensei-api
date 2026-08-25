@@ -9,13 +9,16 @@ RSpec.describe CollectionCharacter, type: :model do
 
   describe 'validations' do
     let(:user) { create(:user) }
-    let(:character) { create(:character) }
+    let(:character) { create(:character, :transcendable) }
 
     subject { build(:collection_character, user: user, character: character) }
 
     describe 'basic validations' do
       it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
-      it { should validate_inclusion_of(:transcendence_step).in_range(0..10) }
+      it 'rejects negative transcendence stages' do
+        subject.transcendence_step = -1
+        expect(subject).not_to be_valid
+      end
       it { should validate_inclusion_of(:awakening_level).in_range(1..10) }
     end
 
@@ -100,7 +103,8 @@ RSpec.describe CollectionCharacter, type: :model do
     describe 'transcendence validations' do
       context 'when transcendence_step > 0 with uncap_level < 5' do
         it 'is invalid' do
-          collection_char = build(:collection_character, uncap_level: 4, transcendence_step: 1)
+          collection_char = build(:collection_character, character: character, uncap_level: 4,
+                                                          transcendence_step: 1)
           expect(collection_char).not_to be_valid
           expect(collection_char.errors[:transcendence_step]).to include('requires uncap level 5 (current: 4)')
         end
@@ -108,9 +112,19 @@ RSpec.describe CollectionCharacter, type: :model do
 
       context 'when transcendence_step > 0 with uncap_level = 5' do
         it 'is valid' do
-          collection_char = build(:collection_character, uncap_level: 5, transcendence_step: 5)
+          collection_char = build(:collection_character, character: character, uncap_level: 5,
+                                                          transcendence_step: 5)
           expect(collection_char).to be_valid
         end
+      end
+
+      it 'clamps a submitted stage to the canonical released-stage cap' do
+        character.update!(max_transcendence_stage: 1)
+        collection_char = build(:collection_character, character: character, uncap_level: 6,
+                                                        transcendence_step: 5)
+
+        expect(collection_char).to be_valid
+        expect(collection_char.transcendence_step).to eq(1)
       end
 
       context 'when transcendence_step = 0 with any uncap_level' do
@@ -208,8 +222,8 @@ RSpec.describe CollectionCharacter, type: :model do
         maxed = create(:collection_character, :maxed)
 
         aggregate_failures do
-          expect(maxed.uncap_level).to eq(5)
-          expect(maxed.transcendence_step).to eq(10)
+          expect(maxed.uncap_level).to eq(6)
+          expect(maxed.transcendence_step).to eq(5)
           expect(maxed.perpetuity).to be true
           expect(maxed.awakening).to be_present
           expect(maxed.awakening_level).to eq(10)
@@ -223,7 +237,7 @@ RSpec.describe CollectionCharacter, type: :model do
       it 'creates a transcended character with proper uncap' do
         transcended = create(:collection_character, :transcended)
 
-        expect(transcended.uncap_level).to eq(5)
+        expect(transcended.uncap_level).to eq(6)
         expect(transcended.transcendence_step).to eq(5)
         expect(transcended).to be_valid
       end

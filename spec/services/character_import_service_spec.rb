@@ -375,12 +375,12 @@ RSpec.describe CharacterImportService, type: :service do
         expect(character.uncap_level).to eq(6)
       end
 
-      it 'clamps transcendence_step to max 10' do
+      it 'clamps transcendence_step to the character released-stage cap' do
         service = described_class.new(user, game_data)
         result = service.import
 
         character = result.created.first
-        expect(character.transcendence_step).to eq(10)
+        expect(character.transcendence_step).to eq(5)
       end
 
       it 'clamps awakening_level to max 10' do

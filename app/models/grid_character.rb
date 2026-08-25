@@ -91,6 +91,7 @@ class GridCharacter < ApplicationRecord
   # Hooks
   before_validation :apply_new_rings, if: -> { new_rings.present? }
   before_validation :apply_new_awakening, if: -> { new_awakening.present? }
+  before_validation :clamp_transcendence_step
   before_save :add_awakening, unless: :is_substitute?
 
   after_create :increment_party_counter, unless: :is_substitute?
@@ -119,9 +120,13 @@ class GridCharacter < ApplicationRecord
   # @return [void]
   def transcendence
     return if transcendence_step.nil?
-    errors.add(:transcendence_step, 'character has no transcendence') if transcendence_step.positive? && !character.transcendence
-    errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5 && character.transcendence
-    errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative? && character.transcendence
+    errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
+  end
+
+  def clamp_transcendence_step
+    return if transcendence_step.nil? || transcendence_step.negative? || character.nil?
+
+    self.transcendence_step = [transcendence_step, character.max_transcendence_stage].min
   end
 
   ##

@@ -127,22 +127,22 @@ RSpec.describe GridCharacter, type: :model do
     end
 
     context 'transcendence validation' do
-      it 'adds an error if transcendence_step is positive but character.transcendence is false' do
+      it 'clamps a positive stage to zero when the character cannot transcend' do
         @grid_char.character.update!(transcendence: false)
         @grid_char.transcendence_step = 1
         @grid_char.valid?(:update)
-        expect(@grid_char.errors[:transcendence_step]).to include('character has no transcendence')
+        expect(@grid_char.transcendence_step).to eq(0)
       end
 
-      it 'adds an error if transcendence_step is greater than 5 when character.transcendence is true' do
-        @grid_char.character.update!(transcendence: true)
-        @grid_char.transcendence_step = 6
+      it 'clamps transcendence_step to the character released-stage cap' do
+        @grid_char.character.update!(transcendence: true, max_transcendence_stage: 2)
+        @grid_char.transcendence_step = 5
         @grid_char.valid?(:update)
-        expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too high')
+        expect(@grid_char.transcendence_step).to eq(2)
       end
 
       it 'adds an error if transcendence_step is negative when character.transcendence is true' do
-        @grid_char.character.update!(transcendence: true)
+        @grid_char.character.update!(transcendence: true, max_transcendence_stage: 5)
         @grid_char.transcendence_step = -1
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too low')
@@ -206,7 +206,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#sync_from_collection!' do
       context 'when collection_character is linked' do
         before do
-          character.update!(transcendence: true) # Enable transcendence
+          character.update!(transcendence: true, max_transcendence_stage: 5) # Enable transcendence
           @grid_char = create(:grid_character,
                               valid_attributes.merge(
                                 collection_character: collection_character,
@@ -244,7 +244,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#out_of_sync?' do
       context 'when collection_character is linked' do
         before do
-          character.update!(transcendence: true)
+          character.update!(transcendence: true, max_transcendence_stage: 5)
           @grid_char = create(:grid_character,
                               valid_attributes.merge(collection_character: collection_character))
         end
@@ -283,7 +283,7 @@ RSpec.describe GridCharacter, type: :model do
 
     describe '#sync_from_collection! with fields' do
       before do
-        character.update!(transcendence: true)
+        character.update!(transcendence: true, max_transcendence_stage: 5)
         @grid_char = create(:grid_character,
                             valid_attributes.merge(collection_character: collection_character))
         # Start in sync, then drift simple value fields (no inter-field validators)
@@ -323,7 +323,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#out_of_sync_fields' do
       context 'when collection_character is linked' do
         before do
-          character.update!(transcendence: true)
+          character.update!(transcendence: true, max_transcendence_stage: 5)
           @grid_char = create(:grid_character,
                               valid_attributes.merge(collection_character: collection_character))
           @grid_char.sync_from_collection!

@@ -23,14 +23,16 @@ FactoryBot.define do
 
     # Trait for a transcended character (requires max uncap)
     trait :transcended do
-      uncap_level { 5 }
+      character { association(:character, :transcendable) }
+      uncap_level { 6 }
       transcendence_step { 5 }
     end
 
     # Trait for max transcendence
     trait :max_transcended do
-      uncap_level { 5 }
-      transcendence_step { 10 }
+      character { association(:character, :transcendable) }
+      uncap_level { 6 }
+      transcendence_step { 5 }
     end
 
     # Trait for a character with awakening
@@ -67,8 +69,9 @@ FactoryBot.define do
 
     # Trait for a fully maxed character
     trait :maxed do
-      uncap_level { 5 }
-      transcendence_step { 10 }
+      character { association(:character, :transcendable) }
+      uncap_level { 6 }
+      transcendence_step { 5 }
       perpetuity { true }
       max_awakening
       with_rings
