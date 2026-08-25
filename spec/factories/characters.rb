@@ -17,12 +17,16 @@ FactoryBot.define do
     max_atk { 8000 }
     max_hp_flb { 1800 }
     max_atk_flb { 9600 }
+    max_hp_ulb { nil }
+    max_atk_ulb { nil }
     max_hp_transcendence { nil }
     max_atk_transcendence { nil }
 
     # FLB and transcendence capabilities
     flb { true }
+    ulb { false }
     transcendence { false }
+    max_transcendence_stage { 0 }
 
     release_date { 1.year.ago }
 
@@ -44,8 +48,18 @@ FactoryBot.define do
 
     trait :transcendable do
       transcendence { true }
+      max_transcendence_stage { 5 }
       max_hp_transcendence { 2100 }
       max_atk_transcendence { 11200 }
+    end
+
+    trait :special_ulb do
+      rarity { 3 }
+      special { true }
+      flb { true }
+      ulb { true }
+      max_hp_ulb { 1900 }
+      max_atk_ulb { 10_000 }
     end
   end
 end

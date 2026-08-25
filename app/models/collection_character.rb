@@ -3,12 +3,13 @@ class CollectionCharacter < ApplicationRecord
   belongs_to :character
   belongs_to :awakening, optional: true
 
+  before_validation :clamp_transcendence_step
   before_save :add_default_awakening
 
   validates :character_id, uniqueness: { scope: :user_id,
     message: "already exists in your collection" }
   validates :uncap_level, inclusion: { in: 0..6 }
-  validates :transcendence_step, inclusion: { in: 0..10 }
+  validates :transcendence_step, inclusion: { in: 0..5 }
   validates :awakening_level, inclusion: { in: 1..10 }
 
   validate :validate_rings
@@ -66,6 +67,12 @@ class CollectionCharacter < ApplicationRecord
   end
 
   private
+
+  def clamp_transcendence_step
+    return if transcendence_step.nil? || transcendence_step.negative? || character.nil?
+
+    self.transcendence_step = [transcendence_step, character.max_transcendence_stage].min
+  end
 
   def validate_rings
     [ring1, ring2, ring3, ring4, earring].each_with_index do |ring, index|

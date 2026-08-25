@@ -99,7 +99,7 @@ module Api
       # @return [void]
       def update_uncap_level
         @grid_character.uncap_level = character_params[:uncap_level]
-        @grid_character.transcendence_step = [character_params[:transcendence_step].to_i, 5].min
+        @grid_character.transcendence_step = character_params[:transcendence_step].to_i
 
         if @grid_character.save
           render json: GridCharacterBlueprint.render(@grid_character,
@@ -359,23 +359,19 @@ module Api
       ##
       # Computes the maximum uncap level for a character based on its flags.
       #
-      # Special characters (limited/seasonal) have a different uncap progression:
-      # - Base: 3, FLB: 4, Transcendence: 5
+      # Special characters have a different uncap progression:
+      # - Base: 3, FLB: 4, ULB: 5
       # Regular characters:
       # - Base: 4, FLB: 5, Transcendence: 6
       #
       # @param character [Character] the character to compute max uncap for.
       # @return [Integer] the maximum uncap level.
       def compute_max_transcendence_step(character)
-        character.transcendence ? 5 : 0
+        character.max_transcendence_stage
       end
 
       def compute_max_uncap_level(character)
-        if character.special
-          character.transcendence ? 5 : character.flb ? 4 : 3
-        else
-          character.transcendence ? 6 : character.flb ? 5 : 4
-        end
+        character.max_uncap_level
       end
 
       ##

@@ -241,7 +241,7 @@ module Api
         when 'GridWeapon'
           weapon_max_uncap(canonical)
         when 'GridCharacter'
-          character_max_uncap(canonical)
+          canonical.max_uncap_level
         when 'GridSummon'
           summon_max_uncap(canonical)
         end
@@ -253,20 +253,6 @@ module Api
         return 4 if weapon.flb
 
         3
-      end
-
-      def character_max_uncap(character)
-        if character.special
-          return 5 if character.transcendence
-          return 4 if character.flb
-
-          3
-        else
-          return 6 if character.transcendence
-          return 5 if character.flb
-
-          4
-        end
       end
 
       def summon_max_uncap(summon)

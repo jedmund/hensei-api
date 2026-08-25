@@ -25,6 +25,42 @@ RSpec.describe Character, type: :model do
       character = build(:character, season: 999)
       expect(character).not_to be_valid
     end
+
+    it 'requires an explicit released stage when transcendence is enabled' do
+      character = build(:character, transcendence: true, max_transcendence_stage: 0)
+
+      expect(character).not_to be_valid
+      expect(character.errors[:max_transcendence_stage]).to include(
+        'must be between 1 and 5 when transcendence is enabled'
+      )
+    end
+
+    it 'normalizes the released stage to zero when transcendence is disabled' do
+      character = build(:character, transcendence: false, max_transcendence_stage: 5)
+
+      expect(character).to be_valid
+      expect(character.max_transcendence_stage).to eq(0)
+    end
+
+    it 'allows ULB only for special FLB characters' do
+      expect(build(:character, :special_ulb)).to be_valid
+      expect(build(:character, ulb: true, special: false)).not_to be_valid
+      expect(build(:character, ulb: true, special: true, flb: false)).not_to be_valid
+    end
+
+    it 'does not allow special characters to use transcendence' do
+      character = build(:character, special: true, transcendence: true, max_transcendence_stage: 1)
+
+      expect(character).not_to be_valid
+      expect(character.errors[:transcendence]).to include('is not supported for special characters')
+    end
+  end
+
+  describe '#max_uncap_level' do
+    it 'uses the distinct regular and special progressions' do
+      expect(build(:character, :transcendable, max_transcendence_stage: 1).max_uncap_level).to eq(6)
+      expect(build(:character, :special_ulb).max_uncap_level).to eq(5)
+    end
   end
 
   describe '#seasonal?' do

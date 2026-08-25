@@ -240,7 +240,7 @@ class CharacterImportService
     awakening_level = parse_awakening_level(param['arousal_level'])
 
     uncap = parse_uncap_level(param['evolution'])
-    transcendence = parse_transcendence_step(param['phase'])
+    transcendence = [parse_transcendence_step(param['phase']), character.max_transcendence_stage].min
 
     # Transcended characters have uncap_level 6 (beyond the normal 0-5 range)
     uncap = 6 if transcendence > 0 && uncap >= 5
@@ -323,7 +323,11 @@ class CharacterImportService
     # Uncap level and transcendence
     if item['uncap_level'].present?
       uncap = parse_uncap_level(item['uncap_level'])
-      transcendence = item['transcendence_step'].present? ? parse_transcendence_step(item['transcendence_step']) : 0
+      transcendence = if item['transcendence_step'].present?
+                        [parse_transcendence_step(item['transcendence_step']), character.max_transcendence_stage].min
+                      else
+                        0
+                      end
       uncap = 6 if transcendence > 0 && uncap >= 5
       attrs[:uncap_level] = uncap
       attrs[:transcendence_step] = transcendence

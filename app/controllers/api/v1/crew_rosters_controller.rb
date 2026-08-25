@@ -65,7 +65,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
         items << {
           id: c.id, type: 'Character', granblue_id: c.granblue_id, name: c.name_en,
           element: c.element, season: c.season,
-          uncap: { flb: c.flb, transcendence: c.transcendence },
+          uncap: { flb: c.flb, ulb: c.ulb, transcendence: c.transcendence },
           special: c.special
         }
       end
@@ -144,6 +144,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
             uncap_level: cc.uncap_level,
             transcendence_step: cc.transcendence_step,
             flb: c.flb,
+            ulb: c.ulb,
             transcendence: c.transcendence,
             special: c.special
           }

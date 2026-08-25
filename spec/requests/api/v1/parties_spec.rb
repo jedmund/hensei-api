@@ -541,6 +541,19 @@ RSpec.describe 'Parties API', type: :request do
       end
     end
 
+    it 'includes the special flag needed to render story ULB character artwork' do
+      story_character = create(:character, :special_ulb)
+      party = create(:party, user: user, visibility: 1)
+      create(:grid_character, party: party, character: story_character, uncap_level: 5)
+      party.update_columns(characters_count: 4, weapons_count: 5, summons_count: 2)
+
+      get '/api/v1/parties', headers: headers
+
+      expect(response).to have_http_status(:ok)
+      result = response.parsed_body['results'].find { |candidate| candidate['id'] == party.id }
+      expect(result.dig('characters', 0, 'character', 'special')).to be true
+    end
+
     context 'with default filters' do
       let!(:good_party) do
         create(:party, user: user, weapons_count: 5, characters_count: 4, summons_count: 2, visibility: 1)
