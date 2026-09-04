@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 ruby '3.4.4'
 
 gem 'bootsnap'
+gem 'rack-attack'
 gem 'rack-cors'
 gem 'rails'
 gem 'sprockets-rails'
