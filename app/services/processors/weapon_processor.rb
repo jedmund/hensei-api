@@ -441,7 +441,7 @@ module Processors
           next
         end
 
-        strength = parse_augment_strength(ax['effect_value'], ax['show_value'])
+        strength = Granblue::AugmentStrength.parse(ax['effect_value'], ax['show_value'])
         grid_weapon["ax_modifier#{idx + 1}_id"] = modifier.id
         grid_weapon["ax_strength#{idx + 1}"] = strength
       end
@@ -456,29 +456,6 @@ module Processors
     def find_modifier_by_game_skill_id(game_skill_id)
       @modifier_cache ||= {}
       @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
-    end
-
-    ##
-    # Parses the strength value from effect_value or show_value.
-    #
-    # @param effect_value [String, nil] the effect_value field.
-    # @param show_value [String, nil] the show_value field.
-    # @return [Float, nil]
-    def parse_augment_strength(effect_value, show_value)
-      if effect_value.present?
-        # Handle "1_3" format (seems to be "tier_value")
-        if effect_value.to_s.include?('_')
-          return effect_value.to_s.split('_').last.to_f
-        end
-        return effect_value.to_f if effect_value.to_s.match?(/\A[\d.]+\z/)
-      end
-
-      # Try show_value (e.g., "3%")
-      if show_value.present?
-        return show_value.to_s.gsub('%', '').to_f
-      end
-
-      nil
     end
 
     ##
