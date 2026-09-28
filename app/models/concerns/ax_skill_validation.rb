@@ -59,7 +59,7 @@ module AxSkillValidation
   def validate_ax_primary(profile)
     return if ax_modifier1.blank?
 
-    allowed_groups = profile == "utility" ? %w[utility] : %w[primary]
+    allowed_groups = %w[primary]
     allowed_groups << "utility" if profile == "primal"
     return if allowed_groups.include?(ax_modifier1.ax_group)
 
@@ -74,7 +74,7 @@ module AxSkillValidation
       return
     end
 
-    if ax_modifier1.ax_group == "utility" || profile == "utility"
+    if ax_modifier1.ax_group == "utility"
       errors.add(:ax_modifier2, "is not available with a utility AX skill")
       return
     end
