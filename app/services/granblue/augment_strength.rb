@@ -6,20 +6,26 @@ module Granblue
   module AugmentStrength
     module_function
 
-    # @param effect_value [String, Numeric, nil] e.g. "3", "1_3"
+    # @param effect_value [String, Numeric, nil] e.g. "3", "2_5"
     # @param show_value [String, nil] e.g. "3%", "+3"
     # @return [Float, nil]
     def parse(effect_value, show_value)
       if effect_value.present?
-        # Handle "1_3" format (seems to be "tier_value")
-        return effect_value.to_s.split('_').last.to_f if effect_value.to_s.include?('_')
+        # Some secondaries (e.g. Stamina, Enmity) send a tier-prefixed value like
+        # "2_5" whose segments don't map directly to the displayed strength
+        # ("+3"). show_value is what the player sees, so trust it here.
+        return show_value_number(show_value) || effect_value.to_s.split('_').last.to_f if effect_value.to_s.include?('_')
         return effect_value.to_f if effect_value.to_s.match?(/\A[\d.]+\z/)
       end
 
-      # Try show_value (e.g., "3%")
-      return show_value.to_s.gsub('%', '').to_f if show_value.present?
+      show_value_number(show_value)
+    end
 
-      nil
+    # @param show_value [String, nil] e.g. "+3%"
+    # @return [Float, nil]
+    def show_value_number(show_value)
+      number = show_value.to_s[/[-+]?\d+(?:\.\d+)?/]
+      number&.to_f
     end
   end
 end
