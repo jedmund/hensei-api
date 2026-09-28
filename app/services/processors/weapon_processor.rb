@@ -170,6 +170,12 @@ module Processors
             end
           end
         rescue ActiveRecord::RecordInvalid => e
+          if ax_present?(grid_weapon)
+            Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+            clear_ax(grid_weapon)
+            retry
+          end
+
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
           discard_unsaved(grid_weapon, :weapons)
         end
@@ -177,6 +183,22 @@ module Processors
     end
 
     private
+
+    AX_ATTRIBUTES = %i[ax_modifier1_id ax_strength1 ax_modifier2_id ax_strength2].freeze
+
+    def ax_present?(grid_weapon)
+      AX_ATTRIBUTES.any? { |attr| grid_weapon[attr].present? }
+    end
+
+    ##
+    # Clears AX skills so a weapon whose game AX data fails validation is still
+    # imported. Losing the whole weapon is worse than losing its AX skills.
+    #
+    # @param grid_weapon [GridWeapon] the unsaved grid weapon.
+    # @return [void]
+    def clear_ax(grid_weapon)
+      AX_ATTRIBUTES.each { |attr| grid_weapon[attr] = nil }
+    end
 
     ##
     # Updates a collection weapon's uncap_level and transcendence_step from game data

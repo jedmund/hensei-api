@@ -237,6 +237,15 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       expect(party.weapons.select(&:new_record?)).to be_empty
       expect { party.update!(name: 'Renamed') }.not_to raise_error
     end
+
+    it 'keeps the weapon and drops its invalid AX skills' do
+      expect { subject.process }.to change(GridWeapon, :count).by(1)
+
+      grid_weapon = party.weapons.find_by(position: -1)
+      expect(grid_weapon.weapon).to eq(ax_weapon)
+      expect(grid_weapon.ax_modifier1_id).to be_nil
+      expect(grid_weapon.ax_strength1).to be_nil
+    end
   end
 
   describe 'element-changeable weapon resolution (integration)' do
