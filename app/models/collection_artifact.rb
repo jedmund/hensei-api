@@ -9,7 +9,9 @@ class CollectionArtifact < ApplicationRecord
 
   has_many :grid_artifacts, dependent: :nullify
 
-  before_destroy :orphan_grid_items
+  # prepend: must run before dependent: :nullify clears the foreign key, or it
+  # finds no grid items to mark orphaned.
+  before_destroy :orphan_grid_items, prepend: true
 
   # Enums - using GranblueEnums::ELEMENTS values (excluding Null)
   # Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6
