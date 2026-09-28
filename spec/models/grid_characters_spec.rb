@@ -165,6 +165,43 @@ RSpec.describe GridCharacter, type: :model do
         expect(@grid_char.errors[:over_mastery]).to be_empty
       end
     end
+
+    context 'individual over mastery values' do
+      before do
+        @grid_char.ring1 = { 'modifier' => 1, 'strength' => 3000 }
+        @grid_char.ring2 = { 'modifier' => 2, 'strength' => 1500 }
+      end
+
+      it 'accepts a strength from the modifier value table' do
+        @grid_char.ring3 = { 'modifier' => 9, 'strength' => 30 }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring3]).to be_empty
+      end
+
+      it 'rejects a strength outside the modifier value table' do
+        @grid_char.ring3 = { 'modifier' => 9, 'strength' => 31 }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring3]).to include('invalid value')
+      end
+
+      it 'rejects an unknown modifier' do
+        @grid_char.ring4 = { 'modifier' => 99, 'strength' => 10 }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring4]).to include('invalid value')
+      end
+
+      it 'accepts numeric strings' do
+        @grid_char.ring3 = { 'modifier' => '4', 'strength' => '15' }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring3]).to be_empty
+      end
+
+      it 'adds an error instead of raising for a non-hash ring' do
+        @grid_char.ring3 = '{modifier: nil, strength: nil}'
+        expect { @grid_char.valid?(:update) }.not_to raise_error
+        expect(@grid_char.errors[:ring3]).to include('is malformed')
+      end
+    end
   end
 
   describe 'validate_aetherial_mastery_value (on :update)' do
