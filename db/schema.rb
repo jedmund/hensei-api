@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_28_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -611,11 +611,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_28_000000) do
     t.boolean "is_substitute", default: false, null: false
     t.jsonb "description"
     t.jsonb "full_auto_skills", default: {}, null: false
+    t.boolean "orphaned", default: false, null: false
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
     t.index ["party_id", "position", "character_id"], name: "index_grid_characters_unique_substitute", unique: true, where: "is_substitute"
     t.index ["party_id", "position"], name: "index_grid_characters_on_party_id_and_position"
+    t.index ["orphaned"], name: "index_grid_characters_on_orphaned"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
 

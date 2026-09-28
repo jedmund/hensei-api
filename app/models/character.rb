@@ -73,10 +73,10 @@ class Character < ApplicationRecord
 
   # Scopes
   scope :by_season, ->(season) { where(season: season) }
+  # A subquery rather than join + DISTINCT: DISTINCT can't be combined with the
+  # pg_search rank ORDER BY, so a text search with a series filter raised.
   scope :by_series, lambda { |series_ids|
-    joins(:character_series_records)
-      .where(character_series: { id: series_ids })
-      .distinct
+    where(id: CharacterSeriesMembership.where(character_series_id: series_ids).select(:character_id))
   }
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
   scope :style_swap_variants, -> { where(style_swap: true) }

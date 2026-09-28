@@ -398,4 +398,21 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
   end
 
+  describe 'DELETE /api/v1/collection/characters/batch_destroy' do
+    let!(:collection_character) { create(:collection_character, user: user, character: character) }
+    let!(:grid_character) do
+      create(:grid_character, party: create(:party, user: user), character: character,
+                              collection_character: collection_character)
+    end
+
+    it 'deletes characters that are used in a party and orphans their grid characters' do
+      delete '/api/v1/collection/characters/batch_destroy',
+             params: { ids: [collection_character.id] }.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['meta']['deleted']).to eq(1)
+      expect(CollectionCharacter.exists?(collection_character.id)).to be false
+      expect(grid_character.reload).to have_attributes(orphaned: true, collection_character_id: nil)
+    end
+  end
 end

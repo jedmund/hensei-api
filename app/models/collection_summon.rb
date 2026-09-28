@@ -5,7 +5,9 @@ class CollectionSummon < ApplicationRecord
   has_many :grid_summons, dependent: :nullify
   has_many :support_summons, dependent: :destroy
 
-  before_destroy :orphan_grid_items
+  # prepend: must run before dependent: :nullify clears the foreign key, or it
+  # finds no grid items to mark orphaned.
+  before_destroy :orphan_grid_items, prepend: true
 
   validates :uncap_level, inclusion: { in: 0..6 }
   validates :transcendence_step, inclusion: { in: 0..10 }

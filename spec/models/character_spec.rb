@@ -228,4 +228,20 @@ RSpec.describe Character, type: :model do
       end
     end
   end
+
+  describe '.by_series' do
+    let(:series) { create(:character_series) }
+    let!(:member) { create(:character, name_en: 'Grimnir Test') }
+    let!(:non_member) { create(:character, name_en: 'Grimnir Other') }
+
+    before { create(:character_series_membership, character: member, character_series: series) }
+
+    it 'filters to characters in the series' do
+      expect(Character.by_series([series.id])).to contain_exactly(member)
+    end
+
+    it 'can be combined with a ranked text search' do
+      expect(Character.en_search('Grimnir').by_series([series.id]).to_a).to eq([member])
+    end
+  end
 end
