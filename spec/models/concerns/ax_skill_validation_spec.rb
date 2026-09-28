@@ -117,13 +117,5 @@ RSpec.describe AxSkillValidation do
       expect(item).not_to be_valid
       expect(item.errors[:ax_modifier1]).to include("is not available for this weapon's AX profile")
     end
-
-    it "ignores a leftover weapon-level ax_type" do
-      primal_weapon.update_column(:ax_type, "utility")
-      hp = create(:weapon_stat_modifier, :ax_hp)
-      item = build(:collection_weapon, weapon: primal_weapon, ax_modifier1: hp, ax_strength1: 9)
-
-      expect(item).to be_valid
-    end
   end
 end
