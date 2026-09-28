@@ -34,12 +34,20 @@ OLD_PREFIXES=(
 	job-icons job-portraits job-wide job-zoom
 	raid-thumbnail
 	ability-icons job-skills weapon-skill-icons elements proficiencies rarity awakening mastery ax
-	fonts placeholders external media
+	placeholders external
 )
 
+# NOT deleted: fonts/ and images/media/. Their planned new homes (app/fonts/, app/media/)
+# were never created, and hensei-web (fonts.ts, the /extension page video) and the
+# extension (_fonts.scss) still read the old locations. Deleting them breaks both apps.
+
 # Orphans never migrated: weapon-raw (dup of weapon-base, unused) and raid-square
-# (aspirational, no source). The duplicate nested images/media/ is dropped too.
-ORPHAN_PREFIXES=(weapon-raw raid-square images/media)
+# (aspirational, no source).
+#
+# Recursive copies: the copy pass's "raids:raids/full" copied raids/ into its own
+# subfolder, sweeping raids/thumbnail/ into raids/full/thumbnail/, and a second run nested
+# again. Both are byte-identical duplicates of raids/thumbnail/ (verified 2026-09-27).
+ORPHAN_PREFIXES=(weapon-raw raid-square raids/full/thumbnail raids/full/full/thumbnail)
 
 for p in "${OLD_PREFIXES[@]}" "${ORPHAN_PREFIXES[@]}"; do
 	echo "==> rm $p/"
