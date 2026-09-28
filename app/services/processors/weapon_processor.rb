@@ -172,11 +172,13 @@ module Processors
         rescue ActiveRecord::RecordInvalid => e
           if ax_present?(grid_weapon)
             Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+            add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
             clear_ax(grid_weapon)
             retry
           end
 
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+          add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
           discard_unsaved(grid_weapon, :weapons)
         end
       end

@@ -246,6 +246,14 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       expect(grid_weapon.ax_modifier1_id).to be_nil
       expect(grid_weapon.ax_strength1).to be_nil
     end
+
+    it 'reports the dropped AX skills as a warning' do
+      subject.process
+
+      expect(subject.warnings).to contain_exactly(
+        a_hash_including(code: 'ax_skills_dropped', type: 'weapon', position: -1, granblue_id: '1040399900')
+      )
+    end
   end
 
   describe 'element-changeable weapon resolution (integration)' do

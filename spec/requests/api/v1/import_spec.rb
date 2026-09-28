@@ -25,6 +25,7 @@ RSpec.describe 'ImportController', type: :request do
         }.to change(Party, :count).by(1)
         expect(response).to have_http_status(:created)
         expect(response.parsed_body['shortcode']).to be_present
+        expect(response.parsed_body['warnings']).to eq([])
       end
     end
 

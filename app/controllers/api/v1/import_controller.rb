@@ -150,6 +150,7 @@ module Api
         return if performed? # Rendered an error response already
 
         party = nil
+        warnings = []
         ActiveRecord::Base.transaction do
           party = Party.create!(
             user: current_user,
@@ -158,7 +159,7 @@ module Api
             last_updated: Time.current
           )
           deck_data = raw_params
-          process_data(party, deck_data)
+          warnings = process_data(party, deck_data)
 
           # Apply raid - explicit selection takes priority over auto-detect
           if body['raid_id'].present?
@@ -170,7 +171,7 @@ module Api
           assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
         end
 
-        render json: { shortcode: party.shortcode, party_id: party.id }, status: :created
+        render json: { shortcode: party.shortcode, party_id: party.id, warnings: warnings }, status: :created
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
         report_unexpected_exception(e, phase: 'import_create')
@@ -353,15 +354,20 @@ module Api
       #
       # @param party [Party] The party to insert data into
       # @param data [Hash] The wrapped data.
-      # @return [Hash] The transformed deck data.
+      # @return [Array<Hash>] Warnings collected from the processors.
       def process_data(party, data)
         Rails.logger.info '[IMPORT] Transforming deck data'
 
-        Processors::JobProcessor.new(party, data).process
-        Processors::CharacterProcessor.new(party, data).process
-        Processors::SummonProcessor.new(party, data).process
-        Processors::WeaponProcessor.new(party, data).process
-        Processors::BulletProcessor.new(party, data).process
+        processors = [
+          Processors::JobProcessor,
+          Processors::CharacterProcessor,
+          Processors::SummonProcessor,
+          Processors::WeaponProcessor,
+          Processors::BulletProcessor
+        ].map { |klass| klass.new(party, data) }
+
+        processors.each(&:process)
+        processors.flat_map(&:warnings)
       end
 
       ##
