@@ -33,6 +33,22 @@ module Processors
     attr_reader :party, :data, :options
 
     ##
+    # Removes a record that failed to save from the party's in-memory association.
+    #
+    # Grid items built with `party:` are added to the party's has_many target via
+    # inverse_of. If one fails validation it stays there unsaved, and the next
+    # `party.update!` autosaves it, raises, and rolls back the whole import.
+    #
+    # @param record [ActiveRecord::Base] the unsaved grid item.
+    # @param association [Symbol] the party association that holds it.
+    # @return [void]
+    def discard_unsaved(record, association)
+      return if record.persisted?
+
+      @party.association(association).target.delete(record)
+    end
+
+    ##
     # Logs a message to Rails.logger, and records it as a Sentry breadcrumb when
     # Sentry is active. Breadcrumbs add zero standalone noise — they only ship
     # attached to an exception that actually gets captured — but give the full

@@ -171,6 +171,7 @@ module Processors
           end
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+          discard_unsaved(grid_weapon, :weapons)
         end
       end
     end
