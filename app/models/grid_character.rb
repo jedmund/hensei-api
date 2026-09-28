@@ -171,17 +171,25 @@ class GridCharacter < ApplicationRecord
   ##
   # Validates individual over mastery values for each ring (ring1 to ring4).
   #
-  # Iterates over each ring and, if a modifier is present, uses a helper to verify that the associated strength
-  # is within the permitted range based on over mastery rules.
+  # For each ring with a modifier, checks that the strength is one of the allowed
+  # values for that modifier. Rings that aren't hashes get an error rather than
+  # raising, so a malformed row can't turn every update into a 500.
   #
   # @return [void]
   def validate_individual_over_mastery_values
-    # Iterate over rings 1-4 and check each ring’s value.
     [ring1, ring2, ring3, ring4].each_with_index do |ring, index|
-      next if ring['modifier'].nil?
-      modifier = over_mastery_modifiers[ring['modifier']]
-      # Use a helper to add errors if the value is out-of-range.
-      check_value({ "ring#{index}": { ring[modifier] => ring['strength'] } }, 'over_mastery')
+      column = :"ring#{index + 1}"
+
+      unless ring.is_a?(Hash)
+        errors.add(column, 'is malformed')
+        next
+      end
+      next if ring['modifier'].blank?
+
+      name = over_mastery_modifiers[ring['modifier'].to_i]
+      allowed = name && over_mastery_values[name.to_sym]
+      strength = Float(ring['strength'], exception: false)
+      errors.add(column, 'invalid value') unless allowed&.include?(strength)
     end
   end
 
@@ -194,6 +202,8 @@ class GridCharacter < ApplicationRecord
   #
   # @return [void]
   def validate_over_mastery_attack_matches_hp
+    return unless ring1.is_a?(Hash) && ring2.is_a?(Hash)
+
     # Convert ring1 and ring2 to use indifferent access so that keys (symbols or strings)
     # can be accessed uniformly.
     r1 = ring1.with_indifferent_access
@@ -215,6 +225,10 @@ class GridCharacter < ApplicationRecord
   #
   # @return [void]
   def validate_aetherial_mastery_value
+    unless earring.is_a?(Hash)
+      errors.add(:earring, 'is malformed')
+      return
+    end
     return if earring['modifier'].nil?
 
     return unless earring['modifier'].to_i.positive?
@@ -406,26 +420,22 @@ class GridCharacter < ApplicationRecord
   # Checks that a given property value falls within the allowed range based on the specified mastery type.
   #
   # The +property+ parameter is expected to be a hash in the following format:
-  #   { ring1: { atk: 300 } }
+  #   { earring: { da: 15 } }
   #
-  # Depending on the +type+, it validates against either over mastery or aetherial mastery values.
+  # Only aetherial mastery is checked here; over mastery rings are validated in
+  # #validate_individual_over_mastery_values.
   # Adds an error to the record if the value is not within the permitted range.
   #
   # @param property [Hash] the property hash containing the attribute and its value.
-  # @param type [String] the type of mastery validation to perform ('over_mastery' or 'aetherial_mastery').
+  # @param type [String] the type of mastery validation to perform ('aetherial_mastery').
   # @return [void]
   def check_value(property, type)
-    # Input format
-    # { ring1: { atk: 300 } }
-
     key = property.keys.first
     modifier = property[key].keys.first
 
     return if modifier.nil?
 
     case type
-    when 'over_mastery'
-      errors.add(key, 'invalid value') unless over_mastery_values.include?(key['strength'])
     when 'aetherial_mastery'
       errors.add(key, 'value too low') if aetherial_mastery_values[modifier][:min] > self[key]['strength']
       errors.add(key, 'value too high') if aetherial_mastery_values[modifier][:max] < self[key]['strength']
