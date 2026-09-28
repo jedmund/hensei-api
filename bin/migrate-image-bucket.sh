@@ -55,7 +55,14 @@ for pair in "${MAP[@]}"; do
 	old="${pair%%:*}"
 	new="${pair##*:}"
 	echo "==> $old/ -> $new/"
-	run cp "$BUCKET/$old/" "$BUCKET/$new/" --recursive
+	if [[ "$new" == "$old/"* ]]; then
+		# jobs -> jobs/full, raids -> raids/full copy a prefix into its own subfolder.
+		# Copy only the direct children, or existing subfolders (raids/thumbnail/, and
+		# full/ itself on a re-run) get nested recursively.
+		run cp "$BUCKET/$old/" "$BUCKET/$new/" --recursive --exclude "*/*"
+	else
+		run cp "$BUCKET/$old/" "$BUCKET/$new/" --recursive
+	fi
 done
 
 # Loose marketing files at the bucket root.
