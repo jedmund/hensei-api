@@ -122,12 +122,12 @@ class Weapon < ApplicationRecord
     weapon_series&.augment_type || 'no_augment'
   end
 
-  # AX slot rules (gbf.wiki/AX_Skills): 'standard' (Omega/Ancestral — per-primary
-  # secondary pools), 'xeno' (different pools incl. supplementals), 'primal'
-  # (standard pools + EXP/Rupie primaries), 'utility' (Ancient weapons: one
-  # EXP/Rupie slot). Explicit column wins.
+  # AX slot rules (gbf.wiki/AX_Skills) are defined by series: 'standard'
+  # (Omega/Ancestral — per-primary secondary pools), 'xeno' (different pools
+  # incl. supplementals), 'primal' (Primal and Ancient weapons — standard pools
+  # plus EXP/Rupie primaries, which have no secondary). The legacy `ax_type`
+  # column is ignored.
   def effective_ax_type
-    return ax_type if ax_type.present?
     return unless effective_augment_type == 'ax'
 
     case weapon_series&.slug

@@ -82,19 +82,48 @@ RSpec.describe AxSkillValidation do
     expect(item).to be_valid
   end
 
-  it "allows one utility roll and rejects a second AX slot" do
-    weapon = create(:weapon, :with_ax, ax_type: "utility")
-    utility = create(
-      :weapon_stat_modifier,
-      slug: "ax_exp", name_en: "EXP Gain", stat: "exp", ax_group: "utility",
-      base_min: 5, base_max: 10
-    )
-    secondary = create(:weapon_stat_modifier, :ax_ca_dmg)
-    item = build(:collection_weapon, weapon: weapon,
-                 ax_modifier1: utility, ax_strength1: 10,
-                 ax_modifier2: secondary, ax_strength2: 4)
+  describe "EXP/Rupie primaries" do
+    let(:primal_series) do
+      series = WeaponSeries.find_by(slug: "primal") || create(:weapon_series, slug: "primal")
+      series.update!(augment_type: :ax)
+      series
+    end
+    let(:primal_weapon) { create(:weapon, weapon_series: primal_series) }
+    let(:exp) do
+      create(:weapon_stat_modifier, slug: "ax_exp", name_en: "EXP Gain", stat: "exp", ax_group: "utility",
+                                    base_min: 5, base_max: 10)
+    end
 
-    expect(item).not_to be_valid
-    expect(item.errors[:ax_modifier2]).to include("is not available with a utility AX skill")
+    it "allows an EXP roll on a primal weapon and rejects a second AX slot" do
+      secondary = create(:weapon_stat_modifier, :ax_ca_dmg)
+      item = build(:collection_weapon, weapon: primal_weapon,
+                   ax_modifier1: exp, ax_strength1: 10,
+                   ax_modifier2: secondary, ax_strength2: 4)
+
+      expect(item).not_to be_valid
+      expect(item.errors[:ax_modifier2]).to include("is not available with a utility AX skill")
+    end
+
+    it "allows standard primaries on a primal weapon" do
+      hp = create(:weapon_stat_modifier, :ax_hp)
+      item = build(:collection_weapon, weapon: primal_weapon, ax_modifier1: hp, ax_strength1: 9)
+
+      expect(item).to be_valid
+    end
+
+    it "rejects an EXP roll on a standard weapon" do
+      item = build(:collection_weapon, weapon: create(:weapon, :with_ax), ax_modifier1: exp, ax_strength1: 10)
+
+      expect(item).not_to be_valid
+      expect(item.errors[:ax_modifier1]).to include("is not available for this weapon's AX profile")
+    end
+
+    it "ignores a leftover weapon-level ax_type" do
+      primal_weapon.update_column(:ax_type, "utility")
+      hp = create(:weapon_stat_modifier, :ax_hp)
+      item = build(:collection_weapon, weapon: primal_weapon, ax_modifier1: hp, ax_strength1: 9)
+
+      expect(item).to be_valid
+    end
   end
 end
