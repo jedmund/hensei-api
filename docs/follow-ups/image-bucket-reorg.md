@@ -1,6 +1,6 @@
 # Image bucket reorganization
 
-Status: **executed, cleanup incomplete.** The copy pass ran on 2026-06-19, and most old
+Status: **executed; cleanup complete (2026-09-27).** The copy pass ran on 2026-06-19, and most old
 prefixes have since been deleted. The layout below is the **live** state, verified against
 a full listing of `siero-img` (34,884 objects, 2.11 GB) on 2026-09-27. It differs from the
 original plan in a few places. Those are called out under
@@ -62,16 +62,9 @@ There is no `raids/{icon,lobby,background}/` in the bucket, even though
 | `raids/` → `raids/full/` | Copied; kept, but nothing reads it yet | Web and extension read only `raids/thumbnail/` from the bucket. `raids/full/` should be used; it covers 122 raids, while thumbnails cover 134. |
 | `raids/{icon,lobby,background}/` | Never populated | **Bug:** hensei-web's database raids table (`RaidImageCell`) requests `raids/icon/<slug>.png`, which 404s for every raid. Its game-CDN fallback only runs when a raid has no slug. |
 
-## Leftovers (2026-09-27)
+## Leftovers
 
-Pure duplicates, safe to delete (the cleanup script covers the first four):
-
-| Prefix | Objects | Size | Evidence |
-|---|---|---|---|
-| `weapon-grid/` | 385 | 7.7 MB | Every file exists in `weapons/grid/` with the same size |
-| `weapon-main/` | 315 | 8.7 MB | Every file exists in `weapons/main/` with the same size |
-| `weapon-square/` | 6 | 0.1 MB | Every file exists in `weapons/square/` with the same size |
-| `raids/full/thumbnail/` | 132 | 2.8 MB | Recursive copy of `raids/thumbnail/` (byte-identical) |
+None. The duplicate folders were deleted on 2026-09-27 (see below).
 
 Kept deliberately:
 
@@ -86,9 +79,14 @@ Done on 2026-09-27 (verified by ETag first; versioning is off, so these were per
 - Deleted `raids/full/full/` (254 objects: 120 duplicates of `raids/full/` plus its nested
   `thumbnail/` copy).
 - Deleted the 120 loose `raids/*.png` originals (all identical to `raids/full/`).
+- Deleted the remaining duplicate folders, 838 objects in total, each verified identical by
+  ETag to its kept copy: `raids/full/thumbnail/` (132, recursive copy of `raids/thumbnail/`),
+  `weapon-grid/` (385), `weapon-main/` (315) and `weapon-square/` (6), all copies of
+  `weapons/*`.
 
-Harmless: 12 zero-byte "folder marker" keys (`guidebooks/`, `images/`, `jobs/`, `labels/`,
-`previews/`, `profile/`, `raids/`, `updates/`, `weapons/keys/`, …). No `.DS_Store` files remain.
+Harmless leftovers: a few zero-byte "folder marker" keys (`guidebooks/`, `images/`, `jobs/`,
+`labels/`, `previews/`, `profile/`, `raids/`, `updates/`, `weapons/keys/`, …). No `.DS_Store`
+files remain.
 
 ## Why the recursion happened
 
@@ -106,13 +104,10 @@ still moves `fonts/` and `media/` locally, which no longer matches the bucket.
 ## Remaining steps
 
 1. Wire `raids/full/` into hensei-web (with a fallback for raids that have only a thumbnail).
-2. Run the cleanup as a dry run and review the output:
-   ```bash
-   BUCKET=s3://siero-img bin/migrate-image-bucket-cleanup.sh
-   ```
-   It no longer deletes `fonts/` or `images/media/`. Then run with `APPLY=1`.
-3. Optionally remove the empty folder markers for a clean listing.
-4. Re-verify with the listing below.
+2. Optionally remove the empty folder markers for a clean listing.
+
+The cleanup script has nothing left to do; re-running it is a no-op. It no longer deletes
+`fonts/` or `images/media/`, which are still in use.
 
 ## Verifying
 
