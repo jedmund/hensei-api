@@ -185,6 +185,32 @@ RSpec.describe GridCharacter, type: :model do
     end
   end
 
+  describe 'duplication' do
+    let(:grid_character) do
+      create(:grid_character, party: party, character: character, position: 1,
+                              ring1: { 'modifier' => 1, 'strength' => 1500 },
+                              ring2: { 'modifier' => 2, 'strength' => 750 },
+                              earring: { 'modifier' => 3, 'strength' => 5 })
+    end
+
+    it 'resets rings and earring to empty hashes, not strings' do
+      copy = grid_character.amoeba_dup
+
+      %i[ring1 ring2 ring3 ring4 earring].each do |column|
+        expect(copy.public_send(column)).to eq('modifier' => nil, 'strength' => nil)
+      end
+    end
+
+    it 'can update the copy after saving it' do
+      copy = grid_character.amoeba_dup
+      copy.party = create(:party)
+      copy.save!
+
+      copy.reload.update!(uncap_level: 4)
+      expect(copy.reload.uncap_level).to eq(4)
+    end
+  end
+
   describe 'Collection Sync' do
     let(:user) { create(:user) }
     let(:collection_character) do

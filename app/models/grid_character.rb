@@ -75,11 +75,13 @@ class GridCharacter < ApplicationRecord
     # on (grid_type, grid_id, position).
     exclude_association :substitutions
     exclude_association :substitute_of
-    set ring1: { modifier: nil, strength: nil }
-    set ring2: { modifier: nil, strength: nil }
-    set ring3: { modifier: nil, strength: nil }
-    set ring4: { modifier: nil, strength: nil }
-    set earring: { modifier: nil, strength: nil }
+    # Amoeba's `set` stringifies its value (`to_s`), which would store a Ruby
+    # hash inspect string in the jsonb columns. Assign real hashes instead.
+    customize(lambda { |_original, copy|
+      %i[ring1 ring2 ring3 ring4 earring].each do |column|
+        copy[column] = { 'modifier' => nil, 'strength' => nil }
+      end
+    })
     set perpetuity: false
     nullify :description
   end
