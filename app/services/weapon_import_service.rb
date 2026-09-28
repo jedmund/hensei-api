@@ -427,7 +427,7 @@ class WeaponImportService
       return nil
     end
 
-    strength = parse_augment_strength(skill['effect_value'], skill['show_value'])
+    strength = Granblue::AugmentStrength.parse(skill['effect_value'], skill['show_value'])
     return nil unless strength
 
     { modifier_id: modifier.id, strength: strength }
@@ -435,24 +435,6 @@ class WeaponImportService
 
   def find_modifier_by_game_skill_id(game_skill_id)
     @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
-  end
-
-  def parse_augment_strength(effect_value, show_value)
-    # Try effect_value first
-    if effect_value.present?
-      # Handle "1_3" format (seems to be "tier_value")
-      if effect_value.to_s.include?('_')
-        return effect_value.to_s.split('_').last.to_f
-      end
-      return effect_value.to_f if effect_value.to_s.match?(/\A[\d.]+\z/)
-    end
-
-    # Try show_value (e.g., "3%")
-    if show_value.present?
-      return show_value.to_s.gsub('%', '').to_f
-    end
-
-    nil
   end
 
   ##
