@@ -17,7 +17,12 @@ module Processors
       @party = party
       @data = data
       @options = options
+      @warnings = []
     end
+
+    # @return [Array<Hash>] non-fatal problems found while processing, e.g. an
+    #   item that was skipped. Returned to the client with the import result.
+    attr_reader :warnings
 
     ##
     # Process the given data and create associated records.
@@ -46,6 +51,24 @@ module Processors
       return if record.persisted?
 
       @party.association(association).target.delete(record)
+    end
+
+    ##
+    # Records a non-fatal problem with a grid item.
+    #
+    # @param code [String] e.g. 'item_skipped', 'ax_skills_dropped'
+    # @param record [GridWeapon, GridSummon] the grid item.
+    # @param item [Object, nil] the canonical Weapon/Summon record.
+    # @return [void]
+    def add_warning(code, record, item)
+      @warnings << {
+        code: code,
+        type: record.class.name.delete_prefix('Grid').downcase,
+        position: record.position,
+        granblue_id: item&.granblue_id,
+        name: item&.name_en,
+        details: record.errors.full_messages
+      }
     end
 
     ##
