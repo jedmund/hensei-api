@@ -209,6 +209,14 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['grid_weapon']).to include('mainhand' => false, 'uncap_level' => 4)
     end
+
+    it 'accepts a cleared awakening with a null level' do
+      params = { weapon: { awakening_id: nil, awakening_level: nil } }
+      put "/api/v1/grid_weapons/#{grid_weapon.id}", params: params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_weapon.reload.awakening_level).to eq(1)
+    end
   end
 
   describe 'POST /api/v1/grid_weapons/update_uncap (update uncap level action)' do

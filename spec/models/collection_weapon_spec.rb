@@ -66,6 +66,14 @@ RSpec.describe CollectionWeapon, type: :model do
         end
       end
 
+      context 'when awakening_level is nil' do
+        it 'defaults it to 1' do
+          collection_weapon = build(:collection_weapon, awakening: nil, awakening_level: nil)
+          expect(collection_weapon).to be_valid
+          expect(collection_weapon.awakening_level).to eq(1)
+        end
+      end
+
       context 'when awakening_level > 1 without awakening' do
         it 'is invalid' do
           collection_weapon = build(:collection_weapon, awakening: nil, awakening_level: 5)

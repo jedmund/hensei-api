@@ -85,6 +85,7 @@ class GridWeapon < ApplicationRecord
   before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
   before_validation :set_default_exorcism_level, on: :create
+  before_validation :default_awakening_level
 
   after_create :increment_party_counter, unless: :is_substitute?
   after_destroy :decrement_party_counter, unless: :is_substitute?
@@ -462,5 +463,13 @@ class GridWeapon < ApplicationRecord
     return unless weapon_augment_type == 'befoulment'
 
     self.exorcism_level = 1
+  end
+
+  # Clients send awakening_level: nil when clearing an awakening, but the column is
+  # NOT NULL (default 1) and the level is meaningless without an awakening.
+  #
+  # @return [void]
+  def default_awakening_level
+    self.awakening_level = 1 if awakening_level.nil?
   end
 end

@@ -22,6 +22,7 @@ class CollectionWeapon < ApplicationRecord
 
   before_destroy :orphan_grid_items
   before_validation :set_default_exorcism_level, on: :create
+  before_validation :default_awakening_level
 
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
@@ -191,5 +192,13 @@ class CollectionWeapon < ApplicationRecord
     return unless weapon_augment_type == 'befoulment'
 
     self.exorcism_level = 1
+  end
+
+  # Clients send awakening_level: nil when clearing an awakening, but the column is
+  # NOT NULL (default 1) and the level is meaningless without an awakening.
+  #
+  # @return [void]
+  def default_awakening_level
+    self.awakening_level = 1 if awakening_level.nil?
   end
 end
