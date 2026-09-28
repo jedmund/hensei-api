@@ -44,10 +44,11 @@ OLD_PREFIXES=(
 # Orphans never migrated: weapon-raw (dup of weapon-base, unused) and raid-square
 # (aspirational, no source).
 #
-# Recursive copies: the copy pass's "raids:raids/full" copied raids/ into its own
-# subfolder, sweeping raids/thumbnail/ into raids/full/thumbnail/, and a second run nested
-# again. Both are byte-identical duplicates of raids/thumbnail/ (verified 2026-09-27).
-ORPHAN_PREFIXES=(weapon-raw raid-square raids/full/thumbnail raids/full/full/thumbnail)
+# Recursive copy: the copy pass's "raids:raids/full" copied raids/ into its own
+# subfolder, sweeping raids/thumbnail/ into raids/full/thumbnail/ (byte-identical to
+# raids/thumbnail/, verified 2026-09-27). The second-level raids/full/full/ was already
+# removed by hand.
+ORPHAN_PREFIXES=(weapon-raw raid-square raids/full/thumbnail)
 
 for p in "${OLD_PREFIXES[@]}" "${ORPHAN_PREFIXES[@]}"; do
 	echo "==> rm $p/"

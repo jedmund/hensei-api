@@ -31,7 +31,7 @@ accessories/{square,grid}/
 artifacts/{square,wide}/
 bullets/square/
 jobs/{icon,portrait,wide,zoom}/                # jobs/full/ exists but is unreferenced
-raids/thumbnail/                               # raids/full/ exists but is unreferenced
+raids/{thumbnail,full}/                        # full/ is kept for use (not yet read; 122 raids vs 134 thumbnails)
 guidebooks/
 
 icons/{abilities,job-skills,weapon-skills/{en,ja},skill-labels/{en,ja},
@@ -59,7 +59,7 @@ There is no `raids/{icon,lobby,background}/` in the bucket, even though
 | `fonts/` → `app/fonts/` | Never moved | hensei-web `getFontBaseUrl()` and the extension's `_fonts.scss` read `fonts/`. Move them first if this ever happens. |
 | `media/` → `app/media/` | `images/media/` kept; `app/media/` doesn't exist | hensei-web's `/extension` page reads `images/media/extension.mp4`. The original plan called this a "duplicate" to delete. It isn't. |
 | `jobs/` → `jobs/full/` | Copied, but nothing reads it | Web reads `jobs/{icon,portrait,wide,zoom}`. The job downloader writes only `wide` and `zoom`. |
-| `raids/` → `raids/full/` | Copied, but nothing reads it | Web and extension read only `raids/thumbnail/` from the bucket. |
+| `raids/` → `raids/full/` | Copied; kept, but nothing reads it yet | Web and extension read only `raids/thumbnail/` from the bucket. `raids/full/` should be used; it covers 122 raids, while thumbnails cover 134. |
 | `raids/{icon,lobby,background}/` | Never populated | **Bug:** hensei-web's database raids table (`RaidImageCell`) requests `raids/icon/<slug>.png`, which 404s for every raid. Its game-CDN fallback only runs when a raid has no slug. |
 
 ## Leftovers (2026-09-27)
@@ -71,16 +71,21 @@ Pure duplicates, safe to delete (the cleanup script covers the first four):
 | `weapon-grid/` | 385 | 7.7 MB | Every file exists in `weapons/grid/` with the same size |
 | `weapon-main/` | 315 | 8.7 MB | Every file exists in `weapons/main/` with the same size |
 | `weapon-square/` | 6 | 0.1 MB | Every file exists in `weapons/square/` with the same size |
-| `raids/full/thumbnail/`, `raids/full/full/thumbnail/` | 132 each | 2.8 MB each | Recursive copies of `raids/thumbnail/` (byte-identical) |
-| `raids/*.png` (direct children) | 120 | 2.3 MB | Originals already copied to `raids/full/` |
+| `raids/full/thumbnail/` | 132 | 2.8 MB | Recursive copy of `raids/thumbnail/` (byte-identical) |
 
-Unreferenced, **decision needed** (not in any script):
+Kept deliberately:
 
 | Prefix | Objects | Size | Notes |
 |---|---|---|---|
-| `raids/full/` | 120 | 2.3 MB | Full-size raid art. No reader. |
-| `raids/full/full/` | 122 | 2.3 MB | 120 duplicates of `raids/full/`, plus `belmervolk-hard.png` and `nihuyvintae-hard.png`, uploaded 2026-09-25, which exist **only** here. The uploader wasn't in any repo code; likely a manual upload that followed the nested folder. Move them to `raids/full/` if full art is kept. |
-| `jobs/full/` | 150 | 21.9 MB | Slug-named job art (`alchemist_a.png`). No reader and no writer; not a duplicate of `jobs/zoom/` (ID-named). |
+| `jobs/full/` | 150 | 21.9 MB | Slug-named job art (`alchemist_a.png`). No reader and no writer, but not a copy of anything (`jobs/zoom/` is ID-named). Kept for now. |
+
+Done on 2026-09-27 (verified by ETag first; versioning is off, so these were permanent):
+
+- Copied `belmervolk-hard.png` and `nihuyvintae-hard.png` (uploaded 2026-09-25, existing only in
+  `raids/full/full/`) into `raids/full/`.
+- Deleted `raids/full/full/` (254 objects: 120 duplicates of `raids/full/` plus its nested
+  `thumbnail/` copy).
+- Deleted the 120 loose `raids/*.png` originals (all identical to `raids/full/`).
 
 Harmless: 12 zero-byte "folder marker" keys (`guidebooks/`, `images/`, `jobs/`, `labels/`,
 `previews/`, `profile/`, `raids/`, `updates/`, `weapons/keys/`, …). No `.DS_Store` files remain.
@@ -100,16 +105,13 @@ still moves `fonts/` and `media/` locally, which no longer matches the bucket.
 
 ## Remaining steps
 
-1. Decide on `raids/full/` (and the two files only in `raids/full/full/`) and `jobs/full/`:
-   keep as unreferenced art, or delete.
+1. Wire `raids/full/` into hensei-web (with a fallback for raids that have only a thumbnail).
 2. Run the cleanup as a dry run and review the output:
    ```bash
    BUCKET=s3://siero-img bin/migrate-image-bucket-cleanup.sh
    ```
    It no longer deletes `fonts/` or `images/media/`. Then run with `APPLY=1`.
-3. Delete whatever step 1 decided (for example `aws s3 rm s3://siero-img/raids/full/full/ --recursive`
-   after moving the two unique files), and remove the empty folder markers if you want a
-   clean listing.
+3. Optionally remove the empty folder markers for a clean listing.
 4. Re-verify with the listing below.
 
 ## Verifying
