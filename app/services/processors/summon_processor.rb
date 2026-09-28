@@ -71,6 +71,7 @@ module Processors
           end
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
+          discard_unsaved(summon, :summons)
         end
       end
     end

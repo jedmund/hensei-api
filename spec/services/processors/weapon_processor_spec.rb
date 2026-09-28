@@ -201,6 +201,53 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
+  describe 'weapons that fail validation' do
+    let!(:ax_atk_modifier) do
+      WeaponStatModifier.find_by(game_skill_id: 1589) ||
+        create(:weapon_stat_modifier, :ax_atk)
+    end
+
+    let!(:ax_weapon) { create(:weapon, :with_ax, granblue_id: '1040399900') }
+
+    # ATK's primary range is 1-3.5, so 9% fails AxSkillValidation.
+    let(:invalid_ax_deck) do
+      {
+        'deck' => {
+          'pc' => {
+            'weapons' => {
+              '1' => {
+                'master' => { 'id' => '1040399900', 'name' => ax_weapon.name_en, 'series_id' => '0' },
+                'param' => {
+                  'id' => 12_345,
+                  'level' => '150',
+                  'augment_skill_info' => [[{ 'skill_id' => 1589, 'effect_value' => '9', 'show_value' => '+9%' }]]
+                }
+              }
+            }
+          }
+        }
+      }
+    end
+
+    subject { described_class.new(party, invalid_ax_deck) }
+
+    it 'does not leave the invalid record on the party association' do
+      subject.process
+
+      expect(party.weapons.select(&:new_record?)).to be_empty
+      expect { party.update!(name: 'Renamed') }.not_to raise_error
+    end
+
+    it 'keeps the weapon and drops its invalid AX skills' do
+      expect { subject.process }.to change(GridWeapon, :count).by(1)
+
+      grid_weapon = party.weapons.find_by(position: -1)
+      expect(grid_weapon.weapon).to eq(ax_weapon)
+      expect(grid_weapon.ax_modifier1_id).to be_nil
+      expect(grid_weapon.ax_strength1).to be_nil
+    end
+  end
+
   describe 'element-changeable weapon resolution (integration)' do
     let(:element_changeable_series) do
       WeaponSeries.find_by(slug: 'ultima') ||
