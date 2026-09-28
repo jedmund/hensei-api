@@ -171,6 +171,11 @@ module Api
         end
 
         render json: { shortcode: party.shortcode, party_id: party.id }, status: :created
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
+        report_unexpected_exception(e, phase: 'import_create')
+        render json: { error: 'invalid_data', details: e.record.errors.full_messages },
+               status: :unprocessable_content
       rescue StandardError => e
         Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
