@@ -4,6 +4,11 @@ Rails.application.routes.draw do
     skip_controllers :applications, :authorized_applications
   end
 
+  # The API isn't meant to be crawled. (public/ isn't served in production.)
+  get '/robots.txt', to: proc {
+    [200, { 'Content-Type' => 'text/plain', 'Cache-Control' => 'public, max-age=86400' }, ["User-agent: *\nDisallow: /\n"]]
+  }
+
   path_prefix = Rails.env.production? ? '/v1' : '/api/v1'
 
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
