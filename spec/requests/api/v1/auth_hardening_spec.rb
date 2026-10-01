@@ -58,6 +58,16 @@ RSpec.describe 'API auth hardening', type: :request do
     end
   end
 
+  describe 'POST /api/v1/parties/:id/unlink_collection' do
+    it 'rejects anonymous requests on anonymous parties' do
+      party = create(:party, user: nil, collection_source_user_id: user.id)
+
+      post "/api/v1/parties/#{party.id}/unlink_collection", headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:unauthorized)
+      expect(party.reload.collection_source_user_id).to eq(user.id)
+    end
+  end
+
   describe 'artifact image downloads' do
     let(:artifact) { create(:artifact) }
 

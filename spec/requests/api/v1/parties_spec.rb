@@ -55,9 +55,58 @@ RSpec.describe 'Parties API', type: :request do
     context 'when the party is private and not owned' do
       let!(:private_party) { create(:party, user: create(:user), visibility: 3, name: 'Private Party') }
 
-      it 'returns unauthorized' do
+      it 'returns not found to another user' do
         get "/api/v1/parties/#{private_party.shortcode}", headers: headers
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns not found to a logged-out visitor' do
+        get "/api/v1/parties/#{private_party.shortcode}"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'hides skill boosts from a logged-out visitor' do
+        get "/api/v1/parties/#{private_party.shortcode}/skill_boosts"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'refuses to remix it' do
+        expect do
+          post "/api/v1/parties/#{private_party.shortcode}/remix", headers: headers
+        end.not_to change(Party, :count)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when the party is private and owned' do
+      let!(:own_private) { create(:party, user: user, visibility: 3, name: 'Mine') }
+
+      it 'returns the party to its owner' do
+        get "/api/v1/parties/#{own_private.shortcode}", headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when the party is unlisted' do
+      let!(:unlisted) { create(:party, user: create(:user), visibility: 2) }
+
+      it 'is visible to a logged-out visitor' do
+        get "/api/v1/parties/#{unlisted.shortcode}"
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when an anonymous party is private' do
+      let!(:anon_private) { create(:party, user: nil, visibility: 3, edit_key: 'anonkey') }
+
+      it 'is visible with its edit key' do
+        get "/api/v1/parties/#{anon_private.shortcode}", headers: { 'X-Edit-Key' => 'anonkey' }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'is hidden without its edit key' do
+        get "/api/v1/parties/#{anon_private.shortcode}"
+        expect(response).to have_http_status(:not_found)
       end
     end
 
