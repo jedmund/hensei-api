@@ -17,6 +17,20 @@ jobs:
       - name: Run RuboCop
         run: bundle exec rubocop
 
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # Ruby version comes from .ruby-version
+      - name: Audit gems for known vulnerabilities
+        run: bundle exec bundle-audit check --update
+      - name: Brakeman static analysis
+        # Existing findings are recorded in config/brakeman.ignore; only new
+        # warnings fail the build.
+        run: bundle exec brakeman --no-pager --quiet
+
   test:
     runs-on: ubuntu-latest
     services:
