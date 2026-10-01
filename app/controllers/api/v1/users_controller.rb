@@ -12,6 +12,11 @@ module Api
       before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys update]
       before_action :set_by_id, only: %w[update]
 
+      # Signups arrive via the web app's server, so the per-IP limit is generous;
+      # the availability checks are called from browsers directly.
+      limit_requests 'signup', to: 60, within: 1.minute, only: :create
+      limit_requests 'availability', to: 30, within: 1.minute, only: %i[check_email check_username]
+
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
       MAX_WEAPONS = 13
