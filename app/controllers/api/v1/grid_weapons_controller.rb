@@ -67,6 +67,11 @@ module Api
       #
       # @return [void]
       def update
+        if weapon_params[:collection_weapon_id].present?
+          collection_item = CollectionWeapon.find_by(id: weapon_params[:collection_weapon_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
+
         normalize_ax_fields!
 
         sync_flag_change = nil
@@ -261,9 +266,7 @@ module Api
       #
       # @return [void]
       def destroy
-        grid_weapon = GridWeapon.find_by('id = ?', params[:id])
-
-        return render_not_found_response('grid_weapon') if grid_weapon.nil?
+        grid_weapon = @grid_weapon
 
         if grid_weapon.destroy
           @party.mark_updated!
@@ -304,7 +307,8 @@ module Api
           )
         end
 
-        unless current_user.present? && @party.collection_source_user_id == current_user.id
+        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
+               @grid_weapon.collection_weapon.user_id == current_user.id
           return render_unauthorized_response
         end
 
@@ -564,7 +568,14 @@ module Api
       #
       # @return [void]
       def find_party
-        @party = Party.find_by(id: params.dig(:weapon, :party_id)) || Party.find_by(id: params[:party_id]) || @grid_weapon&.party
+        requested_party_id = params.dig(:weapon, :party_id) || params[:party_id]
+        @party = if @grid_weapon
+                   # The party always comes from the row itself; a mismatched
+                   # party id in the request is treated as not found.
+                   @grid_weapon.party if requested_party_id.blank? || requested_party_id.to_s == @grid_weapon.party_id.to_s
+                 else
+                   Party.find_by(id: requested_party_id)
+                 end
         render_not_found_response('party') unless @party
       end
 
@@ -616,7 +627,7 @@ module Api
 
       def weapon_params
         params.require(:weapon).permit(
-          :id, :party_id, :weapon_id, :collection_weapon_id,
+          :id, :weapon_id, :collection_weapon_id,
           :position, :mainhand, :uncap_level, :transcendence_step, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
           :ax_modifier1_id, :ax_modifier2_id, :ax_strength1, :ax_strength2,

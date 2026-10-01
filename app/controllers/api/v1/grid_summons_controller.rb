@@ -69,6 +69,11 @@ module Api
       #
       # @return [void]
       def update
+        if summon_params[:collection_summon_id].present?
+          collection_item = CollectionSummon.find_by(id: summon_params[:collection_summon_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
+
         @grid_summon.attributes = summon_params
 
         sync_flag_change = nil
@@ -259,9 +264,7 @@ module Api
       #
       # @return [void]
       def destroy
-        grid_summon = GridSummon.find_by('id = ?', params[:id])
-
-        return render_not_found_response('grid_summon') if grid_summon.nil?
+        grid_summon = @grid_summon
 
         if grid_summon.destroy
           @party.mark_updated!
@@ -302,7 +305,8 @@ module Api
           )
         end
 
-        unless current_user.present? && @party.collection_source_user_id == current_user.id
+        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
+               @grid_summon.collection_summon.user_id == current_user.id
           return render_unauthorized_response
         end
 
@@ -443,7 +447,14 @@ module Api
       #
       # @return [void]
       def find_party
-        @party = Party.find_by(id: params.dig(:summon, :party_id)) || Party.find_by(id: params[:party_id]) || @grid_summon&.party
+        requested_party_id = params.dig(:summon, :party_id) || params[:party_id]
+        @party = if @grid_summon
+                   # The party always comes from the row itself; a mismatched
+                   # party id in the request is treated as not found.
+                   @grid_summon.party if requested_party_id.blank? || requested_party_id.to_s == @grid_summon.party_id.to_s
+                 else
+                   Party.find_by(id: requested_party_id)
+                 end
         render_not_found_response('party') unless @party
       end
 
@@ -561,7 +572,7 @@ module Api
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
-        permitted = params.require(:summon).permit(:id, :party_id, :summon_id, :collection_summon_id,
+        permitted = params.require(:summon).permit(:id, :summon_id, :collection_summon_id,
                                                    :position, :main, :friend, :quick_summon,
                                                    :uncap_level, :transcendence_step, :notes_synced)
         permit_description(permitted, params[:summon])
