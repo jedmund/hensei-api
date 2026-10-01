@@ -242,6 +242,7 @@ class Party < ApplicationRecord
             profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
+  validates :description, rich_text_description: true, if: :description_changed?
 
   # For element, validate numericality and inclusion using the allowed values from GranblueEnums.
   validates :element,

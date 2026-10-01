@@ -71,6 +71,7 @@ class GridWeapon < ApplicationRecord
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
+  validates :description, rich_text_description: true, if: :description_changed?
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
   validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true

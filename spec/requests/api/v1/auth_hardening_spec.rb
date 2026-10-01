@@ -68,6 +68,36 @@ RSpec.describe 'API auth hardening', type: :request do
     end
   end
 
+  describe 'rich text descriptions' do
+    let(:token) { Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public') }
+    let(:bad_doc) do
+      { type: 'doc', content: [{ type: 'heading', attrs: { level: '1 onmouseover=alert(1)' },
+                                 content: [{ type: 'text', text: 'Hi' }] }] }
+    end
+
+    it 'rejects a party description with an invalid heading level' do
+      party = create(:party, user: user)
+      original = party.description
+
+      put "/api/v1/parties/#{party.id}",
+          params: { party: { description: bad_doc.to_json } }.to_json,
+          headers: auth_headers(token)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(party.reload.description).to eq(original)
+    end
+
+    it 'rejects grid item notes with an invalid heading level' do
+      party = create(:party, user: user)
+      grid_weapon = create(:grid_weapon, party: party, position: 0)
+
+      put "/api/v1/grid_weapons/#{grid_weapon.id}",
+          params: { weapon: { description: bad_doc } }.to_json,
+          headers: auth_headers(token)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(grid_weapon.reload.description).to be_nil
+    end
+  end
+
   describe 'rate limiting' do
     it 'limits password logins per email' do
       10.times do
