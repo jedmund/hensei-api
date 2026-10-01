@@ -17,10 +17,10 @@ module RateLimited
   end
 
   class_methods do
-    def limit_requests(name, to:, within:, by: -> { request.remote_ip }, **options)
+    def limit_requests(name, to:, within:, by: -> { request.remote_ip }, **)
       rate_limit(to: to, within: within, by: by, name: name,
                  store: Rails.application.config.x.rate_limit_store,
-                 with: TOO_MANY_REQUESTS, **options)
+                 with: TOO_MANY_REQUESTS, **)
     end
   end
 
