@@ -476,7 +476,7 @@ module Api
         return unless params[:party].present?
 
         params.require(:party).permit(
-          :user_id, :local_id, :edit_key, :extra, :name, :description, :raid_id, :job_id, :visibility,
+          :local_id, :extra, :name, :description, :raid_id, :job_id, :visibility,
           :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
           :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :solo, :clear_time, :button_count,
           :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,

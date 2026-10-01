@@ -22,7 +22,7 @@ module Api
         Rails.logger.error "[500 Error] #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(20)&.join("\n")
         report_unexpected_exception(e)
-        render json: { error: 'Internal Server Error', message: e.message }, status: :internal_server_error
+        render json: { error: 'Internal Server Error' }, status: :internal_server_error
       end
 
       rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
@@ -86,11 +86,10 @@ module Api
         render json: result
       end
 
-      # Assign the current user if the Doorkeeper token isn't nil, then
-      # update the current user's last seen datetime and last IP address
-      # before returning
+      # Assign the current user if the request carries a Doorkeeper token
+      # that is neither expired nor revoked
       def current_user
-        @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+        @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token&.accessible?
 
         @current_user
       end

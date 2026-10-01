@@ -52,7 +52,7 @@ module Api
       rescue StandardError => e
         Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
-        render json: { error: 'Registration failed', message: e.message },
+        render json: { error: 'Registration failed' },
                status: :internal_server_error
       end
 
