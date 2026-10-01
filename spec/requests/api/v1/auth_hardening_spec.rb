@@ -138,6 +138,17 @@ RSpec.describe 'API auth hardening', type: :request do
     end
   end
 
+  describe 'per-IP auth limits' do
+    it 'counts each real client IP separately' do
+      30.times { post '/api/v1/check/username', params: { username: 'someone' }, headers: { 'CF-Connecting-IP' => '203.0.113.9' } }
+      post '/api/v1/check/username', params: { username: 'someone' }, headers: { 'CF-Connecting-IP' => '203.0.113.9' }
+      expect(response).to have_http_status(:too_many_requests)
+
+      post '/api/v1/check/username', params: { username: 'someone' }, headers: { 'CF-Connecting-IP' => '198.51.100.7' }
+      expect(response.status).not_to eq(429)
+    end
+  end
+
   describe 'artifact image downloads' do
     let(:artifact) { create(:artifact) }
 

@@ -3,7 +3,7 @@
 module Api
   module V1
     class SearchController < Api::V1::ApiController
-      rate_limit to: 30, within: 1.minute, by: -> { request.remote_ip }, only: :suggestions,
+      rate_limit to: 30, within: 1.minute, by: -> { client_ip }, only: :suggestions,
                  with: -> { render json: { error: "Rate limit exceeded. Try again later." }, status: :too_many_requests }
 
       TRIGRAM = {
