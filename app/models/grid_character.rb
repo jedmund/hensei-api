@@ -357,7 +357,9 @@ class GridCharacter < ApplicationRecord
   # full_auto_skills maps an ability slot ("0".."3") to whether it is used in
   # Full Auto. Reject unknown slots or non-boolean values.
   FULL_AUTO_SLOTS = %w[0 1 2 3].freeze
+  private_constant :FULL_AUTO_SLOTS
   FULL_AUTO_VALUES = [true, false].freeze
+  private_constant :FULL_AUTO_VALUES
 
   def validate_full_auto_skills
     return if full_auto_skills.blank?

@@ -144,8 +144,8 @@ module GridDamage
       # whose in-game crew didn't match the party data).
       elemental = agg["elemental_enhance"]&.total.to_f
       {
-        optimus: auras[:optimus] + [agg["optimus_exalto"]&.total.to_f || 0.0, 90].min + elemental,
-        omega: auras[:omega] + [agg["omega_exalto"]&.total.to_f || 0.0, 100].min,
+        optimus: auras[:optimus] + [(agg["optimus_exalto"]&.total || 0).to_f, 90].min + elemental,
+        omega: auras[:omega] + [(agg["omega_exalto"]&.total || 0).to_f, 100].min,
         # Odious summons' base aura. The exorcism-level scaling on top (aura base → its
         # [Max] via equipped Odious weapons' exorcism lvls) still needs in-game ground truth.
         taboo: auras[:taboo]

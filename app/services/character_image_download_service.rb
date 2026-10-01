@@ -55,11 +55,11 @@ class CharacterImageDownloadService
     sizes = Granblue::Downloaders::CharacterDownloader::SIZES
     variants = build_variants
 
-    sizes.each_with_object({}) do |size, manifest|
-      manifest[size] = variants.map do |variant|
+    sizes.to_h do |size|
+      [size, variants.map do |variant|
         extension = size == 'detail' ? 'png' : 'jpg'
         "#{variant}.#{extension}"
-      end
+      end]
     end
   end
 

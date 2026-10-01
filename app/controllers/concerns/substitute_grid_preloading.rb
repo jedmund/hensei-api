@@ -53,6 +53,7 @@ module SubstituteGridPreloading
     GridWeapon    => [CollectionWeapon, :weapon_id],
     GridSummon    => [CollectionSummon, :summon_id]
   }.freeze
+  private_constant :OWNERSHIP_BY_GRID
 
   # Sets the virtual `owned` attribute on each substitute_grid so the
   # blueprint can render whether current_user has the underlying entity in

@@ -187,6 +187,7 @@ module Processors
     private
 
     AX_ATTRIBUTES = %i[ax_modifier1_id ax_strength1 ax_modifier2_id ax_strength2].freeze
+    private_constant :AX_ATTRIBUTES
 
     def ax_present?(grid_weapon)
       AX_ATTRIBUTES.any? { |attr| grid_weapon[attr].present? }
@@ -354,6 +355,7 @@ module Processors
       3 => 'dark-opus', 13 => 'ultima', 17 => 'superlative',
       19 => 'class-champion', 27 => 'draconic', 40 => 'draconic-providence', 44 => 'destroyer'
     }.freeze
+    private_constant :GBF_WEAPON_SERIES_TO_SLUG
 
     ##
     # Processes weapon key data and assigns them to the grid_weapon.
@@ -410,7 +412,7 @@ module Processors
     def matches_key?(candidate_key, mapping_entry)
       if mapping_entry.include?('-')
         left, right = mapping_entry.split('-').map(&:to_i)
-        candidate_key.to_i >= left && candidate_key.to_i <= right
+        candidate_key.to_i.between?(left, right)
       else
         candidate_key == mapping_entry
       end

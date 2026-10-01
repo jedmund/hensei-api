@@ -468,7 +468,7 @@ namespace :granblue do
       min_atk:      record.min_atk,
       max_hp:       record.max_hp,
       max_atk:      record.max_atk,
-      matches:      matches.map(&:to_s).join('+'),
+      matches:      matches.join('+'),
       action:       '—',
       has_en_raw:   record.wiki_raw.present?,
       has_jp_raw:   record.respond_to?(:wiki_raw_jp) && record.wiki_raw_jp.present?,

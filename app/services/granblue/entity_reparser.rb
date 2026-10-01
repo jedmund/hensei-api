@@ -78,6 +78,7 @@ module Granblue
     end
 
     MANUAL_ROW_COLUMNS_EXCLUDED = %w[id weapon_skill_version_id created_at updated_at].freeze
+    private_constant :MANUAL_ROW_COLUMNS_EXCLUDED
 
     # Version-linked rows with manual curation die with their version when the
     # pipeline rebuilds slots. Snapshot them before, re-attach after — keyed by

@@ -178,8 +178,7 @@ module Api
 
         identifiers = entries.map { |e| e[:shortcode] }.uniq
         uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-        uuid_ids = identifiers.select { |i| i.match?(uuid_pattern) }
-        non_uuid_ids = identifiers.reject { |i| i.match?(uuid_pattern) }
+        uuid_ids, non_uuid_ids = identifiers.partition { |i| i.match?(uuid_pattern) }
 
         query = Party.includes(
           { raid: :group }, :job,

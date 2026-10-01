@@ -26,7 +26,7 @@ class Dataminer
   # user_id and game_version default to the baked-in constants but should be
   # overridden per session: uid is the logged-in account's player id and
   # game_version is the current game build (both change over time).
-  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable-next Metrics/ParameterLists
   def initialize(page:, access_token:, wing:, midship:, t: 'dummy',
                  user_id: BOT_UID, game_version: GAME_VERSION, debug: false)
     @page = page
@@ -41,7 +41,6 @@ class Dataminer
     @debug = debug
     setup_logger
   end
-  # rubocop:enable Metrics/ParameterLists
 
   def fetch
     timestamp = Time.now.to_i * 1000

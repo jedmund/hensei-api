@@ -25,7 +25,7 @@ class GwEvent < ApplicationRecord
   }
 
   def active?
-    start_date <= Date.current && end_date >= Date.current
+    Date.current.between?(start_date, end_date)
   end
 
   def upcoming?
