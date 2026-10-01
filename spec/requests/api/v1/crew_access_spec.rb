@@ -81,4 +81,21 @@ RSpec.describe 'Crew access rules', type: :request do
       expect(invitee.reload.crew).to be_nil
     end
   end
+
+  describe 'phantom players in other crews' do
+    let(:phantom) { create(:phantom_player, crew: crew) }
+
+    it 'hides a phantom player from users outside the crew' do
+      outsider = create(:user)
+      create(:crew_membership, crew: create(:crew), user: outsider, role: :captain)
+
+      get "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}", headers: headers_for(outsider)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'shows a phantom player to crew members' do
+      get "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}", headers: headers_for(captain)
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
