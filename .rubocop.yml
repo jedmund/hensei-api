@@ -4,7 +4,7 @@ inherit_mode:
   merge:
     - Exclude
 
-require:
+plugins:
   - rubocop-performance
 
 AllCops:
@@ -91,3 +91,20 @@ Style/HashSyntax:
 
 Style/NumericLiterals:
   Enabled: false
+
+# Many boolean-returning methods here are commands that report success
+# (sync_to_collection!, persist, handle_fetch_success), not predicates;
+# renaming them with `?` would misdescribe them.
+Naming/PredicateMethod:
+  AllowBangMethods: true
+  AllowedMethods:
+    - call
+    - compact_character_positions
+    - invalid_format
+    - parse_boolean
+    - to_boolean
+    - backfill_family
+    - handle_fetch_success
+    - persist
+    - validate_data
+    - update_mention_for_entity
