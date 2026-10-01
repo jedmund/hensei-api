@@ -57,4 +57,28 @@ RSpec.describe 'Crew access rules', type: :request do
       expect(weapons_for(response.parsed_body['members'], private_member).length).to eq(1)
     end
   end
+
+  describe 'reusing crew invitations' do
+    let(:invitee) { create(:user) }
+    let(:invitation) { create(:crew_invitation, crew: crew, user: invitee, invited_by: captain) }
+
+    it 'cannot accept an invitation again after leaving the crew' do
+      post "/api/v1/invitations/#{invitation.id}/accept", headers: headers_for(invitee)
+      expect(response).to have_http_status(:ok)
+
+      invitee.reload.active_crew_membership.retire!
+
+      post "/api/v1/invitations/#{invitation.id}/accept", headers: headers_for(invitee)
+      expect(response).to have_http_status(:not_found)
+      expect(invitee.reload.crew).to be_nil
+    end
+
+    it 'cannot accept a rejected invitation' do
+      post "/api/v1/invitations/#{invitation.id}/reject", headers: headers_for(invitee)
+
+      post "/api/v1/invitations/#{invitation.id}/accept", headers: headers_for(invitee)
+      expect(response).to have_http_status(:not_found)
+      expect(invitee.reload.crew).to be_nil
+    end
+  end
 end
