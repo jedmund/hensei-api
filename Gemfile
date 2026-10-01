@@ -7,7 +7,7 @@ gem 'rails'
 gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
-gem 'puma'
+gem 'puma', '~> 7.2', '>= 7.2.1'
 
 # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem 'pg'
