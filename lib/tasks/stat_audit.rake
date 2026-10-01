@@ -425,7 +425,7 @@ namespace :granblue do
       puts "  wiki_ja   (JP page title):    #{has_ja}/#{total}" \
            "#{'  <-- MISSING' if has_ja < total}"
       puts "  wiki_raw_jp (JP HTML):        #{jp_display}" \
-           "#{has_jp_raw && has_jp_raw < total ? '  <-- MISSING' : ''}"
+           "#{'  <-- MISSING' if has_jp_raw && has_jp_raw < total}"
 
       next unless has_jp_raw && has_jp_raw < total && has_ja.positive?
 

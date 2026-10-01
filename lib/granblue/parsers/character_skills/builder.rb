@@ -167,7 +167,7 @@ module Granblue
             suffix = key[-1]
             title = wiki_params["abilitytitle_#{suffix}"].to_s
             subtitle = wiki_params["abilitysubtitle_#{suffix}"].to_s
-            parent_position = title[/CharacterSkill[2]?\|.*?\|(\d+)/, 1]&.to_i
+            parent_position = title[/CharacterSkill2?\|.*?\|(\d+)/, 1]&.to_i
             count = wiki_params["abilitycount_#{suffix}"].to_i
             next if count.zero?
             next if parent_position.blank? && subtitle.blank?

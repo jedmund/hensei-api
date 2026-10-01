@@ -152,7 +152,7 @@ module Api
       def check_username
         username = params[:username].to_s.strip
         normalized = username.downcase
-        segments = normalized.split(/[_\-]+/)
+        segments = normalized.split(/[_-]+/)
         candidates = segments + [normalized]
 
         profane = candidates.any? { |c| ProfanityValidator.word_list(:en, tier: :strict).include?(c) }

@@ -81,7 +81,7 @@ module Granblue
       end
 
       def self.print_progress(current, total, name, status, start_time)
-        pct = format('%5.1f%%', (current.to_f / total * 100))
+        pct = format('%5.1f%%', current.to_f / total * 100)
         elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
         eta = current > 1 ? format_eta((elapsed / current) * (total - current)) : '?'
         marker = status == 'OK' ? 'OK' : 'ERR'

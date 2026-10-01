@@ -7,6 +7,7 @@ RSpec.describe SubstituteGridPreloading, type: :concern do
   let(:host_class) do
     Class.new do
       include SubstituteGridPreloading
+
       attr_accessor :current_user
     end
   end

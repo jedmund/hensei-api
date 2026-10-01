@@ -202,7 +202,7 @@ module Granblue
                 # demerit rows store the panel sign (hp_cut -10); the wiki lists magnitude
                 next if (wiki - ours.abs).abs < 0.005 && ours.negative?
 
-                "#{col}: wiki=#{wiki} ours=#{ours}#{existing.provenance ? " [#{existing.provenance}]" : ''}"
+                "#{col}: wiki=#{wiki} ours=#{ours}#{" [#{existing.provenance}]" if existing.provenance}"
               end
               if diffs.any?
                 mismatches << { series: cand[:series], size: cand[:size],
