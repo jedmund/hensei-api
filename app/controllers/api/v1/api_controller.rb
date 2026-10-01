@@ -83,11 +83,8 @@ module Api
                          .order(:update_type, updated_at: :desc)
 
         result = latest_updates.to_h do |update|
-                   [update.update_type, {
-            version: update.version,
-            updated_at: update.updated_at
-          }]
-                 end
+          [update.update_type, { version: update.version, updated_at: update.updated_at }]
+        end
 
         render json: result
       end
