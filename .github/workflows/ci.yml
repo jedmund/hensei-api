@@ -10,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # Ruby version comes from .ruby-version
@@ -20,7 +20,7 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # Ruby version comes from .ruby-version
@@ -63,7 +63,7 @@ jobs:
       REDIS_URL: redis://localhost:6379/0
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # Ruby version comes from .ruby-version
@@ -75,13 +75,13 @@ jobs:
         run: bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec-results.xml
       - name: Upload coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage/
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: tmp/rspec-results.xml
