@@ -13,8 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.4'
-          bundler-cache: true
+          bundler-cache: true # Ruby version comes from .ruby-version
       - name: Run RuboCop
         run: bundle exec rubocop
 
@@ -53,8 +52,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.4'
-          bundler-cache: true
+          bundler-cache: true # Ruby version comes from .ruby-version
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Setup database
