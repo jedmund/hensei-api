@@ -35,6 +35,7 @@ class GridSummon < ApplicationRecord
 
   # Validate that position is provided.
   validates :position, presence: true
+  validates :description, rich_text_description: true, if: :description_changed?
   validate :compatible_with_position, on: :create, unless: :is_substitute?
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.

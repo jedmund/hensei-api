@@ -9,6 +9,9 @@ module Api
       ##### Error reporting
       include SentryReportable
 
+      ##### Rate limiting
+      include RateLimited
+
       ##### Constants
       COLLECTION_PER_PAGE = 15
       SEARCH_PER_PAGE = 10

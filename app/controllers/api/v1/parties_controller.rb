@@ -36,6 +36,7 @@ module Api
       before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
+      before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
 
       # Primary CRUD Actions
 
@@ -77,19 +78,11 @@ module Api
       # ally_max_hp for max-HP-scaled effects, plus arcarum for venue-gated effects;
       # the foe defaults to the grid element's advantaged target, like the in-game estimate.
       def skill_boosts
-        unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
-          return render_unauthorized_response
-        end
-
         state = skill_boost_state
         render json: GridDamage::PanelPresenter.present(@party, state: state).merge(state: state)
       end
 
       def show
-        unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
-          return render_unauthorized_response
-        end
-
         if @party
           options = { view: :full, root: :party, current_user: current_user }
 
@@ -346,7 +339,7 @@ module Api
       def unlink_collection
         @party = Party.find_by(id: params[:id])
         return render_not_found_response('party') unless @party
-        return render_unauthorized_response unless @party.user_id == current_user&.id
+        return render_unauthorized_response unless current_user && @party.user_id == current_user.id
 
         ActiveRecord::Base.transaction do
           @party.characters.where.not(collection_character_id: nil)
@@ -396,6 +389,23 @@ module Api
       end
 
       private
+
+      # Private parties 404 for anyone who can't view them, so their existence
+      # isn't revealed. Anonymous parties are also viewable with their edit key.
+      def ensure_party_viewable!
+        return if performed?
+        return if can_view_party?
+
+        render_not_found_response('party')
+      end
+
+      def can_view_party?
+        return true if @party.viewable_by?(current_user, admin_mode: admin_mode)
+        return false unless @party.user_id.nil?
+
+        valid_edit_key?(edit_key.to_s.strip.force_encoding('UTF-8'),
+                        @party.edit_key.to_s.strip.force_encoding('UTF-8'))
+      end
 
       # Sanitized battle state for skill_boosts: clamp HP/turn/max HP, cast Arcarum,
       # whitelist the foe element, and default the foe to what the grid element is strong against.

@@ -47,6 +47,7 @@ class GridCharacter < ApplicationRecord
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
+  validates :description, rich_text_description: true, if: :description_changed?
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
   validate :validate_awakening_level, on: :update, unless: :is_substitute?

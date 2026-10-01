@@ -79,6 +79,11 @@ RSpec.configure do |config|
   #
   # This ensures that your canonical CSV data is loaded before your tests run.
   # -----------------------------------------------------------------------------
+  # Rate limit counters are shared process state; start each example clean.
+  config.before do
+    Rails.application.config.x.rate_limit_store.clear
+  end
+
   config.before(:suite) do
     load Rails.root.join('db', 'seed', 'canonical.rb')
 

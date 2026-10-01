@@ -6,6 +6,8 @@ module Api
       skip_before_action :current_user, only: [:update]
       before_action :doorkeeper_authorize!, only: [:create]
 
+      limit_requests 'verify-submit', to: 10, within: 15.minutes, only: :update, by: -> { rate_limit_email_key }
+
       # POST /email_verifications - resend verification email (authenticated)
       def create
         user = current_user
