@@ -125,3 +125,5 @@ group :test do
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
 end
+
+gem "rack-attack", "~> 6.8"

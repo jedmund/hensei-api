@@ -15,6 +15,9 @@ module Api
       ##### Constants
       COLLECTION_PER_PAGE = 15
       SEARCH_PER_PAGE = 10
+      # The web app requests at most 50 search results per page; a lower cap
+      # than other listings makes bulk copies of the item database slower.
+      SEARCH_MAX_PER_PAGE = 50
       MAX_PER_PAGE = 100
       MIN_PER_PAGE = 1
 
@@ -241,7 +244,7 @@ module Api
 
       # Returns the requested page size for search operations
       def search_page_size
-        page_size(SEARCH_PER_PAGE)
+        [page_size(SEARCH_PER_PAGE), SEARCH_MAX_PER_PAGE].min
       end
 
       # Returns a clamped page size from the `limit` query parameter
