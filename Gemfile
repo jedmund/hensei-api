@@ -94,6 +94,8 @@ group :doc do
 end
 
 group :development, :test do
+  gem 'brakeman', require: false
+  gem 'bundler-audit', require: false
   gem 'dotenv-rails'
   gem 'prosopite'
   gem 'pry'

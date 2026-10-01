@@ -13,10 +13,23 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.4'
-          bundler-cache: true
+          bundler-cache: true # Ruby version comes from .ruby-version
       - name: Run RuboCop
         run: bundle exec rubocop
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # Ruby version comes from .ruby-version
+      - name: Audit gems for known vulnerabilities
+        run: bundle exec bundle-audit check --update
+      - name: Brakeman static analysis
+        # Existing findings are recorded in config/brakeman.ignore; only new
+        # warnings fail the build.
+        run: bundle exec brakeman --no-pager --quiet
 
   test:
     runs-on: ubuntu-latest
@@ -53,8 +66,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.4'
-          bundler-cache: true
+          bundler-cache: true # Ruby version comes from .ruby-version
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Setup database

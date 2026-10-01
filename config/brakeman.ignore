@@ -1,0 +1,161 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Unmaintained Dependency",
+      "warning_code": 122,
+      "fingerprint": "21ab0fe00fdd5899ffc405cff75aadb91b805ee996a614f7e27b08a287e9062d",
+      "check_name": "EOLRails",
+      "message": "Support for Rails 8.0.5.1 ends on 2026-11-07",
+      "file": "Gemfile.lock",
+      "line": 300,
+      "link": "https://brakemanscanner.org/docs/warning_types/unmaintained_dependency/",
+      "code": null,
+      "render_path": null,
+      "location": null,
+      "user_input": null,
+      "confidence": "Weak",
+      "cwe_id": [
+        1104
+      ],
+      "note": "Baseline 2026-10-01. Rails 8.0 support ends 2026-11-07; upgrade to Rails 8.1 before then."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "7aa3876f6063209bfcf6c9cccc55d99e87dd337eb0b0459a458d1e5cb02a1243",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/party_query_builder.rb",
+      "line": 202,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "query.where(\"        NOT EXISTS (\\n          SELECT 1 FROM #{grid_table}\\n          JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id\\n          WHERE #{object_table}.granblue_id = ? AND #{grid_table}.party_id = parties.id\\n        )\\n\".squish, id)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "PartyQueryBuilder",
+        "method": "apply_excludes"
+      },
+      "user_input": "grid_table",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "False positive: grid_table/object_table come from a fixed mapping in grid_table_and_object_table, not from params."
+    },
+    {
+      "warning_type": "Format Validation",
+      "warning_code": 30,
+      "fingerprint": "7ecc82163bcd3e4570ad0e24654a304eee4cfe6431806ba05148492b55529234",
+      "check_name": "ValidationRegex",
+      "message": "Insufficient validation for `video_url` using `/\\A(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)[\\w-]+/`. Use `\\A` and `\\z` as anchors",
+      "file": "app/models/playlist.rb",
+      "line": 20,
+      "link": "https://brakemanscanner.org/docs/warning_types/format_validation/",
+      "code": ":video_url, { :format => ({ :with => /\\A(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)[\\w-]+/, :message => \"must be a valid YouTube URL\" }), :allow_blank => true }",
+      "render_path": null,
+      "location": {
+        "type": "model",
+        "model": "Playlist"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        777
+      ],
+      "note": "Real, low risk: YOUTUBE_REGEX is not end-anchored. Clients only use the extracted video ID. Tighten the regex (backlog)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "abf752bb798330c986b5781e671baf8f88f8022f319021921e9bb9045a7c01cd",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/party_query_builder.rb",
+      "line": 184,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "query.where(\"        EXISTS (\\n          SELECT 1 FROM #{grid_table}\\n          JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id\\n          WHERE #{object_table}.granblue_id = ? AND #{grid_table}.party_id = parties.id\\n        )\\n\".squish, id)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "PartyQueryBuilder",
+        "method": "apply_includes"
+      },
+      "user_input": "grid_table",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "False positive: grid_table/object_table come from a fixed mapping in grid_table_and_object_table, not from params."
+    },
+    {
+      "warning_type": "Format Validation",
+      "warning_code": 30,
+      "fingerprint": "b4bae91607ceabdab124b4ce4dff42b55dee2cc8fc931ac64fa646a57383c6fa",
+      "check_name": "ValidationRegex",
+      "message": "Insufficient validation for `video_url` using `/\\A(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)[\\w-]+/`. Use `\\A` and `\\z` as anchors",
+      "file": "app/models/party.rb",
+      "line": 266,
+      "link": "https://brakemanscanner.org/docs/warning_types/format_validation/",
+      "code": ":video_url, { :format => ({ :with => /\\A(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)[\\w-]+/, :message => \"must be a valid YouTube URL\" }), :allow_blank => true }",
+      "render_path": null,
+      "location": {
+        "type": "model",
+        "model": "Party"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        777
+      ],
+      "note": "Real, low risk: YOUTUBE_REGEX is not end-anchored. Clients only use the extracted video ID. Tighten the regex (backlog)."
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 70,
+      "fingerprint": "e22b0e2749e733c6f8ee38d828b7a9f661a4086b5c39c6ac4101a0ced65567ec",
+      "check_name": "MassAssignment",
+      "message": "Specify exact keys allowed for mass assignment instead of using `permit!` which allows any keys",
+      "file": "app/controllers/api/v1/search_controller.rb",
+      "line": 365,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:search).permit!",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Api::V1::SearchController",
+        "method": "search_params"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Search params feed hash conditions (no raw SQL). Replace permit! with explicit keys (backlog)."
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "f38c4da7c0835f26ac9e8c38c38134a87992e158f05f7ed8c72280d6eab2072d",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/api/v1/crew_memberships_controller.rb",
+      "line": 136,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:membership).permit(:role, :joined_at, :retired, :retired_at)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Api::V1::CrewMembershipsController",
+        "method": "membership_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "False positive: update only lets captains change role; officers are limited to joined_at."
+    }
+  ],
+  "updated": "2026-10-01",
+  "brakeman_version": "8.1.0"
+}
