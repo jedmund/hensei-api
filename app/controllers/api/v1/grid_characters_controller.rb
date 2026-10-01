@@ -77,6 +77,11 @@ module Api
       #
       # @return [void]
       def update
+        if character_params[:collection_character_id].present?
+          collection_item = CollectionCharacter.find_by(id: character_params[:collection_character_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
+
         processed_params = transform_character_params(character_params)
         assign_raw_attributes(@grid_character)
         assign_transformed_attributes(@grid_character, processed_params)
@@ -236,9 +241,7 @@ module Api
       #
       # @return [void]
       def destroy
-        grid_character = GridCharacter.find_by('id = ?', params[:id])
-
-        return render_not_found_response('grid_character') if grid_character.nil?
+        grid_character = @grid_character
 
         if grid_character.destroy
           @party.mark_updated!
@@ -285,7 +288,8 @@ module Api
           )
         end
 
-        unless current_user.present? && @party.collection_source_user_id == current_user.id
+        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
+               @grid_character.collection_character.user_id == current_user.id
           return render_unauthorized_response
         end
 
@@ -512,9 +516,14 @@ module Api
       #
       # @return [void]
       def find_party
-        @party = Party.find_by(id: params.dig(:character, :party_id)) ||
-          Party.find_by(id: params[:party_id]) ||
-          @grid_character&.party
+        requested_party_id = params.dig(:character, :party_id) || params[:party_id]
+        @party = if @grid_character
+                   # The party always comes from the row itself; a mismatched
+                   # party id in the request is treated as not found.
+                   @grid_character.party if requested_party_id.blank? || requested_party_id.to_s == @grid_character.party_id.to_s
+                 else
+                   Party.find_by(id: requested_party_id)
+                 end
         render_not_found_response('party') unless @party
       end
 
