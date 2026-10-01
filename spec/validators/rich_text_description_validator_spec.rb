@@ -59,6 +59,18 @@ RSpec.describe RichTextDescriptionValidator do
 
     hidden = heading('1 x=y')
     80.times { hidden = { 'type' => 'blockquote', 'content' => [hidden] } }
-    expect(valid?(doc(hidden).to_json)).to be(false) # past the JSON parser's nesting limit
+    # Built without to_json, which refuses JSON nested past 100 levels.
+    expect(valid?(JSON.generate(doc(hidden), max_nesting: false))).to be(false) # past the parser's limit
+  end
+
+  it 'only accepts documents that can still be rendered as JSON' do
+    node = { 'type' => 'paragraph', 'content' => [{ 'type' => 'text', 'text' => 'x', 'marks' => [{ 'type' => 'bold' }] }] }
+    # doc (0) > blockquotes > paragraph > text at MAX_DEPTH
+    (described_class::MAX_DEPTH - 2).times { node = { 'type' => 'blockquote', 'content' => [node] } }
+    deepest_valid = doc(node)
+
+    expect(valid?(deepest_valid)).to be(true)
+    expect(valid?(doc({ 'type' => 'blockquote', 'content' => [node] }))).to be(false)
+    expect { deepest_valid.to_json }.not_to raise_error
   end
 end

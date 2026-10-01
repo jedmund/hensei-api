@@ -10,7 +10,10 @@
 #   validates :description, rich_text_description: true
 class RichTextDescriptionValidator < ActiveModel::EachValidator
   HEADING_LEVELS = (1..6)
-  MAX_DEPTH = 50
+  # Node depth, not JSON depth: each node level is ~2 levels of JSON. Keeps
+  # stored documents under the 100-level limit Rails' to_json enforces when
+  # rendering them (jsonb notes are rendered as nested JSON).
+  MAX_DEPTH = 40
 
   def validate_each(record, attribute, value)
     doc = parse(value)
