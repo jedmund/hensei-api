@@ -188,6 +188,42 @@ RSpec.describe 'Api::V1::Users', type: :request do
           headers: auth_headers
       expect(user.reload.description).to be_nil
     end
+
+    it 'updates the current user via /users/me' do
+      put '/api/v1/users/me',
+          params: { user: { language: 'ja' } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.language).to eq('ja')
+    end
+
+    it 'rejects unauthenticated requests' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'Changed' } }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:unauthorized)
+      expect(user.reload.description).to be_nil
+    end
+
+    it 'rejects updates to another user' do
+      other = create(:user)
+      put "/api/v1/users/#{other.id}",
+          params: { user: { description: 'Changed' } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(other.reload.description).to be_nil
+    end
+
+    it 'ignores email and password changes' do
+      original_email = user.email
+      put "/api/v1/users/#{user.id}",
+          params: { user: { email: 'changed@example.com', password: 'newpassword1',
+                            password_confirmation: 'newpassword1' } }.to_json,
+          headers: auth_headers
+      user.reload
+      expect(user.email).to eq(original_email)
+      expect(user.authenticate('newpassword1')).to be(false)
+    end
   end
 
   describe 'GET /api/v1/users/info/:id description field' do

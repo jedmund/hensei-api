@@ -9,8 +9,8 @@ module Api
       # (set). update must be excluded from set so its id isn't treated as a
       # username (which now 404s on miss).
       before_action :set, except: %w[create check_email check_username me search deposit_edit_keys update]
+      before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys update]
       before_action :set_by_id, only: %w[update]
-      before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys]
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
@@ -58,8 +58,10 @@ module Api
 
       # TODO: Allow admins to update other users
 
+      # Email and password are not updatable here; they change only through
+      # registration and the password reset flow.
       def update
-        render json: UserBlueprint.render(@user, view: :minimal) if @user.update(user_params)
+        render json: UserBlueprint.render(@user, view: :minimal) if @user.update(user_update_params)
       end
 
       def info
@@ -304,13 +306,11 @@ module Api
         render_not_found_response('user') unless @user
       end
 
+      # Users may only update themselves: accepts 'me' or the caller's own id.
       def set_by_id
-        if params[:id] == 'me'
-          @user = User.includes(active_crew_membership: :crew).find(current_user.id)
-        else
-          @user = User.includes(active_crew_membership: :crew).find_by('id = ?', params[:id])
-        end
-        render_not_found_response('user') unless @user
+        return render_forbidden_response unless params[:id] == 'me' || params[:id] == current_user.id
+
+        @user = User.includes(active_crew_membership: :crew).find(current_user.id)
       end
 
       def user_params
@@ -321,6 +321,10 @@ module Api
           :import_weapons, :default_import_visibility, :simple_portraits,
           :default_rep_view, :timezone, :support_summons_public
         )
+      end
+
+      def user_update_params
+        user_params.except(:email, :password, :password_confirmation)
       end
     end
   end
