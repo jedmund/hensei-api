@@ -9,6 +9,12 @@ updates:
       # Routine minor/patch bumps arrive as one PR; majors stay separate.
       gems:
         update-types: [minor, patch]
+        # Framework and linter upgrades need their own review (Rails minors
+        # change behavior; RuboCop minors add cops), so they get separate PRs
+        # instead of blocking the routine group.
+        exclude-patterns:
+          - "rails"
+          - "rubocop*"
 
   - package-ecosystem: github-actions
     directory: /
