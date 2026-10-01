@@ -10,9 +10,9 @@ module Api
       before_action :set_crew_from_user, only: %i[gw_scores]
       before_action :set_membership, only: %i[update destroy promote demote]
       before_action :set_membership_for_scores, only: %i[gw_scores]
-      before_action :authorize_crew_officer!, only: %i[destroy history]
+      # update narrows officers to joined_at; captains may change the rest.
+      before_action :authorize_crew_officer!, only: %i[update destroy history]
       before_action :authorize_crew_captain!, only: %i[promote demote]
-      before_action :authorize_membership_update!, only: %i[update]
       before_action :authorize_crew_member!, only: %i[gw_scores]
 
       # PUT /crews/:crew_id/memberships/:id
@@ -134,15 +134,6 @@ module Api
 
       def membership_params
         params.require(:membership).permit(:role, :joined_at, :retired, :retired_at)
-      end
-
-      def authorize_membership_update!
-        # Officers can update any membership's joined_at
-        # Captains can update anything
-        return if current_user.crew_captain?
-        return if current_user.crew_officer?
-
-        raise Api::V1::UnauthorizedError
       end
     end
   end

@@ -98,7 +98,8 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
 
   def fetch_roster_members(character_ids, weapon_ids, summon_ids)
     memberships = @crew.active_memberships.includes(:user)
-    user_ids = memberships.map(&:user_id)
+    # Respect each member's collection privacy; private collections stay empty.
+    user_ids = memberships.select { |m| m.user.collection_viewable_by?(current_user) }.map(&:user_id)
 
     # Batch-load all collection data in 3 queries (instead of 3 × N members)
     chars_by_user = if character_ids.present?

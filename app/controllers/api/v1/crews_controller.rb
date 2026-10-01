@@ -86,7 +86,8 @@ module Api
       # Params: character_ids[], weapon_ids[], summon_ids[]
       def roster
         members = @crew.active_memberships.includes(:user)
-        user_ids = members.map(&:user_id)
+        # Respect each member's collection privacy; private collections stay empty.
+        user_ids = members.select { |m| m.user.collection_viewable_by?(current_user) }.map(&:user_id)
 
         # Batch-load all collection items for all members at once
         @roster_cache = preload_roster_collections(user_ids)
