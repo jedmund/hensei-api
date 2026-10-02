@@ -46,7 +46,7 @@ namespace :deploy do
     total = weapons.count
     updated = 0
     skipped = 0
-    puts "  Found #{total} weapons to process#{overwrite ? ' (overwrite mode)' : ''}"
+    puts "  Found #{total} weapons to process#{' (overwrite mode)' if overwrite}"
 
     weapons.find_each.with_index do |weapon, index|
       print "\r  Processing #{index + 1}/#{total}: #{weapon.name_en.to_s.truncate(40)}".ljust(80)
@@ -78,7 +78,7 @@ namespace :deploy do
     total = summons.count
     updated = 0
     skipped = 0
-    puts "  Found #{total} summons to process#{overwrite ? ' (overwrite mode)' : ''}"
+    puts "  Found #{total} summons to process#{' (overwrite mode)' if overwrite}"
 
     summons.find_each.with_index do |summon, index|
       print "\r  Processing #{index + 1}/#{total}: #{summon.name_en.to_s.truncate(40)}".ljust(80)
@@ -110,7 +110,7 @@ namespace :deploy do
     total = characters.count
     updated = 0
     skipped = 0
-    puts "  Found #{total} characters to process#{overwrite ? ' (overwrite mode)' : ''}"
+    puts "  Found #{total} characters to process#{' (overwrite mode)' if overwrite}"
 
     characters.find_each.with_index do |character, index|
       print "\r  Processing #{index + 1}/#{total}: #{character.name_en.to_s.truncate(40)}".ljust(80)

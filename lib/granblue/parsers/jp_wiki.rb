@@ -59,6 +59,7 @@ module Granblue
         '<h1 class="title">Runtime error</h1>',
         '<title>Runtime error'
       ].freeze
+      private_constant :RUNTIME_ERROR_MARKERS
 
       def handle_response(response, title)
         case response.code

@@ -507,7 +507,9 @@ class Party < ApplicationRecord
   # full_auto_skills maps an MC ability slot ("0".."3") to whether it is used in
   # Full Auto. Reject unknown slots or non-boolean values.
   FULL_AUTO_SLOTS = %w[0 1 2 3].freeze
+  private_constant :FULL_AUTO_SLOTS
   FULL_AUTO_VALUES = [true, false].freeze
+  private_constant :FULL_AUTO_VALUES
 
   ##
   # Validates the per-slot MC Full Auto toggles.

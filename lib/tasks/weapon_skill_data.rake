@@ -116,7 +116,8 @@ namespace :granblue do
         if v.weapon_skill_data.any? then resolved_data += 1
         elsif v.weapon_skill_effects.exists? then resolved_effects += 1
         else
-          unresolved << v.skill_modifier end
+          unresolved << v.skill_modifier
+        end
       end
     end
     pct = standard.zero? ? 0 : (100.0 * (resolved_data + resolved_effects) / standard).round(1)

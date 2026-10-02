@@ -101,7 +101,7 @@ module Granblue
           frame = desc_html[/Multiplier:[^.]*?\b(Normal|EX|Omega|Od)\b/i, 1]&.downcase
           # Strip the "Multiplier:" annotation in both forms — linked ('''Multiplier:''' [[…]])
           # and plain ("Multiplier: Normal") — up to the next clause separator.
-          stripped = desc_html.gsub(/'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .\-]+?)(?=[,.]|<|\z)/i, " ")
+          stripped = desc_html.gsub(/'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .-]+?)(?=[,.]|<|\z)/i, " ")
           desc = clean(stripped)
           next if desc.blank?
 

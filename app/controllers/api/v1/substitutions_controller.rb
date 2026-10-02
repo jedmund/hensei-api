@@ -215,12 +215,14 @@ module Api
         'GridWeapon' => :weapon_id,
         'GridSummon' => :summon_id
       }.freeze
+      private_constant :GRID_TYPE_FOREIGN_KEYS
 
       ITEM_CLASS_FOR_GRID = {
         'GridCharacter' => Character,
         'GridWeapon' => Weapon,
         'GridSummon' => Summon
       }.freeze
+      private_constant :ITEM_CLASS_FOR_GRID
 
       def item_foreign_key(grid_type)
         GRID_TYPE_FOREIGN_KEYS[grid_type]

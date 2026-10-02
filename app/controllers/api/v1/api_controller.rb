@@ -82,11 +82,8 @@ module Api
                          .select('DISTINCT ON (update_type) update_type, version, updated_at')
                          .order(:update_type, updated_at: :desc)
 
-        result = latest_updates.each_with_object({}) do |update, hash|
-          hash[update.update_type] = {
-            version: update.version,
-            updated_at: update.updated_at
-          }
+        result = latest_updates.to_h do |update|
+          [update.update_type, { version: update.version, updated_at: update.updated_at }]
         end
 
         render json: result

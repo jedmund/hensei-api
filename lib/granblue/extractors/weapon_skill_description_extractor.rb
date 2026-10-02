@@ -136,7 +136,7 @@ module Granblue
         pos = ws.position.to_i + 1
         name = version.skill&.name_en
         ["", "4s", "5s", "u1", "u2", "u3"].each do |tier|
-          field = "s#{pos}#{tier.empty? ? '' : "_#{tier}"}"
+          field = "s#{pos}#{"_#{tier}" unless tier.empty?}"
           return wiki_field(raw, "#{field}_desc") if wiki_field(raw, "#{field}_name") == name
         end
         nil

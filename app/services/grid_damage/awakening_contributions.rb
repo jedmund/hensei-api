@@ -6,7 +6,7 @@ module GridDamage
   # accumulate per level. These are added DIRECTLY to the panel — the summon-aura/Exalto
   # enhancement does NOT amplify them — so every contribution is flagged `amplifiable: false`.
   # The source-backed awakening tables intentionally live beside their evaluator.
-  # rubocop:disable Metrics/ModuleLength
+  # rubocop:disable-next Metrics/ModuleLength
   module AwakeningContributions
     module_function
 
@@ -276,5 +276,4 @@ module GridDamage
       end.presence
     end
   end
-  # rubocop:enable Metrics/ModuleLength
 end

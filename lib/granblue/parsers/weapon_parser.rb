@@ -369,6 +369,7 @@ module Granblue
       end
 
       SIZE_KEYWORD = /\b(unworldly|massive|big|medium|small)\b/i
+      private_constant :SIZE_KEYWORD
 
       # The size a weapon-skill description states ("Big boost to …"). nil when the
       # description has no size word (genuinely sizeless skills, or template-form).

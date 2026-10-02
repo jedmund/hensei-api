@@ -6,6 +6,7 @@ RSpec.describe RichTextDescriptionValidator do
   let(:model_class) do
     Class.new do
       include ActiveModel::Validations
+
       attr_accessor :description
 
       def self.name = 'DescriptionHolder'

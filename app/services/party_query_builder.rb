@@ -137,6 +137,7 @@ class PartyQueryBuilder
   # Resolves the raid parameter to a UUID.
   # Accepts either a UUID directly or a slug (e.g. "proto-bahamut-hl").
   UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
+  private_constant :UUID_REGEX
 
   def resolve_raid_id
     value = @params[:raid]

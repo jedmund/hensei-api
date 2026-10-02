@@ -5,9 +5,9 @@ module Api
     class EmptyBlueprint < Blueprinter::Base
       field :available, if: ->(_field_name, _empty, options) { options.key?(:availability) } do |_, options|
         if options.key?(:email)
-          User.where('email = ?', options[:email]).count.zero?
+          User.where('email = ?', options[:email]).none?
         elsif options.key?(:username)
-          User.where('lower(username) = ?', options[:username].downcase).count.zero?
+          User.where('lower(username) = ?', options[:username].downcase).none?
         end
       end
     end

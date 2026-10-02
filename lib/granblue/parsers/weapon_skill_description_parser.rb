@@ -22,7 +22,7 @@ module Granblue
       SKIP_PATTERNS = {
         "key_placeholder" => /empowered by a chosen (teluma|pendulum|chain)|a gate to the summits|locked within ultima|granted power with an anklet/i,
         "dynamic_buff"    => /gain \{\{status|allies gain .*\bupon\b|\bstack(able|ing)\b.*upon/i,
-        "nuke_only"       => /\bdeal[s]? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
+        "nuke_only"       => /\bdeals? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
       }.freeze
 
       # A leading EVENT trigger makes everything after it a battle proc (nuke, heal,

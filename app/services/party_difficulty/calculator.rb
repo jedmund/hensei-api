@@ -82,12 +82,14 @@ module PartyDifficulty
       'character' => :pd_character_series_cache,
       'summon' => :pd_summon_series_cache
     }.freeze
+    private_constant :SERIES_CACHE_KEYS
 
     SERIES_MODELS = {
       'weapon' => 'WeaponSeries',
       'character' => 'CharacterSeries',
       'summon' => 'SummonSeries'
     }.freeze
+    private_constant :SERIES_MODELS
 
     ##
     # Batches slug → id lookups for every *_series_match rule into one query
@@ -101,6 +103,7 @@ module PartyDifficulty
       'weapon_series_match' => 'slugs',
       'weapon_tier_match' => 'series_slugs'
     }.freeze
+    private_constant :WEAPON_SERIES_SLUG_SOURCES
 
     def preload_series_caches!
       slugs_by_kind = {
@@ -348,7 +351,7 @@ module PartyDifficulty
     end
 
     def find_tier(score)
-      @difficulties.find { |d| score >= d.min_score.to_f && score <= d.max_score.to_f }
+      @difficulties.find { |d| score.between?(d.min_score.to_f, d.max_score.to_f) }
     end
   end
 end

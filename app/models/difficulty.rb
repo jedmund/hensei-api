@@ -19,7 +19,7 @@ class Difficulty < ApplicationRecord
   def self.for_score(score)
     return nil if score.nil?
 
-    ordered.detect { |d| score >= d.min_score && score <= d.max_score }
+    ordered.detect { |d| score.between?(d.min_score, d.max_score) }
   end
 
   def blueprint

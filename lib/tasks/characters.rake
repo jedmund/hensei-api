@@ -63,7 +63,7 @@ namespace :characters do
   end
 
   # Infer gacha_available from series
-  def self.infer_gacha_available(series)
+  def self.infer_gacha_available?(series)
     non_gachable = [
       GranblueEnums::CHARACTER_SERIES[:Eternal],
       GranblueEnums::CHARACTER_SERIES[:Evoker],
@@ -85,7 +85,7 @@ namespace :characters do
     Character.find_each do |character|
       season = infer_season(character.name_en)
       series = infer_series(character.name_en)
-      gacha_available = infer_gacha_available(series)
+      gacha_available = infer_gacha_available?(series)
 
       if test_mode
         puts "#{character.name_en}:"
