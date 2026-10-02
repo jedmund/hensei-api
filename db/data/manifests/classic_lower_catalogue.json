@@ -1,0 +1,2992 @@
+{
+  "source": "https://gbf.wiki/Draw: all three Classic pools include ordinary R/SR released before 2026-03-10. Catalogue dates or explicit pre-cutoff page existence establish eligibility; unknown dates are not invented.",
+  "entries": [
+    {
+      "type": "Weapon",
+      "granblue_id": "1030003400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-11-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030004500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030256000",
+        "date": "2018-11-15"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030176000",
+        "date": "2017-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030186000",
+        "date": "2017-04-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030207000",
+        "date": "2017-09-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030005400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-12-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030175000",
+        "date": "2017-01-20"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030008900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030275000",
+        "date": "2019-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030261000",
+        "date": "2018-12-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030255000",
+        "date": "2018-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030008400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030266000",
+        "date": "2019-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030253000",
+        "date": "2018-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030222000",
+        "date": "2017-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030005900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030166000",
+        "date": "2016-11-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-01-22"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030008200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030265000",
+        "date": "2019-02-28"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030183000",
+        "date": "2017-03-20"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-22"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030002700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030234000",
+        "date": "2018-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030102400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030104900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030102600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030102300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-08-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030105400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030196000",
+        "date": "2017-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030101800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030104700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-04-04"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030105100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030167000",
+        "date": "2016-11-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030202600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-11-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030204500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-12-02"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030201700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030204400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-11-19"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030206800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030257000",
+        "date": "2018-11-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030205000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-05-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030204800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-03-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030203500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-02-13"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030206600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030252000",
+        "date": "2018-09-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030206400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030241000",
+        "date": "2018-05-21"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030205700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030195000",
+        "date": "2017-06-19"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030207000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030269000",
+        "date": "2019-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030205600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030188000",
+        "date": "2017-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-02-29"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-06-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-09-22"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-05-02"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030191000",
+        "date": "2017-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030302800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-02-28"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030203000",
+        "date": "2017-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030156000",
+        "date": "2016-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030402900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-12-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030164000",
+        "date": "2016-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030400700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030405300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030237000",
+        "date": "2018-02-28"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030400800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-09-12"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030406100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2019-11-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030402100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-11-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030405900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030270000",
+        "date": "2019-06-19"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030405100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030225000",
+        "date": "2017-11-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-10-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030155000",
+        "date": "2016-09-15"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030503000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-06-26"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030505500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030268000",
+        "date": "2019-05-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030230000",
+        "date": "2017-12-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030503900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030502900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030159000",
+        "date": "2016-10-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030181000",
+        "date": "2017-02-28"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030505300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030263000",
+        "date": "2019-01-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030505400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030267000",
+        "date": "2019-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030185000",
+        "date": "2017-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030601100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-07-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030604700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-04-20"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-02-13"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030232000",
+        "date": "2018-01-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030251000",
+        "date": "2018-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030608700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2020-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030608200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030264000",
+        "date": "2019-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030601000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030243000",
+        "date": "2018-06-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030240000",
+        "date": "2018-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030239000",
+        "date": "2018-04-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030604000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603900",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-05-25"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030601500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030605400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030190000",
+        "date": "2017-05-19"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030605800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030221000",
+        "date": "2017-10-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030703200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-01-15"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030702600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-04-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-23"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030704100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030209000",
+        "date": "2017-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030802100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030800000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030800300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030803400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030244000",
+        "date": "2018-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030902000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030171000",
+        "date": "2016-12-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030902800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3030224000",
+        "date": "2017-11-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030901800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-02-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030100100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030100200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030101100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030101400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200700",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030300200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030300100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030300300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030400200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401400",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500300",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600800",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700600",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700500",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030800200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030900000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030900100",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030900200",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030031000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-17"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030009000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030006000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030022000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030034000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030021000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-16"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030019000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030080000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2017-02-25"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030010000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030005000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030008000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030025000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030023000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030024000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-05-14"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030020000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030033000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030003000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030007000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030042000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-08-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030028000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030039000",
+      "rarity": 2,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-07-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020057000",
+        "date": "2016-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-01-22"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020048000",
+        "date": "2015-12-02"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-06-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020001000",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020007000",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-04-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-05-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-04-20"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020018000",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-11-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-02-29"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-09-15"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2018-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-10-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-23"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-16"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-09-12"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-09-22"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-11-19"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020032000",
+        "date": "2015-02-28"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-12-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-04-04"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-17"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-06-26"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020010000",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-11-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020602000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-08-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-02-18"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020602100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-11-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-05-02"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "recruited_character_release_date",
+        "recruits": "3020037000",
+        "date": "2015-05-25"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-06-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-09-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-22"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-01-15"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020800300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-10-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020800100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2016-01-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-08"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-24"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700300",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700500",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020800000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020900000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020900100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2015-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020012000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020031000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020025000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-16"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020027000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020015000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020011000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020016000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020032000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020023000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020028000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-04-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020017000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020030000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020035000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020024000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020013000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020014000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020033000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020010000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020004000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020026000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-17"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020034000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-06-30"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020022000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-31"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020029000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020009000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "catalogue_release_date",
+        "date": "2014-03-10"
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100400",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-30",
+        "source": "https://gbf.wiki/index.php?title=Kila&oldid=304560",
+        "revision_id": 304560,
+        "fields": [
+          "|id=1020100400",
+          "|rarity=r"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Water_Kukri&oldid=304585",
+        "revision_id": 304585,
+        "fields": [
+          "|id=1020101100",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Wind_Axe&oldid=304660",
+        "revision_id": 304660,
+        "fields": [
+          "|id=1020301700",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300000",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Tabar&oldid=304688",
+        "revision_id": 304688,
+        "fields": [
+          "|id=1020300000",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Thunder_Kalinga_Axe&oldid=304689",
+        "revision_id": 304689,
+        "fields": [
+          "|id=1020300200",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400800",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Water_Rod&oldid=304588",
+        "revision_id": 304588,
+        "fields": [
+          "|id=1020400800",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401700",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Wind_Rod&oldid=304661",
+        "revision_id": 304661,
+        "fields": [
+          "|id=1020401700",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-30",
+        "source": "https://gbf.wiki/index.php?title=Pata&oldid=304530",
+        "revision_id": 304530,
+        "fields": [
+          "|id=1020600100",
+          "|rarity=r"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600900",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Tidal_Wraps&oldid=304584",
+        "revision_id": 304584,
+        "fields": [
+          "|id=1020600900",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600600",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Whirlwind_Wraps&oldid=304659",
+        "revision_id": 304659,
+        "fields": [
+          "|id=1020600600",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700100",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=War_Bow&oldid=304624",
+        "revision_id": 304624,
+        "fields": [
+          "|id=1020700100",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700200",
+      "rarity": 1,
+      "evidence": {
+        "kind": "wiki_page_existence",
+        "date": "2019-10-31",
+        "source": "https://gbf.wiki/index.php?title=Wrapped_Bow&oldid=304653",
+        "revision_id": 304653,
+        "fields": [
+          "|id=1020700200",
+          "|rarity=r",
+          "|obtain=premium,normal"
+        ],
+        "detail": "Historical revision proves pre-cutoff existence; exact release date remains unknown."
+      }
+    }
+  ]
+}
