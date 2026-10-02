@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -548,7 +548,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
     t.string "user_id"
     t.decimal "rate"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "drawable_type"
+    t.uuid "drawable_id"
     t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
+    t.index ["user_id", "drawable_type", "drawable_id"], name: "index_gacha_rateups_on_user_and_drawable"
+    t.check_constraint "drawable_type IS NULL AND drawable_id IS NULL OR drawable_type IS NOT NULL AND drawable_id IS NOT NULL AND (drawable_type::text = ANY (ARRAY['Weapon'::character varying, 'Summon'::character varying]::text[]))", name: "gacha_rateups_drawable_pair"
   end
 
   create_table "grid_artifacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
