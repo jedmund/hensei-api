@@ -23,6 +23,7 @@ class User < ApplicationRecord
   has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, dependent: :nullify
   has_many :party_shares, foreign_key: :shared_by_id, dependent: :destroy
   has_many :user_edit_keys, dependent: :destroy
+  has_many :user_identities, dependent: :destroy
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
@@ -54,27 +55,47 @@ class User < ApplicationRecord
             uniqueness: true,
             email: true
 
+  # Password validations. has_secure_password's own validations are off so that
+  # accounts created with a login provider can exist without a password; these
+  # replace them. A password signup is validated exactly as before, and a
+  # password is validated whenever one is being set.
   validates :password,
             length: { minimum: 8 },
             presence: true,
-            on: :create
+            on: :create,
+            unless: :provider_signup?
 
   validates :password,
             length: { minimum: 8 },
             on: :update,
             if: :password_digest_changed?
 
+  validates :password,
+            length: { minimum: 8 },
+            on: :create,
+            if: :provider_signup_with_password?
+
   validates :password_confirmation,
             presence: true,
-            on: :create
+            on: :create,
+            unless: :provider_signup?
 
   validates :password_confirmation,
             presence: true,
             on: :update,
             if: :password_digest_changed?
+
+  validates :password_confirmation,
+            presence: true,
+            on: :create,
+            if: :provider_signup_with_password?
+
+  validates :password, confirmation: true, allow_nil: true
+  validate :password_digest_presence
+  validate :password_within_bcrypt_limit
 
   ##### ActiveModel Security
-  has_secure_password
+  has_secure_password validations: false
 
   RESET_TOKEN_EXPIRY = 1.hour
   RESET_TOKEN_COOLDOWN = 2.minutes
@@ -112,6 +133,16 @@ class User < ApplicationRecord
 
   def blueprint
     UserBlueprint
+  end
+
+  def password?
+    password_digest.present?
+  end
+
+  # The user summary returned alongside OAuth tokens (POST /oauth/token and
+  # social sign-in).
+  def token_payload
+    { id: id, username: username, role: role }
   end
 
   # Check if collection is viewable by another user
@@ -217,6 +248,35 @@ class User < ApplicationRecord
   end
 
   private
+
+  # A new account created with a login provider: it has an identity to log in
+  # with, so it doesn't need a password.
+  def provider_signup?
+    new_record? && user_identities.any?
+  end
+
+  def provider_signup_with_password?
+    provider_signup? && password_digest.present?
+  end
+
+  # Mirrors has_secure_password's presence check: a password signup needs a
+  # password, and an account that has a password can't have it removed.
+  def password_digest_presence
+    return if password_digest.present?
+
+    if new_record?
+      errors.add(:password, :blank) unless provider_signup?
+    elsif password_digest_was.present?
+      errors.add(:password, :blank)
+    end
+  end
+
+  def password_within_bcrypt_limit
+    return if password.blank?
+    return if password.bytesize <= ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED
+
+    errors.add(:password, :password_too_long)
+  end
 
   def should_validate_username_format?
     username_migrated? || username_changed?

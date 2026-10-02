@@ -25,6 +25,18 @@ module RateLimited
 
   private
 
+  # Counts one request against a limit keyed by something only known inside
+  # the action (limit_requests runs before it). Renders the 429 and returns
+  # true once the limit is exceeded.
+  def rate_limit_exceeded!(name, key, to:, within:)
+    store = Rails.application.config.x.rate_limit_store
+    count = store.increment("rate-limit:#{name}:#{key}", 1, expires_in: within)
+    return false if count.nil? || count <= to
+
+    instance_exec(&TOO_MANY_REQUESTS)
+    true
+  end
+
   # The visitor's real IP (see ClientIpResolver); request.remote_ip is a shared
   # edge proxy address in production.
   def client_ip

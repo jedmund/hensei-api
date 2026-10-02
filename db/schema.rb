@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_02_000100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1244,6 +1244,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
     t.index ["user_id"], name: "index_user_edit_keys_on_user_id"
   end
 
+  create_table "user_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "provider", null: false
+    t.string "provider_uid", null: false
+    t.string "email"
+    t.boolean "email_verified", default: false, null: false
+    t.boolean "is_private_email", default: false, null: false
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "provider_uid"], name: "index_user_identities_on_provider_and_provider_uid", unique: true
+    t.index ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -1278,6 +1292,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
     t.datetime "last_extension_version_at"
     t.string "description", limit: 140
     t.boolean "support_summons_public", default: true, null: false
+    t.datetime "password_prompt_dismissed_at"
     t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
@@ -1661,6 +1676,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_28_120000) do
   add_foreign_key "support_summons", "collection_summons"
   add_foreign_key "support_summons", "users"
   add_foreign_key "user_edit_keys", "users"
+  add_foreign_key "user_identities", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"

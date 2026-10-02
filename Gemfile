@@ -72,6 +72,9 @@ gem 'amoeba'
 # Makes http fun again!
 gem 'httparty'
 
+# Verifies the ID tokens Google and Apple issue for social login
+gem 'jwt', '~> 3.3'
+
 # StringScanner provides for lexical scanning operations on a String.
 gem 'strscan'
 
