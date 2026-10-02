@@ -56,11 +56,7 @@ gem 'pg_search'
 gem 'redis'
 
 # Simple, efficient background processing for Ruby
-gem 'sidekiq'
-# Sidekiq 7.3 calls ConnectionPool::TimedStack#pop with a positional timeout,
-# which connection_pool 3 removed; its scheduler thread dies and scheduled jobs
-# and retries never run. Remove once Sidekiq is upgraded.
-gem 'connection_pool', '~> 2.5'
+gem 'sidekiq', '~> 8.1'
 
 # Pagination library
 gem 'will_paginate', '~> 4.0'
