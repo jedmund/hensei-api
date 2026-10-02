@@ -49,16 +49,37 @@ RSpec.describe RichTextDescriptionValidator do
     expect(valid?(nested)).to be(false)
   end
 
-  it 'rejects documents nested too deeply' do
-    node = { 'type' => 'paragraph' }
-    30.times { node = { 'type' => 'blockquote', 'content' => [node] } }
-    expect(valid?(doc(node).to_json)).to be(true)
+  # A Tiptap doc whose JSON nesting depth is exactly `levels` (even, >= 4):
+  # doc > blockquote... > paragraph with empty content.
+  def doc_with_json_depth(levels)
+    node = { 'type' => 'paragraph', 'content' => [] } # 2 levels
+    ((levels - 4) / 2).times { node = { 'type' => 'blockquote', 'content' => [node] } }
+    doc(node)
+  end
 
-    30.times { node = { 'type' => 'blockquote', 'content' => [node] } }
-    expect(valid?(doc(node))).to be(false) # past MAX_DEPTH
+  def json_depth_of(obj)
+    (1..200).find do |n|
+      JSON.generate(obj, max_nesting: n)
+    rescue JSON::NestingError
+      false
+    end
+  end
 
+  it 'accepts documents up to MAX_JSON_DEPTH and rejects deeper ones' do
+    max = described_class::MAX_JSON_DEPTH
+    at_limit = doc_with_json_depth(max)
+    over_limit = doc_with_json_depth(max + 2)
+    expect(json_depth_of(at_limit)).to eq(max)
+
+    expect(valid?(at_limit)).to be(true)
+    expect(valid?(JSON.generate(at_limit))).to be(true)
+    expect(valid?(over_limit)).to be(false)
+    expect(valid?(JSON.generate(over_limit, max_nesting: false))).to be(false)
+  end
+
+  it 'rejects invalid headings hidden past the depth limit' do
     hidden = heading('1 x=y')
     80.times { hidden = { 'type' => 'blockquote', 'content' => [hidden] } }
-    expect(valid?(doc(hidden).to_json)).to be(false) # past the JSON parser's nesting limit
+    expect(valid?(JSON.generate(doc(hidden), max_nesting: false))).to be(false)
   end
 end
