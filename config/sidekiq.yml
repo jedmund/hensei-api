@@ -4,7 +4,8 @@
   - maintenance
 
 :scheduler:
-  party_difficulty_sweep:
-    cron: "0 4 * * *" # Daily at 04:00
-    class: PartyDifficulty::SweepJob
-    queue: maintenance
+  :schedule:
+    party_difficulty_sweep:
+      cron: "0 4 * * *" # Daily at 04:00 UTC
+      class: PartyDifficulty::SweepJob
+      queue: maintenance

@@ -57,6 +57,8 @@ gem 'redis'
 
 # Simple, efficient background processing for Ruby
 gem 'sidekiq', '~> 8.1'
+# Runs the recurring jobs under :scheduler: in config/sidekiq.yml
+gem 'sidekiq-scheduler', '~> 6.0'
 
 # Pagination library
 gem 'will_paginate', '~> 4.0'
