@@ -95,7 +95,7 @@ RSpec.describe 'User identities', :social_auth, type: :request do
     end
 
     context 'with a link ticket' do
-      let(:ticket) { SocialAuth::Ticket.issue(identity, purpose: :link) }
+      let(:ticket) { SocialAuth::Ticket.issue(identity, purpose: :link, user_id: user.id) }
 
       # The user logs in with their password after the ticket was issued.
       def fresh_login
@@ -111,6 +111,28 @@ RSpec.describe 'User identities', :social_auth, type: :request do
         expect(response).to have_http_status(:created)
         expect(response.parsed_body).to include('provider' => 'google', 'email' => 'me@example.com')
         expect(user.user_identities.first).to have_attributes(provider_uid: 'google-1', email_verified: true)
+      end
+
+      it 'links the provider when the matched user presents the ticket' do
+        fresh_login
+        link(link_ticket: ticket)
+
+        expect(response).to have_http_status(:created)
+        expect(user.user_identities.count).to eq(1)
+      end
+
+      it 'refuses the ticket from a different logged-in user' do
+        other = create(:user)
+        ticket
+        travel 1.second
+        other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other.id, expires_in: 30.days, scopes: '')
+
+        post '/api/v1/users/me/identities', params: { link_ticket: ticket }.to_json,
+                                            headers: headers.merge('Authorization' => "Bearer #{other_token.token}")
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body).to eq('error' => 'invalid_ticket')
+        expect(UserIdentity.count).to eq(0)
       end
 
       it 'refuses a session that logged in before the ticket was issued' do
@@ -134,6 +156,7 @@ RSpec.describe 'User identities', :social_auth, type: :request do
 
       it 'refuses a signup ticket' do
         signup_ticket = SocialAuth::Ticket.issue(identity, purpose: :signup)
+        user
         travel 1.second
         access_token
         link(link_ticket: signup_ticket)

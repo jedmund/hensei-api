@@ -95,7 +95,8 @@ RSpec.describe 'Social sign-in', :social_auth, type: :request do
       body = response.parsed_body
       expect(body).to include('status' => 'link_required', 'provider' => 'discord')
       expect(body).not_to have_key('access_token')
-      expect(SocialAuth::Ticket.read(body['ticket'], purpose: :link)).to include('provider_uid' => 'discord-1')
+      expect(SocialAuth::Ticket.read(body['ticket'], purpose: :link))
+        .to include('provider_uid' => 'discord-1', 'user_id' => existing.id)
       expect(SocialAuth::Ticket.read(body['ticket'], purpose: :signup)).to be_nil
       expect(existing.user_identities).to be_empty
     end

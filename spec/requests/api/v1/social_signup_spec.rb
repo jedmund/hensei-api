@@ -90,7 +90,7 @@ RSpec.describe 'Social signup and the password banner', :social_auth, type: :req
     end
 
     it 'refuses a link ticket' do
-      signup(signup_ticket: SocialAuth::Ticket.issue(identity, purpose: :link), user: { username: 'newplayer' })
+      signup(signup_ticket: SocialAuth::Ticket.issue(identity, purpose: :link, user_id: create(:user).id), user: { username: 'newplayer' })
 
       expect(response).to have_http_status(:unauthorized)
       expect(response.parsed_body).to eq('error' => 'invalid_ticket')

@@ -10,10 +10,14 @@ module SocialAuth
     EXPIRES_IN = 10.minutes
 
     class << self
-      def issue(identity, purpose:)
+      # A :link ticket names the account whose email matched (user_id), so only
+      # that account can use it.
+      def issue(identity, purpose:, user_id: nil)
         raise ArgumentError, "unknown ticket purpose: #{purpose}" unless PURPOSES.include?(purpose)
+        raise ArgumentError, 'a link ticket needs the matched user_id' if purpose == :link && user_id.blank?
 
         payload = identity.ticket_payload.merge('iat' => Time.current.to_f)
+        payload['user_id'] = user_id if purpose == :link
         verifier.generate(payload, purpose: purpose, expires_in: EXPIRES_IN)
       end
 

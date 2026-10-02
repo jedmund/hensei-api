@@ -22,7 +22,7 @@ RSpec.describe SocialAuth::Ticket do
   end
 
   it 'expires after 10 minutes' do
-    ticket = described_class.issue(identity, purpose: :link)
+    ticket = described_class.issue(identity, purpose: :link, user_id: 'user-1')
 
     travel 9.minutes
     expect(described_class.read(ticket, purpose: :link)).to be_present
@@ -45,6 +45,15 @@ RSpec.describe SocialAuth::Ticket do
     expect(described_class.read(nil, purpose: :signup)).to be_nil
     expect(described_class.read('', purpose: :signup)).to be_nil
     expect(described_class.read({ 'a' => 1 }, purpose: :signup)).to be_nil
+  end
+
+  it 'names the matched user in a link ticket' do
+    ticket = described_class.issue(identity, purpose: :link, user_id: 'user-1')
+    expect(described_class.read(ticket, purpose: :link)).to include('user_id' => 'user-1')
+  end
+
+  it 'refuses a link ticket without a matched user' do
+    expect { described_class.issue(identity, purpose: :link) }.to raise_error(ArgumentError)
   end
 
   it 'refuses unknown purposes' do

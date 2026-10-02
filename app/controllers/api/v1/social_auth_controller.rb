@@ -27,8 +27,9 @@ module Api
         linked = UserIdentity.includes(:user).find_by(provider: identity.provider, provider_uid: identity.uid)
         return sign_in(linked) if linked
 
-        if identity.email_verified? && User.exists?(email: identity.email)
-          render_link_required(identity)
+        matched_user_id = (User.where(email: identity.email).pick(:id) if identity.email_verified?)
+        if matched_user_id
+          render_link_required(identity, matched_user_id)
         else
           render_signup_required(identity)
         end
@@ -51,10 +52,10 @@ module Api
         render_token_response(linked.user)
       end
 
-      def render_link_required(identity)
+      def render_link_required(identity, user_id)
         render json: {
           status: 'link_required',
-          ticket: SocialAuth::Ticket.issue(identity, purpose: :link),
+          ticket: SocialAuth::Ticket.issue(identity, purpose: :link, user_id: user_id),
           provider: identity.provider
         }
       end

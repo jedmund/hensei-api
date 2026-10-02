@@ -42,12 +42,12 @@ module Api
 
       private
 
-      # A link ticket is only good for a session that logged in after the ticket
-      # was issued, so it can't be attached to an account someone was already
-      # logged in to.
+      # A link ticket is only good for the account whose email matched, and only
+      # for a session that logged in after the ticket was issued. Every failure
+      # is the same invalid_ticket, so the response reveals nothing.
       def identity_from_ticket
         ticket = SocialAuth::Ticket.read(params[:link_ticket], purpose: :link)
-        return render_invalid_ticket unless ticket && doorkeeper_token.created_at > SocialAuth::Ticket.issued_at(ticket)
+        return render_invalid_ticket unless usable_link_ticket?(ticket)
 
         SocialAuth::Identity.new(
           provider: ticket['provider'],
@@ -55,6 +55,12 @@ module Api
           email: (ticket['email'] if ticket['email_verified'] == true),
           is_private_email: ticket['is_private_email'] == true
         )
+      end
+
+      def usable_link_ticket?(ticket)
+        ticket.present? &&
+          ticket['user_id'].to_s == current_user.id.to_s &&
+          doorkeeper_token.created_at > SocialAuth::Ticket.issued_at(ticket)
       end
 
       def identity_from_assertion
