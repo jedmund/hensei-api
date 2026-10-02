@@ -114,6 +114,7 @@ module Granblue
           'premium' => 1,    # Premium
           'classic' => 2,    # Classic
           'classic2' => 3,   # Classic II
+          'classic3' => 12,  # Classic III
           'gala' => 4,       # Flash (wiki uses "gala" for Flash Gala)
           'flash' => 4,      # Flash (alternate)
           'legend' => 5,     # Legend

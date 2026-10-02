@@ -38,7 +38,7 @@ RSpec.describe Granblue::Parsers::Wiki do
     end
 
     it 'has promotions method returning a hash' do
-      expect(described_class.promotions).to include('premium' => 1, 'flash' => 4, 'legend' => 5)
+      expect(described_class.promotions).to include('premium' => 1, 'flash' => 4, 'legend' => 5, 'classic3' => 12)
     end
   end
 

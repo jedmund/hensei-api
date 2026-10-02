@@ -389,7 +389,7 @@ module Granblue
       }.freeze
 
       # Indicators in obtain field that mean character is gacha-available
-      GACHA_INDICATORS = %w[premium flash legend classic classic2 grand zodiac valentine summer halloween holiday formal normal].freeze
+      GACHA_INDICATORS = %w[premium flash legend classic classic2 classic3 grand zodiac valentine summer halloween holiday formal normal].freeze
 
       # Non-gacha obtain values
       NON_GACHA_INDICATORS = %w[rotb event side story promo eternal evoker archangel].freeze
@@ -448,14 +448,16 @@ module Granblue
           end
         end
 
-        # Standard characters get Premium, Flash, Legend by default
-        promotions << 1 # Premium
-        promotions << 4 # Flash
-        promotions << 5 # Legend
+        tokens = obtain.split(',').map(&:strip)
+        # Classic III-only imports must not restore ordinary availability.
+        unless tokens.include?('classic3') && !tokens.include?('premium')
+          promotions.push(1, 4, 5)
+        end
 
         # Add Classic pools only if explicitly mentioned
-        promotions << 2 if obtain.include?('classic') && !obtain.include?('classic2')
-        promotions << 3 if obtain.include?('classic2')
+        promotions << 2 if tokens.include?('classic')
+        promotions << 3 if tokens.include?('classic2')
+        promotions << 12 if tokens.include?('classic3')
 
         promotions.uniq.sort
       end

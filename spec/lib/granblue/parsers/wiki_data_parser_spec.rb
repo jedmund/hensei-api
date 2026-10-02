@@ -172,6 +172,12 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
       expect(result).to include(2)
     end
 
+    it 'recognizes Classic III without also assigning Classic I' do
+      expect(described_class.character_promotions_from_obtain('premium,classic3', '')).to eq([1, 4, 5, 12])
+      expect(described_class.character_promotions_from_obtain('classic3', '')).to eq([12])
+      expect(described_class.character_promotions_from_obtain('classic,classic2,classic3', '')).to eq([2, 3, 12])
+    end
+
     it 'returns empty for non-gacha' do
       expect(described_class.character_promotions_from_obtain('event', '')).to eq([])
     end
