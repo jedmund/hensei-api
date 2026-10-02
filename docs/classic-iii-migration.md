@@ -29,3 +29,7 @@ The normal deployment runs `db:migrate:with_data`. The migration locks the two c
 The obsolete `gacha:migrate_promotions` backfill refuses writes whenever catalogue promotions are populated. Its `TEST=true` preview remains available. Legacy gacha flags cannot represent Classic III and must not overwrite authoritative arrays. Default wiki population fills only empty arrays; `OVERWRITE=true` is a separate explicit catalogue refresh and should use current source data.
 
 Validation used an isolated disposable PostgreSQL test database with catalogue fields only; no writes to existing databases, deployments or pushes occurred. The manifest was independently checked for exact IDs and availability. Targeted migration tests cover reruns, unrelated rows/promotions, shared exceptions, missing and duplicate IDs.
+
+The `data_migrate` integration was also validated with baseline `data:schema:load`, `data:migrate:up VERSION=20261002000001`, and `data:dump` on the disposable database; history records this migration and the generated data schema version is committed. This version precedes the separately planned rate-up migration `20261002010001`; after combining those branches, regenerate `db/data_schema.rb` at the newer version.
+
+The full suite ran before the final lock/drift checks and reported 3,096 examples, one known cross-party GridCharacters failure, and two pending examples. After those final checks, the focused suite passed 76 examples with zero failures.
