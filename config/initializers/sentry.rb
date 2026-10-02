@@ -53,9 +53,24 @@ if sentry_dsn && !one_off_process
 
     config.breadcrumbs_logger = [:active_support_logger]
 
-    # Sample performance traces instead of sending one per request. Set the env
-    # var to 0 to disable tracing entirely without a deploy.
-    config.traces_sample_rate = ENV.fetch('SENTRY_TRACES_SAMPLE_RATE', '0.1').to_f
+    # Sample performance traces instead of sending one per request. Kept low so
+    # tracing stays inside Sentry's free quota (each API trace carries ~25
+    # spans). Set the env var to 0 to turn tracing off.
+    traces_rate = ENV.fetch('SENTRY_TRACES_SAMPLE_RATE', '0.01').to_f
+    config.traces_sample_rate = traces_rate
+    config.traces_sampler = lambda do |context|
+      next 0.0 if traces_rate.zero?
+
+      path = context.dig(:env, 'PATH_INFO').to_s
+      next 0.0 if path.match?(%r{\A(?:/api)?/v1/version\z}) # healthcheck
+
+      # Follow the web app's decision for requests it traced, so a trace
+      # either covers both apps or neither.
+      parent_sampled = context[:parent_sampled]
+      next(parent_sampled ? 1.0 : 0.0) unless parent_sampled.nil?
+
+      traces_rate
+    end
 
     # Drop expected / user-facing exceptions (append; the SDK pre-seeds this list
     # with framework noise, so use += rather than reassigning).
