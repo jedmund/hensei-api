@@ -18,6 +18,8 @@ Rails.application.routes.draw do
     post 'users/me/identities', to: 'user_identities#create'
     delete 'users/me/identities/:provider', to: 'user_identities#destroy'
     post 'auth/:provider', to: 'social_auth#create'
+    post 'extension_auth/codes', to: 'extension_auth#create_code'
+    post 'extension_auth/token', to: 'extension_auth#token'
     get 'users/search', to: 'users#search'
     resources :users, only: %i[create update show]
     resources :grid_weapons, only: %i[create update destroy]
