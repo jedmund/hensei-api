@@ -62,6 +62,12 @@ module Api
         field :has_stored_edit_keys do |user|
           user.user_edit_keys.any?
         end
+        field :has_password do |user|
+          user.password?
+        end
+        field :password_prompt_dismissed do |user|
+          user.password_prompt_dismissed_at.present?
+        end
       end
     end
   end

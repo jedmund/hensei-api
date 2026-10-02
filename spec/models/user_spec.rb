@@ -505,6 +505,77 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'accounts without a password' do
+    def provider_signup(**attrs)
+      User.new(username: 'socialuser', email: 'social@example.com', **attrs).tap do |user|
+        user.user_identities.build(provider: 'discord', provider_uid: '123')
+      end
+    end
+
+    it 'allows a provider signup without a password' do
+      user = provider_signup
+      expect(user.save).to be true
+      expect(user.reload).not_to be_password
+      expect(user.user_identities.count).to eq(1)
+    end
+
+    it 'still validates a password given at a provider signup' do
+      user = provider_signup(password: 'short', password_confirmation: 'short')
+      expect(user).not_to be_valid
+      expect(user.errors[:password]).to be_present
+    end
+
+    it 'lets a passwordless account update its profile' do
+      user = provider_signup.tap(&:save!)
+      expect(user.update(display_name: 'Social')).to be true
+    end
+
+    it 'lets a passwordless account set a first password' do
+      user = provider_signup.tap(&:save!)
+      user.password = 'newpassword'
+      user.password_confirmation = 'newpassword'
+
+      expect(user.save).to be true
+      expect(user.reload.authenticate('newpassword')).to eq(user)
+    end
+
+    it 'never authenticates a passwordless account' do
+      user = provider_signup.tap(&:save!)
+      expect(user.authenticate('')).to be false
+    end
+  end
+
+  describe 'password changes' do
+    let(:user) { create(:user) }
+
+    it 'does not let a password be removed' do
+      user.password = nil
+      expect(user).not_to be_valid
+      expect(user.errors[:password]).to be_present
+    end
+
+    it 'requires the confirmation to match' do
+      user.password = 'newpassword'
+      user.password_confirmation = 'different1'
+      expect(user).not_to be_valid
+      expect(user.errors[:password_confirmation]).to be_present
+    end
+
+    it 'rejects passwords bcrypt would truncate' do
+      user.password = 'a' * 73
+      user.password_confirmation = 'a' * 73
+      expect(user).not_to be_valid
+      expect(user.errors[:password]).to be_present
+    end
+  end
+
+  describe '#token_payload' do
+    it 'returns the summary sent with OAuth tokens' do
+      user = create(:user)
+      expect(user.token_payload).to eq(id: user.id, username: user.username, role: user.role)
+    end
+  end
+
   describe '#generate_reset_token!' do
     let(:user) { create(:user) }
 
