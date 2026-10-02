@@ -9,3 +9,7 @@
       cron: "0 4 * * *" # Daily at 04:00 UTC
       class: PartyDifficulty::SweepJob
       queue: maintenance
+    extension_auth_code_cleanup:
+      cron: "15 4 * * *" # Daily at 04:15 UTC
+      class: ExtensionAuthCodes::CleanupJob
+      queue: maintenance
