@@ -216,6 +216,8 @@ GEM
     jaro_winkler (1.7.0)
     jmespath (1.6.2)
     json (2.21.2)
+    jwt (3.3.0)
+      base64
     kramdown (2.5.1)
       rexml (>= 3.3.9)
     kramdown-parser-gfm (1.1.0)
@@ -559,6 +561,7 @@ DEPENDENCIES
   figaro
   gemoji-parser
   httparty
+  jwt (~> 3.3)
   listen
   mini_magick
   newrelic_rpm
