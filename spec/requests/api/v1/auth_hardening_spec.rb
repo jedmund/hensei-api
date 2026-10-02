@@ -149,6 +149,30 @@ RSpec.describe 'API auth hardening', type: :request do
     end
   end
 
+  describe 'OAuth grant flows' do
+    it 'issues tokens for the password grant and refreshes them' do
+      post '/oauth/token', params: { grant_type: 'password', email: user.email, password: 'password' }
+      expect(response).to have_http_status(:ok)
+      refresh_token = response.parsed_body['refresh_token']
+      expect(refresh_token).to be_present
+
+      post '/oauth/token', params: { grant_type: 'refresh_token', refresh_token: refresh_token }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['access_token']).to be_present
+    end
+
+    it 'rejects the client credentials grant' do
+      post '/oauth/token', params: { grant_type: 'client_credentials', client_id: 'x', client_secret: 'y' }
+      expect(response).to have_http_status(:bad_request)
+      expect(response.parsed_body['error']).to eq('unsupported_grant_type')
+    end
+
+    it 'does not route the authorization endpoint' do
+      get '/oauth/authorize', params: { response_type: 'code', client_id: 'x' }
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe 'artifact image downloads' do
     let(:artifact) { create(:artifact) }
 

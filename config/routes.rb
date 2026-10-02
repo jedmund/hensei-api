@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   use_doorkeeper do
     controllers tokens: 'tokens'
-    skip_controllers :applications, :authorized_applications
+    skip_controllers :applications, :authorized_applications, :authorizations
   end
 
   # The API isn't meant to be crawled. (public/ isn't served in production.)
