@@ -59,7 +59,7 @@ gem 'redis'
 gem 'sidekiq'
 
 # Pagination library
-gem 'will_paginate', '~> 3.3'
+gem 'will_paginate', '~> 4.0'
 
 # Migrate and update data alongside your database structure.
 gem 'data_migrate'
