@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_02_000100) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_02_000200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -517,6 +517,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_02_000100) do
     t.index ["name_en"], name: "index_effects_on_name_en"
   end
 
+  create_table "extension_auth_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "code_digest", null: false
+    t.string "code_challenge", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code_digest"], name: "index_extension_auth_codes_on_code_digest", unique: true
+    t.index ["expires_at"], name: "index_extension_auth_codes_on_expires_at"
+    t.index ["user_id"], name: "index_extension_auth_codes_on_user_id"
+  end
+  
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
@@ -1613,6 +1626,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_02_000100) do
   add_foreign_key "difficulty_change_logs", "users"
   add_foreign_key "difficulty_drafts", "users"
   add_foreign_key "effects", "effects", column: "effect_family_id"
+  add_foreign_key "extension_auth_codes", "users"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
   add_foreign_key "grid_artifacts", "artifacts"

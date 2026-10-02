@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :party_shares, foreign_key: :shared_by_id, dependent: :destroy
   has_many :user_edit_keys, dependent: :destroy
   has_many :user_identities, dependent: :destroy
+  has_many :extension_auth_codes, dependent: :delete_all
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
