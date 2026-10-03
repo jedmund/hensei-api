@@ -36,11 +36,20 @@ module GachaSimulation
         value.freeze
       end
 
+      # The recruited character, with the season and series its tags show
+      def recruit(character)
+        series = character.ordered_series_records.map do |record|
+          { 'id' => record.id, 'slug' => record.slug, 'name' => { 'en' => record.name_en, 'ja' => record.name_jp } }
+        end
+        { 'granblue_id' => character.granblue_id, 'en' => character.name_en, 'ja' => character.name_jp,
+          'season' => character.season, 'series' => series.presence || character.series }
+      end
+
       def load_items
         ApplicationRecord.transaction(isolation: :repeatable_read) do
           # Style Shift rows share their base character's granblue_id; the weapon
           # recruits the base character
-          characters = Character.where(style_swap: false).pluck(:granblue_id, :name_en, :name_jp).group_by(&:first)
+          characters = Character.where(style_swap: false).includes(:character_series_records).group_by(&:granblue_id)
           [Weapon, Summon].flat_map do |model|
             fields = %i[id granblue_id name_en name_jp rarity element promotions release_date]
             fields << :recruits if model == Weapon
@@ -55,9 +64,7 @@ module GachaSimulation
                               else
                                 (recruits.present? ? 'characterWeapon' : 'weapon')
                               end,
-                'recruits' => if matches.size == 1
-                                { 'granblue_id' => matches.first[0], 'en' => matches.first[1], 'ja' => matches.first[2] }
-                              end }
+                'recruits' => (recruit(matches.first) if matches.size == 1) }
             end
           end
         end

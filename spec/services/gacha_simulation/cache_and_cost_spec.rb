@@ -26,7 +26,19 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
     expect(item['category']).to eq('characterWeapon')
     expect(item['release_date']).to eq('2026-03-16')
-    expect(item['recruits']).to eq('granblue_id' => character.granblue_id, 'en' => 'Vira', 'ja' => 'ヴィーラ')
+    expect(item['recruits']).to include('granblue_id' => character.granblue_id, 'en' => 'Vira', 'ja' => 'ヴィーラ')
+  end
+
+  it 'includes the season and series a recruited character is tagged with' do
+    series = CharacterSeries.create!(name_en: 'Zodiac', name_jp: '十二神将', slug: 'zodiac-spec', order: 1)
+    character = create(:character, season: 3)
+    character.character_series_records << series
+    weapon = create(:weapon, rarity: 3, recruits: character.granblue_id)
+    item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
+    expect(item['recruits']).to include(
+      'season' => 3,
+      'series' => [{ 'id' => series.id, 'slug' => 'zodiac-spec', 'name' => { 'en' => 'Zodiac', 'ja' => '十二神将' } }]
+    )
   end
 
   it 'links a weapon to the base character when the character has a Style Shift' do
@@ -35,7 +47,7 @@ RSpec.describe 'Gacha cache and purchase estimates' do
                        style_swap: true, style_name_en: 'Super Cidala')
     weapon = create(:weapon, rarity: 3, recruits: character.granblue_id)
     item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
-    expect(item['recruits']).to eq('granblue_id' => character.granblue_id, 'en' => 'Cidala', 'ja' => 'シンダラ')
+    expect(item['recruits']).to include('granblue_id' => character.granblue_id, 'en' => 'Cidala', 'ja' => 'シンダラ')
   end
 
   it 'uses JPY divided by JPY-per-USD and retains a dated stale quote for seven days' do
