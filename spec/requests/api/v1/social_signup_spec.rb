@@ -22,7 +22,8 @@ RSpec.describe 'Social signup and the password banner', :social_auth, type: :req
       body = response.parsed_body
       user = User.find_by(username: 'newplayer')
       expect(body).to include('token_type' => 'Bearer', 'access_token' => be_present, 'refresh_token' => be_present)
-      expect(body['user']).to eq('id' => user.id, 'username' => 'newplayer', 'role' => user.role)
+      expect(body['user']).to eq('id' => user.id, 'username' => 'newplayer', 'role' => user.role,
+                                 'deletion_scheduled_at' => nil)
       expect(user).to have_attributes(email: 'new@example.com', email_verified: true)
       expect(user).not_to be_password
       expect(user.user_identities.first).to have_attributes(provider: 'discord', provider_uid: 'discord-9',

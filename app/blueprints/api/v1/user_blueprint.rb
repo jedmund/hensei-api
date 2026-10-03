@@ -68,6 +68,7 @@ module Api
         field :password_prompt_dismissed do |user|
           user.password_prompt_dismissed_at.present?
         end
+        field :deletion_scheduled_at
       end
     end
   end

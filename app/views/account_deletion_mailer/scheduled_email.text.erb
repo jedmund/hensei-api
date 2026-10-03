@@ -1,0 +1,9 @@
+Hi <%= @user.display_name_or_username %>,
+
+Your granblue.team account is scheduled to be deleted on <%= @deletion_date %>. You've been signed out everywhere.
+
+Until then, your account and teams stay as they are. If you change your mind, log in and choose "Cancel deletion":
+
+<%= @login_url %>
+
+If you didn't ask to delete your account, log in, cancel the deletion, and change your password right away.
