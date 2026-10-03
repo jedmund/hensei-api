@@ -125,15 +125,13 @@ Deployment steps:
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 (GPL-3.0-only) with additional non-commercial restrictions.
+This project is licensed under the GNU Affero General Public License v3.0 with a non-commercial use condition. See [LICENSE](LICENSE) for the full terms.
 
-Key points:
-- You are free to use and modify the software for non-commercial purposes
-- Any modifications must be shared under the same license
-- You must provide attribution to the original authors
-- No warranty is provided
-
-See the LICENSE file for full details.
+In short:
+- You can use, study, modify and share the code for non-commercial purposes.
+- If you modify it and share it or run it as a service others can use, you must publish your source code under the same terms.
+- You can't use it, or anything built from it, for commercial purposes (selling it, charging for access, or running it with ads or paid features) without permission.
+- There's no warranty.
 
 ## Contact
 
