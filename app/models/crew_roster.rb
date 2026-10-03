@@ -2,7 +2,10 @@
 
 class CrewRoster < ApplicationRecord
   belongs_to :crew
-  belongs_to :created_by, class_name: 'User'
+  # Optional once saved: the user may delete their account later, which clears
+  # this. New records still need one.
+  belongs_to :created_by, class_name: 'User', optional: true
+  validates :created_by, presence: true, on: :create
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :element, presence: true, inclusion: { in: 1..6 }

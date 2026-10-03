@@ -8,7 +8,9 @@ RSpec.describe CrewRoster, type: :model do
 
   describe 'associations' do
     it { is_expected.to belong_to(:crew) }
-    it { is_expected.to belong_to(:created_by).class_name('User') }
+    # Optional so a creator can delete their account; still required on create.
+    it { is_expected.to belong_to(:created_by).class_name('User').without_validating_presence }
+    it { is_expected.to validate_presence_of(:created_by).on(:create) }
   end
 
   describe 'validations' do

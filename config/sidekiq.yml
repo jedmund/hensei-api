@@ -13,3 +13,7 @@
       cron: "15 4 * * *" # Daily at 04:15 UTC
       class: ExtensionAuthCodes::CleanupJob
       queue: maintenance
+    account_deletion_purge:
+      cron: "30 4 * * *" # Daily at 04:30 UTC
+      class: AccountDeletion::PurgeJob
+      queue: maintenance

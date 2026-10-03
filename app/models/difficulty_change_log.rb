@@ -5,7 +5,10 @@
 # Recorded by PartyDifficulty::DraftWorkspace#commit!. Not surfaced anywhere
 # yet — kept for future audit / undo / diff history features.
 class DifficultyChangeLog < ApplicationRecord
-  belongs_to :user
+  # Optional once saved: the user may delete their account later, which clears
+  # this. New records still need one.
+  belongs_to :user, optional: true
+  validates :user, presence: true, on: :create
 
   scope :recent_first, -> { order(committed_at: :desc) }
 end

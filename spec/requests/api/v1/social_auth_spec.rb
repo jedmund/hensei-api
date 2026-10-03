@@ -29,7 +29,8 @@ RSpec.describe 'Social sign-in', :social_auth, type: :request do
       expect(body['access_token']).to be_present
       expect(body['refresh_token']).to be_present
       expect(body['created_at']).to be_a(Integer)
-      expect(body['user']).to eq('id' => user.id, 'username' => user.username, 'role' => user.role)
+      expect(body['user']).to eq('id' => user.id, 'username' => user.username, 'role' => user.role,
+                                 'deletion_scheduled_at' => nil)
       expect(response.headers['Cache-Control']).to include('no-store')
     end
 
