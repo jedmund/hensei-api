@@ -1,0 +1,252 @@
+type,granblue_id,name,availability,rarity,character,recruits
+Weapon,1040016000,Gottfried,exclusive,SSR,Aglovale,3040192000
+Weapon,1040212000,Sacred Lance,exclusive,SSR,Athena,3040202000
+Weapon,1040212800,Spymur's Clause,exclusive,SSR,Baal,3040215000
+Weapon,1040310200,Claidheamh Soluis,exclusive,SSR,Charlotta (Light),3040194000
+Weapon,1040911300,Metal Destroyer,exclusive,SSR,Colossus,3040235000
+Weapon,1040509400,White Hawk,exclusive,SSR,Cucouroux (SSR),3040159000
+Weapon,1040610900,Neko Punch Pro,exclusive,SSR,Dante and Freiheit,3040205000
+Weapon,1040510300,Ishtar,exclusive,SSR,Eustace (Dark),3040198000
+Weapon,1040509600,Arachne,exclusive,SSR,Freezie,3040182000
+Weapon,1040212300,Deirdre's Symbol,exclusive,SSR,Heles (Wind),3040208000
+Weapon,1040512100,Takeminakata,exclusive,SSR,Ilsa (Light),3040258000
+Weapon,1040912000,Soshu Masamune,exclusive,SSR,Jin,3040257000
+Weapon,1040212900,Vagabond,exclusive,SSR,Kolulu,3040222000
+Weapon,1040911600,Juzumaru,exclusive,SSR,Kou,3040242000
+Weapon,1040611500,Rainbow Hand,exclusive,SSR,Ladiva (SSR),3040217000
+Weapon,1040211700,Feendrache Pennant,exclusive,SSR,Lancelot and Vane,3040191000
+Weapon,1040512200,Commander's Sidearm,exclusive,SSR,Lecia (Water),3040263000
+Weapon,1040708800,Levin Shooter,exclusive,SSR,Levin Sisters,3040193000
+Weapon,1040911900,Alabaster Zenith,exclusive,SSR,Lucius (SSR),3040254000
+Weapon,1040610700,Ruling Pen,exclusive,SSR,Lunalu (SSR),3040172000
+Weapon,1040415200,Froststar Staff,exclusive,SSR,Macula Marius,3040213000
+Weapon,1040415400,Euripides,exclusive,SSR,Medusa,3040214000
+Weapon,1040415500,Trí Bandia,exclusive,SSR,Morrigna,3040218000
+Weapon,1040909200,Gigante Slicer,exclusive,SSR,Nicholas,3040156000
+Weapon,1040509200,Railgun,exclusive,SSR,Robomi,3040155000
+Weapon,1040709300,Eon,exclusive,SSR,Sara (Light),3040236000
+Weapon,1040808500,Cythara Anglica,exclusive,SSR,Selfira,3040175000
+Weapon,1040212100,Galactic Impact,exclusive,SSR,Sen (SSR),3040204000
+Weapon,1040709400,Iridescent Bow,exclusive,SSR,Shitori,3040244000
+Weapon,1040911400,Black Dragon's Maw,exclusive,SSR,Siegfried (Fire),3040237000
+Weapon,1040310100,Full Metal Recoil,exclusive,SSR,Silva (Light),3040187000
+Weapon,1040213100,Cardinal Spear,exclusive,SSR,Societte (Wind),3040241000
+Weapon,1040610600,Wyrmtiger Claw,exclusive,SSR,Soriz (SSR),3040170000
+Weapon,1040612100,Golden Dragon,exclusive,SSR,Stan and Aliza,3040233000
+Weapon,1040311200,Hand Axe,exclusive,SSR,Tabina,3040234000
+Weapon,1040111100,Gandring,exclusive,SSR,Tanya (SSR),3040203000
+Weapon,1040310000,Two-by-Four,exclusive,SSR,Tsubasa,3040180000
+Weapon,1040811700,Plushie Pal,exclusive,SSR,Vania and Malinda,3040264000
+Weapon,1040809300,Another Sky,exclusive,SSR,Vira (Wind),3040211000
+Weapon,1040309800,Master Key,exclusive,SSR,Wulf and Renie,3040174000
+Weapon,1040311700,True Tiger's Bane,exclusive,SSR,Yodarha (Wind),3040259000
+Weapon,1040112600,Gangsta Knife,exclusive,SSR,Yuisis (Fire),3040253000
+Weapon,1040414400,Returner Staff,exclusive,SSR,Yurius,3040199000
+Weapon,1040112700,Spectral Cleaver,exclusive,SSR,Danua (Light),3040256000
+Summon,2040297000,"Anat, for Love and War",exclusive,SSR,,
+Summon,2040347000,Belial,shared,SSR,,
+Summon,2040305000,Cerberus,exclusive,SSR,,
+Summon,2040326000,Demonbream,shared,SSR,,
+Summon,2040342000,Dogū,shared,SSR,,
+Summon,2040344000,Elil,shared,SSR,,
+Summon,2040281000,Freyr,exclusive,SSR,,
+Summon,2040311000,Gabriel,shared,SSR,,
+Summon,2040285000,Gorilla,shared,SSR,,
+Summon,2040296000,Hamsa,exclusive,SSR,,
+Summon,2040350000,Heimdallr,shared,SSR,,
+Summon,2040340000,Long Ji,shared,SSR,,
+Summon,2040310000,Magus,exclusive,SSR,,
+Summon,2040323000,Marduk,exclusive,SSR,,
+Summon,2040330000,Metatron,shared,SSR,,
+Summon,2040306000,Michael,shared,SSR,,
+Summon,2040352000,Nyarlathotep,shared,SSR,,
+Summon,2040302000,Poseidon,exclusive,SSR,,
+Summon,2040202000,Raphael,shared,SSR,,
+Summon,2040327000,Sariel,shared,SSR,,
+Summon,2040338000,Surtr,shared,SSR,,
+Summon,2040304000,Sylph,exclusive,SSR,,
+Summon,2040203000,Uriel,shared,SSR,,
+Weapon,1020000800,Fire Sword,shared,R,Farrah,3020006000
+Weapon,1020100600,Mandau,shared,R,Zehek,3020017000
+Weapon,1020400000,Taiaha,shared,R,Jasmine,3020012000
+Weapon,1020400600,Feather Wand,shared,R,Anna,3020008000
+Weapon,1020500100,Petronel,shared,R,Mary,3020016000
+Weapon,1020600300,Mythril Knuckles,shared,R,Hazen,3020009000
+Weapon,1030000100,Ilhoon,shared,SR,,
+Weapon,1030000200,Fragarach,shared,SR,,
+Weapon,1030000300,Tilvung,shared,SR,Helnar,3030004000
+Weapon,1030001200,Almace,shared,SR,,
+Weapon,1030001400,Ram-Dao,shared,SR,Gayne,3030009000
+Weapon,1030001500,Twisted Dagger,shared,SR,,
+Weapon,1030100100,Mirage Knife,shared,SR,,
+Weapon,1030100200,Stiletto,shared,SR,,
+Weapon,1030101100,Fusetto,shared,SR,,
+Weapon,1030200200,Partisan,shared,SR,,
+Weapon,1030200300,Shura Vhara,shared,SR,,
+Weapon,1030200700,Trident,shared,SR,,
+Weapon,1030300200,Bullova,shared,SR,,
+Weapon,1030300300,Horseman's Hammer,shared,SR,,
+Weapon,1030400200,Pastoral Staff,shared,SR,,
+Weapon,1030401300,Arson,shared,SR,Elmott,3030023000
+Weapon,1030401400,Holy Cane,shared,SR,,
+Weapon,1030500000,Crosswind,shared,SR,,
+Weapon,1030500100,Dragon Tail,shared,SR,,
+Weapon,1030500200,Swallowtail,shared,SR,,
+Weapon,1030500300,Snaphance,shared,SR,,
+Weapon,1030500800,Wheellock Axe,shared,SR,,
+Weapon,1030600000,Neko Punch,shared,SR,,
+Weapon,1030800200,Athanasius,shared,SR,,
+Weapon,1030800300,Stravaria,shared,SR,Keehar,3030024000
+Weapon,1020500800,Self Defender,shared,R,Richard,3020014000
+Weapon,1030300100,Shoka,shared,SR,,
+Weapon,1030400700,Spritewood Staff,shared,SR,Mishra,3030002000
+Weapon,1030600100,Jamadhar,shared,SR,,
+Weapon,1020301200,Sky Tomahawk,shared,R,Eso,3020002000
+Weapon,1030001800,Royal Rapier,shared,SR,Ange,3030012000
+Weapon,1030400800,Zhonpeli,shared,SR,Lamretta,3030013000
+Weapon,1030600800,Mauler,shared,SR,,
+Weapon,1020001500,Lightbringer,shared,R,Stan (Event),3020019000
+Weapon,1030201700,Narval,shared,SR,Ulamnuran,3030014000
+Weapon,1030700000,Sarnga,shared,SR,,
+Weapon,1030700100,Aves,shared,SR,,
+Weapon,1020301400,Draph Hammer,shared,R,Galadar,3020004000
+Weapon,1030101800,Puppet Knife,shared,SR,Danua,3030017000
+Weapon,1030200000,Vajranda,shared,SR,,
+Weapon,1030700500,Shadow Bow,shared,SR,,
+Weapon,1030101400,Sword Breaker,shared,SR,,
+Weapon,1030700600,Imperial Bow,shared,SR,,
+Weapon,1020301500,Soldier Axe,shared,R,Ryan,3020000000
+Weapon,1030700700,Sutera's Bow,shared,SR,Sutera (Wind),3030018000
+Weapon,1030401200,Yagrush,shared,SR,,
+Weapon,1030601000,Impact Knuckles,shared,SR,Soriz,3030020000
+Weapon,1020401600,Moss Tree Staff,shared,R,Petra,3020011000
+Weapon,1020601100,Blast Knuckles,shared,R,Feather,3020020000
+Weapon,1030001900,Lyst,shared,SR,Vira,3030019000
+Weapon,1030800000,Songsmith's Harp,shared,SR,Elta,3030025000
+Weapon,1030601100,Chain Knuckles,shared,SR,Ezecrain,3030027000
+Weapon,1030102300,Soul Edge,shared,SR,Ferry,3030032000
+Weapon,1020102200,Bloody Piercer,shared,R,Tanya,3020015000
+Weapon,1030002700,Purity Blade,shared,SR,Lucius (Fire),3030171000
+Weapon,1030102400,Soulbond Dirk,shared,SR,Teena,3030034000
+Weapon,1020301800,Morning Star,shared,R,Daetta,3020024000
+Weapon,1030401700,Aerial Cane,shared,SR,Arusha,3030036000
+Weapon,1020201600,Night Horn,shared,R,Deliford,3020005000
+Weapon,1030102600,Sword of Lisblanc,shared,SR,Farrah (SR),3030037000
+Weapon,1020201700,Ghillie Fork,shared,R,Elmelaura,3020025000
+Weapon,1030601500,Tiger Fang,shared,SR,Mimlemel,3030043000
+Weapon,1020002000,Dark Sword,shared,R,Leonora,3020026000
+Weapon,1020501300,Sawed-Off Shotgun,shared,R,Garma,3020027000
+Weapon,1020402300,Snowman Rod,shared,R,Suframare,3020029000
+Weapon,1030402900,Soothing Torch,shared,SR,Rosamia (SR),3030049000
+Weapon,1020002100,Shrimp Lure,shared,R,Yodarha,3020030000
+Weapon,1030000000,Arondight,shared,SR,Baotorda,3030053000
+Weapon,1020102300,Switchblade,shared,R,Lowain,3020031000
+Weapon,1030603400,Metal Glove,shared,SR,Ladiva,3030055000
+Weapon,1030203500,Golden Mop,shared,SR,Claudia,3030057000
+Weapon,1030603500,Cup and Saucer,shared,SR,Dorothy,3030058000
+Weapon,1030302800,Voulge,shared,SR,Zaja,3030059000
+Weapon,1030900100,Fluorithium Blade,shared,SR,,
+Weapon,1030900200,Sauria,shared,SR,,
+Weapon,1020402500,Stone Pole,shared,R,Norcel,3020033000
+Weapon,1030802100,Aquarium Harp,shared,SR,Ejaeli,3030061000
+Weapon,1020501400,Derringer,shared,R,Barawa,3020034000
+Weapon,1030004500,Tanzanite Sword Mikoh,shared,SR,Therese,3030062000
+Weapon,1020002200,Old Sword,shared,R,Krugne,3020035000
+Weapon,1030702600,Ice Bow,shared,SR,Milleore,3030064000
+Weapon,1020501500,Flame Bolt,shared,R,Karva,3020036000
+Weapon,1030603800,Merciless Chastening,shared,SR,Hazen (SR),3030066000
+Weapon,1030603900,Misanga Bracelet,shared,SR,J.J.,3030075000
+Weapon,1020601400,Chopsticks,shared,R,Ippatsu,3020038000
+Weapon,1030502900,Quarrel,shared,SR,Sahli Lao,3030076000
+Weapon,1020402600,Light Staff,shared,R,Philosophia,3020039000
+Weapon,1030503000,Fire Piece,shared,SR,Mary (SR),3030068000
+Weapon,1020201800,Silver Pole,shared,R,Joel,3020040000
+Weapon,1030604000,Heavy Blast Knuckles,shared,SR,Feather (SR),3030078000
+Weapon,1020002300,Paper Fan,shared,R,Karteira,3020043000
+Weapon,1030403600,Cursed Cane,shared,SR,Will (SR),3030092000
+Weapon,1020402700,Forest Hermit Staff,shared,R,Dante,3020044000
+Weapon,1030303000,Great Hammer,shared,SR,Galadar (SR),3030094000
+Weapon,1020601500,Light Buckler,shared,R,Pavidus,3020045000
+Weapon,1030403700,Witch's Broom,shared,SR,Anna (SR),3030095000
+Weapon,1020301900,Iron Pliers,shared,R,Viceroy,3020046000
+Weapon,1030403900,Flower Crown,shared,SR,Jasmine (SR),3030102000
+Weapon,1020402800,Rubia Rod,shared,R,Camieux (Earth),3020047000
+Weapon,1030204400,Titanium Harpoon,shared,SR,Sig,3030106000
+Weapon,1030204500,Raging Halberd,shared,SR,Vane,3030107000
+Weapon,1030005400,Frying Pan,shared,SR,Yaia,3030111000
+Weapon,1020700700,Flame Bow,shared,R,Flesselles,3020049000
+Weapon,1030703200,Glass Bow,shared,SR,Sutera (Fire),3030113000
+Weapon,1020800100,Night Bell,shared,R,Lunalu,3020050000
+Weapon,1030303200,Golden Woofer,shared,SR,Daetta (SR),3030116000
+Weapon,1020601600,Oven Mitts,shared,R,Nene,3020051000
+Weapon,1030901800,Zanbato,shared,SR,Sevilbarra,3030118000
+Weapon,1020102500,Broken Bottle,shared,R,Lamretta (R),3020052000
+Weapon,1030303300,Massive Axe,shared,SR,Ryan (SR),3030119000
+Weapon,1030204800,Giant Fork,shared,SR,Redluck,3030122000
+Weapon,1020402900,Student Notebook,shared,R,Alistair,3020053000
+Weapon,1030104700,Scalpel,shared,SR,Shao,3030124000
+Weapon,1020002500,Prism Tear,shared,R,Vermeil,3020054000
+Weapon,1030604700,Crimson Talons,shared,SR,Sen,3030127000
+Weapon,1020601700,Iron Guard,shared,R,Balurga,3020055000
+Weapon,1030303600,Cloud Tomahawk,shared,SR,Eso (SR),3030128000
+Weapon,1020002600,Practice Sword,shared,R,Thelonim,3020056000
+Weapon,1030205000,Dreadflayer,shared,SR,Laguna,3030133000
+Weapon,1030104900,Shrike's Beak,shared,SR,Jamil,3030134000
+Weapon,1020002800,Heavy Metal Comb,shared,R,La Coiffe,3020058000
+Weapon,1030303700,Fremel Hammer,shared,SR,Almeida,3030139000
+Weapon,1020601800,Enchanted Nail,shared,R,Chloe,3020059000
+Weapon,1030404400,Sacred Codex,shared,SR,Johann,3030140000
+Weapon,1020602000,Boogie Plates,shared,R,Cailana,3020062000
+Weapon,1030503900,Colorful Crackerjack,shared,SR,Pengy,3030153000
+Weapon,1020102600,Little Scarlet,shared,R,Drusilla,3020063000
+Weapon,1020002900,Blue Crest,shared,R,Cordelia,3020064000
+Weapon,1020800300,Bronze Bell,shared,R,Bakura,3020066000
+Weapon,1020602100,Tattoo Fist,shared,R,Randall,3020070000
+Weapon,1020102700,Spin Blade,shared,R,Spinnah,3020071000
+Weapon,1030406100,Cube Staff,shared,SR,Krugne (SR),3030278000
+Weapon,1030608700,Lifeguard Glove,shared,SR,Joel (SR),3030320000
+Summon,2020004000,Hornbird,shared,R,,
+Summon,2020009000,Skeleton,shared,R,,
+Summon,2020010000,Dragonflair,shared,R,,
+Summon,2020011000,Crusher,shared,R,,
+Summon,2020012000,Minotaur,shared,R,,
+Summon,2020013000,Mandrake,shared,R,,
+Summon,2020014000,Sleepyhead,shared,R,,
+Summon,2020015000,Angelie,shared,R,,
+Summon,2020016000,Jawfish,shared,R,,
+Summon,2020017000,Swordshark,shared,R,,
+Summon,2030003000,Griffin,shared,SR,,
+Summon,2030005000,Golem,shared,SR,,
+Summon,2030006000,Hydra,shared,SR,,
+Summon,2030007000,Wyvern,shared,SR,,
+Summon,2030008000,Myconid,shared,SR,,
+Summon,2030009000,Hellhound,shared,SR,,
+Summon,2030010000,Doomworm,shared,SR,,
+Summon,2020022000,Cave Bat,shared,R,,
+Summon,2020023000,Rivacuda,shared,R,,
+Summon,2020024000,Lumacie Griffin,shared,R,,
+Summon,2030019000,Wilinus Icewyrm,shared,SR,,
+Summon,2030020000,Elmenhilde Windsprite,shared,SR,,
+Summon,2020025000,Venom Lancer,shared,R,,
+Summon,2030021000,Aquamarine Carbuncle,shared,SR,,
+Summon,2020027000,Walking Torch,shared,R,,
+Summon,2020028000,Slime,shared,R,,
+Summon,2030022000,Vrazarek Firewyrm,shared,SR,,
+Summon,2030023000,Stone Golem,shared,SR,,
+Summon,2020029000,Imp,shared,R,,
+Summon,2020030000,Bonethorn,shared,R,,
+Summon,2020031000,Twilight Devil,shared,R,,
+Summon,2020032000,Purgatorian,shared,R,,
+Summon,2030025000,Ruination Gargoyle,shared,SR,,
+Summon,2030028000,Pixie,shared,SR,,
+Summon,2020026000,Rodfly,shared,R,,
+Summon,2030031000,Garnet Carbuncle,shared,SR,,
+Summon,2020033000,Belle,shared,R,,
+Summon,2020034000,Ghost Light,shared,R,,
+Summon,2020035000,Crawler,shared,R,,
+Summon,2030033000,Elusious Windwyrm,shared,SR,,
+Summon,2030034000,Angelie Cascade,shared,SR,,
+Summon,2030039000,Onyx Carbuncle,shared,SR,,
+Summon,2030042000,Opal Carbuncle,shared,SR,,
+Summon,2030024000,Zircon Carbuncle,shared,SR,,
+Summon,2030080000,Clay Golem,shared,SR,,

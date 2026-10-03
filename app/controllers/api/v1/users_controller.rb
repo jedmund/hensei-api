@@ -5,6 +5,8 @@ module Api
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
+      include IssuesTokens
+
       # update looks the user up by id (set_by_id); the rest look up by username
       # (set). update must be excluded from set so its id isn't treated as a
       # username (which now 404s on miss).
@@ -16,6 +18,7 @@ module Api
       # the availability checks are called from browsers directly.
       limit_requests 'signup', to: 60, within: 1.minute, only: :create
       limit_requests 'availability', to: 30, within: 1.minute, only: %i[check_email check_username]
+      limit_requests 'social-signup', to: 20, within: 1.minute, only: :create, if: -> { params[:signup_ticket].present? }
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
@@ -28,6 +31,8 @@ module Api
       DEFAULT_MAX_CLEAR_TIME = 5400
 
       def create
+        return create_from_signup_ticket if params[:signup_ticket].present?
+
         user = User.new(user_params)
 
         unless user.save
@@ -66,7 +71,9 @@ module Api
       # Email and password are not updatable here; they change only through
       # registration and the password reset flow.
       def update
-        render json: UserBlueprint.render(@user, view: :minimal) if @user.update(user_update_params)
+        @user.assign_attributes(user_update_params)
+        dismiss_password_prompt
+        render json: UserBlueprint.render(@user, view: :minimal) if @user.save
       end
 
       def info
@@ -182,9 +189,42 @@ module Api
         render json: { deposited: entries.size }, status: :ok
       end
 
-      def destroy; end
-
       private
+
+      # POST /users with a signup_ticket from POST /auth/:provider: creates a
+      # passwordless account linked to the provider and returns the full token
+      # body (with a refresh token), like a sign-in.
+      def create_from_signup_ticket
+        ticket = SocialAuth::Ticket.read(params[:signup_ticket], purpose: :signup)
+        return render json: { error: 'invalid_ticket' }, status: :unauthorized unless ticket
+
+        attrs = params.fetch(:user, {})
+        attrs = attrs.respond_to?(:permit) ? attrs.permit(:username, :email) : {}
+        signup = SocialAuth::Signup.new(ticket, username: attrs[:username], email: attrs[:email])
+        unless signup.call
+          return render json: { error: 'Validation failed', messages: signup.user.errors.full_messages },
+                        status: :unprocessable_entity
+        end
+
+        send_verification_email(signup.user) unless signup.user.email_verified?
+        render_token_response(signup.user, status: :created)
+      rescue SocialAuth::Signup::IdentityTaken
+        render json: { error: 'invalid_ticket' }, status: :unauthorized
+      end
+
+      def send_verification_email(user)
+        raw_token = user.generate_verification_token!
+        SendEmailVerificationJob.perform_later(user.id, raw_token)
+      end
+
+      # The settings banner suggesting a password stays dismissed once
+      # dismissed. Only the flag is accepted, never the timestamp itself.
+      def dismiss_password_prompt
+        dismissed = params.dig(:user, :password_prompt_dismissed)
+        return unless ActiveModel::Type::Boolean.new.cast(dismissed)
+
+        @user.password_prompt_dismissed_at ||= Time.current
+      end
 
       def build_profile_query(profile_user)
         query = Party.includes(

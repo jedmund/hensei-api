@@ -102,6 +102,7 @@ module GranblueEnums
     Halloween: 8,
     Holiday: 9,
     Collab: 10,
-    Formal: 11
+    Formal: 11,
+    ClassicIII: 12
   }.freeze
 end

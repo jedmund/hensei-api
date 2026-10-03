@@ -14,6 +14,14 @@ Rails.application.routes.draw do
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
     resources :parties, only: %i[index create update destroy]
     get 'users/me', to: 'users#me'
+    get 'users/me/identities', to: 'user_identities#index'
+    post 'users/me/identities', to: 'user_identities#create'
+    delete 'users/me/identities/:provider', to: 'user_identities#destroy'
+    post 'users/me/deletion', to: 'account_deletions#create'
+    delete 'users/me/deletion', to: 'account_deletions#destroy'
+    post 'auth/:provider', to: 'social_auth#create'
+    post 'extension_auth/codes', to: 'extension_auth#create_code'
+    post 'extension_auth/token', to: 'extension_auth#token'
     get 'users/search', to: 'users#search'
     resources :users, only: %i[create update show]
     resources :grid_weapons, only: %i[create update destroy]

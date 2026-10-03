@@ -399,7 +399,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.string "name", null: false
     t.integer "element", null: false
     t.jsonb "items", default: [], null: false
-    t.uuid "created_by_id", null: false
+    t.uuid "created_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_crew_rosters_on_created_by_id"
@@ -443,7 +443,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
   end
 
   create_table "difficulty_change_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
+    t.uuid "user_id"
     t.text "note"
     t.jsonb "changes_payload", default: {}, null: false
     t.integer "ruleset_version_after"
@@ -517,6 +517,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.index ["name_en"], name: "index_effects_on_name_en"
   end
 
+  create_table "extension_auth_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "code_digest", null: false
+    t.string "code_challenge", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code_digest"], name: "index_extension_auth_codes_on_code_digest", unique: true
+    t.index ["expires_at"], name: "index_extension_auth_codes_on_expires_at"
+    t.index ["user_id"], name: "index_extension_auth_codes_on_user_id"
+  end
+  
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
@@ -745,7 +758,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.integer "round", null: false
     t.bigint "score", default: 0, null: false
     t.boolean "is_cumulative", default: false, null: false
-    t.uuid "recorded_by_id", null: false
+    t.uuid "recorded_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "phantom_player_id"
@@ -1248,6 +1261,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.index ["user_id"], name: "index_user_edit_keys_on_user_id"
   end
 
+  create_table "user_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "provider", null: false
+    t.string "provider_uid", null: false
+    t.string "email"
+    t.boolean "email_verified", default: false, null: false
+    t.boolean "is_private_email", default: false, null: false
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "provider_uid"], name: "index_user_identities_on_provider_and_provider_uid", unique: true
+    t.index ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -1282,9 +1309,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.datetime "last_extension_version_at"
     t.string "description", limit: 140
     t.boolean "support_summons_public", default: true, null: false
+    t.datetime "password_prompt_dismissed_at"
+    t.datetime "deletion_scheduled_at"
     t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
+    t.index ["deletion_scheduled_at"], name: "index_users_on_deletion_scheduled_at", where: "(deletion_scheduled_at IS NOT NULL)"
   end
 
   create_table "weapon_awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1602,6 +1632,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
   add_foreign_key "difficulty_change_logs", "users"
   add_foreign_key "difficulty_drafts", "users"
   add_foreign_key "effects", "effects", column: "effect_family_id"
+  add_foreign_key "extension_auth_codes", "users"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
   add_foreign_key "grid_artifacts", "artifacts"
@@ -1665,6 +1696,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
   add_foreign_key "support_summons", "collection_summons"
   add_foreign_key "support_summons", "users"
   add_foreign_key "user_edit_keys", "users"
+  add_foreign_key "user_identities", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"

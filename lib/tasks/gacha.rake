@@ -4,6 +4,9 @@ namespace :gacha do
   desc 'Migrate gacha table data to promotions arrays on weapons and summons'
   task migrate_promotions: :environment do
     test_mode = ENV['TEST'] == 'true'
+    if !test_mode && (Weapon.where.not(promotions: []).exists? || Summon.where.not(promotions: []).exists?)
+      abort 'Legacy gacha backfill refused: populated promotions are authoritative. Use a reviewed data migration.'
+    end
 
     # Mapping from gacha table boolean columns to PROMOTIONS enum values
     promotion_mapping = {
