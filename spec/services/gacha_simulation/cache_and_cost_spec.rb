@@ -29,6 +29,15 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     expect(item['recruits']).to eq('granblue_id' => character.granblue_id, 'en' => 'Vira', 'ja' => 'ヴィーラ')
   end
 
+  it 'links a weapon to the base character when the character has a Style Shift' do
+    character = create(:character, name_en: 'Cidala', name_jp: 'シンダラ')
+    create(:character, granblue_id: character.granblue_id, name_en: 'Cidala', name_jp: 'シンダラ',
+                       style_swap: true, style_name_en: 'Super Cidala')
+    weapon = create(:weapon, rarity: 3, recruits: character.granblue_id)
+    item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
+    expect(item['recruits']).to eq('granblue_id' => character.granblue_id, 'en' => 'Cidala', 'ja' => 'シンダラ')
+  end
+
   it 'uses JPY divided by JPY-per-USD and retains a dated stale quote for seven days' do
     redis = double('redis')
     allow(Sidekiq).to receive(:redis).and_yield(redis)

@@ -38,7 +38,9 @@ module GachaSimulation
 
       def load_items
         ApplicationRecord.transaction(isolation: :repeatable_read) do
-          characters = Character.pluck(:granblue_id, :name_en, :name_jp).group_by(&:first)
+          # Style Shift rows share their base character's granblue_id; the weapon
+          # recruits the base character
+          characters = Character.where(style_swap: false).pluck(:granblue_id, :name_en, :name_jp).group_by(&:first)
           [Weapon, Summon].flat_map do |model|
             fields = %i[id granblue_id name_en name_jp rarity element promotions release_date]
             fields << :recruits if model == Weapon
