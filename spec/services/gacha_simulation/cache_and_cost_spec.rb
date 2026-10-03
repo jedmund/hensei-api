@@ -22,9 +22,10 @@ RSpec.describe 'Gacha cache and purchase estimates' do
 
   it 'identifies the character a weapon recruits' do
     character = create(:character, name_en: 'Vira', name_jp: 'ヴィーラ')
-    weapon = create(:weapon, rarity: 3, recruits: character.granblue_id)
+    weapon = create(:weapon, rarity: 3, recruits: character.granblue_id, release_date: Date.new(2026, 3, 16))
     item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
     expect(item['category']).to eq('characterWeapon')
+    expect(item['release_date']).to eq('2026-03-16')
     expect(item['recruits']).to eq('granblue_id' => character.granblue_id, 'en' => 'Vira', 'ja' => 'ヴィーラ')
   end
 

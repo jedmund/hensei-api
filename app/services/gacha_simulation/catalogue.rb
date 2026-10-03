@@ -40,14 +40,14 @@ module GachaSimulation
         ApplicationRecord.transaction(isolation: :repeatable_read) do
           characters = Character.pluck(:granblue_id, :name_en, :name_jp).group_by(&:first)
           [Weapon, Summon].flat_map do |model|
-            fields = %i[id granblue_id name_en name_jp rarity element promotions]
+            fields = %i[id granblue_id name_en name_jp rarity element promotions release_date]
             fields << :recruits if model == Weapon
             model.where(rarity: [1, 2, 3]).pluck(*fields).map do |row|
-              id, game_id, en, jp, rarity, element, promotions, recruits = row
+              id, game_id, en, jp, rarity, element, promotions, release_date, recruits = row
               matches = characters[recruits] || []
               { 'identity' => "#{model.name}:#{id}", 'drawable_type' => model.name, 'drawable_id' => id,
                 'granblue_id' => game_id, 'name' => { 'en' => en, 'ja' => jp }, 'rarity' => rarity,
-                'element' => element, 'promotions' => (promotions || []).sort,
+                'element' => element, 'promotions' => (promotions || []).sort, 'release_date' => release_date&.iso8601,
                 'category' => if model == Summon
                                 'summon'
                               else
