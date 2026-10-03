@@ -40,8 +40,18 @@ RSpec.describe 'Gacha API', type: :request do
     first = response.parsed_body
     expect(first['draws']).to eq('10')
     expect(first['ordered'].size).to eq(10)
+    expect(first['ssr_order']).to eq(first['ordered'].select { |item| item['rarity'] == 3 }.map { |item| item['identity'] })
     post '/api/v1/gacha/simulations', params: input, as: :json
     expect(response.parsed_body).to eq(first)
+  end
+
+  it 'reports SSR draw order beyond the full draw list' do
+    post '/api/v1/gacha/simulations', params: { draws: '1000', seed: 'order' }, as: :json
+    body = response.parsed_body
+    expect(body['ordered']).to be_nil
+    expect(body['ssr_order'].size).to eq(body.dig('totals', 'SSR').to_i)
+    ssr_items = body['items'].select { |item| item['rarity'] == 3 }
+    expect(body['ssr_order'].tally).to eq(ssr_items.to_h { |item| [item['identity'], item['count'].to_i] })
   end
 
   it 'queues captured distributions, completes jobs and expires tokens' do
@@ -55,6 +65,7 @@ RSpec.describe 'Gacha API', type: :request do
     get "/api/v1/gacha/jobs/#{token}"
     expect(response.parsed_body['status']).to eq('complete')
     expect(response.parsed_body.dig('result', 'ordered')).to be_nil
+    expect(response.parsed_body.dig('result', 'ssr_order')).to be_nil
     expect(response.parsed_body.dig('result', 'draws')).to eq('10010')
     store.clear
     GachaSimulation::SimulationJob.new.perform(token)
