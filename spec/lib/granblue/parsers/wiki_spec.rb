@@ -36,9 +36,39 @@ RSpec.describe Granblue::Parsers::Wiki do
       expect(described_class.character_series).to include('grand' => 1, 'zodiac' => 2)
       expect(described_class.character_series.keys.length).to eq(15)
     end
+  end
 
-    it 'has promotions method returning a hash' do
-      expect(described_class.promotions).to include('premium' => 1, 'flash' => 4, 'legend' => 5, 'classic3' => 12)
+  describe '.promotions_from_obtain' do
+    let(:ordinary) { [1, 4, 5, 6, 7, 8, 9, 10, 11] }
+
+    it 'puts ordinary Premium items in every Premium-type banner' do
+      expect(described_class.promotions_from_obtain('premium,normal')).to eq(ordinary)
+      expect(described_class.promotions_from_obtain('premium,normal;classic3')).to eq(ordinary + [12])
+      expect(described_class.promotions_from_obtain('premium,classic2,normal,non-ticketable')).to eq((ordinary + [3]).sort)
+    end
+
+    it 'puts limited items only in their limited pool' do
+      expect(described_class.promotions_from_obtain('premium,gala,flash')).to eq([4])
+      expect(described_class.promotions_from_obtain('premium,gala,normal')).to eq([5])
+      expect(described_class.promotions_from_obtain('premium,zodiac,2020')).to eq([5])
+      expect(described_class.promotions_from_obtain('premium,summer')).to eq([7])
+      expect(described_class.promotions_from_obtain('premium,swimsuit')).to eq([7])
+      expect(described_class.promotions_from_obtain('premium,holiday')).to eq([9])
+      expect(described_class.promotions_from_obtain('premium,collab')).to eq([10])
+    end
+
+    it 'adds Classic pools only when named' do
+      expect(described_class.promotions_from_obtain('classic')).to eq([2])
+      expect(described_class.promotions_from_obtain('classic2')).to eq([3])
+      expect(described_class.promotions_from_obtain('classic3')).to eq([12])
+    end
+
+    it 'leaves non-gacha items out of every pool' do
+      expect(described_class.promotions_from_obtain('event,collab,BLEACH: Echoes in the Blue Hollow')).to eq([])
+      expect(described_class.promotions_from_obtain('shop,trade moons,gold,30;premium,ticket')).to eq([])
+      expect(described_class.promotions_from_obtain('premium,special,[[Premium Draw|Christmas Holiday Draw Set]]')).to eq([])
+      expect(described_class.promotions_from_obtain('event')).to eq([])
+      expect(described_class.promotions_from_obtain(nil)).to eq([])
     end
   end
 

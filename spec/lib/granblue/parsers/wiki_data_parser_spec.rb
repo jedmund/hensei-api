@@ -183,6 +183,40 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
     end
   end
 
+  describe '.rarity_from' do
+    it 'reads the wiki rarity regardless of case' do
+      expect(described_class.rarity_from('sr', '1030000100')).to eq(2)
+      expect(described_class.rarity_from(' SSR ', '1040000100')).to eq(3)
+      expect(described_class.rarity_from('r', '1020000100')).to eq(1)
+    end
+
+    it 'falls back to the rarity digit in the granblue id' do
+      expect(described_class.rarity_from(nil, '1030004400')).to eq(2)
+      expect(described_class.rarity_from('', '2020028000')).to eq(1)
+      expect(described_class.rarity_from(nil, '3040054000')).to eq(3)
+      expect(described_class.rarity_from(nil, nil)).to be_nil
+    end
+  end
+
+  describe '.parse_weapon rarity and max level' do
+    it 'parses a lowercase SR weapon as SR with an SR max level' do
+      result = described_class.parse_weapon("|id=1030605500\n|rarity=sr\n|evo_base=3\n|evo_max=3")
+      expect(result).to include(rarity: 2, max_level: 75)
+    end
+
+    it 'parses an R weapon as R' do
+      result = described_class.parse_weapon("|id=1020102100\n|rarity=r\n|evo_max=3")
+      expect(result).to include(rarity: 1, max_level: 50)
+    end
+  end
+
+  describe '.parse_summon rarity and max level' do
+    it 'parses a lowercase SR summon as SR with an SR max level' do
+      result = described_class.parse_summon("|id=2030009000\n|rarity=sr")
+      expect(result).to include(rarity: 2, max_level: 75)
+    end
+  end
+
   describe '.calculate_weapon_max_level' do
     it 'returns 50 for R weapons' do
       expect(described_class.calculate_weapon_max_level(1, false, false, false)).to eq(50)
@@ -190,6 +224,14 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
 
     it 'returns 75 for SR weapons' do
       expect(described_class.calculate_weapon_max_level(2, false, false, false)).to eq(75)
+    end
+
+    it 'returns 120 for FLB SR weapons' do
+      expect(described_class.calculate_weapon_max_level(2, true, false, false)).to eq(120)
+    end
+
+    it 'returns nil when the rarity is unknown' do
+      expect(described_class.calculate_weapon_max_level(nil, false, false, false)).to be_nil
     end
 
     it 'returns 100 for base SSR weapons' do
@@ -210,12 +252,16 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
   end
 
   describe '.calculate_summon_max_level' do
-    it 'returns 30 for R summons' do
-      expect(described_class.calculate_summon_max_level(1, false, false, false)).to eq(30)
+    it 'returns 50 for R summons' do
+      expect(described_class.calculate_summon_max_level(1, false, false, false)).to eq(50)
     end
 
-    it 'returns 60 for SR summons' do
-      expect(described_class.calculate_summon_max_level(2, false, false, false)).to eq(60)
+    it 'returns 75 for SR summons' do
+      expect(described_class.calculate_summon_max_level(2, false, false, false)).to eq(75)
+    end
+
+    it 'returns nil when the rarity is unknown' do
+      expect(described_class.calculate_summon_max_level(nil, false, false, false)).to be_nil
     end
 
     it 'returns 100 for base SSR summons' do
@@ -351,7 +397,7 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
     end
 
     it 'parses weapon uncap status' do
-      wiki_text = "|name = Sword\n|evo_max = 6"
+      wiki_text = "|name = Sword\n|rarity = ssr\n|evo_max = 6"
       result = described_class.parse_weapon(wiki_text)
 
       aggregate_failures do

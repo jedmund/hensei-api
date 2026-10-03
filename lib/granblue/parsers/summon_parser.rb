@@ -254,11 +254,7 @@ module Granblue
       # @param obtain [String] Comma-separated obtain values like "premium,gala,flash"
       # @return [Array<Integer>] Array of promotion IDs
       def promotions_from_obtain(obtain)
-        return [] if obtain.blank?
-
-        obtain.downcase.split(',').map(&:strip).filter_map do |value|
-          Granblue::Parsers::Wiki.promotions[value]
-        end.uniq.sort
+        Granblue::Parsers::Wiki.promotions_from_obtain(obtain)
       end
 
       # Parses a date string into a Date object

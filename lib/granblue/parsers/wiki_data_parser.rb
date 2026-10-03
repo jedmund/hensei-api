@@ -23,7 +23,7 @@ module Granblue
         end
 
         # Rarity
-        suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
+        suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
 
         # Element - capitalize first letter for case-insensitive lookup
         if data['element'].present?
@@ -142,7 +142,7 @@ module Granblue
         suggestions[:granblue_id] = data['id'].sub(/_note\z/, '') if data['id'].present?
 
         # Rarity
-        suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
+        suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
 
         # Element - capitalize first letter for case-insensitive lookup
         if data['element'].present?
@@ -211,7 +211,7 @@ module Granblue
         suggestions[:summon_id] = data['summonid'] if data['summonid'].present?
 
         # Rarity
-        suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
+        suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
 
         # Element - capitalize first letter for case-insensitive lookup
         if data['element'].present?
@@ -463,13 +463,24 @@ module Granblue
       end
 
       # Calculate max level for weapons based on rarity and uncap status
+      # Wiki pages mostly write rarity in lowercase ("sr"), sometimes not at all.
+      # Granblue IDs carry rarity in their third digit (1030xxxxxx is an SR
+      # weapon, 3040xxxxxx an SSR character), which covers missing values.
+      # @return [Integer, nil] Rarity enum value, or nil when neither resolves
+      def self.rarity_from(value, granblue_id)
+        rarity = Wiki.rarities[value.to_s.strip.upcase]
+        rarity || { '2' => 1, '3' => 2, '4' => 3 }[granblue_id.to_s[2]]
+      end
+
       # R weapons: max 50
-      # SR weapons: max 75
+      # SR weapons: max 75 (FLB: 120)
       # SSR weapons: max 100 (FLB: 150, ULB: 200, Trans: 250)
+      # Unknown rarity has no max level, rather than defaulting to SSR's.
       def self.calculate_weapon_max_level(rarity, flb, ulb, transcendence)
         case rarity
-        when 1 then 50  # R
-        when 2 then 75  # SR
+        when nil then nil
+        when 1 then 50 # R
+        when 2 then flb ? 120 : 75 # SR
         else # SSR (3+)
           if transcendence
             250
@@ -484,13 +495,15 @@ module Granblue
       end
 
       # Calculate max level for summons based on rarity and uncap status
-      # R summons: max 30
-      # SR summons: max 60
+      # R summons: max 50
+      # SR summons: max 75
       # SSR summons: max 100 (FLB: 150, ULB: 200, Trans: 250)
+      # Unknown rarity has no max level, rather than defaulting to SSR's.
       def self.calculate_summon_max_level(rarity, flb, ulb, transcendence)
         case rarity
-        when 1 then 30  # R
-        when 2 then 60  # SR
+        when nil then nil
+        when 1 then 50  # R
+        when 2 then 75  # SR
         else # SSR (3+)
           if transcendence
             250
