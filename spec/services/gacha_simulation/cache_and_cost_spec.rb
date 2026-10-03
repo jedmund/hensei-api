@@ -20,6 +20,14 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     end
   end
 
+  it 'identifies the character a weapon recruits' do
+    character = create(:character, name_en: 'Vira', name_jp: 'ヴィーラ')
+    weapon = create(:weapon, rarity: 3, recruits: character.granblue_id)
+    item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
+    expect(item['category']).to eq('characterWeapon')
+    expect(item['recruits']).to eq('granblue_id' => character.granblue_id, 'en' => 'Vira', 'ja' => 'ヴィーラ')
+  end
+
   it 'uses JPY divided by JPY-per-USD and retains a dated stale quote for seven days' do
     redis = double('redis')
     allow(Sidekiq).to receive(:redis).and_yield(redis)

@@ -53,7 +53,9 @@ module GachaSimulation
                               else
                                 (recruits.present? ? 'characterWeapon' : 'weapon')
                               end,
-                'recruits' => matches.size == 1 ? { 'en' => matches.first[1], 'ja' => matches.first[2] } : nil }
+                'recruits' => if matches.size == 1
+                                { 'granblue_id' => matches.first[0], 'en' => matches.first[1], 'ja' => matches.first[2] }
+                              end }
             end
           end
         end
