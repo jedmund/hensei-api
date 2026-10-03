@@ -5,6 +5,9 @@ require 'digest'
 module GachaSimulation
   class Engine
     VERSION = '1.0.0'
+    # Draw runs up to this size also report the identity of each SSR in the
+    # order it was drawn; larger runs report aggregate counts only.
+    SSR_ORDER_LIMIT = 10_000
     ASSUMPTIONS = [
       'Hypothetical catalogue pool, not a current banner; Zodiac rotations and spark exchanges excluded',
       'Inferred category shares: R 12:42:25; SR 5:6:4; SSR weapons:summons 11:4',
@@ -23,6 +26,7 @@ module GachaSimulation
     def draw(count)
       counts = Hash.new(0)
       ordered = []
+      ssr_order = []
       totals = { 'R' => 0, 'SR' => 0, 'SSR' => 0 }
       ordinary = cumulative('ordinary')
       guaranteed = cumulative('guaranteed')
@@ -33,9 +37,11 @@ module GachaSimulation
         counts[item['identity']] += 1
         totals[%w[R SR SSR][item['rarity'] - 1]] += 1
         ordered << item if count <= 300
+        ssr_order << item['identity'] if item['rarity'] == 3 && count <= SSR_ORDER_LIMIT
       end
       items = @compiled['ordinary'].map { |e| e['item'] }.uniq { |i| i['identity'] }
       result = { 'draws' => count.to_s, 'totals' => totals.transform_values(&:to_s), 'ordered' => count <= 300 ? ordered : nil,
+                 'ssr_order' => count <= SSR_ORDER_LIMIT ? ssr_order : nil,
                  'items' => items.filter_map { |item| item.merge('count' => counts[item['identity']].to_s) if counts[item['identity']].positive? } }
       metadata.merge(result).merge('cost' => ExchangeRate.cost(count))
     end
