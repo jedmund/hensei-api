@@ -74,7 +74,7 @@ module Granblue
       validate_attributes!(entry, attributes)
       { type: 'Weapon', granblue_id: entry['granblue_id'], action: 'create', before: [], after: [1],
         attributes: attributes.slice('granblue_id', 'name_en', 'name_jp', 'rarity', 'element', 'proficiency', 'recruits',
-                                     'max_level', 'max_skill_level', 'release_date').merge('promotions' => [1], 'gacha' => true) }
+                                     'max_level', 'max_skill_level', 'release_date').merge('promotions' => [1]) }
     end
 
     def validate_attributes!(entry, attributes)
