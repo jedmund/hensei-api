@@ -152,12 +152,7 @@ namespace :deploy do
   end
 
   def promotions_from_obtain(obtain)
-    return [] if obtain.blank?
-
-    mapping = Granblue::Parsers::Wiki.promotions
-    obtain.downcase.split(',').map(&:strip).filter_map do |value|
-      mapping[value]
-    end.uniq.sort
+    Granblue::Parsers::Wiki.promotions_from_obtain(obtain)
   end
 
   def series_from_wiki(wiki_series, obtain, wiki_en)

@@ -107,24 +107,49 @@ module Granblue
         'holiday' => 5      # Holiday
       }.freeze
 
-      # Maps wiki |obtain= values to PROMOTIONS enum values for weapons/summons
-      # Wiki uses comma-separated values like "premium,gala,flash"
-      def self.promotions
-        {
-          'premium' => 1,    # Premium
-          'classic' => 2,    # Classic
-          'classic2' => 3,   # Classic II
-          'classic3' => 12,  # Classic III
-          'gala' => 4,       # Flash (wiki uses "gala" for Flash Gala)
-          'flash' => 4,      # Flash (alternate)
-          'legend' => 5,     # Legend
-          'valentine' => 6,  # Valentine
-          'summer' => 7,     # Summer
-          'halloween' => 8,  # Halloween
-          'holiday' => 9,    # Holiday
-          'collab' => 10,    # Collab
-          'formal' => 11     # Formal
-        }.freeze
+      # Pools an ordinary Premium item appears in: every banner but Classic
+      # (Flash, Legend, each season and Collab draws all include Premium)
+      ORDINARY_PROMOTIONS = [1, 4, 5, 6, 7, 8, 9, 10, 11].freeze
+
+      # Wiki |obtain= tokens for limited pools, and the pool each maps to
+      LIMITED_PROMOTIONS = {
+        'valentine' => 6,
+        'summer' => 7,
+        'swimsuit' => 7,
+        'halloween' => 8,
+        'holiday' => 9,
+        'formal' => 11
+      }.freeze
+
+      # Maps a wiki |obtain= value (e.g. "premium,gala,flash") to PROMOTIONS
+      # enum values, matching how the curated catalogue stores pools:
+      # - limited items only appear in their limited pool, never in Premium:
+      #   gala,flash is Flash Gala; gala,normal, legend and zodiac are Legend
+      #   Festival; a season token is that season's pool
+      # - premium,collab is the Collab draw; other collab items are event rewards
+      # - premium,normal items appear in every Premium-type banner; other
+      #   premium variants (ticket-only, special draw sets) are in no pool
+      # - Classic pools are added only when the wiki names them
+      # @return [Array<Integer>]
+      def self.promotions_from_obtain(obtain)
+        tokens = obtain.to_s.downcase.split(/[,;]/).map(&:strip)
+
+        premium = tokens.include?('premium')
+        limited = tokens.filter_map { |token| LIMITED_PROMOTIONS[token] }
+        limited << 10 if premium && tokens.include?('collab')
+        limited << 4 if tokens.include?('flash')
+        if tokens.include?('legend') || tokens.include?('zodiac') || (tokens.include?('gala') && !tokens.include?('flash'))
+          limited << 5
+        end
+        return limited.uniq.sort if limited.any?
+
+        return [] if tokens.include?('collab')
+
+        promotions = premium && tokens.include?('normal') ? ORDINARY_PROMOTIONS.dup : []
+        promotions << 2 if tokens.include?('classic')
+        promotions << 3 if tokens.include?('classic2')
+        promotions << 12 if tokens.include?('classic3')
+        promotions.uniq.sort
       end
 
       def initialize(props: ['wikitext'], debug: false)
