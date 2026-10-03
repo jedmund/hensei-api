@@ -287,8 +287,10 @@ RSpec.describe 'GridWeapons API', type: :request do
     end
 
     it 'does not destroy conflicting weapon ids from another party' do
+      conflicting_weapon.update!(id: 'ffffffff-ffff-4fff-afff-ffffffffffff')
       other_party = create(:party, user: create(:user))
       other_conflicting_weapon = create(:grid_weapon,
+                                        id: '00000000-0000-4000-a000-000000000001',
                                         party: other_party,
                                         weapon: weapon,
                                         position: 5,

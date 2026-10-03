@@ -539,7 +539,7 @@ module Api
       #
       # @return [void]
       def find_grid_weapon
-        grid_weapon_id = params[:id] || params.dig(:weapon, :id) || params.dig(:resolve, :conflicting)
+        grid_weapon_id = params[:id] || params.dig(:weapon, :id) || Array(params.dig(:resolve, :conflicting)).first
         @grid_weapon = GridWeapon
                        .includes(*GridWeapon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
                        .find_by(id: grid_weapon_id)

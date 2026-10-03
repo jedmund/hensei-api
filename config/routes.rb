@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   path_prefix = Rails.env.production? ? '/v1' : '/api/v1'
 
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
+    get 'gacha/catalogue', to: 'gacha#catalogue'
+    post 'gacha/simulations', to: 'gacha#simulations'
+    post 'gacha/until', to: 'gacha#until_result'
+    post 'gacha/odds', to: 'gacha#odds'
+    get 'gacha/jobs/:token', to: 'gacha#job'
     resources :parties, only: %i[index create update destroy]
     get 'users/me', to: 'users#me'
     get 'users/me/identities', to: 'user_identities#index'

@@ -1,0 +1,52 @@
+require 'rails_helper'
+
+RSpec.describe 'Gacha cache and purchase estimates' do
+  it 'retains immutable catalogue snapshots for at most an hour during failures' do
+    catalogue = GachaSimulation::Catalogue
+    original = catalogue.instance_variable_get(:@snapshot)
+    begin
+      catalogue.instance_variable_set(:@snapshot, nil)
+      allow(catalogue).to receive(:load_items).and_return([{ 'identity' => 'Weapon:fixture', 'name' => 'item' }])
+      snapshot = catalogue.snapshot
+      expect(snapshot['items'].first).to be_frozen
+      travel 901
+      allow(catalogue).to receive(:load_items).and_raise('offline')
+      expect(catalogue.snapshot).to equal(snapshot)
+      travel 2700
+      expect { catalogue.snapshot }.to raise_error(GachaSimulation::Unavailable)
+    ensure
+      travel_back
+      catalogue.instance_variable_set(:@snapshot, original)
+    end
+  end
+
+  it 'uses JPY divided by JPY-per-USD and retains a dated stale quote for seven days' do
+    redis = double('redis')
+    allow(Sidekiq).to receive(:redis).and_yield(redis)
+    quote = { 'provider' => 'Frankfurter / ECB', 'date' => (Date.today - 7).iso8601, 'jpy_per_usd' => '150' }
+    allow(redis).to receive(:get).and_return(JSON.generate(quote))
+    cost = GachaSimulation::ExchangeRate.cost('10')
+    expect(cost['jpy']).to eq('3150.0')
+    expect(cost['usd']).to eq('21.0')
+    expect(cost['exchange_rate']['stale']).to be true
+    quote['date'] = (Date.today - 8).iso8601
+    allow(redis).to receive(:get).and_return(JSON.generate(quote))
+    expect(GachaSimulation::ExchangeRate.cost('10')['usd']).to be_nil
+    expect(GachaSimulation::ExchangeRate.cost('90071992547409930')['jpy']).to eq('28372677652434127950.0')
+  end
+
+  it 'keeps the last quote on provider failure and filters ECB' do
+    uri = URI('https://api.frankfurter.dev/v2/rate/USD/JPY?providers=ecb')
+    http = double('http')
+    allow(Net::HTTP).to receive(:start).and_yield(http)
+    expect(http).to receive(:get).with(uri.request_uri).and_return(Net::HTTPServiceUnavailable.new('1.1', '503', 'Unavailable'))
+    expect { GachaSimulation::ExchangeRate.refresh }.to raise_error(GachaSimulation::Unavailable)
+    response = Net::HTTPOK.new('1.1', '200', 'OK')
+    allow(response).to receive(:body).and_return({ date: Date.today.iso8601, rate: 150 }.to_json)
+    expect(http).to receive(:get).with(uri.request_uri).and_return(response)
+    redis = double('redis')
+    allow(Sidekiq).to receive(:redis).and_yield(redis)
+    expect(redis).to receive(:set).with(GachaSimulation::ExchangeRate::KEY, anything, ex: 8 * 86400)
+    expect(GachaSimulation::ExchangeRate.refresh['jpy_per_usd']).to eq('150.0')
+  end
+end
