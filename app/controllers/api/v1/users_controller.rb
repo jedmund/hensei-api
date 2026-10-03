@@ -189,8 +189,6 @@ module Api
         render json: { deposited: entries.size }, status: :ok
       end
 
-      def destroy; end
-
       private
 
       # POST /users with a signup_ticket from POST /auth/:provider: creates a

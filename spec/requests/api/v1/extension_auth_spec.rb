@@ -97,7 +97,8 @@ RSpec.describe 'Extension auth', type: :request do
       body = response.parsed_body
       expect(body).to include('token_type' => 'Bearer', 'expires_in' => 1.month.to_i)
       expect(body['created_at']).to be_a(Integer)
-      expect(body['user']).to eq('id' => user.id, 'username' => user.username, 'role' => user.role)
+      expect(body['user']).to eq('id' => user.id, 'username' => user.username, 'role' => user.role,
+                                 'deletion_scheduled_at' => nil)
       expect(body['access_token']).to be_present
       expect(body['refresh_token']).to be_present
       expect(body['access_token']).not_to eq(session_token.token)

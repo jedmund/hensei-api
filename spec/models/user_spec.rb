@@ -572,7 +572,13 @@ RSpec.describe User, type: :model do
   describe '#token_payload' do
     it 'returns the summary sent with OAuth tokens' do
       user = create(:user)
-      expect(user.token_payload).to eq(id: user.id, username: user.username, role: user.role)
+      expect(user.token_payload).to eq(id: user.id, username: user.username, role: user.role,
+                                       deletion_scheduled_at: nil)
+    end
+
+    it 'includes a scheduled deletion, so the web app can offer to cancel it' do
+      user = create(:user, deletion_scheduled_at: 10.days.from_now)
+      expect(user.token_payload[:deletion_scheduled_at]).to eq(user.deletion_scheduled_at)
     end
   end
 

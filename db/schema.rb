@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_02_000200) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_02_000300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -399,7 +399,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_02_000200) do
     t.string "name", null: false
     t.integer "element", null: false
     t.jsonb "items", default: [], null: false
-    t.uuid "created_by_id", null: false
+    t.uuid "created_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_crew_rosters_on_created_by_id"
@@ -443,7 +443,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_02_000200) do
   end
 
   create_table "difficulty_change_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
+    t.uuid "user_id"
     t.text "note"
     t.jsonb "changes_payload", default: {}, null: false
     t.integer "ruleset_version_after"
@@ -754,7 +754,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_02_000200) do
     t.integer "round", null: false
     t.bigint "score", default: 0, null: false
     t.boolean "is_cumulative", default: false, null: false
-    t.uuid "recorded_by_id", null: false
+    t.uuid "recorded_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "phantom_player_id"
@@ -1306,9 +1306,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_02_000200) do
     t.string "description", limit: 140
     t.boolean "support_summons_public", default: true, null: false
     t.datetime "password_prompt_dismissed_at"
+    t.datetime "deletion_scheduled_at"
     t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
+    t.index ["deletion_scheduled_at"], name: "index_users_on_deletion_scheduled_at", where: "(deletion_scheduled_at IS NOT NULL)"
   end
 
   create_table "weapon_awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

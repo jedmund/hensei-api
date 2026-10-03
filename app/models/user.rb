@@ -25,6 +25,16 @@ class User < ApplicationRecord
   has_many :user_edit_keys, dependent: :destroy
   has_many :user_identities, dependent: :destroy
   has_many :extension_auth_codes, dependent: :delete_all
+  has_many :difficulty_drafts, dependent: :destroy
+
+  # Records that belong to a crew, another user's party, or the audit trail
+  # outlive the account; deleting it only removes the attribution.
+  has_many :difficulty_change_logs, dependent: :nullify
+  has_many :created_crew_rosters, class_name: 'CrewRoster', foreign_key: :created_by_id, dependent: :nullify
+  has_many :recorded_gw_scores, class_name: 'GwIndividualScore', foreign_key: :recorded_by_id, dependent: :nullify
+  has_many :collection_source_parties, class_name: 'Party', foreign_key: :collection_source_user_id,
+                                       dependent: :nullify
+  has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_by_id
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
@@ -102,6 +112,7 @@ class User < ApplicationRecord
   RESET_TOKEN_COOLDOWN = 2.minutes
   VERIFICATION_TOKEN_EXPIRY = 24.hours
   VERIFICATION_TOKEN_COOLDOWN = 2.minutes
+  DELETION_GRACE_PERIOD = 30.days
 
   ##### Enums
   # Enum for collection privacy levels (1-based to avoid JavaScript falsy 0 issues)
@@ -143,8 +154,14 @@ class User < ApplicationRecord
   # The user summary returned alongside OAuth tokens (POST /oauth/token and
   # social sign-in).
   def token_payload
-    { id: id, username: username, role: role }
+    { id: id, username: username, role: role, deletion_scheduled_at: deletion_scheduled_at }
   end
+
+  def deletion_scheduled?
+    deletion_scheduled_at.present?
+  end
+
+  scope :due_for_deletion, -> { where(deletion_scheduled_at: ..Time.current) }
 
   # Check if collection is viewable by another user
   def collection_viewable_by?(viewer)

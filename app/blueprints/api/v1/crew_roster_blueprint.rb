@@ -5,7 +5,7 @@ class Api::V1::CrewRosterBlueprint < Api::V1::ApiBlueprint
 
   view :full do
     field :created_by do |roster|
-      Api::V1::UserBlueprint.render_as_hash(roster.created_by, view: :minimal)
+      roster.created_by && Api::V1::UserBlueprint.render_as_hash(roster.created_by, view: :minimal)
     end
   end
 end

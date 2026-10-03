@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     get 'users/me/identities', to: 'user_identities#index'
     post 'users/me/identities', to: 'user_identities#create'
     delete 'users/me/identities/:provider', to: 'user_identities#destroy'
+    post 'users/me/deletion', to: 'account_deletions#create'
+    delete 'users/me/deletion', to: 'account_deletions#destroy'
     post 'auth/:provider', to: 'social_auth#create'
     post 'extension_auth/codes', to: 'extension_auth#create_code'
     post 'extension_auth/token', to: 'extension_auth#token'

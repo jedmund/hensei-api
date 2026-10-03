@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      width: 100%;
+      padding: 40px 0;
+      background-color: #f5f5f5;
+    }
+    .card {
+      max-width: 480px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+      padding: 40px 32px;
+    }
+    .greeting {
+      font-size: 16px;
+      color: #444444;
+      margin: 0 0 16px;
+      line-height: 1.5;
+    }
+    .body-text {
+      font-size: 14px;
+      color: #777777;
+      margin: 0 0 24px;
+      line-height: 1.6;
+    }
+    .button-wrapper {
+      text-align: center;
+      margin: 32px 0;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .link-fallback {
+      font-size: 12px;
+      color: #a9a9a9;
+      word-break: break-all;
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+    .link-fallback a {
+      color: inherit;
+    }
+    .footer {
+      font-size: 12px;
+      color: #a9a9a9;
+      margin: 32px 0 0;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <p class="greeting">Hi <%= @user.display_name_or_username %>,</p>
+      <p class="body-text">Your granblue.team account is scheduled to be deleted on <strong><%= @deletion_date %></strong>. You've been signed out everywhere.</p>
+      <p class="body-text">Until then, your account and teams stay as they are. If you change your mind, log in and choose <strong>Cancel deletion</strong>.</p>
+      <div class="button-wrapper">
+        <a href="<%= @login_url %>" class="button" style="background-color: <%= @element_color %>;">Log in to cancel</a>
+      </div>
+      <p class="footer">If you didn't ask to delete your account, log in, cancel the deletion, and change your password right away.</p>
+    </div>
+  </div>
+</body>
+</html>
