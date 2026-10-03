@@ -221,12 +221,12 @@ Sources: [Formal catalogue](https://gbf.wiki/Category:Formal_Characters),
 [Frankfurter](https://frankfurter.dev/),
 [PayPal currency conversion](https://www.paypal.com/us/cshelp/article/where-can-i-find-paypals-currency-calculator-and-exchange-rates-help109).
 
-Local verification (2026-10-02): focused gacha RSpec passed 19 examples; full
-RuboCop passed 802 files. The full API suite ran 3,260 examples with two pending
-and one failure in the existing cross-party `grid_weapons/resolve` authorization
-test (documented previously in the integrated catalogue branch). The full suite
-is not green. Live local checks used a read-only restored-database connection:
-all six modes/all five applicable seasons, four Formal-exclusive additions,
-seed replay, one million queued draws, and a sampled 325,480,450-draw Until run.
-The daily ECB provider returned a dated quote successfully. No production change
-or new migration was performed.
+Local verification (2026-10-02): focused gacha RSpec passed 19 examples; the
+integrated full API suite passed 3,323 examples with two pending. Full RuboCop
+passed 818 files. Integration also fixes the existing cross-party
+`grid_weapons/resolve` nondeterminism by anchoring authorization to the first
+submitted conflict, while retaining party-scoped deletion. Live local checks
+used a read-only restored-database connection: all six modes/all five applicable
+seasons, four Formal-exclusive additions, seed replay, one million queued draws,
+and a sampled 325,480,450-draw Until run. The daily ECB provider returned a dated
+quote successfully.

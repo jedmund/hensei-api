@@ -77,7 +77,8 @@ module GachaSimulation
 
     def metadata
       { 'seed' => @seed, 'configuration' => @config, 'catalogue_fingerprint' => @compiled['fingerprint'],
-        'engine_version' => VERSION, 'ruby_version' => RUBY_VERSION, 'assumptions' => ASSUMPTIONS, 'label' => 'Hypothetical catalogue simulation; spark exchanges excluded' }
+        'engine_version' => VERSION, 'ruby_version' => RUBY_VERSION, 'assumptions' => ASSUMPTIONS,
+        'label' => 'Hypothetical catalogue simulation; spark exchanges excluded' }
     end
 
     def probability(distribution, identity)
