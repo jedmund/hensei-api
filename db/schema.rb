@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -539,31 +539,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
-  create_table "gacha", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "premium"
-    t.boolean "classic"
-    t.boolean "flash"
-    t.boolean "legend"
-    t.boolean "valentines"
-    t.boolean "summer"
-    t.boolean "halloween"
-    t.boolean "holiday"
-    t.string "drawable_type"
-    t.uuid "drawable_id"
-    t.boolean "classic_ii", default: false
-    t.boolean "collab", default: false
-    t.index ["drawable_id"], name: "index_gacha_on_drawable_id", unique: true
-    t.index ["drawable_type", "drawable_id"], name: "index_gacha_on_drawable"
-  end
-
   create_table "gacha_rateups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "gacha_id"
     t.string "user_id"
     t.decimal "rate"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.string "drawable_type"
-    t.uuid "drawable_id"
-    t.index ["gacha_id"], name: "index_gacha_rateups_on_gacha_id"
+    t.string "drawable_type", null: false
+    t.uuid "drawable_id", null: false
     t.index ["user_id", "drawable_type", "drawable_id"], name: "index_gacha_rateups_on_user_and_drawable"
     t.check_constraint "drawable_type IS NULL AND drawable_id IS NULL OR drawable_type IS NOT NULL AND drawable_id IS NOT NULL AND (drawable_type::text = ANY (ARRAY['Weapon'::character varying, 'Summon'::character varying]::text[]))", name: "gacha_rateups_drawable_pair"
   end
@@ -1566,7 +1547,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "weapon_series_id"
-    t.boolean "gacha", default: false, null: false
     t.integer "extra_prerequisite"
     t.string "forged_from"
     t.uuid "forge_chain_id"
@@ -1580,7 +1560,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_010000) do
     t.text "wiki_raw_jp"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
-    t.index ["gacha"], name: "index_weapons_on_gacha"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_weapons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin

@@ -6,6 +6,7 @@ RSpec.describe ClearGachaRateups do
 
   let(:connection) { ActiveRecord::Base.connection }
   let(:weapon) { create(:weapon) }
+  let(:summon) { create(:summon) }
 
   def rateup_count
     connection.select_value('SELECT COUNT(*) FROM gacha_rateups').to_i
@@ -14,7 +15,7 @@ RSpec.describe ClearGachaRateups do
   before do
     connection.execute(<<~SQL)
       INSERT INTO gacha_rateups (user_id, rate, drawable_type, drawable_id)
-      VALUES ('1', 0.3, 'Weapon', '#{weapon.id}'), ('2', 0.5, NULL, NULL)
+      VALUES ('1', 0.3, 'Weapon', '#{weapon.id}'), ('2', 0.5, 'Summon', '#{summon.id}')
     SQL
   end
 
