@@ -12,8 +12,12 @@ module Granblue
     # @note Summon images come in multiple variants based on uncap status
     # @note Supports ULB (5★) and transcendence variants when available
     class SummonDownloader < BaseDownloader
-      # Override SIZES to include 'wide' for m directory images and 'detail' for detail images
-      SIZES = %w[main tall grid wide square detail].freeze
+      # Override SIZES to include 'wide' for m directory images, 'detail' for detail images
+      # and 'gacha' for the g directory art the game shows in its draw animation
+      SIZES = %w[main tall grid wide square detail gacha].freeze
+
+      # Sizes the game serves as transparent PNGs; every other size is a JPG
+      PNG_SIZES = %w[detail gacha].freeze
       # Downloads images for all variants of a summon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle summon-specific variants.
       #
@@ -77,16 +81,18 @@ module Granblue
       # Builds URL for a specific variant and size
       #
       # @param variant_id [String] Summon variant ID
-      # @param size [String] Image size variant ("main", "grid", "square", or "detail")
+      # @param size [String] Image size variant ("main", "grid", "square", "detail" or "gacha")
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
-        directory = directory_for_size(size)
-        url = base_url_for_size(size)
-        if size == 'detail'
-          "#{url}/#{directory}/#{variant_id}.png"
-        else
-          "#{url}/#{directory}/#{variant_id}.jpg"
-        end
+        "#{base_url_for_size(size)}/#{directory_for_size(size)}/#{variant_id}.#{extension_for(size)}"
+      end
+
+      # File extension the game serves for a size variant
+      #
+      # @param size [String] Image size variant
+      # @return [String] "png" for PNG_SIZES, otherwise "jpg"
+      def extension_for(size)
+        PNG_SIZES.include?(size.to_s) ? 'png' : 'jpg'
       end
 
       # Gets object type for file paths and storage keys
@@ -109,7 +115,8 @@ module Granblue
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
-      # @note Maps "main" -> "party_main", "tall" -> "ls", "grid" -> "party_sub", "wide" -> "m", "square" -> "s"
+      # @note Maps "main" -> "party_main", "tall" -> "ls", "grid" -> "party_sub", "wide" -> "m", "square" -> "s",
+      #   "detail" -> "detail", "gacha" -> "g"
       def directory_for_size(size)
         case size.to_s
         when 'main' then 'party_main'
@@ -118,6 +125,7 @@ module Granblue
         when 'wide' then 'm'
         when 'square' then 's'
         when 'detail' then 'detail'
+        when 'gacha' then 'g'
         end
       end
     end
