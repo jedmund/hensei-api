@@ -24,9 +24,9 @@ original plan in a few places. Those are called out under
 
 ```
 characters/{main,grid,square,detail}/
-weapons/{main,grid,square,base}/
+weapons/{main,grid,square,base,gacha}/         # gacha/ = game g/ draw-animation art (PNG); filled by backfill
 weapons/keys/                                  # NOT top-level weapon-keys/ (see below)
-summons/{main,grid,square,detail,tall,wide}/
+summons/{main,grid,square,detail,tall,wide,gacha}/
 accessories/{square,grid}/
 artifacts/{square,wide}/
 bullets/square/

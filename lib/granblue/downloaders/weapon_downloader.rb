@@ -13,8 +13,12 @@ module Granblue
     # @note Supports transcendence variants and element-specific variants
     # @see ElementalWeaponDownloader for handling multi-element weapons
     class WeaponDownloader < BaseDownloader
-      # Override SIZES to include 'base' for b directory images
-      SIZES = %w[main grid square base].freeze
+      # Override SIZES to include 'base' for b directory images and 'gacha' for the
+      # g directory art the game shows in its draw animation
+      SIZES = %w[main grid square base gacha].freeze
+
+      # Sizes the game serves as transparent PNGs; every other size is a JPG
+      PNG_SIZES = %w[base gacha].freeze
 
       # Maps internal element ID to game source offset
       # :note means use _note suffix on base ID, integer means add offset to base ID
@@ -138,7 +142,7 @@ module Granblue
         sizes.each do |size|
           path = download_path(size)
           source_url = build_variant_url(source_id, size)
-          target_filename = "#{target_stem}.#{size == 'base' ? 'png' : 'jpg'}"
+          target_filename = "#{target_stem}.#{extension_for(size)}"
 
           process_element_download(source_url, size, path, target_filename)
         end
@@ -215,15 +219,18 @@ module Granblue
       # Builds URL for a specific variant and size
       #
       # @param variant_id [String] Weapon variant ID
-      # @param size [String] Image size variant ("main", "grid", "square", or "base")
+      # @param size [String] Image size variant ("main", "grid", "square", "base" or "gacha")
       # @return [String] Complete URL for downloading the image
       def build_variant_url(variant_id, size)
-        directory = directory_for_size(size)
-        if size == 'base'
-          "#{@base_url}/#{directory}/#{variant_id}.png"
-        else
-          "#{@base_url}/#{directory}/#{variant_id}.jpg"
-        end
+        "#{@base_url}/#{directory_for_size(size)}/#{variant_id}.#{extension_for(size)}"
+      end
+
+      # File extension the game serves for a size variant
+      #
+      # @param size [String] Image size variant
+      # @return [String] "png" for PNG_SIZES, otherwise "jpg"
+      def extension_for(size)
+        PNG_SIZES.include?(size.to_s) ? 'png' : 'jpg'
       end
 
       # Gets object type for file paths and storage keys
@@ -242,13 +249,14 @@ module Granblue
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
-      # @note Maps "main" -> "ls", "grid" -> "m", "square" -> "s", "base" -> "b"
+      # @note Maps "main" -> "ls", "grid" -> "m", "square" -> "s", "base" -> "b", "gacha" -> "g"
       def directory_for_size(size)
         case size.to_s
         when 'main' then 'ls'
         when 'grid' then 'm'
         when 'square' then 's'
         when 'base' then 'b'
+        when 'gacha' then 'g'
         end
       end
     end
