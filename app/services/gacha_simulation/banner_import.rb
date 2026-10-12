@@ -6,11 +6,15 @@ module GachaSimulation
   # entry and its `/gacha/provision_ratio` tabs (1 is the ordinary draw, 2 the
   # 10-part's guaranteed SR or better). Importing a banner again replaces it.
   class BannerImport
-    # The game's rarity names and numbers, as our rarities
-    RARITY_NAMES = { 'SSレア' => 3, 'Sレア' => 2, 'レア' => 1 }.freeze
+    # The game's rarity names (in the account's language) and numbers, as our rarities
+    RARITY_NAMES = { 'SSレア' => 3, 'Sレア' => 2, 'レア' => 1, 'SS Rare' => 3, 'S Rare' => 2, 'Rare' => 1 }.freeze
     RARITIES = { 4 => 3, 3 => 2, 2 => 1 }.freeze
     CATEGORIES = { 0 => 'characterWeapon', 1 => 'weapon', 2 => 'summon' }.freeze
     TOKYO = 'Asia/Tokyo'
+    # "2026/10/9 19:00" in Japanese
+    JAPANESE_TIME = %r{\A(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2}) (?<hour>\d{1,2}):(?<minute>\d{2})\z}
+    # "7 p.m., Oct 9, 2026 (JST)" or "6:59 p.m., Oct 12, 2026 (JST)" in English
+    ENGLISH_TIME = /\A(?<hour>\d{1,2})(?::(?<minute>\d{2}))? (?<half>[ap])\.m\., (?<month>[A-Z][a-z]+)\.? (?<day>\d{1,2}), (?<year>\d{4}) \(JST\)\z/
 
     def self.call(payload)
       new(payload).call
@@ -92,15 +96,31 @@ module GachaSimulation
       number
     end
 
-    # The game's times are Tokyo time, as "2026/10/9 19:00". A banner's end is
-    # its last minute, so it's stored as the minute after.
+    # The game's times are Tokyo time, in the account's language. A banner's
+    # end is its last minute, so it's stored as the minute after.
     def time(value)
       text = value.to_s
-      raise ValidationError, 'Invalid banner time' unless text.match?(%r{\A\d{4}/\d{1,2}/\d{1,2} \d{1,2}:\d{2}\z})
+      parts = text.match(JAPANESE_TIME) || text.match(ENGLISH_TIME)
+      raise ValidationError, 'Invalid banner time' unless parts
 
-      Time.find_zone!(TOKYO).strptime(text, '%Y/%m/%d %H:%M')
+      Time.find_zone!(TOKYO).local(parts[:year].to_i, month(parts[:month]), parts[:day].to_i, hour(parts),
+                                   parts[:minute].to_i)
     rescue ArgumentError
       raise ValidationError, 'Invalid banner time'
+    end
+
+    def month(value)
+      return value.to_i if value.match?(/\A\d+\z/)
+
+      Date::ABBR_MONTHNAMES.index(value[0, 3]) || raise(ValidationError, 'Invalid banner time')
+    end
+
+    def hour(parts)
+      hour = parts[:hour].to_i
+      return hour unless parts.names.include?('half')
+      raise ValidationError, 'Invalid banner time' unless hour.between?(1, 12)
+
+      (hour % 12) + (parts[:half] == 'p' ? 12 : 0)
     end
   end
 end
