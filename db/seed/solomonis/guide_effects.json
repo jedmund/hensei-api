@@ -1,0 +1,1989 @@
+{
+  "_source": "Game status_list snapshots (docs/modeling/samples/solomonis-guide-effects-en.json); availability and tags matched from gbf.wiki \"Evoking Solomonis\" guidebook tables",
+  "guide_effects": [
+    {
+      "granblue_id": 1,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "ATK +20%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 1,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 2,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Multiattack rate +20%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 2,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 3,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Skill DMG +20% / Skill DMG cap +10%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 303,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 4,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "C.A. DMG +20% / C.A. DMG cap +10%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 305,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "cap"
+      ]
+    },
+    {
+      "granblue_id": 5,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Chain burst DMG +50% / Chain burst DMG cap +30%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 307,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "cap"
+      ]
+    },
+    {
+      "granblue_id": 6,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Special C.A. DMG cap +10%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 305,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "cap"
+      ]
+    },
+    {
+      "granblue_id": 7,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "DMG cap +10%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 308,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "cap"
+      ]
+    },
+    {
+      "granblue_id": 8,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Elemental ATK +20%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 1,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 9,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Stamina",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 3,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 10,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Enmity",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 4,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 11,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Critical hit rate +30%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 5,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 13,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Max HP +30%",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 201,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 14,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "DEF +30%",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 101,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 15,
+      "rarity": "normal",
+      "stackable": true,
+      "name_en": "Healing specs +20%",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 202,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "heal"
+      ]
+    },
+    {
+      "granblue_id": 17,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Bonus Elemental DMG effect (20%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 6,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "echo"
+      ]
+    },
+    {
+      "granblue_id": 18,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Bonus Elemental C.A. DMG effect (20%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 7,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "echo"
+      ]
+    },
+    {
+      "granblue_id": 19,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Elemental Rigor effect (20%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 8,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": [
+        "echo"
+      ]
+    },
+    {
+      "granblue_id": 20,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Amplify normal attack DMG +30%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 311,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 21,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Amplify skill DMG +30%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 312,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 22,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Amplify C.A. DMG +30%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 313,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 23,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Amplify chain DMG +100%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 314,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 24,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Elemental skill enhancement +60%",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 9,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "aura"
+      ]
+    },
+    {
+      "granblue_id": 25,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Mitigate DMG taken (500)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 101,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 27,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Regeneration (1000 HP)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 203,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "heal"
+      ]
+    },
+    {
+      "granblue_id": 28,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Charge bar gain +20%",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 315,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 29,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Uplift (10%)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 315,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 30,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Number of summon calls per turn +1",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "summon"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 31,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "Elemental DMG dealt will be treated as superior to the target's element (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 32,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "Allies' attacks won't miss regardless of accuracy, foe dodge rates, Mirror Image effects, or similar (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 33,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Normal attack hit count +1",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 10,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "flurry"
+      ]
+    },
+    {
+      "granblue_id": 34,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Amplify Human and Geonoid allies' DMG +30%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 310,
+      "target_type": "race",
+      "target_values": [
+        1,
+        7
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp",
+        "race"
+      ]
+    },
+    {
+      "granblue_id": 35,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Normal attack hit count for Erune and Levleath allies +1",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 10,
+      "target_type": "race",
+      "target_values": [
+        2,
+        8
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "flurry",
+        "race"
+      ]
+    },
+    {
+      "granblue_id": 36,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Bonus Elemental C.A. DMG effect to Draph and Grokkle allies (30%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 7,
+      "target_type": "race",
+      "target_values": [
+        3,
+        9
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "echo",
+        "race"
+      ]
+    },
+    {
+      "granblue_id": 37,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Bonus Elemental DMG effect to Harvin and Wolvir allies (30%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 6,
+      "target_type": "race",
+      "target_values": [
+        4,
+        10
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "echo",
+        "race"
+      ]
+    },
+    {
+      "granblue_id": 38,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Primal and Other allies' DMG cap +50%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 308,
+      "target_type": "race",
+      "target_values": [
+        5,
+        6
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": [
+        "cap",
+        "race"
+      ]
+    },
+    {
+      "granblue_id": 39,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At battle start: Dodge/Tank-and-Counter effect to all allies (3 hits) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 40,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "At battle start: 40% boost to all allies' charge bars",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 41,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At battle start: 5 Crests to all allies (Type of Crest depends on their element) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 42,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At battle start: Undying effect to all allies (1 time) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 102,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 43,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At battle start: C.A. Reactivation effect to all allies (1 time) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 304,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 44,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At battle start: Dispel Cancel effect (1 time) / Debuff immunity (1 time) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 103,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 45,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Increase all allies' normal attack hit count based on number of cursed guidebooks held ({value} / Max: +10)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 10,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "flurry"
+      ]
+    },
+    {
+      "granblue_id": 46,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At end of turn: Chance to end cooldown for a random skill on each ally that didn't use a skill that turn (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "cdcut"
+      ]
+    },
+    {
+      "granblue_id": 47,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "When an ally uses a skill: Amplify caster's DMG based on the skill's cooldown (Max: 50% / Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 48,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "At end of turn: Elemental DMG to a foe for each ally that didn't take DMG that turn (Hit number increases based on number of consecutive turns DMG wasn't taken [Max: 5])",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 49,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Amplify MC's and SSR allies' DMG +10% / Amplify SR allies' DMG +100% / Amplify R allies' DMG +200%",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 310,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 50,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "When an ally uses a damage skill: Plain DMG to a foe based on its current HP",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 51,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Sephira coin drop amount upon clearing battles +30%",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "coin"
+      ]
+    },
+    {
+      "granblue_id": 52,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "20% miasma DMG reduction",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "debuff"
+      ]
+    },
+    {
+      "granblue_id": 53,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "1-turn cut to all allies' skill cooldowns after every 5 spaces moved ({value}/5 spaces)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "battlestart",
+        "map"
+      ]
+    },
+    {
+      "granblue_id": 54,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "When not entering battle for 3 spaces or more: Amplify all allies' DMG at start of next battle +50% / DMG Mitigation effect (2000) ({value}/3 spaces) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca",
+        "def"
+      ],
+      "effect_tags": [
+        "amp",
+        "map",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 55,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Next obtained cursed guidebook effect is counteracted (Remaining uses: {value}/1)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 56,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Gain a random guidebook effect when resting at a healing space",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "map"
+      ]
+    },
+    {
+      "granblue_id": 57,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Upon obtaining a guidebook effect from a treasure chest space: Gain 1 additional guidebook effect (Remaining uses: {value}/2)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "guidebook",
+        "map"
+      ]
+    },
+    {
+      "granblue_id": 58,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Upon reaching an event space: Obtain a random amount of Sephira coins",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "map",
+        "coin"
+      ]
+    },
+    {
+      "granblue_id": 59,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "Party members gain all weapons types as specialty weapons (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "weapon"
+      ]
+    },
+    {
+      "granblue_id": 60,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "Party members gain all character types (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "race"
+      ]
+    },
+    {
+      "granblue_id": 61,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Upon an ally using a debuff skill: 2 random debuffs to a foe",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "debuff"
+      ]
+    },
+    {
+      "granblue_id": 62,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "Chance for all allies' normal attacks, skill DMG, and charge attacks to miss / 100% boost to ATK / 50% boost to DMG cap",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "cap"
+      ]
+    },
+    {
+      "granblue_id": 64,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "C.A. Sealed effect to allies upon using their C.A. / Amplify N.A. DMG and skill DMG +20% / Skills and charge attacks won't consume charge bar (Excludes skills with 0 cooldown)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 65,
+      "rarity": "rare",
+      "stackable": true,
+      "name_en": "50% hit to DMG dealt against foes appearing on battle spaces / Amplify DMG against foes appearing on strong foe, terrifying foe, ruler, and boss spaces +50%",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp",
+        "map"
+      ]
+    },
+    {
+      "granblue_id": 66,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "Boost to chance of obtaining rare guidebook effects upon clearing a battle (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "guidebook"
+      ]
+    },
+    {
+      "granblue_id": 67,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "For every 3 skill uses by allies: First-position ally deals 3-hit elemental DMG to all foes / Hit to ATK and DEF (Stackable) / Amplify DMG taken (6 hits) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": [
+        "debuff"
+      ]
+    },
+    {
+      "granblue_id": 68,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "At end of turn: First-position ally deals elemental DMG to all foes / Blind effect / Supplement DMG taken / Remove 1 buff (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "debuff",
+        "dispel"
+      ]
+    },
+    {
+      "granblue_id": 70,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": "Upon an ally attacking: Random debuff to a foe (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
+      "granblue_id": 73,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "20% DMG reduction (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 101,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 74,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "2-turn reduction to skill cooldowns (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "cdcut"
+      ]
+    },
+    {
+      "granblue_id": 75,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "Upon an ally using a charge attack: 2-turn cut their skill cooldowns (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "cdcut"
+      ]
+    },
+    {
+      "granblue_id": 76,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "100% boost to special C.A. DMG cap",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 305,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "cap"
+      ]
+    },
+    {
+      "granblue_id": 77,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "All allies have a maximum charge bar limit of 200% (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 315,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 79,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Elemental skill enhancement +180%",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 9,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "aura"
+      ]
+    },
+    {
+      "granblue_id": 80,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "Allies' DMG taken is converted to the element they have superiority against (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 104,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 81,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "\"Can't recast\" skills and \"Can't resummon\" summon calls become reusable again at the start of each battle (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "summon",
+        "misc"
+      ],
+      "effect_tags": [
+        "cdcut",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 83,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "Summon cooldowns become 1 turn (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "summon"
+      ],
+      "effect_tags": [
+        "cdcut"
+      ]
+    },
+    {
+      "granblue_id": 84,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "Chain bursts of over 4 chains change to Ultimate Nova (Ultimate Nova: Destruction DMG / Remove all buffs from foes / Counts as all elemental chain bursts) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "dispel"
+      ]
+    },
+    {
+      "granblue_id": 85,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Amplify all allies' DMG based on total HP lost after this guidebook effect was obtained ({value} / Max: 100%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 310,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": [
+        "amp",
+        "progressive"
+      ]
+    },
+    {
+      "granblue_id": 86,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Amplify all allies' DMG based on number of times an event space was reached after this guidebook effect was obtained ({value} / Max: 100%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 310,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca",
+        "skill"
+      ],
+      "effect_tags": [
+        "amp",
+        "progressive",
+        "map"
+      ]
+    },
+    {
+      "granblue_id": 87,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Obtain a random number of Sephira coins and 1 random guidebook effect upon clearing a battle",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "map",
+        "coin",
+        "guidebook"
+      ]
+    },
+    {
+      "granblue_id": 88,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Bonus Elemental DMG effect to sabre-, dagger-, spear-, axe-, or staff-specialty allies (50%) / Bonus Superior Elemental DMG effect (50%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": "proficiency",
+      "target_values": [
+        1,
+        2,
+        4,
+        3,
+        6
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "echo",
+        "weapon"
+      ]
+    },
+    {
+      "granblue_id": 89,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Bonus Elemental C.A. DMG effect to gun-, melee-, bow-, harp-, or katana-specialty allies (50%) / Bonus Superior Elemental C.A. DMG effect (50%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": "proficiency",
+      "target_values": [
+        9,
+        7,
+        5,
+        8,
+        10
+      ],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "ca"
+      ],
+      "effect_tags": [
+        "echo",
+        "weapon"
+      ]
+    },
+    {
+      "granblue_id": 90,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Amplify DMG for allies with max HP above 24,999 +30% (Above 49,999: Bonus Elemental DMG effect [30%] / Above 99,999: Boost specs for the Bonus DMG and DMG amplify)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "skill",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp",
+        "echo"
+      ]
+    },
+    {
+      "granblue_id": 91,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "From an ally's 2nd or higher attack each turn: Sharp boost to ATK / From the 3rd or higher attack: Bonus Superior Elemental DMG effect (100%)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na"
+      ],
+      "effect_tags": [
+        "echo",
+        "multistrike"
+      ]
+    },
+    {
+      "granblue_id": 92,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At the end of each turn allies dealt 100 hits of DMG: 2-turn cut to all allies' skill cooldowns (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "cdcut"
+      ]
+    },
+    {
+      "granblue_id": 93,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At end of turn when all allies' charge bars are at least 100%: Consume 100% of all allies' charge bars / First-position ally deals 10-hit elemental DMG to all foes (1000% total) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "skill",
+        "misc"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 95,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "Upon attacking when all allies are almost knocked out: Increase number of times all allies do an attack +1",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "na",
+        "ca"
+      ],
+      "effect_tags": [
+        "enmity",
+        "multistrike"
+      ]
+    },
+    {
+      "granblue_id": 96,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "Sharp hit to DEF / Autorevive (Keeps buffs / Once per battle) / Amplify DMG for each time an ally was knocked out after obtaining this effect ({value} / Max: 100%) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "progressive"
+      ]
+    },
+    {
+      "granblue_id": 97,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At battle start: All allies' HP is reduced to 1 / Shield effect to each ally worth 500% of the HP they consumed (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 105,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "enmity",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 99,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "On Lake Area ruler spaces: Amplify DMG +30% / Bonus Earth DMG effect [20%] / Bonus Earth C.A. DMG effect [20%] / Lower requirements to cancel foe Omens",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "na",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp",
+        "echo"
+      ]
+    },
+    {
+      "granblue_id": 100,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "On Forest Area ruler spaces: Amplify DMG +30% / Bonus Wind DMG effect [20%] / Bonus Wind C.A. DMG effect [20%] / Lower requirements to cancel foe Omens",
+      "name_jp": null,
+      "icon_category": 1,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "na",
+        "ca"
+      ],
+      "effect_tags": [
+        "amp",
+        "echo"
+      ]
+    },
+    {
+      "granblue_id": 101,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "MC harbors the power of the Omnipotent (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": []
+    },
+    {
+      "granblue_id": 102,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At battle start (1st ally): Earth/wind DMG to foes / Hit to ATK, DEF, and M.A. rate / Bonus Earth DMG to allies / End of turn: Restore HP / 10% boost to charge bars (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "na",
+        "ca",
+        "def"
+      ],
+      "effect_tags": [
+        "echo",
+        "heal",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 104,
+      "rarity": "unique",
+      "stackable": true,
+      "name_en": "1-turn reduction to all allies' skill cooldowns / Heal all allies by 10% of max HP at battle start",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc",
+        "def"
+      ],
+      "effect_tags": [
+        "cdcut",
+        "heal"
+      ]
+    },
+    {
+      "granblue_id": 105,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "To all allies for 2 turns after battle start: DMG immunity, debuff immunity, and buffs can't be removed (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 2,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 107,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At battle start: Fraux activates Strength Upright / End skill cooldowns / End cooldown for a damage skill after it is cast for 8 casts (Only if Fraux is a main ally) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": "character",
+      "target_values": [
+        3100
+      ],
+      "character_granblue_id": "3040161000",
+      "availability": "character",
+      "type_tags": [
+        "skill"
+      ],
+      "effect_tags": [
+        "cdcut",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 108,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At battle start: Maria Theresa activates The Empress Upright / If all allies' HP is full before attacking: Sharp boost to all allies' ATK (1 time) (Only if Maria Theresa is a main ally) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": "character",
+      "target_values": [
+        3099
+      ],
+      "character_granblue_id": "3040160000",
+      "availability": "character",
+      "type_tags": [
+        "na",
+        "def"
+      ],
+      "effect_tags": [
+        "heal",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 115,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At battle start: Nier activates The Lovers Upright / Eternal Vow becomes useable again / When Nier and MC are main allies before attacking: Double Strike effect to both (Only if Nier is a main ally) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": "character",
+      "target_values": [
+        3108
+      ],
+      "character_granblue_id": "3040169000",
+      "availability": "character",
+      "type_tags": [
+        "na",
+        "def"
+      ],
+      "effect_tags": [
+        "cdcut",
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 116,
+      "rarity": "cursed",
+      "stackable": true,
+      "name_en": "At end of turn: Random debuffs to each ally",
+      "name_jp": null,
+      "icon_category": 4,
+      "icon_type": 501,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "debuff"
+      ]
+    },
+    {
+      "granblue_id": 120,
+      "rarity": "cursed",
+      "stackable": true,
+      "name_en": "Chance of 1-turn extension to skill cooldowns for all allies at end of turn",
+      "name_jp": null,
+      "icon_category": 4,
+      "icon_type": 501,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "cdcut"
+      ]
+    },
+    {
+      "granblue_id": 122,
+      "rarity": "cursed",
+      "stackable": false,
+      "name_en": "At battle start: DMG immunity to foe (30 hits) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 4,
+      "icon_type": 501,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "battlestart"
+      ]
+    },
+    {
+      "granblue_id": 123,
+      "rarity": "cursed",
+      "stackable": false,
+      "name_en": "Foes' attacks and debuffs can't miss (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 4,
+      "icon_type": 501,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "debuff"
+      ]
+    },
+    {
+      "granblue_id": 124,
+      "rarity": "cursed",
+      "stackable": false,
+      "name_en": "Become weak to all elements (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 4,
+      "icon_type": 501,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": []
+    }
+  ]
+}

@@ -1,0 +1,321 @@
+{
+  "_source": "gbf.wiki \"Evoking Solomonis\" (Arcarum Blessings); name_jp from the matching Arcarum summon",
+  "blessings": [
+    {
+      "slug": "justice",
+      "arcana_number": 11,
+      "name_en": "Justice",
+      "name_jp": "ジャスティス",
+      "released": true,
+      "levels": [
+        {
+          "level": 1,
+          "description_en": "Unseal 1 weapon",
+          "description_jp": null,
+          "cost": 70,
+          "scintillas": 6000
+        },
+        {
+          "level": 2,
+          "description_en": "Unseal 1 weapon",
+          "description_jp": null,
+          "cost": 60,
+          "scintillas": 49000
+        },
+        {
+          "level": 3,
+          "description_en": "Unseal 1 weapon",
+          "description_jp": null,
+          "cost": 50,
+          "scintillas": 135100
+        }
+      ]
+    },
+    {
+      "slug": "hanged_man",
+      "arcana_number": 12,
+      "name_en": "The Hanged Man",
+      "name_jp": "ザ・ハングドマン",
+      "released": true,
+      "levels": [
+        {
+          "level": 1,
+          "description_en": "Bring 1 character of your choice",
+          "description_jp": null,
+          "cost": 100,
+          "scintillas": 9000
+        },
+        {
+          "level": 2,
+          "description_en": "Bring 1 character of your choice",
+          "description_jp": null,
+          "cost": 90,
+          "scintillas": 23000
+        },
+        {
+          "level": 3,
+          "description_en": "Bring 1 character of your choice",
+          "description_jp": null,
+          "cost": 80,
+          "scintillas": 44000
+        },
+        {
+          "level": 4,
+          "description_en": "Bring 1 character of your choice",
+          "description_jp": null,
+          "cost": 70,
+          "scintillas": 65000
+        },
+        {
+          "level": 5,
+          "description_en": "Bring 1 character of your choice",
+          "description_jp": null,
+          "cost": 60,
+          "scintillas": 86000
+        }
+      ]
+    },
+    {
+      "slug": "death",
+      "arcana_number": 13,
+      "name_en": "Death",
+      "name_jp": "デス",
+      "released": true,
+      "levels": [
+        {
+          "level": 1,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (1 time)",
+          "description_jp": null,
+          "cost": 50,
+          "scintillas": 1000
+        },
+        {
+          "level": 2,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (1 time)",
+          "description_jp": null,
+          "cost": 45,
+          "scintillas": 2500
+        },
+        {
+          "level": 3,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (1 time)",
+          "description_jp": null,
+          "cost": 40,
+          "scintillas": 4000
+        },
+        {
+          "level": 4,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (2 times)",
+          "description_jp": null,
+          "cost": 40,
+          "scintillas": 10000
+        },
+        {
+          "level": 5,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (2 times)",
+          "description_jp": null,
+          "cost": 35,
+          "scintillas": 16000
+        },
+        {
+          "level": 6,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (2 times)",
+          "description_jp": null,
+          "cost": 30,
+          "scintillas": 22000
+        },
+        {
+          "level": 7,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (3 times)",
+          "description_jp": null,
+          "cost": 30,
+          "scintillas": 36000
+        },
+        {
+          "level": 8,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (3 times)",
+          "description_jp": null,
+          "cost": 25,
+          "scintillas": 50000
+        },
+        {
+          "level": 9,
+          "description_en": "Set foes' HP to 1 when entering a battle space: (3 times)",
+          "description_jp": null,
+          "cost": 20,
+          "scintillas": 64000
+        }
+      ]
+    },
+    {
+      "slug": "temperance",
+      "arcana_number": 14,
+      "name_en": "Temperance",
+      "name_jp": "テンペランス",
+      "released": true,
+      "levels": [
+        {
+          "level": 1,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 2 turns",
+          "description_jp": null,
+          "cost": 50,
+          "scintillas": 1000
+        },
+        {
+          "level": 2,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 2 turns",
+          "description_jp": null,
+          "cost": 45,
+          "scintillas": 2500
+        },
+        {
+          "level": 3,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 2 turns",
+          "description_jp": null,
+          "cost": 40,
+          "scintillas": 4000
+        },
+        {
+          "level": 4,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 3 turns",
+          "description_jp": null,
+          "cost": 40,
+          "scintillas": 10000
+        },
+        {
+          "level": 5,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 3 turns",
+          "description_jp": null,
+          "cost": 35,
+          "scintillas": 16000
+        },
+        {
+          "level": 6,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 3 turns",
+          "description_jp": null,
+          "cost": 30,
+          "scintillas": 22000
+        },
+        {
+          "level": 7,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 4 turns",
+          "description_jp": null,
+          "cost": 30,
+          "scintillas": 36000
+        },
+        {
+          "level": 8,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 4 turns",
+          "description_jp": null,
+          "cost": 25,
+          "scintillas": 50000
+        },
+        {
+          "level": 9,
+          "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 4 turns",
+          "description_jp": null,
+          "cost": 20,
+          "scintillas": 64000
+        }
+      ]
+    },
+    {
+      "slug": "devil",
+      "arcana_number": 15,
+      "name_en": "The Devil",
+      "name_jp": "ザ・デビル",
+      "released": true,
+      "levels": [
+        {
+          "level": 1,
+          "description_en": "Start with 100 Sephira coins",
+          "description_jp": null,
+          "cost": 70,
+          "scintillas": 1500
+        },
+        {
+          "level": 2,
+          "description_en": "Start with 100 Sephira coins",
+          "description_jp": null,
+          "cost": 65,
+          "scintillas": 4000
+        },
+        {
+          "level": 3,
+          "description_en": "Start with 100 Sephira coins",
+          "description_jp": null,
+          "cost": 60,
+          "scintillas": 10000
+        },
+        {
+          "level": 4,
+          "description_en": "Start with 150 Sephira coins",
+          "description_jp": null,
+          "cost": 60,
+          "scintillas": 24000
+        },
+        {
+          "level": 5,
+          "description_en": "Start with 150 Sephira coins",
+          "description_jp": null,
+          "cost": 55,
+          "scintillas": 38000
+        },
+        {
+          "level": 6,
+          "description_en": "Start with 150 Sephira coins",
+          "description_jp": null,
+          "cost": 50,
+          "scintillas": 59000
+        },
+        {
+          "level": 7,
+          "description_en": "Start with 200 Sephira coins",
+          "description_jp": null,
+          "cost": 50,
+          "scintillas": 97000
+        }
+      ]
+    },
+    {
+      "slug": "tower",
+      "arcana_number": 16,
+      "name_en": "The Tower",
+      "name_jp": "ザ・タワー",
+      "released": false,
+      "levels": []
+    },
+    {
+      "slug": "star",
+      "arcana_number": 17,
+      "name_en": "The Star",
+      "name_jp": "ザ・スター",
+      "released": false,
+      "levels": []
+    },
+    {
+      "slug": "moon",
+      "arcana_number": 18,
+      "name_en": "The Moon",
+      "name_jp": "ザ・ムーン",
+      "released": false,
+      "levels": []
+    },
+    {
+      "slug": "sun",
+      "arcana_number": 19,
+      "name_en": "The Sun",
+      "name_jp": "ザ・サン",
+      "released": false,
+      "levels": []
+    },
+    {
+      "slug": "judgement",
+      "arcana_number": 20,
+      "name_en": "Judgement",
+      "name_jp": "ジャッジメント",
+      "released": false,
+      "levels": []
+    }
+  ]
+}
