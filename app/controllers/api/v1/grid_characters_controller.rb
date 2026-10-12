@@ -611,6 +611,7 @@ module Api
           :uncap_level,
           :transcendence_step,
           :perpetuity,
+          :brought_by_blessing,
           role_ids: [],
           awakening: %i[id level],
           rings: %i[modifier strength],

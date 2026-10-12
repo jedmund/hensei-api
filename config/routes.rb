@@ -115,7 +115,10 @@ Rails.application.routes.draw do
       resources :shares, controller: 'party_shares', only: [:index, :create, :destroy]
     end
 
-    # Evoking Solomonis catalogues
+    # Evoking Solomonis: whole-list writes under a party, and the catalogues
+    put 'parties/:id/blessings', to: 'party_solomonis#blessings'
+    put 'parties/:id/guide_effects', to: 'party_solomonis#guide_effects'
+    put 'parties/:id/unseal_priority', to: 'party_solomonis#unseal_priority'
     get 'solomonis/route_evokers', to: 'solomonis#route_evokers'
     get 'solomonis/blessings', to: 'solomonis#blessings'
     get 'solomonis/guide_effects', to: 'solomonis#guide_effects'
