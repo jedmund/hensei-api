@@ -27,5 +27,12 @@ FactoryBot.define do
     trait :non_hl do
       hl { false }
     end
+
+    trait :solomonis do
+      name_en { 'Evoking Solomonis' }
+      section { 3 }
+      difficulty { 0 }
+      content_mode { RaidGroup::SOLOMONIS }
+    end
   end
 end

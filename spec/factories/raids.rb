@@ -37,5 +37,16 @@ FactoryBot.define do
     trait :null_element do
       element { 0 }
     end
+
+    # An Evoking Solomonis zone.
+    trait :solomonis_zone do
+      association :group, factory: %i[raid_group solomonis]
+      sequence(:name_en) { |n| "Test Microcosm #{n}" }
+      name_jp { nil }
+      sequence(:slug) { |n| "test-microcosm-#{n}" }
+      element { 0 }
+      player_count { 1 }
+      level { nil }
+    end
   end
 end
