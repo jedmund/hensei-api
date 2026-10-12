@@ -14,6 +14,11 @@ module GachaSimulation
       'Guaranteed slots preserve SSR rates and scale SR category shares to the remaining budget',
       'Selected-gala limited residual weapons use weight 2; custom SSR percentages deduct from category budgets'
     ].freeze
+    BANNER_ASSUMPTIONS = [
+      "The game's published rates for this banner; spark exchanges excluded",
+      "The game truncates each displayed percentage; each rarity's shortfall from its stated total is shared equally",
+      'Items missing from our catalogue are left out, and their rate shared equally with the rest of their rarity'
+    ].freeze
     def initialize(compiled, seed = nil)
       @compiled = compiled
       @config = compiled.fetch('config')
@@ -82,9 +87,14 @@ module GachaSimulation
     private
 
     def metadata
-      { 'seed' => @seed, 'configuration' => @config, 'catalogue_fingerprint' => @compiled['fingerprint'],
-        'engine_version' => VERSION, 'ruby_version' => RUBY_VERSION, 'assumptions' => ASSUMPTIONS,
-        'label' => 'Hypothetical catalogue simulation; spark exchanges excluded' }
+      common = { 'seed' => @seed, 'configuration' => @config, 'catalogue_fingerprint' => @compiled['fingerprint'],
+                 'engine_version' => VERSION, 'ruby_version' => RUBY_VERSION }
+      if @compiled['banner']
+        return common.merge('assumptions' => BANNER_ASSUMPTIONS, 'banner' => @compiled['banner'],
+                            'label' => "Simulation of the game's published banner rates; spark exchanges excluded")
+      end
+
+      common.merge('assumptions' => ASSUMPTIONS, 'label' => 'Hypothetical catalogue simulation; spark exchanges excluded')
     end
 
     def probability(distribution, identity)

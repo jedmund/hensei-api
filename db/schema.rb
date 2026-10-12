@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_03_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -537,6 +537,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_010000) do
     t.datetime "updated_at", null: false
     t.index ["party_id"], name: "index_favorites_on_party_id"
     t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
+  create_table "gacha_banner_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "gacha_banner_id", null: false
+    t.integer "tab", null: false
+    t.string "reward_id", null: false
+    t.integer "rarity", null: false
+    t.string "category", null: false
+    t.decimal "percent", null: false
+    t.boolean "rate_up", default: false, null: false
+    t.string "name"
+    t.index ["gacha_banner_id", "tab", "reward_id"], name: "index_gacha_banner_rates_on_banner_tab_reward", unique: true
+    t.index ["gacha_banner_id"], name: "index_gacha_banner_rates_on_gacha_banner_id"
+  end
+
+  create_table "gacha_banners", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "game_id", null: false
+    t.string "name"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
+    t.jsonb "rarity_rates", default: {}, null: false
+    t.datetime "fetched_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_gacha_banners_on_game_id", unique: true
+    t.index ["starts_at"], name: "index_gacha_banners_on_starts_at"
   end
 
   create_table "gacha_rateups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1614,6 +1640,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_010000) do
   add_foreign_key "extension_auth_codes", "users"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
+  add_foreign_key "gacha_banner_rates", "gacha_banners", on_delete: :cascade
   add_foreign_key "grid_artifacts", "artifacts"
   add_foreign_key "grid_artifacts", "collection_artifacts"
   add_foreign_key "grid_artifacts", "grid_characters"

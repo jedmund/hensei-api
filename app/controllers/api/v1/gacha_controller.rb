@@ -14,9 +14,14 @@ module Api
       end
 
       def catalogue
-        config = GachaSimulation::Configuration.normalize(params.permit(:mode, :season, :purchase).to_h)
+        config = GachaSimulation::Configuration.normalize(params.permit(:mode, :season, :purchase, :banner).to_h)
         snapshot = GachaSimulation::Catalogue.snapshot
-        items = snapshot['items'].select { |item| GachaSimulation::Configuration.eligible?(item, config) }
+        banner = current_banner(config, snapshot['items'])
+        items = if banner
+                  snapshot['items'].select { |item| banner[:ids].include?(item['granblue_id']) }
+                else
+                  snapshot['items'].select { |item| GachaSimulation::Configuration.eligible?(item, config) }
+                end
         query = params[:q].to_s.downcase.first(100)
         if query.present?
           items = items.select { |item|
@@ -25,9 +30,12 @@ module Api
             }
           }
         end
-        render json: { modes: GachaSimulation::Configuration::MODES.keys, seasons: GachaSimulation::Configuration::SEASONS.keys,
+        modes = GachaSimulation::Configuration::MODES.keys
+        modes = [GachaSimulation::Configuration::CURRENT, *modes] if GachaBanner.exists?
+        render json: { modes: modes, seasons: GachaSimulation::Configuration::SEASONS.keys,
                        items: items, catalogue_fingerprint: snapshot['fingerprint'], loaded_at: snapshot['loaded_at'],
-                       label: 'Hypothetical catalogue simulations' }
+                       banner: banner&.fetch(:info),
+                       label: banner ? "The game's published banner rates" : 'Hypothetical catalogue simulations' }
       end
 
       def simulations
@@ -64,11 +72,23 @@ module Api
 
       private
 
+      # The banner's details and its rate-ups as catalogue identities
+      def current_banner(config, items)
+        return unless config['mode'] == GachaSimulation::Configuration::CURRENT
+
+        banner = GachaSimulation::Banner.load(config['banner'])
+        by_id = items.index_by { |item| item['granblue_id'] }
+        rateups = banner.rateups.filter_map do |id, percent|
+          { identity: by_id[id]['identity'], percent: percent } if by_id[id]
+        end
+        { ids: banner.reward_ids.to_set, info: banner.info.merge('rateups' => rateups) }
+      end
+
       def prepare
         if params.key?(:rateups) && !params[:rateups].is_a?(Array)
           raise GachaSimulation::ValidationError, 'Rate-ups must be an array'
         end
-        input = params.permit(:mode, :season, :purchase, :draws, :seed, :target, :copies, :comparison,
+        input = params.permit(:mode, :season, :purchase, :banner, :draws, :seed, :target, :copies, :comparison,
                               rateups: %i[identity percent]).to_h
         config = GachaSimulation::Configuration.normalize(input)
         snapshot = GachaSimulation::Catalogue.snapshot
