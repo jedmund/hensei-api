@@ -42,7 +42,8 @@ module GachaSimulation
     def info
       Catalogue.deep_freeze({ 'game_id' => @record.game_id, 'name' => @record.name,
                               'starts_at' => @record.starts_at.iso8601, 'ends_at' => @record.ends_at.iso8601,
-                              'fetched_at' => @record.fetched_at.iso8601, 'live' => @record.live? })
+                              'fetched_at' => @record.fetched_at.iso8601, 'live' => @record.live?,
+                              'ssr_rate' => @rarity_rates.fetch('1').fetch('3') })
     end
 
     def reward_ids

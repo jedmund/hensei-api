@@ -58,7 +58,7 @@ RSpec.describe 'Gacha banner rates', type: :request do
       get '/api/v1/gacha/catalogue', params: { mode: 'current' }
       body = response.parsed_body
       expect(body['items'].size).to eq(9)
-      expect(body['banner']).to include('game_id' => '211960', 'live' => true)
+      expect(body['banner']).to include('game_id' => '211960', 'live' => true, 'ssr_rate' => '0.03')
       expect(body['banner']['rateups']).to eq([{ 'identity' => items.first['identity'], 'percent' => '0.3' }])
     end
 
