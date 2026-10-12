@@ -74,7 +74,7 @@ module Api
           return unless validate_collection_source!(@party, collection_item)
         end
 
-        @grid_summon.attributes = summon_params
+        @grid_summon.attributes = summon_params.merge(seal_state_params(:summon))
 
         sync_flag_change = nil
         if summon_params.key?(:notes_synced)

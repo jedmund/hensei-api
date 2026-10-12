@@ -81,7 +81,7 @@ module Api
         description_in_payload = weapon_params.key?(:description)
 
         ActiveRecord::Base.transaction do
-          unless @grid_weapon.update(weapon_params.except(:bullets))
+          unless @grid_weapon.update(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
             raise ActiveRecord::Rollback
           end
 

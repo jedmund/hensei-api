@@ -117,7 +117,7 @@ module Api
       def shared_parties
         parties = @crew.shared_parties
                        .includes(
-                         :job, { raid: :group },
+                         :job, { raid: :group }, :solomonis_expedition,
                          { characters: :character },
                          { weapons: :weapon },
                          { summons: :summon }
