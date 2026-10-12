@@ -197,7 +197,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
     context 'with an unknown status_id' do
       let(:new_entry) do
         {
-          'name' => 'Bonus DMG to sabre- and gun-specialty allies@@(30%)', 'target_type' => 2,
+          'name' => 'Bonus DMG to sabre- and gun-specialty allies @@(30%)', 'target_type' => 2,
           'target_param' => '1_6', 'display_ailment_id' => nil, 'status_id' => 109, 'icon_category' => 1,
           'icon_type' => 401, 'rarity' => 3, 'is_duplication_possible' => 0, 'deck_condition' => 0, 'num' => 1
         }
@@ -253,7 +253,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         import(payload)
 
         expect(response).to have_http_status(:created)
-        expect(effect(110)).to have_attributes(name_jp: '全体の与ダメージ上昇 (80% / 最大: 100%)', name_en: nil,
+        expect(effect(110)).to have_attributes(name_jp: '全体の与ダメージ上昇(80% / 最大: 100%)', name_en: nil,
                                                needs_review: true)
       end
 

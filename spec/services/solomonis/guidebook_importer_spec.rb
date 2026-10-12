@@ -18,10 +18,19 @@ RSpec.describe Solomonis::GuidebookImporter do
     end
 
     it 'extracts the run value against the template, ignoring @@ breaks' do
-      text = "Autorevive / Amplify DMG@@(30% / Max: 100%)@@(Can't be stacked)"
+      text = "Autorevive / Amplify DMG @@(30% / Max: 100%) @@(Can't be stacked)"
       result = described_class.new([entry('status_id' => 96, 'name' => text)]).call
 
       expect(result.first).to include(solomonis_guide_effect: effect, count: 1, display_value: '30%')
+    end
+
+    it 'removes @@ without adding a space, as the game text already spaces words' do
+      hyphenated = create(:solomonis_guide_effect, granblue_id: 93, stackable: false,
+                                                   name_en: 'First-position ally deals DMG ({value})')
+      text = 'First-@@position ally deals @@DMG (10%)'
+      result = described_class.new([entry('status_id' => 93, 'name' => text)]).call
+
+      expect(result.first).to include(solomonis_guide_effect: hyphenated, display_value: '10%')
     end
 
     it 'leaves the value empty when the text no longer matches' do

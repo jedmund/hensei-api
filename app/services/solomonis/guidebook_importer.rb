@@ -106,7 +106,10 @@ module Solomonis
     def normalize_text(value)
       return nil unless value.is_a?(String)
 
-      value.gsub(LINE_BREAK, ' ').squish.presence
+      # @@ marks a line break in the game UI. The game keeps any word space
+      # beside it ("Sephira @@coins", "First-@@position", and none in
+      # Japanese), so it is removed rather than replaced with a space.
+      value.gsub(LINE_BREAK, '').squish.presence
     end
 
     def update_effect(effect, entry)

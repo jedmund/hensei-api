@@ -15,7 +15,7 @@
       "num": 1
     },
     {
-      "name": "Amplify all allies' DMG based on total HP lost after this guidebook effect was obtained@@(80% / Max: 100%)",
+      "name": "Amplify all allies' DMG based on total HP lost after this guidebook effect was @@obtained (80% / Max: 100%)",
       "target_type": null,
       "target_param": "",
       "display_ailment_id": null,
