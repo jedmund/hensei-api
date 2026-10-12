@@ -23,6 +23,7 @@
 class GridWeapon < ApplicationRecord
   include WeaponCapabilityResolution
   include AxSkillValidation
+  include SolomonisSealable
 
   # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze
@@ -107,6 +108,17 @@ class GridWeapon < ApplicationRecord
     nullify :exorcism_level
     nullify :skill_level
     nullify :description
+  end
+
+  ##
+  # Whether this weapon's slot starts an Evoking Solomonis expedition unsealed.
+  #
+  # @param justice [Boolean] whether the party has the Justice blessing.
+  # @return [Boolean]
+  def solomonis_starting_slot?(justice:)
+    position = self.position.to_i
+    SolomonisParty::STARTING_WEAPON_POSITIONS.include?(position) ||
+      (justice && position == SolomonisParty::JUSTICE_WEAPON_POSITION)
   end
 
   ##

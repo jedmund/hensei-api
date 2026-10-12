@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_12_000006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -21,6 +21,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
   create_table "app_updates", primary_key: "updated_at", id: :datetime, force: :cascade do |t|
     t.string "update_type", null: false
     t.string "version"
+  end
+
+  create_table "arcarum_blessing_levels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "arcarum_blessing_id", null: false
+    t.integer "level", null: false
+    t.text "description_en"
+    t.text "description_jp"
+    t.integer "cost", null: false
+    t.integer "scintillas"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["arcarum_blessing_id", "level"], name: "index_arcarum_blessing_levels_on_arcarum_blessing_id_and_level", unique: true
+    t.index ["arcarum_blessing_id"], name: "index_arcarum_blessing_levels_on_arcarum_blessing_id"
+  end
+
+  create_table "arcarum_blessings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "arcana_number", null: false
+    t.string "name_en"
+    t.string "name_jp"
+    t.boolean "released", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["arcana_number"], name: "index_arcarum_blessings_on_arcana_number", unique: true
+    t.index ["slug"], name: "index_arcarum_blessings_on_slug", unique: true
   end
 
   create_table "artifact_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -207,11 +232,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.date "ulb_date"
     t.integer "max_transcendence_stage", default: 0, null: false
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
+    t.uuid "solomonis_zone_id"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_characters_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["season"], name: "index_characters_on_season"
     t.index ["series"], name: "index_characters_on_series", using: :gin
+    t.index ["solomonis_zone_id"], name: "index_characters_on_solomonis_zone_id"
   end
 
   create_table "charge_attacks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -517,6 +544,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.index ["name_en"], name: "index_effects_on_name_en"
   end
 
+  create_table "expedition_guide_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id", null: false
+    t.uuid "solomonis_guide_effect_id", null: false
+    t.integer "count", default: 1, null: false
+    t.string "display_value"
+    t.integer "acquired_order"
+    t.boolean "inherited", default: false, null: false
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["party_id", "solomonis_guide_effect_id"], name: "index_expedition_guide_effects_on_party_and_effect", unique: true
+    t.index ["party_id"], name: "index_expedition_guide_effects_one_inherited", unique: true, where: "inherited"
+    t.index ["solomonis_guide_effect_id"], name: "index_expedition_guide_effects_on_solomonis_guide_effect_id"
+    t.check_constraint "count >= 1", name: "expedition_guide_effects_count_positive"
+  end
+
   create_table "extension_auth_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.string "code_digest", null: false
@@ -529,7 +572,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.index ["expires_at"], name: "index_extension_auth_codes_on_expires_at"
     t.index ["user_id"], name: "index_extension_auth_codes_on_user_id"
   end
-  
+
   create_table "favorites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.uuid "party_id"
@@ -636,12 +679,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.jsonb "description"
     t.jsonb "full_auto_skills", default: {}, null: false
     t.boolean "orphaned", default: false, null: false
+    t.boolean "brought_by_blessing", default: false, null: false
     t.index ["awakening_id"], name: "index_grid_characters_on_awakening_id"
     t.index ["character_id"], name: "index_grid_characters_on_character_id"
     t.index ["collection_character_id"], name: "index_grid_characters_on_collection_character_id"
+    t.index ["orphaned"], name: "index_grid_characters_on_orphaned"
     t.index ["party_id", "position", "character_id"], name: "index_grid_characters_unique_substitute", unique: true, where: "is_substitute"
     t.index ["party_id", "position"], name: "index_grid_characters_on_party_id_and_position"
-    t.index ["orphaned"], name: "index_grid_characters_on_orphaned"
     t.index ["party_id"], name: "index_grid_characters_on_party_id"
   end
 
@@ -661,6 +705,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.boolean "is_substitute", default: false, null: false
     t.jsonb "description"
     t.boolean "notes_synced", default: false, null: false
+    t.string "seal_state"
+    t.integer "unseal_priority"
     t.index ["collection_summon_id"], name: "index_grid_summons_on_collection_summon_id"
     t.index ["orphaned"], name: "index_grid_summons_on_orphaned"
     t.index ["party_id", "position", "summon_id"], name: "index_grid_summons_unique_substitute", unique: true, where: "is_substitute"
@@ -710,6 +756,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.boolean "notes_synced", default: false, null: false
     t.integer "befoulment_permeation"
     t.integer "skill_level"
+    t.string "seal_state"
+    t.integer "unseal_priority"
     t.index ["awakening_id"], name: "index_grid_weapons_on_awakening_id"
     t.index ["ax_modifier1_id"], name: "index_grid_weapons_on_ax_modifier1_id"
     t.index ["ax_modifier2_id"], name: "index_grid_weapons_on_ax_modifier2_id"
@@ -951,6 +999,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.index ["weapons_count", "characters_count", "summons_count"], name: "index_parties_on_counters"
   end
 
+  create_table "party_blessings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id", null: false
+    t.uuid "arcarum_blessing_id", null: false
+    t.uuid "arcarum_blessing_level_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["arcarum_blessing_id"], name: "index_party_blessings_on_arcarum_blessing_id"
+    t.index ["arcarum_blessing_level_id"], name: "index_party_blessings_on_arcarum_blessing_level_id"
+    t.index ["party_id", "arcarum_blessing_id"], name: "index_party_blessings_on_party_id_and_arcarum_blessing_id", unique: true
+  end
+
   create_table "party_shares", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id", null: false
     t.string "shareable_type", null: false
@@ -1046,6 +1105,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.boolean "hl", default: true, null: false
     t.boolean "guidebooks", default: false, null: false
     t.boolean "unlimited", default: false, null: false
+    t.string "content_mode"
+    t.index ["content_mode"], name: "index_raid_groups_on_content_mode"
   end
 
   create_table "raids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1111,6 +1172,54 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.datetime "updated_at", null: false
     t.index ["name_en"], name: "index_skills_on_name_en"
     t.index ["skill_type"], name: "index_skills_on_skill_type"
+  end
+
+  create_table "solomonis_expeditions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id", null: false
+    t.uuid "user_id"
+    t.string "kind", null: false
+    t.uuid "route_evoker_id", null: false
+    t.integer "pledge_level", default: 0, null: false
+    t.string "outcome"
+    t.integer "bosses_defeated"
+    t.string "midboss"
+    t.integer "expedition_level"
+    t.uuid "build_party_id"
+    t.bigint "game_report_id"
+    t.datetime "ended_at"
+    t.jsonb "stats", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["build_party_id"], name: "index_solomonis_expeditions_on_build_party_id"
+    t.index ["kind"], name: "index_solomonis_expeditions_on_kind"
+    t.index ["party_id"], name: "index_solomonis_expeditions_on_party_id", unique: true
+    t.index ["pledge_level"], name: "index_solomonis_expeditions_on_pledge_level"
+    t.index ["route_evoker_id"], name: "index_solomonis_expeditions_on_route_evoker_id"
+    t.index ["user_id", "game_report_id"], name: "index_solomonis_expeditions_on_user_and_game_report", unique: true, where: "((user_id IS NOT NULL) AND (game_report_id IS NOT NULL))"
+    t.index ["user_id"], name: "index_solomonis_expeditions_on_user_id"
+  end
+
+  create_table "solomonis_guide_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "granblue_id", null: false
+    t.string "rarity", null: false
+    t.boolean "stackable", default: false, null: false
+    t.text "name_en"
+    t.text "name_jp"
+    t.integer "icon_category"
+    t.integer "icon_type"
+    t.string "target_type"
+    t.integer "target_values", default: [], null: false, array: true
+    t.uuid "character_id"
+    t.string "availability"
+    t.string "type_tags", array: true
+    t.string "effect_tags", array: true
+    t.boolean "needs_review", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_solomonis_guide_effects_on_character_id"
+    t.index ["granblue_id"], name: "index_solomonis_guide_effects_on_granblue_id", unique: true
+    t.index ["rarity"], name: "index_solomonis_guide_effects_on_rarity"
+    t.check_constraint "name_en IS NOT NULL OR name_jp IS NOT NULL", name: "solomonis_guide_effects_name_present"
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1596,11 +1705,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
     t.index ["wiki_raw_fetched_at"], name: "index_weapons_on_wiki_raw_fetched_at"
   end
 
+  add_foreign_key "arcarum_blessing_levels", "arcarum_blessings", on_delete: :cascade
   add_foreign_key "character_series_memberships", "character_series"
   add_foreign_key "character_series_memberships", "characters"
   add_foreign_key "character_skill_version_links", "character_skill_versions", column: "from_version_id"
   add_foreign_key "character_skill_version_links", "character_skill_versions", column: "to_version_id"
   add_foreign_key "character_skill_versions", "character_skills"
+  add_foreign_key "characters", "raids", column: "solomonis_zone_id"
   add_foreign_key "charge_attacks", "skills"
   add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"
   add_foreign_key "collection_artifacts", "artifacts"
@@ -1637,6 +1748,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
   add_foreign_key "difficulty_change_logs", "users"
   add_foreign_key "difficulty_drafts", "users"
   add_foreign_key "effects", "effects", column: "effect_family_id"
+  add_foreign_key "expedition_guide_effects", "parties", on_delete: :cascade
+  add_foreign_key "expedition_guide_effects", "solomonis_guide_effects"
   add_foreign_key "extension_auth_codes", "users"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
@@ -1684,6 +1797,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
   add_foreign_key "parties", "raids"
   add_foreign_key "parties", "users"
   add_foreign_key "parties", "users", column: "collection_source_user_id"
+  add_foreign_key "party_blessings", "arcarum_blessing_levels"
+  add_foreign_key "party_blessings", "arcarum_blessings"
+  add_foreign_key "party_blessings", "parties", on_delete: :cascade
   add_foreign_key "party_shares", "parties"
   add_foreign_key "party_shares", "users", column: "shared_by_id"
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
@@ -1696,6 +1812,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_000000) do
   add_foreign_key "skill_effects", "character_skill_versions"
   add_foreign_key "skill_effects", "statuses"
   add_foreign_key "skill_values", "skills"
+  add_foreign_key "solomonis_expeditions", "characters", column: "route_evoker_id"
+  add_foreign_key "solomonis_expeditions", "parties", column: "build_party_id", on_delete: :nullify
+  add_foreign_key "solomonis_expeditions", "parties", on_delete: :cascade
+  add_foreign_key "solomonis_expeditions", "users", on_delete: :nullify
+  add_foreign_key "solomonis_guide_effects", "characters", on_delete: :nullify
   add_foreign_key "summon_calls", "skills"
   add_foreign_key "summon_calls", "skills", column: "alt_skill_id"
   add_foreign_key "summons", "summon_series"

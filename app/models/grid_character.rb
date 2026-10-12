@@ -55,6 +55,8 @@ class GridCharacter < ApplicationRecord
   validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
   validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
   validate :roles_within_cap
+  validate :within_solomonis_character_limit, on: :create, unless: :is_substitute?
+  validate :validate_brought_by_blessing
   validate :validate_full_auto_skills
 
   # Virtual attributes
@@ -346,6 +348,37 @@ class GridCharacter < ApplicationRecord
 
   def decrement_party_counter
     Party.decrement_counter(:characters_count, party_id)
+  end
+
+  # Evoking Solomonis builds hold the route Evoker only (plus one with The
+  # Hanged Man); runs the route Evoker and up to 4 allies. Whether the route
+  # Evoker is actually in the grid is a completeness check, not validated.
+  def within_solomonis_character_limit
+    limit = party&.solomonis_character_limit
+    return if limit.nil?
+
+    others = party.characters.reject do |gc|
+      gc.equal?(self) || (id && gc.id == id) || gc.marked_for_destruction?
+    end
+    return if others.size < limit
+
+    errors.add(:base, "This Evoking Solomonis party can hold at most #{limit} characters")
+  end
+
+  # The ally chosen with The Hanged Man: at most one per party, only when The
+  # Hanged Man is equipped.
+  def validate_brought_by_blessing
+    return unless brought_by_blessing?
+
+    if is_substitute? || !party&.solomonis_blessing?(ArcarumBlessing::HANGED_MAN)
+      errors.add(:brought_by_blessing, 'needs The Hanged Man')
+      return
+    end
+
+    taken = GridCharacter.where(party_id: party_id, brought_by_blessing: true, is_substitute: false)
+    taken = taken.where.not(id: id) if id
+    in_memory = party.characters.any? { |gc| !gc.equal?(self) && gc.new_record? && gc.brought_by_blessing? }
+    errors.add(:brought_by_blessing, 'can only be set on one character') if taken.exists? || in_memory
   end
 
   def roles_within_cap

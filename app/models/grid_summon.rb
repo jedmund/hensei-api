@@ -11,6 +11,10 @@
 # @!attribute [r] party
 #   @return [Party] the associated party.
 class GridSummon < ApplicationRecord
+  include SolomonisSealable
+
+  # The support (friend) summon's position.
+  FRIEND_POSITION = 6
   belongs_to :summon, foreign_key: :summon_id, primary_key: :id
 
   belongs_to :party,
@@ -46,6 +50,7 @@ class GridSummon < ApplicationRecord
   validate :validate_uncap_level_based_on_summon_flags
 
   validate :no_conflicts, on: :create, unless: :is_substitute?
+  validate :no_friend_summon_on_solomonis_party, unless: :is_substitute?
 
   before_validation :set_default_uncap_level, on: :create
 
@@ -57,6 +62,15 @@ class GridSummon < ApplicationRecord
   # Virtual attribute set by the controller for substitute renders. See
   # GridCharacter#owned for the full rationale.
   attr_accessor :owned
+
+  ##
+  # Whether this summon starts an Evoking Solomonis expedition unsealed: only
+  # the main summon does.
+  #
+  # @return [Boolean]
+  def solomonis_starting_slot?(justice: false) # rubocop:disable Lint/UnusedMethodArgument
+    main? || position.to_i == -1
+  end
 
   ##
   # Returns the blueprint for rendering the grid summon.
@@ -239,6 +253,17 @@ class GridSummon < ApplicationRecord
   def no_conflicts
     # Check if the grid summon conflicts with any of the other grid summons in the party
     errors.add(:series, 'must not conflict with existing summons') unless conflicts(party).nil?
+  end
+
+  ##
+  # Evoking Solomonis is single-player: there is no support summon.
+  #
+  # @return [void]
+  def no_friend_summon_on_solomonis_party
+    return unless party&.solomonis?
+    return unless friend? || position.to_i == FRIEND_POSITION
+
+    errors.add(:friend, 'summons are not used in Evoking Solomonis')
   end
 
   ##
