@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     post 'gacha/until', to: 'gacha#until_result'
     post 'gacha/odds', to: 'gacha#odds'
     get 'gacha/jobs/:token', to: 'gacha#job'
+    post 'gacha/banners', to: 'gacha_banners#create'
     resources :parties, only: %i[index create update destroy]
     get 'users/me', to: 'users#me'
     get 'users/me/identities', to: 'user_identities#index'

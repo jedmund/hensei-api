@@ -9,6 +9,12 @@ module GachaSimulation
     def initialize(snapshot, config)
       @snapshot = snapshot
       @config = JSON.parse(JSON.generate(config))
+      if @config['mode'] == Configuration::CURRENT
+        @banner = Banner.load(@config['banner'])
+        @config['banner'] = @banner.info['game_id']
+        return
+      end
+
       @items = snapshot.fetch('items').select { |item| Configuration.eligible?(item, config) }.uniq { |i| i['identity'] }
       @ssr = BigDecimal(%w[flash legend].include?(config['mode']) ? '0.06' : '0.03')
       @featured = config['rateups'].to_h do |rateup|
@@ -22,18 +28,24 @@ module GachaSimulation
 
     def compile
       Catalogue.deep_freeze({ 'fingerprint' => @snapshot['fingerprint'], 'catalogue_loaded_at' => @snapshot['loaded_at'],
-        'config' => @config, 'ordinary' => distribution(false), 'guaranteed' => distribution(true) })
+        'config' => @config, 'banner' => @banner&.info, 'ordinary' => distribution(false),
+        'guaranteed' => distribution(true) })
     end
 
     private
 
     def distribution(guaranteed)
+      return checked(@banner.distribution(@snapshot.fetch('items'), guaranteed)) if @banner
+
       budgets = { 1 => guaranteed ? BigDecimal('0') : BigDecimal('0.85') - @ssr,
                   2 => guaranteed ? 1 - @ssr : BigDecimal('0.15'), 3 => @ssr }
-      result = budgets.flat_map do |rarity, budget|
+      checked(budgets.flat_map do |rarity, budget|
         pool = @items.select { |i| i['rarity'] == rarity }
         rarity == 3 ? ssr_entries(pool, budget) : lower_entries(pool, rarity, budget)
-      end
+      end)
+    end
+
+    def checked(result)
       total = result.sum { |entry| BigDecimal(entry['probability']) }
       raise ValidationError, 'Distribution does not conserve probability' if (total - 1).abs > EPSILON
 

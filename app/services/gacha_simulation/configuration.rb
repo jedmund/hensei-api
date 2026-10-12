@@ -5,12 +5,14 @@ module GachaSimulation
   class Configuration
     MODES = { 'premium' => 1, 'classic' => 2, 'classic_ii' => 3, 'flash' => 4, 'legend' => 5, 'classic_iii' => 12 }.freeze
     SEASONS = { 'valentines' => 6, 'summer' => 7, 'halloween' => 8, 'holiday' => 9, 'formal' => 11 }.freeze
+    # The game's current banner, with the rates it publishes (see Banner)
+    CURRENT = 'current'
 
     def self.normalize(input)
       mode = input.fetch('mode', 'premium')
       season = input['season'].presence
       purchase = input.fetch('purchase', 'ten')
-      raise ValidationError, 'Unsupported mode' unless MODES.key?(mode)
+      raise ValidationError, 'Unsupported mode' unless MODES.key?(mode) || mode == CURRENT
       raise ValidationError, 'Unsupported season' if season && !SEASONS.key?(season)
       raise ValidationError, 'Classic pools do not support seasons' if mode.start_with?('classic') && season
       raise ValidationError, 'Purchase must be singles or ten' unless %w[singles ten].include?(purchase)
@@ -34,7 +36,15 @@ module GachaSimulation
       rates.sort_by! { |entry| entry['identity'] }
       raise ValidationError, 'Duplicate rate-up identity' unless rates.map { |r| r['identity'] }.uniq.size == rates.size
 
-      { 'mode' => mode, 'season' => season, 'purchase' => purchase, 'rateups' => rates }
+      return { 'mode' => mode, 'season' => season, 'purchase' => purchase, 'rateups' => rates } unless mode == CURRENT
+
+      raise ValidationError, 'The current banner has no seasons' if season
+      raise ValidationError, "The current banner's rates come from the game" if rates.any?
+
+      banner = input['banner'].presence&.to_s
+      raise ValidationError, 'Invalid banner id' if banner && !banner.match?(/\A\d{1,12}\z/)
+
+      { 'mode' => mode, 'season' => nil, 'purchase' => purchase, 'rateups' => [], 'banner' => banner }
     end
 
     def self.identity(input)
