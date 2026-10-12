@@ -3,6 +3,9 @@
 module Api
   module V1
     class GachaController < ApiController
+      # Draws above this run in the background
+      QUEUED_ABOVE = 10_000
+
       before_action :computation_limit, only: %i[simulations until_result odds]
       around_action :measure_gacha
       rescue_from GachaSimulation::ValidationError do |error|
@@ -41,9 +44,11 @@ module Api
       def simulations
         input, compiled = prepare
         count = GachaSimulation::Engine.draw_count(input, compiled['config'])
-        if count > 10_000
+        if count > QUEUED_ABOVE
           input['seed'] ||= SecureRandom.hex(16)
           GachaSimulation::Engine.new(compiled, input['seed']) # Validate before accepting a queued job.
+          return if queued_run_limited?
+
           token = GachaSimulation::Jobs.enqueue(compiled, input)
           render json: { token: token, status: 'queued', seed: input['seed'] }, status: :accepted
         else
@@ -96,14 +101,41 @@ module Api
         [input, GachaSimulation::Compiler.new(snapshot, config).compile]
       end
 
+      # Every Draw, Until and Odds request, per visitor
       def computation_limit
-        store = Rails.application.config.x.rate_limit_store
-        count = store.increment("gacha:computation:#{client_ip}", 1, expires_in: 60)
-        raise GachaSimulation::Unavailable, 'Computation limiter unavailable' unless count
-        return if count <= ENV.fetch('GACHA_REQUESTS_PER_MINUTE', '60').to_i
+        return if limit_reached?('computation', ENV.fetch('GACHA_REQUESTS_PER_MINUTE', '60').to_i, 1.minute,
+                                 'Too many draws; try again in a minute')
 
-        response.set_header('Retry-After', '60')
-        render json: { error: 'Gacha computation limit reached; retry in 60 seconds', retry_after: 60 }, status: :too_many_requests
+        limit_reached?('computation-hour', ENV.fetch('GACHA_REQUESTS_PER_HOUR', '600').to_i, 1.hour,
+                       'Too many draws this hour; try again later')
+        nil
+      end
+
+      # Draws too large to answer directly run in the background and keep
+      # their result for an hour, so they're limited separately: per visitor,
+      # and in total across the site. Returns true once it has responded.
+      def queued_run_limited?
+        if GachaSimulation::Jobs.in_flight >= ENV.fetch('GACHA_QUEUED_RUNS_MAX', '20').to_i
+          raise GachaSimulation::Unavailable, 'The simulator is busy; try again shortly'
+        end
+
+        limit_reached?('queued', ENV.fetch('GACHA_QUEUED_RUNS_PER_MINUTE', '10').to_i, 1.minute,
+                       'Too many large draws; try again in a minute') ||
+          limit_reached?('queued-hour', ENV.fetch('GACHA_QUEUED_RUNS_PER_HOUR', '50').to_i, 1.hour,
+                         'Too many large draws this hour; try again later')
+      end
+
+      # Counts this request against a per-visitor limit, and responds with a
+      # 429 when it's over. Refuses the request when the counter is unreachable.
+      def limit_reached?(name, limit, period, message)
+        count = Rails.application.config.x.rate_limit_store
+                     .increment("gacha:#{name}:#{client_ip}", 1, expires_in: period)
+        raise GachaSimulation::Unavailable, 'Computation limiter unavailable' unless count
+        return false if count <= limit
+
+        response.set_header('Retry-After', period.to_i.to_s)
+        render json: { error: message, retry_after: period.to_i }, status: :too_many_requests
+        true
       end
 
       def measure_gacha

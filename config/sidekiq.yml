@@ -1,6 +1,7 @@
 :queues:
   - default
   - downloads
+  - simulations
   - maintenance
 
 :scheduler:

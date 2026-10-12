@@ -24,6 +24,7 @@ RSpec.describe 'Gacha API', type: :request do
     allow(redis).to receive(:get) { |key| store[key] }
     allow(redis).to receive(:set) { |key, value, **options| store[key] = value unless options[:xx] && !store.key?(key) }
     allow(GachaSimulation::SimulationJob).to receive(:perform_async)
+    allow(GachaSimulation::Jobs).to receive(:in_flight).and_return(0)
   end
 
   it 'serves searchable typed items without authentication' do
@@ -81,6 +82,53 @@ RSpec.describe 'Gacha API', type: :request do
     expect(response.headers['Retry-After']).to eq('60')
     get '/api/v1/gacha/catalogue'
     expect(response).to have_http_status(:ok)
+  end
+
+  it 'limits draws per hour as well as per minute' do
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with('GACHA_REQUESTS_PER_HOUR', '600').and_return('2')
+    3.times { post '/api/v1/gacha/simulations', params: { draws: '10' }, as: :json }
+    expect(response).to have_http_status(:too_many_requests)
+    expect(response.parsed_body['error']).to eq('Too many draws this hour; try again later')
+    expect(response.headers['Retry-After']).to eq('3600')
+  end
+
+  it 'limits queued draws per visitor without limiting direct ones' do
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with('GACHA_QUEUED_RUNS_PER_MINUTE', '10').and_return('1')
+    post '/api/v1/gacha/simulations', params: { draws: '10010' }, as: :json
+    expect(response).to have_http_status(:accepted)
+    post '/api/v1/gacha/simulations', params: { draws: '10010' }, as: :json
+    expect(response).to have_http_status(:too_many_requests)
+    expect(response.parsed_body['error']).to eq('Too many large draws; try again in a minute')
+    expect(GachaSimulation::SimulationJob).to have_received(:perform_async).once
+    post '/api/v1/gacha/simulations', params: { draws: '10' }, as: :json
+    expect(response).to have_http_status(:ok)
+  end
+
+  it 'limits queued draws per visitor per hour' do
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with('GACHA_QUEUED_RUNS_PER_HOUR', '50').and_return('1')
+    2.times { post '/api/v1/gacha/simulations', params: { draws: '10010' }, as: :json }
+    expect(response).to have_http_status(:too_many_requests)
+    expect(response.parsed_body['error']).to eq('Too many large draws this hour; try again later')
+  end
+
+  it 'refuses queued draws while the queue is full, without counting them against the visitor' do
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with('GACHA_QUEUED_RUNS_PER_MINUTE', '10').and_return('1')
+    allow(GachaSimulation::Jobs).to receive(:in_flight).and_return(20)
+    post '/api/v1/gacha/simulations', params: { draws: '10010' }, as: :json
+    expect(response).to have_http_status(:service_unavailable)
+    expect(response.parsed_body['error']).to eq('The simulator is busy; try again shortly')
+    expect(GachaSimulation::SimulationJob).not_to have_received(:perform_async)
+    allow(GachaSimulation::Jobs).to receive(:in_flight).and_return(19)
+    post '/api/v1/gacha/simulations', params: { draws: '10010' }, as: :json
+    expect(response).to have_http_status(:accepted)
+  end
+
+  it 'runs queued draws on their own queue' do
+    expect(GachaSimulation::SimulationJob.get_sidekiq_options['queue']).to eq('simulations')
   end
 
   it 'returns validation and catalogue-unavailable errors' do
