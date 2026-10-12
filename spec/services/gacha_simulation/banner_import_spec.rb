@@ -15,6 +15,25 @@ RSpec.describe GachaSimulation::BannerImport do
     expect(banner.rates.find_by!(tab: 1, reward_id: '2020000001')).to have_attributes(rarity: 1, category: 'summon')
   end
 
+  it 'reads the English rarity names and times of an account set to English' do
+    payload = gacha_banner_payload(start: '7 p.m., Oct 9, 2026 (JST)', finish: '6:59 p.m., Oct 12, 2026 (JST)')
+    names = { 'SSレア' => 'SS Rare', 'Sレア' => 'S Rare', 'レア' => 'Rare' }
+    payload['tabs'].each_value { |tab| tab['ratio'].each { |entry| entry['rare'] = names.fetch(entry['rare']) } }
+    described_class.call(payload)
+    banner = GachaBanner.find_by!(game_id: '211960')
+    expect(banner.starts_at).to eq(Time.utc(2026, 10, 9, 10, 0))
+    expect(banner.ends_at).to eq(Time.utc(2026, 10, 12, 10, 0))
+    expect(banner.rarity_rates['1']).to eq('3' => '0.03', '2' => '0.15', '1' => '0.82')
+  end
+
+  it 'reads English times around midnight and noon' do
+    { '12 a.m., Jan 1, 2027 (JST)' => Time.utc(2026, 12, 31, 15, 0),
+      '12:30 p.m., Sept 3, 2027 (JST)' => Time.utc(2027, 9, 3, 3, 30) }.each do |text, expected|
+      described_class.call(gacha_banner_payload(start: text))
+      expect(GachaBanner.find_by!(game_id: '211960').starts_at).to eq(expected)
+    end
+  end
+
   it 'replaces a banner imported again' do
     described_class.call(gacha_banner_payload)
     described_class.call(gacha_banner_payload(guaranteed: false))
@@ -32,6 +51,8 @@ RSpec.describe GachaSimulation::BannerImport do
       nil, {}, gacha_banner_payload.merge('tabs' => {}),
       gacha_banner_payload.tap { |p| p['banner']['id'] = '../1' },
       gacha_banner_payload.tap { |p| p['banner']['service_start'] = 'soon' },
+      gacha_banner_payload.tap { |p| p['banner']['service_start'] = '13 p.m., Oct 9, 2026 (JST)' },
+      gacha_banner_payload.tap { |p| p['banner']['service_start'] = '7 p.m., Foo 9, 2026 (JST)' },
       gacha_banner_payload.tap { |p| p['tabs']['1']['ratio'][0]['ratio'] = '4.00%' },
       gacha_banner_payload.tap { |p| p['tabs']['1']['ratio'][0]['rare'] = 'URレア' },
       gacha_banner_payload.tap { |p| p['tabs']['1']['appear'][0]['item'][0]['drop_rate'] = '1e3' },
