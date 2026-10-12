@@ -1,0 +1,38 @@
+{
+  "content_mode": "solomonis",
+  "raid_group": {
+    "name_en": "Evoking Solomonis",
+    "name_jp": null
+  },
+  "zones": [
+    {
+      "slug": "allotropic-microcosm",
+      "name_en": "Allotropic Microcosm",
+      "name_jp": null,
+      "create_now": true
+    },
+    {
+      "slug": "paracyclic-microcosm",
+      "name_en": "Paracyclic Microcosm",
+      "name_jp": null,
+      "create_now": false
+    }
+  ],
+  "midbosses": [
+    {
+      "value": "banes_gate",
+      "name_en": "Bane's Gate",
+      "name_jp": null
+    },
+    {
+      "value": "infernobringer",
+      "name_en": "Infernobringer",
+      "name_jp": null
+    },
+    {
+      "value": "beast_of_anathema",
+      "name_en": "Beast of Anathema",
+      "name_jp": null
+    }
+  ]
+}
