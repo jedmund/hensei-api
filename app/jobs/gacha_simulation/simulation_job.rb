@@ -4,7 +4,7 @@ module GachaSimulation
   class SimulationJob
     include Sidekiq::Job
 
-    sidekiq_options retry: false
+    sidekiq_options queue: Jobs::QUEUE, retry: false
 
     def perform(token)
       data = Jobs.read(token)
