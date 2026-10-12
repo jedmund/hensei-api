@@ -85,6 +85,21 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
     end
   end
 
+  describe 'raid group content_mode' do
+    it 'marks the Solomonis group on raid groups and on a party raid' do
+      party = create(:party, :solomonis_build, user: user, route_evoker: nier)
+      create(:raid_group)
+
+      get '/api/v1/raid_groups'
+      modes = response.parsed_body.to_h { |g| [g['id'], g['content_mode']] }
+      expect(modes[zone.group.id]).to eq('solomonis')
+      expect(modes.except(zone.group.id).values).to all(be_nil)
+
+      get "/api/v1/parties/#{party.shortcode}", headers: headers
+      expect(response.parsed_body.dig('party', 'raid', 'group', 'content_mode')).to eq('solomonis')
+    end
+  end
+
   describe 'GET /api/v1/parties/:shortcode' do
     it 'returns the solomonis object and seal state for a build' do
       party = create(:party, :solomonis_build, user: user, route_evoker: nier)
