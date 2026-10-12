@@ -55,8 +55,45 @@ class PartyQueryBuilder
     query = apply_has_video_filter(query)
     query = apply_boost_mod_filter(query)
     query = apply_difficulty_filter(query)
+    query = apply_solomonis_filters(query)
 
     query
+  end
+
+  # Evoking Solomonis filters, applied only when the raid filter is a
+  # Solomonis zone: `route_evoker` (character UUID or granblue_id), `kind`
+  # (build or run) and `pledge_level` (one level or a comma-separated list).
+  def apply_solomonis_filters(query)
+    return query unless solomonis_filter_requested?
+
+    raid = Raid.find_by(id: resolve_raid_id)
+    return query unless raid&.solomonis_zone?
+
+    conditions = {}
+    if @params[:route_evoker].present?
+      value = @params[:route_evoker].to_s
+      conditions[:route_evoker_id] =
+        value.match?(UUID_REGEX) ? value : Character.where(granblue_id: value).select(:id)
+    end
+    if @params[:kind].present?
+      kind = @params[:kind].to_s
+      return query.none unless SolomonisExpedition::KINDS.include?(kind)
+
+      conditions[:kind] = kind
+    end
+    if @params[:pledge_level].present?
+      levels = @params[:pledge_level].to_s.split(',').filter_map { |v| Integer(v.strip, exception: false) }
+      return query.none if levels.empty?
+
+      conditions[:pledge_level] = levels
+    end
+
+    query.where(id: SolomonisExpedition.where(conditions).select(:party_id))
+  end
+
+  def solomonis_filter_requested?
+    @params[:raid].present? &&
+      (@params[:route_evoker].present? || @params[:kind].present? || @params[:pledge_level].present?)
   end
 
   # Filters by one or more difficulty tiers. Accepts a comma-separated list of

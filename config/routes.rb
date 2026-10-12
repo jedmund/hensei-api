@@ -115,6 +115,11 @@ Rails.application.routes.draw do
       resources :shares, controller: 'party_shares', only: [:index, :create, :destroy]
     end
 
+    # Evoking Solomonis catalogues
+    get 'solomonis/route_evokers', to: 'solomonis#route_evokers'
+    get 'solomonis/blessings', to: 'solomonis#blessings'
+    get 'solomonis/guide_effects', to: 'solomonis#guide_effects'
+
     put 'parties/:id/jobs', to: 'jobs#update_job'
     put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
     delete 'parties/:id/job_skills', to: 'jobs#destroy_job_skill'

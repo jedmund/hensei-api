@@ -36,7 +36,7 @@ module Api
       view :with_parties do
         field :parties do |playlist, _options|
           ordered = playlist.parties.includes(
-            :job, { raid: :group },
+            :job, { raid: :group }, :solomonis_expedition,
             { characters: :character },
             { weapons: :weapon },
             { summons: :summon }

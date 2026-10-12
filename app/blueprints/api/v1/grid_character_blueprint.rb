@@ -3,7 +3,7 @@
 module Api
   module V1
     class GridCharacterBlueprint < ApiBlueprint
-      fields :position, :uncap_level, :perpetuity, :orphaned
+      fields :position, :uncap_level, :perpetuity, :orphaned, :brought_by_blessing
 
       field :transcendence_step, if: ->(_field, gc, _options) { gc.character&.transcendence } do |gc|
         gc.transcendence_step
@@ -27,7 +27,7 @@ module Api
 
       # Minimal view for party list cards
       view :list do
-        excludes :perpetuity, :collection_character_id, :out_of_sync, :out_of_sync_fields
+        excludes :perpetuity, :collection_character_id, :out_of_sync, :out_of_sync_fields, :brought_by_blessing
         association :character, blueprint: CharacterBlueprint, view: :list
       end
 
