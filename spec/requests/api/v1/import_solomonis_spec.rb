@@ -357,28 +357,72 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         .to eq(["current_setup isn't a party deck; weapons and summons weren't imported"])
     end
 
-    it 'imports weapons and summons from a current setup, without a support summon' do
-      deck = JSON.parse(Rails.root.join('spec/fixtures/deck_sample.json').read)
-      import(body.deep_merge('solomonis' => { 'current_setup' => deck }))
+    describe 'with a current setup (the party deck)' do
+      # Nier's party deck: the Fraux fixture with Nier as the fixed Evoker.
+      let(:setup) do
+        deck = JSON.parse(fixture_dir.join('party-deck.json').read).except('_note')
+        deck['deck']['npc']['1']['master']['id'] = nier.granblue_id
+        deck['deck']['pc']['param']['id'] = 987_654_321
+        deck
+      end
 
-      expect(response).to have_http_status(:created)
-      expect(imported_party.summons.where(friend: true)).to be_empty
+      before do
+        ActiveRecord::Migration.suppress_messages { LoadSolomonisBlessings.new.up }
+        pc = setup['deck']['pc']
+        pc['weapons'].each_value do |entry|
+          id = entry['master']['id']
+          weapon = Weapon.find_by(granblue_id: id) || create(:weapon, granblue_id: id)
+          weapon.update!(flb: true, ulb: true, transcendence: true, extra: true, extra_prerequisite: nil)
+        end
+        (pc['summons'].values + pc['sub_summons'].values).each do |entry|
+          id = entry['master']['id']
+          summon = Summon.find_by(granblue_id: id) || create(:summon, granblue_id: id)
+          summon.update!(flb: true, ulb: true, transcendence: true,
+                         subaura: summon.subaura || pc['sub_summons'].value?(entry))
+        end
+      end
+
+      it 'imports weapons, summons and blessings, everything unsealed and without a support summon' do
+        setup['deck']['pc']['damage_info'] = { 'summon_name' => Summon.find_by!(granblue_id: '2040094000').name_en }
+        import(body.deep_merge('solomonis' => { 'current_setup' => setup }))
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body['warnings']).to eq([])
+        party = imported_party
+        expect(party.weapons.count).to eq(13)
+        expect(party.summons.count).to eq(7)
+        expect(party.summons.where(friend: true)).to be_empty
+        expect(party.summons.where(quick_summon: true).pluck(:position)).to eq([-1])
+        expect(party.party_blessings.map(&:slug)).to contain_exactly('justice', 'death')
+
+        weapons = party.weapons.to_h { |w| [w.position, w.seal_state] }
+        expect(weapons.values_at(-1, 0, 1, 2)).to all(eq('start'))
+        expect(weapons.values_at(*(3..11))).to all(eq('unsealed'))
+        summons = party.summons.to_h { |s| [s.position, s.seal_state] }
+        expect(summons[-1]).to eq('start')
+        expect(summons.except(-1).values).to all(eq('unsealed'))
+        expect(request.filtered_parameters.dig('solomonis', 'current_setup', 'deck', 'pc', 'param', 'id'))
+          .to eq('[FILTERED]')
+      end
+
+      it "skips another Evoker's deck with a warning" do
+        setup['deck']['npc']['1']['master']['id'] = '3040161000'
+        import(body.deep_merge('solomonis' => { 'current_setup' => setup }))
+
+        expect(response).to have_http_status(:created)
+        expect(imported_party.weapons).to be_empty
+        expect(response.parsed_body['warnings'])
+          .to eq(["current_setup is another Evoker's party; weapons and summons weren't imported"])
+      end
     end
   end
 
   describe 'other kinds' do
     it 'rejects an unknown kind' do
-      import(body.merge('kind' => 'solomonis_party'))
-
-      expect(response).to have_http_status(:unprocessable_content)
-      expect(response.parsed_body['error']).to eq('unknown_kind')
-    end
-
-    it 'does not import builds yet' do
       import(body.merge('kind' => 'solomonis_build'))
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.parsed_body['error']).to eq('unsupported_kind')
+      expect(response.parsed_body['error']).to eq('unknown_kind')
     end
   end
 end

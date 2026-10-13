@@ -117,9 +117,9 @@ module Api
 
       # POST /import `kind` values. Without a kind the body is a game deck.
       SOLOMONIS_RUN = 'solomonis_run'
-      SOLOMONIS_BUILD = 'solomonis_build'
-      # Cap for Solomonis payloads (a report, up to 300 guidebook entries and
-      # an optional party deck).
+      SOLOMONIS_PARTY = 'solomonis_party'
+      # Cap for Solomonis payloads (a party deck, or a report with up to 300
+      # guidebook entries and an optional party deck).
       SOLOMONIS_MAX_BODY_BYTES = 1.megabyte
 
       before_action :ensure_editor_role, only: %i[weapons summons characters]
@@ -334,11 +334,10 @@ module Api
         case body['kind']
         when SOLOMONIS_RUN
           import_solomonis_run(body)
-        when SOLOMONIS_BUILD
-          render json: { error: 'unsupported_kind', message: "Evoking Solomonis builds can't be imported yet" },
-                 status: :unprocessable_content
+        when SOLOMONIS_PARTY
+          import_solomonis_party(body)
         else
-          render json: { error: 'unknown_kind', message: 'kind must be solomonis_run or left out' },
+          render json: { error: 'unknown_kind', message: 'kind must be solomonis_party, solomonis_run or left out' },
                  status: :unprocessable_content
         end
       end
@@ -379,6 +378,34 @@ module Api
         raise unless existing
 
         render_duplicate_report(existing)
+      end
+
+      ##
+      # Imports an Evoking Solomonis party from the game's party deck. A new
+      # party each time, like the normal deck import.
+      def import_solomonis_party(body)
+        return render_unauthorized_response unless current_user
+
+        if request.raw_post.bytesize > SOLOMONIS_MAX_BODY_BYTES
+          return render json: { error: 'payload_too_large' }, status: :payload_too_large
+        end
+
+        data = body['solomonis']
+        Processors::SolomonisPartyProcessor.validate!(data)
+        party = Party.new(user: current_user, visibility: resolve_import_visibility(body))
+        apply_solomonis_party_options(party, body)
+
+        warnings = []
+        ActiveRecord::Base.transaction do
+          processor = Processors::SolomonisPartyProcessor.new(party, data)
+          processor.process
+          warnings = processor.warnings
+          assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
+        end
+
+        render json: { party_id: party.id, shortcode: party.shortcode, warnings: warnings }, status: :created
+      rescue Processors::SolomonisProcessor::ImportError => e
+        render json: { error: e.code, message: e.message }, status: :unprocessable_content
       end
 
       # The current user's run imported from this report, if any. The

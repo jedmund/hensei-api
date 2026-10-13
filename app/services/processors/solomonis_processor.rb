@@ -9,16 +9,19 @@ module Processors
   # From the report: route Evoker (and so zone and element), class, the allies
   # at the end of the run, outcome (from bosses defeated), pledge level, end
   # time, turn count, stats and the default name. From the guidebook log: the
-  # guidebook. From the optional `current_setup` (a party deck, same shape as
-  # the normal deck import): weapons and summons.
+  # guidebook. From the optional `current_setup` (the route Evoker's party
+  # deck, see Solomonis::PartyDeck): weapons, summons and blessings, every
+  # weapon and summon unsealed (by the end of a run everything was).
   #
   # Imports keep what the game says: values that break Hensei's rules become
   # warnings (strings, unlike the deck processors' hashes) instead of failing.
   # Only a payload without a usable route Evoker or report ID raises ImportError.
   #
   # On re-import, what the user added on the web stays: the name and visibility
-  # unless sent again, blessings, seal state, matching characters (and brought_by_blessing), and each guidebook
-  # effect's inherited flag, note and pickup order.
+  # unless sent again, matching characters (and brought_by_blessing), each
+  # guidebook effect's inherited flag, note and pickup order and, without a
+  # current_setup, the weapons, summons, blessings, seal state and unseal
+  # priority.
   class SolomonisProcessor < BaseProcessor
     class ImportError < StandardError
       attr_reader :code
@@ -200,32 +203,39 @@ module Processors
     #########################
 
     # The player's current setup for the same route Evoker, when captured. It
-    # replaces the grid's weapons and summons; otherwise they stay as they are.
+    # replaces the grid's weapons, summons and blessings; otherwise they stay
+    # as they are.
     def import_current_setup
       setup = data['current_setup']
       return if setup.nil?
 
-      unless setup.is_a?(Hash) && setup.dig('deck', 'pc').is_a?(Hash)
+      unless Solomonis::PartyDeck.deck?(setup)
         @warnings << "current_setup isn't a party deck; weapons and summons weren't imported"
         return
       end
 
-      setup = setup.deep_dup
-      setup['deck']['pc'].delete('damage_info') # the support summon; Solomonis parties have none
+      deck = Solomonis::PartyDeck.new(setup)
+      evoker = party.solomonis_expedition.route_evoker
+      if deck.route_evoker_granblue_id != evoker.granblue_id
+        @warnings << "current_setup is another Evoker's party; weapons and summons weren't imported"
+        return
+      end
+
       party.weapons.destroy_all
       party.summons.destroy_all
-      processors = [SummonProcessor.new(party, setup), WeaponProcessor.new(party, setup)]
+      import_blessings(deck)
+      processors = [SummonProcessor.new(party, deck.body), WeaponProcessor.new(party, deck.body)]
       processors.each(&:process)
-      processors.flat_map(&:warnings).each { |warning| @warnings << deck_warning_text(warning) }
-      party.recompute_solomonis_state!
+      processors.flat_map(&:warnings).each { |warning| @warnings << Solomonis::PartyDeck.warning_text(warning) }
+      party.apply_solomonis_seal_states!(**deck.unsealed_seal_states)
     end
 
-    def deck_warning_text(warning)
-      return warning.to_s unless warning.is_a?(Hash)
-
-      details = Array(warning[:details]).to_sentence
-      "#{warning[:name] || warning[:granblue_id]} (#{warning[:type]} #{warning[:position]}): " \
-        "#{warning[:code].to_s.tr('_', ' ')}#{" — #{details}" if details.present?}"
+    def import_blessings(deck)
+      levels = deck.blessing_levels
+      @warnings.concat(deck.warnings)
+      party.replace_solomonis_blessings!(levels)
+    rescue ActiveRecord::RecordInvalid => e
+      @warnings << "Blessings weren't imported (#{e.record.errors.full_messages.to_sentence})"
     end
 
     #########################
