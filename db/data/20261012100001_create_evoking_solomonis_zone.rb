@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # Adds the Evoking Solomonis raid group (section 3, after the Sandbox groups)
-# and its live zone, Allotropic Microcosm. Paracyclic Microcosm waits until it
-# opens. Names come from db/seed/solomonis/names.json when present.
+# and its zones: Allotropic Microcosm, and Paracyclic Microcosm ahead of its
+# opening, so its Evokers can be picked already. Names come from
+# db/seed/solomonis/names.json when present.
 #
 # raid_groups.name_jp is NOT NULL and there is no Japanese name yet, so it
 # holds the English name until names.json supplies one; a rerun replaces it
@@ -11,7 +12,10 @@ class CreateEvokingSolomonisZone < ActiveRecord::Migration[8.0]
   NAMES_PATH = Rails.root.join('db/seed/solomonis/names.json')
   GROUP_NAME_EN = 'Evoking Solomonis'
   SECTION = 3
-  ZONES = [{ 'slug' => 'allotropic-microcosm', 'name_en' => 'Allotropic Microcosm', 'name_jp' => nil }].freeze
+  ZONES = [
+    { 'slug' => 'allotropic-microcosm', 'name_en' => 'Allotropic Microcosm', 'name_jp' => nil },
+    { 'slug' => 'paracyclic-microcosm', 'name_en' => 'Paracyclic Microcosm', 'name_jp' => nil }
+  ].freeze
 
   def up
     RaidGroup.reset_column_information

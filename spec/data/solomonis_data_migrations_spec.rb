@@ -13,15 +13,15 @@ RSpec.describe 'Evoking Solomonis data migrations' do
   end
 
   describe CreateEvokingSolomonisZone do
-    it 'creates the group and the live zone, rerunnably' do
+    it 'creates the group and both zones, rerunnably' do
       2.times { quietly(described_class.new) }
 
       group = RaidGroup.find_by!(content_mode: 'solomonis')
       expect(group).to have_attributes(name_en: 'Evoking Solomonis', name_jp: 'Evoking Solomonis', section: 3)
-      expect(group.raids.pluck(:slug)).to eq(['allotropic-microcosm'])
-      zone = group.raids.first
-      expect(zone).to have_attributes(name_en: 'Allotropic Microcosm', name_jp: nil, player_count: 1, element: 0)
-      expect(Raid.where(slug: 'paracyclic-microcosm')).to be_empty
+      expect(group.raids.pluck(:slug)).to contain_exactly('allotropic-microcosm', 'paracyclic-microcosm')
+      expect(Raid.find_by!(slug: 'allotropic-microcosm'))
+        .to have_attributes(name_en: 'Allotropic Microcosm', name_jp: nil, player_count: 1, element: 0)
+      expect(Raid.find_by!(slug: 'paracyclic-microcosm')).to have_attributes(name_en: 'Paracyclic Microcosm')
     end
 
     it 'keeps names edited by hand' do
@@ -35,21 +35,22 @@ RSpec.describe 'Evoking Solomonis data migrations' do
   describe AssignSolomonisEvokerZones do
     before { quietly(CreateEvokingSolomonisZone.new) }
 
-    let(:zone) { Raid.find_by!(slug: 'allotropic-microcosm') }
 
     def character(granblue_id, **attrs)
       Character.find_by(granblue_id: granblue_id) || create(:character, granblue_id: granblue_id, **attrs)
     end
 
-    it 'gives the five Evokers the zone by granblue_id only' do
-      evokers = described_class::EVOKERS.keys.map { |id| character(id) }
+    it 'gives each of the ten Evokers its zone by granblue_id only' do
+      evokers = described_class::EVOKERS.keys.index_with { |id| character(id) }
       alternate = character('3040546000', name_en: 'Nier')
 
       2.times { quietly(described_class.new) }
 
-      expect(evokers.map { |c| c.reload.solomonis_zone_id }.uniq).to eq([zone.id])
+      described_class::EVOKERS.each do |id, (_name, _element, zone_slug)|
+        expect(evokers[id].reload.solomonis_zone).to eq(Raid.find_by!(slug: zone_slug))
+      end
       expect(alternate.reload.solomonis_zone_id).to be_nil
-      expect(Character.solomonis_route_evokers.count).to eq(5)
+      expect(Character.solomonis_route_evokers.count).to eq(10)
     end
 
     it 'skips a missing Evoker' do

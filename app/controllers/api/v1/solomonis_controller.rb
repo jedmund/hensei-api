@@ -13,9 +13,11 @@ module Api
 
       # GET /solomonis/route_evokers
       def route_evokers
+        # Grouped by zone: the zone slugs sort in release order (allotropic, paracyclic)
         evokers = Character.solomonis_route_evokers
                            .includes(:solomonis_zone)
-                           .order(:solomonis_zone_id, :granblue_id)
+                           .joins(:solomonis_zone)
+                           .order('raids.slug', :granblue_id)
         render json: { route_evokers: SolomonisRouteEvokerBlueprint.render_as_hash(evokers, view: :catalogue) }
       end
 
