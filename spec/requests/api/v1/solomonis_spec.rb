@@ -221,6 +221,17 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       expect(response.parsed_body['results']).to be_empty
     end
 
+    it 'lists a zone\'s parties without the usual weapon and summon minimums' do
+      starting = create(:party, :solomonis_build, user: user, route_evoker: nier)
+      starting.update_columns(weapons_count: 3, summons_count: 1)
+
+      get '/api/v1/parties', params: { raid: zone.slug, route_evoker: nier.granblue_id }, headers: headers
+      expect(response.parsed_body['results'].pluck('id')).to include(starting.id)
+
+      get '/api/v1/parties', headers: headers
+      expect(response.parsed_body['results'].pluck('id')).not_to include(starting.id)
+    end
+
     it 'ignores the Solomonis filters for other raids' do
       raid = create(:raid)
       party = listable(create(:party, user: user, raid: raid))
