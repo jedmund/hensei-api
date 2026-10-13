@@ -17,11 +17,19 @@ RSpec.describe 'Evoking Solomonis data migrations' do
       2.times { quietly(described_class.new) }
 
       group = RaidGroup.find_by!(content_mode: 'solomonis')
-      expect(group).to have_attributes(name_en: 'Evoking Solomonis', name_jp: 'Evoking Solomonis', section: 3)
+      expect(group).to have_attributes(name_en: 'Evoking Solomonis', name_jp: 'Evoking Solomonis', section: 3,
+                                       extra: true)
       expect(group.raids.pluck(:slug)).to contain_exactly('allotropic-microcosm', 'paracyclic-microcosm')
       expect(Raid.find_by!(slug: 'allotropic-microcosm'))
         .to have_attributes(name_en: 'Allotropic Microcosm', name_jp: nil, player_count: 1, element: 0)
       expect(Raid.find_by!(slug: 'paracyclic-microcosm')).to have_attributes(name_en: 'Paracyclic Microcosm')
+    end
+
+    it 'turns on the Extra weapon slots for a group created without them' do
+      quietly(described_class.new)
+      RaidGroup.find_by!(content_mode: 'solomonis').update!(extra: false)
+      quietly(described_class.new)
+      expect(RaidGroup.find_by!(content_mode: 'solomonis').extra).to be(true)
     end
 
     it 'keeps names edited by hand' do

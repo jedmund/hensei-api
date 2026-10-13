@@ -5,6 +5,9 @@
 # opening, so its Evokers can be picked already. Names come from
 # db/seed/solomonis/names.json when present.
 #
+# Solomonis decks fill the Extra weapon slots, so the group has `extra` on
+# (also set on a rerun, for a group created before that).
+#
 # raid_groups.name_jp is NOT NULL and there is no Japanese name yet, so it
 # holds the English name until names.json supplies one; a rerun replaces it
 # then. Existing values are never cleared.
@@ -44,6 +47,7 @@ class CreateEvokingSolomonisZone < ActiveRecord::Migration[8.0]
     name_jp = seed['name_jp'].presence
     group.name_jp = name_jp if name_jp && (group.name_jp.blank? || group.name_jp == group.name_en)
     group.name_jp = group.name_en if group.name_jp.blank?
+    group.extra = true
     group.save!
     group
   end
@@ -51,7 +55,7 @@ class CreateEvokingSolomonisZone < ActiveRecord::Migration[8.0]
   def new_group
     order = RaidGroup.where(section: SECTION).maximum(:order).to_i + 1
     RaidGroup.new(content_mode: RaidGroup::SOLOMONIS, section: SECTION, order: order, difficulty: 0,
-                  extra: false, hl: true, guidebooks: false, unlimited: false)
+                  extra: true, hl: true, guidebooks: false, unlimited: false)
   end
 
   def zones

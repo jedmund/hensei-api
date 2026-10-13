@@ -33,6 +33,7 @@ FactoryBot.define do
       section { 3 }
       difficulty { 0 }
       content_mode { RaidGroup::SOLOMONIS }
+      extra { true }
     end
   end
 end
