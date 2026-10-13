@@ -122,4 +122,15 @@ RSpec.describe 'ImportController', type: :request do
       end
     end
   end
+
+  it "keeps the player's user ID in a deck out of the logs" do
+    filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+    deck = { 'deck' => { 'pc' => { 'param' => { 'id' => '123' }, 'quick_user_summon_id' => '9' } } }
+    filtered = filter.filter(deck.merge('import' => deck))
+
+    [filtered['deck'], filtered.dig('import', 'deck')].each do |filtered_deck|
+      expect(filtered_deck.dig('pc', 'param', 'id')).to eq('[FILTERED]')
+      expect(filtered_deck.dig('pc', 'quick_user_summon_id')).to eq('9')
+    end
+  end
 end
