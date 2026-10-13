@@ -1,5 +1,5 @@
 {
-  "_note": "GET /rest/arcarum3/party/deck/<combination_group_id><deck number, 2 digits> (here 31001 = Fraux deck 1), captured 2026-10-13. The query string carries uid; never store it. Normal deck shape plus Solomonis fields (combination_group_id, blessing, blessing_cost_info, dungeon_name, npc 1 is_fix_evoker_npc). Scrubbed: pc.param.id (the player's uid) set to 0. Trimmed: skill descriptions, job bonuses, damage_info effect list, npc skill list, non-awakened weapons' empty arousal blocks; every field the importers read is kept.",
+  "_note": "GET /rest/arcarum3/party/deck/<combination_group_id><deck number> (here 31001 = Fraux deck 1; the group is the Evoker's game character ID, 3100), captured 2026-10-13. The query string carries uid; never store it. Normal deck shape plus Solomonis fields (combination_group_id, blessing, blessing_cost_info, dungeon_name, npc 1 is_fix_evoker_npc). Scrubbed: pc.param.id (the player's uid) set to 0. Trimmed: skill descriptions, job bonuses, damage_info effect list, npc skill list, non-awakened weapons' empty arousal blocks; every field the importers read is kept.",
   "is_equipment_shield": false,
   "is_equipment_familiar": false,
   "bullet_info": [],
