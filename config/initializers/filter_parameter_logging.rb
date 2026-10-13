@@ -6,5 +6,8 @@
 Rails.application.config.filter_parameters += [
   :passw, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn,
   # Extension login: the one-time code and its PKCE verifier.
-  /\Acode\z/, :code_verifier
+  /\Acode\z/, :code_verifier,
+  # Deck imports: the player's user ID (`deck.pc.param.id`, also under the
+  # wrapped `import` key).
+  /(\A|\.)deck\.pc\.param\.id\z/
 ]
