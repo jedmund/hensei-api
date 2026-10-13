@@ -130,8 +130,8 @@ RSpec.describe 'Evoking Solomonis catalogues', type: :model do
       expect(second).not_to be_valid
     end
 
-    it 'is only for runs' do
-      expect(build(:expedition_guide_effect, party: create(:party, :solomonis_build))).not_to be_valid
+    it 'is only for Solomonis parties' do
+      expect(build(:expedition_guide_effect, party: create(:party))).not_to be_valid
     end
   end
 

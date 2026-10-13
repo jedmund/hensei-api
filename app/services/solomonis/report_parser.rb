@@ -74,14 +74,11 @@ module Solomonis
       found.uniq { |c| c[:granblue_id] }
     end
 
-    # @return [Hash] SolomonisExpedition attributes (run-only fields and pledge)
+    # @return [Hash] SolomonisExpedition attributes (the expedition's result and pledge)
     def expedition_attributes
-      outcome = parse_outcome
-      bosses = parse_bosses(outcome)
       {
         pledge_level: parse_pledge_level,
-        outcome: outcome,
-        bosses_defeated: bosses,
+        outcome: parse_outcome,
         ended_at: parse_ended_at,
         stats: parse_stats
       }
@@ -127,29 +124,32 @@ module Solomonis
       0
     end
 
+    # Bosses defeated decide the outcome (0 Miasma 1, 1 Miasma 2, 2 cleared).
+    # is_success only cross-checks it: when it disagrees, boss_count wins.
     def parse_outcome
-      case @report['is_success']
-      when true, 1, '1', 'true' then 'cleared'
-      when false, 0, '0', 'false' then 'failed'
-      else
-        @warnings << "is_success is missing or unreadable; outcome left empty"
-        nil
+      bosses = parse_count('boss_count', warn: false) # the stats warn about an unreadable count
+      outcome = bosses && SolomonisExpedition.outcome_for_bosses(bosses)
+      unless outcome
+        if bosses
+          @warnings << "boss_count #{bosses} is out of range; outcome left empty"
+        elsif @report['boss_count'].nil?
+          @warnings << 'boss_count is missing; outcome left empty'
+        end
+        return nil
       end
+
+      success = parse_success
+      if !success.nil? && success != (outcome == 'cleared')
+        @warnings << "is_success is #{success} but boss_count is #{bosses}; outcome follows boss_count"
+      end
+      outcome
     end
 
-    def parse_bosses(outcome)
-      bosses = parse_count('boss_count')
-      return nil if bosses.nil?
-
-      unless (0..SolomonisExpedition::MAX_BOSSES).cover?(bosses)
-        @warnings << "boss_count #{bosses} is out of range; bosses defeated left empty"
-        return nil
+    def parse_success
+      case @report['is_success']
+      when true, 1, '1', 'true' then true
+      when false, 0, '0', 'false' then false
       end
-      if outcome == 'cleared' && bosses != SolomonisExpedition::MAX_BOSSES
-        @warnings << "a cleared run reports boss_count #{bosses}; bosses defeated left empty"
-        return nil
-      end
-      bosses
     end
 
     def parse_stats

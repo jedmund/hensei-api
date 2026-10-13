@@ -1177,26 +1177,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_000006) do
   create_table "solomonis_expeditions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id", null: false
     t.uuid "user_id"
-    t.string "kind", null: false
     t.uuid "route_evoker_id", null: false
     t.integer "pledge_level", default: 0, null: false
     t.string "outcome"
-    t.integer "bosses_defeated"
-    t.string "midboss"
-    t.integer "expedition_level"
-    t.uuid "build_party_id"
     t.bigint "game_report_id"
     t.datetime "ended_at"
     t.jsonb "stats", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["build_party_id"], name: "index_solomonis_expeditions_on_build_party_id"
-    t.index ["kind"], name: "index_solomonis_expeditions_on_kind"
     t.index ["party_id"], name: "index_solomonis_expeditions_on_party_id", unique: true
     t.index ["pledge_level"], name: "index_solomonis_expeditions_on_pledge_level"
     t.index ["route_evoker_id"], name: "index_solomonis_expeditions_on_route_evoker_id"
     t.index ["user_id", "game_report_id"], name: "index_solomonis_expeditions_on_user_and_game_report", unique: true, where: "((user_id IS NOT NULL) AND (game_report_id IS NOT NULL))"
     t.index ["user_id"], name: "index_solomonis_expeditions_on_user_id"
+    t.check_constraint "outcome IS NULL OR (outcome::text = ANY (ARRAY['miasma_1'::character varying, 'miasma_2'::character varying, 'cleared'::character varying]::text[]))", name: "solomonis_expeditions_outcome_valid"
   end
 
   create_table "solomonis_guide_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1813,7 +1807,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_000006) do
   add_foreign_key "skill_effects", "statuses"
   add_foreign_key "skill_values", "skills"
   add_foreign_key "solomonis_expeditions", "characters", column: "route_evoker_id"
-  add_foreign_key "solomonis_expeditions", "parties", column: "build_party_id", on_delete: :nullify
   add_foreign_key "solomonis_expeditions", "parties", on_delete: :cascade
   add_foreign_key "solomonis_expeditions", "users", on_delete: :nullify
   add_foreign_key "solomonis_guide_effects", "characters", on_delete: :nullify

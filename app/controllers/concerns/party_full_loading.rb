@@ -21,7 +21,7 @@ module PartyFullLoading
       { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
       :skill0, :skill1, :skill2, :skill3, :accessory,
       { party_shares: :shareable },
-      { solomonis_expedition: %i[route_evoker build_party] },
+      { solomonis_expedition: :route_evoker },
       { party_blessings: %i[arcarum_blessing arcarum_blessing_level] },
       { expedition_guide_effects: :solomonis_guide_effect }
     ]

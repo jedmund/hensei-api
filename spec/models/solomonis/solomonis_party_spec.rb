@@ -13,22 +13,21 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
 
   describe 'route Evoker' do
     it "sets the party's raid and element from the route Evoker" do
-      party = create(:party, :solomonis_build, route_evoker: evoker, element: 2)
+      party = create(:party, :solomonis, route_evoker: evoker, element: 2)
       expect(party.raid).to eq(zone)
       expect(party.element).to eq(5)
       expect(party).to be_solomonis
-      expect(party).to be_solomonis_build
     end
 
     it 'can be set through nested attributes' do
       party = create(:party)
-      party.update!(solomonis_expedition_attributes: { kind: 'run', route_evoker_id: evoker.id })
+      party.update!(solomonis_expedition_attributes: { route_evoker_id: evoker.id })
       expect(party.reload.raid_id).to eq(zone.id)
-      expect(party).to be_solomonis_run
+      expect(party).to be_solomonis
     end
 
     it 'moves the party when the route changes' do
-      party = create(:party, :solomonis_build, route_evoker: evoker)
+      party = create(:party, :solomonis, route_evoker: evoker)
       other = create(:character, :solomonis_evoker, element: 2)
       party.update!(solomonis_expedition_attributes: { route_evoker_id: other.id })
       expect(party.reload.raid_id).to eq(other.solomonis_zone_id)
@@ -36,13 +35,13 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
     end
 
     it 'rejects a different element' do
-      party = create(:party, :solomonis_build, route_evoker: evoker)
+      party = create(:party, :solomonis, route_evoker: evoker)
       expect(party.update(element: 3)).to be(false)
       expect(party.errors[:element]).to be_present
     end
 
     it "rejects another Solomonis zone than the route Evoker's" do
-      party = create(:party, :solomonis_build, route_evoker: evoker)
+      party = create(:party, :solomonis, route_evoker: evoker)
       other_zone = create(:raid, :solomonis_zone)
       expect(party.update(raid: other_zone)).to be(false)
       expect(party.errors[:raid]).to be_present
@@ -61,7 +60,7 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
     end
 
     it "keeps the element when the mainhand's element differs" do
-      party = create(:party, :solomonis_build, route_evoker: evoker)
+      party = create(:party, :solomonis, route_evoker: evoker)
       create(:grid_weapon, party: party, weapon: create(:weapon, element: 2), position: -1)
       party.reload.save!
       expect(party.reload.element).to eq(5)
@@ -70,7 +69,7 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
 
   describe 'leaving the mode' do
     it 'deletes the Solomonis data when the raid moves out of the group' do
-      party = create(:party, :solomonis_run, route_evoker: evoker)
+      party = create(:party, :solomonis, route_evoker: evoker)
       hanged_man = blessing_level(:hanged_man, cost: 60)
       party.replace_solomonis_blessings!([hanged_man])
       effect = create(:solomonis_guide_effect)
@@ -90,38 +89,31 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
   end
 
   describe 'character limits' do
-    it 'allows only the route Evoker on a build' do
-      party = create(:party, :solomonis_build, route_evoker: evoker)
-      create(:grid_character, party: party, character: evoker, position: 0)
-      extra = build(:grid_character, party: party.reload, position: 1)
-      expect(extra).not_to be_valid
-    end
-
-    it 'allows one more character with The Hanged Man' do
-      party = create(:party, :solomonis_build, route_evoker: evoker)
-      party.replace_solomonis_blessings!([blessing_level(:hanged_man, cost: 60)])
-      create(:grid_character, party: party, character: evoker, position: 0)
-      create(:grid_character, party: party.reload, position: 1)
-      third = build(:grid_character, party: party.reload, position: 2)
-      expect(third).not_to be_valid
-    end
-
-    it 'allows the route Evoker and 4 allies on a run' do
-      party = create(:party, :solomonis_run, route_evoker: evoker)
+    it 'allows the route Evoker and 4 allies' do
+      party = create(:party, :solomonis, route_evoker: evoker)
       5.times { |i| create(:grid_character, party: party.reload, position: i) }
       sixth = build(:grid_character, party: party.reload, position: 5)
       expect(sixth).not_to be_valid
     end
 
-    it 'rejects turning a full run into a build' do
-      party = create(:party, :solomonis_run, route_evoker: evoker)
-      2.times { |i| create(:grid_character, party: party.reload, position: i) }
-      expect(party.reload.update(solomonis_expedition_attributes: { kind: 'build' })).to be(false)
+    it "counts The Hanged Man's ally among the 4" do
+      party = create(:party, :solomonis, route_evoker: evoker)
+      party.replace_solomonis_blessings!([blessing_level(:hanged_man, cost: 60)])
+      4.times { |i| create(:grid_character, party: party.reload, position: i) }
+      create(:grid_character, party: party.reload, position: 4, brought_by_blessing: true)
+      sixth = build(:grid_character, party: party.reload, position: 5)
+      expect(sixth).not_to be_valid
+    end
+
+    it 'rejects entering the mode with more than 5 characters' do
+      party = create(:party)
+      6.times { |i| create(:grid_character, party: party.reload, position: i) }
+      expect(party.reload.update(solomonis_expedition_attributes: { route_evoker_id: evoker.id })).to be(false)
       expect(party.errors[:characters]).to be_present
     end
 
     describe 'brought_by_blessing' do
-      let(:party) { create(:party, :solomonis_run, route_evoker: evoker) }
+      let(:party) { create(:party, :solomonis, route_evoker: evoker) }
 
       it 'needs The Hanged Man' do
         character = build(:grid_character, party: party, position: 0, brought_by_blessing: true)
@@ -143,7 +135,7 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
   end
 
   describe '#replace_solomonis_blessings!' do
-    let(:party) { create(:party, :solomonis_build, route_evoker: evoker) }
+    let(:party) { create(:party, :solomonis, route_evoker: evoker) }
 
     it 'replaces the loadout' do
       justice = blessing_level(:justice, cost: 50)
@@ -178,18 +170,13 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
       expect { party.replace_solomonis_blessings!([level]) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
-    it 'refuses to drop The Hanged Man while a build holds a second character' do
+    it 'clears brought_by_blessing when The Hanged Man is dropped' do
       party.replace_solomonis_blessings!([blessing_level(:hanged_man, cost: 60)])
       2.times { |i| create(:grid_character, party: party.reload, position: i) }
-      expect { party.reload.replace_solomonis_blessings!([]) }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it "clears a run's brought_by_blessing when The Hanged Man is dropped" do
-      run = create(:party, :solomonis_run, route_evoker: evoker)
-      run.replace_solomonis_blessings!([blessing_level(:hanged_man, cost: 60)])
-      character = create(:grid_character, party: run.reload, position: 0, brought_by_blessing: true)
-      run.reload.replace_solomonis_blessings!([])
+      character = create(:grid_character, party: party.reload, position: 2, brought_by_blessing: true)
+      party.reload.replace_solomonis_blessings!([])
       expect(character.reload.brought_by_blessing).to be(false)
+      expect(party.characters.reload.size).to eq(3)
     end
 
     it 'is only for Solomonis parties' do
@@ -198,7 +185,7 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
   end
 
   describe '#replace_solomonis_guide_effects!' do
-    let(:party) { create(:party, :solomonis_run, route_evoker: evoker) }
+    let(:party) { create(:party, :solomonis, route_evoker: evoker) }
     let(:stackable) { create(:solomonis_guide_effect, stackable: true) }
     let(:unique) { create(:solomonis_guide_effect, :unique) }
 
@@ -220,22 +207,25 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
-    it 'is only for runs' do
-      build_party = create(:party, :solomonis_build, route_evoker: evoker)
+    it 'is only for Solomonis parties' do
       expect do
-        build_party.replace_solomonis_guide_effects!([{ solomonis_guide_effect: stackable }])
+        create(:party).replace_solomonis_guide_effects!([{ solomonis_guide_effect: stackable }])
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
   describe 'remix' do
-    it 'copies the expedition and blessings but not the guidebook or run fields' do
-      party = create(:party, :solomonis_run, route_evoker: evoker)
-      party.solomonis_expedition.update!(outcome: 'cleared', bosses_defeated: 2, game_report_id: 7,
+    it 'copies the expedition, blessings, seals and unseal priority but not the guidebook or results' do
+      party = create(:party, :solomonis, route_evoker: evoker)
+      party.solomonis_expedition.update!(outcome: 'cleared', game_report_id: 7, ended_at: Time.current,
                                          pledge_level: 3, stats: { 'battle' => 1 })
       party.replace_solomonis_blessings!([blessing_level(:justice, cost: 50)])
       party.replace_solomonis_guide_effects!([{ solomonis_guide_effect: create(:solomonis_guide_effect) }])
       weapon = create(:grid_weapon, party: party.reload, position: 5, seal_state: 'unsealed')
+      sealed = [6, 7].map { |p| create(:grid_weapon, party: party.reload, position: p) }
+      summon = create(:grid_summon, party: party.reload, position: 1)
+      party.replace_unseal_priority!([{ type: 'weapon', id: sealed[1].id }, { type: 'summon', id: summon.id },
+                                      { type: 'weapon', id: sealed[0].id }])
 
       remix = party.reload.amoeba_dup
       remix.user = create(:user)
@@ -243,16 +233,20 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
       remix.reload
 
       expedition = remix.solomonis_expedition
-      expect(expedition.kind).to eq('run')
       expect(expedition.route_evoker).to eq(evoker)
       expect(expedition.pledge_level).to eq(3)
       expect(expedition.outcome).to be_nil
       expect(expedition.game_report_id).to be_nil
+      expect(expedition.ended_at).to be_nil
       expect(expedition.stats).to eq({})
       expect(expedition.user_id).to eq(remix.user_id)
       expect(remix.party_blessings.map(&:slug)).to eq(['justice'])
       expect(remix.expedition_guide_effects).to be_empty
       expect(remix.weapons.find_by(position: weapon.position).seal_state).to eq('unsealed')
+      expect(remix.weapons.where(position: [6, 7]).order(:position).pluck(:seal_state, :unseal_priority))
+        .to eq([['sealed', 3], ['sealed', 1]])
+      expect(remix.summons.find_by(position: 1).slice(:seal_state, :unseal_priority))
+        .to eq('seal_state' => 'sealed', 'unseal_priority' => 2)
     end
   end
 end

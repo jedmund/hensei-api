@@ -35,7 +35,6 @@ RSpec.describe 'Evoking Solomonis data migrations' do
   describe AssignSolomonisEvokerZones do
     before { quietly(CreateEvokingSolomonisZone.new) }
 
-
     def character(granblue_id, **attrs)
       Character.find_by(granblue_id: granblue_id) || create(:character, granblue_id: granblue_id, **attrs)
     end

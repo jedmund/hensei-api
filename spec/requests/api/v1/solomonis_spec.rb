@@ -87,7 +87,7 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
 
   describe 'raid group content_mode' do
     it 'marks the Solomonis group on raid groups and on a party raid' do
-      party = create(:party, :solomonis_build, user: user, route_evoker: nier)
+      party = create(:party, :solomonis, user: user, route_evoker: nier)
       create(:raid_group)
 
       get '/api/v1/raid_groups'
@@ -101,8 +101,8 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
   end
 
   describe 'GET /api/v1/parties/:shortcode' do
-    it 'returns the solomonis object and seal state for a build' do
-      party = create(:party, :solomonis_build, user: user, route_evoker: nier)
+    it 'returns the solomonis object and seal state' do
+      party = create(:party, :solomonis, user: user, route_evoker: nier)
       party.replace_solomonis_blessings!([justice_level])
       create(:grid_weapon, party: party, position: -1, mainhand: true)
       create(:grid_weapon, party: party, position: 2)
@@ -114,10 +114,10 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       expect(response).to have_http_status(:ok)
       solomonis = response.parsed_body.dig('party', 'solomonis')
       expect(solomonis).to include(
-        'kind' => 'build', 'pledge_level' => 0, 'outcome' => nil, 'bosses_defeated' => nil, 'midboss' => nil,
-        'expedition_level' => nil, 'build_party' => nil, 'game_report_id' => nil, 'ended_at' => nil,
+        'pledge_level' => 0, 'outcome' => nil, 'game_report_id' => nil, 'ended_at' => nil,
         'stats' => {}, 'blessing_cost_limit' => 100, 'blessing_cost_total' => 50, 'guidebook' => []
       )
+      expect(solomonis.keys).not_to include('kind', 'bosses_defeated', 'midboss', 'expedition_level', 'build_party')
       expect(solomonis['route_evoker']).to eq('id' => nier.id, 'granblue_id' => '3040169000',
                                               'name' => { 'en' => 'Nier', 'ja' => 'ニーア' }, 'element' => 5)
       expect(solomonis['zone']).to include('id' => zone.id, 'slug' => 'allotropic-microcosm')
@@ -134,10 +134,9 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       expect(response.parsed_body.dig('party', 'characters', 0, 'brought_by_blessing')).to be(false)
     end
 
-    it 'returns the guidebook and linked build for a run' do
-      build = create(:party, :solomonis_build, user: create(:user), route_evoker: nier, visibility: 1)
-      run = create(:party, :solomonis_run, user: user, route_evoker: nier)
-      run.solomonis_expedition.update!(outcome: 'cleared', bosses_defeated: 2, build_party: build)
+    it 'returns the outcome and guidebook' do
+      run = create(:party, :solomonis, user: user, route_evoker: nier)
+      run.solomonis_expedition.update!(outcome: 'cleared')
       unique = create(:solomonis_guide_effect, :unique, granblue_id: 90)
       normal = create(:solomonis_guide_effect, granblue_id: 3)
       run.replace_solomonis_guide_effects!([
@@ -149,24 +148,12 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       get "/api/v1/parties/#{run.shortcode}", headers: headers
 
       solomonis = response.parsed_body.dig('party', 'solomonis')
-      expect(solomonis).to include('kind' => 'run', 'outcome' => 'cleared', 'bosses_defeated' => 2,
-                                   'build_party' => { 'shortcode' => build.shortcode, 'name' => build.name })
+      expect(solomonis).to include('outcome' => 'cleared')
       expect(solomonis['guidebook'].map { |e| e.dig('effect', 'granblue_id') }).to eq([90, 3])
       expect(solomonis['guidebook'].first).to include('count' => 1, 'display_value' => '80%',
                                                       'acquired_order' => nil, 'inherited' => true,
                                                       'note' => 'carried over')
       expect(solomonis['guidebook'].first['effect']).to include('availability', 'type_tags', 'effect_tags')
-    end
-
-    it 'hides a linked build the viewer cannot see' do
-      build = create(:party, :solomonis_build, user: user, route_evoker: nier, visibility: 1)
-      run = create(:party, :solomonis_run, user: user, route_evoker: nier)
-      run.solomonis_expedition.update!(build_party: build)
-      build.update!(visibility: 3)
-
-      get "/api/v1/parties/#{run.shortcode}"
-
-      expect(response.parsed_body.dig('party', 'solomonis', 'build_party')).to be_nil
     end
 
     it 'returns null solomonis fields on other parties' do
@@ -187,9 +174,9 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       party
     end
 
-    let!(:nier_build) { listable(create(:party, :solomonis_build, user: user, route_evoker: nier)) }
-    let!(:nier_run) { listable(create(:party, :solomonis_run, user: user, route_evoker: nier)) }
-    let!(:caim_build) { listable(create(:party, :solomonis_build, user: user, route_evoker: caim)) }
+    let!(:nier_build) { listable(create(:party, :solomonis, user: user, route_evoker: nier)) }
+    let!(:nier_run) { listable(create(:party, :solomonis, user: user, route_evoker: nier)) }
+    let!(:caim_build) { listable(create(:party, :solomonis, user: user, route_evoker: caim)) }
 
     before { caim_build.solomonis_expedition.update!(pledge_level: 3) }
 
@@ -199,30 +186,29 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       get '/api/v1/parties', headers: headers
 
       results = response.parsed_body['results'].index_by { |p| p['id'] }
-      expect(results[nier_run.id]['solomonis']).to eq('kind' => 'run', 'route_evoker_id' => nier.id,
-                                                      'pledge_level' => 0)
+      expect(results[nier_run.id]['solomonis']).to eq('route_evoker_id' => nier.id, 'pledge_level' => 0)
       expect(results[other.id]['solomonis']).to be_nil
     end
 
-    it 'filters a Solomonis zone by route Evoker, kind and pledge level' do
+    it 'filters a Solomonis zone by route Evoker and pledge level' do
       get '/api/v1/parties', params: { raid: zone.slug, route_evoker: nier.id }, headers: headers
       expect(response.parsed_body['results'].pluck('id')).to contain_exactly(nier_build.id, nier_run.id)
 
       get '/api/v1/parties', params: { raid: zone.id, route_evoker: caim.granblue_id }, headers: headers
       expect(response.parsed_body['results'].pluck('id')).to contain_exactly(caim_build.id)
 
-      get '/api/v1/parties', params: { raid: zone.slug, kind: 'run' }, headers: headers
-      expect(response.parsed_body['results'].pluck('id')).to contain_exactly(nier_run.id)
-
       get '/api/v1/parties', params: { raid: zone.slug, pledge_level: '2,3' }, headers: headers
       expect(response.parsed_body['results'].pluck('id')).to contain_exactly(caim_build.id)
 
-      get '/api/v1/parties', params: { raid: zone.slug, kind: 'bogus' }, headers: headers
+      get '/api/v1/parties', params: { raid: zone.slug, pledge_level: 'x' }, headers: headers
       expect(response.parsed_body['results']).to be_empty
+
+      get '/api/v1/parties', params: { raid: zone.slug, kind: 'run' }, headers: headers
+      expect(response.parsed_body['results'].pluck('id')).to contain_exactly(nier_build.id, nier_run.id, caim_build.id)
     end
 
     it 'lists a zone\'s parties without the usual weapon and summon minimums' do
-      starting = create(:party, :solomonis_build, user: user, route_evoker: nier)
+      starting = create(:party, :solomonis, user: user, route_evoker: nier)
       starting.update_columns(weapons_count: 3, summons_count: 1)
 
       get '/api/v1/parties', params: { raid: zone.slug, route_evoker: nier.granblue_id }, headers: headers
@@ -236,7 +222,7 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       raid = create(:raid)
       party = listable(create(:party, user: user, raid: raid))
 
-      get '/api/v1/parties', params: { raid: raid.id, kind: 'run' }, headers: headers
+      get '/api/v1/parties', params: { raid: raid.id, route_evoker: nier.id }, headers: headers
 
       expect(response.parsed_body['results'].pluck('id')).to eq([party.id])
     end

@@ -86,8 +86,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
 
       expedition = party.solomonis_expedition
       expect(expedition).to have_attributes(
-        kind: 'run', route_evoker: nier, pledge_level: 0, outcome: 'cleared',
-        bosses_defeated: 2, game_report_id: 381099, midboss: nil
+        route_evoker: nier, pledge_level: 0, outcome: 'cleared', game_report_id: 381099
       )
       expect(expedition.ended_at).to eq(Time.zone.parse('2026-10-11T16:38:00+09:00'))
       expect(expedition.stats).to eq(
@@ -143,7 +142,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
 
       it 'updates the run in place with update_existing, keeping what the user added' do
         first_party.update!(name: 'Renamed')
-        first_party.solomonis_expedition.update!(midboss: 'banes_gate')
+        first_party.solomonis_expedition.update!(pledge_level: 4)
         first_party.expedition_guide_effects.find_by(solomonis_guide_effect: effect(7)).update!(note: 'great')
         dropped = first_party.characters.find_by(character: allies.first)
         replacement = create(:character, granblue_id: '3040999000')
@@ -165,7 +164,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         party = first_party.reload
         expect(party.name).to eq('Renamed')
         expect(party.turn_count).to eq(120)
-        expect(party.solomonis_expedition.midboss).to eq('banes_gate')
+        expect(party.solomonis_expedition.pledge_level).to eq(0)
         expect(GridCharacter.exists?(dropped.id)).to be(false)
         expect(party.characters.map(&:character)).to include(replacement)
         expect(party.characters.count).to eq(5)
@@ -295,17 +294,23 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       )
     end
 
-    it 'keeps the game values that break Hensei rules as warnings' do
+    it 'keeps the game values that break Hensei rules as warnings, with boss_count deciding the outcome' do
       odd = report.merge('boss_count' => '1', 'difficulty' => 9)
       import(body.deep_merge('solomonis' => { 'report' => odd }))
 
       expect(response).to have_http_status(:created)
-      expect(imported_party.solomonis_expedition).to have_attributes(outcome: 'cleared', bosses_defeated: nil,
-                                                                     pledge_level: 0)
+      expect(imported_party.solomonis_expedition).to have_attributes(outcome: 'miasma_2', pledge_level: 0)
       expect(response.parsed_body['warnings']).to contain_exactly(
         "difficulty 9 isn't a pledge level (0–5); saved as 0",
-        'a cleared run reports boss_count 1; bosses defeated left empty'
+        'is_success is true but boss_count is 1; outcome follows boss_count'
       )
+    end
+
+    it 'derives a failed outcome from boss_count' do
+      import(body.deep_merge('solomonis' => { 'report' => report.merge('is_success' => false, 'boss_count' => '0') }))
+
+      expect(imported_party.solomonis_expedition.outcome).to eq('miasma_1')
+      expect(response.parsed_body['warnings']).to eq([])
     end
 
     it 'rejects a report whose Evoker cannot lead a route' do

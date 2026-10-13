@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Evoking Solomonis grid fields. seal_state (start / unsealed / sealed) is null
-# outside Solomonis parties and on imported runs until the user fills it in.
-# unseal_priority ranks a build's sealed weapons and summons in one list.
+# outside Solomonis parties. unseal_priority ranks a party's sealed weapons and
+# summons in one list.
 # brought_by_blessing marks the ally chosen with The Hanged Man.
 class AddSolomonisFieldsToGridItems < ActiveRecord::Migration[8.1]
   def change

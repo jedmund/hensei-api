@@ -7,8 +7,8 @@ module Processors
   # user's existing run for the same report.
   #
   # From the report: route Evoker (and so zone and element), class, the allies
-  # at the end of the run, outcome, bosses defeated, pledge level, end time,
-  # turn count, stats and the default name. From the guidebook log: the
+  # at the end of the run, outcome (from bosses defeated), pledge level, end
+  # time, turn count, stats and the default name. From the guidebook log: the
   # guidebook. From the optional `current_setup` (a party deck, same shape as
   # the normal deck import): weapons and summons.
   #
@@ -17,8 +17,7 @@ module Processors
   # Only a payload without a usable route Evoker or report ID raises ImportError.
   #
   # On re-import, what the user added on the web stays: the name and visibility
-  # unless sent again, midboss, Expedition Lvl, linked build, blessings, seal
-  # state, matching characters (and brought_by_blessing), and each guidebook
+  # unless sent again, blessings, seal state, matching characters (and brought_by_blessing), and each guidebook
   # effect's inherited flag, note and pickup order.
   class SolomonisProcessor < BaseProcessor
     class ImportError < StandardError
@@ -104,7 +103,7 @@ module Processors
         @warnings << "report_id #{report_id} doesn't match the report's own ID #{dungeon_report_id}"
       end
 
-      expedition = party.assign_solomonis_route(evoker, kind: 'run')
+      expedition = party.assign_solomonis_route(evoker)
       expedition.assign_attributes(@report.expedition_attributes.merge(game_report_id: report_id))
       party.turn_count = @report.turn_count
       party.name = @report.deck_name if party.new_record? && party.name.blank?

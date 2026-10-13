@@ -5,9 +5,8 @@ module Api
     # The `solomonis` object on a party.
     #
     # - :full (party page): route Evoker, zone, the expedition fields, the
-    #   blessing loadout and, for runs, the guidebook. Pass `current_user` so a
-    #   linked build the viewer can't see renders as null.
-    # - :summary (party cards and search): kind, route Evoker id, pledge level.
+    #   blessing loadout and the guidebook.
+    # - :summary (party cards and search): route Evoker id, pledge level.
     #
     # Reads the party's preloaded associations (see PartyFullLoading).
     class SolomonisExpeditionBlueprint < Blueprinter::Base
@@ -16,24 +15,16 @@ module Api
       RARITY_ORDER = %w[unique rare normal cursed].freeze
 
       view :summary do
-        fields :kind, :route_evoker_id, :pledge_level
+        fields :route_evoker_id, :pledge_level
       end
 
       view :full do
-        fields :kind, :pledge_level, :outcome, :bosses_defeated, :midboss, :expedition_level,
-               :game_report_id, :ended_at, :stats
+        fields :pledge_level, :outcome, :game_report_id, :ended_at, :stats
 
         association :route_evoker, blueprint: SolomonisRouteEvokerBlueprint
 
         field :zone do |expedition|
           SolomonisRouteEvokerBlueprint.zone_hash(expedition.party.raid)
-        end
-
-        field :build_party do |expedition, options|
-          build = expedition.build_party
-          next nil unless build&.viewable_by?(options[:current_user])
-
-          { shortcode: build.shortcode, name: build.name }
         end
 
         field :blessing_cost_limit do
@@ -58,8 +49,6 @@ module Api
         end
 
         field :guidebook do |expedition|
-          next [] unless expedition.run?
-
           SolomonisExpeditionBlueprint.sorted_guidebook(expedition.party.expedition_guide_effects).map do |entry|
             {
               effect: SolomonisGuideEffectBlueprint.render_as_hash(entry.solomonis_guide_effect),

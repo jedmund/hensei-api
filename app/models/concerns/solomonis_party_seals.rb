@@ -7,7 +7,7 @@ module SolomonisPartySeals
   extend ActiveSupport::Concern
 
   ##
-  # Replaces a build's unseal priority list. Items are loaded from this party
+  # Replaces the unseal priority list. Items are loaded from this party
   # (never trusted from params), must be sealed, and are numbered from 1 in
   # the order given. Slots left out lose their priority.
   #
@@ -15,7 +15,7 @@ module SolomonisPartySeals
   # @raise [ActiveRecord::RecordInvalid] with errors on :unseal_priority
   def replace_unseal_priority!(items)
     errors.clear
-    errors.add(:unseal_priority, 'is only for Evoking Solomonis builds') unless solomonis_build?
+    errors.add(:unseal_priority, 'is only for Evoking Solomonis parties') unless solomonis?
     raise ActiveRecord::RecordInvalid, self if errors.any?
 
     weapons_by_id = GridWeapon.where(party_id: id, is_substitute: false).index_by(&:id)
@@ -46,14 +46,11 @@ module SolomonisPartySeals
   end
 
   ##
-  # Re-derives seal state and unseal priority for the whole party.
-  #
-  # - Builds: every weapon and summon state follows from its position and the
-  #   blessings (starting slots `start`, everything else `sealed`). Priorities
-  #   on slots that are no longer sealed are dropped and the list renumbered
-  #   from 1 without gaps.
-  # - Runs: starting slots become `start`; a slot that was `start` but no longer
-  #   starts (Justice removed) becomes null (unknown). Priorities are cleared.
+  # Re-derives seal state and unseal priority for the whole party: starting
+  # slots become `start`; a slot that was `start` but no longer starts
+  # (Justice removed) or has no state becomes `sealed`; other slots keep their
+  # state. Priorities on slots that aren't sealed are dropped and the list is
+  # renumbered from 1 without gaps.
   #
   # Writes with update_columns, so no grid callbacks fire. Safe to call after
   # any grid or blessing change; does nothing outside Solomonis.
@@ -67,9 +64,8 @@ module SolomonisPartySeals
     summons = GridSummon.where(party_id: id, is_substitute: false).to_a
 
     (weapons + summons).each do |row|
-      state = row.solomonis_seal_state_for(build: expedition.build?, justice: justice)
-      priority = expedition.build? && state == 'sealed' ? row.unseal_priority : nil
-      row.unseal_priority = priority
+      state = row.solomonis_seal_state_for(justice: justice)
+      row.unseal_priority = nil unless state == 'sealed'
       row.seal_state = state
     end
 
@@ -84,7 +80,30 @@ module SolomonisPartySeals
   end
 
   ##
-  # Closes gaps in a build's unseal priority list (after a ranked item is
+  # Sets imported seal state by grid position, then re-derives the rest
+  # (starting slots stay `start` whatever the import says). Slots not listed
+  # keep their state.
+  #
+  # @param weapons [Hash{Integer => String}] weapon position => 'sealed' | 'unsealed'
+  # @param summons [Hash{Integer => String}] summon position => 'sealed' | 'unsealed'
+  def apply_solomonis_seal_states!(weapons: {}, summons: {})
+    return unless SolomonisExpedition.exists?(party_id: id)
+
+    { GridWeapon => weapons, GridSummon => summons }.each do |model, states|
+      next if states.empty?
+
+      model.where(party_id: id, is_substitute: false, position: states.keys).find_each do |row|
+        state = states[row.position]
+        next unless SolomonisSealable::SEAL_STATES.include?(state) && state != 'start'
+
+        row.update_columns(seal_state: state, unseal_priority: state == 'sealed' ? row.unseal_priority : nil)
+      end
+    end
+    recompute_solomonis_state!
+  end
+
+  ##
+  # Closes gaps in the unseal priority list (after a ranked item is
   # removed or stops being sealed). A no-op when the list is already 1..n.
   def normalize_unseal_priorities!
     rows = GridWeapon.where(party_id: id, is_substitute: false).where.not(unseal_priority: nil).to_a +

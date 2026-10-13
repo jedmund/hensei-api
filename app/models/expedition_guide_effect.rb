@@ -20,7 +20,7 @@ class ExpeditionGuideEffect < ApplicationRecord
   validates :inherited, uniqueness: { scope: :party_id, message: 'can only be set on one effect per party' },
                         if: :inherited?
   validate :count_one_unless_stackable
-  validate :party_is_run
+  validate :party_is_solomonis
 
   private
 
@@ -31,10 +31,10 @@ class ExpeditionGuideEffect < ApplicationRecord
     errors.add(:count, 'must be 1 for an effect that cannot be stacked')
   end
 
-  def party_is_run
+  def party_is_solomonis
     return unless party
-    return if party.solomonis_run?
+    return if party.solomonis?
 
-    errors.add(:party, 'must be an Evoking Solomonis run')
+    errors.add(:party, 'must be an Evoking Solomonis party')
   end
 end

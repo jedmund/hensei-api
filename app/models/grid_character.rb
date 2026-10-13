@@ -350,9 +350,9 @@ class GridCharacter < ApplicationRecord
     Party.decrement_counter(:characters_count, party_id)
   end
 
-  # Evoking Solomonis builds hold the route Evoker only (plus one with The
-  # Hanged Man); runs the route Evoker and up to 4 allies. Whether the route
-  # Evoker is actually in the grid is a completeness check, not validated.
+  # Evoking Solomonis parties hold the route Evoker and up to 4 allies. Whether
+  # the route Evoker is actually in the grid is a completeness check, not
+  # validated.
   def within_solomonis_character_limit
     limit = party&.solomonis_character_limit
     return if limit.nil?

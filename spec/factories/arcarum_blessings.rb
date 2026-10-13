@@ -38,7 +38,7 @@ FactoryBot.define do
   end
 
   factory :party_blessing do
-    association :party, :solomonis_build
+    association :party, :solomonis
     association :arcarum_blessing_level
   end
 end

@@ -61,8 +61,8 @@ class PartyQueryBuilder
   end
 
   # Evoking Solomonis filters, applied only when the raid filter is a
-  # Solomonis zone: `route_evoker` (character UUID or granblue_id), `kind`
-  # (build or run) and `pledge_level` (one level or a comma-separated list).
+  # Solomonis zone: `route_evoker` (character UUID or granblue_id) and
+  # `pledge_level` (one level or a comma-separated list).
   def apply_solomonis_filters(query)
     return query unless solomonis_filter_requested? && solomonis_zone_requested?
 
@@ -71,12 +71,6 @@ class PartyQueryBuilder
       value = @params[:route_evoker].to_s
       conditions[:route_evoker_id] =
         value.match?(UUID_REGEX) ? value : Character.where(granblue_id: value).select(:id)
-    end
-    if @params[:kind].present?
-      kind = @params[:kind].to_s
-      return query.none unless SolomonisExpedition::KINDS.include?(kind)
-
-      conditions[:kind] = kind
     end
     if @params[:pledge_level].present?
       levels = @params[:pledge_level].to_s.split(',').filter_map { |v| Integer(v.strip, exception: false) }
@@ -97,7 +91,7 @@ class PartyQueryBuilder
 
   def solomonis_filter_requested?
     @params[:raid].present? &&
-      (@params[:route_evoker].present? || @params[:kind].present? || @params[:pledge_level].present?)
+      (@params[:route_evoker].present? || @params[:pledge_level].present?)
   end
 
   # Filters by one or more difficulty tiers. Accepts a comma-separated list of

@@ -15,9 +15,11 @@
 # Entry points for controllers and importers:
 # - #assign_solomonis_route(character): set or change the route Evoker.
 # - #replace_solomonis_blessings!(levels): write a whole blessing loadout.
-# - #replace_unseal_priority!(items): write a build's whole unseal priority list
+# - #replace_unseal_priority!(items): write the whole unseal priority list
 #   (SolomonisPartySeals).
-# - #replace_solomonis_guide_effects!(entries): write a run's whole guidebook.
+# - #replace_solomonis_guide_effects!(entries): write the whole guidebook.
+# - #apply_solomonis_seal_states!(weapons:, summons:) (SolomonisPartySeals): set
+#   imported seal state by position.
 # - #recompute_solomonis_state! (SolomonisPartySeals): re-derive seal state and close unseal priority
 #   gaps after grid or blessing writes that bypass model callbacks.
 module SolomonisParty
@@ -27,10 +29,8 @@ module SolomonisParty
   STARTING_WEAPON_POSITIONS = [-1, 0, 1].freeze
   # Starts unsealed too when Justice is equipped.
   JUSTICE_WEAPON_POSITION = 2
-  # Builds hold the route Evoker only (plus one with The Hanged Man); runs the
-  # route Evoker and up to 4 allies.
-  BUILD_CHARACTER_LIMIT = 1
-  RUN_CHARACTER_LIMIT = 5
+  # The route Evoker and up to 4 allies (The Hanged Man's ally is one of them).
+  CHARACTER_LIMIT = 5
 
   included do
     include SolomonisPartySeals
@@ -59,14 +59,6 @@ module SolomonisParty
     expedition.present? && !expedition.marked_for_destruction?
   end
 
-  def solomonis_build?
-    solomonis? && solomonis_expedition.build?
-  end
-
-  def solomonis_run?
-    solomonis? && solomonis_expedition.run?
-  end
-
   # True when the party's raid is an Evoking Solomonis zone.
   def solomonis_zone?
     raid&.solomonis_zone? || false
@@ -84,10 +76,7 @@ module SolomonisParty
 
   # Grid character limit (non-substitutes), or nil outside Solomonis.
   def solomonis_character_limit
-    return nil unless solomonis?
-    return RUN_CHARACTER_LIMIT if solomonis_run?
-
-    BUILD_CHARACTER_LIMIT + (solomonis_blessing?(ArcarumBlessing::HANGED_MAN) ? 1 : 0)
+    CHARACTER_LIMIT if solomonis?
   end
 
   # Weapon positions that start unsealed, given the equipped blessings.
@@ -100,12 +89,10 @@ module SolomonisParty
   #########################
 
   ##
-  # Sets the route Evoker, building the expedition if needed (as a build unless
-  # a kind is given), and moves the party to the Evoker's zone and element.
-  # Doesn't save.
-  def assign_solomonis_route(character, kind: nil)
-    expedition = solomonis_expedition || build_solomonis_expedition(kind: kind || 'build')
-    expedition.kind = kind if kind
+  # Sets the route Evoker, building the expedition if needed, and moves the
+  # party to the Evoker's zone and element. Doesn't save.
+  def assign_solomonis_route(character)
+    expedition = solomonis_expedition || build_solomonis_expedition
     expedition.route_evoker = character
     apply_route_to_party(character)
     expedition
@@ -113,9 +100,8 @@ module SolomonisParty
 
   ##
   # Replaces the blessing loadout. Checks the whole set (released, one level per
-  # blessing, total cost), refuses to drop The Hanged Man while a build holds
-  # its extra character, clears brought_by_blessing on a run that drops it, and
-  # recomputes seal state for Justice.
+  # blessing, total cost), clears brought_by_blessing when The Hanged Man is
+  # dropped, and recomputes seal state for Justice.
   #
   # @param levels [Array<ArcarumBlessingLevel>]
   # @raise [ActiveRecord::RecordInvalid] with errors on :blessings
@@ -138,14 +124,14 @@ module SolomonisParty
   end
 
   ##
-  # Replaces a run's guidebook.
+  # Replaces the guidebook (the effects held at the end of an expedition).
   #
   # @param entries [Array<Hash>] `{ solomonis_guide_effect: or solomonis_guide_effect_id:, count:,
   #   display_value:, acquired_order:, inherited:, note: }`
   # @raise [ActiveRecord::RecordInvalid] the failing row, or the party with errors on :guide_effects
   def replace_solomonis_guide_effects!(entries)
     errors.clear
-    errors.add(:guide_effects, 'are only for Evoking Solomonis runs') unless solomonis_run?
+    errors.add(:guide_effects, 'are only for Evoking Solomonis parties') unless solomonis?
     entries = entries.to_a.map { |e| e.to_h.symbolize_keys }
     effect_ids = entries.map { |e| e[:solomonis_guide_effect]&.id || e[:solomonis_guide_effect_id] }
     errors.add(:guide_effects, 'list an effect more than once') if effect_ids.uniq.size != effect_ids.size
@@ -209,7 +195,7 @@ module SolomonisParty
           errors.add(:element, "must match the route Evoker's element")
         end
       end
-      validate_solomonis_character_count if expedition.new_record? || expedition.kind_changed?
+      validate_solomonis_character_count if expedition.new_record?
     elsif solomonis_zone?
       errors.add(:solomonis_expedition, 'with a route Evoker is required for an Evoking Solomonis zone')
     end
@@ -233,21 +219,15 @@ module SolomonisParty
     errors.add(:blessings, 'can hold one level of each blessing') if blessings.uniq.size != blessings.size
     errors.add(:blessings, 'must be released') unless blessings.all?(&:released?)
     total = levels.sum(&:cost)
-    if total > ArcarumBlessing::COST_LIMIT
-      errors.add(:blessings, "cost #{total}, over the limit of #{ArcarumBlessing::COST_LIMIT}")
-    end
+    return if total <= ArcarumBlessing::COST_LIMIT
 
-    hanged_man = blessings.any? { |b| b.slug == ArcarumBlessing::HANGED_MAN }
-    return if hanged_man || !solomonis_build?
-    return if GridCharacter.where(party_id: id, is_substitute: false).count <= BUILD_CHARACTER_LIMIT
-
-    errors.add(:blessings, 'must keep The Hanged Man while the build holds a second character')
+    errors.add(:blessings, "cost #{total}, over the limit of #{ArcarumBlessing::COST_LIMIT}")
   end
 
   def recompute_solomonis_state_after_expedition_change
     expedition = association(:solomonis_expedition).reader
     return unless expedition&.persisted? && !expedition.destroyed?
-    return unless expedition.saved_change_to_id? || expedition.saved_change_to_kind?
+    return unless expedition.saved_change_to_id?
 
     recompute_solomonis_state!
   end

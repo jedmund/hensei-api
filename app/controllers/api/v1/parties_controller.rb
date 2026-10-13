@@ -34,17 +34,15 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
-      # Fields of `party[solomonis]` a client may write. game_report_id and
-      # stats are import-only; ownership comes from the party.
-      SOLOMONIS_PARAMS = %i[kind route_evoker_id pledge_level outcome bosses_defeated midboss
-                            expedition_level build_party_id ended_at].freeze
+      # Fields of `party[solomonis]` a client may write. ended_at, stats and
+      # game_report_id are import-only; ownership comes from the party.
+      SOLOMONIS_PARAMS = %i[route_evoker_id pledge_level outcome].freeze
 
       # Validation error keys on the party's expedition, as the API contract
       # names them (`solomonis.<field>`).
       SOLOMONIS_ERROR_KEYS = {
         'solomonis_expedition' => 'solomonis.route_evoker_id',
-        'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id',
-        'solomonis_expedition.build_party' => 'solomonis.build_party_id'
+        'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id'
       }.freeze
 
       before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
@@ -501,25 +499,12 @@ module Api
         raw.permit(*SOLOMONIS_PARAMS)
       end
 
-      # Applies `party[solomonis]` to the party's expedition (building one, as
-      # a build unless a kind is given, when the party has none). A linked
-      # build must be a Solomonis build the current user can view; anything
-      # else gets the same 422, so private builds aren't revealed.
-      # Renders a 422 when the request can't proceed.
+      # Applies `party[solomonis]` to the party's expedition (building one when
+      # the party has none).
       def assign_solomonis_params(party)
         attrs = solomonis_params&.to_h
         return if attrs.nil?
 
-        expedition = party.solomonis_expedition
-        build_id = attrs['build_party_id']
-        if build_id.present? && build_id != expedition&.build_party_id
-          build = Party.includes(:solomonis_expedition).find_by(id: build_id)
-          unless build&.solomonis_expedition&.build? && build.viewable_by?(current_user, admin_mode: admin_mode)
-            return render_solomonis_errors('solomonis.build_party_id' => ['must be an Evoking Solomonis build you can view'])
-          end
-        end
-
-        attrs['kind'] = 'build' if expedition.nil? && attrs['kind'].blank?
         party.solomonis_expedition_attributes = attrs
       end
 

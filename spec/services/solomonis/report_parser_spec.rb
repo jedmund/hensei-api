@@ -63,10 +63,30 @@ RSpec.describe Solomonis::ReportParser do
     end
   end
 
-  it 'reads a failed run' do
-    attributes = parser({ 'is_success' => false, 'boss_count' => '1' }).expedition_attributes
+  describe 'outcome' do
+    def outcome(overrides)
+      p = parser(overrides)
+      [p.expedition_attributes[:outcome], p.warnings]
+    end
 
-    expect(attributes).to include(outcome: 'failed', bosses_defeated: 1)
+    it 'follows boss_count' do
+      expect(outcome('is_success' => false, 'boss_count' => '0')).to eq(['miasma_1', []])
+      expect(outcome('is_success' => false, 'boss_count' => 1)).to eq(['miasma_2', []])
+      expect(outcome('is_success' => true, 'boss_count' => '2')).to eq(['cleared', []])
+    end
+
+    it 'warns when is_success disagrees, and keeps boss_count' do
+      expect(outcome('is_success' => true, 'boss_count' => '1'))
+        .to eq(['miasma_2', ['is_success is true but boss_count is 1; outcome follows boss_count']])
+      expect(outcome('is_success' => 0, 'boss_count' => '2'))
+        .to eq(['cleared', ['is_success is false but boss_count is 2; outcome follows boss_count']])
+    end
+
+    it 'is empty when boss_count is missing or out of range' do
+      expect(outcome('boss_count' => nil)).to eq([nil, ['boss_count is missing; outcome left empty']])
+      expect(outcome('boss_count' => '3')).to eq([nil, ['boss_count 3 is out of range; outcome left empty']])
+      expect(outcome('boss_count' => 'x')).to eq([nil, ["boss_count isn't a count; ignored"]])
+    end
   end
 
   it 'ignores counts that are not counts' do
