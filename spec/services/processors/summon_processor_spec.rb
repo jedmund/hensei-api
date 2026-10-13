@@ -69,6 +69,11 @@ RSpec.describe Processors::SummonProcessor, type: :model do
     end
   end
 
+  it 'marks only the first main-grid summon as main, not the first sub summon' do
+    subject.process
+    expect(GridSummon.where(party: party, main: true).pluck(:position)).to eq([-1])
+  end
+
   describe 'quick summon detection' do
     it 'sets quick_summon on the matching main grid summon' do
       # deck_sample.json has quick_user_summon_id=675435184 which matches summons[5] (param.id=675435184)
@@ -95,6 +100,12 @@ RSpec.describe Processors::SummonProcessor, type: :model do
       end
 
       it 'sets quick_summon to false on all summons' do
+        subject.process
+        expect(GridSummon.where(party: party).pluck(:quick_summon)).to all(be false)
+      end
+
+      it 'does not match summons that have no ID either' do
+        deck_data['deck']['pc']['summons'].each_value { |entry| entry['param']&.delete('id') }
         subject.process
         expect(GridSummon.where(party: party).pluck(:quick_summon)).to all(be false)
       end
