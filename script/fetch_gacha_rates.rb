@@ -7,6 +7,10 @@
 #
 #   0 * * * * cd hensei-api && ruby script/fetch_gacha_rates.rb
 #
+# It remembers when the uploaded banner ends and doesn't contact the game
+# until then, so most scheduled runs make no requests. After the banner ends,
+# each run checks the game until the next banner is listed.
+#
 # It signs in as a spare game account with that account's cookies. To seed
 # them, sign the account in to the game in a browser, copy the Cookie request
 # header of any game.granbluefantasy.jp request from the Network panel, and run:
@@ -23,8 +27,8 @@
 #   GACHA_RATES_TOKEN    the API's GACHA_RATES_TOKEN
 #   GACHA_ALERT_WEBHOOK  optional Discord webhook for failures
 #
-# Options: --force uploads even if the banner hasn't changed since the last
-# upload today; --dry-run prints the payload instead of uploading it.
+# Options: --force checks the game and uploads even if the banner hasn't ended
+# or changed; --dry-run prints the payload instead of uploading it.
 
 require 'date'
 require 'json'
@@ -36,6 +40,10 @@ class GachaRatesFetcher
   class SignedOut < StandardError; end
 
   GAME = URI('https://game.granbluefantasy.jp/')
+  # "2026/10/9 19:00" in Japanese
+  JAPANESE_TIME = %r{\A(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2}) (?<hour>\d{1,2}):(?<minute>\d{2})\z}
+  # "7 p.m., Oct 9, 2026 (JST)" or "6:59 p.m., Oct 12, 2026 (JST)" in English
+  ENGLISH_TIME = /\A(?<hour>\d{1,2})(?::(?<minute>\d{2}))? (?<half>[ap])\.m\., (?<month>[A-Z][a-z]+)\.? (?<day>\d{1,2}), (?<year>\d{4}) \(JST\)\z/
   USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                'Chrome/141.0.0.0 Safari/537.36'
 
@@ -67,11 +75,19 @@ class GachaRatesFetcher
     abort 'Set GBF_UID to the spare account\'s user id' unless @uid.match?(/\A\d+\z/)
     abort 'Set GACHA_RATES_URL and GACHA_RATES_TOKEN' unless @dry_run || (@api && @token)
 
+    state = load_state
+    ends_at = state['ends_at'] && Time.iso8601(state['ends_at'])
+    if !@force && ends_at && Time.now < ends_at
+      puts "Banner #{state['game_id']} runs until #{ends_at.iso8601}"
+      return
+    end
+
     @cookies = load_cookies
     version = game_version
     banner = current_banner(version)
-    state = load_state
-    if !@force && state['game_id'] == banner['id'] && state['date'] == Date.today.iso8601
+    if !@force && state['game_id'] == banner['id']
+      # The game hasn't listed the next banner yet, or extended this one
+      save_state('game_id' => banner['id'], 'ends_at' => banner_end(banner)&.iso8601)
       puts "Banner #{banner['id']} is unchanged"
       return
     end
@@ -81,7 +97,7 @@ class GachaRatesFetcher
     return puts(JSON.pretty_generate(payload)) if @dry_run
 
     result = upload(payload)
-    save_state('game_id' => banner['id'], 'date' => Date.today.iso8601)
+    save_state('game_id' => banner['id'], 'ends_at' => banner_end(banner)&.iso8601)
     puts "Uploaded banner #{result['game_id']}: #{result['items']} items, #{result['unmatched']} not in the catalogue"
     alert("Banner #{result['game_id']} has #{result['unmatched']} items missing from the catalogue") if result['unmatched'].to_i.positive?
   rescue SignedOut => e
@@ -117,6 +133,26 @@ class GachaRatesFetcher
     raise "Invalid banner id #{id.inspect}" unless id.to_s.match?(/\A\d+\z/)
 
     get_json("gacha/provision_ratio/legend/#{id}/#{tab}", version)
+  end
+
+  # When the banner stops being drawn: a minute after its listed end, which is
+  # given to the minute ("18:59"). Nil if the time can't be read, so the next
+  # run checks the game again.
+  def banner_end(banner)
+    text = banner['service_end'].to_s
+    parts = text.match(JAPANESE_TIME) || text.match(ENGLISH_TIME)
+    unless parts
+      warn "Couldn't read the banner's end time: #{text.inspect}"
+      return
+    end
+
+    hour = parts[:hour].to_i
+    hour = (hour % 12) + (parts[:half] == 'p' ? 12 : 0) if parts.names.include?('half')
+    month = parts[:month].match?(/\A\d+\z/) ? parts[:month].to_i : Date::ABBR_MONTHNAMES.index(parts[:month][0, 3])
+    Time.new(parts[:year].to_i, month, parts[:day].to_i, hour, parts[:minute].to_i, 0, '+09:00') + 60
+  rescue ArgumentError, TypeError
+    warn "Couldn't read the banner's end time: #{text.inspect}"
+    nil
   end
 
   def get_json(path, version)
