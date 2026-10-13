@@ -86,6 +86,7 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
 
       weapons = imported_party.weapons.index_by(&:position)
       expect(weapons.keys).to match_array((-1..11).to_a)
+      expect(imported_party.extra).to be(true)
       expect(weapons[-1]).to have_attributes(uncap_level: 6, transcendence_step: 5, mainhand: true)
       expect(weapons[0]).to have_attributes(uncap_level: 4, transcendence_step: 0)
       expect(weapons[9]).to have_attributes(uncap_level: 5, transcendence_step: 0)

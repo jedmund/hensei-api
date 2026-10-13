@@ -441,6 +441,19 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
   end
 
   describe 'grid item fields' do
+    it 'seals a weapon added outside the starting slots and starts one added in them (D27)' do
+      [[5, 'sealed'], [0, 'start']].each do |position, state|
+        weapon = create(:weapon)
+        post '/api/v1/grid_weapons',
+             params: { weapon: { party_id: party.id, weapon_id: weapon.id, position: position,
+                                 mainhand: false, uncap_level: 3, transcendence_step: 0 } }.to_json,
+             headers: headers
+
+        expect(response).to have_http_status(:created)
+        expect(party.weapons.find_by(position: position).seal_state).to eq(state)
+      end
+    end
+
     it 'sets seal_state on a weapon and summon' do
       weapon = create(:grid_weapon, party: party, position: 5)
       summon = create(:grid_summon, party: party, position: 1, summon: create(:summon))

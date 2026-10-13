@@ -390,6 +390,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         expect(response.parsed_body['warnings']).to eq([])
         party = imported_party
         expect(party.weapons.count).to eq(13)
+        expect(party.extra).to be(true)
         expect(party.summons.count).to eq(7)
         expect(party.summons.where(friend: true)).to be_empty
         expect(party.summons.where(quick_summon: true).pluck(:position)).to eq([-1])
