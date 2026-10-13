@@ -123,9 +123,22 @@ RSpec.describe 'Evoking Solomonis seal state and unseal priority', type: :model 
     let!(:s0) { summon_at(party, 0) }
     let!(:start_weapon) { weapon_at(party, 0) }
 
-    it 'numbers one list across weapons and summons' do
+    it 'numbers weapons and summons as separate lists' do
+      s1 = summon_at(party, 1)
+      party.replace_unseal_priority!([{ type: 'summon', id: s0.id }, { type: 'weapon', id: w4.id },
+                                      { type: 'summon', id: s1.id }, { type: 'weapon', id: w3.id }])
+      expect([w4, w3, s0, s1].map { |row| row.reload.unseal_priority }).to eq([1, 2, 1, 2])
+    end
+
+    it 'gives a weapon and a summon both priority 1' do
       party.replace_unseal_priority!([{ type: 'summon', id: s0.id }, { type: 'weapon', id: w4.id }])
-      expect([s0.reload.unseal_priority, w4.reload.unseal_priority, w3.reload.unseal_priority]).to eq([1, 2, nil])
+      expect([s0.reload.unseal_priority, w4.reload.unseal_priority, w3.reload.unseal_priority]).to eq([1, 1, nil])
+    end
+
+    it 'clears the priority of a type left out' do
+      party.replace_unseal_priority!([{ type: 'summon', id: s0.id }, { type: 'weapon', id: w4.id }])
+      party.replace_unseal_priority!([{ type: 'weapon', id: w3.id }])
+      expect([w3.reload.unseal_priority, w4.reload.unseal_priority, s0.reload.unseal_priority]).to eq([1, nil, nil])
     end
 
     it 'rejects items from another party' do
@@ -155,21 +168,45 @@ RSpec.describe 'Evoking Solomonis seal state and unseal priority', type: :model 
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
-    context 'with a ranked list' do
+    context 'with ranked lists' do
+      let!(:s1) { summon_at(party, 1) }
+
       before do
         party.replace_unseal_priority!([{ type: 'weapon', id: w3.id }, { type: 'summon', id: s0.id },
-                                        { type: 'weapon', id: w4.id }])
+                                        { type: 'weapon', id: w4.id }, { type: 'summon', id: s1.id }])
       end
 
-      it 'closes the gap when a ranked item is removed' do
+      it 'renumbers only weapons when a ranked weapon is removed' do
+        w3.reload.destroy!
+        expect(w4.reload.unseal_priority).to eq(1)
+        expect([s0.reload.unseal_priority, s1.reload.unseal_priority]).to eq([1, 2])
+      end
+
+      it 'renumbers only summons when a ranked summon is removed' do
         s0.reload.destroy!
+        expect(s1.reload.unseal_priority).to eq(1)
         expect([w3.reload.unseal_priority, w4.reload.unseal_priority]).to eq([1, 2])
+      end
+
+      it 'renumbers only weapons when a ranked weapon is unsealed' do
+        w3.reload.update!(seal_state: 'unsealed')
+        expect(w3.unseal_priority).to be_nil
+        expect(w4.reload.unseal_priority).to eq(1)
+        expect([s0.reload.unseal_priority, s1.reload.unseal_priority]).to eq([1, 2])
       end
 
       it 'drops the priority of a weapon moved into a starting slot' do
         w3.reload.update!(position: 1)
         expect(w3.unseal_priority).to be_nil
-        expect([s0.reload.unseal_priority, w4.reload.unseal_priority]).to eq([1, 2])
+        expect(w4.reload.unseal_priority).to eq(1)
+        expect([s0.reload.unseal_priority, s1.reload.unseal_priority]).to eq([1, 2])
+      end
+
+      it 'renumbers each list on its own when recomputing' do
+        GridWeapon.where(id: w4.id).update_all(unseal_priority: 5)
+        GridSummon.where(id: s1.id).update_all(unseal_priority: 7)
+        party.recompute_solomonis_state!
+        expect([w3, w4, s0, s1].map { |row| row.reload.unseal_priority }).to eq([1, 2, 1, 2])
       end
 
       it 'drops position 2 from the list when Justice is added' do

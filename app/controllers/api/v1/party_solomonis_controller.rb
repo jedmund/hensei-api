@@ -73,6 +73,9 @@ module Api
       end
 
       # PUT /parties/:id/unseal_priority { items: [{ type: 'weapon' | 'summon', id }] }
+      #
+      # One ordered array; weapons and summons are numbered as two separate
+      # lists, each from 1 in the order its items appear.
       def unseal_priority
         items = list_param(:items)
         return if performed?

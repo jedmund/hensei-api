@@ -7,9 +7,11 @@ module SolomonisPartySeals
   extend ActiveSupport::Concern
 
   ##
-  # Replaces the unseal priority list. Items are loaded from this party
-  # (never trusted from params), must be sealed, and are numbered from 1 in
-  # the order given. Slots left out lose their priority.
+  # Replaces the unseal priority lists. Weapons and summons are ranked in
+  # two independent lists: the items come in one ordered array, and each
+  # type is numbered from 1 in the order its items appear (so a weapon and a
+  # summon can both be 1). Items are loaded from this party (never trusted
+  # from params) and must be sealed. Slots left out lose their priority.
   #
   # @param items [Array<Hash>] `{ type: 'weapon' | 'summon', id: }` in order
   # @raise [ActiveRecord::RecordInvalid] with errors on :unseal_priority
@@ -40,7 +42,9 @@ module SolomonisPartySeals
     transaction do
       GridWeapon.where(party_id: id).where.not(unseal_priority: nil).update_all(unseal_priority: nil)
       GridSummon.where(party_id: id).where.not(unseal_priority: nil).update_all(unseal_priority: nil)
-      rows.each_with_index { |row, index| row.update_columns(unseal_priority: index + 1) }
+      rows.group_by(&:class).each_value do |ranked|
+        ranked.each_with_index { |row, index| row.update_columns(unseal_priority: index + 1) }
+      end
     end
     rows
   end
@@ -49,8 +53,8 @@ module SolomonisPartySeals
   # Re-derives seal state and unseal priority for the whole party: starting
   # slots become `start`; a slot that was `start` but no longer starts
   # (Justice removed) or has no state becomes `sealed`; other slots keep their
-  # state. Priorities on slots that aren't sealed are dropped and the list is
-  # renumbered from 1 without gaps.
+  # state. Priorities on slots that aren't sealed are dropped, and the weapon
+  # and summon lists are each renumbered from 1 without gaps.
   #
   # Writes with update_columns, so no grid callbacks fire. Safe to call after
   # any grid or blessing change; does nothing outside Solomonis.
@@ -69,9 +73,7 @@ module SolomonisPartySeals
       row.seal_state = state
     end
 
-    ranked = (weapons + summons).select(&:unseal_priority)
-                                .sort_by { |row| unseal_priority_sort_key(row) }
-    ranked.each_with_index { |row, index| row.unseal_priority = index + 1 }
+    [weapons, summons].each { |rows| renumber_unseal_priorities(rows) }
 
     (weapons + summons).each do |row|
       changes = row.changes_to_save.slice('seal_state', 'unseal_priority').transform_values(&:last)
@@ -103,20 +105,24 @@ module SolomonisPartySeals
   end
 
   ##
-  # Closes gaps in the unseal priority list (after a ranked item is
-  # removed or stops being sealed). A no-op when the list is already 1..n.
+  # Closes gaps in the weapon and summon unseal priority lists, each on its
+  # own (after a ranked item is removed or stops being sealed). A no-op when
+  # each list is already 1..n.
   def normalize_unseal_priorities!
-    rows = GridWeapon.where(party_id: id, is_substitute: false).where.not(unseal_priority: nil).to_a +
-           GridSummon.where(party_id: id, is_substitute: false).where.not(unseal_priority: nil).to_a
-    rows.sort_by { |row| unseal_priority_sort_key(row) }
-        .each_with_index do |row, index|
-      row.update_columns(unseal_priority: index + 1) if row.unseal_priority != index + 1
+    [GridWeapon, GridSummon].each do |model|
+      rows = model.where(party_id: id, is_substitute: false).where.not(unseal_priority: nil).to_a
+      renumber_unseal_priorities(rows)
+      rows.each { |row| row.update_columns(unseal_priority: row.unseal_priority) if row.unseal_priority_changed? }
     end
   end
 
   private
 
-  def unseal_priority_sort_key(row)
-    [row.unseal_priority, row.is_a?(GridWeapon) ? 0 : 1, row.position.to_i]
+  # Renumbers the ranked rows of one type 1..n in their current order (ties
+  # broken by position). Assigns in memory; callers write the changes.
+  def renumber_unseal_priorities(rows)
+    rows.select(&:unseal_priority)
+        .sort_by { |row| [row.unseal_priority, row.position.to_i] }
+        .each_with_index { |row, index| row.unseal_priority = index + 1 }
   end
 end

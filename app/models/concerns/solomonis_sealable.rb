@@ -12,9 +12,10 @@
 #   says. A slot nobody has set, or one that stops being a starting slot
 #   (Justice removed, moved out of a starting position), is `sealed`.
 #
-# unseal_priority ranks the party's sealed slots in one list across weapons
-# and summons. Party#replace_unseal_priority! writes it; removing a ranked row,
-# unsealing it or moving it into a starting slot closes the gap.
+# unseal_priority ranks the party's sealed slots in two independent lists,
+# one for weapons and one for summons, each numbered from 1.
+# Party#replace_unseal_priority! writes them; removing a ranked row, unsealing
+# it or moving it into a starting slot closes the gap in its own list.
 #
 # Substitutes carry no seal state.
 module SolomonisSealable

@@ -366,7 +366,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
     let!(:weapon_six) { create(:grid_weapon, party: party, position: 6) }
     let!(:sub_summon) { create(:grid_summon, party: party, position: 1, summon: create(:summon)) }
 
-    it 'ranks sealed weapons and summons in one list' do
+    it 'ranks sealed weapons and summons in separate lists' do
       put "/api/v1/parties/#{party.id}/unseal_priority",
           params: { items: [{ type: 'summon', id: sub_summon.id }, { type: 'weapon', id: weapon_six.id },
                             { type: 'weapon', id: weapon_five.id }] }.to_json,
@@ -374,8 +374,8 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
 
       expect(response).to have_http_status(:ok)
       weapons = body.dig('party', 'weapons').index_by { |w| w['position'] }
-      expect(weapons[6]['unseal_priority']).to eq(2)
-      expect(weapons[5]['unseal_priority']).to eq(3)
+      expect(weapons[6]['unseal_priority']).to eq(1)
+      expect(weapons[5]['unseal_priority']).to eq(2)
       expect(weapons[-1]['unseal_priority']).to be_nil
       expect(body.dig('party', 'summons', 0, 'unseal_priority')).to eq(1)
 

@@ -15,8 +15,8 @@
 # Entry points for controllers and importers:
 # - #assign_solomonis_route(character): set or change the route Evoker.
 # - #replace_solomonis_blessings!(levels): write a whole blessing loadout.
-# - #replace_unseal_priority!(items): write the whole unseal priority list
-#   (SolomonisPartySeals).
+# - #replace_unseal_priority!(items): write the whole unseal priority (the
+#   weapon and summon lists, numbered separately) (SolomonisPartySeals).
 # - #replace_solomonis_guide_effects!(entries): write the whole guidebook.
 # - #apply_solomonis_seal_states!(weapons:, summons:) (SolomonisPartySeals): set
 #   imported seal state by position.

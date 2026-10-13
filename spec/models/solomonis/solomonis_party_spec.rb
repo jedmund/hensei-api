@@ -244,9 +244,9 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
       expect(remix.expedition_guide_effects).to be_empty
       expect(remix.weapons.find_by(position: weapon.position).seal_state).to eq('unsealed')
       expect(remix.weapons.where(position: [6, 7]).order(:position).pluck(:seal_state, :unseal_priority))
-        .to eq([['sealed', 3], ['sealed', 1]])
+        .to eq([['sealed', 2], ['sealed', 1]])
       expect(remix.summons.find_by(position: 1).slice(:seal_state, :unseal_priority))
-        .to eq('seal_state' => 'sealed', 'unseal_priority' => 2)
+        .to eq('seal_state' => 'sealed', 'unseal_priority' => 1)
     end
   end
 end
