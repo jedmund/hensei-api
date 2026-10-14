@@ -37,7 +37,9 @@ module Solomonis
     # status_id => wiki effect text prefix, for effects the text similarity gets wrong.
     # Use :none to force "no wiki match".
     MANUAL_MATCHES = {
-      71 => 'At end of turn: 1 random buff to each ally' # only captured in Japanese so far
+      # Only captured in Japanese so far.
+      71 => 'At end of turn: 1 random buff to each ally',
+      118 => 'Take DMG each turn'
     }.freeze
 
     attr_reader :report
