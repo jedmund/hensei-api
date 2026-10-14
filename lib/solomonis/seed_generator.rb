@@ -24,8 +24,8 @@ module Solomonis
 
     # Each blessing's effect in the game's Japanese, from in-game screenshots. `%d` takes the
     # level's value from its English text ("(2 times)", "by 3 turns", "100 Sephira coins").
-    # Justice's isn't known yet.
     BLESSING_DESCRIPTIONS_JP = {
+      'justice' => '武器の封印を1つ解放する',
       'hanged_man' => '任意のキャラを1人編成可能にする',
       'death' => '%d回まで戦闘マスに出現する敵のHPが1になる',
       'temperance' => '回復マスで味方全体のアビリティと召喚石の再使用間隔を%dターン短縮',

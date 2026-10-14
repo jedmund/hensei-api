@@ -11,21 +11,21 @@
         {
           "level": 1,
           "description_en": "Unseal 1 weapon",
-          "description_jp": null,
+          "description_jp": "武器の封印を1つ解放する",
           "cost": 70,
           "scintillas": 6000
         },
         {
           "level": 2,
           "description_en": "Unseal 1 weapon",
-          "description_jp": null,
+          "description_jp": "武器の封印を1つ解放する",
           "cost": 60,
           "scintillas": 49000
         },
         {
           "level": 3,
           "description_en": "Unseal 1 weapon",
-          "description_jp": null,
+          "description_jp": "武器の封印を1つ解放する",
           "cost": 50,
           "scintillas": 135100
         }
