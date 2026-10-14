@@ -83,6 +83,15 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
         'character_id' => nil, 'availability' => 'event', 'type_tags' => ['offense'], 'effect_tags' => ['dmg_cap']
       )
     end
+
+    it 'leaves out effects waiting on review' do
+      reviewed = create(:solomonis_guide_effect, granblue_id: 88)
+      create(:solomonis_guide_effect, granblue_id: 89, needs_review: true)
+
+      get '/api/v1/solomonis/guide_effects'
+
+      expect(response.parsed_body['guide_effects'].pluck('id')).to eq([reviewed.id])
+    end
   end
 
   describe 'raid group content_mode' do

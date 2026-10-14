@@ -32,7 +32,7 @@ module Api
 
       # GET /solomonis/guide_effects
       def guide_effects
-        render json: { guide_effects: SolomonisGuideEffectBlueprint.render_as_hash(SolomonisGuideEffect.ordered) }
+        render json: { guide_effects: SolomonisGuideEffectBlueprint.render_as_hash(SolomonisGuideEffect.reviewed.ordered) }
       end
 
       private

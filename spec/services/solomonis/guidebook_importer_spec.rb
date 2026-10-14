@@ -55,18 +55,11 @@ RSpec.describe Solomonis::GuidebookImporter do
     expect(importer.warnings).to eq(['Guidebook effect 1 is listed 2 times; kept the first'])
   end
 
-  it 'adds a race effect with its races' do
-    described_class.new([entry('status_id' => 500, 'target_type' => 1, 'target_param' => '2_8', 'rarity' => 2)]).call
+  it 'skips an effect the catalogue does not have, without adding it' do
+    importer = described_class.new([entry('status_id' => 500, 'target_type' => 1, 'target_param' => '2_8')])
 
-    expect(SolomonisGuideEffect.find_by(granblue_id: 500))
-      .to have_attributes(rarity: 'rare', target_type: 'race', target_values: [2, 8], needs_review: true)
-  end
-
-  it 'skips a new effect with an unreadable target' do
-    importer = described_class.new([entry('status_id' => 500, 'target_type' => 1, 'target_param' => '2;drop')])
-
-    expect(importer.call).to eq([])
-    expect(importer.warnings).to eq(['New guidebook effect 500 has an unreadable target; skipped'])
+    expect { expect(importer.call).to eq([]) }.not_to change(SolomonisGuideEffect, :count)
+    expect(importer.warnings).to eq(["Guidebook effect 500 isn't in the catalogue; skipped"])
   end
 
   it 'skips names that are too long' do

@@ -6,11 +6,7 @@
 # Either name may be null, but not both; the UI shows the other in its place.
 class SolomonisGuideEffect < ApplicationRecord
   RARITIES = %w[normal rare unique cursed].freeze
-  # The game's `rarity` field.
-  GAME_RARITIES = { 1 => 'normal', 2 => 'rare', 3 => 'unique', 99 => 'cursed' }.freeze
   TARGET_TYPES = %w[race proficiency character].freeze
-  # The game's `target_type` field.
-  GAME_TARGET_TYPES = { 1 => 'race', 2 => 'proficiency', 3 => 'character' }.freeze
   AVAILABILITIES = %w[global event character].freeze
   NAME_MAX_LENGTH = 1000
   TAG_MAX_LENGTH = 32
@@ -32,6 +28,8 @@ class SolomonisGuideEffect < ApplicationRecord
   validate :tags_are_short_strings
 
   scope :ordered, -> { order(:granblue_id) }
+  # Rows still waiting on a check stay out of the public catalogue.
+  scope :reviewed, -> { where(needs_review: false) }
   scope :by_rarity, ->(rarity) { where(rarity: rarity) if rarity.present? }
 
   private

@@ -202,74 +202,26 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         }
       end
 
-      it 'adds the effect to the catalogue for review and imports it' do
+      it 'skips the effect with a warning and leaves the catalogue alone' do
         payload = body.deep_merge('solomonis' => { 'status_list' => status_list + [new_entry] })
-        payload['solomonis']['report'] = report.merge('spacebook_status_count' => 72)
-
-        expect { import(payload) }.to change(SolomonisGuideEffect, :count).by(1)
-
-        expect(response).to have_http_status(:created)
-        expect(response.parsed_body['warnings']).to eq([])
-        added = effect(998)
-        expect(added).to have_attributes(
-          rarity: 'unique', stackable: false, needs_review: true, name_jp: nil,
-          name_en: 'Bonus DMG to sabre- and gun-specialty allies (30%)',
-          icon_category: 1, icon_type: 401, target_type: 'proficiency', target_values: [1, 9]
-        )
-        expect(imported_party.expedition_guide_effects.find_by(solomonis_guide_effect: added).count).to eq(1)
-      end
-
-      it 'resolves a character effect to its route Evoker' do
-        fraux = create(:character, :solomonis_evoker, granblue_id: '3040161000', character_id: [3100], solomonis_zone: zone)
-        entry = new_entry.merge('target_type' => 3, 'target_param' => '3100', 'deck_condition' => 3100)
-        payload = body.deep_merge('solomonis' => { 'status_list' => status_list + [entry] })
-        import(payload)
-
-        expect(effect(998)).to have_attributes(target_type: 'character', target_values: [3100], character_id: fraux.id)
-      end
-
-      it 'skips an entry with an unknown rarity, with a warning' do
-        payload = body.deep_merge('solomonis' => { 'status_list' => status_list + [new_entry.merge('rarity' => 7)] })
 
         expect { import(payload) }.not_to change(SolomonisGuideEffect, :count)
 
         expect(response).to have_http_status(:created)
-        expect(response.parsed_body['warnings']).to include('New guidebook effect 998 has an unknown rarity; skipped')
+        expect(response.parsed_body['warnings']).to include("Guidebook effect 998 isn't in the catalogue; skipped")
+        expect(imported_party.expedition_guide_effects.count).to eq(status_list.size)
       end
     end
 
     context 'with Japanese text' do
-      let(:japanese_entry) do
-        {
-          'name' => '全体の与ダメージ上昇@@(80% / 最大: 100%)', 'target_type' => nil, 'target_param' => '',
-          'display_ailment_id' => nil, 'status_id' => 999, 'icon_category' => 1, 'icon_type' => 310,
-          'rarity' => 3, 'is_duplication_possible' => 1, 'deck_condition' => 0, 'num' => 1
-        }
-      end
-
-      it 'stores a new effect under name_jp' do
-        payload = body.deep_merge('solomonis' => { 'status_list' => [japanese_entry] })
-        import(payload)
-
-        expect(response).to have_http_status(:created)
-        expect(effect(999)).to have_attributes(name_jp: '全体の与ダメージ上昇(80% / 最大: 100%)', name_en: nil,
-                                               needs_review: true)
-      end
-
-      it 'fills the empty language of a known effect and never overwrites it' do
+      it "doesn't fill the empty language of a known effect" do
         effect(7).update!(name_jp: nil)
         known = status_list.find { |e| e['status_id'] == 7 }
-        jp = known.merge('name' => '与ダメージ上限+10%')
-        import(body.deep_merge('solomonis' => { 'status_list' => [jp] }))
-
-        expect(effect(7)).to have_attributes(name_en: 'DMG cap +10%', name_jp: '与ダメージ上限+10%', needs_review: true)
-
-        other = create(:user)
-        later = jp.merge('name' => '与ダメージ上限アップ')
-        import(body.deep_merge('solomonis' => { 'status_list' => [later] }), as: auth_headers_for(other))
+        import(body.deep_merge('solomonis' => { 'status_list' => [known.merge('name' => '与ダメージ上限+10%')] }))
 
         expect(response).to have_http_status(:created)
-        expect(effect(7).name_jp).to eq('与ダメージ上限+10%')
+        expect(effect(7)).to have_attributes(name_en: 'DMG cap +10%', name_jp: nil, needs_review: false)
+        expect(imported_party.expedition_guide_effects.sole.solomonis_guide_effect).to eq(effect(7))
       end
     end
 
