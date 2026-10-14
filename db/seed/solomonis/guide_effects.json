@@ -1995,6 +1995,30 @@
       ]
     },
     {
+      "granblue_id": 113,
+      "rarity": "unique",
+      "stackable": false,
+      "name_en": "At battle start: Estarriola activates The Hermit Upright / Double Strike effect to all other allies for 3 turns (Only if Estarriola is a main ally) (Can't be stacked)",
+      "name_jp": null,
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": "character",
+      "target_values": [
+        3102
+      ],
+      "character_granblue_id": "3040163000",
+      "availability": "character",
+      "type_tags": [
+        "na",
+        "debuff"
+      ],
+      "effect_tags": [
+        "cdcut",
+        "battlestart",
+        "heal"
+      ]
+    },
+    {
       "granblue_id": 115,
       "rarity": "unique",
       "stackable": false,
