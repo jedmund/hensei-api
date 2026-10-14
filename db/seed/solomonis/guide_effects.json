@@ -1266,7 +1266,7 @@
       "rarity": "rare",
       "stackable": false,
       "name_en": "At battle start: Autorevive effect to all allies (1 time) / Death's Grace effect (Can't be stacked)",
-      "name_jp": null,
+      "name_jp": "バトル開始時、味方全体に自動復活効果(1回)/死の祝福効果(重複不可)",
       "icon_category": 2,
       "icon_type": 204,
       "target_type": null,
