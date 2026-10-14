@@ -46,13 +46,47 @@ RSpec.describe GachaRatesFetcher do
     expect(ratio[1]).to include('X-Version' => '1791424018')
   end
 
-  it 'skips an unchanged banner the same day unless forced' do
-    expect { fetcher.run }.to output.to_stdout
+  context 'while the uploaded banner is running' do
+    before { travel_to Time.zone.parse('2026-10-10 12:00 JST') }
+
+    it "doesn't contact the game until the banner ends, unless forced" do
+      expect { fetcher.run }.to output(/Uploaded/).to_stdout
+      state = JSON.parse(File.read(File.join(dir, 'cookies-state.json')))
+      expect(state).to eq('game_id' => '211960', 'ends_at' => '2026-10-12T19:00:00+09:00')
+
+      requests.clear
+      expect { fetcher.run }.to output(/runs until 2026-10-12T19:00:00\+09:00/).to_stdout
+      expect(requests).to be_empty
+
+      forced = described_class.new(env, force: true)
+      allow(forced).to receive(:get) { |uri, **| respond(uri.path) }
+      allow(forced).to receive(:upload).and_return({ 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 })
+      expect { forced.run }.to output(/Uploaded/).to_stdout
+    end
+  end
+
+  it 'checks the game after the banner ends, and uploads the next one once listed' do
+    travel_to Time.zone.parse('2026-10-10 12:00 JST')
+    expect { fetcher.run }.to output(/Uploaded/).to_stdout
+
+    travel_to Time.zone.parse('2026-10-12 19:05 JST')
+    requests.clear
     expect { fetcher.run }.to output(/unchanged/).to_stdout
-    forced = described_class.new(env, force: true)
-    allow(forced).to receive(:get) { |uri, **| respond(uri.path) }
-    allow(forced).to receive(:upload).and_return({ 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 })
-    expect { forced.run }.to output(/Uploaded/).to_stdout
+    expect(requests.map(&:first)).to all(satisfy { |url| !url.include?('provision_ratio') })
+
+    payload['banner'].merge!('id' => '211962', 'service_end' => '6:59 p.m., Oct 15, 2026 (JST)')
+    allow(fetcher).to receive(:upload).and_return({ 'game_id' => '211962', 'items' => 9, 'unmatched' => 0 })
+    allow(fetcher).to receive(:rates).and_return(payload['tabs']['1'])
+    expect { fetcher.run }.to output(/Uploaded banner 211962/).to_stdout
+    state = JSON.parse(File.read(File.join(dir, 'cookies-state.json')))
+    expect(state).to eq('game_id' => '211962', 'ends_at' => '2026-10-15T19:00:00+09:00')
+  end
+
+  it 'records the end of a banner it already uploaded, so older state stops checking hourly' do
+    travel_to Time.zone.parse('2026-10-10 12:00 JST')
+    File.write(File.join(dir, 'cookies-state.json'), JSON.generate('game_id' => '211960', 'date' => '2026-10-10'))
+    expect { fetcher.run }.to output(/unchanged/).to_stdout
+    expect(JSON.parse(File.read(File.join(dir, 'cookies-state.json')))['ends_at']).to eq('2026-10-12T19:00:00+09:00')
   end
 
   it 'fails, and alerts, when the account is signed out' do

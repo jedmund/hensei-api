@@ -1,7 +1,8 @@
 namespace :db do
-  desc 'Backup remote PostgreSQL database'
-  task :backup do
-    db_url = ENV.fetch('REMOTE_DB_URL') { raise 'Please set REMOTE_DB_URL' }
+  desc 'Backup remote PostgreSQL database (REMOTE_DB_URL or credentials remote_db.url)'
+  task backup: :environment do
+    db_url = ENV['REMOTE_DB_URL'].presence || Rails.application.credentials.dig(:remote_db, :url)
+    raise 'Please set REMOTE_DB_URL or add remote_db.url to credentials' if db_url.blank?
     uri = URI.parse(db_url)
 
     remote_host = uri.host
