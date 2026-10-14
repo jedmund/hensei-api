@@ -135,6 +135,14 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       expect(body.dig('party', 'solomonis', 'outcome')).to be_nil
     end
 
+    it 'rejects a pledge level out of range' do
+      put "/api/v1/parties/#{party.id}", params: { party: { solomonis: { pledge_level: 3_000_000_000 } } }.to_json,
+                                         headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(party.reload.solomonis_expedition.pledge_level).to eq(0)
+    end
+
     it 'moves the raid and element with the route' do
       create(:grid_weapon, party: party, position: 5)
 
@@ -343,6 +351,17 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
                                     { guide_effect_id: unique.id, inherited: true }] }.to_json,
           headers: headers
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(party.expedition_guide_effects.reload).to be_empty
+    end
+
+    it 'rejects counts and pickup orders out of range' do
+      [{ count: 3_000_000_000 }, { count: 1000 }, { acquired_order: 3_000_000_000 }, { acquired_order: 1000 },
+       { count: { 'a' => 1 } }, { acquired_order: [1] }].each do |fields|
+        put "/api/v1/parties/#{party.id}/guide_effects",
+            params: { guide_effects: [{ guide_effect_id: stackable.id }.merge(fields)] }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity), fields.inspect
+      end
       expect(party.expedition_guide_effects.reload).to be_empty
     end
 

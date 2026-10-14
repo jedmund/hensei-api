@@ -118,9 +118,10 @@ module Api
       # POST /import `kind` values. Without a kind the body is a game deck.
       SOLOMONIS_RUN = 'solomonis_run'
       SOLOMONIS_PARTY = 'solomonis_party'
-      # Cap for Solomonis payloads (a party deck, or a report with up to 300
-      # guidebook entries and an optional party deck).
-      SOLOMONIS_MAX_BODY_BYTES = 1.megabyte
+      # Cap on POST /import bodies, checked before parsing. A game deck is
+      # around 100 KB; a Solomonis report with up to 300 guidebook entries and
+      # an optional party deck stays well under it too.
+      MAX_BODY_BYTES = 1.megabyte
 
       before_action :ensure_editor_role, only: %i[weapons summons characters]
 
@@ -135,6 +136,10 @@ module Api
       # @return [void] Renders JSON response with a party shortcode or an error message.
       def create
         Rails.logger.info '[IMPORT] Checking input...'
+
+        if request.raw_post.bytesize > MAX_BODY_BYTES
+          return render json: { error: 'payload_too_large' }, status: :payload_too_large
+        end
 
         body = parse_request_body
         return unless body
@@ -349,10 +354,6 @@ module Api
       def import_solomonis_run(body)
         return render_unauthorized_response unless current_user
 
-        if request.raw_post.bytesize > SOLOMONIS_MAX_BODY_BYTES
-          return render json: { error: 'payload_too_large' }, status: :payload_too_large
-        end
-
         data = body['solomonis']
         Processors::SolomonisProcessor.validate!(data)
         existing = imported_run(Processors::SolomonisProcessor.report_id(data))
@@ -385,10 +386,6 @@ module Api
       # party each time, like the normal deck import.
       def import_solomonis_party(body)
         return render_unauthorized_response unless current_user
-
-        if request.raw_post.bytesize > SOLOMONIS_MAX_BODY_BYTES
-          return render json: { error: 'payload_too_large' }, status: :payload_too_large
-        end
 
         data = body['solomonis']
         Processors::SolomonisPartyProcessor.validate!(data)
@@ -425,12 +422,20 @@ module Api
       def apply_solomonis_party_options(party, body)
         name = body['name']
         party.name = name.squish.truncate(Solomonis::ReportParser::NAME_MAX_LENGTH, omission: '') if name.is_a?(String) && name.present?
-        party.visibility = body['visibility'].to_i if party.persisted? && [1, 2, 3].include?(body['visibility'].to_i)
+        visibility = requested_visibility(body)
+        party.visibility = visibility if party.persisted? && visibility
       end
 
       def resolve_import_visibility(body)
-        vis = body['visibility'].to_i
-        [1, 2, 3].include?(vis) ? vis : current_user.default_import_visibility
+        requested_visibility(body) || current_user.default_import_visibility
+      end
+
+      # The body's visibility (1, 2 or 3, as a number or digit string), or nil
+      # when it's missing or anything else.
+      def requested_visibility(body)
+        value = body['visibility']
+        value = value.to_i if value.is_a?(String) && value.match?(/\A\d\z/)
+        value if [1, 2, 3].include?(value)
       end
 
       ##

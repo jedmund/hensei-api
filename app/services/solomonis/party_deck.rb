@@ -57,7 +57,9 @@ module Solomonis
     #
     # @return [String, nil] its granblue_id
     def route_evoker_granblue_id
-      id = deck.dig('npc', '1', 'master', 'id')
+      slot = deck['npc']['1']
+      master = slot['master'] if slot.is_a?(Hash)
+      id = master['id'] if master.is_a?(Hash)
       id.to_s.presence if id.is_a?(String) || id.is_a?(Integer)
     end
 
@@ -118,7 +120,9 @@ module Solomonis
         return nil
       end
 
-      level = blessing.levels.find { |l| l.level == entry['level'].to_i }
+      number = entry['level']
+      number = number.to_i if number.is_a?(String) && number.match?(/\A\d{1,3}\z/)
+      level = blessing.levels.find { |l| l.level == number }
       return level if level
 
       @warnings << "#{blessing.name_en || blessing.name_jp} has no level #{entry['level'].to_s.truncate(10)}; skipped"

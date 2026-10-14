@@ -302,6 +302,29 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
+    it 'warns about a current setup with a malformed Evoker slot' do
+      setup = JSON.parse(fixture_dir.join('party-deck.json').read).except('_note')
+      ['x', 3, [1], { 'master' => 'x' }].each do |slot|
+        setup['deck']['npc']['1'] = slot
+        import(body.deep_merge('solomonis' => { 'current_setup' => setup }, 'update_existing' => true))
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body['warnings'])
+          .to eq(["current_setup is another Evoker's party; weapons and summons weren't imported"])
+      end
+    end
+
+    it 'uses the default visibility when visibility is not a number' do
+      import(body.merge('visibility' => { 'a' => 1 }))
+
+      expect(response).to have_http_status(:created)
+      expect(imported_party.visibility).to eq(user.default_import_visibility)
+
+      import(body.merge('visibility' => [3], 'update_existing' => true))
+      expect(response).to have_http_status(:created)
+      expect(imported_party.visibility).to eq(user.default_import_visibility)
+    end
+
     it 'warns about a current setup that is not a party deck' do
       import(body.deep_merge('solomonis' => { 'current_setup' => { 'foo' => 1 } }))
 

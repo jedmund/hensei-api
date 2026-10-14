@@ -15,7 +15,7 @@ module Solomonis
     class TooManyEntries < StandardError; end
 
     MAX_ENTRIES = 300
-    MAX_COUNT = 999
+    MAX_COUNT = ExpeditionGuideEffect::MAX_COUNT
     MAX_ID = (2**31) - 1
     LINE_BREAK = '@@'
     VALUE_PLACEHOLDER = '{value}'

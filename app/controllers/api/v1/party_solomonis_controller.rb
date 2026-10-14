@@ -20,6 +20,7 @@ module Api
       MAX_BLESSINGS = ArcarumBlessing::SLUGS.size
       MAX_GUIDE_EFFECTS = 300
       MAX_UNSEAL_ITEMS = 30
+      GUIDE_EFFECT_FIELDS = %i[guide_effect_id count display_value acquired_order inherited note].freeze
 
       # Model validation errors in the usual keyed format.
       rescue_from ActiveRecord::RecordInvalid do |e|
@@ -54,8 +55,12 @@ module Api
           return render_list_error(:guide_effects, "can hold at most #{MAX_GUIDE_EFFECTS} effects")
         end
 
+        return render_list_error(:guide_effects, 'must be objects') unless entries.all?(ActionController::Parameters)
+        if entries.any? { |entry| GUIDE_EFFECT_FIELDS.any? { |key| nested?(entry[key]) } }
+          return render_list_error(:guide_effects, 'fields must be numbers, text or true/false')
+        end
+
         entries = entries.map { |entry| guide_effect_entry(entry) }
-        return render_list_error(:guide_effects, 'must be objects') if entries.any?(&:nil?)
 
         effects_by_id = SolomonisGuideEffect.where(id: entries.pluck(:guide_effect_id)).index_by(&:id)
         if entries.any? { |entry| effects_by_id[entry[:guide_effect_id]].nil? }
@@ -109,9 +114,11 @@ module Api
         []
       end
 
-      def guide_effect_entry(entry)
-        return nil unless entry.is_a?(ActionController::Parameters)
+      def nested?(value)
+        value.is_a?(Array) || value.is_a?(ActionController::Parameters)
+      end
 
+      def guide_effect_entry(entry)
         boolean = ActiveModel::Type::Boolean.new
         {
           guide_effect_id: entry[:guide_effect_id].to_s,

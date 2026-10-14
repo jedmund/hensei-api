@@ -212,6 +212,35 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
       expect(response.parsed_body['error']).to eq('unknown_route_evoker')
     end
 
+    it 'treats a malformed Evoker slot as an unknown Evoker' do
+      ['x', 3, [1], { 'master' => 'x' }, { 'master' => [1] }].each do |slot|
+        deck['deck']['npc']['1'] = slot
+        import
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.parsed_body['error']).to eq('unknown_route_evoker')
+      end
+    end
+
+    it 'skips a blessing whose level is not a number, with a warning' do
+      deck['deck']['blessing']['3']['level'] = { 'a' => 1 }
+      import
+
+      expect(response).to have_http_status(:created)
+      expect(imported_party.party_blessings.map(&:slug)).to eq(['justice'])
+      expect(response.parsed_body['warnings']).to eq(['Death has no level {"a" => 1}; skipped'])
+    end
+
+    it 'uses the default visibility when visibility is not a number' do
+      user.update!(default_import_visibility: 2)
+      [{ 'a' => 1 }, [3], '3x'].each do |visibility|
+        import(body.merge('visibility' => visibility))
+
+        expect(response).to have_http_status(:created)
+        expect(imported_party.visibility).to eq(2)
+      end
+    end
+
     it 'rejects a body that is not a party deck' do
       import(body.merge('solomonis' => { 'deck' => { 'deck' => { 'pc' => {} } } }))
 
@@ -223,6 +252,12 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
       deck['padding'] = 'x' * 1.megabyte
 
       expect { import }.not_to change(Party, :count)
+      expect(response).to have_http_status(:payload_too_large)
+    end
+
+    it 'checks the size before parsing the body' do
+      post '/api/v1/import', params: 'x' * (1.megabyte + 1), headers: headers
+
       expect(response).to have_http_status(:payload_too_large)
     end
 
