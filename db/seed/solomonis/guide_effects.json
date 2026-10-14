@@ -2095,6 +2095,23 @@
       "effect_tags": []
     },
     {
+      "granblue_id": 119,
+      "rarity": "cursed",
+      "stackable": true,
+      "name_en": "Omen cancel requirements on ruler spaces and boss spaces are increased",
+      "name_jp": "君臨者マス/ボスマスで出現する敵の予兆解除条件が増加",
+      "icon_category": 4,
+      "icon_type": 501,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": []
+    },
+    {
       "granblue_id": 120,
       "rarity": "cursed",
       "stackable": true,
