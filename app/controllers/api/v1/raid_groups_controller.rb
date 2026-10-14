@@ -62,7 +62,8 @@ module Api
 
       def raid_group_params
         params.require(:raid_group).permit(
-          :name_en, :name_jp, :difficulty, :order, :section, :extra, :hl, :guidebooks, :unlimited
+          :name_en, :name_jp, :difficulty, :order, :section, :extra, :hl, :guidebooks, :unlimited,
+          :support_summon
         )
       end
     end

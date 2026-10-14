@@ -4,6 +4,10 @@ class Character < ApplicationRecord
   include PgSearch::Model
 
   has_many :character_series_memberships, dependent: :destroy
+
+  # The Evoking Solomonis zone this Evoker's expeditions run in. Set by data
+  # migration, by granblue_id; a character with a zone is a route-eligible Evoker.
+  belongs_to :solomonis_zone, class_name: 'Raid', optional: true, inverse_of: :solomonis_evokers
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
   has_many :character_skills, -> { order(:position) },
            primary_key: :granblue_id, foreign_key: :character_granblue_id, inverse_of: :character
@@ -72,6 +76,7 @@ class Character < ApplicationRecord
   validate :validate_uncap_capabilities
 
   # Scopes
+  scope :solomonis_route_evokers, -> { where.not(solomonis_zone_id: nil) }
   scope :by_season, ->(season) { where(season: season) }
   # A subquery rather than join + DISTINCT: DISTINCT can't be combined with the
   # pg_search rank ORDER BY, so a text search with a series filter raised.
@@ -81,6 +86,11 @@ class Character < ApplicationRecord
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
   scope :style_swap_variants, -> { where(style_swap: true) }
   scope :base_characters, -> { where(style_swap: false) }
+
+  # An Evoker that can be an Evoking Solomonis party's route Evoker.
+  def solomonis_route_eligible?
+    solomonis_zone_id.present?
+  end
 
   def blueprint
     CharacterBlueprint

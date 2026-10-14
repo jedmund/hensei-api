@@ -3,6 +3,10 @@
 class Raid < ApplicationRecord
   belongs_to :group, class_name: 'RaidGroup', foreign_key: :group_id
 
+  # Route Evokers whose Evoking Solomonis expeditions run in this zone.
+  has_many :solomonis_evokers, class_name: 'Character', foreign_key: :solomonis_zone_id,
+                               inverse_of: :solomonis_zone, dependent: :restrict_with_error
+
   # Validations
   validates :name_en, presence: true
   validates :slug, presence: true, uniqueness: true
@@ -25,6 +29,13 @@ class Raid < ApplicationRecord
   }
   scope :with_guidebooks, -> { joins(:group).where(raid_groups: { guidebooks: true }) }
   scope :ordered, -> { joins(:group).order('raid_groups.order ASC, raids.level DESC') }
+
+  scope :solomonis_zones, -> { joins(:group).where(raid_groups: { content_mode: RaidGroup::SOLOMONIS }) }
+
+  # True for an Evoking Solomonis zone.
+  def solomonis_zone?
+    group&.solomonis? || false
+  end
 
   def effective_extra
     extra.nil? ? group.extra : extra

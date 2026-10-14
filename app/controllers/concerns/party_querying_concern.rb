@@ -11,6 +11,7 @@ module PartyQueryingConcern
       { raid: :group },
       :job,
       :difficulty,
+      :solomonis_expedition,
       { user: { active_crew_membership: :crew } },
       { characters: [:character, :awakening] },
       { weapons: [:weapon, :awakening] },
@@ -23,6 +24,7 @@ module PartyQueryingConcern
     Party.includes(
       { raid: :group },
       :job,
+      :solomonis_expedition,
       { user: { active_crew_membership: :crew } },
       :skill0,
       :skill1,

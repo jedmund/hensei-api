@@ -8,6 +8,7 @@ module Api
       include PartyAuthorizationConcern
       include PartyQueryingConcern
       include SubstituteGridPreloading
+      include PartyFullLoading
 
       # Constants used for filtering validations.
 
@@ -32,6 +33,17 @@ module Api
 
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
+
+      # Fields of `party[solomonis]` a client may write. ended_at, stats and
+      # game_report_id are import-only; ownership comes from the party.
+      SOLOMONIS_PARAMS = %i[route_evoker_id pledge_level outcome].freeze
+
+      # Validation error keys on the party's expedition, as the API contract
+      # names them (`solomonis.<field>`).
+      SOLOMONIS_ERROR_KEYS = {
+        'solomonis_expedition' => 'solomonis.route_evoker_id',
+        'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id'
+      }.freeze
 
       before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
       before_action :set, only: %w[update destroy grid_update]
@@ -61,11 +73,16 @@ module Api
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
           party.extra = raid.group.extra
         end
+        assign_solomonis_params(party)
+        return if performed?
+
         party.last_updated = Time.current
         if party.save
-          render json: PartyBlueprint.render(party, view: :created, root: :party), status: :created
+          render json: PartyBlueprint.render(load_full_party(party.id), view: :created, root: :party,
+                                                                         current_user: current_user),
+                 status: :created
         else
-          render_validation_error_response(party)
+          render_party_errors(party)
         end
       end
 
@@ -109,11 +126,15 @@ module Api
         if party_params && party_params[:raid_id] && (raid = Raid.find_by(id: party_params[:raid_id]))
           @party.extra = raid.group.extra
         end
+        assign_solomonis_params(@party)
+        return if performed?
+
         @party.last_updated = Time.current
         if @party.save
-          render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party)
+          render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party,
+                                                                          current_user: current_user)
         else
-          render_validation_error_response(@party)
+          render_party_errors(@party)
         end
       end
 
@@ -245,7 +266,7 @@ module Api
         new_party.last_updated = Time.current
         new_party._source_party_for_remap = @party
         if new_party.save
-          render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
+          render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party), status: :created
         else
           render_validation_error_response(new_party)
         end
@@ -326,7 +347,7 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           synced: synced
         }, status: :ok
       end
@@ -351,7 +372,7 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full, current_user: current_user)
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full, current_user: current_user)
         }, status: :ok
       end
 
@@ -446,35 +467,6 @@ module Api
         preload_substitute_grids!(@party.characters + @party.weapons + @party.summons) if @party.has_substitutions?
       end
 
-      # Associations the PartyBlueprint :full view touches. Eager-loaded by every
-      # action that serializes a full party (show / update / grid_update) so the
-      # response renders without N+1 queries over the grid items.
-      def full_party_preloads
-        [
-          :user, :job, { raid: :group },
-          { characters: GridCharacter::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
-          { weapons: GridWeapon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
-          { summons: GridSummon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
-          :guidebook1, :guidebook2, :guidebook3,
-          { source_party: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
-          { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
-          :skill0, :skill1, :skill2, :skill3, :accessory,
-          { party_shares: :shareable }
-        ]
-      end
-
-      # Re-fetches a party by id with all blueprint associations (and substitute
-      # collection data) preloaded, for rendering a full-view response without
-      # N+1s. The mutating actions (update, grid_update) hold a non-eager-loaded
-      # @party, so they round-trip through this before serializing.
-      def load_full_party(id)
-        party = Party.includes(full_party_preloads).find_by(id: id)
-        return party unless party&.has_substitutions?
-
-        preload_substitute_grids!(party.characters + party.weapons + party.summons)
-        party
-      end
-
       # Loads the party by its id.
       def set
         @party = Party.where('id = ?', params[:id]).first
@@ -498,6 +490,44 @@ module Api
           summons_attributes: %i[id party_id summon_id position main friend quick_summon uncap_level transcendence_step],
           weapons_attributes: %i[id party_id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength exorcism_level awakening_id awakening_level]
         )
+      end
+
+      def solomonis_params
+        raw = params[:party].is_a?(ActionController::Parameters) ? params[:party][:solomonis] : nil
+        return nil unless raw.is_a?(ActionController::Parameters)
+
+        raw.permit(*SOLOMONIS_PARAMS)
+      end
+
+      # Applies `party[solomonis]` to the party's expedition (building one when
+      # the party has none).
+      def assign_solomonis_params(party)
+        attrs = solomonis_params&.to_h
+        return if attrs.nil?
+
+        party.solomonis_expedition_attributes = attrs
+      end
+
+      # Renders a party's validation errors in the usual format, with the
+      # expedition's keys renamed to the contract's `solomonis.*` names. A
+      # party moved into a Solomonis zone without a route Evoker fails on
+      # `solomonis.route_evoker_id` (D12).
+      def render_party_errors(party)
+        errors = Hash.new { |hash, key| hash[key] = [] }
+        party.errors.each do |error|
+          attribute = error.attribute.to_s
+          if attribute == 'solomonis_expedition'
+            errors['solomonis.route_evoker_id'] << 'is required to enter an Evoking Solomonis zone'
+          else
+            key = SOLOMONIS_ERROR_KEYS[attribute] || attribute.sub(/\Asolomonis_expedition\./, 'solomonis.')
+            errors[key] << error.message
+          end
+        end
+        render_solomonis_errors(errors)
+      end
+
+      def render_solomonis_errors(errors)
+        render json: ErrorBlueprint.render_as_json(nil, errors: errors.to_h), status: :unprocessable_entity
       end
 
       # Permits parameters for grid update operation.

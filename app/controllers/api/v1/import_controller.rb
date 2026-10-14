@@ -115,6 +115,14 @@ module Api
         20 => 'robur'
       }.freeze
 
+      # POST /import `kind` values. Without a kind the body is a game deck.
+      SOLOMONIS_RUN = 'solomonis_run'
+      SOLOMONIS_PARTY = 'solomonis_party'
+      # Cap on POST /import bodies, checked before parsing. A game deck is
+      # around 100 KB; a Solomonis report with up to 300 guidebook entries and
+      # an optional party deck stays well under it too.
+      MAX_BODY_BYTES = 1.megabyte
+
       before_action :ensure_editor_role, only: %i[weapons summons characters]
 
       ##
@@ -129,8 +137,13 @@ module Api
       def create
         Rails.logger.info '[IMPORT] Checking input...'
 
+        if request.raw_post.bytesize > MAX_BODY_BYTES
+          return render json: { error: 'payload_too_large' }, status: :payload_too_large
+        end
+
         body = parse_request_body
         return unless body
+        return import_by_kind(body) if body.is_a?(Hash) && body.key?('kind')
 
         raw_params = body['import']
         unless raw_params.is_a?(Hash)
@@ -322,9 +335,107 @@ module Api
 
       private
 
+      def import_by_kind(body)
+        case body['kind']
+        when SOLOMONIS_RUN
+          import_solomonis_run(body)
+        when SOLOMONIS_PARTY
+          import_solomonis_party(body)
+        else
+          render json: { error: 'unknown_kind', message: 'kind must be solomonis_party, solomonis_run or left out' },
+                 status: :unprocessable_content
+        end
+      end
+
+      ##
+      # Imports an Evoking Solomonis run from the game's expedition report.
+      # A report already imported by this user is a 409 unless update_existing
+      # is true, which updates that run in place.
+      def import_solomonis_run(body)
+        return render_unauthorized_response unless current_user
+
+        data = body['solomonis']
+        Processors::SolomonisProcessor.validate!(data)
+        existing = imported_run(Processors::SolomonisProcessor.report_id(data))
+        return render_duplicate_report(existing) if existing && body['update_existing'] != true
+
+        party = existing || Party.new(user: current_user, visibility: resolve_import_visibility(body))
+        apply_solomonis_party_options(party, body)
+
+        warnings = []
+        ActiveRecord::Base.transaction do
+          processor = Processors::SolomonisProcessor.new(party, data)
+          processor.process
+          warnings = processor.warnings
+          assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
+        end
+
+        render json: { party_id: party.id, shortcode: party.shortcode, warnings: warnings }, status: :created
+      rescue Processors::SolomonisProcessor::ImportError => e
+        render json: { error: e.code, message: e.message }, status: :unprocessable_content
+      rescue ActiveRecord::RecordNotUnique
+        # Another request imported the same report first.
+        existing = imported_run(Processors::SolomonisProcessor.report_id(data))
+        raise unless existing
+
+        render_duplicate_report(existing)
+      end
+
+      ##
+      # Imports an Evoking Solomonis party from the game's party deck. A new
+      # party each time, like the normal deck import.
+      def import_solomonis_party(body)
+        return render_unauthorized_response unless current_user
+
+        data = body['solomonis']
+        Processors::SolomonisPartyProcessor.validate!(data)
+        party = Party.new(user: current_user, visibility: resolve_import_visibility(body))
+        apply_solomonis_party_options(party, body)
+
+        warnings = []
+        ActiveRecord::Base.transaction do
+          processor = Processors::SolomonisPartyProcessor.new(party, data)
+          processor.process
+          warnings = processor.warnings
+          assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
+        end
+
+        render json: { party_id: party.id, shortcode: party.shortcode, warnings: warnings }, status: :created
+      rescue Processors::SolomonisProcessor::ImportError => e
+        render json: { error: e.code, message: e.message }, status: :unprocessable_content
+      end
+
+      # The current user's run imported from this report, if any. The
+      # expedition's user is always the party's owner; checked again anyway.
+      def imported_run(report_id)
+        party = SolomonisExpedition.find_by(user_id: current_user.id, game_report_id: report_id)&.party
+        party if party&.user_id == current_user.id
+      end
+
+      def render_duplicate_report(party)
+        render json: { error: 'duplicate_report', party_id: party.id, shortcode: party.shortcode },
+               status: :conflict
+      end
+
+      # Name and visibility only change when sent, so a re-import keeps the
+      # user's edits.
+      def apply_solomonis_party_options(party, body)
+        name = body['name']
+        party.name = name.squish.truncate(Solomonis::ReportParser::NAME_MAX_LENGTH, omission: '') if name.is_a?(String) && name.present?
+        visibility = requested_visibility(body)
+        party.visibility = visibility if party.persisted? && visibility
+      end
+
       def resolve_import_visibility(body)
-        vis = body['visibility'].to_i
-        [1, 2, 3].include?(vis) ? vis : current_user.default_import_visibility
+        requested_visibility(body) || current_user.default_import_visibility
+      end
+
+      # The body's visibility (1, 2 or 3, as a number or digit string), or nil
+      # when it's missing or anything else.
+      def requested_visibility(body)
+        value = body['visibility']
+        value = value.to_i if value.is_a?(String) && value.match?(/\A\d\z/)
+        value if [1, 2, 3].include?(value)
       end
 
       ##
@@ -394,7 +505,7 @@ module Api
           playlist = current_user.playlists.find_by(id: playlist_id)
           next unless playlist
 
-          PlaylistParty.create!(playlist: playlist, party: party)
+          PlaylistParty.find_or_create_by!(playlist: playlist, party: party)
         end
       end
 

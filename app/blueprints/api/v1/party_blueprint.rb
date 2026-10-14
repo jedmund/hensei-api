@@ -81,6 +81,14 @@ module Api
         association :characters, blueprint: GridCharacterBlueprint, view: :list
         association :weapons, blueprint: GridWeaponBlueprint, view: :list
         association :summons, blueprint: GridSummonBlueprint, view: :list
+
+        # Evoking Solomonis card/filter summary, or null. Callers preload
+        # :solomonis_expedition.
+        field :solomonis do |party|
+          next nil unless party.solomonis?
+
+          SolomonisExpeditionBlueprint.render_as_hash(party.solomonis_expedition, view: :summary)
+        end
       end
 
       # Summary view for embedding in remix/source lists — minimal party metadata
@@ -113,6 +121,14 @@ module Api
         include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
         include_view :party_metadata # favorited, has_orphaned_items
+
+        # Evoking Solomonis expedition, blessings and guidebook, or null.
+        field :solomonis do |party, options|
+          next nil unless party.solomonis?
+
+          SolomonisExpeditionBlueprint.render_as_hash(party.solomonis_expedition,
+                                                      view: :full, current_user: options[:current_user])
+        end
 
         # Shares (only visible to owner)
         field :shares, if: ->(_field_name, party, options) {

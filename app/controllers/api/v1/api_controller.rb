@@ -226,6 +226,15 @@ module Api
         permitted
       end
 
+      # Evoking Solomonis seal state on a grid weapon/summon update, when sent.
+      # The model decides what's allowed (runs only, never on a starting slot).
+      def seal_state_params(key)
+        raw = params[key]
+        return {} unless raw.is_a?(ActionController::Parameters) && raw.key?(:seal_state)
+
+        raw.permit(:seal_state)
+      end
+
       # Returns the requested page size within valid bounds
       # Falls back to default if not specified or invalid
       # Reads from X-Per-Page header

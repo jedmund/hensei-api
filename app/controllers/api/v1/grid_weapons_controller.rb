@@ -14,6 +14,7 @@ module Api
       include CollectionSourceConcern
       include PartyAuthorizationConcern
       include SubstituteGridPreloading
+      include PartyFullLoading
 
       before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync sync_to_collection duplicate]
       before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
@@ -81,7 +82,7 @@ module Api
         description_in_payload = weapon_params.key?(:description)
 
         ActiveRecord::Base.transaction do
-          unless @grid_weapon.update(weapon_params.except(:bullets))
+          unless @grid_weapon.update(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
             raise ActiveRecord::Rollback
           end
 
@@ -168,7 +169,7 @@ module Api
         if @grid_weapon.save
           @party.mark_updated!
           render json: {
-            party: PartyBlueprint.render_as_hash(@party, view: :full),
+            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
             grid_weapon: GridWeaponBlueprint.render_as_hash(@grid_weapon, view: :full)
           }, status: :ok
         else
@@ -208,7 +209,7 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           swapped: {
             source: GridWeaponBlueprint.render_as_hash(source.reload, view: :full),
             target: GridWeaponBlueprint.render_as_hash(target.reload, view: :full)

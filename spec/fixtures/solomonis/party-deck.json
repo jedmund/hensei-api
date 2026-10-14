@@ -1,0 +1,202 @@
+{
+  "_note": "GET /rest/arcarum3/party/deck/<combination_group_id><deck number> (here 31001 = Fraux deck 1; the group is the Evoker's game character ID, 3100), captured 2026-10-13. The query string carries uid; never store it. Normal deck shape plus Solomonis fields (combination_group_id, blessing, blessing_cost_info, dungeon_name, npc 1 is_fix_evoker_npc). Scrubbed: pc.param.id (the player's uid) set to 0. Trimmed: skill descriptions, job bonuses, damage_info effect list, npc skill list, non-awakened weapons' empty arousal blocks; every field the importers read is kept.",
+  "is_equipment_shield": false,
+  "is_equipment_familiar": false,
+  "bullet_info": [],
+  "deck": {
+    "group_name": "Fraux Party ",
+    "is_used": false,
+    "name": "Fraux Party 1",
+    "order_no": 1,
+    "priority": 31001,
+    "combination_id": 1,
+    "combination_group_id": 3100,
+    "npc": {
+      "1": {
+        "master": { "id": "3040161000", "character_id": "3100", "name": "Fraux", "short_name": "Fraux", "attribute": 1, "rarity": "4", "weapon": "7", "type": "2", "da_odds": "10", "ta_odds": "5", "image_id": null, "tribe": "2", "tribe_2": "" },
+        "param": { "attack": 36462, "hp": 13430, "level": "100", "total": "23023", "quality": "300", "evolution": "5", "phase": "0", "style": "1", "rarity": "4", "id": 136112235, "image_id_3": "skin/3040600000_02_s1", "has_npcaugment_constant": true, "cjs_name": "npc_3040600000_02", "image_id_3_tower": "skin/3040600000_02_s1", "npc_arousal_form": 3 },
+        "is_position_locked": false,
+        "is_doll": false,
+        "is_fix_evoker_npc": true,
+        "is_invalid_npc": false
+      },
+      "2": { "master": null, "param": null, "skill": null, "is_position_locked": true },
+      "3": { "master": null, "param": null, "skill": null, "is_position_locked": true },
+      "4": { "master": null, "param": null, "skill": null, "is_position_locked": true },
+      "5": { "master": null, "param": null, "skill": null, "is_position_locked": true }
+    },
+    "pc": {
+      "weapons": {
+        "1": {
+          "param": { "id": 4254797748, "image_id": "1040913400", "level": "250", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "25" },
+          "master": { "id": "1040913400", "name": "Higurashi", "attribute": "1", "kind": "10", "rarity": "4", "is_group": "26", "series_id": "35" },
+          "skill1": { "id": "2972", "name": "Transience of Life II" },
+          "skill2": { "id": "2974", "name": "Blazing Chain III" },
+          "skill3": { "id": "1171", "name": "Inferno's Glory" },
+          "skill4": { "id": "2976", "name": "Summer's Final Twilight II" },
+          "is_position_locked": false
+        },
+        "2": {
+          "param": { "id": 4787852344, "image_id": "1040917100", "level": "150", "quality": "99", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15" },
+          "master": { "id": "1040917100", "name": "Sennen Goji", "attribute": "1", "kind": "10", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "1742", "name": "Blaze's Spectacle" },
+          "skill2": { "id": "2538", "name": "Inferno's Impalement" },
+          "skill3": { "id": "2544", "name": "Scarlet Aramis" },
+          "skill4": null,
+          "is_position_locked": false
+        },
+        "3": {
+          "param": { "id": 4978560802, "image_id": "1040621800", "level": "150", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15" },
+          "master": { "id": "1040621800", "name": "Nebula Gauntlets", "attribute": "1", "kind": "7", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "2557", "name": "Blaze's Maneuver" },
+          "skill2": { "id": "764", "name": "Hellfire's Majesty" },
+          "skill3": { "id": "2563", "name": "Scarlet Athos" },
+          "skill4": null,
+          "is_position_locked": false
+        },
+        "4": {
+          "param": { "id": 4978560831, "image_id": "1040621800", "level": "150", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15" },
+          "master": { "id": "1040621800", "name": "Nebula Gauntlets", "attribute": "1", "kind": "7", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "2557", "name": "Blaze's Maneuver" },
+          "skill2": { "id": "764", "name": "Hellfire's Majesty" },
+          "skill3": { "id": "2563", "name": "Scarlet Athos" },
+          "skill4": null,
+          "is_position_locked": false
+        },
+        "5": {
+          "param": { "id": 4809631010, "image_id": "1040917100", "level": "150", "quality": "99", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15" },
+          "master": { "id": "1040917100", "name": "Sennen Goji", "attribute": "1", "kind": "10", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "1742", "name": "Blaze's Spectacle" },
+          "skill2": { "id": "2538", "name": "Inferno's Impalement" },
+          "skill3": { "id": "2544", "name": "Scarlet Aramis" },
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "6": {
+          "param": { "id": 4520829475, "image_id": "1040218900", "level": "150", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15" },
+          "master": { "id": "1040218900", "name": "Overrider", "attribute": "1", "kind": "3", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "2025", "name": "Optimus Exalto Ardendi" },
+          "skill2": { "id": "845", "name": "Fire's Celere" },
+          "skill3": { "id": "2174", "name": "Inferno's Deathstrike" },
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "7": {
+          "param": { "id": 4520829482, "image_id": "1040218900", "level": "150", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15" },
+          "master": { "id": "1040218900", "name": "Overrider", "attribute": "1", "kind": "3", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "2025", "name": "Optimus Exalto Ardendi" },
+          "skill2": { "id": "845", "name": "Fire's Celere" },
+          "skill3": { "id": "2174", "name": "Inferno's Deathstrike" },
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "8": {
+          "param": {
+            "id": 2923208732, "image_id": "1040502500", "level": "150", "quality": "0", "arousal_level": "4", "arousal_form": "1", "augment_skill_info": [],
+            "arousal": { "is_arousal_weapon": true, "level": 4, "form": 1, "form_name": "Attack", "max_level": 4 },
+            "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15"
+          },
+          "master": { "id": "1040502500", "name": "Benedia", "attribute": "1", "kind": "6", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "626", "name": "Inferno's Might III" },
+          "skill2": { "id": "369", "name": "Hellfire's Restraint" },
+          "skill3": null,
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "9": {
+          "param": {
+            "id": 3635127572, "image_id": "1040612700", "level": "150", "quality": "0", "arousal_level": "4", "arousal_form": "1", "augment_skill_info": [],
+            "arousal": { "is_arousal_weapon": true, "level": 4, "form": 1, "form_name": "Attack", "max_level": 4 },
+            "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "15"
+          },
+          "master": { "id": "1040612700", "name": "Fist of Destruction", "attribute": "1", "kind": "7", "rarity": "4", "is_group": "6", "series_id": "2" },
+          "skill1": { "id": "1422", "name": "Inferno's Celere II" },
+          "skill2": { "id": "632", "name": "Fire's Trium" },
+          "skill3": null,
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "10": {
+          "param": { "id": 2679385223, "image_id": "1040310600_03", "level": "250", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "25" },
+          "master": { "id": "1040310600", "name": "Scythe of Repudiation", "attribute": "1", "kind": "4", "rarity": "4", "is_group": "17", "series_id": "3" },
+          "skill1": { "id": "2192", "name": "Inferno's Apotheosis" },
+          "skill2": { "id": "2210", "name": "γ Revelation Ater II" },
+          "skill3": { "id": "2236", "name": "Divine Fire's Fathoms" },
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "11": {
+          "param": { "id": 4527390359, "image_id": "1040815900", "level": "200", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "20" },
+          "master": { "id": "1040815900", "name": "Refrain of Blazing Vigor", "attribute": "1", "kind": "9", "rarity": "4", "is_group": "27", "series_id": "40" },
+          "skill1": { "id": "1453", "name": "Wilnas's Firestorm" },
+          "skill2": { "id": "2049", "name": "Vermillion Magnitude" },
+          "skill3": { "id": "1228", "name": "Inferno's Majesty" },
+          "skill4": null,
+          "is_position_locked": true
+        },
+        "12": {
+          "param": {
+            "id": 4729242064, "image_id": "1040916900", "level": "200", "quality": "0", "arousal_level": "5", "arousal_form": "4", "augment_skill_info": [],
+            "arousal": { "is_arousal_weapon": true, "level": 5, "form": 4, "form_name": "C.A.", "max_level": 5 },
+            "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "1"
+          },
+          "master": { "id": "1040916900", "name": "Oration-Life Katana", "attribute": "3", "kind": "10", "rarity": "4", "is_group": "", "series_id": "41" },
+          "skill1": { "id": "1849", "name": "Blade Voltage II" },
+          "skill2": { "id": "2790", "name": "Cyclic Rebirth's Reverie II" },
+          "skill3": { "id": "2280", "name": "Guiding Star's Splendor" },
+          "skill4": null,
+          "hidden_skill1": { "id": "2800", "name": "Cyclic Rebirth's Reverie II" },
+          "is_position_locked": true
+        },
+        "13": {
+          "param": { "id": 4908819053, "image_id": "1040028900", "level": "200", "quality": "0", "arousal_level": "1", "arousal_form": "1", "augment_skill_info": [], "arousal": { "is_arousal_weapon": false }, "odiant": { "is_odiant_weapon": false, "exorcision_level": 0 }, "skill_level": "1" },
+          "master": { "id": "1040028900", "name": "Doombringer Sword", "attribute": "1", "kind": "1", "rarity": "4", "is_group": "30", "series_id": "44" },
+          "skill1": { "id": "2620", "name": "Destruction's Godblade III" },
+          "skill2": { "id": "2638", "name": "Rebirth's Godshield III" },
+          "skill3": { "id": "2668", "name": "Strife's Godflair II" },
+          "skill4": null,
+          "is_position_locked": true
+        }
+      },
+      "weapon_kind_replace": { "weapon": 10, "weapon2": 10 },
+      "weapon_replace": { "weapon": "1040913400", "weapon2": "1040917100" },
+      "is_open_additional_weapon": true,
+      "is_use_additional_weapon": true,
+      "summons": {
+        "1": { "param": { "id": "591430969", "image_id": "2040094000_04", "level": "250", "quality": "99", "evolution_flag": "0", "evolution": "6", "is_mypage": true }, "master": { "id": "2040094000", "name": "Agni", "attribute": "1", "rarity": "4" }, "is_position_locked": false },
+        "2": { "param": { "id": "1456206836", "image_id": "2040433000", "level": "150", "quality": "99", "evolution_flag": "0", "evolution": "4", "is_mypage": true }, "master": { "id": "2040433000", "name": "Orologia", "attribute": "6", "rarity": "4" }, "is_position_locked": true },
+        "3": { "param": { "id": "1218461502", "image_id": "2040408000", "level": "150", "quality": "99", "evolution_flag": "0", "evolution": "4", "is_mypage": true }, "master": { "id": "2040408000", "name": "Beelzebub", "attribute": "6", "rarity": "4" }, "is_position_locked": true },
+        "4": { "param": { "id": "1160191630", "image_id": "2040398000", "level": "150", "quality": "99", "evolution_flag": "0", "evolution": "4", "is_mypage": false }, "master": { "id": "2040398000", "name": "Wilnas", "attribute": "1", "rarity": "4" }, "is_position_locked": true },
+        "5": { "param": { "id": "837027170", "image_id": "2040321000", "level": "200", "quality": "99", "evolution_flag": "0", "evolution": "5", "is_mypage": false }, "master": { "id": "2040321000", "name": "The Sun", "attribute": "1", "rarity": "4" }, "is_position_locked": true }
+      },
+      "sub_summons": {
+        "1": { "param": { "id": "939541318", "image_id": "2040347000", "level": "150", "quality": "99", "evolution_flag": "0", "evolution": "4", "is_mypage": true }, "master": { "id": "2040347000", "name": "Belial", "attribute": "6", "rarity": "4" }, "is_position_locked": true },
+        "2": { "param": { "id": "827452109", "image_id": "2040306000", "level": "150", "quality": "99", "evolution_flag": "0", "evolution": "4", "is_mypage": false }, "master": { "id": "2040306000", "name": "Michael", "attribute": "1", "rarity": "4" }, "is_position_locked": true }
+      },
+      "quick_user_summon_id": 591430969,
+      "param": { "id": 0, "attack": 51454, "hp": 14416, "attribute": 1, "kind": 10, "image": "310901_sw_0_01" },
+      "job": {
+        "master": { "id": "300301", "name": "Chrysaor", "class": "4", "ex_class": false, "type": "2", "weapon1": "1", "weapon2": "10", "is_super_job_class": false, "super_job_class_id": null },
+        "param": { "id": 17495683, "is_master": true, "level": 20, "master_level": 30, "perfection_proof_level": 6 }
+      },
+      "set_action": [
+        { "character_id": null, "action_set_pos": "0", "set_action_id": "1600", "name": "Miserable Mist" },
+        { "character_id": null, "action_set_pos": "1", "set_action_id": "202961", "name": "Astrapste" },
+        { "character_id": null, "action_set_pos": "2", "set_action_id": "200541", "name": "Dual Arts" }
+      ],
+      "damage_info": { "summon_name": "" },
+      "is_open_sub_summon": true
+    },
+    "blessing": {
+      "1": { "blessing_id": "1", "name": "Justice", "cost": 60, "level": 2, "max_level": 3, "skill_info": { "text": "Unseal 1 weapon", "effect_value": "" }, "is_used": true },
+      "2": { "blessing_id": "2", "name": "The Hanged Man", "cost": 90, "level": 2, "max_level": 5, "skill_info": { "text": "Bring 1 character of your choice", "effect_value": "" }, "is_used": false },
+      "3": { "blessing_id": "3", "name": "Death", "cost": 25, "level": 8, "max_level": 9, "skill_info": { "text": "Set foes' HP to 1 when entering a battle space %s", "effect_value": "(3 times)" }, "is_used": true },
+      "4": { "blessing_id": "4", "name": "Temperance", "cost": 35, "level": 5, "max_level": 9, "skill_info": { "text": "Healing spaces cut all allies' skill and summon cooldowns by %s", "effect_value": "3 turns" }, "is_used": false },
+      "5": { "blessing_id": "5", "name": "The Devil", "cost": 70, "level": 0, "max_level": 7, "skill_info": { "text": "Start with %s Sephira coins", "effect_value": "100" }, "is_used": false }
+    },
+    "blessing_cost_info": { "total_cost": 85, "max_cost": 100 },
+    "dungeon_name": "Allotropic Microcosm"
+  },
+  "is_main_weapon_fixed": false,
+  "fix_evoker_attribute": 1
+}

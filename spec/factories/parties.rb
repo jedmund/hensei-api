@@ -18,5 +18,19 @@ FactoryBot.define do
     turn_count { 0 }
     visibility { 1 }
     # Note: Shortcode and edit_key will be auto-generated via before_create callbacks.
+
+    # Evoking Solomonis parties. The route Evoker sets the raid (zone) and element.
+    #   create(:party, :solomonis)
+    #   create(:party, :solomonis, route_evoker: nier)
+    transient do
+      route_evoker { nil }
+    end
+
+    trait :solomonis do
+      after(:build) do |party, ctx|
+        evoker = ctx.route_evoker || FactoryBot.create(:character, :solomonis_evoker)
+        party.assign_solomonis_route(evoker)
+      end
+    end
   end
 end

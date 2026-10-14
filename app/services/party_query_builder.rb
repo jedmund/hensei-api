@@ -55,8 +55,43 @@ class PartyQueryBuilder
     query = apply_has_video_filter(query)
     query = apply_boost_mod_filter(query)
     query = apply_difficulty_filter(query)
+    query = apply_solomonis_filters(query)
 
     query
+  end
+
+  # Evoking Solomonis filters, applied only when the raid filter is a
+  # Solomonis zone: `route_evoker` (character UUID or granblue_id) and
+  # `pledge_level` (one level or a comma-separated list).
+  def apply_solomonis_filters(query)
+    return query unless solomonis_filter_requested? && solomonis_zone_requested?
+
+    conditions = {}
+    if @params[:route_evoker].present?
+      value = @params[:route_evoker].to_s
+      conditions[:route_evoker_id] =
+        value.match?(UUID_REGEX) ? value : Character.where(granblue_id: value).select(:id)
+    end
+    if @params[:pledge_level].present?
+      levels = @params[:pledge_level].to_s.split(',').filter_map { |v| Integer(v.strip, exception: false) }
+      return query.none if levels.empty?
+
+      conditions[:pledge_level] = levels
+    end
+
+    query.where(id: SolomonisExpedition.where(conditions).select(:party_id))
+  end
+
+  # Whether the raid filter is a Solomonis zone (looked up once per query).
+  def solomonis_zone_requested?
+    return @solomonis_zone_requested if defined?(@solomonis_zone_requested)
+
+    @solomonis_zone_requested = @params[:raid].present? && !!Raid.find_by(id: resolve_raid_id)&.solomonis_zone?
+  end
+
+  def solomonis_filter_requested?
+    @params[:raid].present? &&
+      (@params[:route_evoker].present? || @params[:pledge_level].present?)
   end
 
   # Filters by one or more difficulty tiers. Accepts a comma-separated list of
@@ -258,7 +293,12 @@ class PartyQueryBuilder
   # @param query [ | ActiveRecord::QueryMethods::WhereChain] The current query.
   # @return [ActiveRecord::Relation] The query with count filters applied.
   def apply_count_filters(query)
-    if @options[:apply_defaults]
+    # Solomonis parties start with three weapons and one summon and unlock
+    # more during a run, so the usual minimums would hide most of them.
+    if @options[:apply_defaults] && solomonis_zone_requested?
+      query.where(weapons_count: 0..max_weapons, characters_count: 0..max_characters,
+                  summons_count: 0..max_summons)
+    elsif @options[:apply_defaults]
       query.where(
         weapons_count: default_weapons_count..max_weapons,
         characters_count: default_characters_count..max_characters,

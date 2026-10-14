@@ -118,6 +118,7 @@ module Api
           base_query = Party.includes(
             { raid: :group },
             :job,
+            :solomonis_expedition,
             :user,
             :skill0,
             :skill1,
@@ -230,6 +231,7 @@ module Api
         query = Party.includes(
           { raid: :group },
           :job,
+          :solomonis_expedition,
           :user,
           :skill0,
           :skill1,

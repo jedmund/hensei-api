@@ -69,6 +69,7 @@
 #   @return [Array<Favorite>] the favorites that include this party.
 class Party < ApplicationRecord
   include GranblueEnums
+  include SolomonisParty
 
   alias_attribute :ultimate_mastery, :ultimate_mastery_level
 
@@ -224,6 +225,12 @@ class Party < ApplicationRecord
     include_association :all_characters
     include_association :all_weapons
     include_association :all_summons
+    # Remixes keep the Evoking Solomonis setup (route, pledge, blessings, seal
+    # state and unseal priority on the grids) but never the guidebook;
+    # SolomonisExpedition's own amoeba config clears the fields that describe
+    # the original expedition.
+    include_association :solomonis_expedition
+    include_association :party_blessings
   end
 
   after_create :create_remapped_substitutions
@@ -594,6 +601,9 @@ class Party < ApplicationRecord
   #
   # @return [void]
   def update_element!
+    # Evoking Solomonis parties take their element from the route Evoker.
+    return if solomonis?
+
     main_weapon = weapons.detect { |gw| gw.position.to_i == -1 }
     new_element = main_weapon&.weapon&.element
     update_column(:element, new_element) if new_element.present? && element != new_element
