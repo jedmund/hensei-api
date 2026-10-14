@@ -2198,6 +2198,23 @@
       "effect_tags": [
         "map"
       ]
+    },
+    {
+      "granblue_id": 129,
+      "rarity": "cursed",
+      "stackable": true,
+      "name_en": "20% hit to max HP",
+      "name_jp": "最大HPDOWN(20%)",
+      "icon_category": 4,
+      "icon_type": 503,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "global",
+      "type_tags": [
+        "def"
+      ],
+      "effect_tags": []
     }
   ]
 }
