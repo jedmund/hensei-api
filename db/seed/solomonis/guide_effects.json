@@ -2281,7 +2281,7 @@
       "rarity": "rare",
       "stackable": false,
       "name_en": "2-turn increase to skill cooldowns (Changes to 2-turn reduction to skill cooldowns upon clearing 3 battles) ({value}/ 3 times) (Can't be stacked)",
-      "name_jp": null,
+      "name_jp": "味方全体のアビリティ再使用間隔が2ターン延長◆3回バトルに勝利後、味方全体のアビリティ再使用間隔を2ターン短縮に変化({value}/3回)(重複不可)",
       "icon_category": 4,
       "icon_type": 501,
       "target_type": null,
