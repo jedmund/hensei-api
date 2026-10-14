@@ -2168,7 +2168,7 @@
       "rarity": "cursed",
       "stackable": true,
       "name_en": "At battle start: Confuse effect to a random ally",
-      "name_jp": null,
+      "name_jp": "バトル開始時、ランダムな味方1人に混乱効果",
       "icon_category": 4,
       "icon_type": 501,
       "target_type": null,
