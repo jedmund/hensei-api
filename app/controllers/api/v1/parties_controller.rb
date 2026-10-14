@@ -266,7 +266,7 @@ module Api
         new_party.last_updated = Time.current
         new_party._source_party_for_remap = @party
         if new_party.save
-          render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
+          render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party), status: :created
         else
           render_validation_error_response(new_party)
         end
@@ -347,7 +347,7 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           synced: synced
         }, status: :ok
       end
@@ -372,7 +372,7 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full, current_user: current_user)
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full, current_user: current_user)
         }, status: :ok
       end
 

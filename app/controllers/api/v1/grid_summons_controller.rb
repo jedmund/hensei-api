@@ -14,6 +14,7 @@ module Api
       include CollectionSourceConcern
       include PartyAuthorizationConcern
       include SubstituteGridPreloading
+      include PartyFullLoading
 
       attr_reader :party, :incoming_summon
 
@@ -198,7 +199,7 @@ module Api
         if @grid_summon.save
           @party.mark_updated!
           render json: {
-            party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
             grid_summon: GridSummonBlueprint.render_as_hash(@grid_summon.reload, view: :nested)
           }, status: :ok
         else
@@ -245,7 +246,7 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           swapped: {
             source: GridSummonBlueprint.render_as_hash(source.reload, view: :nested),
             target: GridSummonBlueprint.render_as_hash(target.reload, view: :nested)

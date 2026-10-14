@@ -17,6 +17,7 @@ module Api
       include CollectionSourceConcern
       include PartyAuthorizationConcern
       include SubstituteGridPreloading
+      include PartyFullLoading
 
       before_action :find_grid_character,
                     only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
@@ -150,7 +151,7 @@ module Api
           reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
 
           render json: {
-            party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
             grid_character: GridCharacterBlueprint.render_as_hash(@grid_character.reload, view: :nested),
             reordered: reordered || false
           }, status: :ok
@@ -191,7 +192,7 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           swapped: {
             source: GridCharacterBlueprint.render_as_hash(source.reload, view: :nested),
             target: GridCharacterBlueprint.render_as_hash(target.reload, view: :nested)
