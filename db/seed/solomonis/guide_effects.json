@@ -2137,7 +2137,7 @@
       "rarity": "cursed",
       "stackable": false,
       "name_en": "At battle start: DMG immunity to foe (30 hits) (Can't be stacked)",
-      "name_jp": null,
+      "name_jp": "バトル開始時、敵に被ダメージ無効(30回)(重複不可)",
       "icon_category": 4,
       "icon_type": 501,
       "target_type": null,
