@@ -1,5 +1,5 @@
 {
-  "_source": "gbf.wiki \"Evoking Solomonis\" (Arcarum Blessings); name_jp from the matching Arcarum summon",
+  "_source": "gbf.wiki \"Evoking Solomonis\" (Arcarum Blessings); name_jp from the matching Arcarum summon; description_jp from in-game screenshots",
   "blessings": [
     {
       "slug": "justice",
@@ -41,35 +41,35 @@
         {
           "level": 1,
           "description_en": "Bring 1 character of your choice",
-          "description_jp": null,
+          "description_jp": "任意のキャラを1人編成可能にする",
           "cost": 100,
           "scintillas": 9000
         },
         {
           "level": 2,
           "description_en": "Bring 1 character of your choice",
-          "description_jp": null,
+          "description_jp": "任意のキャラを1人編成可能にする",
           "cost": 90,
           "scintillas": 23000
         },
         {
           "level": 3,
           "description_en": "Bring 1 character of your choice",
-          "description_jp": null,
+          "description_jp": "任意のキャラを1人編成可能にする",
           "cost": 80,
           "scintillas": 44000
         },
         {
           "level": 4,
           "description_en": "Bring 1 character of your choice",
-          "description_jp": null,
+          "description_jp": "任意のキャラを1人編成可能にする",
           "cost": 70,
           "scintillas": 65000
         },
         {
           "level": 5,
           "description_en": "Bring 1 character of your choice",
-          "description_jp": null,
+          "description_jp": "任意のキャラを1人編成可能にする",
           "cost": 60,
           "scintillas": 86000
         }
@@ -85,63 +85,63 @@
         {
           "level": 1,
           "description_en": "Set foes' HP to 1 when entering a battle space: (1 time)",
-          "description_jp": null,
+          "description_jp": "1回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 50,
           "scintillas": 1000
         },
         {
           "level": 2,
           "description_en": "Set foes' HP to 1 when entering a battle space: (1 time)",
-          "description_jp": null,
+          "description_jp": "1回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 45,
           "scintillas": 2500
         },
         {
           "level": 3,
           "description_en": "Set foes' HP to 1 when entering a battle space: (1 time)",
-          "description_jp": null,
+          "description_jp": "1回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 40,
           "scintillas": 4000
         },
         {
           "level": 4,
           "description_en": "Set foes' HP to 1 when entering a battle space: (2 times)",
-          "description_jp": null,
+          "description_jp": "2回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 40,
           "scintillas": 10000
         },
         {
           "level": 5,
           "description_en": "Set foes' HP to 1 when entering a battle space: (2 times)",
-          "description_jp": null,
+          "description_jp": "2回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 35,
           "scintillas": 16000
         },
         {
           "level": 6,
           "description_en": "Set foes' HP to 1 when entering a battle space: (2 times)",
-          "description_jp": null,
+          "description_jp": "2回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 30,
           "scintillas": 22000
         },
         {
           "level": 7,
           "description_en": "Set foes' HP to 1 when entering a battle space: (3 times)",
-          "description_jp": null,
+          "description_jp": "3回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 30,
           "scintillas": 36000
         },
         {
           "level": 8,
           "description_en": "Set foes' HP to 1 when entering a battle space: (3 times)",
-          "description_jp": null,
+          "description_jp": "3回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 25,
           "scintillas": 50000
         },
         {
           "level": 9,
           "description_en": "Set foes' HP to 1 when entering a battle space: (3 times)",
-          "description_jp": null,
+          "description_jp": "3回まで戦闘マスに出現する敵のHPが1になる",
           "cost": 20,
           "scintillas": 64000
         }
@@ -157,63 +157,63 @@
         {
           "level": 1,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 2 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を2ターン短縮",
           "cost": 50,
           "scintillas": 1000
         },
         {
           "level": 2,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 2 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を2ターン短縮",
           "cost": 45,
           "scintillas": 2500
         },
         {
           "level": 3,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 2 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を2ターン短縮",
           "cost": 40,
           "scintillas": 4000
         },
         {
           "level": 4,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 3 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を3ターン短縮",
           "cost": 40,
           "scintillas": 10000
         },
         {
           "level": 5,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 3 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を3ターン短縮",
           "cost": 35,
           "scintillas": 16000
         },
         {
           "level": 6,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 3 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を3ターン短縮",
           "cost": 30,
           "scintillas": 22000
         },
         {
           "level": 7,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 4 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を4ターン短縮",
           "cost": 30,
           "scintillas": 36000
         },
         {
           "level": 8,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 4 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を4ターン短縮",
           "cost": 25,
           "scintillas": 50000
         },
         {
           "level": 9,
           "description_en": "Healing spaces cut all allies' skill and summon cooldowns by 4 turns",
-          "description_jp": null,
+          "description_jp": "回復マスで味方全体のアビリティと召喚石の再使用間隔を4ターン短縮",
           "cost": 20,
           "scintillas": 64000
         }
@@ -229,49 +229,49 @@
         {
           "level": 1,
           "description_en": "Start with 100 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを100獲得する",
           "cost": 70,
           "scintillas": 1500
         },
         {
           "level": 2,
           "description_en": "Start with 100 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを100獲得する",
           "cost": 65,
           "scintillas": 4000
         },
         {
           "level": 3,
           "description_en": "Start with 100 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを100獲得する",
           "cost": 60,
           "scintillas": 10000
         },
         {
           "level": 4,
           "description_en": "Start with 150 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを150獲得する",
           "cost": 60,
           "scintillas": 24000
         },
         {
           "level": 5,
           "description_en": "Start with 150 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを150獲得する",
           "cost": 55,
           "scintillas": 38000
         },
         {
           "level": 6,
           "description_en": "Start with 150 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを150獲得する",
           "cost": 50,
           "scintillas": 59000
         },
         {
           "level": 7,
           "description_en": "Start with 200 Sephira coins",
-          "description_jp": null,
+          "description_jp": "セフィラコインを200獲得する",
           "cost": 50,
           "scintillas": 97000
         }

@@ -18,7 +18,7 @@ RSpec.describe 'Evoking Solomonis data migrations' do
       2.times { quietly(described_class.new) }
 
       group = RaidGroup.find_by!(content_mode: 'solomonis')
-      expect(group).to have_attributes(name_en: 'Evoking Solomonis', name_jp: 'Evoking Solomonis', section: 3,
+      expect(group).to have_attributes(name_en: 'Evoking Solomonis', name_jp: 'ソロモナスの賢者', section: 3,
                                        extra: true)
       expect(group.raids.pluck(:slug)).to contain_exactly('allotropic-microcosm', 'paracyclic-microcosm')
       expect(Raid.find_by!(slug: 'allotropic-microcosm'))

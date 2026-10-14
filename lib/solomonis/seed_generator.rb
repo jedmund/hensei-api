@@ -22,6 +22,16 @@ module Solomonis
     ].freeze
     FIRST_ARCANA_NUMBER = 11
 
+    # Each blessing's effect in the game's Japanese, from in-game screenshots. `%d` takes the
+    # level's value from its English text ("(2 times)", "by 3 turns", "100 Sephira coins").
+    # Justice's isn't known yet.
+    BLESSING_DESCRIPTIONS_JP = {
+      'hanged_man' => '任意のキャラを1人編成可能にする',
+      'death' => '%d回まで戦闘マスに出現する敵のHPが1になる',
+      'temperance' => '回復マスで味方全体のアビリティと召喚石の再使用間隔を%dターン短縮',
+      'devil' => 'セフィラコインを%d獲得する'
+    }.freeze
+
     # Game weapon kind -> Hensei proficiency.
     WEAPON_KIND_TO_PROFICIENCY = { 1 => 1, 2 => 2, 3 => 4, 4 => 3, 5 => 6, 6 => 9, 7 => 7, 8 => 5, 9 => 8, 10 => 10 }.freeze
     TARGET_TYPES = { 'race' => 'race', 'weapon_kind' => 'proficiency', 'proficiency' => 'proficiency', 'character' => 'character' }.freeze
@@ -56,10 +66,11 @@ module Solomonis
           name_en: name_en,
           name_jp: summon_name_jp(name_en),
           released: levels.any?,
-          levels: levels
+          levels: levels.map { |level| level.merge(description_jp: description_jp(slug, level[:description_en])) }
         }
       end
-      { _source: 'gbf.wiki "Evoking Solomonis" (Arcarum Blessings); name_jp from the matching Arcarum summon',
+      { _source: 'gbf.wiki "Evoking Solomonis" (Arcarum Blessings); name_jp from the matching Arcarum summon; ' \
+                 'description_jp from in-game screenshots',
         blessings: entries }
     end
 
@@ -74,7 +85,7 @@ module Solomonis
     def self.names
       {
         content_mode: 'solomonis',
-        raid_group: { name_en: 'Evoking Solomonis', name_jp: nil },
+        raid_group: { name_en: 'Evoking Solomonis', name_jp: 'ソロモナスの賢者' },
         zones: [
           { slug: 'allotropic-microcosm', name_en: 'Allotropic Microcosm', name_jp: '異転律の小世界', create_now: true },
           { slug: 'paracyclic-microcosm', name_en: 'Paracyclic Microcosm', name_jp: '奇巡律の小世界', create_now: true }
@@ -153,6 +164,14 @@ module Solomonis
         { level: cells[0].to_i, description_en: self.class.strip_markup(cells[1]), description_jp: nil,
           cost: cells[2].to_i, scintillas: cells[3].delete(',').to_i }
       end
+    end
+
+    def description_jp(slug, description_en)
+      template = BLESSING_DESCRIPTIONS_JP[slug] or return nil
+      return template unless template.include?('%d')
+
+      value = description_en.to_s.scan(/\d+/).last or return nil
+      format(template, value.to_i)
     end
 
     def summon_name_jp(name_en)
