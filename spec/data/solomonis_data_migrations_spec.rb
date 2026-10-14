@@ -22,8 +22,9 @@ RSpec.describe 'Evoking Solomonis data migrations' do
                                        extra: true)
       expect(group.raids.pluck(:slug)).to contain_exactly('allotropic-microcosm', 'paracyclic-microcosm')
       expect(Raid.find_by!(slug: 'allotropic-microcosm'))
-        .to have_attributes(name_en: 'Allotropic Microcosm', name_jp: nil, player_count: 1, element: 0)
-      expect(Raid.find_by!(slug: 'paracyclic-microcosm')).to have_attributes(name_en: 'Paracyclic Microcosm')
+        .to have_attributes(name_en: 'Allotropic Microcosm', name_jp: '異転律の小世界', player_count: 1, element: 0)
+      expect(Raid.find_by!(slug: 'paracyclic-microcosm'))
+        .to have_attributes(name_en: 'Paracyclic Microcosm', name_jp: '奇巡律の小世界')
     end
 
     it 'turns on the Extra weapon slots for a group created without them' do

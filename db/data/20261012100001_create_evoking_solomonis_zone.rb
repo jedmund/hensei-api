@@ -16,8 +16,8 @@ class CreateEvokingSolomonisZone < ActiveRecord::Migration[8.0]
   GROUP_NAME_EN = 'Evoking Solomonis'
   SECTION = 3
   ZONES = [
-    { 'slug' => 'allotropic-microcosm', 'name_en' => 'Allotropic Microcosm', 'name_jp' => nil },
-    { 'slug' => 'paracyclic-microcosm', 'name_en' => 'Paracyclic Microcosm', 'name_jp' => nil }
+    { 'slug' => 'allotropic-microcosm', 'name_en' => 'Allotropic Microcosm', 'name_jp' => '異転律の小世界' },
+    { 'slug' => 'paracyclic-microcosm', 'name_en' => 'Paracyclic Microcosm', 'name_jp' => '奇巡律の小世界' }
   ].freeze
 
   def up

@@ -76,8 +76,8 @@ module Solomonis
         content_mode: 'solomonis',
         raid_group: { name_en: 'Evoking Solomonis', name_jp: nil },
         zones: [
-          { slug: 'allotropic-microcosm', name_en: 'Allotropic Microcosm', name_jp: nil, create_now: true },
-          { slug: 'paracyclic-microcosm', name_en: 'Paracyclic Microcosm', name_jp: nil, create_now: true }
+          { slug: 'allotropic-microcosm', name_en: 'Allotropic Microcosm', name_jp: '異転律の小世界', create_now: true },
+          { slug: 'paracyclic-microcosm', name_en: 'Paracyclic Microcosm', name_jp: '奇巡律の小世界', create_now: true }
         ],
         midbosses: [
           { value: 'banes_gate', name_en: "Bane's Gate", name_jp: nil },
