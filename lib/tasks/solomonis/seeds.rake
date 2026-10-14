@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'seed_generator'
+require_relative '../../solomonis/seed_generator'
 
 namespace :solomonis do
   desc <<~DESC
