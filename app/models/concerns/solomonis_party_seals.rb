@@ -11,42 +11,28 @@ module SolomonisPartySeals
   # two independent lists: the items come in one ordered array, and each
   # type is numbered from 1 in the order its items appear (so a weapon and a
   # summon can both be 1). Items are loaded from this party (never trusted
-  # from params) and must be sealed. Slots left out lose their priority.
+  # from params, after the party's row lock) and must be sealed. Slots left
+  # out lose their priority.
   #
   # @param items [Array<Hash>] `{ type: 'weapon' | 'summon', id: }` in order
   # @raise [ActiveRecord::RecordInvalid] with errors on :unseal_priority
   def replace_unseal_priority!(items)
-    errors.clear
-    errors.add(:unseal_priority, 'is only for Evoking Solomonis parties') unless solomonis?
-    raise ActiveRecord::RecordInvalid, self if errors.any?
-
-    weapons_by_id = GridWeapon.where(party_id: id, is_substitute: false).index_by(&:id)
-    summons_by_id = GridSummon.where(party_id: id, is_substitute: false).index_by(&:id)
-    rows = items.to_a.map do |item|
-      item = item.to_h.with_indifferent_access
-      case item[:type].to_s
-      when 'weapon' then weapons_by_id[item[:id]]
-      when 'summon' then summons_by_id[item[:id]]
-      end
-    end
-
-    if rows.any?(&:nil?)
-      errors.add(:unseal_priority, 'includes an item that is not in this party')
-    elsif rows.uniq.size != rows.size
-      errors.add(:unseal_priority, 'lists an item more than once')
-    elsif rows.any? { |row| row.seal_state != 'sealed' }
-      errors.add(:unseal_priority, 'can only rank sealed items')
-    end
-    raise ActiveRecord::RecordInvalid, self if errors.any?
-
     transaction do
+      lock_solomonis_party!
+      errors.clear
+      errors.add(:unseal_priority, 'is only for Evoking Solomonis parties') unless solomonis?
+      raise ActiveRecord::RecordInvalid, self if errors.any?
+
+      rows = unseal_priority_rows(items)
+      raise ActiveRecord::RecordInvalid, self if errors.any?
+
       GridWeapon.where(party_id: id).where.not(unseal_priority: nil).update_all(unseal_priority: nil)
       GridSummon.where(party_id: id).where.not(unseal_priority: nil).update_all(unseal_priority: nil)
       rows.group_by(&:class).each_value do |ranked|
         ranked.each_with_index { |row, index| row.update_columns(unseal_priority: index + 1) }
       end
+      rows
     end
-    rows
   end
 
   ##
@@ -117,6 +103,29 @@ module SolomonisPartySeals
   end
 
   private
+
+  # The grid rows #replace_unseal_priority! ranks, read after the party's row
+  # lock. Adds errors on :unseal_priority when the items don't fit.
+  def unseal_priority_rows(items)
+    weapons_by_id = GridWeapon.where(party_id: id, is_substitute: false).index_by(&:id)
+    summons_by_id = GridSummon.where(party_id: id, is_substitute: false).index_by(&:id)
+    rows = items.to_a.map do |item|
+      item = item.to_h.with_indifferent_access
+      case item[:type].to_s
+      when 'weapon' then weapons_by_id[item[:id]]
+      when 'summon' then summons_by_id[item[:id]]
+      end
+    end
+
+    if rows.any?(&:nil?)
+      errors.add(:unseal_priority, 'includes an item that is not in this party')
+    elsif rows.uniq.size != rows.size
+      errors.add(:unseal_priority, 'lists an item more than once')
+    elsif rows.any? { |row| row.seal_state != 'sealed' }
+      errors.add(:unseal_priority, 'can only rank sealed items')
+    end
+    rows
+  end
 
   # Renumbers the ranked rows of one type 1..n in their current order (ties
   # broken by position). Assigns in memory; callers write the changes.

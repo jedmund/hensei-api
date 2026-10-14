@@ -161,6 +161,17 @@ RSpec.describe 'Evoking Solomonis seal state and unseal priority', type: :model 
       expect { create(:party).replace_unseal_priority!([]) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
+    it 'reads the grid only after locking the party' do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+      ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
+        party.replace_unseal_priority!([{ type: 'weapon', id: w3.id }])
+      end
+
+      lock = queries.index { |sql| sql.match?(/FROM "parties".*FOR UPDATE/m) }
+      expect(lock).to be < queries.index { |sql| sql.include?('FROM "grid_weapons"') }
+    end
+
     it 'rejects unsealed items' do
       unsealed = weapon_at(party, 6, seal_state: 'unsealed')
       expect do

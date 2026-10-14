@@ -365,6 +365,16 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       expect(party.expedition_guide_effects.reload).to be_empty
     end
 
+    it 'answers a unique index clash with 422' do
+      allow(Party).to receive(:find_by).and_return(party)
+      allow(party).to receive(:replace_solomonis_guide_effects!).and_raise(ActiveRecord::RecordNotUnique)
+
+      put "/api/v1/parties/#{party.id}/guide_effects", params: guidebook_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(body.dig('errors', 'base')).to be_present
+    end
+
     it "rejects someone else's party" do
       put "/api/v1/parties/#{others_party.id}/guide_effects", params: guidebook_params.to_json, headers: headers
 

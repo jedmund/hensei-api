@@ -103,15 +103,19 @@ module SolomonisParty
   # blessing, total cost), clears brought_by_blessing when The Hanged Man is
   # dropped, and recomputes seal state for Justice.
   #
+  # Holds the party's row lock (see #lock_solomonis_party!) from the checks
+  # to the writes.
+  #
   # @param levels [Array<ArcarumBlessingLevel>]
   # @raise [ActiveRecord::RecordInvalid] with errors on :blessings
   def replace_solomonis_blessings!(levels)
-    errors.clear
     levels = levels.to_a
-    validate_blessing_loadout(levels)
-    raise ActiveRecord::RecordInvalid, self if errors.any?
-
     transaction do
+      lock_solomonis_party!
+      errors.clear
+      validate_blessing_loadout(levels)
+      raise ActiveRecord::RecordInvalid, self if errors.any?
+
       party_blessings.delete_all
       levels.each { |level| party_blessings.create!(arcarum_blessing_level: level) }
       party_blessings.reset
@@ -124,21 +128,23 @@ module SolomonisParty
   end
 
   ##
-  # Replaces the guidebook (the effects held at the end of an expedition).
+  # Replaces the guidebook (the effects held at the end of an expedition),
+  # under the party's row lock like #replace_solomonis_blessings!.
   #
   # @param entries [Array<Hash>] `{ solomonis_guide_effect: or solomonis_guide_effect_id:, count:,
   #   display_value:, acquired_order:, inherited:, note: }`
   # @raise [ActiveRecord::RecordInvalid] the failing row, or the party with errors on :guide_effects
   def replace_solomonis_guide_effects!(entries)
-    errors.clear
-    errors.add(:guide_effects, 'are only for Evoking Solomonis parties') unless solomonis?
     entries = entries.to_a.map { |e| e.to_h.symbolize_keys }
     effect_ids = entries.map { |e| e[:solomonis_guide_effect]&.id || e[:solomonis_guide_effect_id] }
-    errors.add(:guide_effects, 'list an effect more than once') if effect_ids.uniq.size != effect_ids.size
-    errors.add(:guide_effects, 'can have only one inherited effect') if entries.count { |e| e[:inherited] } > 1
-    raise ActiveRecord::RecordInvalid, self if errors.any?
-
     transaction do
+      lock_solomonis_party!
+      errors.clear
+      errors.add(:guide_effects, 'are only for Evoking Solomonis parties') unless solomonis?
+      errors.add(:guide_effects, 'list an effect more than once') if effect_ids.uniq.size != effect_ids.size
+      errors.add(:guide_effects, 'can have only one inherited effect') if entries.count { |e| e[:inherited] } > 1
+      raise ActiveRecord::RecordInvalid, self if errors.any?
+
       expedition_guide_effects.delete_all
       entries.each { |entry| expedition_guide_effects.create!(entry) }
     end
@@ -162,6 +168,14 @@ module SolomonisParty
   end
 
   private
+
+  # Takes the party's row lock for the rest of the transaction, so two
+  # whole-list replaces on one party run one after the other instead of both
+  # deleting and then both inserting. Doesn't reload, so unsaved attributes
+  # and loaded associations stay as they are. Call inside a transaction.
+  def lock_solomonis_party!
+    self.class.where(id: id).lock.pick(:id) if persisted?
+  end
 
   def apply_route_to_party(character)
     return unless character&.solomonis_route_eligible?

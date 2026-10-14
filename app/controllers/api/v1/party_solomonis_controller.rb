@@ -27,6 +27,13 @@ module Api
         render_validation_error_response(e.record)
       end
 
+      # The replaces hold the party's row lock, so this shouldn't happen; if a
+      # write still hits a unique index, it's a conflict to retry, not a 500.
+      rescue_from ActiveRecord::RecordNotUnique do
+        render json: ErrorBlueprint.render_as_json(nil, errors: { base: ['changed at the same time; try again'] }),
+               status: :unprocessable_entity
+      end
+
       before_action :set_party
       before_action :authorize_party!
 

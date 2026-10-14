@@ -11,6 +11,17 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
     create(:arcarum_blessing_level, arcarum_blessing: blessing, cost: cost)
   end
 
+  def queries_during(&)
+    queries = []
+    callback = ->(*, payload) { queries << payload[:sql] }
+    ActiveSupport::Notifications.subscribed(callback, 'sql.active_record', &)
+    queries
+  end
+
+  def party_lock?(sql)
+    sql.match?(/FROM "parties".*FOR UPDATE/m)
+  end
+
   describe 'route Evoker' do
     it "sets the party's raid and element from the route Evoker" do
       party = create(:party, :solomonis, route_evoker: evoker, element: 2)
@@ -182,6 +193,20 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
     it 'is only for Solomonis parties' do
       expect { create(:party).replace_solomonis_blessings!([]) }.to raise_error(ActiveRecord::RecordInvalid)
     end
+
+    it 'locks the party before replacing the loadout' do
+      queries = queries_during { party.replace_solomonis_blessings!([blessing_level(:justice)]) }
+      lock = queries.index { |sql| party_lock?(sql) }
+      expect(lock).to be < queries.index { |sql| sql.start_with?('DELETE FROM "party_blessings"') }
+    end
+
+    it 'locks the party even when the loadout is rejected' do
+      levels = [create(:arcarum_blessing_level, cost: 70), create(:arcarum_blessing_level, cost: 40)]
+      queries = queries_during do
+        expect { party.replace_solomonis_blessings!(levels) }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+      expect(queries).to include(satisfy { |sql| party_lock?(sql) })
+    end
   end
 
   describe '#replace_solomonis_guide_effects!' do
@@ -211,6 +236,12 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
       expect do
         create(:party).replace_solomonis_guide_effects!([{ solomonis_guide_effect: stackable }])
       end.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'locks the party before replacing the guidebook' do
+      queries = queries_during { party.replace_solomonis_guide_effects!([{ solomonis_guide_effect: stackable }]) }
+      lock = queries.index { |sql| party_lock?(sql) }
+      expect(lock).to be < queries.index { |sql| sql.start_with?('DELETE FROM "expedition_guide_effects"') }
     end
   end
 
