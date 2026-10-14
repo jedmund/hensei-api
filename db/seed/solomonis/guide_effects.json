@@ -1999,7 +1999,7 @@
       "rarity": "unique",
       "stackable": false,
       "name_en": "At battle start: Nier activates The Lovers Upright / Eternal Vow becomes useable again / When Nier and MC are main allies before attacking: Double Strike effect to both (Only if Nier is a main ally) (Can't be stacked)",
-      "name_jp": null,
+      "name_jp": "バトル開始時にニーアが「恋人の正位置」を発動/永久ノ誓イが使用可能になる/攻撃開始時にニーアと主人公がバトルメンバーにいる時、2人に再攻撃効果◆ニーアがバトルメンバーにいる時のみ発動(重複不可)",
       "icon_category": 3,
       "icon_type": 401,
       "target_type": "character",
