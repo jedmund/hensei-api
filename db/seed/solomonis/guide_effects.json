@@ -2057,7 +2057,7 @@
       "granblue_id": 118,
       "rarity": "cursed",
       "stackable": true,
-      "name_en": null,
+      "name_en": "Take DMG each turn",
       "name_jp": "毎ターンダメージを受ける",
       "icon_category": 4,
       "icon_type": 503,
