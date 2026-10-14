@@ -65,9 +65,12 @@ module SolomonisParty
   end
 
   # Whether a blessing (by slug) is equipped. Reads the in-memory association,
-  # so it also sees blessings built but not yet saved.
+  # so it also sees blessings built but not yet saved. The blessings are
+  # batch-loaded so the slug check costs one query, not one per blessing.
   def solomonis_blessing?(slug)
-    party_blessings.any? { |pb| !pb.marked_for_destruction? && pb.slug == slug }
+    blessings = party_blessings.reject(&:marked_for_destruction?)
+    ActiveRecord::Associations::Preloader.new(records: blessings, associations: :arcarum_blessing).call
+    blessings.any? { |pb| pb.slug == slug }
   end
 
   def solomonis_blessing_cost_total
