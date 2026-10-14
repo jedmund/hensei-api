@@ -32,6 +32,7 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
       expect(entry['name']['ja']).to eq(group.name_jp)
       expect(entry['order']).to eq(group.order)
       expect(entry['section']).to eq(group.section)
+      expect(entry['support_summon']).to be(true)
     end
   end
 
@@ -92,6 +93,15 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['name']['en']).to eq('Updated Group')
       expect(group.reload.name_en).to eq('Updated Group')
+    end
+
+    it 'turns the support summon off as editor' do
+      put "/api/v1/raid_groups/#{group.id}",
+          params: { raid_group: { support_summon: false } }.to_json,
+          headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['support_summon']).to be(false)
+      expect(group.reload.support_summon).to be(false)
     end
 
     it 'rejects update by regular user' do

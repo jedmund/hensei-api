@@ -5,6 +5,7 @@ require Rails.root.join('db/data/20261012100001_create_evoking_solomonis_zone')
 require Rails.root.join('db/data/20261012100002_assign_solomonis_evoker_zones')
 require Rails.root.join('db/data/20261012100003_load_solomonis_blessings')
 require Rails.root.join('db/data/20261012100004_load_solomonis_guide_effects')
+require Rails.root.join('db/data/20261013100001_turn_off_support_summon_for_arcarum')
 
 RSpec.describe 'Evoking Solomonis data migrations' do
   def quietly(migration)
@@ -106,6 +107,21 @@ RSpec.describe 'Evoking Solomonis data migrations' do
       quietly(described_class.new)
       expect(effect.reload.name_en).to eq('Edited')
       expect(effect.availability).to eq('global')
+    end
+  end
+
+  describe TurnOffSupportSummonForArcarum do
+    it 'turns the support summon off for Arcarum groups only' do
+      quietly(CreateEvokingSolomonisZone.new)
+      sandbox = create(:raid_group, name_en: 'Replicard Sandbox', section: 3)
+      world = create(:raid_group, name_en: 'Genesis Creationis', section: 3)
+      showdowns = create(:raid_group, name_en: 'Epic Showdowns', section: 3)
+
+      2.times { quietly(described_class.new) }
+
+      expect(RaidGroup.find_by!(content_mode: 'solomonis').support_summon).to be(false)
+      expect([sandbox, world].map { |group| group.reload.support_summon }).to all(be(false))
+      expect(showdowns.reload.support_summon).to be(true)
     end
   end
 end

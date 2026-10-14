@@ -13,7 +13,7 @@ module Api
           }
         end
 
-        fields :difficulty, :order, :section, :extra, :guidebooks, :hl, :unlimited, :content_mode
+        fields :difficulty, :order, :section, :extra, :guidebooks, :hl, :unlimited, :content_mode, :support_summon
       end
 
       # Minimal view for party list cards

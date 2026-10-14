@@ -11,6 +11,7 @@ FactoryBot.define do
     hl { true }
     guidebooks { false }
     unlimited { false }
+    support_summon { true }
 
     trait :extra do
       extra { true }
@@ -34,6 +35,7 @@ FactoryBot.define do
       difficulty { 0 }
       content_mode { RaidGroup::SOLOMONIS }
       extra { true }
+      support_summon { false }
     end
   end
 end

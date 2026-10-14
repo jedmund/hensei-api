@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_12_000006) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1106,6 +1106,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_000006) do
     t.boolean "guidebooks", default: false, null: false
     t.boolean "unlimited", default: false, null: false
     t.string "content_mode"
+    t.boolean "support_summon", default: true, null: false
     t.index ["content_mode"], name: "index_raid_groups_on_content_mode"
   end
 
