@@ -242,7 +242,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       let(:japanese_entry) do
         {
           'name' => '全体の与ダメージ上昇@@(80% / 最大: 100%)', 'target_type' => nil, 'target_param' => '',
-          'display_ailment_id' => nil, 'status_id' => 110, 'icon_category' => 1, 'icon_type' => 310,
+          'display_ailment_id' => nil, 'status_id' => 125, 'icon_category' => 1, 'icon_type' => 310,
           'rarity' => 3, 'is_duplication_possible' => 1, 'deck_condition' => 0, 'num' => 1
         }
       end
@@ -252,11 +252,12 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         import(payload)
 
         expect(response).to have_http_status(:created)
-        expect(effect(110)).to have_attributes(name_jp: '全体の与ダメージ上昇(80% / 最大: 100%)', name_en: nil,
+        expect(effect(125)).to have_attributes(name_jp: '全体の与ダメージ上昇(80% / 最大: 100%)', name_en: nil,
                                                needs_review: true)
       end
 
       it 'fills the empty language of a known effect and never overwrites it' do
+        effect(7).update!(name_jp: nil)
         known = status_list.find { |e| e['status_id'] == 7 }
         jp = known.merge('name' => '与ダメージ上限+10%')
         import(body.deep_merge('solomonis' => { 'status_list' => [jp] }))
