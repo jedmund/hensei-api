@@ -1999,7 +1999,7 @@
       "rarity": "unique",
       "stackable": false,
       "name_en": "At battle start: Estarriola activates The Hermit Upright / Double Strike effect to all other allies for 3 turns (Only if Estarriola is a main ally) (Can't be stacked)",
-      "name_jp": null,
+      "name_jp": "バトル開始時にエスタリオラが「節制の正位置」を発動/エスタリオラ以外の味方全体に再攻撃効果(3ターン)◆エスタリオラがバトル開始時にバトルメンバーにいる時のみ発動(重複不可)",
       "icon_category": 3,
       "icon_type": 401,
       "target_type": "character",
