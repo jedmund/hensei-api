@@ -1911,7 +1911,7 @@
       "rarity": "unique",
       "stackable": false,
       "name_en": "To all allies for 2 turns after battle start: DMG immunity, debuff immunity, and buffs can't be removed (Can't be stacked)",
-      "name_jp": null,
+      "name_jp": "バトル開始から2ターンの間、味方全体に被ダメージ無効/弱体効果無効/強化効果が無効化されない(重複不可)",
       "icon_category": 2,
       "icon_type": 401,
       "target_type": null,
