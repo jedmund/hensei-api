@@ -197,7 +197,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       let(:new_entry) do
         {
           'name' => 'Bonus DMG to sabre- and gun-specialty allies @@(30%)', 'target_type' => 2,
-          'target_param' => '1_6', 'display_ailment_id' => nil, 'status_id' => 109, 'icon_category' => 1,
+          'target_param' => '1_6', 'display_ailment_id' => nil, 'status_id' => 998, 'icon_category' => 1,
           'icon_type' => 401, 'rarity' => 3, 'is_duplication_possible' => 0, 'deck_condition' => 0, 'num' => 1
         }
       end
@@ -210,7 +210,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
 
         expect(response).to have_http_status(:created)
         expect(response.parsed_body['warnings']).to eq([])
-        added = effect(109)
+        added = effect(998)
         expect(added).to have_attributes(
           rarity: 'unique', stackable: false, needs_review: true, name_jp: nil,
           name_en: 'Bonus DMG to sabre- and gun-specialty allies (30%)',
@@ -225,7 +225,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         payload = body.deep_merge('solomonis' => { 'status_list' => status_list + [entry] })
         import(payload)
 
-        expect(effect(109)).to have_attributes(target_type: 'character', target_values: [3100], character_id: fraux.id)
+        expect(effect(998)).to have_attributes(target_type: 'character', target_values: [3100], character_id: fraux.id)
       end
 
       it 'skips an entry with an unknown rarity, with a warning' do
@@ -234,7 +234,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         expect { import(payload) }.not_to change(SolomonisGuideEffect, :count)
 
         expect(response).to have_http_status(:created)
-        expect(response.parsed_body['warnings']).to include('New guidebook effect 109 has an unknown rarity; skipped')
+        expect(response.parsed_body['warnings']).to include('New guidebook effect 998 has an unknown rarity; skipped')
       end
     end
 
@@ -242,7 +242,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       let(:japanese_entry) do
         {
           'name' => '全体の与ダメージ上昇@@(80% / 最大: 100%)', 'target_type' => nil, 'target_param' => '',
-          'display_ailment_id' => nil, 'status_id' => 125, 'icon_category' => 1, 'icon_type' => 310,
+          'display_ailment_id' => nil, 'status_id' => 999, 'icon_category' => 1, 'icon_type' => 310,
           'rarity' => 3, 'is_duplication_possible' => 1, 'deck_condition' => 0, 'num' => 1
         }
       end
@@ -252,7 +252,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
         import(payload)
 
         expect(response).to have_http_status(:created)
-        expect(effect(125)).to have_attributes(name_jp: '全体の与ダメージ上昇(80% / 最大: 100%)', name_en: nil,
+        expect(effect(999)).to have_attributes(name_jp: '全体の与ダメージ上昇(80% / 最大: 100%)', name_en: nil,
                                                needs_review: true)
       end
 
