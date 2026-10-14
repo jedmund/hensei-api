@@ -78,11 +78,6 @@ module Solomonis
         zones: [
           { slug: 'allotropic-microcosm', name_en: 'Allotropic Microcosm', name_jp: '異転律の小世界', create_now: true },
           { slug: 'paracyclic-microcosm', name_en: 'Paracyclic Microcosm', name_jp: '奇巡律の小世界', create_now: true }
-        ],
-        midbosses: [
-          { value: 'banes_gate', name_en: "Bane's Gate", name_jp: nil },
-          { value: 'infernobringer', name_en: 'Infernobringer', name_jp: nil },
-          { value: 'beast_of_anathema', name_en: 'Beast of Anathema', name_jp: nil }
         ]
       }
     end

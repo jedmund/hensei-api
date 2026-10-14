@@ -17,22 +17,5 @@
       "name_jp": "奇巡律の小世界",
       "create_now": true
     }
-  ],
-  "midbosses": [
-    {
-      "value": "banes_gate",
-      "name_en": "Bane's Gate",
-      "name_jp": null
-    },
-    {
-      "value": "infernobringer",
-      "name_en": "Infernobringer",
-      "name_jp": null
-    },
-    {
-      "value": "beast_of_anathema",
-      "name_en": "Beast of Anathema",
-      "name_jp": null
-    }
   ]
 }
