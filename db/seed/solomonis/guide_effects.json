@@ -1281,6 +1281,25 @@
       ]
     },
     {
+      "granblue_id": 71,
+      "rarity": "rare",
+      "stackable": false,
+      "name_en": null,
+      "name_jp": "味方全体がターン終了時、自分にランダムな強化効果(重複不可)",
+      "icon_category": 3,
+      "icon_type": 401,
+      "target_type": null,
+      "target_values": [],
+      "character_granblue_id": null,
+      "availability": "event",
+      "type_tags": [
+        "misc"
+      ],
+      "effect_tags": [
+        "amp"
+      ]
+    },
+    {
       "granblue_id": 72,
       "rarity": "unique",
       "stackable": false,
@@ -2003,7 +2022,7 @@
       "rarity": "cursed",
       "stackable": true,
       "name_en": "At end of turn: Random debuffs to each ally",
-      "name_jp": null,
+      "name_jp": "味方全体がターン終了時、自分にランダムな弱体効果",
       "icon_category": 4,
       "icon_type": 501,
       "target_type": null,
