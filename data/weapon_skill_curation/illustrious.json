@@ -1,7 +1,94 @@
 {
   "format": 2,
-  "versions": [],
-  "effects": [],
+  "versions": [
+    {
+      "weapon": "1040217400",
+      "skill": "Cyclonic Strike",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:48:32Z"
+    },
+    {
+      "weapon": "1040217400",
+      "skill": "Cyclonic Strike II",
+      "ordinal": 1,
+      "modifier_override": "none",
+      "suppressed_boosts": [
+        "def_ignore"
+      ],
+      "edited_at": "2026-10-15T07:48:32Z"
+    },
+    {
+      "weapon": "1040217400",
+      "skill": "Electrifying Onslaught",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:48:32Z"
+    },
+    {
+      "weapon": "1040217400",
+      "skill": "Electrifying Onslaught II",
+      "ordinal": 1,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:48:32Z"
+    },
+    {
+      "weapon": "1040217400",
+      "skill": "Electrifying Onslaught III",
+      "ordinal": 2,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:48:32Z"
+    },
+    {
+      "weapon": "1040217400",
+      "skill": "Heavenrend Spearpoint II",
+      "ordinal": 1,
+      "suppressed_boosts": [
+        "na_supp"
+      ],
+      "edited_at": "2026-10-15T09:47:57Z"
+    }
+  ],
+  "effects": [
+    {
+      "weapon": "1040315100",
+      "skill": "Disease Demon",
+      "ordinal": 0,
+      "modifier": "Disease Demon",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": -40.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040315100",
+      "skill": "Gugalanna",
+      "ordinal": 0,
+      "modifier": "Gugalanna",
+      "boost_type": "charge_gain",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": -200.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:07:08Z"
+    }
+  ],
   "data": [],
   "ops": [
     {

@@ -1,7 +1,399 @@
 {
   "format": 2,
-  "versions": [],
-  "effects": [],
+  "versions": [
+    {
+      "weapon": "1040019500",
+      "skill": "Cosmic Sword",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040019500",
+      "skill": "Cosmic Sword II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040112400",
+      "skill": "Cosmic Dagger",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040112400",
+      "skill": "Cosmic Dagger II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040213500",
+      "skill": "Cosmic Lance",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040213500",
+      "skill": "Cosmic Lance II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040311500",
+      "skill": "Cosmic Scythe",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040311500",
+      "skill": "Cosmic Scythe II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040416400",
+      "skill": "Cosmic Rod",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040416400",
+      "skill": "Cosmic Rod II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040511800",
+      "skill": "Cosmic Rifle",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040511800",
+      "skill": "Cosmic Rifle II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040612300",
+      "skill": "Cosmic Gauntlet",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040612300",
+      "skill": "Cosmic Gauntlet II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040709500",
+      "skill": "Cosmic Bow",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040709500",
+      "skill": "Cosmic Bow II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040811500",
+      "skill": "Cosmic Harp",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040811500",
+      "skill": "Cosmic Harp II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040911800",
+      "skill": "Cosmic Blade",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040911800",
+      "skill": "Cosmic Blade II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "atk"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    }
+  ],
+  "effects": [
+    {
+      "weapon": "1040019500",
+      "skill": "Azure Sword's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Sword's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040112400",
+      "skill": "Azure Dagger's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Dagger's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040213500",
+      "skill": "Azure Lance's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Lance's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040311500",
+      "skill": "Azure Scythe's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Scythe's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040416400",
+      "skill": "Azure Rod's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Rod's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040511800",
+      "skill": "Azure Rifle's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Rifle's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040612300",
+      "skill": "Azure Gauntlet's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Gauntlet's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040709500",
+      "skill": "Azure Bow's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Bow's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040811500",
+      "skill": "Azure Harp's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Harp's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040911800",
+      "skill": "Azure Blade's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Blade's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    }
+  ],
   "data": [],
   "ops": [
     {

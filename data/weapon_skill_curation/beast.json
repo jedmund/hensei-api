@@ -1,0 +1,96 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [
+    {
+      "weapon": "1040207800",
+      "skill": "Essence of the East",
+      "ordinal": 0,
+      "modifier": "Essence of the East",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 20,
+        "type": "copy_skill_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040306800",
+      "skill": "Essence of the North",
+      "ordinal": 0,
+      "modifier": "Essence of the North",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 20,
+        "type": "copy_skill_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040607000",
+      "skill": "Essence of the West",
+      "ordinal": 0,
+      "modifier": "Essence of the West",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 20,
+        "type": "copy_skill_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040906700",
+      "skill": "Essence of the South",
+      "ordinal": 0,
+      "modifier": "Essence of the South",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 20,
+        "type": "copy_skill_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    }
+  ],
+  "data": [],
+  "ops": []
+}

@@ -1,7 +1,427 @@
 {
   "format": 2,
-  "versions": [],
-  "effects": [],
+  "versions": [
+    {
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "ca_amp_sp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    },
+    {
+      "weapon": "1040815100",
+      "skill": "Sephirath Fusame",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "na_amp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    },
+    {
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "skill_amp_sp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    },
+    {
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "skill_amp_sp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    },
+    {
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "skill_amp_sp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    },
+    {
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "skill_amp_sp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    },
+    {
+      "weapon": "1040815400",
+      "skill": "Sephirath Haton",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "na_amp"
+      ],
+      "edited_at": "2026-10-15T10:38:09Z"
+    }
+  ],
+  "effects": [
+    {
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc",
+      "ordinal": 0,
+      "modifier": "Sephirath Eparc",
+      "boost_type": "ca_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "bow": 20.0,
+          "sabre": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "ordinal": 0,
+      "modifier": "Sephirath Eparc II",
+      "boost_type": "ca_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "bow": 20.0,
+          "sabre": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "ordinal": 0,
+      "modifier": "Sephirath Eparc II",
+      "boost_type": "ca_amp_sp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815100",
+      "skill": "Sephirath Fusame",
+      "ordinal": 0,
+      "modifier": "Sephirath Fusame",
+      "boost_type": "na_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "gun": 15.0,
+          "katana": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815100",
+      "skill": "Sephirath Fusame II",
+      "ordinal": 0,
+      "modifier": "Sephirath Fusame II",
+      "boost_type": "na_amp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 8.0,
+          "katana": 8.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815100",
+      "skill": "Sephirath Fusame II",
+      "ordinal": 0,
+      "modifier": "Sephirath Fusame II",
+      "boost_type": "na_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "gun": 15.0,
+          "katana": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue",
+      "ordinal": 0,
+      "modifier": "Sephirath Brogue",
+      "boost_type": "skill_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "spear": 10.0,
+          "dagger": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "ordinal": 0,
+      "modifier": "Sephirath Brogue II",
+      "boost_type": "skill_amp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "spear": 10.0,
+          "dagger": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "ordinal": 0,
+      "modifier": "Sephirath Brogue II",
+      "boost_type": "skill_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "spear": 10.0,
+          "dagger": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant",
+      "ordinal": 0,
+      "modifier": "Sephirath Corant",
+      "boost_type": "skill_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "harp": 10.0,
+          "melee": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant II",
+      "ordinal": 0,
+      "modifier": "Sephirath Corant II",
+      "boost_type": "skill_amp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 10.0,
+          "melee": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant II",
+      "ordinal": 0,
+      "modifier": "Sephirath Corant II",
+      "boost_type": "skill_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "harp": 10.0,
+          "melee": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815400",
+      "skill": "Sephirath Haton",
+      "ordinal": 0,
+      "modifier": "Sephirath Haton",
+      "boost_type": "na_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "axe": 15.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815400",
+      "skill": "Sephirath Haton II",
+      "ordinal": 0,
+      "modifier": "Sephirath Haton II",
+      "boost_type": "na_amp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 8.0,
+          "staff": 8.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    },
+    {
+      "weapon": "1040815400",
+      "skill": "Sephirath Haton II",
+      "ordinal": 0,
+      "modifier": "Sephirath Haton II",
+      "boost_type": "na_amp_arc",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "arcarum": true,
+        "specialties": {
+          "axe": 15.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:50:09Z"
+    }
+  ],
   "data": [],
   "ops": [
     {
