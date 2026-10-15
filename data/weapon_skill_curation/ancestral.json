@@ -1,0 +1,153 @@
+{
+  "format": 2,
+  "versions": [
+    {
+      "weapon": "1040215100",
+      "skill": "Flood's Verity",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040912400",
+      "skill": "Gale's Might",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T11:19:53Z"
+    }
+  ],
+  "effects": [
+    {
+      "weapon": "1040020300",
+      "skill": "Black Covenant",
+      "ordinal": 0,
+      "modifier": "Black Covenant",
+      "boost_type": "ca_supp",
+      "scaling_kind": "supplemental_cap",
+      "value": 5.0,
+      "value_unit": "percent_foe_max_hp",
+      "total_cap": 1000000.0,
+      "cap_formula": "500000*(curhp/maxhp)+100000",
+      "condition": {},
+      "target_instance": "charge_attack",
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": true,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040513400",
+      "skill": "Gold Covenant",
+      "ordinal": 0,
+      "modifier": "Gold Covenant",
+      "boost_type": "ca_supp",
+      "scaling_kind": "supplemental_cap",
+      "value": 5.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 400000.0,
+      "total_cap": 1000000.0,
+      "condition": {},
+      "target_instance": "charge_attack",
+      "depends_on": [
+        "foe_max_hp"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": true,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040613800",
+      "skill": "Vermillion Covenant",
+      "ordinal": 0,
+      "modifier": "Vermillion Covenant",
+      "boost_type": "dmg_supp",
+      "scaling_kind": "supplemental_cap",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "total_cap": 100000.0,
+      "cap_formula": "50000*((maxhp-curhp)/maxhp)+10000",
+      "condition": {},
+      "depends_on": [
+        "foe_max_hp",
+        "hp_percent"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040912400",
+      "skill": "Emerald Covenant",
+      "ordinal": 0,
+      "modifier": "Emerald Covenant",
+      "boost_type": "skill_dmg_supp",
+      "scaling_kind": "supplemental_cap",
+      "value": 1.0,
+      "value_unit": "percent_foe_max_hp",
+      "per_copy_cap": 100000.0,
+      "total_cap": 200000.0,
+      "condition": {},
+      "target_instance": "skill",
+      "depends_on": [
+        "foe_max_hp"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": true,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    }
+  ],
+  "data": [
+    {
+      "weapon": "1040215100",
+      "skill": "Flood's Verity",
+      "ordinal": 0,
+      "modifier": "Flood's Verity",
+      "boost_type": "critical",
+      "series": "ex",
+      "size": "massive",
+      "formula_type": "flat",
+      "sl1": 7.9,
+      "sl10": 16.0,
+      "sl15": 20.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040912400",
+      "skill": "Gale's Might",
+      "ordinal": 0,
+      "modifier": "Gale's Might",
+      "boost_type": "atk",
+      "series": "ex",
+      "size": "massive",
+      "formula_type": "flat",
+      "sl1": 16.0,
+      "sl10": 25.0,
+      "sl15": 33.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T11:19:53Z"
+    }
+  ],
+  "ops": []
+}

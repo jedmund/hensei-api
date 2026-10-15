@@ -197,18 +197,33 @@ module Granblue
 
       # Drop stale versions whose skill name still holds an unresolved {{…}} template (the
       # pre-expansion import artifact) now that the resolved skills have been written.
+      # Only generated rows go: a garbled version that carries curation (manually-edited
+      # data/effects, or classification overrides) is kept and reported, never destroyed.
       def self.cleanup_garbled(weapon, stats)
         weapon.weapon_skills.includes(weapon_skill_versions: :skill).each do |ws|
           ws.weapon_skill_versions.each do |v|
             next unless v.skill&.name_en&.include?("{{")
 
-            WeaponSkillDatum.where(weapon_skill_version_id: v.id).delete_all
-            WeaponSkillEffect.where(weapon_skill_version_id: v.id).delete_all
+            WeaponSkillDatum.where(weapon_skill_version_id: v.id, manually_edited_at: nil).delete_all
+            WeaponSkillEffect.where(weapon_skill_version_id: v.id, manually_edited_at: nil).delete_all
+            if curated_version?(v)
+              stats[:garbled_kept] += 1
+              Rails.logger.warn("garbled version kept (carries curation): #{weapon.granblue_id} " \
+                                "position #{ws.position} ordinal #{v.ordinal} #{v.skill.name_en}")
+              next
+            end
+
             v.destroy
             stats[:garbled_removed] += 1
           end
           ws.destroy if ws.weapon_skill_versions.reload.empty?
         end
+      end
+
+      def self.curated_version?(version)
+        version.overrides_edited_at.present? ||
+          WeaponSkillDatum.where(weapon_skill_version_id: version.id).where.not(manually_edited_at: nil).exists? ||
+          WeaponSkillEffect.where(weapon_skill_version_id: version.id).where.not(manually_edited_at: nil).exists?
       end
 
       def self.clean(html)
@@ -228,7 +243,7 @@ module Granblue
       end
 
       private_class_method :parse_skills, :persist, :apply_gameplay_notes, :create_notes_effect,
-                           :cleanup_garbled, :clean, :main_hand_only_description?
+                           :cleanup_garbled, :curated_version?, :clean, :main_hand_only_description?
     end
   end
 end

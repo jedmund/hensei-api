@@ -14,12 +14,15 @@ module Granblue
       refs.map { |f| new(JSON.parse(File.read(f))).validate }
     end
 
-    def initialize(reference)
+    # party: validate this Party instead of looking the reference's shortcode up (the
+    # loader seam: goldens load a fixture and hand its party in).
+    def initialize(reference, party: nil)
       @ref = reference
+      @party = party
     end
 
     def validate
-      party = Party.find_by(shortcode: @ref.fetch('party'))
+      party = @party || Party.find_by(shortcode: @ref.fetch('party'))
       unless party
         return Result.new(party: @ref['party'], captured_on: @ref['captured_on'], ok: false,
                           mismatches: [{ label: 'party', ours: nil, expected: 'missing from this database' }])
