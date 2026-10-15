@@ -45,6 +45,13 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040117600",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040213500",
       "skill": "Cosmic Lance",
       "ordinal": 0,
@@ -95,6 +102,24 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040311900",
+      "skill": "Wamdus's Flood",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316500",
+      "skill": "Wamdus's Flood",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040316600",
       "skill": "}}} Enforcement",
       "ordinal": 0,
@@ -102,11 +127,25 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040316700",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040316800",
       "skill": "}}} Enforcement",
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040316900",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040416400",
@@ -127,6 +166,24 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040416700",
+      "skill": "Ewiyar's Gale",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040422200",
+      "skill": "Ewiyar's Gale",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040511800",
       "skill": "Cosmic Rifle",
       "ordinal": 0,
@@ -143,6 +200,24 @@
         "atk"
       ],
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040512300",
+      "skill": "Fediel's Eclipse",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040516500",
+      "skill": "Fediel's Eclipse",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040612300",
@@ -188,6 +263,13 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040618000",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040709500",
       "skill": "Cosmic Bow",
       "ordinal": 0,
@@ -206,11 +288,36 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040709600",
+      "skill": "Galleon's Landslide",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040712800",
+      "skill": "Galleon's Landslide",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040712900",
       "skill": "}}} Enforcement",
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040713000",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040811500",
@@ -231,11 +338,36 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040811900",
+      "skill": "Wilnas's Firestorm",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040815900",
+      "skill": "Wilnas's Firestorm",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040816000",
       "skill": "}}} Enforcement",
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040816100",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040911800",
@@ -254,6 +386,24 @@
         "atk"
       ],
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040912100",
+      "skill": "Lu Woh's Authority",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040915600",
+      "skill": "Lu Woh's Authority",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "e_atk_prog"
+      ],
+      "edited_at": "2026-10-15T06:43:59Z"
     }
   ],
   "effects": [
@@ -688,6 +838,170 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-07-05T06:40:13Z"
+    },
+    {
+      "weapon": "1040117500",
+      "skill": "Golden Enforcement",
+      "ordinal": 0,
+      "modifier": "Golden Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117500",
+      "skill": "Golden Enforcement",
+      "ordinal": 0,
+      "modifier": "Golden Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117500",
+      "skill": "Zenith Strike: Light",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Light",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117500",
+      "skill": "Zenith Strike: Light",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Light",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117600",
+      "skill": "Golden Enforcement",
+      "ordinal": 0,
+      "modifier": "Golden Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117600",
+      "skill": "Golden Enforcement",
+      "ordinal": 0,
+      "modifier": "Golden Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117600",
+      "skill": "Zenith Strike: Light",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Light",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040117600",
+      "skill": "Zenith Strike: Light",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Light",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040120100",
@@ -1374,6 +1688,334 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040316600",
+      "skill": "Amber Enforcement",
+      "ordinal": 0,
+      "modifier": "Amber Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316600",
+      "skill": "Amber Enforcement",
+      "ordinal": 0,
+      "modifier": "Amber Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316600",
+      "skill": "Striking Art: Earth",
+      "ordinal": 0,
+      "modifier": "Striking Art: Earth",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316600",
+      "skill": "Striking Art: Earth",
+      "ordinal": 0,
+      "modifier": "Striking Art: Earth",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316700",
+      "skill": "Amber Enforcement",
+      "ordinal": 0,
+      "modifier": "Amber Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316700",
+      "skill": "Amber Enforcement",
+      "ordinal": 0,
+      "modifier": "Amber Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316700",
+      "skill": "Striking Art: Earth",
+      "ordinal": 0,
+      "modifier": "Striking Art: Earth",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316700",
+      "skill": "Striking Art: Earth",
+      "ordinal": 0,
+      "modifier": "Striking Art: Earth",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316800",
+      "skill": "Jade Enforcement",
+      "ordinal": 0,
+      "modifier": "Jade Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316800",
+      "skill": "Jade Enforcement",
+      "ordinal": 0,
+      "modifier": "Jade Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316800",
+      "skill": "Zenith Art: Wind",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Wind",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316800",
+      "skill": "Zenith Art: Wind",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Wind",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316900",
+      "skill": "Jade Enforcement",
+      "ordinal": 0,
+      "modifier": "Jade Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316900",
+      "skill": "Jade Enforcement",
+      "ordinal": 0,
+      "modifier": "Jade Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316900",
+      "skill": "Zenith Art: Wind",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Wind",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040316900",
+      "skill": "Zenith Art: Wind",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Wind",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040408500",
       "skill": "Intelligence",
       "ordinal": 0,
@@ -1685,6 +2327,170 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040617900",
+      "skill": "Cobalt Enforcement",
+      "ordinal": 0,
+      "modifier": "Cobalt Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040617900",
+      "skill": "Cobalt Enforcement",
+      "ordinal": 0,
+      "modifier": "Cobalt Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040617900",
+      "skill": "Zenith Art: Water",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Water",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040617900",
+      "skill": "Zenith Art: Water",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Water",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040618000",
+      "skill": "Cobalt Enforcement",
+      "ordinal": 0,
+      "modifier": "Cobalt Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040618000",
+      "skill": "Cobalt Enforcement",
+      "ordinal": 0,
+      "modifier": "Cobalt Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040618000",
+      "skill": "Zenith Art: Water",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Water",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040618000",
+      "skill": "Zenith Art: Water",
+      "ordinal": 0,
+      "modifier": "Zenith Art: Water",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040618200",
@@ -2088,6 +2894,170 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040712900",
+      "skill": "Scarlet Enforcement",
+      "ordinal": 0,
+      "modifier": "Scarlet Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040712900",
+      "skill": "Scarlet Enforcement",
+      "ordinal": 0,
+      "modifier": "Scarlet Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040712900",
+      "skill": "Striking Art: Fire",
+      "ordinal": 0,
+      "modifier": "Striking Art: Fire",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040712900",
+      "skill": "Striking Art: Fire",
+      "ordinal": 0,
+      "modifier": "Striking Art: Fire",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040713000",
+      "skill": "Scarlet Enforcement",
+      "ordinal": 0,
+      "modifier": "Scarlet Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040713000",
+      "skill": "Scarlet Enforcement",
+      "ordinal": 0,
+      "modifier": "Scarlet Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040713000",
+      "skill": "Striking Art: Fire",
+      "ordinal": 0,
+      "modifier": "Striking Art: Fire",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040713000",
+      "skill": "Striking Art: Fire",
+      "ordinal": 0,
+      "modifier": "Striking Art: Fire",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040713600",
@@ -2568,6 +3538,170 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040816000",
+      "skill": "Graphite Enforcement",
+      "ordinal": 0,
+      "modifier": "Graphite Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816000",
+      "skill": "Graphite Enforcement",
+      "ordinal": 0,
+      "modifier": "Graphite Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816000",
+      "skill": "Zenith Strike: Dark",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Dark",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816000",
+      "skill": "Zenith Strike: Dark",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Dark",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816100",
+      "skill": "Graphite Enforcement",
+      "ordinal": 0,
+      "modifier": "Graphite Enforcement",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816100",
+      "skill": "Graphite Enforcement",
+      "ordinal": 0,
+      "modifier": "Graphite Enforcement",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816100",
+      "skill": "Zenith Strike: Dark",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Dark",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040816100",
+      "skill": "Zenith Strike: Dark",
+      "ordinal": 0,
+      "modifier": "Zenith Strike: Dark",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040816300",
       "skill": "Harp Voltage II",
       "ordinal": 0,
@@ -2893,6 +4027,23 @@
       "edited_at": "2026-08-25T06:42:02Z"
     },
     {
+      "weapon": "1040311900",
+      "skill": "Wamdus's Flood",
+      "ordinal": 0,
+      "modifier": "Draconic Progression",
+      "boost_type": "atk",
+      "series": "ex",
+      "formula_type": "progression",
+      "sl1": 0.1,
+      "sl10": 1.0,
+      "sl15": 1.5,
+      "sl20": 2.0,
+      "max_value": 25.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040409500",
       "skill": "Blood Rose Thorns",
       "ordinal": 0,
@@ -2908,8 +4059,25 @@
       "edited_at": "2026-08-25T06:42:02Z"
     },
     {
+      "weapon": "1040416700",
+      "skill": "Ewiyar's Gale",
+      "ordinal": 0,
+      "modifier": "Draconic Progression",
+      "boost_type": "atk",
+      "series": "ex",
+      "formula_type": "progression",
+      "sl1": 0.1,
+      "sl10": 1.0,
+      "sl15": 1.5,
+      "sl20": 2.0,
+      "max_value": 25.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040422200",
-      "skill": "{{ #vardefineecho: s1_name | {{",
+      "skill": "Ewiyar's Gale",
       "ordinal": 0,
       "modifier": "Provenance Progression",
       "boost_type": "atk",
@@ -2921,10 +4089,27 @@
       "aura_boostable": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040512300",
+      "skill": "Fediel's Eclipse",
+      "ordinal": 0,
+      "modifier": "Draconic Progression",
+      "boost_type": "atk",
+      "series": "ex",
+      "formula_type": "progression",
+      "sl1": 0.1,
+      "sl10": 1.0,
+      "sl15": 1.5,
+      "sl20": 2.0,
+      "max_value": 25.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040516500",
-      "skill": "{{ #vardefineecho: s1_name | {{",
+      "skill": "Fediel's Eclipse",
       "ordinal": 0,
       "modifier": "Provenance Progression",
       "boost_type": "atk",
@@ -2996,10 +4181,27 @@
       "aura_boostable": false,
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040709600",
+      "skill": "Galleon's Landslide",
+      "ordinal": 0,
+      "modifier": "Draconic Progression",
+      "boost_type": "atk",
+      "series": "ex",
+      "formula_type": "progression",
+      "sl1": 0.1,
+      "sl10": 1.0,
+      "sl15": 1.5,
+      "sl20": 2.0,
+      "max_value": 25.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
     },
     {
       "weapon": "1040712800",
-      "skill": "{{ #vardefineecho: s1_name | {{",
+      "skill": "Galleon's Landslide",
       "ordinal": 0,
       "modifier": "Provenance Progression",
       "boost_type": "atk",
@@ -3043,8 +4245,25 @@
       "edited_at": "2026-08-25T06:42:02Z"
     },
     {
+      "weapon": "1040811900",
+      "skill": "Wilnas's Firestorm",
+      "ordinal": 0,
+      "modifier": "Draconic Progression",
+      "boost_type": "atk",
+      "series": "ex",
+      "formula_type": "progression",
+      "sl1": 0.1,
+      "sl10": 1.0,
+      "sl15": 1.5,
+      "sl20": 2.0,
+      "max_value": 25.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040815900",
-      "skill": "{{ #vardefineecho: s1_name | {{",
+      "skill": "Wilnas's Firestorm",
       "ordinal": 0,
       "modifier": "Provenance Progression",
       "boost_type": "atk",
@@ -3058,8 +4277,25 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040912100",
+      "skill": "Lu Woh's Authority",
+      "ordinal": 0,
+      "modifier": "Draconic Progression",
+      "boost_type": "atk",
+      "series": "ex",
+      "formula_type": "progression",
+      "sl1": 0.1,
+      "sl10": 1.0,
+      "sl15": 1.5,
+      "sl20": 2.0,
+      "max_value": 25.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
       "weapon": "1040915600",
-      "skill": "{{ #vardefineecho: s1_name | {{",
+      "skill": "Lu Woh's Authority",
       "ordinal": 0,
       "modifier": "Provenance Progression",
       "boost_type": "atk",
