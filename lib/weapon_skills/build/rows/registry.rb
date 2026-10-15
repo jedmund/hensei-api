@@ -40,17 +40,21 @@ module WeaponSkills
           effects = WeaponSkillEffect.base_effects.order(:id).pluck(:modifier, :boost_type).map do |m, b|
             Effect.new(modifier: m, boost_type: b)
           end
-          new(data: data, effects: effects)
+          curve_effects = WeaponSkillEffect.base_effects.where(scaling_kind: "weapon_skill_curve").distinct.pluck(:modifier)
+          new(data: data, effects: effects, curve_effect_modifiers: curve_effects)
         end
 
         attr_reader :data, :effects
 
-        def initialize(data:, effects:)
+        # curve_effect_modifiers: families with a weapon_skill_curve base effect (they scale with
+        # skill level without curve data).
+        def initialize(data:, effects:, curve_effect_modifiers: [])
           @data = data.map { |d| d.is_a?(Curve) ? d : Curve.new(**d.to_h.slice(*CURVE_COLUMNS)) }.freeze
           @effects = effects.map { |e| e.is_a?(Effect) ? e : Effect.new(**e.to_h.slice(:modifier, :boost_type)) }.freeze
           @data_by_modifier = @data.group_by(&:modifier)
           @effect_boosts_by_modifier = @effects.group_by(&:modifier).transform_values { |es| es.to_set(&:boost_type) }
           @curves_by_tier = @data.group_by { |d| [d.boost_type, d.size, d.formula_type] }
+          @curve_effect_modifiers = curve_effect_modifiers.to_set.freeze
         end
 
         # WeaponSkillDatum.for_skill: at most one canonical curve per boost_type for a
@@ -87,6 +91,8 @@ module WeaponSkills
         def canonical_family?(modifier)
           @data_by_modifier.key?(modifier) || @effect_boosts_by_modifier.key?(modifier)
         end
+
+        def curve_effect?(modifier) = @curve_effect_modifiers.include?(modifier)
 
         def effect_boost_types(modifier)
           @effect_boosts_by_modifier.fetch(modifier, Set.new)
