@@ -35,6 +35,11 @@ module Api
       fields :modifier_override, :series_override, :size_override, :suppressed_boosts,
              :overrides_edited_at
 
+      # The classification the calculator uses (WeaponSkillVersion#resolved_*). A
+      # resolved_modifier of nil with a "none" override means "no family"; it doesn't
+      # fall back to skill_modifier.
+      fields :resolved_modifier, :resolved_series, :resolved_size
+
       association :skill, blueprint: SkillBlueprint
     end
   end
