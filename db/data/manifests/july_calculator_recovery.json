@@ -1,0 +1,4026 @@
+{
+  "source": "Weapon-skill curation made directly in the dev database in July 2026 (hensei-api #452 and the golden-panel sessions) that never reached prod. Reconstructed from the #452 commit message, the golden panel references and the July session notes. 'exact' = values recorded at the time; 'derived' = computed from a recorded panel decomposition or an explicit July rule.",
+  "operations": [
+    {
+      "id": "I001",
+      "weapon": "Crimson Scale",
+      "granblue_id": "1040315900",
+      "skill": "Axe Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Axe Voltage II"
+      }
+    },
+    {
+      "id": "I002",
+      "weapon": "Toothache and Suffering",
+      "granblue_id": "1040315600",
+      "skill": "Axe Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Axe Voltage II"
+      }
+    },
+    {
+      "id": "I003",
+      "weapon": "Pain and Suffering",
+      "granblue_id": "1040314300",
+      "skill": "Axe Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Axe Voltage II"
+      }
+    },
+    {
+      "id": "I004",
+      "weapon": "Vynateya Militis",
+      "granblue_id": "1040314700",
+      "skill": "Axe Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Axe Voltage II"
+      }
+    },
+    {
+      "id": "I005",
+      "weapon": "Solomon's Axe Militis",
+      "granblue_id": "1040314600",
+      "skill": "Axe Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Axe Voltage II"
+      }
+    },
+    {
+      "id": "I006",
+      "weapon": "Fantasia-Realm Harp",
+      "granblue_id": "1040816300",
+      "skill": "Harp Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Harp Voltage II"
+      }
+    },
+    {
+      "id": "I007",
+      "weapon": "Harmonia",
+      "granblue_id": "1040814500",
+      "skill": "Harp Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Harp Voltage II"
+      }
+    },
+    {
+      "id": "I008",
+      "weapon": "Heliogabalus Militis",
+      "granblue_id": "1040814000",
+      "skill": "Harp Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Harp Voltage II"
+      }
+    },
+    {
+      "id": "I009",
+      "weapon": "Wilhelm Militis",
+      "granblue_id": "1040615700",
+      "skill": "Gauntlet Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Gauntlet Voltage II"
+      }
+    },
+    {
+      "id": "I010",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Gauntlet Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Gauntlet Voltage II"
+      }
+    },
+    {
+      "id": "I011",
+      "weapon": "Pillardriver",
+      "granblue_id": "1040618200",
+      "skill": "Gauntlet Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Gauntlet Voltage II"
+      }
+    },
+    {
+      "id": "I012",
+      "weapon": "Spymur's Vision Militis",
+      "granblue_id": "1040515000",
+      "skill": "Gun Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Gun Voltage II"
+      }
+    },
+    {
+      "id": "I013",
+      "weapon": "Koukouvagia Militis",
+      "granblue_id": "1040515100",
+      "skill": "Gun Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Gun Voltage II"
+      }
+    },
+    {
+      "id": "I014",
+      "weapon": "Gateway-Star Sword",
+      "granblue_id": "1040025400",
+      "skill": "Sword Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Sword Voltage II"
+      }
+    },
+    {
+      "id": "I015",
+      "weapon": "Sword of Pallas Militis",
+      "granblue_id": "1040022600",
+      "skill": "Sword Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Sword Voltage II"
+      }
+    },
+    {
+      "id": "I016",
+      "weapon": "Selfless-Rift Spear",
+      "granblue_id": "1040219400",
+      "skill": "Spear Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Spear Voltage II"
+      }
+    },
+    {
+      "id": "I017",
+      "weapon": "Erichthonius Militis",
+      "granblue_id": "1040216800",
+      "skill": "Spear Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Spear Voltage II"
+      }
+    },
+    {
+      "id": "I018",
+      "weapon": "Desolation-Crown Bow",
+      "granblue_id": "1040713600",
+      "skill": "Bow Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Bow Voltage II"
+      }
+    },
+    {
+      "id": "I019",
+      "weapon": "Bow of Sigurd Militis",
+      "granblue_id": "1040711400",
+      "skill": "Bow Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Bow Voltage II"
+      }
+    },
+    {
+      "id": "I020",
+      "weapon": "Indra's Edge Militis",
+      "granblue_id": "1040711500",
+      "skill": "Bow Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Bow Voltage II"
+      }
+    },
+    {
+      "id": "I021",
+      "weapon": "Oration-Life Katana",
+      "granblue_id": "1040916900",
+      "skill": "Katana Voltage II",
+      "confidence": "exact",
+      "source": "#452: 'Voltage II versions get their 8%/matching-weapon row (21 inserted; validated gun 5JPIJg, dagger/staff 9JtcHY, axe SRiNSO 8x3x2=48)'; template = the 9 surviving rows (e.g. Dagger Voltage II)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ex_atk_sp",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 8.0,
+        "total_cap": 80.0,
+        "shared_cap_group": "voltage_wrath_grand_epic",
+        "count_basis": "same_weapon_type",
+        "modifier": "Katana Voltage II"
+      }
+    },
+    {
+      "id": "I022",
+      "weapon": "Phoenix's Torch",
+      "granblue_id": "1040422700",
+      "skill": "Flame of the Godrender",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 50
+      }
+    },
+    {
+      "id": "I023",
+      "weapon": "Phoenix's Torch",
+      "granblue_id": "1040422700",
+      "skill": "Prayer of the Phoenix",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "heal_cap",
+        "value": 10
+      }
+    },
+    {
+      "id": "I024",
+      "weapon": "Phoenix's Torch",
+      "granblue_id": "1040422700",
+      "skill": "Prayer of the Phoenix",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10
+      }
+    },
+    {
+      "id": "I025",
+      "weapon": "Tropical Fairy",
+      "granblue_id": "1040416800",
+      "skill": "Balmy Healing Breeze",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "heal_cap",
+        "value": 10
+      }
+    },
+    {
+      "id": "I026",
+      "weapon": "Tropical Fairy",
+      "granblue_id": "1040416800",
+      "skill": "Balmy Healing Breeze",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10
+      }
+    },
+    {
+      "id": "I027",
+      "weapon": "Shishio",
+      "granblue_id": "1040913500",
+      "skill": "Nue's Omen",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10
+      }
+    },
+    {
+      "id": "I028",
+      "weapon": "Zosimos",
+      "granblue_id": "1040420000",
+      "skill": "Authentic Memoirs",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "skill_amp_sp",
+        "value": 4
+      }
+    },
+    {
+      "id": "I029",
+      "weapon": "Zosimos",
+      "granblue_id": "1040420000",
+      "skill": "Authentic Memoirs",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "heal_cap",
+        "value": 10
+      }
+    },
+    {
+      "id": "I030",
+      "weapon": "Zosimos",
+      "granblue_id": "1040420000",
+      "skill": "Authentic Memoirs",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10
+      }
+    },
+    {
+      "id": "I031",
+      "weapon": "Zosimos",
+      "granblue_id": "1040420000",
+      "skill": "Authentic Memoirs II",
+      "confidence": "derived",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "skill_amp_sp",
+        "value": 4
+      }
+    },
+    {
+      "id": "I032",
+      "weapon": "Zosimos",
+      "granblue_id": "1040420000",
+      "skill": "Authentic Memoirs II",
+      "confidence": "derived",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "heal_cap",
+        "value": 10
+      }
+    },
+    {
+      "id": "I033",
+      "weapon": "Zosimos",
+      "granblue_id": "1040420000",
+      "skill": "Authentic Memoirs II",
+      "confidence": "derived",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10
+      }
+    },
+    {
+      "id": "I034",
+      "weapon": "Queen's Stinger",
+      "granblue_id": "1040108900",
+      "skill": "Royal Gift",
+      "confidence": "exact",
+      "source": "#452: '16 desc-derived rows deleted on triggered-effect skills the parser now skips (Godrender hp/dmg_cap, Prayer of the Phoenix, Balmy Healing Breeze, Nue's Omen, Authentic Memoirs, ..., Royal Gift ...)'. dmg_cap members already handled by 20261014120000. Authentic Memoirs II = crest-scaled ('4% per their number of Oblivion Crest'), which the parser skips.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "bonus_elem_dmg",
+        "value": 5
+      }
+    },
+    {
+      "id": "I038",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). NEKVvF: Realm-Breaker's Animus II at melee = atk40/ca20/cacap15/da15/ta10/dmg_cap 13, e_atk row removed (no E. ATK line in either state).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 40.0,
+            "other": 20.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Realm-Breaker's Animus II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I038",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). NEKVvF: Realm-Breaker's Animus II at melee = atk40/ca20/cacap15/da15/ta10/dmg_cap 13, e_atk row removed (no E. ATK line in either state).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 15.0,
+            "other": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Realm-Breaker's Animus II",
+        "boost_type": "da",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I038",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). NEKVvF: Realm-Breaker's Animus II at melee = atk40/ca20/cacap15/da15/ta10/dmg_cap 13, e_atk row removed (no E. ATK line in either state).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 10.0,
+            "other": 5.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Realm-Breaker's Animus II",
+        "boost_type": "ta",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I038",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). NEKVvF: Realm-Breaker's Animus II at melee = atk40/ca20/cacap15/da15/ta10/dmg_cap 13, e_atk row removed (no E. ATK line in either state).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 20.0,
+            "other": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Realm-Breaker's Animus II",
+        "boost_type": "ca_dmg",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I038",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). NEKVvF: Realm-Breaker's Animus II at melee = atk40/ca20/cacap15/da15/ta10/dmg_cap 13, e_atk row removed (no E. ATK line in either state).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 15.0,
+            "other": 5.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Realm-Breaker's Animus II",
+        "boost_type": "ca_dmg_cap",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I038",
+      "weapon": "Covenant-Ruin Fist",
+      "granblue_id": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). NEKVvF: Realm-Breaker's Animus II at melee = atk40/ca20/cacap15/da15/ta10/dmg_cap 13, e_atk row removed (no E. ATK line in either state).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 13.0,
+            "other": 5.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Realm-Breaker's Animus II",
+        "boost_type": "dmg_cap",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I048",
+      "weapon": "Twinfall-Sky Blade",
+      "granblue_id": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). hbeZ3N: Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. 20 + C.A. Cap 15 + DMG Cap 10; EN-wiki elemental-ATK clause is a phantom (e_atk asserted absent).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 40.0,
+            "other": 20.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Dualblade Flash's Bond II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I048",
+      "weapon": "Twinfall-Sky Blade",
+      "granblue_id": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). hbeZ3N: Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. 20 + C.A. Cap 15 + DMG Cap 10; EN-wiki elemental-ATK clause is a phantom (e_atk asserted absent).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 15.0,
+            "other": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Dualblade Flash's Bond II",
+        "boost_type": "da",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I048",
+      "weapon": "Twinfall-Sky Blade",
+      "granblue_id": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). hbeZ3N: Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. 20 + C.A. Cap 15 + DMG Cap 10; EN-wiki elemental-ATK clause is a phantom (e_atk asserted absent).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 10.0,
+            "other": 5.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Dualblade Flash's Bond II",
+        "boost_type": "ta",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I048",
+      "weapon": "Twinfall-Sky Blade",
+      "granblue_id": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). hbeZ3N: Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. 20 + C.A. Cap 15 + DMG Cap 10; EN-wiki elemental-ATK clause is a phantom (e_atk asserted absent).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 20.0,
+            "other": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Dualblade Flash's Bond II",
+        "boost_type": "ca_dmg",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I048",
+      "weapon": "Twinfall-Sky Blade",
+      "granblue_id": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). hbeZ3N: Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. 20 + C.A. Cap 15 + DMG Cap 10; EN-wiki elemental-ATK clause is a phantom (e_atk asserted absent).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 15.0,
+            "other": 5.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Dualblade Flash's Bond II",
+        "boost_type": "ca_dmg_cap",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I048",
+      "weapon": "Twinfall-Sky Blade",
+      "granblue_id": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'celestial Conviction-family specialty tables for the 7 uncurated weapons (sword/katana/spear/bow/fist/dagger/harp)'. Values = the surviving family template (Pillar-Smasher's Conviction / Ultimate Wisdom's Shine / Cloud of Howling Twilight II: own 40/E.ATK 10/DA 15/TA 10/CA 20/CA cap 15/DMG cap 10, other 20/-/10/5/10/5/5). hbeZ3N: Bond II dagger tier = EX 40 + DA 15 + TA 10 + C.A. 20 + C.A. Cap 15 + DMG Cap 10; EN-wiki elemental-ATK clause is a phantom (e_atk asserted absent).",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 10.0,
+            "other": 5.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Dualblade Flash's Bond II",
+        "boost_type": "dmg_cap",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null
+      }
+    },
+    {
+      "id": "I049",
+      "weapon": "Doombringer Edge",
+      "granblue_id": "1040122300",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 25.0
+      }
+    },
+    {
+      "id": "I049",
+      "weapon": "Doombringer Edge",
+      "granblue_id": "1040122300",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 15.0
+      }
+    },
+    {
+      "id": "I050",
+      "weapon": "Doombringer Edge",
+      "granblue_id": "1040122300",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 35.0
+      }
+    },
+    {
+      "id": "I050",
+      "weapon": "Doombringer Edge",
+      "granblue_id": "1040122300",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I051",
+      "weapon": "Doombringer Edge",
+      "granblue_id": "1040122300",
+      "skill": "Rebirth's Godshield II",
+      "confidence": "exact",
+      "source": "same (#452)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield II",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I052",
+      "weapon": "Doombringer Edge",
+      "granblue_id": "1040122300",
+      "skill": "Rebirth's Godshield III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT HP decomposition includes Godshield 30",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield III",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I053",
+      "weapon": "Doombringer Trident",
+      "granblue_id": "1040220300",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 25.0
+      }
+    },
+    {
+      "id": "I053",
+      "weapon": "Doombringer Trident",
+      "granblue_id": "1040220300",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 15.0
+      }
+    },
+    {
+      "id": "I054",
+      "weapon": "Doombringer Trident",
+      "granblue_id": "1040220300",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 35.0
+      }
+    },
+    {
+      "id": "I054",
+      "weapon": "Doombringer Trident",
+      "granblue_id": "1040220300",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I055",
+      "weapon": "Doombringer Trident",
+      "granblue_id": "1040220300",
+      "skill": "Rebirth's Godshield II",
+      "confidence": "exact",
+      "source": "same (#452)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield II",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I056",
+      "weapon": "Doombringer Trident",
+      "granblue_id": "1040220300",
+      "skill": "Rebirth's Godshield III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT HP decomposition includes Godshield 30",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield III",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I057",
+      "weapon": "Doombringer Bow",
+      "granblue_id": "1040714700",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 25.0
+      }
+    },
+    {
+      "id": "I057",
+      "weapon": "Doombringer Bow",
+      "granblue_id": "1040714700",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 15.0
+      }
+    },
+    {
+      "id": "I058",
+      "weapon": "Doombringer Bow",
+      "granblue_id": "1040714700",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 35.0
+      }
+    },
+    {
+      "id": "I058",
+      "weapon": "Doombringer Bow",
+      "granblue_id": "1040714700",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I059",
+      "weapon": "Doombringer Bow",
+      "granblue_id": "1040714700",
+      "skill": "Rebirth's Godshield II",
+      "confidence": "exact",
+      "source": "same (#452)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield II",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I060",
+      "weapon": "Doombringer Bow",
+      "granblue_id": "1040714700",
+      "skill": "Rebirth's Godshield III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT HP decomposition includes Godshield 30",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield III",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I061",
+      "weapon": "Doombringer Lyre",
+      "granblue_id": "1040817900",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 25.0
+      }
+    },
+    {
+      "id": "I061",
+      "weapon": "Doombringer Lyre",
+      "granblue_id": "1040817900",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 15.0
+      }
+    },
+    {
+      "id": "I062",
+      "weapon": "Doombringer Lyre",
+      "granblue_id": "1040817900",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 35.0
+      }
+    },
+    {
+      "id": "I062",
+      "weapon": "Doombringer Lyre",
+      "granblue_id": "1040817900",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I063",
+      "weapon": "Doombringer Lyre",
+      "granblue_id": "1040817900",
+      "skill": "Rebirth's Godshield II",
+      "confidence": "exact",
+      "source": "same (#452)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield II",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I064",
+      "weapon": "Doombringer Lyre",
+      "granblue_id": "1040817900",
+      "skill": "Rebirth's Godshield III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT HP decomposition includes Godshield 30",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield III",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I065",
+      "weapon": "Doombringer Sword",
+      "granblue_id": "1040028900",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 25.0
+      }
+    },
+    {
+      "id": "I065",
+      "weapon": "Doombringer Sword",
+      "granblue_id": "1040028900",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 15.0
+      }
+    },
+    {
+      "id": "I066",
+      "weapon": "Doombringer Sword",
+      "granblue_id": "1040028900",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 35.0
+      }
+    },
+    {
+      "id": "I066",
+      "weapon": "Doombringer Sword",
+      "granblue_id": "1040028900",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I067",
+      "weapon": "Doombringer Sword",
+      "granblue_id": "1040028900",
+      "skill": "Rebirth's Godshield II",
+      "confidence": "exact",
+      "source": "same (#452)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield II",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I068",
+      "weapon": "Doombringer Sword",
+      "granblue_id": "1040028900",
+      "skill": "Rebirth's Godshield III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT HP decomposition includes Godshield 30",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield III",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I069",
+      "weapon": "Doombringer Gauntlet",
+      "granblue_id": "1040621200",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 25.0
+      }
+    },
+    {
+      "id": "I069",
+      "weapon": "Doombringer Gauntlet",
+      "granblue_id": "1040621200",
+      "skill": "Destruction's Godblade II",
+      "confidence": "exact",
+      "source": "SPhnLB #452: 'Godblade/Godshield per-tier rows on all Destroyer weapons (II: 25 atk / 15 des / 20 hp; III: 35/20/30) replacing the canonical III-value rows that misled lower tiers'; SPhnLB Doombringer Gauntlet unc4 panel Bonus Des. DMG 15 / Des. C.A. 5",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade II",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 15.0
+      }
+    },
+    {
+      "id": "I070",
+      "weapon": "Doombringer Gauntlet",
+      "granblue_id": "1040621200",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "atk",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 35.0
+      }
+    },
+    {
+      "id": "I070",
+      "weapon": "Doombringer Gauntlet",
+      "granblue_id": "1040621200",
+      "skill": "Destruction's Godblade III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT confirms III = EX 35 / Bonus Des. DMG 20",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Destruction's Godblade III",
+        "boost_type": "bonus_des_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I071",
+      "weapon": "Doombringer Gauntlet",
+      "granblue_id": "1040621200",
+      "skill": "Rebirth's Godshield II",
+      "confidence": "exact",
+      "source": "same (#452)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield II",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 20.0
+      }
+    },
+    {
+      "id": "I072",
+      "weapon": "Doombringer Gauntlet",
+      "granblue_id": "1040621200",
+      "skill": "Rebirth's Godshield III",
+      "confidence": "exact",
+      "source": "same (#452); g0gpOT HP decomposition includes Godshield 30",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Rebirth's Godshield III",
+        "boost_type": "hp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I074",
+      "weapon": "Huanglong Katana",
+      "granblue_id": "1040906800",
+      "skill": "Zion's Tyranny II",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I075",
+      "weapon": "Machinahand of Knowledge Verboten",
+      "granblue_id": "1040621500",
+      "skill": "Taboo Banelight's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I076",
+      "weapon": "Erichthonius",
+      "granblue_id": "1040206800",
+      "skill": "Inferno's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I077",
+      "weapon": "Two-by-Four",
+      "granblue_id": "1040310000",
+      "skill": "Inferno's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I078",
+      "weapon": "Ancient Cortana",
+      "granblue_id": "1040106400",
+      "skill": "Mistfall's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I079",
+      "weapon": "Cortana",
+      "granblue_id": "1040106500",
+      "skill": "Oblivion's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I080",
+      "weapon": "Buddysaurus Rex",
+      "granblue_id": "1040317000",
+      "skill": "Oblivion's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I081",
+      "weapon": "Gridarvor",
+      "granblue_id": "1040409200",
+      "skill": "Oblivion's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I082",
+      "weapon": "Nalakuvara",
+      "granblue_id": "1040205300",
+      "skill": "Ventosus's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I083",
+      "weapon": "Le Fay",
+      "granblue_id": "1040109000",
+      "skill": "Ventosus's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I084",
+      "weapon": "Freikugel",
+      "granblue_id": "1040504400",
+      "skill": "Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I085",
+      "weapon": "Qilin Bow",
+      "granblue_id": "1040706000",
+      "skill": "Oblivion's Tyranny II",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I086",
+      "weapon": "Spymur's Vision",
+      "granblue_id": "1040506100",
+      "skill": "Terra's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I087",
+      "weapon": "Ancient Nalakuvara",
+      "granblue_id": "1040205200",
+      "skill": "Stormwyrm's Tyranny",
+      "confidence": "exact",
+      "source": "XJZZmv/#452 parser fix: \"'% cut to … max HP' consumed the short alternation first, leaving 'max HP' to double as a bogus hp clause\"; panels show HP Cut -10 (HDbPnu Cortana, XJZZmv Huanglong). Family Tyranny datum already carries hp_cut -10.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I088",
+      "weapon": "Metal Hand",
+      "granblue_id": "1040606700",
+      "skill": "Hoarfrost's Tyranny",
+      "confidence": "exact",
+      "source": "same; the positive version-linked hp_cut REPLACES the family hp_cut -10 per boost_type, flipping the sign",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I088",
+      "weapon": "Metal Hand",
+      "granblue_id": "1040606700",
+      "skill": "Hoarfrost's Tyranny",
+      "confidence": "exact",
+      "source": "same; the positive version-linked hp_cut REPLACES the family hp_cut -10 per boost_type, flipping the sign",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp_cut",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I089",
+      "weapon": "Wilhelm",
+      "granblue_id": "1040606000",
+      "skill": "Hoarfrost's Tyranny",
+      "confidence": "exact",
+      "source": "same; the positive version-linked hp_cut REPLACES the family hp_cut -10 per boost_type, flipping the sign",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I089",
+      "weapon": "Wilhelm",
+      "granblue_id": "1040606000",
+      "skill": "Hoarfrost's Tyranny",
+      "confidence": "exact",
+      "source": "same; the positive version-linked hp_cut REPLACES the family hp_cut -10 per boost_type, flipping the sign",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp_cut",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I090",
+      "weapon": "Guivre Rod",
+      "granblue_id": "1040408500",
+      "skill": "Intelligence",
+      "confidence": "derived",
+      "source": "description '7% cut to … max HP'; same parser bug + 'cuts negate like hits' (#452)",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 7.0
+      }
+    },
+    {
+      "id": "I090",
+      "weapon": "Guivre Rod",
+      "granblue_id": "1040408500",
+      "skill": "Intelligence",
+      "confidence": "derived",
+      "source": "description '7% cut to … max HP'; same parser bug + 'cuts negate like hits' (#452)",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "hp_cut"
+      },
+      "set": {
+        "value": -7.0
+      }
+    },
+    {
+      "id": "I091",
+      "weapon": "Red Sun",
+      "granblue_id": "1040905600",
+      "skill": "Mifune Style, Zen Impact",
+      "confidence": "derived",
+      "source": "description '7% cut to … max HP'; same parser bug + 'cuts negate like hits' (#452)",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "hp",
+        "value": 7.0
+      }
+    },
+    {
+      "id": "I091",
+      "weapon": "Red Sun",
+      "granblue_id": "1040905600",
+      "skill": "Mifune Style, Zen Impact",
+      "confidence": "derived",
+      "source": "description '7% cut to … max HP'; same parser bug + 'cuts negate like hits' (#452)",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "hp_cut"
+      },
+      "set": {
+        "value": -7.0
+      }
+    },
+    {
+      "id": "I092",
+      "weapon": "Cosmic Rod",
+      "granblue_id": "1040416400",
+      "skill": "Cosmic Rod",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I092",
+      "weapon": "Cosmic Rod",
+      "granblue_id": "1040416400",
+      "skill": "Cosmic Rod",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I092",
+      "weapon": "Cosmic Rod",
+      "granblue_id": "1040416400",
+      "skill": "Cosmic Rod",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I092",
+      "weapon": "Cosmic Rod",
+      "granblue_id": "1040416400",
+      "skill": "Cosmic Rod II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I092",
+      "weapon": "Cosmic Rod",
+      "granblue_id": "1040416400",
+      "skill": "Cosmic Rod II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I092",
+      "weapon": "Cosmic Rod",
+      "granblue_id": "1040416400",
+      "skill": "Cosmic Rod II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I093",
+      "weapon": "Cosmic Lance",
+      "granblue_id": "1040213500",
+      "skill": "Cosmic Lance",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I093",
+      "weapon": "Cosmic Lance",
+      "granblue_id": "1040213500",
+      "skill": "Cosmic Lance",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I093",
+      "weapon": "Cosmic Lance",
+      "granblue_id": "1040213500",
+      "skill": "Cosmic Lance",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I093",
+      "weapon": "Cosmic Lance",
+      "granblue_id": "1040213500",
+      "skill": "Cosmic Lance II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I093",
+      "weapon": "Cosmic Lance",
+      "granblue_id": "1040213500",
+      "skill": "Cosmic Lance II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I093",
+      "weapon": "Cosmic Lance",
+      "granblue_id": "1040213500",
+      "skill": "Cosmic Lance II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I094",
+      "weapon": "Cosmic Rifle",
+      "granblue_id": "1040511800",
+      "skill": "Cosmic Rifle",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I094",
+      "weapon": "Cosmic Rifle",
+      "granblue_id": "1040511800",
+      "skill": "Cosmic Rifle",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I094",
+      "weapon": "Cosmic Rifle",
+      "granblue_id": "1040511800",
+      "skill": "Cosmic Rifle",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I094",
+      "weapon": "Cosmic Rifle",
+      "granblue_id": "1040511800",
+      "skill": "Cosmic Rifle II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I094",
+      "weapon": "Cosmic Rifle",
+      "granblue_id": "1040511800",
+      "skill": "Cosmic Rifle II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I094",
+      "weapon": "Cosmic Rifle",
+      "granblue_id": "1040511800",
+      "skill": "Cosmic Rifle II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I095",
+      "weapon": "Cosmic Harp",
+      "granblue_id": "1040811500",
+      "skill": "Cosmic Harp",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I095",
+      "weapon": "Cosmic Harp",
+      "granblue_id": "1040811500",
+      "skill": "Cosmic Harp",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I095",
+      "weapon": "Cosmic Harp",
+      "granblue_id": "1040811500",
+      "skill": "Cosmic Harp",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I095",
+      "weapon": "Cosmic Harp",
+      "granblue_id": "1040811500",
+      "skill": "Cosmic Harp II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I095",
+      "weapon": "Cosmic Harp",
+      "granblue_id": "1040811500",
+      "skill": "Cosmic Harp II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I095",
+      "weapon": "Cosmic Harp",
+      "granblue_id": "1040811500",
+      "skill": "Cosmic Harp II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I096",
+      "weapon": "Cosmic Gauntlet",
+      "granblue_id": "1040612300",
+      "skill": "Cosmic Gauntlet",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I096",
+      "weapon": "Cosmic Gauntlet",
+      "granblue_id": "1040612300",
+      "skill": "Cosmic Gauntlet",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I096",
+      "weapon": "Cosmic Gauntlet",
+      "granblue_id": "1040612300",
+      "skill": "Cosmic Gauntlet",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I096",
+      "weapon": "Cosmic Gauntlet",
+      "granblue_id": "1040612300",
+      "skill": "Cosmic Gauntlet II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I096",
+      "weapon": "Cosmic Gauntlet",
+      "granblue_id": "1040612300",
+      "skill": "Cosmic Gauntlet II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I096",
+      "weapon": "Cosmic Gauntlet",
+      "granblue_id": "1040612300",
+      "skill": "Cosmic Gauntlet II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I097",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Cosmic Sword",
+      "confidence": "exact",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I097",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Cosmic Sword",
+      "confidence": "exact",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I097",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Cosmic Sword",
+      "confidence": "exact",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I097",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Cosmic Sword II",
+      "confidence": "exact",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I097",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Cosmic Sword II",
+      "confidence": "exact",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I097",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Cosmic Sword II",
+      "confidence": "exact",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I098",
+      "weapon": "Cosmic Scythe",
+      "granblue_id": "1040311500",
+      "skill": "Cosmic Scythe",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I098",
+      "weapon": "Cosmic Scythe",
+      "granblue_id": "1040311500",
+      "skill": "Cosmic Scythe",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I098",
+      "weapon": "Cosmic Scythe",
+      "granblue_id": "1040311500",
+      "skill": "Cosmic Scythe",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I098",
+      "weapon": "Cosmic Scythe",
+      "granblue_id": "1040311500",
+      "skill": "Cosmic Scythe II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I098",
+      "weapon": "Cosmic Scythe",
+      "granblue_id": "1040311500",
+      "skill": "Cosmic Scythe II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I098",
+      "weapon": "Cosmic Scythe",
+      "granblue_id": "1040311500",
+      "skill": "Cosmic Scythe II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I099",
+      "weapon": "Cosmic Dagger",
+      "granblue_id": "1040112400",
+      "skill": "Cosmic Dagger",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I099",
+      "weapon": "Cosmic Dagger",
+      "granblue_id": "1040112400",
+      "skill": "Cosmic Dagger",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I099",
+      "weapon": "Cosmic Dagger",
+      "granblue_id": "1040112400",
+      "skill": "Cosmic Dagger",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I099",
+      "weapon": "Cosmic Dagger",
+      "granblue_id": "1040112400",
+      "skill": "Cosmic Dagger II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I099",
+      "weapon": "Cosmic Dagger",
+      "granblue_id": "1040112400",
+      "skill": "Cosmic Dagger II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I099",
+      "weapon": "Cosmic Dagger",
+      "granblue_id": "1040112400",
+      "skill": "Cosmic Dagger II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I100",
+      "weapon": "Cosmic Bow",
+      "granblue_id": "1040709500",
+      "skill": "Cosmic Bow",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I100",
+      "weapon": "Cosmic Bow",
+      "granblue_id": "1040709500",
+      "skill": "Cosmic Bow",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I100",
+      "weapon": "Cosmic Bow",
+      "granblue_id": "1040709500",
+      "skill": "Cosmic Bow",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I100",
+      "weapon": "Cosmic Bow",
+      "granblue_id": "1040709500",
+      "skill": "Cosmic Bow II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I100",
+      "weapon": "Cosmic Bow",
+      "granblue_id": "1040709500",
+      "skill": "Cosmic Bow II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I100",
+      "weapon": "Cosmic Bow",
+      "granblue_id": "1040709500",
+      "skill": "Cosmic Bow II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I101",
+      "weapon": "Cosmic Blade",
+      "granblue_id": "1040911800",
+      "skill": "Cosmic Blade",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I101",
+      "weapon": "Cosmic Blade",
+      "granblue_id": "1040911800",
+      "skill": "Cosmic Blade",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I101",
+      "weapon": "Cosmic Blade",
+      "granblue_id": "1040911800",
+      "skill": "Cosmic Blade",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I101",
+      "weapon": "Cosmic Blade",
+      "granblue_id": "1040911800",
+      "skill": "Cosmic Blade II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 30.0
+      }
+    },
+    {
+      "id": "I101",
+      "weapon": "Cosmic Blade",
+      "granblue_id": "1040911800",
+      "skill": "Cosmic Blade II",
+      "confidence": "derived",
+      "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "atk"
+        ]
+      }
+    },
+    {
+      "id": "I101",
+      "weapon": "Cosmic Blade",
+      "granblue_id": "1040911800",
+      "skill": "Cosmic Blade II",
+      "confidence": "derived",
+      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I102",
+      "weapon": "Cosmic Sword",
+      "granblue_id": "1040019500",
+      "skill": "Azure Sword's Discipline",
+      "confidence": "exact",
+      "source": "XJZZmv #452: \"Azure Sword's Discipline = DMG cap 1%/sabre\" (panel DMG Cap 7)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Azure Sword's Discipline",
+        "boost_type": "dmg_cap",
+        "series": "ex",
+        "scaling_kind": "per_grid_count",
+        "value": 1.0,
+        "count_basis": "same_weapon_type"
+      }
+    },
+    {
+      "id": "I104",
+      "weapon": "Flamma Orbis",
+      "granblue_id": "1040511600",
+      "skill": "Sunveil's Crown",
+      "confidence": "exact",
+      "source": "XJZZmv #452: \"Sunveil's Crown grants the Skill DMG 50 (MH, undebuffed default)\"; XJZZmv panel Skill DMG 50",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Sunveil's Crown",
+        "boost_type": "skill_dmg",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 50.0
+      }
+    },
+    {
+      "id": "I105",
+      "weapon": "Scales of Dominion",
+      "granblue_id": "1040415800",
+      "skill": "Absolute Equality",
+      "confidence": "exact",
+      "source": "HDbPnu #452: 'Conditions: all_weapons_unique (epic Absolute Equality: ATK 20 + DMG cap 10 only when every equipped weapon differs)'",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "atk",
+        "value": 20.0
+      },
+      "set": {
+        "scaling_kind": "conditional_flat",
+        "condition": {
+          "type": "all_weapons_unique"
+        }
+      }
+    },
+    {
+      "id": "I105",
+      "weapon": "Scales of Dominion",
+      "granblue_id": "1040415800",
+      "skill": "Absolute Equality",
+      "confidence": "exact",
+      "source": "HDbPnu #452: 'Conditions: all_weapons_unique (epic Absolute Equality: ATK 20 + DMG cap 10 only when every equipped weapon differs)'",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "dmg_cap",
+        "value": 10.0
+      },
+      "set": {
+        "scaling_kind": "conditional_flat",
+        "condition": {
+          "type": "all_weapons_unique"
+        }
+      }
+    },
+    {
+      "id": "I106",
+      "weapon": "Claws of Terror",
+      "granblue_id": "1040612500",
+      "skill": "Astral Claw",
+      "confidence": "exact",
+      "source": "HDbPnu #452: \"Astral Claw's 'one-foe multiattack DMG cap' is not the panel DMG Cap line (zeroed with notes)\"; #62 plan: convert to suppressed_boosts ['dmg_cap']",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "dmg_cap",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I106",
+      "weapon": "Claws of Terror",
+      "granblue_id": "1040612500",
+      "skill": "Astral Claw",
+      "confidence": "exact",
+      "source": "HDbPnu #452: \"Astral Claw's 'one-foe multiattack DMG cap' is not the panel DMG Cap line (zeroed with notes)\"; #62 plan: convert to suppressed_boosts ['dmg_cap']",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "dmg_cap"
+        ]
+      }
+    },
+    {
+      "id": "I107",
+      "weapon": "Claws of Terror",
+      "granblue_id": "1040612500",
+      "skill": "Astral Claw II",
+      "confidence": "exact",
+      "source": "HDbPnu #452: \"Astral Claw's 'one-foe multiattack DMG cap' is not the panel DMG Cap line (zeroed with notes)\"; #62 plan: convert to suppressed_boosts ['dmg_cap']",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "dmg_cap",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I107",
+      "weapon": "Claws of Terror",
+      "granblue_id": "1040612500",
+      "skill": "Astral Claw II",
+      "confidence": "exact",
+      "source": "HDbPnu #452: \"Astral Claw's 'one-foe multiattack DMG cap' is not the panel DMG Cap line (zeroed with notes)\"; #62 plan: convert to suppressed_boosts ['dmg_cap']",
+      "op": "update_version",
+      "set": {
+        "suppressed_boosts": [
+          "dmg_cap"
+        ]
+      }
+    },
+    {
+      "id": "I108",
+      "weapon": "Fediel's Spine",
+      "granblue_id": "1040020300",
+      "skill": "Black Covenant",
+      "confidence": "derived",
+      "source": "NEKVvF #452: 'Black Covenant = HP-scaled C.A. supp 600k'; NEKVvF panel C.A. Supp. 600,000 at 100% HP",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "flat",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Black Covenant",
+        "boost_type": "ca_supp",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 600000.0
+      }
+    },
+    {
+      "id": "I109",
+      "weapon": "Excalibur",
+      "granblue_id": "1040002000",
+      "skill": "Rightway Pathfinder",
+      "confidence": "exact",
+      "source": "#452 HP curves: \"hp_linear_cutoff (Rightway Pathfinder's 'up to 120%' C.A., linear x hp with the sub-25 cutoff)\"; QJ9736 C.A. DMG 120/60 at hp 100/50",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ca_dmg",
+        "series": "ex",
+        "scaling_kind": "hp_linear_cutoff",
+        "value": 120.0,
+        "modifier": "Rightway Pathfinder"
+      }
+    },
+    {
+      "id": "I109",
+      "weapon": "Excalibur",
+      "granblue_id": "1040002000",
+      "skill": "Rightway Pathfinder II",
+      "confidence": "exact",
+      "source": "#452 HP curves: \"hp_linear_cutoff (Rightway Pathfinder's 'up to 120%' C.A., linear x hp with the sub-25 cutoff)\"; QJ9736 C.A. DMG 120/60 at hp 100/50",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ca_dmg",
+        "series": "ex",
+        "scaling_kind": "hp_linear_cutoff",
+        "value": 120.0,
+        "modifier": "Rightway Pathfinder II"
+      }
+    },
+    {
+      "id": "I111",
+      "weapon": "Ereshkigal",
+      "granblue_id": "1040315100",
+      "skill": "Gugalanna",
+      "confidence": "exact",
+      "source": "R1ckYi #452: 'Gugalanna shows Charge Gain -200% on the panel'; R1ckYi reference Charge Gain -200",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "Gugalanna",
+        "boost_type": "charge_gain",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": -200.0
+      }
+    },
+    {
+      "id": "I112",
+      "weapon": "Ereshkigal",
+      "granblue_id": "1040315100",
+      "skill": "Disease Demon",
+      "confidence": "exact",
+      "source": "description '40% hit to skill DMG cap'; #452: \"Disease Demon's 40% hit to skill cap parses as -40\"",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "skill_dmg_cap"
+      },
+      "set": {
+        "value": -40.0
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "skill_dmg_cap",
+        "value": -40.0,
+        "modifier": "Disease Demon"
+      }
+    },
+    {
+      "id": "I116",
+      "weapon": "Rhomphaia",
+      "granblue_id": "1040217400",
+      "skill": "Cyclonic Strike",
+      "confidence": "exact",
+      "source": "#452/#62: 'Strike/Onslaught family-name-tail misattributions nulled'; durability: 'Rhomphaia suppressors die — phantom DEF Ignore returns'; SPhnLB absent=['def_ignore', …]",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I116",
+      "weapon": "Rhomphaia",
+      "granblue_id": "1040217400",
+      "skill": "Electrifying Onslaught",
+      "confidence": "exact",
+      "source": "#452/#62: 'Strike/Onslaught family-name-tail misattributions nulled'; durability: 'Rhomphaia suppressors die — phantom DEF Ignore returns'; SPhnLB absent=['def_ignore', …]",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I118",
+      "weapon": "Sword of Bahamut Coda",
+      "granblue_id": "1040007400",
+      "skill": "Concrio Ignis",
+      "confidence": "derived",
+      "source": "HDbPnu #452: 'Concrio Ignis SL-curve (30/32/35 ATK, 15/18/21 HP) … normal-frame flat (bahamut is never summon-boosted)'; ref: Coda = Concrio 35/21 at SL20",
+      "op": "insert_datum",
+      "attrs": {
+        "modifier": "Concrio Ignis",
+        "boost_type": "atk",
+        "series": "normal",
+        "formula_type": "flat",
+        "sl10": 30.0,
+        "sl15": 32.0,
+        "sl20": 35.0,
+        "aura_boostable": false
+      }
+    },
+    {
+      "id": "I118",
+      "weapon": "Sword of Bahamut Coda",
+      "granblue_id": "1040007400",
+      "skill": "Concrio Ignis",
+      "confidence": "derived",
+      "source": "HDbPnu #452: 'Concrio Ignis SL-curve (30/32/35 ATK, 15/18/21 HP) … normal-frame flat (bahamut is never summon-boosted)'; ref: Coda = Concrio 35/21 at SL20",
+      "op": "insert_datum",
+      "attrs": {
+        "modifier": "Concrio Ignis",
+        "boost_type": "hp",
+        "series": "normal",
+        "formula_type": "flat",
+        "sl10": 15.0,
+        "sl15": 18.0,
+        "sl20": 21.0,
+        "aura_boostable": false
+      }
+    },
+    {
+      "id": "I119",
+      "weapon": "Sword of Bahamut Coda",
+      "granblue_id": "1040007400",
+      "skill": "Vita Ignis",
+      "confidence": "derived",
+      "source": "HDbPnu #452: 'Vita Ignis 2% per matching character — crew_races count basis over party characters incl. the MC (Human); Wamdus the Harvin excluded, N=5'. Race codes verified: Human 1, Draph 3, Primal 5, Other 0 (Zeta 1, Sariel 5, Koku/Orologia 0, Wamdus 4)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "races": [
+            1,
+            3,
+            5,
+            0
+          ]
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "all_allies",
+        "battle_interaction": false,
+        "modifier": "Vita Ignis",
+        "boost_type": "atk",
+        "series": "normal",
+        "scaling_kind": "per_grid_count",
+        "value": 2.0,
+        "count_basis": "crew_races"
+      }
+    },
+    {
+      "id": "I119",
+      "weapon": "Sword of Bahamut Coda",
+      "granblue_id": "1040007400",
+      "skill": "Vita Ignis",
+      "confidence": "derived",
+      "source": "HDbPnu #452: 'Vita Ignis 2% per matching character — crew_races count basis over party characters incl. the MC (Human); Wamdus the Harvin excluded, N=5'. Race codes verified: Human 1, Draph 3, Primal 5, Other 0 (Zeta 1, Sariel 5, Koku/Orologia 0, Wamdus 4)",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "races": [
+            1,
+            3,
+            5,
+            0
+          ]
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "all_allies",
+        "battle_interaction": false,
+        "modifier": "Vita Ignis",
+        "boost_type": "hp",
+        "series": "normal",
+        "scaling_kind": "per_grid_count",
+        "value": 2.0,
+        "count_basis": "crew_races"
+      }
+    },
+    {
+      "id": "I121",
+      "weapon": "Worldvexing Angelos",
+      "granblue_id": "1040815400",
+      "skill": "Sephirath Haton",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'Sephirath skills: base = Arcarum-only'; 'specialty_scaled rows honor an arcarum condition flag'; durability: 'Aetos Brogue rows gated like the other four elements'",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "na_amp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "axe": 15.0,
+            "staff": 15.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "axe": 15.0,
+            "staff": 15.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "na_amp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Haton"
+      }
+    },
+    {
+      "id": "I122",
+      "weapon": "Worldvexing Angelos",
+      "granblue_id": "1040815400",
+      "skill": "Sephirath Haton II",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'II = always-on for the specialty pair — hbeZ3N (dagger/gun MC) hides Corant II'; hbeZ3N absent skill_amp_sp; pairs from each description",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "na_amp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "specialties": {
+            "axe": 8.0,
+            "staff": 8.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "axe": 8.0,
+            "staff": 8.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "na_amp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Haton II"
+      }
+    },
+    {
+      "id": "I123",
+      "weapon": "Worldvexing Angelos",
+      "granblue_id": "1040815400",
+      "skill": "Sephirath Haton II",
+      "confidence": "exact",
+      "source": "#452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "op": "update_version",
+      "set": {
+        "min_uncap": 4
+      }
+    },
+    {
+      "id": "I124",
+      "weapon": "Worldbreaking Tauros",
+      "granblue_id": "1040815300",
+      "skill": "Sephirath Corant",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'Sephirath skills: base = Arcarum-only'; 'specialty_scaled rows honor an arcarum condition flag'; durability: 'Aetos Brogue rows gated like the other four elements'",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "skill_amp_sp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "melee": 10.0,
+            "harp": 10.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "melee": 10.0,
+            "harp": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "skill_amp_sp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Corant"
+      }
+    },
+    {
+      "id": "I125",
+      "weapon": "Worldbreaking Tauros",
+      "granblue_id": "1040815300",
+      "skill": "Sephirath Corant II",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'II = always-on for the specialty pair — hbeZ3N (dagger/gun MC) hides Corant II'; hbeZ3N absent skill_amp_sp; pairs from each description",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "skill_amp_sp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "specialties": {
+            "melee": 10.0,
+            "harp": 10.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "melee": 10.0,
+            "harp": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "skill_amp_sp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Corant II"
+      }
+    },
+    {
+      "id": "I126",
+      "weapon": "Worldbreaking Tauros",
+      "granblue_id": "1040815300",
+      "skill": "Sephirath Corant II",
+      "confidence": "exact",
+      "source": "#452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "op": "update_version",
+      "set": {
+        "min_uncap": 4
+      }
+    },
+    {
+      "id": "I127",
+      "weapon": "Worldscathing Leon",
+      "granblue_id": "1040815100",
+      "skill": "Sephirath Fusame",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'Sephirath skills: base = Arcarum-only'; 'specialty_scaled rows honor an arcarum condition flag'; durability: 'Aetos Brogue rows gated like the other four elements'",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "na_amp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "gun": 15.0,
+            "katana": 15.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "gun": 15.0,
+            "katana": 15.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "na_amp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Fusame"
+      }
+    },
+    {
+      "id": "I128",
+      "weapon": "Worldscathing Leon",
+      "granblue_id": "1040815100",
+      "skill": "Sephirath Fusame II",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'II = always-on for the specialty pair — hbeZ3N (dagger/gun MC) hides Corant II'; hbeZ3N absent skill_amp_sp; pairs from each description",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "na_amp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "specialties": {
+            "gun": 8.0,
+            "katana": 8.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "gun": 8.0,
+            "katana": 8.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "na_amp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Fusame II"
+      }
+    },
+    {
+      "id": "I129",
+      "weapon": "Worldscathing Leon",
+      "granblue_id": "1040815100",
+      "skill": "Sephirath Fusame II",
+      "confidence": "exact",
+      "source": "#452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "op": "update_version",
+      "set": {
+        "min_uncap": 4
+      }
+    },
+    {
+      "id": "I130",
+      "weapon": "Worldforging Moros",
+      "granblue_id": "1040815000",
+      "skill": "Sephirath Eparc",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'Sephirath skills: base = Arcarum-only'; 'specialty_scaled rows honor an arcarum condition flag'; durability: 'Aetos Brogue rows gated like the other four elements'",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "ca_amp_sp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "sabre": 20.0,
+            "bow": 20.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "sabre": 20.0,
+            "bow": 20.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ca_amp_sp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Eparc"
+      }
+    },
+    {
+      "id": "I131",
+      "weapon": "Worldforging Moros",
+      "granblue_id": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "confidence": "exact",
+      "source": "hbeZ3N #452: 'II = always-on for the specialty pair — hbeZ3N (dagger/gun MC) hides Corant II'; hbeZ3N absent skill_amp_sp; pairs from each description",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "ca_amp_sp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "specialties": {
+            "sabre": 10.0,
+            "bow": 10.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "sabre": 10.0,
+            "bow": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "ca_amp_sp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Eparc II"
+      }
+    },
+    {
+      "id": "I132",
+      "weapon": "Worldforging Moros",
+      "granblue_id": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "confidence": "exact",
+      "source": "#452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "op": "update_version",
+      "set": {
+        "min_uncap": 4
+      }
+    },
+    {
+      "id": "I133",
+      "weapon": "Worldstorming Aetos",
+      "granblue_id": "1040815200",
+      "skill": "Sephirath Brogue",
+      "confidence": "derived",
+      "source": "hbeZ3N #452: 'Sephirath skills: base = Arcarum-only'; 'specialty_scaled rows honor an arcarum condition flag'; durability: 'Aetos Brogue rows gated like the other four elements'",
+      "op": "insert_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {
+          "arcarum": true,
+          "specialties": {
+            "dagger": 10.0,
+            "spear": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "skill_amp_sp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Brogue"
+      }
+    },
+    {
+      "id": "I134",
+      "weapon": "Worldstorming Aetos",
+      "granblue_id": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "confidence": "derived",
+      "source": "Brogue II was imported as plain skill_amp; Corant II's identical wording is skill_amp_sp (#452 Sephirath gating). Replaced by the gated row below.",
+      "op": "delete_effect",
+      "match": {
+        "boost_type": "skill_amp",
+        "value": 10.0
+      }
+    },
+    {
+      "id": "I134",
+      "weapon": "Worldstorming Aetos",
+      "granblue_id": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "confidence": "derived",
+      "source": "hbeZ3N #452: 'II = always-on for the specialty pair — hbeZ3N (dagger/gun MC) hides Corant II'; hbeZ3N absent skill_amp_sp; pairs from each description",
+      "op": "update_effect",
+      "match": {
+        "boost_type": "skill_amp_sp"
+      },
+      "set": {
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "condition": {
+          "specialties": {
+            "dagger": 10.0,
+            "spear": 10.0
+          }
+        }
+      },
+      "insert_if_missing": {
+        "value_unit": "percent",
+        "condition": {
+          "specialties": {
+            "dagger": 10.0,
+            "spear": 10.0
+          }
+        },
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "boost_type": "skill_amp_sp",
+        "series": "ex",
+        "scaling_kind": "specialty_scaled",
+        "value": null,
+        "modifier": "Sephirath Brogue II"
+      }
+    },
+    {
+      "id": "I135",
+      "weapon": "Worldstorming Aetos",
+      "granblue_id": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "confidence": "exact",
+      "source": "#452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "op": "update_version",
+      "set": {
+        "min_uncap": 4
+      }
+    },
+    {
+      "id": "I138",
+      "op": "insert_key_effect",
+      "attrs": {
+        "value_unit": "percent",
+        "condition": {},
+        "depends_on": [],
+        "aura_boostable": false,
+        "seraphic_affected": false,
+        "stacking": "additive",
+        "applies_to": "element_allies",
+        "battle_interaction": false,
+        "modifier": "α Pendulum",
+        "key_slug": "pendulum-alpha",
+        "boost_type": "ca_dmg_cap",
+        "series": "ex",
+        "scaling_kind": "static",
+        "value": 10.0
+      },
+      "confidence": "exact",
+      "source": "memory srinso-r1ckyi-goldens: 'α Pendulum = ca_dmg_cap 10 (validated)'; 54hHKY: 'C.A. DMG Cap 58 = 6x2x4 + alpha Pendulum 10'"
+    },
+    {
+      "id": "I136",
+      "weapon": "Claw of the Dragonslayer",
+      "granblue_id": "1040316600",
+      "skill": "}}} Enforcement",
+      "confidence": "exact",
+      "source": "Junk template version beside the real Amber Enforcement resolves to the Enforcement family too, counting it twice; 54hHKY validated a single Enforcement (DEF 15).",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I136",
+      "weapon": "Concordia",
+      "granblue_id": "1040117500",
+      "skill": "}}} Enforcement",
+      "confidence": "exact",
+      "source": "Junk template version beside the real Golden Enforcement resolves to the Enforcement family too, counting it twice; 54hHKY validated a single Enforcement (DEF 15).",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I136",
+      "weapon": "Forsaken Agastia",
+      "granblue_id": "1040816000",
+      "skill": "}}} Enforcement",
+      "confidence": "exact",
+      "source": "Junk template version beside the real Graphite Enforcement resolves to the Enforcement family too, counting it twice; 54hHKY validated a single Enforcement (DEF 15).",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I136",
+      "weapon": "Lagrange",
+      "granblue_id": "1040617900",
+      "skill": "}}} Enforcement",
+      "confidence": "exact",
+      "source": "Junk template version beside the real Cobalt Enforcement resolves to the Enforcement family too, counting it twice; 54hHKY validated a single Enforcement (DEF 15).",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I136",
+      "weapon": "Mortality Bow",
+      "granblue_id": "1040712900",
+      "skill": "}}} Enforcement",
+      "confidence": "exact",
+      "source": "Junk template version beside the real Scarlet Enforcement resolves to the Enforcement family too, counting it twice; 54hHKY validated a single Enforcement (DEF 15).",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    },
+    {
+      "id": "I136",
+      "weapon": "Spada di Vento",
+      "granblue_id": "1040316800",
+      "skill": "}}} Enforcement",
+      "confidence": "exact",
+      "source": "Junk template version beside the real Jade Enforcement resolves to the Enforcement family too, counting it twice; 54hHKY validated a single Enforcement (DEF 15).",
+      "op": "update_version",
+      "set": {
+        "modifier_override": "none"
+      }
+    }
+  ]
+}
