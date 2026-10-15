@@ -4,9 +4,10 @@
 # July 2026 snapshots in data/. That curation was made directly in the dev
 # database and never shipped, so prod still has the June rows it replaced.
 #
-# - Eight family rows superseded by July rows still apply alongside their
+# - Seven family rows superseded by July rows still apply alongside their
 #   replacements (Wrath/Grand Epic ATK next to their EX Might Sp. rows, the
-#   Surge/Exertion HP curves, Persistence's old cap, Supremacy's DMG Amp. 100).
+#   Surge/Exertion HP curves, Persistence's old cap) and Pendulum of Supremacy's
+#   DMG Amp. 100.
 # - Aramis copies stack (SRiNSO: two copies reach the 60/20 display caps), so
 #   its per-copy total caps go.
 # - Boost-type registry values from data/weapon_skill_boost_types.json and
@@ -21,9 +22,10 @@ class RecoverJulyCanonicalSkillData < ActiveRecord::Migration[8.0]
     %w[Surge ta current_hp_scaled],
     %w[Exertion da current_hp_scaled],
     %w[Exertion ta current_hp_scaled],
-    %w[Persistence dmg_supp supplemental_cap],
-    ["Pendulum of Supremacy", "dmg_amp", "conditional_flat"]
+    %w[Persistence dmg_supp supplemental_cap]
   ].freeze
+  # NEKVvF: Supremacy's ≥280 package has no DMG Amp.
+  SUPERSEDED_KEY_ROWS = [%w[pendulum-supremacy dmg_amp]].freeze
   BOOST_TYPE_KEYS = %w[plain_amp e_atk hp_dmg].freeze
 
   def up
@@ -49,6 +51,10 @@ class RecoverJulyCanonicalSkillData < ActiveRecord::Migration[8.0]
     SUPERSEDED.each do |modifier, boost_type, scaling_kind|
       WeaponSkillEffect.where(weapon_skill_version_id: nil, key_slug: nil, modifier: modifier,
                               boost_type: boost_type, scaling_kind: scaling_kind,
+                              manually_edited_at: nil).delete_all
+    end
+    SUPERSEDED_KEY_ROWS.each do |key_slug, boost_type|
+      WeaponSkillEffect.where(weapon_skill_version_id: nil, key_slug: key_slug, boost_type: boost_type,
                               manually_edited_at: nil).delete_all
     end
   end
