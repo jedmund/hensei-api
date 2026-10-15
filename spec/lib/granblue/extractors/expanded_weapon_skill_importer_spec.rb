@@ -12,6 +12,18 @@ RSpec.describe Granblue::Extractors::ExpandedWeaponSkillImporter do
   end
 
   describe ".apply_gameplay_notes" do
+    it "leaves Grand Epic to its canonical effect (no double-counting atk row)" do
+      skill = instance_double(Skill, name_en: "Grand Epic")
+      version = instance_double(WeaponSkillVersion, skill: skill)
+      slot = instance_double(WeaponSkill, weapon_skill_versions: [version])
+      weapon = instance_double(Weapon, weapon_skills: double(includes: [slot]))
+      notes = { "Grand Epic" => { frame: "ex", clauses: [{ scaling: :per_count, boost_type: "atk", value: 4.0 }] } }
+      allow(Granblue::Parsers::GameplayNotesParser).to receive(:parse).and_return(notes)
+      expect(WeaponSkillEffect).not_to receive(:where)
+
+      described_class.send(:apply_gameplay_notes, weapon, "expanded", Hash.new(0))
+    end
+
     it "does not recreate version-linked Staff Resonance effects" do
       skill = instance_double(Skill, name_en: "Staff Resonance")
       version = instance_double(WeaponSkillVersion, skill: skill)
