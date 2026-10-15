@@ -2,8 +2,13 @@
 
 # Ray of Zhuque Regus was imported with Pontus's granblue_id (1040906600). Skills are keyed by
 # granblue_id, so Regus showed Pontus's skills (Wings of Divinity instead of Fire's Aegis).
-# The wiki page gives Regus 1040906500. Its skills are rebuilt from the stored wikitext;
-# nothing is fetched.
+# The wiki page gives Regus 1040906500.
+#
+# Regus's stored wikitext may itself be Pontus's page (it was fetched while the ids were
+# shared), so its skills are rebuilt here only when the stored page says |id=1040906500.
+# Otherwise Regus is left with no skills; granblue:rebuild_weapons_from_sources rebuilds
+# skill-less weapons from stored sources after granblue:fetch_weapon_sources. Nothing is
+# fetched here.
 class FixRayOfZhuqueRegusGranblueId < ActiveRecord::Migration[8.0]
   PONTUS_ID = "1040906600"
   REGUS_ID = "1040906500"
@@ -17,7 +22,8 @@ class FixRayOfZhuqueRegusGranblueId < ActiveRecord::Migration[8.0]
     end
 
     regus.update_columns(granblue_id: REGUS_ID)
-    return say("no stored wikitext for Regus; skills not rebuilt") if regus.wiki_raw.blank?
+    stored_id = regus.wiki_raw.to_s[/^\|id=\s*(\d+)/, 1]
+    return say("stored wikitext is #{stored_id || 'missing'}, not Regus; skills not rebuilt") unless stored_id == REGUS_ID
 
     Granblue::EntityReparser.new(regus.reload, refetch: false).reparse
     say "Regus skills: #{regus.weapon_skills.reload.count}"
