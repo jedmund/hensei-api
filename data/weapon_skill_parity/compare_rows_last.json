@@ -1,8 +1,7 @@
 {
   "catalogue": "catalogue-20261015-sources",
   "counts": {
-    "diff_accept": 1,
-    "diff_parser": 1,
+    "diff_accept": 2,
     "rows_compiled": 526,
     "rows_equal": 524,
     "rows_today": 524,
@@ -40,12 +39,12 @@
       }
     },
     {
-      "key": "1040913400|1|2|Blazing Chain III|effect|dmg_amp|[\"static\",{}]",
-      "class": "parser",
-      "reason": "Higurashi's Blazing Chain III text ends 'amplify chain damage by 50%'. The description parser maps it to general dmg_amp (a 50% damage amplification on every hit), but it is a chain-burst amplification (cb_amp). The original extractor produces the same row when run on today's text (verified in a rolled-back transaction); today's database predates that text. Needs a parser fix or a dmg_amp suppression before switch-over (W2/W10).",
+      "key": "1040913400|1|2|Blazing Chain III|effect|cb_amp|[\"static\",{}]",
+      "class": "accept",
+      "reason": "New row from today's wiki text: gbf.wiki 'Higurashi' s2_5s_desc (Blazing Chain III) ends 'and amplify chain damage by 50%' (C.B. Amp. 50%). Today's database predates that text. The parser now maps chain-burst amplify wording to cb_amp; before #552 it read this as a general dmg_amp 50.",
       "added": {
         "modifier": "Blazing Chain III",
-        "boost_type": "dmg_amp",
+        "boost_type": "cb_amp",
         "series": "ex",
         "scaling_kind": "static",
         "value": 50.0,

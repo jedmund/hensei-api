@@ -78,6 +78,9 @@ module Granblue
         [/chain ?burst (?:dmg|damage) cap/i,                 "cb_dmg_cap"],
         [/healing cap|boost to healing/i,                    "heal_cap"],
         [/(?:dmg|damage) cap/i,                              "dmg_cap"],
+        # chain-burst amplification ("amplify chain damage by 50%", "Amplify light allies' chain
+        # DMG") is its own boost; consuming "chain" also keeps it off the C.B. DMG line
+        [/amplif\w*(?:\s+\S+){0,3}?\s+chain\b|\bchain (?:burst )?(?:dmg|damage) (?:is )?amplif\w*/i, "cb_amp"],
         [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, "na_amp"],
         [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp_sp"],
         [/amplif\w*.*skill|skill.*amplif/i, "skill_amp_sp"],
