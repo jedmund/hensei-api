@@ -38,8 +38,9 @@ module Granblue
                                     difficulty_computed_at difficulty_ruleset_version guidebook1_id guidebook2_id
                                     guidebook3_id last_updated collection_weapon_id collection_summon_id
                                     collection_character_id]).freeze
-    # Raw page sources: bulky, and the calculator never reads them.
-    CATALOGUE_DROP = %w[game_raw_en game_raw_jp wiki_raw wiki_raw_jp wiki_raw_fetched_at].freeze
+    # Raw page sources and their fetch metadata (game_raw_*, wiki_raw*, e.g.
+    # wiki_raw_jp_fetched_at): bulky or volatile, and the calculator never reads them.
+    CATALOGUE_DROP = /\A(?:game_raw|wiki_raw)/
     TIMESTAMPS = %w[created_at updated_at].freeze
 
     # Local edits a reference's notes call for, applied after granblue:import_golden_party
@@ -218,7 +219,7 @@ module Granblue
         where = ids ? "WHERE t.id::text IN (#{ids.map { |i| conn.quote(i.to_s) }.join(', ')})" : ''
         sql = "SELECT row_to_json(t)::text FROM #{conn.quote_table_name(table)} t #{where} ORDER BY t.id::text COLLATE \"C\""
         generated = conn.columns(table).select(&:virtual?).map(&:name)
-        conn.select_values(sql).map { |json| JSON.parse(json).except(*TIMESTAMPS, *CATALOGUE_DROP, *generated) }
+        conn.select_values(sql).map { |json| JSON.parse(json).except(*TIMESTAMPS, *generated).reject { |k, _| k.match?(CATALOGUE_DROP) } }
       end
 
       def catalogue_tag

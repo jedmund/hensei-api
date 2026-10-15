@@ -52,8 +52,14 @@ RSpec.describe 'Golden panel references' do
         Granblue::GoldenFixture.load(fixture, mode: :replace)
         again = Granblue::GoldenFixture.export(code)
 
-        again["tables"].each { |t, rows| expect(rows).to eq(fixture["tables"][t]), t }
-        expect(again.except("catalogue_tag")).to eq(fixture.except("catalogue_tag"))
+        # Compare only the fixture's own columns: a column added to the catalogue since
+        # the export shows up in a re-export but is no reason to churn the fixture.
+        expect(again.except('catalogue_tag', 'tables')).to eq(fixture.except('catalogue_tag', 'tables'))
+        expect(again['tables'].keys).to eq(fixture['tables'].keys)
+        fixture['tables'].each do |table, rows|
+          columns = rows.flat_map(&:keys).uniq
+          expect(again['tables'][table].map { |r| r.slice(*columns) }).to eq(rows), table
+        end
       end
     end
   end
