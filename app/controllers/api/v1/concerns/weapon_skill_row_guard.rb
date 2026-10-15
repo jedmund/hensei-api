@@ -25,7 +25,7 @@ module Api
           versions = if row.weapon_skill_version_id.present?
                        versions.where(id: row.weapon_skill_version_id)
                      else
-                       versions.where(skill_modifier: row.modifier)
+                       versions.in_family(row.modifier)
                      end
           weapons = versions.filter_map { |v| v.weapon_skill&.weapon }.uniq
           {
