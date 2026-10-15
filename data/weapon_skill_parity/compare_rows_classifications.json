@@ -5,6 +5,6 @@
   },
   "1040913400|1|2|Blazing Chain III|effect|dmg_amp|[\"static\",{}]": {
     "class": "parser",
-    "reason": "Higurashi's Blazing Chain III text ends 'amplify chain damage by 50%'. The description parser maps it to general dmg_amp, but it is a chain-burst amplification. The original extractor produces the same row when run on today's text (verified in a rolled-back transaction); today's database predates that text. Needs a parser fix or a dmg_amp suppression before switch-over (W2/W10)."
+    "reason": "Higurashi's Blazing Chain III text ends 'amplify chain damage by 50%'. The description parser maps it to general dmg_amp (a 50% damage amplification on every hit), but it is a chain-burst amplification (cb_amp). The original extractor produces the same row when run on today's text (verified in a rolled-back transaction); today's database predates that text. Needs a parser fix or a dmg_amp suppression before switch-over (W2/W10)."
   }
 }

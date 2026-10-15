@@ -64,7 +64,8 @@ module WeaponSkills
         def unknown = @differences.select { |d| d["class"] == "unknown" }
 
         def report
-          { "counts" => @counts.sort.to_h,
+          { "catalogue" => WeaponSkills::CatalogueDump.restored_tag,
+            "counts" => @counts.sort.to_h,
             "differences" => @differences.sort_by { |d| d["key"] } }
         end
 
