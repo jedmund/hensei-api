@@ -13,21 +13,31 @@ module WeaponSkills
     LAST_DIFF_PATH = Rails.root.join("data/weapon_skill_parity/last_diff.json")
     FIELDS = %w[gate frame data effects].freeze
 
-    DATA_COLUMNS = %i[boost_type formula_type sl1 sl10 sl15 sl20 sl25 coefficient aura_boostable].freeze
-    EFFECT_COLUMNS = %i[boost_type scaling_kind value per_copy_cap total_cap cap_formula condition
-                        series aura_boostable].freeze
+    # Every column the calculator can read; bookkeeping columns are left out. The lists are
+    # recorded in the snapshot's meta, so a schema change shows as a format mismatch.
+    BOOKKEEPING = %w[id created_at updated_at notes weapon_skill_version_id manually_edited_at provenance].freeze
+
+    def self.data_columns = WeaponSkillDatum.column_names - BOOKKEEPING
+    def self.effect_columns = WeaponSkillEffect.column_names - BOOKKEEPING
 
     def self.capture(meta: {})
       new.capture(meta: meta)
     end
 
     def capture(meta: {})
-      { "meta" => meta.merge("captured_at" => Time.current.utc.iso8601),
+      { "meta" => meta.merge("captured_at" => Time.current.utc.iso8601,
+                             "columns" => { "data" => self.class.data_columns, "effects" => self.class.effect_columns }),
         "versions" => versions, "keys" => keys }
     end
 
     # → { changed: [{key, fields: {field => [before, after]}}], missing: [keys], added: [keys], keys: … }
     def self.diff(before, after)
+      columns = [before, after].map { |snap| snap.dig("meta", "columns") }
+      if columns.uniq.size > 1
+        raise ArgumentError, "snapshot columns differ (#{columns.map(&:inspect).join(' vs ')}); " \
+                             "refresh the baseline with write=true in the PR that changes the schema"
+      end
+
       b = before.fetch("versions")
       a = after.fetch("versions")
       changed = (b.keys & a.keys).filter_map do |key|
@@ -65,8 +75,8 @@ module WeaponSkills
         out[key] = {
           "gate" => [v.unlock_level, v.min_uncap, v.transcendence_stage],
           "frame" => [v.resolved_modifier, v.resolved_series, v.resolved_size, v.multiplier_frame],
-          "data" => sorted(v.weapon_skill_data.map { |d| row(d, DATA_COLUMNS) }),
-          "effects" => sorted(v.weapon_skill_effects.map { |e| row(e, EFFECT_COLUMNS) })
+          "data" => sorted(v.weapon_skill_data.map { |d| row(d, self.class.data_columns) }),
+          "effects" => sorted(v.weapon_skill_effects.map { |e| row(e, self.class.effect_columns) })
         }
       end
       out.sort.to_h
@@ -74,7 +84,7 @@ module WeaponSkills
 
     def keys
       WeaponSkillEffect.where.not(key_slug: nil).group_by(&:key_slug).sort.to_h do |slug, effects|
-        [slug, sorted(effects.map { |e| row(e, EFFECT_COLUMNS) })]
+        [slug, sorted(effects.map { |e| row(e, self.class.effect_columns) })]
       end
     end
 
