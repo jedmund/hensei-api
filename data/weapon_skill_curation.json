@@ -52,6 +52,15 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040213300",
+      "skill": "True Phantom's Supremacy",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "hp"
+      ],
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040213500",
       "skill": "Cosmic Lance",
       "ordinal": 0,
@@ -220,6 +229,20 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040604400",
+      "skill": "Human Animus Parity",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040604400",
+      "skill": "Human Animus Utopia",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040612300",
       "skill": "Cosmic Gauntlet",
       "ordinal": 0,
@@ -268,6 +291,20 @@
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Erune Animus Parity",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Erune Animus Utopia",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040709500",
@@ -320,6 +357,20 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040803800",
+      "skill": "Harvin Animus Parity",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040803800",
+      "skill": "Harvin Animus Utopia",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040811500",
       "skill": "Cosmic Harp",
       "ordinal": 0,
@@ -368,6 +419,20 @@
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Draph Animus Parity",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Draph Animus Utopia",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040911800",
@@ -445,6 +510,25 @@
     },
     {
       "weapon": "1040002000",
+      "skill": "Rightway Pathfinder",
+      "ordinal": 0,
+      "modifier": "Rightway Pathfinder",
+      "boost_type": "ca_supp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 1000000.0,
+      "value_unit": "flat",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040002000",
       "skill": "Rightway Pathfinder II",
       "ordinal": 1,
       "modifier": "Rightway Pathfinder II",
@@ -461,6 +545,25 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040002000",
+      "skill": "Rightway Pathfinder II",
+      "ordinal": 1,
+      "modifier": "Rightway Pathfinder II",
+      "boost_type": "ca_supp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 1000000.0,
+      "value_unit": "flat",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040007400",
@@ -548,6 +651,7 @@
       "scaling_kind": "per_grid_count",
       "value": 1.0,
       "value_unit": "percent",
+      "per_copy_cap": 10.0,
       "count_basis": "same_weapon_type",
       "condition": {},
       "aura_boostable": false,
@@ -556,7 +660,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040020300",
@@ -642,6 +746,282 @@
     },
     {
       "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "sabre": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "sabre": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "sabre": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "sabre": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "sabre": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "sabre": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "sabre": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "sabre": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040025400",
       "skill": "Sword Voltage II",
       "ordinal": 0,
       "modifier": "Sword Voltage II",
@@ -661,6 +1041,44 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040028900",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040028900",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "bonus_des_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040028900",
@@ -740,6 +1158,63 @@
     },
     {
       "weapon": "1040028900",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040028900",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040028900",
+      "skill": "Rebirth's Godshield II",
+      "ordinal": 1,
+      "modifier": "Rebirth's Godshield II",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040028900",
       "skill": "Rebirth's Godshield II",
       "ordinal": 1,
       "modifier": "Rebirth's Godshield II",
@@ -762,6 +1237,25 @@
       "skill": "Rebirth's Godshield III",
       "ordinal": 2,
       "modifier": "Rebirth's Godshield III",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040028900",
+      "skill": "Rebirth's Godshield III",
+      "ordinal": 2,
+      "modifier": "Rebirth's Godshield III",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
@@ -775,6 +1269,33 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040106700",
+      "skill": "Incursio Ventus",
+      "ordinal": 0,
+      "modifier": "Incursio Ventus",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          1,
+          2,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040108400",
@@ -797,6 +1318,27 @@
       "notes": "Reduces earth damage; Rose Crystal 10% profile.",
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040112400",
+      "skill": "Azure Dagger's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Dagger's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040113200",
@@ -1143,6 +1685,44 @@
     },
     {
       "weapon": "1040122300",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040122300",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "bonus_des_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040122300",
       "skill": "Destruction's Godblade II",
       "ordinal": 1,
       "modifier": "Destruction's Godblade II",
@@ -1219,6 +1799,63 @@
     },
     {
       "weapon": "1040122300",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040122300",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040122300",
+      "skill": "Rebirth's Godshield II",
+      "ordinal": 1,
+      "modifier": "Rebirth's Godshield II",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040122300",
       "skill": "Rebirth's Godshield II",
       "ordinal": 1,
       "modifier": "Rebirth's Godshield II",
@@ -1241,6 +1878,25 @@
       "skill": "Rebirth's Godshield III",
       "ordinal": 2,
       "modifier": "Rebirth's Godshield III",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040122300",
+      "skill": "Rebirth's Godshield III",
+      "ordinal": 2,
+      "modifier": "Rebirth's Godshield III",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
@@ -1254,6 +1910,33 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040205400",
+      "skill": "Incursio Corun",
+      "ordinal": 0,
+      "modifier": "Incursio Corun",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          2,
+          3,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040207200",
@@ -1276,6 +1959,27 @@
       "notes": "Reduces water damage; Rose Crystal 10% profile.",
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040213500",
+      "skill": "Azure Lance's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Lance's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040215500",
@@ -1342,6 +2046,282 @@
     },
     {
       "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "spear": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "spear": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "spear": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "spear": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "spear": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "spear": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "spear": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "spear": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "spear": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "spear": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "spear": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "spear": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040219400",
       "skill": "Spear Voltage II",
       "ordinal": 0,
       "modifier": "Spear Voltage II",
@@ -1361,6 +2341,44 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040220300",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040220300",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "bonus_des_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040220300",
@@ -1440,6 +2458,63 @@
     },
     {
       "weapon": "1040220300",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040220300",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040220300",
+      "skill": "Rebirth's Godshield II",
+      "ordinal": 1,
+      "modifier": "Rebirth's Godshield II",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040220300",
       "skill": "Rebirth's Godshield II",
       "ordinal": 1,
       "modifier": "Rebirth's Godshield II",
@@ -1462,6 +2537,25 @@
       "skill": "Rebirth's Godshield III",
       "ordinal": 2,
       "modifier": "Rebirth's Godshield III",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040220300",
+      "skill": "Rebirth's Godshield III",
+      "ordinal": 2,
+      "modifier": "Rebirth's Godshield III",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
@@ -1475,6 +2569,33 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040304300",
+      "skill": "Incursio Terra",
+      "ordinal": 0,
+      "modifier": "Incursio Terra",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          3,
+          4,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040307000",
@@ -1497,6 +2618,27 @@
       "notes": "Reduces fire damage; Rose Crystal 20% profile.",
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040311500",
+      "skill": "Azure Scythe's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Scythe's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040313500",
@@ -2016,6 +3158,60 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040407000",
+      "skill": "Vita Imber",
+      "ordinal": 0,
+      "modifier": "Vita Imber",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          2,
+          4,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040407000",
+      "skill": "Vita Imber",
+      "ordinal": 0,
+      "modifier": "Vita Imber",
+      "boost_type": "hp",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          2,
+          4,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040408500",
       "skill": "Intelligence",
       "ordinal": 0,
@@ -2099,6 +3295,27 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040416400",
+      "skill": "Azure Rod's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Rod's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040418200",
       "skill": "Sephira Maxi-Wind",
       "ordinal": 0,
@@ -2140,6 +3357,33 @@
       "edited_at": "2026-07-05T06:40:13Z"
     },
     {
+      "weapon": "1040504500",
+      "skill": "Incursio Albus",
+      "ordinal": 0,
+      "modifier": "Incursio Albus",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 4.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          1,
+          4,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040511600",
       "skill": "Sunveil's Crown",
       "ordinal": 0,
@@ -2157,6 +3401,27 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040511800",
+      "skill": "Azure Rifle's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Rifle's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040513700",
@@ -2244,6 +3509,58 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040604400",
+      "skill": "Rapidus Human Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Human Animus",
+      "boost_type": "da",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          1,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040604400",
+      "skill": "Rapidus Human Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Human Animus",
+      "boost_type": "ta",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          1,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040607400",
       "skill": "Bronze Rose Bud",
       "ordinal": 0,
@@ -2264,6 +3581,27 @@
       "notes": "Reduces wind damage; Rose Crystal 20% profile.",
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040612300",
+      "skill": "Azure Gauntlet's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Gauntlet's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040614300",
@@ -2676,6 +4014,44 @@
     },
     {
       "weapon": "1040621200",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040621200",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "bonus_des_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040621200",
       "skill": "Destruction's Godblade II",
       "ordinal": 1,
       "modifier": "Destruction's Godblade II",
@@ -2752,6 +4128,63 @@
     },
     {
       "weapon": "1040621200",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040621200",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040621200",
+      "skill": "Rebirth's Godshield II",
+      "ordinal": 1,
+      "modifier": "Rebirth's Godshield II",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040621200",
       "skill": "Rebirth's Godshield II",
       "ordinal": 1,
       "modifier": "Rebirth's Godshield II",
@@ -2774,6 +4207,25 @@
       "skill": "Rebirth's Godshield III",
       "ordinal": 2,
       "modifier": "Rebirth's Godshield III",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040621200",
+      "skill": "Rebirth's Godshield III",
+      "ordinal": 2,
+      "modifier": "Rebirth's Godshield III",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
@@ -2787,6 +4239,58 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Rapidus Erune Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Erune Animus",
+      "boost_type": "da",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          2,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Rapidus Erune Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Erune Animus",
+      "boost_type": "ta",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          2,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040706100",
@@ -2809,6 +4313,27 @@
       "notes": "Reduces water damage; Rose Crystal 20% profile.",
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040709500",
+      "skill": "Azure Bow's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Bow's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040710700",
@@ -2893,7 +4418,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T06:51:51Z"
     },
     {
       "weapon": "1040712900",
@@ -3082,6 +4607,320 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040714700",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040714700",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "bonus_des_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040714700",
       "skill": "Destruction's Godblade II",
       "ordinal": 1,
@@ -3159,6 +4998,63 @@
     },
     {
       "weapon": "1040714700",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040714700",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040714700",
+      "skill": "Rebirth's Godshield II",
+      "ordinal": 1,
+      "modifier": "Rebirth's Godshield II",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040714700",
       "skill": "Rebirth's Godshield II",
       "ordinal": 1,
       "modifier": "Rebirth's Godshield II",
@@ -3181,6 +5077,25 @@
       "skill": "Rebirth's Godshield III",
       "ordinal": 2,
       "modifier": "Rebirth's Godshield III",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040714700",
+      "skill": "Rebirth's Godshield III",
+      "ordinal": 2,
+      "modifier": "Rebirth's Godshield III",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
@@ -3194,6 +5109,58 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040803800",
+      "skill": "Rapidus Harvin Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Harvin Animus",
+      "boost_type": "da",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          4,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040803800",
+      "skill": "Rapidus Harvin Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Harvin Animus",
+      "boost_type": "ta",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          4,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040806300",
@@ -3216,6 +5183,27 @@
       "notes": "Reduces earth damage; Rose Crystal 20% profile.",
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040811500",
+      "skill": "Azure Harp's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Harp's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040813300",
@@ -3724,6 +5712,320 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040817900",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 25.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040817900",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "modifier": "Destruction's Godblade I",
+      "boost_type": "bonus_des_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 15.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040817900",
       "skill": "Destruction's Godblade II",
       "ordinal": 1,
@@ -3801,6 +6103,63 @@
     },
     {
       "weapon": "1040817900",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040817900",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "modifier": "Rebirth's Godshield I",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040817900",
+      "skill": "Rebirth's Godshield II",
+      "ordinal": 1,
+      "modifier": "Rebirth's Godshield II",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 5.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040817900",
       "skill": "Rebirth's Godshield II",
       "ordinal": 1,
       "modifier": "Rebirth's Godshield II",
@@ -3823,6 +6182,25 @@
       "skill": "Rebirth's Godshield III",
       "ordinal": 2,
       "modifier": "Rebirth's Godshield III",
+      "boost_type": "bonus_des_ca",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040817900",
+      "skill": "Rebirth's Godshield III",
+      "ordinal": 2,
+      "modifier": "Rebirth's Godshield III",
       "boost_type": "hp",
       "series": "ex",
       "scaling_kind": "static",
@@ -3836,6 +6214,58 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Rapidus Draph Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Draph Animus",
+      "boost_type": "da",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          3,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Rapidus Draph Animus",
+      "ordinal": 0,
+      "modifier": "Rapidus Draph Animus",
+      "boost_type": "ta",
+      "series": "normal",
+      "scaling_kind": "per_grid_count",
+      "value": 2.0,
+      "value_unit": "percent",
+      "count_basis": "crew_races",
+      "condition": {
+        "races": [
+          3,
+          5,
+          0
+        ]
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040905600",
@@ -3855,6 +6285,27 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040911800",
+      "skill": "Azure Blade's Discipline",
+      "ordinal": 0,
+      "modifier": "Azure Blade's Discipline",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "per_copy_cap": 10.0,
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040912600",
@@ -3896,6 +6347,282 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-07-05T06:40:13Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "katana": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "katana": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "katana": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "katana": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "katana": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "katana": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "katana": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "katana": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "katana": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "katana": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "katana": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "katana": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040916900",
@@ -3967,6 +6694,36 @@
       "edited_at": "2026-08-25T06:42:02Z"
     },
     {
+      "weapon": "1040106700",
+      "skill": "Concrio Ventus",
+      "ordinal": 0,
+      "modifier": "Concrio Ventus",
+      "boost_type": "atk",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 32.0,
+      "sl20": 35.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040106700",
+      "skill": "Concrio Ventus",
+      "ordinal": 0,
+      "modifier": "Concrio Ventus",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 15.0,
+      "sl15": 18.0,
+      "sl20": 21.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040108400",
       "skill": "Emerald Rose Thorns",
       "ordinal": 0,
@@ -3982,6 +6739,36 @@
       "edited_at": "2026-08-25T06:42:02Z"
     },
     {
+      "weapon": "1040205400",
+      "skill": "Concrio Corun",
+      "ordinal": 0,
+      "modifier": "Concrio Corun",
+      "boost_type": "atk",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 32.0,
+      "sl20": 35.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040205400",
+      "skill": "Concrio Corun",
+      "ordinal": 0,
+      "modifier": "Concrio Corun",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 15.0,
+      "sl15": 18.0,
+      "sl20": 21.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040207200",
       "skill": "Bronze Rose Thorns",
       "ordinal": 0,
@@ -3995,6 +6782,36 @@
       "aura_boostable": false,
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040304300",
+      "skill": "Concrio Terra",
+      "ordinal": 0,
+      "modifier": "Concrio Terra",
+      "boost_type": "atk",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 32.0,
+      "sl20": 35.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040304300",
+      "skill": "Concrio Terra",
+      "ordinal": 0,
+      "modifier": "Concrio Terra",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 15.0,
+      "sl15": 18.0,
+      "sl20": 21.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040307000",
@@ -4044,6 +6861,36 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040407000",
+      "skill": "Concrio Imber",
+      "ordinal": 0,
+      "modifier": "Concrio Imber",
+      "boost_type": "atk",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 32.0,
+      "sl20": 35.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040407000",
+      "skill": "Concrio Imber",
+      "ordinal": 0,
+      "modifier": "Concrio Imber",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 15.0,
+      "sl15": 18.0,
+      "sl20": 21.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040409500",
       "skill": "Blood Rose Thorns",
       "ordinal": 0,
@@ -4091,6 +6938,36 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040504500",
+      "skill": "Concrio Albus",
+      "ordinal": 0,
+      "modifier": "Concrio Albus",
+      "boost_type": "atk",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 32.0,
+      "sl20": 35.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040504500",
+      "skill": "Concrio Albus",
+      "ordinal": 0,
+      "modifier": "Concrio Albus",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 15.0,
+      "sl15": 18.0,
+      "sl20": 21.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040512300",
       "skill": "Fediel's Eclipse",
       "ordinal": 0,
@@ -4123,6 +7000,51 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040604400",
+      "skill": "Human Animus Parity",
+      "ordinal": 0,
+      "modifier": "Human Animus Parity",
+      "boost_type": "da",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040604400",
+      "skill": "Human Animus Parity",
+      "ordinal": 0,
+      "modifier": "Human Animus Parity",
+      "boost_type": "ta",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040604400",
+      "skill": "Human Animus Utopia",
+      "ordinal": 0,
+      "modifier": "Human Animus Utopia",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 40.0,
+      "sl20": 45.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040607400",
       "skill": "Bronze Rose Brier",
       "ordinal": 0,
@@ -4151,6 +7073,51 @@
       "aura_boostable": false,
       "provenance": "wiki_series_panel_capture",
       "edited_at": "2026-08-25T06:42:02Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Erune Animus Parity",
+      "ordinal": 0,
+      "modifier": "Erune Animus Parity",
+      "boost_type": "da",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Erune Animus Parity",
+      "ordinal": 0,
+      "modifier": "Erune Animus Parity",
+      "boost_type": "ta",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040703700",
+      "skill": "Erune Animus Utopia",
+      "ordinal": 0,
+      "modifier": "Erune Animus Utopia",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 40.0,
+      "sl20": 45.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040706100",
@@ -4215,6 +7182,51 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040803800",
+      "skill": "Harvin Animus Parity",
+      "ordinal": 0,
+      "modifier": "Harvin Animus Parity",
+      "boost_type": "da",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040803800",
+      "skill": "Harvin Animus Parity",
+      "ordinal": 0,
+      "modifier": "Harvin Animus Parity",
+      "boost_type": "ta",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040803800",
+      "skill": "Harvin Animus Utopia",
+      "ordinal": 0,
+      "modifier": "Harvin Animus Utopia",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 40.0,
+      "sl20": 45.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
       "weapon": "1040806300",
       "skill": "Ice Rose Brier",
       "ordinal": 0,
@@ -4275,6 +7287,51 @@
       "aura_boostable": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Draph Animus Parity",
+      "ordinal": 0,
+      "modifier": "Draph Animus Parity",
+      "boost_type": "da",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Draph Animus Parity",
+      "ordinal": 0,
+      "modifier": "Draph Animus Parity",
+      "boost_type": "ta",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 5.0,
+      "sl15": 8.0,
+      "sl20": 11.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
+    },
+    {
+      "weapon": "1040904400",
+      "skill": "Draph Animus Utopia",
+      "ordinal": 0,
+      "modifier": "Draph Animus Utopia",
+      "boost_type": "hp",
+      "series": "normal",
+      "formula_type": "flat",
+      "sl10": 30.0,
+      "sl15": 40.0,
+      "sl20": 45.0,
+      "aura_boostable": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T07:20:55Z"
     },
     {
       "weapon": "1040912100",
