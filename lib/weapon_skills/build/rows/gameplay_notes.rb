@@ -14,10 +14,22 @@ module WeaponSkills
         # spares them), so they survive it. A notes "static" row does not.
         KEPT_KINDS = %w[per_grid_count specialty_scaled].freeze
 
+        # A pure key-determined page (every key option listed) is left to the key resolver:
+        # the importer bails before persisting skills or notes. Mixed pages carry a key slot.
+        KEY_PAGE = /granted power with (an?|a) (anklet|pendulum|teluma|chain)|empowered by a chosen/i
+        KEY_SLOT = /granted power with (?:an? |a )?(anklet|pendulum|teluma)
+                    |empowered by a chosen (pendulum|teluma)
+                    |a (gate) to the summits|(?:locked|sealed) within (ultima)/xi
+
         module_function
 
-        # expanded wikitext → { skill_name => { frame:, clauses: [...] } }
-        def parse(expanded) = Granblue::Parsers::GameplayNotesParser.parse(expanded)
+        # expanded wikitext → { skill_name => { frame:, clauses: [...] } }; {} when the page's
+        # notes don't apply (see KEY_PAGE).
+        def parse(expanded)
+          return {} if expanded.blank? || (expanded.match?(KEY_PAGE) && !expanded.match?(KEY_SLOT))
+
+          Granblue::Parsers::GameplayNotesParser.parse(expanded)
+        end
 
         # notes: the parsed notes for the version's weapon (see .parse). → [attributes]
         # Curation wins (#537): a boost type that is suppressed or already curated on the
