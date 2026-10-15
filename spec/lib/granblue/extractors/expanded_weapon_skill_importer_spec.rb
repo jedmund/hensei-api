@@ -28,5 +28,29 @@ RSpec.describe Granblue::Extractors::ExpandedWeaponSkillImporter do
 
       described_class.send(:apply_gameplay_notes, weapon, "expanded", Hash.new(0))
     end
+
+    it "keeps curated rows and skips suppressed boost types" do
+      version = create(:weapon_skill_version, suppressed_boosts: ["e_atk"])
+      version.skill.update!(name_en: "Ultimate Wisdom's Shine")
+      curated = WeaponSkillEffect.create!(weapon_skill_version: version, modifier: "Ultimate Wisdom's Shine",
+                                          boost_type: "atk", scaling_kind: "specialty_scaled", value_unit: "percent",
+                                          condition: { "specialties" => { "staff" => 20.0 } },
+                                          manually_edited_at: Time.current, provenance: "manual")
+      table = { "staff" => 10.0 }
+      notes = {
+        "Ultimate Wisdom's Shine" => {
+          frame: "normal", clauses: [{ scaling: :per_specialty, boost_type: "atk", by_specialty: table },
+                                     { scaling: :per_specialty, boost_type: "e_atk", by_specialty: table },
+                                     { scaling: :per_specialty, boost_type: "da", by_specialty: table }]
+        }
+      }
+      allow(Granblue::Parsers::GameplayNotesParser).to receive(:parse).and_return(notes)
+
+      described_class.send(:apply_gameplay_notes, version.weapon_skill.weapon, "expanded", Hash.new(0))
+
+      effects = WeaponSkillEffect.where(weapon_skill_version_id: version.id)
+      expect(effects.pluck(:boost_type)).to contain_exactly("atk", "da")
+      expect(effects.find_by(boost_type: "atk")).to eq(curated)
+    end
   end
 end

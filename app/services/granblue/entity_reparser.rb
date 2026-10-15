@@ -65,7 +65,8 @@ module Granblue
     end
 
     def template_only_wikitext?
-      @entity.wiki_raw.to_s.include?('{{Weapon/Common/') && !@entity.wiki_raw.to_s.include?('s1_desc=')
+      # Line-anchored: the Japanese "|jps1_desc=" line must not count as English skill text.
+      @entity.wiki_raw.to_s.include?('{{Weapon/Common/') && !@entity.wiki_raw.to_s.match?(/^\|\s*s1_desc\s*=/)
     end
 
     def weapon_versions
