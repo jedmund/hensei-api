@@ -11,7 +11,10 @@ namespace :granblue do
 
     ActiveRecord::Base.transaction do
       weapons.each do |weapon|
-        Granblue::EntityReparser.new(weapon, refetch: true).reparse
+        # a savepoint per weapon, so one failure doesn't abort the whole transaction
+        ActiveRecord::Base.transaction(requires_new: true) do
+          Granblue::EntityReparser.new(weapon, refetch: true).reparse
+        end
         puts "reparsed #{weapon.name_en}"
       rescue StandardError => e
         puts "FAILED #{weapon.name_en}: #{e.class}: #{e.message}"
