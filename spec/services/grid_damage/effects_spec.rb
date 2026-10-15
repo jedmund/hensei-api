@@ -108,6 +108,16 @@ RSpec.describe GridDamage::Effects do
     expect(val(EffStruct.new(**base, condition: unmet))).to be_nil
   end
 
+  it "specialty_scaled honors an opening-turns limit (Hollowsky Staff)" do
+    effect = EffStruct.new(scaling_kind: "specialty_scaled",
+                           condition: { "specialties" => { "staff" => 10.0, "harp" => 10.0 }, "turn_lte" => 10 })
+    staff = composition.merge(mc_specialties: %w[staff])
+    value = ->(turn) { described_class.value_for(effect, weapon: weapon, state: { turn: turn }, composition: staff) }
+    expect(value[10]).to eq(10.0)
+    expect(value[11]).to be_nil
+    expect(described_class.value_for(effect, weapon: weapon, state: {}, composition: composition)).to be_nil
+  end
+
   it "per_grid_count → value × count(basis)" do
     expect(val(EffStruct.new(scaling_kind: "per_grid_count", value: 4, count_basis: "distinct_weapon_types"))).to eq(24.0)
   end

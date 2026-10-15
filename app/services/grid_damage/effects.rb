@@ -200,9 +200,11 @@ module GridDamage
     # specialty. The panel reflects the MC's specialties (either job proficiency counts);
     # allies of that specialty get the larger boost, everyone else the "other" row.
     # An "arcarum" flag in the condition venue-gates the row (Sephirath skills apply
-    # only in Arcarum: The World Beyond / Replicard Sandbox).
+    # only in Arcarum: The World Beyond / Replicard Sandbox). A "turn_lte" limits the row to
+    # the opening turns (Hollowsky Staff's turns 1–10 EX ATK).
     def specialty_value(effect, composition:, state: {})
       return nil if effect.condition["arcarum"] && !state[:arcarum]
+      return nil if effect.condition["turn_lte"] && state.fetch(:turn, 1).to_i > effect.condition["turn_lte"].to_i
 
       table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
       specs = Array(composition && (composition[:mc_specialties] || composition[:mc_specialty]))
