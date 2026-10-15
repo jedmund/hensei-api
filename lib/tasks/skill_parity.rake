@@ -21,22 +21,25 @@ namespace :granblue do
     end
 
     after = nil
-    ActiveRecord::Base.transaction do
-      case mode
-      when "current" then nil
-      when "extract" then Granblue::Extractors::WeaponSkillDescriptionExtractor.run
-      when "full_reparse"
-        failures = Hash.new(0)
-        Weapon.where.not(wiki_raw: [nil, ""]).find_each do |w|
-          Granblue::EntityReparser.new(w).reparse
-        rescue StandardError => e
-          failures[e.class.name] += 1
+    # Reparses read stored sources (granblue:fetch_weapon_sources), never the live wiki.
+    Granblue::Parsers::Wiki.offline do
+      ActiveRecord::Base.transaction do
+        case mode
+        when "current" then nil
+        when "extract" then Granblue::Extractors::WeaponSkillDescriptionExtractor.run
+        when "full_reparse"
+          failures = Hash.new(0)
+          Weapon.where.not(wiki_raw: [nil, ""]).find_each do |w|
+            Granblue::EntityReparser.new(w).reparse
+          rescue StandardError => e
+            failures[e.class.name] += 1
+          end
+          puts "reparse failures: #{failures}" if failures.any?
+        else abort "unknown mode=#{mode} (current, extract, full_reparse)"
         end
-        puts "reparse failures: #{failures}" if failures.any?
-      else abort "unknown mode=#{mode} (current, extract, full_reparse)"
+        after = WeaponSkills::ParitySnapshot.capture(meta: meta)
+        raise ActiveRecord::Rollback
       end
-      after = WeaponSkills::ParitySnapshot.capture(meta: meta)
-      raise ActiveRecord::Rollback
     end
 
     diff = WeaponSkills::ParitySnapshot.diff(WeaponSkills::ParitySnapshot.read(path), after)

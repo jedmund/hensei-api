@@ -46,25 +46,10 @@ namespace :granblue do
       end
 
       begin
-        # 1) Fetch raw wikitext from the wiki
-        wiki_text = Granblue::Parsers::Wiki.new.fetch(object.wiki_en)
-
-        # 2) Check if the page is a redirect
-        redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-        if redirect_match
-          redirect_target = redirect_match[1]
-          # Update object to new wiki_en so we don't keep fetching the old page
-          object.update!(wiki_en: redirect_target)
-          # Fetch again with the new page name
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect_target)
-        end
+        # Fetch the page (following a redirect) and store it on the record. Weapons also
+        # refresh their weapon_sources (expansion, followed pages).
+        wiki_text = Granblue::WikiFetcher.new.fetch_and_store(object)
         puts wiki_text
-
-        # 3) Save raw wiki text in the object record (stamp fetch time on
-        #    types that track it — currently only Weapon).
-        attrs = { wiki_raw: wiki_text }
-        attrs[:wiki_raw_fetched_at] = Time.current if object.respond_to?(:wiki_raw_fetched_at)
-        object.update!(attrs)
         puts "Saved wiki data for #{object.name_en} (#{object.id})"
         count += 1
       rescue StandardError => e
@@ -113,12 +98,7 @@ namespace :granblue do
     count = 0
     weapons.each_with_index do |weapon, i|
       begin
-        wiki_text = Granblue::Parsers::Wiki.new.fetch(weapon.wiki_en)
-        if (redirect = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/))
-          weapon.update!(wiki_en: redirect[1])
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect[1])
-        end
-        weapon.update!(wiki_raw: wiki_text, wiki_raw_fetched_at: Time.current)
+        Granblue::WikiFetcher.new.fetch_and_store(weapon) # also refreshes weapon_sources
         count += 1
         puts "  (#{i + 1}/#{total}) #{weapon.name_en}"
       rescue StandardError => e
