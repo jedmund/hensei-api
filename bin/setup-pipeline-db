@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Create (or recreate) a private database for one pipeline workstream from the published
+# game-catalogue dump. Usage: bin/setup-pipeline-db NAME [TAG]
+#   NAME  workstream name, e.g. W3 -> database hensei_pipeline_w3
+#   TAG   catalogue release tag (default: newest catalogue-* release)
+# Needs: Postgres client tools on PATH, a superuser-capable role, and `gh` authenticated
+# with access to jedmund/hensei-api (the dumps are draft releases).
+# Also creates an empty test database, hensei_pipeline_<name>_test, for this workstream's
+# rspec runs (the test environment reads DATABASE_URL too, so never run rspec with the
+# pipeline database exported: the suite would wipe it).
+# Afterwards:
+#   export DATABASE_URL=postgres://localhost/hensei_pipeline_<name> CURATION_AUTO_EXPORT=0
+#   DATABASE_URL=postgres://localhost/hensei_pipeline_<name>_test bundle exec rspec
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+name="${1:?usage: bin/setup-pipeline-db NAME [TAG]}"
+db="hensei_pipeline_$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_\n' '_')"
+repo="jedmund/hensei-api"
+tag="${2:-${CATALOGUE_TAG:-}}"
+if [ -z "$tag" ]; then
+  tag="$(gh release list --repo "$repo" --limit 100 --json tagName --jq '[.[] | select(.tagName | startswith("catalogue-"))][0].tagName')"
+fi
+[ -n "$tag" ] || { echo "no catalogue-* release found on $repo" >&2; exit 1; }
+
+base="${PIPELINE_PG_URL:-postgres://localhost}"
+url="$base/$db"
+cache="tmp/catalogue/$tag"
+mkdir -p "$cache"
+if [ ! -s "$cache/catalogue.dump" ]; then
+  echo "Downloading ${tag}…"
+  gh release download "$tag" --repo "$repo" --pattern catalogue.dump --dir "$cache" --clobber
+fi
+
+echo "Recreating ${db}…"
+dropdb --if-exists --force --maintenance-db="$base/postgres" "$db"
+createdb --maintenance-db="$base/postgres" "$db"
+
+export DATABASE_URL="$url" CURATION_AUTO_EXPORT=0 DISABLE_DATABASE_ENVIRONMENT_CHECK=1 SKIP_SCHEMA_DUMP=1
+bin/rails db:schema:load >/dev/null
+psql "$url" -qc "TRUNCATE data_migrations"
+echo "Restoring the catalogue…"
+# Restore only tables this branch's schema has, so a newer dump (e.g. with
+# weapon_sources) still restores on an older branch.
+tables="$(psql "$url" -Atc "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")"
+pg_restore -l "$cache/catalogue.dump" > "$cache/toc.all"
+: > "$cache/toc.use"
+skipped=""
+while IFS= read -r line; do
+  case "$line" in
+    *"TABLE DATA public "*)
+      t="$(echo "$line" | sed -E 's/.*TABLE DATA public ([^ ]+) .*/\1/')"
+      if echo "$tables" | grep -qx "$t"; then echo "$line" >> "$cache/toc.use"; else skipped="$skipped $t"; fi ;;
+    *) echo "$line" >> "$cache/toc.use" ;;
+  esac
+done < "$cache/toc.all"
+[ -z "$skipped" ] || echo "Skipping tables this branch doesn't have:$skipped"
+pg_restore --data-only --disable-triggers --no-owner --no-privileges --exit-on-error -L "$cache/toc.use" -d "$url" "$cache/catalogue.dump"
+psql "$url" -qc "INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
+                 VALUES ('catalogue_tag', '$tag', now(), now())
+                 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()"
+
+echo "Migrating and syncing curation…"
+bin/rails db:migrate:with_data
+
+if bin/rails -T granblue:import_golden_fixtures 2>/dev/null | grep -q import_golden_fixtures; then
+  bin/rails granblue:import_golden_fixtures
+fi
+
+echo "Creating ${db}_test…"
+dropdb --if-exists --force --maintenance-db="$base/postgres" "${db}_test"
+createdb --maintenance-db="$base/postgres" "${db}_test"
+RAILS_ENV=test DATABASE_URL="${url}_test" bin/rails db:schema:load >/dev/null
+
+echo
+echo "Ready: ${db} (catalogue $tag) and ${db}_test"
+echo "  export DATABASE_URL=$url CURATION_AUTO_EXPORT=0"
+echo "  DATABASE_URL=${url}_test bundle exec rspec"

@@ -26,8 +26,10 @@ class WeaponSkillDatum < ApplicationRecord
   # (boost_type, size) tier. SL VALUES are series-independent (the frame only decides which aura
   # boosts the skill), so this is matched across series so EX/Omega skills reuse the same curve.
   def self.canonical_curve(boost_type:, size:, formula_type: "flat")
+    # Ties (Celere, Verity and Precocity are all Critical Big 10% at SL15) go to the most
+    # complete curve, then the modifier name, so the pick never depends on row order.
     canonical.where(boost_type: boost_type, size: size, formula_type: formula_type)
-             .max_by { |d| d.sl15.to_f }
+             .max_by { |d| [d.sl15.to_f, [d.sl1, d.sl10, d.sl15, d.sl20, d.sl25].compact.size, d.modifier.to_s] }
   end
 
   # Series a version's series also matches in the data: normal and omega share combined

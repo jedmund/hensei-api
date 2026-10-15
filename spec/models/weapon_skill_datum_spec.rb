@@ -241,4 +241,16 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
   end
+
+  describe ".canonical_curve" do
+    it "breaks ties on the most complete curve, whatever the row order" do
+      short = create(:weapon_skill_datum, modifier: "Precocity", boost_type: "critical", series: "normal_omega",
+                                          size: "big", sl1: 4.4, sl10: 8, sl15: 10, sl20: nil)
+      full = create(:weapon_skill_datum, modifier: "Verity", boost_type: "critical", series: "normal_omega",
+                                         size: "big", sl1: 4.4, sl10: 8, sl15: 10, sl20: 11)
+      expect(described_class.canonical_curve(boost_type: "critical", size: "big")).to eq(full)
+      short.touch
+      expect(described_class.canonical_curve(boost_type: "critical", size: "big")).to eq(full)
+    end
+  end
 end
