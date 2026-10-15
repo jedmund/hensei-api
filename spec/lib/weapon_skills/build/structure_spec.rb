@@ -109,6 +109,14 @@ RSpec.describe WeaponSkills::Build::Structure do
       expect(gate(result[[4, 0]])).to eq([200, 5, 0])
       expect(result[[2, 0]].multiplier_frame).to eq("normal")
     end
+
+    # The template's ens3_desc is a summary without numbers ("Boost to ATK, DEF, and max
+    # HP"); the row compiler falls back to this text, so it must be the expansion's.
+    it "takes the expansion's text before the template's summary, as VersionText::Backfill does" do
+      expect(result[[2, 0]].description_en)
+        .to eq("30% boost to ATK , 25% boost to DEF, and 30% boost to max HP for all allies.")
+      expect(result[[1, 0]].description_en).not_to include("{{{weapon")
+    end
   end
 
   describe "Epic page (Chains of Caucasus)" do
