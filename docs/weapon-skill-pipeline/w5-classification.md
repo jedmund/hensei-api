@@ -1,6 +1,6 @@
 # W5: key-skill parity classification
 
-**Status:** measured 2026-10-15 against `catalogue-20261015-sources` (offline, rolled back). **3 keys differ, all classified `parser`.** The diff is `data/weapon_skill_parity/w5_key_diff.json`.
+**Status:** measured 2026-10-15 against `catalogue-20261015-sources` (offline, rolled back). **3 keys differ, all classified `parser`.** The diff is `w5_key_diff.json` (a release asset on `catalogue-20261015-sources`).
 
 ## How to measure
 

@@ -9,7 +9,7 @@
 - icon, `main_hand_only` and `mc_only`.
 
 **Where the details are:**
-- **Every difference:** `data/weapon_skill_parity/compare_structure_last.json`.
+- **Every difference:** `compare_structure_last.json` (a release asset on `catalogue-20261015-sources`).
 - **Each class and its citation:** `data/weapon_skill_parity/compare_structure_classifications.json`, keyed `weapon|position|ordinal|skill|field`.
 
 The task fails on any difference that isn't classified.
@@ -26,7 +26,7 @@ The task fails on any difference that isn't classified.
 | `open` | 7 | One version: two catalogue weapons share a granblue_id. |
 | unknown | 0 | |
 
-**Overlay ops:** the output already satisfies all 95 structural ops in `data/weapon_skill_curation/*.json` (85 `gate`, 10 `add_version`), which `compare_structure_last.json` lists as `redundant_ops`. They can be retired once W8 switches the build over; until then they're harmless.
+**Overlay ops:** the output already satisfies all 95 structural ops in `data/weapon_skill_curation/*.json` (85 `gate`, 10 `add_version`), which `compare_structure_last.json` (a release asset on `catalogue-20261015-sources`) lists as `redundant_ops`. They can be retired once W8 switches the build over; until then they're harmless.
 
 ## What the compiler does beyond a straight port
 
