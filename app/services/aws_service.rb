@@ -3,19 +3,37 @@ class AwsService
 
   class ConfigurationError < StandardError; end
 
+  # Used when no bucket/region is configured (local development with `aws login`).
+  DEFAULT_BUCKET = 'siero-img'.freeze
+  DEFAULT_REGION = 'us-west-2'.freeze
+
   def initialize
     Rails.logger.debug "Environment: #{Rails.env}"
 
-    # Try different methods of getting credentials
+    # Static keys (Rails credentials or env vars) win; production uses them.
     creds = get_credentials
-    Rails.logger.debug "Credentials source: #{creds[:source]}"
+    if creds
+      Rails.logger.debug "Credentials source: #{creds[:source]}"
+      @s3_client = Aws::S3::Client.new(
+        region: creds[:region],
+        access_key_id: creds[:access_key_id],
+        secret_access_key: creds[:secret_access_key],
+        session_token: creds[:session_token]
+      )
+      @bucket = creds[:bucket_name].presence || DEFAULT_BUCKET
+    else
+      # Otherwise let the SDK's default chain find credentials: an `aws login` or
+      # SSO session, AWS_* variables with a session token, or an instance role.
+      @s3_client = Aws::S3::Client.new(region: default_region)
+      unless @s3_client.config.credentials&.set?
+        raise ConfigurationError, 'No AWS credentials found in any location ' \
+                                  '(Rails credentials, AWS_* environment variables, or an AWS CLI session ' \
+                                  'such as `aws login`)'
+      end
 
-    @s3_client = Aws::S3::Client.new(
-      region: creds[:region],
-      access_key_id: creds[:access_key_id],
-      secret_access_key: creds[:secret_access_key]
-    )
-    @bucket = creds[:bucket_name]
+      Rails.logger.debug "Credentials source: #{@s3_client.config.credentials.class.name}"
+      @bucket = ENV['AWS_BUCKET_NAME'].presence || DEFAULT_BUCKET
+    end
   rescue KeyError => e
     raise ConfigurationError, "Missing AWS credential: #{e.message}"
   end
@@ -68,6 +86,7 @@ class AwsService
         region: ENV['AWS_REGION'],
         access_key_id: ENV['AWS_ACCESS_KEY_ID'],
         secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+        session_token: ENV['AWS_SESSION_TOKEN'].presence,
         bucket_name: ENV['AWS_BUCKET_NAME'],
         source: 'environment'
       }
@@ -85,14 +104,10 @@ class AwsService
       }
     end
 
-    validate_credentials = ->(creds, source) {
-      missing = []
-      %i[region access_key_id secret_access_key bucket_name].each do |key|
-        missing << key unless creds[key].present?
-      end
-      raise ConfigurationError, "Missing AWS credentials from #{source}: #{missing.join(', ')}" if missing.any?
-    }
+    nil
+  end
 
-    raise ConfigurationError, "No AWS credentials found in any location"
+  def default_region
+    ENV['AWS_REGION'].presence || Aws.shared_config.region || DEFAULT_REGION
   end
 end
