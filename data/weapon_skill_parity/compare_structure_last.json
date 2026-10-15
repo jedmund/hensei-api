@@ -1,0 +1,3428 @@
+{
+  "counts": {
+    "diff_accept": 121,
+    "diff_backfill": 146,
+    "diff_curate": 32,
+    "diff_open": 7,
+    "diff_override": 56,
+    "diff_parser": 4,
+    "versions": 3755,
+    "weapons": 1866
+  },
+  "differences": [
+    {
+      "key": "1030004400|1|0|Concrio Rubell|skill_modifier",
+      "weapon": "Sword of Bahamut",
+      "kind": "changed",
+      "today": "Rubell",
+      "class": "override"
+    },
+    {
+      "key": "1030103800|1|0|Human Animus Dominion|skill_modifier",
+      "weapon": "Dagger of Bahamut",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1030105500|0|0|Wicked Cool Might|skill_modifier",
+      "weapon": "Wicked Cool Stabber",
+      "kind": "changed",
+      "today": "Might",
+      "class": "override"
+    },
+    {
+      "key": "1030109600|0|0|Willed Grounds|added",
+      "weapon": "Beach Flag",
+      "kind": "added",
+      "ours": [
+        null,
+        3,
+        0
+      ],
+      "class": "accept",
+      "reason": "W2 row 78 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1030203700|1|0|Erune Animus Dominion|skill_modifier",
+      "weapon": "Spear of Bahamut",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1030302900|1|0|Draph Animus Dominion|skill_modifier",
+      "weapon": "Axe of Bahamut",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1030502600|1|0|Harvin Animus Dominion|skill_modifier",
+      "weapon": "Pistol of Bahamut",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1030603700|1|0|Human Animus Utopia|skill_modifier",
+      "weapon": "Fist of Bahamut",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1030702400|1|0|Erune Animus Utopia|skill_modifier",
+      "weapon": "Bow of Bahamut",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1030802000|1|0|Harvin Animus Utopia|skill_modifier",
+      "weapon": "Harp of Bahamut",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1030900500|1|0|Draph Animus Utopia|skill_modifier",
+      "weapon": "Blade of Bahamut",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1030902200|0|0|Mountain's Aegis|added",
+      "weapon": "Tyrian Tiger Blade",
+      "kind": "added",
+      "ours": [
+        null,
+        3,
+        0
+      ],
+      "class": "accept",
+      "reason": "W2 row 79 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040004300|1|0|Concrio Rubell|skill_modifier",
+      "weapon": "Sword of Bahamut Nova",
+      "kind": "changed",
+      "today": "Rubell",
+      "class": "override"
+    },
+    {
+      "key": "1040015300|1|0|Solaris's Supremacy|skill_modifier",
+      "weapon": "Xeno Purity Sunblade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015300|1|0|Solaris's Supremacy|skill_size",
+      "weapon": "Xeno Purity Sunblade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015400|2|0|Solaris's Supremacy|skill_modifier",
+      "weapon": "True Purity Sunblade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015400|2|0|Solaris's Supremacy|skill_size",
+      "weapon": "True Purity Sunblade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015400|3|0|True Solaris's Supremacy|skill_modifier",
+      "weapon": "True Purity Sunblade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015400|3|0|True Solaris's Supremacy|skill_size",
+      "weapon": "True Purity Sunblade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015700|1|0|Adjudicator's Supremacy|skill_modifier",
+      "weapon": "Sahrivar",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015700|1|0|Adjudicator's Supremacy|skill_size",
+      "weapon": "Sahrivar",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015800|2|0|Adjudicator's Supremacy|skill_modifier",
+      "weapon": "Last Sahrivar",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015800|2|0|Adjudicator's Supremacy|skill_size",
+      "weapon": "Last Sahrivar",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015800|3|0|True Adjudicator's Supremacy|skill_modifier",
+      "weapon": "Last Sahrivar",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040015800|3|0|True Adjudicator's Supremacy|skill_size",
+      "weapon": "Last Sahrivar",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040016000|2|0|Aquae Excelsior|skill_size",
+      "weapon": "Gottfried",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 2 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040019700|2|0|Verglas Sovereign|skill_modifier",
+      "weapon": "Fateless",
+      "kind": "changed",
+      "today": "Sovereign",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040019700|2|0|Verglas Sovereign|skill_size",
+      "weapon": "Fateless",
+      "kind": "changed",
+      "today": "unworldly",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040020400|1|0|Luminis Excelsior|skill_size",
+      "weapon": "Official's Jitte",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 4 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040020800|4|0|Water's Majesty|skill_modifier",
+      "weapon": "Rise of Justice",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040020800|4|0|Water's Majesty|skill_size",
+      "weapon": "Rise of Justice",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040021000|2|0|Terrae Excelsior|skill_size",
+      "weapon": "Lovely Ace",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 5 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040022600|3|0|Sword Voltage II|skill_modifier",
+      "weapon": "Sword of Pallas Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040022600|3|0|Sword Voltage II|skill_size",
+      "weapon": "Sword of Pallas Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040022800|2|0|Arsus Excelsior|skill_size",
+      "weapon": "Arcane Rouge",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 6 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040024100|2|0|Knightcode's Trituration|skill_modifier",
+      "weapon": "Sacred Flame Militis",
+      "kind": "changed",
+      "today": "Trituration",
+      "class": "backfill"
+    },
+    {
+      "key": "1040025400|3|0|Sword Voltage II|skill_modifier",
+      "weapon": "Gateway-Star Sword",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040025400|3|0|Sword Voltage II|skill_size",
+      "weapon": "Gateway-Star Sword",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040026900|2|0|Horseman's Supremacy|skill_modifier",
+      "weapon": "Exo Pelion",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040026900|2|0|Horseman's Supremacy|skill_size",
+      "weapon": "Exo Pelion",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040026900|3|0|Horseman's Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Pelion",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "backfill"
+    },
+    {
+      "key": "1040026900|3|0|Horseman's Supremacy: Decimation|skill_size",
+      "weapon": "Exo Pelion",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040027700|1|0|Drago Surge|skill_modifier",
+      "weapon": "Magic Sword Tenma",
+      "kind": "changed",
+      "today": "Surge",
+      "class": "accept",
+      "reason": "W2 row 7 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040027800|2|0|Caliginis Excelsior|skill_size",
+      "weapon": "Goriki-maru Revised",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 8 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040103700|1|0|Human Animus Dominion|skill_modifier",
+      "weapon": "Dagger of Bahamut Nova",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1040107900|1|1|Ventosus's Might II|skill_size",
+      "weapon": "Plume of Suparna",
+      "kind": "changed",
+      "today": "medium",
+      "ours": "big_ii",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040110300|1|0|Terrae Excelsior|skill_size",
+      "weapon": "Nibelung Messer",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 9 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040111000|0|0|Coeli Excelsior|skill_size",
+      "weapon": "Hatsoiiłhał",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 10 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040111100|1|0|Caliginis Excelsior|skill_size",
+      "weapon": "Gandring",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 11 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040112300|1|0|Aquae Excelsior|skill_size",
+      "weapon": "Kris of Hypnos",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 12 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040113200|4|0|Dark's Majesty|skill_modifier",
+      "weapon": "Pain of Death",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040113200|4|0|Dark's Majesty|skill_size",
+      "weapon": "Pain of Death",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040115200|2|0|Coeli Excelsior|skill_size",
+      "weapon": "Bon Joie",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 13 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040115300|1|0|Arsus Excelsior|skill_size",
+      "weapon": "War Fan of Secret Teachings",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 14 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040115400|3|0|Dagger Voltage II|skill_modifier",
+      "weapon": "Plume of Suparna Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040115400|3|0|Dagger Voltage II|skill_size",
+      "weapon": "Plume of Suparna Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040115700|0|1|Thunder God's Authority II|added",
+      "weapon": "Futsunomitama",
+      "kind": "added",
+      "ours": [
+        220,
+        5,
+        2
+      ],
+      "class": "accept",
+      "reason": "W2 row 80 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040115700|1|1|Thunder God's Subjugation II|added",
+      "weapon": "Futsunomitama",
+      "kind": "added",
+      "ours": [
+        210,
+        5,
+        1
+      ],
+      "class": "accept",
+      "reason": "W2 row 81 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040115700|1|2|Thunder God's Subjugation III|added",
+      "weapon": "Futsunomitama",
+      "kind": "added",
+      "ours": [
+        240,
+        5,
+        4
+      ],
+      "class": "accept",
+      "reason": "W2 row 82 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040115700|3|1|Thunder God's Retribution II|added",
+      "weapon": "Futsunomitama",
+      "kind": "added",
+      "ours": [
+        250,
+        5,
+        5
+      ],
+      "class": "accept",
+      "reason": "W2 row 83 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040117500|0|0|}}} Enforcement|missing",
+      "weapon": "Concordia",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040117500|2|0|Golden Enforcement|skill_modifier",
+      "weapon": "Concordia",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040117600|0|0|}}} Enforcement|missing",
+      "weapon": "Concordia Mk II",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040117600|2|0|Golden Enforcement|skill_modifier",
+      "weapon": "Concordia Mk II",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040117600|3|0|Zenith Strike: Light|min_uncap",
+      "weapon": "Concordia Mk II",
+      "kind": "changed",
+      "today": 3,
+      "ours": 4,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040117600|3|0|Zenith Strike: Light|unlock_level",
+      "weapon": "Concordia Mk II",
+      "kind": "changed",
+      "ours": 120,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040118000|2|0|Dreadflame's Supremacy|skill_modifier",
+      "weapon": "Exo Maitrah Karuna",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040118000|2|0|Dreadflame's Supremacy|skill_size",
+      "weapon": "Exo Maitrah Karuna",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040118000|3|0|Dreadflame's Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Maitrah Karuna",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "backfill"
+    },
+    {
+      "key": "1040118000|3|0|Dreadflame's Supremacy: Decimation|skill_size",
+      "weapon": "Exo Maitrah Karuna",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040119900|2|0|Adjudicator's Supremacy|skill_modifier",
+      "weapon": "Exo Ashavan",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040119900|2|0|Adjudicator's Supremacy|skill_size",
+      "weapon": "Exo Ashavan",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040119900|3|0|Adjudicator's Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Ashavan",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "backfill"
+    },
+    {
+      "key": "1040119900|3|0|Adjudicator's Supremacy: Decimation|skill_size",
+      "weapon": "Exo Ashavan",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040120100|3|0|Dagger Voltage II|skill_modifier",
+      "weapon": "Twinfall-Sky Blade",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040120100|3|0|Dagger Voltage II|skill_size",
+      "weapon": "Twinfall-Sky Blade",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040203700|1|0|Erune Animus Dominion|skill_modifier",
+      "weapon": "Spear of Bahamut Nova",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1040207000|0|0|Zion's Might II|skill_size",
+      "weapon": "Eden",
+      "kind": "changed",
+      "today": "medium",
+      "ours": "big_ii",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040207000|0|1|Zion's Might III|skill_size",
+      "weapon": "Eden",
+      "kind": "changed",
+      "today": "big",
+      "ours": "massive",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040207700|1|0|Scales of Wrath|skill_modifier",
+      "weapon": "Qinglong Spear Pontus",
+      "kind": "changed",
+      "today": "Wrath",
+      "class": "accept",
+      "reason": "W2 row 15 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040208100|1|0|Terrae Excelsior|skill_size",
+      "weapon": "All-Might Spear",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 16 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040209400|1|0|Horseman's Supremacy|skill_modifier",
+      "weapon": "Xeno Conviction Flashspear",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040209400|1|0|Horseman's Supremacy|skill_size",
+      "weapon": "Xeno Conviction Flashspear",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040209500|2|0|Horseman's Supremacy|skill_modifier",
+      "weapon": "True Conviction Flashspear",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040209500|2|0|Horseman's Supremacy|skill_size",
+      "weapon": "True Conviction Flashspear",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040209500|3|0|True Horseman's Supremacy|skill_modifier",
+      "weapon": "True Conviction Flashspear",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040209500|3|0|True Horseman's Supremacy|skill_size",
+      "weapon": "True Conviction Flashspear",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040210600|1|0|Bountiful Strike|skill_modifier",
+      "weapon": "Cherished Flip Charm",
+      "kind": "changed",
+      "today": "Strike",
+      "class": "accept",
+      "reason": "W2 row 17 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040213200|1|0|Phantom's Supremacy|skill_modifier",
+      "weapon": "Advocatus",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040213200|1|0|Phantom's Supremacy|skill_size",
+      "weapon": "Advocatus",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040213300|1|0|Undersky's Whispers|skill_size",
+      "weapon": "Advocatus Diaboli",
+      "kind": "changed",
+      "ours": "big",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040213300|2|0|Phantom's Supremacy|skill_modifier",
+      "weapon": "Advocatus Diaboli",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040213300|2|0|Phantom's Supremacy|skill_size",
+      "weapon": "Advocatus Diaboli",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040213300|3|0|True Phantom's Supremacy|skill_modifier",
+      "weapon": "Advocatus Diaboli",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040213300|3|0|True Phantom's Supremacy|skill_size",
+      "weapon": "Advocatus Diaboli",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040213700|2|0|Radiant Sovereign|skill_modifier",
+      "weapon": "Rhongomyniad",
+      "kind": "changed",
+      "today": "Sovereign",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040213700|2|0|Radiant Sovereign|skill_size",
+      "weapon": "Rhongomyniad",
+      "kind": "changed",
+      "today": "unworldly",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040215500|4|0|Earth's Majesty|skill_modifier",
+      "weapon": "Binds of The Hanged Man",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040215500|4|0|Earth's Majesty|skill_size",
+      "weapon": "Binds of The Hanged Man",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040216100|1|0|Arsus Excelsior|skill_size",
+      "weapon": "Flamelance: Accendo",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 18 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040217200|0|0|Sentient Simulacrum|skill_size",
+      "weapon": "Edem",
+      "kind": "changed",
+      "ours": "big",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040217200|1|0|Golden Spirit|skill_size",
+      "weapon": "Edem",
+      "kind": "changed",
+      "ours": "big",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040217300|0|0|Purity of Nature|skill_modifier",
+      "weapon": "Blazing Mistral",
+      "kind": "changed",
+      "today": "Nature",
+      "class": "accept",
+      "reason": "W2 row 19 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040217300|0|1|Purity of Nature II|added",
+      "weapon": "Blazing Mistral",
+      "kind": "added",
+      "ours": [
+        210,
+        5,
+        1
+      ],
+      "class": "accept",
+      "reason": "W2 row 84 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040217300|0|2|Purity of Nature III|added",
+      "weapon": "Blazing Mistral",
+      "kind": "added",
+      "ours": [
+        240,
+        5,
+        4
+      ],
+      "class": "accept",
+      "reason": "W2 row 85 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040217300|1|1|Fine Wind, Clear Heart II|added",
+      "weapon": "Blazing Mistral",
+      "kind": "added",
+      "ours": [
+        220,
+        5,
+        2
+      ],
+      "class": "accept",
+      "reason": "W2 row 86 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040217300|3|1|Crimson Splendor II|added",
+      "weapon": "Blazing Mistral",
+      "kind": "added",
+      "ours": [
+        250,
+        5,
+        5
+      ],
+      "class": "accept",
+      "reason": "W2 row 87 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040218000|2|0|Mistfall's Trituration|skill_modifier",
+      "weapon": "Advocatus Diaboli Militis",
+      "kind": "changed",
+      "today": "Trituration",
+      "class": "backfill"
+    },
+    {
+      "key": "1040218500|2|0|Adjudicator's Supremacy|skill_modifier",
+      "weapon": "Exo Kshathra",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040218500|2|0|Adjudicator's Supremacy|skill_size",
+      "weapon": "Exo Kshathra",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040218500|3|0|Adjudicator's Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Kshathra",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "backfill"
+    },
+    {
+      "key": "1040218500|3|0|Adjudicator's Supremacy: Decimation|skill_size",
+      "weapon": "Exo Kshathra",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040303000|1|0|Draph Animus Dominion|skill_modifier",
+      "weapon": "Axe of Bahamut Nova",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1040306200|1|0|Dreadflame's Supremacy|skill_modifier",
+      "weapon": "Xeno Infernal Flamescythe",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040306200|1|0|Dreadflame's Supremacy|skill_size",
+      "weapon": "Xeno Infernal Flamescythe",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040306300|2|0|Dreadflame's Supremacy|skill_modifier",
+      "weapon": "True Infernal Flamescythe",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040306300|2|0|Dreadflame's Supremacy|skill_size",
+      "weapon": "True Infernal Flamescythe",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040306300|3|0|True Dreadflame's Supremacy|skill_modifier",
+      "weapon": "True Infernal Flamescythe",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040306300|3|0|True Dreadflame's Supremacy|skill_size",
+      "weapon": "True Infernal Flamescythe",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040307100|1|0|Caliginis Excelsior|skill_size",
+      "weapon": "Hermanubis",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 20 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040311800|2|0|Heliacal Sovereign|skill_modifier",
+      "weapon": "Sol Remnant",
+      "kind": "changed",
+      "today": "Sovereign",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040311800|2|0|Heliacal Sovereign|skill_size",
+      "weapon": "Sol Remnant",
+      "kind": "changed",
+      "today": "unworldly",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040313300|1|0|Bitter Perseverance|skill_modifier",
+      "weapon": "Dalmoran Battle Axe",
+      "kind": "changed",
+      "today": "Perseverance",
+      "class": "accept",
+      "reason": "W2 row 22 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040313500|4|0|Earth's Majesty|skill_modifier",
+      "weapon": "Collapse of The Tower",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040313500|4|0|Earth's Majesty|skill_size",
+      "weapon": "Collapse of The Tower",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040314000|1|0|Luminis Excelsior|skill_size",
+      "weapon": "Seyfert",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 23 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040314600|3|0|Axe Voltage II|skill_modifier",
+      "weapon": "Solomon's Axe Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040314600|3|0|Axe Voltage II|skill_size",
+      "weapon": "Solomon's Axe Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040314700|3|0|Axe Voltage II|skill_modifier",
+      "weapon": "Vynateya Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040314700|3|0|Axe Voltage II|skill_size",
+      "weapon": "Vynateya Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040316600|0|0|}}} Enforcement|missing",
+      "weapon": "Claw of the Dragonslayer",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040316600|2|0|Amber Enforcement|skill_modifier",
+      "weapon": "Claw of the Dragonslayer",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040316700|0|0|}}} Enforcement|missing",
+      "weapon": "Claw of the Dragonslayer Mk II",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040316700|2|0|Amber Enforcement|skill_modifier",
+      "weapon": "Claw of the Dragonslayer Mk II",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040316700|3|0|Striking Art: Earth|min_uncap",
+      "weapon": "Claw of the Dragonslayer Mk II",
+      "kind": "changed",
+      "today": 3,
+      "ours": 4,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040316700|3|0|Striking Art: Earth|unlock_level",
+      "weapon": "Claw of the Dragonslayer Mk II",
+      "kind": "changed",
+      "ours": 120,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040316800|0|0|}}} Enforcement|missing",
+      "weapon": "Spada di Vento",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040316800|2|0|Jade Enforcement|skill_modifier",
+      "weapon": "Spada di Vento",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040316900|0|0|}}} Enforcement|missing",
+      "weapon": "Spada di Vento Mk II",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040316900|2|0|Jade Enforcement|skill_modifier",
+      "weapon": "Spada di Vento Mk II",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040316900|3|0|Zenith Art: Wind|min_uncap",
+      "weapon": "Spada di Vento Mk II",
+      "kind": "changed",
+      "today": 3,
+      "ours": 4,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040316900|3|0|Zenith Art: Wind|unlock_level",
+      "weapon": "Spada di Vento Mk II",
+      "kind": "changed",
+      "ours": 120,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040317000|1|0|Caliginis Excelsior|skill_size",
+      "weapon": "Buddysaurus Rex",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 24 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040319100|1|0|Pillar-Smasher's Conviction|skill_modifier",
+      "weapon": "Demolition-Tiger Axe",
+      "kind": "changed",
+      "today": "Pillar-Smasher's Conviction",
+      "class": "override"
+    },
+    {
+      "key": "1040319100|3|0|Axe Voltage II|skill_modifier",
+      "weapon": "Demolition-Tiger Axe",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040319100|3|0|Axe Voltage II|skill_size",
+      "weapon": "Demolition-Tiger Axe",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040319100|4|0|Pillar-Smasher's Conviction II|skill_modifier",
+      "weapon": "Demolition-Tiger Axe",
+      "kind": "changed",
+      "today": "Pillar-Smasher's Conviction II",
+      "class": "override"
+    },
+    {
+      "key": "1040400300|0|0|Grace of Healing|skill_modifier",
+      "weapon": "Asclepius Rod",
+      "kind": "changed",
+      "today": "Healing",
+      "class": "accept",
+      "reason": "W2 row 25 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040400300|0|1|Grace of Healing II|skill_modifier",
+      "weapon": "Asclepius Rod",
+      "kind": "changed",
+      "today": "Healing",
+      "class": "accept",
+      "reason": "W2 row 26 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040401100|1|0|Ophidian Servitor|skill_size",
+      "weapon": "Ouroboros",
+      "kind": "changed",
+      "ours": "massive",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040403900|0|0|Bells of Grace|skill_modifier",
+      "weapon": "Gotle Bell Cane",
+      "kind": "changed",
+      "today": "Grace",
+      "class": "accept",
+      "reason": "W2 row 27 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040406900|1|0|Saving Grace|skill_modifier",
+      "weapon": "Caduceus",
+      "kind": "changed",
+      "today": "Grace",
+      "class": "accept",
+      "reason": "W2 row 28 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040406900|1|1|Saving Grace II|skill_modifier",
+      "weapon": "Caduceus",
+      "kind": "changed",
+      "today": "Grace",
+      "class": "accept",
+      "reason": "W2 row 29 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040406900|1|1|Saving Grace II|skill_size",
+      "weapon": "Caduceus",
+      "kind": "changed",
+      "today": "medium",
+      "class": "accept",
+      "reason": "W2 row 29 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040408400|0|0|Magic Charge|skill_modifier",
+      "weapon": "Fonic Rod",
+      "kind": "changed",
+      "today": "Charge",
+      "class": "accept",
+      "reason": "W2 row 30 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040413000|1|0|Glacial Supremacy|skill_modifier",
+      "weapon": "Xeno Glacial Dream Staff",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040413000|1|0|Glacial Supremacy|skill_size",
+      "weapon": "Xeno Glacial Dream Staff",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040413100|2|0|Glacial Supremacy|skill_modifier",
+      "weapon": "True Glacial Dream Staff",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040413100|2|0|Glacial Supremacy|skill_size",
+      "weapon": "True Glacial Dream Staff",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040413100|3|0|True Glacial Supremacy|skill_modifier",
+      "weapon": "True Glacial Dream Staff",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040413100|3|0|True Glacial Supremacy|skill_size",
+      "weapon": "True Glacial Dream Staff",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040413300|0|0|Architect Battle Arts|skill_modifier",
+      "weapon": "Architect Frame",
+      "kind": "changed",
+      "today": "Arts",
+      "class": "accept",
+      "reason": "W2 row 31 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040414100|1|0|Aquae Excelsior|skill_size",
+      "weapon": "Tyros Scepter",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 32 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040416600|2|0|Evergreen Sovereign|skill_modifier",
+      "weapon": "Yggdrasil's Bough",
+      "kind": "changed",
+      "today": "Sovereign",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040416600|2|0|Evergreen Sovereign|skill_size",
+      "weapon": "Yggdrasil's Bough",
+      "kind": "changed",
+      "today": "unworldly",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040416600|3|0|Astral Arts|skill_modifier",
+      "weapon": "Yggdrasil's Bough",
+      "kind": "changed",
+      "today": "Arts",
+      "class": "accept",
+      "reason": "W2 (w2-classification.md, \"From W6a\"): false join. The page's Astral Arts is 10% skill DMG cap per buff (max 50%); the Arts family is a flat skill-level curve, as with Architect Battle Arts. Per-buff effect is a W10 follow-up."
+    },
+    {
+      "key": "1040416600|4|0|Astral Arts II|skill_modifier",
+      "weapon": "Yggdrasil's Bough",
+      "kind": "changed",
+      "today": "Arts",
+      "class": "accept",
+      "reason": "W2 (w2-classification.md, \"From W6a\"): false join. The page's Astral Arts is 10% skill DMG cap per buff (max 50%); the Arts family is a flat skill-level curve, as with Architect Battle Arts. Per-buff effect is a W10 follow-up."
+    },
+    {
+      "key": "1040416600|4|0|Astral Arts II|skill_size",
+      "weapon": "Yggdrasil's Bough",
+      "kind": "changed",
+      "today": "medium",
+      "class": "accept",
+      "reason": "W2 (w2-classification.md, \"From W6a\"): false join. The page's Astral Arts is 10% skill DMG cap per buff (max 50%); the Arts family is a flat skill-level curve, as with Architect Battle Arts. Per-buff effect is a W10 follow-up."
+    },
+    {
+      "key": "1040418200|4|0|Wind's Majesty|skill_modifier",
+      "weapon": "Theater of Temperance",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040418200|4|0|Wind's Majesty|skill_size",
+      "weapon": "Theater of Temperance",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040419600|3|0|Staff Voltage II|skill_modifier",
+      "weapon": "Ramsund Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040419600|3|0|Staff Voltage II|skill_size",
+      "weapon": "Ramsund Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040420400|0|0|Blaze's Crux|skill_size",
+      "weapon": "Al-Abad",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 35 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040420400|1|0|Arsus Excelsior|skill_size",
+      "weapon": "Al-Abad",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 36 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040421200|2|0|Oceansoul's Majesty III|skill_modifier",
+      "weapon": "Glacial Militis",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "backfill"
+    },
+    {
+      "key": "1040421200|2|0|Oceansoul's Majesty III|skill_size",
+      "weapon": "Glacial Militis",
+      "kind": "changed",
+      "today": "big",
+      "class": "backfill"
+    },
+    {
+      "key": "1040423200|2|0|Phantom's Supremacy|skill_modifier",
+      "weapon": "Exo Hamartia",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040423200|2|0|Phantom's Supremacy|skill_size",
+      "weapon": "Exo Hamartia",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040423300|1|0|Ultimate Wisdom's Shine|skill_modifier",
+      "weapon": "Altruism-Soul Staff",
+      "kind": "changed",
+      "today": "Ultimate Wisdom's Shine",
+      "class": "override"
+    },
+    {
+      "key": "1040423300|3|0|Staff Voltage II|skill_modifier",
+      "weapon": "Altruism-Soul Staff",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040423300|3|0|Staff Voltage II|skill_size",
+      "weapon": "Altruism-Soul Staff",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040423300|4|0|Ultimate Wisdom's Shine II|skill_modifier",
+      "weapon": "Altruism-Soul Staff",
+      "kind": "changed",
+      "today": "Ultimate Wisdom's Shine II",
+      "class": "override"
+    },
+    {
+      "key": "1040423800|2|0|Glimmer's Crux|skill_size",
+      "weapon": "Equilibrium Tannenwand",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 37 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040424300|2|0|Solaris's Supremacy|skill_modifier",
+      "weapon": "Exo Heliocentrum",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040424300|2|0|Solaris's Supremacy|skill_size",
+      "weapon": "Exo Heliocentrum",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040424300|3|0|Solaris's Supremacy: Decimation|added",
+      "weapon": "Exo Heliocentrum",
+      "kind": "added",
+      "ours": [
+        200,
+        5,
+        0
+      ],
+      "class": "parser",
+      "reason": "W2 row 106 (parser case): the compiler now applies the series template's level default, so the gate is right."
+    },
+    {
+      "key": "1040425100|2|0|Caliginis Excelsior|skill_size",
+      "weapon": "Bandit's Secret",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 38 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040502300|1|0|Harvin Animus Dominion|skill_modifier",
+      "weapon": "Pistol of Bahamut Nova",
+      "kind": "changed",
+      "today": "Dominion",
+      "class": "override"
+    },
+    {
+      "key": "1040506700|1|0|Wicked Sick Might|skill_modifier",
+      "weapon": "Wicked Sick Blaster",
+      "kind": "changed",
+      "today": "Might",
+      "class": "override"
+    },
+    {
+      "key": "1040508800|2|0|Luminis Excelsior|skill_size",
+      "weapon": "Ruler of Fate",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 40 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040511500|1|0|Solaris's Supremacy|skill_modifier",
+      "weapon": "Sol Flamma",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040511500|1|0|Solaris's Supremacy|skill_size",
+      "weapon": "Sol Flamma",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040511600|2|0|Solaris's Supremacy|skill_modifier",
+      "weapon": "Flamma Orbis",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040511600|2|0|Solaris's Supremacy|skill_size",
+      "weapon": "Flamma Orbis",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040511600|3|0|True Solaris's Supremacy|skill_modifier",
+      "weapon": "Flamma Orbis",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040511600|3|0|True Solaris's Supremacy|skill_size",
+      "weapon": "Flamma Orbis",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040512000|1|0|Excess Voltage|skill_modifier",
+      "weapon": "Plasma Ripper",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "accept",
+      "reason": "W2 row 41 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040512500|2|0|Aquae Excelsior|skill_size",
+      "weapon": "Acid Bolt Shooter",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 42 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040513200|2|0|Arsus Excelsior|skill_size",
+      "weapon": "Mystic Spray Gun",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 43 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040513600|1|0|Terrae Excelsior|skill_size",
+      "weapon": "Beach-Camouflage Vlisragna",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 44 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040513700|4|0|Light's Majesty|skill_modifier",
+      "weapon": "Shooting of The Star",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040513700|4|0|Light's Majesty|skill_size",
+      "weapon": "Shooting of The Star",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040514400|2|0|Aquae Excelsior|skill_size",
+      "weapon": "Plasma Slicer",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 45 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040514600|2|0|Terrae Excelsior|skill_size",
+      "weapon": "Bubble Sketcher",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 46 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040515700|2|0|Caliginis Excelsior|skill_size",
+      "weapon": "Raffiniert Arquebus",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 48 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040516100|2|0|Blood Red Blow|skill_modifier",
+      "weapon": "Splash Howl",
+      "kind": "changed",
+      "today": "Blow",
+      "class": "override"
+    },
+    {
+      "key": "1040516300|2|0|Glacial Supremacy|skill_modifier",
+      "weapon": "Exo Antaeus",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040516300|2|0|Glacial Supremacy|skill_size",
+      "weapon": "Exo Antaeus",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040516300|3|0|Glacial Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Antaeus",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy: Decimation\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040516300|3|0|Glacial Supremacy: Decimation|skill_size",
+      "weapon": "Exo Antaeus",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040517100|1|0|Cloud of Howling Twilight|skill_modifier",
+      "weapon": "Twinpain-Wolf Gun",
+      "kind": "changed",
+      "today": "Cloud of Howling Twilight",
+      "class": "override"
+    },
+    {
+      "key": "1040517100|3|0|Gun Voltage II|skill_name_en",
+      "weapon": "Twinpain-Wolf Gun",
+      "kind": "changed",
+      "today": "Papillon Flamboyant",
+      "ours": "Gun Voltage II",
+      "class": "accept",
+      "reason": "Twinpain-Wolf Gun: \"Papillon Flamboyant\" at position 3 is the weapon's charge attack (page ougi_name), left by an old import of the expansion's C.A. table (parse_skills now reads only the weapon-skills table); no rows, no curation. Without it Gun Voltage II is appended at position 3 instead of 5; its one generated effect moves with it."
+    },
+    {
+      "key": "1040517100|4|0|Cloud of Howling Twilight II|skill_modifier",
+      "weapon": "Twinpain-Wolf Gun",
+      "kind": "changed",
+      "today": "Cloud of Howling Twilight II",
+      "class": "override"
+    },
+    {
+      "key": "1040517100|5|0|Gun Voltage II|missing",
+      "weapon": "Twinpain-Wolf Gun",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Twinpain-Wolf Gun: \"Papillon Flamboyant\" at position 3 is the weapon's charge attack (page ougi_name), left by an old import of the expansion's C.A. table (parse_skills now reads only the weapon-skills table); no rows, no curation. Without it Gun Voltage II is appended at position 3 instead of 5; its one generated effect moves with it."
+    },
+    {
+      "key": "1040518200|2|0|Phantom's Supremacy|skill_modifier",
+      "weapon": "Exo Evilenes",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040518200|2|0|Phantom's Supremacy|skill_size",
+      "weapon": "Exo Evilenes",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040518900|1|0|Blaze's Crux|skill_size",
+      "weapon": "Firework Galvanizer",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 50 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040602400|1|0|Human Animus Utopia|skill_modifier",
+      "weapon": "Fist of Bahamut Nova",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040604400|3|0|Human Animus Utopia|skill_modifier",
+      "weapon": "Fist of Bahamut Coda",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040604400|4|0|Human Animus Parity|skill_modifier",
+      "weapon": "Fist of Bahamut Coda",
+      "kind": "changed",
+      "today": "Parity",
+      "class": "override"
+    },
+    {
+      "key": "1040606000|0|0|Hoarfrost's Tyranny|skill_size",
+      "weapon": "Wilhelm",
+      "kind": "changed",
+      "today": "small",
+      "ours": "big",
+      "class": "accept",
+      "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+    },
+    {
+      "key": "1040606200|0|0|Feral Roar|skill_modifier",
+      "weapon": "Souval Gauntlet",
+      "kind": "changed",
+      "today": "Roar",
+      "class": "accept",
+      "reason": "W2 row 51 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040611000|1|0|Horseman's Supremacy|skill_modifier",
+      "weapon": "Arkab",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040611000|1|0|Horseman's Supremacy|skill_size",
+      "weapon": "Arkab",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040611100|2|0|Horseman's Supremacy|skill_modifier",
+      "weapon": "Arkab Prior",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040611100|2|0|Horseman's Supremacy|skill_size",
+      "weapon": "Arkab Prior",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040611100|3|0|True Horseman's Supremacy|skill_modifier",
+      "weapon": "Arkab Prior",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040611100|3|0|True Horseman's Supremacy|skill_size",
+      "weapon": "Arkab Prior",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040612500|2|0|Slaughterous Sovereign|skill_modifier",
+      "weapon": "Claws of Terror",
+      "kind": "changed",
+      "today": "Sovereign",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040612500|2|0|Slaughterous Sovereign|skill_size",
+      "weapon": "Claws of Terror",
+      "kind": "changed",
+      "today": "unworldly",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040613000|2|0|Terrae Excelsior|skill_size",
+      "weapon": "Hard Knuckle",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 53 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040614300|4|0|Fire's Majesty|skill_modifier",
+      "weapon": "Kiss of The Devil",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040614300|4|0|Fire's Majesty|skill_size",
+      "weapon": "Kiss of The Devil",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040615700|3|0|Gauntlet Voltage II|skill_modifier",
+      "weapon": "Wilhelm Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040615700|3|0|Gauntlet Voltage II|skill_size",
+      "weapon": "Wilhelm Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040616300|0|1|Ogre's Retribution II|added",
+      "weapon": "Golden Fists of Ura",
+      "kind": "added",
+      "ours": [
+        210,
+        5,
+        1
+      ],
+      "class": "accept",
+      "reason": "W2 row 88 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040616300|0|2|Ogre's Retribution III|added",
+      "weapon": "Golden Fists of Ura",
+      "kind": "added",
+      "ours": [
+        240,
+        5,
+        4
+      ],
+      "class": "accept",
+      "reason": "W2 row 89 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040616300|1|1|Eternal Animosity II|added",
+      "weapon": "Golden Fists of Ura",
+      "kind": "added",
+      "ours": [
+        220,
+        5,
+        2
+      ],
+      "class": "accept",
+      "reason": "W2 row 90 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040616300|3|1|Ferocious Dominance II|added",
+      "weapon": "Golden Fists of Ura",
+      "kind": "added",
+      "ours": [
+        250,
+        5,
+        5
+      ],
+      "class": "accept",
+      "reason": "W2 row 91 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040616900|2|0|Stormwyrm's Majesty III|skill_modifier",
+      "weapon": "Arkab Prior Militis",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "backfill"
+    },
+    {
+      "key": "1040616900|2|0|Stormwyrm's Majesty III|skill_size",
+      "weapon": "Arkab Prior Militis",
+      "kind": "changed",
+      "today": "big",
+      "class": "backfill"
+    },
+    {
+      "key": "1040617900|0|0|}}} Enforcement|missing",
+      "weapon": "Lagrange",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040617900|2|0|Cobalt Enforcement|skill_modifier",
+      "weapon": "Lagrange",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040618000|0|0|}}} Enforcement|missing",
+      "weapon": "Lagrange Mk II",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040618000|2|0|Cobalt Enforcement|skill_modifier",
+      "weapon": "Lagrange Mk II",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040618000|3|0|Zenith Art: Water|min_uncap",
+      "weapon": "Lagrange Mk II",
+      "kind": "changed",
+      "today": 3,
+      "ours": 4,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040618000|3|0|Zenith Art: Water|unlock_level",
+      "weapon": "Lagrange Mk II",
+      "kind": "changed",
+      "ours": 120,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040618400|2|0|Solaris's Supremacy|skill_modifier",
+      "weapon": "Exo Aristarchus",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040618400|2|0|Solaris's Supremacy|skill_size",
+      "weapon": "Exo Aristarchus",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040618400|3|0|Solaris's Supremacy: Decimation|added",
+      "weapon": "Exo Aristarchus",
+      "kind": "added",
+      "ours": [
+        200,
+        5,
+        0
+      ],
+      "class": "parser",
+      "reason": "W2 row 107 (parser case): the compiler now applies the series template's level default, so the gate is right."
+    },
+    {
+      "key": "1040618600|3|0|Gauntlet Voltage II|skill_modifier",
+      "weapon": "Covenant-Ruin Fist",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040618600|3|0|Gauntlet Voltage II|skill_size",
+      "weapon": "Covenant-Ruin Fist",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040619700|2|0|Glacial Supremacy|skill_modifier",
+      "weapon": "Exo Ephialtes",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040619700|2|0|Glacial Supremacy|skill_size",
+      "weapon": "Exo Ephialtes",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040619700|3|0|Glacial Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Ephialtes",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy: Decimation\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040619700|3|0|Glacial Supremacy: Decimation|skill_size",
+      "weapon": "Exo Ephialtes",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040700400|1|0|Elegant Stratagem|skill_modifier",
+      "weapon": "Aetherial Bow",
+      "kind": "changed",
+      "today": "Stratagem",
+      "class": "accept",
+      "reason": "W2 row 54 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040702400|1|0|Erune Animus Utopia|skill_modifier",
+      "weapon": "Bow of Bahamut Nova",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040703700|3|0|Erune Animus Utopia|skill_modifier",
+      "weapon": "Bow of Bahamut Coda",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040703700|4|0|Erune Animus Parity|skill_modifier",
+      "weapon": "Bow of Bahamut Coda",
+      "kind": "changed",
+      "today": "Parity",
+      "class": "override"
+    },
+    {
+      "key": "1040705600|0|0|Forest Blessing|skill_modifier",
+      "weapon": "Silver Bow",
+      "kind": "changed",
+      "today": "Blessing",
+      "class": "accept",
+      "reason": "W2 row 55 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040710700|4|0|Water's Majesty|skill_modifier",
+      "weapon": "Reflection of The Moon",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040710700|4|0|Water's Majesty|skill_size",
+      "weapon": "Reflection of The Moon",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040711000|0|0|Snowfall's Crux|skill_size",
+      "weapon": "Colomba",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 57 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040711400|3|0|Bow Voltage II|skill_modifier",
+      "weapon": "Bow of Sigurd Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040711400|3|0|Bow Voltage II|skill_size",
+      "weapon": "Bow of Sigurd Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040711500|3|0|Bow Voltage II|skill_modifier",
+      "weapon": "Indra's Edge Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040711500|3|0|Bow Voltage II|skill_size",
+      "weapon": "Indra's Edge Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040711700|0|1|Sangre Caliente II|added",
+      "weapon": "Murcielago",
+      "kind": "added",
+      "ours": [
+        210,
+        5,
+        1
+      ],
+      "class": "accept",
+      "reason": "W2 row 92 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040711700|1|1|Robar Tiempo II|added",
+      "weapon": "Murcielago",
+      "kind": "added",
+      "ours": [
+        220,
+        5,
+        2
+      ],
+      "class": "accept",
+      "reason": "W2 row 93 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040711700|2|1|Lluvia de Saetas II|added",
+      "weapon": "Murcielago",
+      "kind": "added",
+      "ours": [
+        240,
+        5,
+        4
+      ],
+      "class": "accept",
+      "reason": "W2 row 94 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040711700|3|1|Dos Colmillos II|added",
+      "weapon": "Murcielago",
+      "kind": "added",
+      "ours": [
+        250,
+        5,
+        5
+      ],
+      "class": "parser",
+      "reason": "W2 row 95 (parser case): the compiler now applies the series template's level default, so the gate is right."
+    },
+    {
+      "key": "1040712400|2|0|Horseman's Supremacy|skill_modifier",
+      "weapon": "Exo Australis",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040712400|2|0|Horseman's Supremacy|skill_size",
+      "weapon": "Exo Australis",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040712400|3|0|Horseman's Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Australis",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "backfill"
+    },
+    {
+      "key": "1040712400|3|0|Horseman's Supremacy: Decimation|skill_size",
+      "weapon": "Exo Australis",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040712900|0|0|}}} Enforcement|missing",
+      "weapon": "Mortality Bow",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040712900|2|0|Scarlet Enforcement|skill_modifier",
+      "weapon": "Mortality Bow",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040713000|0|0|}}} Enforcement|missing",
+      "weapon": "Mortality Bow Mk II",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040713000|2|0|Scarlet Enforcement|skill_modifier",
+      "weapon": "Mortality Bow Mk II",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040713000|3|0|Striking Art: Fire|min_uncap",
+      "weapon": "Mortality Bow Mk II",
+      "kind": "changed",
+      "today": 3,
+      "ours": 4,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040713000|3|0|Striking Art: Fire|unlock_level",
+      "weapon": "Mortality Bow Mk II",
+      "kind": "changed",
+      "ours": 120,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040713600|3|0|Bow Voltage II|skill_modifier",
+      "weapon": "Desolation-Crown Bow",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040713600|3|0|Bow Voltage II|skill_size",
+      "weapon": "Desolation-Crown Bow",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040714400|2|0|Dreadflame's Supremacy|skill_modifier",
+      "weapon": "Exo Krodha",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040714400|2|0|Dreadflame's Supremacy|skill_size",
+      "weapon": "Exo Krodha",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040714400|3|0|Dreadflame's Supremacy: Decimation|skill_modifier",
+      "weapon": "Exo Krodha",
+      "kind": "changed",
+      "today": "Supremacy: Decimation",
+      "class": "backfill"
+    },
+    {
+      "key": "1040714400|3|0|Dreadflame's Supremacy: Decimation|skill_size",
+      "weapon": "Exo Krodha",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040715000|2|0|Arsus Excelsior|skill_size",
+      "weapon": "Equinius",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 59 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040802000|1|0|Harvin Animus Utopia|skill_modifier",
+      "weapon": "Harp of Bahamut Nova",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040803800|3|0|Harvin Animus Utopia|skill_modifier",
+      "weapon": "Harp of Bahamut Coda",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040803800|4|0|Harvin Animus Parity|skill_modifier",
+      "weapon": "Harp of Bahamut Coda",
+      "kind": "changed",
+      "today": "Parity",
+      "class": "override"
+    },
+    {
+      "key": "1040805700|1|0|Adjudicator's Supremacy|skill_modifier",
+      "weapon": "Xeno Judgement Lyre",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040805700|1|0|Adjudicator's Supremacy|skill_size",
+      "weapon": "Xeno Judgement Lyre",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040805800|2|0|Adjudicator's Supremacy|skill_modifier",
+      "weapon": "True Judgement Lyre",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040805800|2|0|Adjudicator's Supremacy|skill_size",
+      "weapon": "True Judgement Lyre",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040805800|3|0|True Adjudicator's Supremacy|skill_modifier",
+      "weapon": "True Judgement Lyre",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040805800|3|0|True Adjudicator's Supremacy|skill_size",
+      "weapon": "True Judgement Lyre",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040809700|1|0|Glacial Supremacy|skill_modifier",
+      "weapon": "Dante's Harp",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040809700|1|0|Glacial Supremacy|skill_size",
+      "weapon": "Dante's Harp",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040809800|2|0|Glacial Supremacy|skill_modifier",
+      "weapon": "Dante Alighieri",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040809800|2|0|Glacial Supremacy|skill_size",
+      "weapon": "Dante Alighieri",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040809800|3|0|True Glacial Supremacy|skill_modifier",
+      "weapon": "Dante Alighieri",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040809800|3|0|True Glacial Supremacy|skill_size",
+      "weapon": "Dante Alighieri",
+      "kind": "changed",
+      "today": "massive",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040811600|2|0|Verdant Sovereign|skill_modifier",
+      "weapon": "Innocent Love",
+      "kind": "changed",
+      "today": "Sovereign",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040811600|2|0|Verdant Sovereign|skill_size",
+      "weapon": "Innocent Love",
+      "kind": "changed",
+      "today": "unworldly",
+      "class": "curate",
+      "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+    },
+    {
+      "key": "1040813300|4|0|Wind's Majesty|skill_modifier",
+      "weapon": "Melody of Judgement",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040813300|4|0|Wind's Majesty|skill_size",
+      "weapon": "Melody of Judgement",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040813600|2|0|Terrae Excelsior|skill_size",
+      "weapon": "Heart of a Songbird",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 60 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040814000|3|0|Harp Voltage II|skill_modifier",
+      "weapon": "Heliogabalus Militis",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040814000|3|0|Harp Voltage II|skill_size",
+      "weapon": "Heliogabalus Militis",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040814400|0|1|Cepheid Variable II|added",
+      "weapon": "Andromeda",
+      "kind": "added",
+      "ours": [
+        210,
+        5,
+        1
+      ],
+      "class": "accept",
+      "reason": "W2 row 96 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040814400|1|1|Galactic Bulge II|added",
+      "weapon": "Andromeda",
+      "kind": "added",
+      "ours": [
+        220,
+        5,
+        2
+      ],
+      "class": "accept",
+      "reason": "W2 row 97 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040814400|1|2|Galactic Bulge III|added",
+      "weapon": "Andromeda",
+      "kind": "added",
+      "ours": [
+        240,
+        5,
+        4
+      ],
+      "class": "accept",
+      "reason": "W2 row 98 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040814400|3|1|Galactic Halo II|added",
+      "weapon": "Andromeda",
+      "kind": "added",
+      "ours": [
+        250,
+        5,
+        5
+      ],
+      "class": "parser",
+      "reason": "W2 row 99 (parser case): the compiler now applies the series template's level default, so the gate is right."
+    },
+    {
+      "key": "1040814900|2|0|Lifetree's Majesty III|skill_modifier",
+      "weapon": "Tribunal Lyre Militis",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "backfill"
+    },
+    {
+      "key": "1040814900|2|0|Lifetree's Majesty III|skill_size",
+      "weapon": "Tribunal Lyre Militis",
+      "kind": "changed",
+      "today": "big",
+      "class": "backfill"
+    },
+    {
+      "key": "1040815000|3|0|Sephirath Eparc II|unlock_level",
+      "weapon": "Worldforging Moros",
+      "kind": "changed",
+      "ours": 150,
+      "class": "accept",
+      "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+    },
+    {
+      "key": "1040815100|3|0|Sephirath Fusame II|unlock_level",
+      "weapon": "Worldscathing Leon",
+      "kind": "changed",
+      "ours": 150,
+      "class": "accept",
+      "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+    },
+    {
+      "key": "1040815200|3|0|Sephirath Brogue II|unlock_level",
+      "weapon": "Worldstorming Aetos",
+      "kind": "changed",
+      "ours": 150,
+      "class": "accept",
+      "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+    },
+    {
+      "key": "1040815300|3|0|Sephirath Corant II|unlock_level",
+      "weapon": "Worldbreaking Tauros",
+      "kind": "changed",
+      "ours": 150,
+      "class": "accept",
+      "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+    },
+    {
+      "key": "1040815400|3|0|Sephirath Haton II|unlock_level",
+      "weapon": "Worldvexing Angelos",
+      "kind": "changed",
+      "ours": 150,
+      "class": "accept",
+      "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+    },
+    {
+      "key": "1040816000|0|0|}}} Enforcement|missing",
+      "weapon": "Forsaken Agastia",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040816000|2|0|Graphite Enforcement|skill_modifier",
+      "weapon": "Forsaken Agastia",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040816100|0|0|}}} Enforcement|missing",
+      "weapon": "Forsaken Agastia Mk II",
+      "kind": "missing",
+      "class": "accept",
+      "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+    },
+    {
+      "key": "1040816100|2|0|Graphite Enforcement|skill_modifier",
+      "weapon": "Forsaken Agastia Mk II",
+      "kind": "changed",
+      "today": "Enforcement",
+      "class": "backfill"
+    },
+    {
+      "key": "1040816100|3|0|Zenith Strike: Dark|min_uncap",
+      "weapon": "Forsaken Agastia Mk II",
+      "kind": "changed",
+      "today": 3,
+      "ours": 4,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040816100|3|0|Zenith Strike: Dark|unlock_level",
+      "weapon": "Forsaken Agastia Mk II",
+      "kind": "changed",
+      "ours": 120,
+      "class": "accept",
+      "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+    },
+    {
+      "key": "1040816300|3|0|Harp Voltage II|skill_modifier",
+      "weapon": "Fantasia-Realm Harp",
+      "kind": "changed",
+      "today": "Voltage",
+      "class": "backfill"
+    },
+    {
+      "key": "1040816300|3|0|Harp Voltage II|skill_size",
+      "weapon": "Fantasia-Realm Harp",
+      "kind": "changed",
+      "today": "medium",
+      "class": "backfill"
+    },
+    {
+      "key": "1040817200|2|0|Blaze's Crux|skill_size",
+      "weapon": "Shati Hariq",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 62 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040901300|1|0|Draph Animus Utopia|skill_modifier",
+      "weapon": "Blade of Bahamut Nova",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040904400|3|0|Draph Animus Utopia|skill_modifier",
+      "weapon": "Blade of Bahamut Coda",
+      "kind": "changed",
+      "today": "Utopia",
+      "class": "override"
+    },
+    {
+      "key": "1040904400|4|0|Draph Animus Parity|skill_modifier",
+      "weapon": "Blade of Bahamut Coda",
+      "kind": "changed",
+      "today": "Parity",
+      "class": "override"
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|icon",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "today": "ws_skill_job_weapon.png",
+      "ours": "ws_skill_hp_1_1.png",
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|main_hand_only",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "today": true,
+      "ours": false,
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|mc_only",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "today": true,
+      "ours": false,
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|skill_modifier",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "ours": "Aegis",
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|skill_name_en",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "today": "Wings of Divinity",
+      "ours": "Fire's Aegis",
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|skill_series",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "today": "ex",
+      "ours": "normal",
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040906600|1|0|Fire's Aegis|skill_size",
+      "weapon": "Ray of Zhuque Regus",
+      "kind": "changed",
+      "ours": "small",
+      "class": "open",
+      "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+    },
+    {
+      "key": "1040908600|1|0|Phantom's Supremacy|skill_modifier",
+      "weapon": "Xeno Phantom Demon Blade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040908600|1|0|Phantom's Supremacy|skill_size",
+      "weapon": "Xeno Phantom Demon Blade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040908700|2|0|Phantom's Supremacy|skill_modifier",
+      "weapon": "True Phantom Demon Blade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040908700|2|0|Phantom's Supremacy|skill_size",
+      "weapon": "True Phantom Demon Blade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040908700|3|0|True Phantom's Supremacy|skill_modifier",
+      "weapon": "True Phantom Demon Blade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040908700|3|0|True Phantom's Supremacy|skill_size",
+      "weapon": "True Phantom Demon Blade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040910100|1|0|Dreadflame's Supremacy|skill_modifier",
+      "weapon": "Emberfire Longblade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040910100|1|0|Dreadflame's Supremacy|skill_size",
+      "weapon": "Emberfire Longblade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040910200|2|0|Dreadflame's Supremacy|skill_modifier",
+      "weapon": "Wrathfire Longblade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040910200|2|0|Dreadflame's Supremacy|skill_size",
+      "weapon": "Wrathfire Longblade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040910200|3|0|True Dreadflame's Supremacy|skill_modifier",
+      "weapon": "Wrathfire Longblade",
+      "kind": "changed",
+      "today": "Supremacy",
+      "class": "backfill"
+    },
+    {
+      "key": "1040910200|3|0|True Dreadflame's Supremacy|skill_size",
+      "weapon": "Wrathfire Longblade",
+      "kind": "changed",
+      "today": "massive",
+      "class": "backfill"
+    },
+    {
+      "key": "1040911200|0|0|Unrelenting Might|skill_modifier",
+      "weapon": "Ancestral Blade",
+      "kind": "changed",
+      "today": "Might",
+      "class": "override"
+    },
+    {
+      "key": "1040911900|2|0|Caliginis Excelsior|skill_size",
+      "weapon": "Alabaster Zenith",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 64 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040912600|4|0|Fire's Majesty|skill_modifier",
+      "weapon": "Heat of The Sun",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "override"
+    },
+    {
+      "key": "1040912600|4|0|Fire's Majesty|skill_size",
+      "weapon": "Heat of The Sun",
+      "kind": "changed",
+      "today": "small",
+      "class": "override"
+    },
+    {
+      "key": "1040913300|0|0|Glimmer's Crux|skill_size",
+      "weapon": "Harakhte",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 65 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040913300|1|0|Luminis Excelsior|skill_size",
+      "weapon": "Harakhte",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 66 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040913500|0|1|Nue's Omen II|added",
+      "weapon": "Shishio",
+      "kind": "added",
+      "ours": [
+        210,
+        5,
+        1
+      ],
+      "class": "accept",
+      "reason": "W2 row 100 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040913500|0|2|Nue's Omen III|added",
+      "weapon": "Shishio",
+      "kind": "added",
+      "ours": [
+        240,
+        5,
+        4
+      ],
+      "class": "accept",
+      "reason": "W2 row 101 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040913500|1|1|Nue's Cry II|added",
+      "weapon": "Shishio",
+      "kind": "added",
+      "ours": [
+        220,
+        5,
+        2
+      ],
+      "class": "accept",
+      "reason": "W2 row 102 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040913500|3|1|Nue's Calamity II|added",
+      "weapon": "Shishio",
+      "kind": "added",
+      "ours": [
+        250,
+        5,
+        5
+      ],
+      "class": "accept",
+      "reason": "W2 row 103 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    },
+    {
+      "key": "1040914300|2|0|Ironflame's Majesty III|skill_modifier",
+      "weapon": "Wrathfire Militis",
+      "kind": "changed",
+      "today": "Majesty",
+      "class": "backfill"
+    },
+    {
+      "key": "1040914300|2|0|Ironflame's Majesty III|skill_size",
+      "weapon": "Wrathfire Militis",
+      "kind": "changed",
+      "today": "big",
+      "class": "backfill"
+    },
+    {
+      "key": "1040918000|2|0|Tranquility's Crux|skill_size",
+      "weapon": "Moon Shotel",
+      "kind": "changed",
+      "today": "big",
+      "class": "accept",
+      "reason": "W2 row 67 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+    }
+  ],
+  "redundant_ops": [
+    {
+      "op": "gate",
+      "weapon": "1040016100",
+      "skill": "Scarlet Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040016500",
+      "skill": "Chain Force",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040018900",
+      "skill": "Grand Epic",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040019500",
+      "skill": "Azure Sword's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040019500",
+      "skill": "Cosmic Sword II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040019700",
+      "skill": "Astral Thrust",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040019700",
+      "skill": "Astral Thrust II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040020800",
+      "skill": "Water's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040020800",
+      "skill": "Water's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040026900",
+      "skill": "Horseman's Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040112400",
+      "skill": "Azure Dagger's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040112400",
+      "skill": "Cosmic Dagger II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040113200",
+      "skill": "Dark's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040113200",
+      "skill": "Dark's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040117500",
+      "skill": "Zenith Strike: Light",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040118000",
+      "skill": "Dreadflame's Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040119900",
+      "skill": "Adjudicator's Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213500",
+      "skill": "Azure Lance's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213500",
+      "skill": "Cosmic Lance II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213700",
+      "skill": "Astral Pierce",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213700",
+      "skill": "Astral Pierce II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213800",
+      "skill": "Abyssal Avenger",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040215000",
+      "skill": "Amber Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040215500",
+      "skill": "Earth's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040215500",
+      "skill": "Earth's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040218500",
+      "skill": "Adjudicator's Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311100",
+      "skill": "Heroic Tale",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311500",
+      "skill": "Azure Scythe's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311500",
+      "skill": "Cosmic Scythe II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311800",
+      "skill": "Astral Blow",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311800",
+      "skill": "Astral Blow II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040313500",
+      "skill": "Earth's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040313500",
+      "skill": "Earth's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040316600",
+      "skill": "Striking Art: Earth",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040316800",
+      "skill": "Zenith Art: Wind",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040413100",
+      "skill": "True Glacial Supremacy",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040415700",
+      "skill": "Staff Resonance",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040415800",
+      "skill": "Absolute Equality",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416400",
+      "skill": "Azure Rod's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416400",
+      "skill": "Cosmic Rod II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416500",
+      "skill": "Sunlight's Stimulant",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416600",
+      "skill": "Astral Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416600",
+      "skill": "Astral Arts II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040418200",
+      "skill": "Wind's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040418200",
+      "skill": "Wind's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040511200",
+      "skill": "Cobalt Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040511800",
+      "skill": "Azure Rifle's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040511800",
+      "skill": "Cosmic Rifle II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040513700",
+      "skill": "Light's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040513700",
+      "skill": "Light's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040514500",
+      "skill": "Graphite Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040515200",
+      "skill": "Daudaskot",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040515200",
+      "skill": "Daudaskot II",
+      "ordinal": 1
+    },
+    {
+      "op": "gate",
+      "weapon": "1040516300",
+      "skill": "Glacial Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040611700",
+      "skill": "Grand Epic",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612200",
+      "skill": "Royal Purple Blow",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612300",
+      "skill": "Azure Gauntlet's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612300",
+      "skill": "Cosmic Gauntlet II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612500",
+      "skill": "Astral Claw",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612500",
+      "skill": "Astral Claw II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040614300",
+      "skill": "Fire's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040614300",
+      "skill": "Fire's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040614500",
+      "skill": "Golden Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040617100",
+      "skill": "Scarlet Reticle",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040617900",
+      "skill": "Zenith Art: Water",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040619700",
+      "skill": "Glacial Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040709200",
+      "skill": "Grand Epic",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040709500",
+      "skill": "Azure Bow's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040709500",
+      "skill": "Cosmic Bow II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040710700",
+      "skill": "Water's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040710700",
+      "skill": "Water's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040711700",
+      "skill": "Dos Colmillos",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040712400",
+      "skill": "Horseman's Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040712900",
+      "skill": "Striking Art: Fire",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040713300",
+      "skill": "Golden Frailty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040714400",
+      "skill": "Dreadflame's Supremacy: Decimation",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040809800",
+      "skill": "True Glacial Supremacy",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040811500",
+      "skill": "Azure Harp's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040811500",
+      "skill": "Cosmic Harp II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040811600",
+      "skill": "Astral Echo",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040811600",
+      "skill": "Astral Echo II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040813300",
+      "skill": "Wind's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040813300",
+      "skill": "Wind's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040813900",
+      "skill": "Jade Arts",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040814400",
+      "skill": "Galactic Halo",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815100",
+      "skill": "Sephirath Fusame II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815400",
+      "skill": "Sephirath Haton II",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040816000",
+      "skill": "Zenith Strike: Dark",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040911800",
+      "skill": "Azure Blade's Discipline",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040911800",
+      "skill": "Cosmic Blade II",
+      "ordinal": 0
+    },
+    {
+      "op": "add_version",
+      "weapon": "1040912600",
+      "skill": "Fire's Majesty",
+      "ordinal": 0
+    },
+    {
+      "op": "gate",
+      "weapon": "1040912600",
+      "skill": "Fire's Majesty",
+      "ordinal": 0
+    }
+  ],
+  "warnings": []
+}
