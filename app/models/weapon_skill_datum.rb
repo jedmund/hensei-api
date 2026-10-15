@@ -2,6 +2,7 @@
 
 class WeaponSkillDatum < ApplicationRecord
   self.table_name = "weapon_skill_data"
+  include CurationExportTracking
 
   SERIES_VALUES = %w[normal omega ex odious normal_omega sephira unique taboo].freeze
   SIZE_VALUES = %w[small medium big big_ii massive unworldly ancestral].freeze

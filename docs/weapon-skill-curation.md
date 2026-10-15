@@ -13,12 +13,20 @@ be rebuilt from commit messages (hensei-api #528).
 ## The workflow
 
 1. Curate locally and stamp the rows (the admin editor does this for you).
-2. Export: `bin/rails granblue:export_weapon_skill_curation`. This writes every
-   curated row to `data/weapon_skill_curation.json`, keyed by weapon granblue_id
-   and skill name.
+2. In development the snapshot exports itself: saving or deleting a curated row
+   rewrites `data/weapon_skill_curation.json` after the request, or when a console,
+   runner or rake process exits. Rake tasks that may write with `update_all` (data
+   migrations, reparses) re-export on exit if anything drifted. Set
+   `CURATION_AUTO_EXPORT=0` to turn it off. To export by hand:
+   `bin/rails granblue:export_weapon_skill_curation`.
 3. Check: `bin/rails granblue:weapon_skill_curation_drift`. It exits nonzero if
    this database has curation the snapshot doesn't.
 4. Commit `data/weapon_skill_curation.json` with your change.
+
+The auto-export won't overwrite the file while it holds rows your database lacks (a
+teammate's curation, or a curated row you deleted); it logs a warning instead. Run
+`bin/rails granblue:sync_weapon_skill_curation` to pull those rows in, or remove them
+from the file if the deletion was intentional.
 
 Every deploy runs `db:migrate:with_data`, and the snapshot sync is chained onto it
 (`lib/tasks/weapon_skill_curation.rake`), so the committed snapshot is applied to
