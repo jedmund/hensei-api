@@ -1,0 +1,658 @@
+{
+  "1030109600|0|0|Willed Grounds|added": {
+    "class": "accept",
+    "reason": "W2 row 78 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1030902200|0|0|Mountain's Aegis|added": {
+    "class": "accept",
+    "reason": "W2 row 79 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040016000|2|0|Aquae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 2 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040019700|2|0|Verglas Sovereign|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040019700|2|0|Verglas Sovereign|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040020400|1|0|Luminis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 4 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040021000|2|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 5 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040022800|2|0|Arsus Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 6 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040027700|1|0|Drago Surge|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 7 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040027800|2|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 8 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040107900|1|1|Ventosus's Might II|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040110300|1|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 9 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040111000|0|0|Coeli Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 10 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040111100|1|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 11 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040112300|1|0|Aquae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 12 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040115200|2|0|Coeli Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 13 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040115300|1|0|Arsus Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 14 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040115700|0|1|Thunder God's Authority II|added": {
+    "class": "accept",
+    "reason": "W2 row 80 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040115700|1|1|Thunder God's Subjugation II|added": {
+    "class": "accept",
+    "reason": "W2 row 81 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040115700|1|2|Thunder God's Subjugation III|added": {
+    "class": "accept",
+    "reason": "W2 row 82 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040115700|3|1|Thunder God's Retribution II|added": {
+    "class": "accept",
+    "reason": "W2 row 83 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040117500|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040117600|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040117600|3|0|Zenith Strike: Light|min_uncap": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040117600|3|0|Zenith Strike: Light|unlock_level": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040207000|0|0|Zion's Might II|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040207000|0|1|Zion's Might III|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040207700|1|0|Scales of Wrath|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 15 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040208100|1|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 16 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040210600|1|0|Bountiful Strike|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 17 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040213300|1|0|Undersky's Whispers|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040213700|2|0|Radiant Sovereign|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040213700|2|0|Radiant Sovereign|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040216100|1|0|Arsus Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 18 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040217200|0|0|Sentient Simulacrum|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040217200|1|0|Golden Spirit|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040217300|0|0|Purity of Nature|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 19 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040217300|0|1|Purity of Nature II|added": {
+    "class": "accept",
+    "reason": "W2 row 84 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040217300|0|2|Purity of Nature III|added": {
+    "class": "accept",
+    "reason": "W2 row 85 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040217300|1|1|Fine Wind, Clear Heart II|added": {
+    "class": "accept",
+    "reason": "W2 row 86 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040217300|3|1|Crimson Splendor II|added": {
+    "class": "accept",
+    "reason": "W2 row 87 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040307100|1|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 20 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040311800|2|0|Heliacal Sovereign|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040311800|2|0|Heliacal Sovereign|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040313300|1|0|Bitter Perseverance|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 22 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040314000|1|0|Luminis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 23 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040316600|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040316700|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040316700|3|0|Striking Art: Earth|min_uncap": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040316700|3|0|Striking Art: Earth|unlock_level": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040316800|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040316900|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040316900|3|0|Zenith Art: Wind|min_uncap": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040316900|3|0|Zenith Art: Wind|unlock_level": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040317000|1|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 24 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040400300|0|0|Grace of Healing|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 25 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040400300|0|1|Grace of Healing II|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 26 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040401100|1|0|Ophidian Servitor|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040403900|0|0|Bells of Grace|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 27 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040406900|1|0|Saving Grace|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 28 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040406900|1|1|Saving Grace II|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 29 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040406900|1|1|Saving Grace II|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 29 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040408400|0|0|Magic Charge|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 30 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040413000|1|0|Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040413000|1|0|Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040413100|2|0|Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040413100|2|0|Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040413100|3|0|True Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040413100|3|0|True Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040413300|0|0|Architect Battle Arts|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 31 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040414100|1|0|Aquae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 32 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040416600|2|0|Evergreen Sovereign|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040416600|2|0|Evergreen Sovereign|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040416600|3|0|Astral Arts|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 (w2-classification.md, \"From W6a\"): false join. The page's Astral Arts is 10% skill DMG cap per buff (max 50%); the Arts family is a flat skill-level curve, as with Architect Battle Arts. Per-buff effect is a W10 follow-up."
+  },
+  "1040416600|4|0|Astral Arts II|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 (w2-classification.md, \"From W6a\"): false join. The page's Astral Arts is 10% skill DMG cap per buff (max 50%); the Arts family is a flat skill-level curve, as with Architect Battle Arts. Per-buff effect is a W10 follow-up."
+  },
+  "1040416600|4|0|Astral Arts II|skill_size": {
+    "class": "accept",
+    "reason": "W2 (w2-classification.md, \"From W6a\"): false join. The page's Astral Arts is 10% skill DMG cap per buff (max 50%); the Arts family is a flat skill-level curve, as with Architect Battle Arts. Per-buff effect is a W10 follow-up."
+  },
+  "1040420400|0|0|Blaze's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 35 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040420400|1|0|Arsus Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 36 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040423800|2|0|Glimmer's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 37 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040424300|3|0|Solaris's Supremacy: Decimation|added": {
+    "class": "parser",
+    "reason": "W2 row 106 (parser case): the compiler now applies the series template's level default, so the gate is right."
+  },
+  "1040425100|2|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 38 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040508800|2|0|Luminis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 40 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040512000|1|0|Excess Voltage|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 41 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040512500|2|0|Aquae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 42 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040513200|2|0|Arsus Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 43 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040513600|1|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 44 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040514400|2|0|Aquae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 45 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040514600|2|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 46 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040515700|2|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 48 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040516300|2|0|Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040516300|2|0|Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040516300|3|0|Glacial Supremacy: Decimation|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy: Decimation\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040516300|3|0|Glacial Supremacy: Decimation|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040517100|3|0|Gun Voltage II|skill_name_en": {
+    "class": "accept",
+    "reason": "Twinpain-Wolf Gun: \"Papillon Flamboyant\" at position 3 is the weapon's charge attack (page ougi_name), left by an old import of the expansion's C.A. table (parse_skills now reads only the weapon-skills table); no rows, no curation. Without it Gun Voltage II is appended at position 3 instead of 5; its one generated effect moves with it."
+  },
+  "1040517100|5|0|Gun Voltage II|missing": {
+    "class": "accept",
+    "reason": "Twinpain-Wolf Gun: \"Papillon Flamboyant\" at position 3 is the weapon's charge attack (page ougi_name), left by an old import of the expansion's C.A. table (parse_skills now reads only the weapon-skills table); no rows, no curation. Without it Gun Voltage II is appended at position 3 instead of 5; its one generated effect moves with it."
+  },
+  "1040518900|1|0|Blaze's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 50 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040606000|0|0|Hoarfrost's Tyranny|skill_size": {
+    "class": "accept",
+    "reason": "Page starts with an {{About}} hatnote but has its own {{Weapon}} block. WeaponParser#skill_source_text followed the hatnote to a missing \"<name> (Weapon)\" page and the parse failed, so the stored size predates today's parser. The compiler reads the page; the size is its description's size word (WeaponParser#build_skill_entry rule)."
+  },
+  "1040606200|0|0|Feral Roar|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 51 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040612500|2|0|Slaughterous Sovereign|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040612500|2|0|Slaughterous Sovereign|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040613000|2|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 53 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040616300|0|1|Ogre's Retribution II|added": {
+    "class": "accept",
+    "reason": "W2 row 88 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040616300|0|2|Ogre's Retribution III|added": {
+    "class": "accept",
+    "reason": "W2 row 89 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040616300|1|1|Eternal Animosity II|added": {
+    "class": "accept",
+    "reason": "W2 row 90 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040616300|3|1|Ferocious Dominance II|added": {
+    "class": "accept",
+    "reason": "W2 row 91 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040617900|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040618000|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040618000|3|0|Zenith Art: Water|min_uncap": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040618000|3|0|Zenith Art: Water|unlock_level": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040618400|3|0|Solaris's Supremacy: Decimation|added": {
+    "class": "parser",
+    "reason": "W2 row 107 (parser case): the compiler now applies the series template's level default, so the gate is right."
+  },
+  "1040619700|2|0|Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040619700|2|0|Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040619700|3|0|Glacial Supremacy: Decimation|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy: Decimation\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040619700|3|0|Glacial Supremacy: Decimation|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040700400|1|0|Elegant Stratagem|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 54 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040705600|0|0|Forest Blessing|skill_modifier": {
+    "class": "accept",
+    "reason": "W2 row 55 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040711000|0|0|Snowfall's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 57 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040711700|0|1|Sangre Caliente II|added": {
+    "class": "accept",
+    "reason": "W2 row 92 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040711700|1|1|Robar Tiempo II|added": {
+    "class": "accept",
+    "reason": "W2 row 93 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040711700|2|1|Lluvia de Saetas II|added": {
+    "class": "accept",
+    "reason": "W2 row 94 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040711700|3|1|Dos Colmillos II|added": {
+    "class": "parser",
+    "reason": "W2 row 95 (parser case): the compiler now applies the series template's level default, so the gate is right."
+  },
+  "1040712900|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040713000|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040713000|3|0|Striking Art: Fire|min_uncap": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040713000|3|0|Striking Art: Fire|unlock_level": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040715000|2|0|Arsus Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 59 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040809700|1|0|Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040809700|1|0|Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040809800|2|0|Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040809800|2|0|Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040809800|3|0|True Glacial Supremacy|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Supremacy\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040809800|3|0|True Glacial Supremacy|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"massive\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040811600|2|0|Verdant Sovereign|skill_modifier": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"Sovereign\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040811600|2|0|Verdant Sovereign|skill_size": {
+    "class": "curate",
+    "reason": "Family and size from a retired derivation: WeaponSkillParser rejects the prefix (not a known aura) and the version is expansion-created, so nothing derives \"unworldly\". Canonical rows are size-keyed (Supremacy/Supremacy: Decimation massive, Sovereign unworldly), so W2 curated modifier_override + size_override with today's values (PR #553, w2-classification.md \"From W6a\"), as for P4 (Wicked Might)."
+  },
+  "1040813600|2|0|Terrae Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 60 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040814400|0|1|Cepheid Variable II|added": {
+    "class": "accept",
+    "reason": "W2 row 96 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040814400|1|1|Galactic Bulge II|added": {
+    "class": "accept",
+    "reason": "W2 row 97 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040814400|1|2|Galactic Bulge III|added": {
+    "class": "accept",
+    "reason": "W2 row 98 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040814400|3|1|Galactic Halo II|added": {
+    "class": "parser",
+    "reason": "W2 row 99 (parser case): the compiler now applies the series template's level default, so the gate is right."
+  },
+  "1040815000|3|0|Sephirath Eparc II|unlock_level": {
+    "class": "accept",
+    "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+  },
+  "1040815100|3|0|Sephirath Fusame II|unlock_level": {
+    "class": "accept",
+    "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+  },
+  "1040815200|3|0|Sephirath Brogue II|unlock_level": {
+    "class": "accept",
+    "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+  },
+  "1040815300|3|0|Sephirath Corant II|unlock_level": {
+    "class": "accept",
+    "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+  },
+  "1040815400|3|0|Sephirath Haton II|unlock_level": {
+    "class": "accept",
+    "reason": "Template:Weapon/Common/World s2_4s_lvl=150 gives the II tier 150/4/0. The world.json gate op (July recovery) sets only min_uncap 4, the same tier; the level was never stored."
+  },
+  "1040816000|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040816100|0|0|}}} Enforcement|missing": {
+    "class": "accept",
+    "reason": "Junk name from an unexpanded Template:Weapon/Common/RevansII line; inert (modifier_override none, no rows) per data migration 20261015100001. The compiler drops template-garbled names, as WeaponParser#persist_single_skill does."
+  },
+  "1040816100|3|0|Zenith Strike: Dark|min_uncap": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040816100|3|0|Zenith Strike: Dark|unlock_level": {
+    "class": "accept",
+    "reason": "Mk II page transcludes its Mk I ({{:Mk I}}), so its skills are the Mk I's (data migration 20261015100001). Template:Weapon/Common/RevansII s2_lvl=120 gives 120/4/0, the gate the Mk I already has through its revans.json gate op; the Mk II copy was made before that gate."
+  },
+  "1040817200|2|0|Blaze's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 62 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040906600|1|0|Fire's Aegis|icon": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040906600|1|0|Fire's Aegis|main_hand_only": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040906600|1|0|Fire's Aegis|mc_only": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040906600|1|0|Fire's Aegis|skill_modifier": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040906600|1|0|Fire's Aegis|skill_name_en": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040906600|1|0|Fire's Aegis|skill_series": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040906600|1|0|Fire's Aegis|skill_size": {
+    "class": "open",
+    "reason": "Two catalogue weapons share granblue_id 1040906600 (Ray of Zhuque Pontus and Ray of Zhuque Regus); weapon_skills is keyed by granblue_id, so the build can hold only one. Today's rows are Pontus's; this diff is Regus compiled against them. Needs a catalogue decision (lead)."
+  },
+  "1040911900|2|0|Caliginis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 64 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040913300|0|0|Glimmer's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 65 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040913300|1|0|Luminis Excelsior|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 66 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040913500|0|1|Nue's Omen II|added": {
+    "class": "accept",
+    "reason": "W2 row 100 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040913500|0|2|Nue's Omen III|added": {
+    "class": "accept",
+    "reason": "W2 row 101 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040913500|1|1|Nue's Cry II|added": {
+    "class": "accept",
+    "reason": "W2 row 102 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040913500|3|1|Nue's Calamity II|added": {
+    "class": "accept",
+    "reason": "W2 row 103 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  },
+  "1040918000|2|0|Tranquility's Crux|skill_size": {
+    "class": "accept",
+    "reason": "W2 row 67 (accept), docs/weapon-skill-pipeline/w2-classification.md."
+  }
+}
