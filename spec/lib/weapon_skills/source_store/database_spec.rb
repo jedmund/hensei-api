@@ -41,4 +41,13 @@ RSpec.describe WeaponSkills::SourceStore::Database do
   it "rejects unknown kinds" do
     expect { store.put("html", "x", "y") }.to raise_error(ArgumentError)
   end
+
+  it "stores and finds keys by their canonical title" do
+    store = described_class.new
+    store.put("wiki_raw", "Devil%27s_Finger", "page")
+
+    expect(WeaponSource.sole.key).to eq("Devil's Finger")
+    expect(store.fetch("wiki_raw", "Devil's Finger").body).to eq("page")
+    expect(store.fetch("wiki_raw", "Devil%27s Finger").body).to eq("page")
+  end
 end
