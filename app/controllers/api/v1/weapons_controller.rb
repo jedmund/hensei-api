@@ -195,7 +195,8 @@ module Api
       end
 
       # POST /weapons/:id/fetch_wiki
-      # Fetches and stores wiki data for this weapon
+      # Fetches the weapon's wiki sources into weapon_sources, then rebuilds its skills from
+      # them (the weapon-skill build).
       def fetch_wiki
         unless @weapon.wiki_en.present?
           return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_entity
@@ -203,17 +204,26 @@ module Api
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@weapon)
-          render json: WeaponBlueprint.render(@weapon, view: :raw)
         rescue Granblue::WikiError => e
-          render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+          return render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         rescue StandardError => e
           Rails.logger.error "[WEAPONS] Wiki fetch error for #{@weapon.id}: #{e.message}"
-          render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+          return render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         end
+
+        begin
+          Granblue::EntityReparser.new(@weapon).reparse
+        rescue StandardError => e
+          Rails.logger.error "[WEAPONS] Skill build error after wiki fetch for #{@weapon.id}: #{e.message}"
+          return render json: { error: "Fetched the wiki page, but rebuilding skills failed: #{e.message}" },
+                        status: :internal_server_error
+        end
+        render json: WeaponBlueprint.render(@weapon.reload, view: :raw)
       end
 
       # POST /weapons/:id/reparse
-      # Re-parses the stored wikitext into structured rows; refetch=true fetches fresh wikitext first.
+      # Rebuilds the weapon's skills from its stored wiki sources (the weapon-skill build);
+      # refetch=true fetches fresh sources first.
       def reparse
         Granblue::EntityReparser.new(@weapon, refetch: params[:refetch] == 'true').reparse
         render json: WeaponBlueprint.render(@weapon.reload, view: :full)
