@@ -43,6 +43,17 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
     expect(described_class.plan(rows).counts).to eq(unchanged: 3)
   end
 
+  it "stamps a weapon whose page is unchanged with the stored fetch time" do
+    weapon.update_columns(wiki_raw: "same", wiki_raw_fetched_at: Time.utc(2026, 6, 17))
+    source("wiki_raw", "Ray of Zhuque Regus", "same", weapon: weapon)
+    rows = export_and_clear
+
+    described_class.apply(described_class.plan(rows))
+
+    expect(weapon.reload).to have_attributes(wiki_raw: "same", wiki_raw_fetched_at: fetched_at)
+    expect(described_class.plan(rows).weapon_updates).to be_empty
+  end
+
   it "keeps a row fetched after the exported one" do
     source("wiki_raw", "Ray_of_Zhuque_Regus", "exported", weapon: weapon)
     rows = export_and_clear
