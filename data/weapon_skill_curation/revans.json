@@ -1,91 +1,6 @@
 {
   "format": 2,
-  "versions": [
-    {
-      "weapon": "1040117500",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "weapon": "1040117600",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:43:59Z"
-    },
-    {
-      "weapon": "1040316600",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "weapon": "1040316700",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:43:59Z"
-    },
-    {
-      "weapon": "1040316800",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "weapon": "1040316900",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:43:59Z"
-    },
-    {
-      "weapon": "1040617900",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "weapon": "1040618000",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:43:59Z"
-    },
-    {
-      "weapon": "1040712900",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "weapon": "1040713000",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:43:59Z"
-    },
-    {
-      "weapon": "1040816000",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "weapon": "1040816100",
-      "skill": "}}} Enforcement",
-      "ordinal": 0,
-      "modifier_override": "none",
-      "edited_at": "2026-10-15T06:43:59Z"
-    }
-  ],
+  "versions": [],
   "effects": [
     {
       "weapon": "1040117500",
@@ -1139,6 +1054,102 @@
       "transcendence_stage": 0,
       "reason": "gbf.wiki Forsaken Agastia: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/RevansII); was skill_version_gates.json",
       "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040117500",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040117600",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040316600",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040316700",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040316800",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040316900",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040617900",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040618000",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040712900",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040713000",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040816000",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
+    },
+    {
+      "op": "remove_version",
+      "weapon": "1040816100",
+      "skill": "}}} Enforcement",
+      "ordinal": 0,
+      "reason": "Template junk from a broken expansion ('}}} Enforcement'), not a skill in the game; the build no longer produces it (W6a accept: 12 Enforcement junk versions dropped).",
+      "edited_at": "2026-10-15T22:00:00Z"
     }
   ]
 }
