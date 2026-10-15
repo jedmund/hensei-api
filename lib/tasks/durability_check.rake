@@ -79,6 +79,17 @@ namespace :granblue do
 end
 
 namespace :granblue do
+  desc "Export the weapon-skill family registry to data/weapon_skill_families.json"
+  task export_weapon_skill_families: :environment do
+    rows = WeaponSkillFamily.order(:name).map do |f|
+      f.attributes.slice("name", "aura_boostable", "boosts", "icon_stems", "color").compact
+    end
+    File.write(Rails.root.join("data/weapon_skill_families.json"), "#{JSON.pretty_generate(rows)}\n")
+    puts "Exported #{rows.size} weapon skill families"
+  end
+end
+
+namespace :granblue do
   desc "Import {{Weapon Skills/*}} family templates: registry header always upserts; " \
        "curves fill gaps only with apply=true. Mismatches are reported, never applied."
   task import_family_templates: :environment do
