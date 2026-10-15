@@ -1,39 +1,6 @@
 {
   "format": 2,
-  "versions": [
-    {
-      "weapon": "1040516300",
-      "skill": "Glacial Supremacy",
-      "ordinal": 0,
-      "modifier_override": "Supremacy",
-      "size_override": "massive",
-      "edited_at": "2026-10-15T19:00:00Z"
-    },
-    {
-      "weapon": "1040516300",
-      "skill": "Glacial Supremacy: Decimation",
-      "ordinal": 0,
-      "modifier_override": "Supremacy: Decimation",
-      "size_override": "massive",
-      "edited_at": "2026-10-15T19:00:00Z"
-    },
-    {
-      "weapon": "1040619700",
-      "skill": "Glacial Supremacy",
-      "ordinal": 0,
-      "modifier_override": "Supremacy",
-      "size_override": "massive",
-      "edited_at": "2026-10-15T19:00:00Z"
-    },
-    {
-      "weapon": "1040619700",
-      "skill": "Glacial Supremacy: Decimation",
-      "ordinal": 0,
-      "modifier_override": "Supremacy: Decimation",
-      "size_override": "massive",
-      "edited_at": "2026-10-15T19:00:00Z"
-    }
-  ],
+  "versions": [],
   "effects": [],
   "data": [],
   "ops": [
