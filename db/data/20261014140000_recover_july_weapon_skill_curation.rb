@@ -17,7 +17,11 @@ class RecoverJulyWeaponSkillCuration < ActiveRecord::Migration[8.0]
     [WeaponSkillEffect, WeaponSkillDatum, WeaponSkillVersion].each(&:reset_column_information)
     @now = Time.current
     operations = JSON.parse(File.read(Rails.root.join(MANIFEST))).fetch("operations")
+    # The deploy log is prod's only signal that a skill was renamed or a row already gone.
+    unmatched = operations.reject { |operation| matches?(operation) }
+    unmatched.each { |op| say "no match: #{op['id']} #{op['op']} #{op['weapon']} / #{op['skill']} #{op['match']&.to_json}" }
     operations.each { |operation| apply(operation) }
+    say "#{operations.size} operations, #{unmatched.size} matched nothing"
   end
 
   def down
@@ -35,6 +39,15 @@ class RecoverJulyWeaponSkillCuration < ActiveRecord::Migration[8.0]
     when "insert_datum" then versions(operation).each { |v| insert_datum(operation["attrs"], v.id) }
     when "insert_key_effect" then insert_effect(operation["attrs"], nil)
     else raise "unknown recovery op #{operation['op']}"
+    end
+  end
+
+  def matches?(operation)
+    case operation["op"]
+    when "insert_key_effect" then true
+    when "delete_effect", "update_effect"
+      effect_scope(operation).exists? || (operation["insert_if_missing"] && versions(operation).exists?)
+    else versions(operation).exists?
     end
   end
 

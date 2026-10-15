@@ -2270,32 +2270,6 @@
       "id": "I092",
       "weapon": "Cosmic Rod",
       "granblue_id": "1040416400",
-      "skill": "Cosmic Rod",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I092",
-      "weapon": "Cosmic Rod",
-      "granblue_id": "1040416400",
-      "skill": "Cosmic Rod II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
-      }
-    },
-    {
-      "id": "I092",
-      "weapon": "Cosmic Rod",
-      "granblue_id": "1040416400",
       "skill": "Cosmic Rod II",
       "confidence": "derived",
       "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
@@ -2344,32 +2318,6 @@
         "suppressed_boosts": [
           "atk"
         ]
-      }
-    },
-    {
-      "id": "I093",
-      "weapon": "Cosmic Lance",
-      "granblue_id": "1040213500",
-      "skill": "Cosmic Lance",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I093",
-      "weapon": "Cosmic Lance",
-      "granblue_id": "1040213500",
-      "skill": "Cosmic Lance II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
       }
     },
     {
@@ -2430,32 +2378,6 @@
       "id": "I094",
       "weapon": "Cosmic Rifle",
       "granblue_id": "1040511800",
-      "skill": "Cosmic Rifle",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I094",
-      "weapon": "Cosmic Rifle",
-      "granblue_id": "1040511800",
-      "skill": "Cosmic Rifle II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
-      }
-    },
-    {
-      "id": "I094",
-      "weapon": "Cosmic Rifle",
-      "granblue_id": "1040511800",
       "skill": "Cosmic Rifle II",
       "confidence": "derived",
       "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
@@ -2504,32 +2426,6 @@
         "suppressed_boosts": [
           "atk"
         ]
-      }
-    },
-    {
-      "id": "I095",
-      "weapon": "Cosmic Harp",
-      "granblue_id": "1040811500",
-      "skill": "Cosmic Harp",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I095",
-      "weapon": "Cosmic Harp",
-      "granblue_id": "1040811500",
-      "skill": "Cosmic Harp II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
       }
     },
     {
@@ -2590,32 +2486,6 @@
       "id": "I096",
       "weapon": "Cosmic Gauntlet",
       "granblue_id": "1040612300",
-      "skill": "Cosmic Gauntlet",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I096",
-      "weapon": "Cosmic Gauntlet",
-      "granblue_id": "1040612300",
-      "skill": "Cosmic Gauntlet II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
-      }
-    },
-    {
-      "id": "I096",
-      "weapon": "Cosmic Gauntlet",
-      "granblue_id": "1040612300",
       "skill": "Cosmic Gauntlet II",
       "confidence": "derived",
       "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
@@ -2664,32 +2534,6 @@
         "suppressed_boosts": [
           "atk"
         ]
-      }
-    },
-    {
-      "id": "I097",
-      "weapon": "Cosmic Sword",
-      "granblue_id": "1040019500",
-      "skill": "Cosmic Sword",
-      "confidence": "exact",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I097",
-      "weapon": "Cosmic Sword",
-      "granblue_id": "1040019500",
-      "skill": "Cosmic Sword II",
-      "confidence": "exact",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
       }
     },
     {
@@ -2750,32 +2594,6 @@
       "id": "I098",
       "weapon": "Cosmic Scythe",
       "granblue_id": "1040311500",
-      "skill": "Cosmic Scythe",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I098",
-      "weapon": "Cosmic Scythe",
-      "granblue_id": "1040311500",
-      "skill": "Cosmic Scythe II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
-      }
-    },
-    {
-      "id": "I098",
-      "weapon": "Cosmic Scythe",
-      "granblue_id": "1040311500",
       "skill": "Cosmic Scythe II",
       "confidence": "derived",
       "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
@@ -2824,32 +2642,6 @@
         "suppressed_boosts": [
           "atk"
         ]
-      }
-    },
-    {
-      "id": "I099",
-      "weapon": "Cosmic Dagger",
-      "granblue_id": "1040112400",
-      "skill": "Cosmic Dagger",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I099",
-      "weapon": "Cosmic Dagger",
-      "granblue_id": "1040112400",
-      "skill": "Cosmic Dagger II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
       }
     },
     {
@@ -2910,32 +2702,6 @@
       "id": "I100",
       "weapon": "Cosmic Bow",
       "granblue_id": "1040709500",
-      "skill": "Cosmic Bow",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I100",
-      "weapon": "Cosmic Bow",
-      "granblue_id": "1040709500",
-      "skill": "Cosmic Bow II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
-      }
-    },
-    {
-      "id": "I100",
-      "weapon": "Cosmic Bow",
-      "granblue_id": "1040709500",
       "skill": "Cosmic Bow II",
       "confidence": "derived",
       "source": "Keeps reparse from recreating the weapon-stat ATK row (Cosmic 'boost to ATK of equipped <type>' never reaches the panel).",
@@ -2984,32 +2750,6 @@
         "suppressed_boosts": [
           "atk"
         ]
-      }
-    },
-    {
-      "id": "I101",
-      "weapon": "Cosmic Blade",
-      "granblue_id": "1040911800",
-      "skill": "Cosmic Blade",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 50.0
-      }
-    },
-    {
-      "id": "I101",
-      "weapon": "Cosmic Blade",
-      "granblue_id": "1040911800",
-      "skill": "Cosmic Blade II",
-      "confidence": "derived",
-      "source": "XJZZmv #452: 'Cosmic weapon-stat rows (30/50% to equipped swords) removed from the skill lines'; memory: Cosmic-style 'N% boost to ATK/HP of equipped <type>' = weapon-STAT boosts, never panel lines",
-      "op": "delete_effect",
-      "match": {
-        "boost_type": "atk",
-        "value": 30.0
       }
     },
     {
