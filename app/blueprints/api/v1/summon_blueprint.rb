@@ -80,6 +80,8 @@ module Api
       view :full do
         include_view :stats
         include_view :dates
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com).
+        fields :wiki_raw_fetched_at, :wiki_raw_jp_fetched_at
 
         field :nicknames do |s|
           {
