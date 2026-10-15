@@ -107,11 +107,22 @@ module WeaponSkills
           name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
         end
 
+        # The size word of the skill's own text. Markup is not text: Metal Hand's
+        # `<span class="text-small">Big boost…` is a big skill, and a `<!--…-->` editor
+        # note or a `<ref>` citation can name a size the skill doesn't have. Templates stay
+        # ({{tt|20% boost|'''Size:''' Big…}} is where Hollowsky's size lives).
         def size_from_description(description)
           return nil if description.blank?
 
-          m = description.match(SIZE_KEYWORD) or return nil
+          m = strip_markup(description).match(SIZE_KEYWORD) or return nil
           m[1].downcase
+        end
+
+        def strip_markup(text)
+          text.gsub(/<!--.*?(?:-->|\z)/m, " ")
+              .gsub(%r{<ref\b[^>]*/>}i, " ")
+              .gsub(%r{<ref\b[^>]*>.*?(?:</ref>|\z)}im, " ")
+              .gsub(/<[^>]+>/, " ")
         end
 
         # A later main-hand-only clause does not make an earlier always-on one main-hand-only.
