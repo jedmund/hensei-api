@@ -136,7 +136,7 @@ module Granblue
         return if @jp_title.blank?
 
         html = @client.fetch(@jp_title)
-        @record.update!(wiki_raw_jp: html)
+        @record.update!(wiki_raw_jp: html, wiki_raw_jp_fetched_at: Time.current)
         html
       end
     end
