@@ -1,6 +1,8 @@
 # W2 classification: migration-only state → curation
 
-**Input:** `data/weapon_skill_parity/full_reparse_2026-10-15.json`, the frozen full-rebuild diff: 67 changed, 10 missing and 26 added versions.
+**Input:**
+- `data/weapon_skill_parity/full_reparse_2026-10-15.json`, the frozen full-rebuild diff: 67 changed, 10 missing and 26 added versions.
+- W3's offline rebuild, `full_reparse_offline_2026-10-15.json` (stored sources, no wiki calls). It reproduces all 103 and adds 4 rows on weapons whose wiki page changed on 2026-10-15. Those 4 are classified in [Offline re-check](#offline-re-check-4-new-rows).
 
 **Method:** this classification wasn't re-parsed. Evidence comes from:
 - the stored wikitext (`weapons.wiki_raw`);
@@ -9,7 +11,7 @@
 - git history;
 - gbf.wiki family and series templates, read in a browser. W3 stores the same pages as `family_template` and `transclusion` sources.
 
-**Check:** after the v1 entries were synced into `hensei_pipeline_w2`, `granblue:skill_parity` reports no differences and `granblue:weapon_skill_curation_drift` is clean.
+**Check:** on `hensei_pipeline_w2` (restored from `catalogue-20261015-sources`), after the curation is synced, `granblue:skill_parity` reports no differences and `granblue:weapon_skill_curation_drift` is clean.
 
 ## Summary
 
@@ -19,17 +21,22 @@
 | `curate + accept` | 1 | Blood Red Blow: Blow link curated (v1); its effect change accepted |
 | `accept` | 78 | 38 Excelsior/Crux size drops, 16 false family links, 24 new tiers / never-persisted skills |
 | `parser` | 2 | Dos Colmillos II, Galactic Halo II gates |
+| **Offline re-check** | 4 | `curate` 1 (Daudaskot II gate), `parser` 3 (Blazing Chain III boost type; two Exo Decimation gates) |
 
-Every one of the 103 differences is in the table below.
+All 103 frozen differences are in the table at the end. The 4 offline-only rows are in their own section.
 
 ### Where the entries are
 
-- **v1** (`data/weapon_skill_curation.json`): `modifier_override` on Wicked Cool Might, Wicked Sick Might, Unrelenting Might ("Might") and Blood Red Blow ("Blow"). Plus the two W5 key caps below.
-- **v2 pending** (`data/weapon_skill_curation/pending/`, overlay v2, validated by `spec/lib/weapon_skills/pending_curation_fragments_spec.rb`):
+The entries now live in W7's per-series overlay v2 files under `data/weapon_skill_curation/`. W7 folded W2's pending fragments into them, and its spec validates every file.
+- **Version overrides:**
+  - `gacha.json`: `modifier_override` on Wicked Cool Might, Wicked Sick Might, Unrelenting Might ("Might") and Blood Red Blow ("Blow").
+  - `new-world-foundation.json`: Majesty/normal/small overrides on the 10 Majesty versions.
+- **Ops:**
   - `epic.json`: 6 `gate` ops, 120/4/0.
-  - `illustrious.json`: 3 `gate` ops, 230/5/3.
-  - `new-world-foundation.json`: 10 `add_version` ops (position 4, ordinal 0, 120/4/0), plus `versions` overrides Majesty/normal/small so the added versions resolve the canonical Majesty curve.
-- **Overlap with the gates manifest:** all 19 gates (9 `gate` ops + 10 `add_version` gates) are also in `skill_version_gates.json`, with the same values. W7's split dedupes them by identity (agreed with W7).
+  - `illustrious.json`: 3 `gate` ops at 230/5/3, plus Daudaskot II at 250/5/5 (offline re-check).
+  - `new-world-foundation.json`: 10 `add_version` ops (position 4, ordinal 0, 120/4/0).
+- **Key-scoped effects** (`_canonical.json`): the W5 Anklet caps and `elem_reduc` rows below.
+- **Overlap with the gates manifest:** the 19 frozen-diff gates were also in `skill_version_gates.json`, with the same values. W7's split deduped them; the manifest's 17:00:01Z stamps won.
 
 ## Parser cases (for W6a, structure)
 
@@ -54,6 +61,18 @@ W6b confirmed P1–P3 are structure work, not row compilation. The lead is forwa
   - **Why the parser misses them:** the name parser rejects them because the prefix isn't a known aura.
   - **Evidence they're EX Might:** the icons `ws_skill_atk_a_2_{2,3}` are the family registry's EX Might stems.
   - The `modifier_override` stays. W6b confirmed its `family_curve` reads `resolved_*`, so the override keeps the canonical curve.
+
+- **P5 (`parser`, row compiler, fixed by W6b in #552): Blazing Chain III** (Higurashi `1040913400`, s2 tier 5★).
+  - **Source:** `s2_5s_desc`: "…10% boost to special C.A. damage cap, and amplify chain damage by 50%."
+  - **Expected:** `cb_amp` static 50 (element allies).
+  - **Got:** `dmg_amp` static 50.
+  - **Also questionable (W10):** "special C.A. damage cap" is stored as `ca_dmg_cap` 10 in both runs; `sp_ca_cap` looks like the right boost type.
+- **P6 (`parser`, structure, W6a): Exo Decimation gate.**
+  - **Weapons:** Exo Heliocentrum `1040424300` and Exo Aristarchus `1040618400`.
+  - **Source:** `Template:Weapon/Common/Exo` emits the "<skill>: Decimation" tier with `s1_4s_lvl=200` when the page sets `5star_date`.
+  - **Expected:** gate 200/5/0, at position 3 like the other Exo Decimations.
+  - **Got:** nil/3/0.
+  - The other 8 Exo Decimations get their gate from `gate` ops; a compiler that applies `s1_4s_lvl` retires those too.
 
 ## Follow-ups (value changes, not parity; for W10)
 
@@ -82,6 +101,39 @@ Source: W5's key-skill classification (`docs/weapon-skill-pipeline/w5-classifica
 |---|---|---|---|
 | `anklet-ascendance` skill_dmg_cap | **curate** | W5: extractor drops total_cap / shared_cap_group | v1 canonical effect, `total_cap: 50`, `shared_cap_group: key_skill_cap` |
 | `anklet-oblivion` na_dmg_cap | **curate** | W5: extractor drops total_cap / shared_cap_group | v1 canonical effect, `total_cap: 10`, `shared_cap_group: key_na_cap` |
+| `anklet-ascendance` elem_reduc | **curate** | W5 (#549): the key text "…and 30% reduced damage taken from superior element" has no parser clause yet (W6b will add one) | canonical effect in `_canonical.json`: `conditional_flat` 30, `boost_level >= 280` |
+| `anklet-maximality` elem_reduc | **curate** | same | same |
+| `anklet-oblivion` elem_reduc | **curate** | same | same |
+
+## Offline re-check (4 new rows)
+
+Source: `full_reparse_offline_2026-10-15.json` (W3).
+- **Evidence:** the stored weapon pages and `Template:Weapon/Common/{Illustrious,Exo}` from W3's source store.
+- **Check:** these four weapons were re-run through `EntityReparser` inside `Wiki.offline` and rolled back, to see exactly what the rebuild produces.
+- **Why these are new:** all four pages changed on gbf.wiki on 2026-10-15, which is why the frozen live run didn't show them.
+
+| # | Key | Weapon | Diff | Change | Bucket | Evidence | Entry or issue |
+|---|---|---|---|---|---|---|---|
+| 104 | `1040515200\|3\|1\|Daudaskot II` | Hraesvelgr | changed | gate [250, 5, 5] → [nil, 3, 0] | **curate** | Page: `s4_u1_name=Daudaskot II` with no `s4_u1_lvl` (removed in today's edit). `Template:Weapon/Common/Illustrious` fixes `s4_4s_lvl=250`. Siblings with an explicit `s4_u1_lvl=250` have 250/5/5. | `gate` op 250/5/5 in `illustrious.json`; same root cause as P1 |
+| 105 | `1040913400\|1\|2\|Blazing Chain III` | Higurashi | changed | effects: 1 → 2 rows (adds `dmg_amp` static 50) | **parser** | Page `s2_5s_desc`: "…and amplify chain damage by 50%". That's chain-burst amplification (`cb_amp`), not general `dmg_amp`. The new row has the wrong boost type, so neither accept nor curate fits. Also differs in `skill_parity mode=extract`. | Parser case P5: fixed in #552 (W6b maps "amplify chain damage" to `cb_amp`); no stopgap curation, per the lead |
+| 106 | `1040424300\|3\|0\|Solaris's Supremacy: Decimation` | Exo Heliocentrum | added | gate [nil, 3, 0]; frame Supremacy: Decimation/ex/massive; atk 9/18/23/25.5 + dmg_cap 5 | **parser** | Page now has `5star_date=2026-09-07`, `evo_max=5`. `Template:Weapon/Common/Exo`: `s1_4s_name={{#if:{{{5star_date}}}|<skill>: Decimation}}`, `s1_4s_lvl={{#if:{{{5star_date}}}|200}}`. The tier is real; its gate should be 200/5/0, like the 8 other Exo Decimations (gate ops in `exo.json`). | Parser case P6 (expected 200/5/0) |
+| 107 | `1040618400\|3\|0\|Solaris's Supremacy: Decimation` | Exo Aristarchus | added | same as 106 | **parser** | Same as 106 (`5star_date=2026-09-07`). | Parser case P6 |
+
+Why the two Decimations aren't curated: the versions don't exist in today's database, so a `gate` op would sit unmatched in every database until a rebuild runs. Unmatched ops also block the dev auto-export ("an op not applied here"). P1 was left as `parser` for the same reason.
+
+## From W6a: series-template families (18 versions)
+
+W6a's structure compiler found these.
+- **Why the build loses them:** they're created by series-template expansion, and the name parser rejects their prefix (not a known aura word), so nothing in a from-scratch build sets the family or size.
+- **Why they survive today:** the old reparse kept them only because template repair matched by name and left classification alone.
+- **What breaks without them:** canonical rows keyed by size (Xeno/Exo/Astral parity).
+
+| Key(s) | Bucket | Evidence | Entry |
+|---|---|---|---|
+| Sovereign ×6: `1040019700\|2\|0` Verglas, `1040213700\|2\|0` Radiant, `1040311800\|2\|0` Heliacal, `1040416600\|2\|0` Evergreen, `1040612500\|2\|0` Slaughterous, `1040811600\|2\|0` Verdant Sovereign | **curate** | `Template:Weapon Skills/Sovereign` (stored source): EX, Unworldly only, 16/25/33/37. This matches the canonical `Sovereign\|atk\|ex\|unworldly` row these resolve today. | `modifier_override: "Sovereign"`, `size_override: "unworldly"` in `astral.json` |
+| Glacial Supremacy ×6 and True Glacial Supremacy ×2: `1040413000\|1\|0`, `1040413100\|2\|0`, `1040413100\|3\|0`, `1040516300\|2\|0`, `1040619700\|2\|0`, `1040809700\|1\|0`, `1040809800\|2\|0`, `1040809800\|3\|0` | **curate** | `Template:Weapon Skills/Supremacy`: EX, Massive only, 9/18/23/25.5. Today these resolve `Supremacy\|atk\|ex\|massive`. | `modifier_override: "Supremacy"`, `size_override: "massive"` in `xeno.json` / `exo.json` |
+| Glacial Supremacy: Decimation ×2: `1040516300\|3\|0`, `1040619700\|3\|0` | **curate** | `Template:Weapon Skills/Supremacy: Decimation`: EX Massive, 9/18/23/25.5 + 5% DMG cap. | `modifier_override: "Supremacy: Decimation"`, `size_override: "massive"` in `exo.json` |
+| `1040416600\|3\|0` Astral Arts, `1040416600\|4\|0` Astral Arts II (Yggdrasil's Bough) | **accept** | Expanded page, section "Astral Arts": "10% boost to Earth allies' skill damage cap per buff (Max: 50%)". `Template:Weapon Skills/Arts` is a flat, skill-level-scaled skill DMG cap (canonical 5.5/10/15/20), so the Arts link is a false join like Architect Battle Arts. Dropping it removes a wrong `skill_dmg_cap` curve. | No entry. Follow-up (W10 / row compiler): model it as `skill_dmg_cap` 10% per buff, max 50%. |
 
 ## All 103 differences
 
