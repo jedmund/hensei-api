@@ -110,6 +110,13 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(r[:skip]).to eq("triggered_effect")
   end
 
+  it "doesn't read a proc's damage ceiling as a DMG Cap boost (Magician-Tower's Calamity)" do
+    r = parse("Massive boost to Earth allies' {{tt|ATK|'''Modifier:''' EX}}.<br />" \
+              "MC deals 300% Earth damage to all foes every 3 turns (Damage cap: ~400,000).")
+    expect(boost(r, "dmg_cap")).to be_nil
+    expect(boost(r, "atk")).to be_present
+  end
+
   it "skips end-of-turn procs (Prayer of the Phoenix)" do
     r = parse("When main weapon (MC only): At end of turn when a foe's Singed lvl is 7 or above: " \
               "Restore 10% of Fire allies' HP (Healing cap: 500). All Fire allies gain Charge Bar 10%.")
