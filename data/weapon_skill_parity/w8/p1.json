@@ -1,0 +1,254 @@
+{
+  "1030109600|0|0|Willed Grounds": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Beach Flag: Stored wikitext has `s1_name`/`s1_desc`; the weapon had no skills in the DB at all (never persisted). gbf.wiki weapon page, skill 1. The build creates it from the page.",
+    "source": "w2-classification.md, 'All 103 differences' row 78 (accept). Stored wiki_raw 'Beach Flag' (inline): '|s1_name=Willed Grounds ... |s1_desc=Medium boost to earth allies' max HP'"
+  },
+  "1030902200|0|0|Mountain's Aegis": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Tyrian Tiger Blade: Stored wikitext has `s1_name`/`s1_desc`; the weapon had no skills in the DB at all (never persisted). gbf.wiki weapon page, skill 1. The build creates it from the page.",
+    "source": "w2-classification.md, 'All 103 differences' row 79 (accept). Stored wiki_raw 'Tyrian Tiger Blade' (inline): '|s1_name=Mountain's Aegis ... |s1_desc=Medium boost to earth allies' max HP'"
+  },
+  "1040016000|2|0|Aquae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Gottfried: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 2 (accept)"
+  },
+  "1040020400|1|0|Luminis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Official's Jitte: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 4 (accept)"
+  },
+  "1040021000|2|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Lovely Ace: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 5 (accept)"
+  },
+  "1040022800|2|0|Arsus Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Arcane Rouge: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 6 (accept)"
+  },
+  "1040027700|1|0|Drago Surge": {
+    "class": "intended",
+    "field": "frame, effects",
+    "reason": "Magic Sword Tenma: Tail-word false join. Page: MC-only boost to C.A. DMG. gbf.wiki Template:Weapon_Skills/Surge is DA/TA rate; its DA/TA rows were phantoms. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 7 (accept)"
+  },
+  "1040027800|2|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Goriki-maru Revised: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 8 (accept)"
+  },
+  "1040111100|1|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Gandring: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 11 (accept)"
+  },
+  "1040115200|2|0|Coeli Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Bon Joie: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 13 (accept)"
+  },
+  "1040115300|1|0|Arsus Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "War Fan of Secret Teachings: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 14 (accept)"
+  },
+  "1040207700|1|0|Scales of Wrath": {
+    "class": "intended",
+    "field": "frame, effects",
+    "reason": "Qinglong Spear Pontus: Tail-word false join. Page: MC-only 20% Bonus DMG below 50% HP. gbf.wiki Template:Weapon_Skills/Wrath is per-grid EX Might Sp./HP/DA/TA; those rows were phantoms. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 15 (accept)"
+  },
+  "1040210600|1|0|Bountiful Strike": {
+    "class": "intended",
+    "field": "frame, data",
+    "reason": "Cherished Flip Charm: Tail-word false join. Page: MC-only Bonus Light DMG vs Bounty. gbf.wiki Template:Weapon_Skills/Strike is N.A. DMG cap; that row was a phantom. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 17 (accept)"
+  },
+  "1040216100|1|0|Arsus Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Flamelance: Accendo: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 18 (accept)"
+  },
+  "1040217200|0|0|Sentient Simulacrum": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size nil -> big: the size now follows the skill description. 'Edem' starts with an {{About}} hatnote, so the old parser followed it to a missing page and never parsed it; the stored size predates today's parser. The build reads the page's own {{Weapon}} block (w6a-classification.md, 'What the compiler does beyond a straight port' item 6).",
+    "source": "w6a-classification.md, Accepted differences, '8 size' row (Plume of Suparna, Eden x2, Advocatus Diaboli, Edem x2, Ouroboros, Wilhelm). Stored wiki_raw 'Edem' (inline): 's1_desc=Big boost to earth allies' ATK'"
+  },
+  "1040217200|1|0|Golden Spirit": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size nil -> big: the size now follows the skill description. 'Edem' starts with an {{About}} hatnote, so the old parser followed it to a missing page and never parsed it; the stored size predates today's parser. The build reads the page's own {{Weapon}} block (w6a-classification.md, 'What the compiler does beyond a straight port' item 6).",
+    "source": "w6a-classification.md, Accepted differences, '8 size' row (Plume of Suparna, Eden x2, Advocatus Diaboli, Edem x2, Ouroboros, Wilhelm). Stored wiki_raw 'Edem' (inline): 's2_desc=When main weapon: Big boost to all allies' ATK based on how low MC's HP is.'"
+  },
+  "1040313300|1|0|Bitter Perseverance": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Dalmoran Battle Axe: Unique MC-only skill (15% charge gain, kept as linked row); no 'Perseverance' family. Link was inert.",
+    "source": "w2-classification.md, 'All 103 differences' row 22 (accept)"
+  },
+  "1040317000|1|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Buddysaurus Rex: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 24 (accept)"
+  },
+  "1040401100|1|0|Ophidian Servitor": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size nil -> massive: the size now follows the skill description. 'Ouroboros' starts with an {{About}} hatnote, so the old parser followed it to a missing page and never parsed it; the stored size predates today's parser. The build reads the page's own {{Weapon}} block (w6a-classification.md, 'What the compiler does beyond a straight port' item 6).",
+    "source": "w6a-classification.md, Accepted differences, '8 size' row (Plume of Suparna, Eden x2, Advocatus Diaboli, Edem x2, Ouroboros, Wilhelm). Stored wiki_raw 'Ouroboros' (inline): 's2_desc=Massive boost to your double attack rate'"
+  },
+  "1040403900|0|0|Bells of Grace": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Gotle Bell Cane: Page: 5% EXP boost. gbf.wiki Template:Weapon_Skills/Grace is max HP + debuff res. Link was inert (no rows).",
+    "source": "w2-classification.md, 'All 103 differences' row 27 (accept)"
+  },
+  "1040408400|0|0|Magic Charge": {
+    "class": "intended",
+    "field": "frame, effects",
+    "reason": "Fonic Rod: Page: 'Medium boost to light allies' ATK based on how low HP is', icon `ws_skill_backwater_5_2` = enmity (kept as linked row). gbf.wiki Template:Weapon_Skills/Charge is C.A. per grid; those effects were phantoms. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 30 (accept)"
+  },
+  "1040413300|0|0|Architect Battle Arts": {
+    "class": "intended",
+    "field": "frame, data",
+    "reason": "Architect Frame: Page: MC-only chance of a random buff. gbf.wiki Template:Weapon_Skills/Arts is skill DMG cap; that row was a phantom. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 31 (accept)"
+  },
+  "1040423800|2|0|Glimmer's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Equilibrium Tannenwand: gbf.wiki Template:Weapon_Skills/Crux, section \"Unboostable Crux\": no size (only Boostable Normal/Taboo are Big). Data unchanged: `Crux\\|ca_supp\\|ex\\|big` is the only EX row and resolves without a size.",
+    "source": "w2-classification.md, 'All 103 differences' row 37 (accept)"
+  },
+  "1040425100|2|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Bandit's Secret: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 38 (accept)"
+  },
+  "1040508800|2|0|Luminis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Ruler of Fate: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 40 (accept)"
+  },
+  "1040512000|1|0|Excess Voltage": {
+    "class": "intended",
+    "field": "frame, effects",
+    "reason": "Plasma Ripper: Page: MC-only stackable DA/TA buff. gbf.wiki Template:Weapon_Skills/Voltage is per-weapon-type EX Might Sp.; that row was a phantom. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 41 (accept)"
+  },
+  "1040512500|2|0|Aquae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Acid Bolt Shooter: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 42 (accept)"
+  },
+  "1040513200|2|0|Arsus Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Mystic Spray Gun: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 43 (accept)"
+  },
+  "1040513600|1|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Beach-Camouflage Vlisragna: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 44 (accept)"
+  },
+  "1040514400|2|0|Aquae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Plasma Slicer: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 45 (accept)"
+  },
+  "1040514600|2|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Bubble Sketcher: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 46 (accept)"
+  },
+  "1040515700|2|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Raffiniert Arquebus: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 48 (accept)"
+  },
+  "1040518900|1|0|Blaze's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Firework Galvanizer: gbf.wiki Template:Weapon_Skills/Crux, section \"Unboostable Crux\": no size (only Boostable Normal/Taboo are Big). Data unchanged: `Crux\\|ca_supp\\|ex\\|big` is the only EX row and resolves without a size.",
+    "source": "w2-classification.md, 'All 103 differences' row 50 (accept)"
+  },
+  "1040606200|0|0|Feral Roar": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Souval Gauntlet: Unique MC-only skill; no 'Roar' family. Link was inert.",
+    "source": "w2-classification.md, 'All 103 differences' row 51 (accept)"
+  },
+  "1040613000|2|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Hard Knuckle: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 53 (accept)"
+  },
+  "1040700400|1|0|Elegant Stratagem": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Aetherial Bow: Page (Aetherial Bow s2): 10% MC debuff success. gbf.wiki Template:Weapon_Skills/Stratagem is crit amp; link was inert for data.",
+    "source": "w2-classification.md, 'All 103 differences' row 54 (accept)"
+  },
+  "1040705600|0|0|Forest Blessing": {
+    "class": "intended",
+    "field": "frame, data",
+    "reason": "Silver Bow: Page (Silver Bow s1): 'Big boost to wind allies' ATK', icon `ws_skill_atk_a_4_3` (EX Might). gbf.wiki Template:Weapon_Skills/Blessing is elem. amplify vs weaker element (seraphic icon); the elem_amplify row was a phantom. Follow-up (W10): ATK should be EX Might Big 6/15/18/21, not 7.2/18/21.6. The dropped rows are the phantom family rows w2-classification.md lists under \"Rows the calculator stops showing (accepted)\".",
+    "source": "w2-classification.md, 'All 103 differences' row 55 (accept)"
+  },
+  "1040715000|2|0|Arsus Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Equinius: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 59 (accept)"
+  },
+  "1040813600|2|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Heart of a Songbird: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 60 (accept)"
+  },
+  "1040817200|2|0|Blaze's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Shati Hariq: gbf.wiki Template:Weapon_Skills/Crux, section \"Unboostable Crux\": no size (only Boostable Normal/Taboo are Big). Data unchanged: `Crux\\|ca_supp\\|ex\\|big` is the only EX row and resolves without a size.",
+    "source": "w2-classification.md, 'All 103 differences' row 62 (accept)"
+  },
+  "1040911900|2|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Alabaster Zenith: gbf.wiki Template:Weapon_Skills/Excelsior: \"Unboostable\", one tier (5.5/10/15), no size. Size `big` was left by the retired icon derivation (0248b08f). Data unchanged: canonical Excelsior row is sizeless.",
+    "source": "w2-classification.md, 'All 103 differences' row 64 (accept)"
+  },
+  "1040918000|2|0|Tranquility's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Moon Shotel: gbf.wiki Template:Weapon_Skills/Crux, section \"Unboostable Crux\": no size (only Boostable Normal/Taboo are Big). Data unchanged: `Crux\\|ca_supp\\|ex\\|big` is the only EX row and resolves without a size.",
+    "source": "w2-classification.md, 'All 103 differences' row 67 (accept)"
+  }
+}
