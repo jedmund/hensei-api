@@ -72,6 +72,15 @@ RSpec.describe Granblue::CurationSnapshot do
     expect(WeaponSkillEffect.where(boost_type: "dmg_cap")).to be_empty
   end
 
+  it "applies overrides to a version whose derived modifier isn't in the model's list" do
+    version.update!(suppressed_boosts: ["e_atk"], overrides_edited_at: edited_at)
+    described_class.export(path: path)
+    version.update_columns(skill_modifier: "Star-Sea Sovereign's Decree", suppressed_boosts: [], overrides_edited_at: nil)
+
+    expect { described_class.sync(path: path, log: quiet) }.not_to raise_error
+    expect(version.reload.suppressed_boosts).to eq(["e_atk"])
+  end
+
   it "reports a row that no longer matches a skill instead of guessing" do
     curate_effect
     described_class.export(path: path)
