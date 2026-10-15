@@ -17,7 +17,7 @@ module Granblue
       Parser = Granblue::Parsers::SeriesKeyParser
       DescParser = Granblue::Parsers::WeaponSkillDescriptionParser
       GameplayNotesParser = Granblue::Parsers::GameplayNotesParser
-      SUPP_BOOSTS = WeaponSkillDescriptionExtractor::SUPP_BOOSTS
+      SUPP_BOOSTS = WeaponSkills::Build::Rows::SUPP_BOOSTS
       # Dark Opus keys need curated handling for skill-level curves, transcendence
       # tiers, and effects that only trigger during battle. The generic extractor
       # cannot represent those distinctions safely, but may still preview them.
