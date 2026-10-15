@@ -107,7 +107,7 @@ module Granblue
         [/gain shield|\bshield\b/i,                          "shield"],
         [/debuff res/i,                                      "debuff_res"],
         [/boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
-        [/(?:dmg|damage) (?:cut|reduc)|lessen .*(?:dmg|damage)/i, "elem_reduc"],
+        [/(?:dmg|damage) (?:cut|reduc)|reduced (?:dmg|damage) taken|lessen .*(?:dmg|damage)/i, "elem_reduc"],
         [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
         [/ignore .*\bdef/i,                                  "def_ignore"],

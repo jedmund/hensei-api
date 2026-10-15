@@ -232,6 +232,13 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
       expect(r[:clauses]).to be_empty
     end
 
+    it "reads 'N% reduced damage taken from superior element' as elemental reduction (Destroyer anklets)" do
+      r = parse("10% boost to [Element] MC's normal attack damage cap, supplement normal attack damage " \
+                "(Damage cap: 20,000), amplify superior elemental damage by 30%, and 30% reduced damage taken " \
+                "from superior element.")
+      expect(r[:clauses].map { |c| [c[:boost_type], c[:value]] }).to include(["elem_reduc", 30.0], ["elem_amplify", 30.0])
+    end
+
     it "doesn't read a critical hit damage cap as Critical (One Sting, One Kill II)" do
       r = parse("'''When main weapon (MC only):''' Every superior elemental attack will be a critical " \
                 "hit.<br />20% boost to all allies' critical hit damage cap.")
