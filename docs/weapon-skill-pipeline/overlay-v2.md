@@ -75,7 +75,9 @@ Per `(version, boost_type)`:
 3. the family default;
 4. the generated row.
 
-Data already resolves this way; effects move to it in W10. Until then, effects keep "linked beats canonical".
+Data and effects both resolve this way (`WeaponSkillVersion#weapon_skill_data` / `#weapon_skill_effects`, W10 track A), each table on its own: a boost type with rows in both tables keeps both (Sephira Manus's DA curve plus its Arcarum delta). `suppressed_boosts: ["*"]` keeps its build meaning (no extraction): it hides generated rows, not the family or a curated row.
+
+A skill-specific value the family row can't express is a curated row, not a generated one: Voltage II's 8% per copy against the Voltage family's 4%.
 
 ## Stamps
 
