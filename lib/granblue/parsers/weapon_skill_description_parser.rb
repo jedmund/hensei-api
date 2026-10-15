@@ -74,6 +74,9 @@ module Granblue
         [/chain ?burst specs/i,                             %w[cb_dmg cb_dmg_cap]],
         [/skill (?:dmg|damage) cap/i,                        "skill_dmg_cap"],
         [/(?:normal attack|n\.?a\.?) (?:dmg|damage) cap/i,   "na_dmg_cap"],
+        # the special C.A. cap is its own panel line (Sp. C.A. Cap), apart from the C.A. DMG
+        # Cap (Blazing Chain III, the Ascendancy skills); before the plain C.A. cap phrase
+        [/special (?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i, "sp_ca_cap"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i,   "ca_dmg_cap"],
         [/chain ?burst (?:dmg|damage) cap/i,                 "cb_dmg_cap"],
         [/healing cap|boost to healing/i,                    "heal_cap"],
