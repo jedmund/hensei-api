@@ -71,6 +71,32 @@ RSpec.describe WeaponSkillVersion, type: :model do
     end
   end
 
+  describe '.in_family / .with_family' do
+    let(:cases) do
+      {
+        derived: [{ skill_modifier: 'Might' }, 'Might'],
+        overridden: [{ skill_modifier: 'Enmity', modifier_override: 'Might' }, 'Might'],
+        pinned_in: [{ skill_modifier: nil, modifier_override: 'Might' }, 'Might'],
+        blank_override: [{ skill_modifier: 'Might', modifier_override: '' }, 'Might'],
+        none: [{ skill_modifier: 'Might', modifier_override: 'none' }, nil],
+        unclassified: [{ skill_modifier: nil }, nil]
+      }
+    end
+
+    it 'agrees with #resolved_modifier' do
+      versions = cases.transform_values do |(attrs, expected)|
+        version = create(:weapon_skill_version, **attrs)
+        expect(version.resolved_modifier).to eq(expected)
+        version
+      end
+
+      in_might = versions.values_at(:derived, :overridden, :pinned_in, :blank_override)
+      expect(described_class.in_family('Might')).to match_array(in_might)
+      expect(described_class.in_family('Enmity')).to be_empty
+      expect(described_class.with_family).to match_array(in_might)
+    end
+  end
+
   describe 'VALID_MODIFIERS' do
     it 'equals WeaponSkillParser::KNOWN_MODIFIERS' do
       expect(described_class::VALID_MODIFIERS).to eq(Granblue::Parsers::WeaponSkillParser::KNOWN_MODIFIERS)

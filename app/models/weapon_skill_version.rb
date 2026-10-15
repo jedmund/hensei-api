@@ -61,6 +61,17 @@ class WeaponSkillVersion < ApplicationRecord
   def resolved_series   = series_override.presence || skill_series
   def resolved_size     = size_override.presence || skill_size
 
+  # #resolved_modifier as SQL, for queries that group or filter versions by family.
+  RESOLVED_MODIFIER_SQL = <<~SQL.squish
+    (CASE WHEN weapon_skill_versions.modifier_override = 'none' THEN NULL
+     ELSE COALESCE(NULLIF(weapon_skill_versions.modifier_override, ''), weapon_skill_versions.skill_modifier) END)
+  SQL
+
+  # Versions whose resolved family is modifier.
+  scope :in_family, ->(modifier) { where("#{RESOLVED_MODIFIER_SQL} = ?", modifier) }
+  # Versions that resolve to some family.
+  scope :with_family, -> { where("COALESCE(#{RESOLVED_MODIFIER_SQL}, '') <> ''") }
+
   # Read-time precedence, the same for data and effects (overlay-v2.md "Precedence at read
   # time"). Per boost_type, the first of these that has rows wins:
   #   1. curated version-linked rows (manually_edited_at set: the overlay or an admin edit);

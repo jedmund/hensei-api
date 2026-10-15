@@ -25,6 +25,17 @@ RSpec.describe GridDamage::Effects do
     expect(val(EffStruct.new(scaling_kind: "static", value: 35))).to eq(35.0)
   end
 
+  it "per_buff_count adds nothing at the panel's default state and scales with buff_count up to its cap" do
+    # Astral Arts: 10% skill DMG cap per buff (Max: 50%)
+    effect = EffStruct.new(scaling_kind: "per_buff_count", boost_type: "skill_dmg_cap", value: 10, total_cap: 50,
+                           shared_cap_group: "key_skill_cap")
+
+    expect(val(effect)).to be_nil
+    expect(val(effect, state: { buff_count: 0 })).to be_nil
+    expect(val(effect, state: { buff_count: 3 })).to eq(30.0)
+    expect(val(effect, state: { buff_count: 8 })).to eq(50.0)
+  end
+
   it "weapon_skill_curve reuses the canonical SL and turn scaling" do
     create(:weapon_skill_datum, modifier: "Progression", boost_type: "e_atk_prog",
                                 series: "normal_omega", size: "big", formula_type: "progression",
