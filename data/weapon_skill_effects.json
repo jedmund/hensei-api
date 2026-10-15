@@ -2741,19 +2741,6 @@
       "key_slug": "pendulum-supremacy"
     },
     {
-      "modifier": "Pendulum of Supremacy",
-      "boost_type": "skill_dmg_cap",
-      "scaling_kind": "static",
-      "value": 60.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "key_slug": "pendulum-supremacy"
-    },
-    {
       "modifier": "Pendulum of Zeal",
       "boost_type": "enmity",
       "scaling_kind": "weapon_skill_curve",
@@ -4305,7 +4292,7 @@
       "value": 10.0,
       "value_unit": "percent",
       "condition": {
-        "gte": 1,
+        "gte": 4,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4313,7 +4300,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "gbf.wiki: lv210 upgrade adds 10% Fated Chain DMG cap.",
+      "notes": "gbf.wiki: lv240 upgrades Fated Chain DMG cap to 20% (additive +10 on top of the lv210 row; distinct modifier for the uniqueness scope).",
       "key_slug": "pendulum-delta"
     },
     {
@@ -4324,7 +4311,7 @@
       "value": 10.0,
       "value_unit": "percent",
       "condition": {
-        "gte": 4,
+        "gte": 1,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4332,7 +4319,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "gbf.wiki: lv240 upgrades Fated Chain DMG cap to 20% (additive +10 on top of the lv210 row; distinct modifier for the uniqueness scope).",
+      "notes": "gbf.wiki: lv210 upgrade adds 10% Fated Chain DMG cap.",
       "key_slug": "pendulum-delta"
     },
     {
@@ -4410,7 +4397,7 @@
       "value": 2.5,
       "value_unit": "percent",
       "condition": {
-        "gte": 1,
+        "gte": 4,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4418,6 +4405,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 TA boost from 2.5% to 5%.",
       "key_slug": "pendulum-alpha"
     },
     {
@@ -4428,7 +4416,7 @@
       "value": 2.5,
       "value_unit": "percent",
       "condition": {
-        "gte": 4,
+        "gte": 1,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4436,7 +4424,6 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "notes": "gbf.wiki: lv240 upgrades the lv210 TA boost from 2.5% to 5%.",
       "key_slug": "pendulum-alpha"
     },
     {
