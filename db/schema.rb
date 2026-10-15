@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_155001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_170001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1712,6 +1712,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_155001) do
     t.datetime "wiki_raw_fetched_at"
     t.text "wiki_raw_jp"
     t.datetime "wiki_raw_jp_fetched_at"
+    t.string "weapon_skill_build_fingerprint"
+    t.datetime "weapon_skill_built_at"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
