@@ -56,6 +56,75 @@ RSpec.describe 'Weapon skill admin API', type: :request do
     end
   end
 
+  # A version's family is its resolved modifier (override, else derived), not the
+  # derived skill_modifier a rebuild writes: an override moves it, "none" removes it.
+  describe 'families group versions by resolved modifier' do
+    let!(:might) do
+      WeaponSkillDatum.create!(modifier: 'Might', boost_type: 'atk', series: 'normal',
+                               size: 'big', formula_type: 'flat', sl15: 18.0)
+    end
+    let!(:enmity) do
+      WeaponSkillDatum.create!(modifier: 'Enmity', boost_type: 'atk', series: 'normal',
+                               size: 'big', formula_type: 'enmity', sl15: 10.0)
+    end
+
+    def make_version(skill_modifier:, modifier_override:, name:)
+      weapon = create(:weapon)
+      ws = WeaponSkill.create!(weapon_granblue_id: weapon.granblue_id, position: 0)
+      WeaponSkillVersion.create!(weapon_skill: ws, skill: create(:skill, name_en: name), ordinal: 0,
+                                 skill_modifier: skill_modifier, modifier_override: modifier_override)
+    end
+
+    let!(:pinned_in) { make_version(skill_modifier: nil, modifier_override: 'Might', name: 'Pinned In') }
+    let!(:moved_in) { make_version(skill_modifier: 'Enmity', modifier_override: 'Might', name: 'Moved In') }
+    let!(:pinned_out) { make_version(skill_modifier: 'Might', modifier_override: 'none', name: 'Pinned Out') }
+    let!(:derived) { make_version(skill_modifier: 'Might', modifier_override: nil, name: 'Derived') }
+
+    def family(modifier)
+      get '/api/v1/weapon_skill_families'
+      response.parsed_body['weapon_skill_families'].find { |f| f['modifier'] == modifier }
+    end
+
+    it 'counts overridden versions under their resolved family in the index' do
+      expect(family('Might')['counts']).to include('versions' => 3, 'weapons' => 3)
+      expect(family('Enmity')['counts']).to include('versions' => 0, 'weapons' => 0)
+    end
+
+    it 'does not list a family that only a "none"-pinned version derives' do
+      WeaponSkillVersion.where(id: [moved_in.id, derived.id]).delete_all
+      might.destroy!
+      make_version(skill_modifier: 'Garrison', modifier_override: 'none', name: 'Gone')
+
+      get '/api/v1/weapon_skill_families'
+      mods = response.parsed_body['weapon_skill_families'].map { |f| f['modifier'] }
+      expect(mods).not_to include('Garrison')
+    end
+
+    it 'shows the resolved family members' do
+      get '/api/v1/weapon_skill_families/Might'
+      fam = response.parsed_body['weapon_skill_family']
+      expect(fam['versions'].map { |v| v['id'] }).to contain_exactly(pinned_in.id, moved_in.id, derived.id)
+      expect(fam['usage']).to include('version_count' => 3)
+
+      get '/api/v1/weapon_skill_families/Enmity'
+      expect(response.parsed_body['weapon_skill_family']['versions']).to be_empty
+    end
+
+    it 'names a family from its resolved members only' do
+      WeaponSkillVersion.where(id: [pinned_in.id, moved_in.id]).delete_all
+      expect(family('Might')['display_name']).to eq('en' => 'Derived', 'ja' => nil)
+    end
+
+    it 'counts the delete blast radius by resolved family' do
+      delete "/api/v1/weapon_skill_data/#{enmity.id}", headers: editor_headers
+      expect(response).to have_http_status(:ok)
+
+      delete "/api/v1/weapon_skill_data/#{might.id}", headers: editor_headers
+      expect(response).to have_http_status(:conflict)
+      expect(response.parsed_body['affected_versions']).to eq(3)
+    end
+  end
+
   describe 'weapon_skill_data CRUD' do
     it 'creates rows with a manual stamp' do
       post '/api/v1/weapon_skill_data', headers: editor_headers,

@@ -61,6 +61,17 @@ class WeaponSkillVersion < ApplicationRecord
   def resolved_series   = series_override.presence || skill_series
   def resolved_size     = size_override.presence || skill_size
 
+  # #resolved_modifier as SQL, for queries that group or filter versions by family.
+  RESOLVED_MODIFIER_SQL = <<~SQL.squish
+    (CASE WHEN weapon_skill_versions.modifier_override = 'none' THEN NULL
+     ELSE COALESCE(NULLIF(weapon_skill_versions.modifier_override, ''), weapon_skill_versions.skill_modifier) END)
+  SQL
+
+  # Versions whose resolved family is modifier.
+  scope :in_family, ->(modifier) { where("#{RESOLVED_MODIFIER_SQL} = ?", modifier) }
+  # Versions that resolve to some family.
+  scope :with_family, -> { where("COALESCE(#{RESOLVED_MODIFIER_SQL}, '') <> ''") }
+
   # SL-scaled data for this version: the canonical modifier/series/size rows PLUS any
   # description-derived per-version rows that fill boost_types the canonical data is missing
   # (composite skills — e.g. Restraint's DA is canonical, its Critical half is version-linked).
