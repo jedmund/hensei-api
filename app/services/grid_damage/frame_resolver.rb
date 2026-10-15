@@ -9,6 +9,8 @@ module GridDamage
   #   - Dark Opus: fixed by name — "Renunciation" = Omega, "Repudiation" = Normal/Primal
   #     ("elemental icon skills are the same category as the first skill").
   #   - Draconic / Draconic Providence base Progression: EX (no Primal/Omega aura).
+  #   - Bahamut: every skill is the normal modifier ("4% ATK (Normal modifier)" on the
+  #     wiki) and never summon-boosted; the shared series templates default them to EX.
   # Key-determined skills (pendulum/teluma/anklet) get their frame from KeySkills, not here.
   module FrameResolver
     module_function
@@ -34,6 +36,8 @@ module GridDamage
         weapon.name_en.to_s.include?("Renunciation") ? "omega" : "normal"
       when "draconic", "draconic-providence"
         "ex"
+      when "bahamut"
+        "normal"
       end
     end
   end

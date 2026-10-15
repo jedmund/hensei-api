@@ -36,6 +36,10 @@ RSpec.describe GridDamage::FrameResolver do
     expect(described_class.frame_for(weapon(slug: "draconic-providence", name: "x"), version(nil))).to eq("ex")
   end
 
+  it "frames every Bahamut skill as normal, whatever the template defaulted" do
+    expect(described_class.frame_for(weapon(slug: "bahamut", name: "Dagger of Bahamut"), version("ex"))).to eq("normal")
+  end
+
   it "defaults to normal otherwise" do
     expect(described_class.frame_for(weapon(slug: "magna", name: "x"), version(nil))).to eq("normal")
     expect(described_class.frame_for(weapon(slug: nil, name: "x"), version(nil))).to eq("normal")
