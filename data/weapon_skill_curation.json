@@ -18,6 +18,13 @@
       "edited_at": "2026-10-15T11:04:34Z"
     },
     {
+      "weapon": "1030105500",
+      "skill": "Wicked Cool Might",
+      "ordinal": 0,
+      "modifier_override": "Might",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
       "weapon": "1030203700",
       "skill": "Erune Animus Dominion",
       "ordinal": 0,
@@ -522,6 +529,13 @@
       "edited_at": "2026-10-15T07:50:10Z"
     },
     {
+      "weapon": "1040506700",
+      "skill": "Wicked Sick Might",
+      "ordinal": 0,
+      "modifier_override": "Might",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
       "weapon": "1040510600",
       "skill": "Gunslinger's Nature",
       "ordinal": 0,
@@ -574,6 +588,13 @@
         "hp_dmg"
       ],
       "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040516100",
+      "skill": "Blood Red Blow",
+      "ordinal": 0,
+      "modifier_override": "Blow",
+      "edited_at": "2026-10-15T13:00:00Z"
     },
     {
       "weapon": "1040516500",
@@ -982,6 +1003,13 @@
       "edited_at": "2026-10-15T07:20:55Z"
     },
     {
+      "weapon": "1040911200",
+      "skill": "Unrelenting Might",
+      "ordinal": 0,
+      "modifier_override": "Might",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
       "weapon": "1040911800",
       "skill": "Cosmic Blade",
       "ordinal": 0,
@@ -1043,6 +1071,50 @@
     }
   ],
   "effects": [
+    {
+      "modifier": "Anklet of Ascendance",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 50.0,
+      "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_skill_cap",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-ascendance",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
+      "modifier": "Anklet of Oblivion",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "total_cap": 10.0,
+      "shared_cap_group": "key_na_cap",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-oblivion",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
     {
       "modifier": "α Pendulum",
       "boost_type": "ca_dmg_cap",
