@@ -48,6 +48,20 @@
       "edited_at": "2026-10-15T06:07:08Z"
     },
     {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040106700",
       "skill": "Concrio Ventus",
       "ordinal": 0,
@@ -85,6 +99,20 @@
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040205400",
@@ -165,6 +193,20 @@
       "edited_at": "2026-10-15T09:47:57Z"
     },
     {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040304300",
       "skill": "Concrio Terra",
       "ordinal": 0,
@@ -236,6 +278,20 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040403700",
       "skill": "Concrio Khelreos",
       "ordinal": 0,
@@ -286,6 +342,20 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040504500",
       "skill": "Concrio Albus",
       "ordinal": 0,
@@ -327,6 +397,20 @@
         "e_atk_prog"
       ],
       "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040604400",
@@ -393,6 +477,20 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040703700",
       "skill": "Erune Animus Parity",
       "ordinal": 0,
@@ -455,6 +553,20 @@
       "ordinal": 0,
       "modifier_override": "none",
       "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040803800",
@@ -521,6 +633,20 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040904400",
       "skill": "Draph Animus Parity",
       "ordinal": 0,
@@ -569,6 +695,20 @@
         "e_atk_prog"
       ],
       "edited_at": "2026-10-15T06:43:59Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T10:06:27Z"
     }
   ],
   "effects": [
@@ -865,7 +1005,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -888,7 +1028,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -911,7 +1051,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -934,7 +1074,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -957,7 +1097,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -980,7 +1120,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1003,7 +1143,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1026,7 +1166,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1049,7 +1189,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1072,7 +1212,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1095,7 +1235,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040025400",
+      "skill": "Star-Sea Sovereign's Decree II",
+      "ordinal": 0,
+      "modifier": "Star-Sea Sovereign's Decree II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1118,7 +1280,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040025400",
@@ -1647,6 +1809,144 @@
     },
     {
       "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "dagger": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "dagger": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "dagger": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "dagger": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "dagger": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "dagger": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
       "ordinal": 0,
       "modifier": "Dualblade Flash's Bond II",
@@ -1666,7 +1966,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040120100",
@@ -1689,7 +1989,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040120100",
@@ -1712,7 +2012,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040120100",
@@ -1735,7 +2035,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040120100",
@@ -1758,7 +2058,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040120100",
+      "skill": "Dualblade Flash's Bond II",
+      "ordinal": 0,
+      "modifier": "Dualblade Flash's Bond II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "dagger": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040120100",
@@ -1781,7 +2103,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040122300",
@@ -2165,7 +2487,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2188,7 +2510,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2211,7 +2533,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2234,7 +2556,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2257,7 +2579,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2280,7 +2602,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2303,7 +2625,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2326,7 +2648,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2349,7 +2671,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2372,7 +2694,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2395,7 +2717,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040219400",
+      "skill": "Dawnfinder's Calm II",
+      "ordinal": 0,
+      "modifier": "Dawnfinder's Calm II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "spear": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -2418,7 +2762,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040219400",
@@ -3258,6 +3602,304 @@
       "edited_at": "2026-10-15T06:43:59Z"
     },
     {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040319100",
+      "skill": "Pillar-Smasher's Conviction II",
+      "ordinal": 0,
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040407000",
       "skill": "Vita Imber",
       "ordinal": 0,
@@ -3457,6 +4099,304 @@
       "edited_at": "2026-07-05T06:40:13Z"
     },
     {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "staff": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "staff": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040423300",
+      "skill": "Ultimate Wisdom's Shine II",
+      "ordinal": 0,
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
       "weapon": "1040504500",
       "skill": "Incursio Albus",
       "ordinal": 0,
@@ -3607,6 +4547,304 @@
       "battle_interaction": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040517100",
+      "skill": "Cloud of Howling Twilight II",
+      "ordinal": 0,
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040604400",
@@ -3976,6 +5214,144 @@
     },
     {
       "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
       "ordinal": 0,
       "modifier": "Realm-Breaker's Animus II",
@@ -3995,7 +5371,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040618600",
@@ -4018,7 +5394,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040618600",
@@ -4041,7 +5417,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040618600",
@@ -4064,7 +5440,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040618600",
@@ -4077,7 +5453,7 @@
       "value_unit": "percent",
       "condition": {
         "specialties": {
-          "melee": 13.0,
+          "melee": 10.0,
           "other": 5.0
         }
       },
@@ -4087,7 +5463,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040618600",
+      "skill": "Realm-Breaker's Animus II",
+      "ordinal": 0,
+      "modifier": "Realm-Breaker's Animus II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "melee": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040618600",
@@ -4110,7 +5508,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040621200",
@@ -4727,7 +6125,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4750,7 +6148,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4773,7 +6171,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4796,7 +6194,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4819,7 +6217,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4842,7 +6240,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4865,7 +6263,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4888,7 +6286,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4911,7 +6309,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4934,7 +6332,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4957,7 +6355,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040713600",
+      "skill": "Heaven-Eye's Light II",
+      "ordinal": 0,
+      "modifier": "Heaven-Eye's Light II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040713600",
@@ -4980,7 +6400,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040714700",
@@ -5952,7 +7372,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -5975,7 +7395,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -5998,7 +7418,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6021,7 +7441,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6044,7 +7464,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6067,7 +7487,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6090,7 +7510,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6113,7 +7533,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6136,7 +7556,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6159,7 +7579,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6182,7 +7602,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040816300",
+      "skill": "Mystic Musician's Melody II",
+      "ordinal": 0,
+      "modifier": "Mystic Musician's Melody II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040816300",
@@ -6205,7 +7647,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040817900",
@@ -6589,7 +8031,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6612,7 +8054,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6635,7 +8077,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6658,7 +8100,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6681,7 +8123,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6704,7 +8146,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6727,7 +8169,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6750,7 +8192,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6773,7 +8215,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6796,7 +8238,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6819,7 +8261,29 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
+    },
+    {
+      "weapon": "1040916900",
+      "skill": "Cyclic Rebirth's Reverie II",
+      "ordinal": 0,
+      "modifier": "Cyclic Rebirth's Reverie II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "katana": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
@@ -6842,7 +8306,7 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T07:20:55Z"
+      "edited_at": "2026-10-15T10:06:27Z"
     },
     {
       "weapon": "1040916900",
