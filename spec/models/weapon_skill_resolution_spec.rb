@@ -64,4 +64,76 @@ RSpec.describe "Weapon skill resolution" do
       expect(build(:weapon_skill_version, skill_modifier: nil).weapon_skill_effects).to be_empty
     end
   end
+
+  # Per boost_type: curated row → suppressed (nothing) → family default → generated row.
+  describe WeaponSkillVersion, "read-time precedence" do
+    let(:version) { create(:weapon_skill_version, skill_modifier: "Voltage", skill_series: :ex, skill_size: :medium) }
+
+    def effect(value, version: nil, curated: false, boost_type: "ex_atk_sp", modifier: "Voltage")
+      WeaponSkillEffect.create!(modifier: modifier, boost_type: boost_type, scaling_kind: "per_grid_count",
+                                value: value, count_basis: "same_weapon_type", weapon_skill_version: version,
+                                manually_edited_at: (Time.current if curated))
+    end
+
+    def datum(sl10, version: nil, curated: false, boost_type: "atk", modifier: "Voltage")
+      create(:weapon_skill_datum, modifier: modifier, boost_type: boost_type, series: "ex", size: "medium",
+                                  sl10: sl10, weapon_skill_version: version,
+                                  manually_edited_at: (Time.current if curated))
+    end
+
+    def effect_values = version.weapon_skill_effects.map { |e| e.value.to_f }.sort
+    def data_values = version.weapon_skill_data.map { |d| d.sl10.to_f }.sort
+
+    it "lets the family default beat a generated row" do
+      effect(4)
+      effect(8, version: version, modifier: "Axe Voltage II")
+      expect(effect_values).to eq([4.0])
+    end
+
+    it "lets a curated row beat the family default" do
+      effect(4)
+      effect(8, version: version, curated: true, modifier: "Axe Voltage II")
+      expect(effect_values).to eq([8.0])
+    end
+
+    it "falls back to a generated row when the family has nothing for the boost type" do
+      effect(4)
+      effect(10, version: version, boost_type: "dmg_cap", modifier: "Axe Voltage II")
+      expect(version.weapon_skill_effects.map(&:boost_type)).to contain_exactly("ex_atk_sp", "dmg_cap")
+    end
+
+    it "hides the family and generated rows of a suppressed boost type, but not a curated row" do
+      effect(4)
+      datum(10)
+      version.update!(suppressed_boosts: %w[ex_atk_sp atk])
+      expect(version.weapon_skill_effects).to be_empty
+      expect(version.weapon_skill_data).to be_empty
+
+      effect(8, version: version, curated: true, modifier: "Axe Voltage II")
+      expect(effect_values).to eq([8.0])
+    end
+
+    it "keeps the family when the build's extraction is fully suppressed (\"*\")" do
+      effect(4)
+      effect(10, version: version, boost_type: "dmg_cap", modifier: "Axe Voltage II")
+      version.update!(suppressed_boosts: ["*"])
+      expect(effect_values).to eq([4.0])
+    end
+
+    it "resolves data the same way" do
+      datum(10)
+      datum(20, version: version, modifier: "Axe Voltage II")
+      expect(data_values).to eq([10.0])
+
+      WeaponSkillDatum.where(weapon_skill_version: version).update_all(manually_edited_at: Time.current)
+      expect(data_values).to eq([20.0])
+    end
+
+    it "resolves data and effects separately" do
+      datum(10, boost_type: "ex_atk_sp")
+      effect(4)
+      expect(version.weapon_skill_data.map(&:boost_type)).to eq(["ex_atk_sp"])
+      expect(version.weapon_skill_effects.map(&:boost_type)).to eq(["ex_atk_sp"])
+    end
+  end
 end
