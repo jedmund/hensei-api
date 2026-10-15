@@ -79,12 +79,24 @@ module WeaponSkills
 
       result = Rows.compile(resolved, text: text, registry: context.registry, curation: context.view, notes: notes)
       filled = result.version
+      # Where the overlay overrides the classification, the stored derived columns are what
+      # the family backfill gives without the override, as the extractor stored them.
+      derived = if override.slice("modifier_override", "size_override").values.any?(&:present?)
+                  unpinned_backfill(with(version, skill_series: derived_series), text, context.registry)
+                else
+                  filled
+                end
       written = with(filled,
-                     skill_modifier: override["modifier_override"].present? ? version.skill_modifier : filled.skill_modifier,
-                     skill_series: derived_series,
-                     skill_size: override["size_override"].present? ? version.skill_size : filled.skill_size,
-                     scales_with_skill_level: scales?(filled, context.registry))
+                     skill_modifier: derived.skill_modifier, skill_series: derived_series,
+                     skill_size: derived.skill_size, scales_with_skill_level: scales?(filled, context.registry))
       { version: written, rows: result.rows, warnings: result.warnings }
+    end
+
+    def unpinned_backfill(version, text, registry)
+      parsed = text.present? ? Parser.parse(text, name: version.skill_name_en) : { clauses: [] }
+      Rows::Classification.backfill(version, parsed, registry)
+    rescue StandardError
+      version
     end
 
     # WeaponSkillVersion#resolved_modifier, from the overlay instead of the row.

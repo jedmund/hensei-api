@@ -48,9 +48,16 @@ namespace :granblue do
 end
 
 # Every deploy runs db:migrate:with_data (Railway pre-deploy), so curation committed to
-# the overlay reaches prod without a hand-written data migration.
+# the overlay reaches prod without a hand-written data migration. The weapon-skill build
+# runs after the sync, in WEAPON_SKILL_BUILD's mode (off: nothing; shadow: a report that
+# never fails the deploy; write: the stale weapons). It's called here rather than from its
+# own enhance block so the order is explicit: rake runs enhance blocks in definition order,
+# and build_weapon_skills.rake loads before this file.
 if Rake::Task.task_defined?("db:migrate:with_data")
   Rake::Task["db:migrate:with_data"].enhance do
-    Rake::Task["granblue:sync_weapon_skill_curation"].invoke unless Rails.env.test?
+    next if Rails.env.test?
+
+    Rake::Task["granblue:sync_weapon_skill_curation"].invoke
+    WeaponSkills::Build::Runner.deploy
   end
 end
