@@ -11,6 +11,16 @@ module Api
         { en: WeaponSkills::VersionText.for(version, :en), ja: WeaponSkills::VersionText.for(version, :jp) }
       end
 
+      # The same text as display segments ({ text:, strong:, tooltip: }), with the wiki
+      # markup resolved against the weapon's element (WeaponSkills::WikiMarkup).
+      field(:description_segments) do |version|
+        element = version.weapon_skill&.weapon&.element
+        %i[en ja].to_h do |locale|
+          [locale, WeaponSkills::WikiMarkup.segments(WeaponSkills::VersionText.for(version, locale),
+                                                     element: element, locale: locale)]
+        end
+      end
+
       # Normalized CDN icon stem (internal element numbering) — the frontend
       # builds /weapon-skill-icons/{locale}/{stem}.png from it. The raw wiki
       # icon name is intentionally not exposed.
