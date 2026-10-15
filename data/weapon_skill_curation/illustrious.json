@@ -104,6 +104,17 @@
     },
     {
       "op": "gate",
+      "weapon": "1040515200",
+      "skill": "Daudaskot II",
+      "ordinal": 1,
+      "unlock_level": 250,
+      "min_uncap": 5,
+      "transcendence_stage": 5,
+      "reason": "gbf.wiki Hraesvelgr: page sets s4_u1_name=Daudaskot II with no s4_u1_lvl; Template:Weapon/Common/Illustrious fixes s4_4s_lvl=250 (transcendence stage 5)",
+      "edited_at": "2026-10-15T18:00:00Z"
+    },
+    {
+      "op": "gate",
       "weapon": "1040711700",
       "skill": "Dos Colmillos",
       "ordinal": 0,
