@@ -89,11 +89,12 @@ module WeaponSkills
 
         # The version as the extractor saw it after its own step 1: resolved classification,
         # with the series re-derived from the description unless the overlay pins it.
-        def build_version(v, ws, name, text)
+        def build_version(record, slot, name, text)
+          v = record
           series = v.series_override.presence ||
                    (text.present? ? Parser.series_for(text, name) : v.skill_series)
           WeaponSkills::BuildResult::Version.new(
-            weapon_granblue_id: ws.weapon_granblue_id, position: ws.position, ordinal: v.ordinal,
+            weapon_granblue_id: slot.weapon_granblue_id, position: slot.position, ordinal: v.ordinal,
             skill_name_en: name, skill_name_jp: v.skill&.name_jp,
             description_en: text, unlock_level: v.unlock_level, min_uncap: v.min_uncap,
             transcendence_stage: v.transcendence_stage,
@@ -138,13 +139,13 @@ module WeaponSkills
 
             change = if mine.nil? then { "missing" => theirs }
                      elsif theirs.nil? then { "added" => mine }
-                     else { "fields" => mine.keys.select { |k| mine[k] != theirs[k] }.to_h { |k| [k, [theirs[k], mine[k]]] } }
+                     else { "fields" => mine.keys.reject { |k| mine[k] == theirs[k] }.to_h { |k| [k, [theirs[k], mine[k]]] } }
                      end
             key = (version.identity + [version.skill_name_en, *rk.first(2), JSON.generate(rk.last)]).join("|")
             klass = classify(key, record, rk, mine || theirs, notes_compiled)
             @counts[:"diff_#{klass}"] += 1
             @differences << { "key" => key, "class" => klass, "reason" => @classifications.dig(key, "reason") }
-                              .compact.merge(change)
+                            .compact.merge(change)
           end
         end
 

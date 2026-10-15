@@ -35,7 +35,8 @@ module WeaponSkills
                .pluck(:weapon_skill_version_id, :boost_type).each { |id, boost| curated[id] << boost }
         end
 
-        entries = rows.to_h do |id, weapon, position, ordinal, name, suppressed, override|
+        entries = rows.to_h do |id, *identity, suppressed, override|
+          weapon, position, ordinal, name = identity
           entry = Entry.new(curated: (curated.key?(id) ? curated[id] : EMPTY).dup.freeze,
                             suppressed: Array(suppressed).to_set.freeze,
                             pinned: override.present?)

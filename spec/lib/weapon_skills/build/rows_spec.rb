@@ -6,10 +6,10 @@ RSpec.describe WeaponSkills::Build::Rows do
   let(:registry_class) { WeaponSkills::Build::Rows::Registry }
   let(:curve) { registry_class::Curve }
 
-  def curve_row(modifier, boost_type, size, sl15, series: "normal", formula_type: "flat", **rest)
-    curve.new(modifier: modifier, boost_type: boost_type, series: series, size: size, formula_type: formula_type,
-              sl1: rest[:sl1], sl10: rest[:sl10], sl15: sl15, sl20: rest[:sl20], sl25: rest[:sl25],
-              coefficient: rest[:coefficient], max_value: rest[:max_value])
+  def curve_row(modifier, boost_type, size, sl15, **rest)
+    curve.new(modifier: modifier, boost_type: boost_type, size: size, sl15: sl15,
+              series: rest.fetch(:series, "normal"), formula_type: rest.fetch(:formula_type, "flat"),
+              **rest.slice(:sl1, :sl10, :sl20, :sl25, :coefficient, :max_value))
   end
 
   let(:data) do
@@ -165,6 +165,12 @@ RSpec.describe WeaponSkills::Build::Rows do
       )
     end
 
+    it "skips a notes boost type that is curated or suppressed on the version" do
+      v = version("Axe Voltage II", modifier: "Voltage")
+      expect(compile(v, "", notes: voltage_notes, view: curation.new(curated: ["ex_atk_sp"])).rows).to be_empty
+      expect(compile(v, "", notes: voltage_notes, view: curation.new(suppressed: ["ex_atk_sp"])).rows).to be_empty
+    end
+
     it "writes nothing for a version whose name has no notes section" do
       expect(compile(version("Dagger Voltage II"), "", notes: voltage_notes).rows).to be_empty
     end
@@ -215,7 +221,7 @@ RSpec.describe WeaponSkills::Build::Rows do
 
     it "breaks for_skill ties on the row's values" do
       tied = [curve_row("Fam", "atk", "big", 10.0, sl1: 1.0), curve_row("Fam", "atk", "big", 10.0, sl1: 2.0)]
-      picks = 4.times.map do |seed|
+      picks = Array.new(4) do |seed|
         registry_class.new(data: tied.shuffle(random: Random.new(seed)), effects: [])
                       .for_skill(modifier: "Fam", series: "normal", size: "big").first.sl1
       end

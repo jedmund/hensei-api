@@ -20,12 +20,18 @@ module WeaponSkills
         def parse(expanded) = Granblue::Parsers::GameplayNotesParser.parse(expanded)
 
         # notes: the parsed notes for the version's weapon (see .parse). → [attributes]
-        def effects(version, notes)
+        # Curation wins (#537): a boost type that is suppressed or already curated on the
+        # version isn't generated. (The importer checks curated effect rows only; the
+        # CurationView answers for data and effects together, as the description pass does.)
+        def effects(version, notes, curation:)
           name = version.skill_name_en.to_s
           return [] if notes.blank? || CANONICAL_NOTES_FAMILIES.include?(name)
 
           info = notes[name] or return []
-          info[:clauses].filter_map { |clause| effect(name, info[:frame], clause) }
+          skip = curation.curated_boost_types(version) | curation.suppressed(version)
+          info[:clauses].filter_map do |clause|
+            effect(name, info[:frame], clause) unless skip.include?(clause[:boost_type])
+          end
         end
 
         def effect(name, frame, clause)

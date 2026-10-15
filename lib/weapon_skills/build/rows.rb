@@ -56,7 +56,7 @@ module WeaponSkills
         # survives on a version the description pass skips. Same order here: notes rows first,
         # then the description's (first answer wins on a clash).
         rows = []
-        GameplayNotes.effects(version, notes).each do |attrs|
+        GameplayNotes.effects(version, notes, curation: curation).each do |attrs|
           next if described && !GameplayNotes::KEPT_KINDS.include?(attrs[:scaling_kind])
 
           rows = add(rows, effect_row(version, attrs), warnings, source: "gameplay notes")
@@ -181,11 +181,11 @@ module WeaponSkills
       end
 
       # The tables' uniqueness scopes (modifier is the skill name for every generated row).
-      def same_record?(a, b)
-        return false unless a.kind == b.kind
+      def same_record?(row, other)
+        return false unless row.kind == other.kind
 
-        keys = a.kind == :datum ? %i[boost_type series size] : %i[boost_type scaling_kind condition]
-        a.attributes.values_at(*keys) == b.attributes.values_at(*keys)
+        keys = row.kind == :datum ? %i[boost_type series size] : %i[boost_type scaling_kind condition]
+        row.attributes.values_at(*keys) == other.attributes.values_at(*keys)
       end
     end
   end

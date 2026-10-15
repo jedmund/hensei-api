@@ -10,6 +10,7 @@ module WeaponSkills
       # canonical_family? with one change: every "pick one of several candidates" ends in a
       # total ordering over the row's values, so the answer never depends on row order.
       class Registry
+        # rubocop:disable Lint/StructNewOverride -- the table's column is "size"
         Curve = Struct.new(:modifier, :boost_type, :series, :size, :formula_type,
                            :sl1, :sl10, :sl15, :sl20, :sl25, :coefficient, :max_value,
                            keyword_init: true) do
@@ -21,6 +22,8 @@ module WeaponSkills
               [coefficient.to_f, max_value.to_f]
           end
         end
+
+        # rubocop:enable Lint/StructNewOverride
 
         # A canonical base effect: only its (modifier, boost_type) matter to the row compiler.
         Effect = Struct.new(:modifier, :boost_type, keyword_init: true)
@@ -46,7 +49,7 @@ module WeaponSkills
           @data = data.map { |d| d.is_a?(Curve) ? d : Curve.new(**d.to_h.slice(*CURVE_COLUMNS)) }.freeze
           @effects = effects.map { |e| e.is_a?(Effect) ? e : Effect.new(**e.to_h.slice(:modifier, :boost_type)) }.freeze
           @data_by_modifier = @data.group_by(&:modifier)
-          @effect_boosts_by_modifier = @effects.group_by(&:modifier).transform_values { |es| es.map(&:boost_type).to_set }
+          @effect_boosts_by_modifier = @effects.group_by(&:modifier).transform_values { |es| es.to_set(&:boost_type) }
           @curves_by_tier = @data.group_by { |d| [d.boost_type, d.size, d.formula_type] }
         end
 
