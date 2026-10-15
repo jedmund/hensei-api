@@ -1,6 +1,9 @@
 require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
+  # bin/setup-pipeline-db migrates scratch databases; their dumps would only add noise.
+  config.active_record.dump_schema_after_migration = ENV["SKIP_SCHEMA_DUMP"].blank?
+
   # Settings specified here will take precedence over those in config/application.rb.
   config.hosts << 'staging-api.granblue.team'
   config.hosts << 'next-api.granblue.team'
