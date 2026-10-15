@@ -57,9 +57,20 @@ module WeaponSkills
       %w[changed missing added keys].all? { |k| diff[k].empty? }
     end
 
+    # One line per version (and per key), so the baseline stays small and a refresh diffs
+    # as one changed line per changed version. Any other section is written as one line.
     def self.write(snapshot, path = BASELINE_PATH)
       FileUtils.mkdir_p(File.dirname(path))
-      File.write(path, "#{JSON.pretty_generate(snapshot)}\n")
+      sections = snapshot.map do |name, value|
+        body = if value.is_a?(Hash) && %w[versions keys].include?(name)
+                 entries = value.map { |key, entry| "    #{JSON.generate(key)}: #{JSON.generate(entry)}" }
+                 entries.empty? ? "{}" : "{\n#{entries.join(",\n")}\n  }"
+               else
+                 JSON.generate(value)
+               end
+        "  #{JSON.generate(name)}: #{body}"
+      end
+      File.write(path, "{\n#{sections.join(",\n")}\n}\n")
     end
 
     def self.read(path = BASELINE_PATH)
