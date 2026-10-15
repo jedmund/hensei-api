@@ -18,6 +18,11 @@ module Api
              :skill_modifier, :skill_series, :skill_size,
              :main_hand_only, :mc_only, :scales_with_skill_level
 
+      # Curated classification (what the version editor writes). skill_* above
+      # is the reparse-derived value; resolved = override, else derived.
+      fields :modifier_override, :series_override, :size_override, :suppressed_boosts,
+             :overrides_edited_at
+
       association :skill, blueprint: SkillBlueprint
     end
   end
