@@ -151,6 +151,22 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "na_amp")).to include(value: nil)
   end
 
+  it "reads the special C.A. damage cap as its own boost (Blazing Chain III, Ascendancy)" do
+    r = parse("'''When main weapon:''' 30% boost to Fire allies' charge bar gain, supplement C.A. damage " \
+              "(Damage cap: 400,000), 10% boost to special C.A. damage cap, and amplify chain damage by 50%.")
+    expect(boost(r, "sp_ca_cap")).to include(value: 10.0)
+    expect(boost(r, "ca_dmg_cap")).to be_nil
+    expect(boost(r, "cb_amp")).to include(value: 50.0)
+    expect(boost(parse("10% boost to Water allies' Special C.A. DMG Cap."), "sp_ca_cap")).to include(value: 10.0)
+  end
+
+  it "keeps the plain C.A. DMG cap apart from the special one in one list (Sword's Charge)" do
+    types = parse("Boost to C.A. DMG, C.A. DMG cap, and special C.A. DMG cap based on how many sabres are equipped")
+            .fetch(:clauses).map { |c| c[:boost_type] }
+    expect(types).to include("ca_dmg", "ca_dmg_cap", "sp_ca_cap")
+    expect(types).not_to include("dmg_cap")
+  end
+
   it "does not split sentences after abbreviation dots (C.A. DMG)" do
     r = parse("20% boost to Water allies' C.A. DMG.")
     expect(boost(r, "ca_dmg")).to include(value: 20.0)
