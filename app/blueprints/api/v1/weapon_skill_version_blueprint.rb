@@ -3,11 +3,13 @@
 module Api
   module V1
     class WeaponSkillVersionBlueprint < ApiBlueprint
-      # name/description are delegated to the canonical Skill (not duplicated in
-      # the DB); projecting them here keeps the version shape consistent with
-      # CharacterSkillVersionBlueprint for frontend reuse.
+      # name comes from the canonical Skill; description is the tier's own text,
+      # else the skill's (WeaponSkills::VersionText). Projecting them here keeps the
+      # version shape consistent with CharacterSkillVersionBlueprint for frontend reuse.
       field(:name) { |version| { en: version.name_en, ja: version.name_jp } }
-      field(:description) { |version| { en: version.description_en, ja: version.description_jp } }
+      field(:description) do |version|
+        { en: WeaponSkills::VersionText.for(version, :en), ja: WeaponSkills::VersionText.for(version, :jp) }
+      end
 
       # Normalized CDN icon stem (internal element numbering) — the frontend
       # builds /weapon-skill-icons/{locale}/{stem}.png from it. The raw wiki
