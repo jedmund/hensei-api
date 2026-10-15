@@ -61,6 +61,7 @@ module WeaponSkills
                end
 
         versions = build_versions(weapon, fields, page.body, slots, expanded_rows.presence, mode: mode)
+        expanded_text!(versions, expanded_rows) if page_kind == SERIES_TEMPLATE
         versions.sort_by!(&:identity)
         slots_out = versions.map(&:position).uniq.map { |p| Slot.new(weapon_granblue_id: weapon.granblue_id, position: p) }
         [slots_out, versions, warnings]
@@ -174,6 +175,17 @@ module WeaponSkills
           parsed_version(gid, fields, raw, entry, row, framed.include?(entry))
         end
         versions + added.map { |row| added_version(gid, fields, raw, row, dropped) }
+      end
+
+      # A series-template page's versions take the expanded skill's text before the tier's own,
+      # as VersionText::Backfill does: the template's ensN_desc is a summary without numbers
+      # ("Boost to ATK, DEF, and max HP" for Celestial's Guiding Star's Splendor), and the row
+      # compiler reads description_en when the page itself has no sN_desc.
+      def expanded_text!(versions, expanded_rows)
+        text = Array(expanded_rows).reject { |row| row[:key_type] }.to_h { |row| [row[:name], row[:description]] }
+        versions.each do |version|
+          version.description_en = text[version.skill_name_en] if text[version.skill_name_en].present?
+        end
       end
 
       # Expanded skills no parsed tier has, with the slot each lands in.
