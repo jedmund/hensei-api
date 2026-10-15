@@ -79,6 +79,9 @@ module Granblue
           end
         end
 
+        # The wiki page (and stored source key) holding a family's template.
+        def template_title(name) = "Template:Weapon Skills/#{name}"
+
         def import_one(name, apply: false)
           raw = fetch_template(name)
           if raw.blank?
@@ -94,12 +97,10 @@ module Granblue
 
         private
 
+        # Raw template wikitext: from the source store inside Wiki.offline (or a build),
+        # else from gbf.wiki. nil when the wiki has no such template.
         def fetch_template(name)
-          require "net/http"
-          ua = Rails.application.credentials.wiki_user_agent
-          uri = URI("https://gbf.wiki/Template:Weapon_Skills/#{ERB::Util.url_encode(name.tr(' ', '_'))}?action=raw")
-          res = Net::HTTP.get_response(uri, { "User-Agent" => ua })
-          res.code == "200" ? res.body.to_s.force_encoding("UTF-8").scrub : nil
+          Granblue::Parsers::Wiki.new.fetch_raw(template_title(name), kind: "family_template")
         end
 
         # The WsBox header IS the family registry row.
