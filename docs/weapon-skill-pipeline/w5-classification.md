@@ -29,7 +29,7 @@ The extractor never sets `total_cap` or `shared_cap_group`. Two anklet rows carr
 | `anklet-ascendance` | `skill_dmg_cap` | 50 | `key_skill_cap` |
 | `anklet-oblivion` | `na_dmg_cap` | 10 | `key_na_cap` |
 
-A re-extraction drops both. The snapshot sees the `total_cap` loss. It doesn't see the `shared_cap_group` loss until the lead adds that column to the `keys` section (requested on #538). Proposed class: **curate**. Mark these rows curated (`manually_edited_at` via the curation overlay, W2's mechanism) so `persist` keeps them.
+A re-extraction drops both. The snapshot sees both losses: since b3fdceb3 it captures every non-bookkeeping effect column, including `frame_rule` and `shared_cap_group`. Proposed class: **curate**. Mark these rows curated (`manually_edited_at` via the curation overlay, W2's mechanism) so `persist` keeps them.
 
 ## Differences
 

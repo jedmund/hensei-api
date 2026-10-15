@@ -28,8 +28,8 @@ namespace :granblue do
     stats = nil
     ActiveRecord::Base.transaction do
       stats, = Granblue::Extractors::KeySkillExtractor.run(store: key_skill_source_store.call)
-      after = baseline.merge("keys" => WeaponSkills::ParitySnapshot.capture["keys"])
-      diff = WeaponSkills::ParitySnapshot.diff(baseline, after)
+      # A full capture so diff checks the column lists; only the keys section is reported.
+      diff = WeaponSkills::ParitySnapshot.diff(baseline, WeaponSkills::ParitySnapshot.capture)
       raise ActiveRecord::Rollback
     end
 
