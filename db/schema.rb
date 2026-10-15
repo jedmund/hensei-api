@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_100004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -233,6 +233,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
     t.integer "max_transcendence_stage", default: 0, null: false
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.uuid "solomonis_zone_id"
+    t.datetime "wiki_raw_fetched_at"
+    t.datetime "wiki_raw_jp_fetched_at"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_characters_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
@@ -1343,6 +1345,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.boolean "support_eligible", default: true, null: false
     t.text "wiki_raw_jp", comment: "Raw HTML from gbf-wiki.com (Japanese)"
+    t.datetime "wiki_raw_fetched_at"
+    t.datetime "wiki_raw_jp_fetched_at"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
@@ -1688,6 +1692,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.datetime "wiki_raw_fetched_at"
     t.text "wiki_raw_jp"
+    t.datetime "wiki_raw_jp_fetched_at"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
@@ -1823,6 +1828,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
   add_foreign_key "weapon_key_series", "weapon_keys"
   add_foreign_key "weapon_key_series", "weapon_series"
   add_foreign_key "weapon_series_variants", "weapon_series"
+  add_foreign_key "weapon_skill_data", "weapon_skill_versions", on_delete: :cascade
+  add_foreign_key "weapon_skill_effects", "weapon_skill_versions", on_delete: :cascade
   add_foreign_key "weapon_skill_versions", "skills"
   add_foreign_key "weapon_skill_versions", "weapon_skills"
   add_foreign_key "weapons", "weapon_series"
