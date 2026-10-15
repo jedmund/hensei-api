@@ -3,6 +3,9 @@
 class Summon < ApplicationRecord
   include PgSearch::Model
 
+  # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
+  normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+
   belongs_to :summon_series, optional: true
   has_many :auras, class_name: "SummonAura", foreign_key: :summon_granblue_id,
                    primary_key: :granblue_id, inverse_of: :summon, dependent: :destroy
