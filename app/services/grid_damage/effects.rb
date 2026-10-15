@@ -110,6 +110,8 @@ module GridDamage
         ally_max_hp_scaled(effect, state: state)
       when "specialty_scaled"
         specialty_value(effect, composition: composition, state: state)
+      when "per_buff_count"
+        per_buff_count(effect, state: state)
       when "documentation"
         nil
       end
@@ -224,6 +226,20 @@ module GridDamage
       individual = effect.per_copy_cap&.to_f
       total = [total, individual].min if individual && effect.shared_cap_group.blank?
       total
+    end
+
+    # "N% per buff (Max: M%)" (Astral Arts: 10% skill DMG cap per buff, max 50%): value x
+    # the ally's buff count, capped at total_cap. The panel is read outside battle, with no
+    # buffs, so the default state has none and the skill adds nothing (lCMBmU: Innocent Love's
+    # per-buff Astral Echo II shows no line). state[:buff_count] sets a count.
+    def per_buff_count(effect, state:)
+      count = state.fetch(:buff_count, 0).to_i
+      base = effect.value&.to_f
+      return nil if base.nil? || count <= 0
+
+      total = base * count
+      cap = effect.total_cap&.to_f
+      cap ? [total, cap].min : total
     end
 
     def grid_count(basis, weapon:, composition:, effect: nil)
