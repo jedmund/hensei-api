@@ -32,3 +32,8 @@ Each version carries its own tier text. The shared `Skill.description_en` is sha
 - `granblue:skill_parity` passes unchanged.
 - Celestial tier I and tier II texts differ, and tier I mentions no E. ATK (spec).
 - A version's text no longer changes when another weapon sharing the skill is reparsed (spec).
+
+## Notes from wave 1
+
+- **Sources:** use `catalogue-20261015-sources` and read tier text from stored sources only, through `Granblue::Parsers::Wiki.offline { }` / `WeaponSkills::SourceStore::Database`.
+- **The `description` op:** W7's overlay applies it as soon as the columns exist. It assumes they're named `description_en` / `description_jp`; tell the W7 agent if you name them differently.
