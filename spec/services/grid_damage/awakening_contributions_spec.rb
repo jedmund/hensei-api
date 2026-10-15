@@ -127,4 +127,15 @@ RSpec.describe GridDamage::AwakeningContributions do
       end
     end
   end
+
+  it "matches the celestial awakening tables shown in game at level 5" do
+    shared = { "atk" => 10.0, "ex_atk" => 10.0 }
+
+    expect(described_class.send(:celestial_bonus, "weapon-atk", 5))
+      .to eq(shared.merge("ta" => 5.0, "na_dmg_cap" => 5.0))
+    expect(described_class.send(:celestial_bonus, "weapon-ca", 5))
+      .to eq(shared.merge("ca_dmg_cap" => 10.0, "sp_ca_cap" => 5.0))
+    expect(described_class.send(:celestial_bonus, "weapon-skill", 5))
+      .to eq(shared.merge("skill_dmg_cap" => 10.0, "skill_dmg_supp" => 20_000.0))
+  end
 end
