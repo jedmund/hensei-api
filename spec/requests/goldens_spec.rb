@@ -43,7 +43,7 @@ RSpec.describe 'Golden panel references' do
 
         expect(keys_in(fixture).uniq & Granblue::GoldenFixture::PRIVATE_KEYS).to eq([])
         expect(fixture['tables'].keys).not_to include('users', 'collection_weapons', 'collection_summons',
-                                                     'collection_characters', 'favorites')
+                                                      'collection_characters', 'favorites')
         expect(fixture['tables']['parties'].pluck('name')).to eq([code])
       end
 

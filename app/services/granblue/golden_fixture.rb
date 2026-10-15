@@ -159,7 +159,7 @@ module Granblue
         end
       end
 
-      def record_queries
+      def record_queries(&)
         queries = []
         callback = lambda do |*, payload|
           next if payload[:cached] || payload[:name] == 'SCHEMA'
@@ -167,7 +167,7 @@ module Granblue
 
           queries << [payload[:sql], payload[:binds]]
         end
-        ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { yield }
+        ActiveSupport::Notifications.subscribed(callback, 'sql.active_record', &)
         queries.uniq
       end
 
@@ -213,7 +213,7 @@ module Granblue
 
       # Rows of a table as JSON objects, sorted by id; nil ids = the whole table.
       def rows(table, ids)
-        return [] if ids&.empty?
+        return [] if ids && ids.empty?
 
         where = ids ? "WHERE t.id::text IN (#{ids.map { |i| conn.quote(i.to_s) }.join(', ')})" : ''
         sql = "SELECT row_to_json(t)::text FROM #{conn.quote_table_name(table)} t #{where} ORDER BY t.id::text"
