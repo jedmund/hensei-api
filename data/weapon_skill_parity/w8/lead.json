@@ -1,0 +1,8 @@
+{
+  "1040509400|1|0|Tsunami's Might": {
+    "class": "intended",
+    "field": "added",
+    "reason": "White Hawk's page puts |s2_name=Tsunami's Might on its s1_desc line; MediaWiki ends a parameter at the first top-level pipe, so s2 exists. The line-based parser missed it; Structure::Wikitext now splits there.",
+    "source": "Stored wiki_raw 'White Hawk': '|s1_desc=Small boost to water allies' double attack rate / Slight chance to dodge and counter (Big DMG)|s2_name=Tsunami's Might' then '|s2_icon=ws_skill_atk_2_2.png', '|s2_desc=Medium boost to water allies' ATK'."
+  }
+}

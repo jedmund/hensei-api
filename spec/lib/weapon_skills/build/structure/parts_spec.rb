@@ -3,6 +3,19 @@
 require "rails_helper"
 
 RSpec.describe "WeaponSkills::Build::Structure parts" do
+  describe WeaponSkills::Build::Structure::Wikitext do
+    it "ends a field at the first top-level pipe and reads the fields after it" do
+      page = "|s1_desc=Boost {{tt|ATK|big}} [[Weapon_Skills|stuff]] (Big DMG)|s2_name=Tsunami's Might\n" \
+             "|s3_desc=Ends in empty parameters.||"
+
+      expect(described_class.fields(page)).to include(
+        "s1_desc" => "Boost {{tt|ATK|big}} [[Weapon_Skills|stuff]] (Big DMG)",
+        "s2_name" => "Tsunami's Might",
+        "s3_desc" => "Ends in empty parameters."
+      )
+    end
+  end
+
   describe WeaponSkills::Build::Structure::Expanded do
     it "drops status icons and their hidden tooltip text" do
       html = "20% Bonus DMG against foes with <span class=\"image_link\"><span class=\"tooltip\">" \

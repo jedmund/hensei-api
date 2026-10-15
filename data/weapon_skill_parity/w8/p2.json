@@ -1,0 +1,326 @@
+{
+  "1040107900|1|1|Ventosus's Might II": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size medium -> big_ii (and the data follows: canonical Might|normal|big_ii 7/16/20/22 instead of medium 3/12/14.5/16). Plume of Suparna is an {{About}}-hatnote page the old parser couldn't read; its stored size predates today's parser. The page says '|s2_4s_desc=Big boost to wind allies' ATK' on a 'II' tier, which is big_ii, as on 53 of the 55 normal Might II versions in the database.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '8 size' (Plume of Suparna); stored wiki_raw 'Plume of Suparna': '|s2_4s_name=Ventosus's Might II', '|s2_4s_desc=Big boost to wind allies' ATK'"
+  },
+  "1040111000|0|0|Coeli Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size 'big' dropped: Template:Weapon_Skills/Excelsior is unboostable, one tier, no size; 'big' came from the retired icon derivation (0248b08f). Frame only: the canonical Excelsior row is sizeless, so the data is unchanged.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #10 (accept)"
+  },
+  "1040112300|1|0|Aquae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size 'big' dropped: Template:Weapon_Skills/Excelsior is unboostable, one tier, no size; 'big' came from the retired icon derivation (0248b08f). Frame only: the canonical Excelsior row is sizeless, so the data is unchanged.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #12 (accept)"
+  },
+  "1040115700|0|1|Thunder God's Authority II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 220/5/2.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #80 (accept: new tier); stored wiki_raw: '|s1_u1_name=Thunder God's Authority II', '|s1_u1_lvl=220'"
+  },
+  "1040115700|1|1|Thunder God's Subjugation II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 210/5/1.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #81 (accept: new tier); stored wiki_raw: '|s2_u1_name=Thunder God's Subjugation II', '|s2_u1_lvl=210'"
+  },
+  "1040115700|1|2|Thunder God's Subjugation III": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 240/5/4.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #82 (accept: new tier); stored wiki_raw: '|s2_u2_name=Thunder God's Subjugation III', '|s2_u2_lvl=240'"
+  },
+  "1040115700|3|1|Thunder God's Retribution II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 250/5/5.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #83 (accept: new tier); stored wiki_raw: '|s4_u1_name=Thunder God's Retribution II', '|s4_u1_lvl=250'"
+  },
+  "1040117500|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040117600|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040117600|3|0|Zenith Strike: Light": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "Mk II gate nil/3/0 -> 120/4/0. The Mk II page only transcludes its Mk I ('{{:Concordia'), so its skills are the Mk I's; the template sets '|s2_lvl=120', and the Mk I already has 120/4/0 through its revans.json gate op. The Mk II copies were made before that op existed.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
+  },
+  "1040217300|0|0|Purity of Nature": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "False 'Nature' family link dropped: unique Illustrious MC-only skill (job_weapon icon), no 'Nature' family template; the link was inert (no rows).",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #19 (accept)"
+  },
+  "1040217300|0|1|Purity of Nature II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 210/5/1.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #84 (accept: new tier); stored wiki_raw: '|s1_u1_name=Purity of Nature II', '|s1_u1_lvl=210'"
+  },
+  "1040217300|0|2|Purity of Nature III": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 240/5/4.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #85 (accept: new tier); stored wiki_raw: '|s1_u2_name=Purity of Nature III', '|s1_u2_lvl=240'"
+  },
+  "1040217300|1|1|Fine Wind, Clear Heart II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 220/5/2.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #86 (accept: new tier); stored wiki_raw: '|s2_u1_name=Fine Wind, Clear Heart II', '|s2_u1_lvl=220'"
+  },
+  "1040217300|3|1|Crimson Splendor II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 250/5/5.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #87 (accept: new tier); stored wiki_raw: '|s4_u1_name=Crimson Splendor II', '|s4_u1_lvl=250'"
+  },
+  "1040314000|1|0|Luminis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size 'big' dropped: Template:Weapon_Skills/Excelsior is unboostable, one tier, no size; 'big' came from the retired icon derivation (0248b08f). Frame only: the canonical Excelsior row is sizeless, so the data is unchanged.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #23 (accept)"
+  },
+  "1040316600|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040316700|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040316700|3|0|Striking Art: Earth": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "Mk II gate nil/3/0 -> 120/4/0. The Mk II page only transcludes its Mk I ('{{:Claw of the Dragonslayer'), so its skills are the Mk I's; the template sets '|s2_lvl=120', and the Mk I already has 120/4/0 through its revans.json gate op. The Mk II copies were made before that op existed.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
+  },
+  "1040316800|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040316900|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040316900|3|0|Zenith Art: Wind": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "Mk II gate nil/3/0 -> 120/4/0. The Mk II page only transcludes its Mk I ('{{:Spada di Vento'), so its skills are the Mk I's; the template sets '|s2_lvl=120', and the Mk I already has 120/4/0 through its revans.json gate op. The Mk II copies were made before that op existed.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
+  },
+  "1040517100|3|0|Gun Voltage II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "The same version at its new position 3, with the same gate (nil/3/0), frame and generated per_grid_count ex_atk_sp 8 row as the removed position-5 key.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '2 | Twinpain-Wolf Gun'"
+  },
+  "1040517100|3|0|Papillon Flamboyant": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "'Papillon Flamboyant' is the page's charge attack ('|ougi_name=Papillon Flamboyant'), left behind by an old import of the expansion's charge-attack table. No rows, no curation.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '2 | Twinpain-Wolf Gun'; stored wiki_raw 'Twinpain-Wolf Gun': '|ougi_name=Papillon Flamboyant'"
+  },
+  "1040517100|5|0|Gun Voltage II": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Gun Voltage II moves from position 5 to 3 (see the added key 1040517100|3|0|Gun Voltage II). Template:Weapon/Common/Celestial's s1 is the garbled '{{ #var: weapon_voltage }} Voltage II', so the expansion's skill is appended after the last slot; the other nine Celestial weapons already hold their Voltage II at position 3.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '2 | Twinpain-Wolf Gun' ('Gun Voltage II moves from position 5 to 3 ... a parity key change for W8')"
+  },
+  "1040606000|0|0|Hoarfrost's Tyranny": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size small -> big. Wilhelm is an {{About}}-hatnote page the old parser couldn't read. With size big, the family's canonical rows resolve: Tyranny|atk|normal_omega|big 6/15/18 (aura_boostable true) and Tyranny|hp_cut -10 as a datum replace the generated 'Hoarfrost's Tyranny' atk normal big 6/15/18 (aura_boostable false) datum and hp_cut -10 effect. Same numbers; the data now has the Tyranny family's series and aura boost.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '8 size' (Wilhelm); stored wiki_raw 'Wilhelm': '|s1_desc=Big Boost to water allies' ATK / 10% cut to water allies' max HP'"
+  },
+  "1040616300|0|1|Ogre's Retribution II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 210/5/1.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #88 (accept: new tier); stored wiki_raw: '|s1_u1_name=Ogre's Retribution II', '|s1_u1_lvl=210'"
+  },
+  "1040616300|0|2|Ogre's Retribution III": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 240/5/4.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #89 (accept: new tier); stored wiki_raw: '|s1_u2_name=Ogre's Retribution III', '|s1_u2_lvl=240'"
+  },
+  "1040616300|1|1|Eternal Animosity II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 220/5/2.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #90 (accept: new tier); stored wiki_raw: '|s2_u1_name=Eternal Animosity II', '|s2_u1_lvl=220'"
+  },
+  "1040616300|3|1|Ferocious Dominance II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 250/5/5.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #91 (accept: new tier); stored wiki_raw: '|s4_u1_name=Ferocious Dominance II', '|s4_u1_lvl=250'"
+  },
+  "1040617900|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040618000|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040618000|3|0|Zenith Art: Water": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "Mk II gate nil/3/0 -> 120/4/0. The Mk II page only transcludes its Mk I ('{{:Lagrange'), so its skills are the Mk I's; the template sets '|s2_lvl=120', and the Mk I already has 120/4/0 through its revans.json gate op. The Mk II copies were made before that op existed.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
+  },
+  "1040711000|0|0|Snowfall's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Size 'big' dropped: Template:Weapon_Skills/Crux section 'Unboostable Crux' has no size (only boostable Normal/Taboo are Big). Frame only: Crux|ca_supp|ex|big is the only EX row and resolves without a size.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #57 (accept)"
+  },
+  "1040711000|1|0|Bow Voltage": {
+    "class": "intended",
+    "field": "effects",
+    "reason": "Colomba's Gameplay Notes now compile a generated 'Bow Voltage' ex_atk_sp per_grid_count 4% row (cap 80, voltage_wrath_grand_epic, same_weapon_type), which wins over the canonical 'Voltage' effect it duplicates (linked beats canonical). Today's database never applied these notes. NOT fully identical, contrary to the W6b note: applies_to goes all_allies -> element_allies and depends_on ['grid_count'] -> []. The stored notes say '** Affects allies of any element.', so all_allies is right; GameplayNotes.effect hard-codes element_allies (a faithful port of the importer; every notes row in the database is element_allies). Flagged for W10.",
+    "source": "data/weapon_skill_parity/compare_rows_classifications.json '1040711000|1|0|Bow Voltage|effect|ex_atk_sp|[\"per_grid_count\",{}]' (accept); W8.md gate 2 'Colomba's redundant Voltage row'; stored expanded 'Colomba', section '=== Bow Voltage ===': '4% boost to ATK (Max: 80%) ... for all allies per Bow weapon in the grid' / 'Affects allies of any element.'"
+  },
+  "1040711700|0|1|Sangre Caliente II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 210/5/1.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #92 (accept: new tier); stored wiki_raw: '|s1_u1_name=Sangre Caliente II', '|s1_u1_lvl=210'"
+  },
+  "1040711700|1|1|Robar Tiempo II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 220/5/2.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #93 (accept: new tier); stored wiki_raw: '|s2_u1_name=Robar Tiempo II', '|s2_u1_lvl=220'"
+  },
+  "1040711700|2|1|Lluvia de Saetas II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 240/5/4.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #94 (accept: new tier); stored wiki_raw: '|s3_u1_name=Lluvia de Saetas II', '|s3_u1_lvl=240'"
+  },
+  "1040711700|3|1|Dos Colmillos II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier on the wiki that today's database never stored. The page gives no s4_u1_lvl; Template:Weapon/Common/Illustrious maps s4_u1 onto s4_4s ('|s4_4s_name={{{s4_4s_name|{{{s4_u1_name|}}}}}}') and fixes '|s4_4s_lvl=250', so the build gates it 250/5/5 (W2 parser case P1, now fixed by the structure compiler).",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #95 (parser case P1); docs/weapon-skill-pipeline/w6a-classification.md 'parser' (P1); stored wiki_raw: '|s4_u1_name=Dos Colmillos II'"
+  },
+  "1040712900|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040713000|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040713000|3|0|Striking Art: Fire": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "Mk II gate nil/3/0 -> 120/4/0. The Mk II page only transcludes its Mk I ('{{:Mortality Bow'), so its skills are the Mk I's; the template sets '|s2_lvl=120', and the Mk I already has 120/4/0 through its revans.json gate op. The Mk II copies were made before that op existed.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
+  },
+  "1040814400|0|1|Cepheid Variable II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 210/5/1.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #96 (accept: new tier); stored wiki_raw: '|s1_u1_name=Cepheid Variable II', '|s1_u1_lvl=210'"
+  },
+  "1040814400|1|1|Galactic Bulge II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 220/5/2.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #97 (accept: new tier); stored wiki_raw: '|s2_u1_name=Galactic Bulge II', '|s2_u1_lvl=220'"
+  },
+  "1040814400|1|2|Galactic Bulge III": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 240/5/4.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #98 (accept: new tier); stored wiki_raw: '|s2_u2_name=Galactic Bulge III', '|s2_u2_lvl=240'"
+  },
+  "1040814400|3|1|Galactic Halo II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier on the wiki that today's database never stored. The page gives no s4_u1_lvl; Template:Weapon/Common/Illustrious maps s4_u1 onto s4_4s ('|s4_4s_name={{{s4_4s_name|{{{s4_u1_name|}}}}}}') and fixes '|s4_4s_lvl=250', so the build gates it 250/5/5 (W2 parser case P1, now fixed by the structure compiler).",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #99 (parser case P1); docs/weapon-skill-pipeline/w6a-classification.md 'parser' (P1); stored wiki_raw: '|s4_u1_name=Galactic Halo II'"
+  },
+  "1040816000|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040816100|0|0|}}} Enforcement": {
+    "class": "intended",
+    "field": "missing",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
+  },
+  "1040816100|3|0|Zenith Strike: Dark": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "Mk II gate nil/3/0 -> 120/4/0. The Mk II page only transcludes its Mk I ('{{:Forsaken Agastia'), so its skills are the Mk I's; the template sets '|s2_lvl=120', and the Mk I already has 120/4/0 through its revans.json gate op. The Mk II copies were made before that op existed.",
+    "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
+  },
+  "1040913400|1|2|Blazing Chain III": {
+    "class": "intended",
+    "field": "effects",
+    "reason": "New cb_amp static 50 row from the stored page text: '|s2_5s_desc=...10% boost to special C.A. damage cap, and amplify chain damage by 50%.' Today's database predates that text. The ca_dmg_cap 10 row is unchanged.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #105 / parser case P5 (fixed by W6b #552); data/weapon_skill_parity/compare_rows_classifications.json '1040913400|1|2|Blazing Chain III|effect|cb_amp|[\"static\",{}]' (accept)"
+  },
+  "1040913500|0|1|Nue's Omen II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 210/5/1.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #100 (accept: new tier); stored wiki_raw: '|s1_u1_name=Nue's Omen II', '|s1_u1_lvl=210'"
+  },
+  "1040913500|0|2|Nue's Omen III": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 240/5/4.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #101 (accept: new tier); stored wiki_raw: '|s1_u2_name=Nue's Omen III', '|s1_u2_lvl=240'"
+  },
+  "1040913500|1|1|Nue's Cry II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 220/5/2.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #102 (accept: new tier); stored wiki_raw: '|s2_u1_name=Nue's Cry II', '|s2_u1_lvl=220'"
+  },
+  "1040913500|3|1|Nue's Calamity II": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Transcendence tier added to the wiki after the June import; today's database never stored it. The build reads it from the page with gate 250/5/5.",
+    "source": "docs/weapon-skill-pipeline/w2-classification.md row #103 (accept: new tier); stored wiki_raw: '|s4_u1_name=Nue's Calamity II', '|s4_u1_lvl=250'"
+  }
+}
