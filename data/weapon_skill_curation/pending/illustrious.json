@@ -1,0 +1,41 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [],
+  "data": [],
+  "ops": [
+    {
+      "weapon": "1040515200",
+      "skill": "Daudaskot",
+      "ordinal": 0,
+      "op": "gate",
+      "unlock_level": 230,
+      "min_uncap": 5,
+      "transcendence_stage": 3,
+      "reason": "gbf.wiki Template:Weapon/Common/Illustrious, s4_lvl={{{s4_lvl|230}}}: the fourth skill unlocks at level 230 (transcendence stage 3) when the page sets no s4_lvl. Was db/data/manifests/skill_version_gates.json (Illustrious).",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
+      "weapon": "1040711700",
+      "skill": "Dos Colmillos",
+      "ordinal": 0,
+      "op": "gate",
+      "unlock_level": 230,
+      "min_uncap": 5,
+      "transcendence_stage": 3,
+      "reason": "gbf.wiki Template:Weapon/Common/Illustrious, s4_lvl={{{s4_lvl|230}}}: the fourth skill unlocks at level 230 (transcendence stage 3) when the page sets no s4_lvl. Was db/data/manifests/skill_version_gates.json (Illustrious).",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
+      "weapon": "1040814400",
+      "skill": "Galactic Halo",
+      "ordinal": 0,
+      "op": "gate",
+      "unlock_level": 230,
+      "min_uncap": 5,
+      "transcendence_stage": 3,
+      "reason": "gbf.wiki Template:Weapon/Common/Illustrious, s4_lvl={{{s4_lvl|230}}}: the fourth skill unlocks at level 230 (transcendence stage 3) when the page sets no s4_lvl. Was db/data/manifests/skill_version_gates.json (Illustrious).",
+      "edited_at": "2026-10-15T13:00:00Z"
+    }
+  ]
+}
