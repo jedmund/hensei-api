@@ -1,0 +1,118 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [],
+  "data": [],
+  "ops": [
+    {
+      "op": "gate",
+      "weapon": "1040020800",
+      "skill": "Water's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Rise of Justice: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040113200",
+      "skill": "Dark's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Pain of Death: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040215500",
+      "skill": "Earth's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Binds of The Hanged Man: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040313500",
+      "skill": "Earth's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Collapse of The Tower: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040418200",
+      "skill": "Wind's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Theater of Temperance: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040513700",
+      "skill": "Light's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Shooting of The Star: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040614300",
+      "skill": "Fire's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Kiss of The Devil: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040710700",
+      "skill": "Water's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Reflection of The Moon: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040813300",
+      "skill": "Wind's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Melody of Judgement: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040912600",
+      "skill": "Fire's Majesty",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Heat of The Sun: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/New World); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    }
+  ]
+}

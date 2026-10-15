@@ -1,0 +1,53 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [],
+  "data": [],
+  "ops": [
+    {
+      "op": "gate",
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "ordinal": 0,
+      "min_uncap": 4,
+      "reason": "July 2026 recovery I132 (exact): #452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "edited_at": "2026-10-14T14:00:00Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815100",
+      "skill": "Sephirath Fusame II",
+      "ordinal": 0,
+      "min_uncap": 4,
+      "reason": "July 2026 recovery I129 (exact): #452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "edited_at": "2026-10-14T14:00:00Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815200",
+      "skill": "Sephirath Brogue II",
+      "ordinal": 0,
+      "min_uncap": 4,
+      "reason": "July 2026 recovery I135 (exact): #452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "edited_at": "2026-10-14T14:00:00Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815300",
+      "skill": "Sephirath Corant II",
+      "ordinal": 0,
+      "min_uncap": 4,
+      "reason": "July 2026 recovery I126 (exact): #452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "edited_at": "2026-10-14T14:00:00Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040815400",
+      "skill": "Sephirath Haton II",
+      "ordinal": 0,
+      "min_uncap": 4,
+      "reason": "July 2026 recovery I123 (exact): #452 durability commit: 'Sephirath II versions corrected to min_uncap 4 (s2_4s unlocks at lv150 = 4-star)'",
+      "edited_at": "2026-10-14T14:00:00Z"
+    }
+  ]
+}

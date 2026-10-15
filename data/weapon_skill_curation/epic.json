@@ -1,0 +1,74 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [],
+  "data": [],
+  "ops": [
+    {
+      "op": "gate",
+      "weapon": "1040018900",
+      "skill": "Grand Epic",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Chains of Caucasus: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Epic); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311100",
+      "skill": "Heroic Tale",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki All-Might Battle-Axe: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Epic); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040415700",
+      "skill": "Staff Resonance",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Savior of Hallowed Ground: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Epic); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040415800",
+      "skill": "Absolute Equality",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Scales of Dominion: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Epic); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040611700",
+      "skill": "Grand Epic",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Adamantine Gauntlet: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Epic); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040709200",
+      "skill": "Grand Epic",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Unius: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Epic); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    }
+  ]
+}
