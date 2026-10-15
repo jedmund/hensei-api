@@ -1,0 +1,159 @@
+{
+  "format": 2,
+  "versions": [
+    {
+      "weapon": "1040612500",
+      "skill": "Astral Claw",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "dmg_cap"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040612500",
+      "skill": "Astral Claw II",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "dmg_cap"
+      ],
+      "edited_at": "2026-10-15T06:07:08Z"
+    }
+  ],
+  "effects": [],
+  "data": [],
+  "ops": [
+    {
+      "op": "gate",
+      "weapon": "1040019700",
+      "skill": "Astral Thrust",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Fateless: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040019700",
+      "skill": "Astral Thrust II",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Fateless: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213700",
+      "skill": "Astral Pierce",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Rhongomyniad: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040213700",
+      "skill": "Astral Pierce II",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Rhongomyniad: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311800",
+      "skill": "Astral Blow",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Sol Remnant: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040311800",
+      "skill": "Astral Blow II",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Sol Remnant: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416600",
+      "skill": "Astral Arts",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Yggdrasil's Bough: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040416600",
+      "skill": "Astral Arts II",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Yggdrasil's Bough: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612500",
+      "skill": "Astral Claw",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Claws of Terror: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040612500",
+      "skill": "Astral Claw II",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Claws of Terror: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040811600",
+      "skill": "Astral Echo",
+      "ordinal": 0,
+      "unlock_level": 120,
+      "min_uncap": 4,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Innocent Love: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040811600",
+      "skill": "Astral Echo II",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Innocent Love: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Astral); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    }
+  ]
+}

@@ -3,16 +3,22 @@
 require "rails_helper"
 
 RSpec.describe Granblue::CurationAutoExport do
-  let(:path) { Rails.root.join("tmp/curation_auto_export_spec.json") }
+  let(:root) { Pathname.new(Dir.mktmpdir("curation_auto_export_spec")) }
+  let(:dir) { root.join("weapon_skill_curation") }
   let(:version) { create(:weapon_skill_version) }
 
   before do
-    stub_const("Granblue::CurationSnapshot::PATH", path)
+    stub_const("Granblue::CurationSnapshot::DIR", dir)
+    stub_const("Granblue::CurationSnapshot::LEGACY_PATH", root.join("weapon_skill_curation.json"))
     allow(described_class).to receive(:enabled?).and_return(true)
     described_class::DIRTY.make_false
   end
 
-  after { FileUtils.rm_f(path) }
+  after { FileUtils.rm_rf(root) }
+
+  def exported(section)
+    Dir.glob(dir.join("*.json").to_s).flat_map { |file| JSON.parse(File.read(file))[section] }
+  end
 
   def effect(stamp)
     WeaponSkillEffect.create!(weapon_skill_version: version, modifier: "Axe Voltage II", boost_type: "ex_atk_sp",
@@ -24,8 +30,7 @@ RSpec.describe Granblue::CurationAutoExport do
 
     described_class.flush!
 
-    exported = JSON.parse(File.read(path))["effects"]
-    expect(exported.map { |row| row["modifier"] }).to eq(["Axe Voltage II"])
+    expect(exported("effects").map { |row| row["modifier"] }).to eq(["Axe Voltage II"])
   end
 
   it "ignores rows nobody curated" do
@@ -42,12 +47,12 @@ RSpec.describe Granblue::CurationAutoExport do
 
   it "won't overwrite a snapshot holding rows this database lacks" do
     curated = effect(Time.current)
-    Granblue::CurationSnapshot.export(path: path)
+    Granblue::CurationSnapshot.export
     curated.destroy!
-    before = File.read(path)
+    before = exported("effects")
 
     expect(described_class.flush!).to be(false)
-    expect(File.read(path)).to eq(before)
+    expect(exported("effects")).to eq(before)
   end
 
   it "checks drift after bulk rake tasks but not around the curation tasks" do

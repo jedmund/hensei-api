@@ -63,7 +63,10 @@ namespace :granblue do
     cols = %w[formula_type sl1 sl10 sl15 sl20 sl25 coefficient max_value aura_boostable]
     skipped_manual = 0
     records.each do |r|
+      # Canonical rows only: a version-linked row with the same key must never be
+      # matched and overwritten (or claimed) by the snapshot.
       d = WeaponSkillDatum.find_or_initialize_by(
+        weapon_skill_version_id: nil,
         modifier: r["modifier"], boost_type: r["boost_type"], series: r["series"], size: r["size"]
       )
       if d.persisted? && d.manually_edited_at.present?

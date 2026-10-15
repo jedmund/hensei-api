@@ -190,11 +190,12 @@ module Granblue
       # value. The cross-family canonical_curve (strongest row for the size) is a last resort
       # for skills with no standard family.
       def self.family_curve(version, clause)
-        return nil unless version.skill_modifier.present?
+        # resolved_*: a curated override wins, and modifier_override "none" means no family curve.
+        return nil unless version.resolved_modifier.present?
 
-        WeaponSkillDatum.for_skill(modifier: version.skill_modifier,
-                                   series: clause[:series] || version.skill_series,
-                                   size: clause[:size])
+        WeaponSkillDatum.for_skill(modifier: version.resolved_modifier,
+                                   series: clause[:series] || version.resolved_series,
+                                   size: clause[:size] || version.resolved_size)
                         .find do |d|
           d.boost_type == clause[:boost_type] && d.formula_type == (clause[:formula_type] || "flat")
         end

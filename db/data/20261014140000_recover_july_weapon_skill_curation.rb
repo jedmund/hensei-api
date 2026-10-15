@@ -9,11 +9,17 @@
 #
 # Every write is stamped manually_edited_at + provenance "manual" so reparse and the
 # family importer leave it alone. Rows already curated by hand are never deleted.
+#
+# Its lasting state is in the curation overlay (data/weapon_skill_curation/): the rows
+# and overrides were exported as curation, and the min_uncap changes are `gate` ops.
+# Once the manifest is gone this migration does nothing.
 class RecoverJulyWeaponSkillCuration < ActiveRecord::Migration[8.0]
   MANIFEST = "db/data/manifests/july_calculator_recovery.json"
   VERSION_COLUMNS = %w[min_uncap modifier_override series_override size_override].freeze
 
   def up
+    return say("#{MANIFEST} is gone: the July curation is in the curation overlay") unless File.exist?(Rails.root.join(MANIFEST))
+
     [WeaponSkillEffect, WeaponSkillDatum, WeaponSkillVersion].each(&:reset_column_information)
     @now = Time.current
     operations = JSON.parse(File.read(Rails.root.join(MANIFEST))).fetch("operations")
