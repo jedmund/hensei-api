@@ -11,21 +11,32 @@ module WeaponSkills
   module TierText
     module_function
 
-    # One tier's text from a parsed field hash (WeaponParser#parse_string output, the
-    # page merged with its series template).
+    # One tier's text from a parsed field hash (the page's `|key=value` fields merged with
+    # its series template's).
     #   slot:   1-based wiki slot (s1…s4)
-    #   suffix: nil for the base tier, else "4s", "5s", "u1"… as in
-    #           WeaponParser#discover_skill_versions
+    #   suffix: nil for the base tier, else "4s", "5s", "u1"… (the sN_<suffix>_name keys)
     # → { name:, en:, jp: }, or nil when the tier has no name.
     def from_wiki_hash(hash, slot, suffix = nil)
-      entry = parser.send(:build_skill_entry, hash, slot, suffix: suffix) or return nil
-
       prefix = suffix ? "s#{slot}_#{suffix}" : "s#{slot}"
-      { name: entry[:name_en], en: presence(entry[:description_en]), jp: presence(hash["jp#{prefix}_desc"]) }
+      raw_name = hash["#{prefix}_name"]
+      return nil if raw_name.blank?
+
+      en = hash["#{suffix ? "ens#{slot}_#{suffix}" : "ens#{slot}"}_desc"].presence || hash["#{prefix}_desc"]
+      { name: clean_name(raw_name), en: presence(en), jp: presence(hash["jp#{prefix}_desc"]) }
     end
 
-    # Every tier of a slot in the parser's order (ascending unlock level), with the
-    # ordinal the parser would give it.
+    # A tier's name field as the structural parse reads it: {{WeaponSkillMod|…}} and HTML
+    # comments removed, and Dark Opus `{{#ifeq:…|Majesty III|Majesty}}` names resolved to
+    # their ELSE (last) branch (both branches share the modifier).
+    def clean_name(raw_name)
+      name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, "").gsub(/<!--.*?-->/, "").strip
+      return name if name.blank? || !name.include?("#ifeq")
+
+      name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
+    end
+
+    # Every tier of a slot in the structural parse's order (ascending unlock level), with
+    # the ordinal it would give it.
     # → [{ ordinal:, suffix:, name:, en:, jp:, unlock_level: }]
     def tiers(hash, slot)
       suffixes = []
@@ -71,12 +82,6 @@ module WeaponSkills
       end
     end
 
-    # WeaponParser's tier builder is pure over the hash; an allocated parser skips the
-    # weapon lookup its constructor does.
-    def parser
-      @parser ||= Granblue::Parsers::WeaponParser.allocate
-    end
-
     # A field the line-based parser cut short (`|jps1_desc={{#switch:` continues on the
     # next lines, so only "{{" is kept) has unbalanced template braces: no usable text.
     def presence(value)
@@ -84,6 +89,6 @@ module WeaponSkills
       text.scan("{{").size == text.scan("}}").size ? text : nil
     end
 
-    private_class_method :parser, :presence
+    private_class_method :clean_name, :presence
   end
 end

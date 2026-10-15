@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "open3"
+
 module WeaponSkills
   # A data-only dump of the game catalogue (no users, parties, grids, collections, crews
   # or OAuth), so any agent or environment can restore the same weapon-skill domain
@@ -34,6 +36,17 @@ module WeaponSkills
     def pg_dump_command(database_url, path)
       ["pg_dump", "-Fc", "-Z9", "--data-only", "--no-owner", "--no-privileges",
        *TABLES.flat_map { |t| ["-t", t] }, "-f", path.to_s, database_url]
+    end
+
+    # Whether REPO already has a release (draft or published) with this tag. Listed rather
+    # than looked up by git tag: a draft has no git tag, and GitHub lets two drafts share
+    # one (catalogue-20261015 was published twice).
+    def release_exists?(tag, runner: Open3)
+      out, status = runner.capture2("gh", "release", "list", "--repo", REPO, "--limit", "1000",
+                                    "--json", "tagName", "--jq", ".[].tagName")
+      raise "gh release list failed (exit #{status.exitstatus})" unless status.success?
+
+      out.split("\n").map(&:strip).include?(tag)
     end
 
     # The tag recorded by bin/setup-pipeline-db, if this database was restored from a dump.
