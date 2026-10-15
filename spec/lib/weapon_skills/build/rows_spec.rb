@@ -161,7 +161,24 @@ RSpec.describe WeaponSkills::Build::Rows do
       expect(rows.size).to eq(1)
       expect(rows.first.attributes).to include(
         modifier: "Axe Voltage II", boost_type: "ex_atk_sp", series: "ex", scaling_kind: "per_grid_count",
-        value: 8.0, total_cap: 80.0, count_basis: "same_weapon_type", value_unit: "percent"
+        value: 8.0, total_cap: 80.0, count_basis: "same_weapon_type", value_unit: "percent",
+        depends_on: ["grid_count"], applies_to: "element_allies"
+      )
+    end
+
+    it "reads who the boost reaches from the notes (Colomba's Bow Voltage: allies of any element)" do
+      notes = described_class::GameplayNotes.parse(<<~WIKI)
+        == Gameplay Notes ==
+        === Bow Voltage ===
+        * Multiplier: EX
+        * 4% boost to ATK (Max: 80%) for all allies per [[Weapon Lists/Bow|Bow weapon]] in the grid.
+        ** Bow weapons of any element contribute to the boost.
+        ** Affects allies of any element.
+      WIKI
+      rows = compile(version("Bow Voltage", modifier: "Voltage"), "", notes: notes).rows
+      expect(rows.map(&:attributes)).to contain_exactly(
+        include(boost_type: "ex_atk_sp", scaling_kind: "per_grid_count", value: 4.0, total_cap: 80.0,
+                applies_to: "all_allies", depends_on: ["grid_count"])
       )
     end
 
