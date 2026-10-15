@@ -40,6 +40,7 @@
 - [ ] Boolean values are either `true` or `false`
 - [ ] Arrays use the correct format (e.g., `{value1,value2}`)
 - [ ] Ran import in test mode (`bin/rails granblue:import_data TEST=true`)
+- [ ] Weapon-skill data edited? Exported it and `bin/rails granblue:weapon_skill_curation_drift` is clean ([docs](../../docs/weapon-skill-curation.md))
 
 ## Test Results
 
