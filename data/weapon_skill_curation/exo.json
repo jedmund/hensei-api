@@ -1,0 +1,129 @@
+{
+  "format": 2,
+  "versions": [
+    {
+      "weapon": "1040516300",
+      "skill": "Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040516300",
+      "skill": "Glacial Supremacy: Decimation",
+      "ordinal": 0,
+      "modifier_override": "Supremacy: Decimation",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040619700",
+      "skill": "Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040619700",
+      "skill": "Glacial Supremacy: Decimation",
+      "ordinal": 0,
+      "modifier_override": "Supremacy: Decimation",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    }
+  ],
+  "effects": [],
+  "data": [],
+  "ops": [
+    {
+      "op": "gate",
+      "weapon": "1040026900",
+      "skill": "Horseman's Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Pelion: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040118000",
+      "skill": "Dreadflame's Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Maitrah Karuna: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040119900",
+      "skill": "Adjudicator's Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Ashavan: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040218500",
+      "skill": "Adjudicator's Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Kshathra: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040516300",
+      "skill": "Glacial Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Antaeus: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040619700",
+      "skill": "Glacial Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Ephialtes: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040712400",
+      "skill": "Horseman's Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Australis: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    },
+    {
+      "op": "gate",
+      "weapon": "1040714400",
+      "skill": "Dreadflame's Supremacy: Decimation",
+      "ordinal": 0,
+      "unlock_level": 200,
+      "min_uncap": 5,
+      "transcendence_stage": 0,
+      "reason": "gbf.wiki Exo Krodha: skill unlock level (sN_lvl / sN_uM_lvl / sN_4s_lvl, Template:Weapon/Common/Exo); was skill_version_gates.json",
+      "edited_at": "2026-10-15T17:00:01Z"
+    }
+  ]
+}

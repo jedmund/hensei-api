@@ -1,0 +1,129 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [
+    {
+      "modifier": "Anklet of Ascendance",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 30.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-ascendance",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T18:00:00Z"
+    },
+    {
+      "modifier": "Anklet of Ascendance",
+      "boost_type": "skill_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 50.0,
+      "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_skill_cap",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-ascendance",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
+      "modifier": "Anklet of Maximality",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 30.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-maximality",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T18:00:00Z"
+    },
+    {
+      "modifier": "Anklet of Oblivion",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 30.0,
+      "value_unit": "percent",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-oblivion",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T18:00:00Z"
+    },
+    {
+      "modifier": "Anklet of Oblivion",
+      "boost_type": "na_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "total_cap": 10.0,
+      "shared_cap_group": "key_na_cap",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-oblivion",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T13:00:00Z"
+    },
+    {
+      "modifier": "α Pendulum",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-alpha",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:07:08Z"
+    }
+  ],
+  "data": [],
+  "ops": []
+}
