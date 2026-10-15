@@ -17,6 +17,14 @@ RSpec.describe GridDamage::WeaponContributions do
       gw = double(uncap_level: 4, transcendence_step: 0)
       expect(described_class.active_versions(weapon, gw)).to contain_exactly(v2, v3)
     end
+
+    it "lets an Exo ': Decimation' skill replace its base Supremacy" do
+      s1, = slot("Dreadflame's Supremacy")
+      s2, v2 = slot("Dreadflame's Supremacy: Decimation")
+      weapon = double(weapon_skills: [s1, s2])
+      gw = double(uncap_level: 5, transcendence_step: 0)
+      expect(described_class.active_versions(weapon, gw)).to contain_exactly(v2)
+    end
   end
 
   describe ".skill_level_for" do

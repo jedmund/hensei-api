@@ -55,12 +55,14 @@ module GridDamage
 
     # An upgraded skill imported as a SEPARATE slot replaces its base in-game — both
     # being active would double-count. Upgrades come as a Roman suffix ("Sephirath
-    # Brogue II") or a "True" prefix (Xeno: "True Solaris's Supremacy" supersedes
-    # "Solaris's Supremacy"). Group the slots' active versions by name stem and keep
-    # the highest variant.
+    # Brogue II"), a "True" prefix (Xeno: "True Solaris's Supremacy" supersedes
+    # "Solaris's Supremacy") or a ": Decimation" suffix (Exo: "Dreadflame's Supremacy:
+    # Decimation" is the 5★ form of "Dreadflame's Supremacy"). Group the slots' active
+    # versions by name stem and keep the highest variant.
     ROMAN_SUFFIX = /\s+(II|III|IV)\z/
     ROMAN_RANK = { nil => 1, "II" => 2, "III" => 3, "IV" => 4 }.freeze
     TRUE_PREFIX = /\ATrue\s+/
+    DECIMATION_SUFFIX = /:\s+Decimation\z/
 
     def active_versions(weapon, grid_weapon)
       active = weapon.weapon_skills.filter_map do |ws|
@@ -75,12 +77,12 @@ module GridDamage
     end
 
     def skill_stem(version)
-      skill_name(version).sub(TRUE_PREFIX, "").sub(ROMAN_SUFFIX, "")
+      skill_name(version).sub(TRUE_PREFIX, "").sub(DECIMATION_SUFFIX, "").sub(ROMAN_SUFFIX, "")
     end
 
     def variant_rank(name)
       rank = ROMAN_RANK[name[ROMAN_SUFFIX, 1]] || 1
-      name.match?(TRUE_PREFIX) ? rank + 10 : rank
+      name.match?(TRUE_PREFIX) || name.match?(DECIMATION_SUFFIX) ? rank + 10 : rank
     end
 
     def series_summon_boosted?(series)
