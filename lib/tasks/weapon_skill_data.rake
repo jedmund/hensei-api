@@ -128,20 +128,6 @@ namespace :granblue do
     puts "unresolved (job/unique): #{unresolved.tally.sort_by { |_, c| -c }.first(15).to_h}" if unresolved.any?
   end
 
-  desc "Backfill null weapon-skill version sizes from the version's own tier text (order-independent)"
-  task backfill_weapon_skill_sizes: :environment do
-    re = /\b(unworldly|massive|big|medium|small)\b/i
-    n = 0
-    WeaponSkillVersion.where(skill_size: nil).where.not(skill_modifier: nil).includes(:skill).find_each do |v|
-      name = v.skill&.name_en.to_s
-      sz = WeaponSkills::VersionText.for(v, :en).to_s[re, 1]&.downcase or next
-      sz = "big_ii" if sz == "big" && name =~ /\bII\b/ && name !~ /\bIII\b/
-      v.update_column(:skill_size, sz)
-      n += 1
-    end
-    puts "backfilled #{n} version sizes from skill descriptions"
-  end
-
   desc "Validate each weapon skill version's derived size against its description's stated keyword"
   task validate_weapon_skill_sizes: :environment do
     re = /\b(unworldly|massive|big|medium|small)\b/i

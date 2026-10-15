@@ -17,8 +17,7 @@ module WeaponSkills
       WEAPON_KINDS = %w[wiki_raw expanded transclusion].freeze
       # An expanded page whose skills come from an equipped key (Dark Opus, Destroyer,
       # Draconic, Ultima) names the key slot in place of a skill.
-      # (ExpandedWeaponSkillImporter::KEY_SLOT has the same phrases, but its /x flag drops
-      # their spaces, so it never matches them.)
+      # (Build::Structure::Expanded::KEY_SLOT has the same phrases.)
       KEY_PLACEHOLDER = /granted\ power\ with\ an?\ (?:anklet|pendulum|teluma|chain)
                          |empowered\ by\ a\ chosen\ (?:pendulum|teluma)
                          |a\ gate\ to\ the\ summits
@@ -45,8 +44,8 @@ module WeaponSkills
       # page_kind of a weapon page, decided at fetch time from its template.
       def self.page_kind(wiki_raw, expanded = nil)
         return "key_determined" if expanded.to_s.match?(KEY_PLACEHOLDER)
-        # Same rule as EntityReparser#template_only_wikitext?: the template supplies the
-        # skills unless the page has an English "|s1_desc=" line ("|jps1_desc=" doesn't count).
+        # The template supplies the skills unless the page has an English "|s1_desc=" line
+        # ("|jps1_desc=" doesn't count).
         if wiki_raw.to_s.include?("{{Weapon/Common/") && !wiki_raw.to_s.match?(ENGLISH_S1_DESC)
           return "series_template"
         end
