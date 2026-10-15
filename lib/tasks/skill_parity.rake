@@ -2,9 +2,9 @@
 
 namespace :granblue do
   desc "Compare this database's resolved weapon-skill rows with data/weapon_skill_parity/baseline.json. " \
-       "write=true refreshes the baseline; group=series groups the diff; mode=extract re-runs the offline " \
-       "description extractor first and mode=full_reparse re-runs EntityReparser on every weapon " \
-       "(both inside a rolled-back transaction); baseline=PATH compares against another snapshot."
+       "write=true refreshes the baseline; group=series groups the diff; mode=build rebuilds every weapon " \
+       "with the weapon-skill build first (inside a rolled-back transaction); baseline=PATH compares " \
+       "against another snapshot."
   task skill_parity: :environment do
     ActiveRecord::Base.logger = nil
     mode = ENV.fetch("mode", "current")
@@ -21,21 +21,15 @@ namespace :granblue do
     end
 
     after = nil
-    # Reparses read stored sources (granblue:fetch_weapon_sources), never the live wiki.
+    # The build reads stored sources (granblue:fetch_weapon_sources), never the live wiki.
     Granblue::Parsers::Wiki.offline do
       ActiveRecord::Base.transaction do
         case mode
         when "current" then nil
-        when "extract" then Granblue::Extractors::WeaponSkillDescriptionExtractor.run
-        when "full_reparse"
-          failures = Hash.new(0)
-          Weapon.where.not(wiki_raw: [nil, ""]).find_each do |w|
-            Granblue::EntityReparser.new(w).reparse
-          rescue StandardError => e
-            failures[e.class.name] += 1
-          end
-          puts "reparse failures: #{failures}" if failures.any?
-        else abort "unknown mode=#{mode} (current, extract, full_reparse)"
+        when "build"
+          summary = WeaponSkills::Build::Runner.new(mode: "write", all: true, io: StringIO.new).call
+          puts "build failures: #{summary.errors.map { |id, e| "#{id} #{e.class}" }.join(', ')}" if summary.failed.positive?
+        else abort "unknown mode=#{mode} (current, build)"
         end
         after = WeaponSkills::ParitySnapshot.capture(meta: meta)
         raise ActiveRecord::Rollback

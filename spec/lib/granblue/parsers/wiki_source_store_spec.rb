@@ -86,7 +86,8 @@ RSpec.describe Granblue::Parsers::Wiki do
     end
 
     def store_page(weapon, text, kind: "wiki_raw")
-      database.put(kind, weapon.wiki_en, text, weapon_id: weapon.id)
+      database.put(kind, weapon.wiki_en, text, weapon_id: weapon.id,
+                                               page_kind: WeaponSkills::SourceStore::Fetcher.page_kind(weapon.wiki_raw))
     end
 
     it "makes no HTTP calls for inline, transcluded and series-template weapons" do
@@ -116,7 +117,7 @@ RSpec.describe Granblue::Parsers::Wiki do
       weapon = create(:weapon, wiki_en: "Unfetched", wiki_raw: "{{Weapon/Common/Xeno\n|name=Unfetched\n}}")
 
       expect { described_class.offline { Granblue::EntityReparser.new(weapon).reparse } }
-        .to raise_error(WeaponSkills::SourceStore::SourceMissing)
+        .to raise_error(Granblue::EntityReparser::MissingWikiRawError)
       expect(wiki_requests).to be_empty
     end
   end
