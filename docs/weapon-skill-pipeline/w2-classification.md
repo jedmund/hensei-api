@@ -1,8 +1,8 @@
 # W2 classification: migration-only state → curation
 
 **Input:**
-- `data/weapon_skill_parity/full_reparse_2026-10-15.json`, the frozen full-rebuild diff: 67 changed, 10 missing and 26 added versions.
-- W3's offline rebuild, `full_reparse_offline_2026-10-15.json` (stored sources, no wiki calls). It reproduces all 103 and adds 4 rows on weapons whose wiki page changed on 2026-10-15. Those 4 are classified in [Offline re-check](#offline-re-check-4-new-rows).
+- `full_reparse_2026-10-15.json` (a release asset on `catalogue-20261015-sources`), the frozen full-rebuild diff: 67 changed, 10 missing and 26 added versions.
+- W3's offline rebuild, `full_reparse_offline_2026-10-15.json` (a release asset on `catalogue-20261015-sources`) (stored sources, no wiki calls). It reproduces all 103 and adds 4 rows on weapons whose wiki page changed on 2026-10-15. Those 4 are classified in [Offline re-check](#offline-re-check-4-new-rows).
 
 **Method:** this classification wasn't re-parsed. Evidence comes from:
 - the stored wikitext (`weapons.wiki_raw`);
@@ -107,7 +107,7 @@ Source: W5's key-skill classification (`docs/weapon-skill-pipeline/w5-classifica
 
 ## Offline re-check (4 new rows)
 
-Source: `full_reparse_offline_2026-10-15.json` (W3).
+Source: W3's `full_reparse_offline_2026-10-15.json`, a release asset on `catalogue-20261015-sources`.
 - **Evidence:** the stored weapon pages and `Template:Weapon/Common/{Illustrious,Exo}` from W3's source store.
 - **Check:** these four weapons were re-run through `EntityReparser` inside `Wiki.offline` and rolled back, to see exactly what the rebuild produces.
 - **Why these are new:** all four pages changed on gbf.wiki on 2026-10-15, which is why the frozen live run didn't show them.
