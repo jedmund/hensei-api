@@ -20,6 +20,8 @@ module WeaponSkills
     # Only versions whose columns are both NULL are touched, unless force: (curated text
     # from the overlay's `description` op is rewritten by the next curation sync anyway).
     class Backfill
+      Structure = WeaponSkills::Build::Structure
+
       Result = Struct.new(:en_sources, :jp_sources, :fallbacks, :written, :weapon_errors, keyword_init: true) do
         def to_h = super.merge(fallbacks: fallbacks.size)
       end
@@ -116,7 +118,7 @@ module WeaponSkills
       end
 
       # The weapon's stored page: its page kind, parsed field hash (transclusions and the
-      # series template followed, as WeaponParser does) and expanded skill table.
+      # series template followed, as the structure compiler does) and expanded skill table.
       def load_page(granblue_id)
         weapon = pick_weapon(granblue_id) or return {}
         raw = fetch("wiki_raw", weapon.wiki_en) or return {}
@@ -132,28 +134,27 @@ module WeaponSkills
         weapons.find { |w| w.wiki_en.present? && fetch("wiki_raw", w.wiki_en) } || weapons.first
       end
 
+      # The field hash the tier text reads: the page that holds the skill fields
+      # (Build::Structure.skill_source_text: a Mk II's base page, a character page's
+      # "(Weapon)" page) with its series template's fields merged on top. A plain merge,
+      # without the level defaults Structure::Wikitext.merge_template adds: those reorder
+      # tiers, and this only needs each tier's text. nil when a page it needs isn't stored.
       def parse_hash(weapon, body)
-        parser = Granblue::Parsers::WeaponParser.new(granblue_id: weapon.granblue_id)
-        hash = parser.send(:parse_string, source_text(parser, body))
+        missing = []
+        text = Structure.skill_source_text(weapon, body, @store, missing)
+        raise WeaponSkills::SourceStore::SourceMissing.new("wiki_raw", missing.first) if missing.any?
+
+        hash = Structure::Wikitext.fields(text)
         if hash[:template]
-          template = Granblue::Parsers::Wiki.new.fetch("Template:#{hash[:template]}")
-          hash.merge!(parser.send(:parse_string, template))
+          key = "Template:#{hash[:template]}"
+          template = Structure.followed_page(@store, key) or
+            raise WeaponSkills::SourceStore::SourceMissing.new("transclusion", key)
+          hash.merge!(Structure::Wikitext.fields(template))
         end
         hash
       rescue WeaponSkills::SourceStore::SourceMissing => e
         @result.weapon_errors << { weapon_granblue_id: weapon.granblue_id, error: e.message }
         nil
-      end
-
-      # WeaponParser follows an {{About|…}} hatnote to "<name> (Weapon)" even when the
-      # hatnote only disambiguates and the {{Weapon}} template is on the page itself
-      # (Ascalon, the SR Seraphic weapons). That page was never stored; read this one.
-      def source_text(parser, body)
-        parser.send(:skill_source_text, body)
-      rescue WeaponSkills::SourceStore::SourceMissing
-        raise unless body.match?(%r{^\{\{Weapon(?:/|\s*$)})
-
-        body
       end
 
       def fetch(kind, key)

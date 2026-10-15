@@ -5,7 +5,7 @@ module WeaponSkills
   # network. The structure compiler (W6a) calls it to fill Version#description_*, and
   # VersionText::Backfill uses it to fill weapon_skill_versions.description_*.
   #
-  # The English text follows the rule WeaponParser stores in Skill#description_en
+  # The English text follows the structural parse's rule for Skill#description_en
   # (`ensN_desc`, else `sN_desc`). The full `sN_desc` the description extractor reads
   # for row compilation is a separate thing (Rows::Description / full_description).
   module TierText
@@ -71,13 +71,13 @@ module WeaponSkills
     end
 
     # The expanded "Weapon Skills" table of a series-template page, keyed by the cleaned
-    # skill name (same row parsing as ExpandedWeaponSkillImporter: Multiplier annotation
-    # stripped). Key-slot option rows carry key_type and are not a weapon's base tiers.
+    # skill name (Build::Structure::Expanded.rows: Multiplier annotation stripped). Key-slot
+    # option rows carry key_type and are not a weapon's base tiers.
     # → { name => { en:, key_type: } }
     def from_expanded(html)
       return {} if html.blank?
 
-      Granblue::Extractors::ExpandedWeaponSkillImporter.send(:parse_skills, html).to_h do |row|
+      WeaponSkills::Build::Structure::Expanded.rows(html).to_h do |row|
         [row[:name], { en: presence(row[:description]), key_type: row[:key_type] }]
       end
     end
