@@ -32,6 +32,13 @@ RSpec.describe WeaponSkills::TierText do
       expect(described_class.from_wiki_hash(cut, 1)).to eq(name: "Demise", en: "Boost to {{WeaponElement}} allies' ATK", jp: nil)
     end
 
+    it "cleans the name: comments dropped, Dark Opus #ifeq names resolved to their last branch" do
+      opus = { "s1_name" => "{{ #ifeq: {{#var: wpn_opus_version}} | omega | Majesty III | Majesty}}<!-- note -->",
+               "s1_desc" => "Big boost" }
+      expect(described_class.from_wiki_hash(opus, 1)).to eq(name: "Majesty", en: "Big boost", jp: nil)
+      expect(described_class.from_wiki_hash(hash, 2)[:name]).to eq("Ultimate Wisdom's Shine")
+    end
+
     it "returns nil for a tier with no name" do
       expect(described_class.from_wiki_hash(hash, 3)).to be_nil
     end
