@@ -130,10 +130,10 @@ RSpec.describe 'Weapon skill admin API', type: :request do
     it 'updates classification on the version' do
       patch "/api/v1/weapon_skill_versions/#{version.id}", headers: editor_headers,
                                                            params: { weapon_skill_version: {
-                                                             skill_series: 'ex', skill_size: 'big', main_hand_only: true
+                                                             series_override: 'ex', size_override: 'big', main_hand_only: true
                                                            } }.to_json
       expect(response).to have_http_status(:ok)
-      expect(version.reload.skill_series).to eq('ex')
+      expect(version.reload.resolved_series).to eq('ex')
       expect(version.main_hand_only).to be(true)
     end
 

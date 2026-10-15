@@ -26,7 +26,7 @@ module Api
       # POST /characters
       # Creates a new character record
       def create
-        character = Character.new(character_params)
+        character = Character.new(with_wiki_fetch_date(character_params))
 
         if character.save
           render json: CharacterBlueprint.render(character, view: :full), status: :created
@@ -38,7 +38,7 @@ module Api
       # PATCH/PUT /characters/:id
       # Updates an existing character record
       def update
-        if @character.update(character_params)
+        if @character.update(with_wiki_fetch_date(character_params, @character))
           render json: CharacterBlueprint.render(@character, view: :full)
         else
           render_validation_error_response(@character)
