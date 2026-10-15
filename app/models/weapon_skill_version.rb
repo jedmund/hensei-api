@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # One tier of a weapon skill slot (base / FLB / ULB / Transcendence stage).
-# Content (name/description) is canonical on the shared Skill catalog and read
-# through #skill — never duplicated here. The version carries only the
-# tier requirement and parser-derived scaling/condition attributes.
+# The name and icon are canonical on the shared Skill catalog and read through
+# #skill. The tier's own text lives here (description_en/_jp): Skill#description_*
+# is shared by name across weapons and tiers, so it can't hold per-tier text. The
+# version also carries the tier requirement and parser-derived scaling/condition attributes.
 class WeaponSkillVersion < ApplicationRecord
   include CurationExportTracking
 
@@ -39,7 +40,12 @@ class WeaponSkillVersion < ApplicationRecord
   validates :transcendence_stage, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :skill_modifier, inclusion: { in: VALID_MODIFIERS }, allow_nil: true
 
-  delegate :name_en, :name_jp, :description_en, :description_jp, to: :skill, allow_nil: true
+  delegate :name_en, :name_jp, to: :skill, allow_nil: true
+
+  # The tier's own text, else the shared skill's (see WeaponSkills::VersionText).
+  # The raw columns are read_attribute(:description_en/_jp).
+  def description_en = WeaponSkills::VersionText.for(self, :en)
+  def description_jp = WeaponSkills::VersionText.for(self, :jp)
 
   # Classification overrides are curation: reparse rewrites the derived skill_modifier/
   # skill_series/skill_size, never these. Resolution goes through resolved_* everywhere.

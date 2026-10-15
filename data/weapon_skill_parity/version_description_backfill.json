@@ -1,0 +1,154 @@
+{
+  "en_sources": {
+    "expanded": 363,
+    "fallback": 20,
+    "tier": 3354
+  },
+  "jp_sources": {
+    "none": 3256,
+    "wiki": 481
+  },
+  "fallbacks": [
+    {
+      "weapon_granblue_id": "1040017300",
+      "position": 0,
+      "ordinal": 0,
+      "skill": "Warspirit's Sword Dance",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040017300",
+      "position": 1,
+      "ordinal": 0,
+      "skill": "Two-Sword Tech",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040105500",
+      "position": 0,
+      "ordinal": 0,
+      "skill": "Twilight",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040113400",
+      "position": 0,
+      "ordinal": 0,
+      "skill": "Impavid Impetus",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040113400",
+      "position": 1,
+      "ordinal": 0,
+      "skill": "Reverberating Rhythm",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040117600",
+      "position": 2,
+      "ordinal": 0,
+      "skill": "Golden Enforcement",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040117600",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Zenith Strike: Light",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040316700",
+      "position": 2,
+      "ordinal": 0,
+      "skill": "Amber Enforcement",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040316700",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Striking Art: Earth",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040316900",
+      "position": 2,
+      "ordinal": 0,
+      "skill": "Jade Enforcement",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040316900",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Zenith Art: Wind",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040517100",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Papillon Flamboyant",
+      "page_kind": "series_template"
+    },
+    {
+      "weapon_granblue_id": "1040618000",
+      "position": 2,
+      "ordinal": 0,
+      "skill": "Cobalt Enforcement",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040618000",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Zenith Art: Water",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040702700",
+      "position": 0,
+      "ordinal": 0,
+      "skill": "Arrow Storm",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040702700",
+      "position": 1,
+      "ordinal": 0,
+      "skill": "Battlefield Tribulations",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040713000",
+      "position": 2,
+      "ordinal": 0,
+      "skill": "Scarlet Enforcement",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040713000",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Striking Art: Fire",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040816100",
+      "position": 2,
+      "ordinal": 0,
+      "skill": "Graphite Enforcement",
+      "page_kind": "inline"
+    },
+    {
+      "weapon_granblue_id": "1040816100",
+      "position": 3,
+      "ordinal": 0,
+      "skill": "Zenith Strike: Dark",
+      "page_kind": "inline"
+    }
+  ],
+  "weapon_errors": []
+}
