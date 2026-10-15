@@ -156,6 +156,15 @@
       "edited_at": "2026-10-15T07:48:32Z"
     },
     {
+      "weapon": "1040217400",
+      "skill": "Heavenrend Spearpoint II",
+      "ordinal": 1,
+      "suppressed_boosts": [
+        "na_supp"
+      ],
+      "edited_at": "2026-10-15T09:47:57Z"
+    },
+    {
       "weapon": "1040304300",
       "skill": "Concrio Terra",
       "ordinal": 0,
