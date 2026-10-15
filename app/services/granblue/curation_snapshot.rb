@@ -197,10 +197,22 @@ module Granblue
       else
         attrs = OVERRIDE_COLUMNS.index_with { |c| row[c] }
         attrs["suppressed_boosts"] ||= []
-        version.update!(attrs.merge("overrides_edited_at" => edited_at))
+        save_overrides!(version, attrs.merge("overrides_edited_at" => edited_at))
         @report.updated += 1
       end
       remove_suppressed(version)
+    end
+
+    # Validates only the columns the snapshot writes. A version's derived skill_modifier can
+    # be a value the model's list doesn't have (Celestial skills carry their own name), and
+    # that mustn't abort the sync, which runs inside every deploy's db:migrate:with_data.
+    def save_overrides!(version, attrs)
+      version.assign_attributes(attrs)
+      version.validate
+      invalid = version.errors.attribute_names.map(&:to_s) & attrs.keys
+      raise ActiveRecord::RecordInvalid, version if invalid.any?
+
+      version.save!(validate: false)
     end
 
     def remove_suppressed(version)
