@@ -14,4 +14,26 @@ RSpec.describe Granblue::Extractors::FamilyTemplateImporter do
     expect(result.missing).to be_empty
     expect(WeaponSkillDatum.where(modifier: "Betrayal")).to be_empty
   end
+
+  it "upserts the family registry row from the WsBox header" do
+    raw = <<~WIKI
+      {{WsBox
+      |aura_boostable=no
+      |color=red
+      |boost1=Might
+      |boost2=HP
+      |big=skill_atk_1_3
+      |o_big=skill_atk_1_3_o
+      }}
+    WIKI
+
+    allow(described_class).to receive(:fetch_template).with("Crux").and_return(raw)
+
+    described_class.import_one("Crux")
+
+    family = WeaponSkillFamily.find_by!(name: "Crux")
+    expect(family.aura_boostable).to be(false)
+    expect(family.boosts).to eq(%w[Might HP])
+    expect(family.icon_stems).to eq("normal" => { "big" => "skill_atk_1_3" }, "omega" => { "big" => "skill_atk_1_3_o" })
+  end
 end
