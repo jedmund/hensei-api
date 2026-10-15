@@ -55,9 +55,10 @@ data = parser.fetch
 #### WeaponParser
 Extracts weapon data from wiki pages.
 
+Weapon skills aren't parsed here: the weapon-skill build (`WeaponSkills::Build`, `bin/rails granblue:build_weapon_skills`) writes them from stored sources.
+
 **Extracted Data:**
 - Weapon stats (HP, ATK)
-- Weapon skills
 - Ougi (charge attack) effects
 - Crafting requirements
 - Upgrade materials
