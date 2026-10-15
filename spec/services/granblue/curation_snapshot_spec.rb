@@ -116,8 +116,9 @@ RSpec.describe Granblue::CurationSnapshot do
   end
 
   describe "files" do
-    it "validates the committed overlay" do
+    it "validates the committed overlay and any pending fragments" do
       expect { described_class.load }.not_to raise_error
+      expect { described_class::Overlay.load(dir: described_class::PENDING_DIR) }.not_to raise_error
     end
 
     it "files entries by series, canonical rows apart, sorted, and keeps ops" do
