@@ -88,11 +88,15 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
         }}
       WIKI
     end
-    let(:weapon) { create(:weapon, granblue_id: '1030101400', name_en: 'Sword Breaker', wiki_raw: wiki_raw) }
+    let(:weapon) do
+      create(:weapon, granblue_id: '1030101400', name_en: 'Sword Breaker', wiki_en: 'Sword Breaker', wiki_raw: wiki_raw)
+    end
 
     before do
-      # The parse must stay offline: stored wikitext only.
+      # The build reads stored sources only.
       allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).and_raise('no network in specs')
+      WeaponSkills::SourceStore::Database.new.put('wiki_raw', weapon.wiki_en, wiki_raw, weapon_id: weapon.id,
+                                                                                      page_kind: 'inline')
     end
 
     it 'keeps the override after EntityReparser rewrites the derived columns' do

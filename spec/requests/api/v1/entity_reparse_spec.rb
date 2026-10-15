@@ -66,16 +66,46 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
         }}
       WIKI
     end
-    let(:weapon) { create(:weapon, element: 3, wiki_raw: wiki_raw) }
+    let(:weapon) { create(:weapon, element: 3, wiki_en: 'Spec Blade', wiki_raw: wiki_raw) }
 
-    it 'rebuilds skills and reruns description extraction' do
+    def store_source
+      WeaponSkills::SourceStore::Database.new.put('wiki_raw', weapon.wiki_en, wiki_raw, weapon_id: weapon.id,
+                                                                                      page_kind: 'inline')
+    end
+
+    it 'rebuilds skills from the stored source with the weapon-skill build' do
+      store_source
       post "/api/v1/weapons/#{weapon.id}/reparse", headers: editor_headers
 
       expect(response).to have_http_status(:ok)
       versions = WeaponSkillVersion.joins(:weapon_skill)
                                    .where(weapon_skills: { weapon_granblue_id: weapon.granblue_id })
-      expect(versions.count).to be >= 1
-      expect(versions.first.skill_series).to be_present
+      expect(versions.count).to eq(1)
+      expect(versions.first).to have_attributes(skill_series: 'normal', skill_size: 'big',
+                                                description_en: "Big boost to water allies' ATK")
+      expect(weapon.reload.weapon_skill_build_fingerprint).to be_present
+    end
+
+    it 'keeps generated skills when the source was never stored' do
+      store_source
+      post "/api/v1/weapons/#{weapon.id}/reparse", headers: editor_headers
+      WeaponSource.where(weapon_id: weapon.id).delete_all
+
+      post "/api/v1/weapons/#{weapon.id}/reparse", headers: editor_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['error']).to match(/stored wiki source/i)
+      expect(WeaponSkill.where(weapon_granblue_id: weapon.granblue_id).count).to eq(1)
+    end
+
+    it 'fetches the sources and then builds on fetch_wiki' do
+      allow(Granblue::WikiFetcher).to receive(:new).and_return(instance_double(Granblue::WikiFetcher))
+      allow(Granblue::WikiFetcher.new).to receive(:fetch_and_store) { store_source }
+
+      post "/api/v1/weapons/#{weapon.id}/fetch_wiki", headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(WeaponSkill.where(weapon_granblue_id: weapon.granblue_id).count).to eq(1)
     end
 
     it 'rejects non-editors' do
