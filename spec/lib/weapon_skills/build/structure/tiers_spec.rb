@@ -47,6 +47,23 @@ RSpec.describe WeaponSkills::Build::Structure::Tiers do
       expect(described_class.size_from_description("[{{wsSize}}] boost to allies' ATK")).to be_nil
       expect(described_class.size_from_description(nil)).to be_nil
     end
+
+    it "ignores size words inside markup" do
+      # Metal Hand s1 (Hoarfrost's Tyranny), as stored
+      metal_hand = %(<span class=""text-small"">Big boost to water allies' ATK / 10% cut to water allies' max HP</span>)
+      expect(described_class.size_from_description(metal_hand)).to eq("big")
+      # Fugudoku s2 (Self-taught Mastery): the size is only in an editor comment
+      fugudoku = "When main weapon and superior element, you have {{crit|boost to critical hit rate|20|100}}" \
+                 "<!--a slight chance to deal big critical DMG-->."
+      expect(described_class.size_from_description(fugudoku)).to be_nil
+      expect(described_class.size_from_description(%(Boost to ATK<ref name="Gamewith Big Majesty" />))).to be_nil
+      expect(described_class.size_from_description("Boost to ATK<ref>small sample</ref>")).to be_nil
+    end
+
+    it "keeps a size given in a template (Hollowsky)" do
+      text = "{{tt|20% boost|'''Size:''' Big<hr />'''Modifier:''' EX}} to axe- and melee-specialty allies' ATK"
+      expect(described_class.size_from_description(text)).to eq("big")
+    end
   end
 
   describe ".resolve_ifeq_name (Dark Opus)" do
