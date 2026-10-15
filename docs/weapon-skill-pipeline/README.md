@@ -56,7 +56,7 @@ The new pipeline must reproduce today's calculator data **exactly** before anyth
    - Schema changes are additive.
    - Stack PRs only inside your workstream.
 7. **Owned files only.** Your brief lists them. Anything else is a question on the tracking issue.
-8. **Migration timestamps:** use your workstream's hour block (W0 `…09xxxx`, W1 `…10xxxx`, W2 `…11xxxx`, W3 `…12xxxx`, W4 `…13xxxx`, W5 `…14xxxx`, W6 `…15xxxx`, W7 `…16xxxx` on the day you start). For `db/schema.rb` and `db/data_schema.rb` conflicts, keep the higher version.
+8. **Migration timestamps:** `20261016` plus your workstream's hour block: W0 `09xxxx`, W1 `10xxxx`, W2 `11xxxx`, W3 `12xxxx`, W4 `13xxxx`, W5 `14xxxx`, W6 `15xxxx` (W6c uses `1550xx`), W7 `16xxxx`. For example, W3's first migration is `20261016120001`. Every block sorts after the migrations already on `main`. For `db/schema.rb` and `db/data_schema.rb` conflicts, keep the higher version.
 9. **Before every PR:**
    - `DATABASE_URL=postgres://localhost/hensei_pipeline_w<n>_test bundle exec rspec` (the full suite, against **your test database**. The test environment reads `DATABASE_URL`, so running rspec with the catalogue database exported would wipe it. A single file fails the coverage minimum, which is expected);
    - `bundle exec rubocop` on changed files;
@@ -79,8 +79,10 @@ The new pipeline must reproduce today's calculator data **exactly** before anyth
 | W3 | Stored sources | W0 | [briefs/W3.md](briefs/W3.md) |
 | W4 | Goldens in CI | W0 | [briefs/W4.md](briefs/W4.md) |
 | W5 | Key-skill parity | W0, W3 interface | [briefs/W5.md](briefs/W5.md) |
-| W6a/b/c | Structure compiler, row compiler, per-version descriptions | W3 | written when wave 1 lands |
-| W7 | Overlay v2 applier | W2 fragments | written when wave 1 lands |
+| W6a | Structure compiler | W3 | [briefs/W6a.md](briefs/W6a.md) |
+| W6b | Row compiler | W0, W3 | [briefs/W6b.md](briefs/W6b.md) |
+| W6c | Per-version descriptions | W3 | [briefs/W6c.md](briefs/W6c.md) |
+| W7 | Overlay v2 applier | W0, W2 | [briefs/W7.md](briefs/W7.md) |
 | W8 | Integration, shadow, switch-over | W6, W7 | written when wave 2 lands |
 | W9 | Golden recaptures (user) | — | see the PRD |
 | W10 | Correctness changes | W8 | later |
