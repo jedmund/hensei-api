@@ -62,7 +62,7 @@ module WeaponSkills
 
         text = kinds.include?("wiki_raw") ? fetch_page_text(weapon) : weapon.wiki_raw.to_s
         page = weapon.wiki_en
-        followed, garbled = record_followed_pages(weapon) if kinds.include?("transclusion") || kinds.include?("expanded")
+        followed, garbled = record_followed_pages(weapon, text) if kinds.include?("transclusion") || kinds.include?("expanded")
 
         expanded = nil
         if kinds.include?("expanded") && (text.include?("{{Weapon/Common/") || garbled)
@@ -120,31 +120,64 @@ module WeaponSkills
         text
       end
 
-      # Runs the weapon's structural parse once, rolled back, through a recording store, to
-      # find the pages it follows. Also reports whether the parse leaves template artifacts
-      # in skill names, which EntityReparser then repairs by expansion.
-      def record_followed_pages(weapon)
+      # Runs the structure compiler once over the page through a recording store, to find
+      # the pages it follows (a transcluded base page, the series template). Also reports
+      # whether the parse leaves template syntax in a skill name, which only the page's
+      # expansion can repair. Pure: nothing is written until fetch_weapon stores `recorded`.
+      def record_followed_pages(weapon, text)
         recording = Recording.new(fetch_page: ->(key) { shared_page(key) })
-        garbled = false
-        Granblue::Parsers::WeaponParser.page_cache.clear
-        Granblue::Parsers::Wiki.offline(store: recording) do
-          ActiveRecord::Base.transaction(requires_new: true) do
-            Granblue::Parsers::WeaponParser.new(granblue_id: weapon.granblue_id).persist_skills_from_wiki_raw
-            garbled = garbled_names?(weapon)
-            raise ActiveRecord::Rollback
-          end
+        store = FollowedPages.new(page: weapon.wiki_en, text: text, page_kind: self.class.page_kind(text),
+                                  recording: recording)
+        garbled = begin
+          Build::Structure.call(weapon, store: store)
+          # Structure drops garbled tiers from its output, so ask its tier parse directly.
+          fields = Build::Structure.page_fields(weapon, text, store, [])
+          Build::Structure.garbled?(Build::Structure::Tiers.slots(fields))
+        rescue StandardError => e
+          failed("structure", weapon.wiki_en, weapon, "#{e.class}: #{e.message}")
+          false
         end
-        Granblue::Parsers::WeaponParser.page_cache.clear
         recording.failures.each { |f| failed(f[:kind], f[:key], weapon, f[:error]) }
         [recording.recorded, garbled]
       end
 
-      def garbled_names?(weapon)
-        WeaponSkillVersion.joins(:weapon_skill, :skill)
-                          .where(weapon_skills: { weapon_granblue_id: weapon.granblue_id })
-                          .exists?(["skills.name_en LIKE ?", "%{{%"])
-      rescue ActiveRecord::StatementInvalid # the parse failed mid-transaction
-        false
+      # The store the structure compiler reads while pages are being recorded: the weapon's
+      # own page from the text just fetched, followed pages through the recording (keys
+      # normalized as Wiki#fetch does), and a miss for everything else (expansions are
+      # fetched after this, and only when the parse needs one).
+      class FollowedPages
+        include Interface
+
+        def initialize(page:, text:, page_kind:, recording:)
+          @page = Granblue::WikiTitle.normalize(page).to_s
+          @text = text.to_s
+          @page_kind = page_kind
+          @recording = recording
+        end
+
+        def fetch(kind, key)
+          key = Granblue::WikiTitle.normalize(key).to_s
+          return own_page if kind.to_s == "wiki_raw" && key == @page
+          raise SourceMissing.new(kind, key) unless kind.to_s == "transclusion"
+
+          begin
+            @recording.fetch(kind, key)
+          rescue SourceMissing
+            raise
+          rescue StandardError
+            # Recording keeps the error for the fetch report; to the compiler it's a miss.
+            raise SourceMissing.new(kind, key)
+          end
+        end
+
+        def put(*) = raise(NotImplementedError, "read-only")
+
+        private
+
+        def own_page
+          Source.new(kind: "wiki_raw", key: @page, body: @text, sha256: Digest::SHA256.hexdigest(@text),
+                     fetched_at: Time.current, page_kind: @page_kind)
+        end
       end
 
       def store_followed(weapon, followed)

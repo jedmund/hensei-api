@@ -104,6 +104,54 @@ RSpec.describe WeaponSkills::SourceStore::Fetcher do
       expect(f.failures).to include(a_hash_including(kind: "transclusion", key: "Missing Base"))
       expect(store.exist?("transclusion", "Missing Base")).to be(false)
     end
+
+    it "stores a Mk II page's base page and the base's series template" do
+      weapon = create(:weapon, wiki_en: "Blade Mk II")
+      base = "{{Weapon/Common/Rebuild\n|s1_name=Edge\n|s1_desc=Big boost to ATK\n}}"
+      wiki = fake_wiki_class.new(pages: { "Blade Mk II" => "{{:Blade|stats}}", "Blade" => base,
+                                          "Template:Weapon/Common/Rebuild" => "<noinclude/>" })
+
+      fetcher(wiki).fetch_weapon(weapon, kinds: %w[wiki_raw transclusion])
+
+      expect(WeaponSource.where(weapon_id: weapon.id, kind: "transclusion").pluck(:key))
+        .to contain_exactly("Blade", "Template:Weapon/Common/Rebuild")
+      expect(weapon.weapon_skills).to be_empty
+    end
+
+    it "reads a page with its own {{Weapon}} block without following its hatnote" do
+      weapon = create(:weapon, wiki_en: "Ascalon", name_en: "Ascalon")
+      page = "{{About|the SR version|the SSR version|Ascalon (SSR)}}\n{{Weapon/Common/Seraphic\n|s1_name=Edge\n}}"
+      wiki = fake_wiki_class.new(pages: { "Ascalon" => page, "Template:Weapon/Common/Seraphic" => "<noinclude/>" })
+      f = fetcher(wiki)
+
+      f.fetch_weapon(weapon, kinds: %w[wiki_raw transclusion])
+
+      expect(wiki.calls).not_to include([:fetch, "Ascalon (Weapon)"])
+      expect(f.failures).to be_empty
+      expect(store.fetch("transclusion", "Template:Weapon/Common/Seraphic").body).to eq("<noinclude/>")
+    end
+
+    it "expands an inline page whose parse leaves template syntax in a skill name" do
+      page = "{{Weapon\n|s1_name={{WeaponElement|{{{element|}}}}}'s Majesty\n|s1_desc=Big boost\n}}"
+      weapon = create(:weapon, wiki_en: "Garbled", wiki_raw: page)
+      wiki = fake_wiki_class.new(expansions: { page => "<table class=\"weapon-skills\"></table>" })
+
+      fetcher(wiki).fetch_weapon(weapon, kinds: %w[expanded transclusion])
+
+      expect(wiki.calls).to include([:expand, page])
+      expect(store.fetch("expanded", "Garbled").body).to include("weapon-skills")
+    end
+
+    it "doesn't expand an inline page whose skill names parse cleanly" do
+      page = "{{Weapon\n|s1_name=Edge\n|s1_desc=Big boost\n}}"
+      weapon = create(:weapon, wiki_en: "Clean", wiki_raw: page)
+      wiki = fake_wiki_class.new
+
+      fetcher(wiki).fetch_weapon(weapon, kinds: %w[expanded transclusion])
+
+      expect(wiki.calls).to be_empty
+      expect(store.exist?("expanded", "Clean")).to be(false)
+    end
   end
 
   describe "shared pages" do
