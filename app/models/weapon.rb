@@ -3,6 +3,9 @@
 class Weapon < ApplicationRecord
   include PgSearch::Model
 
+  # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
+  normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |weapon|
                     {
