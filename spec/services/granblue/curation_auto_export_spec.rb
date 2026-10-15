@@ -57,7 +57,7 @@ RSpec.describe Granblue::CurationAutoExport do
 
   it "checks drift after bulk rake tasks but not around the curation tasks" do
     expect(described_class.rake_bulk_task?(["data:migrate"])).to be(true)
-    expect(described_class.rake_bulk_task?(["granblue:recover_july_reparses"])).to be(true)
+    expect(described_class.rake_bulk_task?(["granblue:build_weapon_skills"])).to be(true)
     expect(described_class.rake_bulk_task?(["granblue:weapon_skill_curation_drift"])).to be(false)
     expect(described_class.rake_bulk_task?(["assets:precompile"])).to be(false)
   end
