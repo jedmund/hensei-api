@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 module Granblue
-  # Re-parses one entity's stored wikitext into its structured skill/aura rows.
-  # This is the safe single-entity counterpart of the bulk parse rakes: the
-  # weapon path runs the FULL pipeline (structural parse, then description
-  # extraction with family backfill), so description-derived data/effects are
-  # rebuilt rather than lost (the bulk `force=true` landmine).
+  # Re-parses one entity's stored wiki source into its structured skill/aura rows.
+  #
+  # Weapons go through the weapon-skill build (WeaponSkills::Build::Runner in write mode,
+  # for this weapon only): its stored sources and the curation overlay in, its slots,
+  # versions and generated rows out, then the overlay sync and the key effects. Curated
+  # rows and overrides survive, because the writer never touches them. refetch: true first
+  # refreshes the weapon's stored sources from the wiki (WikiFetcher → SourceStore::Fetcher).
   class EntityReparser
     class MissingWikiRawError < StandardError; end
 
@@ -19,110 +21,48 @@ module Granblue
 
     def reparse
       WikiFetcher.new.fetch_and_store(@entity) if @refetch
-      raise MissingWikiRawError, 'No stored wikitext — fetch the wiki page first' if @entity.wiki_raw.blank?
 
       case @entity
       when Weapon then reparse_weapon
-      when Summon then reparse_summon
-      when Character then reparse_character
+      when Summon then require_wiki_raw! && reparse_summon
+      when Character then require_wiki_raw! && reparse_character
       else raise ArgumentError, "Unsupported entity #{@entity.class}"
       end
     end
 
     private
 
-    # Structural parse rebuilds slots/versions; series-template weapons are then
-    # repaired via template expansion (network — their raw wikitext has no skill
-    # text); finally the description extractor re-attributes frames and
-    # regenerates the version-linked data/effects the rebuild destroyed
-    # (preserving gameplay-notes kinds and manually-edited rows).
+    def require_wiki_raw!
+      raise MissingWikiRawError, 'No stored wikitext — fetch the wiki page first' if @entity.wiki_raw.blank?
+
+      true
+    end
+
+    # → { skills:, built:, warnings:, counts: } (counts: the writer's report).
+    # Raises MissingWikiRawError when the weapon's page isn't in weapon_sources (a build
+    # without it would delete the weapon's generated skills), and re-raises a build failure.
     def reparse_weapon
-      saved = snapshot_manual_rows
-
-      if template_only_wikitext?
-        # Series-template weapons have no skill text in their raw wikitext — a raw
-        # structural parse would garble their names and force repair to recreate
-        # versions (cascading away version-linked curation). Repair matches by
-        # name and is idempotent, so it runs alone.
-        repair = Extractors::ExpandedWeaponSkillImporter.repair_weapon(@entity)
-        # WikiError's initializer is keyword-only — `raise WikiError, '…'` would ArgumentError.
-        raise WikiError.new(message: 'Template expansion failed') if repair == :expand_failed
-      else
-        Parsers::WeaponParser.new(granblue_id: @entity.granblue_id).persist_skills_from_wiki_raw
-        # Weapons with inline template artifacts in their skill NAMES (e.g.
-        # "Sephira Maxi-{{WeaponElement|...}}") need expansion to resolve them.
-        repair = if garbled_versions.exists?
-                   Extractors::ExpandedWeaponSkillImporter.repair_weapon(@entity, force: true)
-                 else
-                   :not_template
-                 end
+      unless stored_page?
+        raise MissingWikiRawError, 'No stored wiki source for this weapon — fetch the wiki page first'
       end
 
-      Extractors::WeaponSkillDescriptionExtractor.run(weapon: @entity)
-      restored = restore_manual_rows(saved)
-      { skills: @entity.weapon_skills.reload.count, template_repair: repair,
-        manual_rows: { saved: saved.size, restored: restored } }
+      log = StringIO.new
+      summary = WeaponSkills::Build::Runner.new(mode: 'write', ids: [@entity.granblue_id], all: true, io: log).call
+      raise summary.errors.first.last if summary.errors.any?
+      raise MissingWikiRawError, log.string.lines.first.to_s.strip if summary.built.zero?
+
+      { skills: @entity.weapon_skills.reload.count, built: summary.built, warnings: summary.warnings,
+        counts: summary.counts.to_h }
     end
 
-    def template_only_wikitext?
-      # Line-anchored: the Japanese "|jps1_desc=" line must not count as English skill text.
-      @entity.wiki_raw.to_s.include?('{{Weapon/Common/') && !@entity.wiki_raw.to_s.match?(/^\|\s*s1_desc\s*=/)
-    end
+    # The build reads the weapon's page from weapon_sources, by wiki_en.
+    def stored_page?
+      return false if @entity.wiki_en.blank?
 
-    def weapon_versions
-      WeaponSkillVersion.joins(:weapon_skill)
-                        .where(weapon_skills: { weapon_granblue_id: @entity.granblue_id })
-    end
-
-    def garbled_versions
-      weapon_versions.joins(:skill).where('skills.name_en LIKE ?', '%{{%')
-    end
-
-    MANUAL_ROW_COLUMNS_EXCLUDED = %w[id weapon_skill_version_id created_at updated_at].freeze
-    private_constant :MANUAL_ROW_COLUMNS_EXCLUDED
-
-    # Version-linked rows with manual curation die with their version when the
-    # pipeline rebuilds slots. Snapshot them before, re-attach after — keyed by
-    # the OWNING SKILL's name captured at snapshot time (a row's modifier often
-    # differs from the skill name — "Concrio" on "Concrio Ignis" — and keying on
-    # it silently dropped curation).
-    def snapshot_manual_rows
-      meta = WeaponSkillVersion.where(id: weapon_versions.select(:id))
-                               .includes(:skill, :weapon_skill).index_by(&:id)
-      [WeaponSkillDatum, WeaponSkillEffect].flat_map do |model|
-        model.where(weapon_skill_version_id: weapon_versions.select(:id))
-             .where.not(manually_edited_at: nil)
-             .map do |row|
-          v = meta[row.weapon_skill_version_id]
-          { model: model, skill_name: v&.skill&.name_en,
-            position: v&.weapon_skill&.position, ordinal: v&.ordinal,
-            attrs: row.attributes.except(*MANUAL_ROW_COLUMNS_EXCLUDED) }
-        end
-      end
-    end
-
-    # Reattach by the owning skill's name; when repair RENAMED the skill (garbled
-    # template imports gaining their real names), fall back to the slot position +
-    # ordinal — the version identity that survives every rename.
-    def restore_manual_rows(saved)
-      versions_by_name = weapon_versions.includes(:skill).group_by { |v| v.skill&.name_en }
-      versions_by_slot = weapon_versions.includes(:weapon_skill)
-                                        .index_by { |v| [v.weapon_skill.position, v.ordinal] }
-      saved.sum do |entry|
-        targets = versions_by_name[entry[:skill_name]] || []
-        targets = [versions_by_slot[[entry[:position], entry[:ordinal]]]].compact if targets.empty?
-        targets.count do |version|
-          scope = entry[:model].where(weapon_skill_version_id: version.id,
-                                      boost_type: entry[:attrs]['boost_type'])
-          scope = scope.where(scaling_kind: entry[:attrs]['scaling_kind']) if entry[:model] == WeaponSkillEffect
-          # replace any regenerated (non-manual) counterpart with the curated row
-          scope.where(manually_edited_at: nil).delete_all
-          next false if scope.exists?
-
-          entry[:model].create!(entry[:attrs].merge('weapon_skill_version_id' => version.id))
-          true
-        end
-      end
+      WeaponSkills::SourceStore::Database.new.fetch('wiki_raw', @entity.wiki_en)
+      true
+    rescue WeaponSkills::SourceStore::SourceMissing
+      false
     end
 
     # Extract aura rows from the wikitext, upsert them, and prune this summon's

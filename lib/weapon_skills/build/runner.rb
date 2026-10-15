@@ -18,7 +18,8 @@ module WeaponSkills
 
       class Failed < StandardError; end
 
-      Summary = Struct.new(:mode, :in_scope, :stale, :built, :failed, :warnings, :counts, :diff, :seconds,
+      # errors: [[granblue_id, exception]] for the weapons that failed (EntityReparser re-raises).
+      Summary = Struct.new(:mode, :in_scope, :stale, :built, :failed, :errors, :warnings, :counts, :diff, :seconds,
                            keyword_init: true)
 
       # The deploy hook, run after the curation sync in db:migrate:with_data.
@@ -62,7 +63,7 @@ module WeaponSkills
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         Weapon.reset_column_information # the fingerprint columns may be from this deploy's migration
         @context ||= Build.context
-        @summary = Summary.new(mode: @mode, built: 0, failed: 0, warnings: 0, counts: Writer::Report.zero)
+        @summary = Summary.new(mode: @mode, built: 0, failed: 0, errors: [], warnings: 0, counts: Writer::Report.zero)
         targets = stale_weapons
 
         Granblue::Parsers::Wiki.offline(store: @context.store) do
@@ -136,6 +137,7 @@ module WeaponSkills
           @summary.built += 1
         rescue StandardError => e
           @summary.failed += 1
+          @summary.errors << [weapon.granblue_id, e]
           @io.puts "#{weapon.granblue_id} #{weapon.name_en}: #{e.class}: #{e.message.lines.first&.strip}"
         end
       end

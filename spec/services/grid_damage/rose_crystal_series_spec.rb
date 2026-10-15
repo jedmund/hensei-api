@@ -173,11 +173,20 @@ RSpec.describe "Rose Crystal series data" do
     end
   end
 
-  it "is idempotent and survives scoped description extraction" do
+  it "is idempotent and survives a rebuild by the weapon-skill build" do
     CurateRoseCrystalSeriesValues.new.up
-    Weapon.joins(:weapon_series).where(weapon_series: { slug: "rose" }).find_each do |weapon|
-      Granblue::Extractors::WeaponSkillDescriptionExtractor.run(weapon: weapon)
+    store = WeaponSkills::SourceStore::Database.new
+    ROSE_WEAPONS.each do |attrs|
+      weapon = Weapon.find_by!(granblue_id: attrs.fetch(:id))
+      weapon.update!(wiki_en: attrs.fetch(:name))
+      page = "{{Weapon\n|name=#{attrs.fetch(:name)}\n|s1_name=#{attrs.fetch(:first)}\n" \
+             "|s1_desc=#{attrs.fetch(:first_desc)}\n|s2_name=#{attrs.fetch(:second)}\n" \
+             "|s2_desc=#{attrs.fetch(:second_desc)}\n}}"
+      store.put("wiki_raw", weapon.wiki_en, page, weapon_id: weapon.id, page_kind: "inline")
     end
+    summary = WeaponSkills::Build::Runner.new(mode: "write", ids: ROSE_WEAPONS.pluck(:id), all: true,
+                                              io: StringIO.new).call
+    expect(summary).to have_attributes(built: 8, failed: 0)
 
     version_ids = WeaponSkillVersion.joins(weapon_skill: { weapon: :weapon_series }).where(
       weapon_series: { slug: "rose" }
