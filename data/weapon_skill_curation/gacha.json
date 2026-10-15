@@ -23,6 +23,13 @@
       "edited_at": "2026-10-15T13:00:00Z"
     },
     {
+      "weapon": "1040705600",
+      "skill": "Forest Blessing",
+      "ordinal": 0,
+      "modifier_override": "Might",
+      "edited_at": "2026-10-15T23:30:00Z"
+    },
+    {
       "weapon": "1040911200",
       "skill": "Unrelenting Might",
       "ordinal": 0,
