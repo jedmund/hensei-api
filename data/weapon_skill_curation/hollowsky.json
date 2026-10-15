@@ -59,10 +59,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040211900",
@@ -82,10 +82,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040211900",
@@ -105,10 +105,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040310300",
@@ -128,10 +128,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040310300",
@@ -151,10 +151,10 @@
       "aura_boostable": true,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040414700",
@@ -175,11 +175,11 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "notes": "Turns 1-10 only.",
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040414700",
@@ -199,10 +199,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040708900",
@@ -222,10 +222,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040708900",
@@ -245,10 +245,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T11:19:53Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     }
   ],
   "data": [],
