@@ -61,35 +61,32 @@ class WeaponSkillVersion < ApplicationRecord
   def resolved_series   = series_override.presence || skill_series
   def resolved_size     = size_override.presence || skill_size
 
-  # SL-scaled data for this version: the canonical modifier/series/size rows PLUS any
-  # description-derived per-version rows that fill boost_types the canonical data is missing
-  # (composite skills — e.g. Restraint's DA is canonical, its Critical half is version-linked).
-  # Fully unmodeled skills resolve entirely through the version-linked rows.
-  # (suppressed_boosts acts at EXTRACTION time — a suppressed boost_type never
-  # gets a derived row, so resolution stays filter-free.)
-  def weapon_skill_data
-    canonical = WeaponSkillDatum.for_skill(modifier: resolved_modifier, series: resolved_series,
-                                           size: resolved_size).to_a
-    linked = WeaponSkillDatum.where(weapon_skill_version_id: id).to_a
-    return linked if canonical.empty?
+  # Read-time precedence, the same for data and effects (overlay-v2.md "Precedence at read
+  # time"). Per boost_type, the first of these that has rows wins:
+  #   1. curated version-linked rows (manually_edited_at set: the overlay or an admin edit);
+  #   2. suppressed (suppressed_boosts lists the boost type): nothing;
+  #   3. the family default (the canonical rows of the resolved modifier);
+  #   4. generated version-linked rows (the build's output).
+  # Data and effects resolve separately: a boost type may have rows in both tables
+  # (Sephira Manus's DA curve plus its Arcarum effect), and both apply.
+  # suppressed_boosts "*" keeps its build meaning (no extraction): it hides generated rows
+  # only, never the family or a curated row.
 
-    have = canonical.to_set(&:boost_type)
-    canonical + linked.reject { |d| have.include?(d.boost_type) }
+  # SL-scaled data for this version. Fully unmodeled skills resolve entirely through
+  # version-linked rows; composite skills mix (Restraint's DA is the family's, its
+  # Critical half a linked row).
+  def weapon_skill_data
+    family = WeaponSkillDatum.for_skill(modifier: resolved_modifier, series: resolved_series,
+                                        size: resolved_size).to_a
+    resolve_by_boost_type(family, linked_rows(WeaponSkillDatum))
   end
 
-  # Conditional/fixed grid mechanics for this version: description-derived per-version effects
-  # plus the canonical modifier-keyed effects (Pact, Charge, …). A version-linked row is
-  # skill-specific curation (Axe Voltage II's 8%/axe), so per boost_type it REPLACES the
-  # family fallback (Voltage's 4%) instead of stacking with it — the mirror of
-  # weapon_skill_data, where the canonical curve wins and linked rows only fill gaps.
+  # Conditional/fixed grid mechanics for this version (Pact, Charge, Voltage, …), as a
+  # relation. A skill-specific value the family row can't express (Voltage II's 8% per
+  # copy against Voltage's 4%) is a curated row, so it beats the family.
   def weapon_skill_effects
-    linked = WeaponSkillEffect.where(weapon_skill_version_id: id)
-    return linked if resolved_modifier.blank?
-
-    have = linked.pluck(:boost_type).to_set
-    canonical_ids = WeaponSkillEffect.for_skill(modifier: resolved_modifier).base_effects
-                                     .reject { |e| have.include?(e.boost_type) }.map(&:id)
-    WeaponSkillEffect.where(id: linked.ids + canonical_ids)
+    family = resolved_modifier.present? ? WeaponSkillEffect.for_skill(modifier: resolved_modifier).base_effects.to_a : []
+    WeaponSkillEffect.where(id: resolve_by_boost_type(family, linked_rows(WeaponSkillEffect)).map(&:id))
   end
 
   # Normalized icon stem using OUR INTERNAL element numbering — the name files
@@ -106,6 +103,26 @@ class WeaponSkillVersion < ApplicationRecord
   end
 
   private
+
+  # An unsaved version has no linked rows (where(weapon_skill_version_id: nil) would be
+  # every canonical row).
+  def linked_rows(model) = id ? model.where(weapon_skill_version_id: id).to_a : []
+
+  # family: the canonical rows; linked: this version's rows. → family, curated, generated.
+  def resolve_by_boost_type(family, linked)
+    curated, generated = linked.partition(&:manually_edited_at)
+    suppressed = Array(suppressed_boosts).to_set
+    curated_types = curated.to_set(&:boost_type)
+    family_types = family.to_set(&:boost_type)
+
+    kept_family = family.reject { |row| curated_types.include?(row.boost_type) || suppressed.include?(row.boost_type) }
+    kept_generated = generated.reject do |row|
+      boost = row.boost_type
+      curated_types.include?(boost) || suppressed.include?(boost) || suppressed.include?("*") ||
+        family_types.include?(boost)
+    end
+    kept_family + curated + kept_generated
+  end
 
   # Cleans the wiki icon name to a CDN stem template, possibly still containing
   # the element wildcard "*": strips the {{WeaponSkillIcon|…}} wrapper and the
