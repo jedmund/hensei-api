@@ -46,13 +46,20 @@ RSpec.describe WeaponSkillVersion, type: :model do
     end
   end
 
-  describe 'name/description delegation' do
-    it 'reads name and description from the canonical Skill (no local copies)' do
-      skill = create(:skill, skill_type: :weapon, name_en: 'Optimus Exalto Aquae', description_en: '30% boost')
-      version = create(:weapon_skill_version, skill: skill)
+  describe 'name/description' do
+    let(:skill) { create(:skill, skill_type: :weapon, name_en: 'Optimus Exalto Aquae', description_en: '30% boost') }
+    let(:version) { create(:weapon_skill_version, skill: skill) }
+
+    it 'reads the name from the canonical Skill (no local copy)' do
       expect(version.name_en).to eq('Optimus Exalto Aquae')
+      expect(described_class.column_names).not_to include('name_en')
+    end
+
+    it "reads the tier's own description, else the Skill's" do
       expect(version.description_en).to eq('30% boost')
-      expect(described_class.column_names).not_to include('name_en', 'description_en')
+
+      version.update_columns(description_en: 'Tier text')
+      expect(version.description_en).to eq('Tier text')
     end
   end
 
