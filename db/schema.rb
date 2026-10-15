@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1614,6 +1614,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
     t.index ["weapon_granblue_id"], name: "index_weapon_skills_on_weapon_granblue_id"
   end
 
+  create_table "weapon_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "weapon_id"
+    t.string "kind", null: false
+    t.string "key", null: false
+    t.text "body", null: false
+    t.string "sha256", null: false
+    t.datetime "fetched_at", null: false
+    t.string "page_kind"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kind", "key", "fetched_at"], name: "index_weapon_sources_lookup"
+    t.index ["kind", "key"], name: "index_weapon_sources_on_shared_kind_key", unique: true, where: "(weapon_id IS NULL)"
+    t.index ["weapon_id", "kind", "key"], name: "index_weapon_sources_on_weapon_kind_key", unique: true, where: "(weapon_id IS NOT NULL)"
+    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'expanded'::character varying, 'transclusion'::character varying, 'family_template'::character varying]::text[])", name: "weapon_sources_kind"
+    t.check_constraint "page_kind IS NULL OR (page_kind::text = ANY (ARRAY['inline'::character varying, 'series_template'::character varying, 'key_determined'::character varying]::text[]))", name: "weapon_sources_page_kind"
+  end
+
   create_table "weapon_stat_modifiers", force: :cascade do |t|
     t.string "slug", null: false
     t.string "name_en", null: false
@@ -1825,6 +1842,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000001) do
   add_foreign_key "weapon_series_variants", "weapon_series"
   add_foreign_key "weapon_skill_versions", "skills"
   add_foreign_key "weapon_skill_versions", "weapon_skills"
+  add_foreign_key "weapon_sources", "weapons", on_delete: :cascade
   add_foreign_key "weapons", "weapon_series"
   add_foreign_key "weapons", "weapon_series_variants"
 end
