@@ -29,7 +29,7 @@ module WeaponSkills
 
       attr_reader :stats, :failures
 
-      def initialize(store: Database.new, wiki: Granblue::Parsers::Wiki.new(store: nil), delay: 0.5,
+      def initialize(store: Database.new, wiki: Granblue::Parsers::Wiki.new(store: nil), delay: 2.0,
                      retries: 4, backoff: 5.0, log: nil)
         @store = store
         @wiki = wiki

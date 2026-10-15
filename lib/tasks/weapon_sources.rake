@@ -19,7 +19,7 @@ namespace :granblue do
       bin/rails granblue:fetch_weapon_sources stale_days=0        # refetch everything
       bin/rails granblue:fetch_weapon_sources ids=1040415000,...  # these weapons (always refetched)
       bin/rails granblue:fetch_weapon_sources kind=family_template
-      bin/rails granblue:fetch_weapon_sources delay=1.0           # seconds between requests (default 0.5)
+      bin/rails granblue:fetch_weapon_sources delay=3.0           # seconds between requests (default 2.0)
   DESC
   task fetch_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
@@ -30,7 +30,7 @@ namespace :granblue do
     abort "unknown kind=#{kind} (#{store::KINDS.join(', ')})" if kind && !store::KINDS.include?(kind)
 
     cutoff = stale_days&.days&.ago
-    fetcher = store::Fetcher.new(delay: ENV.fetch("delay", "0.5").to_f, log: ->(line) { puts line })
+    fetcher = store::Fetcher.new(delay: ENV.fetch("delay", "2.0").to_f, log: ->(line) { puts line })
     fresh = lambda do |scope|
       scope = scope.where(fetched_at: cutoff..) if cutoff
       scope
