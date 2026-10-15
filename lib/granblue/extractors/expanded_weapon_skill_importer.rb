@@ -16,7 +16,9 @@ module Granblue
       SPECIAL_SERIES = %w[bahamut celestial].freeze
       # An English "|s1_desc=" line at line start (POSIX regex; "|jps1_desc=" must not match).
       ENGLISH_S1_DESC_SQL = '(^|\n)\|[[:space:]]*s1_desc[[:space:]]*='
-      CANONICAL_NOTES_FAMILIES = ["Staff Resonance"].freeze
+      # Families whose notes are modeled canonically. Grand Epic's notes parse as plain atk per
+      # weapon type, which would double-count beside its canonical ex_atk_sp per Epic weapon.
+      CANONICAL_NOTES_FAMILIES = ["Staff Resonance", "Grand Epic"].freeze
       FRAME = { "normal" => "normal", "ex" => "ex", "omega" => "omega", "od" => "odious" }.freeze
 
       def self.run(limit: nil, throttle: 0.2)
