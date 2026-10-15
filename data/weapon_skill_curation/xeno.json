@@ -7,6 +7,54 @@
       "ordinal": 0,
       "suppressed_boosts": [],
       "edited_at": "2026-10-15T09:04:20Z"
+    },
+    {
+      "weapon": "1040413000",
+      "skill": "Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040413100",
+      "skill": "Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040413100",
+      "skill": "True Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040809700",
+      "skill": "Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040809800",
+      "skill": "Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
+    },
+    {
+      "weapon": "1040809800",
+      "skill": "True Glacial Supremacy",
+      "ordinal": 0,
+      "modifier_override": "Supremacy",
+      "size_override": "massive",
+      "edited_at": "2026-10-15T19:00:00Z"
     }
   ],
   "effects": [
