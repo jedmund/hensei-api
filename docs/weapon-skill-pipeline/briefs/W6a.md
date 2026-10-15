@@ -60,3 +60,8 @@ Read-only: the old parser and importer files.
 
 - **From W2:** its `parser` cases P1–P3 are structure work for you: gates, template defaults, and New World's injected third skill. Details are in `docs/weapon-skill-pipeline/w2-classification.md` once W2's PR lands; ask W2 directly before that.
 - **From W6b:** set `skill_series` on each `Version` the way the extractor does today, `series_override || WeaponSkillDescriptionParser.series_for(text, name)`. Row coverage depends on it, because the extractor re-derives the series before it works out which boost types are covered. Agree the exact field semantics with W6b.
+- **From W3:**
+  - `ExpandedWeaponSkillImporter::KEY_SLOT` is broken. Its `/x` flag drops the spaces in phrases like "empowered by a chosen pendulum", so they never match. Write your port's pattern without `/x`, or with escaped spaces, and spec every phrase.
+  - Use `catalogue-20261015-sources` and read every page through `Granblue::Parsers::Wiki.offline { }` / `WeaponSkills::SourceStore::Database`.
+- **New on 2026-10-15:** W3's offline full reparse (`data/weapon_skill_parity/full_reparse_offline_2026-10-15.json`) reproduces W2's 103 differences plus 4 from wiki edits made that day (Daudaskot II gate, Blazing Chain III, two Exo Decimations). W2 is classifying the 4.
+- **Curation now lives in W7's per-series files** (`data/weapon_skill_curation/*.json`), including `gate` and `add_version` ops. Your structure output plus the overlay must reproduce today's gates and slots.

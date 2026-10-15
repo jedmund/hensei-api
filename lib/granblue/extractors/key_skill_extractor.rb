@@ -29,14 +29,16 @@ module Granblue
       KEY_SUPP_SP = { "na_supp" => "na_supp_sp", "ca_supp" => "ca_supp_sp",
                       "skill_dmg_supp" => "skill_supp_sp" }.freeze
 
-      def self.run(dry_run: false)
-        wiki = Granblue::Parsers::Wiki.new
+      # Series pages come from a stored source (WeaponSkills::SourceStore), never the live
+      # wiki: granblue:fetch_weapon_sources stores them as "wiki_raw" sources keyed by title.
+      # A page missing from the store counts as fetch_failed.
+      def self.run(store:, dry_run: false)
         stats = Hash.new(0)
         preview = []
 
         SERIES_PAGES.each do |page|
-          wikitext = fetch(wiki, page) or (stats[:fetch_failed] += 1
-                                           next)
+          wikitext = fetch(store, page) or (stats[:fetch_failed] += 1
+                                            next)
           Parser.parse(wikitext).each do |entry|
             key = WeaponKey.where("lower(name_en) = ?", entry[:name].downcase).first
             next stats[:unmatched_key] += 1 unless key
@@ -114,19 +116,37 @@ module Granblue
           return
         end
 
-        WeaponSkillEffect.for_key(slug).delete_all # idempotent — re-derive from the wiki
-        effects.each { |attrs| WeaponSkillEffect.create!(attrs) }
+        # Idempotent: re-derive from the wiki, except rows a curator edited by hand. An
+        # extracted row with a kept row's identity yields to it.
+        scope = WeaponSkillEffect.for_key(slug)
+        kept = scope.where.not(manually_edited_at: nil).map { |e| identity(e.attributes) }
+        scope.where(manually_edited_at: nil).delete_all
+        effects.each do |attrs|
+          if kept.include?(identity(attrs))
+            stats[:preserved] += 1
+            next
+          end
+
+          WeaponSkillEffect.create!(attrs)
+          stats[:effects] += 1
+        end
         stats[:keys] += 1
-        stats[:effects] += effects.size
       end
 
-      def self.fetch(wiki, page)
-        wiki.fetch(page)
-      rescue Granblue::Parsers::WikiError
+      # The canonical uniqueness of a key-scoped row (index_wse_canonical_uniqueness).
+      def self.identity(attrs)
+        attrs = attrs.to_h.stringify_keys
+        [attrs["modifier"], attrs["boost_type"], attrs["scaling_kind"], attrs["key_slug"],
+         (attrs["condition"] || {}).to_h.deep_stringify_keys.sort.to_h]
+      end
+
+      def self.fetch(store, page)
+        store.fetch("wiki_raw", page).body
+      rescue WeaponSkills::SourceStore::SourceMissing
         nil
       end
 
-      private_class_method :clause_effects, :boost_level_effects, :curve_value, :persist, :fetch
+      private_class_method :clause_effects, :boost_level_effects, :curve_value, :persist, :identity, :fetch
     end
   end
 end
