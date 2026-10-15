@@ -1,7 +1,7 @@
 {
   "party": "F0MD7j",
   "captured_on": "2026-10-15",
-  "notes": "Same F0MD7j grid with Arcarum toggled OFF in game (A/B with F0MD7j.json): Sephira Manus back to 6 (DA 66, TA 75 capped, Added Hit 10.2), Skill Amp. (Arc) gone, plain Skill Amp. 10 stays (Brogue II's always-on part). Estimated DMG unchanged (311677 / 512448). Still no Crit. Amp. line despite Hoarfrost's Stratagem x2 at lvl 150 - not Arcarum-related; crit_amp left unasserted.",
+  "notes": "Same F0MD7j grid with Arcarum toggled OFF in game (A/B with F0MD7j.json): Sephira Manus back to 6 (DA 66, TA 75 capped, Added Hit 10.2), Skill Amp. (Arc) gone, plain Skill Amp. 10 stays (Brogue II's always-on part). Estimated DMG unchanged (311677 / 512448). Still no Crit. Amp. line despite Hoarfrost's Stratagem x2 at lvl 150: the panel lists Crit. Amp. only at Critical 100% (ZCoUJT).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -15,6 +15,7 @@
   },
   "absent": [
     "added_hp",
+    "crit_amp",
     "crit_dmg",
     "dmg_cap_pen",
     "na_amp",

@@ -1,7 +1,7 @@
 {
   "party": "F0MD7j",
   "captured_on": "2026-10-15",
-  "notes": "Water grid (Manadiver: staff/dagger) captured IN ARCARUM: Sephira Manus Aquae shows its Arcarum 60 (DA/TA 75 capped, Added Hit 60.6 exact only with arcarum state) and Sephirath Brogue shows a separate 'Skill Amp. (Arc)' line. Doombringer Edge MH 5* (Anklet of Oblivion), Rubea Stiria x2, Twinfall-Sky Blade (Bond II, dagger tier), Lagrange Mk II (Attack awk 20), Bow of Sigurd Militis, Worldstorming Aetos (Skill DMG awk 10), Clockwork Blade: Kumogakure, Wilhelm Militis, Staff of Repudiation transc5 (beta Pendulum + Pendulum of Extremity). No Crit. Amp. line in game despite Hoarfrost's Stratagem x2 at lvl 150: unexplained, crit_amp left unasserted. Estimated DMG 311677 / to Fire 512448 / Max HP 49808.",
+  "notes": "Water grid (Manadiver: staff/dagger) captured IN ARCARUM: Sephira Manus Aquae shows its Arcarum 60 (DA/TA 75 capped, Added Hit 60.6 exact only with arcarum state) and Sephirath Brogue shows a separate 'Skill Amp. (Arc)' line. Doombringer Edge MH 5* (Anklet of Oblivion), Rubea Stiria x2, Twinfall-Sky Blade (Bond II, dagger tier), Lagrange Mk II (Attack awk 20), Bow of Sigurd Militis, Worldstorming Aetos (Skill DMG awk 10), Clockwork Blade: Kumogakure, Wilhelm Militis, Staff of Repudiation transc5 (beta Pendulum + Pendulum of Extremity). No Crit. Amp. line in game despite Hoarfrost's Stratagem x2 at lvl 150: the panel lists Crit. Amp. only at Critical 100% (ZCoUJT). Estimated DMG 311677 / to Fire 512448 / Max HP 49808.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -14,11 +14,12 @@
     "taboo": 0
   },
   "absent": [
-    "crit_dmg",
     "added_hp",
+    "crit_amp",
+    "crit_dmg",
     "dmg_cap_pen",
-    "skill_amp_sp",
-    "na_amp"
+    "na_amp",
+    "skill_amp_sp"
   ],
   "lines": [
     {

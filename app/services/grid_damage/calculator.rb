@@ -67,7 +67,16 @@ module GridDamage
       agg = Aggregator.aggregate(contributions)
       apply_rate_caps(agg)
       add_overskills(agg)
+      drop_unrealized_crit_amp(agg)
       { agg: agg, contributions: contributions, enhancements: enh }
+    end
+
+    # The panel only lists Crit. Amp. once critical hits are guaranteed: the same two
+    # Hoarfrost's Stratagem show 18% at Critical 100% (ZCoUJT) and nothing at 45%
+    # (F0MD7j); g0gpOT shows it at 100% too.
+    def drop_unrealized_crit_amp(agg)
+      agg.delete("crit_amp") unless agg["critical"]&.capped
+      agg
     end
 
     # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.
