@@ -5,6 +5,10 @@
 # through #skill — never duplicated here. The version carries only the
 # tier requirement and parser-derived scaling/condition attributes.
 class WeaponSkillVersion < ApplicationRecord
+  include CurationExportTracking
+
+  self.curation_stamp_column = :overrides_edited_at
+
   belongs_to :weapon_skill, inverse_of: :weapon_skill_versions
   belongs_to :skill
 
