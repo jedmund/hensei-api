@@ -68,3 +68,4 @@ public/assets
 
 # Dev-only uploaded icons (live in S3 in production)
 public/images/difficulties/
+data/weapon_skill_parity/last_diff.json
