@@ -107,6 +107,22 @@
       "edited_at": "2026-10-15T13:00:00Z"
     },
     {
+      "modifier": "Blow",
+      "boost_type": "bonus_elem_dmg",
+      "scaling_kind": "bonus_dmg",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {},
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "20% Bonus Element DMG on the third hit of triple attacks; highest-only. Stored wiki pages, s*_desc of the Blow skills: 13 of 15 Blow weapons state 20% (e.g. Splash Howl 1040516100 s3_desc, GameWith ref); the other 2 give no number.",
+      "provenance": "manual",
+      "edited_at": "2026-10-15T23:15:00Z"
+    },
+    {
       "modifier": "α Pendulum",
       "boost_type": "ca_dmg_cap",
       "series": "ex",

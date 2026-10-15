@@ -6,7 +6,8 @@ module Api
     # resolves values through. A family is a virtual resource over the
     # canonical weapon_skill_data / weapon_skill_effects rows, the
     # weapon_skill_versions classified into it, and the weapon keys whose
-    # effects reference it.
+    # effects reference it. A version's family is its resolved modifier
+    # (override, else derived), the one the calculator reads.
     class WeaponSkillFamiliesController < Api::V1::ApiController
       # GET /weapon_skill_families
       def index
@@ -21,7 +22,7 @@ module Api
         data = WeaponSkillDatum.where(modifier: modifier).order(:boost_type, :series, :size)
         effects = WeaponSkillEffect.where(modifier: modifier).order(:boost_type)
         versions = WeaponSkillVersion.includes(:skill, weapon_skill: :weapon)
-                                     .where(skill_modifier: modifier)
+                                     .in_family(modifier)
         version_effects = WeaponSkillEffect.where(weapon_skill_version_id: versions.map(&:id))
         all_effects = (effects + version_effects.reject { |e| e.modifier == modifier }).uniq
         keys = WeaponKey.where(slug: all_effects.filter_map(&:key_slug).uniq)
@@ -50,10 +51,11 @@ module Api
       def build_families
         data_rows = WeaponSkillDatum.all.to_a
         effect_rows = WeaponSkillEffect.where(weapon_skill_version_id: nil).to_a
+        family = Arel.sql(WeaponSkillVersion::RESOLVED_MODIFIER_SQL)
         version_stats = WeaponSkillVersion.joins(:weapon_skill)
-                                          .where.not(skill_modifier: [nil, ''])
-                                          .group(:skill_modifier)
-                                          .pluck(:skill_modifier,
+                                          .with_family
+                                          .group(family)
+                                          .pluck(family,
                                                  Arel.sql('COUNT(*)'),
                                                  Arel.sql('COUNT(DISTINCT weapon_skills.weapon_granblue_id)'))
                                           .to_h { |mod, versions, weapons| [mod, { versions: versions, weapons: weapons }] }
@@ -85,10 +87,11 @@ module Api
       # text for the same mechanical family, so a family spanning several of
       # them has no single true name (falls back to the modifier instead).
       def family_display_names
+        family = Arel.sql(WeaponSkillVersion::RESOLVED_MODIFIER_SQL)
         rows = WeaponSkillVersion.joins(:skill)
-                                 .where.not(skill_modifier: [nil, ''])
-                                 .group(:skill_modifier, 'skills.name_en', 'skills.name_jp')
-                                 .pluck(:skill_modifier, 'skills.name_en', 'skills.name_jp')
+                                 .with_family
+                                 .group(family, 'skills.name_en', 'skills.name_jp')
+                                 .pluck(family, 'skills.name_en', 'skills.name_jp')
         rows.group_by { |mod, _, _| mod }.each_with_object({}) do |(mod, entries), out|
           next unless entries.size == 1
 
@@ -102,13 +105,14 @@ module Api
       # per-element icons), and the frontend cycles through them for those.
       def family_icon_stems
         versions = WeaponSkillVersion.joins(weapon_skill: :weapon)
-                                     .where.not(skill_modifier: [nil, ''])
+                                     .with_family
                                      .includes(weapon_skill: :weapon)
         versions.each_with_object(Hash.new { |h, k| h[k] = [] }) do |v, out|
           stem = v.icon_stem
           next if stem.blank?
 
-          out[v.skill_modifier] << stem unless out[v.skill_modifier].include?(stem)
+          family = v.resolved_modifier
+          out[family] << stem unless out[family].include?(stem)
         end
       end
 

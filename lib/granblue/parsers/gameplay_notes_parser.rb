@@ -6,7 +6,7 @@ module Granblue
     # That section carries the community-computed skill values that the in-game / skill-blurb
     # prose omits — e.g. Twinpain's "8% ATK per Gun (Max 80%)" and Cloud's per-specialty table.
     #
-    # Output: { skill_name => { frame:, clauses: [ ... ] } } where each clause is one of:
+    # Output: { skill_name => { frame:, applies_to:, clauses: [ ... ] } } where each clause is one of:
     #   { boost_type:, scaling: :per_count, value:, max:, count_unit:, shared_cap:, sp: }
     #   { boost_type:, scaling: :per_specialty, by_specialty: { "gun"=>40.0, "other"=>20.0, ... } }
     #   { boost_type:, scaling: :flat, value: }
@@ -41,7 +41,7 @@ module Granblue
           next if skill.blank? || skill =~ /gameplay notes/i
 
           clauses = parse_section(skill, body)
-          out[skill] = { frame: frame_of(body), clauses: clauses } if clauses.any?
+          out[skill] = { frame: frame_of(body), applies_to: applies_to_of(body), clauses: clauses } if clauses.any?
         end
         out
       end
@@ -179,6 +179,13 @@ module Granblue
         body[/Multiplier:[^.<]*?\b(Normal|EX|Omega|Od)\b/i, 1]&.downcase&.sub("od", "odious")
       end
 
+      # Who the section's boosts reach: the notes say so when it isn't only the weapon's
+      # element ("Affects allies of any element.": Voltage, Grand Epic, the Ultimate
+      # specialty skills).
+      def self.applies_to_of(body)
+        /allies of any element/i.match?(body) ? "all_allies" : "element_allies"
+      end
+
       def self.shared_cap_of(body)
         return nil unless /share the same cap/i.match?(body)
 
@@ -198,7 +205,7 @@ module Granblue
       end
 
       private_class_method :parse_section, :per_count_clauses, :specialty_clauses, :progression_clauses, :tier_clauses, :data_rows, :boost_for,
-                           :amplify_boosts, :frame_of, :shared_cap_of, :pct, :clean
+                           :amplify_boosts, :frame_of, :applies_to_of, :shared_cap_of, :pct, :clean
     end
   end
 end
