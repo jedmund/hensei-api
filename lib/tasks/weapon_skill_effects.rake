@@ -21,7 +21,9 @@ namespace :granblue do
     updated = 0
     skipped_manual = 0
     records.each do |r|
+      # Canonical rows only: never match (and overwrite) a version-linked effect.
       effect = WeaponSkillEffect.find_or_initialize_by(
+        weapon_skill_version_id: nil,
         modifier: r["modifier"], boost_type: r["boost_type"], scaling_kind: r["scaling_kind"],
         key_slug: r["key_slug"], condition: r["condition"] || {}
       )
