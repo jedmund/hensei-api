@@ -23,6 +23,7 @@ module WeaponSkills
                          |empowered\ by\ a\ chosen\ (?:pendulum|teluma)
                          |a\ gate\ to\ the\ summits
                          |(?:locked|sealed)\ within\ ultima/xi
+      ENGLISH_S1_DESC = /^\|\s*s1_desc\s*=/
       RETRYABLE_ERRORS = [Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, Errno::ECONNREFUSED,
                           Errno::ETIMEDOUT, SocketError, OpenSSL::SSL::SSLError, EOFError].freeze
 
@@ -44,7 +45,11 @@ module WeaponSkills
       # page_kind of a weapon page, decided at fetch time from its template.
       def self.page_kind(wiki_raw, expanded = nil)
         return "key_determined" if expanded.to_s.match?(KEY_PLACEHOLDER)
-        return "series_template" if wiki_raw.to_s.include?("{{Weapon/Common/") && !wiki_raw.to_s.include?("s1_desc=")
+        # Same rule as EntityReparser#template_only_wikitext?: the template supplies the
+        # skills unless the page has an English "|s1_desc=" line ("|jps1_desc=" doesn't count).
+        if wiki_raw.to_s.include?("{{Weapon/Common/") && !wiki_raw.to_s.match?(ENGLISH_S1_DESC)
+          return "series_template"
+        end
 
         "inline"
       end
