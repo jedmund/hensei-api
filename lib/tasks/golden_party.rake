@@ -53,8 +53,48 @@ namespace :granblue do
                             uncap_level: c["uncap_level"] || 5, transcendence_step: c["transcendence_step"],
                             perpetuity: c["perpetuity"] }.compact).save!(validate: false)
       end
+      Granblue::GoldenFixture.apply_adjustments(party)
       puts "#{shortcode}: #{party.weapons.count} weapons, #{party.summons.count} summons, " \
            "#{party.characters.count} characters, job #{party.job&.name_en || 'none'}"
+    end
+  end
+
+  desc "Write spec/fixtures/goldens/<shortcode>.json: a golden party plus every catalogue row the calculator " \
+       "reads for its panel references. shortcode=XXXXXX (default: every existing fixture)"
+  task export_golden_fixture: :environment do
+    shortcodes = ENV["shortcode"].present? ? [ENV["shortcode"]] : Granblue::GoldenFixture.shortcodes
+    abort "shortcode=XXXXXX is required (no fixtures yet)" if shortcodes.empty?
+
+    FileUtils.mkdir_p(Granblue::GoldenFixture::DIR)
+    shortcodes.each do |shortcode|
+      fixture = Granblue::GoldenFixture.write(shortcode)
+      rows = fixture["tables"].values.sum(&:size)
+      puts "#{shortcode}: #{rows} rows in #{fixture['tables'].size} tables, " \
+           "references #{fixture['references'].join(', ').presence || 'none'}"
+    end
+  end
+
+  desc "Load spec/fixtures/goldens/<shortcode>.json into this database. shortcode=XXXXXX " \
+       "[mode=party|missing] (party: party rows only, the catalogue must hold what they use; " \
+       "missing: also add the fixture's catalogue rows this database lacks)"
+  task import_golden_fixture: :environment do
+    shortcode = ENV.fetch("shortcode") { abort "shortcode=XXXXXX is required" }
+    mode = ENV.fetch("mode", "party").to_sym
+    abort "mode must be party or missing" unless %i[party missing].include?(mode)
+
+    party = Granblue::GoldenFixture.load(shortcode, mode: mode)
+    puts "#{shortcode}: #{party.weapons.count} weapons, #{party.summons.count} summons, #{party.characters.count} characters"
+  rescue Granblue::GoldenFixture::Error => e
+    abort e.message
+  end
+
+  desc "Load every golden fixture's party into this database (party rows only; used by bin/setup-pipeline-db)"
+  task import_golden_fixtures: :environment do
+    Granblue::GoldenFixture.shortcodes.each do |shortcode|
+      party = Granblue::GoldenFixture.load(shortcode, mode: :party)
+      puts "#{shortcode}: loaded (#{party.weapons.count} weapons)"
+    rescue Granblue::GoldenFixture::Error => e
+      warn "#{shortcode}: skipped - #{e.message}"
     end
   end
 end
