@@ -120,4 +120,47 @@ RSpec.describe Granblue::Parsers::Wiki do
       expect(wiki_requests).to be_empty
     end
   end
+
+  describe "#fetch" do
+    it "sends the canonical title as an encoded parameter" do
+      stub_request(:get, %r{gbf\.wiki/api\.php})
+        .with(query: hash_including(action: "parse", page: "Devil's Finger"))
+        .to_return(status: 200, body: JSON.generate(parse: { wikitext: { "*" => "page" } }),
+                   headers: { "Content-Type" => "application/json" })
+
+      expect(described_class.new(store: nil).fetch("Devil%27s_Finger")).to eq("page")
+    end
+  end
+
+  describe "#last_edited" do
+    it "returns each title's latest edit, following the wiki's title normalization" do
+      body = { query: { normalized: [{ from: "ray of Zhuque Regus", to: "Ray of Zhuque Regus" }],
+                        pages: [{ title: "Ray of Zhuque Regus", revisions: [{ timestamp: "2026-10-15T12:00:00Z" }] },
+                                { title: "Gone", missing: true }] } }
+      stub_request(:get, %r{gbf\.wiki/api\.php})
+        .with(query: hash_including(action: "query", prop: "revisions", titles: "ray of Zhuque Regus|Gone"))
+        .to_return(status: 200, body: JSON.generate(body), headers: { "Content-Type" => "application/json" })
+
+      edited = described_class.new(store: nil).last_edited(%w[ray_of_Zhuque_Regus Gone])
+
+      expect(edited).to eq("ray_of_Zhuque_Regus" => Time.utc(2026, 10, 15, 12), "Gone" => nil)
+    end
+
+    it "asks about percent-encoded and padded keys by their plain title" do
+      body = { query: { pages: [{ title: "Devil's Finger", revisions: [{ timestamp: "2026-10-01T00:00:00Z" }] }] } }
+      stub_request(:get, %r{gbf\.wiki/api\.php})
+        .with(query: hash_including(titles: "Devil's Finger"))
+        .to_return(status: 200, body: JSON.generate(body), headers: { "Content-Type" => "application/json" })
+
+      edited = described_class.new(store: nil).last_edited(["Devil%27s Finger", "\nDevil's Finger"])
+
+      expect(edited.values).to eq([Time.utc(2026, 10, 1)] * 2)
+    end
+
+    it "refuses more than 50 titles" do
+      expect { described_class.new(store: nil).last_edited(Array.new(51) { |i| "P#{i}" }) }
+        .to raise_error(ArgumentError)
+    end
+  end
 end
+

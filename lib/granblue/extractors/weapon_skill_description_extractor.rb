@@ -24,7 +24,7 @@ module Granblue
           # its raw text parses into phantom boosts
           next if skill&.name_en.to_s.match?(/[{}]/)
 
-          desc = full_description(v).presence || skill&.description_en
+          desc = full_description(v).presence || WeaponSkills::VersionText.for(v, :en)
           next if desc.blank?
 
           # 1. Re-attribute the frame from the description (never the icon), for EVERY version.

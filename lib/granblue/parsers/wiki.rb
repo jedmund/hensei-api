@@ -189,16 +189,14 @@ module Granblue
 
       # kind: which stored kind to read in store mode (default: transclusion, then wiki_raw).
       def fetch(page, kind: nil)
+        page = Granblue::WikiTitle.normalize(page)
         return stored_page(page, kind) if store
 
-        query_params = params(page).map do |key, value|
-          "#{key}=#{value}"
-        end.join('&')
+        ap "--> Fetching #{page}" if @debug
 
-        destination = "#{base_uri}?#{query_params}"
-        ap "--> Fetching #{destination}" if @debug
-
-        response = HTTParty.get(destination, headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
+        # The title goes in as a query parameter, encoded by HTTParty.
+        response = HTTParty.get(base_uri, query: params(page),
+                                          headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
 
         handle_response(response, page)
       end
@@ -222,6 +220,7 @@ module Granblue
       # A page's raw wikitext through index.php?action=raw (used for the family templates,
       # Template:Weapon Skills/<name>). Returns nil unless the wiki answers 200.
       def fetch_raw(title, kind: 'family_template')
+        title = Granblue::WikiTitle.normalize(title)
         return store.fetch(kind, title).body if store
 
         path = title.tr(' ', '_').split('/').map { |segment| ERB::Util.url_encode(segment) }.join('/')
@@ -229,6 +228,28 @@ module Granblue
                                 headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
                                 format: :plain)
         response.code == 200 ? response.body.to_s.dup.force_encoding('UTF-8').scrub : nil
+      end
+
+      # The time of each page's latest edit, up to 50 titles in one request (action=query,
+      # prop=revisions). → { title as given => Time, or nil when the page doesn't exist }.
+      # Always live: it's how a store decides what to refetch.
+      def last_edited(titles)
+        raise ArgumentError, 'at most 50 titles per request' if titles.size > 50
+
+        # Keys stored before titles were normalized can be percent-encoded ("Devil%27s Finger").
+        plain = titles.index_with { |t| Granblue::WikiTitle.normalize(t) }
+        response = HTTParty.get(base_uri,
+                                query: { action: 'query', format: 'json', formatversion: 2, prop: 'revisions',
+                                         rvprop: 'timestamp', titles: plain.values.uniq.join('|') },
+                                headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
+        raise WikiError.new(code: response.code, message: 'Unexpected response', page: titles.first) unless response.code == 200
+
+        query = JSON.parse(response.body).fetch('query', {})
+        normalized = Array(query['normalized']).to_h { |n| [n['from'], n['to']] }
+        edited = Array(query['pages']).to_h do |p|
+          [p['title'], p['missing'] ? nil : Time.zone.parse(p.dig('revisions', 0, 'timestamp').to_s)]
+        end
+        titles.index_with { |t| edited[normalized.fetch(plain[t], plain[t])] }
       end
 
       private

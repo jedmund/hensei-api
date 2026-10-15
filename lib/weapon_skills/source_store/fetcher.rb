@@ -99,6 +99,11 @@ module WeaponSkills
         put("wiki_raw", title, body, nil, nil)
       end
 
+      # Latest-edit times for up to 50 titles, throttled and retried like every request.
+      def last_edited(titles)
+        request!("last edits (#{titles.size} pages)") { @wiki.last_edited(titles) }
+      end
+
       class EmptyResponse < StandardError; end
 
       private

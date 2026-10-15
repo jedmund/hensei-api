@@ -27,6 +27,11 @@ RSpec.describe WeaponSkills::TierText do
       expect(described_class.from_wiki_hash(hash, 1, "4s")).to eq(name: "Demise", en: "Full text of tier two.", jp: nil)
     end
 
+    it "drops text the line parser cut short at a multi-line template" do
+      cut = hash.merge("jps1_desc" => "{{", "ens1_desc" => "Boost to {{WeaponElement}} allies' ATK")
+      expect(described_class.from_wiki_hash(cut, 1)).to eq(name: "Demise", en: "Boost to {{WeaponElement}} allies' ATK", jp: nil)
+    end
+
     it "returns nil for a tier with no name" do
       expect(described_class.from_wiki_hash(hash, 3)).to be_nil
     end

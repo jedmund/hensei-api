@@ -77,8 +77,11 @@ module WeaponSkills
       @parser ||= Granblue::Parsers::WeaponParser.allocate
     end
 
+    # A field the line-based parser cut short (`|jps1_desc={{#switch:` continues on the
+    # next lines, so only "{{" is kept) has unbalanced template braces: no usable text.
     def presence(value)
-      value.to_s.strip.presence
+      text = value.to_s.strip.presence or return nil
+      text.scan("{{").size == text.scan("}}").size ? text : nil
     end
 
     private_class_method :parser, :presence
