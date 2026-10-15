@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-# Marks data/weapon_skill_curation.json dirty when a curated row changes, so the
-# development auto-export (Granblue::CurationAutoExport) picks it up. A row counts as
-# curated when its stamp column is set now or was set before this change.
+# Marks the curation overlay (the per-series files in data/weapon_skill_curation/) dirty
+# when a curated row changes, so the development auto-export
+# (Granblue::CurationAutoExport) picks it up. A row counts as curated when its stamp
+# column is set now or was set before this change.
 module CurationExportTracking
   extend ActiveSupport::Concern
 
