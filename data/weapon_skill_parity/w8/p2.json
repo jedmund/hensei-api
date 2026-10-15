@@ -42,15 +42,15 @@
     "source": "docs/weapon-skill-pipeline/w2-classification.md row #83 (accept: new tier); stored wiki_raw: '|s4_u1_name=Thunder God's Retribution II', '|s4_u1_lvl=250'"
   },
   "1040117500|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040117600|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040117600|3|0|Zenith Strike: Light": {
@@ -96,15 +96,15 @@
     "source": "docs/weapon-skill-pipeline/w2-classification.md row #23 (accept)"
   },
   "1040316600|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040316700|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040316700|3|0|Striking Art: Earth": {
@@ -114,15 +114,15 @@
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 gate | Revans Mk II x6'; stored Template:Weapon/Common/RevansII: '|s2_lvl=120'"
   },
   "1040316800|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040316900|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040316900|3|0|Zenith Art: Wind": {
@@ -180,15 +180,15 @@
     "source": "docs/weapon-skill-pipeline/w2-classification.md row #91 (accept: new tier); stored wiki_raw: '|s4_u1_name=Ferocious Dominance II', '|s4_u1_lvl=250'"
   },
   "1040617900|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040618000|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040618000|3|0|Zenith Art: Water": {
@@ -234,15 +234,15 @@
     "source": "docs/weapon-skill-pipeline/w2-classification.md row #95 (parser case P1); docs/weapon-skill-pipeline/w6a-classification.md 'parser' (P1); stored wiki_raw: '|s4_u1_name=Dos Colmillos II'"
   },
   "1040712900|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040713000|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040713000|3|0|Striking Art: Fire": {
@@ -276,15 +276,15 @@
     "source": "docs/weapon-skill-pipeline/w2-classification.md row #99 (parser case P1); docs/weapon-skill-pipeline/w6a-classification.md 'parser' (P1); stored wiki_raw: '|s4_u1_name=Galactic Halo II'"
   },
   "1040816000|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040816100|0|0|}}} Enforcement": {
-    "class": "open",
+    "class": "intended",
     "field": "missing",
-    "reason": "W8 gate 2 expects these junk versions dropped, but the build keeps them: the compiler drops the template-garbled name (correct), and Build::Writer#curated? keeps a gone version whose overrides_edited_at is set (revans.json pins it with modifier_override 'none'), so the full run reports versions_kept 12 and no difference. Database side: inert junk at 0|0 (no rows). Build side: no version. Options posted on #561: replace the revans.json version entry with a remove_version op, or have the writer drop override-only 'none' versions with no rows. Lead decides.",
+    "reason": "Template junk ('}}} Enforcement') from a broken expansion, not a skill in the game. The overlay now drops it with a remove_version op (revans.json) instead of pinning it to modifier_override 'none'.",
     "source": "docs/weapon-skill-pipeline/w6a-classification.md accepted table, row '12 missing | Revans Mk I and Mk II'; stored Template:Weapon/Common/RevansII: '|s1_name={{WeaponSkillMod|unique|{{{element|}}}}} Enforcement'"
   },
   "1040816100|3|0|Zenith Strike: Dark": {
