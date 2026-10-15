@@ -55,3 +55,8 @@ Read-only: the old parser and importer files.
   - a Dark Opus key page;
   - order independence (shuffle the inputs and get the same output).
 - A WebMock (or equivalent) spec shows no HTTP.
+
+## Notes from wave 1
+
+- **From W2:** its `parser` cases P1–P3 are structure work for you: gates, template defaults, and New World's injected third skill. Details are in `docs/weapon-skill-pipeline/w2-classification.md` once W2's PR lands; ask W2 directly before that.
+- **From W6b:** set `skill_series` on each `Version` the way the extractor does today, `series_override || WeaponSkillDescriptionParser.series_for(text, name)`. Row coverage depends on it, because the extractor re-derives the series before it works out which boost types are covered. Agree the exact field semantics with W6b.

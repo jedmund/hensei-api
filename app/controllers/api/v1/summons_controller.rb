@@ -17,7 +17,7 @@ module Api
       # POST /summons
       # Creates a new summon record
       def create
-        summon = Summon.new(summon_params)
+        summon = Summon.new(with_wiki_fetch_date(summon_params))
 
         if summon.save
           render json: SummonBlueprint.render(summon, view: :full), status: :created
@@ -29,7 +29,7 @@ module Api
       # PATCH/PUT /summons/:id
       # Updates an existing summon record
       def update
-        if @summon.update(summon_params)
+        if @summon.update(with_wiki_fetch_date(summon_params, @summon))
           render json: SummonBlueprint.render(@summon, view: :full)
         else
           render_validation_error_response(@summon)
