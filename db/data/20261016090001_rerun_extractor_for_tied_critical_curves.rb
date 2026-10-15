@@ -8,6 +8,11 @@ class RerunExtractorForTiedCriticalCurves < ActiveRecord::Migration[8.0]
   WEAPONS = %w[1030504300 1040518700 1040709700].freeze
 
   def up
+    # Ran on prod before the weapon-skill build replaced the extractor (W8 gate 4).
+    unless defined?(Granblue::Extractors::WeaponSkillDescriptionExtractor)
+      return say("WeaponSkillDescriptionExtractor is gone (the weapon-skill build writes these rows); skipping")
+    end
+
     [WeaponSkillDatum, WeaponSkillEffect, WeaponSkillVersion].each(&:reset_column_information)
     Weapon.where(granblue_id: WEAPONS).find_each do |weapon|
       Granblue::Extractors::WeaponSkillDescriptionExtractor.run(weapon: weapon)

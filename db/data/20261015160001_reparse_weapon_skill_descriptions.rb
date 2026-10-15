@@ -13,6 +13,11 @@
 # as curated first (atSjtJ: HP 16 at level 200).
 class ReparseWeaponSkillDescriptions < ActiveRecord::Migration[8.0]
   def up
+    # Ran on prod before the weapon-skill build replaced the extractor (W8 gate 4).
+    unless defined?(Granblue::Extractors::WeaponSkillDescriptionExtractor)
+      return say("WeaponSkillDescriptionExtractor is gone (the weapon-skill build writes these rows); skipping")
+    end
+
     [WeaponSkillDatum, WeaponSkillEffect, WeaponSkillVersion].each(&:reset_column_information)
 
     WeaponSkillDatum.joins(weapon_skill_version: :skill)
