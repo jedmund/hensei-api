@@ -51,7 +51,7 @@ module WeaponSkills
             ws = v.weapon_skill
             raw, weapon_id = weapons[ws.weapon_granblue_id]
             name = v.skill&.name_en.to_s
-            text = Description.text(wiki_raw: raw, position: ws.position, name: name, fallback: v.skill&.description_en)
+            text = Description.text(wiki_raw: raw, position: ws.position, name: name, fallback: WeaponSkills::VersionText.for(v, :en))
             version = build_version(v, ws, name, text)
             notes = notes_for(weapon_id, notes_cache)
             rows = Rows.call(version, text: text, registry: registry, curation: curation, notes: notes)

@@ -113,7 +113,7 @@ module Granblue
         version = CurationSnapshot.find_version(entry) or return :unmatched
         return :satisfied if matches?(version, attrs)
 
-        # update_columns: the version model delegates description_* to its skill.
+        # update_columns: skip callbacks and the curation stamp; ops carry no database stamp.
         version.update_columns(attrs.merge("updated_at" => Time.current))
         :applied
       end
