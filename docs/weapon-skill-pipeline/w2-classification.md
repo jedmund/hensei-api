@@ -121,6 +121,20 @@ Source: `full_reparse_offline_2026-10-15.json` (W3).
 
 Why the two Decimations aren't curated: the versions don't exist in today's database, so a `gate` op would sit unmatched in every database until a rebuild runs. Unmatched ops also block the dev auto-export ("an op not applied here"). P1 was left as `parser` for the same reason.
 
+## From W6a: series-template families (18 versions)
+
+W6a's structure compiler found these.
+- **Why the build loses them:** they're created by series-template expansion, and the name parser rejects their prefix (not a known aura word), so nothing in a from-scratch build sets the family or size.
+- **Why they survive today:** the old reparse kept them only because template repair matched by name and left classification alone.
+- **What breaks without them:** canonical rows keyed by size (Xeno/Exo/Astral parity).
+
+| Key(s) | Bucket | Evidence | Entry |
+|---|---|---|---|
+| Sovereign ×6: `1040019700\|2\|0` Verglas, `1040213700\|2\|0` Radiant, `1040311800\|2\|0` Heliacal, `1040416600\|2\|0` Evergreen, `1040612500\|2\|0` Slaughterous, `1040811600\|2\|0` Verdant Sovereign | **curate** | `Template:Weapon Skills/Sovereign` (stored source): EX, Unworldly only, 16/25/33/37. This matches the canonical `Sovereign\|atk\|ex\|unworldly` row these resolve today. | `modifier_override: "Sovereign"`, `size_override: "unworldly"` in `astral.json` |
+| Glacial Supremacy ×6 and True Glacial Supremacy ×2: `1040413000\|1\|0`, `1040413100\|2\|0`, `1040413100\|3\|0`, `1040516300\|2\|0`, `1040619700\|2\|0`, `1040809700\|1\|0`, `1040809800\|2\|0`, `1040809800\|3\|0` | **curate** | `Template:Weapon Skills/Supremacy`: EX, Massive only, 9/18/23/25.5. Today these resolve `Supremacy\|atk\|ex\|massive`. | `modifier_override: "Supremacy"`, `size_override: "massive"` in `xeno.json` / `exo.json` |
+| Glacial Supremacy: Decimation ×2: `1040516300\|3\|0`, `1040619700\|3\|0` | **curate** | `Template:Weapon Skills/Supremacy: Decimation`: EX Massive, 9/18/23/25.5 + 5% DMG cap. | `modifier_override: "Supremacy: Decimation"`, `size_override: "massive"` in `exo.json` |
+| `1040416600\|3\|0` Astral Arts, `1040416600\|4\|0` Astral Arts II (Yggdrasil's Bough) | **accept** | Expanded page, section "Astral Arts": "10% boost to Earth allies' skill damage cap per buff (Max: 50%)". `Template:Weapon Skills/Arts` is a flat, skill-level-scaled skill DMG cap (canonical 5.5/10/15/20), so the Arts link is a false join like Architect Battle Arts. Dropping it removes a wrong `skill_dmg_cap` curve. | No entry. Follow-up (W10 / row compiler): model it as `skill_dmg_cap` 10% per buff, max 50%. |
+
 ## All 103 differences
 
 The diff column abbreviates frames as `[modifier, series, size, multiplier_frame]` and gates as `[unlock_level, min_uncap, transcendence_stage]`, before → after (today → full reparse).
