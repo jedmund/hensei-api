@@ -83,4 +83,80 @@ namespace :granblue do
     puts "Failures: #{failures.size}"
     failures.each { |f| puts "  - #{f}" }
   end
+
+  desc <<~DESC
+    Write every stored source to a gzipped JSON Lines file, to seed another database
+    (granblue:import_weapon_sources) without refetching the wiki.
+
+    Usage:
+      bin/rails granblue:export_weapon_sources file=tmp/weapon_sources.jsonl.gz
+  DESC
+  task export_weapon_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    path = ENV.fetch("file", "tmp/weapon_sources.jsonl.gz")
+    count = WeaponSkills::SourceStore::Transfer.export(path)
+    puts "Exported #{count} sources to #{path} (#{(File.size(path) / 1024.0 / 1024).round(1)} MB)"
+  end
+
+  desc <<~DESC
+    Load sources exported by granblue:export_weapon_sources into this database. Dry run by
+    default: prints what would change and writes nothing. Rows are matched by weapon UUID,
+    kind and key; an existing row fetched later is kept. Each weapon's stored page is also
+    written to weapons.wiki_raw, as a fetch would. Never talks to the wiki.
+
+    Usage:
+      bin/rails granblue:import_weapon_sources file=tmp/weapon_sources.jsonl.gz
+      bin/rails granblue:import_weapon_sources file=tmp/weapon_sources.jsonl.gz write=true
+  DESC
+  task import_weapon_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    transfer = WeaponSkills::SourceStore::Transfer
+    header, rows = transfer.read(ENV.fetch("file", "tmp/weapon_sources.jsonl.gz"))
+    plan = transfer.plan(rows)
+    puts "File: #{rows.size} sources, exported #{header['exported_at']}"
+    puts "Database: #{ActiveRecord::Base.connection_db_config.database} " \
+         "(#{WeaponSource.count} sources, #{Weapon.count} weapons)"
+    puts "Plan: #{plan.counts.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
+    puts "  #{plan.inserts.size} rows to write, #{plan.deletes.size} to remove, " \
+         "#{plan.weapon_updates.size} weapons to stamp (#{plan.counts[:weapon_pages]} with a changed page)"
+    plan.problems.first(20).each { |p| puts "  - #{p}" }
+    puts "  … #{plan.problems.size - 20} more" if plan.problems.size > 20
+
+    if ENV["write"] == "true"
+      transfer.apply(plan)
+      puts "Written. weapon_sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
+    else
+      puts "Dry run; nothing written. Add write=true to apply."
+    end
+  end
+
+  desc <<~DESC
+    Ask gbf.wiki which stored pages were edited since they were fetched (50 titles per
+    request), and optionally refetch only those weapons and pages.
+
+    Usage:
+      bin/rails granblue:check_weapon_sources                 # report only
+      bin/rails granblue:check_weapon_sources refetch=true    # refetch what changed
+      bin/rails granblue:check_weapon_sources delay=3.0       # seconds between requests (default 2.0)
+  DESC
+  task check_weapon_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    fetcher = WeaponSkills::SourceStore::Fetcher.new(delay: ENV.fetch("delay", "2.0").to_f, log: ->(l) { puts l })
+    freshness = WeaponSkills::SourceStore::Freshness.new(fetcher: fetcher)
+    result = freshness.check
+    names = Weapon.where(id: result.weapon_ids).order(:granblue_id).pluck(:granblue_id, :name_en)
+    puts "Checked #{result.checked} pages in #{fetcher.stats['requests']} requests."
+    puts "Edited since the fetch: #{names.size} weapons, #{result.shared.size} shared pages"
+    names.each { |id, name| puts "  - #{id} #{name}" }
+    result.shared.each { |kind, key| puts "  - #{kind} #{key}" }
+    puts "No longer on the wiki: #{result.missing.size}" if result.missing.any?
+    result.missing.first(30).each { |t| puts "  - #{t}" }
+
+    if ENV["refetch"] == "true" && result.stale?
+      puts "Refetching…"
+      stats = freshness.refetch(result, log: ->(l) { puts l })
+      puts "Requests: #{stats['requests']}; failures: #{fetcher.failures.size}"
+      fetcher.failures.each { |f| puts "  - #{f[:kind]} #{f[:key]} (weapon #{f[:weapon]}): #{f[:error]}" }
+    end
+  end
 end
