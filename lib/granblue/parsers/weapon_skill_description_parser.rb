@@ -109,6 +109,9 @@ module Granblue
         # parenthetical proc blocks ("(For every 3 skills used: … allies gain 10%…)")
         # describe triggered effects, not passive boosts
         body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, "")
+        # a proc's damage ceiling ("300% Earth damage … (Damage cap: ~400,000)") isn't
+        # a DMG Cap boost
+        body = body.gsub(/\(\s*damage cap:[^()]*\)/i, "")
         if body.match?(EVENT_TRIGGER)
           return { main_hand_only: desc.match?(/when main weapon/i),
                    mc_only: desc.match?(/\(mc only\)/i),

@@ -39,8 +39,10 @@ module GridDamage
       ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "attack"],
       ["bonus_ca", nil, "Bonus ELEMENT C.A.", "bonus-ELEMENT-ca", "attack"],
       ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "attack"],
+      ["rigor", nil, "ELEMENT Rigor", "ELEMENT-rigor", "attack"],
       # HP (green labels) — Heal Cap sits with HP in-game
       ["hp", nil, "HP", "hp", "hp"],
+      ["hp_fixed", nil, "HP (Fixed)", "hp-fixed", "hp"],
       ["heal_cap", nil, "Heal Cap", "heal-cap", "hp"],
       ["hp_cut", nil, "HP Cut", "hp-cut", "hp"],
       ["hp_dmg", nil, "HP DMG", "hp-dmg", "hp"],
@@ -69,7 +71,6 @@ module GridDamage
       ["na_amp_sp", nil, "N.A. Amp. (Sp.)", "na-amp-sp", "special"],
       ["skill_dmg", nil, "Skill DMG", "skill-dmg", "special"],
       ["skill_dmg_cap", nil, "Skill DMG Cap", "skill-dmg-cap", "special"],
-      ["skill_hit", nil, "Skill Hit", "skill-hit", "special"],
       ["skill_cap_sp", nil, "Skill Cap (Sp.)", "skill-cap-sp", "special"],
       ["skill_amp", nil, "Skill Amp.", "skill-amp", "special"],
       ["skill_amp_sp", nil, "Skill Amp. (Sp.)", "skill-amp-sp", "special"],
@@ -128,8 +129,8 @@ module GridDamage
       ["rupie_ax", nil, "Rupie Gain", "ax-rupie-gain", "ax"]
     ].freeze
 
-    SUPPLEMENT_KEYS = %w[dmg_supp na_supp na_supp_sp skill_dmg_supp skill_supp_sp ca_supp
-                         ca_supp_ax skill_supp_ax].freeze
+    FLAT_KEYS = %w[dmg_supp na_supp na_supp_sp skill_dmg_supp skill_supp_sp ca_supp
+                   ca_supp_ax skill_supp_ax hp_fixed].freeze
 
     # → { enhancements: {optimus:, omega:, taboo:}, lines: [{key, series, label,
     #    label_slug, group, value, display, capped}] } for the party at the given state.
@@ -235,9 +236,9 @@ module GridDamage
       ids.uniq
     end
 
-    # Supplements are flat counts (+100,000); everything else is a percent.
+    # Supplements and fixed HP are flat counts (+100,000); everything else is a percent.
     def display_value(key, value)
-      return format("%+d", value).gsub(/(\d)(?=(\d{3})+\z)/, '\1,') if SUPPLEMENT_KEYS.include?(key)
+      return format("%+d", value).gsub(/(\d)(?=(\d{3})+\z)/, '\1,') if FLAT_KEYS.include?(key)
 
       rounded = value.round(2)
       rounded = rounded.to_i if rounded == rounded.to_i
@@ -245,8 +246,9 @@ module GridDamage
     end
 
     # Boost types not in the ordered map still render, so nothing is silently hidden.
-    # Enhancement-only boosts appear in the header, never as lines.
-    HIDDEN_KEYS = %w[elemental_enhance].freeze
+    # Enhancement-only boosts appear in the header, never as lines. Skill hit rate
+    # (β Pendulum's lv210/240 upgrade) is real but the game doesn't list it (g0gpOT).
+    HIDDEN_KEYS = %w[elemental_enhance skill_hit].freeze
 
     # Registry rows override the code defaults (#62): a populated panel_lines table
     # IS the panel — order, labels, badges, grouping. Empty table (tests, bare DBs)
