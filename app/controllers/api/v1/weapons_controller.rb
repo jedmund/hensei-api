@@ -17,7 +17,7 @@ module Api
       # POST /weapons
       # Creates a new weapon record
       def create
-        weapon = Weapon.new(weapon_params)
+        weapon = Weapon.new(with_wiki_fetch_date(weapon_params))
 
         if weapon.save
           render json: WeaponBlueprint.render(weapon, view: :full), status: :created
@@ -29,7 +29,7 @@ module Api
       # PATCH/PUT /weapons/:id
       # Updates an existing weapon record
       def update
-        if @weapon.update(weapon_params)
+        if @weapon.update(with_wiki_fetch_date(weapon_params, @weapon))
           @weapon.reload
           render json: WeaponBlueprint.render(@weapon, view: :full)
         else

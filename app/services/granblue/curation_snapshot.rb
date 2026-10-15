@@ -1,22 +1,30 @@
 # frozen_string_literal: true
 
 module Granblue
-  # Hand curation of weapon-skill data, as a committable snapshot
-  # (data/weapon_skill_curation.json) that every deploy applies.
+  # Hand curation of weapon-skill data, as a committed overlay that every deploy
+  # applies (docs/weapon-skill-curation.md, docs/weapon-skill-pipeline/overlay-v2.md).
   #
-  # Curation is any row stamped manually_edited_at (effects and data, canonical and
-  # version-linked) plus version overrides (overrides_edited_at). July 2026's curation
-  # was made in the dev database and never shipped, because only the canonical rows
-  # were exported and nothing applied them to prod. Now:
+  # The overlay lives in data/weapon_skill_curation/: one file per weapon series, plus
+  # _canonical.json for canonical rows. It holds
+  # - curated rows (stamped manually_edited_at) and version overrides (overrides_edited_at);
+  # - structural ops (remove_version, add_version, gate, description), which exist only
+  #   in the files: the database has no record that a value came from an op.
   #
-  # - export writes every curated row, keyed by weapon granblue_id + skill name;
-  # - sync applies the snapshot: it creates missing rows and updates a row only when
-  #   the snapshot's stamp is newer, so a later edit made in prod's admin editor wins.
-  #   It never deletes curated rows. To remove a generated row, curate a
-  #   suppressed_boosts override; sync deletes uncurated rows of suppressed types.
-  # - drift lists curated rows in this database that the committed snapshot lacks.
+  # - export rewrites the rows and overrides from this database, keeps every op, and
+  #   files each entry under its weapon's series;
+  # - sync validates every file first (a bad file aborts before anything is written),
+  #   then in one transaction applies the ops, the overrides and the rows. Rows are
+  #   created when missing and updated only when the snapshot's stamp is newer, so a
+  #   later edit made in prod's admin editor wins. It never deletes curated rows. To
+  #   remove a generated row, curate a suppressed_boosts override.
+  # - drift lists curation in this database that the files lack, and ops not applied here.
+  #
+  # The v1 single file (data/weapon_skill_curation.json) is still read while it exists;
+  # export and granblue:split_weapon_skill_curation replace it.
   class CurationSnapshot
-    PATH = Rails.root.join("data/weapon_skill_curation.json")
+    DIR = Rails.root.join("data/weapon_skill_curation")
+    PENDING_DIR = DIR.join("pending")
+    LEGACY_PATH = Rails.root.join("data/weapon_skill_curation.json")
     EFFECT_COLUMNS = %w[modifier boost_type series scaling_kind value value_unit per_copy_cap total_cap
                         shared_cap_group cap_formula count_basis count_cap condition target_instance depends_on
                         aura_boostable seraphic_affected stacking applies_to battle_interaction notes key_slug
@@ -24,56 +32,93 @@ module Granblue
     DATUM_COLUMNS = %w[modifier boost_type series size formula_type sl1 sl10 sl15 sl20 sl25 coefficient
                        max_value aura_boostable provenance].freeze
     OVERRIDE_COLUMNS = %w[modifier_override series_override size_override suppressed_boosts].freeze
-    SECTIONS = %w[versions effects data].freeze
+    ROW_SECTIONS = %w[versions effects data].freeze
 
-    Report = Struct.new(:created, :updated, :skipped_newer, :suppressed, :unmatched, keyword_init: true)
-
-    def self.export(path: PATH)
-      File.write(path, "#{JSON.pretty_generate(new.payload)}\n")
+    Report = Struct.new(:created, :updated, :skipped_newer, :suppressed, :unmatched,
+                        :ops_applied, :ops_satisfied, :ops_skipped, keyword_init: true) do
+      def changed? = (created + updated + suppressed + ops_applied).positive?
     end
 
-    def self.sync(path: PATH, log: $stdout)
-      return Report.new(created: 0, updated: 0, skipped_newer: 0, suppressed: 0, unmatched: []) unless File.exist?(path)
-
-      new.sync(JSON.parse(File.read(path)), log: log)
+    def self.load(dir: DIR, legacy_path: LEGACY_PATH)
+      Overlay.load(dir: dir, legacy_path: legacy_path)
     end
 
-    # → { "missing" => [rows curated here but absent from the snapshot],
-    #     "changed" => [rows whose values differ], "unapplied" => [snapshot rows not here] }
-    def self.drift(path: PATH)
-      committed = File.exist?(path) ? JSON.parse(File.read(path)) : {}
-      new.drift(committed)
+    def self.export(dir: DIR, legacy_path: LEGACY_PATH)
+      ops = load(dir: dir, legacy_path: legacy_path).entries("ops")
+      Layout.new(dir).write(new.payload.merge("ops" => ops))
+      FileUtils.rm_f(legacy_path)
     end
 
+    def self.sync(dir: DIR, legacy_path: LEGACY_PATH, log: $stdout)
+      new.sync(load(dir: dir, legacy_path: legacy_path).to_h, log: log)
+    end
+
+    # → { "missing" => [curated here, absent from the files], "changed" => [values differ],
+    #     "unapplied" => [file entries or ops this database doesn't reflect] }
+    def self.drift(dir: DIR, legacy_path: LEGACY_PATH)
+      new.drift(load(dir: dir, legacy_path: legacy_path).to_h)
+    end
+
+    # Moves the v1 file and pending/ fragments into the per-series layout. It works from
+    # the files alone (the database only says which series a weapon is in), so it can be
+    # re-run after anyone adds a fragment. Logs each fragment that disagreed with an
+    # existing entry and which one the stamps kept. → { file name => entry count }
+    def self.split(dir: DIR, legacy_path: LEGACY_PATH, pending_dir: PENDING_DIR, log: $stdout)
+      sections = load(dir: dir, legacy_path: legacy_path).to_h
+      Overlay.fold(sections, Overlay.load(dir: pending_dir).to_h).each do |conflict|
+        kept, dropped = conflict.values_at("kept", "dropped")
+        log.puts "split: #{describe(kept)}: kept #{kept.except('reason').to_json}, " \
+                 "dropped #{dropped.except('reason').to_json}"
+      end
+      docs = Layout.new(dir).write(sections)
+      FileUtils.rm_f(legacy_path)
+      Dir.glob(File.join(pending_dir.to_s, "*.json")).each { |path| FileUtils.rm_f(path) }
+      docs.transform_values { |doc| Overlay::SECTIONS.sum { |section| doc[section].size } }
+    end
+
+    # The overlay's view of each version, for the row compiler.
+    def self.view(dir: DIR, legacy_path: LEGACY_PATH)
+      View.new(load(dir: dir, legacy_path: legacy_path))
+    end
+
+    # A version reference (weapon granblue_id, skill name, ordinal) → the version. The
+    # ordinal decides only between same-named versions on one weapon.
+    def self.find_version(ref)
+      return nil unless ref["weapon"]
+
+      scope = WeaponSkillVersion.joins(:skill, :weapon_skill)
+                                .where(weapon_skills: { weapon_granblue_id: ref["weapon"] }, skills: { name_en: ref["skill"] })
+      scope.size > 1 ? scope.find_by(ordinal: ref["ordinal"]) : scope.first
+    end
+
+    # Curation in this database, by section (no ops: those live only in the files).
     def payload
       {
-        "_generated" => "Hand-curated weapon-skill rows, exported by rake granblue:export_weapon_skill_curation " \
-                        "and applied on every deploy by granblue:sync_weapon_skill_curation.",
         "versions" => versions_payload,
         "effects" => rows_payload(WeaponSkillEffect, EFFECT_COLUMNS),
         "data" => rows_payload(WeaponSkillDatum, DATUM_COLUMNS)
       }
     end
 
-    def sync(snapshot, log:)
-      @report = Report.new(created: 0, updated: 0, skipped_newer: 0, suppressed: 0, unmatched: [])
+    def sync(overlay, log:)
+      @report = Report.new(created: 0, updated: 0, skipped_newer: 0, suppressed: 0, unmatched: [],
+                           ops_applied: 0, ops_satisfied: 0, ops_skipped: 0)
       ActiveRecord::Base.transaction do
-        Array(snapshot["versions"]).each { |row| sync_version(row) }
-        Array(snapshot["effects"]).each { |row| sync_row(WeaponSkillEffect, row, effect_identity(row)) }
-        Array(snapshot["data"]).each { |row| sync_row(WeaponSkillDatum, row, datum_identity(row)) }
+        apply_ops(Array(overlay["ops"]))
+        Array(overlay["versions"]).each { |row| sync_version(row) }
+        Array(overlay["effects"]).each { |row| sync_row(WeaponSkillEffect, row, effect_identity(row)) }
+        Array(overlay["data"]).each { |row| sync_row(WeaponSkillDatum, row, datum_identity(row)) }
       end
-      @report.unmatched.each { |row| log.puts "curation sync: no match for #{describe(row)}" }
-      log.puts "curation sync: #{@report.created} created, #{@report.updated} updated, " \
-               "#{@report.skipped_newer} kept (newer here), #{@report.suppressed} suppressed rows removed, " \
-               "#{@report.unmatched.size} unmatched"
+      log_report(log)
       @report
     end
 
-    def drift(committed)
+    def drift(overlay)
       current = payload
-      SECTIONS.each_with_object({ "missing" => [], "changed" => [], "unapplied" => [] }) do |section, out|
-        mine = index(current[section], section)
-        theirs = index(Array(committed[section]), section)
+      out = { "missing" => [], "changed" => [], "unapplied" => [] }
+      ROW_SECTIONS.each do |section|
+        mine = current[section].index_by { |row| Overlay.identity(section, row) }
+        theirs = Array(overlay[section]).index_by { |row| Overlay.identity(section, row) }
         mine.each do |key, row|
           if !theirs.key?(key) then out["missing"] << row
           elsif comparable(theirs[key]) != comparable(row) then out["changed"] << row
@@ -81,6 +126,13 @@ module Granblue
         end
         theirs.each { |key, row| out["unapplied"] << row unless mine.key?(key) }
       end
+      ops = Ops.new
+      out["unapplied"].concat(Array(overlay["ops"]).reject { |op| ops.satisfied?(op) })
+      out
+    end
+
+    def self.describe(entry)
+      [entry["op"], entry["weapon"], entry["skill"], entry["modifier"], entry["boost_type"]].compact.join(" / ")
     end
 
     private
@@ -88,21 +140,20 @@ module Granblue
     # ---- export ---------------------------------------------------------------
 
     def versions_payload
-      WeaponSkillVersion.includes(:skill, :weapon_skill).where.not(overrides_edited_at: nil)
-                        .map { |v| version_ref(v).merge(serialize(v, OVERRIDE_COLUMNS)).merge(stamp(v.overrides_edited_at)) }
-                        .sort_by { |row| [row["weapon"].to_s, row["skill"].to_s, row["ordinal"].to_i] }
+      WeaponSkillVersion.includes(:skill, :weapon_skill).where.not(overrides_edited_at: nil).map do |v|
+        overrides = serialize(v, OVERRIDE_COLUMNS)
+        # A stamped version with every override cleared is still curation ("no overrides").
+        overrides = { "suppressed_boosts" => [] } if overrides.empty?
+        version_ref(v).merge(overrides).merge(stamp(v.overrides_edited_at))
+      end
     end
 
     def rows_payload(model, columns)
       curated = model.where.not(manually_edited_at: nil).includes(weapon_skill_version: %i[skill weapon_skill])
       # rows still pointing at a deleted version are dead (the calculator never reads them)
-      rows = curated.reject { |row| row.weapon_skill_version_id && row.weapon_skill_version.nil? }.map do |row|
+      curated.reject { |row| row.weapon_skill_version_id && row.weapon_skill_version.nil? }.map do |row|
         ref = row.weapon_skill_version ? version_ref(row.weapon_skill_version) : {}
         ref.merge(serialize(row, columns)).merge(stamp(row.manually_edited_at))
-      end
-      rows.sort_by do |row|
-        [row["weapon"].to_s, row["skill"].to_s, row["modifier"].to_s, row["boost_type"].to_s,
-         sorted(row["condition"] || {}).to_json]
       end
     end
 
@@ -126,16 +177,20 @@ module Granblue
 
     # ---- sync -----------------------------------------------------------------
 
-    def find_version(row)
-      return nil unless row["weapon"]
-
-      scope = WeaponSkillVersion.joins(:skill, :weapon_skill)
-                                .where(weapon_skills: { weapon_granblue_id: row["weapon"] }, skills: { name_en: row["skill"] })
-      scope.size > 1 ? scope.find_by(ordinal: row["ordinal"]) : scope.first
+    def apply_ops(ops)
+      applier = Ops.new
+      ops.each_with_index.sort_by { |op, i| [Overlay::OP_ORDER.index(op["op"]), i] }.each do |op, _|
+        case applier.apply(op)
+        when :applied then @report.ops_applied += 1
+        when :satisfied then @report.ops_satisfied += 1
+        when :skipped then @report.ops_skipped += 1
+        else @report.unmatched << op
+        end
+      end
     end
 
     def sync_version(row)
-      version = find_version(row) or return @report.unmatched << row
+      version = self.class.find_version(row) or return @report.unmatched << row
       edited_at = Time.iso8601(row["edited_at"])
       if version.overrides_edited_at && version.overrides_edited_at.to_i >= edited_at.to_i
         @report.skipped_newer += 1
@@ -198,33 +253,22 @@ module Granblue
       return :unmatched if row["weapon"].nil? && row["skill"] # never fall back to a canonical row
       return nil unless row["weapon"]
 
-      find_version(row)&.id || :unmatched
+      self.class.find_version(row)&.id || :unmatched
+    end
+
+    def log_report(log)
+      @report.unmatched.each { |entry| log.puts "curation sync: no match for #{self.class.describe(entry)}" }
+      log.puts "curation sync: #{@report.ops_applied} ops applied (#{@report.ops_satisfied} already in place, " \
+               "#{@report.ops_skipped} waiting for columns), #{@report.created} created, #{@report.updated} updated, " \
+               "#{@report.skipped_newer} kept (newer here), #{@report.suppressed} suppressed rows removed, " \
+               "#{@report.unmatched.size} unmatched"
     end
 
     # ---- drift ----------------------------------------------------------------
 
-    def index(rows, section)
-      rows.index_by do |row|
-        base = [row["weapon"], row["skill"], row["ordinal"]]
-        case section
-        when "versions" then base
-        when "effects" then base + [row["modifier"], row["boost_type"], row["key_slug"], sorted(row["condition"] || {}).to_json]
-        else base + [row["modifier"], row["boost_type"], row["series"], row["size"]]
-        end
-      end
-    end
-
-    def sorted(value)
-      value.is_a?(Hash) ? value.sort.to_h.transform_values { |v| sorted(v) } : value
-    end
-
     # Stamps only order edits; a row whose values match is in sync.
     def comparable(row)
       row.except("edited_at").transform_values { |v| v.is_a?(Integer) ? v.to_f : v }
-    end
-
-    def describe(row)
-      [row["weapon"], row["skill"], row["modifier"], row["boost_type"]].compact.join(" / ")
     end
   end
 end

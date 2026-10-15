@@ -14,6 +14,8 @@ module Granblue
       # Aura-word-less special series re-expanded even when complete, to capture the wiki
       # Multiplier frame (the heuristic can't infer it). Start with the non-summon-boosted ones.
       SPECIAL_SERIES = %w[bahamut celestial].freeze
+      # An English "|s1_desc=" line at line start (POSIX regex; "|jps1_desc=" must not match).
+      ENGLISH_S1_DESC_SQL = '(^|\n)\|[[:space:]]*s1_desc[[:space:]]*='
       CANONICAL_NOTES_FAMILIES = ["Staff Resonance"].freeze
       FRAME = { "normal" => "normal", "ex" => "ex", "omega" => "omega", "od" => "odious" }.freeze
 
@@ -30,9 +32,9 @@ module Granblue
         # need the wiki Multiplier captured even when already complete — e.g. Celestial/Bahamut.
         special_series_ids = WeaponSeries.where(slug: SPECIAL_SERIES).select(:id)
         scope = Weapon.includes(:weapon_series)
-                      .where("(wiki_raw IS NOT NULL AND wiki_raw <> '' AND wiki_raw NOT ILIKE ?) " \
+                      .where("(wiki_raw IS NOT NULL AND wiki_raw <> '' AND wiki_raw !~ ?) " \
                              "OR granblue_id IN (?) OR weapon_series_id IN (?)",
-                             "%s1_desc=%", garbled_ids, special_series_ids)
+                             ENGLISH_S1_DESC_SQL, garbled_ids, special_series_ids)
         scope = scope.limit(limit) if limit
 
         scope.find_each do |w|
@@ -162,9 +164,14 @@ module Granblue
           next if CANONICAL_NOTES_FAMILIES.include?(skill_name)
 
           v = by_name[skill_name] or next
-          WeaponSkillEffect.where(weapon_skill_version_id: v.id,
-                                  scaling_kind: %w[per_grid_count specialty_scaled]).delete_all
-          info[:clauses].each { |c| create_notes_effect(v, skill_name, info[:frame], c, stats) }
+          # Curation wins, as in the description extractor: curated rows stay, and a boost
+          # type that is suppressed or already curated on this version isn't generated.
+          linked = WeaponSkillEffect.where(weapon_skill_version_id: v.id)
+          linked.where(scaling_kind: %w[per_grid_count specialty_scaled], manually_edited_at: nil).delete_all
+          skip = linked.where.not(manually_edited_at: nil).pluck(:boost_type).to_set | Array(v.suppressed_boosts)
+          info[:clauses].each do |c|
+            create_notes_effect(v, skill_name, info[:frame], c, stats) unless skip.include?(c[:boost_type])
+          end
         end
       end
 
@@ -190,18 +197,33 @@ module Granblue
 
       # Drop stale versions whose skill name still holds an unresolved {{…}} template (the
       # pre-expansion import artifact) now that the resolved skills have been written.
+      # Only generated rows go: a garbled version that carries curation (manually-edited
+      # data/effects, or classification overrides) is kept and reported, never destroyed.
       def self.cleanup_garbled(weapon, stats)
         weapon.weapon_skills.includes(weapon_skill_versions: :skill).each do |ws|
           ws.weapon_skill_versions.each do |v|
             next unless v.skill&.name_en&.include?("{{")
 
-            WeaponSkillDatum.where(weapon_skill_version_id: v.id).delete_all
-            WeaponSkillEffect.where(weapon_skill_version_id: v.id).delete_all
+            WeaponSkillDatum.where(weapon_skill_version_id: v.id, manually_edited_at: nil).delete_all
+            WeaponSkillEffect.where(weapon_skill_version_id: v.id, manually_edited_at: nil).delete_all
+            if curated_version?(v)
+              stats[:garbled_kept] += 1
+              Rails.logger.warn("garbled version kept (carries curation): #{weapon.granblue_id} " \
+                                "position #{ws.position} ordinal #{v.ordinal} #{v.skill.name_en}")
+              next
+            end
+
             v.destroy
             stats[:garbled_removed] += 1
           end
           ws.destroy if ws.weapon_skill_versions.reload.empty?
         end
+      end
+
+      def self.curated_version?(version)
+        version.overrides_edited_at.present? ||
+          WeaponSkillDatum.where(weapon_skill_version_id: version.id).where.not(manually_edited_at: nil).exists? ||
+          WeaponSkillEffect.where(weapon_skill_version_id: version.id).where.not(manually_edited_at: nil).exists?
       end
 
       def self.clean(html)
@@ -221,7 +243,7 @@ module Granblue
       end
 
       private_class_method :parse_skills, :persist, :apply_gameplay_notes, :create_notes_effect,
-                           :cleanup_garbled, :clean, :main_hand_only_description?
+                           :cleanup_garbled, :curated_version?, :clean, :main_hand_only_description?
     end
   end
 end
