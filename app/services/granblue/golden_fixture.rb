@@ -216,7 +216,7 @@ module Granblue
         return [] if ids && ids.empty?
 
         where = ids ? "WHERE t.id::text IN (#{ids.map { |i| conn.quote(i.to_s) }.join(', ')})" : ''
-        sql = "SELECT row_to_json(t)::text FROM #{conn.quote_table_name(table)} t #{where} ORDER BY t.id::text"
+        sql = "SELECT row_to_json(t)::text FROM #{conn.quote_table_name(table)} t #{where} ORDER BY t.id::text COLLATE \"C\""
         generated = conn.columns(table).select(&:virtual?).map(&:name)
         conn.select_values(sql).map { |json| JSON.parse(json).except(*TIMESTAMPS, *CATALOGUE_DROP, *generated) }
       end
