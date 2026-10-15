@@ -40,7 +40,22 @@ export DATABASE_URL="$url" CURATION_AUTO_EXPORT=0 DISABLE_DATABASE_ENVIRONMENT_C
 bin/rails db:schema:load >/dev/null
 psql "$url" -qc "TRUNCATE data_migrations"
 echo "Restoring the catalogue…"
-pg_restore --data-only --disable-triggers --no-owner --no-privileges --exit-on-error -d "$url" "$cache/catalogue.dump"
+# Restore only tables this branch's schema has, so a newer dump (e.g. with
+# weapon_sources) still restores on an older branch.
+tables="$(psql "$url" -Atc "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")"
+pg_restore -l "$cache/catalogue.dump" > "$cache/toc.all"
+: > "$cache/toc.use"
+skipped=""
+while IFS= read -r line; do
+  case "$line" in
+    *"TABLE DATA public "*)
+      t="$(echo "$line" | sed -E 's/.*TABLE DATA public ([^ ]+) .*/\1/')"
+      if echo "$tables" | grep -qx "$t"; then echo "$line" >> "$cache/toc.use"; else skipped="$skipped $t"; fi ;;
+    *) echo "$line" >> "$cache/toc.use" ;;
+  esac
+done < "$cache/toc.all"
+[ -z "$skipped" ] || echo "Skipping tables this branch doesn't have:$skipped"
+pg_restore --data-only --disable-triggers --no-owner --no-privileges --exit-on-error -L "$cache/toc.use" -d "$url" "$cache/catalogue.dump"
 psql "$url" -qc "INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
                  VALUES ('catalogue_tag', '$tag', now(), now())
                  ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()"

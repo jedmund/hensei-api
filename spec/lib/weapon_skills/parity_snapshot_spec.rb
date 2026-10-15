@@ -17,7 +17,9 @@ RSpec.describe WeaponSkills::ParitySnapshot do
     entry = described_class.capture["versions"].fetch(key_for(version))
 
     expect(entry["gate"]).to eq([150, 4, 0])
-    expect(entry["data"]).to eq([["atk", "flat", 3.5, 10.0, 12.0, nil, nil, nil, true]])
+    row = described_class.data_columns.zip(entry["data"].first).to_h
+    expect(row.slice("boost_type", "formula_type", "sl1", "sl10", "sl15"))
+      .to eq("boost_type" => "atk", "formula_type" => "flat", "sl1" => 3.5, "sl10" => 10.0, "sl15" => 12.0)
     expect(entry["effects"]).to eq([])
   end
 
