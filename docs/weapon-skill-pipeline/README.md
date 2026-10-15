@@ -31,11 +31,15 @@ The new pipeline must reproduce today's calculator data **exactly** before anyth
    - Baselines and diffs go in `data/weapon_skill_parity/`.
    - Status goes on GitHub.
    - Don't leave results in a temp directory.
-2. **Status on GitHub.**
+2. **Talk to each other.**
+   - **Live coordination:** use `ListAgents` to find the other workstream agents (named by workstream) and `SendMessage` them directly. Use it for interface questions, "I need a file you own", and "my change affects yours".
+   - **The record:** anything decided goes on the GitHub issue too, so it outlives the session.
+   - **The lead:** message the lead when you're blocked or done.
+3. **Status on GitHub.**
    - **Tracking issue:** "Weapon-skill pipeline", label `pipeline`.
    - **Per-workstream issues:** label `pipeline:W<n>`.
    - **Comments:** comment when you start, when you're blocked, when you need a file you don't own, and when you open a PR.
-3. **Your own databases.** Never use a shared `hensei_dev` or `hensei_test`. Run `bin/setup-pipeline-db W<n>`, which creates `hensei_pipeline_w<n>` (the catalogue) and `hensei_pipeline_w<n>_test` (empty, for rspec). Then export:
+4. **Your own databases.** Never use a shared `hensei_dev` or `hensei_test`. Run `bin/setup-pipeline-db W<n>`, which creates `hensei_pipeline_w<n>` (the catalogue) and `hensei_pipeline_w<n>_test` (empty, for rspec). Then export:
    ```sh
    export DATABASE_URL=postgres://localhost/hensei_pipeline_w<n>
    export CURATION_AUTO_EXPORT=0   # curation files change only by explicit export
@@ -44,19 +48,22 @@ The new pipeline must reproduce today's calculator data **exactly** before anyth
    - **The dump:** game catalogue only, no user data. It's a **draft** release on `jedmund/hensei-api`, so it's private to repo collaborators; any machine with `gh` auth can download it.
    - Run the script again when the lead announces a new dump.
    - **Never** run rake tasks against `hensei_dev` from a pipeline branch. The dev curation auto-export would write that database's curation into your branch.
-4. **Your own branch:** `pipeline/W<n>-<slug>`, from `main`, in its own worktree or clone.
-5. **Deploy-safe PRs.**
+5. **Your own branch:** `pipeline/W<n>-<slug>`, branched from **`origin/pipeline/integration`**, in its own worktree or clone.
+   - `pipeline/integration` is W0 plus every workstream the lead has reviewed. Nobody merges into it but the lead.
+   - Open your PR against `main`, and list the PRs it depends on in the description. The lead rebases it as dependencies land, and the user merges into `main`.
+6. **Deploy-safe PRs.**
    - Main deploys automatically. New code goes behind `WEAPON_SKILL_BUILD` or in the `WeaponSkills::` namespace.
    - Schema changes are additive.
    - Stack PRs only inside your workstream.
-6. **Owned files only.** Your brief lists them. Anything else is a question on the tracking issue.
-7. **Migration timestamps:** use your workstream's hour block (W0 `…09xxxx`, W1 `…10xxxx`, W2 `…11xxxx`, W3 `…12xxxx`, W4 `…13xxxx`, W5 `…14xxxx`, W6 `…15xxxx`, W7 `…16xxxx` on the day you start). For `db/schema.rb` and `db/data_schema.rb` conflicts, keep the higher version.
-8. **Before every PR:**
+7. **Owned files only.** Your brief lists them. Anything else is a question on the tracking issue.
+8. **Migration timestamps:** use your workstream's hour block (W0 `…09xxxx`, W1 `…10xxxx`, W2 `…11xxxx`, W3 `…12xxxx`, W4 `…13xxxx`, W5 `…14xxxx`, W6 `…15xxxx`, W7 `…16xxxx` on the day you start). For `db/schema.rb` and `db/data_schema.rb` conflicts, keep the higher version.
+9. **Before every PR:**
    - `DATABASE_URL=postgres://localhost/hensei_pipeline_w<n>_test bundle exec rspec` (the full suite, against **your test database**. The test environment reads `DATABASE_URL`, so running rspec with the catalogue database exported would wipe it. A single file fails the coverage minimum, which is expected);
    - `bundle exec rubocop` on changed files;
    - `bin/rails granblue:skill_parity`. It must pass, or the PR refreshes the baseline and explains every change.
    - Curation changes also need `bin/rails granblue:weapon_skill_curation_drift`.
-9. **Commits and PRs:**
+10. **Never parse against the live wiki.** Only W3's fetch task talks to gbf.wiki. Every parse, reparse, extraction and experiment reads stored sources. If a source is missing, ask W3; don't fetch it ad hoc.
+11. **Commits and PRs:**
    - Conventional Commits (`type(scope): summary`) with a short "why" body.
    - Stage by explicit path.
    - No AI or agent attribution.
