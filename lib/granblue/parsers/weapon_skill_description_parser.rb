@@ -33,6 +33,7 @@ module Granblue
         \A[\s/]*
         (?: at\ (?:the\ )?(?:end|start)\ of
           | for\ every\b
+          | from\ an?\b
           | upon\b
           | when\b [^:]* (?: after\ normal\ attacks | attack(?:s|ing)\b | us(?:es|ing)\b
                            | activat | drain | removes?\b | chain\ burst | end\ of\ turn
@@ -41,10 +42,34 @@ module Granblue
         [^:]* :
       }xi
 
+      # A sentence that only applies in a battle state (a foe's status or Break, a status on
+      # the MC, an active buff) isn't a passive grid boost (Golden Advent: "…against foes in
+      # Break"). "When MC is not debuffed" is the default state and stays: Sunveil's Crown
+      # shows on the panel (PWwPYz).
+      BATTLE_STATE = /
+        against\ foes?\ (?:in|with)\b | \bfoes?\ in\ break | when\ (?:a\ |the\ )?foe\ (?:has|is)\b
+        | when\ under\b | \bwhile\b.*\bin\ effect | when\b[^.]*\b(?:is|are)\ boosted
+        | when\ (?:the\ )?mc\ has\b | (?-i:allies\ with\ [A-Z])
+      /xi
+
+      # A clause describing a proc, not a passive: heals, chances, "upon …" actions, HP costs.
+      PROC_CLAUSE = /\b(?:restore|refresh)\b.*\bhp\b | \d+%\ chance | \bchance\ to\b | \bupon\b
+                    | \bconsumes?\b | \bstarts?\ battle\ with\b/xi
+
+      # HP mentioned as a threshold, cost or count ("when HP is above 80%", "2% of the foe's
+      # Max HP", "per 200 HP") — never an HP boost, and its number is never the value.
+      HP_REFERENCE = /
+        \bhp\ is\ (?:at\ |above\ |below\ )?\d+%(?:\ or\ (?:above|below|more|less))?
+        | (?:above|below|under)\ \d+%\ (?:of\ )?(?:max\ )?hp\b
+        | \d+%\ of\ (?:the\ )?foe'?s?\ max\ hp | \bper\ \d+\ hp\b
+      /xi
+
       # Ordered (specific → general) phrase → boost_type (or array for "specs" bundles).
       # Within a clause we match-and-consume so a specific phrase ("skill DMG cap") prevents
       # the general one ("DMG cap") re-matching.
       BOOST_PATTERNS = [
+        # a critical hit damage cap isn't the DMG Cap or Critical line (One Sting, One Kill II)
+        [/critical hit (?:dmg|damage) cap/i, nil],
         [/(?:charge attack|c\.?a\.?) specs/i,               %w[ca_dmg ca_dmg_cap]],
         [/chain ?burst specs/i,                             %w[cb_dmg cb_dmg_cap]],
         [/skill (?:dmg|damage) cap/i,                        "skill_dmg_cap"],
@@ -62,6 +87,7 @@ module Granblue
         [/supplement.*skill/i,                               "skill_dmg_supp"],
         [/supplement.*(?:normal attack|n\.?a\.?)/i,          "na_supp"],
         [/supplement/i,                                      "dmg_supp"],
+        [/skill (?:dmg|damage)/i,                            "skill_dmg"],
         # Destruction (Destroyer weapons) is a damage TYPE, not an element — keep it off the
         # elemental "Bonus Water DMG" line. Must precede the generic bonus patterns.
         [/(?:bonus )?destruction.*?(?:charge attack|c\.?a\.?).*?(?:dmg|damage)/i, "bonus_des_ca"],
@@ -111,7 +137,7 @@ module Granblue
         body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, "")
         # a proc's damage ceiling ("300% Earth damage … (Damage cap: ~400,000)") isn't
         # a DMG Cap boost
-        body = body.gsub(/\(\s*damage cap:[^()]*\)/i, "")
+        body = body.gsub(/\(\s*(?:damage|healing) cap:[^()]*\)/i, "")
         if body.match?(EVENT_TRIGGER)
           return { main_hand_only: desc.match?(/when main weapon/i),
                    mc_only: desc.match?(/\(mc only\)/i),
@@ -123,13 +149,19 @@ module Granblue
 
         clauses = []
         last_size = nil
-        split_clauses(body).each do |frag|
+        fragments = split_sentences(body).grep_v(BATTLE_STATE)
+                                         .flat_map { |sentence| split_clauses(sentence) }
+        fragments.each do |frag|
           # a mid-body event trigger ("When a Dark chain burst activates: …") turns
           # the rest of the description into battle procs — GBF lists procs last
           break if frag.match?(EVENT_TRIGGER)
           # crest/status-scaled values ("by 4% per their number of Oblivion Crest")
           # are battle-dynamic, not passive grid boosts
           next if frag.match?(/(?:per|based on) their number of/i)
+          next if frag.match?(PROC_CLAUSE)
+
+          # Bloodshed's "take DMG worth 20% of max HP" IS its value (HP DMG)
+          frag = frag.gsub(HP_REFERENCE, " ") unless frag.match?(/take (?:dmg|damage) worth/i)
 
           size = frag[SIZE_KEYWORD, 1]&.downcase || last_size
           last_size = size if frag.match?(SIZE_KEYWORD)
@@ -173,8 +205,18 @@ module Granblue
       def self.split_clauses(body)
         # <br/> first so it isn't mistaken for the "/" clause separator; it separates the stat
         # clauses in tiered skills (e.g. "…max HP.<br/>10% Bonus Destruction C.A. DMG").
-        body.split(%r{<br\s*/?>|\s*/\s*|(?-i:(?<=[a-z0-9%)])\.\s+(?=[A-Z0-9]))|,\s+|\s+and\s+|\s+plus\s+}i)
+        body.split(%r{<br\s*/?>|\s*/\s*|#{SENTENCE_END}|,\s+|\s+and\s+|\s+plus\s+}io)
             .map(&:strip).reject(&:empty?)
+      end
+
+      # A period ends a sentence after a lowercase word, number, % or ")", or after an
+      # all-caps word ("…allies' ATK. Water allies restore…"), but not after a dotted
+      # abbreviation ("C.A. DMG").
+      SENTENCE_END = /(?-i:(?<=[a-z0-9%)]|[A-Z]{2})\.\s+(?=[A-Z0-9]))/
+
+      # Sentences (and <br>-separated lines) of the body, for sentence-level conditions.
+      def self.split_sentences(body)
+        body.split(%r{<br\s*/?>|\s*/\s*|#{SENTENCE_END}}io).map(&:strip).reject(&:empty?)
       end
 
       # [boost_type, formula] pairs for a fragment. A HP-/turn-scaling phrase converts the base
