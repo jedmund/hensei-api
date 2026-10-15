@@ -232,6 +232,30 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
       expect(r[:clauses]).to be_empty
     end
 
+    it "reads chain-burst amplification as cb_amp, not general DMG amplify (Higurashi's Blazing Chain III)" do
+      r = parse("'''When main weapon:''' 30% boost to Fire allies' charge bar gain, supplement C.A. damage " \
+                "(Damage cap: 400,000), 10% boost to special C.A. damage cap, and amplify chain damage by 50%.")
+      types = r[:clauses].map { |c| [c[:boost_type], c[:value]] }
+      expect(types).to include(["cb_amp", 50.0])
+      expect(types.map(&:first)).not_to include("dmg_amp")
+    end
+
+    it "keeps chain-burst amplify wordings off the C.B. DMG and DMG Amplify lines" do
+      ["Amplify chain burst DMG by 10%", "Amplify Dark allies' chain burst damage by 10%",
+       "Chain burst damage amplified by 10%"].each do |text|
+        expect(parse(text)[:clauses].map { |c| [c[:boost_type], c[:value]] }).to eq([["cb_amp", 10.0]]), text
+      end
+      expect(boost_types("Amplify light allies' chain DMG and C.A. DMG")).to include("cb_amp")
+      expect(boost_types("Amplify light allies' chain DMG and C.A. DMG")).not_to include("dmg_amp")
+    end
+
+    it "reads 'N% reduced damage taken from superior element' as elemental reduction (Destroyer anklets)" do
+      r = parse("10% boost to [Element] MC's normal attack damage cap, supplement normal attack damage " \
+                "(Damage cap: 20,000), amplify superior elemental damage by 30%, and 30% reduced damage taken " \
+                "from superior element.")
+      expect(r[:clauses].map { |c| [c[:boost_type], c[:value]] }).to include(["elem_reduc", 30.0], ["elem_amplify", 30.0])
+    end
+
     it "doesn't read a critical hit damage cap as Critical (One Sting, One Kill II)" do
       r = parse("'''When main weapon (MC only):''' Every superior elemental attack will be a critical " \
                 "hit.<br />20% boost to all allies' critical hit damage cap.")
