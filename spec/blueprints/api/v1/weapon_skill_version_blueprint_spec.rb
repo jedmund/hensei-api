@@ -15,4 +15,17 @@ RSpec.describe Api::V1::WeaponSkillVersionBlueprint do
   it "falls back to the skill's text before a backfill" do
     expect(described_class.render_as_hash(version)[:description]).to eq(en: "Shared text", ja: nil)
   end
+
+  it "adds display segments resolved against the weapon's element, leaving description raw" do
+    version.weapon_skill.weapon.update_columns(element: GranblueEnums::ELEMENTS[:Fire])
+    raw = "Boost to {{WeaponElement}} allies' {{tt|ATK|Big}}"
+    version.update_columns(description_en: raw)
+
+    hash = described_class.render_as_hash(version)
+
+    expect(hash[:description][:en]).to eq(raw)
+    expect(hash[:description_segments]).to eq(
+      en: [{ text: "Boost to Fire allies' " }, { text: "ATK", tooltip: "Big" }], ja: []
+    )
+  end
 end
