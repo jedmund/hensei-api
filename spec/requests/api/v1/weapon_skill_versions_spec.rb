@@ -31,6 +31,8 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
     expect(version.overrides_edited_at).to be_present
     expect(version.resolved_modifier).to be_nil
     expect(response.parsed_body).to include('series_override' => 'omega', 'skill_series' => 'normal')
+    expect(response.parsed_body).to include('skill_modifier' => 'Might', 'resolved_modifier' => nil,
+                                            'resolved_series' => 'omega', 'resolved_size' => 'big')
   end
 
   it 'ignores the derived classification columns a reparse would overwrite' do
@@ -48,6 +50,8 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
 
     expect(version.reload.series_override).to be_nil
     expect(version.resolved_series).to eq('normal')
+    expect(response.parsed_body).to include('resolved_series' => 'normal', 'resolved_modifier' => 'Might',
+                                            'resolved_size' => 'medium')
   end
 
   it 'does not stamp overrides_edited_at for a non-override edit' do
