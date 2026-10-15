@@ -1,0 +1,6 @@
+{
+  "1040711000|1|0|Bow Voltage|effect|ex_atk_sp|[\"per_grid_count\",{}]": {
+    "class": "accept",
+    "reason": "Colomba's Gameplay Notes give Bow Voltage 4% ex_atk_sp per bow (cap 80, voltage_wrath_grand_epic), identical to the canonical Voltage effect it replaces per boost type. Today's database never applied these notes (inline page, never expanded by a reparse), so the row is new but the calculator's answer is unchanged."
+  }
+}

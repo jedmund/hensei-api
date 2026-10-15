@@ -8,8 +8,12 @@ module WeaponSkills
       # omit (Voltage's per-weapon %, Cloud's per-specialty table). Returns effect attribute
       # hashes instead of writing them.
       module GameplayNotes
-        # Families whose notes are already modeled canonically.
-        CANONICAL_NOTES_FAMILIES = ["Staff Resonance"].freeze
+        # Families whose notes are already modeled canonically. "Grand Epic" is new here. Its
+        # canonical effect is ex_atk_sp per Epic weapon (count_basis series:epic), but the notes
+        # parser reads its section as plain "atk" per same weapon type: a second boost that
+        # double-counts. No database row came from it today (its pages are inline, so a reparse
+        # never expanded them), so skipping it keeps parity. See #546.
+        CANONICAL_NOTES_FAMILIES = ["Staff Resonance", "Grand Epic"].freeze
         # The notes-owned scaling kinds: the description pass leaves these alone (its purge
         # spares them), so they survive it. A notes "static" row does not.
         KEPT_KINDS = %w[per_grid_count specialty_scaled].freeze

@@ -171,6 +171,11 @@ RSpec.describe WeaponSkills::Build::Rows do
       expect(compile(v, "", notes: voltage_notes, view: curation.new(suppressed: ["ex_atk_sp"])).rows).to be_empty
     end
 
+    it "leaves canonically modeled families (Grand Epic) to their canonical effect" do
+      notes = { "Grand Epic" => { frame: "ex", clauses: [{ boost_type: "atk", scaling: :per_count, value: 4.0, max: 80.0 }] } }
+      expect(compile(version("Grand Epic", modifier: "Grand Epic"), "", notes: notes).rows).to be_empty
+    end
+
     it "writes nothing for a version whose name has no notes section" do
       expect(compile(version("Dagger Voltage II"), "", notes: voltage_notes).rows).to be_empty
     end
