@@ -54,7 +54,10 @@ module Granblue
       # Handle the response from the wiki if the response is successful
       # If the save flag is set, it will persist the data to the database
       def handle_fetch_success(response, save)
+        # use_local re-parses the stored text; only a real fetch gets a new date.
+        fetched = !(@use_local && @character.wiki_raw.present?)
         @character.wiki_raw = response
+        @character.wiki_raw_fetched_at = Time.current if fetched
         @character.save!
 
         ap "#{@character.granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug

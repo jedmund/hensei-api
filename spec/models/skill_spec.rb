@@ -25,7 +25,7 @@ RSpec.describe Skill, type: :model do
   end
 
   describe 'associations' do
-    it { is_expected.to have_many(:weapon_skill_versions).dependent(:destroy) }
+    it { is_expected.to have_many(:weapon_skill_versions).dependent(:restrict_with_error) }
   end
 
   describe 'validations' do
