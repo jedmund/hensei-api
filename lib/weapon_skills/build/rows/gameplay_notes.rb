@@ -46,17 +46,20 @@ module WeaponSkills
           info = notes[name] or return []
           skip = curation.curated_boost_types(version) | curation.suppressed(version)
           info[:clauses].filter_map do |clause|
-            effect(name, info[:frame], clause) unless skip.include?(clause[:boost_type])
+            effect(name, info, clause) unless skip.include?(clause[:boost_type])
           end
         end
 
-        def effect(name, frame, clause)
-          base = { modifier: name, boost_type: clause[:boost_type], series: frame, value_unit: "percent",
-                   applies_to: "element_allies", stacking: "additive" }
+        # info: the section's { frame:, applies_to: }. Who the boost reaches comes from the notes
+        # text ("Affects allies of any element"); a per-count boost depends on the grid count,
+        # as the canonical per_grid_count rows do.
+        def effect(name, info, clause)
+          base = { modifier: name, boost_type: clause[:boost_type], series: info[:frame], value_unit: "percent",
+                   applies_to: info[:applies_to] || "element_allies", stacking: "additive" }
           case clause[:scaling]
           when :per_count
             base.merge(scaling_kind: "per_grid_count", value: clause[:value], count_basis: "same_weapon_type",
-                       total_cap: clause[:max], shared_cap_group: clause[:shared_cap])
+                       total_cap: clause[:max], shared_cap_group: clause[:shared_cap], depends_on: ["grid_count"])
           when :per_specialty
             base.merge(scaling_kind: "specialty_scaled", condition: { "specialties" => clause[:by_specialty] })
           when :flat
