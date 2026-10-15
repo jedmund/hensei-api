@@ -1,0 +1,117 @@
+{
+  "party": "PWwPYz",
+  "captured_on": "2026-10-15",
+  "notes": "Light 5-weapon check grid (Ranger Origin: bow/gun). Flamma Orbis 5* MH (Sunveil's Crown Skill DMG 50 + Skill DMG Cap 30; True Solaris's Supremacy active at level 200: EX 25.5 + HP 16), Desolation-Crown Bow (bow MC = matching tier: EX 40/DA 15/TA 10/C.A. 20/C.A. Cap 15/DMG Cap 10 and NO E. ATK - third celestial II without it after Animus II and Bond II; only Shine II (staff) grants it), Cosmic Sword (Azure Discipline 1% x 2 sabres), Luminiera Sword Omega (AX C.A. DMG 5.5 + Stamina 3), Huanglong Katana (Zion's Tyranny II: HP Cut -10). Luminiera Omega 6* main + friend. Estimated DMG 38172 / to Dark 57637 / Max HP 14981.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "dark"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 340,
+    "taboo": 0
+  },
+  "absent": [
+    "e_atk",
+    "crit_amp",
+    "dmg_cap_pen",
+    "added_hit",
+    "added_hp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 68.5
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 55
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 65.5
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 8
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 15
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 101
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -10
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 25
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 12
+    },
+    {
+      "label": "Skill DMG",
+      "boost": "skill_dmg",
+      "value": 50
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 30
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 3
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 5
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 5.5
+    },
+    {
+      "label": "Skill DMG Supp. (AX)",
+      "boost": "skill_supp_ax",
+      "value": 2000
+    }
+  ]
+}

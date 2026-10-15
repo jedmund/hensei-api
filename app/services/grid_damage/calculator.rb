@@ -67,7 +67,16 @@ module GridDamage
       agg = Aggregator.aggregate(contributions)
       apply_rate_caps(agg)
       add_overskills(agg)
+      drop_unrealized_crit_amp(agg)
       { agg: agg, contributions: contributions, enhancements: enh }
+    end
+
+    # The panel only lists Crit. Amp. once critical hits are guaranteed: the same two
+    # Hoarfrost's Stratagem show 18% at Critical 100% (ZCoUJT) and nothing at 45%
+    # (F0MD7j); g0gpOT shows it at 100% too.
+    def drop_unrealized_crit_amp(agg)
+      agg.delete("crit_amp") unless agg["critical"]&.capped
+      agg
     end
 
     # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.
@@ -137,11 +146,11 @@ module GridDamage
     def enhancements(party, agg)
       element = grid_element(party)
       auras = Auras.for_party(party, element: element)
-      # Line-less "+N% to [element]'s weapon skills" skills (astral weapons) boost the
-      # OPTIMUS frame only — the XJZZmv Sandalphon A/B pair isolates it: without
-      # Selas the omega header is exactly Lumi 340 + Wedges 30 + Pijiu 10, with no
-      # astral contribution (the earlier both-frames reading came from a capture
-      # whose in-game crew didn't match the party data).
+      # A line-less "+N% to [element]'s weapon skills" weapon effect would boost the
+      # OPTIMUS frame here. No weapon carries one: those boosts come from summons and
+      # characters. Astral weapons were once modeled with +20, but their in-game skills
+      # are an EX ATK boost and Astral Echo only, and wOF5LS's 460% header is exact
+      # without it (Innocent Love equipped).
       elemental = agg["elemental_enhance"]&.total.to_f
       {
         optimus: auras[:optimus] + [(agg["optimus_exalto"]&.total || 0).to_f, 90].min + elemental,

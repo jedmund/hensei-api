@@ -117,4 +117,18 @@ RSpec.describe GridDamage::Calculator do
       expect(described_class.boost_list(party, state: state)["atk"].by_series["ex"]).to be_nil
     end
   end
+
+  describe ".drop_unrealized_crit_amp" do
+    def result(key, total, capped)
+      GridDamage::Aggregator::Result.new(boost_type: key, total: total, capped: capped)
+    end
+
+    it "keeps Crit. Amp. only once Critical is capped (ZCoUJT vs F0MD7j)" do
+      capped = { "critical" => result("critical", 100.0, true), "crit_amp" => result("crit_amp", 18.0, false) }
+      uncapped = { "critical" => result("critical", 45.0, false), "crit_amp" => result("crit_amp", 18.0, false) }
+
+      expect(described_class.drop_unrealized_crit_amp(capped)).to have_key("crit_amp")
+      expect(described_class.drop_unrealized_crit_amp(uncapped)).not_to have_key("crit_amp")
+    end
+  end
 end

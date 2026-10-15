@@ -1,0 +1,167 @@
+{
+  "party": "ZCoUJT",
+  "captured_on": "2026-10-15",
+  "notes": "F0MD7j's water grid with Bow of Sigurd Militis and Wilhelm Militis swapped for two Taisai Spirit Bows (Skill DMG awk 4) and Hoarfrost's Celere copies pushing Critical to 100%. Outside Arcarum. Settles Crit. Amp.: the same two Hoarfrost's Stratagem show 18% here at Critical 100% and nothing on F0MD7j at 45%, so the panel lists Crit. Amp. only once Critical is capped. Estimated DMG 439624 / to Fire 1164483 / Max HP 50645.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 0,
+    "taboo": 0
+  },
+  "absent": [
+    "added_hit",
+    "added_hp",
+    "dmg_cap_pen",
+    "skill_amp_sp",
+    "skill_amp_arc",
+    "na_amp",
+    "skill_dmg_supp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 695
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 178
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 16
+    },
+    {
+      "label": "E. ATK",
+      "boost": "e_atk",
+      "value": 15
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 40
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 66
+    },
+    {
+      "label": "Water Optimus",
+      "boost": "optimus_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Water DMG",
+      "boost": "bonus_elem_dmg",
+      "value": 22.5
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 204
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 40
+    },
+    {
+      "label": "Fire Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 17
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 10
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "N.A. Amp. (Sp.)",
+      "boost": "na_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "Skill DMG",
+      "boost": "skill_dmg",
+      "value": 40
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "Skill Amp.",
+      "boost": "skill_amp",
+      "value": 10
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 25
+    },
+    {
+      "label": "Crit. Amp.",
+      "boost": "crit_amp",
+      "value": 18
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Crit. DMG",
+      "boost": "crit_dmg",
+      "value": 22.5
+    }
+  ]
+}
