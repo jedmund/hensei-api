@@ -61,10 +61,15 @@ module Granblue
 
     # Moves the v1 file and pending/ fragments into the per-series layout. It works from
     # the files alone (the database only says which series a weapon is in), so it can be
-    # re-run after anyone adds a fragment. → { file name => entry count }
-    def self.split(dir: DIR, legacy_path: LEGACY_PATH, pending_dir: PENDING_DIR)
+    # re-run after anyone adds a fragment. Logs each fragment that disagreed with an
+    # existing entry and which one the stamps kept. → { file name => entry count }
+    def self.split(dir: DIR, legacy_path: LEGACY_PATH, pending_dir: PENDING_DIR, log: $stdout)
       sections = load(dir: dir, legacy_path: legacy_path).to_h
-      Overlay.fold(sections, Overlay.load(dir: pending_dir).to_h)
+      Overlay.fold(sections, Overlay.load(dir: pending_dir).to_h).each do |conflict|
+        kept, dropped = conflict.values_at("kept", "dropped")
+        log.puts "split: #{describe(kept)}: kept #{kept.except('reason').to_json}, " \
+                 "dropped #{dropped.except('reason').to_json}"
+      end
       docs = Layout.new(dir).write(sections)
       FileUtils.rm_f(legacy_path)
       Dir.glob(File.join(pending_dir.to_s, "*.json")).each { |path| FileUtils.rm_f(path) }

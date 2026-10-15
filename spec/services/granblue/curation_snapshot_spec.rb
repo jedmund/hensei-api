@@ -256,6 +256,7 @@ RSpec.describe Granblue::CurationSnapshot do
           example.run
           raise ActiveRecord::Rollback
         end
+      ensure
         WeaponSkillVersion.reset_column_information
       end
 
@@ -314,7 +315,7 @@ RSpec.describe Granblue::CurationSnapshot do
                                 op("remove_version", "edited_at" => (edited_at + 1.day).iso8601, "skill" => "Other")] },
                     pending)
 
-      counts = described_class.split(dir: dir, legacy_path: legacy, pending_dir: pending)
+      counts = described_class.split(dir: dir, legacy_path: legacy, pending_dir: pending, log: quiet)
 
       expect(counts).to eq("spec-series.json" => 3)
       expect(File.exist?(legacy)).to be(false)
@@ -322,14 +323,26 @@ RSpec.describe Granblue::CurationSnapshot do
       expect(described_class.load(**files).entries("ops").map { |e| e["op"] }).to match_array(%w[gate remove_version])
     end
 
-    it "lets a newer fragment replace an entry with the same identity" do
+    it "lets a newer fragment replace an entry with the same identity, and says so" do
       write_overlay("x.json", "ops" => [op("gate", "unlock_level" => 150)])
       write_overlay("x.json", { "ops" => [op("gate", "unlock_level" => 200, "edited_at" => (edited_at + 1.day).iso8601)] },
                     pending)
 
-      described_class.split(dir: dir, legacy_path: legacy, pending_dir: pending)
+      described_class.split(dir: dir, legacy_path: legacy, pending_dir: pending, log: quiet)
 
       expect(described_class.load(**files).entries("ops").sole["unlock_level"]).to eq(200)
+      expect(quiet.string).to match(/gate .*kept .*"unlock_level":200.*dropped .*"unlock_level":150/)
+    end
+
+    it "keeps the newer entry over an older fragment" do
+      write_overlay("x.json", "ops" => [op("gate", "unlock_level" => 150)])
+      write_overlay("x.json", { "ops" => [op("gate", "unlock_level" => 200, "edited_at" => (edited_at - 1.day).iso8601)] },
+                    pending)
+
+      described_class.split(dir: dir, legacy_path: legacy, pending_dir: pending, log: quiet)
+
+      expect(described_class.load(**files).entries("ops").sole["unlock_level"]).to eq(150)
+      expect(quiet.string).to include("dropped")
     end
   end
 

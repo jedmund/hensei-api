@@ -33,22 +33,28 @@ module Granblue
 
       # Folds fragments (pending/) into sections. A fragment with the identity of an
       # existing entry replaces it when its stamp is newer; an identical one is dropped.
-      # → sections, changed in place
+      # Changes sections in place. → the conflicts: same identity, different values,
+      # as [{ "kept" => entry, "dropped" => entry }]
       def self.fold(sections, fragments)
-        SECTIONS.each do |section|
+        SECTIONS.flat_map do |section|
           entries = (sections[section] ||= [])
           at = entries.each_with_index.to_h { |entry, i| [identity(section, entry), i] }
-          Array(fragments[section]).each do |entry|
-            i = at[identity(section, entry)]
+          Array(fragments[section]).filter_map do |entry|
+            key = identity(section, entry)
+            i = at[key]
             if i.nil?
-              at[identity(section, entry)] = entries.size
+              at[key] = entries.size
               entries << entry
-            elsif Time.iso8601(entry["edited_at"]) > Time.iso8601(entries[i]["edited_at"])
-              entries[i] = entry
+              next
             end
+
+            current = entries[i]
+            next if entry.except("edited_at", "reason") == current.except("edited_at", "reason")
+
+            entries[i] = entry if Time.iso8601(entry["edited_at"]) > Time.iso8601(current["edited_at"])
+            { "kept" => entries[i], "dropped" => entries[i].equal?(entry) ? current : entry }
           end
         end
-        sections
       end
 
       def self.read(path)
