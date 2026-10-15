@@ -3,10 +3,10 @@
 module WeaponSkills
   module SourceStore
     # Used only by the fetch step. It finds the pages a weapon's structural parse follows
-    # (transclusions, templates), because the parser discovers them as it goes. Wrapped
-    # around one weapon's parse (inside Wiki.offline), it answers each request for a
-    # recordable kind from the network and remembers it. The caller writes `recorded` to
-    # the real store once the parse is rolled back. Other kinds miss, as offline.
+    # (transclusions, templates), because the parse discovers them as it goes. The structure
+    # compiler reads through it once per weapon (Fetcher#record_followed_pages), and it
+    # answers each request for a recordable kind from the network and remembers it. The
+    # caller writes `recorded` to the real store afterwards. Other kinds miss, as offline.
     class Recording
       include Interface
 
@@ -30,7 +30,7 @@ module WeaponSkills
         begin
           body = @fetch_page.call(key.to_s)
         rescue StandardError => e
-          # The parser swallows errors, so remember them here for the fetch report.
+          # The caller reads a failure as a miss, so remember it here for the fetch report.
           @failures << { kind: kind.to_s, key: key.to_s, error: "#{e.class}: #{e.message}" }
           raise
         end
