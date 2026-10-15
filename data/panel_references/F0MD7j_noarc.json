@@ -1,0 +1,161 @@
+{
+  "party": "F0MD7j",
+  "captured_on": "2026-10-15",
+  "notes": "Same F0MD7j grid with Arcarum toggled OFF in game (A/B with F0MD7j.json): Sephira Manus back to 6 (DA 66, TA 75 capped, Added Hit 10.2), Skill Amp. (Arc) gone, plain Skill Amp. 10 stays (Brogue II's always-on part). Estimated DMG unchanged (311677 / 512448). Still no Crit. Amp. line despite Hoarfrost's Stratagem x2 at lvl 150 - not Arcarum-related; crit_amp left unasserted.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire",
+    "arcarum": false
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 0,
+    "taboo": 0
+  },
+  "absent": [
+    "added_hp",
+    "crit_dmg",
+    "dmg_cap_pen",
+    "na_amp",
+    "skill_amp_arc",
+    "skill_amp_sp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 395
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 178
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 56
+    },
+    {
+      "label": "E. ATK",
+      "boost": "e_atk",
+      "value": 15
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 45
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 66
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 75,
+      "capped": true
+    },
+    {
+      "label": "Water Optimus",
+      "boost": "optimus_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Water DMG",
+      "boost": "bonus_elem_dmg",
+      "value": 22.5
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 204
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 40
+    },
+    {
+      "label": "Fire Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 17
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 10
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "N.A. Amp. (Sp.)",
+      "boost": "na_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 80
+    },
+    {
+      "label": "Skill Amp.",
+      "boost": "skill_amp",
+      "value": 10
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 25
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 50000
+    },
+    {
+      "label": "Added Hit",
+      "boost": "added_hit",
+      "value": 10.2
+    }
+  ]
+}
