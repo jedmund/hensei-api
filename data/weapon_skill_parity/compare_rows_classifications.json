@@ -2,5 +2,9 @@
   "1040711000|1|0|Bow Voltage|effect|ex_atk_sp|[\"per_grid_count\",{}]": {
     "class": "accept",
     "reason": "Colomba's Gameplay Notes give Bow Voltage 4% ex_atk_sp per bow (cap 80, voltage_wrath_grand_epic), identical to the canonical Voltage effect it replaces per boost type. Today's database never applied these notes (inline page, never expanded by a reparse), so the row is new but the calculator's answer is unchanged."
+  },
+  "1040913400|1|2|Blazing Chain III|effect|dmg_amp|[\"static\",{}]": {
+    "class": "parser",
+    "reason": "Higurashi's Blazing Chain III text ends 'amplify chain damage by 50%'. The description parser maps it to general dmg_amp, but it is a chain-burst amplification. The original extractor produces the same row when run on today's text (verified in a rolled-back transaction); today's database predates that text. Needs a parser fix or a dmg_amp suppression before switch-over (W2/W10)."
   }
 }
