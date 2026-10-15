@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Development only: re-export data/weapon_skill_curation.json after curated rows change
-# (docs/weapon-skill-curation.md). Requests flush after each controller action; other
-# processes flush on exit.
+# Development only: re-export the curation overlay (data/weapon_skill_curation/) after
+# curated rows change (docs/weapon-skill-curation.md). Requests flush after each
+# controller action; other processes flush on exit.
 Rails.application.config.after_initialize do
   next unless Granblue::CurationAutoExport.enabled?
 

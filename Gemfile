@@ -131,6 +131,7 @@ group :test do
   gem 'rspec'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'webmock', require: false
 end
 
 gem "rack-attack", "~> 6.8"

@@ -54,7 +54,7 @@ module Granblue
       def self.repair_weapon(weapon, wiki: Granblue::Parsers::Wiki.new, stats: Hash.new(0), force: false)
         return :not_template unless force || weapon.wiki_raw.to_s.include?('{{Weapon/Common/')
 
-        expanded = wiki.expand(weapon.wiki_raw)
+        expanded = wiki.expand(weapon.wiki_raw, page: weapon.wiki_en)
         return :expand_failed if expanded.blank?
         # Key-determined weapons (anklet/pendulum/teluma) list every key option when expanded;
         # leave them to the key→skill resolver rather than creating all options as skills.
