@@ -45,12 +45,51 @@ module WeaponSkills
               end
             end
             pair = field(line) or next
-            key, value = pair
-            next if value.match?(PLACEHOLDER)
+            inline_fields(*pair).each do |key, value|
+              next if value.match?(PLACEHOLDER)
 
-            data[key] = value
+              data[key] = value
+            end
           end
           data
+        end
+
+        # As in MediaWiki, a template parameter's value ends at the first `|` outside `{{…}}`
+        # and `[[…]]`; anything after it on the line is more parameters. White Hawk's page has
+        # `|s1_desc=…|s2_name=Tsunami's Might` on one line, and Marriage Sharkbell's s1_desc
+        # ends in empty `||` parameters. → [[key, value], …]
+        def inline_fields(key, value)
+          segments = top_level_split(value)
+          extra = segments.drop(1).filter_map do |segment|
+            k, v = segment.split("=", 2).map(&:strip)
+            [k, v] if v && k.match?(/\A[A-Za-z0-9_]+\z/)
+          end
+          [[key, segments.first.strip], *extra]
+        end
+
+        def top_level_split(text)
+          parts = [+""]
+          depth = 0
+          i = 0
+          while i < text.length
+            two = text[i, 2]
+            if ["{{", "[["].include?(two)
+              depth += 1
+              parts.last << two
+              i += 2
+            elsif ["}}", "]]"].include?(two) && depth.positive?
+              depth -= 1
+              parts.last << two
+              i += 2
+            elsif text[i] == "|" && depth.zero?
+              parts << +""
+              i += 1
+            else
+              parts.last << text[i]
+              i += 1
+            end
+          end
+          parts
         end
 
         # Page fields merged with the series template's, with the template defaults above.
