@@ -118,7 +118,7 @@ namespace :granblue do
          "(#{WeaponSource.count} sources, #{Weapon.count} weapons)"
     puts "Plan: #{plan.counts.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
     puts "  #{plan.inserts.size} rows to write, #{plan.deletes.size} to remove, " \
-         "#{plan.weapon_updates.size} weapons.wiki_raw to update"
+         "#{plan.weapon_updates.size} weapons to stamp (#{plan.counts[:weapon_pages]} with a changed page)"
     plan.problems.first(20).each { |p| puts "  - #{p}" }
     puts "  … #{plan.problems.size - 20} more" if plan.problems.size > 20
 

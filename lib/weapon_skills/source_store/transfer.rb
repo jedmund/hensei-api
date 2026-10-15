@@ -103,12 +103,14 @@ module WeaponSkills
             end
           end
 
+          # wiki_raw_fetched_at records when the page was last checked, so it moves up to
+          # the stored fetch even when the text is the same.
           next unless weapon && r["kind"] == "wiki_raw"
-          next if weapon.wiki_raw == r["body"] && weapon.wiki_en == key
-          next if weapon.wiki_raw_fetched_at && weapon.wiki_raw_fetched_at > fetched_at
+          next if weapon.wiki_raw_fetched_at && weapon.wiki_raw_fetched_at >= fetched_at
 
           weapon_updates[weapon.id] = { wiki_raw: r["body"], wiki_raw_fetched_at: fetched_at, wiki_en: key }
-          counts[:weapon_pages] += 1
+          counts[:weapon_checked] += 1
+          counts[:weapon_pages] += 1 if weapon.wiki_raw != r["body"]
           counts[:weapon_renamed_pages] += 1 if weapon.wiki_en != key
         end
         Plan.new(inserts: inserts, deletes: deletes.uniq, weapon_updates: weapon_updates, counts: counts,
