@@ -3,6 +3,9 @@
 class Character < ApplicationRecord
   include PgSearch::Model
 
+  # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
+  normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+
   has_many :character_series_memberships, dependent: :destroy
 
   # The Evoking Solomonis zone this Evoker's expeditions run in. Set by data
