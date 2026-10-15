@@ -1,6 +1,6 @@
 # W5: key-skill parity classification
 
-**Status:** measurement pending on W3's stored sources (#541). Until a catalogue dump carries `weapon_sources` with the five key series pages, `granblue:key_skill_parity` aborts instead of reading the wiki.
+**Status:** measured 2026-10-15 against `catalogue-20261015-sources` (offline, rolled back). **3 keys differ, all classified `parser`.** The diff is `data/weapon_skill_parity/w5_key_diff.json`.
 
 ## How to measure
 
@@ -20,7 +20,14 @@ The baseline has 87 key effects on 45 of the 49 `weapon_keys`. `persist` skips t
 
 Rows with `manually_edited_at` are now kept on every key (today only one, on `pendulum-alpha`).
 
-## Known finding before measurement
+## Run summary
+
+`{curated_skipped: 16, effects: 7, keys: 3, no_value: 11, preserved: 2, unmatched_key: 1}`
+- **All five pages were read from the store** (no `fetch_failed`). `Draconic Weapons Provenance` is a redirect to `Draconic_Weapons#Forging to Provenance` with no key tables of its own, so it adds nothing.
+- **Ultima Weapons yields no key entries:** `SeriesKeyParser` finds no key tables on it. All gauph keys are under the curated `gauph-` prefix, so this changes nothing today.
+- **`unmatched_key: 1` is Δ Pendulum:** the lookup is `lower(name_en) = ?` with Ruby's `downcase` ("δ pendulum"), and Postgres `lower('Δ')` doesn't fold the Greek capital under this database's collation. It's harmless because `pendulum-` is curated.
+
+## Cap rows on the anklets (resolved by W2)
 
 The extractor never sets `total_cap` or `shared_cap_group`. Two anklet rows carry both, set by migrations (#434, #452):
 
@@ -29,11 +36,18 @@ The extractor never sets `total_cap` or `shared_cap_group`. Two anklet rows carr
 | `anklet-ascendance` | `skill_dmg_cap` | 50 | `key_skill_cap` |
 | `anklet-oblivion` | `na_dmg_cap` | 10 | `key_na_cap` |
 
-A re-extraction drops both. The snapshot sees both losses: since b3fdceb3 it captures every non-bookkeeping effect column, including `frame_rule` and `shared_cap_group`. Proposed class: **curate**. Mark these rows curated (`manually_edited_at` via the curation overlay, W2's mechanism) so `persist` keeps them.
+W2's curation (#553, now in `pipeline/integration`) marks both rows `manually_edited_at`. `persist` keeps them (`preserved: 2`), so they don't appear in the diff.
 
 ## Differences
 
-_Filled in after the measurement run._
-
 | key | difference | class | action |
 |---|---|---|---|
+| `anklet-ascendance` | `elem_reduc` 30% (≥280 gate) missing | `parser` | see below |
+| `anklet-maximality` | `elem_reduc` 30% (≥280 gate) missing | `parser` | see below |
+| `anklet-oblivion` | `elem_reduc` 30% (≥280 gate) missing | `parser` | see below |
+
+**Why it's missing:** all three anklets share the prose "…amplify superior elemental damage by 30%, and 30% reduced damage taken from superior element." `WeaponSkillDescriptionParser` returns the cap, supplement and `elem_amplify` clauses but no clause for "N% reduced damage taken from superior element". The `elem_reduc` rows in the database came from outside the extractor. Every other field of the re-derived rows matches the baseline.
+
+**Action:**
+- **Parser fix (W6, which owns the parser):** map "N% reduced damage taken from superior element" to `elem_reduc` with value N. This isn't specific to keys. A fix restores the three rows, and the anklet keys then reach zero differences.
+- **Until then:** don't run `granblue:extract_key_skills` with writes. If it has to run sooner, curate the three `elem_reduc` rows (W2's mechanism) so `persist` keeps them.
