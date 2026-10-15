@@ -52,6 +52,11 @@ module WeaponSkills
 
         def clean(html)
           s = html.dup
+          # Status icons expand to [[File:…|25px|link=X]] plus a hidden tooltip span; keeping
+          # either garbles the text ("25px|link=BurnedBurnedHP is lowered…").
+          s.gsub!(%r{<span class="hr"></span>}i, "")
+          s.gsub!(%r{<span class="tooltiptext">.*?</span>}im, "")
+          s.gsub!(/\[\[(?:File|Image):[^\]]*\]\]/i, "")
           s.gsub!(%r{<br\s*/?>}i, " / ")
           s.gsub!(/\[\[[^\]|]*\|([^\]]*)\]\]/, '\1')
           s.gsub!(/\[\[([^\]]*)\]\]/, '\1')
