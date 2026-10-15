@@ -155,4 +155,88 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     r = parse("20% boost to Water allies' C.A. DMG.")
     expect(boost(r, "ca_dmg")).to include(value: 20.0)
   end
+  describe "proc and condition text (2026-10 audit)" do
+    def boost_types(desc) = parse(desc)[:clauses].map { |c| c[:boost_type] }
+
+    it "splits a sentence ending in an all-caps stat and skips its heal proc (Empress-Justice's Virtue)" do
+      r = parse("When main weapon: Massive boost to Water allies' {{tt|ATK|'''Modifier:''' EX}}. Water allies restore " \
+                "10% HP upon casting [[Dispel|buff-removing skills]] (Healing cap: 3000).")
+      expect(r[:clauses].map { |c| [c[:boost_type], c[:value]] }).to eq([["atk", nil]])
+    end
+
+    it "skips chance-based heal procs (Sauna-Goer's Companion)" do
+      expect(boost_types("When main weapon (MC only): ~30% chance to restore HP (Healing cap: 1000) and remove " \
+                         "1 debuff upon normal attacks.")).to be_empty
+    end
+
+    it "never reads an HP threshold as an HP boost or a value (Impervious Covenant)" do
+      r = parse("[[#Impervious Covenant|Supplemental damage]] to spear- and katana-specialty allies' attacks when HP " \
+                "is above 80% (Damage cap: 30,000)")
+      expect(boost(r, "hp")).to be_nil
+      expect(r[:clauses].filter_map { |c| c[:value] }).to be_empty
+    end
+
+    it "ignores HP costs and per-HP counts (Rikishi's Pride, Whispers of Death)" do
+      expect(boost_types("'''When main weapon (MC only):'''<br />Increase {{ClassSkill|In the Face of Adversity}}'s " \
+                         "specs.<br />(Gain {{status|Bonus DMG|a=50%|t=3t}} and {{status|Guts|t=i|n=1}}.<br />" \
+                         "Consumes 40% of max HP instead.)")).not_to include("hp")
+      expect(boost_types("Boost {{ClassSkill|skill=Splitting Spirit}} to 3% charge bar per 200 HP.")).to be_empty
+    end
+
+    it "reads 'N% of the foe's max HP' as neither HP nor a value (Golden Advent II)" do
+      r = parse("'''When main weapon (MC only):''' {{tt|Guaranteed|Unaffected by ''Hit to triple attack rate'' " \
+                "debuffs}} triple attacks against foes in Break. Supplemental damage dealt equal to 2% of the foe's " \
+                "Max HP (Damage cap: 100,000) to foes in Break.")
+      expect(boost(r, "hp")).to be_nil
+      expect(r[:clauses].filter_map { |c| c[:value] }).to be_empty
+    end
+
+    it "skips boosts that only apply against foes in a state (Golden Advent, Astral Thrust)" do
+      expect(boost_types("'''When main weapon (MC only):''' 75% boost to double attack rate and 30% boost to triple " \
+                         "attack rate against foes in Break.")).to be_empty
+      expect(boost_types("10% boost to Water allies' one-foe attack damage cap against foes with 5 or more " \
+                         "debuffs.")).to be_empty
+    end
+
+    it "skips boosts that need a status on the MC or foe" do
+      [
+        "When main weapon (MC only): ~10% bonus Light damage effect when foe has {{tt|Charmed|{{status|Charmed}}}} effect.",
+        "When main weapon (MC only): 15% [[Bonus_Damage|Bonus Dark DMG]] effect when under {{status|Cursed}}.",
+        "'''When main weapon (MC only):''' 55% boost to double attack rate and 30% boost to triple attack rate " \
+        "while [[Superstar|High Voltage]] is in effect.",
+        "When main weapon (MC only): 10% bonus Water DMG effect when double attack rate is boosted."
+      ].each { |desc| expect(boost_types(desc)).to be_empty, desc }
+    end
+
+    it "keeps 'when MC is not debuffed' boosts, which the panel shows (Sunveil's Crown, PWwPYz)" do
+      r = parse("'''When main weapon (MC only):'''<br />50% boost to skill damage and 30% boost to skill damage cap " \
+                "for Light allies when MC is not debuffed.")
+      expect(boost(r, "skill_dmg")).to include(value: 50.0)
+      expect(boost(r, "skill_dmg_cap")).to include(value: 30.0)
+    end
+
+    it "keeps elemental amplify against an element's foes" do
+      expect(boost_types("Amplify damage against Light foes by 10%.")).to include("elem_amplify")
+    end
+
+    it "skips on-action procs (Ogre's Retribution, Shell-Piercing)" do
+      expect(boost_types("'''When main weapon (MC only):'''<br />200% full-force counter upon taking damage " \
+                         "(3 hits).<br />500% Light damage to a foe upon countering (Damage cap: ~560,000).")).to be_empty
+      expect(boost_types("When main weapon (MC only): 50% chance to inflict {{status|DEF Lowered (Stackable)|a=10%|" \
+                         "am=30%|t=180s}} with every normal attack.")).to be_empty
+    end
+
+    it "treats 'From a …:' as an event trigger (Heavenrend Spearpoint II)" do
+      r = parse("'''When main weapon:'''<br />'''From a Wind ally's 2nd attack of a Double Strike or higher " \
+                "effect:'''<br />Supplement normal attack damage by 50,000.")
+      expect(r[:clauses]).to be_empty
+    end
+
+    it "doesn't read a critical hit damage cap as Critical (One Sting, One Kill II)" do
+      r = parse("'''When main weapon (MC only):''' Every superior elemental attack will be a critical " \
+                "hit.<br />20% boost to all allies' critical hit damage cap.")
+      valued = r[:clauses].select { |c| c[:value] || c[:size] }.map { |c| c[:boost_type] }
+      expect(valued).not_to include("critical", "dmg_cap")
+    end
+  end
 end
