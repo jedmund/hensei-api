@@ -2,159 +2,29 @@
   "_generated": "Exported from the hensei DB (source of truth) by rake granblue:export_weapon_skill_effects.",
   "effects": [
     {
-      "modifier": "Betrayal",
-      "boost_type": "atk",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "type": "turn_lte",
-        "lte": 8,
-        "curve": {
-          "formula_type": "flat",
-          "sl1": 3.0,
-          "sl10": 8.0,
-          "sl15": 10.0
-        }
-      },
-      "aura_boostable": true,
-      "seraphic_affected": false,
-      "stacking": "highest_only",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Applies for the first 8 turns; copies of the same named skill do not stack."
-    },
-    {
-      "modifier": "Covert Artistry",
-      "boost_type": "ca_dmg",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 20.0,
-      "value_unit": "percent",
-      "condition": {},
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "mc_only",
-      "battle_interaction": false,
-      "notes": "When main weapon (MC only): 20% boost to C.A. damage."
-    },
-    {
-      "modifier": "Preemptive Blade",
-      "boost_type": "atk",
-      "series": "normal",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "type": "turn_lte",
-        "lte": 8,
-        "curve": {
-          "formula_type": "flat",
-          "sl1": 5.0,
-          "sl10": 15.0,
-          "sl15": 20.0
-        }
-      },
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Unboostable ATK for the first 8 turns."
-    },
-    {
-      "modifier": "Preemptive Wall",
-      "boost_type": "def",
-      "series": "normal",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "type": "turn_lte",
-        "lte": 8,
-        "curve": {
-          "formula_type": "flat",
-          "sl1": 10.0,
-          "sl10": 28.0,
-          "sl15": 33.0
-        }
-      },
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Unboostable DEF for the first 8 turns."
-    },
-    {
-      "modifier": "Rose's Refuge",
-      "boost_type": "def",
+      "modifier": "Abyss Teluma",
+      "boost_type": "elem_reduc",
       "series": "ex",
       "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "type": "turn_lte",
-        "lte": 8,
         "curve": {
-          "formula_type": "flat",
-          "sl1": 10.0,
-          "sl10": 28.0,
-          "sl15": 33.0
-        }
+          "sl15": 25.0,
+          "sl20": 30.0,
+          "formula_type": "flat"
+        },
+        "reduced_element": "water"
       },
+      "depends_on": [
+        "skill_level"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "notes": "DEF applies for the first 8 turns. The main-hand Poison reduction clause is not a calculator effect."
-    },
-    {
-      "modifier": "Staff Resonance",
-      "boost_type": "da",
-      "series": "ex",
-      "scaling_kind": "per_grid_count",
-      "value": 1.0,
-      "value_unit": "percent",
-      "count_basis": "same_weapon_type",
-      "count_cap": 10,
-      "condition": {},
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "highest_only",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "1% DA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
-    },
-    {
-      "modifier": "Staff Resonance",
-      "boost_type": "ta",
-      "series": "ex",
-      "scaling_kind": "per_grid_count",
-      "value": 1.0,
-      "value_unit": "percent",
-      "count_basis": "same_weapon_type",
-      "count_cap": 10,
-      "condition": {},
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "highest_only",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "1% TA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
-    },
-    {
-      "modifier": "Technical Artistry",
-      "boost_type": "skill_dmg",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 20.0,
-      "value_unit": "percent",
-      "condition": {},
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "mc_only",
-      "battle_interaction": false,
-      "notes": "When main weapon (MC only): 20% boost to skill damage."
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces water damage.",
+      "key_slug": "teluma-abyss"
     },
     {
       "modifier": "Anklet of Ascendance",
@@ -483,6 +353,31 @@
       "notes": "6.25% below 280%, 12.5% at >=280%."
     },
     {
+      "modifier": "Aureole Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "sl15": 25.0,
+          "sl20": 30.0,
+          "formula_type": "flat"
+        },
+        "reduced_element": "light"
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces light damage.",
+      "key_slug": "teluma-aureole"
+    },
+    {
       "modifier": "Beast Essence",
       "boost_type": "dmg_cap",
       "scaling_kind": "flat",
@@ -499,6 +394,28 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "10% general DMG cap at SL20; stacks additively to 20% with other weapon-skill cap sources."
+    },
+    {
+      "modifier": "Betrayal",
+      "boost_type": "atk",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "lte": 8,
+        "type": "turn_lte",
+        "curve": {
+          "sl1": 3.0,
+          "sl10": 8.0,
+          "sl15": 10.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Applies for the first 8 turns; copies of the same named skill do not stack."
     },
     {
       "modifier": "Bloodrage",
@@ -598,9 +515,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Glory",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Glory"
         }
       },
       "aura_boostable": true,
@@ -619,9 +536,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Glory",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Glory"
         }
       },
       "aura_boostable": true,
@@ -640,9 +557,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Glory",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Glory"
         }
       },
       "aura_boostable": true,
@@ -661,9 +578,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Glory",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Glory"
         }
       },
       "aura_boostable": true,
@@ -682,9 +599,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Majesty",
+          "size": "medium",
           "series": "normal",
-          "size": "medium"
+          "modifier": "Majesty"
         }
       },
       "aura_boostable": true,
@@ -704,9 +621,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Majesty",
+          "size": "medium",
           "series": "normal",
-          "size": "medium"
+          "modifier": "Majesty"
         }
       },
       "aura_boostable": true,
@@ -726,9 +643,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Might",
+          "size": "medium",
           "series": "normal",
-          "size": "medium"
+          "modifier": "Might"
         }
       },
       "aura_boostable": true,
@@ -748,9 +665,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Verity",
+          "size": "medium",
           "series": "normal",
-          "size": "medium"
+          "modifier": "Verity"
         }
       },
       "aura_boostable": true,
@@ -826,6 +743,19 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false
+    },
+    {
+      "modifier": "Clarity",
+      "boost_type": "counter_dmg",
+      "scaling_kind": "static",
+      "value": 3.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Clarity template states a flat 3% chance to dodge and counter for small, medium, and big. Skill level and auras do not raise the chance; the Counter DMG table is counterattack damage, not the Weapon Skill Boosts Counter Rate line."
     },
     {
       "modifier": "Cloud of Howling Twilight II",
@@ -961,8 +891,8 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "basis": "max_same_weapon_type",
-        "type": "count_basis_gte"
+        "type": "count_basis_gte",
+        "basis": "max_same_weapon_type"
       },
       "depends_on": [
         "grid_count"
@@ -982,8 +912,8 @@
       "value_unit": "percent",
       "condition": {
         "gte": 4,
-        "basis": "max_same_weapon_type",
-        "type": "count_basis_gte"
+        "type": "count_basis_gte",
+        "basis": "max_same_weapon_type"
       },
       "depends_on": [
         "grid_count"
@@ -1004,8 +934,8 @@
       "total_cap": 20.0,
       "condition": {
         "gte": 4,
-        "basis": "max_same_weapon_type",
-        "type": "count_basis_gte"
+        "type": "count_basis_gte",
+        "basis": "max_same_weapon_type"
       },
       "depends_on": [
         "grid_count"
@@ -1016,6 +946,20 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "Validated by Lord of Flames + Extinction Blade Mk II threshold capture: DMG Cap (Sp.) is absent at 3 sabres and appears as 7% at 4 sabres."
+    },
+    {
+      "modifier": "Covert Artistry",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "notes": "When main weapon (MC only): 20% boost to C.A. damage."
     },
     {
       "modifier": "Craft",
@@ -1041,6 +985,31 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "Only on critical hits; shares cap with Hollowsky/Fortitude/Frailty/Pact/Persistence."
+    },
+    {
+      "modifier": "Crag Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "sl15": 25.0,
+          "sl20": 30.0,
+          "formula_type": "flat"
+        },
+        "reduced_element": "earth"
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces earth damage.",
+      "key_slug": "teluma-crag"
     },
     {
       "modifier": "Draconic Barrier",
@@ -1096,8 +1065,8 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "True Dragon Barrier",
-          "series": "normal"
+          "series": "normal",
+          "modifier": "True Dragon Barrier"
         }
       },
       "depends_on": [
@@ -1482,32 +1451,6 @@
       "notes": "50% Heal Cap to all allies."
     },
     {
-      "modifier": "Clarity",
-      "boost_type": "counter_dmg",
-      "scaling_kind": "static",
-      "value": 3.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Clarity template states a flat 3% chance to dodge and counter for small, medium, and big. Skill level and auras do not raise the chance; the Counter DMG table is counterattack damage, not the Weapon Skill Boosts Counter Rate line."
-    },
-    {
-      "modifier": "Heed",
-      "boost_type": "counter_dmg",
-      "scaling_kind": "static",
-      "value": 3.0,
-      "value_unit": "percent",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "White Hawk SL10 Varuna/Varuna, Phantasmas SL15 Hades/Hades, and Abyss Striker SL15 Celeste/Celeste show Counter Rate 3%, so this line is not summon-aura amplified."
-    },
-    {
       "modifier": "Gauph Key Dio",
       "boost_type": "heal_cap",
       "series": "ex",
@@ -1572,10 +1515,10 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "formula_type": "flat",
           "sl10": 15.0,
           "sl15": 17.5,
-          "sl20": 20.0
+          "sl20": 20.0,
+          "formula_type": "flat"
         }
       },
       "depends_on": [
@@ -1598,9 +1541,9 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "modifier": "Stamina",
+          "size": "big_ii",
           "series": "normal",
-          "size": "big_ii"
+          "modifier": "Stamina"
         }
       },
       "depends_on": [
@@ -1624,10 +1567,10 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "formula_type": "flat",
           "sl10": 20.0,
           "sl15": 22.5,
-          "sl20": 25.0
+          "sl20": 25.0,
+          "formula_type": "flat"
         }
       },
       "depends_on": [
@@ -1650,10 +1593,10 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "formula_type": "flat",
           "sl10": 20.0,
           "sl15": 22.5,
-          "sl20": 25.0
+          "sl20": 25.0,
+          "formula_type": "flat"
         }
       },
       "depends_on": [
@@ -1712,9 +1655,9 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "modifier": "Enmity",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Enmity"
         }
       },
       "depends_on": [
@@ -1792,6 +1735,33 @@
       "applies_to": "all_allies",
       "battle_interaction": false,
       "key_slug": "gauph-gamma"
+    },
+    {
+      "modifier": "Godblade",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 35.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "EX Might. Tier I/II/III = 25(MC only)/25/35%; highest-tier recorded. TIER nuance not modeled."
+    },
+    {
+      "modifier": "Godblade",
+      "boost_type": "bonus_des_dmg",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Bonus Destruction DMG echo. Tier I/II/III = 15/15/20%; highest recorded."
     },
     {
       "modifier": "Godflair",
@@ -1954,6 +1924,32 @@
       "notes": "Defensive; excluded from core damage."
     },
     {
+      "modifier": "Godshield",
+      "boost_type": "bonus_des_ca",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Bonus Destruction DMG on C.A. Tier I/II/III = 5/5/10%; highest recorded."
+    },
+    {
+      "modifier": "Godshield",
+      "boost_type": "hp",
+      "scaling_kind": "static",
+      "value": 30.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Tier I/II/III = 20(MC only)/20/30%; highest recorded."
+    },
+    {
       "modifier": "Godstrike",
       "boost_type": "elem_amplify",
       "scaling_kind": "conditional_flat",
@@ -2054,6 +2050,19 @@
       "notes": "EX Might Sp. +4% per Epic-series weapon. User capture with 1/2/3 Chains of Caucasus under Agni/Agni shows 4/16/36 displayed, matching 4/8/12 raw through 340% aura. Shares the 80% pool with Voltage (NEKVvF) and Wrath (JBDMhV)."
     },
     {
+      "modifier": "Heed",
+      "boost_type": "counter_dmg",
+      "scaling_kind": "static",
+      "value": 3.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "White Hawk SL10 Varuna/Varuna, Phantasmas SL15 Hades/Hades, and Abyss Striker SL15 Celeste/Celeste show Counter Rate 3%, so this line is not summon-aura amplified."
+    },
+    {
       "modifier": "Honing",
       "boost_type": "atk",
       "series": "ex",
@@ -2152,143 +2161,18 @@
       "notes": "10% bonus elem DMG vs foes with any Bounty lvl; A-sided, highest-only."
     },
     {
-      "modifier": "Abyss Teluma",
-      "boost_type": "elem_reduc",
-      "series": "ex",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "reduced_element": "water",
-        "curve": {
-          "formula_type": "flat",
-          "sl15": 25.0,
-          "sl20": 30.0
-        }
-      },
-      "depends_on": [
-        "skill_level"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces water damage.",
-      "key_slug": "teluma-abyss"
-    },
-    {
-      "modifier": "Crag Teluma",
-      "boost_type": "elem_reduc",
-      "series": "ex",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "reduced_element": "earth",
-        "curve": {
-          "formula_type": "flat",
-          "sl15": 25.0,
-          "sl20": 30.0
-        }
-      },
-      "depends_on": [
-        "skill_level"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces earth damage.",
-      "key_slug": "teluma-crag"
-    },
-    {
-      "modifier": "Tempest Teluma",
-      "boost_type": "elem_reduc",
-      "series": "ex",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "reduced_element": "wind",
-        "curve": {
-          "formula_type": "flat",
-          "sl15": 25.0,
-          "sl20": 30.0
-        }
-      },
-      "depends_on": [
-        "skill_level"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces wind damage.",
-      "key_slug": "teluma-tempest"
-    },
-    {
-      "modifier": "Aureole Teluma",
-      "boost_type": "elem_reduc",
-      "series": "ex",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "reduced_element": "light",
-        "curve": {
-          "formula_type": "flat",
-          "sl15": 25.0,
-          "sl20": 30.0
-        }
-      },
-      "depends_on": [
-        "skill_level"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces light damage.",
-      "key_slug": "teluma-aureole"
-    },
-    {
-      "modifier": "Malice Teluma",
-      "boost_type": "elem_reduc",
-      "series": "ex",
-      "scaling_kind": "weapon_skill_curve",
-      "value_unit": "percent",
-      "condition": {
-        "reduced_element": "dark",
-        "curve": {
-          "formula_type": "flat",
-          "sl15": 25.0,
-          "sl20": 30.0
-        }
-      },
-      "depends_on": [
-        "skill_level"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces dark damage.",
-      "key_slug": "teluma-malice"
-    },
-    {
       "modifier": "Inferno Teluma",
       "boost_type": "elem_reduc",
       "series": "ex",
       "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
-        "reduced_element": "fire",
         "curve": {
-          "formula_type": "flat",
           "sl15": 25.0,
-          "sl20": 30.0
-        }
+          "sl20": 30.0,
+          "formula_type": "flat"
+        },
+        "reduced_element": "fire"
       },
       "depends_on": [
         "skill_level"
@@ -2335,6 +2219,31 @@
       "applies_to": "element_allies",
       "battle_interaction": true,
       "notes": "Per-turn damage; per-SL value lives in weapon_skill_data (turn_dmg). Interactions (consumes Mirror Image, absorbed by Shield, ignores Unchallenged/Death's Grace) excluded from core damage number."
+    },
+    {
+      "modifier": "Malice Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "sl15": 25.0,
+          "sl20": 30.0,
+          "formula_type": "flat"
+        },
+        "reduced_element": "dark"
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces dark damage.",
+      "key_slug": "teluma-malice"
     },
     {
       "modifier": "Maneuver",
@@ -2394,9 +2303,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Majesty",
+          "size": "big",
           "series": "omega",
-          "size": "big"
+          "modifier": "Majesty"
         }
       },
       "depends_on": [
@@ -2419,9 +2328,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Majesty",
+          "size": "big",
           "series": "omega",
-          "size": "big"
+          "modifier": "Majesty"
         }
       },
       "depends_on": [
@@ -2444,9 +2353,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Majesty",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Majesty"
         }
       },
       "depends_on": [
@@ -2469,9 +2378,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Majesty",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Majesty"
         }
       },
       "depends_on": [
@@ -2485,21 +2394,6 @@
       "notes": "gbf.wiki Draconic Weapons Provenance: Big Majesty curve in the Optimus frame.",
       "key_slug": "teluma-optimus",
       "frame_rule": "teluma"
-    },
-    {
-      "modifier": "Salvation Teluma",
-      "boost_type": "hp_fixed",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 10000.0,
-      "value_unit": "flat",
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "gbf.wiki Draconic Weapons Provenance: adds 10,000 HP to weapon-element allies.",
-      "key_slug": "teluma-salvation"
     },
     {
       "modifier": "Pact",
@@ -2615,9 +2509,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Progression",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Progression"
         }
       },
       "aura_boostable": true,
@@ -2705,9 +2599,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Stamina",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Stamina"
         }
       },
       "aura_boostable": true,
@@ -2726,9 +2620,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Trium",
+          "size": "medium",
           "series": "normal",
-          "size": "medium"
+          "modifier": "Trium"
         }
       },
       "aura_boostable": true,
@@ -2747,9 +2641,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Trium",
+          "size": "medium",
           "series": "normal",
-          "size": "medium"
+          "modifier": "Trium"
         }
       },
       "aura_boostable": true,
@@ -2867,9 +2761,9 @@
       "value_unit": "percent",
       "condition": {
         "curve": {
-          "modifier": "Enmity",
+          "size": "big",
           "series": "normal",
-          "size": "big"
+          "modifier": "Enmity"
         }
       },
       "aura_boostable": true,
@@ -3212,6 +3106,52 @@
       "notes": "25% below 280%, 50% at >=280%."
     },
     {
+      "modifier": "Preemptive Blade",
+      "boost_type": "atk",
+      "series": "normal",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "lte": 8,
+        "type": "turn_lte",
+        "curve": {
+          "sl1": 5.0,
+          "sl10": 15.0,
+          "sl15": 20.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Unboostable ATK for the first 8 turns."
+    },
+    {
+      "modifier": "Preemptive Wall",
+      "boost_type": "def",
+      "series": "normal",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "lte": 8,
+        "type": "turn_lte",
+        "curve": {
+          "sl1": 10.0,
+          "sl10": 28.0,
+          "sl15": 33.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Unboostable DEF for the first 8 turns."
+    },
+    {
       "modifier": "Quenching",
       "boost_type": "ca_supp",
       "scaling_kind": "supplemental_cap",
@@ -3292,6 +3232,29 @@
       "battle_interaction": false
     },
     {
+      "modifier": "Rose's Refuge",
+      "boost_type": "def",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "lte": 8,
+        "type": "turn_lte",
+        "curve": {
+          "sl1": 10.0,
+          "sl10": 28.0,
+          "sl15": 33.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "DEF applies for the first 8 turns. The main-hand Poison reduction clause is not a calculator effect."
+    },
+    {
       "modifier": "Rubell",
       "boost_type": "atk",
       "series": "ex",
@@ -3300,10 +3263,10 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "formula_type": "flat",
           "sl10": 15.0,
           "sl15": 20.0,
-          "sl20": 25.0
+          "sl20": 25.0,
+          "formula_type": "flat"
         }
       },
       "depends_on": [
@@ -3325,10 +3288,10 @@
       "condition": {
         "type": "weapon_specialty",
         "curve": {
-          "formula_type": "flat",
           "sl10": 10.0,
           "sl15": 15.0,
-          "sl20": 20.0
+          "sl20": 20.0,
+          "formula_type": "flat"
         }
       },
       "depends_on": [
@@ -3439,6 +3402,21 @@
       "battle_interaction": false
     },
     {
+      "modifier": "Salvation Teluma",
+      "boost_type": "hp_fixed",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10000.0,
+      "value_unit": "flat",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: adds 10,000 HP to weapon-element allies.",
+      "key_slug": "teluma-salvation"
+    },
+    {
       "modifier": "Scandere Aggressio",
       "boost_type": "na_dmg_cap",
       "scaling_kind": "static",
@@ -3491,6 +3469,46 @@
       "notes": "+50% Skill DMG cap to all allies."
     },
     {
+      "modifier": "Sephira Manus",
+      "boost_type": "da",
+      "scaling_kind": "conditional_flat",
+      "value": 54.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Wilhelm Militis with Arcarum ON/OFF shows DA 60% vs 6%; this row is the +54% Arcarum delta."
+    },
+    {
+      "modifier": "Sephira Manus",
+      "boost_type": "ta",
+      "scaling_kind": "conditional_flat",
+      "value": 54.0,
+      "value_unit": "percent",
+      "condition": {
+        "eq": true,
+        "type": "arcarum"
+      },
+      "depends_on": [
+        "arcarum"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "notes": "Wilhelm Militis with Arcarum ON/OFF shows TA 60% vs 6%; this row is the +54% Arcarum delta."
+    },
+    {
       "modifier": "Sephira Maxi",
       "boost_type": "dmg_cap",
       "scaling_kind": "conditional_flat",
@@ -3532,46 +3550,6 @@
       "notes": "+20% DMG cap only in Arcarum/Replicard; same-element Sephira Maxi do not stack."
     },
     {
-      "modifier": "Sephira Manus",
-      "boost_type": "da",
-      "scaling_kind": "conditional_flat",
-      "value": 54.0,
-      "value_unit": "percent",
-      "condition": {
-        "eq": true,
-        "type": "arcarum"
-      },
-      "depends_on": [
-        "arcarum"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Wilhelm Militis with Arcarum ON/OFF shows DA 60% vs 6%; this row is the +54% Arcarum delta."
-    },
-    {
-      "modifier": "Sephira Manus",
-      "boost_type": "ta",
-      "scaling_kind": "conditional_flat",
-      "value": 54.0,
-      "value_unit": "percent",
-      "condition": {
-        "eq": true,
-        "type": "arcarum"
-      },
-      "depends_on": [
-        "arcarum"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "notes": "Wilhelm Militis with Arcarum ON/OFF shows TA 60% vs 6%; this row is the +54% Arcarum delta."
-    },
-    {
       "modifier": "Sephira Salire",
       "boost_type": "na_dmg_cap",
       "scaling_kind": "conditional_flat",
@@ -3608,6 +3586,38 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false
+    },
+    {
+      "modifier": "Staff Resonance",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "1% DA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
+    },
+    {
+      "modifier": "Staff Resonance",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 1.0,
+      "value_unit": "percent",
+      "count_basis": "same_weapon_type",
+      "count_cap": 10,
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "highest_only",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "1% TA per staff in the grid, up to 10%; multiple Staff Resonance skills do not stack."
     },
     {
       "modifier": "Striking Art",
@@ -3668,6 +3678,45 @@
       "applies_to": "element_allies",
       "battle_interaction": false,
       "notes": "TA rate scales linearly 5% (full HP) -> 35% (1 HP) by missing HP; same curve as DA. Validated by Tatjenen HP sweep."
+    },
+    {
+      "modifier": "Technical Artistry",
+      "boost_type": "skill_dmg",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 20.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "mc_only",
+      "battle_interaction": false,
+      "notes": "When main weapon (MC only): 20% boost to skill damage."
+    },
+    {
+      "modifier": "Tempest Teluma",
+      "boost_type": "elem_reduc",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "curve": {
+          "sl15": 25.0,
+          "sl20": 30.0,
+          "formula_type": "flat"
+        },
+        "reduced_element": "wind"
+      },
+      "depends_on": [
+        "skill_level"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "gbf.wiki Draconic Weapons Provenance: 25% at SL15, 30% at SL20; reduces wind damage.",
+      "key_slug": "teluma-tempest"
     },
     {
       "modifier": "Trituration",
@@ -4288,6 +4337,20 @@
     },
     {
       "modifier": "α Pendulum",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "static",
+      "value": 10.0,
+      "value_unit": "percent",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "pendulum-alpha"
+    },
+    {
+      "modifier": "α Pendulum",
       "boost_type": "da",
       "series": "ex",
       "scaling_kind": "conditional_flat",
@@ -4400,7 +4463,7 @@
       "value": 5.0,
       "value_unit": "percent",
       "condition": {
-        "gte": 1,
+        "gte": 4,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4408,6 +4471,7 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
+      "notes": "gbf.wiki: lv240 upgrades the lv210 skill hit-count boost from 5% to 10%.",
       "key_slug": "pendulum-beta"
     },
     {
@@ -4418,7 +4482,7 @@
       "value": 5.0,
       "value_unit": "percent",
       "condition": {
-        "gte": 4,
+        "gte": 1,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4426,7 +4490,6 @@
       "stacking": "additive",
       "applies_to": "all_allies",
       "battle_interaction": false,
-      "notes": "gbf.wiki: lv240 upgrades the lv210 skill hit-count boost from 5% to 10%.",
       "key_slug": "pendulum-beta"
     },
     {
@@ -4453,7 +4516,7 @@
       "value": 2.5,
       "value_unit": "percent",
       "condition": {
-        "gte": 4,
+        "gte": 1,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4461,7 +4524,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "gbf.wiki: lv240 upgrades special C.A. DMG cap to 5% (additive +2.5 on the lv210 row).",
+      "notes": "gbf.wiki: lv210 upgrade adds 2.5% special C.A. DMG cap (JBDMhV tr3: 18.5 = 16 + 2.5).",
       "key_slug": "pendulum-gamma"
     },
     {
@@ -4472,7 +4535,7 @@
       "value": 2.5,
       "value_unit": "percent",
       "condition": {
-        "gte": 1,
+        "gte": 4,
         "type": "transcendence_step"
       },
       "aura_boostable": false,
@@ -4480,7 +4543,7 @@
       "stacking": "additive",
       "applies_to": "element_allies",
       "battle_interaction": false,
-      "notes": "gbf.wiki: lv210 upgrade adds 2.5% special C.A. DMG cap (JBDMhV tr3: 18.5 = 16 + 2.5).",
+      "notes": "gbf.wiki: lv240 upgrades special C.A. DMG cap to 5% (additive +2.5 on the lv210 row).",
       "key_slug": "pendulum-gamma"
     }
   ]
