@@ -1530,21 +1530,6 @@
     "aura_boostable": true
   },
   {
-    "modifier": "Heed",
-    "boost_type": "da",
-    "series": "normal_omega",
-    "size": "small",
-    "formula_type": "flat",
-    "sl1": null,
-    "sl10": 2.5,
-    "sl15": 3.5,
-    "sl20": null,
-    "sl25": null,
-    "coefficient": null,
-    "max_value": null,
-    "aura_boostable": true
-  },
-  {
     "modifier": "Healing",
     "boost_type": "heal_cap",
     "series": "normal_omega",
@@ -1583,6 +1568,21 @@
     "sl1": 1.0,
     "sl10": 5.0,
     "sl15": 7.5,
+    "sl20": null,
+    "sl25": null,
+    "coefficient": null,
+    "max_value": null,
+    "aura_boostable": true
+  },
+  {
+    "modifier": "Heed",
+    "boost_type": "da",
+    "series": "normal_omega",
+    "size": "small",
+    "formula_type": "flat",
+    "sl1": null,
+    "sl10": 2.5,
+    "sl15": 3.5,
     "sl20": null,
     "sl25": null,
     "coefficient": null,

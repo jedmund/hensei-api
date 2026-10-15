@@ -1,0 +1,1316 @@
+[
+  {
+    "name": "Abandon",
+    "aura_boostable": true,
+    "boosts": [
+      "DA Rate",
+      "TA Rate"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Aegis",
+    "aura_boostable": true,
+    "boosts": [
+      "HP"
+    ],
+    "icon_stems": {
+      "ex": {
+        "big": "ws_skill_hp_a_*_2.png",
+        "small": "ws_skill_hp_a_*_1.png",
+        "medium": "ws_skill_hp_a_*_2.png"
+      },
+      "omega": {
+        "big": "ws_skill_hp_m_*_3.png",
+        "small": "ws_skill_hp_m_*_1.png",
+        "medium": "ws_skill_hp_m_*_2.png"
+      },
+      "normal": {
+        "big": "ws_skill_hp_*_3.png",
+        "small": "ws_skill_hp_*_1.png",
+        "big_ii": "ws_skill_hp_*_3_2.png",
+        "medium": "ws_skill_hp_*_2.png"
+      }
+    },
+    "color": "green"
+  },
+  {
+    "name": "Apotheosis",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "HP",
+      "DMG Amp."
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Aramis",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill Cap (Sp.)",
+      "Skill Amp. (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Ars",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP",
+      "Critical"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Arts",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Ascendancy",
+    "aura_boostable": false,
+    "boosts": [
+      "Sp. C.A. Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Athos",
+    "aura_boostable": false,
+    "boosts": [
+      "DA Rate",
+      "TA Rate",
+      "N.A. Amp. (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Auspice",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "Heal Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Bastion",
+    "aura_boostable": true,
+    "boosts": [
+      "Od Enmity",
+      "DEF"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Beast Essence",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Betrayal",
+    "aura_boostable": true,
+    "boosts": [],
+    "icon_stems": {}
+  },
+  {
+    "name": "Bladeshield",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "Critical"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Blessing",
+    "aura_boostable": false,
+    "boosts": [
+      "Elem. Amplify"
+    ],
+    "icon_stems": {},
+    "color": "yes"
+  },
+  {
+    "name": "Bloodrage",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Critical",
+      "Hit to DEF"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Bloodshed",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "HP DMG"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Blow",
+    "aura_boostable": false,
+    "boosts": [],
+    "icon_stems": {},
+    "color": "yes"
+  },
+  {
+    "name": "Celere",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "Od Might",
+      "Critical"
+    ],
+    "icon_stems": {
+      "omega": {
+        "medium": "ws_skill_moment_m_*.png"
+      },
+      "normal": {
+        "big": "ws_skill_moment_*_3.png",
+        "small": "ws_skill_moment_*_1.png",
+        "big_ii": "ws_skill_hp_*_3_2.png",
+        "medium": "ws_skill_moment_*.png"
+      }
+    },
+    "color": "red"
+  },
+  {
+    "name": "Chain Force",
+    "aura_boostable": false,
+    "boosts": [
+      "C.B. DMG",
+      "C.B. DMG Cap"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Charge",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. DMG",
+      "C.A. DMG Cap",
+      "Sp. C.A. Cap"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Clarity",
+    "aura_boostable": true,
+    "boosts": [
+      "Counter Rate"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Convergence",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DEF",
+      "DMG Cap (Sp.)"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Craft",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Supp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Crux",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. Supp."
+    ],
+    "icon_stems": {
+      "normal": {
+        "big": "ws_skill_secret_*_3.png"
+      }
+    },
+    "color": "red"
+  },
+  {
+    "name": "Deathstrike",
+    "aura_boostable": true,
+    "boosts": [
+      "Bonus Fire DMG",
+      "Bonus Water DMG",
+      "Bonus Earth DMG",
+      "Bonus Wind DMG",
+      "Bonus Light DMG",
+      "Bonus Dark DMG"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Demolishment",
+    "aura_boostable": true,
+    "boosts": [
+      "N.A. Amp."
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Devastation",
+    "aura_boostable": true,
+    "boosts": [
+      "TA Rate"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Dominion",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Draconic Barrier",
+    "aura_boostable": false,
+    "boosts": [
+      "Fire Reduc.",
+      "Water Reduc.",
+      "Earth Reduc.",
+      "Wind Reduc.",
+      "Light Reduc.",
+      "Dark Reduc."
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Draconic Fortitude",
+    "aura_boostable": false,
+    "boosts": [
+      "HP (Fixed)"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Draconic Magnitude",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Amp. (Non-elem. Foe)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Draconic Progression",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Dual-Edge",
+    "aura_boostable": true,
+    "boosts": [
+      "DA Rate"
+    ],
+    "icon_stems": {
+      "normal": {
+        "big": "ws_skill_da_*_3.png",
+        "small": "ws_skill_da_*_1.png",
+        "medium": "ws_skill_da_*_2.png"
+      }
+    },
+    "color": "red"
+  },
+  {
+    "name": "Empowerment",
+    "aura_boostable": true,
+    "boosts": [
+      "Od DMG Amp"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Encouragement",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "TA Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Enforcement",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DEF"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Enmity",
+    "aura_boostable": true,
+    "boosts": [
+      "Enmity",
+      "Omega Enmity",
+      "EX Enmity"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Essence",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Excelsior",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. DMG Cap"
+    ],
+    "icon_stems": {
+      "normal": {
+        "big": "ws_skill_sp_limit_*.png"
+      }
+    },
+    "color": "red"
+  },
+  {
+    "name": "Exertion",
+    "aura_boostable": false,
+    "boosts": [
+      "DA Rate",
+      "TA Rate"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Fandango",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "Od Might",
+      "TA Rate"
+    ],
+    "icon_stems": {
+      "normal": {
+        "big": "ws_skill_ranbu_*_3.png",
+        "small": "ws_skill_ranbu_*_1.png",
+        "medium": "ws_skill_ranbu_*_2.png"
+      }
+    }
+  },
+  {
+    "name": "Fathoms",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DMG Cap",
+      "C.B. Amp.",
+      "FC Amp.",
+      "C.A. Amp. (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Fortified",
+    "aura_boostable": false,
+    "boosts": [
+      "DEF"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Fortitude",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Supp."
+    ],
+    "icon_stems": {},
+    "color": "yellow"
+  },
+  {
+    "name": "Frailty",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Supp."
+    ],
+    "icon_stems": {},
+    "color": "yellow"
+  },
+  {
+    "name": "Fulgor Elatio",
+    "aura_boostable": false,
+    "boosts": [
+      "Charge Gain"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Fulgor Fortis",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Fulgor Impetus",
+    "aura_boostable": false,
+    "boosts": [
+      "Elem. Amplify"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Fulgor Sanatio",
+    "aura_boostable": false,
+    "boosts": [
+      "Heal Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Garrison",
+    "aura_boostable": true,
+    "boosts": [
+      "DEF"
+    ],
+    "icon_stems": {
+      "normal": {
+        "big": "ws_skill_guard_*_3.png",
+        "small": "ws_skill_guard_*_1.png",
+        "medium": "ws_skill_guard_*_2.png"
+      }
+    },
+    "color": "blue"
+  },
+  {
+    "name": "Glory",
+    "aura_boostable": true,
+    "boosts": [
+      "C.A. DMG",
+      "C.A. DMG Cap",
+      "C.B. DMG",
+      "C.B. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Godblade",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "Bonus Des. DMG"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Godflair",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Cap",
+      "Skill Supp. (Sp.)",
+      "Elem. Amplify",
+      "Elem. Reduc."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Godheart",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. DMG Cap",
+      "C.A. Supp. (Sp.)",
+      "Elem. Amplify",
+      "Elem. Reduc."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Godshield",
+    "aura_boostable": false,
+    "boosts": [
+      "HP",
+      "Bonus Des. DMG C.A."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Godstrike",
+    "aura_boostable": false,
+    "boosts": [
+      "N.A. DMG Cap",
+      "N.A. Supp. (Sp.)",
+      "Elem. Amplify",
+      "Elem. Reduc."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Grace",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "Debuff Res."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Grand Epic",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might Sp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Haunt",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "DA Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Healing",
+    "aura_boostable": true,
+    "boosts": [
+      "Heal Cap"
+    ],
+    "icon_stems": {
+      "omega": {
+        "big": "ws_skill_heal_limit_m_*_3.png"
+      },
+      "normal": {
+        "big": "ws_skill_heal_limit_*_3.png",
+        "small": "ws_skill_heal_limit_*_1.png",
+        "medium": "ws_skill_heal_limit_*_2.png"
+      }
+    },
+    "color": "green"
+  },
+  {
+    "name": "Heed",
+    "aura_boostable": true,
+    "boosts": [
+      "DA Rate",
+      "Counter Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Heroism",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "DA Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Honing",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DMG Cap",
+      "Skill Cap (Sp.)",
+      "Skill Amp. (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Hunt",
+    "aura_boostable": false,
+    "boosts": [],
+    "icon_stems": {}
+  },
+  {
+    "name": "Impalement",
+    "aura_boostable": true,
+    "boosts": [
+      "DEF Ignore",
+      "Might"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Initiation",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. Supp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Insignia",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "Turn DMG"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Majesty",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "Od Might",
+      "HP"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Maneuver",
+    "aura_boostable": false,
+    "boosts": [
+      "N.A. Supp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Marvel",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Supp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Might",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "EX Might"
+    ],
+    "icon_stems": {
+      "ex": {
+        "big": "ws_skill_atk_a_*_3.png",
+        "small": "ws_skill_atk_a_*_1.png",
+        "big_ii": "ws_skill_atk_a_*_4.png",
+        "medium": "ws_skill_atk_a_*_2.png",
+        "massive": "ws_skill_atk_a_*_5.png"
+      },
+      "omega": {
+        "big": "ws_skill_atk_m_*_3.png",
+        "medium": "ws_skill_atk_m_*_2.png"
+      },
+      "normal": {
+        "big": "ws_skill_atk_*_3.png",
+        "small": "ws_skill_atk_*_1.png",
+        "big_ii": "ws_skill_atk_*_3_2.png",
+        "medium": "ws_skill_atk_*_2.png",
+        "massive": "ws_skill_atk_*_4_3.png"
+      }
+    },
+    "color": "red"
+  },
+  {
+    "name": "Mystery",
+    "aura_boostable": true,
+    "boosts": [
+      "C.A. DMG"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Onslaught",
+    "aura_boostable": true,
+    "boosts": [
+      "Bonus C.A."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Pact",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Supp."
+    ],
+    "icon_stems": {
+      "omega": {
+        "big": "ws_skill_secret_k_*_3.png"
+      }
+    }
+  },
+  {
+    "name": "Parity",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP",
+      "DA Rate",
+      "TA Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Persistence",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Supp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Plenum",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP",
+      "Stamina"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Porthos",
+    "aura_boostable": false,
+    "boosts": [
+      "C.B. Amp.",
+      "FC Amp.",
+      "C.A. Amp. (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Precocity",
+    "aura_boostable": true,
+    "boosts": [
+      "Critical",
+      "Heal Cap"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Preemptive Barrier",
+    "aura_boostable": false,
+    "boosts": [],
+    "icon_stems": {}
+  },
+  {
+    "name": "Preemptive Blade",
+    "aura_boostable": false,
+    "boosts": [],
+    "icon_stems": {}
+  },
+  {
+    "name": "Preemptive Wall",
+    "aura_boostable": false,
+    "boosts": [],
+    "icon_stems": {}
+  },
+  {
+    "name": "Primacy",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "DA Rate"
+    ],
+    "icon_stems": {
+      "omega": {
+        "medium": "ws_skill_musou_m_*_2.png"
+      },
+      "normal": {
+        "big": "ws_skill_musou_*_3.png",
+        "big_ii": "ws_skill_musou_*_3_2.png",
+        "medium": "ws_skill_musou_*_2.png"
+      }
+    },
+    "color": "red"
+  },
+  {
+    "name": "Progression",
+    "aura_boostable": true,
+    "boosts": [
+      "E. ATK (Prog.)"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Quenching",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. Supp."
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Quintessence",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Cap"
+    ],
+    "icon_stems": {},
+    "color": "yellow"
+  },
+  {
+    "name": "Refuge",
+    "aura_boostable": true,
+    "boosts": [
+      "Debuff Res."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Resolve",
+    "aura_boostable": true,
+    "boosts": [
+      "Critical",
+      "Counter Rate"
+    ],
+    "icon_stems": {},
+    "color": "yellow"
+  },
+  {
+    "name": "Resonator",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DEF",
+      "DMG Cap (Sp.)"
+    ],
+    "icon_stems": {},
+    "color": "yellow"
+  },
+  {
+    "name": "Restraint",
+    "aura_boostable": true,
+    "boosts": [
+      "DA Rate",
+      "Critical"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Rigor",
+    "aura_boostable": true,
+    "boosts": [
+      "Rigor"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Rubell",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Ruination",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DMG Cap",
+      "DA Rate",
+      "TA Rate",
+      "N.A. Amp. (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sapience",
+    "aura_boostable": true,
+    "boosts": [
+      "TA Rate",
+      "Heal Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Scandere Aggressio",
+    "aura_boostable": false,
+    "boosts": [
+      "N.A. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Scandere Arcanum",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Scandere Catena",
+    "aura_boostable": false,
+    "boosts": [
+      "C.B. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Scandere Facultas",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sentence",
+    "aura_boostable": true,
+    "boosts": [
+      "C.A. DMG",
+      "C.A. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sephira Maxi",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Cap (Arc)",
+      "DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sephira Soul",
+    "aura_boostable": false,
+    "boosts": [
+      "HP"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sephira Tek",
+    "aura_boostable": false,
+    "boosts": [
+      "Critical"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sovereign",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Spearhead",
+    "aura_boostable": true,
+    "boosts": [
+      "TA Rate",
+      "Critical"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Spectacle",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Supp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Stamina",
+    "aura_boostable": true,
+    "boosts": [
+      "Stamina",
+      "Omega Stamina",
+      "Od Stamina"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Stratagem",
+    "aura_boostable": true,
+    "boosts": [
+      "Crit. Amp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Strike",
+    "aura_boostable": false,
+    "boosts": [
+      "n.a. dmg cap"
+    ],
+    "icon_stems": {},
+    "color": "yellow"
+  },
+  {
+    "name": "Striking Art",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Cap",
+      "N.A. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Supremacy",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Supremacy: Decimation",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Surge",
+    "aura_boostable": false,
+    "boosts": [
+      "DA Rate",
+      "TA Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Sweep",
+    "aura_boostable": true,
+    "boosts": [
+      "Omega Might"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Tempering",
+    "aura_boostable": true,
+    "boosts": [
+      "Skill DMG Cap",
+      "Skill DMG Supp."
+    ],
+    "icon_stems": {
+      "normal": {
+        "big": "ws_skill_train_*_3.png",
+        "small": "ws_skill_train_*_1.png",
+        "medium": "ws_skill_train_*_2.png"
+      }
+    },
+    "color": "yellow"
+  },
+  {
+    "name": "Trituration",
+    "aura_boostable": true,
+    "boosts": [
+      "Omega Might"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Trium",
+    "aura_boostable": true,
+    "boosts": [
+      "DA Rate",
+      "TA Rate"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Truce",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "Counter Rate"
+    ],
+    "icon_stems": {
+      "omega": {
+        "small": "ws_skill_fullcut_m_*.png"
+      }
+    }
+  },
+  {
+    "name": "True Dragon Barrier",
+    "aura_boostable": false,
+    "boosts": [
+      "DEF"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "True Supremacy",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Tyranny",
+    "aura_boostable": true,
+    "boosts": [
+      "Might",
+      "Omega Might",
+      "EX Might",
+      "Od Might",
+      "HP Cut"
+    ],
+    "icon_stems": {
+      "omega": {
+        "big": "ws_skill_tyrant_m_*.png"
+      },
+      "normal": {
+        "big": "ws_skill_tyrant_*.png",
+        "massive": "ws_skill_tyrant_*_2.png"
+      }
+    }
+  },
+  {
+    "name": "Ultio",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP",
+      "Enmity"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Utopia",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "HP"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Valuables",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DEF",
+      "DMG Cap (Sp.)"
+    ],
+    "icon_stems": {},
+    "color": "red"
+  },
+  {
+    "name": "Verity",
+    "aura_boostable": true,
+    "boosts": [
+      "Critical"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Verve",
+    "aura_boostable": true,
+    "boosts": [
+      "HP",
+      "Stamina"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Vitality",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DEF",
+      "DMG Cap (Sp.)"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Vivification",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might",
+      "DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Voltage",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might Sp."
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Wrath",
+    "aura_boostable": false,
+    "boosts": [
+      "EX Might Sp.",
+      "HP",
+      "DA Rate",
+      "TA Rate"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Zenith Art",
+    "aura_boostable": false,
+    "boosts": [
+      "Skill DMG Cap",
+      "C.A. DMG Cap"
+    ],
+    "icon_stems": {}
+  },
+  {
+    "name": "Zenith Strike",
+    "aura_boostable": false,
+    "boosts": [
+      "C.A. DMG Cap",
+      "N.A. DMG Cap"
+    ],
+    "icon_stems": {}
+  }
+]

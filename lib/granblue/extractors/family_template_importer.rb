@@ -105,7 +105,7 @@ module Granblue
         # The WsBox header IS the family registry row.
         def upsert_family(name, raw)
           box = raw[/\{\{WsBox(.*?)\n\}\}/m, 1].to_s
-          fields = box.scan(/^\|([a-z0-9_]+)=(.*)$/).transform_values { |v| v.strip }
+          fields = box.scan(/^\|([a-z0-9_]+)=(.*)$/).to_h.transform_values(&:strip)
           boosts = fields.keys.grep(/\Aboost\d\z/).sort.filter_map { |k| fields[k].presence }
           stems = {}
           { "" => "normal", "o_" => "omega", "ex_" => "ex" }.each do |prefix, series|
