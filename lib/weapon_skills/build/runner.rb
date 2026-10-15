@@ -35,9 +35,13 @@ module WeaponSkills
             nil
           end
         when "write"
+          # A weapon that fails keeps its existing rows (its savepoint rolled back) and stays
+          # stale, so the next deploy retries it. Failing the deploy here would leave the
+          # other weapons written but the release blocked.
           summary = new(mode: "write", io: io).call
-          raise Failed, "build_weapon_skills: #{summary.failed} weapons failed to build" if summary.failed.positive?
-
+          if summary.failed.positive?
+            io.puts "build_weapon_skills (write): #{summary.failed} weapons failed and kept their existing rows"
+          end
           summary
         end
       end
