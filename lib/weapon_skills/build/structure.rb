@@ -148,7 +148,9 @@ module WeaponSkills
       #   :key     key-determined pages, which the repair never touched. Their base skill (the
       #            expansion's rows outside the key slots) takes the place of the garbled tier it
       #            renders, in page order, keeping that tier's slot, gate and icon, as the
-      #            Draconic repair (data migration 20261015100001) did by hand.
+      #            Draconic repair (data migration 20261015100001) did by hand. Nothing is
+      #            appended: a key page's other expanded rows (Dark Opus's element-named
+      #            Majesty III…) render tiers the parse already has.
       #   :text    other pages: nothing structural.
       # In :key and :text the expansion only gives a tier with no text of its own the text of
       # the expanded skill with its name (Skill#description_en is shared by name), and no frame.
@@ -178,10 +180,10 @@ module WeaponSkills
       def placed_rows(rows, slots, dropped, mode)
         next_position = (slots.map { |s| s[:position] }.max || -1) + 1
         free = mode == :key ? dropped.sort_by { |e| [e[:position], e[:ordinal]] } : []
-        rows.map do |row|
+        rows.filter_map do |row|
           if (tier = free.shift)
             row.merge(position: tier[:position], ordinal: tier[:ordinal], replaces: tier)
-          else
+          elsif mode == :repair
             row.merge(position: next_position).tap { next_position += 1 }
           end
         end
