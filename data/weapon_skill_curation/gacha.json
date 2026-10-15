@@ -55,10 +55,10 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040408500",
@@ -96,11 +96,11 @@
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
       "notes": "Stored expanded page, Gameplay Notes \"Staff Voltage II\": 8% boost to ATK (Max: 80%) for all allies per staff in the grid (GameWith ref). Voltage II tier; the Voltage family default is 4%.",
       "provenance": "manual",
-      "edited_at": "2026-10-15T23:15:00Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "weapon": "1040905600",
