@@ -17,7 +17,7 @@ module WeaponSkills
   #      overlay's columns) and scales_with_skill_level from its resolved family.
   module Build
     # Bump when compiler output changes, so every weapon's fingerprint goes stale.
-    VERSION = 3
+    VERSION = 4
 
     Parser = Granblue::Parsers::WeaponSkillDescriptionParser
 
@@ -72,24 +72,36 @@ module WeaponSkills
       text = Rows::Description.text(wiki_raw: wiki_raw, position: version.position, name: version.skill_name_en,
                                     fallback: version.description_en)
       derived_series = text.present? ? Parser.series_for(text, version.skill_name_en) : version.skill_series
+      registry = context.registry
       resolved = with(version,
-                      skill_modifier: resolved_modifier(override, version.skill_modifier),
+                      skill_modifier: resolved_modifier(override, tier(version.skill_modifier, version, registry)),
                       skill_series: override["series_override"].presence || derived_series,
                       skill_size: override["size_override"].presence || version.skill_size)
 
-      result = Rows.compile(resolved, text: text, registry: context.registry, curation: context.view, notes: notes)
+      result = Rows.compile(resolved, text: text, registry: registry, curation: context.view, notes: notes)
       filled = result.version
+      filled = with(filled, skill_modifier: tier(filled.skill_modifier, filled, registry)) if override["modifier_override"].blank?
       # Where the overlay overrides the classification, the stored derived columns are what
       # the family backfill gives without the override, as the extractor stored them.
       derived = if override.slice("modifier_override", "size_override").values.any?(&:present?)
-                  unpinned_backfill(with(version, skill_series: derived_series), text, context.registry)
+                  unpinned = unpinned_backfill(with(version, skill_series: derived_series), text, registry)
+                  with(unpinned, skill_modifier: tier(unpinned.skill_modifier, unpinned, registry))
                 else
                   filled
                 end
       written = with(filled,
                      skill_modifier: derived.skill_modifier, skill_series: derived_series,
-                     skill_size: derived.skill_size, scales_with_skill_level: scales?(filled, context.registry))
+                     skill_size: derived.skill_size, scales_with_skill_level: scales?(filled, registry))
       { version: written, rows: result.rows, warnings: result.warnings }
+    end
+
+    # A skill named "… II" takes its family's II tier when the canonical data has one
+    # (Voltage II: 8% per weapon against Voltage's 4%, Template:Weapon Skills/Voltage).
+    def tier(modifier, version, registry)
+      return modifier if modifier.blank? || modifier.end_with?(" II") || !version.skill_name_en.to_s.end_with?(" II")
+
+      tiered = "#{modifier} II"
+      registry.canonical_family?(tiered) ? tiered : modifier
     end
 
     def unpinned_backfill(version, text, registry)

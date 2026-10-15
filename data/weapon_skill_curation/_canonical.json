@@ -138,6 +138,723 @@
       "key_slug": "pendulum-alpha",
       "provenance": "manual",
       "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "modifier": "Voltage II",
+      "boost_type": "ex_atk_sp",
+      "series": "ex",
+      "scaling_kind": "per_grid_count",
+      "value": 8.0,
+      "value_unit": "percent",
+      "total_cap": 80.0,
+      "shared_cap_group": "voltage_wrath_grand_epic",
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "depends_on": [
+        "grid_count"
+      ],
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Cloud of Howling Twilight II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "gun": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 40.0,
+          "other": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 20.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 15.0,
+          "other": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Pillar-Smasher's Conviction II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "other": 5.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "staff": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 20.0,
+          "staff": 40.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "ca_dmg",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "da",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 10.0,
+          "staff": 15.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "e_atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "modifier": "Ultimate Wisdom's Shine II",
+      "boost_type": "ta",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "other": 5.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
     }
   ],
   "data": [],
