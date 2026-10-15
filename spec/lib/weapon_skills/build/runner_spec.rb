@@ -163,13 +163,14 @@ RSpec.describe WeaponSkills::Build::Runner do
                                    "ActiveRecord::StatementInvalid: broken")
     end
 
-    it "builds stale weapons in write mode and raises when one failed" do
+    it "builds stale weapons in write mode and reports, without raising, when one failed" do
       allow(WeaponSkills::Build).to receive_messages(context: context)
       expect(described_class.deploy(mode: "write", io: io).built).to eq(2)
 
       WeaponSource.find_by(weapon: sourced).update!(body: "edited")
       allow(WeaponSkills::Build).to receive(:for).and_raise("bad page")
-      expect { described_class.deploy(mode: "write", io: io) }.to raise_error(described_class::Failed, /1 weapons failed/)
+      expect { described_class.deploy(mode: "write", io: io) }.not_to raise_error
+      expect(io.string).to include("1 weapons failed and kept their existing rows")
     end
   end
 end
