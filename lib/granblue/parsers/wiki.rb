@@ -152,12 +152,45 @@ module Granblue
         promotions.uniq.sort
       end
 
-      def initialize(props: ['wikitext'], debug: false)
-        @debug = debug
-        @props = props.join('|')
+      SOURCE_STORE_KEY = :granblue_wiki_source_store
+      # Page kinds a plain fetch(page) may be stored under, in lookup order: pages a parser
+      # follows (transclusions, templates), then whole pages (key series pages).
+      FETCH_KINDS = %w[transclusion wiki_raw].freeze
+
+      # Runs the block with every Wiki reading from a SourceStore instead of gbf.wiki:
+      # fetch, expand and fetch_raw return stored bodies, and a miss raises
+      # WeaponSkills::SourceStore::SourceMissing. Scoped to the current thread.
+      def self.offline(store: WeaponSkills::SourceStore::Database.new)
+        previous = Thread.current[SOURCE_STORE_KEY]
+        Thread.current[SOURCE_STORE_KEY] = store
+        yield
+      ensure
+        Thread.current[SOURCE_STORE_KEY] = previous
       end
 
-      def fetch(page)
+      # The store reads come from: an explicit offline scope, else the database store
+      # whenever the weapon-skill build is on, else none (the network, as before).
+      def self.current_store
+        Thread.current[SOURCE_STORE_KEY] ||
+          (WeaponSkills.build_mode == 'off' ? nil : WeaponSkills::SourceStore::Database.new)
+      end
+
+      # store: :ambient follows Wiki.current_store at call time; nil always uses the
+      # network (the fetch step itself); a SourceStore always reads from it.
+      def initialize(props: ['wikitext'], debug: false, store: :ambient)
+        @debug = debug
+        @props = props.join('|')
+        @store = store
+      end
+
+      def store
+        @store == :ambient ? self.class.current_store : @store
+      end
+
+      # kind: which stored kind to read in store mode (default: transclusion, then wiki_raw).
+      def fetch(page, kind: nil)
+        return stored_page(page, kind) if store
+
         query_params = params(page).map do |key, value|
           "#{key}=#{value}"
         end.join('&')
@@ -173,7 +206,10 @@ module Granblue
       # Expand the templates in a chunk of wikitext (action=expandtemplates) — resolves the
       # {{Weapon/Common/<Series>}} wrapper so series-template skills (Bahamut/Xeno/Militis/…)
       # render their skill rows. Returns the expanded wikitext/HTML, or nil on error.
-      def expand(text)
+      # page: the weapon page the text came from, which keys the stored expansion.
+      def expand(text, page: nil)
+        return stored_expansion(text, page) if store
+
         response = HTTParty.post(base_uri,
                                  body: { action: 'expandtemplates', format: 'json',
                                          prop: 'wikitext', text: text },
@@ -183,7 +219,46 @@ module Granblue
         JSON.parse(response.body).dig('expandtemplates', 'wikitext')
       end
 
+      # A page's raw wikitext through index.php?action=raw (used for the family templates,
+      # Template:Weapon Skills/<name>). Returns nil unless the wiki answers 200.
+      def fetch_raw(title, kind: 'family_template')
+        return store.fetch(kind, title).body if store
+
+        path = title.tr(' ', '_').split('/').map { |segment| ERB::Util.url_encode(segment) }.join('/')
+        response = HTTParty.get("https://gbf.wiki/#{path}?action=raw",
+                                headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
+                                format: :plain)
+        response.code == 200 ? response.body.to_s.dup.force_encoding('UTF-8').scrub : nil
+      end
+
       private
+
+      def stored_page(page, kind)
+        kinds = kind ? [kind.to_s] : FETCH_KINDS
+        kinds.each do |k|
+          return store.fetch(k, page).body
+        rescue WeaponSkills::SourceStore::SourceMissing
+          next
+        end
+        raise WeaponSkills::SourceStore::SourceMissing.new(kinds.join('|'), page)
+      end
+
+      # The stored expansion of a weapon page. Refuses one made from different wikitext
+      # (weapons.wiki_raw changed without a source fetch), which would be silently stale.
+      def stored_expansion(text, page)
+        raise WeaponSkills::SourceStore::SourceMissing.new('expanded', '(no page given)') if page.blank?
+
+        raw = begin
+          store.fetch('wiki_raw', page)
+        rescue WeaponSkills::SourceStore::SourceMissing
+          nil
+        end
+        if raw && raw.sha256 != Digest::SHA256.hexdigest(text.to_s)
+          raise WeaponSkills::SourceStore::SourceMissing.new('expanded', "#{page} (wiki_raw changed since the fetch)")
+        end
+
+        store.fetch('expanded', page).body
+      end
 
       def handle_response(response, page)
         case response.code
