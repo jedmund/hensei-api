@@ -64,6 +64,18 @@ RSpec.describe GridDamage::Effects do
     expect(val(effect, state: { hp_percent: 0 }, grid_weapon: grid_weapon)).to eq(40.5)
   end
 
+  it "weapon_skill_curve reads a skill without a skill level at its highest defined level" do
+    effect = EffStruct.new(
+      scaling_kind: "weapon_skill_curve", boost_type: "critical",
+      condition: { "curve" => { "formula_type" => "flat", "sl10" => 15, "sl15" => 17.5, "sl20" => 20 } }
+    )
+    stored_at_sl1 = GridStruct.new(skill_level: 1)
+
+    expect(described_class.value_for(effect, weapon: weapon, state: {}, composition: composition,
+                                             grid_weapon: stored_at_sl1, levels: false)).to eq(20.0)
+    expect(val(effect, grid_weapon: stored_at_sl1)).to eq(15.0)
+  end
+
   it "weapon_skill_curve interpolates documented inline anchors" do
     effect = EffStruct.new(
       scaling_kind: "weapon_skill_curve", boost_type: "critical",

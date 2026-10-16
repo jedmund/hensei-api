@@ -39,7 +39,7 @@ module GridDamage
                                 !(unboostable_families.include?(v.resolved_modifier) &&
                                   AURA_BOOSTED_FRAMES.include?(frame))
           v.weapon_skill_data.each do |d|
-            value = Scaling.value(d, skill_level: skill_level, hp_percent: hp, turn: turn)
+            value = Scaling.value(d, skill_level: row_skill_level(v, d, skill_level), hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,
               value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
@@ -94,6 +94,22 @@ module GridDamage
 
     def skill_name(version)
       version.skill&.name_en.to_s
+    end
+
+    # Whether a version's skill has a skill level in game. The level is stored per
+    # weapon, but it only applies to the skills that have one (Fediel's Spine: Eclipse's
+    # Stamina levels, Black Covenant doesn't). An unknown flag counts as leveling.
+    def levels?(version)
+      version.try(:scales_with_skill_level) != false
+    end
+
+    # The level to evaluate one data row at: the copy's skill level for a skill that
+    # levels; the row's highest defined level for one that doesn't, whatever the copy's
+    # skill level (the game reports SL1 for weapons whose skills don't level).
+    def row_skill_level(version, datum, copy_level)
+      return copy_level if levels?(version)
+
+      Scaling.fixed_level(datum) || copy_level
     end
 
     # The skill level of THIS grid copy, assuming it's leveled to its uncap's cap (the

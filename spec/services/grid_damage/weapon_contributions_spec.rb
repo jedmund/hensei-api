@@ -62,6 +62,35 @@ RSpec.describe GridDamage::WeaponContributions do
     end
   end
 
+  describe ".for_party skill levels" do
+    let(:party) { create(:party) }
+
+    # One weapon whose single skill owns an EX ATK row that varies by skill level
+    # (9 / 18 / 23 / 25.5), stored at `skill_level` on an FLB copy.
+    def ex_atk(scales:, skill_level:)
+      weapon = create(:weapon, max_skill_level: 20)
+      version = create(:weapon_skill_version, weapon_skill: create(:weapon_skill, weapon: weapon),
+                                              skill_series: "ex", scales_with_skill_level: scales)
+      create(:weapon_skill_datum, weapon_skill_version: version, boost_type: "atk", series: "ex",
+                                  sl1: 9.0, sl10: 18.0, sl15: 23.0, sl20: 25.5)
+      create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 4,
+                           skill_level: skill_level)
+      described_class.for_party(party).map(&:value)
+    end
+
+    it "gives a skill without a skill level its full fixed value on a copy stored at SL1" do
+      expect(ex_atk(scales: false, skill_level: 1)).to eq([25.5])
+    end
+
+    it "keeps a skill with a skill level on the copy's skill level" do
+      expect(ex_atk(scales: true, skill_level: 1)).to eq([9.0])
+    end
+
+    it "follows a leveling skill's copy up to SL15" do
+      expect(ex_atk(scales: true, skill_level: 15)).to eq([23.0])
+    end
+  end
+
   describe ".series_summon_boosted?" do
     it "keeps ancestral weapons flat before registry data is seeded" do
       series = instance_double(WeaponSeries, slug: "ancestral", summon_boosted: nil)

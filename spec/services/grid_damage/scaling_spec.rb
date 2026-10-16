@@ -94,4 +94,15 @@ RSpec.describe GridDamage::Scaling do
         .to be_within(0.01).of(34.80)
     end
   end
+
+  describe ".fixed_level" do
+    it "is the highest level the row defines" do
+      expect(described_class.fixed_level(datum(sl1: 9.0, sl10: 18.0, sl15: 23.0, sl20: 25.5))).to eq(20)
+      expect(described_class.fixed_level(datum(sl1: 10.5, sl10: 15.0))).to eq(10)
+    end
+
+    it "is nil for a row with no levels (coefficient-only Stamina)" do
+      expect(described_class.fixed_level(datum(formula_type: "stamina", coefficient: 56.4))).to be_nil
+    end
+  end
 end
