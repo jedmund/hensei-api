@@ -37,7 +37,8 @@ module GridDamage
           # skill; otherwise fall back to the effect's heuristic series.
           v.weapon_skill_effects.each do |e|
             frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
-            value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
+            value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw,
+                                 levels: WeaponContributions.levels?(v))
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
@@ -77,7 +78,9 @@ module GridDamage
     end
 
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
-    def value_for(effect, weapon:, state:, composition:, grid_weapon: nil)
+    # levels: whether the bearing skill has a skill level in game. Key-granted skills
+    # (no version) level with the weapon, so the default is true.
+    def value_for(effect, weapon:, state:, composition:, grid_weapon: nil, levels: true)
       case effect.scaling_kind
       when "static", "flat", "ally_hp_scaled", "current_hp_scaled"
         # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
@@ -103,7 +106,7 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: true)
       when "weapon_skill_curve"
         weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
-                           composition: composition)
+                           composition: composition, levels: levels)
       when "supplemental_cap"
         supplemental_cap(effect, state: state)
       when "ally_max_hp_scaled"
@@ -122,7 +125,7 @@ module GridDamage
     # key tables (Ultima Rubell/Strife/Courage and elemental Telumas) may carry their
     # documented anchors inline instead. A condition type beside the curve remains an
     # ordinary gate (for example, Ultima's weapon-specialty restriction).
-    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:)
+    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:, levels: true)
       condition = effect.condition.to_h.with_indifferent_access
       if condition[:type].present? &&
          !Conditions.met?(condition, state: state, composition: composition,
@@ -138,6 +141,7 @@ module GridDamage
       return nil unless datum
 
       skill_level = WeaponContributions.skill_level_for(weapon, grid_weapon)
+      skill_level = Scaling.fixed_level(datum) || skill_level unless levels
       Scaling.value(
         datum,
         skill_level: skill_level,
