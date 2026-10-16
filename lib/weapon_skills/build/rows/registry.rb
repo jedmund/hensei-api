@@ -94,6 +94,16 @@ module WeaponSkills
 
         def curve_effect?(modifier) = @curve_effect_modifiers.include?(modifier)
 
+        # A family whose skills have a skill level: some canonical curve of it changes with
+        # skill level (per-level values, or a formula coefficient that takes the skill level,
+        # as Stamina's does), or it has a weapon_skill_curve base effect. A family with only
+        # fixed values (Godblade, Voltage II, Exalto, …) has none.
+        def leveled_family?(modifier)
+          curve_effect?(modifier) || @data_by_modifier.fetch(modifier, []).any? do |d|
+            d.levels.compact.uniq.size > 1 || !d.coefficient.nil?
+          end
+        end
+
         def effect_boost_types(modifier)
           @effect_boosts_by_modifier.fetch(modifier, Set.new)
         end
