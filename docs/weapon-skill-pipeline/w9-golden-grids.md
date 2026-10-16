@@ -16,15 +16,29 @@ Every weapon below is in your collection (checked 2026-10-15), at the uncap show
 
 In priority order: where the calculator has the least evidence for the most rows. The number is the grid's ID; other docs refer to it.
 
-- [x] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: done 2026-10-16. XfBq6u (Omega) at 100/75/50/25/1% and nCvV1x/LqZ4tM (Optimus) at 100/75/50/25/1% match every line, except XfBq6u at 1% (Ω Enmity 350 vs 345.17, DEF 64.8 vs 64.58: the curves near 0 HP; Persistence pins the slider at exactly 1%).
-- [ ] **[Fire session](#fire-session) F2, [Wind session](#wind-session) W1 and W3, [Water session](#water-session) A1**: the rest of the fallback-curve evidence (#19). The Dark session covered ATK Big at SL15 and SL20; these add SL10 and ATK Medium. They back a fix that changes about 480 rows.
-- [ ] **#17 Odious below the cap** (Fire session and Water session): the Odious summon scale is now a rule (1/2/2.5/3% per exorcision level), verified only at the cap. The import now keeps exorcision levels and befoulments (API #588, live 2026-10-16), so this can be captured now.
+### Verification (checks a model we already have)
+
+- [ ] **[Water session](#water-session) A1: Zodiaco Vitae (Clawed Flood, ATK Medium, SL15).** The most important capture right now. The fallback-curve fix moves 134 ATK Medium rows to the EX curve (3/12/14.5) with no in-game number behind them; the panel should add 14.5 at SL15.
+- [ ] **[Fire session](#fire-session) F2: Resentment's Gaze 3★ (Armed Blaze, SL10).** Adds an SL10 point to the Armed curve (6/15/18/20); the panel should add 15.
+- [ ] **[Wind session](#wind-session) W1 and W3**: Windhose 4★ (Armed Gale, SL15, no awakening) and Daur da Blao (Armed Gale, SL20). A second element for the Armed curve.
+- [ ] **#17 Odious below the cap** (Fire session and Water session): the Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★), verified only at the cap.
 - [ ] **The rest of the Fire, Wind and Water sessions**: Proven awakenings (#15), Malus (#14), covenants (#16).
-- [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80).
-- [x] **#18 Blazing Chain's supplement**: done 2026-10-16 (WpPucd: C.A. Supp. 400,000 below its cap). Fire session F1 is no longer needed.
 - [ ] **[#2](#2-hoee8b-dark-no-job)**: the last exact rebuild.
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
 - [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
+
+### New information (things we don't know yet)
+
+- [ ] **Deck JSON with every capture.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel itself: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state at that moment. Paste it alongside the screenshots, or instead of them. It settles rounding, catches a stale saved party, and shows fields we don't know about yet. (Kaneo GBF-41 makes this automatic later.)
+- [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
+- [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
+- [ ] **Grace of Healing (#20)**: is it a heal cap or a healing boost? Needs Asclepius Rod, which isn't in your collection.
+
+### Done
+
+- [x] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: done 2026-10-16. XfBq6u (Omega) at 100/75/50/25/1% and nCvV1x/LqZ4tM (Optimus) at 100/75/50/25/1% match every line, except XfBq6u at 1% (Ω Enmity 350 vs 345.17, DEF 64.8 vs 64.58: the curves near 0 HP; Persistence pins the slider at exactly 1%).
+- [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80). ATK Big's fallback is wrong; Armed skills stop at 20 at SL20.
+- [x] **#18 Blazing Chain's supplement**: done 2026-10-16 (WpPucd: C.A. Supp. 400,000 below its cap). Fire session F1 is no longer needed.
 
 When #2 is in (#5 and #6 are done), the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
 
@@ -44,7 +58,7 @@ Later, the extension could capture the panel straight from the game: the deck re
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
 2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
 3. **Set the party public** on granblue.team. Import it from the game right before capturing, so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match.
-4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header.
+4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. If you can, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
 5. **HP sweeps:** set the Calculator Conditions HP slider to 100, 75, 50, 25 and 1, with one capture each.
 6. **Remove-and-diff:** one capture per removed weapon, with everything else unchanged. Recapture the base state between removals; a stale grid once faked two wrong conclusions.
 
