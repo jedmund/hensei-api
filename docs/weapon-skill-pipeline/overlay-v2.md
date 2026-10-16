@@ -58,14 +58,16 @@ Every op has `op`, the version reference, `reason` (a citation: a gbf.wiki page 
 | `remove_version` | — | Drops a version the build produces but the game doesn't have. |
 | `gate` | `unlock_level`?, `min_uncap`?, `transcendence_stage`? (at least one) | Sets the unlock requirements. Replaces `db/data/manifests/skill_version_gates.json`. |
 | `description` | `description_en`? and/or `description_jp`? | Sets the version's text (after W6c), replacing parsed text. |
+| `remove_row` | `section` (`effects` or `data`), `modifier`, `boost_type`, and the rest of that section's identity (`key_slug`?, `condition`? / `series`?, `size`?) | Deletes a curated row that turned out wrong. The sync never deletes curated rows, so taking the entry out of the files isn't enough. The version reference is left out for a canonical row. Generated rows are untouched, and a file can't both keep the row and remove it. |
 
 ## Order of application
 
 1. The build writes generated slots, versions and rows.
 2. `remove_version`, then `add_version`.
 3. `gate` and `description`.
-4. Version overrides (`modifier_override`, `series_override`, `size_override`, `suppressed_boosts`). Suppression deletes generated rows of suppressed types.
-5. Curated rows (create, or update when the snapshot's `edited_at` is newer).
+4. `remove_row`.
+5. Version overrides (`modifier_override`, `series_override`, `size_override`, `suppressed_boosts`). Suppression deletes generated rows of suppressed types.
+6. Curated rows (create, or update when the snapshot's `edited_at` is newer).
 
 ## Precedence at read time
 
