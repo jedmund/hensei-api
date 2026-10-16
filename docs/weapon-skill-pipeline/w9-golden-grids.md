@@ -265,7 +265,7 @@ These weren't captured before. Each varies one thing, so the difference between 
   2. the same grid with another main hand.
 
 ### 19. EX skills with no family of their own (fallback curves)
-**Question:** about 470 generated rows on EX skills with no family borrow the Taboo curve. The build's fallback ranks curves by size, so the largest (Taboo ×1.2) wins. That's a bug in our code, not game behaviour, and nothing on the wiki ties these skills to Odious values. The plain EX curves differ at every skill level, so **one capture at a known SL, plus one with the weapon removed,** settles each case.
+**Question:** about 480 generated rows on EX skills with no family borrow the Taboo curve. The build's fallback ranks curves by size, so the largest (Taboo ×1.2) wins. That's a bug in our code, not game behaviour, and nothing on the wiki ties these skills to Odious values. The plain EX curves differ at every skill level, so **one capture at a known SL, plus one with the weapon removed,** settles each case.
 
 **Setup:** one stable grid of any element; keep it fixed for all of 19a–19d. For each test weapon, put it in the same slot, capture, then take it out and capture again. Record the test weapon's **skill level** each time. A second SL (for example a fresh SL1 copy) confirms the shape but isn't required.
 
