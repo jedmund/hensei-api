@@ -5,7 +5,8 @@ module WeaponSkills
   # Returns a list of error strings; empty means valid.
   module OverlaySchema
     SECTIONS = %w[versions effects data ops].freeze
-    OPS = %w[add_version remove_version gate description].freeze
+    OPS = %w[add_version remove_version gate description remove_row].freeze
+    ROW_OP_SECTIONS = %w[effects data].freeze
     OVERRIDES = %w[modifier_override series_override size_override suppressed_boosts].freeze
     GATE_FIELDS = %w[unlock_level min_uncap transcendence_stage].freeze
 
@@ -59,7 +60,9 @@ module WeaponSkills
       op = entry["op"]
       return ["op must be one of #{OPS.join(', ')}"] unless OPS.include?(op)
 
-      errors = reference_errors(entry, required: true) + stamp_errors(entry)
+      # remove_row names a curated row, which may be canonical (no weapon reference)
+      canonical = op == "remove_row" && entry["weapon"].nil? && entry["skill"].nil?
+      errors = reference_errors(entry, required: !canonical) + stamp_errors(entry)
       errors << "reason is required (cite the wiki page or capture)" if entry["reason"].blank?
       case op
       when "add_version"
@@ -71,6 +74,10 @@ module WeaponSkills
         given.each { |f| errors << "#{f} must be an integer or null" unless entry[f].nil? || entry[f].is_a?(Integer) }
       when "description"
         errors << "description needs description_en or description_jp" unless %w[description_en description_jp].intersect?(entry.keys)
+      when "remove_row"
+        errors << "section must be one of #{ROW_OP_SECTIONS.join(', ')}" unless ROW_OP_SECTIONS.include?(entry["section"])
+        errors << "boost_type is required" if entry["boost_type"].blank?
+        errors << "modifier is required" if entry["modifier"].blank?
       end
       errors
     end

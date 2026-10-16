@@ -244,6 +244,42 @@ RSpec.describe Granblue::CurationSnapshot do
       expect(sync.unmatched.size).to eq(1)
     end
 
+    it "removes a curated row once, keeping the generated row and other curated rows" do
+      curate_effect
+      kept = curate_effect(boost_type: "atk")
+      generated = curate_effect(manually_edited_at: nil, provenance: nil, scaling_kind: "static")
+      remove = op("remove_row", "section" => "effects", "modifier" => "Axe Voltage II", "boost_type" => "ex_atk_sp",
+                  "condition" => {})
+      write_overlay("s.json", "ops" => [remove])
+
+      expect(described_class.drift(**files)["unapplied"]).to eq([remove])
+      expect(sync).to have_attributes(ops_applied: 1, unmatched: [])
+      expect(WeaponSkillEffect.all).to contain_exactly(kept, generated)
+      expect(sync).to have_attributes(ops_applied: 0, ops_satisfied: 1)
+      expect(described_class.drift(**files)["unapplied"]).to be_empty
+    end
+
+    it "removes a curated canonical row" do
+      canonical = curate_effect(weapon_skill_version: nil, modifier: "α Pendulum", boost_type: "ca_dmg_cap",
+                                key_slug: "pendulum-alpha")
+      write_overlay("_canonical.json",
+                    "ops" => [{ "op" => "remove_row", "section" => "effects", "modifier" => "α Pendulum",
+                                "boost_type" => "ca_dmg_cap", "key_slug" => "pendulum-alpha", "condition" => {},
+                                "reason" => "spec", "edited_at" => edited_at.iso8601 }])
+
+      expect(sync.ops_applied).to eq(1)
+      expect(WeaponSkillEffect.exists?(canonical.id)).to be(false)
+    end
+
+    it "rejects a row that a remove_row op also removes" do
+      curate_effect
+      described_class.export(**files)
+      write_overlay("ops.json", "ops" => [op("remove_row", "section" => "effects", "modifier" => "Axe Voltage II",
+                                             "boost_type" => "ex_atk_sp", "condition" => {})])
+
+      expect { sync }.to raise_error(described_class::Overlay::Invalid, /also removed by a remove_row op/)
+    end
+
     it "applies remove_version before add_version whatever the file order" do
       replacement = { "weapon" => weapon.granblue_id, "skill" => "Replacement", "ordinal" => version.ordinal,
                       "position" => weapon_skill.position, "min_uncap" => 3 }
