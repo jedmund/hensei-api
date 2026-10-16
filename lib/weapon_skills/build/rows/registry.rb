@@ -41,6 +41,11 @@ module WeaponSkills
           "enmity" => "Enmity", "stamina" => "Stamina", "heal_cap" => "Healing"
         }.freeze
 
+        # The Optimus last resort (canonical_curve): which skill series may take it, and the
+        # series it reads, in order.
+        LAST_RESORT_FOR = %w[ex odious taboo].freeze
+        LAST_RESORT_SERIES = %w[normal normal_omega].freeze
+
         def self.from_database
           data = WeaponSkillDatum.canonical.order(:id).pluck(*CURVE_COLUMNS).map do |values|
             Curve.new(**CURVE_COLUMNS.zip(values).to_h)
@@ -91,15 +96,21 @@ module WeaponSkills
         # completeness, then the modifier and the row's values as a fixed key. The size of the
         # values never decides (WeaponSkillDatum.canonical_curve's "strongest curve" rule let
         # the Taboo family's ×1.2 values win for every EX skill).
+        #
+        # The Optimus last resort: an EX or Odious skill with no curve in its own series, for
+        # any boost type but ATK, takes the normal (Optimus) curve, then normal_omega's
+        # (LAST_RESORT_SERIES). It never takes a Taboo, Odious, omega-only or EX curve that
+        # way. ATK keeps the strict rule. last_resort? tells the caller which path was taken.
         def canonical_curve(boost_type:, size:, formula_type: "flat", series: nil)
-          compatible = SERIES_FALLBACK.fetch(series, [series])
-          base = BASE_FAMILIES[boost_type]
-          @curves_by_tier.fetch([boost_type, size, formula_type], [])
-                         .select { |d| compatible.include?(d.series) }
-                         .min_by do |d|
-                           [compatible.index(d.series), d.modifier == base ? 0 : 1, -d.levels.compact.size,
-                            d.modifier.to_s] + d.tie_key
-                         end
+          tier = @curves_by_tier.fetch([boost_type, size, formula_type], [])
+          pick(tier, boost_type, SERIES_FALLBACK.fetch(series, [series])) ||
+            (last_resort_allowed?(boost_type, series) && pick(tier, boost_type, LAST_RESORT_SERIES)) ||
+            nil
+        end
+
+        # Whether a curve canonical_curve returned for this series came from the last resort.
+        def last_resort?(curve, series)
+          !SERIES_FALLBACK.fetch(series, [series]).include?(curve.series)
         end
 
         # A family with any canonical data or base effect (the extractor's canonical_family?).
@@ -124,6 +135,18 @@ module WeaponSkills
         end
 
         private
+
+        def pick(tier, boost_type, series_order)
+          base = BASE_FAMILIES[boost_type]
+          tier.select { |d| series_order.include?(d.series) }.min_by do |d|
+            [series_order.index(d.series), d.modifier == base ? 0 : 1, -d.levels.compact.size, d.modifier.to_s] +
+              d.tie_key
+          end
+        end
+
+        def last_resort_allowed?(boost_type, series)
+          boost_type != "atk" && LAST_RESORT_FOR.include?(series)
+        end
 
         def series_matched(group, compatible)
           matched = group.select { |d| d.series.nil? || compatible.include?(d.series) }
