@@ -33,6 +33,22 @@ RSpec.describe GridDamage::SummonAuras do
     end
   end
 
+  describe ".odious_aura (one exorcision scale for every Odious summon)" do
+    it "matches the stored tiers from base to cap" do
+      expect([0, 3, 4].map { |u| described_class.odious_aura(u, 0.0) }).to eq([40.0, 80.0, 100.0])
+      expect([0, 3, 4].map { |u| described_class.odious_aura(u, 1.0) }).to eq([60.0, 120.0, 150.0])
+    end
+
+    it "gives a 5★ its 3.0% rate without a stored row (0ZA6Ak: 180 at the cap)" do
+      expect(described_class.odious_aura(5, 1.0)).to eq(180.0)
+      expect(described_class.odious_aura(5, 0.0)).to eq(120.0)
+    end
+
+    it "uses the highest tier at or below the uncap" do
+      expect(described_class.odious_aura(2, 1.0)).to eq(60.0)
+    end
+  end
+
   describe ".slot_for" do
     it "treats main and friend summons as main-aura sources" do
       expect(described_class.slot_for(double(main?: true, friend?: false, position: -1))).to eq("main")
