@@ -1,7 +1,7 @@
 {
   "party": "0ZA6Ak",
   "captured_on": "2026-10-16",
-  "notes": "W9 golden 3: Fire Odious grid (rebuild of qBOvon/54hHKY's design) with Belmervolk main and friend. Estimated DMG 326338 / to Wind 601932 / Max HP 52666. Summons: Belmervolk 4★ main + 5★ friend (taboo 330 = 150 + 180: the wiki has no 5★ row, so this capture is the evidence for 5★ max 180%; the base 120% assumes 3% per exorcision level, extending the page's 1/2/2.5% pattern). OPEN: (1) Blazing Chain (Higurashi MH) also grants charge bar gain 30 and C.A. supplement 400,000 at every tier, and its III 'amplify chain damage by 50%' covers FC Amp as well as C.B. Amp; the build emits only sp_ca_cap and cb_amp. (2) C.B. DMG has a display cap of 120 (orange here). (3) Worldforging Moros's Sephirath Eparc II shows on the plain 'C.A. Amp.' line (ca_amp), not 'C.A. Amp. (Sp.)'. (4) C.A. DMG Cap is 10 too high (ours 100.4 raw): α Pendulum 10 or Mortality Bow Mk II's Special awakening lv20 10; one of them doesn't count.",
+  "notes": "W9 golden 3: Fire Odious grid (rebuild of qBOvon's design) with Belmervolk main and friend. Estimated DMG 326338 / to Wind 601932 / Max HP 52666. Summons: Belmervolk 4★ main + 5★ friend (taboo 330 = 150 + 180: the wiki has no 5★ row, so this capture is the evidence for 5★ max 180%; the base 120% assumes 3% per exorcision level, extending the page's 1/2/2.5% pattern). Evidence this capture settled: Blazing Chain (Higurashi MH) grants charge bar gain 30 and C.A. supplement 400,000 at every tier, and its III 'amplify chain damage by 50%' covers FC Amp. as well as C.B. Amp.; C.B. DMG shows capped at 120; Sephirath Eparc II's C.A. amplification is on the plain C.A. Amp. line; α Pendulum has no C.A. cap (its 10 is an N.A. DMG cap).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -124,14 +124,12 @@
     {
       "label": "C.A. DMG Cap",
       "boost": "ca_dmg_cap",
-      "value": 90.4,
-      "skip": true
+      "value": 90.4
     },
     {
       "label": "C.A. Amp.",
       "boost": "ca_amp",
-      "value": 10,
-      "skip": true
+      "value": 10
     },
     {
       "label": "Sp. C.A. Cap",
@@ -142,8 +140,7 @@
       "label": "C.B. DMG",
       "boost": "cb_dmg",
       "value": 120,
-      "capped": true,
-      "skip": true
+      "capped": true
     },
     {
       "label": "C.B. DMG Cap",
@@ -158,8 +155,7 @@
     {
       "label": "FC Amp.",
       "boost": "fc_amp",
-      "value": 50,
-      "skip": true
+      "value": 50
     },
     {
       "label": "Skill Supp. (Sp.)",
@@ -175,8 +171,7 @@
     {
       "label": "Charge Gain",
       "boost": "charge_gain",
-      "value": 30,
-      "skip": true
+      "value": 30
     },
     {
       "label": "DMG Cap Pen.",
