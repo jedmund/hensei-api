@@ -46,6 +46,28 @@
     },
     {
       "modifier": "Anklet of Maximality",
+      "boost_type": "ca_dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 50.0,
+      "value_unit": "percent",
+      "total_cap": 50.0,
+      "shared_cap_group": "key_ca_cap",
+      "condition": {
+        "gte": 280,
+        "type": "boost_level"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "key_slug": "anklet-maximality",
+      "provenance": "manual",
+      "edited_at": "2026-10-16T01:00:00Z"
+    },
+    {
+      "modifier": "Anklet of Maximality",
       "boost_type": "elem_reduc",
       "series": "ex",
       "scaling_kind": "conditional_flat",
@@ -121,45 +143,6 @@
       "notes": "20% Bonus Element DMG on the third hit of triple attacks; highest-only. Stored wiki pages, s*_desc of the Blow skills: 13 of 15 Blow weapons state 20% (e.g. Splash Howl 1040516100 s3_desc, GameWith ref); the other 2 give no number.",
       "provenance": "manual",
       "edited_at": "2026-10-15T23:15:00Z"
-    },
-    {
-      "modifier": "α Pendulum",
-      "boost_type": "ca_dmg_cap",
-      "series": "ex",
-      "scaling_kind": "static",
-      "value": 10.0,
-      "value_unit": "percent",
-      "condition": {},
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "element_allies",
-      "battle_interaction": false,
-      "key_slug": "pendulum-alpha",
-      "provenance": "manual",
-      "edited_at": "2026-10-15T06:07:08Z"
-    },
-    {
-      "modifier": "Voltage II",
-      "boost_type": "ex_atk_sp",
-      "series": "ex",
-      "scaling_kind": "per_grid_count",
-      "value": 8.0,
-      "value_unit": "percent",
-      "total_cap": 80.0,
-      "shared_cap_group": "voltage_wrath_grand_epic",
-      "count_basis": "same_weapon_type",
-      "condition": {},
-      "depends_on": [
-        "grid_count"
-      ],
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "provenance": "manual",
-      "edited_at": "2026-10-16T00:00:00Z"
     },
     {
       "modifier": "Cloud of Howling Twilight II",
@@ -857,28 +840,39 @@
       "edited_at": "2026-10-16T00:00:00Z"
     },
     {
-      "modifier": "Anklet of Maximality",
-      "boost_type": "ca_dmg_cap",
+      "modifier": "Voltage II",
+      "boost_type": "ex_atk_sp",
       "series": "ex",
-      "scaling_kind": "conditional_flat",
-      "value": 50.0,
+      "scaling_kind": "per_grid_count",
+      "value": 8.0,
       "value_unit": "percent",
-      "total_cap": 50.0,
-      "shared_cap_group": "key_ca_cap",
-      "condition": {
-        "gte": 280,
-        "type": "boost_level"
-      },
+      "total_cap": 80.0,
+      "shared_cap_group": "voltage_wrath_grand_epic",
+      "count_basis": "same_weapon_type",
+      "condition": {},
+      "depends_on": [
+        "grid_count"
+      ],
       "aura_boostable": false,
       "seraphic_affected": false,
       "stacking": "additive",
-      "applies_to": "element_allies",
+      "applies_to": "all_allies",
       "battle_interaction": false,
-      "key_slug": "anklet-maximality",
       "provenance": "manual",
-      "edited_at": "2026-10-16T01:00:00Z"
+      "edited_at": "2026-10-16T00:00:00Z"
     }
   ],
   "data": [],
-  "ops": []
+  "ops": [
+    {
+      "op": "remove_row",
+      "section": "effects",
+      "modifier": "α Pendulum",
+      "boost_type": "ca_dmg_cap",
+      "key_slug": "pendulum-alpha",
+      "condition": {},
+      "reason": "α Pendulum has no C.A. cap: the stored Dark Opus page gives it a 10% N.A. DMG cap boost (plus DA/TA at 210/240). Goldens 0ZA6Ak/plktjH/k2hvSF read C.A. DMG Cap 10 lower than this row gives.",
+      "edited_at": "2026-10-15T18:30:00Z"
+    }
+  ]
 }
