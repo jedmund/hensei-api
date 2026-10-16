@@ -12595,6 +12595,17 @@
     "description_en": "100% boost to Taboo Allowater's weapon skills (Boost to specs based on equipped water Odious weapons' exorcision lvls [Max: 150%])"
   },
   {
+    "summon_granblue_id": "2040447000",
+    "slot": "main",
+    "target": "odious_frame",
+    "element": null,
+    "value": 120.0,
+    "uncap_level": 5,
+    "transcendence_stage": 0,
+    "condition": null,
+    "description_en": "120% boost to Taboo Allowater's weapon skills (Boost to specs based on equipped water Odious weapons' exorcision lvls [Max: 180%])"
+  },
+  {
     "summon_granblue_id": "2040448000",
     "slot": "main",
     "target": "elemental_atk",
