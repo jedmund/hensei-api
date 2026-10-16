@@ -121,58 +121,124 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
-  describe 'Odious weapons' do
-    let!(:befoulment_modifier) { create(:weapon_stat_modifier, :befoul_def_down) }
-    let!(:odious_weapon) { create(:weapon, :odiant, granblue_id: '1040399800') }
+  # Excerpts from a real party-deck response (deck "Gold3")
+  describe 'augment skills and skill levels from a real deck' do
+    let!(:befoulment_modifier) { create(:weapon_stat_modifier, :befoul_atk_down) }
+    let!(:ax_atk_modifier) { WeaponStatModifier.find_by(game_skill_id: 1589) || create(:weapon_stat_modifier, :ax_atk) }
+    let!(:ax_skill_cap_modifier) { create(:weapon_stat_modifier, :ax_skill_cap) }
+    let!(:odious_weapon) do
+      Weapon.find_by(granblue_id: '1040220800') ||
+        create(:weapon, :odiant, granblue_id: '1040220800', name_en: 'Demonspear of Prosperity Verboten')
+    end
+    let!(:ax_weapon) do
+      Weapon.find_by(granblue_id: '1040401500') ||
+        create(:weapon, :with_ax, granblue_id: '1040401500', name_en: 'Colossus Cane Omega')
+    end
 
-    let(:odious_deck) do
+    let(:odious_param) do
+      {
+        'id' => 54_321,
+        'level' => '150',
+        'augment_skill_info' => [[{ 'depth' => 2, 'effect_value' => 6.2, 'show_value' => '-6.2%', 'skill_id' => 2873 }]],
+        'augment_skill_icon_image' => ['ex_skill_atk_down'],
+        'odiant' => { 'exorcision_level' => 5, 'is_odiant_weapon' => true, 'max_exorcision_level' => 5,
+                      'reduction_effect_value' => 180 },
+        'skill_level' => '15'
+      }
+    end
+
+    let(:ax_param) do
+      {
+        'id' => 65_432,
+        'level' => '150',
+        'augment_skill_info' => [[
+          { 'depth' => nil, 'effect_value' => '2.5', 'show_value' => '+2.5%', 'skill_id' => 1589 },
+          { 'depth' => nil, 'effect_value' => '1', 'show_value' => '+1%', 'skill_id' => 1598 }
+        ]],
+        'augment_skill_icon_image' => %w[ex_skill_atk ex_skill_ab_limit],
+        'odiant' => { 'exorcision_level' => 0, 'is_odiant_weapon' => false, 'max_exorcision_level' => 0,
+                      'reduction_effect_value' => 0 },
+        'skill_level' => '20'
+      }
+    end
+
+    let(:deck) do
       {
         'deck' => {
           'pc' => {
             'weapons' => {
-              '1' => {
-                'master' => { 'id' => '1040399800', 'name' => odious_weapon.name_en, 'series_id' => '0' },
-                'param' => {
-                  'id' => 54_321,
-                  'level' => '150',
-                  'augment_skill_info' => [[{ 'skill_id' => 2880, 'effect_value' => '21', 'show_value' => '21%' }]],
-                  'odiant' => { 'is_odiant_weapon' => true, 'exorcision_level' => 3 }
-                }
-              }
+              '2' => { 'master' => { 'id' => '1040220800', 'name' => odious_weapon.name_en, 'series_id' => '0' },
+                       'param' => odious_param },
+              '6' => { 'master' => { 'id' => '1040401500', 'name' => ax_weapon.name_en, 'series_id' => '0' },
+                       'param' => ax_param }
             }
           }
         }
       }
     end
 
-    subject { described_class.new(party, odious_deck) }
+    subject { described_class.new(party, deck) }
 
-    it 'stores the befoulment and exorcision level instead of treating them as AX skills' do
+    it "stores the Odious weapon's befoulment, permeation, exorcision and skill levels" do
       subject.process
 
-      grid_weapon = party.weapons.find_by(position: -1)
+      grid_weapon = party.weapons.find_by(weapon: odious_weapon)
       expect(grid_weapon.befoulment_modifier).to eq(befoulment_modifier)
-      expect(grid_weapon.befoulment_strength).to eq(21.0)
-      expect(grid_weapon.exorcism_level).to eq(3)
+      # effect_value is the magnitude; the sign is only in show_value
+      expect(grid_weapon.befoulment_strength).to eq(6.2)
+      expect(grid_weapon.befoulment_permeation).to eq(2)
+      expect(grid_weapon.exorcism_level).to eq(5)
+      expect(grid_weapon.skill_level).to eq(15)
       expect(grid_weapon.ax_modifier1_id).to be_nil
       expect(subject.warnings).to be_empty
     end
 
-    it 'keeps them through the collection sync and updates the collection weapon' do
-      collection_weapon = create(:collection_weapon, user: party.user, weapon: odious_weapon, game_id: '54321',
-                                                     exorcism_level: 1)
+    it "stores the AX weapon's Skill DMG Cap roll and skill level" do
+      subject.process
+
+      grid_weapon = party.weapons.find_by(weapon: ax_weapon)
+      expect(grid_weapon.ax_modifier1).to eq(ax_atk_modifier)
+      expect(grid_weapon.ax_strength1).to eq(2.5)
+      expect(grid_weapon.ax_modifier2).to eq(ax_skill_cap_modifier)
+      expect(grid_weapon.ax_strength2).to eq(1.0)
+      expect(grid_weapon.skill_level).to eq(20)
+      expect(grid_weapon.befoulment_permeation).to be_nil
+    end
+
+    it 'keeps the values through the collection sync and updates the collection weapons' do
+      odious_copy = create(:collection_weapon, user: party.user, weapon: odious_weapon, game_id: '54321')
+      ax_copy = create(:collection_weapon, user: party.user, weapon: ax_weapon, game_id: '65432')
 
       subject.process
 
-      grid_weapon = party.weapons.find_by(position: -1)
-      expect(grid_weapon.collection_weapon).to eq(collection_weapon)
-      expect(grid_weapon.befoulment_modifier).to eq(befoulment_modifier)
-      expect(grid_weapon.exorcism_level).to eq(3)
+      grid_weapon = party.weapons.find_by(weapon: odious_weapon)
+      expect(grid_weapon.collection_weapon).to eq(odious_copy)
+      expect(grid_weapon.befoulment_permeation).to eq(2)
+      expect(grid_weapon.exorcism_level).to eq(5)
+      expect(grid_weapon.skill_level).to eq(15)
 
-      collection_weapon.reload
-      expect(collection_weapon.befoulment_modifier).to eq(befoulment_modifier)
-      expect(collection_weapon.befoulment_strength).to eq(21.0)
-      expect(collection_weapon.exorcism_level).to eq(3)
+      odious_copy.reload
+      expect(odious_copy.befoulment_modifier).to eq(befoulment_modifier)
+      expect(odious_copy.befoulment_strength).to eq(6.2)
+      expect(odious_copy.befoulment_permeation).to eq(2)
+      expect(odious_copy.exorcism_level).to eq(5)
+      expect(odious_copy.skill_level).to eq(15)
+      expect(ax_copy.reload.skill_level).to eq(20)
+    end
+
+    it 'keeps stored permeation and skill level when the game omits them' do
+      odious_param['augment_skill_info'][0][0].delete('depth')
+      odious_param.delete('skill_level')
+      odious_copy = create(:collection_weapon, user: party.user, weapon: odious_weapon, game_id: '54321',
+                                               befoulment_permeation: 4, skill_level: 12)
+
+      subject.process
+
+      grid_weapon = party.weapons.find_by(weapon: odious_weapon)
+      expect(grid_weapon.befoulment_permeation).to eq(4)
+      expect(grid_weapon.skill_level).to eq(12)
+      expect(odious_copy.reload.befoulment_permeation).to eq(4)
+      expect(odious_copy.skill_level).to eq(12)
     end
   end
 

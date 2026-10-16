@@ -77,6 +77,16 @@ FactoryBot.define do
       polarity { -1 }
     end
 
+    trait :befoul_atk_down do
+      slug { 'befoul_atk_down' }
+      name_en { 'ATK Down' }
+      category { 'befoulment' }
+      stat { 'atk' }
+      polarity { -1 }
+      suffix { '%' }
+      game_skill_id { 2873 }
+    end
+
     trait :befoul_def_down do
       slug { 'befoul_def_down' }
       name_en { 'DEF Down' }

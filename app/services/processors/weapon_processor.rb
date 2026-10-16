@@ -133,7 +133,7 @@ module Processors
       @party = party
       @data = data
       @augment_parser = Granblue::AugmentSkillParser.new(log_tag: 'WeaponProcessor')
-      @odious_attrs = {}.compare_by_identity
+      @game_sync_attrs = {}.compare_by_identity
     end
 
     ##
@@ -228,8 +228,8 @@ module Processors
       updates[:ax_modifier2_id] = grid_weapon.ax_modifier2_id
       updates[:ax_strength2] = grid_weapon.ax_strength2
       updates[:element] = grid_weapon.element
-      # Befoulment and exorcism level, only for weapons the game marked Odious
-      updates.merge!(@odious_attrs[grid_weapon]) if @odious_attrs.key?(grid_weapon)
+      # Befoulment, permeation, exorcism and skill levels, only when the game sent them
+      updates.merge!(@game_sync_attrs.fetch(grid_weapon, {}))
 
       if grid_weapon.awakening_id.present?
         updates[:awakening_id] = grid_weapon.awakening_id
@@ -421,10 +421,12 @@ module Processors
     end
 
     ##
-    # Assigns augment skills from the game data: befoulment and exorcism level
-    # for Odious weapons, AX skills otherwise. Odious attributes are remembered
-    # so update_collection_from_game can push them to the linked collection
-    # weapon before sync_from_collection! copies the collection back.
+    # Assigns augment skills and skill level from the game data: befoulment,
+    # permeation and exorcism level for Odious weapons, AX skills otherwise.
+    # The non-AX values are remembered so update_collection_from_game can push
+    # them to the linked collection weapon before sync_from_collection! copies
+    # the collection back. (AX is pushed from the grid weapon itself, since an
+    # invalid roll is cleared before save.)
     #
     # @param grid_weapon [GridWeapon] the grid weapon record being built.
     # @param param [Hash] the raw weapon's `param` data.
@@ -432,7 +434,7 @@ module Processors
     def process_augment_skills(grid_weapon, param)
       attrs = @augment_parser.attributes(param)
       grid_weapon.assign_attributes(attrs)
-      @odious_attrs[grid_weapon] = attrs if @augment_parser.odious?(param)
+      @game_sync_attrs[grid_weapon] = attrs.except(*AX_ATTRIBUTES)
     end
 
     ##

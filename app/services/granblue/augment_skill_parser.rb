@@ -2,20 +2,26 @@
 
 module Granblue
   ##
-  # Parses a weapon's augment skills (AX rolls, or an Odious weapon's befoulment
-  # and exorcision level) from the game's weapon `param` data. Shared by party
+  # Parses a weapon's augment skills (AX rolls, or an Odious weapon's befoulment,
+  # permeation and exorcision level) and skill level from the game's weapon
+  # `param` data. Shared by party
   # import (Processors::WeaponProcessor) and collection import (WeaponImportService)
   # so both store the same values.
   #
   # The game sends augment skills as an array of skill arrays:
-  #   "augment_skill_info": [[{ "skill_id": 1589, "effect_value": "2.5", "show_value": "+2.5%" }, ...]]
+  #   "augment_skill_info": [[{ "skill_id": 1589, "effect_value": "2.5", "show_value": "+2.5%", "depth": null }, ...]]
   # and marks Odious weapons with:
-  #   "odiant": { "is_odiant_weapon": true, "exorcision_level": 3 }
+  #   "odiant": { "is_odiant_weapon": true, "exorcision_level": 5, "max_exorcision_level": 5, ... }
+  # An Odious weapon's single augment entry is its befoulment; its `depth` is the
+  # permeation level. `effect_value` is the magnitude; the sign is only in `show_value`.
+  # Every weapon carries `"skill_level": "15"`.
   #
   # Modifiers are resolved by WeaponStatModifier#game_skill_id. Unknown ids are
   # logged and skipped.
   class AugmentSkillParser
     MAX_EXORCISM_LEVEL = 5
+    PERMEATION_RANGE = (1..6)
+    SKILL_LEVEL_RANGE = (1..25)
 
     # @param log_tag [String] prefix for log lines, e.g. "WeaponProcessor"
     def initialize(log_tag:)
@@ -24,19 +30,25 @@ module Granblue
     end
 
     ##
-    # Returns the augment attributes for a weapon's game param data: befoulment
-    # and exorcism level for Odious weapons, AX skills otherwise.
+    # Returns the attributes for a weapon's game param data: befoulment,
+    # permeation and exorcism level for Odious weapons, AX skills otherwise,
+    # plus the skill level. Values the game didn't send are left out, so
+    # merging the result never clears a stored value.
     #
     # @param param [Hash] the game's weapon `param` hash
     # @return [Hash] attributes to assign (empty if there are none)
     def attributes(param)
       return {} unless param.is_a?(Hash)
 
-      if odious?(param)
-        befoulment_attrs(param['augment_skill_info']).merge(exorcism_level: exorcism_level(param))
-      else
-        ax_attrs(param['augment_skill_info'])
-      end
+      attrs = if odious?(param)
+                befoulment_attrs(param['augment_skill_info']).merge(exorcism_level: exorcism_level(param))
+              else
+                ax_attrs(param['augment_skill_info'])
+              end
+
+      level = skill_level(param)
+      attrs[:skill_level] = level if level
+      attrs
     end
 
     # @param param [Hash] the game's weapon `param` hash
@@ -68,15 +80,30 @@ module Granblue
     # Odious weapons carry a single befoulment in augment_skill_info.
     #
     # @param augment_skill_info [Array] the game's augment skill data
-    # @return [Hash] befoulment_modifier_id / befoulment_strength, or empty
+    # @return [Hash] befoulment_modifier_id / befoulment_strength, plus
+    #   befoulment_permeation when the game sent a depth; or empty
     def befoulment_attrs(augment_skill_info)
-      parsed = parse_skill(skill_list(augment_skill_info).first)
+      skill = skill_list(augment_skill_info).first
+      parsed = parse_skill(skill)
       return {} unless parsed
 
-      { befoulment_modifier_id: parsed[:modifier_id], befoulment_strength: parsed[:strength] }
+      attrs = { befoulment_modifier_id: parsed[:modifier_id], befoulment_strength: parsed[:strength] }
+      permeation = integer_in(skill['depth'], PERMEATION_RANGE)
+      attrs[:befoulment_permeation] = permeation if permeation
+      attrs
     end
 
     private
+
+    def skill_level(param)
+      integer_in(param['skill_level'], SKILL_LEVEL_RANGE)
+    end
+
+    # @return [Integer, nil] the value as an integer when it is one within range
+    def integer_in(value, range)
+      integer = Integer(value.to_s, 10, exception: false)
+      integer if integer && range.cover?(integer)
+    end
 
     def exorcism_level(param)
       param['odiant']['exorcision_level'].to_i.clamp(0, MAX_EXORCISM_LEVEL)
