@@ -116,7 +116,7 @@ Element-changeable weapons (Celestial, Superlative and others) are listed with t
 | | Herb Basket |
 | | Third Stripe of the Streak |
 
-### 7. 54hHKY (rebuild of qBOvon): Fire Odious / Taboo, 13 weapons
+### 7. 0ZA6Ak (rebuild of qBOvon): Fire Odious / Taboo, 13 weapons
 qBOvon was another player's capture, and 7 of its lines depended on their account. Rebuild its composition on **your** account so every line counts. **Validates:** taboo exorcision scaling, befoulment Hit lines, Odious families. **Reference:** `qBOvon.json` for the lines that weren't account-dependent; I'll write a new one.
 
 | Slot | Weapon | State |
