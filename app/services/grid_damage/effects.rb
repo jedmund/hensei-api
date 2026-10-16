@@ -92,11 +92,11 @@ module GridDamage
       # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
       when "persistence_supp"
         effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
-      # "Up to N%" linear-in-HP boosts with the stamina-style sub-25 cutoff
-      # (Rightway Pathfinder: 120 x hp/100 -> 120/90/60/30, gone below 25)
+      # "Up to N%" boosts linear in current HP (Rightway Pathfinder: 120 x hp/100 ->
+      # 120/90/60/30 at 100/75/50/25, still 12 and 6 at 10 and 5% in XfBq6u: no cutoff).
+      # The kind keeps its old name; the panel's 1% slider point reads 0 (open).
       when "hp_linear_cutoff"
-        hp = state.fetch(:hp_percent, 100).to_f
-        hp < 25 ? nil : effect.value.to_f * hp / 100.0
+        effect.value.to_f * state.fetch(:hp_percent, 100).to_f / 100.0
       when "hp_current_linear"
         hp_linear_value(effect, state: state, missing: false)
       when "hp_missing_linear"
