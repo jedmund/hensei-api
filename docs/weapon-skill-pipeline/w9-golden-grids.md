@@ -10,11 +10,12 @@ Each grid below was reconstructed from its reference's notes.
 
 | # | Grid | Captured as | State |
 |---|---|---|---|
+| 1 | R1ckYi's design (Pendulum of Supremacy where R1ckYi had Sagacity) | LD66IX | every line matches; CI fixture |
 | 3 | K4UydX's design | 7AiIOo | every line matches; CI fixture |
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
 
-Still wanted, in priority order: 5 and 6 (the HP sweeps), 1 and 2, then 17 and 18 (open questions from 0ZA6Ak), 14 to 16, and 8 to 13.
+Still wanted, in priority order: 5 and 6 (the HP sweeps), 2, then 17 and 18 (open questions from 0ZA6Ak), 14 to 16, and 8 to 13.
 
 ## Capture rules (from past rounds)
 
@@ -30,7 +31,7 @@ Element-changeable weapons (Celestial, Superlative and others) are listed with t
 
 ## A. Exact rebuilds (old reference reused)
 
-### 1. R1ckYi: Dark, Lancer Origin, 13 weapons
+### 1. R1ckYi: Dark, Lancer Origin, 13 weapons (captured: LD66IX)
 **Validates:** Illustrious u1 upgrades, Gugalanna's charge gain −200, key pools, Demolition-Tiger's awakening. **Reference:** `R1ckYi.json` (foe Light, enhancements optimus 290 / omega 20).
 
 | Slot | Weapon | State |
@@ -266,9 +267,9 @@ These weren't captured before. Each varies one thing, so the difference between 
 ## Priority
 
 1. **5 and 6, the HP sweeps.** They anchor every HP-scaled curve.
-2. **1 and 2,** the rest of section A.
+2. **2,** the rest of section A.
 3. **17 and 18.** They pin the two values 0ZA6Ak couldn't show.
 4. **14 to 16.** These unblock W10 Track D.
 5. **8 to 13,** as you have the weapons.
 
-After all of section A has been captured again, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on. Still missing from section A: 1, 2, 5 and 6.
+After all of section A has been captured again, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on. Still missing from section A: 2, 5 and 6.
