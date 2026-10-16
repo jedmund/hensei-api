@@ -617,7 +617,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.string "drawable_type", null: false
     t.uuid "drawable_id", null: false
     t.index ["user_id", "drawable_type", "drawable_id"], name: "index_gacha_rateups_on_user_and_drawable"
-    t.check_constraint "drawable_type IS NULL AND drawable_id IS NULL OR drawable_type IS NOT NULL AND drawable_id IS NOT NULL AND (drawable_type::text = ANY (ARRAY['Weapon'::character varying::text, 'Summon'::character varying::text]))", name: "gacha_rateups_drawable_pair"
+    t.check_constraint "drawable_type IS NULL AND drawable_id IS NULL OR drawable_type IS NOT NULL AND drawable_id IS NOT NULL AND (drawable_type::text = ANY (ARRAY['Weapon'::character varying, 'Summon'::character varying]::text[]))", name: "gacha_rateups_drawable_pair"
   end
 
   create_table "grid_artifacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1193,7 +1193,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["route_evoker_id"], name: "index_solomonis_expeditions_on_route_evoker_id"
     t.index ["user_id", "game_report_id"], name: "index_solomonis_expeditions_on_user_and_game_report", unique: true, where: "((user_id IS NOT NULL) AND (game_report_id IS NOT NULL))"
     t.index ["user_id"], name: "index_solomonis_expeditions_on_user_id"
-    t.check_constraint "outcome IS NULL OR (outcome::text = ANY (ARRAY['miasma_1'::character varying::text, 'miasma_2'::character varying::text, 'cleared'::character varying::text]))", name: "solomonis_expeditions_outcome_valid"
+    t.check_constraint "outcome IS NULL OR (outcome::text = ANY (ARRAY['miasma_1'::character varying, 'miasma_2'::character varying, 'cleared'::character varying]::text[]))", name: "solomonis_expeditions_outcome_valid"
   end
 
   create_table "solomonis_guide_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1634,8 +1634,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["kind", "key", "fetched_at"], name: "index_weapon_sources_lookup"
     t.index ["kind", "key"], name: "index_weapon_sources_on_shared_kind_key", unique: true, where: "(weapon_id IS NULL)"
     t.index ["weapon_id", "kind", "key"], name: "index_weapon_sources_on_weapon_kind_key", unique: true, where: "(weapon_id IS NOT NULL)"
-    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying::text, 'expanded'::character varying::text, 'transclusion'::character varying::text, 'family_template'::character varying::text])", name: "weapon_sources_kind"
-    t.check_constraint "page_kind IS NULL OR (page_kind::text = ANY (ARRAY['inline'::character varying::text, 'series_template'::character varying::text, 'key_determined'::character varying::text]))", name: "weapon_sources_page_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'expanded'::character varying, 'transclusion'::character varying, 'family_template'::character varying]::text[])", name: "weapon_sources_kind"
+    t.check_constraint "page_kind IS NULL OR (page_kind::text = ANY (ARRAY['inline'::character varying, 'series_template'::character varying, 'key_determined'::character varying]::text[]))", name: "weapon_sources_page_kind"
   end
 
   create_table "weapon_stat_modifiers", force: :cascade do |t|
