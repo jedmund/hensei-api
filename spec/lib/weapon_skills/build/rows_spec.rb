@@ -122,7 +122,42 @@ RSpec.describe WeaponSkills::Build::Rows do
       expect(fallback(only_taboo, "odious")).to eq(taboo)
     end
 
-    it "writes no row and warns when no curve in a compatible series exists" do
+    describe "the Optimus last resort (non-ATK boost types)" do
+      let(:da_taboo) { curve_row("Trium", "da", "medium", 6.0, series: "taboo", sl1: 1.0, sl10: 4.2) }
+      let(:da_omega) { curve_row("Heroism", "da", "medium", 9.0, series: "omega", sl1: 2.0, sl10: 6.0) }
+      let(:da_normal_omega) { curve_row("Trium", "da", "medium", 5.0, series: "normal_omega", sl1: 0.8, sl10: 3.5) }
+      let(:da_normal) { curve_row("Dual-Edge", "da", "medium", 5.0, sl1: 0.8, sl10: 3.5, sl20: 6.0) }
+
+      it "gives an EX DA skill with no EX curve the normal DA curve, then normal_omega's" do
+        reg = registry_class.new(data: [da_taboo, da_omega, da_normal_omega, da_normal], effects: [])
+        expect(fallback(reg, "ex", boost_type: "da", size: "medium")).to eq(da_normal)
+        reg = registry_class.new(data: [da_taboo, da_omega, da_normal_omega], effects: [])
+        expect(fallback(reg, "ex", boost_type: "da", size: "medium")).to eq(da_normal_omega)
+        expect(fallback(reg, "odious", boost_type: "da", size: "medium")).to eq(da_taboo) # own series first
+      end
+
+      it "never uses a Taboo or omega-only curve" do
+        reg = registry_class.new(data: [da_taboo, da_omega], effects: [])
+        expect(fallback(reg, "ex", boost_type: "da", size: "medium")).to be_nil
+      end
+
+      it "never reaches an EX curve for an Odious skill" do
+        ex_hp = curve_row("Aegis", "hp", "small", 14.5, series: "ex", sl1: 3.0, sl10: 12.0)
+        expect(fallback(registry_class.new(data: [ex_hp], effects: []), "odious", boost_type: "hp", size: "small"))
+          .to be_nil
+      end
+
+      it "marks the row's provenance" do
+        reg = registry_class.new(data: [da_taboo, da_normal_omega], effects: [])
+        rows = compile(version("Climate Control", series: "ex"), "Medium boost to all allies' double attack rate",
+                       reg: reg).rows
+        expect(rows.first.attributes).to include(boost_type: "da", sl15: 5.0,
+                                                 provenance: "fallback:Trium/normal_omega (Optimus last resort)")
+        expect(described_class.last_resort_row?(rows.first)).to be(true)
+      end
+    end
+
+    it "keeps ATK strict: no curve in a compatible series means no row and a warning" do
       result = compile(version("Clouds of Nightfall", series: "ex"), "Big boost to dark allies' ATK",
                        reg: registry_class.new(data: [taboo, normal_might], effects: []))
       expect(result.rows).to be_empty

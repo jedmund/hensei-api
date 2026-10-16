@@ -19,9 +19,10 @@ module WeaponSkills
       class Failed < StandardError; end
 
       # errors: [[granblue_id, exception]] for the weapons that failed (EntityReparser re-raises).
-      # fallback_rows: generated data rows copied from another family's curve (Rows.fallback_row?).
-      Summary = Struct.new(:mode, :in_scope, :stale, :built, :failed, :errors, :warnings, :fallback_rows, :counts,
-                           :diff, :seconds, keyword_init: true)
+      # fallback_rows: generated data rows copied from another family's curve (Rows.fallback_row?);
+      # last_resort_rows: those of them borrowed across series (Rows.last_resort_row?).
+      Summary = Struct.new(:mode, :in_scope, :stale, :built, :failed, :errors, :warnings, :fallback_rows,
+                           :last_resort_rows, :counts, :diff, :seconds, keyword_init: true)
 
       # The deploy hook, run after the curation sync in db:migrate:with_data.
       #   off:    nothing.
@@ -64,7 +65,7 @@ module WeaponSkills
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         Weapon.reset_column_information # the fingerprint columns may be from this deploy's migration
         @context ||= Build.context
-        @summary = Summary.new(mode: @mode, built: 0, failed: 0, errors: [], warnings: 0, fallback_rows: 0,
+        @summary = Summary.new(mode: @mode, built: 0, failed: 0, errors: [], warnings: 0, fallback_rows: 0, last_resort_rows: 0,
                                counts: Writer::Report.zero)
         targets = stale_weapons
 
@@ -137,6 +138,7 @@ module WeaponSkills
           end
           @summary.warnings += result.warnings.size
           @summary.fallback_rows += result.rows.count { |row| Rows.fallback_row?(row) }
+          @summary.last_resort_rows += result.rows.count { |row| Rows.last_resort_row?(row) }
           @summary.built += 1
         rescue StandardError => e
           @summary.failed += 1
@@ -178,7 +180,8 @@ module WeaponSkills
           "versions +#{c[:versions_created]} ~#{c[:versions_updated]} -#{c[:versions_deleted]} " \
           "kept #{c[:versions_kept]}; slots +#{c[:slots_created]} -#{c[:slots_deleted]}; " \
           "rows +#{c[:rows_created]} ~#{c[:rows_updated]} -#{c[:rows_deleted]} " \
-          "kept curated #{c[:rows_kept_curated]}; #{@summary.fallback_rows} fallback rows; " \
+          "kept curated #{c[:rows_kept_curated]}; #{@summary.fallback_rows} fallback rows " \
+          "(#{@summary.last_resort_rows} Optimus last resort); " \
           "#{@summary.warnings} warnings; #{format('%.1f', @summary.seconds)}s"
       end
     end
