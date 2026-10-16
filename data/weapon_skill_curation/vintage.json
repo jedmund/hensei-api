@@ -1,0 +1,26 @@
+{
+  "format": 2,
+  "versions": [
+    {
+      "weapon": "1040400300",
+      "skill": "Grace of Healing",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "heal_cap"
+      ],
+      "edited_at": "2026-10-16T12:00:00Z"
+    },
+    {
+      "weapon": "1040400300",
+      "skill": "Grace of Healing II",
+      "ordinal": 1,
+      "suppressed_boosts": [
+        "heal_cap"
+      ],
+      "edited_at": "2026-10-16T12:00:00Z"
+    }
+  ],
+  "effects": [],
+  "data": [],
+  "ops": []
+}
