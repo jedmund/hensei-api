@@ -117,8 +117,9 @@ module Granblue
         [/counter/i,                                         "counter_dmg"],
         [/gain shield|\bshield\b/i,                          "shield"],
         [/debuff res/i,                                      "debuff_res"],
-        # "30% boost to Fire allies' charge bar gain" (Blazing Chain); never "MC's charge bar gain"
-        [/boost to (?:\w+ )?allies' charge bar gain|boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
+        # "30% boost to Fire allies' charge bar gain" (Blazing Chain); the panel counts the MC's
+        # own charge bar gain too (WpPucd: Dainsleif's Strategist's Temperament adds 7)
+        [/boost to (?:(?:\w+ )?allies'|MC's) charge bar gain|boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
         [/(?:dmg|damage) (?:cut|reduc)|reduced (?:dmg|damage) taken|lessen .*(?:dmg|damage)/i, "elem_reduc"],
         [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
