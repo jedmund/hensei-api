@@ -1,7 +1,7 @@
 {
   "party": "QmQaPH",
   "captured_on": "2026-10-17",
-  "notes": "W9 M1: F0 (UC3M0M) with Higurashi swapped for Asauchi 4★ (SL15). Fire (Kengo): Colossus Cane Ira x3, Colossus Cane Omega x2 (AX C.A. DMG 3 + Stamina 2; ATK 2.5 + Skill DMG Cap 1), Scythe of Repudiation T5 (γ Pendulum + Pendulum of Supremacy), Sol Remnant, Doombringer Sword (Anklet of Ascendance), Heat of The Sun; Agni 6★ T5 main and friend. Against UC3M0M: Higurashi's main-hand lines leave; Asauchi adds EX Might 18 (Nameless Zanpakuto, EX Big at SL15) and DA 20 / TA 10 (The Origin of All Zanpakuto at SL15). Estimated DMG 278505 / to Wind 489592 / Max HP 52343. DA/TA are open: the Optimus stopgap gives 5/5, the panel 20/10. Synchronized Artistry and Climate Control share the wording; M3 (Climate Control at SL1) shows whether it scales.",
+  "notes": "W9 M1: F0 (UC3M0M) with Higurashi swapped for Asauchi 4★ (SL15). Fire (Kengo): Colossus Cane Ira x3, Colossus Cane Omega x2 (AX C.A. DMG 3 + Stamina 2; ATK 2.5 + Skill DMG Cap 1), Scythe of Repudiation T5 (γ Pendulum + Pendulum of Supremacy), Sol Remnant, Doombringer Sword (Anklet of Ascendance), Heat of The Sun; Agni 6★ T5 main and friend. Against UC3M0M: Higurashi's main-hand lines leave; Asauchi adds EX Might 18 (Nameless Zanpakuto, EX Big at SL15) and DA 20 / TA 10 (The Origin of All Zanpakuto at SL15). Estimated DMG 278505 / to Wind 489592 / Max HP 52343. DA/TA match the curated flat 20/10 (GameWith, Astro Modele's 連舞の拵え: DA 20% / TA 10%, the same skill text).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -118,14 +118,12 @@
     {
       "label": "DA Rate",
       "boost": "da",
-      "value": 20,
-      "skip": true
+      "value": 20
     },
     {
       "label": "TA Rate",
       "boost": "ta",
-      "value": 10,
-      "skip": true
+      "value": 10
     },
     {
       "label": "C.A. DMG Cap",
