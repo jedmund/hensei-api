@@ -1,181 +1,172 @@
 # W9: golden grids to build
 
-Golden parties are in-game captures of the weapon panel ("Weapon Skill Boosts"). CI checks the calculator against them. Each grid below says what to build, what it proves, and what to capture.
+Golden parties are in-game captures of the weapon panel ("Weapon Skill Boosts"). CI checks the calculator against them. This doc lists what's left to capture, how to build each party, and what's already done.
 
 ## How to help
 
-1. Pick the next unchecked item in **[To do](#to-do)**.
-2. Build it on your account, following the [capture rules](#capture-rules).
+1. Take the next unchecked item in **[Next captures](#next-captures)** and open its recipe.
+2. Build the party, following [Before you capture](#before-you-capture).
 3. Send me the party link and the screenshots. I write the reference and fix whatever doesn't match.
 
-Before you send a capture, check the [import checklist](#import-checklist): most wrong references so far came from the saved party not matching the game, not from the calculator.
+A capture with a test weapon is always compared against its base: the same party without the test weapon (or with the original main hand). Change nothing else between the two.
 
-Every weapon below is in your collection (checked 2026-10-15), at the uncap shown. The collection didn't record skill levels then, so the plans assume each weapon is at its uncap's maximum (3★ SL10, 4★ SL15, 5★ SL20, 6★ SL25). Since 2026-10-16 (API #588) the import stores each weapon's skill level from the game, so a party imported now carries its real ones.
+Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party can be deleted once its fixture is exported. Keep the parties listed under [Base grids](#base-grids) while captures still build on them.
 
-## To do
+## Accuracy and coverage
 
-In priority order: where the calculator has the least evidence for the most rows. The number is the grid's ID; other docs refer to it.
+As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
 
-### Verification (checks a model we already have)
+**Accuracy on captured grids (measured):** 39 golden parties, 56 references, 1,438 panel lines. 1,416 match exactly and are checked in CI on every change. 22 lines (1.5%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
-- [x] **[Water session](#water-session) A0-A2**: done 2026-10-16. YCKMmk (base) and enTSuN (Xuanwu Mace Malus at SL20, matches) pass; 2aH20k shows Clawed Flood at **14.5** at SL15, confirming the EX Might Medium curve the fallback-curve fix moves 134 rows to (open until the fix). A3-A4 (covenants) remain.
-- [ ] **[Fire session](#fire-session) F2: Resentment's Gaze 3★ (Armed Blaze, SL10).** Adds an SL10 point to the Armed curve (6/15/18/20); the panel should add 15.
-- [ ] **[Wind session](#wind-session) W1 and W3**: Windhose 4★ (Armed Gale, SL15, no awakening) and Daur da Blao (Armed Gale, SL20). A second element for the Armed curve.
-- [ ] **#17 Odious below the cap** (Fire session and Water session): the Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★), verified only at the cap.
-- [ ] **The rest of the Fire, Wind and Water sessions**: Proven awakenings (#15), Malus (#14), covenants (#16).
-- [ ] **[#2](#2-hoee8b-dark-no-job)**: the last exact rebuild.
-- [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
-- [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
+**Coverage of the catalogue (measured):**
 
-### Fallback-curve captures (PR #591)
-
-The fallback-curve fix gives every skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed (Dark session, 2aH20k). The groups below have no capture yet. Some follow an EX row that's missing values, and some (marked *stopgap*) borrow the Optimus curve because no EX curve exists. One capture at a known skill level per group pins the curve. Swap the weapon into a base grid's test slot and capture with and without it, as in the element sessions.
-
-**In your collection now:**
-
-- [ ] **EX Stamina, Sunveil's Radiance** (*stopgap*): **True Purity Sunblade** 4★ (SL15) and 5★ (SL20), Light. Any Light grid with an empty test slot, HP 100%. Read the **Stamina** line. Two skill levels give the curve's shape.
-- [ ] **EX Enmity, Undersky's Whispers** (*stopgap*): **Advocatus Diaboli** 5★ (SL20), Dark. Use the Dark session base (LGZkRG with an Executioner removed). Enmity is 0 at full HP, so capture the base and the base with Advocatus at **HP 50% and 25%**. Read **Enmity**.
-- [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): **Wilnas's Finger** 4★ (SL15), Fire. Use the Fire session base, at **HP 50% and 25%**, with and without it.
-
-**From your stash** (weapons not in your granblue.team collection). Most of these DA/TA and Critical skills work only from the **main hand** ("When main weapon (MC only)"), so each of those is a main-hand swap: one capture each, with only the main hand changed. The others go in sub slots and can share a party, one per panel line.
-
-**Done 2026-10-16:** L1-L3 as SAlNoF and ZSEUmr. Grace of Healing shows no Heal Cap line (it's a healing boost; suppressed). Pumpkin Trick gives Critical 3.2 and Resilient Shine gives HP 6 at SL1, both the fallback-curve fix's values.
-
-*Element parties* (capture the base without the test weapons, then with all of them; each sits on a different line):
-
-| # | Weapon (stash state) | Element | Slot | Its skills | Tests | Base |
-|---|---|---|---|---|---|---|
-| L1 | Asclepius Rod (0★, SL1) | Light | sub | Zion's Healing, Grace of Healing | Heal Cap (#20); Zion's Healing's known value is subtracted | any Light grid with 3 free sub slots |
-| L2 | Lantern Blade (3★, SL1) | Light | sub | Pumpkin Trick | Critical, EX Medium | same party |
-| L3 | Frilly Charm Bracelet (3★, SL1) | Light | sub | Resilient Shine (Covert Artistry is main hand only) | HP, EX Big | same party |
-| E1 | Baihu Fangstaff (4★, SL15) | Earth | sub | Terra's Might, Terra's Third Spur | C.A. DMG and Might at SL15 | 7AiIOo with 2 weapons removed |
-| E2 | Seaside Guardian (3★, SL1) | Earth | sub | Resilient Grounds (Synchronized Artistry is main hand only) | HP, EX Big | same party |
-
-*Main-hand swaps* (the base's main hand replaced, nothing else changed):
-
-| # | Weapon (stash state) | Element | Its skills | Tests | Base |
-|---|---|---|---|---|---|
-| M1 | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA/TA Medium at SL15 | Fire session base |
-| M2 | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical at SL15 | LGZkRG |
-| M3 | Ishkur Shaft (3★, SL1) | Wind | Climate Control, Tempest's Vestige | DA/TA at SL1 | HDJE0N |
-| M4 | Air Cannon (4★, SL1) | Water | Bang!, Air Blast | Critical Massive at SL1 | YCKMmk |
-| M5 | Edem (4★, SL1) | Earth | Golden Spirit, Sentient Simulacrum | Enmity Big at SL1 (capture at HP 50%, with and without) | 7AiIOo |
-
-M1, M2 and E1 are worth the most: they pin SL15, where the stopgap values are least certain. The other Synchronized Artistry and Resilient weapons in the stash only repeat an SL1 point and aren't needed.
-
-A golden needs the party saved on granblue.team. For stash weapons, save it as a private party; once the fixture is exported it can be deleted.
-
-**Not in your collection (any one weapon per group, at any known skill level):**
-
-| Group | Rows | Panel line | Weapons |
+| Skill versions (3,759) | Count | Share | Reliability |
 |---|---|---|---|
-| EX DA/TA (*stopgap*) | 25 | DA Rate, TA Rate | Synchronized Artistry on 18 event SSRs (e.g. Scarface, Tigerclaw, Seaside Guardian, Materpent Lyre, Anti-Asteroid Beam Cannon, Blade of Remorse, Astro Modele, King's Thruster); Climate Control (Ishkur Shaft); The Origin of All Zanpakuto (Asauchi); Noble's Dance (Luin); Ophidian Servitor (Ouroboros); Royal Wing Barrier (Pilum); Swiftblade Oath (Hoarfrost Blade Persius); Dexterity (Guivre Rod); Skull Parade (Skull Wand); Cuttlefish's Cut (Squid Hand); Wild Wanderer (Vassago); Triple Talon Hellion (Coco & Mimi); Incantation Fang (Medusiana Staff); Solo (Vyrnstrument) |
-| EX Critical (*stopgap*) | 8 | Critical | Full-Auto Fire (Assault Rifle (Man-Portable)), Ghost on the Battlefield (Soldier Bow), Unblinking Stare (Revolvyrn), Piercing Fang (Brionac), Bang! (Air Cannon), Spearsquid Flash (Squidpiercer), Twelfth Crown Prince's Favorite (Xingese Liuyedao), Pumpkin Trick (Lantern Blade) |
-| EX Enmity (*stopgap*) | 3 more | Enmity (at HP 50/25%) | Golden Spirit (Edem), Magic Charge (Fonic Rod), Audacity (Thunder Dirk Jove) |
-| EX HP Big (Resilient, Mysterious VIT II) | 10 | HP | Resilient Gale (Alster Bow, Intervallo Bramoso, Le Chevalier au Lion), Resilient Shadow (Giant Octo Leg on a Stick, Pantoufle de Machine, Shuprae Specialty), Resilient Flood (Materpent Lyre), Resilient Grounds (Seaside Guardian), Resilient Shine (Frilly Charm Bracelet), Mysterious VIT II (Mysterious Wand). The EX Aegis Big row stops at SL10, so **SL15 or SL20** is the capture that matters. |
-| EX HP Medium (Willed, Mysterious VIT) | 13 | HP | Willed Blaze (Miner's Lantern, Trap Knight's Helm), Willed Flood (Shark Bouquet, Motherly Flower Wreath), Willed Grounds (Beach Flag), Willed Gale (Achromatic Palette), Mysterious VIT (Mysterious Hammer/Harp/Hatchet, Pina Colata Bow, Sombre Gauntlet, Tadpole Tail), Downfall of Ignorance (Iridescent Bow). Mysterious Hatchet also pins EX HP Small at SL15. |
-| EX ATK Small | 3 | EX Might | Speed Cast (Fonic Rod), All-Night Party (Spirit Seeker), Succession of Knighthood (Brand of Binding Oath). SL20 is the missing point. |
-| Terra's Third Spur | 1 | C.A. DMG | Baihu Fangstaff, at SL20. |
-| Odious HP/Enmity Small (*stopgap*) | 2 | HP, Od Enmity | Taboo Netherfell's Aegis (Codex of Sanctity Verboten), Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
-| Heal cap, Grace of Healing (*stopgap*) | 2 | Heal Cap | Asclepius Rod (also #20) |
+| Have values | 3,225 | 86% | |
+| from a family template | 2,720 | 72% | high: wiki tables, checked by goldens for the common families |
+| hand-curated, with a citation | 281 | 7% | high |
+| borrowed fallback curve | 235 | 6% | ATK Big, Armed and ATK Medium confirmed in game; the rest unconfirmed |
+| of which Optimus stopgap | 30 | 1% | low: placeholders until captured |
+| No values | 534 | 14% | mostly battle triggers and main-hand procs, which never reach the panel; some real gaps among them |
 
-Tidings of the New World's SL20 value (16, from a template) never applies: World weapons stop at SL15.
+**Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
 
-### New information (things we don't know yet)
+## Next captures
 
-- [ ] **Deck JSON with base captures.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel at full HP and default conditions: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state. Paste it with any 100% capture. Calculator Conditions (HP slider, foe element) are rendered as HTML, so sweep points still need screenshots. (Kaneo GBF-41 makes this automatic later.)
-- [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
-- [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
-- [ ] **Grace of Healing (#20)**: is it a heal cap or a healing boost? Needs Asclepius Rod, which isn't in your collection.
+In priority order: where the calculator has the least evidence for the most rows.
 
-### Done
+- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
+- [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
+- [ ] **[Main-hand swap M5](#main-hand-swaps-m1m5)**: Edem (Enmity at SL1).
+- [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
+- [ ] **[The other element-session captures](#other-element-session-captures)**: Proven awakenings (#15), Malus (#14), covenants (#16).
+- [ ] **[#2 HoEE8b](#2-hoee8b-dark-no-job)**: the last exact rebuild. Once it's in, the parity baseline can be deleted.
+- [ ] **[#8–#13](#partly-recorded-grids)**: partly recorded grids.
+- [ ] **XZq7xW**: the contributor re-imports the party so its exorcision levels and befoulments come through.
 
-- [x] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: done 2026-10-16. XfBq6u (Omega) at 100/75/50/25/1% and nCvV1x/LqZ4tM (Optimus) at 100/75/50/25/1% match every line, except XfBq6u at 1% (Ω Enmity 350 vs 345.17, DEF 64.8 vs 64.58: the curves near 0 HP; Persistence pins the slider at exactly 1%).
-- [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80). ATK Big's fallback is wrong; Armed skills stop at 20 at SL20.
-- [x] **#18 Blazing Chain's supplement**: done 2026-10-16 (WpPucd: C.A. Supp. 400,000 below its cap). Fire session F1 is no longer needed.
+### Open questions
 
-When #2 is in (#5 and #6 are done), the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
+- **`reduction_effect_value` on Odious weapons.** An unknown field in each Odious weapon's `odiant` block: 180 on a Demonspear at exorcision 5/5, 0 on everything else. One deck JSON with Verboten weapons at different exorcision levels shows what it is.
+- **The HP slider's 1% point.** At 1%, XfBq6u reads as if HP were about 0.1–0.25% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58, Rightway's C.A. DMG 0), while LqZ4tM's Persistence reads exactly 1% (10,200). The curves themselves are right at 10% and 5%.
+- **Undersky's Whispers' value.** MjthwV's Estimated DMG rises 11.131% × (1+2r)r, which is 11.13 at SL20 if the skill is a separate multiplier; our row still carries the stopgap 13.5. Hidden stats can't be checked against the panel, so this needs an Estimated DMG model or a second source.
+- **Malus below SL20** (#14): every Malus you own is 5★, so only SL20 can be captured for now.
 
-## Import checklist
-
-The reference is checked against the party as saved on granblue.team, so the saved party has to match the game exactly. Check these before sending:
-
-- **Summons, especially the friend summon.** The import takes whatever the deck has saved. WpPucd first came in with a stale Belmervolk friend summon instead of the Colossus Omega used for the capture.
-- **Re-import after 2026-10-16.** Before API #588 went live, imports dropped AX Skill DMG Cap rolls, befoulments, permeation, exorcision levels and skill levels. A party saved before then that has AX or Odious weapons needs a fresh import from the game; the import now keeps all of them.
-- **Skill levels.** The import stores them from the game now, so a weapon below its maximum is handled automatically; there's no need to tell me.
-- **Keys and awakenings.** The collection doesn't always list keys (your Renunciation weapons have none recorded), so check them on the party.
-
-Later, the extension could capture the panel straight from the game: the deck response includes it (`damage_info.effect_value_info`, with the orange `is_max` flag and the enhancement numbers). That would remove the screenshots and catch every mismatch above automatically. It's filed as a feature (Kaneo GBF-41).
-
-## Capture rules
+## Before you capture
 
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
 2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
-3. **Set the party public** on granblue.team. Import it from the game right before capturing, so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match.
-4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. For a capture at default conditions, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
-5. **HP sweeps:** set the Calculator Conditions HP slider to 100, 75, 50, 25 and 1, with one capture each.
-6. **Remove-and-diff:** one capture per removed weapon, with everything else unchanged. Recapture the base state between removals; a stale grid once faked two wrong conclusions.
+3. **Import the party from the game right before capturing,** so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match. Check the **friend summon** in particular: the import takes whatever the deck has saved (WpPucd first came in with a stale one), and the team page must list it: the panel's enhancement header counts the support summon (RKY1Eb first had only the main Varuna, so its Optimus read half). Parties saved before 2026-10-16 with AX or Odious weapons need a fresh import.
+4. **A test slot is a main-grid slot.** Extra slots only take certain series.
+5. **Stash weapons** (not in your collection): save the party as private. Once I've exported the fixture, you can delete it.
+6. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. For a capture at full HP and default conditions, paste the deck JSON too: it has every line's exact value (230.5 where the panel shows 230). Calculator Conditions (HP slider, foe element) are HTML only, so HP sweeps still need screenshots.
+7. **HP sweeps:** set the Calculator Conditions HP slider to each point, with one capture each.
 
-Element-changeable weapons (Celestial, Superlative and others) are listed with their default element; set them to the grid's element.
+Skill levels come from the import, so there's no need to report them. Element-changeable weapons (Celestial, Superlative and others) are set to the grid's element.
 
----
+## Base grids
 
-## Exact rebuilds
+| Base | Element | Build | Status |
+|---|---|---|---|
+| **jFY42F** | Dark | LGZkRG recaptured after an Opus key change (LD66IX with one Executioner swapped for Hollowsky Blade). Use it in place of LGZkRG. | captured |
+| **UC3M0M** (F0) | Fire | Higurashi (6★ T5) MH; Colossus Cane Ira ×3; Colossus Cane Omega ×2; Scythe of Repudiation (6★ T5, γ Pendulum + Pendulum of Supremacy); Sol Remnant; Doombringer Sword (Anklet of Ascendance); Heat of The Sun; two empty slots. Agni 6★ T5 main and friend. | captured |
+| **W0** | Wind | HDJE0N with Piercing Galewing removed (the test slot). Zephyrus 6★ T5 main and friend. | **not captured** |
+| **YCKMmk** | Water | Hraesvelgr (6★ T5) MH; Leviathan Gaze Omega ×3; Leviathan Gaze Mare ×2; Staff of Renunciation (6★ T5, Δ Pendulum + Chain of Falsehood); Doombringer Edge (Anklet of Oblivion); two empty slots. Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. | captured |
+| **RKY1Eb** | Water | Exo Ephialtes (5★) MH; Spirit of Mana ×3 (4★). Varuna 6★ main and friend. A small grid for main-hand swaps. | captured |
+| **E0** | Earth | 7AiIOo with both World Enders removed, nothing in their slots | captured (PrXqh2) |
+| **7AiIOo** | Earth | as captured | captured |
+| **ZSEUmr** | Light | Rhongomyniad (5★) MH, Lantern Blade, Asclepius Rod, Frilly Charm Bracelet; free sub slots. Luminiera Omega 6★ main and friend. | captured |
 
-These rebuild lost goldens. Their old reference holds the expected values.
+## Recipes
 
-### #5 OlFQ2a: Dark Omega HP sweep
-**Validates:**
-- mixed-source stamina
-- omega enmity
-- the ancestral frame
-- AX stamina levels
+### Fallback curves
 
-**Reference:** `OlFQ2a_hp{100,75,50,25,1}.json` (foe Light, optimus 60 / omega 460)
+The fallback-curve fix (live since 2026-10-16, #592) gives a skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed. The captures below pin the groups that aren't. Some follow an EX row that's missing values; others, marked *stopgap*, borrow the Optimus curve because no EX curve exists.
 
-**Job:** Fighter Origin, 10 weapons.
+#### Earth stash party (E0–E2)
 
-| Slot | Weapon | State |
-|---|---|---|
-| MH | Excalibur | element → Dark |
-| | Celeste Claw Omega ×3 | AX: ATK 2.5 + Skill Cap 1 / C.A. 6 + E.ATK 2 / none |
-| | Celeste Grace Ater ×3 | |
-| | Fediel's Spine ×2 | AX: HP 6 + Stamina 2 / HP 3 + Stamina 3 |
-| | Katana of Renunciation | key Chain of Falsehood |
+| # | Weapon (stash) | Slot | Its skills | Tests |
+|---|---|---|---|---|
+| E0 | — | — | — | the base (see [Base grids](#base-grids)); capture first |
+| E1 | Baihu Fangstaff (4★, SL15) | a World Ender slot | Terra's Might, Terra's Third Spur | C.A. DMG and Might at SL15 |
+| E2 | Seaside Guardian (3★, SL1) | the other World Ender slot | Resilient Grounds (its Synchronized Artistry only works as main hand) | HP, EX Big (6 at SL1) |
 
-**Summons:** a Celeste Omega-type pair (omega 460). Tell me which.
+Capture E0, then E0 with E1 and E2 together (they sit on different panel lines).
 
-**From your collection:** all owned, and your AX rolls match. Main summon Celeste Omega 6★ T5. The collection doesn't list the Katana of Renunciation's key: check it's Chain of Falsehood, or tell me what it has.
+#### Main-hand swaps (M1–M5)
 
-**Capture:** all five HP points.
+These skills work only from the main hand ("When main weapon (MC only)"). Each is one capture: the base with only its main hand swapped.
 
-### #6 QJ9736: Dark Optimus HP sweep
-**Validates:**
-- stamina
-- Garrison
-- Rightway Pathfinder
-- Persistence curves
+| # | Weapon (stash) | Element | Its skills | Tests | Base |
+|---|---|---|---|---|---|
+| M1 ✓ | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA 20 / TA 10, fixed (QmQaPH) | UC3M0M, Higurashi → Asauchi |
+| M2 ✓ | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical 30 at SL15 (CrPnZ9) | XWhkW9, main hand → Xingese Liuyedao |
+| ~~M3~~ | ~~Astro Modele~~ | | | not needed: GameWith gives Synchronized Artistry a fixed DA 20% / TA 10% (and it unlocks at weapon level 100), so the "multiattack rate" main-hand skills are curated flat | |
+| M4 ✓ | Air Cannon (3★, SL1) | Water | Bang!, Air Blast | Critical 30 at SL1 too, so fixed (4pWKNB) | RKY1Eb, Exo Ephialtes → Air Cannon |
+| M5 | Edem (4★, SL1) | Earth | Golden Spirit, Sentient Simulacrum | Enmity Big at SL1 | 7AiIOo at **HP 50%**, as is and with Andromeda → Edem |
 
-**Reference:** `QJ9736_hp{100,75,50,25,1}.json` (foe Light, optimus 400 / omega 30)
+M1 and M2 pinned SL15; M4 showed the main-hand Critical skills don't level.
 
-**Job:** Fighter Origin, 10 weapons.
+#### Collection weapons
 
-| Slot | Weapon | State |
-|---|---|---|
-| MH | Excalibur | element → Dark |
-| | Fallen Sword ×4 | |
-| | Eternal Signature ×2 | |
-| | Daodao Fu | |
-| | Herb Basket | |
-| | Third Stripe of the Streak | |
+- [ ] **EX Stamina, Sunveil's Radiance** (*stopgap*): True Purity Sunblade 4★ (SL15), then 5★ (SL20), each in a free sub slot of ZSEUmr, HP 100%. Read **Stamina**.
+- [x] **EX Enmity, Undersky's Whispers** (*stopgap*): the skill is **main hand only** (a sub-slot Advocatus adds nothing at any HP: aDkEIX). Captured as MjthwV: no panel line at any HP, so the row is `panel_hidden` and shows under Hidden stats. Its value is still the stopgap: the Estimated DMG rise implies 11.13 at SL20 if it's a separate multiplier (open).
+- [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): Wilnas's Finger 4★ (SL15) in F0's test slot, at **HP 50% and 25%**, with and without it.
 
-**Summons:** not in the notes. Hades 6★ T5 (main and friend) should be close; tell me what the header reads.
+#### Still to find
 
-**From your collection:** all owned.
+Not in your collection or stash at a useful level. Any one weapon per group, at a known skill level:
 
-**Capture:** all five HP points.
+| Group | Rows | Panel line | Weapons |
+|---|---|---|---|
+| EX DA/TA (*stopgap*) | the rest | DA Rate, TA Rate | Noble's Dance (Luin), Ophidian Servitor (Ouroboros), Royal Wing Barrier (Pilum), Swiftblade Oath (Hoarfrost Blade Persius), Dexterity (Guivre Rod), Skull Parade (Skull Wand), Cuttlefish's Cut (Squid Hand), Wild Wanderer (Vassago), Triple Talon Hellion (Coco & Mimi), Incantation Fang (Medusiana Staff), Solo (Vyrnstrument) |
+| EX Critical (*stopgap*) | 8 | Critical | Full-Auto Fire (Assault Rifle (Man-Portable)), Ghost on the Battlefield (Soldier Bow), Unblinking Stare (Revolvyrn), Piercing Fang (Brionac), Spearsquid Flash (Squidpiercer) |
+| EX Enmity (*stopgap*) | 2 more | Enmity (HP 50/25%) | Magic Charge (Fonic Rod), Audacity (Thunder Dirk Jove) |
+| EX HP Big | 10 | HP | any Resilient weapon or Mysterious Wand at **SL15 or SL20** (the EX row stops at SL10) |
+| EX HP Medium | 13 | HP | Willed Blaze/Flood/Grounds/Gale (Miner's Lantern, Shark Bouquet, Beach Flag, Achromatic Palette, …), Mysterious VIT (Mysterious Hammer/Harp/Hatchet, Pina Colata Bow, Sombre Gauntlet, Tadpole Tail), Downfall of Ignorance (Iridescent Bow). Mysterious Hatchet also pins EX HP Small at SL15. |
+| EX ATK Small | 3 | EX Might | Speed Cast (Fonic Rod), All-Night Party (Spirit Seeker), Succession of Knighthood (Brand of Binding Oath), at **SL20** |
+| Odious HP/Enmity Small (*stopgap*) | 2 | HP, Od Enmity | Taboo Netherfell's Aegis (Codex of Sanctity Verboten), Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
+
+#### Armed curve checks
+
+The Armed curve is 6/15/18/20 (SL1/10/15/20), captured on Armed Shadow. These check other skill levels and elements.
+
+| # | Base | Test weapon | Expect |
+|---|---|---|---|
+| F2 | F0 | Resentment's Gaze 3★ (Armed Blaze, SL10) | EX Might +15 |
+| W1 | W0 | Windhose 4★, no awakening (Armed Gale, SL15) | EX Might +18 |
+| W3 | W0 | Daur da Blao 5★ (Armed Gale, SL20) | EX Might +20 |
+
+### #17 Odious below the cap
+
+The Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★, gbf.wiki/Belmervolk). Read the **Od** number in the panel header.
+
+- [ ] **Fire:** 0ZA6Ak with one Deathcannon of Prosperity Verboten removed (3 Odious weapons at exorcision 5 = 15 levels). Expect Od **302.5%** (Belmervolk 4★ 137.5 + 5★ friend 165).
+- [ ] **Water:** YCKMmk with Nihuyvintae 5★ as main summon and four 0★ Terrorbow of Mortality Verboten (exorcision 1) in the Gaze Mare and empty slots; a non-Odious friend summon. Expect Od **132%** (3.0% × (40 + 4 levels)).
+
+### Other element-session captures
+
+Each goes in its base's test slot, one at a time.
+
+| # | Base | Test weapon | Tests |
+|---|---|---|---|
+| F3 | F0 | Ushumgal 5★, Attack awakening 15 | #15 Armed Blaze at SL20 with the Attack awakening |
+| F4 | F0 | Ushumgal 5★, Special awakening 15 | #15 the Special awakening instead |
+| F5 | F0 | Ray of Zhuque Malus 5★ | #14 Malus at SL20 |
+| F6 | F0 | Wilnas's Finger 4★ | #16 Vermillion Covenant as a sub |
+| F7 | F0, main hand → Wilnas's Finger 4★ | — | #16 Vermillion Covenant as main hand |
+| W2 | W0 | Windhose 5★, Attack awakening 15 | #15 at SL20 with the Attack awakening |
+| W4 | W0 | Qinglong Spear Malus 5★ | #14 Malus at SL20 |
+| W5 | W0 | Ewiyar's Beak 4★ | #16 Ewiyar's covenant as a sub |
+| A3 | YCKMmk | Wamdus's Cnidocyte 4★ | #16 Azure Covenant as a sub |
+| A4 | YCKMmk | Hollowsky Staff 4★ | #16 Hollowsky covenant (Water) as a sub |
+
+What these answer:
+- **#14 Malus:** "<Element>'s Might" and "Essence of the <Direction>" (SL20 confirmed on Xuanwu Mace Malus, enTSuN).
+- **#15 Proven "Armed" skills** with awakenings. Bismarck's Special lv15 gives Skill DMG Cap +10 and DMG Cap +3; Clarion's Attack lv15 adds EX Might 15.
+- **#16 Covenants:** which covenant lines the panel shows, as main hand and as a sub. Fediel's Spine's Black Covenant is verified; Hollowsky Blade's shows nothing as a sub.
 
 ### #2 HoEE8b: Dark, no job
+
 **Validates:**
 - specialty inferred from the main hand
 - Garrison at full HP (0)
@@ -194,139 +185,21 @@ These rebuild lost goldens. Their old reference holds the expected values.
 | | Executioner ×2 | |
 | | Excalibur | element → Dark |
 | | Pain and Suffering ×2 | |
-| | Katana of Repudiation | transcendence 5; β Pendulum + Pendulum of Sagacity |
+| | Katana of Repudiation | transcendence 5; your Pendulum of Supremacy is fine (LD66IX used it too) |
 | | Demolition-Tiger Axe | element → Dark; Attack awakening lv5 |
 | | Festering of Mournful Obsequies | 5★; Aureole Teluma + Optimus Teluma |
 | | Doombringer Lyre | 5★; Anklet of Oblivion |
 
 **Summons:** Hades 250 (main and friend). Subs: Orologia, Bahamut 250, Sariel, Lucifer 250, Death, Fediel.
 
-**From your collection:** all owned. Your Katana of Repudiation runs Pendulum of Supremacy, not Sagacity; that's fine (LD66IX did the same), just keep it.
+**Capture:** the base grid. All weapons are in your collection.
 
-**Capture:** the base grid.
-
----
-
-## Element sessions
-
-Each session answers several questions at once. Save the **base** grid with one main-grid slot left empty (the test slot; extra slots only take certain series), capture it, then put each test weapon in the test slot, one at a time, and capture again. Change nothing else between captures. A test weapon's value is its capture minus the base.
-
-What the sessions answer:
-- **#14 Malus:** values of "<Element>'s Might" and "Essence of the <Direction>". Your Malus weapons are all 5★, so this checks SL20 only.
-- **#15 Proven "Armed" skills:** values at SL15 and SL20, with and without awakenings. Only Clarion's Armed Flood at SL20 (35) is verified.
-- **#16 Covenants:** which covenant lines the panel shows, as main hand and as a sub. Fediel's Spine's Black Covenant is verified.
-- **#17 Odious below the cap:** the Taboo aura between its base and its cap at 20 exorcision levels (gbf.wiki/Belmervolk: 1/2/2.5/3.0% per level at 0/3/4/5★). Read it from the "Od" number in the panel header.
-- **#18 Blazing Chain's supplement:** Higurashi's C.A. supplement, modelled as 400,000. Every Fire golden so far hits the 1,000,000 cap because of the Odious weapons.
-- **#19 Fallback curves:** about 480 rows on EX skills with no family borrow the Taboo curve, because the build's fallback picks the largest one. It's a bug in our code, not game behaviour. Each capture tells the two curves apart:
-
-  | Skill | We show now (SL10/15/20) | EX curve gives (SL10/15/20) | Panel line |
-  |---|---|---|---|
-  | ATK Big ("Armed …", Clouds of Nightfall) | 18 / 21.6 / 21.6 | 15 / 18 / 21 | EX Might |
-  | ATK Medium ("Clawed …") | 14.4 / 17.4 / 17.4 | 12 / 14.5 / 14.5 | EX Might |
-
-  Neither borrowed curve has an SL20 value, so the calculator holds the SL15 one; the EX ATK Medium row stops at SL15 too.
-
-  If a change matches neither column, send it anyway: the EX template row needs fixing then.
-
-  **Dark session result:** the borrowed curve is wrong. Clouds of Nightfall gives 21 at SL20 (the EX curve). The "Armed" skills have their own curve: Armed Shadow gives 18 at SL15 and 20 at SL20 (6/15/18/20, like normal Might Big), which also fits Clarion's Armed Flood at 35 with an Attack awakening lv15. The fix waits on its own PR.
-
-### Dark session
-**Base:** LD66IX with **one Executioner** removed (that's the test slot). Same summons: Beelzebub 4★ main, Hades 6★ T5 friend, Fediel sub.
-
-| Capture | Test slot | Answers |
-|---|---|---|
-| D0 | empty | the base |
-| D1 | Bismarck 4★ (Armed Shadow, SL15) | #19 ATK Big at SL15 |
-| D2 | Bismarck 5★ (Armed Shadow, SL20) | #19 ATK Big at SL20 |
-| D3 | Qilin Sword 5★ (Clouds of Nightfall) | #19 ATK Big, a second skill on the same curve |
-| D4 | Hollowsky Blade 4★ (Calamitous Covenant) | #16 Hollowsky covenant as a sub |
-
-**Result (2026-10-16):**
-
-| Capture | Party | EX Might | Other changes | What it showed |
-|---|---|---|---|---|
-| D4 (used as the base) | LGZkRG | 230 | none | Hollowsky Blade's covenant shows no line as a sub, so this capture is the base; every line matches |
-| D1 | C1UGnK | 248 (+18) | Skill DMG Cap 65 | Armed Shadow at SL15 = 18 |
-| D3 | GmPPWw | 251 (+21) | none | Clouds of Nightfall at SL20 = 21 |
-| D2 | FaJB80 | 250 (+20) | Skill DMG Cap 75, DMG Cap Pen. 9.5 | Armed Shadow at SL20 = 20; the Special awakening lv15 gives Skill DMG Cap +10 and DMG Cap +3, which shows as DMG Cap Pen. +1.5 because DMG Cap is already at 20 |
-
-The panel shows EX Might without its decimal (the base is 230.5). The three EX Might lines stay open until the fallback fix; every other line matches. D0 (an empty test slot) wasn't needed.
-
-### Fire session
-**Base** (10 weapons). It leaves out the Odious weapons, which pushed C.A. Supp. past its cap in every Fire golden so far. It doesn't need to be a strong grid, only the same between captures.
-
-| Slot | Weapon | State |
-|---|---|---|
-| MH | Higurashi | 6★, transcendence 5 |
-| | Colossus Cane Omega ×2 | 5★ |
-| | Colossus Cane Ira ×3 | 4★ |
-| | Scythe of Repudiation | 6★, transcendence 5; β Pendulum + Pendulum of Extremity |
-| | Doombringer Sword | 5★; Anklet of Ascendance |
-| | Heat of The Sun | 5★ |
-| | *(test slot)* | |
-
-**Summons:** Agni 6★ T5 main; friend Agni (any), and tell me which.
-
-| Capture | Change | Answers |
-|---|---|---|
-| F0 | test slot empty | the base; #18 with Higurashi |
-| ~~F1~~ | ~~main hand → Unsigned Kaneshige 5★ (Fire), test slot empty~~ | not needed: WpPucd answered #18 |
-| F2 | Resentment's Gaze 3★ (Armed Blaze, SL10) | #19 ATK Big at SL10 |
-| F3 | Ushumgal 5★, Attack awakening 15 | #15 Armed Blaze at SL20 with the Attack awakening |
-| F4 | Ushumgal 5★, Special awakening 15 | #15 the Special awakening instead |
-| F5 | Ray of Zhuque Malus 5★ | #14 Malus at SL20 |
-| F6 | Wilnas's Finger 4★ | #16 Vermillion Covenant as a sub |
-| F7 | main hand → Wilnas's Finger 4★, test slot empty | #16 Vermillion Covenant as main hand |
-
-**Odious below the cap (#17):** separately, 0ZA6Ak with one **Deathcannon of Prosperity Verboten** removed (3 Odious weapons at exorcision 5 = 15 levels). Expected header: Od 302.5% (Belmervolk 4★ 137.5 + 5★ friend 165).
-
-### Wind session
-**Base:** HDJE0N with **Piercing Galewing** removed (that's the test slot). Same summons: Zephyrus 6★ T5 main and friend.
-
-| Capture | Test slot | Answers |
-|---|---|---|
-| W0 | empty | the base |
-| W1 | Windhose 4★, no awakening (Armed Gale, SL15) | #15 and #19 ATK Big at SL15 |
-| W2 | Windhose 5★, Attack awakening 15 (SL20) | #15 at SL20 with the Attack awakening |
-| W3 | Daur da Blao 5★ (Armed Gale) | #19 ATK Big at SL20, no awakening |
-| W4 | Qinglong Spear Malus 5★ | #14 Malus at SL20 |
-| W5 | Ewiyar's Beak 4★ | #16 Ewiyar's covenant as a sub |
-
-### Water session
-**Base** (10 weapons; it doesn't need to be a strong grid, only the same between captures):
-
-| Slot | Weapon | State |
-|---|---|---|
-| MH | Hraesvelgr | 6★, transcendence 5 |
-| | Leviathan Gaze Omega ×3 | 5★ |
-| | Leviathan Gaze Mare ×3 | 4★ |
-| | Staff of Repudiation | 6★, transcendence 5; β Pendulum + Pendulum of Extremity |
-| | Doombringer Edge | 5★; Anklet of Oblivion |
-| | *(test slot)* | |
-
-**Summons:** Varuna 6★ T5 main; friend Varuna (any), and tell me which.
-
-| Capture | Change | Answers |
-|---|---|---|
-| A0 | test slot empty | the base |
-| A1 | Zodiaco Vitae 4★ (Clawed Flood, SL15) | #19 ATK Medium at SL15 |
-| A2 | Xuanwu Mace Malus 5★ | #14 Malus at SL20 |
-| A3 | Wamdus's Cnidocyte 4★ | #16 Azure Covenant as a sub |
-| A4 | Hollowsky Staff 4★ | #16 Hollowsky covenant (Water) as a sub |
-
-**Odious at 5★ (#17):** separately, main summon **Nihuyvintae 5★**, with four of your 0★ Water Odious weapons (Terrorbow of Mortality Verboten, exorcision 1) in place of the three Leviathan Gaze Mare and the test slot. Use a non-Odious friend summon. Expected header: Od 132% (3.0% × (40 + 4 levels)).
-
-### Not possible yet
-- **#20 Grace of Healing:** Asclepius Rod isn't in your collection.
-- **#14 below SL20:** every Malus you own is 5★; a lower copy would add SL15/SL10 points later.
-
----
-
-## Partly recorded grids
+### Partly recorded grids
 
 The old notes don't name every weapon in these. Fill the gaps with whatever you'd normally run, and tell me what you used.
 
-### #8 XJZZmv: Light Omega AX, Nighthound
+#### #8 XJZZmv: Light Omega AX, Nighthound
+
 **Validates:**
 - seven AX lines, including Skill DMG Supp. lv3
 - Selas (Arche) adding +20 to both the normal and omega enhancements
@@ -335,26 +208,16 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 
 **Reference:** `XJZZmv.json`
 
-**Known weapons:**
-- Flamma Orbis (MH)
-- Luminiera Sword Omega ×4, with AX (record all of it)
-- True Purity Sunblade
-- Huanglong Katana
-- Sword of Renunciation (transcendence 3, SL20; β Pendulum + Chain of Temptation)
-- Cosmic Sword
-- one unknown slot
+**Weapons:** Flamma Orbis (MH); Luminiera Sword Omega ×4 with AX; True Purity Sunblade; Huanglong Katana; Sword of Renunciation (yours is transcendence 5, the old capture had 3); Cosmic Sword; one unknown slot.
 
-**From your collection:** all owned. Your Sword of Renunciation is transcendence 5 (the old capture had 3); use it and I'll adjust.
-
-**Crew:** Selas (Arche) with Grand Sandalphon in the backline.
-
-**Summons:** one sub is Lu Woh 3★.
+**Crew:** Selas (Arche) with Grand Sandalphon in the backline. **Summons:** one sub is Lu Woh 3★.
 
 **Capture:**
 1. with Sandalphon (enhancements 60/400);
 2. without him (40/380).
 
-### #9 HDbPnu: Dark rarities grid, no job
+#### #9 HDbPnu: Dark rarities grid, no job
+
 **Validates:**
 - awakenings by series
 - skill-level overrides
@@ -362,30 +225,19 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 
 **Reference:** `HDbPnu.json`
 
-**Weapons,** one per series:
-- **Illustrious (MH):** your Dark Illustrious
-- **Malice:** any
-- **Epic:** any
-- **Exo Hamartia:** Special awakening lv10
-- **Forsaken Agastia:** Attack awakening lv20
-- **Regalia:** any
-- **Cortana:** SL1; leave it unfed
-- **Bahamut Coda:** any Dark Coda
-- **Advocatus:** Xeno; SL15
-- **Astral:** any
+**Weapons,** one per series: your Dark Illustrious (MH); any Malice, Epic, Regalia and Astral; Exo Hamartia (Special lv10); Forsaken Agastia (yours is Attack lv1, keep it); Cortana (SL1, unfed); any Dark Bahamut Coda; Advocatus Diaboli.
 
-**From your collection:** Exo Hamartia (Special 10), Forsaken Agastia (yours is Attack lv1, not 20; fine, keep it), Cortana 3★, Advocatus Diaboli 5★, any Dark Bahamut Coda 5★, Trick Stick 3★. Pick any Malice, Epic, Regalia and Astral you own.
-
-**Crew:** MC, Zeta, Sariel, Koku, Orologia, Wamdus. The mix of races matters for Coda's Vita.
+**Crew:** MC, Zeta, Sariel, Koku, Orologia, Wamdus (the race mix matters for Coda's Vita).
 
 **Capture:**
 1. the base grid;
 2. one capture per weapon removed;
 3. a main-hand swap to Trick Stick.
 
-### #10 NEKVvF: Dark, Monk, pendulum ≥ 280
+#### #10 NEKVvF: Dark, Monk, pendulum ≥ 280
+
 **Validates:**
-- Pendulum of Supremacy: its base Skill DMG Cap and the ≥280 package (EX, C.B./FC Amp., C.A. Amp. (Sp.), DMG Cap)
+- Pendulum of Supremacy: its base Skill DMG Cap and the ≥280 package
 - the Exo main-hand-only awakening (Attack type)
 - Gauph Courage (Critical 20)
 - Gauntlet Voltage II and Realm-Breaker's Animus II
@@ -393,104 +245,73 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 
 **Reference:** `NEKVvF.json`
 
-**Known weapons:**
-- Exo Hamartia (MH; Attack awakening lv10)
-- Covenant-Ruin Fist ×2 (Gauntlet Voltage II; Realm-Breaker's Animus II)
-- Fediel's Spine (Black Covenant)
-- one Armed Shadow weapon (for example Scarface or Daemonenschwinge)
-- an Ultima weapon with Gauph Courage
-- a Dark Opus weapon with Pendulum of Supremacy, at an opus boost of 280% or more
-
-**From your collection:** Exo Hamartia (Attack 10), Fediel's Spine, Katana of Repudiation (Pendulum of Supremacy). Differences: you have one Covenant-Ruin Fist (not two); for the Armed Shadow weapon use Bismarck 5★; no Ultima has Gauph Key of Courage, so leave that slot to any Dark weapon and tell me which.
+**Weapons:** Exo Hamartia (MH, Attack lv10); Covenant-Ruin Fist (you have one, not two); Fediel's Spine; Bismarck 5★ (the Armed Shadow weapon); Katana of Repudiation (Pendulum of Supremacy, opus boost ≥ 280%); no Ultima has Gauph Key of Courage, so use any Dark weapon in that slot and tell me which.
 
 **Capture:**
 1. friend Celeste 6★;
 2. friend Bahamut T5.
 
-### #11 JBDMhV: Wind, Manadiver
+#### #11 JBDMhV: Wind, Manadiver
+
 **Validates:**
 - Sp. C.A. Cap (Sword's Charge per sabre, γ Pendulum's transcendence upgrade)
 - the Wrath family on EX Might Sp.
 
 **Reference:** `JBDMhV.json`
 
-**Known weapons:**
-- Petit Bouquet de Fleurs (MH)
-- Sette di Spade ×2 (awakenings Attack 15 and Defense 15)
-- Sette di Spade Mk II ×2 (Attack 20 and Defense 20)
-- Reunion (Healing awakening lv4)
-- Spear of Renunciation (6★, transcendence 3; γ Pendulum + Chain of Restoration)
+**Weapons:** Petit Bouquet de Fleurs (MH); Sette di Spade ×2 (Attack 15, Defense 15); Sette di Spade Mk II ×2 (Attack 20, Defense 20); Reunion (Healing lv4); Spear of Renunciation (6★ T3; check its keys are γ Pendulum + Chain of Restoration).
 
-**Summons:** Zephyrus 6★ (main and friend). Other slots aren't recorded.
+**Summons:** Zephyrus 6★ (main and friend). **Capture:** the base grid.
 
-**From your collection:** all owned. The collection doesn't list your Spear of Renunciation's keys: check they're γ Pendulum + Chain of Restoration, or tell me what it has.
+#### #12 hbeZ3N: Water, Bandit Tycoon
 
-**Capture:** the base grid.
-
-### #12 hbeZ3N: Water, Bandit Tycoon
 **Validates:**
 - the Δ Pendulum package (C.B. DMG Cap, FC DMG Cap)
-- Clarion's Attack awakening (EX Might; skipped in the old reference)
+- Clarion's Attack awakening (EX Might)
 
-**Reference:** `hbeZ3N.json` (predates Clarion's Attack lv15, so record its level)
+**Reference:** `hbeZ3N.json`
 
-**Known weapons:**
-- Twinfall-Sky Blade (Dualblade Flash's Bond II)
-- Clarion (record its Attack awakening level)
-- Kris of Hypnos
-- Staff of Renunciation (transcendence 5; Δ Pendulum)
-- Worldbreaking Tauros 4★
-- Aquamarine Hatchet
-- daggers with Voltage II: 4 daggers in total
-
-**From your collection:** all owned except the Voltage II daggers. Your Staff of Renunciation has β Pendulum + Chain of Falsehood, not Δ Pendulum, so the Δ lines won't appear; that's fine.
+**Weapons:** Twinfall-Sky Blade; Clarion (record its Attack awakening level); Kris of Hypnos; Staff of Renunciation (yours has β + Chain of Falsehood, so the Δ lines won't appear); Worldbreaking Tauros 4★; Aquamarine Hatchet; daggers with Voltage II (4 daggers in total; you don't own these).
 
 **Capture:**
 1. the base grid;
 2. without Twinfall;
 3. with Kris of Hypnos as MH in place of Clarion.
 
-### #13 fsl8DD: Water Vitality
-**Validates:**
-- the Vitality formulas (EX Might, DEF and DMG Cap (Sp.) from Max HP)
+#### #13 fsl8DD: Water Vitality
+
+**Validates:** the Vitality formulas (EX Might, DEF and DMG Cap (Sp.) from Max HP).
 
 **Reference:** `fsl8DD.json`
 
-**Known:**
-- one Calamitous Aquashade at SL15
-- Summons: Varuna (main and friend)
-
-**From your collection:** Calamitous Aquashade 4★ (SL15), Varuna 6★ T5.
-
-**Capture:** HP at 100%; note the in-game Max HP.
-
----
+**Build:** one Calamitous Aquashade 4★ (SL15); Varuna 6★ T5 main and friend. **Capture:** HP 100%, and note the in-game Max HP.
 
 ## Done
 
-| # | Grid | Captured as | State |
+| # | Grid | Captured as | Result |
 |---|---|---|---|
-| 1 | R1ckYi's design (Pendulum of Supremacy where R1ckYi had Sagacity) | LD66IX | every line matches; CI fixture |
-| 3 | K4UydX's design | 7AiIOo | every line matches; CI fixture |
-| 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
-| 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
-| — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; three EX Might lines open until the fallback fix |
-| 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u, XfBq6u_hp75/50/25/1 | every line matches; 1% has Ω Enmity, DEF and the 0% C.A. DMG line open |
-| 6 | Dark Optimus HP sweep (QJ9736's design) | nCvV1x (10 weapons, 100%); LqZ4tM_hp75/50/25/1 (13 weapons) | every line matches |
-| 18 | Blazing Chain's supplement | WpPucd (Fire Omega) | every line matches; CI fixture. Also showed the panel counts the MC's own charge bar gain (Dainsleif) |
-| — | Contributed Water Odious grid | XZq7xW | CI fixture; confirms Odious Exalto ("Water Taboo" 25, added to the Taboo enhancement). The Taboo header, the Od-amplified lines and the befoulment lines are open until the contributor's exorcision levels and befoulments are recorded |
+| 1 | R1ckYi's design (Pendulum of Supremacy in place of Sagacity) | LD66IX | every line matches |
+| 3 | K4UydX's design | 7AiIOo | every line matches |
+| 4 | SPhnLB's design | HDJE0N | every line matches |
+| 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u at 100/75/50/25/10/5/1% | every line matches except the 1% point (see [Open questions](#open-questions)); Rightway Pathfinder has no sub-25% cutoff |
+| 6 | Dark Optimus HP sweep (QJ9736's design) | nCvV1x (100%, 10 weapons); LqZ4tM at 75/50/25/1% (13 weapons) | every line matches |
+| 7 | qBOvon's design | 0ZA6Ak; plktjH (no Mortality Bow Mk II); k2hvSF (no Mortality Bow Mk II or Moros) | every line matches |
+| 18 | Blazing Chain's supplement | WpPucd | C.A. Supp. 400,000 below its cap; the MC's own charge bar gain counts (Dainsleif) |
+| 19 | Dark session (fallback curves) | LGZkRG (base), C1UGnK (Bismarck 4★), FaJB80 (Bismarck 5★), GmPPWw (Qilin Sword) | Armed Shadow 18 at SL15 and 20 at SL20; Clouds of Nightfall 21 at SL20 |
+| 19 | Water session A0–A2 | YCKMmk (base), 2aH20k (Zodiaco Vitae), enTSuN (Xuanwu Mace Malus) | Clawed Flood 14.5 at SL15; Malus matches at SL20 |
+| 20 | Light stash parties (L1–L3) | SAlNoF, ZSEUmr | Grace of Healing is a healing boost (no Heal Cap line); Pumpkin Trick Critical 3.2 and Resilient Shine HP 6 at SL1 |
+| 19 | Earth stash party (E0–E2) | PrXqh2 (base), tIQu43 (Baihu Fangstaff, Seaside Guardian) | Terra's Might Big 18 at SL15; Resilient Grounds HP 6 at SL1; Terra's Third Spur ("for an earth ally in third position") doesn't reach the MC's panel, so it and the other two position-targeted Beast skills are suppressed |
+| 19 | Fire base and M1 | UC3M0M (F0), QmQaPH (Asauchi as main hand) | every line matches: Nameless Zanpakuto EX Might 18 at SL15; The Origin of All Zanpakuto DA 20 / TA 10, fixed, which with GameWith's Astro Modele page curates all 23 "multiattack rate" main-hand skills (Synchronized Artistry, Climate Control) flat |
+| M2 | Xingese Liuyedao as main hand | CrPnZ9 (HP 1%, turn 1; HP 100% at turns 1 and 5) | every line matches: Twelfth Crown Prince's Favorite gives Critical 30 at SL15, as the wiki says for Bang! ("a 30% boost to crit rate to the MC"), so all three main-hand "Massive boost to critical hit rate" skills (with First Comes Rock) are curated at 30; Hatred's Progression ×2 reads E. ATK (Prog.) 8 per turn |
+| M4 | Air Cannon as main hand | RKY1Eb (base: Exo Ephialtes, three Spirit of Mana, Varuna main and support), 4pWKNB (Air Cannon at SL1) | every line matches: Bang! reads Critical 30 at SL1 as at SL15, so the three main-hand Critical skills are fixed at 30 (their in-game icon is the star used for special skills); Air Blast EX Might 6. Re-importing RKY1Eb after its support summon was added turned up a site bug: deleting a party with a main or support summon raised after the delete (fixed in #593, GBF-43). |
+| — | Dark base and Advocatus Diaboli | jFY42F (new Dark base), aDkEIX (Advocatus 5★ in slot 7, HP 100–1%) | every line matches: Phantom's Supremacy EX Might 26 and True Phantom's Supremacy HP 16 at SL20; AX multiattack 2.5 and C.A. Supp. 5 (30,000). Undersky's Whispers is main hand only, so the panel doesn't change with HP; the EX Enmity capture moves to the main hand |
+| — | Advocatus Diaboli as main hand | MjthwV (HP 100/75/50/25/1%) | every line matches. Undersky's Whispers shows no panel line at any HP, but Estimated DMG rises on the Enmity curve ((1+2r)r: 659126 → 686639 / 732495 / 796692 / 871618, exact at 75/50/25%). New `panel_hidden` flag: the row is kept off the panel and listed under Hidden stats |
+| — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
-<summary>The recipes for the done grids</summary>
+<summary>Recipes for the done grids</summary>
 
-### #1 R1ckYi: Dark, Lancer Origin
-**Validates:**
-- Illustrious u1 upgrades
-- Gugalanna's charge gain −200
-- key pools
-- Demolition-Tiger's awakening
-
-**Reference:** `R1ckYi.json` (foe Light, optimus 290 / omega 20); captured as `LD66IX.json`
+#### #1 R1ckYi: Dark, Lancer Origin (captured as LD66IX)
 
 | Slot | Weapon | State |
 |---|---|---|
@@ -499,77 +320,69 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | | Pain and Suffering ×2 | |
 | | Executioner ×2 | |
 | | Causality Driver ×2 | |
-| | Katana of Repudiation | transcendence 5; β Pendulum + Pendulum of Sagacity |
+| | Katana of Repudiation | transcendence 5; β Pendulum + Pendulum of Supremacy |
 | | Pain of Death | |
-| | Demolition-Tiger Axe | element → Dark; Attack awakening lv5 |
+| | Demolition-Tiger Axe | Attack awakening lv5 |
 | | Doombringer Lyre | 5★; Anklet of Oblivion |
 
-**Summons:** Versusia (main), Hades (sub), Hades (friend).
+**Summons:** Beelzebub 4★ main, Hades 6★ T5 friend, Fediel sub.
 
-### #3 K4UydX: Earth, Rising Force
-**Validates:**
-- blanket amplification (caps, amps and supplementals ×4.0)
-- specialty-hidden Ultima and Celestial pieces
-- the ≥280 Medicinal Master package
-
-**Reference:** `K4UydX.json` (foe Water, optimus 300 / omega 0); captured as `7AiIOo.json`
+#### #3 K4UydX: Earth, Rising Force (captured as 7AiIOo)
 
 | Slot | Weapon | State |
 |---|---|---|
-| MH | Andromeda | transcendence 1 |
+| MH | Andromeda | 5★ |
 | | Bloodwrought Coral ×3 | |
 | | World Ender ×2 | |
-| | Harp of Repudiation | transcendence 5; α Pendulum + Pendulum of Sagacity |
+| | Harp of Repudiation | transcendence 5; γ Pendulum + Pendulum of Sagacity |
 | | Staff of the Medicinal Master ×2 | |
-| | Altruism-Soul Staff | element → Earth; Attack awakening lv5 |
+| | Ultima Staff | Gauph Key of Strength + α + Tria |
 | | Bounty of Gracious Earth | Oblivion Teluma + Optimus Teluma |
-| | Doombringer Trident | Anklet of Oblivion |
-| | Ultima Staff | element → Earth; keys Gauph Strength / Δ / Tessera |
+| | Doombringer Trident | Anklet of Maximality |
+| | Altruism-Soul Staff | Attack awakening lv5 |
 
-### #4 SPhnLB: Wind, Lancer Origin
-**Validates:**
-- Added HP and Debuff Res. overskills
-- World awakening specialty pairing
-- Doombringer II tiers
+**Summons:** Versusia main, Titan 6★ T5 friend; subs The Hanged Man, Galleon, Uriel.
 
-**Reference:** `SPhnLB.json` (foe Earth, optimus 460 / omega 20); captured as `HDJE0N.json`
+#### #4 SPhnLB: Wind, Lancer Origin (captured as HDJE0N)
 
 | Slot | Weapon | State |
 |---|---|---|
 | MH | Rhomphaia | transcendence 5 |
-| | Kaguya's Folding Fan ×2 | |
-| | Piercing Galewing | |
 | | Orderbringer ×2 | |
-| | Evanescence | |
+| | Kaguya's Folding Fan ×2 | |
 | | Vortex of the Void | Attack awakening lv4 |
+| | Evanescence | Attack awakening lv4 |
+| | Piercing Galewing | |
 | | Claíomh Solais Díon | |
 | | Spear of Repudiation | transcendence 5; β Pendulum + Pendulum of Extremity |
-| | Doombringer Gauntlet | 4★ |
-| | Selfless-Rift Spear | element → Wind; awakening lv5 |
-| | Worldvexing Angelos | awakening lv10 |
+| | Selfless-Rift Spear | Attack awakening lv5 |
+| | Worldvexing Angelos | Attack awakening lv10 |
+| | Doombringer Gauntlet | 5★ |
 
-**Summons:** Zephyrus 6★ (main and friend).
+**Summons:** Zephyrus 6★ T5 main and friend; subs Bastet, Ewiyar, Raphael.
 
-### #7 qBOvon rebuild: Fire Odious / Taboo
-**Validates:**
-- taboo exorcision scaling
-- befoulment Hit lines
-- Odious families
+#### #5 Dark Omega HP sweep (captured as XfBq6u)
 
-**Reference:** `0ZA6Ak.json`, `plktjH.json`, `k2hvSF.json`
+Excalibur MH; Celeste Claw Omega ×3 (AX ATK 2.5 + Skill DMG Cap 1; C.A. 6 + Ele. ATK 2; none); Celeste Grace Ater ×3; Fediel's Spine ×2 (AX HP 6 + Stamina 2; HP 3 + Stamina 3); Katana of Renunciation T3 (β Pendulum + Pendulum of Supremacy). Celeste Omega 6★ T5 main and friend, Fediel sub. Fighter Origin.
+
+#### #6 Dark Optimus HP sweep (captured as nCvV1x and LqZ4tM)
+
+Excalibur MH; Fallen Sword ×4 (Multiattack 4/4/1/1); Eternal Signature ×2; Herb Basket; Third Stripe of the Streak; Daodao Fu. LqZ4tM adds Pain of Death, Doombringer Lyre (Anklet of Oblivion) and Demolition-Tiger Axe (Attack lv5). Hades 6★ T5 main and friend, Fediel sub. Fighter Origin.
+
+#### #7 qBOvon rebuild: Fire Odious / Taboo (captured as 0ZA6Ak)
 
 | Slot | Weapon | State |
 |---|---|---|
-| MH | Unsigned Kaneshige | element → Fire |
+| MH | Higurashi | 6★, transcendence 5 |
 | | Colossus Cane Ira ×3 | |
-| | Demonspear of Prosperity Verboten ×2 | exorcision 5 |
 | | Deathcannon of Prosperity Verboten ×2 | exorcision 5 |
-| | Scythe of Renunciation | transcendence 5 |
+| | Demonspear of Prosperity Verboten ×2 | exorcision 5 |
+| | Scythe of Renunciation | transcendence 5; α Pendulum + Chain of Temptation |
 | | Mortality Bow Mk II | Special awakening lv20 |
-| | Worldforging Moros | |
+| | Doombringer Sword | Anklet of Ascendance |
 | | Heat of The Sun | |
-| | Doombringer Sword | Anklet of Oblivion |
+| | Worldforging Moros | C.A. awakening lv10 |
 
-**Summons:** Belmervolk 4★ (main) and 5★ (friend).
+**Summons:** Belmervolk 4★ main, 5★ friend. Kengo.
 
 </details>

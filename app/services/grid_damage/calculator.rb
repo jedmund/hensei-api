@@ -56,7 +56,8 @@ module GridDamage
     end
 
     # Full panel computation: the aggregate PLUS the final (amplified) contribution list
-    # that produced it — the per-line breakdown the UI explains the math with.
+    # that produced it — the per-line breakdown the UI explains the math with. Skills the
+    # game leaves off the panel (panel_hidden) aggregate apart, as :hidden_agg.
     def panel(party, state: {})
       composition = GridComposition.for_party(party)
       agg = aggregate_pass(party, state, composition) # pass 1 (raw) — to read the Exalto totals
@@ -66,11 +67,13 @@ module GridDamage
       # feed the enhancements in so boost_level (≥280) effects can fire too.
       contributions = collect_contributions(party, state.merge(enhancements: enh), composition)
       contributions = amplify_contributions(contributions, enh)
+      hidden, contributions = contributions.partition(&:panel_hidden)
       agg = Aggregator.aggregate(contributions)
       apply_rate_caps(agg)
       add_overskills(agg)
       drop_unrealized_crit_amp(agg)
-      { agg: agg, contributions: contributions, enhancements: enh }
+      { agg: agg, contributions: contributions, enhancements: enh,
+        hidden_agg: Aggregator.aggregate(hidden), hidden_contributions: hidden }
     end
 
     # The panel only lists Crit. Amp. once critical hits are guaranteed: the same two
@@ -164,7 +167,7 @@ module GridDamage
     end
 
     def aggregate_pass(party, state, composition, amplify_enh: nil)
-      contributions = collect_contributions(party, state, composition)
+      contributions = collect_contributions(party, state, composition).reject(&:panel_hidden)
       contributions = amplify_contributions(contributions, amplify_enh) if amplify_enh
       Aggregator.aggregate(contributions)
     end

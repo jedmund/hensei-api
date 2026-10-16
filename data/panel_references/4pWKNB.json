@@ -1,0 +1,34 @@
+{
+  "party": "4pWKNB",
+  "captured_on": "2026-10-16",
+  "notes": "M4: RKY1Eb with Air Cannon (3★) as main hand. Bang! adds Critical 30, Air Blast EX Might 6. Estimated DMG 11494 / to Fire 16194 / Max HP 16253.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 340,
+    "omega": 0,
+    "taboo": 0
+  },
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 36
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 6
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 39
+    }
+  ]
+}

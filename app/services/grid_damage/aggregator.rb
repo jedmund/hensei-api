@@ -24,11 +24,12 @@ module GridDamage
     # `source_ids` names the grid weapons a contribution came from (UI highlighting).
     # `source_label` ({en:, ja:}) and `source_icon` (weapon-skill icon stem) identify the
     # producing skill for per-line breakdowns; `base_value`/`multiplier` record the
-    # pre-amplification value and the enhancement factor applied to it.
+    # pre-amplification value and the enhancement factor applied to it. `panel_hidden`
+    # marks a skill the game counts in Estimated DMG but doesn't list on the panel.
     Contribution = Struct.new(:boost_type, :series, :value, :main_hand_only, :mainhand,
                               :shared_cap_group, :cap, :amplifiable, :source_ids,
                               :source_label, :source_icon, :base_value, :multiplier,
-                              :stacking_group,
+                              :stacking_group, :panel_hidden,
                               keyword_init: true)
 
     # An aggregated boost_type. `by_series` is set only for multiplicative_by_series;

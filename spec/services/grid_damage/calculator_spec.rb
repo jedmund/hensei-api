@@ -91,6 +91,19 @@ RSpec.describe GridDamage::Calculator do
 
       expect(described_class.boost_list(party, state: state)["atk"].by_series["normal"]).to eq(73.0)
     end
+
+    it "keeps panel_hidden skills off the panel and lists them as hidden stats" do
+      add_weapon(modifier: "Celere", series: "ex", position: 3, boosts: { "critical" => 12.0 })
+      WeaponSkillDatum.find_by!(modifier: "Celere").update!(panel_hidden: true)
+
+      expect(described_class.boost_list(party, state: state)).not_to have_key("critical")
+      expect(described_class.panel(party, state: state)[:hidden_agg]["critical"].total).to eq(12.0)
+
+      lines = GridDamage::PanelPresenter.present(party, state: state)[:lines]
+      expect(lines.select { |l| l[:key] == "critical" }).to contain_exactly(
+        a_hash_including(group: "hidden", label: "Critical", display: "12%")
+      )
+    end
   end
 
   context "boost_level (≥280) key effects — the two-pass activation" do

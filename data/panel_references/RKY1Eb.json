@@ -1,0 +1,44 @@
+{
+  "party": "RKY1Eb",
+  "captured_on": "2026-10-16",
+  "notes": "Water base for M4: Exo Ephialtes main hand, three Spirit of Mana, Varuna. Default Calculator Conditions (HP 100%, turn 1). Estimated DMG 18130 / to Fire 25543 / Max HP 16674.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 340,
+    "omega": 0,
+    "taboo": 0
+  },
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 36
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 45.5
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 9
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 300000
+    }
+  ]
+}

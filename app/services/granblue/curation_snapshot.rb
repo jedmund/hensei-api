@@ -30,8 +30,10 @@ module Granblue
                         aura_boostable seraphic_affected stacking applies_to battle_interaction notes key_slug
                         frame_rule provenance].freeze
     DATUM_COLUMNS = %w[modifier boost_type series size formula_type sl1 sl10 sl15 sl20 sl25 coefficient
-                       max_value aura_boostable provenance].freeze
+                       max_value aura_boostable panel_hidden provenance].freeze
     OVERRIDE_COLUMNS = %w[modifier_override series_override size_override suppressed_boosts].freeze
+    # Flags written only when set, so rows curated before the column existed stay unchanged.
+    FALSE_BY_DEFAULT = %w[panel_hidden].freeze
     ROW_SECTIONS = %w[versions effects data].freeze
 
     Report = Struct.new(:created, :updated, :skipped_newer, :suppressed, :unmatched,
@@ -166,6 +168,7 @@ module Granblue
       columns.each_with_object({}) do |column, out|
         value = record[column]
         next if value.nil? || value == [] || (value == {} && column != "condition")
+        next if value == false && FALSE_BY_DEFAULT.include?(column)
 
         out[column] = value.is_a?(BigDecimal) ? value.to_f : value
       end
@@ -233,6 +236,7 @@ module Granblue
       attrs = columns.index_with { |c| row[c] }
       attrs["condition"] ||= {} if model == WeaponSkillEffect
       attrs["depends_on"] ||= [] if model == WeaponSkillEffect
+      FALSE_BY_DEFAULT.each { |c| attrs[c] ||= false if columns.include?(c) }
       record = model.find_by(identity)
       if record.nil?
         model.create!(attrs.compact.merge(identity).merge("manually_edited_at" => edited_at))

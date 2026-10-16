@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_170001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1525,6 +1525,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_170001) do
     t.uuid "weapon_skill_version_id"
     t.datetime "manually_edited_at"
     t.string "provenance"
+    t.boolean "panel_hidden", default: false, null: false
     t.index ["modifier", "boost_type", "series", "size"], name: "index_wsd_canonical_uniqueness", unique: true, where: "(weapon_skill_version_id IS NULL)"
     t.index ["modifier"], name: "index_weapon_skill_data_on_modifier"
     t.index ["series"], name: "index_weapon_skill_data_on_series"
