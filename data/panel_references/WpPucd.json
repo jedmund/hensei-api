@@ -1,0 +1,165 @@
+{
+  "party": "WpPucd",
+  "captured_on": "2026-10-16",
+  "notes": "Fire Omega grid (Kengo). Higurashi MH transc5, Colossus Cane Ira x3, Colossus Cane Omega x2 (AX: C.A. DMG 3 + Stamina 2; ATK 2.5 + Skill DMG Cap 1), Scythe of Repudiation transc5 (γ Pendulum + Pendulum of Supremacy), Sol Remnant, Dainsleif, Damascus Knife, Doombringer Sword (Anklet of Ascendance), Heat of The Sun, Kiss of The Devil. Colossus Omega 6★ T5 main and friend (the first import had a stale Belmervolk friend summon). C.A. Supp. reads 400,000 below its cap: Blazing Chain's supplement (W9 #18). Estimated DMG 368135 / to Wind 691498 / Max HP 34270. Charge Gain 37 = Blazing Chain 30 + Dainsleif's Strategist's Temperament 7 (the MC's own charge bar gain counts).",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 400,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 67
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 470
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 193
+    },
+    {
+      "label": "Fire Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 79
+    },
+    {
+      "label": "Wind Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 2
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 70
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 16.5
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 58.8
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "Sp. C.A. Cap",
+      "boost": "sp_ca_cap",
+      "value": 15
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 18.5
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 8.8
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 150
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 150
+    },
+    {
+      "label": "Skill Supp. (Sp.)",
+      "boost": "skill_supp_sp",
+      "value": 30000
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 400000,
+      "capped": false
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": 37
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 6
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 2.5
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 4
+    },
+    {
+      "label": "Skill DMG Cap (AX)",
+      "boost": "skill_cap_ax",
+      "value": 1
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 3
+    }
+  ]
+}
