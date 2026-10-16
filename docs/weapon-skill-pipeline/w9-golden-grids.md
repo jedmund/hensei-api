@@ -10,7 +10,7 @@ Golden parties are in-game captures of the weapon panel ("Weapon Skill Boosts").
 
 Before you send a capture, check the [import checklist](#import-checklist): most wrong references so far came from the saved party not matching the game, not from the calculator.
 
-Every weapon below is in your collection (checked 2026-10-15), at the uncap shown. The collection doesn't record skill levels, so I assume each weapon is at its uncap's maximum (3★ SL10, 4★ SL15, 5★ SL20, 6★ SL25); tell me when one isn't.
+Every weapon below is in your collection (checked 2026-10-15), at the uncap shown. The collection didn't record skill levels then, so the plans assume each weapon is at its uncap's maximum (3★ SL10, 4★ SL15, 5★ SL20, 6★ SL25). Since 2026-10-16 (API #588) the import stores each weapon's skill level from the game, so a party imported now carries its real ones.
 
 ## To do
 
@@ -18,13 +18,13 @@ In priority order: where the calculator has the least evidence for the most rows
 
 - [ ] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: the HP sweeps. No golden checks HP below 100%, so every enmity, stamina and Garrison curve is unverified. This is the biggest gap.
 - [ ] **[Fire session](#fire-session) F2, [Wind session](#wind-session) W1 and W3, [Water session](#water-session) A1**: the rest of the fallback-curve evidence (#19). The Dark session covered ATK Big at SL15 and SL20; these add SL10 and ATK Medium. They back a fix that changes about 480 rows.
-- [ ] **#17 Odious below the cap** (Fire session and Water session): the Odious summon scale is now a rule (1/2/2.5/3% per exorcision level), verified only at the cap. **Wait for API PR #588 to deploy** first: until then, party imports drop exorcision levels and befoulments.
+- [ ] **#17 Odious below the cap** (Fire session and Water session): the Odious summon scale is now a rule (1/2/2.5/3% per exorcision level), verified only at the cap. The import now keeps exorcision levels and befoulments (API #588, live 2026-10-16), so this can be captured now.
 - [ ] **The rest of the Fire, Wind and Water sessions**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80).
 - [x] **#18 Blazing Chain's supplement**: done 2026-10-16 (WpPucd: C.A. Supp. 400,000 below its cap). Fire session F1 is no longer needed.
 - [ ] **[#2](#2-hoee8b-dark-no-job)**: the last exact rebuild.
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
-- [ ] **XZq7xW** (contributed Water Odious grid): once PR #588 deploys, the contributor re-imports the party so its exorcision levels and befoulments come through. See [Done](#done).
+- [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
 
 When #2, #5 and #6 are in, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
 
@@ -33,18 +33,17 @@ When #2, #5 and #6 are in, the parity baseline can be deleted: the goldens and c
 The reference is checked against the party as saved on granblue.team, so the saved party has to match the game exactly. Check these before sending:
 
 - **Summons, especially the friend summon.** The import takes whatever the deck has saved. WpPucd first came in with a stale Belmervolk friend summon instead of the Colossus Omega used for the capture.
-- **AX skills.** Until PR #588 deploys, an AX Skill DMG Cap roll is dropped on import. Check both AX skills on every AX weapon.
-- **Odious weapons.** Until PR #588 deploys, the party import drops exorcision levels and befoulments. Avoid Odious captures until then, or tell me each Verboten weapon's exorcision level, befoulment and permeation.
-- **Skill levels.** After PR #588, the import stores each weapon's skill level from the game. Until then, tell me any weapon below its uncap's maximum.
+- **Re-import after 2026-10-16.** Before API #588 went live, imports dropped AX Skill DMG Cap rolls, befoulments, permeation, exorcision levels and skill levels. A party saved before then that has AX or Odious weapons needs a fresh import from the game; the import now keeps all of them.
+- **Skill levels.** The import stores them from the game now, so a weapon below its maximum is handled automatically; there's no need to tell me.
 - **Keys and awakenings.** The collection doesn't always list keys (your Renunciation weapons have none recorded), so check them on the party.
 
-Later, the extension could capture the panel straight from the game: the deck response includes it (`damage_info.effect_value_info`, with the orange `is_max` flag and the enhancement numbers). That would remove the screenshots and catch every mismatch above automatically. It's filed as a feature.
+Later, the extension could capture the panel straight from the game: the deck response includes it (`damage_info.effect_value_info`, with the orange `is_max` flag and the enhancement numbers). That would remove the screenshots and catch every mismatch above automatically. It's filed as a feature (Kaneo GBF-41).
 
 ## Capture rules
 
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
 2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
-3. **Set the party public** on granblue.team. Record every weapon's uncap, transcendence, keys, and awakening type and level. Also record any skill level below the uncap's default; the extension syncs `skillLevel`.
+3. **Set the party public** on granblue.team. Import it from the game right before capturing, so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match.
 4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header.
 5. **HP sweeps:** set the Calculator Conditions HP slider to 100, 75, 50, 25 and 1, with one capture each.
 6. **Remove-and-diff:** one capture per removed weapon, with everything else unchanged. Recapture the base state between removals; a stale grid once faked two wrong conclusions.
