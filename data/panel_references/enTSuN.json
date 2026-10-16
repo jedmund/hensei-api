@@ -1,0 +1,136 @@
+{
+  "party": "enTSuN",
+  "captured_on": "2026-10-16",
+  "notes": "W9 Water session A2: Xuanwu Mace Malus 5★ (SL20) in the test slot. Water Omega (Soldier): Hraesvelgr MH (T5), Leviathan Gaze Omega x3 (AX ATK 3; ATK 3; HP 5 + Stamina 3), Leviathan Gaze Mare x2, Staff of Renunciation T5 (Δ Pendulum + Chain of Falsehood), Doombringer Edge (Anklet of Oblivion); Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. Estimated DMG 568954 / to Fire 892874 / Max HP 37975.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 410,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 22
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 601
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 59
+    },
+    {
+      "label": "Water Omega",
+      "boost": "omega_exalto",
+      "value": 40
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 152
+    },
+    {
+      "label": "Fire Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 10.2
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "N.A. Amp.",
+      "boost": "na_amp",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 50
+    },
+    {
+      "label": "FC DMG Cap",
+      "boost": "fc_dmg_cap",
+      "value": 20
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 100000,
+      "capped": true
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": -100
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 6
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 6
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 5
+    },
+    {
+      "label": "HP (AX)",
+      "boost": "hp_ax",
+      "value": 5
+    }
+  ]
+}
