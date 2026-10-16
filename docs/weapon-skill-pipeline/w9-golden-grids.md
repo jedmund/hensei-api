@@ -126,7 +126,7 @@ These rebuild lost goldens. Their old reference holds the expected values.
 
 ## Element sessions
 
-Each session answers several questions at once. Save the **base** grid with one slot left empty (the test slot), capture it, then put each test weapon in the test slot, one at a time, and capture again. Change nothing else between captures. A test weapon's value is its capture minus the base.
+Each session answers several questions at once. Save the **base** grid with one main-grid slot left empty (the test slot; extra slots only take certain series), capture it, then put each test weapon in the test slot, one at a time, and capture again. Change nothing else between captures. A test weapon's value is its capture minus the base.
 
 What the sessions answer:
 - **#14 Malus:** values of "<Element>'s Might" and "Essence of the <Direction>". Your Malus weapons are all 5★, so this checks SL20 only.
@@ -146,7 +146,7 @@ What the sessions answer:
   If a change matches neither column, send it anyway: the EX template row needs fixing then.
 
 ### Dark session
-**Base:** LD66IX with **Pain of Death** removed (that's the test slot). Same summons: Beelzebub 4★ main, Hades 6★ T5 friend, Fediel sub.
+**Base:** LD66IX with **one Executioner** removed (that's the test slot). Same summons: Beelzebub 4★ main, Hades 6★ T5 friend, Fediel sub.
 
 | Capture | Test slot | Answers |
 |---|---|---|
