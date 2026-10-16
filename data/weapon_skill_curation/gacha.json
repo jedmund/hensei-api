@@ -389,7 +389,7 @@
       "formula_type": "flat",
       "sl15": 30.0,
       "aura_boostable": false,
-      "provenance": "manual: Air Cannon wiki (\"At skill level 15, this weapon skill grants a 30% boost to crit rate to the MC\"); golden CrPnZ9 (Twelfth Crown Prince's Favorite at SL15 = 30). Other skill levels unconfirmed.",
+      "provenance": "manual: Air Cannon wiki (\"At skill level 15, this weapon skill grants a 30% boost to crit rate to the MC\"); golden CrPnZ9 (Twelfth Crown Prince's Favorite at SL15 = 30); golden 4pWKNB (Bang! at SL1 = 30): fixed, doesn't level (the in-game icon is the star used for special skills).",
       "edited_at": "2026-10-17T08:00:00Z"
     },
     {
