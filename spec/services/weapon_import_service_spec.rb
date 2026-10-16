@@ -365,6 +365,98 @@ RSpec.describe WeaponImportService, type: :service do
       end
     end
 
+    # Excerpts from a real party-deck response (deck "Gold3")
+    context 'with a Skill DMG Cap AX roll' do
+      let!(:ax_skill_cap_modifier) { create(:weapon_stat_modifier, :ax_skill_cap) }
+
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'param' => {
+                'id' => '77777777',
+                'image_id' => '1040213900',
+                'evolution' => 5,
+                'phase' => 0,
+                'augment_skill_info' => [[
+                  { 'depth' => nil, 'effect_value' => '2.5', 'show_value' => '+2.5%', 'skill_id' => 1589 },
+                  { 'depth' => nil, 'effect_value' => '1', 'show_value' => '+1%', 'skill_id' => 1598 }
+                ]],
+                'augment_skill_icon_image' => %w[ex_skill_atk ex_skill_ab_limit],
+                'odiant' => { 'exorcision_level' => 0, 'is_odiant_weapon' => false, 'max_exorcision_level' => 0,
+                              'reduction_effect_value' => 0 },
+                'skill_level' => '20'
+              },
+              'master' => { 'id' => '1040213900' }
+            }
+          ]
+        }
+      end
+
+      it 'maps skill_id 1598 to ax_skill_cap and stores the skill level' do
+        result = described_class.new(user, game_data).import
+
+        expect(result.errors).to be_empty
+        weapon = result.created.first
+        expect(weapon.ax_modifier1).to eq(ax_atk_modifier)
+        expect(weapon.ax_strength1).to eq(2.5)
+        expect(weapon.ax_modifier2).to eq(ax_skill_cap_modifier)
+        expect(weapon.ax_strength2).to eq(1.0)
+        expect(weapon.skill_level).to eq(20)
+        expect(weapon.befoulment_permeation).to be_nil
+      end
+    end
+
+    context 'with an Odious weapon' do
+      let!(:befoulment_modifier) { create(:weapon_stat_modifier, :befoul_atk_down) }
+      let!(:odious_weapon) do
+        Weapon.find_by(granblue_id: '1040220800') ||
+          create(:weapon, :odiant, granblue_id: '1040220800', name_en: 'Demonspear of Prosperity Verboten')
+      end
+
+      let(:param) do
+        {
+          'id' => '88888888',
+          'image_id' => '1040220800',
+          'evolution' => 4,
+          'phase' => 0,
+          'augment_skill_info' => [[{ 'depth' => 2, 'effect_value' => 6.2, 'show_value' => '-6.2%', 'skill_id' => 2873 }]],
+          'augment_skill_icon_image' => ['ex_skill_atk_down'],
+          'odiant' => { 'exorcision_level' => 5, 'is_odiant_weapon' => true, 'max_exorcision_level' => 5,
+                        'reduction_effect_value' => 180 },
+          'skill_level' => '15'
+        }
+      end
+      let(:game_data) { { 'list' => [{ 'param' => param, 'master' => { 'id' => '1040220800' } }] } }
+
+      it 'stores the befoulment, permeation, exorcision and skill levels' do
+        result = described_class.new(user, game_data).import
+
+        expect(result.errors).to be_empty
+        weapon = result.created.first
+        expect(weapon.befoulment_modifier).to eq(befoulment_modifier)
+        # effect_value is the magnitude; the sign is only in show_value
+        expect(weapon.befoulment_strength).to eq(6.2)
+        expect(weapon.befoulment_permeation).to eq(2)
+        expect(weapon.exorcism_level).to eq(5)
+        expect(weapon.skill_level).to eq(15)
+        expect(weapon.ax_modifier1).to be_nil
+      end
+
+      it 'keeps stored permeation and skill level when the game omits them' do
+        existing = create(:collection_weapon, user: user, weapon: odious_weapon, game_id: '88888888',
+                                              befoulment_permeation: 4, skill_level: 12)
+        param['augment_skill_info'][0][0].delete('depth')
+        param.delete('skill_level')
+
+        described_class.new(user, game_data, update_existing: true).import
+
+        expect(existing.reload.befoulment_permeation).to eq(4)
+        expect(existing.skill_level).to eq(12)
+        expect(existing.exorcism_level).to eq(5)
+      end
+    end
+
     context 'with duplicate game_id' do
       let(:game_data) do
         {

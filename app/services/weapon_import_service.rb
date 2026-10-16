@@ -37,7 +37,7 @@ class WeaponImportService
     @skipped = []
     @errors = []
     @awakening_cache = {}
-    @modifier_cache = {}
+    @augment_parser = Granblue::AugmentSkillParser.new(log_tag: 'WeaponImportService')
     @processed_game_ids = []
   end
 
@@ -294,18 +294,8 @@ class WeaponImportService
     awakening_attrs = parse_awakening(param['arousal'])
     attrs.merge!(awakening_attrs) if awakening_attrs
 
-    # Check if this is an Odiant (befoulment) weapon
-    odiant = param['odiant']
-    if odiant && odiant['is_odiant_weapon'] == true
-      # Parse befoulment from augment_skill_info
-      befoulment_attrs = parse_befoulment(param['augment_skill_info'])
-      attrs.merge!(befoulment_attrs) if befoulment_attrs
-      attrs[:exorcism_level] = odiant['exorcision_level'].to_i.clamp(0, 5)
-    else
-      # Regular weapon - parse AX skills
-      ax_attrs = parse_ax_skills(param['augment_skill_info'])
-      attrs.merge!(ax_attrs) if ax_attrs
-    end
+    # Befoulment and exorcism level for Odious weapons, AX skills otherwise
+    attrs.merge!(@augment_parser.attributes(param))
 
     attrs
   end
@@ -345,96 +335,6 @@ class WeaponImportService
     return nil unless slug
 
     @awakening_cache[slug] ||= Awakening.find_by(slug: slug, object_type: 'Weapon')
-  end
-
-  ##
-  # Parses AX skill data from game format.
-  # Game augment_skill_info is an array of skill arrays.
-  #
-  # @param augment_skill_info [Array] The game's AX skill data
-  # @return [Hash, nil] AX skill attributes or nil if no AX skills
-  def parse_ax_skills(augment_skill_info)
-    return nil if augment_skill_info.blank? || !augment_skill_info.is_a?(Array)
-
-    # First entry in augment_skill_info is an array of skills
-    skills = augment_skill_info.first
-    return nil if skills.blank? || !skills.is_a?(Array)
-
-    attrs = {}
-
-    # First AX skill
-    if skills[0].is_a?(Hash)
-      ax1 = parse_single_augment_skill(skills[0])
-      if ax1
-        attrs[:ax_modifier1_id] = ax1[:modifier_id]
-        attrs[:ax_strength1] = ax1[:strength]
-      end
-    end
-
-    # Second AX skill
-    if skills[1].is_a?(Hash)
-      ax2 = parse_single_augment_skill(skills[1])
-      if ax2
-        attrs[:ax_modifier2_id] = ax2[:modifier_id]
-        attrs[:ax_strength2] = ax2[:strength]
-      end
-    end
-
-    attrs.empty? ? nil : attrs
-  end
-
-  ##
-  # Parses befoulment data from game format.
-  # Odiant weapons have a single befoulment in augment_skill_info.
-  #
-  # @param augment_skill_info [Array] The game's augment skill data
-  # @return [Hash, nil] Befoulment attributes or nil if no befoulment
-  def parse_befoulment(augment_skill_info)
-    return nil if augment_skill_info.blank? || !augment_skill_info.is_a?(Array)
-
-    skills = augment_skill_info.first
-    return nil if skills.blank? || !skills.is_a?(Array)
-
-    skill = skills.first
-    return nil unless skill.is_a?(Hash)
-
-    result = parse_single_augment_skill(skill)
-    return nil unless result
-
-    {
-      befoulment_modifier_id: result[:modifier_id],
-      befoulment_strength: result[:strength]
-    }
-  end
-
-  ##
-  # Parses a single augment skill (AX or befoulment) from game data.
-  #
-  # @param skill [Hash] Single skill data with skill_id and effect_value
-  # @return [Hash, nil] { modifier_id:, strength: } or nil
-  def parse_single_augment_skill(skill)
-    return nil unless skill['skill_id'].present?
-
-    game_skill_id = skill['skill_id'].to_i
-    modifier = find_modifier_by_game_skill_id(game_skill_id)
-
-    unless modifier
-      # Log unknown skill ID with icon for discovery
-      Rails.logger.warn(
-        "[WeaponImportService] Unknown augment skill_id=#{game_skill_id} " \
-        "icon=#{skill['augment_skill_icon_image']}"
-      )
-      return nil
-    end
-
-    strength = Granblue::AugmentStrength.parse(skill['effect_value'], skill['show_value'])
-    return nil unless strength
-
-    { modifier_id: modifier.id, strength: strength }
-  end
-
-  def find_modifier_by_game_skill_id(game_skill_id)
-    @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
   end
 
   ##
