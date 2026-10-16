@@ -129,4 +129,29 @@ RSpec.describe 'Grid item cross-party authorization', type: :request do
 
     it_behaves_like 'a party-scoped grid resource', path: 'grid_summons', param_key: :summon
   end
+
+  describe 'nested grid attributes on a party' do
+    let(:owner_weapon) { create(:grid_weapon, party: owner_party, position: 0) }
+    let(:attacker_weapon) { create(:grid_weapon, party: attacker_party, position: 0) }
+
+    it 'ignores a party id on a nested item when updating your own party' do
+      owner_weapon
+      put "/api/v1/parties/#{attacker_party.id}",
+          params: { party: { weapons_attributes: [{ id: attacker_weapon.id, party_id: owner_party.id, position: 1 }] } }.to_json,
+          headers: attacker_headers
+
+      expect(attacker_weapon.reload.party_id).to eq(attacker_party.id)
+      expect(owner_party.weapons.reload.pluck(:id)).to eq([owner_weapon.id])
+    end
+
+    it 'ignores a party id on a nested item when creating a party' do
+      owner_weapon
+      weapon = create(:weapon)
+      post '/api/v1/parties',
+           params: { party: { name: 'new', weapons_attributes: [{ weapon_id: weapon.id, party_id: owner_party.id, position: 2 }] } }.to_json,
+           headers: attacker_headers
+
+      expect(owner_party.weapons.reload.pluck(:id)).to eq([owner_weapon.id])
+    end
+  end
 end

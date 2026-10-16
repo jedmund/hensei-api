@@ -483,12 +483,12 @@ module Api
           :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,
           :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
           full_auto_skills: %w[0 1 2 3],
-          characters_attributes: [:id, :party_id, :character_id, :position, :uncap_level,
+          characters_attributes: [:id, :character_id, :position, :uncap_level,
                                   :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
                                   { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
                                     earring: %i[modifier strength] }],
-          summons_attributes: %i[id party_id summon_id position main friend quick_summon uncap_level transcendence_step],
-          weapons_attributes: %i[id party_id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level]
+          summons_attributes: %i[id summon_id position main friend quick_summon uncap_level transcendence_step],
+          weapons_attributes: %i[id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level]
         )
       end
 
