@@ -16,7 +16,7 @@ Every weapon below is in your collection (checked 2026-10-15), at the uncap show
 
 In priority order: where the calculator has the least evidence for the most rows. The number is the grid's ID; other docs refer to it.
 
-- [ ] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: the HP sweeps. No golden checks HP below 100%, so every enmity, stamina and Garrison curve is unverified. This is the biggest gap.
+- [x] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: done 2026-10-16. XfBq6u (Omega) at 100/75/50/25/1% and nCvV1x/LqZ4tM (Optimus) at 100/75/50/25/1% match every line, except XfBq6u at 1% (Ω Enmity 350 vs 345.17, DEF 64.8 vs 64.58: the curves near 0 HP; Persistence pins the slider at exactly 1%).
 - [ ] **[Fire session](#fire-session) F2, [Wind session](#wind-session) W1 and W3, [Water session](#water-session) A1**: the rest of the fallback-curve evidence (#19). The Dark session covered ATK Big at SL15 and SL20; these add SL10 and ATK Medium. They back a fix that changes about 480 rows.
 - [ ] **#17 Odious below the cap** (Fire session and Water session): the Odious summon scale is now a rule (1/2/2.5/3% per exorcision level), verified only at the cap. The import now keeps exorcision levels and befoulments (API #588, live 2026-10-16), so this can be captured now.
 - [ ] **The rest of the Fire, Wind and Water sessions**: Proven awakenings (#15), Malus (#14), covenants (#16).
@@ -26,7 +26,7 @@ In priority order: where the calculator has the least evidence for the most rows
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
 - [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
 
-When #2, #5 and #6 are in, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
+When #2 is in (#5 and #6 are done), the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
 
 ## Import checklist
 
@@ -407,6 +407,8 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
 | — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; three EX Might lines open until the fallback fix |
+| 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u, XfBq6u_hp75/50/25/1 | every line matches; 1% has Ω Enmity, DEF and the 0% C.A. DMG line open |
+| 6 | Dark Optimus HP sweep (QJ9736's design) | nCvV1x (10 weapons, 100%); LqZ4tM_hp75/50/25/1 (13 weapons) | every line matches |
 | 18 | Blazing Chain's supplement | WpPucd (Fire Omega) | every line matches; CI fixture. Also showed the panel counts the MC's own charge bar gain (Dainsleif) |
 | — | Contributed Water Odious grid | XZq7xW | CI fixture; confirms Odious Exalto ("Water Taboo" 25, added to the Taboo enhancement). The Taboo header, the Od-amplified lines and the befoulment lines are open until the contributor's exorcision levels and befoulments are recorded |
 
