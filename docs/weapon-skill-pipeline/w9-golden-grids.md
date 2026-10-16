@@ -84,7 +84,7 @@ Tidings of the New World's SL20 value (16, from a template) never applies: World
 
 - [ ] **Deck JSON with base captures.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel at full HP and default conditions: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state. Paste it with any 100% capture. Calculator Conditions (HP slider, foe element) are rendered as HTML, so sweep points still need screenshots. (Kaneo GBF-41 makes this automatic later.)
 - [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
-- [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
+- [x] **Omega enmity and Garrison near 0 HP**: answered 2026-10-16. XfBq6u at 10% and 5% matches Ω Enmity (294, 322), DEF (62.01, 63.56) and Rightway's C.A. DMG (12, 6), so the curves are right and Rightway has no sub-25% cutoff. Only the slider's 1% point stays open (it reads as if HP were about 0.1-0.25%).
 - [x] **Grace of Healing (#20)**: answered 2026-10-16 by SAlNoF and ZSEUmr. It's a healing boost, not a heal cap: no Heal Cap line, so heal_cap is suppressed on both tiers.
 
 ### Done
