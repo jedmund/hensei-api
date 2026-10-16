@@ -15,7 +15,7 @@ Each grid below was reconstructed from its reference's notes.
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
 
-Still wanted, in priority order: 5 and 6 (the HP sweeps), 2, then 17 and 18 (open questions from 0ZA6Ak), 14 to 16, and 8 to 13.
+Still wanted, in priority order: 5 and 6 (the HP sweeps), 2, then 17 to 20 (single-value questions), 14 to 16, and 8 to 13.
 
 ## Capture rules (from past rounds)
 
@@ -264,11 +264,28 @@ These weren't captured before. Each varies one thing, so the difference between 
   1. with Higurashi as main hand;
   2. the same grid with another main hand.
 
+### 19. EX skills with no family of their own
+**Question:** about 240 EX skills have no family curve, so they borrow the Taboo curve (×1.2): ATK Big reads 7.2/18/21.6 at SL1/10/15, where the plain EX curve would give 6/15/18. Which one the game uses is unverified (W10 #576, "Taboo fallback"). Proven's Armed skills (#15) are one case; this grid covers the rest.
+- **Grid:** any stable grid plus **one** of these weapons: Opening Shamisen (Clawed Blaze, ATK Medium), or any EX weapon whose skill is a plain "Big boost to <element> allies' ATK" with no named family.
+- **Captures:**
+  1. at its max skill level;
+  2. at SL10 (or the lowest you have);
+  3. removed.
+
+### 20. Grace of Healing
+**Question:** Asclepius Rod's Grace of Healing ("boost to healing") is stored as a heal cap boost, with values borrowed from the Taboo curve. It might be a healing boost (回復性能), which the panel may not show at all, rather than a heal cap (回復上限).
+- **Grid:** any grid plus **Asclepius Rod**.
+- **Captures:**
+  1. with it, and the skill's Japanese name from the weapon's detail screen;
+  2. removed.
+
+  If the panel shows no healing line for it, that answers the question too.
+
 ## Priority
 
 1. **5 and 6, the HP sweeps.** They anchor every HP-scaled curve.
 2. **2,** the rest of section A.
-3. **17 and 18.** They pin the two values 0ZA6Ak couldn't show.
+3. **17 to 20.** They pin values the current goldens can't show, and unblock W10's Taboo fallback and Grace of Healing.
 4. **14 to 16.** These unblock W10 Track D.
 5. **8 to 13,** as you have the weapons.
 
