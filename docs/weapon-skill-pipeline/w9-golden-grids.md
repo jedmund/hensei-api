@@ -16,7 +16,6 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Earth stash party](#earth-stash-party-e0e2)** (E0–E2): Terra's Third Spur at SL15, EX HP Big.
 - [ ] **[Main-hand swaps M1 and M2](#main-hand-swaps-m1m5)**: Asauchi (DA/TA Medium at SL15) and Xingese Liuyedao (Critical at SL15). M1 needs the [Fire base](#base-grids) (F0) first.
 - [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
@@ -53,7 +52,7 @@ Skill levels come from the import, so there's no need to report them. Element-ch
 | **F0** | Fire | Higurashi (6★ T5) MH; Colossus Cane Omega ×2 (5★); Colossus Cane Ira ×3 (4★); Scythe of Repudiation (6★ T5, β Pendulum + Pendulum of Extremity); Doombringer Sword (5★, Anklet of Ascendance); Heat of The Sun (5★); one empty test slot. Agni 6★ T5 main, Agni friend (tell me which). No Odious weapons, so C.A. Supp. stays under its cap. | **not captured** |
 | **W0** | Wind | HDJE0N with Piercing Galewing removed (the test slot). Zephyrus 6★ T5 main and friend. | **not captured** |
 | **YCKMmk** | Water | Hraesvelgr (6★ T5) MH; Leviathan Gaze Omega ×3; Leviathan Gaze Mare ×2; Staff of Renunciation (6★ T5, Δ Pendulum + Chain of Falsehood); Doombringer Edge (Anklet of Oblivion); two empty slots. Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. | captured |
-| **E0** | Earth | 7AiIOo with both World Enders removed, nothing in their slots | **not captured** |
+| **E0** | Earth | 7AiIOo with both World Enders removed, nothing in their slots | captured (PrXqh2) |
 | **7AiIOo** | Earth | as captured | captured |
 | **ZSEUmr** | Light | Rhongomyniad (5★) MH, Lantern Blade, Asclepius Rod, Frilly Charm Bracelet; free sub slots. Luminiera Omega 6★ main and friend. | captured |
 
@@ -105,7 +104,6 @@ Not in your collection or stash at a useful level. Any one weapon per group, at 
 | EX HP Big | 10 | HP | any Resilient weapon or Mysterious Wand at **SL15 or SL20** (the EX row stops at SL10) |
 | EX HP Medium | 13 | HP | Willed Blaze/Flood/Grounds/Gale (Miner's Lantern, Shark Bouquet, Beach Flag, Achromatic Palette, …), Mysterious VIT (Mysterious Hammer/Harp/Hatchet, Pina Colata Bow, Sombre Gauntlet, Tadpole Tail), Downfall of Ignorance (Iridescent Bow). Mysterious Hatchet also pins EX HP Small at SL15. |
 | EX ATK Small | 3 | EX Might | Speed Cast (Fonic Rod), All-Night Party (Spirit Seeker), Succession of Knighthood (Brand of Binding Oath), at **SL20** |
-| Terra's Third Spur | 1 | C.A. DMG | Baihu Fangstaff at **SL20** |
 | Odious HP/Enmity Small (*stopgap*) | 2 | HP, Od Enmity | Taboo Netherfell's Aegis (Codex of Sanctity Verboten), Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
 
 #### Armed curve checks
@@ -282,6 +280,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 19 | Dark session (fallback curves) | LGZkRG (base), C1UGnK (Bismarck 4★), FaJB80 (Bismarck 5★), GmPPWw (Qilin Sword) | Armed Shadow 18 at SL15 and 20 at SL20; Clouds of Nightfall 21 at SL20 |
 | 19 | Water session A0–A2 | YCKMmk (base), 2aH20k (Zodiaco Vitae), enTSuN (Xuanwu Mace Malus) | Clawed Flood 14.5 at SL15; Malus matches at SL20 |
 | 20 | Light stash parties (L1–L3) | SAlNoF, ZSEUmr | Grace of Healing is a healing boost (no Heal Cap line); Pumpkin Trick Critical 3.2 and Resilient Shine HP 6 at SL1 |
+| 19 | Earth stash party (E0–E2) | PrXqh2 (base), tIQu43 (Baihu Fangstaff, Seaside Guardian) | Terra's Might Big 18 at SL15; Resilient Grounds HP 6 at SL1; Terra's Third Spur ("for an earth ally in third position") doesn't reach the MC's panel, so it and the other two position-targeted Beast skills are suppressed |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
