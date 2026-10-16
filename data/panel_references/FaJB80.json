@@ -1,7 +1,7 @@
 {
   "party": "FaJB80",
   "captured_on": "2026-10-16",
-  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Bismarck 5★ (Armed Shadow, SL20), Special awakening lv15 in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1580326 / to Light 2039003 / Max HP 79402. EX Might +20: Armed Shadow at SL20 = 20, one less than EX Might Big's 21 and equal to the normal Might Big row (6/15/18/20); consistent with Clarion's Armed Flood at SL20 = 35 with an Attack awakening lv15 (+15). The Special awakening adds Skill DMG Cap and DMG Cap Pen. (these match), not EX. Open until the fallback fix.",
+  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Bismarck 5★ (Armed Shadow, SL20), Special awakening lv15 in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1580326 / to Light 2039003 / Max HP 79402. EX Might +20: Armed Shadow at SL20 = 20, one less than EX Might Big's 21 and equal to the normal Might Big row (6/15/18/20); consistent with Clarion's Armed Flood at SL20 = 35 with an Attack awakening lv15 (+15). The Special awakening lv15 adds Skill DMG Cap +10 and DMG Cap +3 (confirmed by the user), not EX; DMG Cap was already at its 20% cap, so the +3 shows as DMG Cap Pen. +1.5 (half the excess). Both match. Skill levels confirmed: 4★ SL15, 5★ SL20. Open until the fallback fix.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
