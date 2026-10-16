@@ -8,22 +8,37 @@ Golden parties are in-game captures of the weapon panel ("Weapon Skill Boosts").
 2. Build it on your account, following the [capture rules](#capture-rules).
 3. Send me the party link and the screenshots. I write the reference and fix whatever doesn't match.
 
+Before you send a capture, check the [import checklist](#import-checklist): most wrong references so far came from the saved party not matching the game, not from the calculator.
+
 Every weapon below is in your collection (checked 2026-10-15), at the uncap shown. The collection doesn't record skill levels, so I assume each weapon is at its uncap's maximum (3★ SL10, 4★ SL15, 5★ SL20, 6★ SL25); tell me when one isn't.
 
 ## To do
 
-In priority order. The number is the grid's ID; other docs refer to it.
+In priority order: where the calculator has the least evidence for the most rows. The number is the grid's ID; other docs refer to it.
 
-- [ ] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: the HP sweeps. They anchor every HP-scaled curve.
+- [ ] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: the HP sweeps. No golden checks HP below 100%, so every enmity, stamina and Garrison curve is unverified. This is the biggest gap.
+- [ ] **[Fire session](#fire-session) F2, [Wind session](#wind-session) W1 and W3, [Water session](#water-session) A1**: the rest of the fallback-curve evidence (#19). The Dark session covered ATK Big at SL15 and SL20; these add SL10 and ATK Medium. They back a fix that changes about 480 rows.
+- [ ] **#17 Odious below the cap** (Fire session and Water session): the Odious summon scale is now a rule (1/2/2.5/3% per exorcision level), verified only at the cap. **Wait for API PR #588 to deploy** first: until then, party imports drop exorcision levels and befoulments.
+- [ ] **The rest of the Fire, Wind and Water sessions**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80).
-- [ ] **[Fire session](#fire-session)**: Blazing Chain's supplement (#18), fallback curves at SL10 (#19), Malus (#14), Proven awakenings (#15), Wilnas's covenant (#16), Odious below the cap (#17).
-- [ ] **[Wind session](#wind-session)**: Proven at two skill levels (#15), fallback curves (#19), Malus (#14), Ewiyar's covenant (#16).
-- [ ] **[Water session](#water-session)**: Odious at 5★ below the cap (#17), ATK Medium fallback (#19), Malus (#14), Wamdus's covenant (#16).
+- [x] **#18 Blazing Chain's supplement**: done 2026-10-16 (WpPucd: C.A. Supp. 400,000 below its cap). Fire session F1 is no longer needed.
 - [ ] **[#2](#2-hoee8b-dark-no-job)**: the last exact rebuild.
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
-- [ ] **XZq7xW** (contributed Water Odious grid): waiting on the contributor's exorcision levels and befoulments for each Verboten weapon. See [Done](#done).
+- [ ] **XZq7xW** (contributed Water Odious grid): once PR #588 deploys, the contributor re-imports the party so its exorcision levels and befoulments come through. See [Done](#done).
 
 When #2, #5 and #6 are in, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
+
+## Import checklist
+
+The reference is checked against the party as saved on granblue.team, so the saved party has to match the game exactly. Check these before sending:
+
+- **Summons, especially the friend summon.** The import takes whatever the deck has saved. WpPucd first came in with a stale Belmervolk friend summon instead of the Colossus Omega used for the capture.
+- **AX skills.** Until PR #588 deploys, an AX Skill DMG Cap roll is dropped on import. Check both AX skills on every AX weapon.
+- **Odious weapons.** Until PR #588 deploys, the party import drops exorcision levels and befoulments. Avoid Odious captures until then, or tell me each Verboten weapon's exorcision level, befoulment and permeation.
+- **Skill levels.** After PR #588, the import stores each weapon's skill level from the game. Until then, tell me any weapon below its uncap's maximum.
+- **Keys and awakenings.** The collection doesn't always list keys (your Renunciation weapons have none recorded), so check them on the party.
+
+Later, the extension could capture the panel straight from the game: the deck response includes it (`damage_info.effect_value_info`, with the orange `is_max` flag and the enhancement numbers). That would remove the screenshots and catch every mismatch above automatically. It's filed as a feature.
 
 ## Capture rules
 
@@ -188,7 +203,7 @@ The panel shows EX Might without its decimal (the base is 230.5). The three EX M
 | Capture | Change | Answers |
 |---|---|---|
 | F0 | test slot empty | the base; #18 with Higurashi |
-| F1 | main hand → Unsigned Kaneshige 5★ (Fire), test slot empty | #18 without Higurashi |
+| ~~F1~~ | ~~main hand → Unsigned Kaneshige 5★ (Fire), test slot empty~~ | not needed: WpPucd answered #18 |
 | F2 | Resentment's Gaze 3★ (Armed Blaze, SL10) | #19 ATK Big at SL10 |
 | F3 | Ushumgal 5★, Attack awakening 15 | #15 Armed Blaze at SL20 with the Attack awakening |
 | F4 | Ushumgal 5★, Special awakening 15 | #15 the Special awakening instead |
@@ -393,6 +408,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
 | — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; three EX Might lines open until the fallback fix |
+| 18 | Blazing Chain's supplement | WpPucd (Fire Omega) | every line matches; CI fixture. Also showed the panel counts the MC's own charge bar gain (Dainsleif) |
 | — | Contributed Water Odious grid | XZq7xW | CI fixture; confirms Odious Exalto ("Water Taboo" 25, added to the Taboo enhancement). The Taboo header, the Od-amplified lines and the befoulment lines are open until the contributor's exorcision levels and befoulments are recorded |
 
 <details>
