@@ -264,13 +264,19 @@ These weren't captured before. Each varies one thing, so the difference between 
   1. with Higurashi as main hand;
   2. the same grid with another main hand.
 
-### 19. EX skills with no family of their own
-**Question:** about 240 EX skills have no family curve, so they borrow the Taboo curve (×1.2): ATK Big reads 7.2/18/21.6 at SL1/10/15, where the plain EX curve would give 6/15/18. Which one the game uses is unverified (W10 #576, "Taboo fallback"). Proven's Armed skills (#15) are one case; this grid covers the rest.
-- **Grid:** any stable grid plus **one** of these weapons: Opening Shamisen (Clawed Blaze, ATK Medium), or any EX weapon whose skill is a plain "Big boost to <element> allies' ATK" with no named family.
-- **Captures:**
-  1. at its max skill level;
-  2. at SL10 (or the lowest you have);
-  3. removed.
+### 19. EX skills with no family of their own (fallback curves)
+**Question:** about 470 generated rows on EX skills with no family borrow the Taboo curve. The build's fallback ranks curves by size, so the largest (Taboo ×1.2) wins. That's a bug in our code, not game behaviour, and nothing on the wiki ties these skills to Odious values. The plain EX curves differ at every skill level, so **one capture at a known SL, plus one with the weapon removed,** settles each case.
+
+**Setup:** one stable grid of any element; keep it fixed for all of 19a–19d. For each test weapon, put it in the same slot, capture, then take it out and capture again. Record the test weapon's **skill level** each time. A second SL (for example a fresh SL1 copy) confirms the shape but isn't required.
+
+| # | Skill type | Weapons (any one) | Panel line | We show now (SL1/10/15) | EX curve would give |
+|---|---|---|---|---|---|
+| 19a | ATK Big, 312 versions: the "Armed <element>" event SSRs and similar | Bident or Aburaboshi Ramen Flag (Armed Flood), Blade of Remorse (Armed Gale), Astro Modele (Armed Blaze), Bismarck (Armed Shadow), Autograph Art Sketchbook (Armed Shine), Agarthan Hunter's Dagger (Armed Grounds) | EX Might | 7.2 / 18 / 21.6 | 6 / 15 / 18 |
+| 19b | ATK Medium, 134 versions: the "Clawed <element>" event SRs | Fire Starter or Astro Wand (Clawed Blaze), Alster Spear (Clawed Gale), Death Whip (Clawed Flood), Halite Axe (Clawed Grounds), Corn Slicer (Clawed Shadow), Bedazzled Dagger (Clawed Shine) | EX Might | 3.6 / 14.4 / 17.4 | 3 / 12 / 14.5 |
+| 19c | HP Medium, 11 versions: the "Willed <element>" event SRs | Miner's Lantern (Willed Blaze), Shark Bouquet (Willed Flood), Beach Flag (Willed Grounds), Achromatic Palette (Willed Gale) | HP | 7.2 / 18 / 20.4 | 3 / 12 / 14.5 |
+| 19d | DA + TA Medium (optional) | Anti-Asteroid Beam Cannon, Materpent Lyre or Seaside Guardian (Synchronized Artistry) | DA Rate, TA Rate | 1 / 4.2 / 6 | 0.8 / 3.5 / 5 |
+
+An SR at SL1 is easy to get from a fresh drop, so 19b and 19c can cover two SLs cheaply. If the panel's change matches neither column, send it anyway: that means the EX template row itself needs fixing.
 
 ### 20. Grace of Healing
 **Question:** Asclepius Rod's Grace of Healing ("boost to healing") is stored as a heal cap boost, with values borrowed from the Taboo curve. It might be a healing boost (回復性能), which the panel may not show at all, rather than a heal cap (回復上限).
