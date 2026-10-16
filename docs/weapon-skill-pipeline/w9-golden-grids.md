@@ -18,7 +18,7 @@ In priority order: where the calculator has the least evidence for the most rows
 
 ### Verification (checks a model we already have)
 
-- [x] **[Water session](#water-session) A0-A2**: done 2026-10-16. YCKMmk (base) and enTSuN (Xuanwu Mace Malus at SL20, matches) pass; 2aH20k shows Clawed Flood at **14.5** at SL15, confirming the EX Might Medium curve the fallback-curve fix moves 134 rows to (open until the fix). A3-A4 (covenants) remain.
+- [x] **[Water session](#water-session) A0-A2**: done 2026-10-16. YCKMmk (base) and enTSuN (Xuanwu Mace Malus at SL20, matches) pass; 2aH20k shows Clawed Flood at **14.5** at SL15, confirming the EX Might Medium curve the fallback-curve fix moves 134 rows to (matches since the fix went live). A3-A4 (covenants) remain.
 - [ ] **[Fire session](#fire-session) F2: Resentment's Gaze 3★ (Armed Blaze, SL10).** Adds an SL10 point to the Armed curve (6/15/18/20); the panel should add 15.
 - [ ] **[Wind session](#wind-session) W1 and W3**: Windhose 4★ (Armed Gale, SL15, no awakening) and Daur da Blao (Armed Gale, SL20). A second element for the Armed curve.
 - [ ] **#17 Odious below the cap** (Fire session and Water session): the Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★), verified only at the cap.
@@ -27,9 +27,9 @@ In priority order: where the calculator has the least evidence for the most rows
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
 - [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
 
-### Fallback-curve captures (PR #591)
+### Fallback-curve captures (fix live since 2026-10-16, #592)
 
-The fallback-curve fix gives every skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed (Dark session, 2aH20k). The groups below have no capture yet. Some follow an EX row that's missing values, and some (marked *stopgap*) borrow the Optimus curve because no EX curve exists. One capture at a known skill level per group pins the curve. Swap the weapon into a base grid's test slot and capture with and without it, as in the element sessions.
+The fallback-curve fix (live in production) gives every skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed (Dark session, 2aH20k). The groups below have no capture yet. Some follow an EX row that's missing values, and some (marked *stopgap*) borrow the Optimus curve because no EX curve exists. One capture at a known skill level per group pins the curve. Swap the weapon into a base grid's test slot and capture with and without it, as in the element sessions.
 
 **In your collection now:**
 
@@ -45,9 +45,9 @@ The fallback-curve fix gives every skill with no family of its own the curve of 
 
 | # | Weapon (stash state) | Element | Slot | Its skills | Tests | Base |
 |---|---|---|---|---|---|---|
-| L1 | Asclepius Rod (0★, SL1) | Light | sub | Zion's Healing, Grace of Healing | Heal Cap (#20); Zion's Healing's known value is subtracted | any Light grid with 3 free sub slots |
-| L2 | Lantern Blade (3★, SL1) | Light | sub | Pumpkin Trick | Critical, EX Medium | same party |
-| L3 | Frilly Charm Bracelet (3★, SL1) | Light | sub | Resilient Shine (Covert Artistry is main hand only) | HP, EX Big | same party |
+| L1 ✓ | Asclepius Rod (0★, SL1) | Light | sub | Zion's Healing, Grace of Healing | Heal Cap (#20): answered, no Heal Cap line | any Light grid with 3 free sub slots |
+| L2 ✓ | Lantern Blade (3★, SL1) | Light | sub | Pumpkin Trick | Critical, EX Medium | same party |
+| L3 ✓ | Frilly Charm Bracelet (3★, SL1) | Light | sub | Resilient Shine (Covert Artistry is main hand only) | HP, EX Big | same party |
 | E1 | Baihu Fangstaff (4★, SL15) | Earth | sub | Terra's Might, Terra's Third Spur | C.A. DMG and Might at SL15 | 7AiIOo with 2 weapons removed |
 | E2 | Seaside Guardian (3★, SL1) | Earth | sub | Resilient Grounds (Synchronized Artistry is main hand only) | HP, EX Big | same party |
 
@@ -77,7 +77,6 @@ A golden needs the party saved on granblue.team. For stash weapons, save it as a
 | EX ATK Small | 3 | EX Might | Speed Cast (Fonic Rod), All-Night Party (Spirit Seeker), Succession of Knighthood (Brand of Binding Oath). SL20 is the missing point. |
 | Terra's Third Spur | 1 | C.A. DMG | Baihu Fangstaff, at SL20. |
 | Odious HP/Enmity Small (*stopgap*) | 2 | HP, Od Enmity | Taboo Netherfell's Aegis (Codex of Sanctity Verboten), Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
-| Heal cap, Grace of Healing (*stopgap*) | 2 | Heal Cap | Asclepius Rod (also #20) |
 
 Tidings of the New World's SL20 value (16, from a template) never applies: World weapons stop at SL15.
 
@@ -86,7 +85,7 @@ Tidings of the New World's SL20 value (16, from a template) never applies: World
 - [ ] **Deck JSON with base captures.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel at full HP and default conditions: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state. Paste it with any 100% capture. Calculator Conditions (HP slider, foe element) are rendered as HTML, so sweep points still need screenshots. (Kaneo GBF-41 makes this automatic later.)
 - [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
 - [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
-- [ ] **Grace of Healing (#20)**: is it a heal cap or a healing boost? Needs Asclepius Rod, which isn't in your collection.
+- [x] **Grace of Healing (#20)**: answered 2026-10-16 by SAlNoF and ZSEUmr. It's a healing boost, not a heal cap: no Heal Cap line, so heal_cap is suppressed on both tiers.
 
 ### Done
 
@@ -250,7 +249,7 @@ What the sessions answer:
 | D3 | GmPPWw | 251 (+21) | none | Clouds of Nightfall at SL20 = 21 |
 | D2 | FaJB80 | 250 (+20) | Skill DMG Cap 75, DMG Cap Pen. 9.5 | Armed Shadow at SL20 = 20; the Special awakening lv15 gives Skill DMG Cap +10 and DMG Cap +3, which shows as DMG Cap Pen. +1.5 because DMG Cap is already at 20 |
 
-The panel shows EX Might without its decimal (the base is 230.5). The three EX Might lines stay open until the fallback fix; every other line matches. D0 (an empty test slot) wasn't needed.
+The panel shows EX Might without its decimal (the base is 230.5). Since the fallback-curve fix, the three EX Might lines match too. D0 (an empty test slot) wasn't needed.
 
 ### Fire session
 **Base** (10 weapons). It leaves out the Odious weapons, which pushed C.A. Supp. past its cap in every Fire golden so far. It doesn't need to be a strong grid, only the same between captures.
@@ -317,7 +316,6 @@ The panel shows EX Might without its decimal (the base is 230.5). The three EX M
 **Odious at 5★ (#17):** separately, main summon **Nihuyvintae 5★**, with four of your 0★ Water Odious weapons (Terrorbow of Mortality Verboten, exorcision 1) in place of the three Leviathan Gaze Mare and the test slot. Use a non-Odious friend summon. Expected header: Od 132% (3.0% × (40 + 4 levels)).
 
 ### Not possible yet
-- **#20 Grace of Healing:** Asclepius Rod isn't in your collection.
 - **#14 below SL20:** every Malus you own is 5★; a lower copy would add SL15/SL10 points later.
 
 ---
@@ -474,10 +472,12 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 3 | K4UydX's design | 7AiIOo | every line matches; CI fixture |
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
-| — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; three EX Might lines open until the fallback fix |
+| — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; every line matches since the fallback-curve fix |
 | 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u, XfBq6u_hp75/50/25/1 | every line matches; 1% has Ω Enmity, DEF and the 0% C.A. DMG line open |
 | 6 | Dark Optimus HP sweep (QJ9736's design) | nCvV1x (10 weapons, 100%); LqZ4tM_hp75/50/25/1 (13 weapons) | every line matches |
 | 18 | Blazing Chain's supplement | WpPucd (Fire Omega) | every line matches; CI fixture. Also showed the panel counts the MC's own charge bar gain (Dainsleif) |
+| — | [Water session](#water-session) A0-A2 | YCKMmk, 2aH20k, enTSuN | every line matches: Clawed Flood 14.5 at SL15 (EX Might Medium), Xuanwu Mace Malus at SL20 |
+| — | Light stash parties (L1-L3) | SAlNoF, ZSEUmr | every line matches: Grace of Healing has no Heal Cap line, Pumpkin Trick Critical 3.2 and Resilient Shine HP 6 at SL1 |
 | — | Contributed Water Odious grid | XZq7xW | CI fixture; confirms Odious Exalto ("Water Taboo" 25, added to the Taboo enhancement). The Taboo header, the Od-amplified lines and the befoulment lines are open until the contributor's exorcision levels and befoulments are recorded |
 
 <details>
