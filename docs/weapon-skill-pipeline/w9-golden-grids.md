@@ -15,12 +15,13 @@ Every weapon below is in your collection (checked 2026-10-15), at the uncap show
 In priority order. The number is the grid's ID; other docs refer to it.
 
 - [ ] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: the HP sweeps. They anchor every HP-scaled curve.
-- [ ] **[Dark session](#dark-session)**: fallback curves (#19) and a Hollowsky covenant (#16).
+- [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80).
 - [ ] **[Fire session](#fire-session)**: Blazing Chain's supplement (#18), fallback curves at SL10 (#19), Malus (#14), Proven awakenings (#15), Wilnas's covenant (#16), Odious below the cap (#17).
 - [ ] **[Wind session](#wind-session)**: Proven at two skill levels (#15), fallback curves (#19), Malus (#14), Ewiyar's covenant (#16).
 - [ ] **[Water session](#water-session)**: Odious at 5★ below the cap (#17), ATK Medium fallback (#19), Malus (#14), Wamdus's covenant (#16).
 - [ ] **[#2](#2-hoee8b-dark-no-job)**: the last exact rebuild.
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
+- [ ] **XZq7xW** (contributed Water Odious grid): waiting on the contributor's exorcision levels and befoulments for each Verboten weapon. See [Done](#done).
 
 When #2, #5 and #6 are in, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
 
@@ -145,6 +146,8 @@ What the sessions answer:
 
   If a change matches neither column, send it anyway: the EX template row needs fixing then.
 
+  **Dark session result:** the borrowed curve is wrong. Clouds of Nightfall gives 21 at SL20 (the EX curve). The "Armed" skills have their own curve: Armed Shadow gives 18 at SL15 and 20 at SL20 (6/15/18/20, like normal Might Big), which also fits Clarion's Armed Flood at 35 with an Attack awakening lv15. The fix waits on its own PR.
+
 ### Dark session
 **Base:** LD66IX with **one Executioner** removed (that's the test slot). Same summons: Beelzebub 4★ main, Hades 6★ T5 friend, Fediel sub.
 
@@ -155,6 +158,17 @@ What the sessions answer:
 | D2 | Bismarck 5★ (Armed Shadow, SL20) | #19 ATK Big at SL20 |
 | D3 | Qilin Sword 5★ (Clouds of Nightfall) | #19 ATK Big, a second skill on the same curve |
 | D4 | Hollowsky Blade 4★ (Calamitous Covenant) | #16 Hollowsky covenant as a sub |
+
+**Result (2026-10-16):**
+
+| Capture | Party | EX Might | Other changes | What it showed |
+|---|---|---|---|---|
+| D4 (used as the base) | LGZkRG | 230 | none | Hollowsky Blade's covenant shows no line as a sub, so this capture is the base; every line matches |
+| D1 | C1UGnK | 248 (+18) | Skill DMG Cap 65 | Armed Shadow at SL15 = 18 |
+| D3 | GmPPWw | 251 (+21) | none | Clouds of Nightfall at SL20 = 21 |
+| D2 | FaJB80 | 250 (+20) | Skill DMG Cap 75, DMG Cap Pen. 9.5 | Armed Shadow at SL20 = 20; the Special awakening lv15 gives Skill DMG Cap +10 and DMG Cap +3, which shows as DMG Cap Pen. +1.5 because DMG Cap is already at 20 |
+
+The panel shows EX Might without its decimal (the base is 230.5). The three EX Might lines stay open until the fallback fix; every other line matches. D0 (an empty test slot) wasn't needed.
 
 ### Fire session
 **Base** (10 weapons). It leaves out the Odious weapons, which pushed C.A. Supp. past its cap in every Fire golden so far. It doesn't need to be a strong grid, only the same between captures.
@@ -378,6 +392,8 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 3 | K4UydX's design | 7AiIOo | every line matches; CI fixture |
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
+| — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; three EX Might lines open until the fallback fix |
+| — | Contributed Water Odious grid | XZq7xW | CI fixture; confirms Odious Exalto ("Water Taboo" 25, added to the Taboo enhancement). The Taboo header, the Od-amplified lines and the befoulment lines are open until the contributor's exorcision levels and befoulments are recorded |
 
 <details>
 <summary>The recipes for the done grids</summary>
