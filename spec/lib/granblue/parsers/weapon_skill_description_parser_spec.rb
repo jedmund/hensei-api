@@ -265,6 +265,17 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
       expect(boost_types("Amplify light allies' chain DMG and C.A. DMG")).not_to include("dmg_amp")
     end
 
+    it "reads a plain chain amplify as C.B. and FC Amp. (Blazing Chain III, 0ZA6Ak)" do
+      r = parse("30% boost to Fire allies' charge bar gain, supplement C.A. damage (Damage cap: 400,000), " \
+                "10% boost to special C.A. damage cap, and amplify chain damage by 50%.")
+      expect(r[:clauses].map { |c| [c[:boost_type], c[:value]] })
+        .to eq([["charge_gain", 30.0], ["ca_supp", 400_000.0], ["sp_ca_cap", 10.0], ["cb_amp", 50.0], ["fc_amp", 50.0]])
+    end
+
+    it "reads an MC-only charge bar gain as nothing" do
+      expect(boost_types("7% boost to MC's charge bar gain.")).not_to include("charge_gain")
+    end
+
     it "reads 'N% reduced damage taken from superior element' as elemental reduction (Destroyer anklets)" do
       r = parse("10% boost to [Element] MC's normal attack damage cap, supplement normal attack damage " \
                 "(Damage cap: 20,000), amplify superior elemental damage by 30%, and 30% reduced damage taken " \
