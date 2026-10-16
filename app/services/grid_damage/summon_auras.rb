@@ -28,11 +28,15 @@ module GridDamage
       totals
     end
 
-    # Odious summons scale from their base aura to the "[Max: N%]" in the aura text
-    # with the equipped same-element Odious weapons' exorcision levels. Validated at
-    # the endpoint only (qBOvon: Belmervolk 4★ 100→150 with 4 weapons at exo 5 = 20
-    # levels, main+friend = 300); modeled as linear in total levels reaching Max at 20.
+    # Odious summons scale with the equipped same-element Odious weapons' exorcision
+    # levels, capped at 20 levels. Every Odious summon uses one per-level rate per uncap
+    # tier (gbf.wiki/Belmervolk: 1/2/2.5/3.0% at 0/3/4/5★), from a base of 40 levels'
+    # worth (40/80/100/120%) to 60 levels' worth at the cap (60/120/150/180%). The
+    # stored rows say which summons are Odious; the rate table gives every tier, so a
+    # summon's new 5★ needs no new row (0ZA6Ak: a 5★ Belmervolk at 180).
     ODIOUS_MAX_EXO_LEVELS = 20.0
+    ODIOUS_RATE_BY_UNCAP = { 0 => 1.0, 3 => 2.0, 4 => 2.5, 5 => 3.0 }.freeze
+    ODIOUS_BASE_LEVELS = 40.0
 
     def odious_exorcism_fraction(party, element)
       levels = party.weapons.filter_map do |gw|
@@ -44,14 +48,16 @@ module GridDamage
       (levels.sum / ODIOUS_MAX_EXO_LEVELS).clamp(0.0, 1.0)
     end
 
-    def taboo_aura(granblue_id, slot, uncap, transcendence_step, exo_fraction)
-      rows = SummonAura.where(summon_granblue_id: granblue_id, slot: slot, target: "odious_frame").to_a
-      row = best_row(rows, uncap: uncap, transcendence_step: transcendence_step)
-      return 0.0 unless row
+    def taboo_aura(granblue_id, slot, uncap, _transcendence_step, exo_fraction)
+      return 0.0 unless SummonAura.exists?(summon_granblue_id: granblue_id, slot: slot, target: "odious_frame")
 
-      base = row.value.to_f
-      max = row.description_en.to_s[/\[Max:\s*(\d+(?:\.\d+)?)%\]/, 1]&.to_f
-      max ? base + ((max - base) * exo_fraction) : base
+      odious_aura(uncap, exo_fraction)
+    end
+
+    # Pure: an Odious summon's aura at an uncap level and exorcision fraction (0..1).
+    def odious_aura(uncap, exo_fraction)
+      rate = ODIOUS_RATE_BY_UNCAP.select { |tier, _| tier <= uncap }.max_by(&:first)&.last.to_f
+      rate * (ODIOUS_BASE_LEVELS + (ODIOUS_MAX_EXO_LEVELS * exo_fraction))
     end
 
     # Main summon + support/friend supply their main aura; every other slot (the four

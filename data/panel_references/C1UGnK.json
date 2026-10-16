@@ -1,0 +1,198 @@
+{
+  "party": "C1UGnK",
+  "captured_on": "2026-10-16",
+  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Bismarck 4★ (Armed Shadow, SL15), no awakening in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1560708 / to Light 2028423 / Max HP 78972. EX Might +18 over the base (real base 230.5, shown 230): Armed Shadow at SL15 = 18, the EX Might curve. The build borrows the Taboo curve (21.6), so this line is open until the fallback fix.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 290,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [
+    "added_hit",
+    "crit_dmg",
+    "skill_amp_sp",
+    "skill_cap_sp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 416
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 248,
+      "skip": true
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 80,
+      "capped": true
+    },
+    {
+      "label": "E. ATK",
+      "boost": "e_atk",
+      "value": 10
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 42.5
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 58.1
+    },
+    {
+      "label": "Dark Optimus",
+      "boost": "optimus_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Dark DMG",
+      "boost": "bonus_elem_dmg",
+      "value": 35.1
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 295
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 75
+    },
+    {
+      "label": "Light Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 14
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 7.8
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "N.A. Amp.",
+      "boost": "na_amp",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "N.A. Amp. (Sp.)",
+      "boost": "na_amp_sp",
+      "value": 10,
+      "capped": false
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 65,
+      "capped": false
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 100
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 100
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 100000,
+      "capped": true
+    },
+    {
+      "label": "N.A. Supp.",
+      "boost": "na_supp",
+      "value": 50000,
+      "capped": false
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000,
+      "capped": false
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": -200
+    },
+    {
+      "label": "DEF Ignore",
+      "boost": "def_ignore",
+      "value": 7.8
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 8,
+      "capped": false
+    }
+  ]
+}

@@ -36,6 +36,8 @@ module GridDamage
                   # SPhnLB: Debuff Res. orange at 30; qBOvon: Charge Gain orange at 50,
                   # C.A. Supp. orange at 1,000,000
                   "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0,
+                  # 0ZA6Ak: C.B. DMG orange at 120
+                  "cb_dmg" => 120.0,
                   # gbf.wiki/AX_Skills: utility AX boosts cap across the whole grid.
                   "exp_ax" => 30.0, "rupie_ax" => 50.0 }.freeze
 
@@ -46,7 +48,7 @@ module GridDamage
     # "caps/supplementals aren't amplified" reads came from key/EX sources, whose frame
     # factor is 1.0 anyway. Only the Exalto totals themselves are excluded — they ARE the
     # enhancement, and amplifying them would feed back into itself.
-    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto hp_dmg].freeze
+    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto odious_exalto hp_dmg].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
@@ -155,9 +157,9 @@ module GridDamage
       {
         optimus: auras[:optimus] + [(agg["optimus_exalto"]&.total || 0).to_f, 90].min + elemental,
         omega: auras[:omega] + [(agg["omega_exalto"]&.total || 0).to_f, 100].min,
-        # Odious summons' base aura. The exorcism-level scaling on top (aura base → its
-        # [Max] via equipped Odious weapons' exorcism lvls) still needs in-game ground truth.
-        taboo: auras[:taboo]
+        # Odious summons' auras (scaled by exorcision, SummonAuras) plus Odious Exalto,
+        # which adds flat like the other Exalto skills (XZq7xW: 385 = 180 + 180 + 25)
+        taboo: auras[:taboo] + (agg["odious_exalto"]&.total || 0).to_f
       }
     end
 

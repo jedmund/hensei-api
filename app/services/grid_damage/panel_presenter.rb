@@ -23,6 +23,7 @@ module GridDamage
       ["ex_atk_sp", nil, "EX Might Sp.", "ex-might-sp", "attack"],
       ["stamina", "normal", "Stamina", "stamina", "attack"],
       ["stamina", "omega", "Ω Stamina", "omega-stamina", "attack"],
+      ["stamina", "odious", "Od Stamina", "od-stamina", "attack"],
       ["stamina", "ex", "Stamina", "stamina", "attack"],
       ["enmity", "normal", "Enmity", "enmity", "attack"],
       ["enmity", "omega", "Ω Enmity", "omega-enmity", "attack"],
@@ -34,6 +35,7 @@ module GridDamage
       ["ta", nil, "TA Rate", "ta-rate", "attack"],
       ["optimus_exalto", nil, "ELEMENT Optimus", "ELEMENT-optimus", "attack"],
       ["omega_exalto", nil, "ELEMENT Omega", "ELEMENT-omega", "attack"],
+      ["odious_exalto", nil, "ELEMENT Taboo", "ELEMENT-taboo", "attack"],
       # Bonus DMG closes out the red group (SRiNSO panel order)
       ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "attack"],
       ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "attack"],
@@ -80,6 +82,7 @@ module GridDamage
       ["skill_amp_arc", nil, "Skill Amp. (Arc)", "skill-amp-arc", "special"],
       ["ca_dmg", nil, "C.A. DMG", "ca-dmg", "special"],
       ["ca_dmg_cap", nil, "C.A. DMG Cap", "ca-dmg-cap", "special"],
+      ["ca_amp", nil, "C.A. Amp.", "ca-amp", "special"],
       ["ca_amp_sp", nil, "C.A. Amp. (Sp.)", "ca-amp-sp", "special"],
       ["ca_amp_arc", nil, "C.A. Amp. (Arc)", "ca-amp-arc", "special"],
       ["sp_ca_cap", nil, "Sp. C.A. Cap", "sp-ca-cap", "special"],

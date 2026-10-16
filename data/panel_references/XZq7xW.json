@@ -1,0 +1,244 @@
+{
+  "party": "XZq7xW",
+  "captured_on": "2026-10-16",
+  "notes": "Contributed Water Odious grid (another player's account, Wizard Origin). Staff of Renunciation MH transc5, 7 Mortality Verboten weapons (Demonsword x3, Fiendspear, Deepstrings x2, Cyclestaff x2), Gospel of Water and Sky, Doombringer Edge, Worldvexing Angelos (Attack 10), Altruism-Soul Staff (Attack 5). Nihuyvintae 5★ main and friend. Taboo 385 = 2 x 180 (5★ at the exorcision cap) + 25 (Odious Exalto Aquae, the 'Water Taboo' line); the party data records exorcision 1 on every Odious weapon, which can't reach the cap, so the contributor's real exorcision levels are higher. Estimated DMG 1160020 / to Fire 1780244 / Max HP 124601. Checks for now: Odious Exalto Aquae ('Water Taboo' 25) and the lines that don't depend on exorcision or befoulments. Open until the contributor's exorcision levels and befoulments are recorded: the Taboo header and Od-amplified lines (a rolled-back what-if with the seven Odious weapons at exorcision 3 matched Taboo 385, Od Might 349, HP 400, Skill DMG Cap 100 and Skill DMG Supp. 200,000), the befoulment lines (ATK/DEF/Skill DMG/C.A. DMG/Debuff S. Hit, HP Cut, DMG Supp.), and EX Might +64, Od Stamina, DMG Cap (Sp.), Skill Amp., DEF Ignore, DMG Cap Pen. and the HP overskill.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 20,
+    "omega": 20
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 40
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 28.8
+    },
+    {
+      "label": "Od Might",
+      "boost": "atk",
+      "series": "odious",
+      "value": 349,
+      "skip": true
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 182,
+      "skip": true
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 48
+    },
+    {
+      "label": "Od Stamina",
+      "boost": "stamina",
+      "series": "odious",
+      "value": 64.95,
+      "skip": true
+    },
+    {
+      "label": "E. ATK",
+      "boost": "e_atk",
+      "value": 10
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 15
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 15
+    },
+    {
+      "label": "Water Taboo",
+      "boost": "odious_exalto",
+      "value": 25
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 400,
+      "capped": true,
+      "skip": true
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 25
+    },
+    {
+      "label": "Fire Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 17
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 20,
+      "capped": true,
+      "skip": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 2.4
+    },
+    {
+      "label": "Od DMG Amp.",
+      "boost": "od_dmg_amp",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "N.A. Amp.",
+      "boost": "na_amp",
+      "value": 8
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 100,
+      "capped": true,
+      "skip": true
+    },
+    {
+      "label": "Skill Amp.",
+      "boost": "skill_amp",
+      "value": 30,
+      "capped": true,
+      "skip": true
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 20
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 83950,
+      "skip": true
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 200000,
+      "capped": true,
+      "skip": true
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": -100
+    },
+    {
+      "label": "DEF Ignore",
+      "boost": "def_ignore",
+      "value": 4.85,
+      "skip": true
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 6,
+      "skip": true
+    },
+    {
+      "label": "HP (overskill)",
+      "boost": "added_hp",
+      "value": 3.13,
+      "skip": true
+    },
+    {
+      "label": "ATK Hit",
+      "boost": "atk_hit",
+      "value": -5.6,
+      "skip": true
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -14,
+      "skip": true
+    },
+    {
+      "label": "DEF Hit",
+      "boost": "def_hit",
+      "value": -22.2,
+      "skip": true
+    },
+    {
+      "label": "Skill DMG Hit",
+      "boost": "skill_dmg_hit",
+      "value": -13,
+      "skip": true
+    },
+    {
+      "label": "C.A. DMG Hit",
+      "boost": "ca_dmg_hit",
+      "value": -25,
+      "skip": true
+    },
+    {
+      "label": "Debuff S. Hit",
+      "boost": "debuff_hit",
+      "value": -8.6,
+      "skip": true
+    }
+  ]
+}

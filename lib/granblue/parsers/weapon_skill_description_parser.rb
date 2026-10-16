@@ -81,11 +81,16 @@ module Granblue
         [/chain ?burst (?:dmg|damage) cap/i,                 "cb_dmg_cap"],
         [/healing cap|boost to healing/i,                    "heal_cap"],
         [/(?:dmg|damage) cap/i,                              "dmg_cap"],
-        # chain-burst amplification ("amplify chain damage by 50%", "Amplify light allies' chain
-        # DMG") is its own boost; consuming "chain" also keeps it off the C.B. DMG line
-        [/amplif\w*(?:\s+\S+){0,3}?\s+chain\b|\bchain (?:burst )?(?:dmg|damage) (?:is )?amplif\w*/i, "cb_amp"],
+        # chain amplification is its own boost; consuming "chain" keeps it off the C.B. DMG line.
+        # "chain burst" names only chain bursts; a plain "chain" ("amplify chain damage by 50%")
+        # covers full chains too: the panel shows it on C.B. Amp. and FC Amp. (0ZA6Ak, Blazing
+        # Chain III)
+        [/amplif\w*(?:\s+\S+){0,3}?\s+chain burst\b|\bchain burst (?:dmg|damage) (?:is )?amplif\w*/i, "cb_amp"],
+        [/amplif\w*(?:\s+\S+){0,3}?\s+chain\b|\bchain (?:dmg|damage) (?:is )?amplif\w*/i, %w[cb_amp fc_amp]],
         [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, "na_amp"],
-        [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp_sp"],
+        # a C.A. amplification shows on the plain C.A. Amp. line (0ZA6Ak, Sephirath Eparc II);
+        # C.A. Amp. (Sp.) comes from the canonical ≥280 sources, not from description text
+        [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp"],
         [/amplif\w*.*skill|skill.*amplif/i, "skill_amp_sp"],
         [/amplif\w*.*elemental|elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, "elem_amplify"],
         [/amplif/i,                                          "dmg_amp"],
@@ -112,7 +117,8 @@ module Granblue
         [/counter/i,                                         "counter_dmg"],
         [/gain shield|\bshield\b/i,                          "shield"],
         [/debuff res/i,                                      "debuff_res"],
-        [/boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
+        # "30% boost to Fire allies' charge bar gain" (Blazing Chain); never "MC's charge bar gain"
+        [/boost to (?:\w+ )?allies' charge bar gain|boost to charge bar gain|charge bar gain (?:boost|up)|hit to .*charge bar gain/i, "charge_gain"],
         [/(?:dmg|damage) (?:cut|reduc)|reduced (?:dmg|damage) taken|lessen .*(?:dmg|damage)/i, "elem_reduc"],
         [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
         [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
@@ -130,17 +136,23 @@ module Granblue
         desc = clean(description)
         return blank_result if desc.blank?
 
-        if name =~ /\b(Optimus|Omega) Exalto\b/i # frame-amplifier ("boost to …'s weapon skills")
+        # frame-amplifier ("boost to …'s weapon skills"); Odious Exalto boosts the Taboo
+        # frame ("25% boost to Taboo Allowater's weapon skills", XZq7xW's "Water Taboo" line)
+        if name =~ /\b(Optimus|Omega|Odious) Exalto\b/i
           ex = "#{Regexp.last_match(1).downcase}_exalto"
+          series = { "omega_exalto" => "omega", "odious_exalto" => "odious" }.fetch(ex, "normal")
           return blank_result.merge(clauses: [{ boost_type: ex, value: value_for(desc, ex), size: nil,
-                                                series: (ex == "omega_exalto" ? "omega" : "normal"),
-                                                formula_type: "flat", condition: nil }])
+                                                series: series, formula_type: "flat", condition: nil }])
         end
 
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
         # parenthetical proc blocks ("(For every 3 skills used: … allies gain 10%…)")
         # describe triggered effects, not passive boosts
         body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, "")
+        # a C.A. supplement with no "by N" is worth its damage cap ("supplement C.A. damage
+        # (Damage cap: 400,000)", Blazing Chain); it stops being a proc ceiling below
+        body = body.gsub(/(supplement (?:charge attack|c\.?a\.?) (?:dmg|damage))\s*\(\s*damage cap:\s*~?([\d,]+)\s*\)/i,
+                         '\\1 by \\2')
         # a proc's damage ceiling ("300% Earth damage … (Damage cap: ~400,000)") isn't
         # a DMG Cap boost
         body = body.gsub(/\(\s*(?:damage|healing) cap:[^()]*\)/i, "")

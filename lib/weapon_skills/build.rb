@@ -17,7 +17,7 @@ module WeaponSkills
   #      overlay's columns) and scales_with_skill_level from its resolved family.
   module Build
     # Bump when compiler output changes, so every weapon's fingerprint goes stale.
-    VERSION = 4
+    VERSION = 6
 
     Parser = Granblue::Parsers::WeaponSkillDescriptionParser
 
