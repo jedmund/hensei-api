@@ -1,0 +1,200 @@
+{
+  "party": "MqzAYO",
+  "captured_on": "2026-10-16",
+  "notes": "W9 golden 3: Fire Odious grid (rebuild of qBOvon/54hHKY's design), omega summons (taboo 0). Estimated DMG 332637 / to Wind 619188 / Max HP 43686. The site's import reported 4 items with issues (see issue). OPEN (skipped until a remove-and-diff round): C.A. DMG Cap (ours 60.8), C.A. Amp. 10 (no panel line yet), FC Amp. 50, C.A. Supp. (ours 252000, +400000 unexplained), Charge Gain 30. Candidates: Worldforging Moros C.A. awakening lv10, Mortality Bow Mk II Special awakening lv20, the Scythe's α Pendulum + Chain of Temptation, the Kengo MC.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 400,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 12.5
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 390
+    },
+    {
+      "label": "Od Might",
+      "boost": "atk",
+      "series": "odious",
+      "value": 48
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 137
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 5
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 5
+    },
+    {
+      "label": "Fire Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 235
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -30
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 15
+    },
+    {
+      "label": "Wind Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 10
+    },
+    {
+      "label": "Od DMG Amp.",
+      "boost": "od_dmg_amp",
+      "value": 3.6
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 19
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 65
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 39.3
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 50.8,
+      "skip": true
+    },
+    {
+      "label": "C.A. Amp.",
+      "boost": "ca_amp",
+      "value": 10,
+      "skip": true
+    },
+    {
+      "label": "Sp. C.A. Cap",
+      "boost": "sp_ca_cap",
+      "value": 10
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 44.9
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 20.8
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 50
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 50,
+      "skip": true
+    },
+    {
+      "label": "Skill Supp. (Sp.)",
+      "boost": "skill_supp_sp",
+      "value": 30000
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 652000,
+      "skip": true
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": 30,
+      "skip": true
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 1
+    },
+    {
+      "label": "ATK Hit",
+      "boost": "atk_hit",
+      "value": -14.1
+    },
+    {
+      "label": "C.A. DMG Hit",
+      "boost": "ca_dmg_hit",
+      "value": -19
+    },
+    {
+      "label": "Debuff S. Hit",
+      "boost": "debuff_hit",
+      "value": -10.2
+    }
+  ]
+}
