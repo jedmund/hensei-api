@@ -37,7 +37,7 @@ base_min: 1, base_max: 3, game_skill_id: 1600 },
   { slug: 'ax_enmity', ax_group: 'secondary', name_en: 'Enmity', name_jp: '背水', category: 'ax', stat: 'enmity', polarity: 1, suffix: nil,
 base_min: 1, base_max: 3, game_skill_id: 1601 },
   { slug: 'ax_skill_cap', ax_group: 'secondary', name_en: 'Skill DMG Cap', name_jp: 'アビダメ上限', category: 'ax', stat: 'skill_cap', polarity: 1,
-suffix: '%', base_min: 1, base_max: 2 },
+suffix: '%', base_min: 1, base_max: 2, game_skill_id: 1598 },
 
   # Extended AX Skills (axType 2)
   { slug: 'ax_skill_supp', ax_group: 'extended', name_en: 'Supplemental Skill DMG', name_jp: 'アビ与ダメ上昇', category: 'ax', stat: 'skill_supp',

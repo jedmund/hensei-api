@@ -55,6 +55,21 @@ FactoryBot.define do
       ax_secondaries { WeaponStatModifier::AX_SECONDARY_POOLS.fetch('ax_ca_dmg') }
     end
 
+    trait :ax_skill_cap do
+      slug { 'ax_skill_cap' }
+      name_en { 'Skill DMG Cap' }
+      category { 'ax' }
+      stat { 'skill_cap' }
+      polarity { 1 }
+      suffix { '%' }
+      game_skill_id { 1598 }
+      ax_group { 'secondary' }
+      base_min { 1 }
+      base_max { 2 }
+      secondary_min { 1 }
+      secondary_max { 2 }
+    end
+
     trait :befoulment do
       sequence(:slug) { |n| "befoul-modifier-#{n}" }
       sequence(:name_en) { |n| "Befoulment #{n}" }
