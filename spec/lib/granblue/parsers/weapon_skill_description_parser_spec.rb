@@ -272,6 +272,12 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
         .to eq([["charge_gain", 30.0], ["ca_supp", 400_000.0], ["sp_ca_cap", 10.0], ["cb_amp", 50.0], ["fc_amp", 50.0]])
     end
 
+    it "reads Odious Exalto as a Taboo-frame boost (XZq7xW's Water Taboo line)" do
+      r = parse("25% boost to Taboo Allowater's weapon skills", name: "Odious Exalto Aquae")
+      expect(r[:clauses].map { |c| c.slice(:boost_type, :value, :series) })
+        .to eq([{ boost_type: "odious_exalto", value: 25.0, series: "odious" }])
+    end
+
     it "reads an MC-only charge bar gain as nothing" do
       expect(boost_types("7% boost to MC's charge bar gain.")).not_to include("charge_gain")
     end

@@ -48,7 +48,7 @@ module GridDamage
     # "caps/supplementals aren't amplified" reads came from key/EX sources, whose frame
     # factor is 1.0 anyway. Only the Exalto totals themselves are excluded — they ARE the
     # enhancement, and amplifying them would feed back into itself.
-    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto hp_dmg].freeze
+    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto odious_exalto hp_dmg].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
@@ -157,9 +157,9 @@ module GridDamage
       {
         optimus: auras[:optimus] + [(agg["optimus_exalto"]&.total || 0).to_f, 90].min + elemental,
         omega: auras[:omega] + [(agg["omega_exalto"]&.total || 0).to_f, 100].min,
-        # Odious summons' base aura. The exorcism-level scaling on top (aura base → its
-        # [Max] via equipped Odious weapons' exorcism lvls) still needs in-game ground truth.
-        taboo: auras[:taboo]
+        # Odious summons' auras (scaled by exorcision, SummonAuras) plus Odious Exalto,
+        # which adds flat like the other Exalto skills (XZq7xW: 385 = 180 + 180 + 25)
+        taboo: auras[:taboo] + (agg["odious_exalto"]&.total || 0).to_f
       }
     end
 
