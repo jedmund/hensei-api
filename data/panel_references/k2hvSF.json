@@ -1,0 +1,189 @@
+{
+  "party": "k2hvSF",
+  "captured_on": "2026-10-16",
+  "notes": "W9 golden 3c: 0ZA6Ak without Mortality Bow Mk II and Worldforging Moros. Moros's share (vs plktjH): C.A. DMG Cap 20 (C.A. awakening lv10, as modelled), C.A. Amp. 10 (Sephirath Eparc II, plain line), EX Might 32.5, HP 24. With both gone the C.A. cap is 60.4 = Inferno's Glory 8.8 + Taboo Doomfire's Glory II 25.8 x2: α Pendulum gives no C.A. cap (Dark Opus Weapons: 'α Pendulum: 10% boost to normal attack DMG cap' plus DA/TA at 210/240). Estimated DMG 226201 / to Wind 417228 / Max HP 47130.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 60,
+    "taboo": 330
+  },
+  "absent": [
+    "def",
+    "ca_amp",
+    "ca_amp_sp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 12.5
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 124
+    },
+    {
+      "label": "Od Might",
+      "boost": "atk",
+      "series": "odious",
+      "value": 206
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 84.5
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 5
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 5
+    },
+    {
+      "label": "Fire Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 287
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -30
+    },
+    {
+      "label": "Wind Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 17
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 3.2
+    },
+    {
+      "label": "Od DMG Amp.",
+      "boost": "od_dmg_amp",
+      "value": 15.48
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 114
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 60.4,
+      "skip": true
+    },
+    {
+      "label": "Sp. C.A. Cap",
+      "boost": "sp_ca_cap",
+      "value": 10
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 120,
+      "capped": true,
+      "skip": true
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 60.4
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 50
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 50,
+      "skip": true
+    },
+    {
+      "label": "Skill Supp. (Sp.)",
+      "boost": "skill_supp_sp",
+      "value": 30000
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": 30,
+      "skip": true
+    },
+    {
+      "label": "ATK Hit",
+      "boost": "atk_hit",
+      "value": -14.1
+    },
+    {
+      "label": "C.A. DMG Hit",
+      "boost": "ca_dmg_hit",
+      "value": -19
+    },
+    {
+      "label": "Debuff S. Hit",
+      "boost": "debuff_hit",
+      "value": -10.2
+    }
+  ]
+}
