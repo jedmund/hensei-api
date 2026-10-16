@@ -500,5 +500,14 @@ RSpec.describe GridSummon, type: :model do
       expect(party.boost_mod).to eq('omega')
       expect(party.boost_side).to eq('double')
     end
+
+    it 'skips the recompute when the party is destroyed with its main and friend summons' do
+      party = create(:party)
+      GridSummon.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
+      GridSummon.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+
+      expect { party.reload.destroy! }.not_to raise_error
+      expect(Party.exists?(party.id)).to be false
+    end
   end
 end

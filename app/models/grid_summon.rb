@@ -188,6 +188,8 @@ class GridSummon < ApplicationRecord
   def recompute_party_boost!
     return if is_substitute?
     return unless main? || friend?
+    # destroying the party destroys its summons; there's nothing left to recompute
+    return unless Party.exists?(party_id)
 
     party.reload
     party.recompute_boost!
