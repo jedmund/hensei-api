@@ -27,6 +27,32 @@ In priority order: where the calculator has the least evidence for the most rows
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
 - [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
 
+### Fallback-curve captures (PR #591)
+
+The fallback-curve fix gives every skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed (Dark session, 2aH20k). The groups below have no capture yet. Some follow an EX row that's missing values, and some (marked *stopgap*) borrow the Optimus curve because no EX curve exists. One capture at a known skill level per group pins the curve. Swap the weapon into a base grid's test slot and capture with and without it, as in the element sessions.
+
+**In your collection now:**
+
+- [ ] **EX Stamina, Sunveil's Radiance** (*stopgap*): **True Purity Sunblade** 4★ (SL15) and 5★ (SL20), Light. Any Light grid with an empty test slot, HP 100%. Read the **Stamina** line. Two skill levels give the curve's shape.
+- [ ] **EX Enmity, Undersky's Whispers** (*stopgap*): **Advocatus Diaboli** 5★ (SL20), Dark. Use the Dark session base (LGZkRG with an Executioner removed). Enmity is 0 at full HP, so capture the base and the base with Advocatus at **HP 50% and 25%**. Read **Enmity**.
+- [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): **Wilnas's Finger** 4★ (SL15), Fire. Use the Fire session base, at **HP 50% and 25%**, with and without it.
+
+**Not in your collection (any one weapon per group, at any known skill level):**
+
+| Group | Rows | Panel line | Weapons |
+|---|---|---|---|
+| EX DA/TA (*stopgap*) | 25 | DA Rate, TA Rate | Synchronized Artistry on 18 event SSRs (e.g. Scarface, Tigerclaw, Seaside Guardian, Materpent Lyre, Anti-Asteroid Beam Cannon, Blade of Remorse, Astro Modele, King's Thruster); Climate Control (Ishkur Shaft); The Origin of All Zanpakuto (Asauchi); Noble's Dance (Luin); Ophidian Servitor (Ouroboros); Royal Wing Barrier (Pilum); Swiftblade Oath (Hoarfrost Blade Persius); Dexterity (Guivre Rod); Skull Parade (Skull Wand); Cuttlefish's Cut (Squid Hand); Wild Wanderer (Vassago); Triple Talon Hellion (Coco & Mimi); Incantation Fang (Medusiana Staff); Solo (Vyrnstrument) |
+| EX Critical (*stopgap*) | 8 | Critical | Full-Auto Fire (Assault Rifle (Man-Portable)), Ghost on the Battlefield (Soldier Bow), Unblinking Stare (Revolvyrn), Piercing Fang (Brionac), Bang! (Air Cannon), Spearsquid Flash (Squidpiercer), Twelfth Crown Prince's Favorite (Xingese Liuyedao), Pumpkin Trick (Lantern Blade) |
+| EX Enmity (*stopgap*) | 3 more | Enmity (at HP 50/25%) | Golden Spirit (Edem), Magic Charge (Fonic Rod), Audacity (Thunder Dirk Jove) |
+| EX HP Big (Resilient, Mysterious VIT II) | 10 | HP | Resilient Gale (Alster Bow, Intervallo Bramoso, Le Chevalier au Lion), Resilient Shadow (Giant Octo Leg on a Stick, Pantoufle de Machine, Shuprae Specialty), Resilient Flood (Materpent Lyre), Resilient Grounds (Seaside Guardian), Resilient Shine (Frilly Charm Bracelet), Mysterious VIT II (Mysterious Wand). The EX Aegis Big row stops at SL10, so **SL15 or SL20** is the capture that matters. |
+| EX HP Medium (Willed, Mysterious VIT) | 13 | HP | Willed Blaze (Miner's Lantern, Trap Knight's Helm), Willed Flood (Shark Bouquet, Motherly Flower Wreath), Willed Grounds (Beach Flag), Willed Gale (Achromatic Palette), Mysterious VIT (Mysterious Hammer/Harp/Hatchet, Pina Colata Bow, Sombre Gauntlet, Tadpole Tail), Downfall of Ignorance (Iridescent Bow). Mysterious Hatchet also pins EX HP Small at SL15. |
+| EX ATK Small | 3 | EX Might | Speed Cast (Fonic Rod), All-Night Party (Spirit Seeker), Succession of Knighthood (Brand of Binding Oath). SL20 is the missing point. |
+| Terra's Third Spur | 1 | C.A. DMG | Baihu Fangstaff, at SL20. |
+| Odious HP/Enmity Small (*stopgap*) | 2 | HP, Od Enmity | Taboo Netherfell's Aegis (Codex of Sanctity Verboten), Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
+| Heal cap, Grace of Healing (*stopgap*) | 2 | Heal Cap | Asclepius Rod (also #20) |
+
+Tidings of the New World's SL20 value (16, from a template) never applies: World weapons stop at SL15.
+
 ### New information (things we don't know yet)
 
 - [ ] **Deck JSON with base captures.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel at full HP and default conditions: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state. Paste it with any 100% capture. Calculator Conditions (HP slider, foe element) are rendered as HTML, so sweep points still need screenshots. (Kaneo GBF-41 makes this automatic later.)
