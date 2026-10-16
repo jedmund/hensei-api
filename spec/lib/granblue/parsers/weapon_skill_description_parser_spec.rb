@@ -278,8 +278,9 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
         .to eq([{ boost_type: "odious_exalto", value: 25.0, series: "odious" }])
     end
 
-    it "reads an MC-only charge bar gain as nothing" do
-      expect(boost_types("7% boost to MC's charge bar gain.")).not_to include("charge_gain")
+    it "reads the MC's charge bar gain as Charge Gain (WpPucd: Dainsleif's Strategist's Temperament)" do
+      expect(parse("7% boost to MC's charge bar gain.")[:clauses].map { |c| [c[:boost_type], c[:value]] })
+        .to eq([["charge_gain", 7.0]])
     end
 
     it "reads 'N% reduced damage taken from superior element' as elemental reduction (Destroyer anklets)" do
