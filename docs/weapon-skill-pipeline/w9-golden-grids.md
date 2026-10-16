@@ -18,7 +18,7 @@ In priority order: where the calculator has the least evidence for the most rows
 
 ### Verification (checks a model we already have)
 
-- [ ] **[Water session](#water-session) A1: Zodiaco Vitae (Clawed Flood, ATK Medium, SL15).** The most important capture right now. The fallback-curve fix moves 134 ATK Medium rows to the EX curve (3/12/14.5) with no in-game number behind them; the panel should add 14.5 at SL15.
+- [x] **[Water session](#water-session) A0-A2**: done 2026-10-16. YCKMmk (base) and enTSuN (Xuanwu Mace Malus at SL20, matches) pass; 2aH20k shows Clawed Flood at **14.5** at SL15, confirming the EX Might Medium curve the fallback-curve fix moves 134 rows to (open until the fix). A3-A4 (covenants) remain.
 - [ ] **[Fire session](#fire-session) F2: Resentment's Gaze 3★ (Armed Blaze, SL10).** Adds an SL10 point to the Armed curve (6/15/18/20); the panel should add 15.
 - [ ] **[Wind session](#wind-session) W1 and W3**: Windhose 4★ (Armed Gale, SL15, no awakening) and Daur da Blao (Armed Gale, SL20). A second element for the Armed curve.
 - [ ] **#17 Odious below the cap** (Fire session and Water session): the Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★), verified only at the cap.
@@ -29,7 +29,7 @@ In priority order: where the calculator has the least evidence for the most rows
 
 ### New information (things we don't know yet)
 
-- [ ] **Deck JSON with every capture.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel itself: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state at that moment. Paste it alongside the screenshots, or instead of them. It settles rounding, catches a stale saved party, and shows fields we don't know about yet. (Kaneo GBF-41 makes this automatic later.)
+- [ ] **Deck JSON with base captures.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel at full HP and default conditions: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state. Paste it with any 100% capture. Calculator Conditions (HP slider, foe element) are rendered as HTML, so sweep points still need screenshots. (Kaneo GBF-41 makes this automatic later.)
 - [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
 - [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
 - [ ] **Grace of Healing (#20)**: is it a heal cap or a healing boost? Needs Asclepius Rod, which isn't in your collection.
@@ -58,7 +58,7 @@ Later, the extension could capture the panel straight from the game: the deck re
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
 2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
 3. **Set the party public** on granblue.team. Import it from the game right before capturing, so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match.
-4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. If you can, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
+4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. For a capture at default conditions, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
 5. **HP sweeps:** set the Calculator Conditions HP slider to 100, 75, 50, 25 and 1, with one capture each.
 6. **Remove-and-diff:** one capture per removed weapon, with everything else unchanged. Recapture the base state between removals; a stale grid once faked two wrong conclusions.
 
