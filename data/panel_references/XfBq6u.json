@@ -1,0 +1,130 @@
+{
+  "party": "XfBq6u",
+  "captured_on": "2026-10-16",
+  "notes": "W9 #5, rebuild of OlFQ2a (Dark Omega, Fighter Origin) at HP 100%: Excalibur MH, Celeste Claw Omega x3 (AX ATK 2.5 + Skill DMG Cap 1; C.A. DMG 6 + Ele. ATK 2; none), Celeste Grace Ater x3, Fediel's Spine x2 (AX HP 6 + Stamina 2; HP 3 + Stamina 3), Katana of Renunciation T3 with β Pendulum + Pendulum of Supremacy (OlFQ2a had Chain of Falsehood: no Charge Gain -100 here; Supremacy's ≥280 package adds EX 40, C.A. Amp. (Sp.), C.B./FC Amp. and DMG Cap overflow). Celeste Omega 6★ T5 main and friend, Fediel sub. Estimated DMG 350737 / to Light 554527 / Max HP 53688. Stamina is one panel line: Excalibur's normal stamina (16.8) plus the two Fediel's Spines' (44.84). DMG Cap Pen. 4 needs raw DMG Cap 28 = Vivification 3 x 7 + Pendulum of Supremacy 7; the canonical Vivification DMG Cap row's total cap of 20 (uncited) trims it to 27 (Pen. 3.5), so that line is open until the cap is fixed.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 60,
+    "omega": 420,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 644
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 82
+    },
+    {
+      "label": "Stamina",
+      "boost": "stamina",
+      "value": 61.64
+    },
+    {
+      "label": "Dark Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 114
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 9.1
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 120,
+      "capped": true
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 30
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 100
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 100
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 4,
+      "skip": true
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 2.5
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 9
+    },
+    {
+      "label": "Elemental ATK (AX)",
+      "boost": "ele_atk_ax",
+      "value": 2
+    },
+    {
+      "label": "HP (AX)",
+      "boost": "hp_ax",
+      "value": 9
+    },
+    {
+      "label": "Skill DMG Cap (AX)",
+      "boost": "skill_cap_ax",
+      "value": 1
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 6
+    }
+  ]
+}
