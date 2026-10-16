@@ -1,7 +1,7 @@
 {
   "party": "XfBq6u",
   "captured_on": "2026-10-16",
-  "notes": "W9 #5, rebuild of OlFQ2a (Dark Omega, Fighter Origin) at HP 100%: Excalibur MH, Celeste Claw Omega x3 (AX ATK 2.5 + Skill DMG Cap 1; C.A. DMG 6 + Ele. ATK 2; none), Celeste Grace Ater x3, Fediel's Spine x2 (AX HP 6 + Stamina 2; HP 3 + Stamina 3), Katana of Renunciation T3 with β Pendulum + Pendulum of Supremacy (OlFQ2a had Chain of Falsehood: no Charge Gain -100 here; Supremacy's ≥280 package adds EX 40, C.A. Amp. (Sp.), C.B./FC Amp. and DMG Cap overflow). Celeste Omega 6★ T5 main and friend, Fediel sub. Estimated DMG 350737 / to Light 554527 / Max HP 53688. Stamina is one panel line: Excalibur's normal stamina (16.8) plus the two Fediel's Spines' (44.84). DMG Cap Pen. 4 needs raw DMG Cap 28 = Vivification 3 x 7 + Pendulum of Supremacy 7; the canonical Vivification DMG Cap row's total cap of 20 (uncited) trims it to 27 (Pen. 3.5), so that line is open until the cap is fixed.",
+  "notes": "W9 #5, rebuild of OlFQ2a (Dark Omega, Fighter Origin) at HP 100%: Excalibur MH, Celeste Claw Omega x3 (AX ATK 2.5 + Skill DMG Cap 1; C.A. DMG 6 + Ele. ATK 2; none), Celeste Grace Ater x3, Fediel's Spine x2 (AX HP 6 + Stamina 2; HP 3 + Stamina 3), Katana of Renunciation T3 with β Pendulum + Pendulum of Supremacy (OlFQ2a had Chain of Falsehood: no Charge Gain -100 here; Supremacy's ≥280 package adds EX 40, C.A. Amp. (Sp.), C.B./FC Amp. and DMG Cap overflow). Celeste Omega 6★ T5 main and friend, Fediel sub. Estimated DMG 350737 / to Light 554527 / Max HP 53688. Stamina is one panel line: Excalibur's normal stamina (16.8) plus the two Fediel's Spines' (44.84). DMG Cap Pen. 4 needs raw DMG Cap 28 = Vivification 3 x 7 + Pendulum of Supremacy 7; Vivification has no shared cap; the wiki's (Max: 20%) is the DMG Cap line cap.",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -93,8 +93,7 @@
     {
       "label": "DMG Cap Pen.",
       "boost": "dmg_cap_pen",
-      "value": 4,
-      "skip": true
+      "value": 4
     },
     {
       "label": "ATK (AX)",
