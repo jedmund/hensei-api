@@ -36,6 +36,8 @@ module GridDamage
                   # SPhnLB: Debuff Res. orange at 30; qBOvon: Charge Gain orange at 50,
                   # C.A. Supp. orange at 1,000,000
                   "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0,
+                  # 0ZA6Ak: C.B. DMG orange at 120
+                  "cb_dmg" => 120.0,
                   # gbf.wiki/AX_Skills: utility AX boosts cap across the whole grid.
                   "exp_ax" => 30.0, "rupie_ax" => 50.0 }.freeze
 
