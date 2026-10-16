@@ -1,7 +1,7 @@
 {
   "party": "7AiIOo",
   "captured_on": "2026-10-16",
-  "notes": "W9 golden 1: Earth grid (rebuild of K4UydX's design). Estimated DMG 980620 / to Water 1396886 / Max HP 113208. PENDING: the saved party has no friend summon (Versusia main uncap 4 + Hanged Man, Galleon, Uriel), so the calculator gets optimus 130 against the panel's 300. Add the friend summon on granblue.team, re-import, then export the fixture.",
+  "notes": "W9 golden 1: Earth grid (rebuild of K4UydX's design). Estimated DMG 980620 / to Water 1396886 / Max HP 113208. Summons: Versusia (main), Titan 6★ (friend), subs The Hanged Man / Galleon / Uriel (Galleon's sub aura gives EX Might +2, included). Validates the key C.A. cap pool: γ Pendulum 50 + Anklet of Maximality 50 share key_ca_cap (C.A. DMG Cap 86.2 = Terra's Glory 31.2 + Ultimate Wisdom's Shine II 5 + 50).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
