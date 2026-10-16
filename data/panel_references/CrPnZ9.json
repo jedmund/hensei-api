@@ -1,0 +1,147 @@
+{
+  "party": "CrPnZ9",
+  "captured_on": "2026-10-17",
+  "notes": "W9 M2: LqZ4tM (Dark Optimus, 13 weapons) with Excalibur swapped for Xingese Liuyedao 4★ (SL15) as main hand, job Kengo; HP slider at 1% (the base capture, XWhkW9, reads exactly as LqZ4tM_hp1). Hades 6★ T5 main and friend, Fediel sub. Excalibur's main-hand lines (Garrison, Rightway Pathfinder, its E. ATK and caps) leave; Twelfth Crown Prince's Favorite adds Critical 30 at SL15. Estimated DMG 428265 / to Light 779277 / Max HP 104876.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 1,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [
+    "e_atk",
+    "ca_supp",
+    "stamina"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 712
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 178
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 16
+    },
+    {
+      "label": "E. ATK (Prog.)",
+      "boost": "e_atk_prog",
+      "value": 8
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 30
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 50
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 25
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 400,
+      "capped": true
+    },
+    {
+      "label": "Heal Cap",
+      "boost": "heal_cap",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 75
+    },
+    {
+      "label": "Light Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "Debuff Res.",
+      "boost": "debuff_res",
+      "value": 20
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 14
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 10
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 5
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 10200
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 100000
+    },
+    {
+      "label": "HP (overskill)",
+      "boost": "added_hp",
+      "value": 5.63
+    }
+  ]
+}

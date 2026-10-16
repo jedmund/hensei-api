@@ -16,7 +16,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
 
-**Accuracy on captured grids (measured):** 33 golden parties, 43 references, 1,105 panel lines. 1,083 match exactly and are checked in CI on every change. 22 lines (2.0%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
+**Accuracy on captured grids (measured):** 34 golden parties, 46 references, 1,179 panel lines. 1,157 match exactly and are checked in CI on every change. 22 lines (1.9%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
 **Coverage of the catalogue (measured):**
 
@@ -35,10 +35,9 @@ As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Main-hand swap M2](#main-hand-swaps-m1m5)**: Xingese Liuyedao (Critical at SL15).
 - [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
-- [ ] **[Main-hand swaps M4–M5](#main-hand-swaps-m1m5)**: Air Cannon, Edem (SL1 points).
+- [ ] **[Main-hand swaps M4–M5](#main-hand-swaps-m1m5)**: Air Cannon (Critical below SL15), Edem (Enmity at SL1).
 - [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
 - [ ] **[The other element-session captures](#other-element-session-captures)**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [ ] **[#2 HoEE8b](#2-hoee8b-dark-no-job)**: the last exact rebuild. Once it's in, the parity baseline can be deleted.
@@ -98,12 +97,12 @@ These skills work only from the main hand ("When main weapon (MC only)"). Each i
 | # | Weapon (stash) | Element | Its skills | Tests | Base |
 |---|---|---|---|---|---|
 | M1 ✓ | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA 20 / TA 10, fixed (QmQaPH) | UC3M0M, Higurashi → Asauchi |
-| M2 | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical at SL15 (*stopgap*) | LGZkRG, Ereshkigal → Xingese Liuyedao |
+| M2 ✓ | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical 30 at SL15 (CrPnZ9) | XWhkW9, main hand → Xingese Liuyedao |
 | ~~M3~~ | ~~Astro Modele~~ | | | not needed: GameWith gives Synchronized Artistry a fixed DA 20% / TA 10% (and it unlocks at weapon level 100), so the "multiattack rate" main-hand skills are curated flat | |
-| M4 | Air Cannon (4★, SL1) | Water | Bang!, Air Blast | Critical Massive at SL1 | YCKMmk, Hraesvelgr → Air Cannon |
+| M4 | Air Cannon (4★, SL1) | Water | Bang!, Air Blast | Critical below SL15: only the SL15 point (30) is known, from M2 and the wiki | YCKMmk, Hraesvelgr → Air Cannon |
 | M5 | Edem (4★, SL1) | Earth | Golden Spirit, Sentient Simulacrum | Enmity Big at SL1 | 7AiIOo at **HP 50%**, as is and with Andromeda → Edem |
 
-M1 and M2 are worth the most: they pin SL15, where the stopgap values are least certain.
+M1 and M2 pinned SL15. M4 shows how the main-hand Critical skills scale below it.
 
 #### Collection weapons
 
@@ -301,6 +300,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 20 | Light stash parties (L1–L3) | SAlNoF, ZSEUmr | Grace of Healing is a healing boost (no Heal Cap line); Pumpkin Trick Critical 3.2 and Resilient Shine HP 6 at SL1 |
 | 19 | Earth stash party (E0–E2) | PrXqh2 (base), tIQu43 (Baihu Fangstaff, Seaside Guardian) | Terra's Might Big 18 at SL15; Resilient Grounds HP 6 at SL1; Terra's Third Spur ("for an earth ally in third position") doesn't reach the MC's panel, so it and the other two position-targeted Beast skills are suppressed |
 | 19 | Fire base and M1 | UC3M0M (F0), QmQaPH (Asauchi as main hand) | every line matches: Nameless Zanpakuto EX Might 18 at SL15; The Origin of All Zanpakuto DA 20 / TA 10, fixed, which with GameWith's Astro Modele page curates all 23 "multiattack rate" main-hand skills (Synchronized Artistry, Climate Control) flat |
+| M2 | Xingese Liuyedao as main hand | CrPnZ9 (HP 1%, turn 1; HP 100% at turns 1 and 5) | every line matches: Twelfth Crown Prince's Favorite gives Critical 30 at SL15, as the wiki says for Bang! ("a 30% boost to crit rate to the MC"), so all three main-hand "Massive boost to critical hit rate" skills (with First Comes Rock) are curated at 30; Hatred's Progression ×2 reads E. ATK (Prog.) 8 per turn |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>

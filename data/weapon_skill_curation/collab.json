@@ -4,6 +4,32 @@
   "effects": [],
   "data": [
     {
+      "weapon": "1040620900",
+      "skill": "First Comes Rock",
+      "ordinal": 0,
+      "modifier": "First Comes Rock",
+      "boost_type": "critical",
+      "series": "ex",
+      "formula_type": "flat",
+      "sl15": 30.0,
+      "aura_boostable": false,
+      "provenance": "manual: Air Cannon wiki (\"At skill level 15, this weapon skill grants a 30% boost to crit rate to the MC\"); golden CrPnZ9 (Twelfth Crown Prince's Favorite at SL15 = 30). Other skill levels unconfirmed.",
+      "edited_at": "2026-10-17T08:00:00Z"
+    },
+    {
+      "weapon": "1040918500",
+      "skill": "Twelfth Crown Prince's Favorite",
+      "ordinal": 0,
+      "modifier": "Twelfth Crown Prince's Favorite",
+      "boost_type": "critical",
+      "series": "ex",
+      "formula_type": "flat",
+      "sl15": 30.0,
+      "aura_boostable": false,
+      "provenance": "manual: Air Cannon wiki (\"At skill level 15, this weapon skill grants a 30% boost to crit rate to the MC\"); golden CrPnZ9 (Twelfth Crown Prince's Favorite at SL15 = 30). Other skill levels unconfirmed.",
+      "edited_at": "2026-10-17T08:00:00Z"
+    },
+    {
       "weapon": "1040918800",
       "skill": "The Origin of All Zanpakuto",
       "ordinal": 0,
