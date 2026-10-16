@@ -136,11 +136,13 @@ module Granblue
         desc = clean(description)
         return blank_result if desc.blank?
 
-        if name =~ /\b(Optimus|Omega) Exalto\b/i # frame-amplifier ("boost to …'s weapon skills")
+        # frame-amplifier ("boost to …'s weapon skills"); Odious Exalto boosts the Taboo
+        # frame ("25% boost to Taboo Allowater's weapon skills", XZq7xW's "Water Taboo" line)
+        if name =~ /\b(Optimus|Omega|Odious) Exalto\b/i
           ex = "#{Regexp.last_match(1).downcase}_exalto"
+          series = { "omega_exalto" => "omega", "odious_exalto" => "odious" }.fetch(ex, "normal")
           return blank_result.merge(clauses: [{ boost_type: ex, value: value_for(desc, ex), size: nil,
-                                                series: (ex == "omega_exalto" ? "omega" : "normal"),
-                                                formula_type: "flat", condition: nil }])
+                                                series: series, formula_type: "flat", condition: nil }])
         end
 
         body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
