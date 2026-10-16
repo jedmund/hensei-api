@@ -111,6 +111,14 @@ module GridDamage
       cap ? [total, cap.to_f].min : total
     end
 
+    # The level to read a row at when its skill has no skill level in game (Destroyer,
+    # Celestial, Exalto, Sephira): the highest level the row defines, so a copy the game
+    # reports at SL1 still gets the skill's full fixed value. nil when the row defines no
+    # level at all (a coefficient-only Stamina row, which always levels).
+    def fixed_level(datum)
+      SL_ANCHORS.reverse.find { |sl| !anchor(datum, sl).nil? }
+    end
+
     def anchor(datum, skill_level)
       v = datum.public_send(:"sl#{skill_level}")
       v&.to_f
