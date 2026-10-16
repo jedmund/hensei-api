@@ -27,7 +27,9 @@ module GridDamage
         keys = STAT_KEYS[mod.stat] or next []
         keys.map do |key|
           Aggregator::Contribution.new(
-            boost_type: key, series: nil, value: gw.befoulment_strength.to_f,
+            # Strength is stored as a magnitude by the extension import and signed by older
+            # parties; the panel shows the modifier's sign either way (ATK Hit -14.1).
+            boost_type: key, series: nil, value: mod.polarity * gw.befoulment_strength.to_f.abs,
             main_hand_only: false, mainhand: gw.mainhand, amplifiable: false,
             source_ids: [gw.id],
             source_label: { en: mod.name_en, ja: mod.name_jp }
