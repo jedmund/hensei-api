@@ -72,7 +72,9 @@ module Granblue
     def value_matches?(ours, ref)
       return false if ours.nil?
 
-      (ours - ref).abs <= 0.00501 || (ref == ref.floor && ours.floor == ref)
+      # A whole-number panel value may be truncated (230.5 shows as 230, LD66IX) or rounded
+      # (Garrison 276.8 shows as 277, LqZ4tM at 1% HP).
+      (ours - ref).abs <= 0.00501 || (ref == ref.floor && [ours.floor, ours.round].include?(ref))
     end
 
     def check(mismatches, label, ours, expected)
