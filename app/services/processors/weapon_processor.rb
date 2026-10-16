@@ -132,6 +132,8 @@ module Processors
       super(party, data, options)
       @party = party
       @data = data
+      @augment_parser = Granblue::AugmentSkillParser.new(log_tag: 'WeaponProcessor')
+      @odious_attrs = {}.compare_by_identity
     end
 
     ##
@@ -226,6 +228,8 @@ module Processors
       updates[:ax_modifier2_id] = grid_weapon.ax_modifier2_id
       updates[:ax_strength2] = grid_weapon.ax_strength2
       updates[:element] = grid_weapon.element
+      # Befoulment and exorcism level, only for weapons the game marked Odious
+      updates.merge!(@odious_attrs[grid_weapon]) if @odious_attrs.key?(grid_weapon)
 
       if grid_weapon.awakening_id.present?
         updates[:awakening_id] = grid_weapon.awakening_id
@@ -312,9 +316,7 @@ module Processors
         skill_ids = [raw_weapon['skill1'], raw_weapon['skill2'], raw_weapon['skill3']].compact.map { |s| s['id'] }
         process_weapon_keys(grid_weapon, skill_ids, raw_weapon) if skill_ids.length.positive?
 
-        if raw_weapon.dig('param', 'augment_skill_info').present?
-          process_weapon_ax(grid_weapon, raw_weapon.dig('param', 'augment_skill_info'))
-        end
+        process_augment_skills(grid_weapon, raw_weapon['param'])
 
         grid_weapon
       end.compact
@@ -419,47 +421,18 @@ module Processors
     end
 
     ##
-    # Processes AX (augment) skill data.
-    #
-    # The deck stores AX skills in an array of arrays under "augment_skill_info".
-    # This method flattens the data and assigns each skill's modifier and strength.
-    # Modifiers are now looked up by game_skill_id in the weapon_stat_modifiers table.
+    # Assigns augment skills from the game data: befoulment and exorcism level
+    # for Odious weapons, AX skills otherwise. Odious attributes are remembered
+    # so update_collection_from_game can push them to the linked collection
+    # weapon before sync_from_collection! copies the collection back.
     #
     # @param grid_weapon [GridWeapon] the grid weapon record being built.
-    # @param ax_skill_info [Array] the raw AX skill info.
+    # @param param [Hash] the raw weapon's `param` data.
     # @return [void]
-    def process_weapon_ax(grid_weapon, ax_skill_info)
-      # Flatten the nested array structure.
-      ax_skills = ax_skill_info.flatten
-      ax_skills.each_with_index do |ax, idx|
-        break if idx >= 2 # Only 2 AX skill slots
-
-        game_skill_id = ax['skill_id'].to_i
-        modifier = find_modifier_by_game_skill_id(game_skill_id)
-
-        unless modifier
-          Rails.logger.warn(
-            "[WeaponProcessor] Unknown augment skill_id=#{game_skill_id} " \
-            "icon=#{ax['augment_skill_icon_image']}"
-          )
-          next
-        end
-
-        strength = Granblue::AugmentStrength.parse(ax['effect_value'], ax['show_value'])
-        grid_weapon["ax_modifier#{idx + 1}_id"] = modifier.id
-        grid_weapon["ax_strength#{idx + 1}"] = strength
-      end
-    end
-
-    ##
-    # Finds a WeaponStatModifier by its game_skill_id.
-    # Uses memoization to cache lookups.
-    #
-    # @param game_skill_id [Integer] the game's skill ID.
-    # @return [WeaponStatModifier, nil]
-    def find_modifier_by_game_skill_id(game_skill_id)
-      @modifier_cache ||= {}
-      @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
+    def process_augment_skills(grid_weapon, param)
+      attrs = @augment_parser.attributes(param)
+      grid_weapon.assign_attributes(attrs)
+      @odious_attrs[grid_weapon] = attrs if @augment_parser.odious?(param)
     end
 
     ##

@@ -365,6 +365,78 @@ RSpec.describe WeaponImportService, type: :service do
       end
     end
 
+    context 'with a Skill DMG Cap AX roll' do
+      let!(:ax_skill_cap_modifier) { create(:weapon_stat_modifier, :ax_skill_cap) }
+
+      # Captured in game: ATK 2.5 + Skill DMG Cap 1
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'param' => {
+                'id' => '77777777',
+                'image_id' => '1040213900',
+                'evolution' => 5,
+                'phase' => 0,
+                'augment_skill_info' => [
+                  [
+                    { 'skill_id' => 1589, 'effect_value' => '2.5', 'show_value' => '+2.5%' },
+                    { 'skill_id' => 1598, 'effect_value' => '1', 'show_value' => '+1%' }
+                  ]
+                ]
+              },
+              'master' => { 'id' => '1040213900' }
+            }
+          ]
+        }
+      end
+
+      it 'maps skill_id 1598 to ax_skill_cap' do
+        result = described_class.new(user, game_data).import
+
+        expect(result.errors).to be_empty
+        weapon = result.created.first
+        expect(weapon.ax_modifier1).to eq(ax_atk_modifier)
+        expect(weapon.ax_strength1).to eq(2.5)
+        expect(weapon.ax_modifier2).to eq(ax_skill_cap_modifier)
+        expect(weapon.ax_strength2).to eq(1.0)
+      end
+    end
+
+    context 'with an Odious weapon' do
+      let!(:befoulment_modifier) { create(:weapon_stat_modifier, :befoul_def_down) }
+      let!(:odious_weapon) { create(:weapon, :odiant, granblue_id: '1040399700') }
+
+      let(:game_data) do
+        {
+          'list' => [
+            {
+              'param' => {
+                'id' => '88888888',
+                'image_id' => '1040399700',
+                'evolution' => 5,
+                'phase' => 0,
+                'augment_skill_info' => [[{ 'skill_id' => 2880, 'effect_value' => '21', 'show_value' => '21%' }]],
+                'odiant' => { 'is_odiant_weapon' => true, 'exorcision_level' => 4 }
+              },
+              'master' => { 'id' => '1040399700' }
+            }
+          ]
+        }
+      end
+
+      it 'stores the befoulment and exorcision level' do
+        result = described_class.new(user, game_data).import
+
+        expect(result.errors).to be_empty
+        weapon = result.created.first
+        expect(weapon.befoulment_modifier).to eq(befoulment_modifier)
+        expect(weapon.befoulment_strength).to eq(21.0)
+        expect(weapon.exorcism_level).to eq(4)
+        expect(weapon.ax_modifier1).to be_nil
+      end
+    end
+
     context 'with duplicate game_id' do
       let(:game_data) do
         {

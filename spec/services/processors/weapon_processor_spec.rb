@@ -76,7 +76,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
-  describe '#process_weapon_ax' do
+  describe '#process_augment_skills' do
     let(:grid_weapon) { build(:grid_weapon, party: party) }
 
     let!(:ax_hp_modifier) do
@@ -86,28 +86,93 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
     let!(:ax_ca_dmg_modifier) do
       WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
-        create(:weapon_stat_modifier,
-               slug: 'ax_ca_dmg',
-               name_en: 'C.A. DMG',
-               category: 'ax',
-               stat: 'ca_dmg',
-               polarity: 1,
-               suffix: '%',
-               game_skill_id: 1591)
+        create(:weapon_stat_modifier, :ax_ca_dmg)
     end
 
-    it 'flattens nested augment_skill_info and assigns ax_modifier_id and ax_strength' do
-      ax_skill_info = [
-        [
-          { 'skill_id' => '1588', 'effect_value' => '3', 'show_value' => '3%' },
-          { 'skill_id' => '1591', 'effect_value' => '5', 'show_value' => '5%' }
+    it 'assigns ax_modifier_id and ax_strength from nested augment_skill_info' do
+      param = {
+        'augment_skill_info' => [
+          [
+            { 'skill_id' => '1588', 'effect_value' => '3', 'show_value' => '3%' },
+            { 'skill_id' => '1591', 'effect_value' => '5', 'show_value' => '5%' }
+          ]
         ]
-      ]
-      processor.send(:process_weapon_ax, grid_weapon, ax_skill_info)
+      }
+      processor.send(:process_augment_skills, grid_weapon, param)
       expect(grid_weapon.ax_modifier1).to eq(ax_hp_modifier)
       expect(grid_weapon.ax_strength1).to eq(3.0)
       expect(grid_weapon.ax_modifier2).to eq(ax_ca_dmg_modifier)
       expect(grid_weapon.ax_strength2).to eq(5.0)
+    end
+
+    it 'maps skill_id 1598 to the Skill DMG Cap AX roll' do
+      skill_cap_modifier = create(:weapon_stat_modifier, :ax_skill_cap)
+      param = {
+        'augment_skill_info' => [
+          [
+            { 'skill_id' => 1588, 'effect_value' => '3', 'show_value' => '+3%' },
+            { 'skill_id' => 1598, 'effect_value' => '1', 'show_value' => '+1%' }
+          ]
+        ]
+      }
+      processor.send(:process_augment_skills, grid_weapon, param)
+      expect(grid_weapon.ax_modifier2).to eq(skill_cap_modifier)
+      expect(grid_weapon.ax_strength2).to eq(1.0)
+    end
+  end
+
+  describe 'Odious weapons' do
+    let!(:befoulment_modifier) { create(:weapon_stat_modifier, :befoul_def_down) }
+    let!(:odious_weapon) { create(:weapon, :odiant, granblue_id: '1040399800') }
+
+    let(:odious_deck) do
+      {
+        'deck' => {
+          'pc' => {
+            'weapons' => {
+              '1' => {
+                'master' => { 'id' => '1040399800', 'name' => odious_weapon.name_en, 'series_id' => '0' },
+                'param' => {
+                  'id' => 54_321,
+                  'level' => '150',
+                  'augment_skill_info' => [[{ 'skill_id' => 2880, 'effect_value' => '21', 'show_value' => '21%' }]],
+                  'odiant' => { 'is_odiant_weapon' => true, 'exorcision_level' => 3 }
+                }
+              }
+            }
+          }
+        }
+      }
+    end
+
+    subject { described_class.new(party, odious_deck) }
+
+    it 'stores the befoulment and exorcision level instead of treating them as AX skills' do
+      subject.process
+
+      grid_weapon = party.weapons.find_by(position: -1)
+      expect(grid_weapon.befoulment_modifier).to eq(befoulment_modifier)
+      expect(grid_weapon.befoulment_strength).to eq(21.0)
+      expect(grid_weapon.exorcism_level).to eq(3)
+      expect(grid_weapon.ax_modifier1_id).to be_nil
+      expect(subject.warnings).to be_empty
+    end
+
+    it 'keeps them through the collection sync and updates the collection weapon' do
+      collection_weapon = create(:collection_weapon, user: party.user, weapon: odious_weapon, game_id: '54321',
+                                                     exorcism_level: 1)
+
+      subject.process
+
+      grid_weapon = party.weapons.find_by(position: -1)
+      expect(grid_weapon.collection_weapon).to eq(collection_weapon)
+      expect(grid_weapon.befoulment_modifier).to eq(befoulment_modifier)
+      expect(grid_weapon.exorcism_level).to eq(3)
+
+      collection_weapon.reload
+      expect(collection_weapon.befoulment_modifier).to eq(befoulment_modifier)
+      expect(collection_weapon.befoulment_strength).to eq(21.0)
+      expect(collection_weapon.exorcism_level).to eq(3)
     end
   end
 
