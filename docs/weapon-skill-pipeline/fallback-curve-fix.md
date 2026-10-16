@@ -1,6 +1,6 @@
-# Fallback-curve fix (Build::VERSION 9)
+# Fallback-curve fix (Build::VERSION 10)
 
-What the fallback-curve fix changes in the resolved weapon-skill data. Measured on `hensei_pipeline_fallback` (the pipeline database at Build::VERSION 8): the committed baseline, compared with the curation sync plus a full `build_weapon_skills all=true mode=write` on this branch. **286 versions change (297 rows); none is added or removed.** 254 rows change value and 43 rows are no longer generated. The user reviews every value change in this list before merge.
+What the fallback-curve fix changes in the resolved weapon-skill data. Measured on `hensei_pipeline_fallback` rebased on `pipeline/W9-goldens` (Build::VERSION 9, the skill-level rule): that branch's baseline, compared with the curation sync plus a full `build_weapon_skills all=true mode=write` on this branch. **286 versions change (297 rows); none is added or removed.** 254 rows change value and 43 rows are no longer generated. The user reviews every value change in this list before merge.
 
 ## What was wrong
 
@@ -22,8 +22,9 @@ Base LGZkRG (EX Might 230, 230.5 internally); one weapon in the test slot:
 | C1UGnK | Bismarck 4★ | Armed Shadow, SL15 | 18 |
 | FaJB80 | Bismarck 5★ | Armed Shadow, SL20 | 20 |
 | GmPPWw | Qilin Sword 5★ | Clouds of Nightfall, SL20 | 21 |
+| 2aH20k (base YCKMmk) | Zodiaco Vitae 4★ | Clawed Flood, SL15 | 14.5 |
 
-Clarion's Armed Flood at SL20 with an Attack awakening lv15 reads 35 (20 + 15). The three EX Might lines were marked `skip` until this fix; they're checked now and pass.
+Clarion's Armed Flood at SL20 with an Attack awakening lv15 reads 35 (20 + 15). The four EX Might lines were marked `skip` until this fix; they're checked now and pass.
 
 ## Changes by skill type
 
@@ -31,11 +32,11 @@ Clarion's Armed Flood at SL20 with an Attack awakening lv15 reads 35 (20 + 15). 
 |---|---|---|---|---|
 | **EX ATK Big, no family** | 92 | 7.2/18/21.6 (Tyranny, Taboo) | 6/15/18/21 (EX Might Big) | **Captured:** GmPPWw, Clouds of Nightfall at SL20 = 21. Template:Weapon Skills/Might, EX table. |
 | **Armed Blaze/Flood/Gale/Grounds/Shadow/Shine** | 62 | 7.2/18/21.6 (Tyranny, Taboo) | 6/15/18/20 (new canonical **Armed** family) | **Captured:** C1UGnK (SL15 = 18), FaJB80 (SL20 = 20), Clarion's Armed Flood (SL20 + awakening 15 = 35). SL1/SL10 follow normal Might Big, by analogy only. The six skills now resolve through the family, so they no longer generate a row of their own. |
-| **EX ATK Medium** ("Clawed …", Mysterious ATK, …) | 66 | 3.6/14.4/17.4 (Fandango, Taboo) | 3/12/14.5 (EX Might Medium) | **No capture.** Follows the canonical EX Might Medium row (Template:Weapon Skills/Might, EX table) without in-game confirmation. Captures are planned. |
+| **EX ATK Medium** ("Clawed …", Mysterious ATK, …) | 66 | 3.6/14.4/17.4 (Fandango, Taboo) | 3/12/14.5 (EX Might Medium) | **Captured:** 2aH20k, Clawed Flood at SL15 = 14.5 (the build gave 17.4). Template:Weapon Skills/Might, EX table. SL20 isn't in the template; the calculator holds 14.5. |
 | **EX HP Medium** ("Willed …", Mysterious VIT, Downfall of Ignorance) | 10 | 7.2/18/20.4 (Auspice, Taboo) | 3/12/14.5 (EX Aegis Medium) | **No capture.** Follows the canonical EX Aegis Medium row (Template:Weapon Skills/Aegis, EX table) without in-game confirmation. |
-| **EX HP Big** ("Resilient …", Mysterious VIT II) | 10 | 9/18/21 (Aegis, normal) | 6/15/–/– (EX Aegis Big) | **No capture, incomplete source.** The stored Aegis template gives EX Big as 6/15/?/?; see "Stopped" below. |
+| **EX HP Big** ("Resilient …", Mysterious VIT II) | 10 | 9/18/21 (Aegis, normal) | 6/15/–/– (EX Aegis Big) | **No capture, incomplete source.** The stored Aegis template gives EX Big as 6/15/?/?; see "Stopped" below. The calculator holds the last anchor, so SL15 and SL20 read **15** (were 21). |
 | **EX HP Small: Tidings of the New World** (the five World weapons) | 5 | 3/12/14.5 (Aegis, omega) | 3/12/14.5/16, **curated** | SL15 = 14.5 is panel-confirmed by every golden with a World weapon (0ZA6Ak, plktjH, F0MD7j, ZCoUJT, HDJE0N, XZq7xW, lCMBmU, wOF5LS; all 4★). The curve is Template:Weapon Skills/True Supremacy's EX table, the same "Massive ATK / Small max HP" skill. **SL20 = 16 is from that template only.** |
-| **EX HP Small: Mysterious VIT** (Mysterious Hatchet) | 1 | 3/12/14.5 (Aegis, omega) | 1/10/–/16 (EX Aegis Small) | **No capture, incomplete source.** See "Stopped". |
+| **EX HP Small: Mysterious VIT** (Mysterious Hatchet) | 1 | 3/12/14.5 (Aegis, omega) | 1/10/–/16 (EX Aegis Small) | **No capture, incomplete source.** See "Stopped". The calculator interpolates SL15 to **13** (was 14.5); SL20 reads 16. |
 | **EX ATK Small** (All-Night Party, Speed Cast, Succession of Knighthood) | 3 | 1/10/12/13 (Might, normal) | 1/10/12 (EX Might Small) | **No capture.** Only SL20 changes: EX Might Small has no SL20 in the template. |
 | **Normal/Omega ATK Big** (Inferno's Second Insignia; Ironflame's Gauntlet III) | 2 | 7.2/18/21.6 (Tyranny, Taboo) | 6/15/18/20 (Might normal / omega Big) | No capture. The skill's own series. |
 | **Mountain's Enmity** (Fremel Hammer, normal) | 1 (2 rows) | ATK 3.6/14.4/17.4, HP 7.2/18/20.4 (Taboo) | ATK 3/12/14.5/16, HP 6/15/17 (Might / Aegis normal Medium) | No capture. The skill's own series. |
@@ -44,7 +45,7 @@ Clarion's Armed Flood at SL20 with an Attack awakening lv15 reads 35 (20 + 15). 
 
 ### Rows no longer generated (43)
 
-No canonical curve exists in the skill's series, so the build writes no row and warns. None of these is in a golden, and no stored template has a sized EX (or Odious) table for them: the Trium template has only "Normal & Omega" and "Taboo", Verity/Enmity/Healing/Stamina have no EX table. **These skills now add nothing in the calculator** until a capture or a cited curation gives their values.
+No canonical curve exists in the skill's series, so the build writes no row and warns. No golden line depends on them (`validate_panel` and `goldens_spec` pass with the rows gone), and no stored template has a sized EX (or Odious) table for them: the Trium template has only "Normal & Omega" and "Taboo", Verity/Enmity/Healing/Stamina have no EX table. **These skills now add nothing in the calculator** until a capture or a cited curation gives their values.
 
 | Group | Versions | Old (borrowed) |
 |---|---|---|
@@ -72,8 +73,8 @@ The citation sits in each row's `provenance` (data rows have no notes column).
 
 ## Stopped for lack of stored evidence
 
-- **EX Aegis Small** (Template:Weapon Skills/Aegis, EX table): 1/10/**?**/16, cited to Kamigame. SL15 isn't stored. The row stays as is; Mysterious VIT (Mysterious Hatchet) now reads it. Tidings would have too, which is how an earlier series-first attempt broke 5 references; it's curated instead (above).
-- **EX Aegis Big**: 6/15/**?/?**. SL15 and SL20 aren't stored. Resilient … and Mysterious VIT II now read it.
+- **EX Aegis Small** (Template:Weapon Skills/Aegis, EX table): 1/10/**?**/16, cited to Kamigame. SL15 isn't stored. The row stays as is; Mysterious VIT (Mysterious Hatchet) now reads it: 13 at SL15 (interpolated), 16 at SL20. Tidings would have too, which is how an earlier series-first attempt broke 5 references; it's curated instead (above).
+- **EX Aegis Big**: 6/15/**?/?**. SL15 and SL20 aren't stored. Resilient … and Mysterious VIT II now read it: 15 at SL15 and SL20.
 - **EX Aegis Medium**: 3/12/14.5/**?**. SL20 isn't stored; the calculator holds 14.5.
 - **EX DA/TA, Critical, Enmity, Heal cap, Stamina by size**: no stored template has these tables (above).
 
@@ -81,16 +82,17 @@ Each needs a capture or the Kamigame page (not stored; never fetched).
 
 ## Goldens
 
-- **C1UGnK, FaJB80, GmPPWw:** the EX Might lines are checked again (no `skip`) and match; their fixtures are re-exported from this database. The re-export also carries this database's catalogue state for those three parties (skill-label positions, two new labels, the anklet key effects), which no line depends on.
+- **C1UGnK, FaJB80, GmPPWw, 2aH20k:** the EX Might lines are checked again (no `skip`) and match; their fixtures are re-exported from this database. Besides the fallback rows, the re-export carries this database's catalogue state, which no line depends on: two panel labels this database has and the W9 fixtures lack (ELEMENT Taboo, Od Stamina) with the label positions renumbered around them (C1UGnK/FaJB80/GmPPWw only), the anklet key effects under new ids (same values; the key extraction recreates them), and the weapons' build fingerprints.
 - **The World-weapon goldens** (0ZA6Ak, plktjH, F0MD7j, ZCoUJT, HDJE0N, XZq7xW, lCMBmU, wOF5LS) keep HP: Tidings is curated.
 - **XfBq6u** (and its sweeps) keeps Stamina: Eclipse's Stamina is curated.
-- No other reference moved. `granblue:validate_panel` on the rebuilt database: every fixture party matches; `spec/requests/goldens_spec.rb`: 84 examples, 0 failures.
+- No other reference moved. `granblue:validate_panel` on the rebuilt database: every fixture party matches; 37 panel references match.
 
 ## Checks
 
 On `hensei_pipeline_fallback`, after `sync_weapon_skill_curation` (the registry reads canonical rows from the database, so the Armed row must be synced before the build; the deploy does this in `db:migrate:with_data`):
 - the first full write: rows ~214 updated (provenance), −108 deleted (62 Armed versions now covered by the family; 46 with no compatible curve, of which Authority's Trium's two rows and Eclipse's Stamina were then restored by curation), versions ~12 (the 12 Armed versions added from the expanded page now carry the Armed modifier);
-- two further full builds in a row: `versions +0 ~0 -0; rows +0 ~0 -0`;
+- after rebasing on W9 (VERSION 9's skill-level rule): versions ~49, rows unchanged, and the same 286-version diff against that branch's baseline;
+- two consecutive full builds: `versions +0 ~0 -0; rows +0 ~0 -0`;
 - `granblue:skill_parity`: no differences against the refreshed baseline;
 - the curation drift check is clean, and a re-export leaves the new entries byte-identical.
 
