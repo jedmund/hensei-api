@@ -117,6 +117,20 @@
   ],
   "data": [
     {
+      "weapon": "1040020300",
+      "skill": "Eclipse's Stamina",
+      "ordinal": 0,
+      "modifier": "Eclipse's Stamina",
+      "boost_type": "stamina",
+      "series": "ex",
+      "size": "massive",
+      "formula_type": "stamina",
+      "coefficient": 50.4,
+      "aura_boostable": false,
+      "provenance": "golden_panel: XfBq6u and its HP 25/50/75% sweeps (two Fediel's Spines give 44.84 of the Stamina line at 100% HP), coefficient 50.4 from Template:Weapon Skills/Stamina, Ancestral column (cited to Fediel's Spine)",
+      "edited_at": "2026-10-16T12:00:00Z"
+    },
+    {
       "weapon": "1040215100",
       "skill": "Flood's Verity",
       "ordinal": 0,
@@ -131,6 +145,38 @@
       "aura_boostable": false,
       "provenance": "manual",
       "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040313000",
+      "skill": "Authority's Trium",
+      "ordinal": 0,
+      "modifier": "Authority's Trium",
+      "boost_type": "da",
+      "series": "ex",
+      "size": "massive",
+      "formula_type": "flat",
+      "sl1": 2.8,
+      "sl10": 10.0,
+      "sl15": 14.0,
+      "aura_boostable": false,
+      "provenance": "wiki_template: Template:Weapon Skills/Trium, Massive row (2.8/10/14), cited to GameWith, Lu Woh's Horn",
+      "edited_at": "2026-10-16T12:00:00Z"
+    },
+    {
+      "weapon": "1040313000",
+      "skill": "Authority's Trium",
+      "ordinal": 0,
+      "modifier": "Authority's Trium",
+      "boost_type": "ta",
+      "series": "ex",
+      "size": "massive",
+      "formula_type": "flat",
+      "sl1": 2.8,
+      "sl10": 10.0,
+      "sl15": 14.0,
+      "aura_boostable": false,
+      "provenance": "wiki_template: Template:Weapon Skills/Trium, Massive row (2.8/10/14), cited to GameWith, Lu Woh's Horn",
+      "edited_at": "2026-10-16T12:00:00Z"
     },
     {
       "weapon": "1040912400",
