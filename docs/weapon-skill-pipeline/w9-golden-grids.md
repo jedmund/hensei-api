@@ -16,7 +16,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Main-hand swap M3](#main-hand-swaps-m1m5)**: Ishkur Shaft (Climate Control, SL1). M1 showed the "Medium boost to multiattack rate" main-hand skills give DA 20 / TA 10 at SL15, not the stopgap's 5/5; M3 shows whether they scale.
+- [ ] **[Main-hand swap M3](#main-hand-swaps-m1m5)**: Astro Modele (Synchronized Artistry, SL1) as UC3M0M's main hand. M1 showed the "Medium boost to multiattack rate" main-hand skills give DA 20 / TA 10 at SL15, not the stopgap's 5/5; M3 shows whether they scale, and Armed Blaze at SL1 (EX Might +6).
 - [ ] **[Main-hand swap M2](#main-hand-swaps-m1m5)**: Xingese Liuyedao (Critical at SL15).
 - [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
@@ -79,9 +79,9 @@ These skills work only from the main hand ("When main weapon (MC only)"). Each i
 
 | # | Weapon (stash) | Element | Its skills | Tests | Base |
 |---|---|---|---|---|---|
-| M1 | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA/TA Medium at SL15 (*stopgap*) | F0, Higurashi → Asauchi |
+| M1 ✓ | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA/TA at SL15: **DA 20 / TA 10** (QmQaPH) | UC3M0M, Higurashi → Asauchi |
 | M2 | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical at SL15 (*stopgap*) | LGZkRG, Ereshkigal → Xingese Liuyedao |
-| M3 | Ishkur Shaft (3★, SL1) | Wind | Climate Control, Tempest's Vestige | DA/TA at SL1 | HDJE0N, Rhomphaia → Ishkur Shaft |
+| M3 | Astro Modele (3★, SL1) | Fire | Synchronized Artistry, Armed Blaze | DA/TA at SL1 (same wording as M1's skill); Armed at SL1 (EX Might +6) | UC3M0M, Higurashi → Astro Modele |
 | M4 | Air Cannon (4★, SL1) | Water | Bang!, Air Blast | Critical Massive at SL1 | YCKMmk, Hraesvelgr → Air Cannon |
 | M5 | Edem (4★, SL1) | Earth | Golden Spirit, Sentient Simulacrum | Enmity Big at SL1 | 7AiIOo at **HP 50%**, as is and with Andromeda → Edem |
 
