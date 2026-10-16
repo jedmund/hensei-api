@@ -6,6 +6,16 @@ Each grid below was reconstructed from its reference's notes.
 - **If you rebuild a grid exactly** (same weapons, uncaps, transcendence, keys, awakenings, skill levels and summons), the old reference already holds the expected values. Your capture just has to match it.
 - **If something differs,** that's fine. Capture anyway and tell me what changed; I'll write a new reference.
 
+## Status
+
+| # | Grid | Captured as | State |
+|---|---|---|---|
+| 3 | K4UydX's design | 7AiIOo | every line matches; CI fixture |
+| 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
+| 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
+
+Still wanted, in priority order: 5 and 6 (the HP sweeps), 1 and 2, then 17 and 18 (open questions from 0ZA6Ak), 14 to 16, and 8 to 13.
+
 ## Capture rules (from past rounds)
 
 1. **Your own account.** Grids submitted by others can't pin values that depend on their account state (skill levels, awakenings).
@@ -55,7 +65,7 @@ Element-changeable weapons (Celestial, Superlative and others) are listed with t
 
 **Summons:** Hades 250 (main and friend). Subs: Orologia, Bahamut 250, Sariel, Lucifer 250, Death, Fediel.
 
-### 3. K4UydX: Earth, Rising Force, 13 weapons
+### 3. K4UydX: Earth, Rising Force, 13 weapons (captured: 7AiIOo)
 **Validates:** blanket amplification (caps, amps and supplementals ×4.0), specialty-hidden Ultima and Celestial pieces, the ≥280 Medicinal Master package. **Reference:** `K4UydX.json` (foe Water, optimus 300 / omega 0).
 
 | Slot | Weapon | State |
@@ -72,7 +82,7 @@ Element-changeable weapons (Celestial, Superlative and others) are listed with t
 
 **Summons:** not in the notes. Use an earth optimus pair that gives optimus 300 (for example Titan-type), and tell me which.
 
-### 4. SPhnLB: Wind, Lancer Origin, 13 weapons
+### 4. SPhnLB: Wind, Lancer Origin, 13 weapons (captured: HDJE0N)
 **Validates:** Added HP and Debuff Res. overskills, World awakening specialty pairing, Doombringer II tiers. **Reference:** `SPhnLB.json` (foe Earth, optimus 460 / omega 20).
 
 | Slot | Weapon | State |
@@ -116,7 +126,7 @@ Element-changeable weapons (Celestial, Superlative and others) are listed with t
 | | Herb Basket |
 | | Third Stripe of the Streak |
 
-### 7. 0ZA6Ak (rebuild of qBOvon): Fire Odious / Taboo, 13 weapons
+### 7. qBOvon rebuild: Fire Odious / Taboo, 13 weapons (captured: 0ZA6Ak, plktjH, k2hvSF)
 qBOvon was another player's capture, and 7 of its lines depended on their account. Rebuild its composition on **your** account so every line counts. **Validates:** taboo exorcision scaling, befoulment Hit lines, Odious families. **Reference:** `qBOvon.json` for the lines that weren't account-dependent; I'll write a new one.
 
 | Slot | Weapon | State |
@@ -241,11 +251,24 @@ These weren't captured before. Each varies one thing, so the difference between 
   
   If the covenant depends on battle state, capture the panel in battle at the moment it's active too, and tell me the condition.
 
+### 17. Odious exorcision below the cap
+**Question:** the Taboo aura is modelled as linear in total exorcision levels, from the base (40 levels' worth of the uncap's rate) to the cap at 20 levels (gbf.wiki/Belmervolk: 1/2/2.5/3.0% per level at 0/3/4/5★). Only the cap is verified (0ZA6Ak: 4★ 150 + 5★ 180 = 330).
+- **Grid:** 0ZA6Ak.
+- **Captures:** the Taboo line with the four Odious weapons' exorcision levels summing to less than 20 (for example one weapon swapped for a lower-exorcision copy, or a fresh one at level 1). Record every Odious weapon's exorcision level. If you have a 5★ Nihuyvintae or a 4★ friend, a capture with that pair helps too.
+
+### 18. Blazing Chain's C.A. supplement
+**Question:** Blazing Chain (Higurashi main hand) is modelled as a 400,000 C.A. supplement, read from its "(Damage cap: 400,000)". In 0ZA6Ak the C.A. Supp. line is at its 1,000,000 cap, so the value wasn't visible.
+- **Grid:** any grid with Higurashi as main hand whose C.A. Supp. reads below 1,000,000 (not orange).
+- **Captures:**
+  1. with Higurashi as main hand;
+  2. the same grid with another main hand.
+
 ## Priority
 
 1. **5 and 6, the HP sweeps.** They anchor every HP-scaled curve.
-2. **1 to 4.** They cover the most lines per capture.
-3. **14 to 16.** These unblock W10 Track D.
-4. **7 to 13,** as you have the weapons.
+2. **1 and 2,** the rest of section A.
+3. **17 and 18.** They pin the two values 0ZA6Ak couldn't show.
+4. **14 to 16.** These unblock W10 Track D.
+5. **8 to 13,** as you have the weapons.
 
-After all of section A has been captured again, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
+After all of section A has been captured again, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on. Still missing from section A: 1, 2, 5 and 6.
