@@ -12,7 +12,7 @@ module Granblue
     # folds them into the series files.
     class Overlay
       SECTIONS = %w[versions effects data ops].freeze
-      OP_ORDER = %w[remove_version add_version gate description].freeze
+      OP_ORDER = %w[remove_version add_version gate description remove_row].freeze
       CANONICAL_FILE = "_canonical.json"
       NO_SERIES_FILE = "_none.json"
 
@@ -88,8 +88,13 @@ module Granblue
         when "versions" then ref
         when "effects" then ref + [entry["modifier"], entry["boost_type"], entry["key_slug"], sorted(entry["condition"] || {})]
         when "data" then ref + [entry["modifier"], entry["boost_type"], entry["series"], entry["size"]]
-        when "ops" then ref + [entry["op"]]
+        when "ops" then ref + [entry["op"]] + (entry["op"] == "remove_row" ? removed_identity(entry) : [])
         end
+      end
+
+      # A remove_row op: the identity of the row it removes, in that section.
+      def self.removed_identity(entry)
+        [entry["section"]] + identity(entry["section"], entry).drop(3)
       end
 
       def self.sorted(value)
@@ -101,10 +106,14 @@ module Granblue
         base = [entry["weapon"].to_s, entry["skill"].to_s, entry["ordinal"].to_i]
         case section
         when "versions" then base
-        when "ops" then base + [OP_ORDER.index(entry["op"]).to_i]
+        when "ops" then base + [OP_ORDER.index(entry["op"]).to_i, removed_identity_key(entry)]
         else base + [entry["modifier"].to_s, entry["boost_type"].to_s, sorted(entry["condition"] || {}).to_json,
                      entry["key_slug"].to_s, entry["series"].to_s, entry["size"].to_s]
         end
+      end
+
+      def self.removed_identity_key(entry)
+        entry["op"] == "remove_row" ? removed_identity(entry).to_json : ""
       end
 
       def validate!
@@ -113,7 +122,7 @@ module Granblue
 
           WeaponSkills::OverlaySchema.validate(doc).map { |e| "#{label}: #{e}" }
         end
-        errors.concat(duplicate_errors) if errors.empty?
+        errors.concat(duplicate_errors + removed_row_errors) if errors.empty?
         raise Invalid, "curation overlay is invalid; nothing was applied:\n  #{errors.join("\n  ")}" if errors.any?
 
         self
@@ -128,6 +137,19 @@ module Granblue
       end
 
       private
+
+      # A row that a remove_row op deletes would come straight back from the rows section.
+      def removed_row_errors
+        removed = entries("ops").select { |op| op["op"] == "remove_row" }
+                                .to_h { |op| [[op["section"]] + self.class.identity(op["section"], op), op] }
+        WeaponSkills::OverlaySchema::ROW_OP_SECTIONS.flat_map do |section|
+          entries(section).filter_map do |entry|
+            next unless removed.key?([section] + self.class.identity(section, entry))
+
+            "#{section}: #{CurationSnapshot.describe(entry)} is also removed by a remove_row op"
+          end
+        end
+      end
 
       def duplicate_errors
         SECTIONS.flat_map do |section|

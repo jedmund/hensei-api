@@ -3,7 +3,7 @@
 module Granblue
   class CurationSnapshot
     # Structural curation ops (docs/weapon-skill-pipeline/overlay-v2.md): remove_version,
-    # add_version, gate and description. Each op is idempotent; #apply returns
+    # add_version, gate, description and remove_row. Each op is idempotent; #apply returns
     #   :applied    it changed the database;
     #   :satisfied  the database already matched;
     #   :skipped    it can't apply here yet (a description op before the text columns exist);
@@ -29,6 +29,7 @@ module Granblue
         when "add_version" then add_version(entry)
         when "gate" then set_fields(entry, gate_attrs(entry))
         when "description" then description(entry)
+        when "remove_row" then remove_row(entry)
         else raise ArgumentError, "unknown curation op #{entry['op']}"
         end
       end
@@ -42,6 +43,7 @@ module Granblue
         when "gate" then !version.nil? && matches?(version, gate_attrs(entry))
         when "description"
           !@description_columns || (!version.nil? && matches?(version, entry.slice(*DESCRIPTION_FIELDS)))
+        when "remove_row" then (scope = curated_rows(entry)).nil? || !scope.exists?
         end
       end
 
@@ -57,6 +59,30 @@ module Granblue
         version.destroy!
         slot.destroy! unless slot.weapon_skill_versions.exists?
         :applied
+      end
+
+      # Deletes a curated row: the sync never deletes one, so a curated value found to be
+      # wrong needs this op. Generated rows are the build's to write.
+      def remove_row(entry)
+        scope = curated_rows(entry) or return :unmatched
+        scope.delete_all.positive? ? :applied : :satisfied
+      end
+
+      # The curated rows with the op's row identity (CurationSnapshot#effect_identity and
+      # #datum_identity), or nil when it names a version this database doesn't have.
+      def curated_rows(entry)
+        version_id = nil
+        if entry["weapon"]
+          version = CurationSnapshot.find_version(entry) or return nil
+          version_id = version.id
+        end
+        identity = { weapon_skill_version_id: version_id, modifier: entry["modifier"], boost_type: entry["boost_type"] }
+        model, keys = if entry["section"] == "effects"
+                        [WeaponSkillEffect, { key_slug: entry["key_slug"], condition: entry["condition"] || {} }]
+                      else
+                        [WeaponSkillDatum, { series: entry["series"], size: entry["size"] }]
+                      end
+        model.where(identity.merge(keys)).where.not(manually_edited_at: nil)
       end
 
       def add_version(entry)
