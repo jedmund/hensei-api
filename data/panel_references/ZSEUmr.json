@@ -1,0 +1,44 @@
+{
+  "party": "ZSEUmr",
+  "captured_on": "2026-10-16",
+  "notes": "Stash-weapon Light party (W9 fallback captures L1-L3). Rhongomyniad 5★ MH (SL20), Lantern Blade 3★ (Pumpkin Trick, SL1), Asclepius Rod 3★ (SL1), Frilly Charm Bracelet 3★ (Resilient Shine, SL1); Luminiera Omega 6★ main and friend; Cavalier. Critical 3.2 = Pumpkin Trick at SL1: the Optimus last-resort curve in the fallback-curve fix (Bloodrage normal Medium, 3.2/5/6.5); the current build borrows 3.8. HP 6 = Resilient Shine at SL1 (EX Aegis Big); the current build gives 9. Both lines are open until that fix. No Heal Cap line (Grace of Healing is a healing boost) and no C.A. DMG line (Covert Artistry works only from the main hand). Estimated DMG 6866 / to Dark 10108 / Max HP 14648.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "dark"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 340,
+    "taboo": 0
+  },
+  "absent": [
+    "heal_cap",
+    "ca_dmg"
+  ],
+  "lines": [
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 37
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 3.2,
+      "skip": true
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 6,
+      "skip": true
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50
+    }
+  ]
+}

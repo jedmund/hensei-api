@@ -39,6 +39,8 @@ The fallback-curve fix gives every skill with no family of its own the curve of 
 
 **From your stash** (weapons not in your granblue.team collection). Most of these DA/TA and Critical skills work only from the **main hand** ("When main weapon (MC only)"), so each of those is a main-hand swap: one capture each, with only the main hand changed. The others go in sub slots and can share a party, one per panel line.
 
+**Done 2026-10-16:** L1-L3 as SAlNoF and ZSEUmr. Grace of Healing shows no Heal Cap line (it's a healing boost; suppressed). Pumpkin Trick gives Critical 3.2 and Resilient Shine gives HP 6 at SL1, both the fallback-curve fix's values.
+
 *Element parties* (capture the base without the test weapons, then with all of them; each sits on a different line):
 
 | # | Weapon (stash state) | Element | Slot | Its skills | Tests | Base |
