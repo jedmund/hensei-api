@@ -34,6 +34,7 @@ module WeaponSkills
                            multiplier_frame main_hand_only mc_only scales_with_skill_level].freeze
       DESCRIPTION_COLUMNS = %i[description_en description_jp].freeze
       MODELS = { datum: WeaponSkillDatum, effect: WeaponSkillEffect }.freeze
+      ROW_DEFAULTS = { provenance: nil }.freeze
 
       # context: accepted for symmetry with Build.for; the writer needs nothing from it.
       def self.call(result, context: nil) # rubocop:disable Lint/UnusedMethodArgument
@@ -128,7 +129,8 @@ module WeaponSkills
         by_key = generated.index_by { |row| row_key(kind, row.attributes.symbolize_keys) }
 
         wanted.each do |row|
-          attrs = row.attributes.merge(weapon_skill_version_id: version.id)
+          # provenance is set only on fallback rows; nil clears a stale one
+          attrs = ROW_DEFAULTS.merge(row.attributes).merge(weapon_skill_version_id: version.id)
           key = row_key(kind, attrs)
           if curated_keys.include?(key)
             @report.rows_kept_curated += 1

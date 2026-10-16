@@ -29,7 +29,8 @@ module WeaponSkills
 
     # A generated version-linked row. `kind` picks the table (weapon_skill_data or
     # weapon_skill_effects); `attributes` holds that table's columns, excluding ids,
-    # timestamps, provenance and curation stamps.
+    # timestamps and curation stamps. provenance is present only on a datum copied from a
+    # fallback curve ("fallback:<modifier>/<series>"); the writer clears it elsewhere.
     ROW_KINDS = %i[datum effect].freeze
     Row = Struct.new(:version_identity, :kind, :boost_type, :condition, :attributes, keyword_init: true) do
       def identity = [version_identity, kind, boost_type, condition || {}]
