@@ -37,6 +37,32 @@ The fallback-curve fix gives every skill with no family of its own the curve of 
 - [ ] **EX Enmity, Undersky's Whispers** (*stopgap*): **Advocatus Diaboli** 5★ (SL20), Dark. Use the Dark session base (LGZkRG with an Executioner removed). Enmity is 0 at full HP, so capture the base and the base with Advocatus at **HP 50% and 25%**. Read **Enmity**.
 - [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): **Wilnas's Finger** 4★ (SL15), Fire. Use the Fire session base, at **HP 50% and 25%**, with and without it.
 
+**From your stash** (weapons not in your granblue.team collection). Most of these DA/TA and Critical skills work only from the **main hand** ("When main weapon (MC only)"), so each of those is a main-hand swap: one capture each, with only the main hand changed. The others go in sub slots and can share a party, one per panel line.
+
+*Element parties* (capture the base without the test weapons, then with all of them; each sits on a different line):
+
+| # | Weapon (stash state) | Element | Slot | Its skills | Tests | Base |
+|---|---|---|---|---|---|---|
+| L1 | Asclepius Rod (0★, SL1) | Light | sub | Zion's Healing, Grace of Healing | Heal Cap (#20); Zion's Healing's known value is subtracted | any Light grid with 3 free sub slots |
+| L2 | Lantern Blade (3★, SL1) | Light | sub | Pumpkin Trick | Critical, EX Medium | same party |
+| L3 | Frilly Charm Bracelet (3★, SL1) | Light | sub | Resilient Shine (Covert Artistry is main hand only) | HP, EX Big | same party |
+| E1 | Baihu Fangstaff (4★, SL15) | Earth | sub | Terra's Might, Terra's Third Spur | C.A. DMG and Might at SL15 | 7AiIOo with 2 weapons removed |
+| E2 | Seaside Guardian (3★, SL1) | Earth | sub | Resilient Grounds (Synchronized Artistry is main hand only) | HP, EX Big | same party |
+
+*Main-hand swaps* (the base's main hand replaced, nothing else changed):
+
+| # | Weapon (stash state) | Element | Its skills | Tests | Base |
+|---|---|---|---|---|---|
+| M1 | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA/TA Medium at SL15 | Fire session base |
+| M2 | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical at SL15 | LGZkRG |
+| M3 | Ishkur Shaft (3★, SL1) | Wind | Climate Control, Tempest's Vestige | DA/TA at SL1 | HDJE0N |
+| M4 | Air Cannon (4★, SL1) | Water | Bang!, Air Blast | Critical Massive at SL1 | YCKMmk |
+| M5 | Edem (4★, SL1) | Earth | Golden Spirit, Sentient Simulacrum | Enmity Big at SL1 (capture at HP 50%, with and without) | 7AiIOo |
+
+M1, M2 and E1 are worth the most: they pin SL15, where the stopgap values are least certain. The other Synchronized Artistry and Resilient weapons in the stash only repeat an SL1 point and aren't needed.
+
+A golden needs the party saved on granblue.team. For stash weapons, save it as a private party; once the fixture is exported it can be deleted.
+
 **Not in your collection (any one weapon per group, at any known skill level):**
 
 | Group | Rows | Panel line | Weapons |
