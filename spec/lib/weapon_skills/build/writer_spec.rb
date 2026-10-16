@@ -65,6 +65,18 @@ RSpec.describe WeaponSkills::Build::Writer do
     expect(WeaponSkillDatum.sole.sl10).to eq(12.0)
   end
 
+  it "writes a fallback row's provenance and clears it once the row has its own curve" do
+    v = version(0, 0, "Inferno's Might")
+    fallback = datum(v.identity, "atk", 10.0)
+    fallback.attributes = fallback.attributes.merge(provenance: "fallback:Might/normal")
+    write(result([v], [fallback]))
+    expect(WeaponSkillDatum.sole.provenance).to eq("fallback:Might/normal")
+
+    expect(write(result([v], [fallback])).changed?).to be(false)
+    write(result([v], [datum(v.identity, "atk", 10.0)]))
+    expect(WeaponSkillDatum.sole.provenance).to be_nil
+  end
+
   it "never touches curated rows or the overlay's columns" do
     v = version(0, 0, "Inferno's Might")
     write(result([v]))

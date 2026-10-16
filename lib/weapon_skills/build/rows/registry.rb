@@ -33,6 +33,14 @@ module WeaponSkills
 
         SERIES_FALLBACK = WeaponSkillDatum::SERIES_FALLBACK
 
+        # The family whose curve stands for a boost type's plain "<size> boost" when a skill
+        # has no family of its own: the gbf.wiki template for that boost alone
+        # (Template:Weapon Skills/Might is ATK, Aegis is HP, Trium is DA and TA, …).
+        BASE_FAMILIES = {
+          "atk" => "Might", "hp" => "Aegis", "da" => "Trium", "ta" => "Trium", "critical" => "Verity",
+          "enmity" => "Enmity", "stamina" => "Stamina", "heal_cap" => "Healing"
+        }.freeze
+
         def self.from_database
           data = WeaponSkillDatum.canonical.order(:id).pluck(*CURVE_COLUMNS).map do |values|
             Curve.new(**CURVE_COLUMNS.zip(values).to_h)
@@ -75,16 +83,23 @@ module WeaponSkills
           end
         end
 
-        # WeaponSkillDatum.canonical_curve: the strongest canonical curve for a tier, across
-        # families. The model's tie-break (sl15, completeness, modifier) can still tie when one
-        # modifier has the tier in two series (Stamina medium: normal 65 / omega 60.4), so it
-        # continues with the caller's series (exact, then SERIES_FALLBACK), then the row's values.
+        # The fallback curve for an SL-scaled clause whose skill has no family of its own.
+        # Candidates are the tier's canonical curves in a series the skill can take: its own,
+        # then its SERIES_FALLBACK. A curve from any other series never qualifies (an EX skill
+        # never borrows a Taboo curve); with no candidate the answer is nil. Among candidates:
+        # the nearest series, then the boost type's base family (BASE_FAMILIES), then
+        # completeness, then the modifier and the row's values as a fixed key. The size of the
+        # values never decides (WeaponSkillDatum.canonical_curve's "strongest curve" rule let
+        # the Taboo family's ×1.2 values win for every EX skill).
         def canonical_curve(boost_type:, size:, formula_type: "flat", series: nil)
           compatible = SERIES_FALLBACK.fetch(series, [series])
-          @curves_by_tier.fetch([boost_type, size, formula_type], []).max_by do |d|
-            [d.sl15.to_f, d.levels.compact.size, d.modifier.to_s,
-             -(compatible.index(d.series) || compatible.size)] + d.tie_key
-          end
+          base = BASE_FAMILIES[boost_type]
+          @curves_by_tier.fetch([boost_type, size, formula_type], [])
+                         .select { |d| compatible.include?(d.series) }
+                         .min_by do |d|
+                           [compatible.index(d.series), d.modifier == base ? 0 : 1, -d.levels.compact.size,
+                            d.modifier.to_s] + d.tie_key
+                         end
         end
 
         # A family with any canonical data or base effect (the extractor's canonical_family?).
