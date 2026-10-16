@@ -16,7 +16,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
 
-**Accuracy on captured grids (measured):** 36 golden parties, 48 references, 1,187 panel lines. 1,165 match exactly and are checked in CI on every change. 22 lines (1.9%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
+**Accuracy on captured grids (measured):** 38 golden parties, 51 references, 1,283 panel lines. 1,261 match exactly and are checked in CI on every change. 22 lines (1.7%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
 **Coverage of the catalogue (measured):**
 
@@ -66,7 +66,7 @@ Skill levels come from the import, so there's no need to report them. Element-ch
 
 | Base | Element | Build | Status |
 |---|---|---|---|
-| **LGZkRG** | Dark | LD66IX with one Executioner swapped for Hollowsky Blade (its covenant adds nothing as a sub) | captured |
+| **jFY42F** | Dark | LGZkRG recaptured after an Opus key change (LD66IX with one Executioner swapped for Hollowsky Blade). Use it in place of LGZkRG. | captured |
 | **UC3M0M** (F0) | Fire | Higurashi (6★ T5) MH; Colossus Cane Ira ×3; Colossus Cane Omega ×2; Scythe of Repudiation (6★ T5, γ Pendulum + Pendulum of Supremacy); Sol Remnant; Doombringer Sword (Anklet of Ascendance); Heat of The Sun; two empty slots. Agni 6★ T5 main and friend. | captured |
 | **W0** | Wind | HDJE0N with Piercing Galewing removed (the test slot). Zephyrus 6★ T5 main and friend. | **not captured** |
 | **YCKMmk** | Water | Hraesvelgr (6★ T5) MH; Leviathan Gaze Omega ×3; Leviathan Gaze Mare ×2; Staff of Renunciation (6★ T5, Δ Pendulum + Chain of Falsehood); Doombringer Edge (Anklet of Oblivion); two empty slots. Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. | captured |
@@ -108,7 +108,7 @@ M1 and M2 pinned SL15; M4 showed the main-hand Critical skills don't level.
 #### Collection weapons
 
 - [ ] **EX Stamina, Sunveil's Radiance** (*stopgap*): True Purity Sunblade 4★ (SL15), then 5★ (SL20), each in a free sub slot of ZSEUmr, HP 100%. Read **Stamina**.
-- [ ] **EX Enmity, Undersky's Whispers** (*stopgap*): Advocatus Diaboli 5★ (SL20) in LGZkRG's test slot. Enmity is 0 at full HP, so capture LGZkRG and LGZkRG with Advocatus, both at **HP 50% and 25%**. Read **Enmity**.
+- [ ] **EX Enmity, Undersky's Whispers** (*stopgap*): the skill is **main hand only** (a sub-slot Advocatus adds nothing at any HP: aDkEIX). Put Advocatus Diaboli 5★ (SL20) in jFY42F's **main hand** and capture at **HP 100%, 50% and 25%**. Enmity is 0 at full HP, so the 100% capture is the base. Read **Enmity**.
 - [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): Wilnas's Finger 4★ (SL15) in F0's test slot, at **HP 50% and 25%**, with and without it.
 
 #### Still to find
@@ -303,6 +303,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 19 | Fire base and M1 | UC3M0M (F0), QmQaPH (Asauchi as main hand) | every line matches: Nameless Zanpakuto EX Might 18 at SL15; The Origin of All Zanpakuto DA 20 / TA 10, fixed, which with GameWith's Astro Modele page curates all 23 "multiattack rate" main-hand skills (Synchronized Artistry, Climate Control) flat |
 | M2 | Xingese Liuyedao as main hand | CrPnZ9 (HP 1%, turn 1; HP 100% at turns 1 and 5) | every line matches: Twelfth Crown Prince's Favorite gives Critical 30 at SL15, as the wiki says for Bang! ("a 30% boost to crit rate to the MC"), so all three main-hand "Massive boost to critical hit rate" skills (with First Comes Rock) are curated at 30; Hatred's Progression ×2 reads E. ATK (Prog.) 8 per turn |
 | M4 | Air Cannon as main hand | RKY1Eb (base: Exo Ephialtes, three Spirit of Mana, Varuna main and support), 4pWKNB (Air Cannon at SL1) | every line matches: Bang! reads Critical 30 at SL1 as at SL15, so the three main-hand Critical skills are fixed at 30 (their in-game icon is the star used for special skills); Air Blast EX Might 6. Re-importing RKY1Eb after its support summon was added turned up a site bug: deleting a party with a main or support summon raised after the delete (fixed in #593, GBF-43). |
+| — | Dark base and Advocatus Diaboli | jFY42F (new Dark base), aDkEIX (Advocatus 5★ in slot 7, HP 100–1%) | every line matches: Phantom's Supremacy EX Might 26 and True Phantom's Supremacy HP 16 at SL20; AX multiattack 2.5 and C.A. Supp. 5 (30,000). Undersky's Whispers is main hand only, so the panel doesn't change with HP; the EX Enmity capture moves to the main hand |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
