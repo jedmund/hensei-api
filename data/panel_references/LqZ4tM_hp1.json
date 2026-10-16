@@ -1,7 +1,7 @@
 {
   "party": "LqZ4tM",
   "captured_on": "2026-10-16",
-  "notes": "W9 #6 HP sweep, Dark Optimus with the extra slots: nCvV1x (Excalibur MH, Fallen Sword x4, Eternal Signature x2, Herb Basket, Third Stripe of the Streak, Daodao Fu) plus Pain of Death, Doombringer Lyre (Anklet of Oblivion) and Demolition-Tiger Axe (Attack lv5); Hades 6★ T5 main and friend, Fediel sub; Fighter Origin. HP 1% on the Calculator Conditions slider. Checks normal stamina, Garrison, Rightway Pathfinder and Persistence.",
+  "notes": "W9 #6 HP sweep, Dark Optimus with the extra slots: nCvV1x (Excalibur MH, Fallen Sword x4, Eternal Signature x2, Herb Basket, Third Stripe of the Streak, Daodao Fu) plus Pain of Death, Doombringer Lyre (Anklet of Oblivion) and Demolition-Tiger Axe (Attack lv5); Hades 6★ T5 main and friend, Fediel sub; Fighter Origin. HP 1% on the Calculator Conditions slider. Checks normal stamina, Garrison, Rightway Pathfinder and Persistence. C.A. DMG reads 20 (Rightway's share 0) where a linear 120 x 1% gives 1.2; the 1% slider point is open (see XfBq6u_hp1).",
   "state": {
     "turn": 1,
     "hp_percent": 1,
@@ -115,7 +115,8 @@
       "label": "C.A. DMG",
       "boost": "ca_dmg",
       "value": 20,
-      "capped": false
+      "capped": false,
+      "skip": true
     },
     {
       "label": "C.A. DMG Cap",
