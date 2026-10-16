@@ -1,3 +1,5 @@
+require_relative '../local_database'
+
 namespace :db do
   desc 'Backup remote PostgreSQL database (REMOTE_DB_URL or credentials remote_db.url)'
   task backup: :environment do
@@ -28,6 +30,8 @@ namespace :db do
   desc 'Restore PostgreSQL database from backup (use CLEAN=1 to drop and recreate first)'
   task :restore, [:backup_file] => [:environment] do |_, args|
     db_config = ActiveRecord::Base.connection_db_config
+    LocalDatabase.ensure_local!(db_config)
+    local_host = db_config.configuration_hash[:host]
     local_user = ENV.fetch('LOCAL_DB_USER', db_config.configuration_hash[:username] || 'justin')
     local_db = ENV.fetch('LOCAL_DB_NAME', db_config.database)
 
@@ -52,7 +56,10 @@ namespace :db do
     end
 
     puts "Restoring database from #{backup_file}..."
-    system("pg_restore --no-owner --role=#{local_user} --disable-triggers -U #{local_user} -d #{local_db} #{backup_file}")
+    # Restore to the same server the checks above looked at, not libpq's default
+    host_args = local_host.present? ? ['-h', local_host.to_s] : []
+    system('pg_restore', '--no-owner', "--role=#{local_user}", '--disable-triggers', *host_args,
+           '-U', local_user, '-d', local_db, backup_file)
     puts 'Restore completed!'
   end
 
