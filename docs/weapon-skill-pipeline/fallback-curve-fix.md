@@ -1,6 +1,6 @@
 # Fallback-curve fix (Build::VERSION 10)
 
-What the fallback-curve fix changes in the resolved weapon-skill data. Measured on `hensei_pipeline_fallback` rebased on `pipeline/W9-goldens` (Build::VERSION 9, the skill-level rule): that branch's baseline, compared with the curation sync plus a full `build_weapon_skills all=true mode=write` on this branch. **286 versions change (297 rows); none is added or removed.** 254 rows change value and 43 rows are no longer generated. The user reviews every value change in this list before merge.
+What the fallback-curve fix changes in the resolved weapon-skill data. Measured on `hensei_pipeline_fallback` rebased on `pipeline/W9-goldens` (Build::VERSION 9, the skill-level rule): that branch's baseline, compared with the curation sync plus a full `build_weapon_skills all=true mode=write` on this branch. **269 versions change (278 rows); none is added or removed.** 43 rows now come from the Optimus last resort (below); 24 of them change value and 19 keep their old values. The user reviews every value change in this list before merge.
 
 ## What was wrong
 
@@ -10,8 +10,9 @@ A skill with no family of its own takes an SL curve from another family (`Regist
 
 - **Candidates:** only canonical curves of the tier (boost type, size, formula) in a series the skill can take: its own series, then `SERIES_FALLBACK` (normal → normal_omega, omega → normal_omega, odious ↔ taboo). EX has no fallback series, so an EX skill only takes EX curves. Odious/Taboo curves are never a fallback for a non-Odious skill.
 - **Ranking:** the nearest series, then the boost type's base family (`Registry::BASE_FAMILIES`: Might for ATK, Aegis for HP, Trium for DA/TA, Verity, Enmity, Stamina, Healing), then completeness (more SL columns), then the modifier name and the row's values as a fixed key. The size of the values never decides. A new family can only move another skill's fallback if it shares that skill's series and is the base family, or ties the base family's absence on completeness and sorts first.
-- **No compatible curve:** no row, and a build warning `no curve for <boost>/<size> in series "<series>" (<skill>)`.
-- **Provenance:** each generated row copied from a fallback curve records it, as `provenance = "fallback:<modifier>/<series>"` (for example `fallback:Might/ex`). Parity ignores `provenance`, so this doesn't churn the baseline. The build summary now reports the count: **214 fallback rows**.
+- **Optimus last resort (user decision on #591: "Let's let them fall back to Optimus for now"):** an EX or Odious skill with no curve in its own series, for any boost type **except ATK**, takes the normal (Optimus) curve for that boost type and size, then normal_omega's. It never takes a Taboo, Odious, omega-only or EX curve this way. ATK keeps the strict rule, and incomplete EX rows (EX Aegis Big, EX Aegis Small) stay as they are until captured.
+- **No compatible curve, even as a last resort:** no row, and a build warning `no curve for <boost>/<size> in series "<series>" (<skill>)`. None of the rows this fix touches ends there; the remaining warnings (Lovers-Death's Demise DEF Massive, the Stratagem C.A. Amp., the Progression E. ATK Small, Taboo Puncturing DEF Ignore) had no row before this fix either.
+- **Provenance:** each generated row copied from a fallback curve records it, as `provenance = "fallback:<modifier>/<series>"` (for example `fallback:Might/ex`). Parity ignores `provenance`, so this doesn't churn the baseline. A last-resort row's provenance ends in ` (Optimus last resort)`, for example `fallback:Trium/normal_omega (Optimus last resort)`. The build summary now reports both counts: **257 fallback rows (43 Optimus last resort)**.
 
 ## The evidence
 
@@ -41,24 +42,36 @@ Clarion's Armed Flood at SL20 with an Attack awakening lv15 reads 35 (20 + 15). 
 | **Normal/Omega ATK Big** (Inferno's Second Insignia; Ironflame's Gauntlet III) | 2 | 7.2/18/21.6 (Tyranny, Taboo) | 6/15/18/20 (Might normal / omega Big) | No capture. The skill's own series. |
 | **Mountain's Enmity** (Fremel Hammer, normal) | 1 (2 rows) | ATK 3.6/14.4/17.4, HP 7.2/18/20.4 (Taboo) | ATK 3/12/14.5/16, HP 6/15/17 (Might / Aegis normal Medium) | No capture. The skill's own series. |
 | **Terra's Third Spur** (Baihu Fangstaff, C.A. DMG Big, normal) | 1 | 5.5/10/12.5/14.5/16.5 (Glory, normal_omega) | 5.5/10/12.5 (Mystery, normal) | No capture. The exact series now beats normal_omega; SL1–15 are unchanged, SL20/25 are dropped. |
-| **No row any more** | 43 | (various borrowed curves) | none, with a build warning | See below. |
+| **Optimus last resort** (EX DA/TA/Critical/Enmity/Heal cap/Stamina, Odious HP/Enmity Small) | 43 | (various borrowed curves) | normal, then normal_omega curve | **No capture.** Borrowed across series; see below. |
 
-### Rows no longer generated (43)
+### Optimus last-resort rows (43)
 
-No canonical curve exists in the skill's series, so the build writes no row and warns. No golden line depends on them (`validate_panel` and `goldens_spec` pass with the rows gone), and no stored template has a sized EX (or Odious) table for them: the Trium template has only "Normal & Omega" and "Taboo", Verity/Enmity/Healing/Stamina have no EX table. **These skills now add nothing in the calculator** until a capture or a cited curation gives their values.
+These skills have no canonical curve in their own series: no stored template has a sized EX (or Odious) table for DA/TA, Critical, Enmity, Heal cap, Stamina, or Odious HP/Enmity Small (the Trium template has only "Normal & Omega" and "Taboo"). Before this fix they borrowed the largest curve of any series, often Taboo. They now take the normal (Optimus) curve for the boost type and size, then normal_omega's, picked by the same ranking (base family, completeness, name). **These values are borrowed across series with no in-game confirmation**; each row's provenance says so. The Trium template's Massive row is cited to an EX weapon (GameWith, Lu Woh's Horn), which hints DA/TA curves may not depend on the series.
 
-| Group | Versions | Old (borrowed) |
-|---|---|---|
-| EX DA (Climate Control, Skull Parade, Synchronized Artistry ×3, Origin of All Zanpakuto, Noble's Dance, Ophidian Servitor, Royal Wing Barrier, Swiftblade Oath, Dexterity, Mifune Style: Binary Star, Solo) | 13 | Trium Taboo medium/small, Trium normal_omega big/massive |
-| EX TA (Climate Control, Synchronized Artistry ×3, Origin of All Zanpakuto, Cuttlefish's Cut, Noble's Dance, Wild Wanderer, All-Night Party, Succession of Knighthood, Incantation Fang, Triple Talon Hellion) | 12 | same |
-| EX Critical (Bang!, Spearsquid Flash, Twelfth Crown Prince's Favorite, Full-Auto Fire, Ghost on the Battlefield, Unblinking Stare, Piercing Fang, Pumpkin Trick) | 8 | Sephira Tek, Verity normal_omega, Precocity Taboo |
-| EX Enmity (Golden Spirit, Undersky's Whispers, Audacity, Magic Charge, Firestorm's Enmity) | 5 | Bastion Odious, Enmity normal_omega |
-| EX Heal cap (Grace of Healing, Grace of Healing II) | 2 | Sapience Taboo, Healing normal_omega |
-| EX Stamina (Sunveil's Radiance) | 1 | Stamina omega Big (56.4) |
-| Odious HP Small (Taboo Netherfell's Aegis) | 1 | Aegis omega Small |
-| Odious Enmity Small (Taboo Doomfire's Enmity) | 1 | Enmity normal_omega Small |
+By boost type: DA 13, TA 12, Critical 8, Enmity 6 (one Odious), Heal cap 2, Stamina 1, HP 1 (Odious). No row is dropped.
 
-**DA/TA have no canonical EX row.** They don't follow one: they get no row.
+| Boost | Skill series, size | Versions | Old (borrowed) | New (Optimus last resort) | From | Skills |
+|---|---|---|---|---|---|---|
+| da | ex big | 1 | 1.2/5/7 | 1.2/5/7 (same) | Dual-Edge/normal | Solo (Vyrnstrument) |
+| da | ex massive | 4 | 2.8/10/14 | 2.8/10/14 (same) | Trium/normal_omega | Noble's Dance (Luin); Ophidian Servitor (Ouroboros); Royal Wing Barrier (Pilum); Swiftblade Oath (Hoarfrost Blade Persius) |
+| da | ex medium | 6 | 1/4.2/6 | 0.8/3.5/5/6 | Dual-Edge/normal | Climate Control (Ishkur Shaft); Skull Parade (Skull Wand); Synchronized Artistry (Anti-Asteroid Beam Cannon); Synchronized Artistry (Materpent Lyre); Synchronized Artistry (Seaside Guardian); The Origin of All Zanpakuto (Asauchi) |
+| da | ex small | 2 | 0.3/3/4.2 | 0.4/2.2/3.5 | Dual-Edge/normal | Dexterity (Guivre Rod); Mifune Style, Binary Star (Red Sun) |
+| ta | ex big | 2 | 1.2/5/7 | 1.2/5/7 (same) | Trium/normal_omega | Incantation Fang (Medusiana Staff); Triple Talon Hellion (Coco & Mimi) |
+| ta | ex massive | 3 | 2.8/10/14 | 2.8/10/14 (same) | Trium/normal_omega | Cuttlefish's Cut (Squid Hand); Noble's Dance (Luin); Wild Wanderer (Vassago) |
+| ta | ex medium | 5 | 1/4.2/6 | 0.8/3.5/5/6/7 | Trium/normal_omega | Climate Control (Ishkur Shaft); Synchronized Artistry (Anti-Asteroid Beam Cannon); Synchronized Artistry (Materpent Lyre); Synchronized Artistry (Seaside Guardian); The Origin of All Zanpakuto (Asauchi) |
+| ta | ex small | 2 | 0.3/3/4.2 | 0.25/2.5/3.5 | Trium/normal_omega | All-Night Party (Spirit Seeker); Succession of Knighthood (Brand of Binding Oath) |
+| critical | ex big | 3 | 4.4/8/10/11 | 4.4/8/10/11 (same) | Verity/normal_omega | Full-Auto Fire (Assault Rifle (Man-Portable)); Ghost on the Battlefield (Soldier Bow); Unblinking Stare (Revolvyrn) |
+| critical | ex massive | 3 | 2/20/30 | 7.9/16/20 | Verity/normal_omega | Bang! (Air Cannon); Spearsquid Flash (Squidpiercer); Twelfth Crown Prince's Favorite (Xingese Liuyedao) |
+| critical | ex medium | 2 | 3.8/6/7.8 | 3.2/5/6.5 | Bloodrage/normal | Piercing Fang (Brionac); Pumpkin Trick (Lantern Blade) |
+| enmity | ex big | 2 | -/12/15 | 0.83/10/12.5/13.5/14.5 | Enmity/normal_omega | Golden Spirit (Edem); Undersky's Whispers (Advocatus Diaboli) |
+| enmity | ex massive | 1 | -/-/18.75 | -/-/18.75 (same) | Enmity/normal_omega | Firestorm's Enmity (Wilnas's Finger) |
+| enmity | ex medium | 1 | 0.66/8/10 | 0.66/8/10 (same) | Enmity/normal_omega | Magic Charge (Fonic Rod) |
+| enmity | ex small | 1 | 0.5/6/7/7.5 | 0.5/6/7/7.5 (same) | Enmity/normal_omega | Audacity (Thunder Dirk Jove) |
+| enmity | odious small | 1 | 0.5/6/7/7.5 | 0.5/6/7/7.5 (same) | Enmity/normal_omega | Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
+| heal_cap | ex big | 1 | 5/10/15/17.5 | 5/10/15/17.5 (same) | Healing/normal_omega | Grace of Healing II (Asclepius Rod) |
+| heal_cap | ex small | 1 | 1.2/6/9 | 1/5/7.5 | Healing/normal_omega | Grace of Healing (Asclepius Rod) |
+| stamina | ex big | 1 | coefficient 56.4 | coefficient 56.4 (same) | Stamina/normal | Sunveil's Radiance (True Purity Sunblade) |
+| hp | odious small | 1 | 3/12/14.5 | 3/12/14 | Aegis/normal | Taboo Netherfell's Aegis (Codex of Sanctity Verboten) |
 
 ## Curation added (cited overlay entries)
 
@@ -76,7 +89,7 @@ The citation sits in each row's `provenance` (data rows have no notes column).
 - **EX Aegis Small** (Template:Weapon Skills/Aegis, EX table): 1/10/**?**/16, cited to Kamigame. SL15 isn't stored. The row stays as is; Mysterious VIT (Mysterious Hatchet) now reads it: 13 at SL15 (interpolated), 16 at SL20. Tidings would have too, which is how an earlier series-first attempt broke 5 references; it's curated instead (above).
 - **EX Aegis Big**: 6/15/**?/?**. SL15 and SL20 aren't stored. Resilient … and Mysterious VIT II now read it: 15 at SL15 and SL20.
 - **EX Aegis Medium**: 3/12/14.5/**?**. SL20 isn't stored; the calculator holds 14.5.
-- **EX DA/TA, Critical, Enmity, Heal cap, Stamina by size**: no stored template has these tables (above).
+- **EX DA/TA, Critical, Enmity, Heal cap, Stamina by size, Odious HP/Enmity Small**: no stored template has these tables; they use the Optimus last resort (above) until captured.
 
 Each needs a capture or the Kamigame page (not stored; never fetched).
 
@@ -91,7 +104,8 @@ Each needs a capture or the Kamigame page (not stored; never fetched).
 
 On `hensei_pipeline_fallback`, after `sync_weapon_skill_curation` (the registry reads canonical rows from the database, so the Armed row must be synced before the build; the deploy does this in `db:migrate:with_data`):
 - the first full write: rows ~214 updated (provenance), −108 deleted (62 Armed versions now covered by the family; 46 with no compatible curve, of which Authority's Trium's two rows and Eclipse's Stamina were then restored by curation), versions ~12 (the 12 Armed versions added from the expanded page now carry the Armed modifier);
-- after rebasing on W9 (VERSION 9's skill-level rule): versions ~49, rows unchanged, and the same 286-version diff against that branch's baseline;
+- after rebasing on W9 (VERSION 9's skill-level rule): versions ~49, rows unchanged;
+- after adding the Optimus last resort: rows +43 (all last resort), then nothing;
 - two consecutive full builds: `versions +0 ~0 -0; rows +0 ~0 -0`;
 - `granblue:skill_parity`: no differences against the refreshed baseline;
 - the curation drift check is clean, and a re-export leaves the new entries byte-identical.
@@ -102,6 +116,8 @@ On `hensei_pipeline_fallback`, after `sync_weapon_skill_curation` (the registry 
 - `Registry#for_skill` still uses sl15 as a tie-break within one family.
 
 ## Every changed version
+
+Against `pipeline/W9-goldens`'s baseline. Last-resort rows whose values didn't change (19) aren't listed here; they're in the last-resort table above.
 
 ### atk big (ex): 7.2/18/21.6 → 6/15/18/21 — 92
 
@@ -124,7 +140,7 @@ Mysterious VIT II (Mysterious Wand, `1040401600` slot 0); Resilient Flood (Mater
 
 Downfall of Ignorance (Iridescent Bow, `1040709400` slot 1); Mysterious VIT (Mysterious Harp, `1030801100` slot 0); Mysterious VIT (Pina Colata Bow, `1030702900` slot 0); Mysterious VIT (Tadpole Tail, `1030104200` slot 0); Willed Blaze (Miner's Lantern, `1030306100` slot 0); Willed Blaze (Trap Knight's Helm, `1030609500` slot 0); Willed Flood (Motherly Flower Wreath, `1030704900` slot 0); Willed Flood (Shark Bouquet, `1030109200` slot 0); Willed Gale (Achromatic Palette, `1030406800` slot 0); Willed Grounds (Beach Flag, `1030109600` slot 0)
 
-### da medium (ex): 1/4.2/6 → (no row) — 6
+### da medium (ex): 1/4.2/6 → 0.8/3.5/5/6 — 6
 
 Climate Control (Ishkur Shaft, `1040019200` slot 1); Skull Parade (Skull Wand, `1030401800` slot 0); Synchronized Artistry (Anti-Asteroid Beam Cannon, `1040519100` slot 1); Synchronized Artistry (Materpent Lyre, `1040818300` slot 1); Synchronized Artistry (Seaside Guardian, `1040621900` slot 1); The Origin of All Zanpakuto (Asauchi, `1040918800` slot 1)
 
@@ -132,47 +148,31 @@ Climate Control (Ishkur Shaft, `1040019200` slot 1); Skull Parade (Skull Wand, `
 
 Tidings of the New World (Worldbreaking Tauros, `1040815300` slot 0); Tidings of the New World (Worldforging Moros, `1040815000` slot 0); Tidings of the New World (Worldscathing Leon, `1040815100` slot 0); Tidings of the New World (Worldstorming Aetos, `1040815200` slot 0); Tidings of the New World (Worldvexing Angelos, `1040815400` slot 0)
 
-### ta medium (ex): 1/4.2/6 → (no row) — 5
+### ta medium (ex): 1/4.2/6 → 0.8/3.5/5/6/7 — 5
 
 Climate Control (Ishkur Shaft, `1040019200` slot 1); Synchronized Artistry (Anti-Asteroid Beam Cannon, `1040519100` slot 1); Synchronized Artistry (Materpent Lyre, `1040818300` slot 1); Synchronized Artistry (Seaside Guardian, `1040621900` slot 1); The Origin of All Zanpakuto (Asauchi, `1040918800` slot 1)
-
-### da massive (ex): 2.8/10/14 → (no row) — 4
-
-Noble's Dance (Luin, `1040203900` slot 2); Ophidian Servitor (Ouroboros, `1040401100` slot 1); Royal Wing Barrier (Pilum, `1040200200` slot 1); Swiftblade Oath (Hoarfrost Blade Persius, `1040102100` slot 1)
 
 ### atk small (ex): 1/10/12/13 → 1/10/12 — 3
 
 All-Night Party (Spirit Seeker, `1040311400` slot 1); Speed Cast (Fonic Rod, `1040408400` slot 1); Succession of Knighthood (Brand of Binding Oath, `1040019400` slot 1)
 
-### critical big (ex): 4.4/8/10/11 → (no row) — 3
-
-Full-Auto Fire (Assault Rifle (Man-Portable), `1040518700` slot 0); Ghost on the Battlefield (Soldier Bow, `1040709700` slot 1); Unblinking Stare (Revolvyrn, `1030504300` slot 0)
-
-### critical massive (ex): 2/20/30 → (no row) — 3
+### critical massive (ex): 2/20/30 → 7.9/16/20 — 3
 
 Bang! (Air Cannon, `1040615600` slot 1); Spearsquid Flash (Squidpiercer, `1030204100` slot 0); Twelfth Crown Prince's Favorite (Xingese Liuyedao, `1040918500` slot 1)
 
-### ta massive (ex): 2.8/10/14 → (no row) — 3
-
-Cuttlefish's Cut (Squid Hand, `1030601300` slot 0); Noble's Dance (Luin, `1040203900` slot 2); Wild Wanderer (Vassago, `1040301200` slot 1)
-
-### critical medium (ex): 3.8/6/7.8 → (no row) — 2
+### critical medium (ex): 3.8/6/7.8 → 3.2/5/6.5 — 2
 
 Piercing Fang (Brionac, `1040200300` slot 2); Pumpkin Trick (Lantern Blade, `1030003100` slot 0)
 
-### da small (ex): 0.3/3/4.2 → (no row) — 2
+### da small (ex): 0.3/3/4.2 → 0.4/2.2/3.5 — 2
 
 Dexterity (Guivre Rod, `1040408500` slot 1); Mifune Style, Binary Star (Red Sun, `1040905600` slot 1)
 
-### enmity big (ex): -/12/15 → (no row) — 2
+### enmity big (ex): -/12/15 → 0.83/10/12.5/13.5/14.5 — 2
 
 Golden Spirit (Edem, `1040217200` slot 1); Undersky's Whispers (Advocatus Diaboli, `1040213300` slot 1)
 
-### ta big (ex): 1.2/5/7 → (no row) — 2
-
-Incantation Fang (Medusiana Staff, `1040414000` slot 1); Triple Talon Hellion (Coco & Mimi, `1040600600` slot 1)
-
-### ta small (ex): 0.3/3/4.2 → (no row) — 2
+### ta small (ex): 0.3/3/4.2 → 0.25/2.5/3.5 — 2
 
 All-Night Party (Spirit Seeker, `1040311400` slot 1); Succession of Knighthood (Brand of Binding Oath, `1040019400` slot 1)
 
@@ -192,31 +192,7 @@ Mountain's Enmity (Fremel Hammer, `1030303700` slot 0)
 
 Terra's Third Spur (Baihu Fangstaff, `1040408600` slot 0)
 
-### da big (ex): 1.2/5/7 → (no row) — 1
-
-Solo (Vyrnstrument, `1030802900` slot 0)
-
-### enmity massive (ex): -/-/18.75 → (no row) — 1
-
-Firestorm's Enmity (Wilnas's Finger, `1040613800` slot 0)
-
-### enmity medium (ex): 0.66/8/10 → (no row) — 1
-
-Magic Charge (Fonic Rod, `1040408400` slot 0)
-
-### enmity small (ex): 0.5/6/7/7.5 → (no row) — 1
-
-Audacity (Thunder Dirk Jove, `1040101800` slot 1)
-
-### enmity small (odious): 0.5/6/7/7.5 → (no row) — 1
-
-Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten, `1040029800` slot 1)
-
-### heal_cap big (ex): 5/10/15/17.5 → (no row) — 1
-
-Grace of Healing II (Asclepius Rod, `1040400300` slot 0)
-
-### heal_cap small (ex): 1.2/6/9 → (no row) — 1
+### heal_cap small (ex): 1.2/6/9 → 1/5/7.5 — 1
 
 Grace of Healing (Asclepius Rod, `1040400300` slot 0)
 
@@ -228,10 +204,6 @@ Mountain's Enmity (Fremel Hammer, `1030303700` slot 0)
 
 Mysterious VIT (Mysterious Hatchet, `1040303100` slot 1)
 
-### hp small (odious): 3/12/14.5 → (no row) — 1
+### hp small (odious): 3/12/14.5 → 3/12/14 — 1
 
 Taboo Netherfell's Aegis (Codex of Sanctity Verboten, `1040426200` slot 1)
-
-### stamina big (ex): stamina coefficient 56.4 → (no row) — 1
-
-Sunveil's Radiance (True Purity Sunblade, `1040015400` slot 1)
