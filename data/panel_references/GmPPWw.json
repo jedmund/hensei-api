@@ -1,7 +1,7 @@
 {
   "party": "GmPPWw",
   "captured_on": "2026-10-16",
-  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Qilin Sword 5★ (Clouds of Nightfall, SL20) in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1572091 / to Light 2029922 / Max HP 79385. EX Might +21: Clouds of Nightfall at SL20 = 21, the canonical EX Might Big row (6/15/18/21). Open until the fallback fix (the build borrows Taboo's 21.6).",
+  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Qilin Sword 5★ (Clouds of Nightfall, SL20) in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1572091 / to Light 2029922 / Max HP 79385. EX Might +21: Clouds of Nightfall at SL20 = 21, the canonical EX Might Big row (6/15/18/21). Checked since the fallback fix (the build used to borrow Taboo's 21.6).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -29,8 +29,7 @@
       "label": "EX Might",
       "boost": "atk",
       "series": "ex",
-      "value": 251,
-      "skip": true
+      "value": 251
     },
     {
       "label": "EX Might Sp.",

@@ -1,7 +1,7 @@
 {
   "party": "2aH20k",
   "captured_on": "2026-10-16",
-  "notes": "W9 Water session A1: Zodiaco Vitae 4★ (Clawed Flood, SL15) in the test slot. Water Omega (Soldier): Hraesvelgr MH (T5), Leviathan Gaze Omega x3 (AX ATK 3; ATK 3; HP 5 + Stamina 3), Leviathan Gaze Mare x2, Staff of Renunciation T5 (Δ Pendulum + Chain of Falsehood), Doombringer Edge (Anklet of Oblivion); Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. Clawed Flood adds EX Might 14.5 at SL15: the EX Might Medium curve (3/12/14.5). Estimated DMG 580862 / to Fire 913374 / Max HP 38188. EX Might is open until the fallback-curve fix: the build borrows Taboo's ATK Medium (17.4 at SL15, ours 76.4).",
+  "notes": "W9 Water session A1: Zodiaco Vitae 4★ (Clawed Flood, SL15) in the test slot. Water Omega (Soldier): Hraesvelgr MH (T5), Leviathan Gaze Omega x3 (AX ATK 3; ATK 3; HP 5 + Stamina 3), Leviathan Gaze Mare x2, Staff of Renunciation T5 (Δ Pendulum + Chain of Falsehood), Doombringer Edge (Anklet of Oblivion); Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. Clawed Flood adds EX Might 14.5 at SL15: the EX Might Medium curve (3/12/14.5). Estimated DMG 580862 / to Fire 913374 / Max HP 38188. EX Might is checked since the fallback-curve fix (the build used to borrow Taboo's ATK Medium, 17.4 at SL15).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -35,8 +35,7 @@
       "label": "EX Might",
       "boost": "atk",
       "series": "ex",
-      "value": 73.5,
-      "skip": true
+      "value": 73.5
     },
     {
       "label": "Water Omega",
