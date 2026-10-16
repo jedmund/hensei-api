@@ -15,8 +15,13 @@ module Granblue
         @curated = Hash.new { |h, k| h[k] = Set.new }
         @suppressed = {}
         @pinned = Set.new
+        @leveled = Set.new
         (overlay.entries("effects") + overlay.entries("data")).each do |row|
-          @curated[key(row["weapon"], row["skill"], row["ordinal"])] << row["boost_type"] if row["weapon"]
+          next unless row["weapon"]
+
+          ref = key(row["weapon"], row["skill"], row["ordinal"])
+          @curated[ref] << row["boost_type"]
+          @leveled << ref if self.class.leveled_row?(row)
         end
         overlay.entries("versions").each do |entry|
           ref = key(entry["weapon"], entry["skill"], entry["ordinal"])
@@ -34,6 +39,23 @@ module Granblue
       # The version's suppressed_boosts; "*" suppresses all extraction.
       def suppressed(version)
         @suppressed.fetch(version_key(version), EMPTY)
+      end
+
+      # True when a curated row of the version changes with skill level (Concrio 30/32/35 at
+      # SL10/15/20) or depends on it (Malus Essence's copy_skill_level condition).
+      def leveled?(version)
+        @leveled.include?(version_key(version))
+      end
+
+      LEVEL_KEYS = %w[sl1 sl10 sl15 sl20 sl25].freeze
+
+      # A datum or effect (overlay entry or row attributes, string keys) that varies with
+      # skill level: different per-level values, a formula coefficient, a weapon_skill_curve
+      # scaling, or a skill-level condition.
+      def self.leveled_row?(row)
+        row.values_at(*LEVEL_KEYS).compact.map(&:to_f).uniq.size > 1 || !row["coefficient"].nil? ||
+          row["scaling_kind"] == "weapon_skill_curve" ||
+          row.dig("condition", "type").to_s.include?("skill_level")
       end
 
       # True when the overlay sets the version's family (including "none").
