@@ -6,9 +6,9 @@
       "skill": "Sephirath Eparc",
       "ordinal": 0,
       "suppressed_boosts": [
-        "ca_amp_sp"
+        "ca_amp"
       ],
-      "edited_at": "2026-10-15T10:38:09Z"
+      "edited_at": "2026-10-15T18:30:00Z"
     },
     {
       "weapon": "1040815100",
@@ -95,6 +95,29 @@
       "skill": "Sephirath Eparc II",
       "ordinal": 0,
       "modifier": "Sephirath Eparc II",
+      "boost_type": "ca_amp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "sabre": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T18:30:00Z"
+    },
+    {
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "ordinal": 0,
+      "modifier": "Sephirath Eparc II",
       "boost_type": "ca_amp_arc",
       "series": "ex",
       "scaling_kind": "specialty_scaled",
@@ -104,29 +127,6 @@
         "specialties": {
           "bow": 20.0,
           "sabre": 20.0
-        }
-      },
-      "aura_boostable": false,
-      "seraphic_affected": false,
-      "stacking": "additive",
-      "applies_to": "all_allies",
-      "battle_interaction": false,
-      "provenance": "manual",
-      "edited_at": "2026-10-16T00:00:00Z"
-    },
-    {
-      "weapon": "1040815000",
-      "skill": "Sephirath Eparc II",
-      "ordinal": 0,
-      "modifier": "Sephirath Eparc II",
-      "boost_type": "ca_amp_sp",
-      "series": "ex",
-      "scaling_kind": "specialty_scaled",
-      "value_unit": "percent",
-      "condition": {
-        "specialties": {
-          "bow": 10.0,
-          "sabre": 10.0
         }
       },
       "aura_boostable": false,
@@ -423,5 +423,23 @@
     }
   ],
   "data": [],
-  "ops": []
+  "ops": [
+    {
+      "op": "remove_row",
+      "weapon": "1040815000",
+      "skill": "Sephirath Eparc II",
+      "ordinal": 0,
+      "section": "effects",
+      "modifier": "Sephirath Eparc II",
+      "boost_type": "ca_amp_sp",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "sabre": 10.0
+        }
+      },
+      "reason": "Sephirath Eparc II's C.A. amplification shows on the plain C.A. Amp. line, not C.A. Amp. (Sp.) (golden 0ZA6Ak: C.A. Amp. 10; k2hvSF without Moros: no C.A. Amp.). The row moves to ca_amp.",
+      "edited_at": "2026-10-15T18:30:00Z"
+    }
+  ]
 }
