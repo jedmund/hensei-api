@@ -120,14 +120,12 @@
     {
       "label": "C.A. DMG Cap",
       "boost": "ca_dmg_cap",
-      "value": 80.4,
-      "skip": true
+      "value": 80.4
     },
     {
       "label": "C.A. Amp.",
       "boost": "ca_amp",
-      "value": 10,
-      "skip": true
+      "value": 10
     },
     {
       "label": "Sp. C.A. Cap",
@@ -138,8 +136,7 @@
       "label": "C.B. DMG",
       "boost": "cb_dmg",
       "value": 120,
-      "capped": true,
-      "skip": true
+      "capped": true
     },
     {
       "label": "C.B. DMG Cap",
@@ -154,8 +151,7 @@
     {
       "label": "FC Amp.",
       "boost": "fc_amp",
-      "value": 50,
-      "skip": true
+      "value": 50
     },
     {
       "label": "Skill Supp. (Sp.)",
@@ -171,8 +167,7 @@
     {
       "label": "Charge Gain",
       "boost": "charge_gain",
-      "value": 30,
-      "skip": true
+      "value": 30
     },
     {
       "label": "ATK Hit",
