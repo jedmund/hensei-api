@@ -37,7 +37,8 @@ module GridDamage
           # skill; otherwise fall back to the effect's heuristic series.
           v.weapon_skill_effects.each do |e|
             frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
-            value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw)
+            value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw,
+                                 levels: WeaponContributions.levels?(v))
             next if value.nil? || value.zero?
 
             out << Aggregator::Contribution.new(
@@ -77,7 +78,9 @@ module GridDamage
     end
 
     # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
-    def value_for(effect, weapon:, state:, composition:, grid_weapon: nil)
+    # levels: whether the bearing skill has a skill level in game. Key-granted skills
+    # (no version) level with the weapon, so the default is true.
+    def value_for(effect, weapon:, state:, composition:, grid_weapon: nil, levels: true)
       case effect.scaling_kind
       when "static", "flat", "ally_hp_scaled", "current_hp_scaled"
         # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
@@ -92,18 +95,18 @@ module GridDamage
       # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
       when "persistence_supp"
         effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
-      # "Up to N%" linear-in-HP boosts with the stamina-style sub-25 cutoff
-      # (Rightway Pathfinder: 120 x hp/100 -> 120/90/60/30, gone below 25)
+      # "Up to N%" boosts linear in current HP (Rightway Pathfinder: 120 x hp/100 ->
+      # 120/90/60/30 at 100/75/50/25, still 12 and 6 at 10 and 5% in XfBq6u: no cutoff).
+      # The kind keeps its old name; the panel's 1% slider point reads 0 (open).
       when "hp_linear_cutoff"
-        hp = state.fetch(:hp_percent, 100).to_f
-        hp < 25 ? nil : effect.value.to_f * hp / 100.0
+        effect.value.to_f * state.fetch(:hp_percent, 100).to_f / 100.0
       when "hp_current_linear"
         hp_linear_value(effect, state: state, missing: false)
       when "hp_missing_linear"
         hp_linear_value(effect, state: state, missing: true)
       when "weapon_skill_curve"
         weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
-                           composition: composition)
+                           composition: composition, levels: levels)
       when "supplemental_cap"
         supplemental_cap(effect, state: state)
       when "ally_max_hp_scaled"
@@ -122,7 +125,7 @@ module GridDamage
     # key tables (Ultima Rubell/Strife/Courage and elemental Telumas) may carry their
     # documented anchors inline instead. A condition type beside the curve remains an
     # ordinary gate (for example, Ultima's weapon-specialty restriction).
-    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:)
+    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:, levels: true)
       condition = effect.condition.to_h.with_indifferent_access
       if condition[:type].present? &&
          !Conditions.met?(condition, state: state, composition: composition,
@@ -138,6 +141,7 @@ module GridDamage
       return nil unless datum
 
       skill_level = WeaponContributions.skill_level_for(weapon, grid_weapon)
+      skill_level = Scaling.fixed_level(datum) || skill_level unless levels
       Scaling.value(
         datum,
         skill_level: skill_level,

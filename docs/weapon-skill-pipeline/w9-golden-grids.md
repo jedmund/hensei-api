@@ -8,28 +8,57 @@ Golden parties are in-game captures of the weapon panel ("Weapon Skill Boosts").
 2. Build it on your account, following the [capture rules](#capture-rules).
 3. Send me the party link and the screenshots. I write the reference and fix whatever doesn't match.
 
-Every weapon below is in your collection (checked 2026-10-15), at the uncap shown. The collection doesn't record skill levels, so I assume each weapon is at its uncap's maximum (3★ SL10, 4★ SL15, 5★ SL20, 6★ SL25); tell me when one isn't.
+Before you send a capture, check the [import checklist](#import-checklist): most wrong references so far came from the saved party not matching the game, not from the calculator.
+
+Every weapon below is in your collection (checked 2026-10-15), at the uncap shown. The collection didn't record skill levels then, so the plans assume each weapon is at its uncap's maximum (3★ SL10, 4★ SL15, 5★ SL20, 6★ SL25). Since 2026-10-16 (API #588) the import stores each weapon's skill level from the game, so a party imported now carries its real ones.
 
 ## To do
 
-In priority order. The number is the grid's ID; other docs refer to it.
+In priority order: where the calculator has the least evidence for the most rows. The number is the grid's ID; other docs refer to it.
 
-- [ ] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: the HP sweeps. They anchor every HP-scaled curve.
-- [ ] **[Dark session](#dark-session)**: fallback curves (#19) and a Hollowsky covenant (#16).
-- [ ] **[Fire session](#fire-session)**: Blazing Chain's supplement (#18), fallback curves at SL10 (#19), Malus (#14), Proven awakenings (#15), Wilnas's covenant (#16), Odious below the cap (#17).
-- [ ] **[Wind session](#wind-session)**: Proven at two skill levels (#15), fallback curves (#19), Malus (#14), Ewiyar's covenant (#16).
-- [ ] **[Water session](#water-session)**: Odious at 5★ below the cap (#17), ATK Medium fallback (#19), Malus (#14), Wamdus's covenant (#16).
+### Verification (checks a model we already have)
+
+- [ ] **[Water session](#water-session) A1: Zodiaco Vitae (Clawed Flood, ATK Medium, SL15).** The most important capture right now. The fallback-curve fix moves 134 ATK Medium rows to the EX curve (3/12/14.5) with no in-game number behind them; the panel should add 14.5 at SL15.
+- [ ] **[Fire session](#fire-session) F2: Resentment's Gaze 3★ (Armed Blaze, SL10).** Adds an SL10 point to the Armed curve (6/15/18/20); the panel should add 15.
+- [ ] **[Wind session](#wind-session) W1 and W3**: Windhose 4★ (Armed Gale, SL15, no awakening) and Daur da Blao (Armed Gale, SL20). A second element for the Armed curve.
+- [ ] **#17 Odious below the cap** (Fire session and Water session): the Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★), verified only at the cap.
+- [ ] **The rest of the Fire, Wind and Water sessions**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [ ] **[#2](#2-hoee8b-dark-no-job)**: the last exact rebuild.
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
+- [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
 
-When #2, #5 and #6 are in, the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
+### New information (things we don't know yet)
+
+- [ ] **Deck JSON with every capture.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel itself: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state at that moment. Paste it alongside the screenshots, or instead of them. It settles rounding, catches a stale saved party, and shows fields we don't know about yet. (Kaneo GBF-41 makes this automatic later.)
+- [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
+- [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
+- [ ] **Grace of Healing (#20)**: is it a heal cap or a healing boost? Needs Asclepius Rod, which isn't in your collection.
+
+### Done
+
+- [x] **[#5](#5-olfq2a-dark-omega-hp-sweep)** and **[#6](#6-qj9736-dark-optimus-hp-sweep)**: done 2026-10-16. XfBq6u (Omega) at 100/75/50/25/1% and nCvV1x/LqZ4tM (Optimus) at 100/75/50/25/1% match every line, except XfBq6u at 1% (Ω Enmity 350 vs 345.17, DEF 64.8 vs 64.58: the curves near 0 HP; Persistence pins the slider at exactly 1%).
+- [x] **[Dark session](#dark-session)**: done 2026-10-16 (LGZkRG, C1UGnK, GmPPWw, FaJB80). ATK Big's fallback is wrong; Armed skills stop at 20 at SL20.
+- [x] **#18 Blazing Chain's supplement**: done 2026-10-16 (WpPucd: C.A. Supp. 400,000 below its cap). Fire session F1 is no longer needed.
+
+When #2 is in (#5 and #6 are done), the parity baseline can be deleted: the goldens and compiler specs carry the checking from then on.
+
+## Import checklist
+
+The reference is checked against the party as saved on granblue.team, so the saved party has to match the game exactly. Check these before sending:
+
+- **Summons, especially the friend summon.** The import takes whatever the deck has saved. WpPucd first came in with a stale Belmervolk friend summon instead of the Colossus Omega used for the capture.
+- **Re-import after 2026-10-16.** Before API #588 went live, imports dropped AX Skill DMG Cap rolls, befoulments, permeation, exorcision levels and skill levels. A party saved before then that has AX or Odious weapons needs a fresh import from the game; the import now keeps all of them.
+- **Skill levels.** The import stores them from the game now, so a weapon below its maximum is handled automatically; there's no need to tell me.
+- **Keys and awakenings.** The collection doesn't always list keys (your Renunciation weapons have none recorded), so check them on the party.
+
+Later, the extension could capture the panel straight from the game: the deck response includes it (`damage_info.effect_value_info`, with the orange `is_max` flag and the enhancement numbers). That would remove the screenshots and catch every mismatch above automatically. It's filed as a feature (Kaneo GBF-41).
 
 ## Capture rules
 
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
 2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
-3. **Set the party public** on granblue.team. Record every weapon's uncap, transcendence, keys, and awakening type and level. Also record any skill level below the uncap's default; the extension syncs `skillLevel`.
-4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header.
+3. **Set the party public** on granblue.team. Import it from the game right before capturing, so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match.
+4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. If you can, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
 5. **HP sweeps:** set the Calculator Conditions HP slider to 100, 75, 50, 25 and 1, with one capture each.
 6. **Remove-and-diff:** one capture per removed weapon, with everything else unchanged. Recapture the base state between removals; a stale grid once faked two wrong conclusions.
 
@@ -145,6 +174,8 @@ What the sessions answer:
 
   If a change matches neither column, send it anyway: the EX template row needs fixing then.
 
+  **Dark session result:** the borrowed curve is wrong. Clouds of Nightfall gives 21 at SL20 (the EX curve). The "Armed" skills have their own curve: Armed Shadow gives 18 at SL15 and 20 at SL20 (6/15/18/20, like normal Might Big), which also fits Clarion's Armed Flood at 35 with an Attack awakening lv15. The fix waits on its own PR.
+
 ### Dark session
 **Base:** LD66IX with **one Executioner** removed (that's the test slot). Same summons: Beelzebub 4★ main, Hades 6★ T5 friend, Fediel sub.
 
@@ -155,6 +186,17 @@ What the sessions answer:
 | D2 | Bismarck 5★ (Armed Shadow, SL20) | #19 ATK Big at SL20 |
 | D3 | Qilin Sword 5★ (Clouds of Nightfall) | #19 ATK Big, a second skill on the same curve |
 | D4 | Hollowsky Blade 4★ (Calamitous Covenant) | #16 Hollowsky covenant as a sub |
+
+**Result (2026-10-16):**
+
+| Capture | Party | EX Might | Other changes | What it showed |
+|---|---|---|---|---|
+| D4 (used as the base) | LGZkRG | 230 | none | Hollowsky Blade's covenant shows no line as a sub, so this capture is the base; every line matches |
+| D1 | C1UGnK | 248 (+18) | Skill DMG Cap 65 | Armed Shadow at SL15 = 18 |
+| D3 | GmPPWw | 251 (+21) | none | Clouds of Nightfall at SL20 = 21 |
+| D2 | FaJB80 | 250 (+20) | Skill DMG Cap 75, DMG Cap Pen. 9.5 | Armed Shadow at SL20 = 20; the Special awakening lv15 gives Skill DMG Cap +10 and DMG Cap +3, which shows as DMG Cap Pen. +1.5 because DMG Cap is already at 20 |
+
+The panel shows EX Might without its decimal (the base is 230.5). The three EX Might lines stay open until the fallback fix; every other line matches. D0 (an empty test slot) wasn't needed.
 
 ### Fire session
 **Base** (10 weapons). It leaves out the Odious weapons, which pushed C.A. Supp. past its cap in every Fire golden so far. It doesn't need to be a strong grid, only the same between captures.
@@ -174,7 +216,7 @@ What the sessions answer:
 | Capture | Change | Answers |
 |---|---|---|
 | F0 | test slot empty | the base; #18 with Higurashi |
-| F1 | main hand → Unsigned Kaneshige 5★ (Fire), test slot empty | #18 without Higurashi |
+| ~~F1~~ | ~~main hand → Unsigned Kaneshige 5★ (Fire), test slot empty~~ | not needed: WpPucd answered #18 |
 | F2 | Resentment's Gaze 3★ (Armed Blaze, SL10) | #19 ATK Big at SL10 |
 | F3 | Ushumgal 5★, Attack awakening 15 | #15 Armed Blaze at SL20 with the Attack awakening |
 | F4 | Ushumgal 5★, Special awakening 15 | #15 the Special awakening instead |
@@ -378,6 +420,11 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 3 | K4UydX's design | 7AiIOo | every line matches; CI fixture |
 | 4 | SPhnLB's design | HDJE0N | every line matches; CI fixture |
 | 7 | qBOvon's design | 0ZA6Ak, plus plktjH (no Mortality Bow Mk II) and k2hvSF (no Mortality Bow Mk II or Moros) | every line matches; CI fixtures |
+| — | [Dark session](#dark-session) | LGZkRG, C1UGnK, GmPPWw, FaJB80 | CI fixtures; three EX Might lines open until the fallback fix |
+| 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u, XfBq6u_hp75/50/25/1 | every line matches; 1% has Ω Enmity, DEF and the 0% C.A. DMG line open |
+| 6 | Dark Optimus HP sweep (QJ9736's design) | nCvV1x (10 weapons, 100%); LqZ4tM_hp75/50/25/1 (13 weapons) | every line matches |
+| 18 | Blazing Chain's supplement | WpPucd (Fire Omega) | every line matches; CI fixture. Also showed the panel counts the MC's own charge bar gain (Dainsleif) |
+| — | Contributed Water Odious grid | XZq7xW | CI fixture; confirms Odious Exalto ("Water Taboo" 25, added to the Taboo enhancement). The Taboo header, the Od-amplified lines and the befoulment lines are open until the contributor's exorcision levels and befoulments are recorded |
 
 <details>
 <summary>The recipes for the done grids</summary>

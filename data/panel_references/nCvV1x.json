@@ -1,0 +1,104 @@
+{
+  "party": "nCvV1x",
+  "captured_on": "2026-10-16",
+  "notes": "W9 #6, rebuild of QJ9736 (Dark Optimus, Fighter Origin) at HP 100%: Excalibur MH, Fallen Sword x4 (Multiattack awakenings 4/4/1/1), Eternal Signature x2, Herb Basket, Third Stripe of the Streak, Daodao Fu; Hades 6★ T5 main and friend, Fediel sub. Matches QJ9736_hp100 line for line, plus DA 40 / TA 20. Estimated DMG 818632 / to Light 947732 / Max HP 113784.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 620
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 80
+    },
+    {
+      "label": "Stamina",
+      "boost": "stamina",
+      "series": "normal",
+      "value": 243
+    },
+    {
+      "label": "E. ATK (Prog.)",
+      "boost": "e_atk_prog",
+      "value": 8
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 40
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 20
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 390
+    },
+    {
+      "label": "Heal Cap",
+      "boost": "heal_cap",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 50
+    },
+    {
+      "label": "Debuff Res.",
+      "boost": "debuff_res",
+      "value": 20
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 14
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 120,
+      "capped": true
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 30
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 30000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 100000
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    }
+  ]
+}

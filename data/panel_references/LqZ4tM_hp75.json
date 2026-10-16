@@ -1,0 +1,155 @@
+{
+  "party": "LqZ4tM",
+  "captured_on": "2026-10-16",
+  "notes": "W9 #6 HP sweep, Dark Optimus with the extra slots: nCvV1x (Excalibur MH, Fallen Sword x4, Eternal Signature x2, Herb Basket, Third Stripe of the Streak, Daodao Fu) plus Pain of Death, Doombringer Lyre (Anklet of Oblivion) and Demolition-Tiger Axe (Attack lv5); Hades 6★ T5 main and friend, Fediel sub; Fighter Origin. HP 75% on the Calculator Conditions slider. Checks normal stamina, Garrison, Rightway Pathfinder and Persistence.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 75,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 722
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 190
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 16
+    },
+    {
+      "label": "Stamina",
+      "boost": "stamina",
+      "value": 135
+    },
+    {
+      "label": "E. ATK",
+      "boost": "e_atk",
+      "value": 10
+    },
+    {
+      "label": "E. ATK (Prog.)",
+      "boost": "e_atk_prog",
+      "value": 8
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 55
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 35
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 400,
+      "capped": true
+    },
+    {
+      "label": "Heal Cap",
+      "boost": "heal_cap",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 141
+    },
+    {
+      "label": "Light Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "Debuff Res.",
+      "boost": "debuff_res",
+      "value": 20
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 14
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 110,
+      "capped": false
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 45
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 25000
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 100000
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "HP (overskill)",
+      "boost": "added_hp",
+      "value": 5.63
+    }
+  ]
+}

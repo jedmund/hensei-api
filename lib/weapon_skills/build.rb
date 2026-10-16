@@ -17,7 +17,7 @@ module WeaponSkills
   #      overlay's columns) and scales_with_skill_level from its resolved family.
   module Build
     # Bump when compiler output changes, so every weapon's fingerprint goes stale.
-    VERSION = 6
+    VERSION = 9
 
     Parser = Granblue::Parsers::WeaponSkillDescriptionParser
 
@@ -89,9 +89,12 @@ module WeaponSkills
                 else
                   filled
                 end
+      own_levels = context.view.leveled?(version) ||
+                   result.rows.any? { |r| Granblue::CurationSnapshot::View.leveled_row?(r.attributes.to_h.transform_keys(&:to_s)) }
       written = with(filled,
                      skill_modifier: derived.skill_modifier, skill_series: derived_series,
-                     skill_size: derived.skill_size, scales_with_skill_level: scales?(filled, registry))
+                     skill_size: derived.skill_size,
+                     scales_with_skill_level: own_levels || scales?(filled, registry, text))
       { version: written, rows: result.rows, warnings: result.warnings }
     end
 
@@ -119,14 +122,21 @@ module WeaponSkills
       pinned.presence || derived
     end
 
-    # A version scales with skill level when its resolved family has canonical curve data
-    # or a weapon_skill_curve base effect (WeaponParser#scales_with_skill_level?).
-    def scales?(version, registry)
-      modifier = version.skill_modifier
-      return false if modifier.blank?
+    # Whether the skill has a skill level in game (a per-skill property: Fediel's Spine's
+    # Eclipse's Stamina has one, its Black Covenant doesn't). A skill in a known family
+    # follows the family: curve families (Might, Stamina, Arts, …) level, fixed ones
+    # (Godblade, Covenant, Voltage II, …) don't, whatever the size. A skill with no family
+    # follows its text: a sized boost ("Big boost to dark allies' ATK", Armed Shadow: 18 at
+    # SL15, 20 at SL20) levels; an explicit value or a formula doesn't. Before either, a skill
+    # whose own rows change with skill level levels (compile_version: Bahamut Concrio and
+    # Animus, Malus Essence).
+    SIZED_BOOST = /\b(?:small|medium|big|massive|unworldly)\s+(?:amplifying\s+|supplemental\s+)?boost\b/i
 
-      registry.for_skill(modifier: modifier, series: version.skill_series, size: version.skill_size).any? ||
-        registry.curve_effect?(modifier)
+    def scales?(version, registry, text = nil)
+      modifier = version.skill_modifier
+      return registry.leveled_family?(modifier) if modifier.present? && registry.canonical_family?(modifier)
+
+      text.to_s.match?(SIZED_BOOST)
     end
 
     # Gameplay Notes from the weapon's stored expansion, for every weapon that has one.
