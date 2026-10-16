@@ -45,7 +45,8 @@ module GridDamage
               value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
               amplifiable: version_amplifiable, source_ids: [gw.id],
               source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
-              source_icon: v.icon_stem
+              source_icon: v.icon_stem,
+              panel_hidden: d.panel_hidden
             )
           end
         end

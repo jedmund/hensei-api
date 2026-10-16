@@ -61,6 +61,25 @@ RSpec.describe Granblue::CurationSnapshot do
       expect([second.created, second.updated, second.changed?]).to eq([0, 0, false])
     end
 
+    it "writes panel_hidden only when set and restores it either way" do
+      hidden = WeaponSkillDatum.create!(weapon_skill_version: version, modifier: "Undersky's Whispers",
+                                        boost_type: "enmity", series: "ex", formula_type: "enmity", sl20: 13.5,
+                                        panel_hidden: true, manually_edited_at: edited_at, provenance: "manual")
+      WeaponSkillDatum.create!(weapon_skill_version: version, modifier: "Draconic Progression", boost_type: "atk",
+                               series: "ex", formula_type: "progression", sl20: 2.0,
+                               manually_edited_at: edited_at, provenance: "manual")
+      described_class.export(**files)
+
+      rows = described_class.load(dir: dir).to_h["data"]
+      expect(rows.to_h { |row| [row["boost_type"], row.key?("panel_hidden")] }).to eq("enmity" => true, "atk" => false)
+
+      hidden.update!(panel_hidden: false, manually_edited_at: nil)
+      sync
+
+      expect(WeaponSkillDatum.find_by(boost_type: "enmity").panel_hidden).to be(true)
+      expect(WeaponSkillDatum.find_by(boost_type: "atk").panel_hidden).to be(false)
+    end
+
     it "keeps a row that was edited after the export" do
       effect = curate_effect
       described_class.export(**files)

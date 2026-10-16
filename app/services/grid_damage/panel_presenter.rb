@@ -150,7 +150,19 @@ module GridDamage
 
       lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
       lines += leftover_lines(agg, contributions)
+      lines += hidden_lines(computed[:hidden_agg], computed[:hidden_contributions], element)
       { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(2) }, lines: lines }
+    end
+
+    # Skills the game counts in Estimated DMG without a panel line (MjthwV: Advocatus
+    # Diaboli's main-hand Enmity). They keep their usual label in a "hidden" group.
+    def hidden_lines(agg, contributions, element)
+      return [] if agg.blank?
+
+      contributions = active_contributions(contributions)
+      lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
+      lines += leftover_lines(agg, contributions)
+      lines.map { |line| line.merge(group: "hidden", capped: false) }
     end
 
     def line_for(agg, contributions, spec, element)
