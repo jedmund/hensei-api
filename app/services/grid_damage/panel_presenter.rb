@@ -80,6 +80,7 @@ module GridDamage
       ["skill_amp_arc", nil, "Skill Amp. (Arc)", "skill-amp-arc", "special"],
       ["ca_dmg", nil, "C.A. DMG", "ca-dmg", "special"],
       ["ca_dmg_cap", nil, "C.A. DMG Cap", "ca-dmg-cap", "special"],
+      ["ca_amp", nil, "C.A. Amp.", "ca-amp", "special"],
       ["ca_amp_sp", nil, "C.A. Amp. (Sp.)", "ca-amp-sp", "special"],
       ["ca_amp_arc", nil, "C.A. Amp. (Arc)", "ca-amp-arc", "special"],
       ["sp_ca_cap", nil, "Sp. C.A. Cap", "sp-ca-cap", "special"],
