@@ -16,10 +16,11 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Main-hand swaps M1 and M2](#main-hand-swaps-m1m5)**: Asauchi (DA/TA Medium at SL15) and Xingese Liuyedao (Critical at SL15). M1 needs the [Fire base](#base-grids) (F0) first.
+- [ ] **[Main-hand swap M3](#main-hand-swaps-m1m5)**: Ishkur Shaft (Climate Control, SL1). M1 showed the "Medium boost to multiattack rate" main-hand skills give DA 20 / TA 10 at SL15, not the stopgap's 5/5; M3 shows whether they scale.
+- [ ] **[Main-hand swap M2](#main-hand-swaps-m1m5)**: Xingese Liuyedao (Critical at SL15).
 - [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
-- [ ] **[Main-hand swaps M3–M5](#main-hand-swaps-m1m5)**: Ishkur Shaft, Air Cannon, Edem (SL1 points).
+- [ ] **[Main-hand swaps M4–M5](#main-hand-swaps-m1m5)**: Air Cannon, Edem (SL1 points).
 - [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
 - [ ] **[The other element-session captures](#other-element-session-captures)**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [ ] **[#2 HoEE8b](#2-hoee8b-dark-no-job)**: the last exact rebuild. Once it's in, the parity baseline can be deleted.
@@ -49,7 +50,7 @@ Skill levels come from the import, so there's no need to report them. Element-ch
 | Base | Element | Build | Status |
 |---|---|---|---|
 | **LGZkRG** | Dark | LD66IX with one Executioner swapped for Hollowsky Blade (its covenant adds nothing as a sub) | captured |
-| **F0** | Fire | Higurashi (6★ T5) MH; Colossus Cane Omega ×2 (5★); Colossus Cane Ira ×3 (4★); Scythe of Repudiation (6★ T5, β Pendulum + Pendulum of Extremity); Doombringer Sword (5★, Anklet of Ascendance); Heat of The Sun (5★); one empty test slot. Agni 6★ T5 main, Agni friend (tell me which). No Odious weapons, so C.A. Supp. stays under its cap. | **not captured** |
+| **UC3M0M** (F0) | Fire | Higurashi (6★ T5) MH; Colossus Cane Ira ×3; Colossus Cane Omega ×2; Scythe of Repudiation (6★ T5, γ Pendulum + Pendulum of Supremacy); Sol Remnant; Doombringer Sword (Anklet of Ascendance); Heat of The Sun; two empty slots. Agni 6★ T5 main and friend. | captured |
 | **W0** | Wind | HDJE0N with Piercing Galewing removed (the test slot). Zephyrus 6★ T5 main and friend. | **not captured** |
 | **YCKMmk** | Water | Hraesvelgr (6★ T5) MH; Leviathan Gaze Omega ×3; Leviathan Gaze Mare ×2; Staff of Renunciation (6★ T5, Δ Pendulum + Chain of Falsehood); Doombringer Edge (Anklet of Oblivion); two empty slots. Leviathan Omega 6★ T5 main and friend, Wedges of the Sky sub. | captured |
 | **E0** | Earth | 7AiIOo with both World Enders removed, nothing in their slots | captured (PrXqh2) |
@@ -281,6 +282,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 19 | Water session A0–A2 | YCKMmk (base), 2aH20k (Zodiaco Vitae), enTSuN (Xuanwu Mace Malus) | Clawed Flood 14.5 at SL15; Malus matches at SL20 |
 | 20 | Light stash parties (L1–L3) | SAlNoF, ZSEUmr | Grace of Healing is a healing boost (no Heal Cap line); Pumpkin Trick Critical 3.2 and Resilient Shine HP 6 at SL1 |
 | 19 | Earth stash party (E0–E2) | PrXqh2 (base), tIQu43 (Baihu Fangstaff, Seaside Guardian) | Terra's Might Big 18 at SL15; Resilient Grounds HP 6 at SL1; Terra's Third Spur ("for an earth ally in third position") doesn't reach the MC's panel, so it and the other two position-targeted Beast skills are suppressed |
+| 19 | Fire base and M1 | UC3M0M (F0), QmQaPH (Asauchi as main hand) | F0 matches every line; Nameless Zanpakuto EX Might 18 at SL15; The Origin of All Zanpakuto DA 20 / TA 10 at SL15 (open: the stopgap gives 5/5) |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
