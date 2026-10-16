@@ -882,7 +882,22 @@
       "edited_at": "2026-10-16T00:00:00Z"
     }
   ],
-  "data": [],
+  "data": [
+    {
+      "modifier": "Armed",
+      "boost_type": "atk",
+      "series": "ex",
+      "size": "big",
+      "formula_type": "flat",
+      "sl1": 6.0,
+      "sl10": 15.0,
+      "sl15": 18.0,
+      "sl20": 20.0,
+      "aura_boostable": false,
+      "provenance": "panel_capture: C1UGnK (Armed Shadow SL15, EX Might +18), FaJB80 (Armed Shadow SL20, +20), Clarion Armed Flood SL20 with Attack awakening lv15 (+35 = 20 + 15); SL1/SL10 as Template:Weapon Skills/Might normal Big",
+      "edited_at": "2026-10-16T12:00:00Z"
+    }
+  ],
   "ops": [
     {
       "op": "remove_row",
