@@ -16,8 +16,10 @@ RSpec.describe WeaponSkills::Build::Rows do
     [
       curve_row("Tyranny", "atk", "big", 18.0, sl1: 6.0, sl10: 15.0),
       curve_row("Tyranny", "hp", "small", -5.0),
-      # the strongest atk/big curve across families: the fallback, never Tyranny's own
+      # the base family for atk (BASE_FAMILIES): the fallback, never Tyranny's own
       curve_row("Might", "atk", "big", 20.0, sl1: 7.0, sl10: 16.0),
+      # what a skill with no aura in its text (series "ex") falls back to
+      curve_row("Might", "atk", "big", 18.0, series: "ex", sl1: 6.0, sl10: 15.0, sl20: 21.0),
       curve_row("Stamina", "stamina", "medium", nil, formula_type: "stamina", coefficient: 65.0),
       curve_row("Stamina", "stamina", "medium", nil, series: "omega", formula_type: "stamina", coefficient: 60.4),
       curve_row("Celere", "critical", "big", 10.0, sl1: 2.0),
@@ -61,9 +63,16 @@ RSpec.describe WeaponSkills::Build::Rows do
                                                series: "normal", sl15: 18.0, sl1: 6.0, aura_boostable: false)
     end
 
-    it "falls back to the strongest canonical curve when the skill has no family" do
+    it "falls back to the base family's curve (Might for ATK) when the skill has no family" do
       rows = compile(version("Unknown Edge"), "Big boost to ATK").rows
-      expect(rows.first.attributes).to include(sl15: 20.0)
+      expect(rows.first.attributes).to include(series: "ex", sl15: 18.0, sl20: 21.0, provenance: "fallback:Might/ex")
+      rows = compile(version("Inferno's Edge"), "Big boost to fire allies' ATK").rows
+      expect(rows.first.attributes).to include(series: "normal", sl15: 20.0, provenance: "fallback:Might/normal")
+    end
+
+    it "leaves provenance off a row from the skill's own family curve" do
+      rows = compile(version("Hoarfrost's Tyranny", modifier: "Tyranny", size: "small"), "Big boost to ATK").rows
+      expect(rows.first.attributes).not_to have_key(:provenance)
     end
 
     it "breaks a canonical_curve tie (one family, two series) by the clause's series" do
@@ -73,14 +82,130 @@ RSpec.describe WeaponSkills::Build::Rows do
       expect(stamina.attributes).to include(coefficient: 65.0, formula_type: "stamina")
     end
 
-    it "breaks a canonical_curve tie between families by completeness, then name" do
-      picked = registry.canonical_curve(boost_type: "critical", size: "big", formula_type: "flat")
+    it "breaks a canonical_curve tie between families by base family, then completeness, then name" do
+      picked = registry.canonical_curve(boost_type: "critical", size: "big", formula_type: "flat", series: "normal")
       expect(picked.modifier).to eq("Verity")
+
+      defs = registry_class.new(data: [curve_row("Bulwark", "def", "big", 10.0),
+                                       curve_row("Rampart", "def", "big", 10.0, sl1: 2.0),
+                                       curve_row("Aegisguard", "def", "big", 9.0, sl1: 2.0)], effects: [])
+      picked = defs.canonical_curve(boost_type: "def", size: "big", formula_type: "flat", series: "normal")
+      expect(picked.modifier).to eq("Aegisguard")
     end
 
     it "skips boost types the family's canonical rows already cover" do
       rows = compile(version("Hoarfrost's Tyranny", modifier: "Tyranny", size: "big"), "Big boost to ATK").rows
       expect(rows).to be_empty
+    end
+  end
+
+  # Captures C1UGnK, FaJB80 and GmPPWw: EX ATK Big skills with no family follow the EX Might
+  # Big row; the six "Armed <element>" skills follow their own 6/15/18/20.
+  describe "fallback curves" do
+    let(:ex_might) { curve_row("Might", "atk", "big", 18.0, series: "ex", sl1: 6.0, sl10: 15.0, sl20: 21.0) }
+    let(:taboo) { curve_row("Tyranny", "atk", "big", 21.6, series: "taboo", sl1: 7.2, sl10: 18.0) }
+    let(:normal_might) { curve_row("Might", "atk", "big", 18.0, sl1: 6.0, sl10: 15.0, sl20: 20.0) }
+    let(:ex_registry) { registry_class.new(data: [taboo, normal_might, ex_might], effects: []) }
+
+    def fallback(reg, series, boost_type: "atk", size: "big")
+      reg.canonical_curve(boost_type: boost_type, size: size, formula_type: "flat", series: series)
+    end
+
+    it "takes the skill's own series over a larger curve from another series" do
+      expect(fallback(ex_registry, "ex")).to eq(ex_might)
+      expect(fallback(ex_registry, "normal")).to eq(normal_might)
+    end
+
+    it "never gives an EX skill a Taboo curve" do
+      only_taboo = registry_class.new(data: [taboo], effects: [])
+      expect(fallback(only_taboo, "ex")).to be_nil
+      expect(fallback(only_taboo, "odious")).to eq(taboo)
+    end
+
+    describe "the Optimus last resort (non-ATK boost types)" do
+      let(:da_taboo) { curve_row("Trium", "da", "medium", 6.0, series: "taboo", sl1: 1.0, sl10: 4.2) }
+      let(:da_omega) { curve_row("Heroism", "da", "medium", 9.0, series: "omega", sl1: 2.0, sl10: 6.0) }
+      let(:da_normal_omega) { curve_row("Trium", "da", "medium", 5.0, series: "normal_omega", sl1: 0.8, sl10: 3.5) }
+      let(:da_normal) { curve_row("Dual-Edge", "da", "medium", 5.0, sl1: 0.8, sl10: 3.5, sl20: 6.0) }
+
+      it "gives an EX DA skill with no EX curve the normal DA curve, then normal_omega's" do
+        reg = registry_class.new(data: [da_taboo, da_omega, da_normal_omega, da_normal], effects: [])
+        expect(fallback(reg, "ex", boost_type: "da", size: "medium")).to eq(da_normal)
+        reg = registry_class.new(data: [da_taboo, da_omega, da_normal_omega], effects: [])
+        expect(fallback(reg, "ex", boost_type: "da", size: "medium")).to eq(da_normal_omega)
+        expect(fallback(reg, "odious", boost_type: "da", size: "medium")).to eq(da_taboo) # own series first
+      end
+
+      it "never uses a Taboo or omega-only curve" do
+        reg = registry_class.new(data: [da_taboo, da_omega], effects: [])
+        expect(fallback(reg, "ex", boost_type: "da", size: "medium")).to be_nil
+      end
+
+      it "never reaches an EX curve for an Odious skill" do
+        ex_hp = curve_row("Aegis", "hp", "small", 14.5, series: "ex", sl1: 3.0, sl10: 12.0)
+        expect(fallback(registry_class.new(data: [ex_hp], effects: []), "odious", boost_type: "hp", size: "small"))
+          .to be_nil
+      end
+
+      it "marks the row's provenance" do
+        reg = registry_class.new(data: [da_taboo, da_normal_omega], effects: [])
+        rows = compile(version("Climate Control", series: "ex"), "Medium boost to all allies' double attack rate",
+                       reg: reg).rows
+        expect(rows.first.attributes).to include(boost_type: "da", sl15: 5.0,
+                                                 provenance: "fallback:Trium/normal_omega (Optimus last resort)")
+        expect(described_class.last_resort_row?(rows.first)).to be(true)
+      end
+    end
+
+    it "keeps ATK strict: no curve in a compatible series means no row and a warning" do
+      result = compile(version("Clouds of Nightfall", series: "ex"), "Big boost to dark allies' ATK",
+                       reg: registry_class.new(data: [taboo, normal_might], effects: []))
+      expect(result.rows).to be_empty
+      expect(result.warnings).to include(a_string_matching(%r{no curve for atk/big in series "ex"}))
+    end
+
+    it "copies the EX Might Big row and records it in provenance" do
+      rows = compile(version("Clouds of Nightfall", series: "ex"), "Big boost to dark allies' ATK", reg: ex_registry).rows
+      expect(rows.first.attributes).to include(sl1: 6.0, sl10: 15.0, sl15: 18.0, sl20: 21.0,
+                                               provenance: "fallback:Might/ex")
+    end
+
+    it "keeps another family's fallback when a family with larger values is added" do
+      bigger = [
+        curve_row("Zealotry", "atk", "big", 30.0, series: "ex", sl1: 10.0, sl10: 25.0, sl20: 35.0, sl25: 40.0),
+        curve_row("Abyss", "atk", "big", 30.0, series: "ex", sl1: 10.0, sl10: 25.0, sl20: 35.0, sl25: 40.0),
+        curve_row("Fandango", "atk", "big", 25.0, series: "taboo", sl1: 9.0, sl10: 20.0, sl20: 28.0)
+      ]
+      grown = registry_class.new(data: ex_registry.data + bigger, effects: [])
+      expect(fallback(grown, "ex")).to eq(ex_might)
+      expect(fallback(grown, "normal")).to eq(normal_might)
+    end
+
+    describe "the Armed family" do
+      let(:armed) { curve_row("Armed", "atk", "big", 18.0, series: "ex", sl1: 6.0, sl10: 15.0, sl20: 20.0) }
+      let(:armed_registry) { registry_class.new(data: [taboo, ex_might, armed], effects: []) }
+
+      it "resolves every Armed <element> skill to its own curve, not a fallback" do
+        %w[Blaze Flood Gale Grounds Shadow Shine].each do |element|
+          result = compile(version("Armed #{element}", series: "ex"), "Big boost to allies' ATK", reg: armed_registry)
+          expect(result.version.skill_modifier).to eq("Armed")
+          expect(result.rows).to be_empty # the family's canonical row covers atk
+          expect(armed_registry.for_skill(modifier: "Armed", series: "ex", size: result.version.skill_size))
+            .to contain_exactly(armed)
+        end
+      end
+
+      it "doesn't move other EX ATK Big skills off EX Might" do
+        expect(fallback(armed_registry, "ex")).to eq(ex_might)
+      end
+
+      it "is a cited canonical overlay row (6/15/18/20, EX, big)" do
+        overlay = JSON.parse(Rails.root.join("data/weapon_skill_curation/_canonical.json").read)
+        entry = overlay["data"].find { |e| e["modifier"] == "Armed" }
+        expect(entry).to include("boost_type" => "atk", "series" => "ex", "size" => "big", "sl1" => 6.0,
+                                 "sl10" => 15.0, "sl15" => 18.0, "sl20" => 20.0)
+        expect(entry["provenance"]).to include("C1UGnK", "FaJB80", "Clarion")
+      end
     end
   end
 

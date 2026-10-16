@@ -21,6 +21,10 @@ module WeaponSkills
       Row = WeaponSkills::BuildResult::Row
 
       SUPP_BOOSTS = %w[dmg_supp na_supp ca_supp skill_dmg_supp].freeze
+      FALLBACK_PROVENANCE = "fallback:"
+      # Appended to a fallback row's provenance when the curve crossed series (the Optimus
+      # last resort, Registry#canonical_curve).
+      LAST_RESORT_MARKER = " (Optimus last resort)"
 
       # Every value column, with the table defaults, so rows compare column for column.
       DATUM_DEFAULTS = {
@@ -90,7 +94,10 @@ module WeaponSkills
 
           row = if sl_scaled?(clause)
                   datum = datum_attributes(version, clause, registry)
-                  warnings << "no curve for #{clause[:boost_type]}/#{clause[:size]}" unless datum
+                  unless datum
+                    warnings << "no curve for #{clause[:boost_type]}/#{clause[:size]} in series " \
+                                "#{(clause[:series] || version.skill_series).inspect} (#{version.skill_name_en})"
+                  end
                   datum && datum_row(version, datum)
                 elsif clause[:value]
                   effect_row(version, effect_attributes(version, clause, parsed))
@@ -131,20 +138,34 @@ module WeaponSkills
                 .find { |d| d.boost_type == clause[:boost_type] && d.formula_type == formula }
       end
 
+      # A row copied from a fallback curve (no family curve of its own) records which one in
+      # provenance: "fallback:<modifier>/<series>", plus " (Optimus last resort)" when the
+      # curve came from another series. Family-curve rows keep provenance nil.
       def datum_attributes(version, clause, registry)
         formula = clause[:formula_type] || "flat"
-        curve = family_curve(version, clause, registry) ||
-                registry.canonical_curve(boost_type: clause[:boost_type], size: clause[:size], formula_type: formula,
-                                         series: clause[:series] || version.skill_series)
+        curve = family_curve(version, clause, registry)
+        fallback = curve.nil?
+        series = clause[:series] || version.skill_series
+        curve ||= registry.canonical_curve(boost_type: clause[:boost_type], size: clause[:size], formula_type: formula,
+                                           series: series)
         return nil unless curve
 
-        DATUM_DEFAULTS.merge(
+        attrs = DATUM_DEFAULTS.merge(
           modifier: version.skill_name_en, boost_type: clause[:boost_type], series: clause[:series],
           size: clause[:size], formula_type: formula,
           sl1: curve.sl1, sl10: curve.sl10, sl15: curve.sl15, sl20: curve.sl20, sl25: curve.sl25,
           coefficient: curve.coefficient, max_value: curve.max_value, aura_boostable: false
         )
+        return attrs unless fallback
+
+        provenance = "#{FALLBACK_PROVENANCE}#{curve.modifier}/#{curve.series}"
+        provenance += LAST_RESORT_MARKER if registry.last_resort?(curve, series)
+        attrs.merge(provenance: provenance)
       end
+
+      def last_resort_row?(row) = fallback_row?(row) && row.attributes[:provenance].end_with?(LAST_RESORT_MARKER)
+
+      def fallback_row?(row) = row.attributes[:provenance].to_s.start_with?(FALLBACK_PROVENANCE)
 
       def effect_attributes(version, clause, parsed)
         { modifier: version.skill_name_en, boost_type: clause[:boost_type], series: clause[:series],

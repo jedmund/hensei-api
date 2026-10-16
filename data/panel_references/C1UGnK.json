@@ -1,7 +1,7 @@
 {
   "party": "C1UGnK",
   "captured_on": "2026-10-16",
-  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Bismarck 4★ (Armed Shadow, SL15), no awakening in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1560708 / to Light 2028423 / Max HP 78972. EX Might +18 over the base (real base 230.5, shown 230): Armed Shadow at SL15 = 18, the EX Might curve. The build borrows the Taboo curve (21.6), so this line is open until the fallback fix.",
+  "notes": "W9 Dark session (#19/#16): LD66IX with one Executioner swapped for Bismarck 4★ (Armed Shadow, SL15), no awakening in slot 7; everything else unchanged. LGZkRG (Hollowsky Blade) serves as the base: its covenant shows no panel line as a sub. Estimated DMG 1560708 / to Light 2028423 / Max HP 78972. EX Might +18 over the base (real base 230.5, shown 230): Armed Shadow at SL15 = 18, the EX Might curve. The build used to borrow the Taboo curve (21.6); the fallback fix gives Armed skills their own canonical Armed row (6/15/18/20).",
   "state": {
     "turn": 1,
     "hp_percent": 100,
@@ -29,8 +29,7 @@
       "label": "EX Might",
       "boost": "atk",
       "series": "ex",
-      "value": 248,
-      "skip": true
+      "value": 248
     },
     {
       "label": "EX Might Sp.",

@@ -18,7 +18,7 @@ In priority order: where the calculator has the least evidence for the most rows
 
 ### Verification (checks a model we already have)
 
-- [ ] **[Water session](#water-session) A1: Zodiaco Vitae (Clawed Flood, ATK Medium, SL15).** The most important capture right now. The fallback-curve fix moves 134 ATK Medium rows to the EX curve (3/12/14.5) with no in-game number behind them; the panel should add 14.5 at SL15.
+- [x] **[Water session](#water-session) A0-A2**: done 2026-10-16. YCKMmk (base) and enTSuN (Xuanwu Mace Malus at SL20, matches) pass; 2aH20k shows Clawed Flood at **14.5** at SL15, confirming the EX Might Medium curve the fallback-curve fix moves 134 rows to (open until the fix). A3-A4 (covenants) remain.
 - [ ] **[Fire session](#fire-session) F2: Resentment's Gaze 3★ (Armed Blaze, SL10).** Adds an SL10 point to the Armed curve (6/15/18/20); the panel should add 15.
 - [ ] **[Wind session](#wind-session) W1 and W3**: Windhose 4★ (Armed Gale, SL15, no awakening) and Daur da Blao (Armed Gale, SL20). A second element for the Armed curve.
 - [ ] **#17 Odious below the cap** (Fire session and Water session): the Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★), verified only at the cap.
@@ -27,9 +27,63 @@ In priority order: where the calculator has the least evidence for the most rows
 - [ ] **[#8](#8-xjzzmv-light-omega-ax-nighthound) to [#13](#13-fsl8dd-water-vitality)**: partly recorded grids.
 - [ ] **XZq7xW** (contributed Water Odious grid): ready for the contributor to re-import the party, so its exorcision levels and befoulments come through. See [Done](#done).
 
+### Fallback-curve captures (PR #591)
+
+The fallback-curve fix gives every skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed (Dark session, 2aH20k). The groups below have no capture yet. Some follow an EX row that's missing values, and some (marked *stopgap*) borrow the Optimus curve because no EX curve exists. One capture at a known skill level per group pins the curve. Swap the weapon into a base grid's test slot and capture with and without it, as in the element sessions.
+
+**In your collection now:**
+
+- [ ] **EX Stamina, Sunveil's Radiance** (*stopgap*): **True Purity Sunblade** 4★ (SL15) and 5★ (SL20), Light. Any Light grid with an empty test slot, HP 100%. Read the **Stamina** line. Two skill levels give the curve's shape.
+- [ ] **EX Enmity, Undersky's Whispers** (*stopgap*): **Advocatus Diaboli** 5★ (SL20), Dark. Use the Dark session base (LGZkRG with an Executioner removed). Enmity is 0 at full HP, so capture the base and the base with Advocatus at **HP 50% and 25%**. Read **Enmity**.
+- [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): **Wilnas's Finger** 4★ (SL15), Fire. Use the Fire session base, at **HP 50% and 25%**, with and without it.
+
+**From your stash** (weapons not in your granblue.team collection). Most of these DA/TA and Critical skills work only from the **main hand** ("When main weapon (MC only)"), so each of those is a main-hand swap: one capture each, with only the main hand changed. The others go in sub slots and can share a party, one per panel line.
+
+**Done 2026-10-16:** L1-L3 as SAlNoF and ZSEUmr. Grace of Healing shows no Heal Cap line (it's a healing boost; suppressed). Pumpkin Trick gives Critical 3.2 and Resilient Shine gives HP 6 at SL1, both the fallback-curve fix's values.
+
+*Element parties* (capture the base without the test weapons, then with all of them; each sits on a different line):
+
+| # | Weapon (stash state) | Element | Slot | Its skills | Tests | Base |
+|---|---|---|---|---|---|---|
+| L1 | Asclepius Rod (0★, SL1) | Light | sub | Zion's Healing, Grace of Healing | Heal Cap (#20); Zion's Healing's known value is subtracted | any Light grid with 3 free sub slots |
+| L2 | Lantern Blade (3★, SL1) | Light | sub | Pumpkin Trick | Critical, EX Medium | same party |
+| L3 | Frilly Charm Bracelet (3★, SL1) | Light | sub | Resilient Shine (Covert Artistry is main hand only) | HP, EX Big | same party |
+| E1 | Baihu Fangstaff (4★, SL15) | Earth | sub | Terra's Might, Terra's Third Spur | C.A. DMG and Might at SL15 | 7AiIOo with 2 weapons removed |
+| E2 | Seaside Guardian (3★, SL1) | Earth | sub | Resilient Grounds (Synchronized Artistry is main hand only) | HP, EX Big | same party |
+
+*Main-hand swaps* (the base's main hand replaced, nothing else changed):
+
+| # | Weapon (stash state) | Element | Its skills | Tests | Base |
+|---|---|---|---|---|---|
+| M1 | Asauchi (4★, SL15) | Fire | The Origin of All Zanpakuto, Nameless Zanpakuto | DA/TA Medium at SL15 | Fire session base |
+| M2 | Xingese Liuyedao (4★, SL15) | Dark | Twelfth Crown Prince's Favorite, Xingese Blade | Critical at SL15 | LGZkRG |
+| M3 | Ishkur Shaft (3★, SL1) | Wind | Climate Control, Tempest's Vestige | DA/TA at SL1 | HDJE0N |
+| M4 | Air Cannon (4★, SL1) | Water | Bang!, Air Blast | Critical Massive at SL1 | YCKMmk |
+| M5 | Edem (4★, SL1) | Earth | Golden Spirit, Sentient Simulacrum | Enmity Big at SL1 (capture at HP 50%, with and without) | 7AiIOo |
+
+M1, M2 and E1 are worth the most: they pin SL15, where the stopgap values are least certain. The other Synchronized Artistry and Resilient weapons in the stash only repeat an SL1 point and aren't needed.
+
+A golden needs the party saved on granblue.team. For stash weapons, save it as a private party; once the fixture is exported it can be deleted.
+
+**Not in your collection (any one weapon per group, at any known skill level):**
+
+| Group | Rows | Panel line | Weapons |
+|---|---|---|---|
+| EX DA/TA (*stopgap*) | 25 | DA Rate, TA Rate | Synchronized Artistry on 18 event SSRs (e.g. Scarface, Tigerclaw, Seaside Guardian, Materpent Lyre, Anti-Asteroid Beam Cannon, Blade of Remorse, Astro Modele, King's Thruster); Climate Control (Ishkur Shaft); The Origin of All Zanpakuto (Asauchi); Noble's Dance (Luin); Ophidian Servitor (Ouroboros); Royal Wing Barrier (Pilum); Swiftblade Oath (Hoarfrost Blade Persius); Dexterity (Guivre Rod); Skull Parade (Skull Wand); Cuttlefish's Cut (Squid Hand); Wild Wanderer (Vassago); Triple Talon Hellion (Coco & Mimi); Incantation Fang (Medusiana Staff); Solo (Vyrnstrument) |
+| EX Critical (*stopgap*) | 8 | Critical | Full-Auto Fire (Assault Rifle (Man-Portable)), Ghost on the Battlefield (Soldier Bow), Unblinking Stare (Revolvyrn), Piercing Fang (Brionac), Bang! (Air Cannon), Spearsquid Flash (Squidpiercer), Twelfth Crown Prince's Favorite (Xingese Liuyedao), Pumpkin Trick (Lantern Blade) |
+| EX Enmity (*stopgap*) | 3 more | Enmity (at HP 50/25%) | Golden Spirit (Edem), Magic Charge (Fonic Rod), Audacity (Thunder Dirk Jove) |
+| EX HP Big (Resilient, Mysterious VIT II) | 10 | HP | Resilient Gale (Alster Bow, Intervallo Bramoso, Le Chevalier au Lion), Resilient Shadow (Giant Octo Leg on a Stick, Pantoufle de Machine, Shuprae Specialty), Resilient Flood (Materpent Lyre), Resilient Grounds (Seaside Guardian), Resilient Shine (Frilly Charm Bracelet), Mysterious VIT II (Mysterious Wand). The EX Aegis Big row stops at SL10, so **SL15 or SL20** is the capture that matters. |
+| EX HP Medium (Willed, Mysterious VIT) | 13 | HP | Willed Blaze (Miner's Lantern, Trap Knight's Helm), Willed Flood (Shark Bouquet, Motherly Flower Wreath), Willed Grounds (Beach Flag), Willed Gale (Achromatic Palette), Mysterious VIT (Mysterious Hammer/Harp/Hatchet, Pina Colata Bow, Sombre Gauntlet, Tadpole Tail), Downfall of Ignorance (Iridescent Bow). Mysterious Hatchet also pins EX HP Small at SL15. |
+| EX ATK Small | 3 | EX Might | Speed Cast (Fonic Rod), All-Night Party (Spirit Seeker), Succession of Knighthood (Brand of Binding Oath). SL20 is the missing point. |
+| Terra's Third Spur | 1 | C.A. DMG | Baihu Fangstaff, at SL20. |
+| Odious HP/Enmity Small (*stopgap*) | 2 | HP, Od Enmity | Taboo Netherfell's Aegis (Codex of Sanctity Verboten), Taboo Doomfire's Enmity (Karmasword of Prosperity Verboten) |
+| Heal cap, Grace of Healing (*stopgap*) | 2 | Heal Cap | Asclepius Rod (also #20) |
+
+Tidings of the New World's SL20 value (16, from a template) never applies: World weapons stop at SL15.
+
 ### New information (things we don't know yet)
 
-- [ ] **Deck JSON with every capture.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel itself: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state at that moment. Paste it alongside the screenshots, or instead of them. It settles rounding, catches a stale saved party, and shows fields we don't know about yet. (Kaneo GBF-41 makes this automatic later.)
+- [ ] **Deck JSON with base captures.** The party-deck response the game sends (`deck.pc.damage_info`) holds the panel at full HP and default conditions: every line's exact value (230.5 where the panel shows 230), the orange `is_max` flag, the three enhancement numbers, and the full weapon and summon state. Paste it with any 100% capture. Calculator Conditions (HP slider, foe element) are rendered as HTML, so sweep points still need screenshots. (Kaneo GBF-41 makes this automatic later.)
 - [ ] **`reduction_effect_value` on Odious weapons.** Unknown field in each Odious weapon's `odiant` block (180 on a Demonspear at exorcision 5/5, 0 on everything else). One deck JSON with Verboten weapons at different exorcision levels shows how it moves, and so what it is.
 - [ ] **Omega enmity and Garrison near 0 HP.** XfBq6u matches at 25% and above but not at 1% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58). XfBq6u at **10%** and **5%** HP maps the end of both curves.
 - [ ] **Grace of Healing (#20)**: is it a heal cap or a healing boost? Needs Asclepius Rod, which isn't in your collection.
@@ -58,7 +112,7 @@ Later, the extension could capture the panel straight from the game: the deck re
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
 2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
 3. **Set the party public** on granblue.team. Import it from the game right before capturing, so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match.
-4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. If you can, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
+4. **Screenshot both panel pages,** including the Estimated DMG / to-element / Max HP header. For a capture at default conditions, paste the deck JSON too (see [New information](#new-information-things-we-dont-know-yet)).
 5. **HP sweeps:** set the Calculator Conditions HP slider to 100, 75, 50, 25 and 1, with one capture each.
 6. **Remove-and-diff:** one capture per removed weapon, with everything else unchanged. Recapture the base state between removals; a stale grid once faked two wrong conclusions.
 

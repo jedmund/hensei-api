@@ -1,0 +1,36 @@
+{
+  "party": "SAlNoF",
+  "captured_on": "2026-10-16",
+  "notes": "Stash-weapon Light party (W9 fallback captures L1/L3; Lantern Blade wasn't in the saved party). Rhongomyniad 5★ MH (SL20), Valentine Sword 3★ (Zion's Aegis, SL10), Asclepius Rod 0★ (SL1), Frilly Charm Bracelet 3★ (Resilient Shine, SL1); Luminiera Omega 6★ main and friend; Cavalier. No Heal Cap line: Asclepius Rod's Grace of Healing is a healing boost, not a heal cap (W9 #20), so its heal_cap is suppressed. HP 24 = Zion's Aegis 18 + Resilient Shine 6 at SL1: the EX Aegis Big value (6) the fallback-curve fix uses; the current build borrows 9, now matched by the fallback-curve fix. Estimated DMG 7253 / to Dark 10678 / Max HP 17318.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "dark"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 340,
+    "taboo": 0
+  },
+  "absent": [
+    "heal_cap"
+  ],
+  "lines": [
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 37
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 24
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50
+    }
+  ]
+}

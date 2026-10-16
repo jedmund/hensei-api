@@ -86,6 +86,21 @@ RSpec.describe WeaponSkills::Build::Runner do
       expect(io.string).to include("build_weapon_skills (write): 2 in scope, 2 stale, 2 built, 0 failed")
     end
 
+    it "counts the rows copied from a fallback curve" do
+      fallback = WeaponSkills::BuildResult::Row.new(
+        version_identity: ["1040000001", 0, 0], kind: :datum, boost_type: "atk", condition: nil,
+        attributes: { boost_type: "atk", provenance: "fallback:Might/ex" }
+      )
+      own = WeaponSkills::BuildResult::Row.new(version_identity: ["1040000001", 0, 0], kind: :datum,
+                                               boost_type: "hp", condition: nil, attributes: { boost_type: "hp" })
+      allow(WeaponSkills::Build).to receive(:for) do |weapon, **|
+        WeaponSkills::BuildResult.new(weapon_granblue_id: weapon.granblue_id, rows: [fallback, own])
+      end
+
+      expect(run.fallback_rows).to eq(2)
+      expect(io.string).to include("2 fallback rows")
+    end
+
     it "logs a weapon that fails, doesn't store its fingerprint, and carries on" do
       allow(WeaponSkills::Build).to receive(:for).and_call_original
       allow(WeaponSkills::Build).to receive(:for).with(sourced, context: context).and_raise("bad page")
