@@ -89,6 +89,8 @@ module Api
 
           SolomonisExpeditionBlueprint.render_as_hash(party.solomonis_expedition, view: :summary)
         end
+
+        include_view :sticker_metadata
       end
 
       # Summary view for embedding in remix/source lists — minimal party metadata
@@ -112,6 +114,7 @@ module Api
         include_view :preview_objects # Characters, Weapons, Summons
         include_view :preview_metadata # Object counts
         include_view :party_metadata # favorited, has_orphaned_items
+        include_view :sticker_metadata # labels, my_sticker
       end
 
       # For object views
@@ -121,6 +124,15 @@ module Api
         include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
         include_view :party_metadata # favorited, has_orphaned_items
+        include_view :sticker_metadata # labels, my_sticker
+
+        # Private sticker counts, only for the owner. Retired stickers are
+        # included because they still count.
+        field :sticker_breakdown, if: ->(_field_name, party, options) {
+          options[:current_user] && party.user_id.present? && party.user_id == options[:current_user].id
+        } do |party|
+          PartyStickerSummary.breakdown_for(party.id)
+        end
 
         # Evoking Solomonis expedition, blessings and guidebook, or null.
         field :solomonis do |party, options|
@@ -222,6 +234,25 @@ module Api
 
         field :has_orphaned_items do |party|
           party.has_orphaned_items?
+        end
+      end
+
+      # Sticker labels (no counts) and the viewer's own sticker. List pages
+      # pass precomputed `party_labels` / `my_stickers` (see
+      # PartyStickerSummary.blueprint_options); without them each party is
+      # looked up on its own. participation_score is never rendered.
+      view :sticker_metadata do
+        field :labels do |party, options|
+          labels = options[:party_labels] || PartyStickerSummary.labels_for([party.id])
+          labels[party.id] || []
+        end
+
+        field :my_sticker do |party, options|
+          if options[:my_stickers]
+            options[:my_stickers][party.id]
+          elsif options[:current_user]
+            PartyStickerSummary.my_stickers_for(options[:current_user], [party.id])[party.id]
+          end
         end
       end
 
