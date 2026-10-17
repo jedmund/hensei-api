@@ -26,7 +26,7 @@ As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 | from a family template | 2,720 | 72% | high: wiki tables, checked by goldens for the common families |
 | hand-curated, with a citation | 285 | 8% | high |
 | borrowed fallback curve | 232 | 6% | ATK Big, ATK Massive, Armed and ATK Medium confirmed in game; the rest unconfirmed |
-| of which Optimus stopgap | 27 | 1% | low: placeholders until captured |
+| of which Optimus stopgap | 27 | 1% | low: placeholders until captured. Firestorm's Enmity is now confirmed (3LRS7C), so 26 are unverified |
 | No values | 534 | 14% | mostly battle triggers and main-hand procs, which never reach the panel; some real gaps among them |
 
 **Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
@@ -35,12 +35,12 @@ As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
 In priority order: where the calculator has the least evidence for the most rows.
 
+- [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: start with Fire (0ZA6Ak minus one Deathcannon, expect Od 302.5%). The Taboo aura amplifies every Odious-series line (42 skill versions), and it's modelled as linear from base to cap but verified only at the cap. One capture, weapons you own.
 - [ ] **[Arcarum switch, the rest](#arcarum-switch-captures)**: Sephira Soul (HP, curated by wording), the Sephirath C.A. and N.A. amps, and Salire below full HP.
 - [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina). Advocatus Diaboli is done (MjthwV).
 - [ ] **[EX HP Big and Medium](#still-to-find)**: the largest unconfirmed borrowed curves (21 rows). Needs a Resilient, Willed or Mysterious weapon at SL15 or SL20; SL1 already matches.
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
 - [ ] **[Main-hand swap M5](#main-hand-swaps-m1m5)**: Edem (Enmity at SL1).
-- [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
 - [ ] **[The other element-session captures](#other-element-session-captures)**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [ ] **[#2 HoEE8b](#2-hoee8b-dark-no-job)**: the last exact rebuild. Once it's in, the parity baseline can be deleted.
 - [ ] **[#8–#13](#partly-recorded-grids)**: partly recorded grids.
