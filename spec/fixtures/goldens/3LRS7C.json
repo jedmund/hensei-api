@@ -2,7 +2,7 @@
   "format": 1,
   "shortcode": "3LRS7C",
   "catalogue_tag": "catalogue-20261015-w8",
-  "references": ["3LRS7C","3LRS7C_hp1","3LRS7C_hp25","3LRS7C_hp50","3LRS7C_hp75"],
+  "references": ["3LRS7C","3LRS7C_hp1","3LRS7C_hp10_noarc","3LRS7C_hp1_noarc","3LRS7C_hp25","3LRS7C_hp50","3LRS7C_hp5_noarc","3LRS7C_hp75"],
   "adjustments": [],
   "tables": {
     "grid_characters": [],
