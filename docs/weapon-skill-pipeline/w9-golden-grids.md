@@ -16,7 +16,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
-**Accuracy on captured grids (measured):** 41 golden parties, 58 references, 1,499 panel lines. 1,477 match exactly and are checked in CI on every change. 22 lines (1.5%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
+**Accuracy on captured grids (measured):** 43 golden parties, 62 references, 1,607 panel lines. 1,585 match exactly and are checked in CI on every change. 22 lines (1.4%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
 **Coverage of the catalogue (measured):**
 
@@ -307,6 +307,8 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | — | Dark base and Advocatus Diaboli | jFY42F (new Dark base), aDkEIX (Advocatus 5★ in slot 7, HP 100–1%) | every line matches: Phantom's Supremacy EX Might 26 and True Phantom's Supremacy HP 16 at SL20; AX multiattack 2.5 and C.A. Supp. 5 (30,000). Undersky's Whispers is main hand only, so the panel doesn't change with HP; the EX Enmity capture moves to the main hand |
 | — | Advocatus Diaboli as main hand | MjthwV (HP 100/75/50/25/1%) | every line matches. Undersky's Whispers shows no panel line at any HP, but Estimated DMG rises on the Enmity curve ((1+2r)r: 659126 → 686639 / 732495 / 796692 / 871618, exact at 75/50/25%). New `panel_hidden` flag: the row is kept off the panel and listed under Hidden stats |
 | — | Arcarum test slot: EX ATK Massive | PdsR5k (Earth base, slot 4 empty), LgXJEi (Binds of The Hanged Man 5★ SL20 in slot 4) | every line matches. Fool-Hanged Man's Perseverance adds EX Might +25 on the panel; the borrowed curve's 25.5 at SL20 floors to the same display, so the EX ATK Massive fallback (23 versions: nine Arcarum, five World) is confirmed to display precision. Earth's Majesty fills HP to the 400 cap and the overflow shows as HP (Overskill) 1.5 |
+| — | Arcarum switch: Sephira Maxi | LgXJEi_arc (LgXJEi with Arcarum on) | Sephira Maxi's Arcarum part is its own **DMG Cap (Arc) 20** line (orange, capped); DMG Cap stays 17. The curated rows had added +15 to DMG Cap: moved to `dmg_cap_arc` 20 for all 10 Arcarum weapons, old rows removed by op, line capped at 20 |
+| — | Fire base and Kiss of The Devil | X53WHq (Fire base), PF0R3w (Kiss of The Devil 5★ SL20, Arcarum off), PF0R3w_arc (on) | every line matches after one fix: Sol Remnant's Astral Blow II showed as Bonus Fire DMG 10, but its bonus applies to triple attacks only and the game shows no line. Triple-attack bonus DMG now goes to `bonus_elem_dmg_ta` (off the panel), with the Blow family; QmQaPH, UC3M0M and WpPucd, which also hold Sol Remnant, now assert the line is absent. Seduction EX ATK Massive and Sephira Maxi-Fire's DMG Cap (Arc) 20 confirmed |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
