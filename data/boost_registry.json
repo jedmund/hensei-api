@@ -791,6 +791,14 @@
       "display_cap": 50.0
     },
     {
+      "key": "bonus_elem_dmg_single",
+      "hidden": true
+    },
+    {
+      "key": "bonus_elem_dmg_ta",
+      "hidden": true
+    },
+    {
       "key": "ca_amp_arc",
       "amplifiable": false
     },
