@@ -14,7 +14,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 ## Accuracy and coverage
 
-As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
+As of 2026-10-17: #594 (Build::VERSION 10 plus the W9 curation) and the `pipeline/W9-goldens-3` branch (Arcarum gating, the 1% HP point, AX Enmity).
 
 **Accuracy on captured grids (measured):** 48 golden parties, 76 references, 2,015 panel lines. 1,997 match exactly and are checked in CI on every change. 18 lines (0.9%) are open, all for known reasons: XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
@@ -23,13 +23,13 @@ As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 | Skill versions (3,759) | Count | Share | Reliability |
 |---|---|---|---|
 | Have values | 3,225 | 86% | |
-| from a family template | 2,720 | 72% | high: wiki tables, checked by goldens for the common families |
-| hand-curated, with a citation | 285 | 8% | high |
+| from a family template | 2,710 | 72% | high: wiki tables, checked by goldens for the common families |
+| hand-curated, with a citation | 295 | 8% | high (the ten Sephira Tek and Soul weapons moved here from their family template) |
 | borrowed fallback curve | 232 | 6% | ATK Big, ATK Massive, Armed and ATK Medium confirmed in game; the rest unconfirmed |
 | of which Optimus stopgap | 27 | 1% | low: placeholders until captured. Firestorm's Enmity is now confirmed (3LRS7C), so 26 are unverified |
 | No values | 534 | 14% | mostly battle triggers and main-hand procs, which never reach the panel; some real gaps among them |
 
-**Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
+**Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. Checked across the HP range (100% to the 1% point) and, for Odious, across exorcision levels below the Taboo aura's cap; Arcarum-only skills are checked with the switch off and on. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
 
 ## Next captures
 
