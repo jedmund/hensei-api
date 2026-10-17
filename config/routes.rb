@@ -246,6 +246,17 @@ Rails.application.routes.draw do
         post :upload_image
       end
     end
+    resources :events, only: %i[index show create update] do
+      collection do
+        post :sync
+      end
+      member do
+        post :approve
+        post :hide
+        post :upload_image
+      end
+    end
+    resources :featured_parties, only: %i[index create update destroy]
 
     # Party difficulty
     resources :difficulties, only: %i[index show create update destroy]
