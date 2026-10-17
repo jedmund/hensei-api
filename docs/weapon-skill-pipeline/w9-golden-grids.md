@@ -35,7 +35,6 @@ As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[F7: Wilnas's Finger as main hand](#other-element-session-captures)**: F0 with Higurashi → Wilnas's Finger 4★, at HP 100% and 50%. #16 Vermillion Covenant as main hand. The sub-slot half is done (3LRS7C).
 - [ ] **[Arcarum switch, the rest](#arcarum-switch-captures)**: Sephira Soul (HP, curated by wording), the Sephirath C.A. and N.A. amps, and Salire below full HP.
 - [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina). Advocatus Diaboli is done (MjthwV).
 - [ ] **[EX HP Big and Medium](#still-to-find)**: the largest unconfirmed borrowed curves (21 rows). Needs a Resilient, Willed or Mysterious weapon at SL15 or SL20; SL1 already matches.
@@ -167,7 +166,7 @@ Each goes in its base's test slot, one at a time.
 | F4 | F0 | Ushumgal 5★, Special awakening 15 | #15 the Special awakening instead |
 | F5 | F0 | Ray of Zhuque Malus 5★ | #14 Malus at SL20 |
 | F6 ✓ | F0 | Wilnas's Finger 4★ | #16 Vermillion Covenant as a sub (3LRS7C) |
-| F7 | F0, main hand → Wilnas's Finger 4★ | — | #16 Vermillion Covenant as main hand |
+| ~~F7~~ | | | not needed: Vermillion Covenant isn't main-hand-only and showed its full line as a sub (3LRS7C), so the main hand can't add anything |
 | W2 | W0 | Windhose 5★, Attack awakening 15 | #15 at SL20 with the Attack awakening |
 | W4 | W0 | Qinglong Spear Malus 5★ | #14 Malus at SL20 |
 | W5 | W0 | Ewiyar's Beak 4★ | #16 Ewiyar's covenant as a sub |
