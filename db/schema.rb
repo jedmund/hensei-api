@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_120005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -546,6 +546,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["name_en"], name: "index_effects_on_name_en"
   end
 
+  create_table "event_raids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "event_id", null: false
+    t.uuid "raid_id", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "raid_id"], name: "index_event_raids_on_event_id_and_raid_id", unique: true
+    t.index ["raid_id"], name: "index_event_raids_on_raid_id"
+  end
+
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.integer "kind", default: 0, null: false
+    t.integer "element"
+    t.integer "event_number"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
+    t.string "image_key"
+    t.integer "status", default: 0, null: false
+    t.jsonb "source_refs", default: {}, null: false
+    t.jsonb "source_payload", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ends_at"], name: "index_events_on_ends_at"
+    t.index ["event_number"], name: "index_events_on_unite_and_fight_event_number", unique: true, where: "((kind = 3) AND (event_number IS NOT NULL))"
+    t.index ["kind"], name: "index_events_on_kind"
+    t.index ["status", "starts_at"], name: "index_events_on_status_and_starts_at"
+  end
+
   create_table "expedition_guide_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "party_id", null: false
     t.uuid "solomonis_guide_effect_id", null: false
@@ -582,6 +612,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.datetime "updated_at", null: false
     t.index ["party_id"], name: "index_favorites_on_party_id"
     t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
+  create_table "featured_parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "event_id"
+    t.uuid "party_id", null: false
+    t.integer "position", default: 0, null: false
+    t.string "note_en"
+    t.string "note_jp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "party_id"], name: "index_featured_parties_on_event_id_and_party_id", unique: true
+    t.index ["event_id"], name: "index_featured_parties_on_event_id"
+    t.index ["party_id"], name: "index_featured_parties_on_party_id"
   end
 
   create_table "gacha_banner_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -976,6 +1019,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.datetime "difficulty_computed_at"
     t.integer "difficulty_ruleset_version"
     t.jsonb "full_auto_skills", default: {}, null: false
+    t.decimal "participation_score", precision: 12, scale: 4
+    t.datetime "participation_computed_at"
     t.index ["accessory_id"], name: "index_parties_on_accessory_id"
     t.index ["boost_mod", "boost_side"], name: "index_parties_on_boost_mod_and_boost_side"
     t.index ["collection_source_user_id"], name: "index_parties_on_collection_source_user_id"
@@ -989,6 +1034,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["guidebook3_id"], name: "index_parties_on_guidebook3_id"
     t.index ["job_id"], name: "index_parties_on_job_id"
     t.index ["last_updated"], name: "index_parties_on_last_updated"
+    t.index ["participation_computed_at"], name: "index_parties_on_participation_computed_at"
+    t.index ["participation_score"], name: "index_parties_on_participation_score"
     t.index ["raid_id"], name: "index_parties_on_raid_id"
     t.index ["shortcode"], name: "index_parties_on_shortcode"
     t.index ["skill0_id"], name: "index_parties_on_skill0_id"
@@ -1025,6 +1072,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["shareable_type", "shareable_id"], name: "index_party_shares_on_shareable"
     t.index ["shareable_type", "shareable_id"], name: "index_party_shares_on_shareable_type_and_shareable_id"
     t.index ["shared_by_id"], name: "index_party_shares_on_shared_by_id"
+  end
+
+  create_table "party_stickers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "party_id", null: false
+    t.uuid "sticker_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_party_stickers_on_created_at"
+    t.index ["party_id", "sticker_id"], name: "index_party_stickers_on_party_id_and_sticker_id"
+    t.index ["sticker_id"], name: "index_party_stickers_on_sticker_id"
+    t.index ["user_id", "party_id"], name: "index_party_stickers_on_user_id_and_party_id", unique: true
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
@@ -1247,6 +1306,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["family"], name: "index_statuses_on_family"
     t.index ["game_ailment_id"], name: "index_statuses_on_game_ailment_id", unique: true, where: "(game_ailment_id IS NOT NULL)"
     t.index ["name_en"], name: "index_statuses_on_name_en"
+  end
+
+  create_table "stickers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "slug", null: false
+    t.string "meaning_en", null: false
+    t.string "meaning_jp"
+    t.string "image_key"
+    t.integer "position", default: 0, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active", "position"], name: "index_stickers_on_active_and_position"
+    t.index ["slug"], name: "index_stickers_on_slug", unique: true
   end
 
   create_table "substitutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1770,11 +1842,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
   add_foreign_key "difficulty_change_logs", "users"
   add_foreign_key "difficulty_drafts", "users"
   add_foreign_key "effects", "effects", column: "effect_family_id"
+  add_foreign_key "event_raids", "events"
+  add_foreign_key "event_raids", "raids"
   add_foreign_key "expedition_guide_effects", "parties", on_delete: :cascade
   add_foreign_key "expedition_guide_effects", "solomonis_guide_effects"
   add_foreign_key "extension_auth_codes", "users"
   add_foreign_key "favorites", "parties"
   add_foreign_key "favorites", "users"
+  add_foreign_key "featured_parties", "events"
+  add_foreign_key "featured_parties", "parties"
   add_foreign_key "gacha_banner_rates", "gacha_banners", on_delete: :cascade
   add_foreign_key "grid_artifacts", "artifacts"
   add_foreign_key "grid_artifacts", "collection_artifacts"
@@ -1824,6 +1900,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
   add_foreign_key "party_blessings", "parties", on_delete: :cascade
   add_foreign_key "party_shares", "parties"
   add_foreign_key "party_shares", "users", column: "shared_by_id"
+  add_foreign_key "party_stickers", "parties"
+  add_foreign_key "party_stickers", "stickers"
+  add_foreign_key "party_stickers", "users"
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
   add_foreign_key "phantom_players", "crews"
   add_foreign_key "phantom_players", "users", column: "claimed_by_id"

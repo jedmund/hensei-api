@@ -123,6 +123,10 @@ Rails.application.routes.draw do
     get 'solomonis/blessings', to: 'solomonis#blessings'
     get 'solomonis/guide_effects', to: 'solomonis#guide_effects'
 
+    # Community participation: stickers on parties (:id is the party UUID)
+    put 'parties/:id/sticker', to: 'party_stickers#update'
+    delete 'parties/:id/sticker', to: 'party_stickers#destroy'
+
     put 'parties/:id/jobs', to: 'jobs#update_job'
     put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
     delete 'parties/:id/job_skills', to: 'jobs#destroy_job_skill'
@@ -232,6 +236,28 @@ Rails.application.routes.draw do
     get 'weapon_skill_families', to: 'weapon_skill_families#index'
     get 'weapon_skill_families/*modifier', to: 'weapon_skill_families#show', format: false
     resources :weapon_skill_boost_types, only: %i[index show]
+
+    # Community participation: sticker catalogue, events, staff picks, home
+    resources :stickers, only: %i[index create update destroy] do
+      collection do
+        put :reorder
+      end
+      member do
+        post :upload_image
+      end
+    end
+    resources :events, only: %i[index show create update] do
+      collection do
+        post :sync
+      end
+      member do
+        post :approve
+        post :hide
+        post :upload_image
+      end
+    end
+    resources :featured_parties, only: %i[index create update destroy]
+    get 'home', to: 'home#show'
 
     # Party difficulty
     resources :difficulties, only: %i[index show create update destroy]
