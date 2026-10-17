@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :parties, dependent: :destroy
   has_many :playlists, dependent: :destroy
   has_many :favorites, dependent: :destroy
+  has_many :party_stickers, dependent: :destroy
   has_many :collection_characters, dependent: :destroy
   has_many :collection_weapons, dependent: :destroy
   has_many :collection_summons, dependent: :destroy
