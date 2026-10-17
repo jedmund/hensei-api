@@ -16,7 +16,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
-**Accuracy on captured grids (measured):** 43 golden parties, 62 references, 1,607 panel lines. 1,585 match exactly and are checked in CI on every change. 22 lines (1.4%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
+**Accuracy on captured grids (measured):** 45 golden parties, 66 references, 1,731 panel lines. 1,709 match exactly and are checked in CI on every change. 22 lines (1.3%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
 **Coverage of the catalogue (measured):**
 
@@ -309,6 +309,8 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | — | Arcarum test slot: EX ATK Massive | PdsR5k (Earth base, slot 4 empty), LgXJEi (Binds of The Hanged Man 5★ SL20 in slot 4) | every line matches. Fool-Hanged Man's Perseverance adds EX Might +25 on the panel; the borrowed curve's 25.5 at SL20 floors to the same display, so the EX ATK Massive fallback (23 versions: nine Arcarum, five World) is confirmed to display precision. Earth's Majesty fills HP to the 400 cap and the overflow shows as HP (Overskill) 1.5 |
 | — | Arcarum switch: Sephira Maxi | LgXJEi_arc (LgXJEi with Arcarum on) | Sephira Maxi's Arcarum part is its own **DMG Cap (Arc) 20** line (orange, capped); DMG Cap stays 17. The curated rows had added +15 to DMG Cap: moved to `dmg_cap_arc` 20 for all 10 Arcarum weapons, old rows removed by op, line capped at 20 |
 | — | Fire base and Kiss of The Devil | X53WHq (Fire base), PF0R3w (Kiss of The Devil 5★ SL20, Arcarum off), PF0R3w_arc (on) | every line matches after one fix: Sol Remnant's Astral Blow II showed as Bonus Fire DMG 10, but its bonus applies to triple attacks only and the game shows no line. Triple-attack bonus DMG now goes to `bonus_elem_dmg_ta` (off the panel), with the Blow family; QmQaPH, UC3M0M and WpPucd, which also hold Sol Remnant, now assert the line is absent. Seduction EX ATK Massive and Sephira Maxi-Fire's DMG Cap (Arc) 20 confirmed |
+| — | Arcarum switch: Militis | 8Hm8De (Spymur's Vision Militis 4★ SL1 in PdsR5k's slot 4, Arcarum off), 8Hm8De_arc (on) | every line matches: Ridge's Surge DA/TA +5 at full HP, Gun Voltage II EX Might Sp. +8, Salire N.A. DMG Cap 3 (off) and +7 more to the 20 cap (on). New: Salire's Arcarum "take DMG worth 40% of max HP" shows as **HP DMG 40** (orange); added for the four Salire skills, and the line is now flagged at 40. Estimated DMG rises with Arcarum on (989370 → 1003571) |
+| — | Arcarum switch: Sephira | OsDlrX (Sephira Emerald Blade 4★ SL15, Arcarum off), OsDlrX_arc (on) | Sephira Earth-Tek's **Critical 30** shows only with Arcarum on; the family row applied it always. The six Tek and four Soul weapons now suppress the family row and carry an Arcarum-gated curve (Soul by its wording, not captured). Estimated DMG is the same with Arcarum on or off, so Critical isn't part of it |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
