@@ -16,7 +16,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
-**Accuracy on captured grids (measured):** 39 golden parties, 56 references, 1,438 panel lines. 1,416 match exactly and are checked in CI on every change. 22 lines (1.5%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
+**Accuracy on captured grids (measured):** 41 golden parties, 58 references, 1,499 panel lines. 1,477 match exactly and are checked in CI on every change. 22 lines (1.5%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
 **Coverage of the catalogue (measured):**
 
@@ -25,7 +25,7 @@ As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 | Have values | 3,225 | 86% | |
 | from a family template | 2,720 | 72% | high: wiki tables, checked by goldens for the common families |
 | hand-curated, with a citation | 285 | 8% | high |
-| borrowed fallback curve | 232 | 6% | ATK Big, Armed and ATK Medium confirmed in game; the rest unconfirmed |
+| borrowed fallback curve | 232 | 6% | ATK Big, ATK Massive, Armed and ATK Medium confirmed in game; the rest unconfirmed |
 | of which Optimus stopgap | 27 | 1% | low: placeholders until captured |
 | No values | 534 | 14% | mostly battle triggers and main-hand procs, which never reach the panel; some real gaps among them |
 
@@ -80,7 +80,7 @@ Skill levels come from the import, so there's no need to report them. Element-ch
 
 ### Fallback curves
 
-The fallback-curve fix (live since 2026-10-16, #592) gives a skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed. The captures below pin the groups that aren't. Some follow an EX row that's missing values; others, marked *stopgap*, borrow the Optimus curve because no EX curve exists.
+The fallback-curve fix (live since 2026-10-16, #592) gives a skill with no family of its own the curve of its own series. ATK Big, ATK Massive (LgXJEi), Armed and ATK Medium are confirmed. The captures below pin the groups that aren't. Some follow an EX row that's missing values; others, marked *stopgap*, borrow the Optimus curve because no EX curve exists.
 
 #### Earth stash party (E0–E2)
 
@@ -306,6 +306,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | M4 | Air Cannon as main hand | RKY1Eb (base: Exo Ephialtes, three Spirit of Mana, Varuna main and support), 4pWKNB (Air Cannon at SL1) | every line matches: Bang! reads Critical 30 at SL1 as at SL15, so the three main-hand Critical skills are fixed at 30 (their in-game icon is the star used for special skills); Air Blast EX Might 6. Re-importing RKY1Eb after its support summon was added turned up a site bug: deleting a party with a main or support summon raised after the delete (fixed in #593, GBF-43). |
 | — | Dark base and Advocatus Diaboli | jFY42F (new Dark base), aDkEIX (Advocatus 5★ in slot 7, HP 100–1%) | every line matches: Phantom's Supremacy EX Might 26 and True Phantom's Supremacy HP 16 at SL20; AX multiattack 2.5 and C.A. Supp. 5 (30,000). Undersky's Whispers is main hand only, so the panel doesn't change with HP; the EX Enmity capture moves to the main hand |
 | — | Advocatus Diaboli as main hand | MjthwV (HP 100/75/50/25/1%) | every line matches. Undersky's Whispers shows no panel line at any HP, but Estimated DMG rises on the Enmity curve ((1+2r)r: 659126 → 686639 / 732495 / 796692 / 871618, exact at 75/50/25%). New `panel_hidden` flag: the row is kept off the panel and listed under Hidden stats |
+| — | Arcarum test slot: EX ATK Massive | PdsR5k (Earth base, slot 4 empty), LgXJEi (Binds of The Hanged Man 5★ SL20 in slot 4) | every line matches. Fool-Hanged Man's Perseverance adds EX Might +25 on the panel; the borrowed curve's 25.5 at SL20 floors to the same display, so the EX ATK Massive fallback (23 versions: nine Arcarum, five World) is confirmed to display precision. Earth's Majesty fills HP to the 400 cap and the overflow shows as HP (Overskill) 1.5 |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>
