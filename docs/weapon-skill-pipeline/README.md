@@ -4,6 +4,8 @@ This directory coordinates the work that replaces hensei-api's weapon-skill impo
 - stored sources → pure build → committed curation overlay → one precedence rule.
 - The product plan is `docs/prds/weapon-skill-data-pipeline-prd.md` in the workspace repo.
 
+**Coming back to this?** Start with [report.md](report.md): where the calculator stands, what we learned, and where to pick up.
+
 This manual and the briefs are self-contained. An agent working from a clone of this repo needs nothing else.
 
 ## The first milestone is parity
