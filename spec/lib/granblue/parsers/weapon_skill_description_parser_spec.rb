@@ -25,6 +25,13 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     expect(boost(r, "bonus_elem_dmg_single")).to include(value: 80.0)
   end
 
+  it "routes triple-attack bonus DMG off the elemental Bonus DMG line (Sol Remnant)" do
+    r = parse("10% Bonus Fire DMG effect to Fire allies' triple attacks.")
+    # X53WHq panel: no Bonus Fire DMG line with Astral Blow II equipped.
+    expect(boost(r, "bonus_elem_dmg")).to be_nil
+    expect(boost(r, "bonus_elem_dmg_ta")).to include(value: 10.0)
+  end
+
   it "parses NA amp from an MC-only main-weapon skill, ignoring the nuke clause (Geisa Ari)" do
     r = parse("When main weapon (MC only): No charge bar gain upon normal attacks, " \
               "amplify normal attack damage by 30%, and normal attacks deal 4-hit damage to random foes.")

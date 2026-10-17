@@ -15,6 +15,20 @@ module GridDamage
     STAMINA_OFFSET = 2.1
     STAMINA_HP_FLOOR = 25 # below 25% HP, Stamina is constant at its 25%-HP value
 
+    # The in-game calculator's lowest HP setting is 1%, but skills that grow as HP falls
+    # read it as 1 HP (3LRS7C: Enmity 56.25, AX Enmity 5, DMG Supp. +60,000, where 10%
+    # and 5% are exact; XfBq6u: Ω Enmity 350.99, shown as 350, where exactly 0 gives 351).
+    # One HP is about 0.002% of a typical max HP. HP-scaled supplements read exactly 0
+    # there (+60,000, not 59,999), so they pass `at_min: 0.0`. Hensei's slider matches
+    # the game. Persistence is the exception: it reads exactly 1% (LqZ4tM), so it
+    # doesn't use this.
+    ONE_HP_PERCENT = 0.002
+
+    def panel_hp(hp_percent, at_min: ONE_HP_PERCENT)
+      hp = hp_percent.to_f
+      hp.positive? && hp <= 1 ? at_min : hp
+    end
+
     # The skill's contribution at (skill_level, state).
     #   state: { hp_percent: 0..100, turn: Integer }
     # Returns a Float in the datum's units, or nil if undefined.
@@ -57,7 +71,7 @@ module GridDamage
       modifier = flat(datum, skill_level)
       return nil if modifier.nil?
 
-      r = (1.0 - (hp_percent.to_f / 100.0)).clamp(0.0, 1.0)
+      r = (1.0 - (panel_hp(hp_percent) / 100.0)).clamp(0.0, 1.0)
       modifier * ((-r**3) + (4 * r))
     end
 
@@ -65,7 +79,7 @@ module GridDamage
       modifier = flat(datum, skill_level)
       return nil if modifier.nil?
 
-      r = 1.0 - (hp_percent.to_f / 100.0)
+      r = 1.0 - (panel_hp(hp_percent) / 100.0)
       r = r.clamp(0.0, 1.0)
       modifier * ((1 + (2 * r)) * r)
     end

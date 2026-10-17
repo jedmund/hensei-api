@@ -1,0 +1,178 @@
+{
+  "party": "PdsR5k",
+  "captured_on": "2026-10-16",
+  "notes": "Earth base for the Arcarum test slot (Rising Force, Andromeda MH, slot 4 empty). Versusia main, Titan 6\u2605 T5 friend, subs The Hanged Man / Galleon / Uriel. HP 100%, turn 1. Estimated DMG 939486 / to Water 1351262 / Max HP 111408.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "water"
+  },
+  "enhancements": {
+    "optimus": 300,
+    "omega": 0,
+    "taboo": 0
+  },
+  "absent": [
+    "skill_dmg_cap",
+    "skill_dmg_supp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 518
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 97
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 40
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 10
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 5
+    },
+    {
+      "label": "Earth Optimus",
+      "boost": "optimus_exalto",
+      "value": 90,
+      "capped": true
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Earth C.A.",
+      "boost": "bonus_ca",
+      "value": 16
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 380
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 25
+    },
+    {
+      "label": "Water Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 12
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 8
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "DMG Amp. (Non-elem. Foe)",
+      "boost": "plain_amp",
+      "value": 10
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 10
+    },
+    {
+      "label": "N.A. Amp.",
+      "boost": "na_amp",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "Skill Cap (Sp.)",
+      "boost": "skill_cap_sp",
+      "value": 30
+    },
+    {
+      "label": "Skill Amp. (Sp.)",
+      "boost": "skill_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 68
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 86.2
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "Sp. C.A. Cap",
+      "boost": "sp_ca_cap",
+      "value": 5
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 66
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 31.2
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 100
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 100
+    },
+    {
+      "label": "C.A. Supp. (Sp.)",
+      "boost": "ca_supp_sp",
+      "value": 300000
+    },
+    {
+      "label": "DEF Ignore",
+      "boost": "def_ignore",
+      "value": 16
+    }
+  ]
+}

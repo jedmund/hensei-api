@@ -1,0 +1,189 @@
+{
+  "party": "3LRS7C",
+  "captured_on": "2026-10-17",
+  "notes": "3LRS7C at HP 5% with Arcarum off: Firestorm's Enmity 51.66, Vermillion Covenant DMG Supp. +57,500, AX Stamina 2.2, AX Enmity 4.73, all on our curves. With 3LRS7C_hp1 this shows the slider's 1% point is the outlier: at 1% the HP-scaled lines read as HP 0 (DMG Supp. +60,000 where 1% gives +59,500). Estimated DMG 504801 / to Wind 822885.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 5,
+    "foe_element": "wind",
+    "arcarum": false
+  },
+  "enhancements": {
+    "optimus": 340,
+    "omega": 60,
+    "taboo": 0
+  },
+  "absent": [
+    "bonus_elem_dmg",
+    "dmg_cap_arc"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 160
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 150
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 167
+    },
+    {
+      "label": "Enmity",
+      "boost": "enmity",
+      "series": "ex",
+      "value": 51.66
+    },
+    {
+      "label": "Fire Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 190
+    },
+    {
+      "label": "Wind Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 8.8
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 72.6
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 88.72
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "Sp. C.A. Cap",
+      "boost": "sp_ca_cap",
+      "value": 15
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 81.4
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 38.72
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 150
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 150
+    },
+    {
+      "label": "Skill Supp. (Sp.)",
+      "boost": "skill_supp_sp",
+      "value": 30000
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 400000
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": 30
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 3.5
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 2.5
+    },
+    {
+      "label": "DEF (AX)",
+      "boost": "def_ax",
+      "value": 3
+    },
+    {
+      "label": "Skill DMG Cap (AX)",
+      "boost": "skill_cap_ax",
+      "value": 1
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 3
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 57500
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 2.2
+    },
+    {
+      "label": "Enmity (AX)",
+      "boost": "enmity_ax",
+      "value": 4.73
+    }
+  ]
+}

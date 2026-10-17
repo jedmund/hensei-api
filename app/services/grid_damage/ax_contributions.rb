@@ -21,8 +21,11 @@ module GridDamage
       2 => { 100 => 4.0, 75 => 4.0, 50 => 4.0, 25 => 3.0, 0 => 2.0 },
       3 => { 100 => 5.0, 75 => 5.0, 50 => 4.0, 25 => 3.0, 0 => 2.0 }
     }.freeze
+    # Level 1 at 50/25% comes from 3LRS7C's panel, not the wiki's 2.26 and 3.63: it shows
+    # 2.25 at 50%, and 3.64 / 4.45 / 4.73 at 25 / 10 / 5%, which only fit a 25% anchor in
+    # [3.635, 3.6375).
     ENMITY_AX = {
-      1 => { 100 => 1.0, 75 => 2.0, 50 => 2.26, 25 => 3.63, 0 => 5.0 },
+      1 => { 100 => 1.0, 75 => 2.0, 50 => 2.25, 25 => 3.636, 0 => 5.0 },
       2 => { 100 => 1.0, 75 => 2.0, 50 => 2.33, 25 => 4.17, 0 => 6.0 },
       3 => { 100 => 1.0, 75 => 3.0, 50 => 3.37, 25 => 5.44, 0 => 7.0 }
     }.freeze
@@ -34,7 +37,7 @@ module GridDamage
     }.freeze
 
     def for_party(party, state: {})
-      hp = state.fetch(:hp_percent, 100).to_f
+      hp = Scaling.panel_hp(state.fetch(:hp_percent, 100))
       mods = WeaponStatModifier.where(category: "ax").index_by(&:id)
       party.weapons.flat_map do |gw|
         [[gw.ax_modifier1_id, gw.ax_strength1], [gw.ax_modifier2_id, gw.ax_strength2]].filter_map do |mod_id, strength|

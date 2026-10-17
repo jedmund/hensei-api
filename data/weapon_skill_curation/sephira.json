@@ -1,0 +1,365 @@
+{
+  "format": 2,
+  "versions": [
+    {
+      "weapon": "1040309600",
+      "skill": "Sephira Dark-Tek",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040909100",
+      "skill": "Sephira Earth-Tek",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040110500",
+      "skill": "Sephira Fire-Tek",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040414300",
+      "skill": "Sephira Light-Tek",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040509100",
+      "skill": "Sephira Water-Tek",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040015200",
+      "skill": "Sephira Wind-Tek",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040610000",
+      "skill": "Sephira Earthsoul",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "hp"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040210800",
+      "skill": "Sephira Firesoul",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "hp"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040808400",
+      "skill": "Sephira Watersoul",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "hp"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040708500",
+      "skill": "Sephira Windsoul",
+      "ordinal": 0,
+      "suppressed_boosts": [
+        "hp"
+      ],
+      "edited_at": "2026-10-17T07:00:00Z"
+    }
+  ],
+  "effects": [
+    {
+      "weapon": "1040309600",
+      "skill": "Sephira Dark-Tek",
+      "ordinal": 0,
+      "modifier": "Sephira Dark-Tek",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl1": 2.0,
+          "sl10": 20.0,
+          "sl15": 30.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only (OsDlrX: Sephira Emerald Blade SL15 shows Critical 30 with Arcarum on and nothing with it off). Curve from Template:Weapon Skills/Sephira Tek.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040909100",
+      "skill": "Sephira Earth-Tek",
+      "ordinal": 0,
+      "modifier": "Sephira Earth-Tek",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl1": 2.0,
+          "sl10": 20.0,
+          "sl15": 30.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only (OsDlrX: Sephira Emerald Blade SL15 shows Critical 30 with Arcarum on and nothing with it off). Curve from Template:Weapon Skills/Sephira Tek.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040110500",
+      "skill": "Sephira Fire-Tek",
+      "ordinal": 0,
+      "modifier": "Sephira Fire-Tek",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl1": 2.0,
+          "sl10": 20.0,
+          "sl15": 30.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only (OsDlrX: Sephira Emerald Blade SL15 shows Critical 30 with Arcarum on and nothing with it off). Curve from Template:Weapon Skills/Sephira Tek.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040414300",
+      "skill": "Sephira Light-Tek",
+      "ordinal": 0,
+      "modifier": "Sephira Light-Tek",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl1": 2.0,
+          "sl10": 20.0,
+          "sl15": 30.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only (OsDlrX: Sephira Emerald Blade SL15 shows Critical 30 with Arcarum on and nothing with it off). Curve from Template:Weapon Skills/Sephira Tek.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040509100",
+      "skill": "Sephira Water-Tek",
+      "ordinal": 0,
+      "modifier": "Sephira Water-Tek",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl1": 2.0,
+          "sl10": 20.0,
+          "sl15": 30.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only (OsDlrX: Sephira Emerald Blade SL15 shows Critical 30 with Arcarum on and nothing with it off). Curve from Template:Weapon Skills/Sephira Tek.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040015200",
+      "skill": "Sephira Wind-Tek",
+      "ordinal": 0,
+      "modifier": "Sephira Wind-Tek",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl1": 2.0,
+          "sl10": 20.0,
+          "sl15": 30.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only (OsDlrX: Sephira Emerald Blade SL15 shows Critical 30 with Arcarum on and nothing with it off). Curve from Template:Weapon Skills/Sephira Tek.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040610000",
+      "skill": "Sephira Earthsoul",
+      "ordinal": 0,
+      "modifier": "Sephira Earthsoul",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl10": 15.0,
+          "sl15": 18.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only, by the skill text ('in Arcarum') and the Sephira Tek capture OsDlrX; not captured itself. Curve from Template:Weapon Skills/Sephira Soul.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040210800",
+      "skill": "Sephira Firesoul",
+      "ordinal": 0,
+      "modifier": "Sephira Firesoul",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl10": 15.0,
+          "sl15": 18.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only, by the skill text ('in Arcarum') and the Sephira Tek capture OsDlrX; not captured itself. Curve from Template:Weapon Skills/Sephira Soul.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040808400",
+      "skill": "Sephira Watersoul",
+      "ordinal": 0,
+      "modifier": "Sephira Watersoul",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl10": 15.0,
+          "sl15": 18.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only, by the skill text ('in Arcarum') and the Sephira Tek capture OsDlrX; not captured itself. Curve from Template:Weapon Skills/Sephira Soul.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    },
+    {
+      "weapon": "1040708500",
+      "skill": "Sephira Windsoul",
+      "ordinal": 0,
+      "modifier": "Sephira Windsoul",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "weapon_skill_curve",
+      "value_unit": "percent",
+      "condition": {
+        "type": "arcarum",
+        "eq": true,
+        "curve": {
+          "sl10": 15.0,
+          "sl15": 18.0,
+          "formula_type": "flat"
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "Arcarum only, by the skill text ('in Arcarum') and the Sephira Tek capture OsDlrX; not captured itself. Curve from Template:Weapon Skills/Sephira Soul.",
+      "edited_at": "2026-10-17T07:00:00Z"
+    }
+  ],
+  "data": [],
+  "ops": []
+}

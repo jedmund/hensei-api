@@ -14,31 +14,33 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 ## Accuracy and coverage
 
-As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
+As of 2026-10-17: #594 (Build::VERSION 10 plus the W9 curation) and the `pipeline/W9-goldens-3` branch (Arcarum gating, the 1% HP point, AX Enmity).
 
-**Accuracy on captured grids (measured):** 39 golden parties, 56 references, 1,438 panel lines. 1,416 match exactly and are checked in CI on every change. 22 lines (1.5%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
+**Accuracy on captured grids (measured):** 48 golden parties, 76 references, 2,015 panel lines. 1,997 match exactly and are checked in CI on every change. 18 lines (0.9%) are open, all for known reasons: XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
 **Coverage of the catalogue (measured):**
 
 | Skill versions (3,759) | Count | Share | Reliability |
 |---|---|---|---|
 | Have values | 3,225 | 86% | |
-| from a family template | 2,720 | 72% | high: wiki tables, checked by goldens for the common families |
-| hand-curated, with a citation | 281 | 7% | high |
-| borrowed fallback curve | 235 | 6% | ATK Big, Armed and ATK Medium confirmed in game; the rest unconfirmed |
-| of which Optimus stopgap | 30 | 1% | low: placeholders until captured |
+| from a family template | 2,710 | 72% | high: wiki tables, checked by goldens for the common families |
+| hand-curated, with a citation | 295 | 8% | high (the ten Sephira Tek and Soul weapons moved here from their family template) |
+| borrowed fallback curve | 232 | 6% | ATK Big, ATK Massive, Armed and ATK Medium confirmed in game; the rest unconfirmed |
+| of which Optimus stopgap | 27 | 1% | low: placeholders until captured. Firestorm's Enmity is now confirmed (3LRS7C), so 26 are unverified |
 | No values | 534 | 14% | mostly battle triggers and main-hand procs, which never reach the panel; some real gaps among them |
 
-**Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
+**Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. Checked across the HP range (100% to the 1% point) and, for Odious, across exorcision levels below the Taboo aura's cap; Arcarum-only skills are checked with the switch off and on. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
 
 ## Next captures
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
+- [ ] **[#17 Odious below the cap, Water](#17-odious-below-the-cap)**: the low end of the Taboo aura (0★ Odious weapons at exorcision 1, Nihuyvintae 5★). Fire's middle point is done (ZXBugx: Od 302.5% as predicted).
+- [ ] **[Arcarum switch, the rest](#arcarum-switch-captures)**: Sephira Soul (HP, curated by wording), the Sephirath C.A. and N.A. amps, and Salire below full HP.
+- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina). Advocatus Diaboli is done (MjthwV).
+- [ ] **[EX HP Big and Medium](#still-to-find)**: the largest unconfirmed borrowed curves (21 rows). Needs a Resilient, Willed or Mysterious weapon at SL15 or SL20; SL1 already matches.
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
 - [ ] **[Main-hand swap M5](#main-hand-swaps-m1m5)**: Edem (Enmity at SL1).
-- [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
 - [ ] **[The other element-session captures](#other-element-session-captures)**: Proven awakenings (#15), Malus (#14), covenants (#16).
 - [ ] **[#2 HoEE8b](#2-hoee8b-dark-no-job)**: the last exact rebuild. Once it's in, the parity baseline can be deleted.
 - [ ] **[#8–#13](#partly-recorded-grids)**: partly recorded grids.
@@ -47,14 +49,14 @@ In priority order: where the calculator has the least evidence for the most rows
 ### Open questions
 
 - **`reduction_effect_value` on Odious weapons.** An unknown field in each Odious weapon's `odiant` block: 180 on a Demonspear at exorcision 5/5, 0 on everything else. One deck JSON with Verboten weapons at different exorcision levels shows what it is.
-- **The HP slider's 1% point.** At 1%, XfBq6u reads as if HP were about 0.1–0.25% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58, Rightway's C.A. DMG 0), while LqZ4tM's Persistence reads exactly 1% (10,200). The curves themselves are right at 10% and 5%.
 - **Undersky's Whispers' value.** MjthwV's Estimated DMG rises 11.131% × (1+2r)r, which is 11.13 at SL20 if the skill is a separate multiplier; our row still carries the stopgap 13.5. Hidden stats can't be checked against the panel, so this needs an Estimated DMG model or a second source.
 - **Malus below SL20** (#14): every Malus you own is 5★, so only SL20 can be captured for now.
+- **Salire's low-HP ATK in Arcarum.** The Salire skills' Arcarum text also boosts ATK based on how low HP is. 8Hm8De_arc at full HP shows no ATK line, yet Estimated DMG rises (989370 → 1003571). Not modelled; an HP sweep with Arcarum on would show whether it reaches the panel.
 
 ## Before you capture
 
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
-2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
+2. **Arcarum off, unless the capture is about Arcarum.** Use the in-game calculator's Arcarum switch, with a raid that has the slot count the grid needs: 10 or 13 weapons. For an Arcarum, World or Militis weapon, capture both: off, then on (the `_arc` reference). Several of their skills add or boost lines only in Arcarum (Sephira Maxi, Tek and Soul, Salire, the Sephirath amps).
 3. **Import the party from the game right before capturing,** so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match. Check the **friend summon** in particular: the import takes whatever the deck has saved (WpPucd first came in with a stale one), and the team page must list it: the panel's enhancement header counts the support summon (RKY1Eb first had only the main Varuna, so its Optimus read half). Parties saved before 2026-10-16 with AX or Odious weapons need a fresh import.
 4. **A test slot is a main-grid slot.** Extra slots only take certain series.
 5. **Stash weapons** (not in your collection): save the party as private. Once I've exported the fixture, you can delete it.
@@ -80,7 +82,7 @@ Skill levels come from the import, so there's no need to report them. Element-ch
 
 ### Fallback curves
 
-The fallback-curve fix (live since 2026-10-16, #592) gives a skill with no family of its own the curve of its own series. ATK Big, Armed and ATK Medium are confirmed. The captures below pin the groups that aren't. Some follow an EX row that's missing values; others, marked *stopgap*, borrow the Optimus curve because no EX curve exists.
+The fallback-curve fix (live since 2026-10-16, #592) gives a skill with no family of its own the curve of its own series. ATK Big, ATK Massive (LgXJEi), Armed and ATK Medium are confirmed. The captures below pin the groups that aren't. Some follow an EX row that's missing values; others, marked *stopgap*, borrow the Optimus curve because no EX curve exists.
 
 #### Earth stash party (E0–E2)
 
@@ -110,7 +112,7 @@ M1 and M2 pinned SL15; M4 showed the main-hand Critical skills don't level.
 
 - [ ] **EX Stamina, Sunveil's Radiance** (*stopgap*): True Purity Sunblade 4★ (SL15), then 5★ (SL20), each in a free sub slot of ZSEUmr, HP 100%. Read **Stamina**.
 - [x] **EX Enmity, Undersky's Whispers** (*stopgap*): the skill is **main hand only** (a sub-slot Advocatus adds nothing at any HP: aDkEIX). Captured as MjthwV: no panel line at any HP, so the row is `panel_hidden` and shows under Hidden stats. Its value is still the stopgap: the Estimated DMG rise implies 11.13 at SL20 if it's a separate multiplier (open).
-- [ ] **EX Enmity, Firestorm's Enmity** (*stopgap*): Wilnas's Finger 4★ (SL15) in F0's test slot, at **HP 50% and 25%**, with and without it.
+- [x] **EX Enmity, Firestorm's Enmity** (*stopgap*): captured as 3LRS7C (Wilnas's Finger 4★ SL15 in F0's slot 7, HP 100/75/50/25/1%). The borrowed Optimus Enmity Massive curve matches exactly (7.03 / 18.75 / 35.16), so the stopgap value is confirmed.
 
 #### Still to find
 
@@ -136,11 +138,22 @@ The Armed curve is 6/15/18/20 (SL1/10/15/20), captured on Armed Shadow. These ch
 | W1 | W0 | Windhose 4★, no awakening (Armed Gale, SL15) | EX Might +18 |
 | W3 | W0 | Daur da Blao 5★ (Armed Gale, SL20) | EX Might +20 |
 
+### Arcarum switch captures
+
+Each is one weapon in PdsR5k's slot 4 (Earth) or X53WHq's (Fire), captured with Arcarum off and on.
+
+| Weapon | Its Arcarum skill | Tests | Covered so far |
+|---|---|---|---|
+| Sephira Emerald Duke (or any Soul weapon) | Sephira Earthsoul | HP only in Arcarum, 15 at SL10 and 18 at SL15 | curated by its wording, as Tek is (OsDlrX) |
+| Worldforging Moros | Sephirath Eparc (II) | C.A. Amp. (Arc) | not captured |
+| Worldscathing Leon or Worldvexing Angelos | Sephirath Fusame / Haton (II) | N.A. Amp. (Arc) | not captured; Skill Amp. (Arc) matches on F0MD7j |
+| Spymur's Vision Militis | Sephira Salire Terra | Arcarum on at HP 50% and 25% | 8Hm8De at full HP only (see [Open questions](#open-questions)) |
+
 ### #17 Odious below the cap
 
 The Taboo aura is modelled as linear between its base and its cap at 20 exorcision levels (1/2/2.5/3% per level at 0/3/4/5★, gbf.wiki/Belmervolk). Read the **Od** number in the panel header.
 
-- [ ] **Fire:** 0ZA6Ak with one Deathcannon of Prosperity Verboten removed (3 Odious weapons at exorcision 5 = 15 levels). Expect Od **302.5%** (Belmervolk 4★ 137.5 + 5★ friend 165).
+- [x] **Fire:** captured as ZXBugx (three Odious weapons at exorcision 5 = 15 levels) and 8hUoSk (four, the cap). Od reads **302.5%** and 330%, as modelled.
 - [ ] **Water:** YCKMmk with Nihuyvintae 5★ as main summon and four 0★ Terrorbow of Mortality Verboten (exorcision 1) in the Gaze Mare and empty slots; a non-Odious friend summon. Expect Od **132%** (3.0% × (40 + 4 levels)).
 
 ### Other element-session captures
@@ -152,8 +165,8 @@ Each goes in its base's test slot, one at a time.
 | F3 | F0 | Ushumgal 5★, Attack awakening 15 | #15 Armed Blaze at SL20 with the Attack awakening |
 | F4 | F0 | Ushumgal 5★, Special awakening 15 | #15 the Special awakening instead |
 | F5 | F0 | Ray of Zhuque Malus 5★ | #14 Malus at SL20 |
-| F6 | F0 | Wilnas's Finger 4★ | #16 Vermillion Covenant as a sub |
-| F7 | F0, main hand → Wilnas's Finger 4★ | — | #16 Vermillion Covenant as main hand |
+| F6 ✓ | F0 | Wilnas's Finger 4★ | #16 Vermillion Covenant as a sub (3LRS7C) |
+| ~~F7~~ | | | not needed: Vermillion Covenant isn't main-hand-only and showed its full line as a sub (3LRS7C), so the main hand can't add anything |
 | W2 | W0 | Windhose 5★, Attack awakening 15 | #15 at SL20 with the Attack awakening |
 | W4 | W0 | Qinglong Spear Malus 5★ | #14 Malus at SL20 |
 | W5 | W0 | Ewiyar's Beak 4★ | #16 Ewiyar's covenant as a sub |
@@ -293,7 +306,7 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | 1 | R1ckYi's design (Pendulum of Supremacy in place of Sagacity) | LD66IX | every line matches |
 | 3 | K4UydX's design | 7AiIOo | every line matches |
 | 4 | SPhnLB's design | HDJE0N | every line matches |
-| 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u at 100/75/50/25/10/5/1% | every line matches except the 1% point (see [Open questions](#open-questions)); Rightway Pathfinder has no sub-25% cutoff |
+| 5 | Dark Omega HP sweep (OlFQ2a's design, Pendulum of Supremacy in place of Chain of Falsehood) | XfBq6u at 100/75/50/25/10/5/1% | every line matches, the 1% point since 3LRS7C showed it reads as 1 HP; Rightway Pathfinder has no sub-25% cutoff |
 | 6 | Dark Optimus HP sweep (QJ9736's design) | nCvV1x (100%, 10 weapons); LqZ4tM at 75/50/25/1% (13 weapons) | every line matches |
 | 7 | qBOvon's design | 0ZA6Ak; plktjH (no Mortality Bow Mk II); k2hvSF (no Mortality Bow Mk II or Moros) | every line matches |
 | 18 | Blazing Chain's supplement | WpPucd | C.A. Supp. 400,000 below its cap; the MC's own charge bar gain counts (Dainsleif) |
@@ -306,6 +319,13 @@ The old notes don't name every weapon in these. Fill the gaps with whatever you'
 | M4 | Air Cannon as main hand | RKY1Eb (base: Exo Ephialtes, three Spirit of Mana, Varuna main and support), 4pWKNB (Air Cannon at SL1) | every line matches: Bang! reads Critical 30 at SL1 as at SL15, so the three main-hand Critical skills are fixed at 30 (their in-game icon is the star used for special skills); Air Blast EX Might 6. Re-importing RKY1Eb after its support summon was added turned up a site bug: deleting a party with a main or support summon raised after the delete (fixed in #593, GBF-43). |
 | — | Dark base and Advocatus Diaboli | jFY42F (new Dark base), aDkEIX (Advocatus 5★ in slot 7, HP 100–1%) | every line matches: Phantom's Supremacy EX Might 26 and True Phantom's Supremacy HP 16 at SL20; AX multiattack 2.5 and C.A. Supp. 5 (30,000). Undersky's Whispers is main hand only, so the panel doesn't change with HP; the EX Enmity capture moves to the main hand |
 | — | Advocatus Diaboli as main hand | MjthwV (HP 100/75/50/25/1%) | every line matches. Undersky's Whispers shows no panel line at any HP, but Estimated DMG rises on the Enmity curve ((1+2r)r: 659126 → 686639 / 732495 / 796692 / 871618, exact at 75/50/25%). New `panel_hidden` flag: the row is kept off the panel and listed under Hidden stats |
+| — | Arcarum test slot: EX ATK Massive | PdsR5k (Earth base, slot 4 empty), LgXJEi (Binds of The Hanged Man 5★ SL20 in slot 4) | every line matches. Fool-Hanged Man's Perseverance adds EX Might +25 on the panel; the borrowed curve's 25.5 at SL20 floors to the same display, so the EX ATK Massive fallback (23 versions: nine Arcarum, five World) is confirmed to display precision. Earth's Majesty fills HP to the 400 cap and the overflow shows as HP (Overskill) 1.5 |
+| — | Arcarum switch: Sephira Maxi | LgXJEi_arc (LgXJEi with Arcarum on) | Sephira Maxi's Arcarum part is its own **DMG Cap (Arc) 20** line (orange, capped); DMG Cap stays 17. The curated rows had added +15 to DMG Cap: moved to `dmg_cap_arc` 20 for all 10 Arcarum weapons, old rows removed by op, line capped at 20 |
+| — | Fire base and Kiss of The Devil | X53WHq (Fire base), PF0R3w (Kiss of The Devil 5★ SL20, Arcarum off), PF0R3w_arc (on) | every line matches after one fix: Sol Remnant's Astral Blow II showed as Bonus Fire DMG 10, but its bonus applies to triple attacks only and the game shows no line. Triple-attack bonus DMG now goes to `bonus_elem_dmg_ta` (off the panel), with the Blow family; QmQaPH, UC3M0M and WpPucd, which also hold Sol Remnant, now assert the line is absent. Seduction EX ATK Massive and Sephira Maxi-Fire's DMG Cap (Arc) 20 confirmed |
+| — | Arcarum switch: Militis | 8Hm8De (Spymur's Vision Militis 4★ SL1 in PdsR5k's slot 4, Arcarum off), 8Hm8De_arc (on) | every line matches: Ridge's Surge DA/TA +5 at full HP, Gun Voltage II EX Might Sp. +8, Salire N.A. DMG Cap 3 (off) and +7 more to the 20 cap (on). New: Salire's Arcarum "take DMG worth 40% of max HP" shows as **HP DMG 40** (orange); added for the four Salire skills, and the line is now flagged at 40. Estimated DMG rises with Arcarum on (989370 → 1003571) |
+| — | Arcarum switch: Sephira | OsDlrX (Sephira Emerald Blade 4★ SL15, Arcarum off), OsDlrX_arc (on) | Sephira Earth-Tek's **Critical 30** shows only with Arcarum on; the family row applied it always. The six Tek and four Soul weapons now suppress the family row and carry an Arcarum-gated curve (Soul by its wording, not captured). Estimated DMG is the same with Arcarum on or off, so Critical isn't part of it |
+| F6 | Wilnas's Finger in F0's test slot | 3LRS7C at HP 100/75/50/25/1% with Arcarum on; 10/5/1% with it off | every line matches. The slider's lowest setting (1%; it can't be set to 2–4%) reads as 1 HP: 10% and 5% are exact, while at 1% Enmity 56.25, AX Enmity 5, AX Stamina 2 and DMG Supp. +60,000 are the 0% values. The calculator now does the same (`Scaling.panel_hp`): skills that grow as HP falls (Enmity, Garrison, AX Enmity/Stamina, HP-linear skills) use 1 HP (0.002%; exactly 0 would show XfBq6u's Ω Enmity as 351, not 350), HP-scaled supplements use 0, and Persistence keeps the true 1% (LqZ4tM: 10,200). This closed the 1% lines on XfBq6u and LqZ4tM too. AX Enmity +1 reads 2.25 / 3.64 / 4.45 / 4.73 at 50/25/10/5%, where the wiki's table gives 2.26 / 3.63; the table's level 1 anchors are now 2.25 and 3.636, the only 25% value that fits all three low-HP readings. Arcarum off drops only DMG Cap (Arc), and only Estimated DMG to Wind changes (861082 → 845529). Firestorm's Enmity (Optimus Enmity Massive stopgap) reads 7.03 / 18.75 / 35.16 at 75/50/25%, exactly ours. Vermillion Covenant as a sub is DMG Supp. +10,000 at full HP rising to +60,000 at 0% (10,000 + 50,000 × HP lost). Also fixed: Sol Remnant's triple-attack bonus showed as a raw "bonus elem dmg ta" line; it and the single-attack key are now hidden boost types |
+| 17 | Odious below the cap, Fire | ZXBugx (Blazing Mistral MH, two Demonspear and one Deathcannon of Prosperity Verboten at exorcision 5, 15 levels), 8hUoSk (plus the second Deathcannon, 20 levels) | every line matches. Od reads 302.5% at 15 levels (Belmervolk 4★ 137.5 + 5★ friend 165) and 330% at the cap, so the Taboo aura's linear model holds between base and cap; Od Might, Od DMG Amp., HP, the C.A./C.B. lines and the befoulments all follow it |
 | — | Contributed Water Odious grid | XZq7xW | confirms Odious Exalto ("Water Taboo" 25); the Taboo header and the Od and befoulment lines are open until the contributor re-imports |
 
 <details>

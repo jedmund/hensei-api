@@ -57,11 +57,19 @@
     },
     {
       "boost_type": "stamina",
+      "series": "odious",
+      "label_en": "Od Stamina",
+      "slug": "od-stamina",
+      "group": "attack",
+      "position": 7
+    },
+    {
+      "boost_type": "stamina",
       "series": "ex",
       "label_en": "Stamina",
       "slug": "stamina",
       "group": "attack",
-      "position": 7
+      "position": 8
     },
     {
       "boost_type": "enmity",
@@ -69,7 +77,7 @@
       "label_en": "Enmity",
       "slug": "enmity",
       "group": "attack",
-      "position": 8
+      "position": 9
     },
     {
       "boost_type": "enmity",
@@ -77,7 +85,7 @@
       "label_en": "Ω Enmity",
       "slug": "omega-enmity",
       "group": "attack",
-      "position": 9
+      "position": 10
     },
     {
       "boost_type": "enmity",
@@ -85,210 +93,217 @@
       "label_en": "Enmity",
       "slug": "enmity",
       "group": "attack",
-      "position": 10
+      "position": 11
     },
     {
       "boost_type": "e_atk",
       "label_en": "E. ATK",
       "slug": "e-atk",
       "group": "attack",
-      "position": 11
+      "position": 12
     },
     {
       "boost_type": "e_atk_prog",
       "label_en": "E. ATK (Prog.)",
       "slug": "e-atk-prog",
       "group": "attack",
-      "position": 12
+      "position": 13
     },
     {
       "boost_type": "critical",
       "label_en": "Critical",
       "slug": "critical",
       "group": "attack",
-      "position": 13
+      "position": 14
     },
     {
       "boost_type": "da",
       "label_en": "DA Rate",
       "slug": "da-rate",
       "group": "attack",
-      "position": 14
+      "position": 15
     },
     {
       "boost_type": "ta",
       "label_en": "TA Rate",
       "slug": "ta-rate",
       "group": "attack",
-      "position": 15
+      "position": 16
     },
     {
       "boost_type": "optimus_exalto",
       "label_en": "ELEMENT Optimus",
       "slug": "ELEMENT-optimus",
       "group": "attack",
-      "position": 16
+      "position": 17
     },
     {
       "boost_type": "omega_exalto",
       "label_en": "ELEMENT Omega",
       "slug": "ELEMENT-omega",
       "group": "attack",
-      "position": 17
+      "position": 18
+    },
+    {
+      "boost_type": "odious_exalto",
+      "label_en": "ELEMENT Taboo",
+      "slug": "ELEMENT-taboo",
+      "group": "attack",
+      "position": 19
     },
     {
       "boost_type": "bonus_elem_dmg",
       "label_en": "Bonus ELEMENT DMG",
       "slug": "bonus-ELEMENT-dmg",
       "group": "attack",
-      "position": 18
+      "position": 20
     },
     {
       "boost_type": "bonus_des_dmg",
       "label_en": "Bonus Des. DMG",
       "slug": "bonus-des-dmg",
       "group": "attack",
-      "position": 19
+      "position": 21
     },
     {
       "boost_type": "bonus_ca",
       "label_en": "Bonus ELEMENT C.A.",
       "slug": "bonus-ELEMENT-ca",
       "group": "attack",
-      "position": 20
+      "position": 22
     },
     {
       "boost_type": "bonus_des_ca",
       "label_en": "Bonus Des. DMG C.A.",
       "slug": "bonus-des-dmg-ca",
       "group": "attack",
-      "position": 21
+      "position": 23
     },
     {
       "boost_type": "rigor",
       "label_en": "ELEMENT Rigor",
       "slug": "ELEMENT-rigor",
       "group": "attack",
-      "position": 22
+      "position": 24
     },
     {
       "boost_type": "hp",
       "label_en": "HP",
       "slug": "hp",
       "group": "hp",
-      "position": 23
+      "position": 25
     },
     {
       "boost_type": "hp_fixed",
       "label_en": "HP (Fixed)",
       "slug": "hp-fixed",
       "group": "hp",
-      "position": 24
+      "position": 26
     },
     {
       "boost_type": "heal_cap",
       "label_en": "Heal Cap",
       "slug": "heal-cap",
       "group": "hp",
-      "position": 25
+      "position": 27
     },
     {
       "boost_type": "hp_cut",
       "label_en": "HP Cut",
       "slug": "hp-cut",
       "group": "hp",
-      "position": 26
+      "position": 28
     },
     {
       "boost_type": "hp_dmg",
       "label_en": "HP DMG",
       "slug": "hp-dmg",
       "group": "hp",
-      "position": 27
+      "position": 29
     },
     {
       "boost_type": "def",
       "label_en": "DEF",
       "slug": "def",
       "group": "defense",
-      "position": 28
+      "position": 30
     },
     {
       "boost_type": "elem_reduc",
       "label_en": "FOE_ELEMENT Reduc.",
       "slug": "FOE_ELEMENT-reduc",
       "group": "defense",
-      "position": 29
+      "position": 31
     },
     {
       "boost_type": "fire_reduc",
       "label_en": "Fire Reduc.",
       "slug": "fire-reduc",
       "group": "defense",
-      "position": 30
+      "position": 32
     },
     {
       "boost_type": "water_reduc",
       "label_en": "Water Reduc.",
       "slug": "water-reduc",
       "group": "defense",
-      "position": 31
+      "position": 33
     },
     {
       "boost_type": "earth_reduc",
       "label_en": "Earth Reduc.",
       "slug": "earth-reduc",
       "group": "defense",
-      "position": 32
+      "position": 34
     },
     {
       "boost_type": "wind_reduc",
       "label_en": "Wind Reduc.",
       "slug": "wind-reduc",
       "group": "defense",
-      "position": 33
+      "position": 35
     },
     {
       "boost_type": "light_reduc",
       "label_en": "Light Reduc.",
       "slug": "light-reduc",
       "group": "defense",
-      "position": 34
+      "position": 36
     },
     {
       "boost_type": "dark_reduc",
       "label_en": "Dark Reduc.",
       "slug": "dark-reduc",
       "group": "defense",
-      "position": 35
+      "position": 37
     },
     {
       "boost_type": "debuff_res",
       "label_en": "Debuff Res.",
       "slug": "debuff-res",
       "group": "defense",
-      "position": 36
+      "position": 38
     },
     {
       "boost_type": "dmg_cap",
       "label_en": "DMG Cap",
       "slug": "dmg-cap",
       "group": "special",
-      "position": 37
+      "position": 39
     },
     {
       "boost_type": "dmg_cap_sp",
       "label_en": "DMG Cap (Sp.)",
       "slug": "dmg-cap-sp",
       "group": "special",
-      "position": 38
+      "position": 40
     },
     {
       "boost_type": "dmg_cap_arc",
       "label_en": "DMG Cap (Arc)",
       "slug": "dmg-cap-arc",
       "group": "special",
-      "position": 39
+      "position": 41
     },
     {
       "boost_type": "dmg_amp",
@@ -296,7 +311,7 @@
       "label_en": "DMG Amp.",
       "slug": "dmg-amp",
       "group": "special",
-      "position": 40
+      "position": 42
     },
     {
       "boost_type": "dmg_amp",
@@ -304,7 +319,7 @@
       "label_en": "Ω DMG Amp.",
       "slug": "omega-dmg-amp",
       "group": "special",
-      "position": 41
+      "position": 43
     },
     {
       "boost_type": "dmg_amp",
@@ -312,461 +327,476 @@
       "label_en": "DMG Amp.",
       "slug": "dmg-amp",
       "group": "special",
-      "position": 42
+      "position": 44
     },
     {
       "boost_type": "od_dmg_amp",
       "label_en": "Od DMG Amp.",
       "slug": "od-dmg-amp",
       "group": "special",
-      "position": 43
+      "position": 45
     },
     {
       "boost_type": "elem_amplify",
       "label_en": "Elem. Amplify",
       "slug": "elem-amplify",
       "group": "special",
-      "position": 44
+      "position": 46
     },
     {
       "boost_type": "plain_amp",
       "label_en": "DMG Amp. (Non-elem. Foe)",
       "slug": "plain-amp",
       "group": "special",
-      "position": 45
+      "position": 47
     },
     {
       "boost_type": "na_dmg_cap",
       "label_en": "N.A. DMG Cap",
       "slug": "na-dmg-cap",
       "group": "special",
-      "position": 46
+      "position": 48
     },
     {
       "boost_type": "na_amp",
       "label_en": "N.A. Amp.",
       "slug": "na-amp",
       "group": "special",
-      "position": 47
+      "position": 49
     },
     {
       "boost_type": "na_amp_sp",
       "label_en": "N.A. Amp. (Sp.)",
       "slug": "na-amp-sp",
       "group": "special",
-      "position": 48
+      "position": 50
     },
     {
       "boost_type": "na_amp_arc",
       "label_en": "N.A. Amp. (Arc)",
       "slug": "na-amp-arc",
       "group": "special",
-      "position": 49
+      "position": 51
     },
     {
       "boost_type": "skill_dmg",
       "label_en": "Skill DMG",
       "slug": "skill-dmg",
       "group": "special",
-      "position": 50
+      "position": 52
     },
     {
       "boost_type": "skill_dmg_cap",
       "label_en": "Skill DMG Cap",
       "slug": "skill-dmg-cap",
       "group": "special",
-      "position": 51
+      "position": 53
     },
     {
       "boost_type": "skill_cap_sp",
       "label_en": "Skill Cap (Sp.)",
       "slug": "skill-cap-sp",
       "group": "special",
-      "position": 52
+      "position": 54
     },
     {
       "boost_type": "skill_amp",
       "label_en": "Skill Amp.",
       "slug": "skill-amp",
       "group": "special",
-      "position": 53
+      "position": 55
     },
     {
       "boost_type": "skill_amp_sp",
       "label_en": "Skill Amp. (Sp.)",
       "slug": "skill-amp-sp",
       "group": "special",
-      "position": 54
+      "position": 56
     },
     {
       "boost_type": "skill_amp_arc",
       "label_en": "Skill Amp. (Arc)",
       "slug": "skill-amp-arc",
       "group": "special",
-      "position": 55
+      "position": 57
     },
     {
       "boost_type": "ca_dmg",
       "label_en": "C.A. DMG",
       "slug": "ca-dmg",
       "group": "special",
-      "position": 56
+      "position": 58
     },
     {
       "boost_type": "ca_dmg_cap",
       "label_en": "C.A. DMG Cap",
       "slug": "ca-dmg-cap",
       "group": "special",
-      "position": 57
+      "position": 59
+    },
+    {
+      "boost_type": "ca_amp",
+      "label_en": "C.A. Amp.",
+      "slug": "ca-amp",
+      "group": "special",
+      "position": 60
     },
     {
       "boost_type": "ca_amp_sp",
       "label_en": "C.A. Amp. (Sp.)",
       "slug": "ca-amp-sp",
       "group": "special",
-      "position": 58
+      "position": 61
     },
     {
       "boost_type": "ca_amp_arc",
       "label_en": "C.A. Amp. (Arc)",
       "slug": "ca-amp-arc",
       "group": "special",
-      "position": 59
+      "position": 62
     },
     {
       "boost_type": "sp_ca_cap",
       "label_en": "Sp. C.A. Cap",
       "slug": "sp-ca-cap",
       "group": "special",
-      "position": 60
+      "position": 63
     },
     {
       "boost_type": "cb_dmg",
       "label_en": "C.B. DMG",
       "slug": "cb-dmg",
       "group": "special",
-      "position": 61
+      "position": 64
     },
     {
       "boost_type": "cb_dmg_cap",
       "label_en": "C.B. DMG Cap",
       "slug": "cb-dmg-cap",
       "group": "special",
-      "position": 62
+      "position": 65
     },
     {
       "boost_type": "fc_dmg_cap",
       "label_en": "FC DMG Cap",
       "slug": "fc-dmg-cap",
       "group": "special",
-      "position": 63
+      "position": 66
     },
     {
       "boost_type": "cb_amp",
       "label_en": "C.B. Amp.",
       "slug": "cb-amp",
       "group": "special",
-      "position": 64
+      "position": 67
     },
     {
       "boost_type": "fc_amp",
       "label_en": "FC Amp.",
       "slug": "fc-amp",
       "group": "special",
-      "position": 65
+      "position": 68
     },
     {
       "boost_type": "crit_amp",
       "label_en": "Crit. Amp.",
       "slug": "crit-amp",
       "group": "special",
-      "position": 66
+      "position": 69
     },
     {
       "boost_type": "ca_supp",
       "label_en": "C.A. Supp.",
       "slug": "ca-supp",
       "group": "special",
-      "position": 67
+      "position": 70
     },
     {
       "boost_type": "dmg_supp",
       "label_en": "DMG Supp.",
       "slug": "dmg-supp",
       "group": "special",
-      "position": 68
+      "position": 71
     },
     {
       "boost_type": "na_supp",
       "label_en": "N.A. Supp.",
       "slug": "na-supp",
       "group": "special",
-      "position": 69
+      "position": 72
     },
     {
       "boost_type": "na_supp_sp",
       "label_en": "N.A. Supp. (Sp.)",
       "slug": "na-supp-sp",
       "group": "special",
-      "position": 70
+      "position": 73
     },
     {
       "boost_type": "skill_dmg_supp",
       "label_en": "Skill DMG Supp.",
       "slug": "skill-dmg-supp",
       "group": "special",
-      "position": 71
+      "position": 74
     },
     {
       "boost_type": "skill_supp_sp",
       "label_en": "Skill Supp. (Sp.)",
       "slug": "skill-supp-sp",
       "group": "special",
-      "position": 72
+      "position": 75
     },
     {
       "boost_type": "charge_gain",
       "label_en": "Charge Gain",
       "slug": "charge-gain",
       "group": "special",
-      "position": 73
+      "position": 76
     },
     {
       "boost_type": "def_ignore",
       "label_en": "DEF Ignore",
       "slug": "def-ignore",
       "group": "special",
-      "position": 74
+      "position": 77
     },
     {
       "boost_type": "crit_dmg",
       "label_en": "Crit. DMG",
       "slug": "crit-dmg",
       "group": "overskill",
-      "position": 75
+      "position": 78
     },
     {
       "boost_type": "added_hit",
       "label_en": "Added Hit",
       "slug": "added-hit",
       "group": "overskill",
-      "position": 76
+      "position": 79
     },
     {
       "boost_type": "dmg_cap_pen",
       "label_en": "DMG Cap Pen.",
       "slug": "dmg-cap-pen",
       "group": "overskill",
-      "position": 77
+      "position": 80
     },
     {
       "boost_type": "added_hp",
       "label_en": "HP",
       "slug": "added-hp",
       "group": "overskill",
-      "position": 78
+      "position": 81
     },
     {
       "boost_type": "atk_hit",
       "label_en": "ATK Hit",
       "slug": "bf-atk",
       "group": "befoulment",
-      "position": 79
+      "position": 82
     },
     {
       "boost_type": "da_hit",
       "label_en": "DA Rate Hit",
       "slug": "bf-da-rate",
       "group": "befoulment",
-      "position": 80
+      "position": 83
     },
     {
       "boost_type": "ta_hit",
       "label_en": "TA Rate Hit",
       "slug": "bf-ta-rate",
       "group": "befoulment",
-      "position": 81
+      "position": 84
     },
     {
       "boost_type": "skill_dmg_hit",
       "label_en": "Skill DMG Hit",
       "slug": "bf-skill-dmg",
       "group": "befoulment",
-      "position": 82
+      "position": 85
     },
     {
       "boost_type": "ca_dmg_hit",
       "label_en": "C.A. DMG Hit",
       "slug": "bf-ca-dmg",
       "group": "befoulment",
-      "position": 83
+      "position": 86
     },
     {
       "boost_type": "hp_hit",
       "label_en": "HP Hit",
       "slug": "bf-hp",
       "group": "befoulment",
-      "position": 84
+      "position": 87
     },
     {
       "boost_type": "def_hit",
       "label_en": "DEF Hit",
       "slug": "bf-def",
       "group": "befoulment",
-      "position": 85
+      "position": 88
     },
     {
       "boost_type": "debuff_hit",
       "label_en": "Debuff S. Hit",
       "slug": "bf-debuff",
       "group": "befoulment",
-      "position": 86
+      "position": 89
     },
     {
       "boost_type": "turn_dmg_hit",
       "label_en": "Turn DMG",
       "slug": "bf-turn-dmg",
       "group": "befoulment",
-      "position": 87
+      "position": 90
     },
     {
       "boost_type": "hp_ax",
       "label_en": "HP (AX)",
       "slug": "ax-hp",
       "group": "ax",
-      "position": 88
+      "position": 91
     },
     {
       "boost_type": "atk_ax",
       "label_en": "ATK (AX)",
       "slug": "ax-atk",
       "group": "ax",
-      "position": 89
+      "position": 92
     },
     {
       "boost_type": "stamina_ax",
       "label_en": "Stamina (AX)",
       "slug": "ax-stamina",
       "group": "ax",
-      "position": 90
+      "position": 93
     },
     {
       "boost_type": "enmity_ax",
       "label_en": "Enmity (AX)",
       "slug": "ax-enmity",
       "group": "ax",
-      "position": 91
+      "position": 94
     },
     {
       "boost_type": "def_ax",
       "label_en": "DEF (AX)",
       "slug": "ax-def",
       "group": "ax",
-      "position": 92
+      "position": 95
     },
     {
       "boost_type": "da_ax",
       "label_en": "DA Rate (AX)",
       "slug": "ax-da-rate",
       "group": "ax",
-      "position": 93
+      "position": 96
     },
     {
       "boost_type": "ta_ax",
       "label_en": "TA Rate (AX)",
       "slug": "ax-ta-rate",
       "group": "ax",
-      "position": 94
+      "position": 97
     },
     {
       "boost_type": "ele_atk_ax",
       "label_en": "Elemental ATK (AX)",
       "slug": "ax-ele-atk",
       "group": "ax",
-      "position": 95
+      "position": 98
     },
     {
       "boost_type": "ele_dmg_red_ax",
       "label_en": "Elemental Reduc. (AX)",
       "slug": "ax-ele-reduc",
       "group": "ax",
-      "position": 96
+      "position": 99
     },
     {
       "boost_type": "ca_dmg_ax",
       "label_en": "C.A. DMG (AX)",
       "slug": "ax-ca-dmg",
       "group": "ax",
-      "position": 97
+      "position": 100
     },
     {
       "boost_type": "ca_cap_ax",
       "label_en": "C.A. DMG Cap (AX)",
       "slug": "ax-ca-dmg-cap",
       "group": "ax",
-      "position": 98
+      "position": 101
     },
     {
       "boost_type": "ca_supp_ax",
       "label_en": "C.A. Supp. (AX)",
       "slug": "ax-ca-supp",
       "group": "ax",
-      "position": 99
+      "position": 102
     },
     {
       "boost_type": "skill_supp_ax",
       "label_en": "Skill DMG Supp. (AX)",
       "slug": "ax-skill-dmg-supp",
       "group": "ax",
-      "position": 100
+      "position": 103
     },
     {
       "boost_type": "skill_cap_ax",
       "label_en": "Skill DMG Cap (AX)",
       "slug": "ax-skill-dmg-cap",
       "group": "ax",
-      "position": 101
+      "position": 104
     },
     {
       "boost_type": "na_cap_ax",
       "label_en": "N.A. DMG Cap (AX)",
       "slug": "ax-na-dmg-cap",
       "group": "ax",
-      "position": 102
+      "position": 105
     },
     {
       "boost_type": "healing_ax",
       "label_en": "Healing (AX)",
       "slug": "ax-heal",
       "group": "ax",
-      "position": 103
+      "position": 106
     },
     {
       "boost_type": "debuff_res_ax",
       "label_en": "Debuff Res. (AX)",
       "slug": "ax-debuff-res",
       "group": "ax",
-      "position": 104
+      "position": 107
     },
     {
       "boost_type": "exp_ax",
       "label_en": "EXP Gain",
       "slug": "ax-exp-gain",
       "group": "ax",
-      "position": 105
+      "position": 108
     },
     {
       "boost_type": "rupie_ax",
       "label_en": "Rupie Gain",
       "slug": "ax-rupie-gain",
       "group": "ax",
-      "position": 106
+      "position": 109
     }
   ],
   "boost_types": [
     {
       "key": "bonus_elem_dmg",
       "display_cap": 50.0
+    },
+    {
+      "key": "bonus_elem_dmg_single",
+      "hidden": true
+    },
+    {
+      "key": "bonus_elem_dmg_ta",
+      "hidden": true
     },
     {
       "key": "ca_amp_arc",
@@ -787,6 +817,10 @@
     {
       "key": "ca_supp",
       "display_cap": 1000000.0
+    },
+    {
+      "key": "cb_dmg",
+      "display_cap": 120.0
     },
     {
       "key": "charge_gain",
@@ -823,6 +857,7 @@
     },
     {
       "key": "dmg_cap_arc",
+      "display_cap": 20.0,
       "amplifiable": false
     },
     {
@@ -865,6 +900,7 @@
     },
     {
       "key": "hp_dmg",
+      "display_cap": 40.0,
       "amplifiable": false
     },
     {
@@ -891,6 +927,10 @@
     {
       "key": "na_supp",
       "display_cap": 100000.0
+    },
+    {
+      "key": "odious_exalto",
+      "amplifiable": false
     },
     {
       "key": "omega_exalto",
