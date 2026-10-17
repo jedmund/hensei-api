@@ -35,7 +35,10 @@ As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina) and Wilnas's Finger (EX Enmity). Advocatus Diaboli is done (MjthwV).
+- [ ] **Wilnas's Finger session (F0)**: one weapon, three answers. In F0's test slot at HP 100/50/25% (Firestorm's Enmity, *stopgap*, and #16 Vermillion Covenant as a sub), then as F0's main hand (#16 as main hand). See [Collection weapons](#collection-weapons) and [Other element-session captures](#other-element-session-captures).
+- [ ] **[Arcarum switch, the rest](#arcarum-switch-captures)**: Sephira Soul (HP, curated by wording), the Sephirath C.A. and N.A. amps, and Salire below full HP.
+- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina). Advocatus Diaboli is done (MjthwV).
+- [ ] **[EX HP Big and Medium](#still-to-find)**: the largest unconfirmed borrowed curves (21 rows). Needs a Resilient, Willed or Mysterious weapon at SL15 or SL20; SL1 already matches.
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
 - [ ] **[Main-hand swap M5](#main-hand-swaps-m1m5)**: Edem (Enmity at SL1).
 - [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
@@ -50,11 +53,12 @@ In priority order: where the calculator has the least evidence for the most rows
 - **The HP slider's 1% point.** At 1%, XfBq6u reads as if HP were about 0.1–0.25% (Ω Enmity 350 vs our 345.17, DEF 64.8 vs 64.58, Rightway's C.A. DMG 0), while LqZ4tM's Persistence reads exactly 1% (10,200). The curves themselves are right at 10% and 5%.
 - **Undersky's Whispers' value.** MjthwV's Estimated DMG rises 11.131% × (1+2r)r, which is 11.13 at SL20 if the skill is a separate multiplier; our row still carries the stopgap 13.5. Hidden stats can't be checked against the panel, so this needs an Estimated DMG model or a second source.
 - **Malus below SL20** (#14): every Malus you own is 5★, so only SL20 can be captured for now.
+- **Salire's low-HP ATK in Arcarum.** The Salire skills' Arcarum text also boosts ATK based on how low HP is. 8Hm8De_arc at full HP shows no ATK line, yet Estimated DMG rises (989370 → 1003571). Not modelled; an HP sweep with Arcarum on would show whether it reaches the panel.
 
 ## Before you capture
 
 1. **Your own account.** Grids from other players can't pin values that depend on their account (skill levels, awakenings).
-2. **Outside Arcarum.** Sephirath base skills are Arcarum-only. Use a raid with the slot count the grid needs: 10 or 13 weapons.
+2. **Arcarum off, unless the capture is about Arcarum.** Use the in-game calculator's Arcarum switch, with a raid that has the slot count the grid needs: 10 or 13 weapons. For an Arcarum, World or Militis weapon, capture both: off, then on (the `_arc` reference). Several of their skills add or boost lines only in Arcarum (Sephira Maxi, Tek and Soul, Salire, the Sephirath amps).
 3. **Import the party from the game right before capturing,** so uncaps, transcendence, keys, awakenings, AX skills, Odious data and skill levels all match. Check the **friend summon** in particular: the import takes whatever the deck has saved (WpPucd first came in with a stale one), and the team page must list it: the panel's enhancement header counts the support summon (RKY1Eb first had only the main Varuna, so its Optimus read half). Parties saved before 2026-10-16 with AX or Odious weapons need a fresh import.
 4. **A test slot is a main-grid slot.** Extra slots only take certain series.
 5. **Stash weapons** (not in your collection): save the party as private. Once I've exported the fixture, you can delete it.
@@ -135,6 +139,17 @@ The Armed curve is 6/15/18/20 (SL1/10/15/20), captured on Armed Shadow. These ch
 | F2 | F0 | Resentment's Gaze 3★ (Armed Blaze, SL10) | EX Might +15 |
 | W1 | W0 | Windhose 4★, no awakening (Armed Gale, SL15) | EX Might +18 |
 | W3 | W0 | Daur da Blao 5★ (Armed Gale, SL20) | EX Might +20 |
+
+### Arcarum switch captures
+
+Each is one weapon in PdsR5k's slot 4 (Earth) or X53WHq's (Fire), captured with Arcarum off and on.
+
+| Weapon | Its Arcarum skill | Tests | Covered so far |
+|---|---|---|---|
+| Sephira Emerald Duke (or any Soul weapon) | Sephira Earthsoul | HP only in Arcarum, 15 at SL10 and 18 at SL15 | curated by its wording, as Tek is (OsDlrX) |
+| Worldforging Moros | Sephirath Eparc (II) | C.A. Amp. (Arc) | not captured |
+| Worldscathing Leon or Worldvexing Angelos | Sephirath Fusame / Haton (II) | N.A. Amp. (Arc) | not captured; Skill Amp. (Arc) matches on F0MD7j |
+| Spymur's Vision Militis | Sephira Salire Terra | Arcarum on at HP 50% and 25% | 8Hm8De at full HP only (see [Open questions](#open-questions)) |
 
 ### #17 Odious below the cap
 
