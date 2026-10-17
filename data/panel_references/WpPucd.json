@@ -12,7 +12,7 @@
     "omega": 400,
     "taboo": 0
   },
-  "absent": [],
+  "absent": ["bonus_elem_dmg"],
   "lines": [
     {
       "label": "Might",
