@@ -1,0 +1,83 @@
+{
+  "party": "8hUoSk",
+  "captured_on": "2026-10-17",
+  "notes": "W9 #17, the pair to ZXBugx: the same grid plus the second Deathcannon (four Odious weapons, 20 exorcision levels, the cap). Od 330%, as on 0ZA6Ak. Estimated DMG 28339 / to Wind 41487, Max HP 48840.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 0,
+    "taboo": 330
+  },
+  "absent": [
+    "dmg_cap"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 22
+    },
+    {
+      "label": "Od Might",
+      "boost": "atk",
+      "series": "odious",
+      "value": 206
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 228
+    },
+    {
+      "label": "Od DMG Amp.",
+      "boost": "od_dmg_amp",
+      "value": 15.48
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 98.04
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 51.6
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 113
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 51.6
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "ATK Hit",
+      "boost": "atk_hit",
+      "value": -14.1
+    },
+    {
+      "label": "C.A. DMG Hit",
+      "boost": "ca_dmg_hit",
+      "value": -19
+    },
+    {
+      "label": "Debuff S. Hit",
+      "boost": "debuff_hit",
+      "value": -10.2
+    }
+  ]
+}
