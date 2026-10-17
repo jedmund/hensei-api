@@ -14,7 +14,7 @@ Goldens are self-contained fixtures (`spec/fixtures/goldens/`), so a saved party
 
 ## Accuracy and coverage
 
-As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
+As of 2026-10-16, after #594 (Build::VERSION 10 plus the W9 curation).
 
 **Accuracy on captured grids (measured):** 39 golden parties, 56 references, 1,438 panel lines. 1,416 match exactly and are checked in CI on every change. 22 lines (1.5%) are open, all for known reasons: the HP slider's 1% point, XZq7xW's missing account data, and lines waiting on captures. None is an unexplained mismatch.
 
@@ -24,9 +24,9 @@ As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
 |---|---|---|---|
 | Have values | 3,225 | 86% | |
 | from a family template | 2,720 | 72% | high: wiki tables, checked by goldens for the common families |
-| hand-curated, with a citation | 281 | 7% | high |
-| borrowed fallback curve | 235 | 6% | ATK Big, Armed and ATK Medium confirmed in game; the rest unconfirmed |
-| of which Optimus stopgap | 30 | 1% | low: placeholders until captured |
+| hand-curated, with a citation | 285 | 8% | high |
+| borrowed fallback curve | 232 | 6% | ATK Big, Armed and ATK Medium confirmed in game; the rest unconfirmed |
+| of which Optimus stopgap | 27 | 1% | low: placeholders until captured |
 | No values | 534 | 14% | mostly battle triggers and main-hand procs, which never reach the panel; some real gaps among them |
 
 **Estimate (not measured):** for typical endgame grids (Optimus, Omega or Odious with Opus, Destroyer, Celestial, Ultima and similar), 95%+ of panel lines should be exact; for grids leaning on event or collab weapons, more like 85–90%. Estimated DMG follows the panel: when every line matches, it matches too. The largest remaining sources of error, in order: the stopgap rows, the unconfirmed borrowed curves (HP Medium/Big, ATK Small), real effects hidden among the versions with no values, and battle-state conditions. An audit of the 534 versions without values would turn the estimate into a measurement.
@@ -35,7 +35,7 @@ As of 2026-10-17 (Build::VERSION 10 plus the W9 curation).
 
 In priority order: where the calculator has the least evidence for the most rows.
 
-- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina), Advocatus Diaboli and Wilnas's Finger (EX Enmity).
+- [ ] **[Collection fallback captures](#collection-weapons)**: True Purity Sunblade (EX Stamina) and Wilnas's Finger (EX Enmity). Advocatus Diaboli is done (MjthwV).
 - [ ] **[Armed curve checks](#armed-curve-checks)**: F2 Resentment's Gaze (SL10), W1 Windhose (SL15), W3 Daur da Blao (SL20).
 - [ ] **[Main-hand swap M5](#main-hand-swaps-m1m5)**: Edem (Enmity at SL1).
 - [ ] **[#17 Odious below the cap](#17-odious-below-the-cap)**: the Taboo aura between its base and its cap, verified only at the cap.
