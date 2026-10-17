@@ -108,6 +108,9 @@ module Granblue
         # appear on the panel's elemental "Bonus DMG" line (5JPIJg: panel shows only the
         # always-on Deathstrike bonus). Must precede the generic elemental bonus pattern.
         [/bonus.*(?:dmg|damage).*single attacks?|single attacks?.*bonus.*(?:dmg|damage)/i, "bonus_elem_dmg_single"],
+        # Likewise triple-attack-only bonus DMG (Sol Remnant's Astral Blow II): X53WHq's panel
+        # has no Bonus Fire DMG line with it equipped.
+        [/bonus.*(?:dmg|damage).*triple attacks?|triple attacks?.*bonus.*(?:dmg|damage)/i, "bonus_elem_dmg_ta"],
         [/bonus.*(?:dmg|damage)/i, "bonus_elem_dmg"],
         [/hit to (?:multiattack|double attack|triple attack)/i, "multiattack"], # → −DA (guarantee)
         [/multiattack rate/i, %w[da ta]], # +DA and +TA
