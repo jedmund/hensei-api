@@ -1,7 +1,7 @@
 {
   "party": "3LRS7C",
   "captured_on": "2026-10-17",
-  "notes": "3LRS7C at HP 25%: Enmity 35.16, DMG Supp. +47,500, AX Stamina drops to 3. Open: AX Enmity +1 shows 3.64; ours is 3.63. Estimated DMG 445071 / to Wind 746401.",
+  "notes": "3LRS7C at HP 25%: Enmity 35.16, DMG Supp. +47,500, AX Stamina drops to 3. AX Enmity +1 shows 3.64. Estimated DMG 445071 / to Wind 746401.",
   "state": {
     "turn": 1,
     "hp_percent": 25,
@@ -188,8 +188,7 @@
     {
       "label": "Enmity (AX)",
       "boost": "enmity_ax",
-      "value": 3.64,
-      "skip": true
+      "value": 3.64
     }
   ]
 }
