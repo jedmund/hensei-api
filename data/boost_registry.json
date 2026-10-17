@@ -892,6 +892,7 @@
     },
     {
       "key": "hp_dmg",
+      "display_cap": 40.0,
       "amplifiable": false
     },
     {
