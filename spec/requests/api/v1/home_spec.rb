@@ -37,6 +37,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       section = json_response['current'].sole
       expect(section['event']['id']).to eq(current.id)
       expect(section['raids'].map { |r| r['raid']['id'] }).to eq([raid.id, empty_raid.id])
+      expect(section['raids'].first['raid']['slug']).to eq(raid.slug)
       expect(section['raids'].first['parties'].map { |p| p['id'] }).to eq([top.id, second.id])
       expect(section['raids'].second['parties']).to eq([])
     end
