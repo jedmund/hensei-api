@@ -1,7 +1,7 @@
 {
   "party": "3LRS7C",
   "captured_on": "2026-10-17",
-  "notes": "3LRS7C at HP 1% with Arcarum off: the same lines as with it on, minus Sephira Maxi-Fire's DMG Cap (Arc) 20. Estimated DMG is unchanged (521141); to Wind drops 861082 -> 845529, so DMG Cap (Arc) acts on weak-element damage only (as on PF0R3w). Open, as with Arcarum on: Enmity 56.25, AX Enmity 5 and AX Stamina 2 are our values at HP 0%.",
+  "notes": "3LRS7C at HP 1% with Arcarum off: the same lines as with it on, minus Sephira Maxi-Fire's DMG Cap (Arc) 20. Estimated DMG is unchanged (521141); to Wind drops 861082 -> 845529, so DMG Cap (Arc) acts on weak-element damage only (as on PF0R3w). Enmity 56.25, AX Enmity 5 and AX Stamina 2 are the values at 1 HP, not 1%: the slider's 1% point reads as 1 HP for skills that grow as HP falls (Scaling.panel_hp), and HP-scaled supplements read 0.",
   "state": {
     "turn": 1,
     "hp_percent": 1,
@@ -40,8 +40,7 @@
       "label": "Enmity",
       "boost": "enmity",
       "series": "ex",
-      "value": 56.25,
-      "skip": true
+      "value": 56.25
     },
     {
       "label": "Fire Omega",
@@ -179,14 +178,12 @@
     {
       "label": "Stamina (AX)",
       "boost": "stamina_ax",
-      "value": 2,
-      "skip": true
+      "value": 2
     },
     {
       "label": "Enmity (AX)",
       "boost": "enmity_ax",
-      "value": 5,
-      "skip": true
+      "value": 5
     }
   ]
 }

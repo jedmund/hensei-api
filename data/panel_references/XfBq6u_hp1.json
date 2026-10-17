@@ -1,7 +1,7 @@
 {
   "party": "XfBq6u",
   "captured_on": "2026-10-16",
-  "notes": "W9 #5 HP sweep: XfBq6u at HP 1% (Calculator Conditions slider), everything else as at 100%. Checks Excalibur's normal stamina with Fediel's Spine's ancestral stamina, omega enmity, Excalibur's Garrison (DEF), Rightway Pathfinder (C.A. DMG 120 x HP) and the AX stamina levels. At 1% the Stamina line is gone (stamina's sub-25% cutoff) and C.A. DMG shows 0%. Open: Ω Enmity 350 and DEF 64.8 fit an effective HP of about 0.1-0.25%, not 1% (ours at 1%: 345.17 and 64.58; at 0.1%: 350.42 and 64.78; at 0%: 351.0 and 64.8). OlFQ2a's old 1% capture fits the same way (377 vs 371.73 at 1%). C.A. DMG shows 0% where we drop the line (Rightway Pathfinder's sub-25% cutoff). XfBq6u at 10% and 5% matches Ω Enmity, DEF and Rightway's C.A. DMG (12, 6) exactly, so both curves are right and Rightway has no sub-25% cutoff; the 1% slider point is the outlier (Ω Enmity, DEF and C.A. DMG all read as if HP were about 0.1-0.25%), though LqZ4tM's Persistence reads exactly 10,200 there. Open.",
+  "notes": "W9 #5 HP sweep: XfBq6u at HP 1% (Calculator Conditions slider), everything else as at 100%. Checks Excalibur's normal stamina with Fediel's Spine's ancestral stamina, omega enmity, Excalibur's Garrison (DEF), Rightway Pathfinder (C.A. DMG 120 x HP) and the AX stamina levels. At 1% the Stamina line is gone (stamina's sub-25% cutoff) and C.A. DMG shows 0%. Open: Ω Enmity 350 and DEF 64.8 fit an effective HP of about 0.1-0.25%, not 1% (ours at 1%: 345.17 and 64.58; at 0.1%: 350.42 and 64.78; at 0%: 351.0 and 64.8). OlFQ2a's old 1% capture fits the same way (377 vs 371.73 at 1%). C.A. DMG shows 0% where we drop the line (Rightway Pathfinder's sub-25% cutoff). XfBq6u at 10% and 5% matches Ω Enmity, DEF and Rightway's C.A. DMG (12, 6) exactly, so both curves are right and Rightway has no sub-25% cutoff; the 1% slider point is the outlier (Ω Enmity, DEF and C.A. DMG all read as if HP were about 0.1-0.25%), though LqZ4tM's Persistence reads exactly 10,200 there. Open. Resolved 2026-10-17: the 1% point reads as 1 HP (Scaling.panel_hp, from 3LRS7C at 10/5/1%), and every line matches.",
   "state": {
     "turn": 1,
     "hp_percent": 1,
@@ -32,8 +32,7 @@
       "label": "Ω Enmity",
       "boost": "enmity",
       "series": "omega",
-      "value": 350,
-      "skip": true
+      "value": 350
     },
     {
       "label": "Dark Omega",
@@ -48,8 +47,7 @@
     {
       "label": "DEF",
       "boost": "def",
-      "value": 64.8,
-      "skip": true
+      "value": 64.8
     },
     {
       "label": "DMG Cap",
@@ -72,8 +70,7 @@
       "label": "C.A. DMG",
       "boost": "ca_dmg",
       "value": 0,
-      "capped": false,
-      "skip": true
+      "capped": false
     },
     {
       "label": "C.A. DMG Cap",

@@ -46,6 +46,19 @@ RSpec.describe GridDamage::Scaling do
     it "is 3× the modifier near 0 HP" do
       expect(described_class.value(d, skill_level: 15, hp_percent: 0)).to be_within(1e-9).of(18.0)
     end
+
+    it "reads the slider's 1% point as 1 HP, like the in-game calculator (3LRS7C)" do
+      expect(described_class.value(d, skill_level: 15, hp_percent: 1)).to be_within(0.001).of(18.0)
+      expect(described_class.value(d, skill_level: 15, hp_percent: 5)).to be_within(1e-9).of(6.0 * 2.9 * 0.95)
+    end
+  end
+
+  describe ".panel_hp" do
+    it "maps the 1% point to one HP point, or to the given floor" do
+      expect(described_class.panel_hp(1)).to eq(described_class::ONE_HP_PERCENT)
+      expect(described_class.panel_hp(1, at_min: 0.0)).to eq(0.0)
+      expect(described_class.panel_hp(5)).to eq(5.0)
+    end
   end
 
   describe "stamina (coefficient curve): (HP%/(Coef−SLadj))^2.9 + 2.1" do

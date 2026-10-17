@@ -37,7 +37,7 @@ module GridDamage
     }.freeze
 
     def for_party(party, state: {})
-      hp = state.fetch(:hp_percent, 100).to_f
+      hp = Scaling.panel_hp(state.fetch(:hp_percent, 100))
       mods = WeaponStatModifier.where(category: "ax").index_by(&:id)
       party.weapons.flat_map do |gw|
         [[gw.ax_modifier1_id, gw.ax_strength1], [gw.ax_modifier2_id, gw.ax_strength2]].filter_map do |mod_id, strength|

@@ -1,7 +1,7 @@
 {
   "party": "3LRS7C",
   "captured_on": "2026-10-17",
-  "notes": "3LRS7C at HP 1%: DMG Supp. +60,000 (its cap). Open, the 1% slider point again: Enmity 56.25, AX Enmity 5 and AX Stamina 2 are exactly our values at HP 0% (ours at 1%: 55.32, 4.95, 2.04). Estimated DMG 521141 / to Wind 861082.",
+  "notes": "3LRS7C at HP 1%: DMG Supp. +60,000 (its cap). Enmity 56.25, AX Enmity 5 and AX Stamina 2 are the values at 1 HP, not 1%: the slider's 1% point reads as 1 HP for skills that grow as HP falls (Scaling.panel_hp), and HP-scaled supplements read 0. Estimated DMG 521141 / to Wind 861082.",
   "state": {
     "turn": 1,
     "hp_percent": 1,
@@ -39,8 +39,7 @@
       "label": "Enmity",
       "boost": "enmity",
       "series": "ex",
-      "value": 56.25,
-      "skip": true
+      "value": 56.25
     },
     {
       "label": "Fire Omega",
@@ -184,14 +183,12 @@
     {
       "label": "Stamina (AX)",
       "boost": "stamina_ax",
-      "value": 2,
-      "skip": true
+      "value": 2
     },
     {
       "label": "Enmity (AX)",
       "boost": "enmity_ax",
-      "value": 5,
-      "skip": true
+      "value": 5
     }
   ]
 }

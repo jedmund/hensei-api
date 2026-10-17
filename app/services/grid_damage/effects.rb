@@ -97,9 +97,9 @@ module GridDamage
         effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
       # "Up to N%" boosts linear in current HP (Rightway Pathfinder: 120 x hp/100 ->
       # 120/90/60/30 at 100/75/50/25, still 12 and 6 at 10 and 5% in XfBq6u: no cutoff).
-      # The kind keeps its old name; the panel's 1% slider point reads 0 (open).
+      # The kind keeps its old name; the 1% slider point reads 0 (Scaling.panel_hp).
       when "hp_linear_cutoff"
-        effect.value.to_f * state.fetch(:hp_percent, 100).to_f / 100.0
+        effect.value.to_f * Scaling.panel_hp(state.fetch(:hp_percent, 100)) / 100.0
       when "hp_current_linear"
         hp_linear_value(effect, state: state, missing: false)
       when "hp_missing_linear"
@@ -168,10 +168,8 @@ module GridDamage
       ceiling = effect.total_cap&.to_f
       return nil if floor.nil? || ceiling.nil?
 
-      # The in-game calculator's "1%" anchor behaves as the 1-HP endpoint for these
-      # linear MA skills: Exertion shows 5%, Surge shows 35%.
-      hp = state.fetch(:hp_percent, 100).to_f
-      current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
+      # Exertion shows 5% and Surge 35% at the 1% slider point (Scaling.panel_hp).
+      current_ratio = (Scaling.panel_hp(state.fetch(:hp_percent, 100), at_min: 0.0) / 100.0).clamp(0.0, 1.0)
       ratio = missing ? 1.0 - current_ratio : current_ratio
       floor + ((ceiling - floor) * ratio)
     end
@@ -196,8 +194,7 @@ module GridDamage
       match = formula.to_s.delete(" ").match(CAP_FORMULA_PATTERN)
       return nil unless match
 
-      hp = state.fetch(:hp_percent, 100).to_f
-      current_ratio = hp <= 1 ? 0.0 : (hp / 100.0).clamp(0.0, 1.0)
+      current_ratio = (Scaling.panel_hp(state.fetch(:hp_percent, 100), at_min: 0.0) / 100.0).clamp(0.0, 1.0)
       ratio = match[:ratio].include?("maxhp-curhp") ? 1.0 - current_ratio : current_ratio
       match[:base].to_f + (match[:slope].to_f * ratio)
     end
