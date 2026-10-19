@@ -126,11 +126,6 @@ module Api
         include_view :party_metadata # favorited, has_orphaned_items
         include_view :sticker_metadata # labels, my_sticker
 
-        # Every sticker the team has received, without counts (detail view only)
-        field :received_stickers do |party|
-          PartyStickerSummary.received_for(party.id)
-        end
-
         # Every given sticker, one per giver, for the
         # sticker area. Givers stay anonymous; `mine` marks the viewer's own.
         field :placed_stickers do |party, options|

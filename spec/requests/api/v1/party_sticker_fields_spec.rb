@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Sticker fields on the party blueprint (labels, my_sticker,
-# received_stickers, sticker_breakdown) and the explore label param.
+# placed_stickers, sticker_breakdown) and the explore label param.
 RSpec.describe 'Party sticker fields', type: :request do
   let(:owner) { create(:user) }
   let(:viewer) { create(:user) }
@@ -82,21 +82,26 @@ RSpec.describe 'Party sticker fields', type: :request do
     end
   end
 
-  describe 'received_stickers' do
-    it 'lists every active sticker received, in picker order, without counts' do
-      give(3, accessible)
-      give(1, cleared)
+  describe 'placed_stickers' do
+    it 'lists every active sticker given, oldest first, without saying who gave it' do
+      first = create(:party_sticker, party: party, sticker: fast, x: 0.5, y: 20, rotation: -4, created_at: 2.days.ago)
+      create(:party_sticker, party: party, sticker: cleared, user: viewer, created_at: 1.day.ago)
       retired = create(:sticker, slug: 'retired', position: 3, active: false)
       give(1, retired)
 
-      get "/api/v1/parties/#{party.shortcode}"
-      expect(json_response['party']['received_stickers']).to eq(%w[cleared accessible])
+      get "/api/v1/parties/#{party.shortcode}", headers: bearer_headers(viewer)
+      placed = json_response['party']['placed_stickers']
+      expect(placed.map { |p| p['sticker'] }).to eq(%w[fast cleared])
+      expect(placed.first).to eq('id' => first.id, 'sticker' => 'fast', 'mine' => false,
+                                 'placement' => { 'x' => 0.5, 'y' => 20.0, 'rotation' => -4.0 })
+      expect(placed.last).to include('mine' => true, 'placement' => nil)
+      expect(placed.first.keys).not_to include('user_id')
     end
 
     it 'is not on list views' do
       give(1, cleared)
       get '/api/v1/parties'
-      expect(listed(party.id)).not_to have_key('received_stickers')
+      expect(listed(party.id)).not_to have_key('placed_stickers')
     end
   end
 

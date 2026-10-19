@@ -26,15 +26,6 @@ module PartyStickerSummary
           end
   end
 
-  # [slug, ...]: every active sticker the party has received at least once,
-  # in picker order. No counts, and the order doesn't hint at them.
-  def received_for(party_id)
-    Sticker.active
-           .where(id: PartySticker.where(party_id: party_id).select(:sticker_id))
-           .order(:position, :slug)
-           .pluck(:slug)
-  end
-
   # [{ id:, sticker: slug, mine:, placement: { x, y, rotation } | nil }] for
   # every active sticker given to the party, oldest first. Givers stay
   # anonymous. For the sticker area.
