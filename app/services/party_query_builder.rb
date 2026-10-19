@@ -56,8 +56,17 @@ class PartyQueryBuilder
     query = apply_boost_mod_filter(query)
     query = apply_difficulty_filter(query)
     query = apply_solomonis_filters(query)
+    query = apply_label_filter(query)
 
     query
+  end
+
+  # `label=<slug>`: parties where that active sticker has reached the label
+  # threshold.
+  def apply_label_filter(query)
+    return query unless @params[:label].present?
+
+    query.where(id: PartyStickerSummary.labelled_party_ids(@params[:label]))
   end
 
   # Evoking Solomonis filters, applied only when the raid filter is a

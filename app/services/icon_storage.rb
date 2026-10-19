@@ -10,8 +10,8 @@
 class IconStorage
   CONTENT_TYPE = 'image/png'
 
-  def self.put(key, bytes)
-    new.put(key, bytes)
+  def self.put(key, bytes, content_type: CONTENT_TYPE)
+    new.put(key, bytes, content_type: content_type)
   end
 
   def self.copy(source_key, dest_key)
@@ -26,13 +26,13 @@ class IconStorage
     @backend = Rails.env.production? ? :s3 : :local
   end
 
-  def put(key, bytes)
+  def put(key, bytes, content_type: CONTENT_TYPE)
     if @backend == :s3
       aws.s3_client.put_object(
         bucket: aws.bucket,
         key: key,
         body: StringIO.new(bytes),
-        content_type: CONTENT_TYPE,
+        content_type: content_type,
         acl: 'public-read'
       )
     else
@@ -57,6 +57,10 @@ class IconStorage
       FileUtils.mkdir_p(File.dirname(dest))
       FileUtils.cp(src, dest)
     end
+  end
+
+  def exist?(key)
+    @backend == :s3 ? aws.file_exists?(key) : File.exist?(local_path(key))
   end
 
   def delete(key)

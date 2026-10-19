@@ -20,6 +20,7 @@ module Api
       SEARCH_MAX_PER_PAGE = 50
       MAX_PER_PAGE = 100
       MIN_PER_PAGE = 1
+      UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
       ##### Errors
       # Catch-all for unhandled exceptions - log details and return 500
@@ -199,6 +200,11 @@ module Api
 
         Rails.logger.warn "[#{controller_name.upcase}] Unauthorized access attempt by user #{current_user&.id}"
         render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+      end
+
+      # True when the current user may use editor-only options on public reads.
+      def editor_role?
+        current_user&.role.to_i >= 7
       end
 
       def render_forbidden_response(message = 'Forbidden')
