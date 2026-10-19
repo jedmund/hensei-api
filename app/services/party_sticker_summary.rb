@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Batched sticker lookups for rendering parties. List pages compute labels and
-# the viewer's own stickers for the whole page in one grouped query each, and
-# pass the results to PartyBlueprint as options (see `blueprint_options`).
+# Batched sticker lookups for rendering parties. Rendering many parties
+# computes labels and the viewer's own stickers for all of them in one grouped
+# query each (PartyBlueprint does this itself; see `batch_options`).
 module PartyStickerSummary
   module_function
 
@@ -85,13 +85,10 @@ module PartyStickerSummary
                 .select(:party_id)
   end
 
-  # Options to pass to PartyBlueprint when rendering many parties.
-  def blueprint_options(parties, current_user)
+  # PartyBlueprint options with every party's labels and the viewer's
+  # stickers looked up at once.
+  def batch_options(parties, viewer)
     ids = parties.map(&:id)
-    {
-      current_user: current_user,
-      party_labels: labels_for(ids),
-      my_stickers: my_stickers_for(current_user, ids)
-    }
+    { party_labels: labels_for(ids), my_stickers: my_stickers_for(viewer, ids) }
   end
 end

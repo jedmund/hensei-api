@@ -228,8 +228,9 @@ module Api
           party_lookup[p.id] = p
         end
 
-        # Without current_user so `favorited` keeps its old (signed-out) value here.
-        sticker_options = PartyStickerSummary.blueprint_options(parties.to_a, current_user).except(:current_user)
+        # Each party renders on its own, so their stickers are looked up together
+        # here. Without current_user so `favorited` keeps its signed-out value.
+        sticker_options = PartyStickerSummary.batch_options(parties.to_a, current_user)
 
         # Deduplicate: skip entries that resolve to an already-seen party
         seen_party_ids = Set.new
@@ -390,7 +391,7 @@ module Api
           view: :list,
           root: :results,
           meta: pagination_meta(@parties),
-          **PartyStickerSummary.blueprint_options(@parties, current_user)
+          current_user: current_user
         )
       end
 
@@ -410,7 +411,7 @@ module Api
           view: :list,
           root: :results,
           meta: pagination_meta(@parties),
-          **PartyStickerSummary.blueprint_options(@parties, current_user)
+          current_user: current_user
         )
       end
 

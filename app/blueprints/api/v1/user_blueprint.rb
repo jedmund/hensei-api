@@ -43,9 +43,7 @@ module Api
         include_view :minimal
 
         field :parties, if: ->(_fn, _obj, options) { options[:parties].length.positive? } do |_, options|
-          parties = options[:parties].to_a
-          PartyBlueprint.render_as_hash(parties, view: :list,
-                                                 **PartyStickerSummary.blueprint_options(parties, options[:current_user]))
+          PartyBlueprint.render_as_hash(options[:parties], view: :list, current_user: options[:current_user])
         end
       end
 

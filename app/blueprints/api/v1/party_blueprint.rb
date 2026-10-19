@@ -3,6 +3,23 @@
 module Api
   module V1
     class PartyBlueprint < ApiBlueprint
+      # Rendering many parties looks up their sticker labels and the viewer's
+      # stickers in one query each, rather than one per party (see
+      # sticker_metadata). The viewer is `current_user`, or `sticker_viewer`
+      # where current_user has to stay out of the options.
+      module BatchStickers
+        %i[render render_as_hash render_as_json].each do |method|
+          define_method(method) do |object, options = {}|
+            if object.respond_to?(:map) && !object.is_a?(Hash) && !options.key?(:party_labels)
+              viewer = options.fetch(:sticker_viewer) { options[:current_user] }
+              options = options.merge(PartyStickerSummary.batch_options(object.to_a, viewer))
+            end
+            super(object, options)
+          end
+        end
+      end
+      singleton_class.prepend(BatchStickers)
+
       # Base fields that are always needed
       fields :local_id, :description, :shortcode, :visibility,
              :name, :element, :extra, :charge_attack,
@@ -243,10 +260,9 @@ module Api
         end
       end
 
-      # Sticker labels (no counts) and the viewer's own sticker. List pages
-      # pass precomputed `party_labels` / `my_stickers` (see
-      # PartyStickerSummary.blueprint_options); without them each party is
-      # looked up on its own.
+      # Sticker labels (no counts) and the viewer's own sticker. Rendering
+      # many parties precomputes `party_labels` / `my_stickers` (see
+      # BatchStickers); without them each party is looked up on its own.
       view :sticker_metadata do
         field :labels do |party, options|
           labels = options[:party_labels] || PartyStickerSummary.labels_for([party.id])

@@ -40,10 +40,9 @@ module Api
             { characters: :character },
             { weapons: :weapon },
             { summons: :summon }
-          ).order(last_updated: :desc).to_a
+          ).order(last_updated: :desc)
 
-          PartyBlueprint.render_as_hash(ordered, view: :list,
-                                                 **PartyStickerSummary.blueprint_options(ordered, options[:current_user]))
+          PartyBlueprint.render_as_hash(ordered, view: :list, current_user: options[:current_user])
         end
       end
     end

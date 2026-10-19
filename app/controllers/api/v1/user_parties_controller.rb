@@ -25,7 +25,7 @@ module Api
           view: :list,
           root: :results,
           meta: pagination_meta(parties),
-          **PartyStickerSummary.blueprint_options(parties, current_user)
+          current_user: current_user
         )
       end
 
