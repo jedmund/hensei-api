@@ -236,7 +236,7 @@ module Granblue
 
         @fixture = fixture
         @mode = mode
-        @tables = fixture.fetch('tables')
+        @tables = with_skill_owners(fixture.fetch('tables'))
       end
 
       def call
@@ -251,6 +251,39 @@ module Granblue
       def conn = GoldenFixture.connection
 
       def catalogue_tables = @tables.keys - PARTY_TABLES
+
+      # Fixtures exported before skills were owned by a character row carry
+      # character_skills without character_id. Those skills all belonged to the base row
+      # (style_swap: false) for their granblue_id: take its id from the fixture's own
+      # characters, then from the database.
+      def with_skill_owners(tables)
+        skills = tables['character_skills']
+        return tables if skills.blank? || skills.all? { |row| row['character_id'].present? }
+
+        needed = skills.reject { |row| row['character_id'].present? }.pluck('character_granblue_id').uniq
+        owners = base_character_ids(tables, needed.compact)
+        unresolved = needed.reject { |granblue_id| owners[granblue_id] }
+        if unresolved.any?
+          raise Error, "#{@fixture['shortcode']}: no base character row for character_skills " \
+                       "of #{unresolved.map { |id| id || '(no granblue_id)' }.join(', ')}"
+        end
+
+        tables.merge('character_skills' => skills.map do |row|
+          next row if row['character_id'].present?
+
+          row.merge('character_id' => owners[row['character_granblue_id']])
+        end)
+      end
+
+      def base_character_ids(tables, granblue_ids)
+        from_fixture = tables.fetch('characters', [])
+                             .reject { |c| c['style_swap'] }
+                             .to_h { |c| [c['granblue_id'], c['id']] }
+        missing = granblue_ids - from_fixture.keys
+        return from_fixture if missing.empty?
+
+        Character.where(granblue_id: missing, style_swap: false).pluck(:granblue_id, :id).to_h.merge(from_fixture)
+      end
 
       # Foreign keys stay off while the tables are emptied and filled: catalogue rows point
       # at rows outside the fixture (a weapon's recruit, a skill's other users) that the

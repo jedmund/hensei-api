@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_030000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -176,8 +176,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_030000) do
     t.string "game_action_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["character_granblue_id", "kind", "position"], name: "idx_character_skills_unique_slot", unique: true
+    t.uuid "character_id", null: false
     t.index ["character_granblue_id"], name: "index_character_skills_on_character_granblue_id"
+    t.index ["character_id", "kind", "position"], name: "idx_character_skills_unique_slot", unique: true
   end
 
   create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1762,6 +1763,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_030000) do
   add_foreign_key "character_skill_version_links", "character_skill_versions", column: "from_version_id"
   add_foreign_key "character_skill_version_links", "character_skill_versions", column: "to_version_id"
   add_foreign_key "character_skill_versions", "character_skills"
+  add_foreign_key "character_skills", "characters"
   add_foreign_key "characters", "raids", column: "solomonis_zone_id"
   add_foreign_key "charge_attacks", "skills"
   add_foreign_key "charge_attacks", "skills", column: "alt_skill_id"

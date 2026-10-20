@@ -32,4 +32,34 @@ RSpec.describe GridDamage::CharacterAuras do
 
     expect(described_class.for_party(party, element: 'earth')).to eq(optimus: 0.0, omega: 0.0)
   end
+
+  context 'with a style shift sharing its base granblue_id' do
+    def boost(character, amount)
+      skill = create(:character_skill, :support, character: character, position: 1)
+      version = create(:character_skill_version, character_skill: skill)
+      create(:skill_effect, character_skill_version: version, status: nil, ordinal: 1,
+                            effect_type: :weapon_skill_boost, target: :element_allies,
+                            frame: 'omega', element: 'light', amount: amount)
+    end
+
+    let(:base) { create(:character, granblue_id: '3040377000', element: 6) }
+    let(:style) { create(:character, granblue_id: '3040377000', style_swap: true, element: 6) }
+
+    before do
+      boost(base, 10)
+      boost(style, 25)
+    end
+
+    it "counts the style row's support skills when the style is in the grid" do
+      create(:grid_character, party: party, character: style, position: 1, uncap_level: 4)
+
+      expect(described_class.for_party(party, element: 'light')).to eq(optimus: 0.0, omega: 25.0)
+    end
+
+    it "counts the base row's support skills when the base is in the grid" do
+      create(:grid_character, party: party, character: base, position: 1, uncap_level: 4)
+
+      expect(described_class.for_party(party, element: 'light')).to eq(optimus: 0.0, omega: 10.0)
+    end
+  end
 end

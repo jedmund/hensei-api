@@ -12,8 +12,8 @@ module Granblue
       def initialize(character)
         @character = character
         @params = extract_template_params(character.wiki_raw.to_s)
-        @game_en = character.game_raw_en || {}
-        @game_jp = character.game_raw_jp || {}
+        @game_en = own_style(character.game_raw_en) || {}
+        @game_jp = own_style(character.game_raw_jp) || {}
       end
 
       attr_reader :params, :game_en, :game_jp
@@ -49,6 +49,17 @@ module Granblue
       private
 
       attr_reader :character
+
+      # A style shift shares its base's granblue_id, and writers before PR 2 stored the
+      # base's (style 1) payload on the style row too. Game data whose `style` isn't this
+      # row's is ignored, so the row builds from its own wiki data instead of the other
+      # style's icons and action ids. A payload without `style` is kept as is.
+      def own_style(payload)
+        return payload unless payload.is_a?(Hash) && payload['style'].present?
+
+        row_style = character.style_swap ? 2 : 1
+        payload if payload['style'].to_i == row_style
+      end
 
       def collection_entry(collection, position)
         case collection

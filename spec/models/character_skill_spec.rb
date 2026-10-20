@@ -4,16 +4,7 @@ require 'rails_helper'
 
 RSpec.describe CharacterSkill, type: :model do
   describe 'associations' do
-    it 'belongs to character by granblue_id' do
-      reflection = described_class.reflect_on_association(:character)
-
-      aggregate_failures do
-        expect(reflection.macro).to eq(:belongs_to)
-        expect(reflection.options[:primary_key]).to eq(:granblue_id)
-        expect(reflection.options[:foreign_key]).to eq(:character_granblue_id)
-        expect(reflection.options[:inverse_of]).to eq(:character_skills)
-      end
-    end
+    it { is_expected.to belong_to(:character).inverse_of(:character_skills) }
 
     it { is_expected.to have_many(:character_skill_versions).dependent(:destroy).inverse_of(:character_skill) }
   end
@@ -25,6 +16,17 @@ RSpec.describe CharacterSkill, type: :model do
         'ougi' => 'ougi',
         'support' => 'support'
       )
+    end
+  end
+
+  describe 'character_granblue_id' do
+    it "is set from the owning character's granblue_id" do
+      character = create(:character, granblue_id: '3990000001')
+      skill = described_class.new(character: character, kind: :ability, position: 1)
+
+      skill.valid?
+
+      expect(skill.character_granblue_id).to eq('3990000001')
     end
   end
 
@@ -57,6 +59,14 @@ RSpec.describe CharacterSkill, type: :model do
         other = build(:character_skill, character: create(:character), kind: :ability, position: 1)
 
         expect(other).to be_valid
+      end
+
+      it "allows the same position on a style row that shares the base's granblue_id" do
+        create(:character_skill, character: character, kind: :ability, position: 1)
+        style = create(:character, granblue_id: character.granblue_id, style_swap: true)
+        styled = build(:character_skill, character: style, kind: :ability, position: 1)
+
+        expect(styled).to be_valid
       end
     end
   end

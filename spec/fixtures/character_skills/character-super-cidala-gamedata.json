@@ -1,0 +1,777 @@
+{
+  "_provisional": "D9: invented until the real style-2 payload (K2); action_id and class_name values are made up",
+  "id": "3040377000",
+  "name": "Cidala",
+  "type": "2",
+  "style": 2,
+  "tribe": "2",
+  "white": {
+    "has_present": false
+  },
+  "max_hp": "852",
+  "rarity": "4",
+  "scenes": [],
+  "weapon": "4,7",
+  "white2": {
+    "has_present": false
+  },
+  "ability": {
+    "1": {
+      "kind": "",
+      "name": "Luck Goes Up",
+      "pick": "",
+      "rate": "100",
+      "turn": "",
+      "type": "target_enemy_aura_ailments_if",
+      "wait": "5",
+      "level": {
+        "took_ability": true,
+        "release_level": 1
+      },
+      "multi": "0",
+      "state": "0",
+      "tribe": "",
+      "job_id": "",
+      "recast": "3",
+      "second": "",
+      "ailment": "7130001001",
+      "comment": "Gain Luck Goes Up / Gain Tank-and-Counter",
+      "name_en": "Luck Goes Up",
+      "release": "",
+      "target1": "us",
+      "target2": "one",
+      "category": "",
+      "cjs_name": "",
+      "max_turn": "",
+      "action_id": "990001",
+      "attribute": "",
+      "duplicate": "",
+      "frequency": "",
+      "help_flag": "",
+      "icon_type": "1",
+      "param_max": "",
+      "param_min": "",
+      "subaction": "0",
+      "turn_disp": "",
+      "weapon_id": "",
+      "action_pos": "",
+      "class_name": "2559_3",
+      "comment_en": "Gain Luck Goes Up / Gain Tank-and-Counter",
+      "effect_all": "",
+      "name_trial": "",
+      "param_free": "990001",
+      "ailments_id": "7301001001",
+      "ignore_self": "",
+      "limit_value": "",
+      "multi_param": "",
+      "param_free2": "",
+      "param_free3": "",
+      "param_free4": "",
+      "param_free5": "",
+      "recast_disp": "",
+      "target_type": "",
+      "weapon_type": "",
+      "absolute_hit": "",
+      "character_id": "",
+      "is_available": true,
+      "start_recast": "",
+      "target_param": "",
+      "turn_disp_en": "",
+      "action_sub_id": "990001",
+      "comment_trial": "",
+      "damage_limit1": "",
+      "damage_limit2": "",
+      "damage_limit3": "",
+      "damage_limit4": "",
+      "name_trial_en": "",
+      "ability_detail": {
+        "buff": [
+          {
+            "detail": "Linked skill",
+            "effect": "",
+            "status": "1047",
+            "help_flag": "301"
+          }
+        ],
+        "debuff": [
+          {
+            "detail": "ATK is lowered (Stackable)",
+            "effect": "180 sec",
+            "status": "1428",
+            "help_flag": ""
+          },
+          {
+            "detail": "DEF is lowered (Stackable)",
+            "effect": "180 sec",
+            "status": "1427",
+            "help_flag": ""
+          },
+          {
+            "detail": "Water ATK is lowered",
+            "effect": "180 sec",
+            "status": "1123",
+            "help_flag": ""
+          },
+          {
+            "detail": "DEF is lowered for earth DMG",
+            "effect": "180 sec",
+            "status": "1023",
+            "help_flag": ""
+          },
+          {
+            "detail": "Debuff resistance is lowered",
+            "effect": "180 sec",
+            "status": "1011",
+            "help_flag": ""
+          },
+          {
+            "detail": "Attacks are slightly limited",
+            "effect": "180 sec",
+            "status": "1101",
+            "help_flag": ""
+          },
+          {
+            "detail": "Attacks have a slight chance to miss",
+            "effect": "3 turns",
+            "status": "1032_33",
+            "help_flag": ""
+          }
+        ]
+      },
+      "no_effect_flag": "",
+      "recast_disp_en": "",
+      "weapon_skill_id": "",
+      "comment_trial_en": "",
+      "fast_recast_type": "",
+      "target_attribute": "",
+      "damage_deduction1": "",
+      "damage_deduction2": "",
+      "damage_deduction3": "",
+      "damage_deduction4": "",
+      "damage_limit_type": "",
+      "distribution_rate": "",
+      "form_change_value": "",
+      "target_backmember": "",
+      "ability_effect_type": "",
+      "action_sub_id_dummy": "990001",
+      "damage_ability_flag": "",
+      "multi_notification_id": "",
+      "full_auto_setting_flag": true,
+      "ignore_pick_target_flag": "",
+      "multi_contribution_type": "",
+      "recast_additional_comment": "  (linked skill)",
+      "skin_effect_ability_number": "",
+      "recast_additional_comment_en": "  (linked skill)"
+    },
+    "2": {
+      "kind": "",
+      "name": "Bringer of Proarsperity",
+      "pick": "",
+      "rate": "100",
+      "turn": "",
+      "type": "target_enemy_aura_ailments_if",
+      "wait": "5",
+      "level": {
+        "took_ability": true,
+        "release_level": 1
+      },
+      "multi": "0",
+      "state": "0",
+      "tribe": "",
+      "job_id": "",
+      "recast": "3",
+      "second": "",
+      "ailment": "7130001001",
+      "comment": "All Earth allies gain Dispel Cancel, Mirror Image and Dodge All",
+      "name_en": "Bringer of Proarsperity",
+      "release": "",
+      "target1": "us",
+      "target2": "one",
+      "category": "",
+      "cjs_name": "",
+      "max_turn": "",
+      "action_id": "990031",
+      "attribute": "",
+      "duplicate": "",
+      "frequency": "",
+      "help_flag": "",
+      "icon_type": "1",
+      "param_max": "",
+      "param_min": "",
+      "subaction": "0",
+      "turn_disp": "",
+      "weapon_id": "",
+      "action_pos": "",
+      "class_name": "2560_3",
+      "comment_en": "All Earth allies gain Dispel Cancel, Mirror Image and Dodge All",
+      "effect_all": "",
+      "name_trial": "",
+      "param_free": "990031",
+      "ailments_id": "7301001001",
+      "ignore_self": "",
+      "limit_value": "",
+      "multi_param": "",
+      "param_free2": "",
+      "param_free3": "",
+      "param_free4": "",
+      "param_free5": "",
+      "recast_disp": "",
+      "target_type": "",
+      "weapon_type": "",
+      "absolute_hit": "",
+      "character_id": "",
+      "is_available": true,
+      "start_recast": "",
+      "target_param": "",
+      "turn_disp_en": "",
+      "action_sub_id": "990031",
+      "comment_trial": "",
+      "damage_limit1": "",
+      "damage_limit2": "",
+      "damage_limit3": "",
+      "damage_limit4": "",
+      "name_trial_en": "",
+      "ability_detail": {
+        "buff": [
+          {
+            "detail": "ATK is boosted (Stackable)",
+            "effect": "",
+            "status": "1104",
+            "help_flag": ""
+          },
+          {
+            "detail": "DEF is boosted (Stackable)",
+            "effect": "",
+            "status": "1378",
+            "help_flag": ""
+          },
+          {
+            "detail": "Maximum amount of DMG that can be dealt per hit is boosted (Stackable)",
+            "effect": "",
+            "status": "7225",
+            "help_flag": ""
+          },
+          {
+            "detail": "Buffs can't be removed or shortened (1 time)",
+            "effect": "",
+            "status": "6549",
+            "help_flag": ""
+          },
+          {
+            "detail": "Next one-to-one attack received will be ineffective (Effect removed on next all-foe all-ally attack)",
+            "effect": "",
+            "status": "1313",
+            "help_flag": ""
+          },
+          {
+            "detail": "Next ATK received will be ineffective for a fixed amount",
+            "effect": "",
+            "status": "1314",
+            "help_flag": ""
+          },
+          {
+            "detail": "Charge attack reactivates (1 time)",
+            "effect": "",
+            "status": "6410",
+            "help_flag": ""
+          },
+          {
+            "detail": "Linked skill",
+            "effect": "",
+            "status": "1047",
+            "help_flag": "301"
+          }
+        ]
+      },
+      "no_effect_flag": "",
+      "recast_disp_en": "",
+      "weapon_skill_id": "",
+      "comment_trial_en": "",
+      "fast_recast_type": "",
+      "target_attribute": "",
+      "damage_deduction1": "",
+      "damage_deduction2": "",
+      "damage_deduction3": "",
+      "damage_deduction4": "",
+      "damage_limit_type": "",
+      "distribution_rate": "",
+      "form_change_value": "",
+      "target_backmember": "",
+      "ability_effect_type": "",
+      "action_sub_id_dummy": "990031",
+      "damage_ability_flag": "",
+      "multi_notification_id": "",
+      "full_auto_setting_flag": true,
+      "ignore_pick_target_flag": "",
+      "multi_contribution_type": "",
+      "recast_additional_comment": "  (linked skill)",
+      "skin_effect_ability_number": "",
+      "recast_additional_comment_en": "  (linked skill)"
+    },
+    "3": {
+      "kind": "",
+      "name": "Luck Goes Down",
+      "pick": "",
+      "rate": "100,100,100",
+      "turn": "1,1,1",
+      "type": "dodge,full_cover,no_attack",
+      "wait": "10",
+      "multi": "0",
+      "quest": {
+        "area_id": "100000",
+        "comment": null,
+        "is_clear": false,
+        "quest_id": 217224,
+        "chapter_id": "21722",
+        "is_release": false,
+        "location_id": "10000",
+        "chapter_name": "Tiger! Tiger!",
+        "is_cross_fate": false,
+        "open_npc_level": "45"
+      },
+      "state": "1,1,1",
+      "tribe": "",
+      "job_id": "",
+      "recast": "12",
+      "second": "",
+      "ailment": "1019007001,1075011001,7298001001",
+      "comment": "Earth DMG to a foe / Inflict Luck Goes Down 5",
+      "name_en": "Luck Goes Down",
+      "release": "",
+      "target1": "us,us,us",
+      "target2": "one,one,one",
+      "category": "",
+      "cjs_name": "ab_3040377000_05",
+      "max_turn": "",
+      "action_id": "990061",
+      "attribute": "",
+      "duplicate": "",
+      "frequency": "",
+      "help_flag": "",
+      "icon_type": "3",
+      "param_max": "",
+      "param_min": "",
+      "subaction": "0",
+      "turn_disp": "",
+      "weapon_id": "",
+      "action_pos": "",
+      "class_name": "2561_1",
+      "comment_en": "Earth DMG to a foe / Inflict Luck Goes Down 5",
+      "effect_all": "",
+      "name_trial": "",
+      "param_free": "990061",
+      "ailments_id": "",
+      "ignore_self": "",
+      "limit_value": "",
+      "multi_param": "",
+      "param_free2": "",
+      "param_free3": "",
+      "param_free4": "",
+      "param_free5": "",
+      "recast_disp": "",
+      "target_type": "",
+      "weapon_type": "",
+      "absolute_hit": "",
+      "character_id": "",
+      "is_available": false,
+      "start_recast": "",
+      "target_param": "",
+      "turn_disp_en": "",
+      "action_sub_id": "990061",
+      "comment_trial": "",
+      "damage_limit1": "",
+      "damage_limit2": "",
+      "damage_limit3": "",
+      "damage_limit4": "",
+      "name_trial_en": "",
+      "ability_detail": {
+        "buff": [
+          {
+            "detail": "Takes no DMG or debuffs while in effect",
+            "effect": "1 turn",
+            "status": "1019",
+            "help_flag": ""
+          },
+          {
+            "detail": "Receives all attacks in place of allies (Includes all-ally attacks)",
+            "effect": "1 turn",
+            "status": "1075",
+            "help_flag": ""
+          },
+          {
+            "detail": "Can't attack / On next turn: Sharp boost to ATK / Deal triple attacks (Can't be removed)",
+            "effect": "1 turn",
+            "status": "7298",
+            "help_flag": ""
+          }
+        ]
+      },
+      "no_effect_flag": "",
+      "recast_disp_en": "",
+      "weapon_skill_id": "",
+      "comment_trial_en": "",
+      "fast_recast_type": "",
+      "target_attribute": "",
+      "damage_deduction1": "",
+      "damage_deduction2": "",
+      "damage_deduction3": "",
+      "damage_deduction4": "",
+      "damage_limit_type": "",
+      "distribution_rate": "",
+      "form_change_value": "",
+      "target_backmember": "",
+      "ability_effect_type": "",
+      "action_sub_id_dummy": "990061",
+      "damage_ability_flag": "",
+      "multi_notification_id": "",
+      "full_auto_setting_flag": true,
+      "ignore_pick_target_flag": "",
+      "multi_contribution_type": "",
+      "recast_additional_comment": "",
+      "skin_effect_ability_number": "",
+      "recast_additional_comment_en": ""
+    }
+  },
+  "comment": null,
+  "episode": [
+    {
+      "is_show": false,
+      "chapter_id": 20722,
+      "is_cleared": false,
+      "chapter_name": "???",
+      "is_available": false,
+      "phase_scene_id": null,
+      "special_conditions": [],
+      "chapter_open_conditions": []
+    },
+    {
+      "is_show": false,
+      "chapter_id": 21722,
+      "is_cleared": false,
+      "chapter_name": "???",
+      "is_available": false,
+      "phase_scene_id": null,
+      "special_conditions": [],
+      "chapter_open_conditions": [
+        {
+          "type": 8,
+          "content": {
+            "is_sidestory": false,
+            "open_chapter_id": 20722,
+            "open_event_name": null,
+            "open_chapter_name": "Guardian of the East-Northeast",
+            "open_chapter_type": 2,
+            "open_event_comment": "",
+            "is_open_event_chapter": false
+          }
+        },
+        {
+          "type": 6,
+          "content": 45
+        }
+      ]
+    },
+    {
+      "is_show": false,
+      "chapter_id": 22215,
+      "is_cleared": false,
+      "chapter_name": "???",
+      "is_available": false,
+      "phase_scene_id": null,
+      "special_conditions": [],
+      "chapter_open_conditions": [
+        {
+          "type": 8,
+          "content": {
+            "is_sidestory": false,
+            "open_chapter_id": 21722,
+            "open_event_name": null,
+            "open_chapter_name": "Tiger! Tiger!",
+            "open_chapter_type": 2,
+            "open_event_comment": "",
+            "is_open_event_chapter": false
+          }
+        },
+        {
+          "type": 6,
+          "content": 80
+        }
+      ]
+    },
+    {
+      "is_show": false,
+      "chapter_id": 22216,
+      "is_cleared": false,
+      "chapter_name": "???",
+      "is_available": false,
+      "phase_scene_id": null,
+      "special_conditions": [],
+      "chapter_open_conditions": [
+        {
+          "type": 8,
+          "content": {
+            "is_sidestory": false,
+            "open_chapter_id": 22215,
+            "open_event_name": null,
+            "open_chapter_name": "To Kill a Divine Tiger",
+            "open_chapter_type": 2,
+            "open_event_comment": "",
+            "is_open_event_chapter": false
+          }
+        },
+        {
+          "type": 6,
+          "content": 100
+        }
+      ]
+    }
+  ],
+  "lp_rank": 1,
+  "newyear": {
+    "has_present": false
+  },
+  "next_id": "3040046000",
+  "prev_id": "3040018000",
+  "tribe_2": "",
+  "birthday": {
+    "has_present": false
+  },
+  "evo_name": "Cidala",
+  "is_other": false,
+  "npc_list": {
+    "3192": [
+      {
+        "item_id": 3040377000,
+        "is_archive": false,
+        "image_suffix": null,
+        "has_npcaugment_constant": false,
+        "thumbnail_awakening_level": "01"
+      },
+      {
+        "item_id": 3040512000,
+        "is_archive": false,
+        "image_suffix": null,
+        "has_npcaugment_constant": false,
+        "thumbnail_awakening_level": "01"
+      }
+    ]
+  },
+  "attribute": 3,
+  "christmas": {
+    "has_present": false
+  },
+  "halloween": {
+    "has_present": false
+  },
+  "is_pushed": false,
+  "kind_name": 0,
+  "max_level": 80,
+  "next_type": "npc",
+  "pose_list": [],
+  "prev_type": "npc",
+  "series_id": [
+    "6"
+  ],
+  "valentine": {
+    "has_present": false
+  },
+  "default_hp": "136",
+  "is_archive": false,
+  "is_numbers": false,
+  "max_attack": "10140",
+  "style_list": [
+    {
+      "name": "Default Style",
+      "image": "3040377000_01",
+      "style": 1,
+      "can_set": true,
+      "is_open": true,
+      "set_conditions": [],
+      "open_conditions": [],
+      "specialty_weapon": [
+        "4",
+        "7"
+      ]
+    },
+    {
+      "name": "Super Cidala",
+      "image": "3040377000_01_st2",
+      "style": 2,
+      "can_set": true,
+      "is_open": true,
+      "set_conditions": [],
+      "open_conditions": [],
+      "specialty_weapon": [
+        "4",
+        "7"
+      ]
+    }
+  ],
+  "valentine2": {
+    "has_present": false
+  },
+  "npc_id_list": {
+    "3192": [
+      "3040377000",
+      "3040512000"
+    ]
+  },
+  "rarity_name": "SS Rare",
+  "user_npc_id": null,
+  "voice_acter": "Ai Kakuma",
+  "episode_rate": 0,
+  "image_suffix": {
+    "01": null,
+    "81": null
+  },
+  "is_event_cut": 0,
+  "is_play_voice": false,
+  "other_episode": [],
+  "special_skill": {
+    "name": "Ascending Fur-tune",
+    "recast": "100",
+    "comment": "Massive Earth DMG to a foe / Gain ATK Sharply Boosted (Can't be extended)"
+  },
+  "appear_ability": {
+    "1": null
+  },
+  "default_attack": "2022",
+  "is_arcarum_npc": false,
+  "support_ability": {
+    "1": {
+      "id": "990101",
+      "name": "Divine Tiger United",
+      "turn": "9999,9999,9999,9999,9999",
+      "type": "hate_up_support,guard_ailment,character_attack_up,double_attack_rate_up,attack_count_exec_ability",
+      "level": {
+        "took_ability": true,
+        "release_level": 1
+      },
+      "recast": "",
+      "second": "",
+      "comment": "Boost to hostility / Hit to charge bar gain / Guaranteed triple attacks / Amplify normal attack DMG",
+      "max_turn": "",
+      "action_id": "990101",
+      "attribute": "",
+      "help_flag": "",
+      "icon_type": "3",
+      "subaction": "0",
+      "turn_disp": "",
+      "class_name": "55_3",
+      "name_trial": "",
+      "recast_disp": "",
+      "target_type": "",
+      "start_recast": "",
+      "target_param": "",
+      "comment_trial": "",
+      "no_effect_flag": "",
+      "fast_recast_type": "",
+      "target_attribute": "",
+      "multi_notification_id": "",
+      "ignore_pick_target_flag": "",
+      "recast_additional_comment": ""
+    },
+    "2": {
+      "id": "990102",
+      "name": "Peach-Colored Date",
+      "turn": "99999",
+      "type": "turn_end_auto_exec_no_attack",
+      "level": {
+        "took_ability": true,
+        "release_level": 1
+      },
+      "recast": "",
+      "second": "",
+      "comment": "Raise Peach Scent lvl by 1 upon using skills (Max: 5)",
+      "max_turn": "",
+      "action_id": "990102",
+      "attribute": "",
+      "help_flag": "",
+      "icon_type": "3",
+      "subaction": "0",
+      "turn_disp": "",
+      "class_name": "55_3",
+      "name_trial": "",
+      "recast_disp": "",
+      "target_type": "",
+      "start_recast": "",
+      "target_param": "",
+      "comment_trial": "",
+      "no_effect_flag": "",
+      "fast_recast_type": "",
+      "target_attribute": "",
+      "multi_notification_id": "",
+      "ignore_pick_target_flag": "",
+      "recast_additional_comment": ""
+    },
+    "3": null,
+    "4": null
+  },
+  "entry_event_list": [
+    {
+      "id": null,
+      "group_id": "",
+      "location_id": "78460",
+      "is_sidestory": false,
+      "thumbnail_image": "",
+      "is_uncapped_event": false
+    },
+    {
+      "id": null,
+      "group_id": "4",
+      "location_id": "78390",
+      "is_sidestory": false,
+      "thumbnail_image": "",
+      "is_uncapped_event": false
+    },
+    {
+      "id": null,
+      "group_id": "",
+      "location_id": "79150",
+      "is_sidestory": false,
+      "thumbnail_image": "",
+      "is_uncapped_event": false
+    },
+    {
+      "id": null,
+      "group_id": "",
+      "location_id": "79720",
+      "is_sidestory": false,
+      "thumbnail_image": "",
+      "is_uncapped_event": false
+    },
+    {
+      "id": null,
+      "group_id": "5",
+      "location_id": "91690",
+      "is_sidestory": false,
+      "thumbnail_image": "",
+      "is_uncapped_event": false
+    },
+    {
+      "id": null,
+      "group_id": "",
+      "location_id": "92750",
+      "is_sidestory": false,
+      "thumbnail_image": "",
+      "is_uncapped_event": false
+    }
+  ],
+  "is_not_attention": false,
+  "specialty_weapon": [
+    "4",
+    "7"
+  ],
+  "npc_relation_list": [],
+  "backmember_ability": {
+    "1": null,
+    "2": null
+  },
+  "max_awakening_level": 1,
+  "is_show_skill_change": false,
+  "transcendence_episode": [],
+  "change_config_user_sex": null,
+  "power_up_special_skill": [],
+  "has_npcaugment_constant": false,
+  "scenes_by_transcendence": []
+}
