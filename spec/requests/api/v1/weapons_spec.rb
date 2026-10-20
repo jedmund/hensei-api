@@ -162,5 +162,33 @@ RSpec.describe 'Weapons API', type: :request do
       expect(response).to have_http_status(:unauthorized)
       expect(weapon.reload.max_exorcism_level).to eq(5)
     end
+
+    context 'when the weapon has stored wikitext' do
+      let(:fetched_at) { 2.days.ago.change(usec: 0) }
+      let!(:stored) { create(:weapon, wiki_raw: '{{Stored}}', wiki_raw_fetched_at: fetched_at) }
+
+      it 'keeps the wikitext when the update sends a blank one' do
+        patch "/api/v1/weapons/#{stored.id}",
+              params: { weapon: { name_en: 'Renamed', wiki_raw: '' } }.to_json,
+              headers: editor_headers
+
+        expect(response).to have_http_status(:ok)
+        stored.reload
+        expect(stored.name_en).to eq('Renamed')
+        expect(stored.wiki_raw).to eq('{{Stored}}')
+        expect(stored.wiki_raw_fetched_at).to eq(fetched_at)
+      end
+
+      it 'replaces the wikitext and stamps the fetch date when the update sends new text' do
+        patch "/api/v1/weapons/#{stored.id}",
+              params: { weapon: { wiki_raw: '{{New}}' } }.to_json,
+              headers: editor_headers
+
+        expect(response).to have_http_status(:ok)
+        stored.reload
+        expect(stored.wiki_raw).to eq('{{New}}')
+        expect(stored.wiki_raw_fetched_at).to be > fetched_at
+      end
+    end
   end
 end
