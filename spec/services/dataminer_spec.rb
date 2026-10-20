@@ -167,4 +167,47 @@ RSpec.describe Dataminer do
       expect(miner).to have_received(:sleep).with(2.0).twice
     end
   end
+
+  describe 'authentication failure' do
+    let(:ids) { %w[3040000911 3040000912 3040000913] }
+
+    before do
+      ids.each { |id| create(:character, granblue_id: id, game_raw_en: nil) }
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000911'))
+                                                 .to_return(status: 200, body: style1_payload.merge('id' => '3040000911',
+                                                                                                    'style_list' => []).to_json)
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000912'))
+                                                 .to_return(status: 200, body: '{"auth_status":"require_auth"}')
+    end
+
+    it 'stops the run at the first one and keeps the ids it did not get to' do
+      miner.fetch_characters(ids)
+
+      expect(WebMock).not_to have_requested(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000913'))
+      expect(miner.remaining_ids).to eq(%w[3040000912 3040000913])
+      expect(miner.summary.fetched).to eq(1)
+      expect(miner.summary.errors.map(&:granblue_id)).to eq(['3040000912'])
+    end
+
+    it 'stops a fetch_all run the same way' do
+      # Only this example's characters are missing game data.
+      Character.where.not(granblue_id: ids).update_all(game_raw_en: { 'id' => 'x' })
+      miner.fetch_all_characters(only_missing: true)
+
+      expect(miner.remaining_ids).to eq(%w[3040000912 3040000913])
+    end
+
+    it 'carries on after other errors' do
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000912'))
+                                                 .to_timeout
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000913'))
+                                                 .to_return(status: 200, body: style1_payload.merge('id' => '3040000913',
+                                                                                                    'style_list' => []).to_json)
+
+      miner.fetch_characters(ids)
+
+      expect(miner.remaining_ids).to be_nil
+      expect(miner.summary.fetched).to eq(2)
+    end
+  end
 end

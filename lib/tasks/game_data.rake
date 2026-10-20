@@ -32,6 +32,8 @@ namespace :granblue do
     account to Japanese before fetching with lang=jp.
 
     Fetches only records missing the column by default; at least 2s between requests.
+    The run stops at the first authentication failure (expired cookies) and prints the
+    ids it didn't get to, so it can resume with ids=.
     Prints a summary: fetched (unchanged = same payload as stored, changed), skipped, errors.
     Character writes don't queue a build per row; without build= the task prints the
     build command to run next.
@@ -106,6 +108,18 @@ namespace :granblue do
       CharacterSkills::SourceFetch.finish(miner.summary, build: build, changed_out: ENV['changed_out'].presence)
     elsif ENV['changed_out'].present?
       miner.summary.write_changed(ENV['changed_out'])
+    end
+
+    if miner.remaining_ids
+      left = miner.remaining_ids
+      warn "\nStopped: the game rejected the session (cookies expired?). #{left.size} #{type.pluralize} not fetched."
+      if type == 'Character'
+        warn 'Refresh ACCESS_TOKEN / WING / MIDSHIP and resume with:'
+        warn "  ... rake granblue:fetch_game_data#{" lang=#{lang}" if lang != 'en'}#{" style=#{style}" if style} ids=#{left.join(',')}"
+      else
+        warn "Refresh ACCESS_TOKEN / WING / MIDSHIP and rerun type=#{type} without force=true: it fetches only the rows still missing."
+      end
+      exit 1
     end
   end
 end

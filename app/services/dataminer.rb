@@ -24,7 +24,8 @@ class Dataminer
     'X-Requested-With' => 'XMLHttpRequest'
   }.freeze
 
-  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary, :delay
+  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary, :delay,
+              :remaining_ids
 
   # The delay to use for a requested value (nil → MIN_DELAY); a shorter one is raised
   # to MIN_DELAY, and warn is called with a note.
@@ -55,6 +56,8 @@ class Dataminer
     @game_version = game_version
     @debug = debug
     @delay = self.class.clamp_delay(delay)
+    # Set when a run stopped on an authentication failure: the ids it didn't get to.
+    @remaining_ids = nil
     # What this instance fetched and stored: unchanged / changed / skipped / errors.
     @summary = Granblue::SourceFetchSummary.new('fetch_game_data')
     setup_logger
@@ -108,6 +111,9 @@ class Dataminer
     response
   end
 
+  # Stops at the first authentication failure (expired cookies fail every later request
+  # too) and leaves the ids it didn't finish in remaining_ids; other errors are counted
+  # per character and the run carries on.
   def fetch_characters(granblue_ids, style: nil, lang: 'en')
     granblue_ids.each_with_index do |granblue_id, index|
       pause if index.positive?
@@ -116,6 +122,9 @@ class Dataminer
       else
         fetch_character(granblue_id, lang: lang)
       end
+    rescue AuthenticationError => e
+      stop_run!('Character', granblue_ids, index, e)
+      break
     rescue StandardError => e
       summary.error!(granblue_id, e.message)
       logger.error "Error processing Character #{granblue_id}: #{e.message}"
@@ -344,6 +353,9 @@ class Dataminer
 
       success_count += 1
       logger.debug "Successfully processed #{model_name} #{granblue_id}"
+    rescue AuthenticationError => e
+      stop_run!(model_name, granblue_ids, index, e)
+      break
     rescue StandardError => e
       error_count += 1
       summary.error!(granblue_id, e.message)
@@ -358,6 +370,13 @@ class Dataminer
 
   def pause
     sleep(delay)
+  end
+
+  def stop_run!(model_name, granblue_ids, index, error)
+    @remaining_ids = granblue_ids[index..]
+    summary.error!(granblue_ids[index], "authentication failed: #{error.message.presence || 'session expired'}")
+    logger.error "Authentication failed at #{model_name} #{granblue_ids[index]} after #{index} of #{granblue_ids.size}; " \
+                 "stopping (#{@remaining_ids.size} left)."
   end
 
   class AuthenticationError < StandardError; end

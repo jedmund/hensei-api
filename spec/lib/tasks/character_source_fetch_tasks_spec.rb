@@ -260,6 +260,15 @@ RSpec.describe 'character source fetch tasks' do
       expect(out).to include('mode=shadow ids=3040377000')
     end
 
+    it 'stops on an expired session and prints how to resume' do
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000301'))
+                                                 .to_return(status: 200, body: '{"auth_status":"require_auth"}')
+      expect do
+        invoke('granblue:fetch_game_data', ACCESS_TOKEN: 't', WING: 'w', MIDSHIP: 'm', ids: '3040377000,3040000301,3040000302')
+      end.to raise_error(SystemExit).and output(/2 Characters not fetched.*ids=3040000301,3040000302/m).to_stderr
+      expect(cidala.reload.game_raw_en['id']).to eq('3040377000')
+    end
+
     it 'never paces the game faster than 2 seconds' do
       invoke('granblue:fetch_game_data', ACCESS_TOKEN: 't', WING: 'w', MIDSHIP: 'm', ids: '3040377000', delay: '0.5')
       expect(Dataminer).to have_received(:new).with(hash_including(delay: 2.0))
