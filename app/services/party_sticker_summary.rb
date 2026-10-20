@@ -6,24 +6,18 @@
 module PartyStickerSummary
   module_function
 
-  # { party_id => [slug, slug] }: active stickers given by at least
-  # STICKER_LABEL_THRESHOLD users, most given first, at most MAX_LABELS.
+  # { party_id => [slug] }: each party's label, the active sticker given most
+  # among its last RECENT_FOR_LABEL active stickers (by when each was first
+  # given). Retired stickers don't take up any of those places. A tie is broken
+  # by a hash of the party and slug: as good as random, but the same on every
+  # load, so cards don't change sticker when lists refetch.
   def labels_for(party_ids)
     ids = Array(party_ids).compact.uniq
     return {} if ids.empty?
 
-    counts = PartySticker.joins(:sticker)
-                         .where(party_id: ids, stickers: { active: true })
-                         .group(:party_id, 'stickers.slug', 'stickers.position')
-                         .having('COUNT(*) >= ?', PartySticker::STICKER_LABEL_THRESHOLD)
-                         .count
-
-    counts.group_by { |(party_id, _slug, _position), _count| party_id }
-          .transform_values do |rows|
-            rows.sort_by { |(_pid, slug, position), count| [-count, position, slug] }
-                .first(PartySticker::MAX_LABELS)
-                .map { |(_pid, slug, _position), _count| slug }
-          end
+    label_rows(PartySticker.where(party_id: ids))
+      .pluck(:party_id, :slug)
+      .to_h { |party_id, slug| [party_id, [slug]] }
   end
 
   # [{ id:, sticker: slug, mine:, placement: { x, y, rotation } | nil }] for
@@ -75,14 +69,33 @@ module PartyStickerSummary
            end
   end
 
-  # Subquery of party ids where `slug` (an active sticker) has reached the
-  # label threshold.
+  # Subquery of the ids of parties whose label is `slug`.
   def labelled_party_ids(slug)
-    PartySticker.joins(:sticker)
-                .where(stickers: { slug: slug.to_s, active: true })
-                .group(:party_id)
-                .having('COUNT(*) >= ?', PartySticker::STICKER_LABEL_THRESHOLD)
-                .select(:party_id)
+    label_rows(PartySticker.all).where(slug: slug.to_s).select(:party_id)
+  end
+
+  # One row (party_id, slug) per party in `scope`: its label. Ranks each
+  # party's active stickers newest first, counts slugs among the most recent,
+  # and keeps the most counted, ties broken by the hash.
+  def label_rows(scope)
+    recent = scope.joins(:sticker)
+                  .where(stickers: { active: true })
+                  .select(
+                    'party_stickers.party_id', 'stickers.slug',
+                    'ROW_NUMBER() OVER (PARTITION BY party_stickers.party_id ' \
+                    'ORDER BY party_stickers.created_at DESC, party_stickers.id DESC) AS recency'
+                  )
+    labels = PartySticker.unscoped
+                         .from(recent, :party_stickers)
+                         .where('party_stickers.recency <= ?', PartySticker::RECENT_FOR_LABEL)
+                         .group(:party_id, :slug)
+                         .select('DISTINCT ON (party_stickers.party_id) party_stickers.party_id, party_stickers.slug')
+                         .order(Arel.sql(
+                                  'party_stickers.party_id, COUNT(*) DESC, ' \
+                                  "md5(party_stickers.party_id::text || ':' || party_stickers.slug)"
+                                ))
+    # Wrapped, so plucking or selecting from it keeps the DISTINCT ON
+    PartySticker.unscoped.from(labels, :party_stickers)
   end
 
   # PartyBlueprint options with every party's labels and the viewer's

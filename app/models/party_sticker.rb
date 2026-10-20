@@ -3,10 +3,8 @@
 # One user's sticker on one party. The unique (user_id, party_id) index keeps
 # it to one per user per team; changing a sticker updates this row.
 class PartySticker < ApplicationRecord
-  # Distinct users who must give an active sticker before it shows as a label.
-  STICKER_LABEL_THRESHOLD = 5
-  # Labels shown on a team, most given first.
-  MAX_LABELS = 2
+  # A team's label is the sticker given most among its last this many.
+  RECENT_FOR_LABEL = 10
 
   belongs_to :user
   belongs_to :party

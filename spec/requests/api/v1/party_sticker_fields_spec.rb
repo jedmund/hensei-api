@@ -31,16 +31,21 @@ RSpec.describe 'Party sticker fields', type: :request do
   end
 
   describe 'labels' do
-    it 'shows at most two active stickers given by at least 5 users, most given first' do
-      give(5, cleared)
-      give(7, fast)
-      give(6, accessible)
+    it 'shows the one sticker given most recently most' do
+      give(2, cleared)
+      give(3, fast)
+      give(1, accessible)
       get '/api/v1/parties'
-      expect(listed(party.id)['labels']).to eq(%w[fast accessible])
+      expect(listed(party.id)['labels']).to eq(%w[fast])
     end
 
-    it 'does not label below the threshold' do
-      give(4, cleared)
+    it 'labels from a single giver' do
+      give(1, cleared)
+      get '/api/v1/parties'
+      expect(listed(party.id)['labels']).to eq(%w[cleared])
+    end
+
+    it 'does not label without stickers' do
       get '/api/v1/parties'
       expect(listed(party.id)['labels']).to eq([])
     end
@@ -53,7 +58,7 @@ RSpec.describe 'Party sticker fields', type: :request do
     end
 
     it 'shows labels on the party page' do
-      give(5, cleared)
+      give(1, cleared)
       get "/api/v1/parties/#{party.shortcode}"
       expect(json_response['party']['labels']).to eq(['cleared'])
     end
@@ -141,8 +146,9 @@ RSpec.describe 'Party sticker fields', type: :request do
     let!(:high) { listable(create(:party, visibility: 1)) }
 
     it 'filters by label' do
-      give(5, cleared, to: low)
-      give(4, cleared, to: high)
+      give(2, cleared, to: low)
+      give(1, cleared, to: high)
+      give(2, fast, to: high)
       get '/api/v1/parties', params: { label: 'cleared' }
       expect(json_response['results'].map { |p| p['id'] }).to eq([low.id])
     end
@@ -161,7 +167,7 @@ RSpec.describe 'Party sticker fields', type: :request do
     end
 
     it 'runs one labels query and one my_sticker query per page' do
-      4.times { give(5, cleared, to: listable(create(:party, visibility: 1))) }
+      4.times { give(2, cleared, to: listable(create(:party, visibility: 1))) }
 
       queries = party_sticker_queries { get '/api/v1/parties', headers: bearer_headers(viewer) }
 
