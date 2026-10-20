@@ -81,6 +81,17 @@ RSpec.describe 'CharacterSkillParser golden snapshots for a style shift' do
     end
   end
 
+  it "ignores the base's game data left on the style row by older writers" do
+    style.update!(game_raw_en: base.game_raw_en)
+
+    icons = CharacterSkillGolden.ability_icons(build(style))
+
+    aggregate_failures do
+      expect(icons).to match_array(style_icons)
+      expect(icons & base_icons).to be_empty
+    end
+  end
+
   it "persists the two rows' skills independently" do
     Granblue::Parsers::CharacterSkillParser.new(base.reload).parse(persist: true)
     Granblue::Parsers::CharacterSkillParser.new(style.reload).parse(persist: true)
