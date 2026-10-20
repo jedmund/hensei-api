@@ -11,17 +11,14 @@
 #     skill-build fingerprint already used for the jsonb value.
 #   - Idempotent: a character that already has a row of a kind is skipped for that kind
 #     (a newer fetch through the store wins). Batches by id; logs counts only.
+#   - Records when it ran (ar_internal_metadata), so rake granblue:sync_character_sources
+#     can copy, after the deploy, what the old code wrote to the columns in the meantime.
 #
 # Reads the columns with SQL: Character ignores them.
 class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   BATCH = 100
   # kind → [column, fetched_at column or nil]
-  KINDS = {
-    'wiki_raw' => %w[wiki_raw wiki_raw_fetched_at],
-    'wiki_raw_jp' => %w[wiki_raw_jp wiki_raw_jp_fetched_at],
-    'game_raw_en' => ['game_raw_en', nil],
-    'game_raw_jp' => ['game_raw_jp', nil]
-  }.freeze
+  KINDS = CharacterSkills::SourceSync::COLUMNS
 
   def up
     KINDS.each do |kind, (column, fetched_column)|
@@ -29,7 +26,7 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
       skipped = 0
       each_batch(kind, column, fetched_column) do |rows|
         values = rows.filter_map do |id, value, fetched_at|
-          body = Source.serialize(kind, prepare(kind, value))
+          body = CharacterSkills::SourceSync.body_for(kind, value)
           if body.nil?
             skipped += 1
             next
@@ -42,10 +39,13 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
       end
       say "#{kind}: #{copied} copied, #{skipped} blank"
     end
+    CharacterSkills::SourceSync.record_copied_at
   end
 
+  # The rows can't be told from ones written through the store since, and the columns
+  # stay until the follow-up drop, so there's nothing to restore.
   def down
-    execute "DELETE FROM sources WHERE owner_type = 'Character' AND kind IN (#{KINDS.keys.map { |k| quote(k) }.join(', ')})"
+    raise ActiveRecord::IrreversibleMigration
   end
 
   private
@@ -72,13 +72,6 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
 
       yield rows
       last_id = rows.last.first
-    end
-  end
-
-  def prepare(kind, value)
-    case kind
-    when 'wiki_raw_jp' then Granblue::JpWikiPage.trim(value)
-    else value
     end
   end
 

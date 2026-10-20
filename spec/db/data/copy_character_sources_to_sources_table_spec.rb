@@ -80,6 +80,16 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
     expect(Source.where(kind: 'wiki_raw').count).to eq(2)
   end
 
+  it 'records when it ran, for the sync task' do
+    run
+    expect(CharacterSkills::SourceSync.copied_at).to be_within(1.minute).of(Time.current)
+    expect(Source.maximum(:updated_at)).to be <= CharacterSkills::SourceSync.copied_at
+  end
+
+  it 'is irreversible' do
+    expect { migration_class.new.down }.to raise_error(ActiveRecord::IrreversibleMigration)
+  end
+
   it 'logs counts only' do
     output = StringIO.new
     migration = migration_class.new

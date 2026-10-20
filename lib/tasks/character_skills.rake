@@ -7,6 +7,14 @@ namespace :granblue do
     puts "Statuses - created: #{result[:created]}, updated: #{result[:updated]}, total: #{result[:total]}"
   end
 
+  desc "Once after the PR 7a deploy is live: copy into `sources` what the old code wrote to the characters " \
+       "source columns after the copy migration ran (missing rows, and rows not rewritten since the copy whose " \
+       "sha256 differs). Prints counts only; idempotent; queues no builds."
+  task sync_character_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    CharacterSkills::SourceSync.new.call
+  end
+
   desc "Build character skills from the stored sources (CharacterSkills::Build::Runner). " \
        "mode=shadow (default unless CHARACTER_SKILL_BUILD=write) builds in a rolled-back transaction and prints " \
        "the differences; mode=write keeps the result. Builds only characters whose fingerprint changed unless " \
