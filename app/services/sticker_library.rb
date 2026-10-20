@@ -23,10 +23,4 @@ module StickerLibrary
   def by_id
     @by_id ||= all.index_by(&:id)
   end
-
-  # Whether `key` is one of the library's shared images
-  def image?(key)
-    @keys ||= all.flat_map { |entry| [entry.image_key, entry.image_key_jp] }.compact.to_set
-    @keys.include?(key)
-  end
 end
