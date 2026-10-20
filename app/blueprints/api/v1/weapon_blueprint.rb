@@ -61,11 +61,12 @@ module Api
                  :forge_order, :extra, :series, :promotion_names
       end
 
-      # Minimal view for party list cards — just enough for image rendering
+      # Minimal view for party list cards — just enough for image rendering.
+      # Keeps :series so reps can pick transcendence-stage art (Dark Opus).
       view :list do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
                  :max_exorcism_level, :limit, :rarity, :promotions,
-                 :forge_order, :extra, :series, :promotion_names
+                 :forge_order, :extra, :promotion_names
       end
 
       # Minimal view for the element-variant lookup endpoint.

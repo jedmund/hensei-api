@@ -14,7 +14,7 @@ module PartyQueryingConcern
       :solomonis_expedition,
       { user: { active_crew_membership: :crew } },
       { characters: [:character, :awakening] },
-      { weapons: [:weapon, :awakening] },
+      { weapons: [{ weapon: [:weapon_series, :weapon_series_variant] }, :awakening] },
       { summons: :summon }
     )
   end
