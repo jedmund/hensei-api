@@ -20,7 +20,9 @@ module Granblue
     end
 
     def reparse
-      WikiFetcher.new.fetch_and_store(@entity) if @refetch
+      # The fetch saves wiki_raw, which would also queue CharacterSkills::BuildJob; this
+      # reparse builds the character itself.
+      Character.without_skill_build { WikiFetcher.new.fetch_and_store(@entity) } if @refetch
 
       case @entity
       when Weapon then reparse_weapon
@@ -90,10 +92,19 @@ module Granblue
       { auras: records.size }
     end
 
+    # Characters go through the character-skill build (CharacterSkills::Build::Runner in write
+    # mode, for this row only, even when it isn't stale): the row's stored sources in, its skills
+    # upserted by natural key, so ids survive and nothing the sources still make is lost.
+    # → { skills:, built:, counts: } (counts: the writer's report). Re-raises a build failure, and
+    # raises MissingWikiRawError when the build was held back (it made no skills, so the
+    # existing ones were kept) rather than reporting success.
     def reparse_character
-      status_lookup = Parsers::CharacterSkillParser.build_status_lookup
-      Parsers::CharacterSkillParser.new(@entity, status_lookup: status_lookup).parse(persist: true)
-      { skills: @entity.character_skills.count }
+      log = StringIO.new
+      summary = ::CharacterSkills::Build::Runner.new(mode: 'write', characters: [@entity], all: true, io: log).call
+      raise summary.errors.first.last if summary.errors.any?
+      raise MissingWikiRawError, log.string.lines.first.to_s.strip.sub(/\A\S+ /, '') if summary.built.zero?
+
+      { skills: @entity.character_skills.count, built: summary.built, counts: summary.counts.to_h }
     end
   end
 end

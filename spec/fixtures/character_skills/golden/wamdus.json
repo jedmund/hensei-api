@@ -83,7 +83,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Fated Chain Bar",
               "amount": "20%",
@@ -99,7 +99,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Tentakernel",
               "amount": null,
@@ -131,7 +131,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "one_foe",
               "status": "Charged",
               "amount": "30%",
@@ -175,7 +175,7 @@
           ],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Tentaforce",
               "amount": null,
@@ -390,7 +390,7 @@
           ],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "all_allies",
               "status": "DMG Mitigation",
               "amount": "5000",

@@ -129,7 +129,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "ATK Boosted (Stackable)",
               "amount": "10%",
@@ -161,7 +161,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "DMG Cap Boosted (Stackable)",
               "amount": "2%",
@@ -417,7 +417,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Twin Tiger Fury",
               "amount": null,
@@ -475,7 +475,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Twin Tiger Fury",
               "amount": null,
@@ -491,7 +491,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Tiger Tape+",
               "amount": null,
@@ -617,8 +617,8 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
-              "target": "one_foe",
+              "type": "grant_status",
+              "target": "caster",
               "status": "Tiger Tape+",
               "amount": null,
               "amount_max": null,
@@ -633,8 +633,8 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
-              "target": "one_foe",
+              "type": "grant_status",
+              "target": "caster",
               "status": "Tiger Tape+",
               "amount": null,
               "amount_max": null,
@@ -761,7 +761,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "one_foe",
               "status": "Silver Stripes",
               "amount": null,
@@ -825,7 +825,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "one_foe",
               "status": "Triple Attack Rate Boosted (Stackable)",
               "amount": "15%",

@@ -223,7 +223,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "ATK Sharply Boosted (Can't be extended)",
               "amount": "50%",

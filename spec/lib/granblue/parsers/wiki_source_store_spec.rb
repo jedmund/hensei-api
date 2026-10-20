@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require "webmock"
 
 RSpec.describe Granblue::Parsers::Wiki do
   include WebMock::API
@@ -15,8 +14,7 @@ RSpec.describe Granblue::Parsers::Wiki do
     example.run
   ensure
     WebMock.reset!
-    WebMock.allow_net_connect!
-    WebMock.disable!
+    WebMock.disable_net_connect!
   end
 
   def wiki_requests = WebMock::RequestRegistry.instance.requested_signatures.hash.keys

@@ -31,7 +31,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Jammed",
               "amount": "30%-90%",
@@ -47,7 +47,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "DMG Amplified",
               "amount": "30%",
@@ -123,7 +123,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Jammed",
               "amount": "30%-90%",
@@ -139,7 +139,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "DMG Amplified",
               "amount": "30%",
@@ -348,7 +348,7 @@
           ],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Shield",
               "amount": "3000",
@@ -418,7 +418,7 @@
           "description_en": "Damage increased and damage cap increased to ~2,040,000.\nShield endurance increased to Shield.\n(When HP is below 25%: Also gain Tri-Slash.)",
           "description_jp": "自分のHPを犠牲にして敵全体に無属性ダメージ(消費HPの100(++で300)倍)/自分にバリア効果(3000)(+で/土属性防御DOWN(25%))(++で/瀕死状態の場合、ターン進行時に攻撃行動を3回行う効果)",
           "variant_role": "transcendence_upgrade",
-          "ordinal": 2,
+          "ordinal": 3,
           "type_color": "damage",
           "cooldown": 6,
           "initial_cooldown": null,
@@ -505,7 +505,7 @@
           ],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Shield",
               "amount": "3000",
@@ -828,7 +828,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Earth ATK Up",
               "amount": "20%",
@@ -928,7 +928,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Earth ATK Up",
               "amount": "20%",
@@ -1044,7 +1044,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Earth ATK Up",
               "amount": "20%",

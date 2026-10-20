@@ -24,6 +24,36 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
     )
   end
 
+  describe 'effect_type' do
+    let(:charge_boost) { instance_double('Status', id: 'cb-id', category: 'buff') }
+    let(:paradise) { instance_double('Status', id: 'field-id', category: 'field') }
+    let(:mystery) { instance_double('Status', id: 'mystery-id', category: 'special') }
+    let(:lookup) do
+      { by_name: { 'veil' => veil, 'jammed' => jammed, 'charge boost' => charge_boost, 'paradise' => paradise,
+                   'mystery' => mystery }, by_id: {} }
+    end
+
+    it "grants a buff even when the previous clause says 'to a foe'" do
+      # The 80-character text window reaches back into the damage line.
+      effect = parser.parse("400% Fire damage to a foe.\nGain {{status|Charge Boost|t=3T}}.").find { |e| e[:status_id] == 'cb-id' }
+      expect(effect).to include(effect_type: 'grant_status', target: 'caster')
+    end
+
+    it 'inflicts a debuff even when the text says gain' do
+      expect(parser.parse('Gain {{status|Jammed}}.').first[:effect_type]).to eq('inflict_status')
+    end
+
+    it 'types a field status as a field effect' do
+      expect(parser.parse('Create {{status|Paradise}} on the field.').first[:effect_type]).to eq('field_effect')
+    end
+
+    it 'falls back to the text for a status of unknown category' do
+      expect(parser.parse('Inflict {{status|Mystery}} on a foe.').first[:effect_type]).to eq('inflict_status')
+      expect(parser.parse('Gain {{status|Mystery}}.').first[:effect_type]).to eq('grant_status')
+      expect(parser.parse('Inflict {{status|Unknown}} on a foe.').first[:effect_type]).to eq('inflict_status')
+    end
+  end
+
   it 'parses damage with hit count and cap' do
     damage = parser.parse('5-hit, {{tt|100%|Massive}} damage to a foe (Damage cap: ~110,000).')
                    .find { |e| e[:effect_type] == 'deal_damage' }

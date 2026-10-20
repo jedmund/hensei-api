@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# Backfill playable characters that have no parsed skills: download their wiki
-# data (for any missing it) and parse the skill graph. Safe to re-run — wiki
-# fetch skips records that already have wiki_raw, and the parse step only
-# touches characters that currently have no skills.
+# Backfill playable characters (both style rows) that have no skills: download
+# their wiki data (for any missing it) and build their skills with the
+# character skill build. Safe to re-run — wiki fetch skips records that already
+# have wiki_raw, and the build step is limited to the characters found here.
 #
 # Usage: bin/backfill_missing_character_skills.sh
 #
@@ -13,8 +13,8 @@ cd "$(dirname "$0")/.."
 find_missing() {
   bin/rails runner '
     ids = Character.where("granblue_id LIKE ?", "304%")
-      .where("NOT EXISTS (SELECT 1 FROM character_skills s WHERE s.character_granblue_id = characters.granblue_id)")
-      .order(:granblue_id).pluck(:granblue_id)
+      .where("NOT EXISTS (SELECT 1 FROM character_skills s WHERE s.character_id = characters.id)")
+      .order(:granblue_id).distinct.pluck(:granblue_id)
     puts "MISSING:#{ids.join(",")}"
   ' 2>/dev/null | sed -n 's/^MISSING://p'
 }
@@ -36,8 +36,8 @@ for id in "${ids[@]}"; do
 done
 echo
 
-echo "== Step 2: parse skills for characters that have none (missing-only) =="
-bundle exec rake granblue:parse_character_skills
+echo "== Step 2: build skills for those characters =="
+bundle exec rake granblue:build_character_skills mode=write ids="$ids_csv" || echo "  (some builds failed — see above)"
 echo
 
 echo "== Result =="

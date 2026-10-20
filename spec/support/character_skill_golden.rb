@@ -2,7 +2,7 @@
 
 # The golden-snapshot shape for a built character skill graph (slots, versions,
 # effects with resolved status names, and links), as stored under
-# spec/fixtures/character_skills/golden/. Same shape as character_skill_golden_spec.rb.
+# spec/fixtures/character_skills/golden/. Used by character_skill_golden_spec.rb and character_skill_style_golden_spec.rb.
 module CharacterSkillGolden
   module_function
 

@@ -32,6 +32,11 @@ module Granblue
           'assassin' => 'assassin'
         }.freeze
 
+        # A buff is granted (even on a skill that also hits a foe), a debuff inflicted, a field
+        # state is a field effect. The text window around a template reaches into the previous
+        # clause ("…damage to a foe.\nGain Charge Boost."), so it can't override a known category.
+        CATEGORY_EFFECT_TYPES = { 'buff' => 'grant_status', 'debuff' => 'inflict_status', 'field' => 'field_effect' }.freeze
+
         attr_reader :unmatched_statuses
 
         def initialize(status_lookup)
@@ -128,14 +133,11 @@ module Granblue
           clauses.find { |range, _| range.cover?(offset) }&.last
         end
 
+        # The status's category decides the type (CATEGORY_EFFECT_TYPES); the text window is
+        # only for statuses whose category is unknown.
         def effect_type_for_status(context, status)
-          return 'field_effect' if status&.category == 'field'
-
-          normalized = context.to_s.downcase
-          if status&.category == 'debuff' || normalized.match?(/inflict|foe|enemy|lowered|delay/)
-            'inflict_status'
-          else
-            'grant_status'
+          CATEGORY_EFFECT_TYPES.fetch(status&.category.to_s) do
+            context.to_s.downcase.match?(/inflict|foe|enemy|lowered|delay/) ? 'inflict_status' : 'grant_status'
           end
         end
 
