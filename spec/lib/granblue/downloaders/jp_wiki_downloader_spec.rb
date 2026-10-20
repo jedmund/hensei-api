@@ -22,6 +22,17 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
       expect(described_class).not_to have_received(:sleep).with(0.1)
     end
 
+    it 'sleeps only after a real request' do
+      create(:character, name_jp: 'キャッシュ', wiki_ja: nil, wiki_raw_jp: '<html>cached</html>')
+      fetches = 0
+      allow(client).to receive(:fetch) { (fetches += 1) && '<html></html>' }
+
+      described_class.backfill(model: Character)
+
+      expect(fetches).to be_positive
+      expect(described_class).to have_received(:sleep).exactly(fetches).times
+    end
+
     it 'defaults to 2 seconds' do
       expect(described_class::DEFAULT_THROTTLE).to eq(2.0)
     end

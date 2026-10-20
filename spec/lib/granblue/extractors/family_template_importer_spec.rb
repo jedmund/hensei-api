@@ -46,4 +46,14 @@ RSpec.describe Granblue::Extractors::FamilyTemplateImporter do
 
     expect(described_class).to have_received(:sleep).with(2.0).twice
   end
+
+  it "still waits after a failed import" do
+    allow(described_class).to receive(:import_one).and_raise(StandardError, "boom")
+    allow(described_class).to receive(:sleep)
+
+    results = described_class.import(%w[Crux Betrayal])
+
+    expect(results.map(&:status)).to all(start_with("error: StandardError"))
+    expect(described_class).to have_received(:sleep).with(2.0).twice
+  end
 end

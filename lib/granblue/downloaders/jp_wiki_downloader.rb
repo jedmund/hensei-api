@@ -37,14 +37,16 @@ module Granblue
         scope.find_each.with_index do |record, index|
           progress = index + 1
           title = resolve_title(record)
-          new(record, client: client, jp_title: title).download(force: force)
+          downloader = new(record, client: client, jp_title: title)
+          requested = downloader.request?(force: force)
+          downloader.download(force: force)
           downloaded += 1
           print_progress(progress, total, label(record), 'OK', start_time)
         rescue StandardError => e
           errored << { name: label(record), title: title, error: e.message }
           print_progress(progress, total, label(record), "ERR: #{e.message}", start_time)
         ensure
-          sleep(throttle)
+          sleep(throttle) if requested # only after a real request to gbf-wiki.com
         end
 
         print_summary(downloaded, errored, total, start_time)
@@ -128,6 +130,11 @@ module Granblue
         @record = record
         @client = client || Granblue::Parsers::JpWiki.new
         @jp_title = jp_title || self.class.resolve_title(record)
+      end
+
+      # True when download will fetch the page (not cached, or force, and a title).
+      def request?(force: false)
+        (@record.wiki_raw_jp.blank? || force) && @jp_title.present?
       end
 
       # Fetches the JP wiki page and caches it. Returns the HTML, or nil when
