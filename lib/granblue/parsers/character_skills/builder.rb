@@ -214,13 +214,15 @@ subtitle: subtitle }
           info_desc = FieldParser.parse_info_des(wiki_params["#{base_key}_#{description_suffix}"])
           cooldowns = FieldParser.parse_cooldown(wiki_params["#{base_key}_cd"])
 
-          levels.each_with_index.filter_map do |level, index|
+          # The caller appends these to the slot afterwards, so each one's ordinal counts the
+          # ones built before it (ordinals are the version's natural key within a slot).
+          levels.each_with_index.with_object([]) do |(level, index), built|
             description = info_desc[:descriptions][index + 1]
             cooldown = cooldowns[:enhanced][index]
             next if description.blank? && cooldown.blank?
 
-            build_version(
-              base_key, slot, role: InferenceRules.enhanced_role(level), ordinal: next_ordinal(slot),
+            built << build_version(
+              base_key, slot, role: InferenceRules.enhanced_role(level), ordinal: next_ordinal(slot) + built.size,
               overrides: {
                 **inline_base_overrides(base_key),
                 unlock_level: level,

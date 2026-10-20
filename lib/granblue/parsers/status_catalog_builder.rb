@@ -12,10 +12,29 @@ module Granblue
       }.freeze
 
       class << self
+        # Every character with stored wiki or game data. Loads only the columns the records
+        # come from (wiki_raw_jp is most of the table's size and isn't one of them).
         def build_all(debug: false)
+          characters = Character.where.not(game_raw_en: [nil, {}]).or(Character.where.not(wiki_raw: [nil, '']))
+          merge_and_persist(characters.select(:id, :granblue_id, :wiki_raw, :game_raw_en, :game_raw_jp),
+                            overwrite: true, debug: debug)
+        end
+
+        # The same merge over the given characters (a relation, or records, unsaved text
+        # included), for building a few characters: it adds the statuses they name that the
+        # catalogue lacks and fills blank attributes, but never overwrites one. A subset merges
+        # differently from the whole table (one character can pair a name with another's
+        # ailment id), and build_all's values are the ones every fingerprint was taken with.
+        def build_for(characters, debug: false)
+          merge_and_persist(characters, overwrite: false, debug: debug)
+        end
+
+        private
+
+        def merge_and_persist(characters, overwrite:, debug:)
           records = {}
 
-          Character.where.not(game_raw_en: [nil, {}]).or(Character.where.not(wiki_raw: [nil, ''])).find_each do |character|
+          each_character(characters) do |character|
             new(character).records.each do |record|
               key = record[:game_ailment_id].presence || "name:#{record[:name_en].downcase}"
               records[key] = merge_record(records[key], record)
@@ -25,10 +44,12 @@ module Granblue
             puts "[STATUS_CATALOG] #{character.granblue_id}: #{e.message}" if debug
           end
 
-          persist(records.values, debug: debug)
+          persist(records.values, overwrite: overwrite, debug: debug)
         end
 
-        private
+        def each_character(characters, &)
+          characters.respond_to?(:find_each) ? characters.find_each(&) : Array(characters).each(&)
+        end
 
         def merge_record(existing, record)
           return record if existing.blank?
@@ -38,16 +59,19 @@ module Granblue
           end
         end
 
-        def persist(records, debug:)
+        def persist(records, overwrite:, debug:)
           created = 0
           updated = 0
 
           records.each do |attrs|
             status = find_status(attrs)
             was_new = status.new_record?
-            attrs = attrs.merge(category: strongest_category(status.category, attrs[:category])) unless was_new
-
-            status.assign_attributes(attrs.compact)
+            if was_new || overwrite
+              attrs = attrs.merge(category: strongest_category(status.category, attrs[:category])) unless was_new
+              status.assign_attributes(attrs.compact)
+            else
+              status.assign_attributes(attrs.compact.select { |column, _| status[column].blank? })
+            end
             next unless status.changed?
 
             status.save!

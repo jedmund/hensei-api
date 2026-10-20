@@ -65,6 +65,22 @@ class Character < ApplicationRecord
   # Validations
   before_validation :normalize_max_transcendence_stage
 
+  # Skill build: a new character, or a change to anything its skills are built from
+  # (CharacterSkills::Build::Fingerprint::INPUT_COLUMNS), queues CharacterSkills::BuildJob.
+  # Covers every writer (controllers, the extractor import, Dataminer, wiki fetch tasks).
+  # Bulk work can skip it with Character.without_skill_build { ... }; the deploy build picks
+  # those characters up.
+  thread_cattr_accessor :skip_skill_build, instance_accessor: false
+  after_commit :enqueue_skill_build, on: %i[create update], if: :skill_inputs_changed?
+
+  def self.without_skill_build
+    previous = skip_skill_build
+    self.skip_skill_build = true
+    yield
+  ensure
+    self.skip_skill_build = previous
+  end
+
   validates :season,
             numericality: { only_integer: true },
             inclusion: { in: GranblueEnums::CHARACTER_SEASONS.values },
@@ -223,6 +239,18 @@ class Character < ApplicationRecord
   end
 
   private
+
+  def skill_inputs_changed?
+    return false if self.class.skip_skill_build
+    return false unless saved_changes.keys.intersect?(CharacterSkills::Build::Fingerprint::INPUT_COLUMNS)
+
+    # Nothing to build from and nothing to report on: the job would be a no-op.
+    wiki_raw.present? || CharacterSkill.exists?(character_id: id)
+  end
+
+  def enqueue_skill_build
+    CharacterSkills::BuildJob.perform_later(id)
+  end
 
   def normalize_max_transcendence_stage
     self.max_transcendence_stage = 0 unless transcendence?

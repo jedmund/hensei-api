@@ -121,5 +121,48 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
       post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
       expect(response).to have_http_status(:unprocessable_entity)
     end
+
+    context 'with stored wikitext' do
+      let(:fixtures) { Rails.root.join('spec/fixtures/character_skills') }
+      let(:character) do
+        create(:character, granblue_id: '3040252000', name_en: 'Vikala',
+                           wiki_raw: fixtures.join('character-vikala-wikidata.txt').read,
+                           game_raw_en: JSON.parse(fixtures.join('character-vikala-gamedata.json').read))
+      end
+
+      def version_ids
+        CharacterSkillVersion.joins(:character_skill).where(character_skills: { character_id: character.id })
+                             .order(:id).pluck(:id, :name_en, :game_icon)
+      end
+
+      it 'builds the skills, then keeps their ids on a second reparse' do
+        post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
+        expect(response).to have_http_status(:ok)
+        first = version_ids
+        expect(first).not_to be_empty
+        expect(character.reload.character_skill_build_fingerprint).to be_present
+
+        post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
+        expect(response).to have_http_status(:ok)
+        expect(version_ids).to eq(first)
+      end
+
+      it 'refuses a reparse whose build makes no skills, and keeps the existing ones' do
+        post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
+        ids = version_ids
+        character.update_columns(wiki_raw: '#REDIRECT [[Somewhere]]')
+
+        post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['error']).to include('the build made no skills; kept its existing skills')
+        expect(version_ids).to eq(ids)
+      end
+
+      it "builds only this row, not its style shift's" do
+        style = create(:character, granblue_id: character.granblue_id, style_swap: true, wiki_raw: character.wiki_raw)
+        post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
+        expect(CharacterSkill.where(character_id: style.id)).to be_empty
+      end
+    end
   end
 end
