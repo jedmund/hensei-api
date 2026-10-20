@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_030000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1027,6 +1027,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["shared_by_id"], name: "index_party_shares_on_shared_by_id"
   end
 
+  create_table "party_stickers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "party_id", null: false
+    t.uuid "sticker_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "x"
+    t.float "y"
+    t.float "rotation"
+    t.index ["created_at"], name: "index_party_stickers_on_created_at"
+    t.index ["party_id", "sticker_id"], name: "index_party_stickers_on_party_id_and_sticker_id"
+    t.index ["sticker_id"], name: "index_party_stickers_on_sticker_id"
+    t.index ["user_id", "party_id"], name: "index_party_stickers_on_user_id_and_party_id", unique: true
+  end
+
   create_table "pg_search_documents", force: :cascade do |t|
     t.text "content"
     t.string "granblue_id"
@@ -1247,6 +1262,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
     t.index ["family"], name: "index_statuses_on_family"
     t.index ["game_ailment_id"], name: "index_statuses_on_game_ailment_id", unique: true, where: "(game_ailment_id IS NOT NULL)"
     t.index ["name_en"], name: "index_statuses_on_name_en"
+  end
+
+  create_table "stickers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "slug", null: false
+    t.string "meaning_en", null: false
+    t.string "meaning_jp"
+    t.string "image_key"
+    t.integer "position", default: 0, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "image_key_jp"
+    t.index ["active", "position"], name: "index_stickers_on_active_and_position"
+    t.index ["slug"], name: "index_stickers_on_slug", unique: true
   end
 
   create_table "substitutions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1824,6 +1853,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_090001) do
   add_foreign_key "party_blessings", "parties", on_delete: :cascade
   add_foreign_key "party_shares", "parties"
   add_foreign_key "party_shares", "users", column: "shared_by_id"
+  add_foreign_key "party_stickers", "parties"
+  add_foreign_key "party_stickers", "stickers"
+  add_foreign_key "party_stickers", "users"
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
   add_foreign_key "phantom_players", "crews"
   add_foreign_key "phantom_players", "users", column: "claimed_by_id"

@@ -126,7 +126,7 @@ module Api
                        .paginate(page: params[:page], per_page: page_size)
 
         render json: {
-          parties: PartyBlueprint.render_as_hash(parties, view: :list),
+          parties: PartyBlueprint.render_as_hash(parties, view: :list, current_user: current_user),
           meta: pagination_meta(parties)
         }
       end

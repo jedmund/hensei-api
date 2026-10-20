@@ -3,6 +3,23 @@
 module Api
   module V1
     class PartyBlueprint < ApiBlueprint
+      # Rendering many parties looks up their sticker labels and the viewer's
+      # stickers in one query each, rather than one per party (see
+      # sticker_metadata). The viewer is `current_user`, or `sticker_viewer`
+      # where current_user has to stay out of the options.
+      module BatchStickers
+        %i[render render_as_hash render_as_json].each do |method|
+          define_method(method) do |object, options = {}|
+            if object.respond_to?(:map) && !object.is_a?(Hash) && !options.key?(:party_labels)
+              viewer = options.fetch(:sticker_viewer) { options[:current_user] }
+              options = options.merge(PartyStickerSummary.batch_options(object.to_a, viewer))
+            end
+            super(object, options)
+          end
+        end
+      end
+      singleton_class.prepend(BatchStickers)
+
       # Base fields that are always needed
       fields :local_id, :description, :shortcode, :visibility,
              :name, :element, :extra, :charge_attack,
@@ -89,6 +106,8 @@ module Api
 
           SolomonisExpeditionBlueprint.render_as_hash(party.solomonis_expedition, view: :summary)
         end
+
+        include_view :sticker_metadata
       end
 
       # Summary view for embedding in remix/source lists — minimal party metadata
@@ -112,6 +131,7 @@ module Api
         include_view :preview_objects # Characters, Weapons, Summons
         include_view :preview_metadata # Object counts
         include_view :party_metadata # favorited, has_orphaned_items
+        include_view :sticker_metadata # labels, my_sticker
       end
 
       # For object views
@@ -121,6 +141,21 @@ module Api
         include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
         include_view :party_metadata # favorited, has_orphaned_items
+        include_view :sticker_metadata # labels, my_sticker
+
+        # Every given sticker, one per giver, for the
+        # sticker area. Givers stay anonymous; `mine` marks the viewer's own.
+        field :placed_stickers do |party, options|
+          PartyStickerSummary.placed_for(party.id, options[:current_user])
+        end
+
+        # Private sticker counts, only for the owner. Retired stickers are
+        # included because they still count.
+        field :sticker_breakdown, if: ->(_field_name, party, options) {
+          options[:current_user] && party.user_id.present? && party.user_id == options[:current_user].id
+        } do |party|
+          PartyStickerSummary.breakdown_for(party.id)
+        end
 
         # Evoking Solomonis expedition, blessings and guidebook, or null.
         field :solomonis do |party, options|
@@ -222,6 +257,24 @@ module Api
 
         field :has_orphaned_items do |party|
           party.has_orphaned_items?
+        end
+      end
+
+      # Sticker labels (no counts) and the viewer's own sticker. Rendering
+      # many parties precomputes `party_labels` / `my_stickers` (see
+      # BatchStickers); without them each party is looked up on its own.
+      view :sticker_metadata do
+        field :labels do |party, options|
+          labels = options[:party_labels] || PartyStickerSummary.labels_for([party.id])
+          labels[party.id] || []
+        end
+
+        field :my_sticker do |party, options|
+          if options[:my_stickers]
+            options[:my_stickers][party.id]
+          elsif options[:current_user]
+            PartyStickerSummary.my_stickers_for(options[:current_user], [party.id])[party.id]
+          end
         end
       end
 

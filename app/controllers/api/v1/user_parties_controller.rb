@@ -24,7 +24,8 @@ module Api
           parties,
           view: :list,
           root: :results,
-          meta: pagination_meta(parties)
+          meta: pagination_meta(parties),
+          current_user: current_user
         )
       end
 

@@ -228,6 +228,10 @@ module Api
           party_lookup[p.id] = p
         end
 
+        # Each party renders on its own, so their stickers are looked up together
+        # here. Without current_user so `favorited` keeps its signed-out value.
+        sticker_options = PartyStickerSummary.batch_options(parties.to_a, current_user)
+
         # Deduplicate: skip entries that resolve to an already-seen party
         seen_party_ids = Set.new
         results = []
@@ -241,12 +245,13 @@ module Api
           result = if party.nil?
                      { party: nil, status: 'not_found' }
                    elsif party.user_id.present?
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'already_claimed' }
+                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options),
+                       status: 'already_claimed' }
                    elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
                                           party.edit_key.to_s.strip.force_encoding('UTF-8'))
                      { party: nil, status: 'invalid_key' }
                    else
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'ready' }
+                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options), status: 'ready' }
                    end
 
           results << result
@@ -385,7 +390,8 @@ module Api
           @parties,
           view: :list,
           root: :results,
-          meta: pagination_meta(@parties)
+          meta: pagination_meta(@parties),
+          current_user: current_user
         )
       end
 
@@ -404,7 +410,8 @@ module Api
           @parties,
           view: :list,
           root: :results,
-          meta: pagination_meta(@parties)
+          meta: pagination_meta(@parties),
+          current_user: current_user
         )
       end
 
