@@ -49,7 +49,7 @@ module PartyStickerSummary
                 .to_h
   end
 
-  # [{ sticker: slug, count: n, meaning: { en, ja }, image_url }] for one
+  # [{ sticker: slug, count: n, meaning: { en, ja }, image_url, image_url_ja }] for one
   # party, retired stickers included (they still count, and the picker
   # catalogue no longer lists them, hence meaning and image here). Only ever
   # shown to the party's owner.
@@ -64,7 +64,8 @@ module PartyStickerSummary
                sticker: sticker.slug,
                count: counts[sticker.id],
                meaning: { en: sticker.meaning_en, ja: sticker.meaning_jp },
-               image_url: Api::V1::StickerBlueprint.image_url(sticker)
+               image_url: Api::V1::StickerBlueprint.image_url(sticker),
+               image_url_ja: Api::V1::StickerBlueprint.image_url(sticker, :image_key_jp)
              }
            end
   end

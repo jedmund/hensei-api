@@ -15,10 +15,16 @@ module Api
         StickerBlueprint.image_url(sticker)
       end
 
-      def self.image_url(sticker)
-        return nil if sticker.image_key.blank?
+      # The Japanese image, or null when there's none (show image_url)
+      field :image_url_ja do |sticker|
+        StickerBlueprint.image_url(sticker, :image_key_jp)
+      end
 
-        "#{sticker.image_key}?v=#{sticker.updated_at.to_i}"
+      def self.image_url(sticker, column = :image_key)
+        key = sticker.public_send(column)
+        return nil if key.blank?
+
+        "#{key}?v=#{sticker.updated_at.to_i}"
       end
 
       fields :position, :active

@@ -9,7 +9,7 @@ class Sticker < ApplicationRecord
   IMAGE_PREFIX = 'icons/stickers'
 
   # Cache key for the public catalogue (GET /stickers), busted on any write.
-  CATALOGUE_CACHE_KEY = 'stickers/catalogue/v1'
+  CATALOGUE_CACHE_KEY = 'stickers/catalogue/v2'
 
   has_many :party_stickers, dependent: :restrict_with_error
 

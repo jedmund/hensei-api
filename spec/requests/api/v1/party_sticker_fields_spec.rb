@@ -121,9 +121,9 @@ RSpec.describe 'Party sticker fields', type: :request do
       get "/api/v1/parties/#{party.shortcode}", headers: bearer_headers(owner)
       expect(json_response['party']['sticker_breakdown']).to eq(
         [{ 'sticker' => 'cleared', 'count' => 2, 'meaning' => { 'en' => cleared.meaning_en, 'ja' => cleared.meaning_jp },
-           'image_url' => nil },
+           'image_url' => nil, 'image_url_ja' => nil },
          { 'sticker' => 'fast', 'count' => 1, 'meaning' => { 'en' => fast.meaning_en, 'ja' => fast.meaning_jp },
-           'image_url' => nil }]
+           'image_url' => nil, 'image_url_ja' => nil }]
       )
     end
 

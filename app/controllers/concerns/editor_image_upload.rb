@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Reads and stores an editor-uploaded image for a record with an `image_key`
-# column. Accepts the `image` param as a multipart file or, like the
+# column (or another, given as `column:`). Accepts the `image` param as a multipart file or, like the
 # awakenings upload, as a base64 string.
 module EditorImageUpload
   extend ActiveSupport::Concern
@@ -9,9 +9,9 @@ module EditorImageUpload
   private
 
   # Validates the upload and stores it at "<prefix>/<name>.<ext>", replacing
-  # the record's previous image. Returns the record, or renders a 422 and
-  # returns nil on failure.
-  def store_editor_image(record, prefix:, name:, **validator_options)
+  # the record's previous image in `column`. Returns the record, or renders a
+  # 422 and returns nil on failure.
+  def store_editor_image(record, prefix:, name:, column: :image_key, **validator_options)
     bytes = uploaded_image_bytes(params[:image])
     result = IconUploadValidator.call(bytes, **validator_options)
     unless result.valid?
@@ -20,12 +20,12 @@ module EditorImageUpload
     end
 
     key = "#{prefix}/#{name}.#{result.extension}"
-    previous_key = record.image_key
+    previous_key = record.public_send(column)
     IconStorage.put(key, bytes, content_type: result.content_type)
-    record.update!(image_key: key)
+    record.update!(column => key)
     # Same key as before (a replaced image): bump updated_at anyway, since the
     # image_url version comes from it and caches would keep the old image
-    record.touch unless record.saved_change_to_image_key?
+    record.touch unless record.saved_change_to_attribute?(column)
     remove_replaced_image(previous_key) if previous_key.present? && previous_key != key
     record
   end

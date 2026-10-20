@@ -58,9 +58,13 @@ module Api
       end
 
       # POST /stickers/:id/upload_image
-      # Multipart `image` (PNG or WebP), stored at icons/stickers/<slug>.<ext>.
+      # Multipart `image` (PNG or WebP), stored at icons/stickers/<slug>.<ext>,
+      # or with `language=ja` as the Japanese image at <slug>.ja.<ext>.
       def upload_image
-        stored = store_editor_image(@sticker, prefix: Sticker::IMAGE_PREFIX, name: @sticker.slug,
+        japanese = params[:language].to_s == 'ja'
+        stored = store_editor_image(@sticker, prefix: Sticker::IMAGE_PREFIX,
+                                              name: japanese ? "#{@sticker.slug}.ja" : @sticker.slug,
+                                              column: japanese ? :image_key_jp : :image_key,
                                               formats: %w[PNG WEBP],
                                               max_dimension: MAX_IMAGE_DIMENSION,
                                               max_bytes: MAX_IMAGE_BYTES)

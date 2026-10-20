@@ -134,6 +134,25 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(json_response['image_url']).to eq("icons/stickers/cleared.png?v=#{sticker.updated_at.to_i}")
     end
 
+    it 'stores the Japanese image apart, under icons/stickers/<slug>.ja.png' do
+      sticker.update!(image_key: 'icons/stickers/cleared.png')
+      post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: png_upload, language: 'ja' },
+                                                          headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(IconStorage).to have_received(:put).with('icons/stickers/cleared.ja.png', kind_of(String),
+                                                      content_type: 'image/png')
+      expect(sticker.reload.image_key_jp).to eq('icons/stickers/cleared.ja.png')
+      expect(sticker.image_key).to eq('icons/stickers/cleared.png')
+      expect(json_response['image_url_ja']).to start_with('icons/stickers/cleared.ja.png?v=')
+      expect(IconStorage).not_to have_received(:delete)
+    end
+
+    it 'has no Japanese image until one is uploaded' do
+      post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: png_upload }, headers: editor_headers
+      expect(json_response['image_url_ja']).to be_nil
+    end
+
     it 'accepts a base64 string' do
       post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: CommunitySpecHelpers::PNG_BASE64 },
                                                           headers: editor_headers
