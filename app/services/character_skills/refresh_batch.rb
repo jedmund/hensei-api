@@ -45,7 +45,7 @@ module CharacterSkills
         character_id: character.id, granblue_id: character.granblue_id, style_swap: character.style_swap,
         name: { en: character.name_en, ja: character.name_jp },
         style_name: character.style_swap ? { en: character.style_name_en, ja: character.style_name_jp } : nil,
-        status: 'queued', error: nil, refresh: nil
+        status: 'queued', error: nil, error_code: nil, error_status: nil, refresh: nil
       }
     end
 

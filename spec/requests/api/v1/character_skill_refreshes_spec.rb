@@ -85,10 +85,12 @@ RSpec.describe 'Character skill refreshes', type: :request do
       expect(body['items']).to eq([
         { 'character_id' => second.id, 'granblue_id' => '3040900002', 'style_swap' => false,
           'name' => { 'en' => 'Second', 'ja' => second.name_jp }, 'style_name' => nil,
-          'status' => 'queued', 'error' => nil, 'refresh' => nil },
+          'status' => 'queued', 'error' => nil, 'error_code' => nil, 'error_status' => nil,
+          'refresh' => nil },
         { 'character_id' => style.id, 'granblue_id' => '3040900001', 'style_swap' => true,
           'name' => { 'en' => 'First', 'ja' => style.name_jp }, 'style_name' => { 'en' => 'Super First', 'ja' => nil },
-          'status' => 'queued', 'error' => nil, 'refresh' => nil }
+          'status' => 'queued', 'error' => nil, 'error_code' => nil, 'error_status' => nil,
+          'refresh' => nil }
       ])
     end
 

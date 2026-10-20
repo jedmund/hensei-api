@@ -10,6 +10,10 @@ module CharacterSkills
   class RefreshJob < ApplicationJob
     queue_as :default
 
+    # Raised by HTTParty when gbf.wiki or gbf-wiki.com can't be reached at all.
+    NETWORK_ERRORS = [SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH,
+                      OpenSSL::SSL::SSLError, HTTParty::Error].freeze
+
     def perform(batch_id, action)
       batch = RefreshBatch.find(batch_id)
       return unless batch
@@ -28,7 +32,10 @@ module CharacterSkills
       batch.status!('running')
       batch.items.each do |item|
         character = Character.find_by(id: item[:character_id])
-        next batch.update_item!(item[:character_id], status: 'failed', error: 'This character no longer exists') unless character
+        unless character
+          next batch.update_item!(item[:character_id], status: 'failed', error: 'This character no longer exists',
+                                                       error_code: 'unexpected', error_status: nil)
+        end
 
         batch.update_item!(character.id, status: 'fetching')
         refresh = Refresh.new(character)
@@ -37,7 +44,7 @@ module CharacterSkills
         batch.store_sources(character.id, sources)
         batch.update_item!(character.id, status: 'previewed', refresh: result)
       rescue StandardError => e
-        batch.update_item!(item[:character_id], status: 'failed', error: item_error(e))
+        batch.update_item!(item[:character_id], status: 'failed', **failure(e))
       end
       batch.status!(batch.previewed_ids.any? ? 'previewed' : 'failed')
     end
@@ -65,18 +72,30 @@ module CharacterSkills
       result = Refresh.new(character).apply(sources)
       batch.update_item!(character.id, status: 'applied', refresh: result)
     rescue StandardError => e
-      batch.update_item!(item[:character_id], status: 'failed', error: item_error(e))
+      batch.update_item!(item[:character_id], status: 'failed', **failure(e))
     end
 
-    def item_error(error)
+    # → { error:, error_code:, error_status: } for an item (D28). error is the English detail;
+    # error_code is what the UI localizes:
+    #   wiki_fetch_failed: the wiki answered with an error (error_status: its HTTP status) or
+    #                      couldn't be reached (error_status: nil);
+    #   build_refused:     no wikitext, the build made no skills, or no page / JP title;
+    #   unexpected:        anything else (a build that raised, an expired preview, a bug).
+    def failure(error)
       case error
       when Granblue::WikiError
-        "The wiki page #{error.page} could not be fetched (#{error.code || error.message})".squeeze(' ')
-      when Refresh::Error, Granblue::WikiFetcher::MissingPageError
-        error.message
+        { error: "The wiki page #{error.page} could not be fetched (#{error.code || error.message})".squeeze(' '),
+          error_code: 'wiki_fetch_failed', error_status: error.code.presence&.to_i }
+      when *NETWORK_ERRORS
+        { error: "The wiki could not be reached (#{error.class}: #{error.message})",
+          error_code: 'wiki_fetch_failed', error_status: nil }
+      when Refresh::BuildRefused, Granblue::WikiFetcher::MissingPageError
+        { error: error.message, error_code: 'build_refused', error_status: nil }
+      when Refresh::Error
+        { error: error.message, error_code: 'unexpected', error_status: nil }
       else
         Rails.logger.error "[CHARACTER_SKILLS] Refresh item failed: #{error.class}: #{error.message}"
-        "#{error.class}: #{error.message}"
+        { error: "#{error.class}: #{error.message}", error_code: 'unexpected', error_status: nil }
       end
     end
   end

@@ -60,8 +60,49 @@ RSpec.describe CharacterSkills::RefreshJob do
       state = reload_batch
       expect(state.status).to eq('previewed')
       expect(state.item(first.id)).to include(status: 'failed', refresh: nil,
-                                              error: 'The wiki page Page 3040900001 could not be fetched (502)')
-      expect(state.item(second.id)[:status]).to eq('previewed')
+                                              error: 'The wiki page Page 3040900001 could not be fetched (502)',
+                                              error_code: 'wiki_fetch_failed', error_status: 502)
+      expect(state.item(second.id)).to include(status: 'previewed', error: nil, error_code: nil, error_status: nil)
+    end
+
+    it 'codes an unreachable wiki as wiki_fetch_failed without a status' do
+      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Page 3040900001')
+                                                                       .and_raise(Net::OpenTimeout, 'execution expired')
+
+      described_class.perform_now(batch.id, 'preview')
+
+      expect(reload_batch.item(first.id)).to include(status: 'failed', error_code: 'wiki_fetch_failed', error_status: nil,
+                                                     error: include('could not be reached'))
+    end
+
+    it 'codes a build that makes no skills as build_refused' do
+      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Page 3040900001').and_return('{{Nothing}}')
+      CharacterSkills::Build::Runner.new(mode: 'write', characters: [first], all: true, io: StringIO.new,
+                                         enqueue_icons: false).call
+
+      described_class.perform_now(batch.id, 'preview')
+
+      expect(reload_batch.item(first.id)).to include(status: 'failed', error_code: 'build_refused', error_status: nil,
+                                                     error: include('made no skills'))
+    end
+
+    it 'codes a missing Japanese page as build_refused' do
+      first.update_columns(wiki_ja: nil, name_jp: nil)
+      jp_batch = CharacterSkills::RefreshBatch.create(user: editor, characters: [first], refetch_jp: true)
+
+      described_class.perform_now(jp_batch.id, 'preview')
+
+      expect(CharacterSkills::RefreshBatch.find(jp_batch.id).item(first.id))
+        .to include(status: 'failed', error_code: 'build_refused', error: include('Japanese wiki page'))
+    end
+
+    it 'codes anything else as unexpected' do
+      allow_any_instance_of(CharacterSkills::Refresh).to receive(:preview).and_raise(NoMethodError, 'oops')
+
+      described_class.perform_now(batch.id, 'preview')
+
+      expect(reload_batch.item(first.id)).to include(status: 'failed', error_code: 'unexpected', error_status: nil,
+                                                     error: 'NoMethodError: oops')
     end
 
     it 'fails the refresh when no character could be previewed' do
@@ -109,7 +150,8 @@ RSpec.describe CharacterSkills::RefreshJob do
       described_class.perform_now(batch.id, 'apply')
 
       state = reload_batch
-      expect(state.item(first.id)).to include(status: 'failed', error: CharacterSkills::Refresh::EXPIRED_MESSAGE)
+      expect(state.item(first.id)).to include(status: 'failed', error: CharacterSkills::Refresh::EXPIRED_MESSAGE,
+                                              error_code: 'unexpected', error_status: nil)
       expect(state.item(second.id)[:status]).to eq('applied')
       expect(first.reload.wiki_raw).to eq(wiki(7))
     end
