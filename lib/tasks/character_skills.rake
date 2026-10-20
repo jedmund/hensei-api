@@ -10,7 +10,8 @@ namespace :granblue do
   desc "Build character skills from the stored sources (CharacterSkills::Build::Runner). " \
        "mode=shadow (default unless CHARACTER_SKILL_BUILD=write) builds in a rolled-back transaction and prints " \
        "the differences; mode=write keeps the result. Builds only characters whose fingerprint changed unless " \
-       "all=true; ids=GRANBLUE_ID,... narrows the run (both styles). Exits nonzero if any character failed."
+       "all=true; ids=GRANBLUE_ID,... narrows the run (both styles); icons=false skips queueing icon downloads " \
+       "(e.g. on a local copy). Exits nonzero if any character failed."
   task build_character_skills: :environment do
     ActiveRecord::Base.logger = nil
     mode = ENV['mode'].presence || (CharacterSkills.build_mode == 'write' ? 'write' : 'shadow')
@@ -20,7 +21,8 @@ namespace :granblue do
       mode: mode,
       ids: ENV['ids'].to_s.split(',').map(&:strip).compact_blank.presence,
       all: ENV['all'] == 'true',
-      diff_limit: ENV['limit'].presence&.to_i
+      diff_limit: ENV['limit'].presence&.to_i,
+      enqueue_icons: ENV['icons'] != 'false'
     ).call
     exit(1) if summary.failed.positive?
   end

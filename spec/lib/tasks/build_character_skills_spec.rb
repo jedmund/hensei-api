@@ -12,7 +12,7 @@ RSpec.describe 'character skill build tasks' do
   end
 
   around do |example|
-    keys = %w[ids all mode limit CHARACTER_SKILL_BUILD]
+    keys = %w[ids all mode limit icons CHARACTER_SKILL_BUILD]
     saved = keys.to_h { |k| [k, ENV.fetch(k, nil)] }
     keys.each { |k| ENV.delete(k) }
     example.run
@@ -36,13 +36,19 @@ RSpec.describe 'character skill build tasks' do
       ENV['all'] = 'true'
       invoke('granblue:build_character_skills')
       expect(CharacterSkills::Build::Runner).to have_received(:new)
-        .with(mode: 'shadow', ids: %w[3040252000 3040164000], all: true, diff_limit: nil)
+        .with(mode: 'shadow', ids: %w[3040252000 3040164000], all: true, diff_limit: nil, enqueue_icons: true)
     end
 
     it 'writes when CHARACTER_SKILL_BUILD=write' do
       ENV['CHARACTER_SKILL_BUILD'] = 'write'
       invoke('granblue:build_character_skills')
       expect(CharacterSkills::Build::Runner).to have_received(:new).with(hash_including(mode: 'write'))
+    end
+
+    it 'skips icon downloads with icons=false' do
+      ENV['icons'] = 'false'
+      invoke('granblue:build_character_skills')
+      expect(CharacterSkills::Build::Runner).to have_received(:new).with(hash_including(enqueue_icons: false))
     end
 
     it 'exits nonzero when a character failed' do
