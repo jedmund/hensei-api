@@ -13,6 +13,28 @@ module CharacterSkills
     # Two stored versions share a snapshot key but disagree on name or icon.
     class ConflictError < StandardError; end
 
+    # Before slots carry their owner row (character_id), every slot belongs to
+    # the base row (style_swap: false) for its granblue_id, so every entry is style 1.
+    EXPORT_SQL_BY_GRANBLUE_ID = <<~SQL.squish.freeze
+      SELECT DISTINCT owner.granblue_id, 1, s.kind, s.position, v.ordinal, v.name_en, v.game_icon
+      FROM character_skill_versions v
+      JOIN character_skills s ON s.id = v.character_skill_id
+      JOIN characters owner ON owner.granblue_id = s.character_granblue_id AND owner.style_swap = false
+      WHERE v.game_icon IS NOT NULL
+      ORDER BY 1, 2, 3, 4, 5, 6, 7
+    SQL
+
+    # Slots owned by a character row: the style comes from that row.
+    EXPORT_SQL_BY_CHARACTER_ID = <<~SQL.squish.freeze
+      SELECT DISTINCT owner.granblue_id, CASE WHEN owner.style_swap THEN 2 ELSE 1 END, s.kind, s.position, v.ordinal,
+                      v.name_en, v.game_icon
+      FROM character_skill_versions v
+      JOIN character_skills s ON s.id = v.character_skill_id
+      JOIN characters owner ON owner.id = s.character_id
+      WHERE v.game_icon IS NOT NULL
+      ORDER BY 1, 2, 3, 4, 5, 6, 7
+    SQL
+
     class << self
       # Writes every stored version that has a game_icon. Returns the entry count.
       def export(path = DEFAULT_PATH)
@@ -79,14 +101,8 @@ module CharacterSkills
       # left duplicate versions with the same ordinal, name and icon; DISTINCT
       # collapses them.
       def export_rows
-        rows = ActiveRecord::Base.connection.select_rows(<<~SQL.squish)
-          SELECT DISTINCT owner.granblue_id, #{style_sql}, s.kind, s.position, v.ordinal, v.name_en, v.game_icon
-          FROM character_skill_versions v
-          JOIN character_skills s ON s.id = v.character_skill_id
-          #{owner_join_sql}
-          WHERE v.game_icon IS NOT NULL
-          ORDER BY 1, 2, 3, 4, 5, 6, 7
-        SQL
+        sql = owner_key? ? EXPORT_SQL_BY_CHARACTER_ID : EXPORT_SQL_BY_GRANBLUE_ID
+        rows = ActiveRecord::Base.connection.select_rows(sql)
         rows.map do |row|
           KEYS.zip(row).to_h.merge('style' => row[1].to_i, 'position' => row[3].to_i, 'ordinal' => row[4].to_i)
         end
@@ -98,20 +114,6 @@ module CharacterSkills
 
         sample = conflicts.first(5).map { |key, group| "#{key.join('/')}: #{group.map { |e| e.values_at('name_en', 'game_icon') }}" }
         raise ConflictError, "#{conflicts.size} snapshot keys have conflicting versions, e.g. #{sample.join('; ')}"
-      end
-
-      # Before slots carry their owner row (character_id), every slot belongs to
-      # the base row (style_swap: false) for its granblue_id.
-      def owner_join_sql
-        if owner_key?
-          'JOIN characters owner ON owner.id = s.character_id'
-        else
-          'JOIN characters owner ON owner.granblue_id = s.character_granblue_id AND owner.style_swap = false'
-        end
-      end
-
-      def style_sql
-        'CASE WHEN owner.style_swap THEN 2 ELSE 1 END'
       end
 
       def owner_key?
