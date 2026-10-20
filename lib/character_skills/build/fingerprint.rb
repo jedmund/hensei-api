@@ -27,7 +27,8 @@ module CharacterSkills
       INPUT_COLUMNS = (SOURCES + ATTRIBUTES).freeze
       NONE = "-"
 
-      def self.icon_snapshot_path = Rails.root.join("data/character_skills/icons.json")
+      # The snapshot the Builder reads its fallback icons from.
+      def self.icon_snapshot_path = IconSnapshot::DEFAULT_PATH
 
       # One instance per run: the statuses and icon digests are computed once, after the
       # status catalogue has been refreshed.
