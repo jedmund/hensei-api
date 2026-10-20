@@ -33,6 +33,20 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[retired first second])
     end
 
+    it 'tells editors which stickers can still be deleted' do
+      given = create(:sticker, slug: 'given')
+      create(:party_sticker, sticker: given)
+      get '/api/v1/stickers', params: { include_inactive: true }, headers: editor_headers
+      deletable = json_response['stickers'].to_h { |s| [s['slug'], s['deletable']] }
+      expect(deletable['given']).to be(false)
+      expect(deletable.except('given').values).to all(be(true))
+    end
+
+    it 'leaves deletable out of the public catalogue' do
+      get '/api/v1/stickers'
+      expect(json_response['stickers']).to all(satisfy { |s| !s.key?('deletable') })
+    end
+
     it 'ignores include_inactive for non-editors' do
       get '/api/v1/stickers', params: { include_inactive: true }, headers: member_headers
       expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[first second])

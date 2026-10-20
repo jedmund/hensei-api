@@ -28,6 +28,14 @@ module Api
       end
 
       fields :position, :active
+
+      # For editors: whether it can still be deleted (nobody has given it).
+      # Takes `given_sticker_ids`, the given ones looked up at once.
+      view :editor do
+        field :deletable do |sticker, options|
+          !options.fetch(:given_sticker_ids).include?(sticker.id)
+        end
+      end
     end
   end
 end

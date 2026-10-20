@@ -17,9 +17,7 @@ module Api
       # GET /stickers
       # Active stickers in picker order. Editors may pass include_inactive=true.
       def index
-        if include_inactive?
-          return render json: StickerBlueprint.render(Sticker.ordered, root: :stickers)
-        end
+        return render json: render_editor(Sticker.ordered, root: :stickers) if include_inactive?
 
         payload = Rails.cache.fetch(Sticker::CATALOGUE_CACHE_KEY, expires_in: 1.hour) do
           StickerBlueprint.render_as_hash(Sticker.active.ordered, root: :stickers)
@@ -31,7 +29,7 @@ module Api
       def create
         sticker = Sticker.new(sticker_params)
         if sticker.save
-          render json: StickerBlueprint.render(sticker), status: :created
+          render json: render_editor(sticker), status: :created
         else
           render_validation_error_response(sticker)
         end
@@ -40,7 +38,7 @@ module Api
       # PUT /stickers/:id
       def update
         if @sticker.update(sticker_params)
-          render json: StickerBlueprint.render(@sticker)
+          render json: render_editor(@sticker)
         else
           render_validation_error_response(@sticker)
         end
@@ -70,7 +68,7 @@ module Api
                                               max_bytes: MAX_IMAGE_BYTES)
         return unless stored
 
-        render json: StickerBlueprint.render(@sticker)
+        render json: render_editor(@sticker)
       end
 
       # PUT /stickers/reorder
@@ -87,10 +85,16 @@ module Api
           ids.each_with_index { |id, index| stickers[id].update!(position: index) }
         end
 
-        render json: StickerBlueprint.render(Sticker.ordered, root: :stickers)
+        render json: render_editor(Sticker.ordered, root: :stickers)
       end
 
       private
+
+      # The editor view, with whether each sticker can be deleted
+      def render_editor(stickers, **)
+        given = PartySticker.where(sticker_id: Array(stickers).map(&:id)).distinct.pluck(:sticker_id).to_set
+        StickerBlueprint.render(stickers, view: :editor, given_sticker_ids: given, **)
+      end
 
       def set_sticker
         @sticker = Sticker.find_by(id: params[:id].to_s[UUID_FORMAT])
