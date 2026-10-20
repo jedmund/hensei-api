@@ -225,8 +225,7 @@ class ArtifactImportService
       attack_score: score_info['attack_score'],
       defense_score: score_info['defense_score'],
       special_score: score_info['special_score'],
-      total_score: score_info['total_score'],
-      raw_data: data
+      total_score: score_info['total_score']
     }
   end
 
