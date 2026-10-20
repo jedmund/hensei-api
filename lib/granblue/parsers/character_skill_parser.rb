@@ -43,10 +43,12 @@ module Granblue
         report
       end
 
-      # Preloads the Status catalog into name/id indexes for O(1) lookups.
+      # Preloads the Status catalog into name/id indexes for O(1) lookups. Several statuses
+      # can share a name (one per game ailment id); the oldest wins, so a name resolves the
+      # same way on every build, and a status added later doesn't move existing effects.
       def self.build_status_lookup
-        Status.all.each_with_object({ by_name: {}, by_id: {} }) do |status, acc|
-          acc[:by_name][status.name_en.to_s.downcase] = status
+        Status.order(:created_at, :id).each_with_object({ by_name: {}, by_id: {} }) do |status, acc|
+          acc[:by_name][status.name_en.to_s.downcase] ||= status
           acc[:by_id][status.id] = status
         end
       end
