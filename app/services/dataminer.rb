@@ -23,7 +23,7 @@ class Dataminer
     'X-Requested-With' => 'XMLHttpRequest'
   }.freeze
 
-  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version
+  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary
 
   # user_id and game_version default to the baked-in constants but should be
   # overridden per session: uid is the logged-in account's player id and
@@ -41,6 +41,8 @@ class Dataminer
     @user_id = user_id
     @game_version = game_version
     @debug = debug
+    # What this instance fetched and stored: unchanged / changed / skipped / errors.
+    @summary = Granblue::SourceFetchSummary.new('fetch_game_data')
     setup_logger
   end
 
@@ -101,6 +103,7 @@ class Dataminer
         fetch_character(granblue_id, lang: lang)
       end
     rescue StandardError => e
+      summary.error!(granblue_id, e.message)
       logger.error "Error processing Character #{granblue_id}: #{e.message}"
     end
   end
@@ -254,15 +257,18 @@ class Dataminer
     record = if model_name == 'Character'
                # Error and popup responses are hashes too; only a character payload is stored.
                unless response_data['id'].present? && response_data['ability'].present?
+                 summary.skipped!('no character payload')
                  logger.warn "Character #{granblue_id}: response has no id or ability; not stored"
                  return
                end
                response_style = response_data['style'].presence&.to_i
                if response_style && response_style != style.to_i
+                 summary.skipped!('style mismatch')
                  logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"
                  return
                end
                unless [1, 2].include?(style.to_i)
+                 summary.skipped!('no row for style')
                  logger.warn "Character #{granblue_id}: no row for style #{style}; not stored"
                  return
                end
@@ -272,12 +278,19 @@ class Dataminer
              end
 
     if record
-      record.update(column => response_data)
+      before = record[column]
+      unless record.update(column => response_data)
+        summary.error!(granblue_id, record.errors.full_messages.to_sentence)
+        return
+      end
+      summary.fetched!(granblue_id, before: before, after: record[column])
       logger.debug "Updated #{model_name} #{granblue_id} #{column}#{" (style #{style})" if model_name == 'Character'}"
     else
+      summary.skipped!('not in database')
       logger.warn "#{model_name} with granblue_id #{granblue_id}#{" (style #{style})" if model_name == 'Character'} not found in database"
     end
   rescue StandardError => e
+    summary.error!(granblue_id, e.message)
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
   end
 
@@ -322,6 +335,7 @@ class Dataminer
       sleep(THROTTLE)
     rescue StandardError => e
       error_count += 1
+      summary.error!(record.granblue_id, e.message)
       logger.error "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
     end
 
