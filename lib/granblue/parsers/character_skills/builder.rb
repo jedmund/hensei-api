@@ -309,11 +309,9 @@ subtitle: subtitle }
         end
 
         def snapshot_icon(slot, ordinal, name_en)
-          entry = ::CharacterSkills::IconSnapshot.lookup(
-            granblue_id: character.granblue_id, style: character.style_swap ? 2 : 1,
-            kind: slot.dig(:attrs, :kind), position: slot.dig(:attrs, :position), ordinal: ordinal
-          )
-          entry[:game_icon].presence if entry && name_en.present? && entry[:name_en] == name_en
+          key = { granblue_id: character.granblue_id, style: character.style_swap ? 2 : 1,
+                  kind: slot.dig(:attrs, :kind), position: slot.dig(:attrs, :position), ordinal: ordinal }
+          ::CharacterSkills::IconSnapshot.icon_for(key, name_en: name_en)
         end
 
         def description_for(key)

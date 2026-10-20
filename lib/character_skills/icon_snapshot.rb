@@ -32,11 +32,35 @@ module CharacterSkills
         load(path)[[granblue_id.to_s, style.to_i, kind.to_s, position.to_i, ordinal.to_i]]
       end
 
+      # The snapshot icon for a built version, or nil. The entry at the exact key
+      # wins when it names the same ability. Otherwise (a rebuild renumbered the
+      # slot's versions) the slot's entries with that name decide, but only when
+      # they all agree on one icon. key: { granblue_id:, style:, kind:, position:, ordinal: }.
+      def icon_for(key, name_en:, path: DEFAULT_PATH)
+        return if name_en.blank?
+
+        exact = lookup(**key, path: path)
+        return exact[:game_icon].presence if exact && exact[:name_en] == name_en
+
+        slot = slot_index(path)[[key[:granblue_id].to_s, key[:style].to_i, key[:kind].to_s, key[:position].to_i]] || []
+        icons = slot.filter_map { |entry| entry[:game_icon].presence if entry[:name_en] == name_en }.uniq
+        icons.first if icons.one?
+      end
+
       def reset!
         @indexes = {}
+        @slot_indexes = {}
       end
 
       private
+
+      # { [granblue_id, style, kind, position] => [{ name_en:, game_icon: }, ...] }
+      def slot_index(path)
+        @slot_indexes ||= {}
+        @slot_indexes[path.to_s] ||= load(path).each_with_object({}) do |(key, entry), index|
+          (index[key.first(4)] ||= []) << entry
+        end
+      end
 
       def build_index(path)
         return {} unless File.exist?(path)

@@ -55,4 +55,43 @@ RSpec.describe CharacterSkills::IconSnapshot do
       expect(described_class.load(path)).to eq({})
     end
   end
+
+  describe '.icon_for' do
+    let(:entries) do
+      [
+        { granblue_id: '3030003000', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Flamebound', game_icon: '4_1' },
+        { granblue_id: '3030003000', style: 1, kind: 'ability', position: 1, ordinal: 2, name_en: 'Flamebound', game_icon: '4_1' },
+        { granblue_id: '3030003000', style: 1, kind: 'ability', position: 2, ordinal: 1, name_en: 'Split', game_icon: '5_1' },
+        { granblue_id: '3030003000', style: 1, kind: 'ability', position: 2, ordinal: 2, name_en: 'Split', game_icon: '6_1' },
+        { granblue_id: '3030003000', style: 1, kind: 'ability', position: 2, ordinal: 3, name_en: 'Exact', game_icon: '7_1' }
+      ]
+    end
+
+    before { File.write(path, JSON.generate(entries)) }
+
+    def icon(position:, ordinal:, name_en:)
+      key = { granblue_id: '3030003000', style: 1, kind: 'ability', position: position, ordinal: ordinal }
+      described_class.icon_for(key, name_en: name_en, path: path)
+    end
+
+    it 'takes the exact entry when it names the same ability' do
+      expect(icon(position: 2, ordinal: 3, name_en: 'Exact')).to eq('7_1')
+    end
+
+    it 'prefers the exact entry over the slot fallback' do
+      expect(icon(position: 2, ordinal: 1, name_en: 'Split')).to eq('5_1')
+    end
+
+    it 'falls back to the slot entries with the same name on a renumbered ordinal' do
+      expect(icon(position: 1, ordinal: 3, name_en: 'Flamebound')).to eq('4_1')
+    end
+
+    it 'gives nothing when the slot entries with that name disagree' do
+      expect(icon(position: 2, ordinal: 4, name_en: 'Split')).to be_nil
+    end
+
+    it 'gives nothing when no entry has the name' do
+      expect(icon(position: 1, ordinal: 1, name_en: 'Something Else')).to be_nil
+    end
+  end
 end

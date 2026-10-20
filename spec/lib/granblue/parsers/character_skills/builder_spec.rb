@@ -89,6 +89,25 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
       end
     end
 
+    context 'with a matching entry under another ordinal of the same slot' do
+      let(:snapshot_entries) { [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1').merge(ordinal: 7)] }
+
+      it 'takes the snapshot icon' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('5555_1')
+      end
+    end
+
+    context 'with same-named entries in the slot that disagree' do
+      let(:snapshot_entries) do
+        [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1').merge(ordinal: 7),
+         entry(name_en: 'Ring the Dormouse', game_icon: '6666_1').merge(ordinal: 8)]
+      end
+
+      it 'falls back to the wiki stem' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
+      end
+    end
+
     context 'without a snapshot entry' do
       it 'falls back to the wiki stem' do
         expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
