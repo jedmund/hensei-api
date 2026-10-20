@@ -7,7 +7,7 @@ module Api
         if options.key?(:email)
           User.where('email = ?', options[:email]).none?
         elsif options.key?(:username)
-          User.where('lower(username) = ?', options[:username].downcase).none?
+          User.with_username(options[:username]).none?
         end
       end
     end

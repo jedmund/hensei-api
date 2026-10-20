@@ -164,6 +164,11 @@ class User < ApplicationRecord
 
   scope :due_for_deletion, -> { where(deletion_scheduled_at: ..Time.current) }
 
+  # Usernames are unique case-insensitively, so lookups by name ignore case
+  # too (/vazkii and /Vazkii are the same profile). Uses the lower(username)
+  # index.
+  scope :with_username, ->(name) { where('lower(username) = ?', name.to_s.downcase) }
+
   # Check if collection is viewable by another user
   def collection_viewable_by?(viewer)
     return true if self == viewer # Owners can always view their own collection

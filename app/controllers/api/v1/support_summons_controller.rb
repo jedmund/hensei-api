@@ -68,7 +68,7 @@ module Api
       # username so the route is consistent with other user-keyed endpoints.
       def set_target_user
         identifier = params[:user_id].to_s
-        @target_user = User.find_by('lower(username) = ?', identifier.downcase) ||
+        @target_user = User.with_username(identifier).first ||
                        User.find_by(id: identifier)
         return if @target_user
 

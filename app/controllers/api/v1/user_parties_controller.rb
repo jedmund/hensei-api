@@ -32,7 +32,7 @@ module Api
       private
 
       def set_user
-        @user = User.find_by(username: params[:user_id])
+        @user = User.with_username(params[:user_id]).first
         render_not_found_response('user') unless @user
       end
     end
