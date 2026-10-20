@@ -40,4 +40,36 @@ RSpec.describe 'ParseStringGameRaw' do
       expect(untouched.reload.game_raw_en).to eq('id' => '3')
     end
   end
+
+  it 'skips rows Postgres or the JSON generator rejects without failing' do
+    nul = create(:character)
+    huge = create(:weapon)
+    good = create(:summon)
+    set_raw(nul, :game_raw_en, "to_jsonb('{\"name\":\"a\\u0000b\"}'::text)")
+    set_raw(huge, :game_raw_en, "to_jsonb('{\"atk\":1e400}'::text)")
+    set_raw(good, :game_raw_en, "to_jsonb('{\"id\":\"4\"}'::text)")
+
+    migration = migration_class.new.tap { |m| m.verbose = false }
+    expect { migration.up }.not_to raise_error
+
+    aggregate_failures do
+      expect(typeof(nul, :game_raw_en)).to eq('string')
+      expect(typeof(huge, :game_raw_en)).to eq('string')
+      expect(good.reload.game_raw_en).to eq('id' => '4')
+    end
+  end
+
+  it 'logs counts and skipped ids, never payloads' do
+    character = create(:character)
+    set_raw(character, :game_raw_en, "to_jsonb('{\"secret\":\"payload\",\"name\":\"a\\u0000b\"}'::text)")
+
+    output = StringIO.new
+    migration = migration_class.new
+    allow(migration).to receive(:write) { |text| output.puts(text) }
+    migration.up
+
+    expect(output.string).to include("characters.game_raw_en: skipped #{character.id}")
+    expect(output.string).to include('characters.game_raw_en: 0 strings parsed, 1 skipped')
+    expect(output.string).not_to include('payload')
+  end
 end
