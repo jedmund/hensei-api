@@ -69,7 +69,9 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
       let(:snapshot_entries) { [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1')] }
 
       it 'prefers the game class_name over the snapshot' do
-        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('1065_1')
+        version = first_ability_version(builder.build)
+        expect(version[:attrs][:game_icon]).to eq('1065_1')
+        expect(version[:game_icon_source]).to eq('game')
       end
     end
 
@@ -77,7 +79,9 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
       let(:snapshot_entries) { [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1')] }
 
       it 'takes the snapshot icon' do
-        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('5555_1')
+        version = first_ability_version(builder.build)
+        expect(version[:attrs][:game_icon]).to eq('5555_1')
+        expect(version[:game_icon_source]).to eq('snapshot')
       end
     end
 
@@ -85,7 +89,10 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
       let(:snapshot_entries) { [entry(name_en: 'Some Other Ability', game_icon: '5555_1')] }
 
       it 'falls back to the wiki stem' do
-        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
+        version = first_ability_version(builder.build)
+        expect(version[:attrs][:game_icon]).to eq('9999_1')
+        expect(version[:game_icon_source]).to eq('wiki')
+        expect(version[:attrs]).not_to have_key(:game_icon_source)
       end
     end
 
@@ -111,6 +118,16 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
     context 'without a snapshot entry' do
       it 'falls back to the wiki stem' do
         expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
+      end
+    end
+
+    context 'without any icon' do
+      let(:wiki_raw) { File.read(fixtures.join('character-vikala-wikidata.txt')).sub(/^\|a1_icon=.*$/, '|a1_icon=') }
+
+      it 'records no source' do
+        version = first_ability_version(builder.build)
+        expect(version[:attrs][:game_icon]).to be_nil
+        expect(version[:game_icon_source]).to be_nil
       end
     end
 

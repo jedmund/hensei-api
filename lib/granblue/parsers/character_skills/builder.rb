@@ -239,11 +239,15 @@ subtitle: subtitle }
           raw_description_en = FieldParser.clean_description(overrides[:description_en] || description_for(key))
           version_key = version_key(slot, key, role, ordinal)
           @version_keys << version_key
+          attrs = version_attrs(key, slot: slot, role: role, ordinal: ordinal, raw_description_en: raw_description_en, overrides: overrides)
+          icon_source = attrs.delete(:game_icon_source)
 
           {
             key: version_key,
             source_key: key,
-            attrs: version_attrs(key, slot: slot, role: role, ordinal: ordinal, raw_description_en: raw_description_en, overrides: overrides).compact,
+            # Where game_icon came from (see game_icon_for); reported, never written.
+            game_icon_source: attrs[:game_icon] && icon_source,
+            attrs: attrs.compact,
             effects: effects_for(slot, raw_description_en)
           }
         end
@@ -276,7 +280,7 @@ subtitle: subtitle }
             description_en: FieldParser.display_description(raw_description_en),
             description_jp: FieldParser.display_description(FieldParser.clean_description(jp&.dig('comment'))),
             icon: FieldParser.first_icon(wiki_params["#{key}_icon"]),
-            game_icon: game_icon_for(key, game, slot: slot, ordinal: ordinal, name_en: name_en),
+            **game_icon_for(key, game, slot: slot, ordinal: ordinal, name_en: name_en),
             type_color: TYPE_COLORS[wiki_params["#{key}_color"].to_s.strip.downcase],
             cooldown: cooldown[:base],
             initial_cooldown: cooldown[:initial],
@@ -299,15 +303,21 @@ subtitle: subtitle }
           }.merge(overrides.except(:name_en, :description_en))
         end
 
-        # The game asset stem for this version's icon. Prefers game-data
-        # class_name ("625_4"); then the committed icon snapshot when its entry
-        # names the same ability; then a wiki icon already in stem form.
+        # The game asset stem for this version's icon, and where it came from
+        # → { game_icon:, game_icon_source: "game" | "snapshot" | "wiki" | nil }.
+        # Prefers game-data class_name ("625_4"); then the committed icon snapshot
+        # when its entry names the same ability; then a wiki icon already in stem
+        # form. A "wiki" stem is a guess an in-game capture should confirm (PR 5's
+        # icon_fallbacks).
         def game_icon_for(key, game, slot:, ordinal:, name_en:)
           class_name = game&.dig('class_name').to_s.strip
-          return class_name if class_name.match?(ICON_STEM)
+          return { game_icon: class_name, game_icon_source: 'game' } if class_name.match?(ICON_STEM)
 
-          snapshot_icon(slot, ordinal, name_en) ||
-            FieldParser.first_icon(wiki_params["#{key}_icon"]).to_s[WIKI_ICON_STEM, 1]
+          snapshot = snapshot_icon(slot, ordinal, name_en)
+          return { game_icon: snapshot, game_icon_source: 'snapshot' } if snapshot
+
+          stem = FieldParser.first_icon(wiki_params["#{key}_icon"]).to_s[WIKI_ICON_STEM, 1]
+          { game_icon: stem, game_icon_source: stem && 'wiki' }
         end
 
         def snapshot_icon(slot, ordinal, name_en)
