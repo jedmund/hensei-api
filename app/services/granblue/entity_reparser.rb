@@ -95,10 +95,14 @@ module Granblue
     # Characters go through the character-skill build (CharacterSkills::Build::Runner in write
     # mode, for this row only, even when it isn't stale): the row's stored sources in, its skills
     # upserted by natural key, so ids survive and nothing the sources still make is lost.
-    # → { skills:, built:, counts: } (counts: the writer's report). Re-raises a build failure.
+    # → { skills:, built:, counts: } (counts: the writer's report). Re-raises a build failure, and
+    # raises MissingWikiRawError when the build was held back (it made no skills, so the
+    # existing ones were kept) rather than reporting success.
     def reparse_character
-      summary = ::CharacterSkills::Build::Runner.new(mode: 'write', characters: [@entity], all: true, io: StringIO.new).call
+      log = StringIO.new
+      summary = ::CharacterSkills::Build::Runner.new(mode: 'write', characters: [@entity], all: true, io: log).call
       raise summary.errors.first.last if summary.errors.any?
+      raise MissingWikiRawError, log.string.lines.first.to_s.strip.sub(/\A\S+ /, '') if summary.built.zero?
 
       { skills: @entity.character_skills.count, built: summary.built, counts: summary.counts.to_h }
     end
