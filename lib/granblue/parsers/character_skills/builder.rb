@@ -243,7 +243,7 @@ subtitle: subtitle }
           {
             key: version_key,
             source_key: key,
-            attrs: version_attrs(key, role: role, ordinal: ordinal, raw_description_en: raw_description_en, overrides: overrides).compact,
+            attrs: version_attrs(key, slot: slot, role: role, ordinal: ordinal, raw_description_en: raw_description_en, overrides: overrides).compact,
             effects: effects_for(slot, raw_description_en)
           }
         end
@@ -262,20 +262,21 @@ subtitle: subtitle }
           effects
         end
 
-        def version_attrs(key, role:, ordinal:, raw_description_en:, overrides:)
+        def version_attrs(key, slot:, role:, ordinal:, raw_description_en:, overrides:)
           game = data.game_action(key)
+          name_en = FieldParser.clean_markup(overrides[:name_en] || wiki_params["#{key}_name"] || game&.dig('name_en') || game&.dig('name'))
           jp = data.game_action(key, lang: :jp)
           description = description_for(key)
           ob_levels = FieldParser.parse_ob_levels(wiki_params["#{key}_oblevel"] || wiki_params["#{key}_level"])
           cooldown = FieldParser.parse_cooldown(wiki_params["#{key}_cd"])
           duration = FieldParser.parse_duration_value(wiki_params["#{key}_dur"])
           {
-            name_en: FieldParser.clean_markup(overrides[:name_en] || wiki_params["#{key}_name"] || game&.dig('name_en') || game&.dig('name')),
+            name_en: name_en,
             name_jp: FieldParser.jp_name_for(jp),
             description_en: FieldParser.display_description(raw_description_en),
             description_jp: FieldParser.display_description(FieldParser.clean_description(jp&.dig('comment'))),
             icon: FieldParser.first_icon(wiki_params["#{key}_icon"]),
-            game_icon: game_icon_for(key, game),
+            game_icon: game_icon_for(key, game, slot: slot, ordinal: ordinal, name_en: name_en),
             type_color: TYPE_COLORS[wiki_params["#{key}_color"].to_s.strip.downcase],
             cooldown: cooldown[:base],
             initial_cooldown: cooldown[:initial],
@@ -299,12 +300,20 @@ subtitle: subtitle }
         end
 
         # The game asset stem for this version's icon. Prefers game-data
-        # class_name ("625_4"); falls back to a wiki icon already in stem form.
-        def game_icon_for(key, game)
+        # class_name ("625_4"); then the committed icon snapshot when its entry
+        # names the same ability; then a wiki icon already in stem form.
+        def game_icon_for(key, game, slot:, ordinal:, name_en:)
           class_name = game&.dig('class_name').to_s.strip
           return class_name if class_name.match?(ICON_STEM)
 
-          FieldParser.first_icon(wiki_params["#{key}_icon"]).to_s[WIKI_ICON_STEM, 1]
+          snapshot_icon(slot, ordinal, name_en) ||
+            FieldParser.first_icon(wiki_params["#{key}_icon"]).to_s[WIKI_ICON_STEM, 1]
+        end
+
+        def snapshot_icon(slot, ordinal, name_en)
+          key = { granblue_id: character.granblue_id, style: character.style_swap ? 2 : 1,
+                  kind: slot.dig(:attrs, :kind), position: slot.dig(:attrs, :position), ordinal: ordinal }
+          ::CharacterSkills::IconSnapshot.icon_for(key, name_en: name_en)
         end
 
         def description_for(key)

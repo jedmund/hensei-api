@@ -29,7 +29,7 @@ module Api
       # PATCH/PUT /summons/:id
       # Updates an existing summon record
       def update
-        if @summon.update(with_wiki_fetch_date(summon_params, @summon))
+        if @summon.update(with_wiki_fetch_date(update_params, @summon))
           render json: SummonBlueprint.render(@summon, view: :full)
         else
           render_validation_error_response(@summon)
@@ -207,6 +207,13 @@ module Api
       def set
         @summon = find_by_any_id(Summon, params[:id])
         render_not_found_response('summon') unless @summon
+      end
+
+      # The edit form sends back the wikitext it loaded, so a blank wiki_raw means
+      # it failed to load, not a deliberate clear: keep the stored text.
+      def update_params
+        attrs = summon_params
+        attrs[:wiki_raw].blank? && @summon.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
       end
 
       def summon_params
