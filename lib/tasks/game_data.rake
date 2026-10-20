@@ -19,8 +19,16 @@ namespace :granblue do
       ... rake granblue:fetch_game_data type=Weapon          # Weapon | Summon | Character (default)
       ... rake granblue:fetch_game_data force=true           # re-fetch all, not just rows missing game_raw_en
       ... rake granblue:fetch_game_data debug=true           # verbose logging
+      ... rake granblue:fetch_game_data ids=3040377000,3040088000   # these characters only (always fetched)
+      ... rake granblue:fetch_game_data ids=3040377000 style=2      # one style only (2 = the style_swap row)
+      ... rake granblue:fetch_game_data lang=jp              # store in game_raw_jp
 
-    Fetches only records missing game_raw_en by default; throttled ~1 req/sec.
+    Characters: style 1 lands on the base row, and every other open style in its
+    style_list is fetched onto that style's row (style_swap: true).
+    lang only picks the column: the game's language is an account setting, so set the
+    account to Japanese before fetching with lang=jp.
+
+    Fetches only records missing the column by default; throttled ~1 req/sec.
   DESC
   task fetch_game_data: :environment do
     required = { 'ACCESS_TOKEN' => ENV.fetch('ACCESS_TOKEN', nil), 'WING' => ENV.fetch('WING', nil), 'MIDSHIP' => ENV.fetch('MIDSHIP', nil) }
@@ -37,6 +45,18 @@ namespace :granblue do
       exit 1
     end
 
+    lang = ENV['lang'].presence || 'en'
+    unless Dataminer::LANG_COLUMNS.key?(lang)
+      warn "Invalid lang '#{lang}'. Must be one of: #{Dataminer::LANG_COLUMNS.keys.join(', ')}."
+      exit 1
+    end
+    ids = ENV['ids'].to_s.split(',').map(&:strip).compact_blank
+    style = ENV['style'].presence&.to_i
+    if (ids.any? || style || lang != 'en') && type != 'Character'
+      warn 'ids=, style= and lang= only apply to type=Character.'
+      exit 1
+    end
+
     only_missing = ENV['force'] != 'true'
     miner = Dataminer.new(
       page: 'archive',
@@ -49,7 +69,18 @@ namespace :granblue do
       debug: ENV['debug'] == 'true'
     )
 
-    puts "Fetching game data for #{type.pluralize}#{' (missing only)' if only_missing}..."
-    miner.public_send(:"fetch_all_#{type.downcase.pluralize}", only_missing: only_missing)
+    if ids.any?
+      puts "Fetching game data (#{lang}) for #{ids.size} characters#{" (style #{style})" if style}..."
+      miner.fetch_characters(ids, style: style, lang: lang)
+    elsif style
+      warn 'style= needs ids=.'
+      exit 1
+    elsif type == 'Character'
+      puts "Fetching game data (#{lang}) for Characters#{' (missing only)' if only_missing}..."
+      miner.fetch_all_characters(only_missing: only_missing, lang: lang)
+    else
+      puts "Fetching game data for #{type.pluralize}#{' (missing only)' if only_missing}..."
+      miner.public_send(:"fetch_all_#{type.downcase.pluralize}", only_missing: only_missing)
+    end
   end
 end
