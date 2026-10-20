@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require "webmock/rspec"
 
 # Fixtures are stored wiki sources exported from catalogue-20261015-sources (expansions
 # trimmed to their weapon-skills table); the expectations are today's database rows.
@@ -29,9 +28,6 @@ RSpec.describe WeaponSkills::Build::Structure do
   end
 
   def gate(version) = [version.unlock_level, version.min_uncap, version.transcendence_stage]
-
-  before { WebMock.disable_net_connect! }
-  after { WebMock.allow_net_connect! }
 
   describe "inline page (Illustrious: Murcielago)" do
     subject(:result) { versions("1040711700") }
