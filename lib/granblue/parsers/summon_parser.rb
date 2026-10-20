@@ -95,6 +95,7 @@ module Granblue
           rescue WikiError => e
             errors.push(e.page)
           end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
         ap 'The following pages were unable to be fetched:'
@@ -121,6 +122,7 @@ module Granblue
           rescue WikiError => e
             errors.push(e.page)
           end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
         ap 'The following pages were unable to be fetched:'
