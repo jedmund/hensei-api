@@ -68,6 +68,23 @@ RSpec.describe Dataminer do
       expect(style2).not_to have_been_requested
     end
 
+    it 'does not fetch or store a style that has no row' do
+      with_style3 = style1_payload.merge('style_list' => style1_payload['style_list'] +
+        [{ 'style' => 3, 'is_open' => true, 'name' => 'Third Style' }])
+      stub_style(1, with_style3)
+      stub_style(2, style2_payload)
+      style3 = stub_style(3, style2_payload.merge('style' => 3))
+
+      miner.fetch_character('3040377000')
+      miner.fetch_character('3040377000', style: 3, other_styles: false)
+
+      aggregate_failures do
+        expect(style3).to have_been_requested.once
+        expect(base.reload.game_raw_en['style']).to eq(1)
+        expect(style.reload.game_raw_en['style']).to eq(2)
+      end
+    end
+
     it 'does not store a response whose style differs from the one requested' do
       stub_style(2, style1_payload)
 

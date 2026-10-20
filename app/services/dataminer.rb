@@ -257,6 +257,10 @@ class Dataminer
                  logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"
                  return
                end
+               unless [1, 2].include?(style.to_i)
+                 logger.warn "Character #{granblue_id}: no row for style #{style}; not stored"
+                 return
+               end
                model.find_by(granblue_id: granblue_id, style_swap: style.to_i == 2)
              else
                model.find_by(granblue_id: granblue_id)
@@ -272,13 +276,13 @@ class Dataminer
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
   end
 
-  # Styles other than 1 that the game lists as open for this character.
+  # Open styles other than 1 that have a row to store them on.
   def other_open_styles(response)
     Array(response['style_list']).filter_map do |entry|
       next unless entry.is_a?(Hash) && entry['is_open']
 
-      style = entry['style'].to_i
-      style if style > 1
+      # Only style 2 has a row (style_swap: true) to land on.
+      entry['style'].to_i if entry['style'].to_i == 2
     end.uniq
   end
 
