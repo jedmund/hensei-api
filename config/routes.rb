@@ -265,6 +265,7 @@ Rails.application.routes.draw do
       end
     end
     resources :featured_parties, only: %i[index create update destroy]
+    get 'home', to: 'home#show'
 
     # Party difficulty
     resources :difficulties, only: %i[index show create update destroy]

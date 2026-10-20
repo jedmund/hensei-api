@@ -5,6 +5,7 @@
 # events are public.
 class Event < ApplicationRecord
   include GranblueEnums
+  include ExpiresHomeFeed
 
   IMAGE_PREFIX = 'events'
 

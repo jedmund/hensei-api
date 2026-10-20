@@ -3,6 +3,8 @@
 # A staff pick, optionally tied to an event. Only public parties can be
 # featured.
 class FeaturedParty < ApplicationRecord
+  include ExpiresHomeFeed
+
   belongs_to :event, optional: true
   belongs_to :party
 

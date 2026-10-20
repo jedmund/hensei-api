@@ -71,8 +71,8 @@ class PartyQueryBuilder
     end
   end
 
-  # `label=<slug>`: parties where that active sticker has reached the label
-  # threshold.
+  # `label=<slug>`: parties whose label is that sticker (see
+  # PartyStickerSummary.labels_for).
   def apply_label_filter(query)
     return query unless @params[:label].present?
 
