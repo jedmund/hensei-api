@@ -192,6 +192,73 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     end
   end
 
+  describe 'the sticker library' do
+    let(:first) { StickerLibrary.all.first }
+    let(:last) { StickerLibrary.all.last }
+
+    it 'lists the library for editors, marking stickers already made from it' do
+      made = create(:sticker, image_key: first.image_key)
+      get '/api/v1/stickers/library', headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      library = json_response['library']
+      expect(library.size).to eq(StickerLibrary.all.size)
+      expect(library.first).to include('id' => first.id, 'label' => first.label, 'image_url' => first.image_key,
+                                       'image_url_ja' => first.image_key_jp, 'sticker_id' => made.id)
+      expect(library.last['sticker_id']).to be_nil
+    end
+
+    it 'is for editors only' do
+      get '/api/v1/stickers/library', headers: member_headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'creates a sticker with a library sticker’s images' do
+      post '/api/v1/stickers', params: { sticker: { slug: 'from-library', meaning_en: 'Hi', library_id: first.id } },
+                               headers: editor_headers
+
+      expect(response).to have_http_status(:created)
+      sticker = Sticker.find_by!(slug: 'from-library')
+      expect([sticker.image_key, sticker.image_key_jp]).to eq([first.image_key, first.image_key_jp])
+    end
+
+    it 'swaps a sticker’s images for a library sticker’s' do
+      sticker = create(:sticker, image_key: 'icons/stickers/mine.png')
+      put "/api/v1/stickers/#{sticker.id}", params: { sticker: { library_id: last.id } }, headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(sticker.reload.image_key).to eq(last.image_key)
+    end
+
+    it 'rejects an unknown library sticker' do
+      post '/api/v1/stickers', params: { sticker: { slug: 'nope', meaning_en: 'Hi', library_id: 999_999 } },
+                               headers: editor_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(Sticker.exists?(slug: 'nope')).to be(false)
+    end
+
+    it 'keeps the shared library image when one is uploaded over it' do
+      allow(IconStorage).to receive(:put)
+      allow(IconStorage).to receive(:delete)
+      sticker = create(:sticker, slug: 'shared', image_key: first.image_key)
+
+      post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: png_upload }, headers: editor_headers
+
+      expect(sticker.reload.image_key).to eq('icons/stickers/shared.png')
+      expect(IconStorage).not_to have_received(:delete)
+    end
+
+    it 'still removes the sticker’s own image when it’s replaced in another format' do
+      allow(IconStorage).to receive(:put)
+      allow(IconStorage).to receive(:delete)
+      sticker = create(:sticker, slug: 'own', image_key: 'icons/stickers/own.webp')
+
+      post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: png_upload }, headers: editor_headers
+
+      expect(IconStorage).to have_received(:delete).with('icons/stickers/own.webp')
+    end
+  end
+
   describe 'PUT /api/v1/stickers/reorder' do
     let!(:a) { create(:sticker, position: 0) }
     let!(:b) { create(:sticker, position: 1) }

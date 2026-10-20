@@ -241,6 +241,7 @@ Rails.application.routes.draw do
     resources :stickers, only: %i[index create update destroy] do
       collection do
         put :reorder
+        get :library
       end
       member do
         post :upload_image

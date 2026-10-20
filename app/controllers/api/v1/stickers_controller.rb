@@ -6,13 +6,14 @@ module Api
     class StickersController < Api::V1::ApiController
       include EditorImageUpload
 
-      EDITOR_ACTIONS = %i[create update destroy upload_image reorder].freeze
+      EDITOR_ACTIONS = %i[create update destroy upload_image reorder library].freeze
       MAX_IMAGE_DIMENSION = 512
       MAX_IMAGE_BYTES = 512 * 1024
 
       before_action :doorkeeper_authorize!, only: EDITOR_ACTIONS
       before_action :ensure_editor_role, only: EDITOR_ACTIONS
       before_action :set_sticker, only: %i[update destroy upload_image]
+      before_action :set_library_entry, only: %i[create update]
 
       # GET /stickers
       # Active stickers in picker order. Editors may pass include_inactive=true.
@@ -25,9 +26,27 @@ module Api
         render json: payload
       end
 
+      # GET /stickers/library
+      # The game's stickers editors can pick from, each with the catalogue
+      # sticker already made from it (sticker_id), if any.
+      def library
+        used = Sticker.where(image_key: StickerLibrary.all.map(&:image_key)).pluck(:image_key, :id).to_h
+        render json: {
+          library: StickerLibrary.all.map do |entry|
+            {
+              id: entry.id, label: entry.label, section: entry.section, group: entry.group,
+              image_url: entry.image_key, image_url_ja: entry.image_key_jp,
+              sticker_id: used[entry.image_key]
+            }
+          end
+        }
+      end
+
       # POST /stickers
+      # `library_id` takes its images from that library sticker.
       def create
         sticker = Sticker.new(sticker_params)
+        use_library_images(sticker)
         if sticker.save
           render json: render_editor(sticker), status: :created
         else
@@ -36,8 +55,11 @@ module Api
       end
 
       # PUT /stickers/:id
+      # `library_id` swaps its images for that library sticker's.
       def update
-        if @sticker.update(sticker_params)
+        @sticker.assign_attributes(sticker_params)
+        use_library_images(@sticker)
+        if @sticker.save
           render json: render_editor(@sticker)
         else
           render_validation_error_response(@sticker)
@@ -103,6 +125,21 @@ module Api
 
       def include_inactive?
         ActiveModel::Type::Boolean.new.cast(params[:include_inactive]) && editor_role?
+      end
+
+      # The library sticker named by `library_id`, if any; 422 for an unknown one
+      def set_library_entry
+        id = params.dig(:sticker, :library_id)
+        return if id.blank?
+
+        @library_entry = StickerLibrary.find(id)
+        render json: { error: 'Unknown library sticker' }, status: :unprocessable_entity unless @library_entry
+      end
+
+      def use_library_images(sticker)
+        return unless @library_entry
+
+        sticker.assign_attributes(image_key: @library_entry.image_key, image_key_jp: @library_entry.image_key_jp)
       end
 
       def sticker_params

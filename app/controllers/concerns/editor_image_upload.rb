@@ -26,8 +26,14 @@ module EditorImageUpload
     # Same key as before (a replaced image): bump updated_at anyway, since the
     # image_url version comes from it and caches would keep the old image
     record.touch unless record.saved_change_to_attribute?(column)
-    remove_replaced_image(previous_key) if previous_key.present? && previous_key != key
+    remove_replaced_image(previous_key) if owned_image?(previous_key, prefix, name) && previous_key != key
     record
+  end
+
+  # Only the record's own file (<prefix>/<name>.<ext>) is removed when it's
+  # replaced: an image it shares, like a sticker library stamp, stays.
+  def owned_image?(key, prefix, name)
+    key.present? && File.dirname(key) == prefix && File.basename(key, '.*') == name
   end
 
   def uploaded_image_bytes(value)
