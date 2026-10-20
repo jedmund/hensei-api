@@ -13,7 +13,8 @@ module Processors
   # summon import exactly as for a normal deck. There is no support summon.
   # Weapons and summons the game shows as locked are `sealed`, the others
   # `unsealed` (starting slots stay `start`). The unseal priority is never
-  # imported.
+  # imported. With The Hanged Man equipped, the one character besides the
+  # Evoker is the one it brings: the party screen has no other choice.
   #
   # Warnings are strings, as for the run import.
   class SolomonisPartyProcessor < BaseProcessor
@@ -39,6 +40,7 @@ module Processors
       save_party
       import_blessings
       import_grid
+      mark_hanged_man_ally
       party.apply_solomonis_seal_states!(**@deck.locked_seal_states)
       @warnings.concat(@deck.warnings)
       party
@@ -82,6 +84,14 @@ module Processors
       end
       processors.each(&:process)
       processors.flat_map(&:warnings).each { |warning| @warnings << Solomonis::PartyDeck.warning_text(warning) }
+    end
+
+    def mark_hanged_man_ally
+      return unless party.solomonis_blessing?(ArcarumBlessing::HANGED_MAN)
+
+      evoker = party.solomonis_expedition.route_evoker
+      allies = party.characters.reload.reject { |gc| gc.character_id == evoker.id }
+      allies.first.update!(brought_by_blessing: true) if allies.one?
     end
   end
 end

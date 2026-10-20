@@ -243,6 +243,22 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
         expect(response).to have_http_status(:created)
         expect(imported_party.solomonis_expedition.route_evoker).to eq(fraux)
       end
+
+      it 'marks the ally as brought by The Hanged Man when it is equipped' do
+        deck['deck']['blessing'].each_value { |entry| entry['is_used'] = entry['name'] == 'The Hanged Man' }
+        import
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body['warnings']).to eq([])
+        brought = imported_party.characters.to_h { |c| [c.character, c.brought_by_blessing] }
+        expect(brought).to eq(ally => true, fraux => false)
+      end
+
+      it 'marks no ally without The Hanged Man' do
+        import
+
+        expect(imported_party.characters.map(&:brought_by_blessing)).to all(be(false))
+      end
     end
 
     it "rejects a deck whose Evoker isn't a route Evoker" do
