@@ -112,7 +112,7 @@ module HasSources
   end
 
   def stage_source_fetched_at(kind, time)
-    (staged_sources[kind] ||= {})[:fetched_at] = time
+    (staged_sources[kind] ||= {})[:fetched_at] = Source.type_for_attribute('fetched_at').cast(time)
   end
 
   # The full row (body included).

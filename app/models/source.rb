@@ -93,6 +93,7 @@ class Source < ApplicationRecord
     def put_body(owner, kind, body, key: '', fetched_at: Time.current, skip_owner_hook: false)
       kind = kind.to_s
       format_of(kind)
+      fetched_at = type_for_attribute('fetched_at').cast(fetched_at) # a String from a stored preview, too
       source = fetch(owner, kind, key: key)
       return remove(source, skip_owner_hook) if body.nil?
 

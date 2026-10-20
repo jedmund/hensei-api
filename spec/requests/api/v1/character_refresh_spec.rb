@@ -227,6 +227,18 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       expect(ring_cooldown).to eq(9)
     end
 
+    # The stored row already has a fetch time (every row in prod does); the refresh's
+    # fetched_at is an ISO string.
+    it 'dates an unchanged page as fetched again' do
+      Source.owned_by(character).update_all(fetched_at: 1.week.ago)
+      stub_wiki(stored_text)
+      post "/api/v1/characters/#{character.id}/reparse?refetch=true", headers: auth_headers(editor)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['refresh']).to include('written' => true, 'wiki_changed' => false)
+      expect(character.reload.wiki_raw_fetched_at).to be > 1.minute.ago
+    end
+
     it 'rebuilds from the stored text without fetching' do
       expect_any_instance_of(Granblue::WikiFetcher).not_to receive(:fetch)
       reparse({ refetch: false, refetch_jp: false, preview: false, preview_token: nil })

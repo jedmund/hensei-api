@@ -288,6 +288,27 @@ RSpec.describe 'Api::V1::Characters', type: :request do
     end
   end
 
+  describe 'fetch dates (from sources)' do
+    let(:fetched_at) { Time.utc(2026, 10, 1, 9) }
+    let!(:character) { create(:character, wiki_raw: '{{Character}}', wiki_raw_fetched_at: fetched_at) }
+
+    it 'shows them on the character itself' do
+      get "/api/v1/characters/#{character.id}"
+      expect(Time.zone.parse(response.parsed_body['wiki_raw_fetched_at'])).to eq(fetched_at)
+      expect(response.parsed_body).to have_key('wiki_raw_jp_fetched_at')
+    end
+
+    it 'leaves them out of a nested render, which reads no sources' do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('"sources"') }
+      hash = ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
+        Api::V1::CharacterBlueprint.render_as_hash(Character.find(character.id), view: :full)
+      end
+      expect(hash).not_to have_key(:wiki_raw_fetched_at)
+      expect(queries).to be_empty
+    end
+  end
+
   describe 'GET /api/v1/characters/:id/raw' do
     let!(:character) { create(:character) }
 

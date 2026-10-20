@@ -11,7 +11,7 @@ module Api
 
       # GET /characters/:id
       def show
-        render json: CharacterBlueprint.render(@character, view: :with_recruitment)
+        render json: CharacterBlueprint.render(@character, view: :with_recruitment, source_dates: true)
       end
 
       # GET /characters/:id/related
@@ -29,7 +29,7 @@ module Api
         character = Character.new(with_wiki_fetch_date(character_params))
 
         if character.save
-          render json: CharacterBlueprint.render(character, view: :full), status: :created
+          render json: CharacterBlueprint.render(character, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(character)
         end
@@ -39,7 +39,7 @@ module Api
       # Updates an existing character record
       def update
         if @character.update(with_wiki_fetch_date(update_params, @character))
-          render json: CharacterBlueprint.render(@character, view: :full)
+          render json: CharacterBlueprint.render(@character, view: :full, source_dates: true)
         else
           render_validation_error_response(@character)
         end
@@ -264,7 +264,7 @@ module Api
       def full_character
         character = Character.find(@character.id)
         ActiveRecord::Associations::Preloader.new(records: [character], associations: Character::SKILL_GRAPH_PRELOAD).call
-        CharacterBlueprint.render_as_hash(character, view: :full)
+        CharacterBlueprint.render_as_hash(character, view: :full, source_dates: true)
       end
 
       def set

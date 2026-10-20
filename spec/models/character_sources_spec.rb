@@ -55,6 +55,11 @@ RSpec.describe Character, 'sources' do
     expect(character.reload.wiki_raw_fetched_at).to eq(fetched_at + 1.day)
   end
 
+  it 'takes a fetch time given as a string, for an unchanged body too' do
+    character.update!(wiki_raw: '{{Character}}', wiki_raw_fetched_at: (fetched_at + 2.days).iso8601)
+    expect(character.reload.wiki_raw_fetched_at).to eq(fetched_at + 2.days)
+  end
+
   it 'removes a source assigned a blank value' do
     character.update!(game_raw_en: nil)
     expect(character.reload.game_raw_en).to be_nil
