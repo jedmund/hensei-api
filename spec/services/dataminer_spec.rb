@@ -6,6 +6,14 @@ require 'webmock/rspec'
 # The style-2 payload (character-super-cidala-gamedata.json) is hand-made from the real
 # style-1 capture until the game's own style-2 response lands (board decision D9).
 RSpec.describe Dataminer do
+  # Another spec turns WebMock off when it finishes; make sure nothing reaches the game.
+  before do
+    WebMock.enable!
+    WebMock.disable_net_connect!
+  end
+
+  after { WebMock.allow_net_connect! }
+
   let(:fixture_dir) { Rails.root.join('spec/fixtures/character_skills') }
   let(:style1_payload) { JSON.parse(fixture_dir.join('character-cidala-gamedata.json').read) }
   let(:style2_payload) { JSON.parse(fixture_dir.join('character-super-cidala-gamedata.json').read) }
