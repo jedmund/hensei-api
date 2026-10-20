@@ -170,7 +170,7 @@ module Api
                     username.match?(User::USERNAME_FORMAT) &&
                     !profane &&
                     !reserved &&
-                    User.where('lower(username) = ?', normalized).none?
+                    User.with_username(normalized).none?
         render json: { available: available }
       end
 
@@ -349,7 +349,7 @@ module Api
       # probes (sitemap.xml, favicon.ico, ...) don't render a nil user through
       # the blueprint and 500.
       def set
-        @user = User.includes(active_crew_membership: :crew).find_by('lower(username) = ?', params[:id].downcase)
+        @user = User.includes(active_crew_membership: :crew).with_username(params[:id]).first
         render_not_found_response('user') unless @user
       end
 

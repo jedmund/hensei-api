@@ -20,7 +20,7 @@ module Api
       # POST /crews/:crew_id/invitations
       # Send an invitation to a user (officers only)
       def create
-        user = User.find_by(id: params[:user_id]) || User.find_by(username: params[:username])
+        user = User.find_by(id: params[:user_id]) || User.with_username(params[:username]).first
         raise ActiveRecord::RecordNotFound, 'User not found' unless user
         raise CrewErrors::CannotInviteSelfError if user.id == current_user.id
         raise CrewErrors::AlreadyInCrewError if user.crew.present?
