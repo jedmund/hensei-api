@@ -245,6 +245,7 @@ Rails.application.routes.draw do
       end
       member do
         post :upload_image
+        delete :image, action: :remove_image
       end
     end
 
