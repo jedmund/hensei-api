@@ -111,6 +111,7 @@ The data runs from `docs/prds/character-skills-pr4-backfill.md` (workspace repo)
 
 - **Fetches don't build per row.** `fetch_wiki_data`, `download_jp_wiki` and `fetch_game_data` write inside `Character.without_skill_build`, print a summary (fetched = unchanged + changed, skipped with reasons, errors) and the changed granblue_ids, then print the build command to run next. `build=shadow|write` runs that build over the changed characters instead; `changed_out=PATH` writes the list, one id per line.
 - **Wiki requests** are at least 2s apart (`Granblue::WikiThrottle`; `delay=`/`throttle=` can only raise it).
+- **On a local copy**, pass `icons=false` to `build_character_skills mode=write`: a write queues `IconDownloadJob` into whatever Redis the process sees (`build=write` on the fetch tasks always queues it).
 - **Coverage** is read-only. Run it before and after every step: `bin/rails granblue:character_skill_coverage [ids=…] [format=csv out=PATH] [s3=true]`. `s3=true` makes one HEAD request per stored icon stem.
 
 Runs, in order:
@@ -124,6 +125,7 @@ Runs, in order:
    - `bin/rails granblue:build_character_skills mode=write`
    - Coverage again: `Blank wiki_raw` should be 0 apart from rows without `wiki_en`; `Ability icons from the wiki stem only` lists the renamed abilities that lost their snapshot icon.
 4. **Run 3, game data** (needs the user's game session; see `granblue:fetch_game_data`'s description for the cookies).
+   - `awk -F, '$1=="no_game_raw_en"{print $2}' tmp/coverage-before.csv | sort -u > tmp/no-game-raw-en.txt`
    - `bin/rails granblue:fetch_game_data ids=$(paste -sd, tmp/no-game-raw-en.txt) changed_out=tmp/game-changed.txt` (the ids from the coverage CSV's `no_game_raw_en` rows; style 2 is fetched where it's open)
    - `bin/rails granblue:build_character_skills mode=shadow`: expect only icon changes on versions that had none or a wiki stem, and new action ids. Review, then `mode=write`.
 5. **Run 4, Japanese text.**
