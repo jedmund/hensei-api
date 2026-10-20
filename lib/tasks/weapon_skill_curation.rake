@@ -52,12 +52,14 @@ end
 # runs after the sync, in WEAPON_SKILL_BUILD's mode (off: nothing; shadow: a report that
 # never fails the deploy; write: the stale weapons). It's called here rather than from its
 # own enhance block so the order is explicit: rake runs enhance blocks in definition order,
-# and build_weapon_skills.rake loads before this file.
+# and build_weapon_skills.rake loads before this file. The character-skill build follows, in
+# CHARACTER_SKILL_BUILD's mode, with the same rules.
 if Rake::Task.task_defined?("db:migrate:with_data")
   Rake::Task["db:migrate:with_data"].enhance do
     next if Rails.env.test?
 
     Rake::Task["granblue:sync_weapon_skill_curation"].invoke
     WeaponSkills::Build::Runner.deploy
+    CharacterSkills::Build::Runner.deploy
   end
 end
