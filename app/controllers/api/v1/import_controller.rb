@@ -217,7 +217,7 @@ module Api
 
         begin
           weapon.update!(
-            "game_raw_#{lang}" => body.to_json
+            "game_raw_#{lang}" => body
           )
 
           # Parse series_id and assign WeaponSeries
@@ -261,7 +261,7 @@ module Api
 
         begin
           summon.update!(
-            "game_raw_#{lang}" => body.to_json
+            "game_raw_#{lang}" => body
           )
 
           # Parse series_id and assign SummonSeries
@@ -295,7 +295,12 @@ module Api
         body = parse_request_body
         return unless body
 
-        character = Character.find_by(granblue_id: body['id'])
+        style_row = body['style'].to_s == '2'
+        character = gamedata_character(body)
+        if style_row && character.nil? && Character.exists?(granblue_id: body['id'])
+          Rails.logger.error "[IMPORT] Style row missing for character #{body['id']}"
+          return render json: { error: "style row missing for #{body['id']}" }, status: :unprocessable_content
+        end
         unless character
           Rails.logger.error "[IMPORT] Character not found with ID: #{body['id']}"
           return render json: { error: 'Character not found' }, status: :not_found
@@ -309,7 +314,7 @@ module Api
 
         begin
           character.update!(
-            "game_raw_#{lang}" => body.to_json
+            "game_raw_#{lang}" => body
           )
 
           # Parse series_id and create CharacterSeriesMembership
@@ -334,6 +339,16 @@ module Api
       end
 
       private
+
+      # The row a character detail payload belongs to. A style shift shares its
+      # granblue_id with the base character, so the payload's style picks the row.
+      # A style 2 payload never lands on the base row; anything else falls back to
+      # any row with the id.
+      def gamedata_character(body)
+        return Character.find_by(granblue_id: body['id'], style_swap: true) if body['style'].to_s == '2'
+
+        Character.find_by(granblue_id: body['id'], style_swap: false) || Character.find_by(granblue_id: body['id'])
+      end
 
       def import_by_kind(body)
         case body['kind']

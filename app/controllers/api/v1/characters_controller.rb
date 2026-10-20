@@ -38,7 +38,7 @@ module Api
       # PATCH/PUT /characters/:id
       # Updates an existing character record
       def update
-        if @character.update(with_wiki_fetch_date(character_params, @character))
+        if @character.update(with_wiki_fetch_date(update_params, @character))
           render json: CharacterBlueprint.render(@character, view: :full)
         else
           render_validation_error_response(@character)
@@ -252,6 +252,13 @@ module Api
         ActiveRecord::Associations::Preloader.new(
           records: [@character], associations: Character::SKILL_GRAPH_PRELOAD
         ).call
+      end
+
+      # The edit form sends back the wikitext it loaded, so a blank wiki_raw means
+      # it failed to load, not a deliberate clear: keep the stored text.
+      def update_params
+        attrs = character_params
+        attrs[:wiki_raw].blank? && @character.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
       end
 
       def character_params

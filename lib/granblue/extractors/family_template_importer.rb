@@ -68,14 +68,15 @@ module Granblue
       }.freeze
 
       class << self
-        def import(names, apply: false, throttle: 1.0)
+        def import(names, apply: false, throttle: Granblue::WikiThrottle::MIN_DELAY)
+          throttle = Granblue::WikiThrottle.clamp(throttle, warn: method(:warn))
           names.map do |name|
-            result = import_one(name, apply: apply)
-            sleep(throttle)
-            result
+            import_one(name, apply: apply)
           rescue StandardError => e
             Result.new(family: name, status: "error: #{e.class}: #{e.message[0..80]}",
                        missing: [], mismatches: [], skipped: [])
+          ensure
+            sleep(throttle) # after errors too, so the next fetch still waits
           end
         end
 

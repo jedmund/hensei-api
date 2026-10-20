@@ -258,6 +258,34 @@ RSpec.describe 'Api::V1::Characters', type: :request do
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
     end
+
+    context 'when the character has stored wikitext' do
+      let(:fetched_at) { 2.days.ago.change(usec: 0) }
+      let!(:character) { create(:character, wiki_raw: '{{Character|name=Vikala}}', wiki_raw_fetched_at: fetched_at) }
+
+      it 'keeps the wikitext when the update sends a blank one' do
+        put "/api/v1/characters/#{character.id}",
+            params: { character: { name_en: 'Vikala', wiki_raw: '' } }.to_json,
+            headers: editor_headers
+
+        expect(response).to have_http_status(:ok)
+        character.reload
+        expect(character.name_en).to eq('Vikala')
+        expect(character.wiki_raw).to eq('{{Character|name=Vikala}}')
+        expect(character.wiki_raw_fetched_at).to eq(fetched_at)
+      end
+
+      it 'replaces the wikitext and stamps the fetch date when the update sends new text' do
+        put "/api/v1/characters/#{character.id}",
+            params: { character: { wiki_raw: '{{Character|name=Vikala (Summer)}}' } }.to_json,
+            headers: editor_headers
+
+        expect(response).to have_http_status(:ok)
+        character.reload
+        expect(character.wiki_raw).to eq('{{Character|name=Vikala (Summer)}}')
+        expect(character.wiki_raw_fetched_at).to be > fetched_at
+      end
+    end
   end
 
   describe 'GET /api/v1/characters/:id/raw' do

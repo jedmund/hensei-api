@@ -36,4 +36,24 @@ RSpec.describe Granblue::Extractors::FamilyTemplateImporter do
     expect(family.boosts).to eq(%w[Might HP])
     expect(family.icon_stems).to eq("normal" => { "big" => "skill_atk_1_3" }, "omega" => { "big" => "skill_atk_1_3_o" })
   end
+
+  it "waits at least 2 seconds between template fetches" do
+    allow(described_class).to receive(:import_one)
+    allow(described_class).to receive(:sleep)
+    allow(described_class).to receive(:warn)
+
+    described_class.import(%w[Crux Betrayal], throttle: 0.5)
+
+    expect(described_class).to have_received(:sleep).with(2.0).twice
+  end
+
+  it "still waits after a failed import" do
+    allow(described_class).to receive(:import_one).and_raise(StandardError, "boom")
+    allow(described_class).to receive(:sleep)
+
+    results = described_class.import(%w[Crux Betrayal])
+
+    expect(results.map(&:status)).to all(start_with("error: StandardError"))
+    expect(described_class).to have_received(:sleep).with(2.0).twice
+  end
 end
