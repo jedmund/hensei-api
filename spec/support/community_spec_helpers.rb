@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Shared helpers for the sticker specs (and, later, other community
-# features).
+# Shared helpers for the community participation specs (stickers, events,
+# staff picks, home).
 module CommunitySpecHelpers
   # 1x1 transparent PNG.
   PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
@@ -9,6 +9,14 @@ module CommunitySpecHelpers
   def bearer_headers(user)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  # A giver whose stickers count at full weight: an account older than
+  # 14 days with a public party.
+  def trusted_user
+    user = create(:user, created_at: 30.days.ago)
+    create(:party, user: user, visibility: 1)
+    user
   end
 
   def png_bytes
