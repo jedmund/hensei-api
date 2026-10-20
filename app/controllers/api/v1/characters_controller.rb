@@ -225,20 +225,47 @@ module Api
       end
 
       # POST /characters/:id/reparse
-      # Re-parses the stored wikitext into structured rows; refetch=true fetches fresh wikitext first.
+      # Body (contract C6): { refetch, refetch_jp, preview, preview_token }.
+      #   preview: true   fetches what's asked and builds in shadow mode; writes nothing and
+      #                   returns a preview_token that keeps the fetched text for 30 minutes.
+      #   preview_token   writes exactly the previewed text and builds, without fetching.
+      #   neither         fetches what's asked (refetch=true still works as a query param),
+      #                   then writes and builds.
+      # → { refresh: <C6 refresh>, character: <:full character when written, else null> }
       def reparse
-        Granblue::EntityReparser.new(@character, refetch: params[:refetch] == 'true').reparse
-        render json: CharacterBlueprint.render(@character.reload, view: :full)
-      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
-        render json: { error: e.message }, status: :unprocessable_entity
+        result =
+          if boolean_param(:preview)
+            CharacterSkills::Refresh.preview(@character, user: current_user, refetch: boolean_param(:refetch),
+                                                         refetch_jp: boolean_param(:refetch_jp))
+          elsif params[:preview_token].present?
+            CharacterSkills::Refresh.apply_preview(@character, user: current_user, token: params[:preview_token].to_s)
+          else
+            CharacterSkills::Refresh.reparse(@character, refetch: boolean_param(:refetch),
+                                                         refetch_jp: boolean_param(:refetch_jp))
+          end
+        render json: { refresh: result, character: result[:written] ? full_character : nil }
+      rescue CharacterSkills::Refresh::PreviewExpired => e
+        render json: { error: 'preview_expired', message: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiFetcher::MissingPageError, CharacterSkills::Refresh::BuildRefused => e
+        render json: { error: e.message, message: e.message }, status: :unprocessable_entity
       rescue Granblue::WikiError => e
         render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
       rescue StandardError => e
-        Rails.logger.error "[CHARACTERS] Reparse error for #{@character.id}: #{e.message}"
+        Rails.logger.error "[CHARACTERS] Reparse error for #{@character.id}: #{e.class}: #{e.message}"
         render json: { error: "Failed to re-parse: #{e.message}" }, status: :internal_server_error
       end
 
       private
+
+      def boolean_param(key)
+        ActiveModel::Type::Boolean.new.cast(params[key]) || false
+      end
+
+      def full_character
+        character = Character.find(@character.id)
+        ActiveRecord::Associations::Preloader.new(records: [character], associations: Character::SKILL_GRAPH_PRELOAD).call
+        CharacterBlueprint.render_as_hash(character, view: :full)
+      end
 
       def set
         if params[:style_swap] == 'true' && !uuid_format?(params[:id])
