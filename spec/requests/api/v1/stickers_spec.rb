@@ -192,6 +192,45 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     end
   end
 
+  describe 'DELETE /api/v1/stickers/:id/image' do
+    before { allow(IconStorage).to receive(:delete) }
+
+    it 'removes the Japanese image and its file' do
+      sticker = create(:sticker, slug: 'cleared', image_key_jp: 'icons/stickers/cleared.ja.png')
+      delete "/api/v1/stickers/#{sticker.id}/image", params: { language: 'ja' }, headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(sticker.reload.image_key_jp).to be_nil
+      expect(json_response['image_url_ja']).to be_nil
+      expect(IconStorage).to have_received(:delete).with('icons/stickers/cleared.ja.png')
+    end
+
+    it 'keeps a shared library image’s file' do
+      entry = StickerLibrary.all.find(&:image_key_jp)
+      sticker = create(:sticker, image_key: entry.image_key, image_key_jp: entry.image_key_jp)
+      delete "/api/v1/stickers/#{sticker.id}/image", params: { language: 'ja' }, headers: editor_headers
+
+      expect(sticker.reload.image_key_jp).to be_nil
+      expect(IconStorage).not_to have_received(:delete)
+    end
+
+    it 'does not remove the English image' do
+      sticker = create(:sticker, image_key: 'icons/stickers/x.png')
+      delete "/api/v1/stickers/#{sticker.id}/image", params: { language: 'en' }, headers: editor_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(sticker.reload.image_key).to eq('icons/stickers/x.png')
+    end
+
+    it 'is for editors only' do
+      sticker = create(:sticker, image_key_jp: 'icons/stickers/x.ja.png')
+      delete "/api/v1/stickers/#{sticker.id}/image", params: { language: 'ja' }, headers: member_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(sticker.reload.image_key_jp).to eq('icons/stickers/x.ja.png')
+    end
+  end
+
   describe 'the sticker library' do
     let(:first) { StickerLibrary.all.first }
     let(:last) { StickerLibrary.all.last }

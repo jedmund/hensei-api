@@ -8,7 +8,7 @@ module Api
 
       # GET /users/:user_id/playlists
       def index
-        owner = User.find_by!(username: params[:user_id])
+        owner = User.with_username(params[:user_id]).first!
         playlists = owner.playlists
                          .includes(:playlist_parties, :user)
                          .visible_to(current_user, owner)
@@ -27,7 +27,7 @@ module Api
 
       # GET /users/:user_id/playlists/:id
       def show
-        owner = User.find_by!(username: params[:user_id])
+        owner = User.with_username(params[:user_id]).first!
         playlist = owner.playlists.find_by!(slug: params[:id])
 
         unless playlist.viewable_by?(current_user)
