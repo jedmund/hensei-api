@@ -13,10 +13,11 @@ module Granblue
 
       class << self
         # Every character with stored wiki or game data. Loads only the columns the records
-        # come from (wiki_raw_jp is most of the table's size and isn't one of them).
+        # come from (wiki_raw_jp is most of the table's size and isn't one of them);
+        # CharacterWikiData reads style_swap to pick the row's own game data.
         def build_all(debug: false)
           characters = Character.where.not(game_raw_en: [nil, {}]).or(Character.where.not(wiki_raw: [nil, '']))
-          merge_and_persist(characters.select(:id, :granblue_id, :wiki_raw, :game_raw_en, :game_raw_jp),
+          merge_and_persist(characters.select(:id, :granblue_id, :style_swap, :wiki_raw, :game_raw_en, :game_raw_jp),
                             overwrite: true, debug: debug)
         end
 
