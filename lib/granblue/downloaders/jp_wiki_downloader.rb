@@ -19,19 +19,26 @@ module Granblue
       # Backfill wiki_raw_jp for a model. Skips rows already cached unless force.
       # Uses wiki_ja when it's clean Japanese; falls back to name_jp + rarity
       # suffix when wiki_ja is blank or a legacy percent-encoded path.
-      def self.backfill(model:, limit: nil, throttle: DEFAULT_THROTTLE, force: false, debug: false)
+      #
+      #   ids:     granblue_ids, taken as given (a row with no resolvable title is skipped)
+      #   missing: only rows with a blank wiki_raw_jp (force then changes nothing:
+      #            a blank row is always fetched)
+      #   force:   refetch rows that already have wiki_raw_jp; without ids/missing,
+      #            only those rows
+      #
+      # Returns { downloaded:, skipped:, errors:, summary: } (a Granblue::SourceFetchSummary).
+      def self.backfill(model:, limit: nil, throttle: DEFAULT_THROTTLE, force: false, debug: false, # rubocop:disable Metrics/ParameterLists
+                        ids: nil, missing: false)
         throttle = Granblue::WikiThrottle.clamp(throttle, warn: method(:puts))
-        scope = model.where.not(wiki_raw_jp: [nil, '']) if force
-        scope ||= eligible_scope(model)
+        scope = backfill_scope(model, ids: ids, missing: missing, force: force)
         scope = scope.limit(limit) if limit
 
         total = scope.count
         puts "Downloading JP wiki pages for #{total} #{model.name.downcase}s" \
-             "#{' (missing only)' unless force}...\n\n"
+             "#{' (missing only)' if missing || !force}...\n\n"
 
         client = Granblue::Parsers::JpWiki.new(debug: debug)
-        downloaded = 0
-        errored = []
+        summary = Granblue::SourceFetchSummary.new('download_jp_wiki')
         start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         scope.find_each.with_index do |record, index|
@@ -39,18 +46,32 @@ module Granblue
           title = resolve_title(record)
           downloader = new(record, client: client, jp_title: title)
           requested = downloader.request?(force: force)
-          downloader.download(force: force)
-          downloaded += 1
-          print_progress(progress, total, label(record), 'OK', start_time)
+          unless requested
+            summary.skipped!(title.blank? ? 'no title' : 'has wiki_raw_jp')
+            next
+          end
+
+          before = record.wiki_raw_jp
+          html = downloader.download(force: force)
+          summary.fetched!(record.granblue_id, before: before, after: html)
+          print_progress(progress, total, label(record), before == html ? 'unchanged' : 'changed', start_time)
         rescue StandardError => e
-          errored << { name: label(record), title: title, error: e.message }
+          summary.error!(record.granblue_id, "#{e.message} (#{title})", label: label(record))
           print_progress(progress, total, label(record), "ERR: #{e.message}", start_time)
         ensure
-          sleep(throttle) if requested # only after a real request to gbf-wiki.com
+          Granblue::WikiThrottle.wait(throttle) if requested # only after a real request to gbf-wiki.com
         end
 
-        print_summary(downloaded, errored, total, start_time)
-        { downloaded: downloaded, skipped: total - downloaded - errored.size, errors: errored }
+        print_summary(summary, start_time)
+        { downloaded: summary.fetched, skipped: summary.skipped, errors: summary.errors, summary: summary }
+      end
+
+      def self.backfill_scope(model, ids:, missing:, force:)
+        scope = if ids then model.where(granblue_id: ids)
+                elsif force && !missing then model.where.not(wiki_raw_jp: [nil, ''])
+                else eligible_scope(model)
+                end
+        missing ? scope.where(wiki_raw_jp: [nil, '']) : scope
       end
 
       # Records eligible for JP wiki download: have a clean wiki_ja, or have
@@ -87,26 +108,20 @@ module Granblue
         pct = format('%5.1f%%', current.to_f / total * 100)
         elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
         eta = current > 1 ? format_eta((elapsed / current) * (total - current)) : '?'
-        marker = status == 'OK' ? 'OK' : 'ERR'
-        suffix = status == 'OK' ? '' : " (#{status})"
+        error = status.start_with?('ERR')
+        marker = error ? 'ERR' : 'OK'
+        suffix = error ? " (#{status})" : " #{status}"
         line = "[#{current}/#{total}] #{pct}  [#{marker}] #{name}#{suffix}"
         line += "  elapsed: #{format_eta(elapsed)}  eta: #{eta}"
         puts line
       end
 
-      def self.print_summary(downloaded, errored, total, start_time)
+      def self.print_summary(summary, start_time)
         elapsed = format_eta(Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time)
 
         puts "\n#{'=' * 60}"
         puts "Done in #{elapsed}"
-        puts "  Downloaded: #{downloaded}"
-        puts "  Errors:     #{errored.size}"
-        puts "  Skipped:    #{total - downloaded - errored.size}"
-
-        return if errored.empty?
-
-        puts "\nErrors:"
-        errored.each { |e| puts "  #{e[:name]} (#{e[:title]}) — #{e[:error]}" }
+        summary.print($stdout)
       end
 
       def self.format_eta(seconds)
