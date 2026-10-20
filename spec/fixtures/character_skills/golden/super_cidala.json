@@ -6,9 +6,9 @@
       "versions": [
         {
           "name_en": "Luck Goes Up",
-          "name_jp": null,
+          "name_jp": "運気揚々(うんきあげあげ)",
           "description_en": "Gain Luck Goes Up and Tank-and-Counter.",
-          "description_jp": null,
+          "description_jp": "自分に運気揚々効果/カウンター効果(被ダメージ/2回)◆効果中、土属性追撃効果/ターン進行時に攻撃行動を2回行う/全力でカウンター",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
@@ -70,9 +70,9 @@
       "versions": [
         {
           "name_en": "Bringer of Proarsperity",
-          "name_jp": null,
+          "name_jp": "開寅招福(かいいんしょうふく)",
           "description_en": "All Earth allies gain Dispel Cancel, Mirror Image, and Dodge All 1.",
-          "description_jp": null,
+          "description_jp": "土属性キャラにディスペルガード効果(1回)/幻影効果(1回)/敵の全ての攻撃を回避(1回)",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
@@ -152,9 +152,9 @@
       "versions": [
         {
           "name_en": "Luck Goes Down",
-          "name_jp": null,
+          "name_jp": "運気下々(うんきさげさげ)",
           "description_en": "1200% Earth damage to a foe (Damage cap: ~1,305,000).\nInflict Luck Goes Down 5.",
-          "description_jp": null,
+          "description_jp": "敵に12倍土属性ダメージ/運気下々効果",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
@@ -200,9 +200,9 @@
       "versions": [
         {
           "name_en": "Ascending Fur-tune",
-          "name_jp": null,
+          "name_jp": "寅気上昇(いんきじょうしょう)",
           "description_en": "550% Earth damage to a foe.\nGain ATK Sharply Boosted (Can't be extended).",
-          "description_jp": null,
+          "description_jp": "土属性ダメージ(特大)/自分の攻撃大幅UP",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
@@ -264,9 +264,9 @@
       "versions": [
         {
           "name_en": "Divine Tiger United",
-          "name_jp": null,
+          "name_jp": "寅神合体",
           "description_en": "+10 boost to hostility, 35% hit to charge bar gain, guaranteed triple attacks, and normal attack damage by 15%.",
-          "description_jp": null,
+          "description_jp": "敵のターゲットにされやすく奥義ゲージが溜まりにくいが必ずトリプルアタック/通常攻撃の与ダメージUP",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
@@ -295,9 +295,9 @@
       "versions": [
         {
           "name_en": "Peach-Colored Date",
-          "name_jp": null,
+          "name_jp": "桃色なデート",
           "description_en": "Upon using skills: Raise Peach Scent lvl by 1 (Max: 5).\n(When Peach Scent lvl is 5: 70% hit to DEF, can't use skills, and doesn't deal multiattacks.)",
-          "description_jp": null,
+          "description_jp": "アビリティ使用時、自分の桃香Lvが1上昇(最大5)◆桃香Lv5の時防御大幅DOWN/アビリティ使用不可/連続攻撃が発生しない",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,

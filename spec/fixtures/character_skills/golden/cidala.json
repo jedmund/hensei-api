@@ -6,9 +6,9 @@
       "versions": [
         {
           "name_en": "Jinx of the Tiger",
-          "name_jp": null,
+          "name_jp": "悪運散虎(あくうんさんこ)",
           "description_en": "450% Earth damage to a foe (Damage cap: ~635,000).\nRemove 1 buff.\nInflict ATK Lowered (Stackable) and DEF Lowered (Stackable).\n(Additional random debuffs based on foe's Tiger Tape lvl.)",
-          "description_jp": null,
+          "description_jp": "敵に土属性ダメージ/強化効果を1つ無効化/攻防DOWN(累積)◆対象の虎帯Lvに応じた数の弱体効果を付与",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
@@ -104,9 +104,9 @@
       "versions": [
         {
           "name_en": "Tiger's Prosperity",
-          "name_jp": null,
+          "name_jp": "双虎風水(ふたごふうすい)",
           "description_en": "450% Earth damage to a foe (Damage cap: ~635,000).\nGain ATK Boosted (Stackable), DEF Boosted (Stackable), and DMG Cap Boosted (Stackable).\n(Additional random buffs based on foe's Tiger Tape lvl.)",
-          "description_jp": null,
+          "description_jp": "敵の全ての攻撃を回避/かばう効果(全体)/攻撃行動を行わない◆次のターン自分の攻撃大幅UP/必ずトリプルアタック",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
@@ -202,9 +202,9 @@
       "versions": [
         {
           "name_en": "Twin Tiger Feng Shui",
-          "name_jp": null,
+          "name_jp": "戯遊絡虎(ぎゆうからこ)",
           "description_en": "Gain Dodge All, Substituted (All-Ally), and Twin Tiger Feng Shui.\n(Can't attack. On next turn: Gain ATK Sharply Boosted and Guaranteed TA.)",
-          "description_jp": null,
+          "description_jp": "自分に戯遊絡虎効果◆効果中、通常攻撃とアビリティの与ダメージUP/乱撃効果/通常攻撃後に敵に8倍土属性ダメージ/銀虎Lvと金虎Lvが3の時のみ使用可能",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
@@ -394,9 +394,9 @@
       "versions": [
         {
           "name_en": "Gilded Heaven Strike",
-          "name_jp": null,
+          "name_jp": "金牙神然",
           "description_en": "500% Earth damage to a foe.\nGain Twin Tiger Fury. (Next use of either linked skill activates both.)\nEnd cooldowns for linked skills.",
-          "description_jp": null,
+          "description_jp": "土属性ダメージ(特大)/次のリンクアビリティが両方発動/即時使用可能",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
@@ -452,9 +452,9 @@
         },
         {
           "name_en": "Her Royal Tigerness",
-          "name_jp": null,
+          "name_jp": "威風寅寅(いふういんいん)(最終上限解放で習得)",
           "description_en": "550% Earth damage to a foe.\nGain Twin Tiger Fury. (Next use of either linked skill activates both.)\nEnd cooldowns for linked skills.\n1-turn cut to 's cooldown.\n(Deal 100% Bonus Earth damage based on foe's Tiger Tape+ lvl [Damage cap: ~63,000 per hit / Max: 5 hits].)",
-          "description_jp": null,
+          "description_jp": "土属性ダメージ(特大)/次のリンクアビリティが両方発動/即時使用可能/双虎風水の再使用間隔を1ターン短縮◆対象の虎帯Lvに応じて追加ダメージ(最大5回)",
           "variant_role": "uncap_upgrade",
           "ordinal": 2,
           "type_color": null,
@@ -532,9 +532,9 @@
       "versions": [
         {
           "name_en": "Queen of Tigers",
-          "name_jp": null,
+          "name_jp": "寅神宮の主",
           "description_en": "+20 boost to hostility, 20% hit to debuff resistance, 30% boost to , and guaranteed double attacks.\nRaise foe's Tiger Tape lvl by 1 upon triple attacks (Max: 5).\n(Based on Tiger Tape lvl: Hit to foe's ATK and DEF.)",
-          "description_jp": null,
+          "description_jp": "敵対心が高く弱体耐性が低いが攻撃UP/必ず連続攻撃/トリプルアタック発動時(+で/奥義発動時)に敵の虎帯Lvが1上昇(最大5)◆敵が虎帯Lvに応じて攻撃DOWN/防御DOWN(+で/被ダメージ上昇)",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
@@ -592,9 +592,9 @@
         },
         {
           "name_en": "Queen of Tigers",
-          "name_jp": null,
+          "name_jp": "寅神宮の主",
           "description_en": "Also raise foe's Tiger Tape+ lvl by 1 upon charge attacks.\n(Based on Tiger Tape+ lvl: Also supplement damage taken by foe.)",
-          "description_jp": null,
+          "description_jp": "敵対心が高く弱体耐性が低いが攻撃UP/必ず連続攻撃/トリプルアタック発動時(+で/奥義発動時)に敵の虎帯Lvが1上昇(最大5)◆敵が虎帯Lvに応じて攻撃DOWN/防御DOWN(+で/被ダメージ上昇)",
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
@@ -658,9 +658,9 @@
       "versions": [
         {
           "name_en": "Reversal of Fortune",
-          "name_jp": null,
+          "name_jp": "災転福為(さいてんふくい)",
           "description_en": "At end of turn if Cidala didn't attack:\nRestore HP (Healing cap: 2022) and remove all debuffs.\nGain Double Strike and Bonus Earth DMG.",
-          "description_jp": null,
+          "description_jp": "シンダラが攻撃行動を行わなかった場合、ターン終了時に自分のHP回復/弱体効果を全て回復/再攻撃効果/土属性追撃効果",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
@@ -738,9 +738,9 @@
       "versions": [
         {
           "name_en": "Belling the Silver Tiger",
-          "name_jp": null,
+          "name_jp": "銀鈴揺鳴(ぎんりんようめい)",
           "description_en": "When Earth MC uses a buff skill:\n450% Earth damage to a foe (Damage cap: ~450,000).\nRemove 1 buff.\nRaise Cidala's Silver Stripes lvl by 1 (Max: 3).",
-          "description_jp": null,
+          "description_jp": "土属性の主人公が強化アビリティを使用時、敵に土属性ダメージ/強化効果を1つ無効化/自分の銀虎Lvが1上昇(最大3)",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
@@ -802,9 +802,9 @@
       "versions": [
         {
           "name_en": "Belling the Gold Tiger",
-          "name_jp": null,
+          "name_jp": "金鈴揺鳴(きんりんようめい)",
           "description_en": "When Earth MC uses a damage skill:\n450% Earth damage to a foe (Damage cap: ~450,000).\nCidala gains Triple Attack Rate Boosted (Stackable).\nRaise Cidala's Gold Stripes lvl by 1 (Max: 3).",
-          "description_jp": null,
+          "description_jp": "土属性の主人公がダメージアビリティを使用時、敵に土属性ダメージ/自分のトリプルアタック確率UP(累積)/金虎Lvが1上昇(最大3)",
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,

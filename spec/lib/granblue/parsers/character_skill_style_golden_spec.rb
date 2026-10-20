@@ -16,18 +16,20 @@ RSpec.describe 'CharacterSkillParser golden snapshots for a style shift' do
 
   let(:fixture_dir) { Rails.root.join('spec/fixtures/character_skills') }
   let(:golden_dir) { fixture_dir.join('golden') }
+  # Both rows share one gbf-wiki.com page; the style's skills are in its スタイルシフト section.
+  let(:jp_page) { fixture_dir.join('character-cidala-jpwiki.html').read }
 
   let!(:base) do
     create(:character, granblue_id: granblue_id, name_en: 'Cidala',
                        wiki_raw: fixture_dir.join('character-cidala-wikidata.txt').read,
                        game_raw_en: JSON.parse(fixture_dir.join('character-cidala-gamedata.json').read),
-                       game_raw_jp: nil, wiki_raw_jp: nil)
+                       game_raw_jp: nil, wiki_raw_jp: jp_page)
   end
   let!(:style) do
     create(:character, granblue_id: granblue_id, name_en: 'Cidala', style_swap: true, style_name_en: 'Super Cidala',
                        wiki_raw: fixture_dir.join('character-super-cidala-wikidata.txt').read,
                        game_raw_en: JSON.parse(fixture_dir.join('character-super-cidala-gamedata.json').read),
-                       game_raw_jp: nil, wiki_raw_jp: nil)
+                       game_raw_jp: nil, wiki_raw_jp: jp_page)
   end
 
   before { Granblue::Parsers::StatusCatalogBuilder.build_all }
@@ -90,6 +92,26 @@ RSpec.describe 'CharacterSkillParser golden snapshots for a style shift' do
       expect(icons).to match_array(style_icons)
       expect(icons & base_icons).to be_empty
     end
+  end
+
+  it "takes each row's JP text from its own section of the shared JP page" do
+    jp_names = lambda do |report|
+      report[:slots].select { |slot| slot[:attrs][:kind] == 'ability' }
+                    .map { |slot| slot[:versions].first[:attrs][:name_jp] }
+    end
+
+    aggregate_failures do
+      expect(jp_names.call(build(style))).to eq(%w[運気揚々(うんきあげあげ) 開寅招福(かいいんしょうふく) 運気下々(うんきさげさげ)])
+      expect(jp_names.call(build(base))).not_to include('運気揚々(うんきあげあげ)')
+    end
+  end
+
+  it "gives a style row no JP text when the page has no section for it" do
+    style.update!(wiki_raw_jp: jp_page.gsub('スタイルシフト「スーパーシンダラ」', '別ページ'))
+
+    names = build(style)[:slots].flat_map { |slot| slot[:versions].map { |v| v[:attrs][:name_jp] } }
+
+    expect(names.compact).to be_empty
   end
 
   it "persists the two rows' skills independently" do
