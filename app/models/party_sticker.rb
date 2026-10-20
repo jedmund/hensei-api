@@ -20,8 +20,15 @@ class PartySticker < ApplicationRecord
   # clamped on save, so a drop at the very edge still lands
   validates :x, :y, :rotation, numericality: true, allow_nil: true
   before_save :clamp_placement
+  # A team's score counts its stickers and when each was given, so moving or
+  # swapping one doesn't change it
+  after_commit :enqueue_participation_recompute, on: %i[create destroy]
 
   private
+
+  def enqueue_participation_recompute
+    PartyParticipation::ScoreJob.perform_later(party_id) if party_id.present?
+  end
 
   def clamp_placement
     self.x = x.clamp(X_RANGE.begin, X_RANGE.end) unless x.nil?
