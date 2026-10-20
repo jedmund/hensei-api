@@ -39,12 +39,21 @@ RSpec.describe 'Import gamedata', type: :request do
       expect(base.reload.game_raw_en).to be_nil
     end
 
-    it 'falls back to the base row when there is no style row' do
+    it 'refuses a style 2 payload when there is no style row' do
       solo = create(:character, granblue_id: '3040001000')
       post '/api/v1/import/characters?lang=en', params: { 'id' => '3040001000', 'style' => 2 }.to_json,
                                                 headers: headers_for(editor)
 
-      expect(solo.reload.game_raw_en).to eq('id' => '3040001000', 'style' => 2)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body['error']).to eq('style row missing for 3040001000')
+      expect(solo.reload.game_raw_en).to be_nil
+    end
+
+    it 'puts a payload without a style on the base row' do
+      post '/api/v1/import/characters?lang=en', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
+
+      expect(base.reload.game_raw_en).to eq('id' => '3040377000')
+      expect(style.reload.game_raw_en).to be_nil
     end
 
     it 'rejects a non-editor' do
