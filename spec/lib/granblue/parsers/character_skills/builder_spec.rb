@@ -31,4 +31,79 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
   it 'reuses the injected effect parser instance' do
     expect(builder.effect_parser).to be(effect_parser)
   end
+
+  describe 'game_icon resolution' do
+    let(:snapshot_path) { Rails.root.join('tmp', "icon-snapshot-#{SecureRandom.hex(4)}.json") }
+    let(:wiki_raw) do
+      File.read(fixtures.join('character-vikala-wikidata.txt'))
+          .sub(/^\|a1_icon=.*$/, '|a1_icon= Ability_m_9999_1.png')
+    end
+    let(:game_raw_en) { nil }
+    let(:character) do
+      build(:character, granblue_id: '3040252000', name_en: 'Vikala', wiki_raw: wiki_raw, game_raw_en: game_raw_en)
+    end
+    let(:snapshot_entries) { [] }
+
+    def first_ability_version(graph)
+      slot = graph[:slots].find { |s| s[:attrs][:kind] == 'ability' && s[:attrs][:position] == 1 }
+      slot[:versions].find { |v| v[:attrs][:ordinal] == 1 }
+    end
+
+    def entry(name_en:, game_icon:)
+      { granblue_id: '3040252000', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: name_en, game_icon: game_icon }
+    end
+
+    before do
+      File.write(snapshot_path, JSON.generate(snapshot_entries))
+      stub_const('CharacterSkills::IconSnapshot::DEFAULT_PATH', snapshot_path)
+      CharacterSkills::IconSnapshot.reset!
+    end
+
+    after do
+      FileUtils.rm_f(snapshot_path)
+      CharacterSkills::IconSnapshot.reset!
+    end
+
+    context 'with game data' do
+      let(:game_raw_en) { JSON.parse(File.read(fixtures.join('character-vikala-gamedata.json'))) }
+      let(:snapshot_entries) { [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1')] }
+
+      it 'prefers the game class_name over the snapshot' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('1065_1')
+      end
+    end
+
+    context 'without game data and a matching snapshot entry' do
+      let(:snapshot_entries) { [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1')] }
+
+      it 'takes the snapshot icon' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('5555_1')
+      end
+    end
+
+    context 'with a snapshot entry under another name' do
+      let(:snapshot_entries) { [entry(name_en: 'Some Other Ability', game_icon: '5555_1')] }
+
+      it 'falls back to the wiki stem' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
+      end
+    end
+
+    context 'without a snapshot entry' do
+      it 'falls back to the wiki stem' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
+      end
+    end
+
+    context 'for a style row' do
+      let(:character) do
+        build(:character, granblue_id: '3040252000', name_en: 'Vikala', wiki_raw: wiki_raw, style_swap: true)
+      end
+      let(:snapshot_entries) { [entry(name_en: 'Ring the Dormouse', game_icon: '5555_1')] }
+
+      it 'does not take the base row\'s snapshot entry' do
+        expect(first_ability_version(builder.build)[:attrs][:game_icon]).to eq('9999_1')
+      end
+    end
+  end
 end
