@@ -25,6 +25,8 @@ module Api
       # Minimal view for party list cards
       view :list do
         identifier :id
+        # Home's raid thumbnails and "see all" filters key off the slug
+        field :slug
 
         field :name do |raid|
           {
