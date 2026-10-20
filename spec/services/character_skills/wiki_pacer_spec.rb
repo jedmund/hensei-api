@@ -5,12 +5,13 @@ require 'rails_helper'
 RSpec.describe CharacterSkills::WikiPacer do
   let(:now) { [100.0] }
   let(:sleeps) { [] }
-  let(:pacer) do
-    described_class.new(clock: -> { now.first }, sleeper: lambda { |seconds|
-                          sleeps << seconds
-                          now[0] += seconds
-                        })
+  let(:sleeper) do
+    lambda do |seconds|
+      sleeps << seconds
+      now[0] += seconds
+    end
   end
+  let(:pacer) { described_class.new(clock: -> { now.first }, sleeper: sleeper) }
 
   it "doesn't wait for a site's first request" do
     pacer.wait(:gbf_wiki)

@@ -52,6 +52,9 @@ RSpec.describe 'Character skill refreshes', type: :request do
     post "/api/v1/character_skill_refreshes/#{id}/apply", params: body.to_json, headers: auth_headers(as)
   end
 
+  # Only the refresh job: the apply also queues the icon download, which would reach S3.
+  def run_refresh_jobs = perform_enqueued_jobs(only: CharacterSkills::RefreshJob)
+
   def cooldown(character)
     CharacterSkillVersion.joins(:character_skill).find_by(character_skills: { character_id: character.id }).cooldown
   end
@@ -63,7 +66,8 @@ RSpec.describe 'Character skill refreshes', type: :request do
     allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch) do |_, entity, **|
       Granblue::WikiFetcher::Page.new(title: entity.wiki_en, text: wiki(5))
     end
-    CharacterSkills::Build::Runner.new(mode: 'write', all: true, io: StringIO.new, enqueue_icons: false).call
+    CharacterSkills::Build::Runner.new(mode: 'write', characters: [first, style, second], all: true, io: StringIO.new,
+                                       enqueue_icons: false).call
   end
 
   describe 'POST /character_skill_refreshes' do
@@ -90,10 +94,9 @@ RSpec.describe 'Character skill refreshes', type: :request do
 
     it 'is a 422 too_many_characters over 20' do
       ids = Array.new(21) { |i| make("30409100#{i.to_s.rjust(2, '0')}").id }
-      create_refresh(ids)
+      expect { create_refresh(ids) }.not_to have_enqueued_job(CharacterSkills::RefreshJob)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body).to include('error' => 'too_many_characters', 'message' => be_present)
-      expect(CharacterSkills::RefreshJob).not_to have_been_enqueued
     end
 
     it 'is a 422 for no or unknown characters' do
@@ -144,7 +147,7 @@ RSpec.describe 'Character skill refreshes', type: :request do
     it 'writes the chosen characters from the previewed text and skips the rest' do
       create_refresh([first.id, style.id, second.id])
       id = response.parsed_body['id']
-      perform_enqueued_jobs
+      run_refresh_jobs
 
       show(id)
       body = response.parsed_body
@@ -165,7 +168,7 @@ RSpec.describe 'Character skill refreshes', type: :request do
       show(id)
       expect(response.parsed_body['status']).to eq('applying')
 
-      perform_enqueued_jobs
+      expect { run_refresh_jobs }.not_to have_enqueued_job(CharacterSkills::BuildJob)
       show(id)
       body = response.parsed_body
       expect(body['status']).to eq('applied')
@@ -178,15 +181,14 @@ RSpec.describe 'Character skill refreshes', type: :request do
       expect(cooldown(second)).to eq(5)
       expect(style.reload.wiki_raw).to eq(wiki(7))
       expect(cooldown(style)).to eq(7)
-      expect(CharacterSkills::BuildJob).not_to have_been_enqueued
     end
 
     it 'applies every previewed character by default' do
       create_refresh([first.id, second.id])
       id = response.parsed_body['id']
-      perform_enqueued_jobs
+      run_refresh_jobs
       apply(id)
-      perform_enqueued_jobs
+      run_refresh_jobs
 
       show(id)
       expect(response.parsed_body['items'].pluck('status')).to eq(%w[applied applied])
