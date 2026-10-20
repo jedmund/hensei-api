@@ -19,7 +19,7 @@ namespace :granblue do
       bin/rails granblue:fetch_weapon_sources stale_days=0        # refetch everything
       bin/rails granblue:fetch_weapon_sources ids=1040415000,...  # these weapons (always refetched)
       bin/rails granblue:fetch_weapon_sources kind=family_template
-      bin/rails granblue:fetch_weapon_sources delay=3.0           # seconds between requests (default 2.0)
+      bin/rails granblue:fetch_weapon_sources delay=3.0           # seconds between requests (default and minimum 2.0)
   DESC
   task fetch_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
@@ -30,7 +30,7 @@ namespace :granblue do
     abort "unknown kind=#{kind} (#{store::KINDS.join(', ')})" if kind && !store::KINDS.include?(kind)
 
     cutoff = stale_days&.days&.ago
-    fetcher = store::Fetcher.new(delay: ENV.fetch("delay", "2.0").to_f, log: ->(line) { puts line })
+    fetcher = store::Fetcher.new(delay: Granblue::WikiThrottle.clamp(ENV["delay"].presence, warn: method(:puts)), log: ->(line) { puts line })
     fresh = lambda do |scope|
       scope = scope.where(fetched_at: cutoff..) if cutoff
       scope
@@ -137,11 +137,12 @@ namespace :granblue do
     Usage:
       bin/rails granblue:check_weapon_sources                 # report only
       bin/rails granblue:check_weapon_sources refetch=true    # refetch what changed
-      bin/rails granblue:check_weapon_sources delay=3.0       # seconds between requests (default 2.0)
+      bin/rails granblue:check_weapon_sources delay=3.0       # seconds between requests (default and minimum 2.0)
   DESC
   task check_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
-    fetcher = WeaponSkills::SourceStore::Fetcher.new(delay: ENV.fetch("delay", "2.0").to_f, log: ->(l) { puts l })
+    delay = Granblue::WikiThrottle.clamp(ENV["delay"].presence, warn: method(:puts))
+    fetcher = WeaponSkills::SourceStore::Fetcher.new(delay: delay, log: ->(l) { puts l })
     freshness = WeaponSkills::SourceStore::Freshness.new(fetcher: fetcher)
     result = freshness.check
     names = Weapon.where(id: result.weapon_ids).order(:granblue_id).pluck(:granblue_id, :name_en)

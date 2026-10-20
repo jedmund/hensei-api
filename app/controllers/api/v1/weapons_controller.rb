@@ -29,7 +29,7 @@ module Api
       # PATCH/PUT /weapons/:id
       # Updates an existing weapon record
       def update
-        if @weapon.update(with_wiki_fetch_date(weapon_params, @weapon))
+        if @weapon.update(with_wiki_fetch_date(update_params, @weapon))
           @weapon.reload
           render json: WeaponBlueprint.render(@weapon, view: :full)
         else
@@ -241,6 +241,13 @@ module Api
       def set
         @weapon = find_by_any_id(Weapon, params[:id])
         render_not_found_response('weapon') unless @weapon
+      end
+
+      # The edit form sends back the wikitext it loaded, so a blank wiki_raw means
+      # it failed to load, not a deliberate clear: keep the stored text.
+      def update_params
+        attrs = weapon_params
+        attrs[:wiki_raw].blank? && @weapon.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
       end
 
       def weapon_params

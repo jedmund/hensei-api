@@ -8,13 +8,14 @@ namespace :granblue do
       rake granblue:fetch_wiki_data type=Summon         # Fetch all Summons
       rake granblue:fetch_wiki_data type=Character id=5 # Fetch specific Character by ID
       rake granblue:fetch_wiki_data force=true          # Force re-download even if data exists
+      rake granblue:fetch_wiki_data delay=3.0           # seconds between requests (default and minimum 2.0)
   DESC
   task fetch_wiki_data: :environment do
     # Get parameters from environment
     type = (ENV['type'] || 'Character').classify
     id = ENV['id']
     force = ENV['force'] == 'true'
-    delay = (ENV['delay'].presence || '0.5').to_f # be respectful: throttle between wiki requests
+    delay = Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts))
 
     # Validate object type
     valid_types = %w[Character Weapon Summon]
@@ -48,7 +49,7 @@ namespace :granblue do
       begin
         # Fetch the page (following a redirect) and store it on the record. Weapons also
         # refresh their weapon_sources (expansion, followed pages).
-        wiki_text = Granblue::WikiFetcher.new.fetch_and_store(object)
+        wiki_text = Granblue::WikiFetcher.new(delay: delay).fetch_and_store(object)
         puts wiki_text
         puts "Saved wiki data for #{object.name_en} (#{object.id})"
         count += 1
@@ -77,12 +78,12 @@ namespace :granblue do
       rake granblue:refresh_stale_wiki_data            # all missing/stale weapons
       rake granblue:refresh_stale_wiki_data days=30    # also any weapon updated in last 30 days
       rake granblue:refresh_stale_wiki_data limit=50   # cap the batch
-      rake granblue:refresh_stale_wiki_data delay=1.0  # seconds between requests (default 0.5)
+      rake granblue:refresh_stale_wiki_data delay=3.0  # seconds between requests (default and minimum 2.0)
   DESC
   task refresh_stale_wiki_data: :environment do
     days  = ENV['days'].presence&.to_i
     limit = ENV['limit'].presence&.to_i
-    delay = (ENV['delay'].presence || '0.5').to_f
+    delay = Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts))
 
     base = Weapon.where.not(wiki_en: [nil, ''])
     stale = base.where(
@@ -98,7 +99,7 @@ namespace :granblue do
     count = 0
     weapons.each_with_index do |weapon, i|
       begin
-        Granblue::WikiFetcher.new.fetch_and_store(weapon) # also refreshes weapon_sources
+        Granblue::WikiFetcher.new(delay: delay).fetch_and_store(weapon) # also refreshes weapon_sources
         count += 1
         puts "  (#{i + 1}/#{total}) #{weapon.name_en}"
       rescue StandardError => e
