@@ -252,6 +252,11 @@ class Dataminer
     column = LANG_COLUMNS.fetch(lang.to_s) { raise ArgumentError, "unknown lang #{lang.inspect}" }
     model = Object.const_get(model_name)
     record = if model_name == 'Character'
+               # Error and popup responses are hashes too; only a character payload is stored.
+               unless response_data['id'].present? && response_data['ability'].present?
+                 logger.warn "Character #{granblue_id}: response has no id or ability; not stored"
+                 return
+               end
                response_style = response_data['style'].presence&.to_i
                if response_style && response_style != style.to_i
                  logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"

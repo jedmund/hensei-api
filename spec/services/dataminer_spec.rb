@@ -85,6 +85,14 @@ RSpec.describe Dataminer do
       end
     end
 
+    it 'does not store a response that is not a character payload' do
+      stub_style(2, { 'popup' => { 'body' => 'Maintenance' } })
+
+      miner.fetch_character('3040377000', style: 2, other_styles: false)
+
+      expect(style.reload.game_raw_en).to be_nil
+    end
+
     it 'does not store a response whose style differs from the one requested' do
       stub_style(2, style1_payload)
 
