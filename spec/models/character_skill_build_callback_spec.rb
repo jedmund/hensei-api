@@ -20,10 +20,11 @@ RSpec.describe Character, 'skill build callback' do
       expect { character.update!(name_en: 'Renamed') }.not_to have_enqueued_job(CharacterSkills::BuildJob)
     end
 
-    %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp element].each do |column|
+    {
+      'wiki_raw' => '{{Character|x=1}}', 'wiki_raw_jp' => '<p>x</p>', 'game_raw_en' => { 'a' => 1 },
+      'game_raw_jp' => { 'a' => 1 }, 'element' => 3, 'style_swap' => true, 'granblue_id' => '3040999999'
+    }.each do |column, value|
       it "queues a build when #{column} changes" do
-        value = { 'wiki_raw' => '{{Character|x=1}}', 'wiki_raw_jp' => '<p>x</p>', 'game_raw_en' => { 'a' => 1 },
-                  'game_raw_jp' => { 'a' => 1 }, 'element' => 3 }.fetch(column)
         expect { character.update!(column => value) }
           .to have_enqueued_job(CharacterSkills::BuildJob).with(character.id).exactly(:once)
       end
