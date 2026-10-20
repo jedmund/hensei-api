@@ -13,11 +13,11 @@ module Granblue
 
         def persist(graph)
           ActiveRecord::Base.transaction do
-            CharacterSkill.where(character_granblue_id: @character.granblue_id).destroy_all
+            CharacterSkill.where(character_id: @character.id).destroy_all
 
             versions_by_key = {}
             graph[:slots].each do |slot_hash|
-              slot = CharacterSkill.create!(permitted_attrs(CharacterSkill, slot_hash[:attrs]))
+              slot = CharacterSkill.create!(permitted_attrs(CharacterSkill, slot_hash[:attrs]).merge(character: @character))
               slot_hash[:versions].each do |version_hash|
                 version_attrs = permitted_attrs(CharacterSkillVersion, version_hash[:attrs]).merge(character_skill_id: slot.id)
                 version = CharacterSkillVersion.create!(version_attrs)
