@@ -7,7 +7,7 @@ module CharacterSkills
     #   - the row's wiki_raw, wiki_raw_jp, game_raw_en and game_raw_jp, each as its own sha256
     #     ("-" for nil);
     #   - the other characters columns the Builder reads: granblue_id, element, style_swap;
-    #   - the statuses catalogue, (id, name_en) sorted;
+    #   - the statuses catalogue, (id, name_en, category) sorted (a name resolves by category);
     #   - the sha256 of the icon snapshot file, or "-" when it's absent.
     # Stored on characters.character_skill_build_fingerprint after a write; a run without
     # all: true skips characters whose fingerprint still matches.
@@ -58,7 +58,8 @@ module CharacterSkills
 
       def statuses_digest
         @statuses_digest ||= Digest::SHA256.hexdigest(
-          Status.pluck(:id, :name_en).sort_by { |id, _| id.to_s }.map { |id, name| "#{id}:#{name}" }.join("\n")
+          Status.pluck(:id, :name_en, :category).sort_by { |id, *| id.to_s }
+                .map { |id, name, category| "#{id}:#{name}:#{category}" }.join("\n")
         )
       end
 

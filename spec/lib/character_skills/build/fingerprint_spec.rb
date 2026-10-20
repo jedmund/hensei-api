@@ -61,6 +61,13 @@ RSpec.describe CharacterSkills::Build::Fingerprint do
     end
   end
 
+  it "changes when a status's category changes" do
+    status = Status.create!(name_en: "Charge Boost", category: "debuff")
+    before = fingerprint
+    status.update!(category: "buff")
+    expect(fingerprint).not_to eq(before)
+  end
+
   it "changes when a status is added or renamed" do
     before = fingerprint
     status = Status.create!(name_en: "Burning", category: "debuff")
