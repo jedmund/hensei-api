@@ -8,7 +8,7 @@ module Granblue
     # with no further network calls. The JP wiki has no API, so the batch
     # backfill is throttled to stay polite.
     class JpWikiDownloader
-      DEFAULT_THROTTLE = 1.0 # seconds between requests
+      DEFAULT_THROTTLE = Granblue::WikiThrottle::MIN_DELAY # seconds between requests
 
       RARITY_SUFFIX = {
         1 => '(R)',
@@ -20,6 +20,7 @@ module Granblue
       # Uses wiki_ja when it's clean Japanese; falls back to name_jp + rarity
       # suffix when wiki_ja is blank or a legacy percent-encoded path.
       def self.backfill(model:, limit: nil, throttle: DEFAULT_THROTTLE, force: false, debug: false)
+        throttle = Granblue::WikiThrottle.clamp(throttle, warn: method(:puts))
         scope = model.where.not(wiki_raw_jp: [nil, '']) if force
         scope ||= eligible_scope(model)
         scope = scope.limit(limit) if limit
@@ -43,7 +44,7 @@ module Granblue
           errored << { name: label(record), title: title, error: e.message }
           print_progress(progress, total, label(record), "ERR: #{e.message}", start_time)
         ensure
-          sleep(throttle) if throttle&.positive?
+          sleep(throttle)
         end
 
         print_summary(downloaded, errored, total, start_time)
