@@ -707,7 +707,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Club",
               "amount": null,
@@ -783,7 +783,7 @@
           ],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "ATK Sharply Boosted",
               "amount": "50%",

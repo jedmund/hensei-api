@@ -43,14 +43,36 @@ module Granblue
         report
       end
 
-      # Preloads the Status catalog into name/id indexes for O(1) lookups. Several statuses
-      # can share a name (one per game ailment id); the oldest wins, so a name resolves the
-      # same way on every build, and a status added later doesn't move existing effects.
+      # Ties between same-name categories go to the first of these; a field row also beats a
+      # buff majority (field states such as Sun-touched Paradise get mislabelled as buffs).
+      CATEGORY_TIE_ORDER = %w[field buff debuff special].freeze
+
+      # Preloads the Status catalog into name/id indexes for O(1) lookups.
+      #
+      # Several statuses can share a name (one per game ailment id, often paired with the
+      # name by mistake, so their categories disagree). A name resolves to the majority
+      # category among its rows (ties: field, then buff; a field row beats buff), then the
+      # oldest row in that category. Deterministic, and right for 97% of the hand-labelled
+      # effects in the 2026-10 status audit, where "oldest row" was right for 44%.
       def self.build_status_lookup
-        Status.order(:created_at, :id).each_with_object({ by_name: {}, by_id: {} }) do |status, acc|
-          acc[:by_name][status.name_en.to_s.downcase] ||= status
-          acc[:by_id][status.id] = status
-        end
+        statuses = Status.order(:created_at, :id).to_a
+        by_name = statuses.group_by { |status| status.name_en.to_s.downcase }
+                          .transform_values { |rows| resolve_same_name(rows) }
+        { by_name: by_name, by_id: statuses.index_by(&:id) }
+      end
+
+      # rows: same-name statuses, oldest first.
+      def self.resolve_same_name(rows)
+        return rows.first if rows.size == 1
+
+        counts = rows.filter_map(&:category).tally
+        return rows.first if counts.empty?
+
+        top = counts.values.max
+        tied = counts.select { |_, count| count == top }.keys
+        category = CATEGORY_TIE_ORDER.find { |c| tied.include?(c) } || tied.min
+        category = 'field' if category == 'buff' && counts.key?('field')
+        rows.find { |row| row.category == category }
       end
 
       private

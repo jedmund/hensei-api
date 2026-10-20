@@ -7,6 +7,6 @@ module CharacterSkills
   module Build
     # Bump whenever the builder's output changes on purpose: every character becomes stale
     # and the next deploy rebuilds it.
-    VERSION = 1
+    VERSION = 2
   end
 end
