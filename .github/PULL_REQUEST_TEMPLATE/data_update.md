@@ -41,6 +41,7 @@
 - [ ] Arrays use the correct format (e.g., `{value1,value2}`)
 - [ ] Ran import in test mode (`bin/rails granblue:import_data TEST=true`)
 - [ ] Weapon-skill data edited? Exported it and `bin/rails granblue:weapon_skill_curation_drift` is clean ([docs](../../docs/weapon-skill-curation.md))
+- [ ] Character skill parsing or a character's sources changed? `bin/rails granblue:character_skill_drift` reports only the differences you expect ([docs](../../docs/weapon-skill-pipeline/README.md#contracts))
 
 ## Test Results
 

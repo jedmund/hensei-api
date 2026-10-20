@@ -99,3 +99,8 @@ W0 defines these; the other workstreams build against them.
 - **Overlay v2:** [overlay-v2.md](overlay-v2.md), plus a JSON schema checked by a spec.
 - **`SourceStore`:** `fetch(kind, key)` returns the body or raises `SourceMissing`; `put(kind, key, body, page_kind:)`.
 - **Flag:** `WEAPON_SKILL_BUILD` = `off` | `shadow` | `write`.
+- **Character skills** have the same switch: `CHARACTER_SKILL_BUILD` = `off` | `shadow` | `write` (read in `CharacterSkills.build_mode`, `lib/character_skills.rb`).
+  - The deploy hook (`db:migrate:with_data`) runs the weapon build, then the character build (`CharacterSkills::Build::Runner.deploy`), each in its own flag's mode. `shadow` only reports and never fails a deploy; `write` rebuilds the characters whose fingerprint changed.
+  - Saving a character whose skill sources change queues `CharacterSkills::BuildJob`. It writes in `write`, or when the character has no skills yet; otherwise it builds in shadow and logs what would change.
+  - By hand: `bin/rails granblue:build_character_skills mode=shadow|write [all=true] [ids=GRANBLUE_ID,...] [icons=false]`.
+  - Drift check: `bin/rails granblue:character_skill_drift` builds every character in shadow mode and exits nonzero if any built skills differ from the stored ones.
