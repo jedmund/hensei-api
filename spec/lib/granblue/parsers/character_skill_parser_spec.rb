@@ -129,19 +129,20 @@ RSpec.describe Granblue::Parsers::CharacterSkillParser do
         WIKI
       end
 
-      it 'persists the effects again whenever the character is reparsed' do
+      it 'keeps the same effects, with the same ids, whenever the character is reparsed' do
         character = create(:character, granblue_id: '3990515000', element: 6, wiki_raw: wiki_raw)
+        effects = SkillEffect.joins(character_skill_version: :character_skill)
+                             .where(character_skills: { character_id: character.id })
+                             .effect_weapon_skill_boost
 
-        2.times do
+        ids = Array.new(2) do
           described_class.new(character).parse(persist: true)
-          effects = SkillEffect.joins(character_skill_version: :character_skill)
-                               .where(character_skills: { character_granblue_id: character.granblue_id })
-                               .effect_weapon_skill_boost
-
           expect(effects.pluck(:frame, :element, :amount)).to contain_exactly(
             ['normal', 'light', '20.0'], ['omega', 'light', '20.0']
           )
+          effects.order(:id).pluck(:id)
         end
+        expect(ids.uniq.size).to eq(1)
       end
 
       it 'does not apply Light Grand Sandalphon data to an Earth character' do
@@ -150,7 +151,7 @@ RSpec.describe Granblue::Parsers::CharacterSkillParser do
         described_class.new(character).parse(persist: true)
 
         effects = SkillEffect.joins(character_skill_version: :character_skill)
-                             .where(character_skills: { character_granblue_id: character.granblue_id })
+                             .where(character_skills: { character_id: character.id })
                              .effect_weapon_skill_boost
         expect(effects).to be_empty
       end

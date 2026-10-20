@@ -12,10 +12,19 @@ module Granblue
       }.freeze
 
       class << self
+        # Every character with stored wiki or game data. Loads only the columns the records
+        # come from (wiki_raw_jp is most of the table's size and isn't one of them).
         def build_all(debug: false)
+          characters = Character.where.not(game_raw_en: [nil, {}]).or(Character.where.not(wiki_raw: [nil, '']))
+          build_for(characters.select(:id, :granblue_id, :wiki_raw, :game_raw_en, :game_raw_jp), debug: debug)
+        end
+
+        # The same merge and persist over the given characters (a relation, or records,
+        # unsaved text included). Upserts; never deletes a status.
+        def build_for(characters, debug: false)
           records = {}
 
-          Character.where.not(game_raw_en: [nil, {}]).or(Character.where.not(wiki_raw: [nil, ''])).find_each do |character|
+          each_character(characters) do |character|
             new(character).records.each do |record|
               key = record[:game_ailment_id].presence || "name:#{record[:name_en].downcase}"
               records[key] = merge_record(records[key], record)
@@ -29,6 +38,10 @@ module Granblue
         end
 
         private
+
+        def each_character(characters, &)
+          characters.respond_to?(:find_each) ? characters.find_each(&) : Array(characters).each(&)
+        end
 
         def merge_record(existing, record)
           return record if existing.blank?

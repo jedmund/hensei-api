@@ -4,8 +4,10 @@ module Granblue
   module Parsers
     # Public façade for parsing a character's wiki/game data into the normalized
     # skill graph. Orchestrates the CharacterSkills::* collaborators: Builder
-    # assembles the graph, JpLocalizer fills Japanese text, Reporter builds the
-    # diagnostic report, and Persister writes it.
+    # assembles the graph and JpLocalizer fills Japanese text (#graph, pure: it reads
+    # the record and the statuses catalogue, never the network or skill rows), and
+    # Reporter builds the diagnostic report (#report). Writing is
+    # CharacterSkills::Build's job (::CharacterSkills::Build::Runner and Writer).
     class CharacterSkillParser
       attr_reader :character
 
@@ -17,38 +19,28 @@ module Granblue
         @status_lookup = status_lookup
       end
 
-      def parse(persist: false)
-        graph = CharacterSkills::Builder.new(character, data: data, effect_parser: effect_parser).build
-        CharacterSkills::JpLocalizer.new(character).apply(graph[:slots])
-        report = CharacterSkills::Reporter.new(data: data, status_lookup: status_lookup)
-                                          .report_for(graph, unmatched_statuses: effect_parser.unmatched_statuses)
-        CharacterSkills::Persister.new(character).persist(graph) if persist
-        report
+      # → { character_granblue_id:, slots:, links: }, built once per parser.
+      def graph
+        @graph ||= CharacterSkills::Builder.new(character, data: data, effect_parser: effect_parser).build.tap do |built|
+          CharacterSkills::JpLocalizer.new(character).apply(built[:slots])
+        end
       end
 
-      def self.persist_all(debug: false, overwrite: false)
-        characters = Character.where.not(wiki_raw: [nil, ''])
-        characters = characters.left_joins(:character_skills).where(character_skills: { id: nil }) unless overwrite
+      def report
+        CharacterSkills::Reporter.new(data: data, status_lookup: status_lookup)
+                                 .report_for(graph, unmatched_statuses: effect_parser.unmatched_statuses)
+      end
 
-        total = characters.count
-        processed = 0
-        errors = []
-        status_lookup = build_status_lookup
-
-        characters.find_each.with_index do |character, index|
-          if debug
-            percentage = total.zero? ? 100.0 : ((index + 1) / total.to_f * 100).round(1)
-            puts "#{percentage}%: Processing skills for #{character.name_en} (#{character.granblue_id})..."
-          end
-
-          new(character, status_lookup: status_lookup).parse(persist: true)
-          processed += 1
-        rescue StandardError => e
-          errors << "#{character.granblue_id}: #{e.message}"
-          Rails.logger.error "[CHARACTER_SKILLS] Failed for #{character.granblue_id}: #{e.message}"
+      # The report; persist: true also builds and writes this character's skills through
+      # the build runner (write mode, even when not stale). Kept for the report tasks
+      # and callers that still pass persist:.
+      def parse(persist: false)
+        if persist
+          summary = ::CharacterSkills::Build::Runner.new(mode: 'write', characters: [character], all: true,
+                                                         io: StringIO.new).call
+          raise summary.errors.first.last if summary.errors.any?
         end
-
-        { processed: processed, skipped: total - processed - errors.size, errors: errors }
+        report
       end
 
       # Preloads the Status catalog into name/id indexes for O(1) lookups.
