@@ -111,6 +111,7 @@ The data runs from `docs/prds/character-skills-pr4-backfill.md` (workspace repo)
 
 - **Fetches don't build per row.** `fetch_wiki_data`, `download_jp_wiki` and `fetch_game_data` write inside `Character.without_skill_build`, print a summary (fetched = unchanged + changed, skipped with reasons, errors) and the changed granblue_ids, then print the build command to run next. `build=shadow|write` runs that build over the changed characters instead; `changed_out=PATH` writes the list, one id per line.
 - **Wiki requests** are at least 2s apart (`Granblue::WikiThrottle`; `delay=`/`throttle=` can only raise it).
+- **Game requests** (`fetch_game_data`) are at least 2s apart too (`delay=` can only raise it). The run stops at the first authentication failure (expired cookies) and prints the ids it didn't get to; refresh the cookies and resume with that `ids=`.
 - **On a local copy**, pass `icons=false` to `build_character_skills mode=write`: a write queues `IconDownloadJob` into whatever Redis the process sees (`build=write` on the fetch tasks always queues it).
 - **Coverage** is read-only. Run it before and after every step: `bin/rails granblue:character_skill_coverage [ids=…] [format=csv out=PATH] [s3=true]`. `s3=true` makes one HEAD request per stored icon stem.
 
