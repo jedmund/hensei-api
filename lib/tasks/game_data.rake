@@ -22,6 +22,7 @@ namespace :granblue do
       ... rake granblue:fetch_game_data ids=3040377000,3040088000   # these characters only (always fetched)
       ... rake granblue:fetch_game_data ids=3040377000 style=2      # one style only (2 = the style_swap row)
       ... rake granblue:fetch_game_data lang=jp              # store in game_raw_jp
+      ... rake granblue:fetch_game_data delay=3              # seconds between requests (default and minimum 2)
       ... rake granblue:fetch_game_data changed_out=tmp/game_changed.txt   # write the changed granblue_ids
       ... rake granblue:fetch_game_data build=shadow         # Characters: build the changed ones afterwards (or build=write)
 
@@ -30,7 +31,7 @@ namespace :granblue do
     lang only picks the column: the game's language is an account setting, so set the
     account to Japanese before fetching with lang=jp.
 
-    Fetches only records missing the column by default; throttled ~1 req/sec.
+    Fetches only records missing the column by default; at least 2s between requests.
     Prints a summary: fetched (unchanged = same payload as stored, changed), skipped, errors.
     Character writes don't queue a build per row; without build= the task prints the
     build command to run next.
@@ -78,7 +79,8 @@ namespace :granblue do
       t: ENV['T'].presence || 'dummy',
       user_id: ENV['GAME_UID'].presence || Dataminer::BOT_UID,
       game_version: ENV['GAME_VERSION'].presence || Dataminer::GAME_VERSION,
-      debug: ENV['debug'] == 'true'
+      debug: ENV['debug'] == 'true',
+      delay: Dataminer.clamp_delay(ENV['delay'].presence, warn: method(:puts))
     )
 
     if style && ids.empty?

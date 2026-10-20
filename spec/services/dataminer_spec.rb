@@ -139,4 +139,32 @@ RSpec.describe Dataminer do
       end
     end
   end
+
+  describe 'pace' do
+    it 'waits at least 2 seconds between game requests' do
+      expect(miner.delay).to eq(2.0)
+      expect(described_class.new(page: 'archive', access_token: 't', wing: 'w', midship: 'm', delay: 0.5).delay).to eq(2.0)
+      expect(described_class.new(page: 'archive', access_token: 't', wing: 'w', midship: 'm', delay: 3).delay).to eq(3.0)
+    end
+
+    it 'says when a requested delay was raised' do
+      notes = []
+      expect(described_class.clamp_delay('1', warn: notes.method(:<<))).to eq(2.0)
+      expect(notes.first).to include('below the 2.0s minimum')
+      expect(described_class.clamp_delay(nil)).to eq(2.0)
+    end
+
+    it 'sleeps the delay between characters, and between styles' do
+      stub_style(1, style1_payload)
+      stub_style(2, style2_payload)
+      other = create(:character, granblue_id: '3040000901', game_raw_en: nil)
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => other.granblue_id))
+                                                 .to_return(status: 200, body: style1_payload.merge('id' => other.granblue_id,
+                                                                                                    'style_list' => []).to_json)
+
+      miner.fetch_characters(%w[3040377000 3040000901])
+
+      expect(miner).to have_received(:sleep).with(2.0).twice
+    end
+  end
 end

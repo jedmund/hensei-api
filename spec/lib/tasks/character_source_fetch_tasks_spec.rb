@@ -260,6 +260,11 @@ RSpec.describe 'character source fetch tasks' do
       expect(out).to include('mode=shadow ids=3040377000')
     end
 
+    it 'never paces the game faster than 2 seconds' do
+      invoke('granblue:fetch_game_data', ACCESS_TOKEN: 't', WING: 'w', MIDSHIP: 'm', ids: '3040377000', delay: '0.5')
+      expect(Dataminer).to have_received(:new).with(hash_including(delay: 2.0))
+    end
+
     it 'counts a response it cannot store as skipped' do
       stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000399'))
                                                  .to_return(status: 200, body: '{"popup":{}}')

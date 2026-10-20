@@ -5,7 +5,8 @@ class Dataminer
 
   BOT_UID = '39094985'
   GAME_VERSION = '1741068713'
-  THROTTLE = 1
+  # Seconds between two requests to the game, at least (the same pace as the wikis).
+  MIN_DELAY = 2.0
   LANG_COLUMNS = { 'en' => :game_raw_en, 'jp' => :game_raw_jp, 'ja' => :game_raw_jp }.freeze
 
   base_uri 'https://game.granbluefantasy.jp'
@@ -23,14 +24,26 @@ class Dataminer
     'X-Requested-With' => 'XMLHttpRequest'
   }.freeze
 
-  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary
+  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary, :delay
+
+  # The delay to use for a requested value (nil → MIN_DELAY); a shorter one is raised
+  # to MIN_DELAY, and warn is called with a note.
+  def self.clamp_delay(requested, warn: nil)
+    return MIN_DELAY if requested.nil?
+
+    delay = requested.to_f
+    return delay if delay >= MIN_DELAY
+
+    warn&.call("Game delay #{delay}s is below the #{MIN_DELAY}s minimum; using #{MIN_DELAY}s.")
+    MIN_DELAY
+  end
 
   # user_id and game_version default to the baked-in constants but should be
   # overridden per session: uid is the logged-in account's player id and
   # game_version is the current game build (both change over time).
   # rubocop:disable-next Metrics/ParameterLists
   def initialize(page:, access_token:, wing:, midship:, t: 'dummy',
-                 user_id: BOT_UID, game_version: GAME_VERSION, debug: false)
+                 user_id: BOT_UID, game_version: GAME_VERSION, debug: false, delay: MIN_DELAY)
     @page = page
     @cookies = {
       access_gbtk: access_token,
@@ -41,6 +54,7 @@ class Dataminer
     @user_id = user_id
     @game_version = game_version
     @debug = debug
+    @delay = self.class.clamp_delay(delay)
     # What this instance fetched and stored: unchanged / changed / skipped / errors.
     @summary = Granblue::SourceFetchSummary.new('fetch_game_data')
     setup_logger
@@ -87,7 +101,7 @@ class Dataminer
     update_game_data('Character', granblue_id, response, style: style, lang: lang)
     if other_styles && style == 1
       other_open_styles(response).each do |other|
-        sleep(THROTTLE)
+        pause
         fetch_character(granblue_id, style: other, lang: lang, other_styles: false)
       end
     end
@@ -96,7 +110,7 @@ class Dataminer
 
   def fetch_characters(granblue_ids, style: nil, lang: 'en')
     granblue_ids.each_with_index do |granblue_id, index|
-      sleep(THROTTLE) if index.positive?
+      pause if index.positive?
       if style
         fetch_character(granblue_id, style: style, lang: lang, other_styles: false)
       else
@@ -311,38 +325,39 @@ class Dataminer
     scope = scope.where(style_swap: false) if model_name == 'Character'
     scope = scope.where(LANG_COLUMNS.fetch(lang.to_s) => nil) if only_missing
 
-    total = scope.count
+    granblue_ids = scope.order(:granblue_id).pluck(:granblue_id)
+    total = granblue_ids.size
     success_count = 0
     error_count = 0
 
     logger.info "Starting to fetch #{total} #{model_name.downcase}s#{' (missing data only)' if only_missing}..."
 
-    scope.find_each do |record|
-      logger.info "\nProcessing #{model_name} #{record.granblue_id} (#{success_count + error_count + 1}/#{total})"
+    granblue_ids.each_with_index do |granblue_id, index|
+      pause if index.positive?
+      logger.info "\nProcessing #{model_name} #{granblue_id} (#{index + 1}/#{total})"
 
-      response = case model_name
-                 when 'Character'
-                   fetch_character(record.granblue_id, lang: lang)
-                 when 'Weapon'
-                   fetch_weapon(record.granblue_id)
-                 when 'Summon'
-                   fetch_summon(record.granblue_id)
-                 end
+      case model_name
+      when 'Character' then fetch_character(granblue_id, lang: lang)
+      when 'Weapon' then fetch_weapon(granblue_id)
+      when 'Summon' then fetch_summon(granblue_id)
+      end
 
       success_count += 1
-      logger.debug "Successfully processed #{model_name} #{record.granblue_id}"
-
-      sleep(THROTTLE)
+      logger.debug "Successfully processed #{model_name} #{granblue_id}"
     rescue StandardError => e
       error_count += 1
-      summary.error!(record.granblue_id, e.message)
-      logger.error "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
+      summary.error!(granblue_id, e.message)
+      logger.error "Error processing #{model_name} #{granblue_id}: #{e.message}"
     end
 
     logger.info "\nProcessing complete!"
     logger.info "Total: #{total}"
     logger.info "Successful: #{success_count}"
     logger.info "Failed: #{error_count}"
+  end
+
+  def pause
+    sleep(delay)
   end
 
   class AuthenticationError < StandardError; end
