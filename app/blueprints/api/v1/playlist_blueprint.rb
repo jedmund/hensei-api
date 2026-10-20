@@ -38,7 +38,7 @@ module Api
           ordered = playlist.parties.includes(
             :job, { raid: :group }, :solomonis_expedition,
             { characters: :character },
-            { weapons: :weapon },
+            { weapons: { weapon: :weapon_series } },
             { summons: :summon }
           ).order(last_updated: :desc)
 

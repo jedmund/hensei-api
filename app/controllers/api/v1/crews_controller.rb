@@ -119,7 +119,7 @@ module Api
                        .includes(
                          :job, { raid: :group }, :solomonis_expedition,
                          { characters: :character },
-                         { weapons: :weapon },
+                         { weapons: { weapon: :weapon_series } },
                          { summons: :summon }
                        )
                        .order(created_at: :desc)

@@ -61,11 +61,18 @@ module Api
                  :forge_order, :extra, :series, :promotion_names
       end
 
-      # Minimal view for party list cards — just enough for image rendering
+      # Minimal view for party list cards — just enough for image rendering.
+      # Series is trimmed to id/slug so reps can pick transcendence-stage art.
       view :list do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
                  :max_exorcism_level, :limit, :rarity, :promotions,
-                 :forge_order, :extra, :series, :promotion_names
+                 :forge_order, :extra, :promotion_names
+
+        field :series do |w|
+          next nil unless w.weapon_series.present?
+
+          { id: w.weapon_series_id, slug: w.weapon_series.slug }
+        end
       end
 
       # Minimal view for the element-variant lookup endpoint.
