@@ -70,7 +70,7 @@ RSpec.describe CharacterSkills::Build::Runner do
       expect(first.reload.character_skill_build_fingerprint).to match(/\A\h{64}\z/)
       expect(run.stale).to eq(0)
 
-      first.update_columns(wiki_raw: wiki("Blaze"))
+      put_source(first, :wiki_raw, wiki("Blaze"))
       summary = run
       expect(summary.stale).to eq(1)
       expect(summary.results.map(&:character)).to eq([first])
@@ -106,8 +106,8 @@ RSpec.describe CharacterSkills::Build::Runner do
     it "keeps a failing character's rows, counts it, leaves it stale and carries on" do
       run
       ids = skill_ids(first)
-      first.update_columns(wiki_raw: wiki("Blaze"))
-      second.update_columns(wiki_raw: wiki("Frost"))
+      put_source(first, :wiki_raw, wiki("Blaze"))
+      put_source(second, :wiki_raw, wiki("Frost"))
       allow(CharacterSkills::Build::Writer).to receive(:new).and_call_original
       allow(CharacterSkills::Build::Writer).to receive(:new).with(having_attributes(id: first.id), anything)
                                                             .and_raise(ActiveRecord::RecordInvalid)
@@ -130,7 +130,7 @@ RSpec.describe CharacterSkills::Build::Runner do
     it "doesn't rebuild a character with skills and a blank wiki_raw" do
       run
       ids = skill_ids(first)
-      first.update_columns(wiki_raw: "")
+      put_source(first, :wiki_raw, "")
       summary = run(all: true)
       expect(summary.no_source).to eq(1)
       expect(skill_ids(first)).to eq(ids)
@@ -141,7 +141,7 @@ RSpec.describe CharacterSkills::Build::Runner do
       run
       ids = skill_ids(first)
       stored = first.reload.character_skill_build_fingerprint
-      first.update_columns(wiki_raw: "#REDIRECT [[Somewhere]]")
+      put_source(first, :wiki_raw, "#REDIRECT [[Somewhere]]")
       summary = run
       expect(summary.empty).to eq(1)
       expect(summary).to be_drift
@@ -165,7 +165,7 @@ RSpec.describe CharacterSkills::Build::Runner do
 
     it "reports field-level differences grouped by category, and none after a write" do
       run
-      first.update_columns(wiki_raw: wiki("Blaze", passive: "Boost more."))
+      put_source(first, :wiki_raw, wiki("Blaze", passive: "Boost more."))
       summary = run(mode: "shadow", diff_limit: 1)
       change = summary.results.first.changes.find { |c| c.kind == "ability" }
       expect(change.to_h).to include(change: "updated", fields: ["name_en"])

@@ -4,6 +4,8 @@ module Granblue
   module Parsers
     # Builds the normalized Status catalog from stored character wiki/game blobs.
     class StatusCatalogBuilder
+      # The sources a character's statuses come from.
+      SOURCE_KINDS = %w[wiki_raw game_raw_en game_raw_jp].freeze
       CATEGORY_PRIORITY = {
         'buff' => 0,
         'special' => 1,
@@ -12,13 +14,12 @@ module Granblue
       }.freeze
 
       class << self
-        # Every character with stored wiki or game data. Loads only the columns the records
-        # come from (wiki_raw_jp is most of the table's size and isn't one of them);
+        # Every character with stored wiki or game data. Loads only the sources the records
+        # come from (wiki_raw_jp is most of their size and isn't one of them);
         # CharacterWikiData reads style_swap to pick the row's own game data.
         def build_all(debug: false)
-          characters = Character.where.not(game_raw_en: [nil, {}]).or(Character.where.not(wiki_raw: [nil, '']))
-          merge_and_persist(characters.select(:id, :granblue_id, :style_swap, :wiki_raw, :game_raw_en, :game_raw_jp),
-                            overwrite: true, debug: debug)
+          characters = Character.with_source(:game_raw_en).or(Character.with_source(:wiki_raw))
+          merge_and_persist(characters.select(:id, :granblue_id, :style_swap), overwrite: true, debug: debug)
         end
 
         # The same merge over the given characters (a relation, or records, unsaved text
@@ -49,7 +50,12 @@ module Granblue
         end
 
         def each_character(characters, &)
-          characters.respond_to?(:find_each) ? characters.find_each(&) : Array(characters).each(&)
+          return Array(characters).each(&) unless characters.respond_to?(:find_in_batches)
+
+          # In id order, as find_each: a record merges into the ones before it.
+          characters.find_in_batches(batch_size: 200) do |batch|
+            Character.preload_sources(batch, kinds: SOURCE_KINDS).each(&)
+          end
         end
 
         def merge_record(existing, record)

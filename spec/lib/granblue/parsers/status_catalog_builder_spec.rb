@@ -37,7 +37,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
     end
 
     it "reads characters whose game data names its style" do
-      character('Styled', %w[Burned]).update_columns(game_raw_en: { 'style' => 1 })
+      put_source(character('Styled', %w[Burned]), :game_raw_en, { 'style' => 1 })
       described_class.build_all
       expect(Status.pluck(:name_en)).to eq(['Burned'])
     end

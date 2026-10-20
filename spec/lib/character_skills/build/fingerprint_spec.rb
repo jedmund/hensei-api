@@ -20,22 +20,41 @@ RSpec.describe CharacterSkills::Build::Fingerprint do
     expect(fingerprints).to eq(character.id => fingerprint)
   end
 
-  it "tells nil from an empty string on both paths" do
-    character.update_columns(wiki_raw_jp: nil)
+  it "treats a blank source as no source, on both paths" do
+    put_source(character, :wiki_raw_jp, nil)
     nil_fp = fingerprint
-    character.update_columns(wiki_raw_jp: "")
-    expect(fingerprint).not_to eq(nil_fp)
+    put_source(character, :wiki_raw_jp, "")
+    expect(fingerprint).to eq(nil_fp)
     expect(fingerprints[character.id]).to eq(fingerprint)
   end
 
-  it "doesn't depend on jsonb key order" do
-    reordered = character.reload.dup.tap { |c| c.game_raw_en = { "ability" => { "1" => { "class_name" => "1_1", "name" => "Fire" } } } }
+  it "doesn't depend on JSON key order" do
+    reordered = Character.find(character.id).tap { |c| c.game_raw_en = { "ability" => { "1" => { "class_name" => "1_1", "name" => "Fire" } } } }
     expect(fingerprint(reordered)).to eq(fingerprint)
+  end
+
+  it "hashes staged, unsaved text (a preview) as it would be stored" do
+    original = fingerprint
+    staged = Character.find(character.id).tap { |c| c.wiki_raw = "{{Character|a1_name=Ice}}" }
+    expect(fingerprint(staged)).not_to eq(original)
+    expect(Source.read(character, :wiki_raw)).to eq("{{Character|a1_name=Fire}}")
+
+    stored = put_source(Character.find(character.id), :wiki_raw, "{{Character|a1_name=Ice}}")
+    expect(fingerprint(staged)).to eq(fingerprint(stored))
+  end
+
+  # D35: moving the jsonb columns into sources keeps their digest (canonical JSON).
+  it "hashes a game payload as the sha256 of its canonical JSON" do
+    payload = { "ability" => { "1" => { "name" => "Fire", "class_name" => "1_1" } } }
+    canonical = '{"ability":{"1":{"class_name":"1_1","name":"Fire"}}}'
+    expect(character.source_sha256(:game_raw_en)).to eq(Digest::SHA256.hexdigest(canonical))
+    expect(Source.read(character, :game_raw_en)).to eq(payload)
   end
 
   it "doesn't change with fetch times or unrelated columns" do
     before = fingerprint
-    character.update_columns(wiki_raw_fetched_at: Time.current, wiki_raw_jp_fetched_at: Time.current, name_en: "Renamed")
+    Source.owned_by(character).update_all(fetched_at: Time.current)
+    character.update_columns(name_en: "Renamed")
     expect(fingerprint).to eq(before)
   end
 
@@ -56,8 +75,13 @@ RSpec.describe CharacterSkills::Build::Fingerprint do
   }.each do |column, value|
     it "changes when #{column} changes" do
       before = fingerprint
-      character.update_columns(column => value)
+      if described_class::SOURCES.include?(column)
+        put_source(character, column, value)
+      else
+        character.update_columns(column => value)
+      end
       expect(fingerprint).not_to eq(before)
+      expect(fingerprints[character.id]).to eq(fingerprint)
     end
   end
 

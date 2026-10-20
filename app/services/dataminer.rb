@@ -301,12 +301,15 @@ class Dataminer
              end
 
     if record
-      before = record[column]
-      unless record.update(column => response_data)
+      # A character's payload is its game_raw_* source (D35); the others are columns.
+      before = record.public_send(column)
+      attrs = { column => response_data }
+      attrs[:"#{column}_fetched_at"] = Time.current if record.is_a?(Character)
+      unless record.update(attrs)
         summary.error!(granblue_id, record.errors.full_messages.to_sentence)
         return
       end
-      summary.fetched!(granblue_id, before: before, after: record[column])
+      summary.fetched!(granblue_id, before: before, after: record.public_send(column))
       logger.debug "Updated #{model_name} #{granblue_id} #{column}#{" (style #{style})" if model_name == 'Character'}"
     else
       summary.skipped!('not in database')
@@ -315,6 +318,11 @@ class Dataminer
   rescue StandardError => e
     summary.error!(granblue_id, e.message)
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
+  end
+
+  # Rows with no payload for column; a character's is a source.
+  def missing_scope(scope, column)
+    scope.respond_to?(:without_source) ? scope.without_source(column) : scope.where(column => nil)
   end
 
   # Open styles other than 1 that have a row to store them on.
@@ -332,7 +340,7 @@ class Dataminer
     scope = model
     # Style rows are filled from their base row's style_list, never fetched as style 1.
     scope = scope.where(style_swap: false) if model_name == 'Character'
-    scope = scope.where(LANG_COLUMNS.fetch(lang.to_s) => nil) if only_missing
+    scope = missing_scope(scope, LANG_COLUMNS.fetch(lang.to_s)) if only_missing
 
     granblue_ids = scope.order(:granblue_id).pluck(:granblue_id)
     total = granblue_ids.size

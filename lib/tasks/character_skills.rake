@@ -65,7 +65,7 @@ namespace :granblue do
 
   desc 'Dry-run report on character skill parsing quality (no persistence).'
   task character_skill_report: :environment do
-    chars = Character.where.not(wiki_raw: [nil, ''])
+    chars = Character.with_source(:wiki_raw).preload(:sources)
     status_lookup = Granblue::Parsers::CharacterSkillParser.build_status_lookup
     reports = chars.find_each.map do |character|
       Granblue::Parsers::CharacterSkillParser.new(character, status_lookup: status_lookup).parse(persist: false)

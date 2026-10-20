@@ -30,13 +30,14 @@ module CharacterSkills
     LABEL_WIDTH = 76
     CSV_HEADERS = %w[check granblue_id style name_en rarity detail].freeze
 
+    # A character's source row of a kind (D35: blank and JSON-null payloads are never stored).
+    SOURCE_SQL = "FROM sources WHERE sources.owner_type = 'Character' AND sources.owner_id = characters.id " \
+                 "AND sources.key = '' AND sources.kind = '%s'"
     CHARACTER_COLUMNS = [
       'characters.id', 'characters.granblue_id', 'characters.style_swap', 'characters.name_en',
-      'characters.rarity', 'characters.release_date', 'characters.wiki_en', 'characters.wiki_raw_fetched_at',
-      "COALESCE(characters.wiki_raw, '') <> ''",
-      "COALESCE(characters.wiki_raw_jp, '') <> ''",
-      "jsonb_typeof(characters.game_raw_en) = 'object'",
-      "jsonb_typeof(characters.game_raw_jp) = 'object'"
+      'characters.rarity', 'characters.release_date', 'characters.wiki_en',
+      "(SELECT sources.fetched_at #{format(SOURCE_SQL, 'wiki_raw')})",
+      *%w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp].map { |kind| "EXISTS (SELECT 1 #{format(SOURCE_SQL, kind)})" }
     ].freeze
     CHARACTER_FIELDS = %i[id granblue_id style_swap name_en rarity release_date wiki_en fetched_at
                           wiki_raw wiki_raw_jp game_en game_jp skills].freeze

@@ -298,5 +298,16 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       expect(json['id']).to eq(character.id)
       expect(json).to have_key('wiki_raw')
     end
+
+    it 'reads the sources from the store, in the same shape' do
+      payload = { 'id' => character.granblue_id, 'ability' => { '1' => { 'name' => 'Fire' } } }
+      Source.put(character, :wiki_raw, '{{Character}}', skip_owner_hook: true)
+      Source.put(character, :game_raw_en, payload, skip_owner_hook: true)
+
+      get "/api/v1/characters/#{character.id}/raw"
+
+      json = response.parsed_body
+      expect(json).to include('wiki_raw' => '{{Character}}', 'game_raw_en' => payload, 'game_raw_jp' => nil)
+    end
   end
 end

@@ -99,7 +99,7 @@ module CharacterSkills
 
       # Characters in scope (ids: path), ordered by granblue_id.
       def scope
-        relation = Character.where.not(wiki_raw: [nil, ""]).or(Character.where(id: CharacterSkill.select(:character_id)))
+        relation = Character.with_source(:wiki_raw).or(Character.where(id: CharacterSkill.select(:character_id)))
         relation = relation.where(granblue_id: @ids) if @ids
         relation.order(:granblue_id, :style_swap)
       end
@@ -133,10 +133,10 @@ module CharacterSkills
       # → [[character id, fingerprint]] for characters given as records.
       def given_targets(fingerprints)
         @given = @characters.index_by(&:id)
-        in_scope = @characters.select { |c| c.wiki_raw.present? || CharacterSkill.exists?(character_id: c.id) }
+        in_scope = @characters.select { |c| c.source_sha256(:wiki_raw) || CharacterSkill.exists?(character_id: c.id) }
         @summary.in_scope = in_scope.size
         candidates = in_scope.filter_map do |character|
-          next no_source(character) if character.wiki_raw.blank?
+          next no_source(character) unless character.source_sha256(:wiki_raw)
 
           fingerprint = fingerprints.for(character)
           [character.id, fingerprint] if @all || character.character_skill_build_fingerprint != fingerprint
@@ -145,10 +145,11 @@ module CharacterSkills
         candidates
       end
 
-      # → [[character id, fingerprint]] from the scope, hashing the sources in SQL.
+      # → [[character id, fingerprint]] from the scope, from the sources' stored sha256.
       def scoped_targets(fingerprints)
-        rows = scope.pluck(:id, :granblue_id, Arel.sql("coalesce(characters.wiki_raw, '') = ''"),
-                           :character_skill_build_fingerprint)
+        wiki = Source.select(1).where(owner_type: Character.polymorphic_name, kind: "wiki_raw", key: "")
+                     .where("sources.owner_id = characters.id")
+        rows = scope.pluck(:id, :granblue_id, Arel.sql("NOT EXISTS (#{wiki.to_sql})"), :character_skill_build_fingerprint)
         report_unknown_ids(rows.map(&:second))
         @summary.in_scope = rows.size
         blank, sourced = rows.partition { |row| row[2] }
@@ -161,14 +162,14 @@ module CharacterSkills
         candidates
       end
 
-      # Loads the targets a few at a time: wiki_raw_jp makes a row large.
+      # Loads the targets a few at a time, with their sources (wiki_raw_jp is the largest).
       def each_target(targets, &)
         fingerprint_by_id = targets.to_h
         if @given
           fingerprint_by_id.each { |id, fingerprint| yield @given.fetch(id), fingerprint }
         else
           fingerprint_by_id.keys.each_slice(LOAD_BATCH) do |batch|
-            Character.where(id: batch).order(:granblue_id, :style_swap).each { |c| yield c, fingerprint_by_id.fetch(c.id) }
+            Character.where(id: batch).preload(:sources).order(:granblue_id, :style_swap).each { |c| yield c, fingerprint_by_id.fetch(c.id) }
           end
         end
       end

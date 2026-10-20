@@ -104,7 +104,7 @@ namespace :deploy do
   task parse_characters: :environment do
     overwrite = ENV['OVERWRITE'] == 'true'
 
-    characters = Character.where.not(wiki_raw: [nil, ''])
+    characters = Character.with_source(:wiki_raw).preload(:sources)
     characters = characters.where(series: [], season: nil) unless overwrite
 
     total = characters.count

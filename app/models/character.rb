@@ -2,6 +2,19 @@
 
 class Character < ApplicationRecord
   include PgSearch::Model
+  include HasSources
+
+  # The fetched sources live in `sources` (D35); these columns are read-only leftovers until
+  # the follow-up migration drops them, and ignoring them keeps every load from dragging
+  # ~200 KB of page text per row. db/data/20261020210000_copy_character_sources_to_sources_table
+  # reads them with SQL.
+  self.ignored_columns += %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp wiki_raw_fetched_at wiki_raw_jp_fetched_at]
+
+  source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at
+  # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
+  source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
+  source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at
+  source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
@@ -66,11 +79,13 @@ class Character < ApplicationRecord
   before_validation :normalize_max_transcendence_stage
 
   # Skill build: a new character, or a change to anything its skills are built from
-  # (CharacterSkills::Build::Fingerprint::INPUT_COLUMNS), queues CharacterSkills::BuildJob.
-  # Covers every writer (controllers, the extractor import, Dataminer, wiki fetch tasks).
-  # Bulk work can skip it with Character.without_skill_build { ... }; the deploy build picks
-  # those characters up.
+  # (CharacterSkills::Build::Fingerprint: its sources and ATTRIBUTES), queues
+  # CharacterSkills::BuildJob. Covers every writer (controllers, the extractor import,
+  # Dataminer, wiki fetch tasks): a save of the character, or a Source.put for it
+  # (.source_changed). Bulk work can skip it with Character.without_skill_build { ... };
+  # the deploy build picks those characters up.
   thread_cattr_accessor :skip_skill_build, instance_accessor: false
+  after_save :capture_skill_build
   after_commit :enqueue_skill_build, on: %i[create update], if: :skill_inputs_changed?
 
   def self.without_skill_build
@@ -79,6 +94,18 @@ class Character < ApplicationRecord
     yield
   ensure
     self.skip_skill_build = previous
+  end
+
+  # Source hooks: a source written outside a save of the character (Source.put).
+  def self.source_change_hook?(kind)
+    !skip_skill_build && CharacterSkills::Build::Fingerprint::SOURCES.include?(kind)
+  end
+
+  def self.source_changed(character_id, _kind)
+    return unless Source.exists?(owner_type: polymorphic_name, owner_id: character_id, kind: 'wiki_raw') ||
+                  CharacterSkill.exists?(character_id: character_id)
+
+    CharacterSkills::BuildJob.perform_later(character_id)
   end
 
   validates :season,
@@ -240,12 +267,20 @@ class Character < ApplicationRecord
 
   private
 
-  def skill_inputs_changed?
-    return false if self.class.skip_skill_build
-    return false unless saved_changes.keys.intersect?(CharacterSkills::Build::Fingerprint::INPUT_COLUMNS)
+  # Decided at the save, not the commit: without_skill_build may only wrap the save.
+  def capture_skill_build
+    fingerprint = CharacterSkills::Build::Fingerprint
+    @skill_build_pending = !self.class.skip_skill_build &&
+                           (saved_changes.keys.intersect?(fingerprint::ATTRIBUTES) ||
+                            saved_source_changes.intersect?(fingerprint::SOURCES))
+  end
 
+  def skill_inputs_changed?
+    return false unless @skill_build_pending
+
+    @skill_build_pending = false
     # Nothing to build from and nothing to report on: the job would be a no-op.
-    wiki_raw.present? || CharacterSkill.exists?(character_id: id)
+    source_sha256(:wiki_raw).present? || CharacterSkill.exists?(character_id: id)
   end
 
   def enqueue_skill_build

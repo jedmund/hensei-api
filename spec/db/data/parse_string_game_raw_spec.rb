@@ -14,6 +14,11 @@ RSpec.describe 'ParseStringGameRaw' do
     )
   end
 
+  # The column itself (a character's reader is its source now; the column stays until dropped).
+  def stored(record, column)
+    record.class.where(id: record.id).pick(Arel.sql(column.to_s))
+  end
+
   def typeof(record, column)
     record.class.where(id: record.id).pick(Arel.sql("jsonb_typeof(#{column})"))
   end
@@ -32,12 +37,12 @@ RSpec.describe 'ParseStringGameRaw' do
     migration_class.new.tap { |m| m.verbose = false }.up
 
     aggregate_failures do
-      expect(character.reload.game_raw_en).to eq('id' => '1', 'ability' => {})
+      expect(stored(character, :game_raw_en)).to eq('id' => '1', 'ability' => {})
       expect(typeof(character, :game_raw_en)).to eq('object')
       expect(Character.where(id: character.id).pick(Arel.sql('game_raw_jp IS NULL'))).to be(true)
       expect(weapon.reload.game_raw_jp).to eq('id' => '2')
       expect(typeof(summon, :game_raw_en)).to eq('string')
-      expect(untouched.reload.game_raw_en).to eq('id' => '3')
+      expect(stored(untouched, :game_raw_en)).to eq('id' => '3')
     end
   end
 

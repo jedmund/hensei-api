@@ -313,8 +313,10 @@ module Api
         end
 
         begin
+          # Stored as the character's game_raw_<lang> source (D35), dated now.
           character.update!(
-            "game_raw_#{lang}" => body
+            "game_raw_#{lang}" => body,
+            "game_raw_#{lang}_fetched_at" => Time.current
           )
 
           # Parse series_id and create CharacterSeriesMembership

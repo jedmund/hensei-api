@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+# Writes a record's source directly, the way update_columns wrote the old columns: no
+# owner hook (no skill build queued), no fetch time unless given. Reloads the record so
+# its readers see the new value.
+module SourceHelpers
+  def put_source(record, kind, value, fetched_at: nil)
+    Source.put(record, kind, value, fetched_at: fetched_at, skip_owner_hook: true)
+    record.reload
+  end
+end
+
+RSpec.configure do |config|
+  config.include SourceHelpers
+end

@@ -82,11 +82,17 @@ class Source < ApplicationRecord
     end
 
     # Stores value as the current body. Writes only when the sha256 changes; an unchanged
-    # body still moves fetched_at forward (it was confirmed then), without the owner hook.
-    # A blank value removes the row. → PutResult
+    # body only moves fetched_at forward (it was confirmed then), without the owner hook.
+    # fetched_at: nil leaves the row's fetch time as it is (an edit, not a fetch; nil for a
+    # new row). A blank value removes the row. → PutResult
     def put(owner, kind, value, key: '', fetched_at: Time.current, skip_owner_hook: false)
+      put_body(owner, kind, serialize(kind, value), key: key, fetched_at: fetched_at, skip_owner_hook: skip_owner_hook)
+    end
+
+    # put with an already serialized body (nil to remove).
+    def put_body(owner, kind, body, key: '', fetched_at: Time.current, skip_owner_hook: false)
       kind = kind.to_s
-      body = serialize(kind, value)
+      format_of(kind)
       source = fetch(owner, kind, key: key)
       return remove(source, skip_owner_hook) if body.nil?
 
@@ -99,7 +105,9 @@ class Source < ApplicationRecord
       status = source ? :changed : :created
       source ||= new(owner_type: owner&.class&.polymorphic_name, owner_id: owner&.id, kind: kind, key: key)
       source.skip_owner_hook = skip_owner_hook
-      source.update!(body: body, sha256: sha, fetched_at: fetched_at)
+      source.assign_attributes(body: body, sha256: sha)
+      source.fetched_at = fetched_at if fetched_at
+      source.save!
       PutResult.new(status: status, source: source)
     end
 

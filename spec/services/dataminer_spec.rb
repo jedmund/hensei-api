@@ -191,7 +191,7 @@ RSpec.describe Dataminer do
 
     it 'stops a fetch_all run the same way' do
       # Only this example's characters are missing game data.
-      Character.where.not(granblue_id: ids).update_all(game_raw_en: { 'id' => 'x' })
+      Character.where.not(granblue_id: ids).find_each { |c| put_source(c, :game_raw_en, { 'id' => 'x' }) }
       miner.fetch_all_characters(only_missing: true)
 
       expect(miner.remaining_ids).to eq(%w[3040000912 3040000913])

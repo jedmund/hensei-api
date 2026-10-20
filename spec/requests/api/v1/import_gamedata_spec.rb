@@ -21,7 +21,8 @@ RSpec.describe 'Import gamedata', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(base.reload.game_raw_en).to eq(payload)
-      expect(Character.where(id: base.id).pick(Arel.sql('jsonb_typeof(game_raw_en)'))).to eq('object')
+      expect(Source.fetch(base, :game_raw_en)).to have_attributes(body: JSON.generate(Source.canonical(payload)))
+      expect(Source.fetch(base, :game_raw_en).fetched_at).to be_present
     end
 
     it 'puts a style 1 payload on the base row' do
