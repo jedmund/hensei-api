@@ -29,6 +29,8 @@ module Granblue
 
       if (redirect = text.match(/#REDIRECT \[\[(.*?)\]\]/))
         entity.update!(wiki_en: redirect[1])
+        # The target is a second request to the wiki: never right after the first.
+        WikiThrottle.wait(WikiThrottle.clamp(@delay))
         text = wiki.fetch(redirect[1])
       end
 
