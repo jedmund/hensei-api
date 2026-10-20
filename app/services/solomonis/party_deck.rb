@@ -53,11 +53,13 @@ module Solomonis
       body['deck']
     end
 
-    # The route Evoker: the fixed first character slot.
+    # The route Evoker, which can sit in any character slot: the character
+    # whose game character ID is the deck's group (`combination_group_id`),
+    # else the one the game marks `is_fix_evoker_npc`, else the first slot.
     #
     # @return [String, nil] its granblue_id
     def route_evoker_granblue_id
-      slot = deck['npc']['1']
+      slot = route_evoker_slot
       master = slot['master'] if slot.is_a?(Hash)
       id = master['id'] if master.is_a?(Hash)
       id.to_s.presence if id.is_a?(String) || id.is_a?(Integer)
@@ -106,6 +108,17 @@ module Solomonis
     end
 
     private
+
+    def route_evoker_slot
+      characters = slots(deck['npc']).sort_by(&:first).map(&:last)
+      group = deck['combination_group_id']
+      group = group.to_s if group.is_a?(String) || group.is_a?(Integer)
+      by_group = characters.find do |slot|
+        id = slot['master']['character_id']
+        group.is_a?(String) && group.present? && (id.is_a?(String) || id.is_a?(Integer)) && id.to_s == group
+      end
+      by_group || characters.find { |slot| truthy?(slot['is_fix_evoker_npc']) } || deck['npc']['1']
+    end
 
     def blessing_level(entry, catalogue)
       name = entry['name'].to_s.strip

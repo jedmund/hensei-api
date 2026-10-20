@@ -204,7 +204,48 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
       expect { import }.to change(Party, :count).by(1)
     end
 
-    it "rejects a deck whose first character isn't a route Evoker" do
+    context 'when the Evoker is not in the first slot' do
+      let(:ally) { create(:character) }
+      let(:ally_slot) do
+        deck['deck']['npc']['1'].deep_dup.merge('is_fix_evoker_npc' => false).tap do |slot|
+          slot['master'] = slot['master'].merge('id' => ally.granblue_id, 'character_id' => '9999', 'name' => 'Ally')
+        end
+      end
+
+      before do
+        deck['deck']['npc']['3'] = deck['deck']['npc']['1']
+        deck['deck']['npc']['1'] = ally_slot
+      end
+
+      it 'takes the route Evoker from the character matching the deck group' do
+        expect { import }.to change(Party, :count).by(1)
+
+        party = imported_party
+        expect(party.solomonis_expedition.route_evoker).to eq(fraux)
+        expect(party).to have_attributes(raid_id: fraux.solomonis_zone_id, element: fraux.element)
+        expect(party.characters.order(:position).map { |c| [c.position, c.character] })
+          .to eq([[0, ally], [2, fraux]])
+      end
+
+      it 'falls back to the slot marked as the fixed Evoker without a deck group' do
+        deck['deck'].delete('combination_group_id')
+        import
+
+        expect(response).to have_http_status(:created)
+        expect(imported_party.solomonis_expedition.route_evoker).to eq(fraux)
+      end
+
+      it 'prefers the deck group over the fixed-Evoker mark' do
+        deck['deck']['npc']['1']['is_fix_evoker_npc'] = true
+        deck['deck']['npc']['3']['is_fix_evoker_npc'] = false
+        import
+
+        expect(response).to have_http_status(:created)
+        expect(imported_party.solomonis_expedition.route_evoker).to eq(fraux)
+      end
+    end
+
+    it "rejects a deck whose Evoker isn't a route Evoker" do
       deck['deck']['npc']['1']['master']['id'] = create(:character).granblue_id
 
       expect { import }.not_to change(Party, :count)

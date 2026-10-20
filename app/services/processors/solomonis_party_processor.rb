@@ -5,8 +5,9 @@ module Processors
   # Imports an Evoking Solomonis party from the game's party deck
   # (`kind: "solomonis_party"` on POST /import) into a new party.
   #
-  # The route Evoker is the deck's fixed first character. The party name is the
-  # deck's name, the pledge level 0 and the blessings the deck has equipped.
+  # The route Evoker can be in any character slot (see PartyDeck). The party
+  # name is the deck's name, the pledge level 0 and the blessings the deck has
+  # equipped.
   # Class, skills, characters, weapons and summons go through the normal deck
   # processors, so uncaps, awakening, keys, AX, collection links and the quick
   # summon import exactly as for a normal deck. There is no support summon.
