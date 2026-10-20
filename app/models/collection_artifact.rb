@@ -3,6 +3,10 @@
 class CollectionArtifact < ApplicationRecord
   include ArtifactSkillValidations
 
+  # raw_data held the full game payload and nothing read it. It is being cleared
+  # (CollectionArtifacts::RawDataClearer) and will be dropped in a later release.
+  self.ignored_columns += ['raw_data']
+
   # Associations
   belongs_to :user
   belongs_to :artifact

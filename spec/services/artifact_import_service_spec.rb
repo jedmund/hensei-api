@@ -83,6 +83,15 @@ RSpec.describe ArtifactImportService, type: :service do
         expect(result.errors).to be_empty
       end
 
+      it 'does not store the game payload' do
+        result = described_class.new(user, game_data).import
+
+        stored = CollectionArtifact.connection.select_value(
+          "SELECT raw_data FROM collection_artifacts WHERE id = #{CollectionArtifact.connection.quote(result.created.first.id)}"
+        )
+        expect(stored).to be_nil
+      end
+
       it 'sets the correct game_id' do
         service = described_class.new(user, game_data)
         result = service.import
