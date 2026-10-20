@@ -11,14 +11,18 @@ module GridDamage
     # → { optimus:, omega: } percent totals.
     def for_party(party, element:)
       totals = { optimus: 0.0, omega: 0.0 }
-      party.characters.includes(:character).each do |gc|
+      # Skills belong to the grid character's own row, so a style shift counts its own
+      # support skills, not its base's. Filtered in Ruby to stay on the preload.
+      party.characters.includes(character: { character_skills: { character_skill_versions: :skill_effects } }).each do |gc|
         next unless gc.character
 
-        CharacterSkill.where(character_granblue_id: gc.character.granblue_id, kind: "support").each do |cs|
+        gc.character.character_skills.select(&:support?).each do |cs|
           version = active_version(cs)
           next unless version
 
-          version.skill_effects.effect_weapon_skill_boost.where(element: [element, "all"]).each do |e|
+          version.skill_effects.each do |e|
+            next unless e.effect_weapon_skill_boost? && [element, "all"].include?(e.element)
+
             totals[:optimus] += e.amount.to_f if e.frame == "normal"
             totals[:omega]   += e.amount.to_f if e.frame == "omega"
           end

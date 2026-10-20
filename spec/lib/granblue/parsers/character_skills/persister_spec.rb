@@ -27,7 +27,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Persister do
   it 'creates slots, versions, effects, and links, dropping unknown attribute keys' do
     described_class.new(character).persist(graph)
 
-    skill = CharacterSkill.find_by(character_granblue_id: character.granblue_id, kind: 'ability', position: 1)
+    skill = CharacterSkill.find_by(character_id: character.id, kind: 'ability', position: 1)
     base = skill.character_skill_versions.find_by(name_en: 'Base')
 
     aggregate_failures do
@@ -41,6 +41,20 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Persister do
     described_class.new(character).persist(graph)
     described_class.new(character).persist(graph)
 
-    expect(CharacterSkill.where(character_granblue_id: character.granblue_id).count).to eq(1)
+    expect(CharacterSkill.where(character_id: character.id).count).to eq(1)
+  end
+
+  it "owns the slots by the character row and leaves the other style's skills alone" do
+    style = create(:character, granblue_id: character.granblue_id, style_swap: true)
+    described_class.new(character).persist(graph)
+    base_ids = CharacterSkill.where(character_id: character.id).ids
+    described_class.new(style).persist(graph)
+    described_class.new(style).persist(graph)
+
+    aggregate_failures do
+      expect(CharacterSkill.where(character_id: character.id).ids).to eq(base_ids)
+      expect(CharacterSkill.where(character_id: style.id).count).to eq(1)
+      expect(CharacterSkill.where(character_id: style.id).pick(:character_granblue_id)).to eq(character.granblue_id)
+    end
   end
 end

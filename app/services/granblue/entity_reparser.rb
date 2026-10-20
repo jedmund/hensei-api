@@ -93,7 +93,7 @@ module Granblue
     def reparse_character
       status_lookup = Parsers::CharacterSkillParser.build_status_lookup
       Parsers::CharacterSkillParser.new(@entity, status_lookup: status_lookup).parse(persist: true)
-      { skills: CharacterSkill.where(character_granblue_id: @entity.granblue_id).count }
+      { skills: @entity.character_skills.count }
     end
   end
 end

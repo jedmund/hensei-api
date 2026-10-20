@@ -55,7 +55,39 @@ while IFS= read -r line; do
   esac
 done < "$cache/toc.all"
 [ -z "$skipped" ] || echo "Skipping tables this branch doesn't have:$skipped"
+# A dump from before skills were owned by a character row (K1) has no
+# character_skills.character_id: let the restore leave it NULL, then backfill it the
+# way the K1 migration does. Only NULLs are touched, so a newer dump passes through.
+psql "$url" -qc "ALTER TABLE character_skills ALTER COLUMN character_id DROP NOT NULL"
 pg_restore --data-only --disable-triggers --no-owner --no-privileges --exit-on-error -L "$cache/toc.use" -d "$url" "$cache/catalogue.dump"
+psql "$url" -q -v ON_ERROR_STOP=1 <<'SQL'
+DO $$
+DECLARE
+  ambiguous text;
+  orphans integer;
+BEGIN
+  SELECT string_agg(granblue_id, ', ' ORDER BY granblue_id) INTO ambiguous FROM (
+    SELECT c.granblue_id FROM characters c
+    WHERE c.style_swap = false
+      AND EXISTS (SELECT 1 FROM character_skills cs
+                  WHERE cs.character_id IS NULL AND cs.character_granblue_id = c.granblue_id)
+    GROUP BY c.granblue_id HAVING count(*) > 1) dup;
+  IF ambiguous IS NOT NULL THEN
+    RAISE EXCEPTION 'character_skills can''t be backfilled: more than one base (style_swap: false) row for %', ambiguous;
+  END IF;
+
+  UPDATE character_skills cs SET character_id = c.id
+  FROM characters c
+  WHERE cs.character_id IS NULL AND c.granblue_id = cs.character_granblue_id AND c.style_swap = false;
+
+  SELECT count(*) INTO orphans FROM character_skills WHERE character_id IS NULL;
+  IF orphans > 0 THEN
+    RAISE EXCEPTION '% character_skills have no base (style_swap: false) character row', orphans;
+  END IF;
+END
+$$;
+ALTER TABLE character_skills ALTER COLUMN character_id SET NOT NULL;
+SQL
 psql "$url" -qc "INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
                  VALUES ('catalogue_tag', '$tag', now(), now())
                  ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()"

@@ -1,0 +1,163 @@
+{{CharacterTabs|base={{BASENAME}}|lore=no|voice=no}}
+{{StyleDisclaimer|char=[[Cidala]]'s}}
+{{Character
+|default_style=Cidala
+|style_name=Super Cidala
+|style_default=Cidala
+|style_id=2
+|id= 3040377000
+|charid=<!--3192-->
+|series= 12generals
+|jpname=シンダラ
+|jptitle=スーパーシンダラ
+|jpva=加隈亜衣
+|name= Cidala
+|release_date=2025-03-04
+|link_gamewith=490228
+|link_jpwiki=
+|link_kamigame=SSRスーパーシンダラ
+|gender=f
+|obtain=style
+|title=Super Cidala
+|title_source=style
+|5star=no
+|5star_date=
+|base_evo=0
+|max_evo=0
+|uncap_type=hide
+|expedition_type=bloodhound
+|blush_value=
+|base_da=12
+|base_ta=6
+|art1= {{PAGENAME}} A_st2.png
+|art2= 
+|art3= 
+|sprite1= {{PAGENAME}} SDA_st2.png
+|sprite2= 
+|sprite3= 
+|rarity= SSR
+|element= Earth
+|type= Attack
+|race= Erune
+|va= Ai Kakuma
+|join= Clear Ch. 6, Ep. 4 of [[Romance of the Divine Generals]]
+|join_weapon= 
+|weapon= Axe,Melee
+|min_atk=
+|max_atk=12162
+|flb_atk=
+|bonus_atk=540
+|min_hp=
+|max_hp=988
+|flb_hp=
+|bonus_hp=180
+|ougi_count=1
+|ougi_name= Ascending Fur-tune
+|ougi_desc= {{tt|550%|Massive}} Earth damage to a foe.<br />Gain {{status|ATK Sharply Boosted (Can't be extended)|a=50%|t=1.5T|m=ass}}.<ref name="GameWith">GameWith, Cidala. https://グランブルーファンタジー.gamewith.jp/article/show/311656</ref>
+|ougi2_name= 
+|ougi2_desc= 
+|ougi3_name= 
+|ougi3_desc= 
+|ougi4_name= 
+|ougi4_desc= 
+|abilitysubtitle=
+|abilitycount=3
+|a1_icon= Ability_m_2559_3.png
+|a1_color=yellow
+|a1_name= Luck Goes Up
+|a1_cd= {{InfoCd|num=0|cooldown=5|cooldown1=|level1=55}}
+|a1_dur= {{InfoDur|type=t|duration=2}}
+|a1_oblevel= {{InfoOb|obtained=100}}
+|a1_effdesc= {{InfoDes|num=0|des=Gain {{status|Luck Goes Up|t=2T}} and {{status|Tank-and-Counter|a=300%|t=2T|n=2}}.<ref name="GameWith" />}}
+|a2_icon= Ability_m_2560_3.png
+|a2_color=yellow
+|a2_name= Bringer of Proarsperity
+|a2_cd= {{InfoCd|num=0|cooldown=5|cooldown1=|level1=75}}
+|a2_dur= -
+|a2_oblevel= {{InfoOb|obtained=100}}
+|a2_effdesc= {{InfoDes|num=0|des=All Earth allies gain {{status|Dispel Cancel|t=i|n=1}}, {{status|Mirror Image|t=i|n=1}}, and {{status|Dodge All 1|t=i|n=1}}.}}
+|a3_icon= Ability_m_2561_1.png
+|a3_color=red
+|a3_name= Luck Goes Down
+|a3_cd= {{InfoCd|num=0|cooldown=5}}
+|a3_dur= {{InfoDur|type=t|duration=5}}
+|a3_oblevel= {{InfoOb|obtained=100}}
+|a3_effdesc= {{InfoDes|num=0|des=1200% Earth damage to a foe (Damage cap: ~1,305,000).<ref name="GameWith" /><br />Inflict {{status|Luck Goes Down 5|t=5T|acc=200%}}.}}
+|a4_icon=
+|a4_color=
+|a4_name=
+|a4_cd={{InfoCd|num=0|cooldown=}}
+|a4_dur={{InfoDur|type=t|duration=}}
+|a4_oblevel={{InfoOb|obtained=}}
+|a4_effdesc={{InfoDes|num=0|des=}}
+|s_abilitycount=2
+|sa_name= Divine Tiger United
+|sa_level= {{InfoOb|obtained=100}}
+|sa_desc= +10 boost to hostility, 35% hit to charge bar gain, guaranteed triple attacks, and {{atkmod|amplify}} normal attack damage by 15%.<ref name="GameWith" />
+|sa2_name= Peach-Colored Date
+|sa2_level= {{InfoOb|obtained=100}}
+|sa2_desc= '''Upon using skills:''' Raise {{status|Peach Scent|t=i}} lvl by 1 (Max: 5).<br />('''When {{status|Peach Scent}} lvl is 5:''' 70% hit to DEF, can't use skills, and doesn't deal multiattacks.)<ref name="GameWith" />
+|sa_emp_desc=Boost to triple attack rate based on number of foe's debuffs.
+|perk3=Critical Hit
+|perk8=Critical Hit
+|perk11=Triple Attack
+|perk12=Skill DMG Cap
+|perk13=C.A. DMG Cap
+|perk14=Debuff Success
+|perk15=Support Skill
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=n
+|a2_mimic_notes=
+|a3_mimic=n
+|a3_mimic_notes=
+|a4_mimic=
+|a4_mimic_notes=
+|profile=One—nay, two—Divine Generals who protect the East-Northeast. These extraordinary twins utilize feng shui to direct the flow of qi and determine whether a location has good or bad luck. With the twins at your side, they can point you in a favorable direction.
+}}
+
+==Gameplay Notes==
+* {{itm|Cidala}} must be level 100 to swap to this style.
+* Shares a [[Cross-Fate Episode]] with [[Catura]] and another with [[Makura]].
+** Gains +540 ATK after completing one [[Cross-Fate Episode]] and +180 HP after completing the second, regardless of order.
+===Ascending Fur-tune===
+{{AssassinBuff|{{status|ATK Sharply Boosted (Can't be extended)|a=50%|t=1.5T|m=ass}}}}
+
+===Luck Goes Up===
+*{{status|Luck Goes Up|t=2T}} grants the following effects:<ref name="GameWith" />
+**30% Bonus Earth DMG effect
+**[[Double Strike]] effect
+**Counters with the max number of hits
+
+===Luck Goes Down===
+*{{status|Luck Goes Down 5|t=5T|acc=200%}} has the following effects:<ref name="GameWith" />
+**25% DEF Down
+**Supplemental DMG Taken effect (Damage cap: 30,000)
+**'''For every 20,220,000 Earth normal attack damage dealt to this foe:''' Deal 2,022,000 Plain damage. Inflict {{status|DMG Taken Amplified 1|a=20%|t=1T|n=22|acc=}}.
+
+===Divine Tiger United===
+*In a 4-man party with default hostility, the probability that Cidala gets targeted is ~40%.
+
+===Extended Mastery Support Skill===
+*{{verify|1% boost to triple attack rate per debuff.}}
+**Each rank increases the maximum triple attack rate boost, but not the boost per debuff.
+{| class="wikitable" style="text-align:center;"
+!Rank||Max TA Up<ref name="GameWith" />
+|-
+!1★
+|
+|-
+!2★
+|
+|-
+!3★
+|10%
+|-
+|}
+=== Bonus DMG Stacking Information ===
+{{EchoTable/Info}}
+{{EchoTable|{{PAGENAME}}|title={{CharacterSkill|{{PAGENAME}}|1}}|1|skillu|element=earth}}
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{#var: character_template_bottom | }}
+
+==References==
+<references />

@@ -11,6 +11,18 @@ class AddCharacterIdToCharacterSkills < ActiveRecord::Migration[8.1]
   def up
     add_reference :character_skills, :character, type: :uuid, foreign_key: true, null: true, index: false
 
+    # The backfill joins on (granblue_id, style_swap: false); two base rows would give a
+    # skill two owners, and which one UPDATE … FROM picks is undefined.
+    ambiguous = select_values(<<~SQL.squish)
+      SELECT c.granblue_id FROM characters c
+      WHERE c.style_swap = false
+        AND EXISTS (SELECT 1 FROM character_skills cs WHERE cs.character_granblue_id = c.granblue_id)
+      GROUP BY c.granblue_id HAVING count(*) > 1 ORDER BY c.granblue_id
+    SQL
+    if ambiguous.any?
+      raise "character_skills can't be backfilled: more than one base (style_swap: false) row for #{ambiguous.join(', ')}"
+    end
+
     execute <<~SQL.squish
       UPDATE character_skills cs SET character_id = c.id
       FROM characters c

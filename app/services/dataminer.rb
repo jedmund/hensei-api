@@ -5,6 +5,8 @@ class Dataminer
 
   BOT_UID = '39094985'
   GAME_VERSION = '1741068713'
+  THROTTLE = 1
+  LANG_COLUMNS = { 'en' => :game_raw_en, 'jp' => :game_raw_jp, 'ja' => :game_raw_jp }.freeze
 
   base_uri 'https://game.granbluefantasy.jp'
   format :json
@@ -57,7 +59,13 @@ class Dataminer
     response
   end
 
-  def fetch_character(granblue_id)
+  # Fetches one style of a character and stores it on that style's row. A style shift
+  # shares its base's granblue_id but has its own abilities, so after style 1 this also
+  # fetches every other open style in the response's style_list.
+  #
+  # lang only picks the column (game_raw_en / game_raw_jp): the game's language is an
+  # account setting, so the session must already be in that language.
+  def fetch_character(granblue_id, style: 1, lang: 'en', other_styles: true)
     timestamp = Time.now.to_i * 1000
     url = "/archive/npc_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
     body = {
@@ -67,13 +75,34 @@ class Dataminer
       attribute: '0',
       event_id: nil,
       story_id: nil,
-      style: 1,
+      style: style,
       character_id: granblue_id
     }
 
     response = fetch_detail(url, body)
-    update_game_data('Character', granblue_id, response) if response
+    return response unless response
+
+    update_game_data('Character', granblue_id, response, style: style, lang: lang)
+    if other_styles && style == 1
+      other_open_styles(response).each do |other|
+        sleep(THROTTLE)
+        fetch_character(granblue_id, style: other, lang: lang, other_styles: false)
+      end
+    end
     response
+  end
+
+  def fetch_characters(granblue_ids, style: nil, lang: 'en')
+    granblue_ids.each_with_index do |granblue_id, index|
+      sleep(THROTTLE) if index.positive?
+      if style
+        fetch_character(granblue_id, style: style, lang: lang, other_styles: false)
+      else
+        fetch_character(granblue_id, lang: lang)
+      end
+    rescue StandardError => e
+      logger.error "Error processing Character #{granblue_id}: #{e.message}"
+    end
   end
 
   def fetch_weapon(granblue_id)
@@ -113,8 +142,8 @@ class Dataminer
   end
 
   # Public batch processing methods
-  def fetch_all_characters(only_missing: false)
-    process_all_records('Character', only_missing: only_missing)
+  def fetch_all_characters(only_missing: false, lang: 'en')
+    process_all_records('Character', only_missing: only_missing, lang: lang)
   end
 
   def fetch_all_weapons(only_missing: false)
@@ -167,7 +196,7 @@ class Dataminer
     # Suppress SQL logs in non-debug mode
     return if debug
 
-    ActiveRecord::Base.logger.level = ::Logger::INFO if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.logger&.level = ::Logger::INFO if defined?(ActiveRecord::Base)
   end
 
   def fetch_detail(url, body)
@@ -214,26 +243,60 @@ class Dataminer
     JSON.parse(response.body)
   end
 
-  def update_game_data(model_name, granblue_id, response_data)
+  # Characters: style 2 is the style_swap row, anything else the base row. The response's
+  # own style wins over the requested one when they disagree, so a payload never lands on
+  # the other style's row.
+  def update_game_data(model_name, granblue_id, response_data, style: 1, lang: 'en')
     return unless response_data.is_a?(Hash)
 
+    column = LANG_COLUMNS.fetch(lang.to_s) { raise ArgumentError, "unknown lang #{lang.inspect}" }
     model = Object.const_get(model_name)
-    record = model.find_by(granblue_id: granblue_id)
+    record = if model_name == 'Character'
+               # Error and popup responses are hashes too; only a character payload is stored.
+               unless response_data['id'].present? && response_data['ability'].present?
+                 logger.warn "Character #{granblue_id}: response has no id or ability; not stored"
+                 return
+               end
+               response_style = response_data['style'].presence&.to_i
+               if response_style && response_style != style.to_i
+                 logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"
+                 return
+               end
+               unless [1, 2].include?(style.to_i)
+                 logger.warn "Character #{granblue_id}: no row for style #{style}; not stored"
+                 return
+               end
+               model.find_by(granblue_id: granblue_id, style_swap: style.to_i == 2)
+             else
+               model.find_by(granblue_id: granblue_id)
+             end
 
     if record
-      record.update(game_raw_en: response_data)
-      logger.debug "Updated #{model_name} #{granblue_id}"
+      record.update(column => response_data)
+      logger.debug "Updated #{model_name} #{granblue_id} #{column}#{" (style #{style})" if model_name == 'Character'}"
     else
-      logger.warn "#{model_name} with granblue_id #{granblue_id} not found in database"
+      logger.warn "#{model_name} with granblue_id #{granblue_id}#{" (style #{style})" if model_name == 'Character'} not found in database"
     end
   rescue StandardError => e
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
   end
 
-  def process_all_records(model_name, only_missing: false)
+  # Open styles other than 1 that have a row to store them on.
+  def other_open_styles(response)
+    Array(response['style_list']).filter_map do |entry|
+      next unless entry.is_a?(Hash) && entry['is_open']
+
+      # Only style 2 has a row (style_swap: true) to land on.
+      entry['style'].to_i if entry['style'].to_i == 2
+    end.uniq
+  end
+
+  def process_all_records(model_name, only_missing: false, lang: 'en')
     model = Object.const_get(model_name)
     scope = model
-    scope = scope.where(game_raw_en: nil) if only_missing
+    # Style rows are filled from their base row's style_list, never fetched as style 1.
+    scope = scope.where(style_swap: false) if model_name == 'Character'
+    scope = scope.where(LANG_COLUMNS.fetch(lang.to_s) => nil) if only_missing
 
     total = scope.count
     success_count = 0
@@ -246,7 +309,7 @@ class Dataminer
 
       response = case model_name
                  when 'Character'
-                   fetch_character(record.granblue_id)
+                   fetch_character(record.granblue_id, lang: lang)
                  when 'Weapon'
                    fetch_weapon(record.granblue_id)
                  when 'Summon'
@@ -256,7 +319,7 @@ class Dataminer
       success_count += 1
       logger.debug "Successfully processed #{model_name} #{record.granblue_id}"
 
-      sleep(1)
+      sleep(THROTTLE)
     rescue StandardError => e
       error_count += 1
       logger.error "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
