@@ -49,7 +49,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "all_foes",
               "status": "Caught 2",
               "amount": null,
@@ -189,8 +189,8 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
-              "target": "one_foe",
+              "type": "grant_status",
+              "target": "caster",
               "status": "Utopia+",
               "amount": null,
               "amount_max": null,
@@ -462,7 +462,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Other Self 1",
               "amount": null,
@@ -520,7 +520,7 @@
           "flags": [],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Other Self 1",
               "amount": null,

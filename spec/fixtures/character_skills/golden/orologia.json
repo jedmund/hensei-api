@@ -624,7 +624,7 @@
           ],
           "effects": [
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "one_foe",
               "status": "Causal Intervention",
               "amount": null,
