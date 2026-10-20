@@ -41,6 +41,24 @@ RSpec.describe CharacterSkills::IconSnapshot do
     end
   end
 
+  describe '.export with conflicting versions' do
+    it 'raises when two versions share a key but not a name and icon' do
+      slot = create(:character_skill, character: create(:character, granblue_id: '3040001000'), kind: 'ability', position: 1)
+      create(:character_skill_version, character_skill: slot, ordinal: 2, name_en: 'One', game_icon: '1_1')
+      create(:character_skill_version, character_skill: slot, ordinal: 2, name_en: 'Two', game_icon: '1_1')
+
+      expect { described_class.export(path) }.to raise_error(described_class::ConflictError, %r{3040001000/1/ability/1/2})
+      expect(File.exist?(path)).to be(false)
+    end
+
+    it 'collapses identical duplicates into one entry' do
+      slot = create(:character_skill, character: create(:character, granblue_id: '3040001000'), kind: 'ability', position: 1)
+      2.times { create(:character_skill_version, character_skill: slot, ordinal: 2, name_en: 'Same', game_icon: '1_1') }
+
+      expect(described_class.export(path)).to eq(1)
+    end
+  end
+
   describe '.load' do
     it 'indexes entries by granblue_id, style, kind, position and ordinal' do
       File.write(path, JSON.generate([{ granblue_id: '3040377000', style: 2, kind: 'ability', position: 1, ordinal: 1,

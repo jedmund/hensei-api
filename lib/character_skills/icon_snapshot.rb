@@ -10,10 +10,14 @@ module CharacterSkills
     DEFAULT_PATH = Rails.root.join('data/character_skills/icons.json')
     KEYS = %w[granblue_id style kind position ordinal name_en game_icon].freeze
 
+    # Two stored versions share a snapshot key but disagree on name or icon.
+    class ConflictError < StandardError; end
+
     class << self
       # Writes every stored version that has a game_icon. Returns the entry count.
       def export(path = DEFAULT_PATH)
         entries = export_rows
+        check_conflicts!(entries)
         FileUtils.mkdir_p(File.dirname(path))
         File.write(path, serialize(entries))
         reset!
@@ -81,11 +85,19 @@ module CharacterSkills
           JOIN character_skills s ON s.id = v.character_skill_id
           #{owner_join_sql}
           WHERE v.game_icon IS NOT NULL
-          ORDER BY 1, 2, 3, 4, 5
+          ORDER BY 1, 2, 3, 4, 5, 6, 7
         SQL
         rows.map do |row|
           KEYS.zip(row).to_h.merge('style' => row[1].to_i, 'position' => row[3].to_i, 'ordinal' => row[4].to_i)
         end
+      end
+
+      def check_conflicts!(entries)
+        conflicts = entries.group_by { |entry| entry.values_at(*KEYS.first(5)) }.select { |_, group| group.size > 1 }
+        return if conflicts.empty?
+
+        sample = conflicts.first(5).map { |key, group| "#{key.join('/')}: #{group.map { |e| e.values_at('name_en', 'game_icon') }}" }
+        raise ConflictError, "#{conflicts.size} snapshot keys have conflicting versions, e.g. #{sample.join('; ')}"
       end
 
       # Before slots carry their owner row (character_id), every slot belongs to
