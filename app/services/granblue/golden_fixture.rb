@@ -260,7 +260,14 @@ module Granblue
         skills = tables['character_skills']
         return tables if skills.blank? || skills.all? { |row| row['character_id'].present? }
 
-        owners = base_character_ids(tables, skills.pluck('character_granblue_id').compact.uniq)
+        needed = skills.reject { |row| row['character_id'].present? }.pluck('character_granblue_id').uniq
+        owners = base_character_ids(tables, needed.compact)
+        unresolved = needed.reject { |granblue_id| owners[granblue_id] }
+        if unresolved.any?
+          raise Error, "#{@fixture['shortcode']}: no base character row for character_skills " \
+                       "of #{unresolved.map { |id| id || '(no granblue_id)' }.join(', ')}"
+        end
+
         tables.merge('character_skills' => skills.map do |row|
           next row if row['character_id'].present?
 
