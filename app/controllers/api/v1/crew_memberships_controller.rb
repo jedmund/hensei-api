@@ -128,7 +128,7 @@ module Api
 
       def set_membership_for_scores
         # Try to find by username first, then fall back to ID
-        @membership = @crew.crew_memberships.joins(:user).find_by(users: { username: params[:id] }) ||
+        @membership = @crew.crew_memberships.joins(:user).merge(User.with_username(params[:id])).first ||
                       @crew.crew_memberships.find(params[:id])
       end
 

@@ -50,9 +50,24 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       get "/api/v1/users/#{user.username}/playlists", headers: auth_headers
       expect(response.parsed_body['meta']).to include('count', 'total_pages', 'per_page')
     end
+
+    it 'finds the user when the username is in a different case' do
+      get "/api/v1/users/#{user.username.upcase}/playlists", headers: unauth_headers
+      expect(response).to have_http_status(:ok)
+
+      ids = response.parsed_body['results'].map { |p| p['id'] }
+      expect(ids).to include(public_playlist.id)
+    end
   end
 
   describe 'GET /api/v1/users/:user_id/playlists/:id' do
+    it 'finds the playlist when the username is in a different case' do
+      playlist = create(:playlist, user: user, visibility: 1)
+
+      get "/api/v1/users/#{user.username.upcase}/playlists/#{playlist.slug}", headers: unauth_headers
+      expect(response).to have_http_status(:ok)
+    end
+
     it 'returns a public playlist with parties ordered by last_updated desc' do
       playlist = create(:playlist, user: user, visibility: 1)
       old_party = create(:party, user: user, last_updated: 2.days.ago)
