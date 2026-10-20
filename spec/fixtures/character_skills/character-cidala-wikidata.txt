@@ -1,0 +1,276 @@
+{{CharacterTabs|base={{BASENAME}}}}
+{{Character
+|id= 3040377000
+|charid=3192
+|series= 12generals
+|jpname=シンダラ
+|jptitle=東北東の守護神
+|jpva=加隈亜衣
+|name= Cidala
+|release_date=2021-12-31
+|link_gamewith=311656
+|link_jpwiki=%A5%B7%A5%F3%A5%C0%A5%E9%20%28SSR%29
+|link_kamigame=SSR/シンダラ
+|gender=f
+|obtain=premium,zodiac
+|title=Guardian of the East-Northeast
+|title_source=
+|5star=yes
+|5star_date=2025-01-10
+|base_evo= 4
+|max_evo=5
+|uncap_type= SSR,scale
+|expedition_type=bloodhound
+|blush_value=
+|base_da=12
+|base_ta=6
+|art1= {{PAGENAME}} A.png
+|art2= {{PAGENAME}} B.png
+|art3= {{PAGENAME}} C.png
+|art_story1= {{PAGENAME}} ST.png
+|sprite1= {{PAGENAME}} SDA.png
+|sprite2= {{PAGENAME}} SDB.png
+|sprite3= {{PAGENAME}} SDC.png
+|rarity= SSR
+|element= Earth
+|type= Attack
+|race= Erune
+|va= Ai Kakuma
+|join=[[Premium Gala]] (2022 Zodiac Character)
+|join_weapon= Tigrisius
+|weapon= Axe,Melee
+|min_atk=
+|max_atk= 10140
+|flb_atk=12162
+|bonus_atk=540
+|min_hp=
+|max_hp= 852
+|flb_hp=988
+|bonus_hp=180
+|ougi_count=2
+|ougi_name= Gilded Heaven Strike
+|ougi_desc= {{tt|500%|Massive}} Earth damage to a foe.<ref name="GameWith" /><br />Gain {{status|Twin Tiger Fury|t=i}}. (Next use of either linked skill activates both.)<br />End cooldowns for linked skills.
+|ougi2_label= {{InfoSkillUpgrade|text=After 5★:}}<br />
+|ougi2_name=Her Royal Tigerness
+|ougi2_desc={{tt|550%|Massive}} Earth damage to a foe.<br />Gain {{status|Twin Tiger Fury|t=i}}. (Next use of either linked skill activates both.)<br />End cooldowns for linked skills.<br />1-turn cut to {{CharacterSkill2|Cidala|3}}'s cooldown.<br />(Deal 100% Bonus Earth damage based on foe's {{Status|Tiger Tape+}} lvl [Damage cap: ~63,000 per hit / Max: 5 hits].)<ref name="GameWith" />
+|ougi3_name= 
+|ougi3_desc= 
+|ougi4_name= 
+|ougi4_desc= 
+|abilitysubtitle=
+|abilitycount=4
+|a1_icon= Ability_m_1640_1.png
+|a1_color=red
+|a1_name= Jinx of the Tiger
+|a1_cd= {{LinkedSkill}}<br />{{InfoCd|num=0|cooldown=3|cooldown1=|level1=55}}
+|a1_dur= {{InfoDur|type=s|duration=180}} /<br />{{InfoDur|type=t|duration=3}}
+|a1_oblevel= {{InfoOb|obtained=1|enhanced=55}}
+|a1_effdesc= {{InfoDes|num=0|des=450% Earth damage to a foe (Damage cap: ~635,000).<br />Remove 1 buff.<br />Inflict {{Status|ATK Lowered (Stackable)|t=180s|a=10%|am=40%|acc=100%}} and {{Status|DEF Lowered (Stackable)|t=180s|a=10%|am=40%|acc=100%}}.<ref name="GameWith" /><br />(Additional random debuffs based on foe's {{status|Tiger Tape|s=p}} lvl.)}}
+|a2_icon= Ability_m_1641_1.png
+|a2_color=red
+|a2_name= Tiger's Prosperity
+|a2_cd= {{LinkedSkill}}<br />{{InfoCd|num=0|cooldown=3|cooldown1=|level1=75}}
+|a2_dur= -
+|a2_oblevel= {{InfoOb|obtained=1|enhanced=75}}
+|a2_effdesc= {{InfoDes|num=0|des=450% Earth damage to a foe (Damage cap: ~635,000).<br />Gain {{Status|ATK Boosted (Stackable)|t=i|a=10%|am=40%|m=us}}, {{Status|DEF Boosted (Stackable)|t=i|a=10%|am=40%}}, and {{Status|DMG Cap Boosted (Stackable)|t=i|a=2%|am=10%}}.<ref name="GameWith" /><br />(Additional random buffs based on foe's {{status|Tiger Tape|s=p}} lvl.)}}
+|a3_icon= Ability_m_1642_3.png
+|a3_color=yellow
+|a3_name= Twin Tiger Feng Shui
+|a3_cd= {{InfoCd|num=0|cooldown=12}}
+|a3_dur= {{InfoDur|type=t|duration=1}}
+|a3_oblevel= {{InfoOb|obtained=45}}
+|a3_effdesc= {{InfoDes|num=0|des=Gain {{Status|Dodge All|t=1T}}, {{Status|Substituted (All-Ally)|t=1T}}, and {{status|Twin Tiger Feng Shui|t=1T}}.<br />(Can't attack. On next turn: Gain {{status|ATK Sharply Boosted|t=1T|a=50%|m=ass}} and {{status|Guaranteed TA|t=1T}}.)<ref name="GameWith" />}}
+|a4_icon=Ability_m_2529_3.png
+|a4_color=yellow
+|a4_name=High of the Tiger
+|a4_cd=-
+|a4_dur=-
+|a4_oblevel={{InfoOb|obtained=100}}
+|a4_effdesc={{InfoDes|num=0|des=Gain {{Status|High of the Tiger|t=i}}.<br />(Can only be used when both {{Status|Silver Stripes}} and {{Status|Gold Stripes}} lvl are at 3. Can't be recast.)}}
+|s_abilitycount=4
+|sa_name= Queen of Tigers
+|sa_level= {{InfoOb|obtained=1|enhanced=90}}
+|sa_desc={{InfoDes|num=1|des=+20 boost to hostility, 20% hit to debuff resistance, 30% boost to {{atkmod|ATK|m=p}}, and guaranteed double attacks.<ref name="GameWith" /><br />Raise foe's {{status|Tiger Tape|t=i|s=p|acc=200%}} lvl by 1 upon triple attacks (Max: 5).<br />('''Based on {{Status|Tiger Tape}} lvl:''' Hit to foe's ATK and DEF.)|des1=Also raise foe's {{Status|Tiger Tape+|t=i|s=p|acc=200%}} lvl by 1 upon charge attacks.<br />('''Based on {{Status|Tiger Tape+}} lvl:''' Also supplement damage taken by foe.) |level1=90}}
+|sa2_name= Reversal of Fortune
+|sa2_level= {{InfoOb|obtained=1}}
+|sa2_desc= '''At end of turn if Cidala didn't attack:'''<br />Restore HP (Healing cap: 2022) and remove all debuffs.<br />Gain {{status|Double Strike|t=1T}} and {{status|Bonus Earth DMG|t=1T|a=40%}}.<ref name="GameWith" />
+|sa3_name=Belling the Silver Tiger
+|sa3_level={{InfoOb|obtained=95}}
+|sa3_desc='''When Earth MC uses a buff skill:'''<br />450% Earth damage to a foe (Damage cap: ~450,000).<ref name="GameWith" /><br />Remove 1 buff.<br />Raise Cidala's {{Status|Silver Stripes|t=i}} lvl by 1 (Max: 3).
+|sa4_name=Belling the Gold Tiger
+|sa4_level={{InfoOb|obtained=95}}
+|sa4_desc='''When Earth MC uses a damage skill:'''<br />450% Earth damage to a foe (Damage cap: ~450,000).<br />Cidala gains {{Status|Triple Attack Rate Boosted (Stackable)|t=i|a=15%|am=45%}}.<ref name="GameWith" /><br />Raise Cidala's {{Status|Gold Stripes|t=i}} lvl by 1 (Max: 3).
+|sa_emp_desc=Boost to triple attack rate based on number of foe's debuffs.
+|perk3=Critical Hit
+|perk8=Critical Hit
+|perk11=Triple Attack
+|perk12=Skill DMG Cap
+|perk13=C.A. DMG Cap
+|perk14=Debuff Success
+|perk15=Support Skill
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=n
+|a2_mimic_notes=
+|a3_mimic=n
+|a3_mimic_notes=
+|a4_mimic=n
+|a4_mimic_notes=
+|xfate1=26092
+|xfate_bonus1=ATK +540 
+|xfate2=26094
+|xfate_bonus2=HP +180 
+|profile=One—nay, two—Divine Generals who protect the East-Northeast. These extraordinary twins utilize feng shui to direct the flow of qi and determine whether a location has good or bad luck. With the twins at your side, they can point you in a favorable direction.
+}}
+
+==Gameplay Notes==
+{{CharacterUpdateHistory|2025-01-10}}
+
+===Gilded Heaven Strike===
+*The second linked skill activated via {{status|Twin Tiger Fury|t=i}} is considered an auto-activated skill.
+**Effects that track skill usage (e.g., {{ClassIcon|Lumberjack|size=x18px}}[[Lumberjack]]'s {{status|Woodcutter's Song}}) do not count the auto-activated linked skill.
+**Effects that follow the usage of a skill (e.g., {{itm|Lobelia}}'s {{status|Thunderbolt of Disaster}}) occur after only the first linked skill.
+
+===Jinx of the Tiger===
+*Randomly inflicts additional effects from the following:<ref name="GameWith">GameWith, Cidala. https://グランブルーファンタジー.gamewith.jp/article/show/311656</ref>
+**{{Status|Water ATK Lowered|t=180s|a=20%|acc=100%}}
+**{{Status|Earth DEF Down|t=180s|a=20%|acc=100%}}
+**{{Status|Debuff Resistance Lowered|t=180s|a=20%|acc=100%}}
+**{{Status|Blinded 3|t=3T|a=60%|acc=100%}}
+**{{Status|Charmed|t=180s|a=20%|acc=100%}}
+*The number of additional effects inflicted increases with the foe's {{Status|Tiger Tape|s=p}} lvl.
+**At lvl 5, all additional effects are inflicted.
+
+===Tiger's Prosperity===
+*Randomly grants additional effects from the following:<ref name="GameWith" />
+**{{Status|Dispel Cancel|t=i|n=1}}
+**{{Status|Mirror Image|t=i|n=1}}
+**{{Status|Shield|t=i|a=3000}}
+**{{Status|C.A. Reactivation (1 time)|t=i}}
+**{{Status|Charge Bar|a=30%}}
+*The number of additional effects granted increases with the foe's {{Status|Tiger Tape|s=p}} lvl.
+**At lvl 5, all additional effects are granted.
+
+===Twin Tiger Feng Shui===
+{{AssassinBuff|{{status|ATK Sharply Boosted|t=1T|a=50%|m=ass}}}}
+
+=== High of the Tiger ===
+* {{Status|High of the Tiger|t=i}} grants the following effects:<ref name="GameWith" />
+** 20% N.A. DMG Amplified
+** 20% Skill DMG Amplified
+** 2-hit [[Flurry]] effect
+** '''After normal attacks:''' Deal 800% Earth damage to the foe (Damage cap: ~830,000)
+
+===Queen of Tigers===
+{{PermanentDebuffStacking|1={{status|Tiger Tape|t=i|s=p}}|ref=<ref name="GameWith" />}}
+* At level 90, {{Status|Tiger Tape+}} also supplements damage taken by foes affected by the debuff.
+{| class="wikitable" style="text-align: center;"
+!Lvl||Status||ATK Down||DEF Down||Supp. DMG Taken (Lvl 90+)
+|-
+!1
+|{{status|Tiger Tape 1|icon}}
+|3%
+|3%
+|6000
+|-
+!2
+|{{status|Tiger Tape 2|icon}}
+|6%
+|6%
+|12,000
+|-
+!3
+|{{status|Tiger Tape 3|icon}}
+|9%
+|9%
+|18,000
+|-
+!4
+|{{status|Tiger Tape 4|icon}}
+|12%
+|12%
+|24,000
+|-
+!5
+|{{status|Tiger Tape 5|icon}}
+|15%
+|15%
+|30,000
+|}
+*In a 4-man party with default hostility, the probability that Cidala gets targeted is ~50%.
+
+===Reversal of Fortune===
+*{{CharacterSupportSkill|Cidala|2}} activates ''after'' turn-progressing effects such as {{status|Time Warp}} and {{itm|Clarisse (Valentine)}}'s {{CharacterSupportSkill|page=Clarisse_(Valentine)|no=2}}.
+*In multi-wave battles, this support skill will activate if Cidala does not get to attack before progressing to the next wave.
+*In [[Battle System 2.0]], [[Battle System 2.0#Guarding|Guarding]] for a turn will activate this support skill.
+
+=== Belling the Silver Tiger ===
+* {{CharacterSupportSkill|Cidala|3}} only triggers when Earth MC uses buff skills ([[Skill Color|yellow border]]). 
+** The skill does not have to actually buff or target {{PAGENAME}}.
+**Skills with other border colors do not trigger this support skill, even if they provide a buff.
+**Auto-activated skills and 0-turn cooldown skills do not trigger this support skill.
+
+=== Belling the Gold Tiger ===
+* {{CharacterSupportSkill|Cidala|4}} only triggers when Earth MC uses damage skills ([[Skill Color|red border]]). 
+** The skill does not have to actually deal damage.
+**Skills with other border colors do not trigger this support skill, even if they deal damage.
+**Auto-activated skills and 0-turn cooldown skills do not trigger this support skill.
+
+===Extended Mastery Support Skill===
+*{{verify|1% boost to triple attack rate per debuff.}}
+**Each rank increases the maximum triple attack rate boost, but not the boost per debuff.
+{| class="wikitable" style="text-align:center;"
+!Rank||Max TA Up<ref name="GameWith" />
+|-
+!1★
+|
+|-
+!2★
+|
+|-
+!3★
+|10%
+|-
+|}
+===Bonus DMG Stacking Information===
+{{EchoTable/Info}}
+{{EchoTable|{{PAGENAME}}|2|skillb|override=passivea}}
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{#var: character_template_bottom | }}
+
+==Outfits==
+===Stripes of the Guardians===
+{{CharSkin
+|id=3710195000
+|char=Cidala
+|art_tab=Default
+|art=Stripes of the Guardians (Cidala).png
+|sd=Stripes of the Guardians (Cidala) SD.png
+|desc=Stripes of the Guardians
+|flavor=Never mind the fact that these outfits give off major pajama vibes—they're still formal vestments worn for end-of-the-year ceremonies, gawr. Even so, I'll sometimes catch the gawrls rolling around in them outside of work. "But they're so warm and cozy," they mew at me. Sigh... Great, the hoods are fraying at the seams again. Do they honestly think a magic fairy does all the sewing when it's me pricking my paws, gawr? And don't get me started on the food crumbs and chocolate stains! Aaagh, you gawrls need to treat treasures with respect, gawr!
+|obtain=[[Auld Lang Syne: Age of Tyranno]]
+|release_date=2022-12-25
+|voice=Yes
+|sprite=Yes
+|ougi=Tiger Supremacy, Now and Forever
+|music=
+}}
+
+===Wearable Sleeping Bag===
+{{CharSkin
+|id=3710191000
+|char=Cidala
+|art_tab=Default
+|art=Wearable Sleeping Bag (Cidala).png
+|sd=Wearable Sleeping Bag (Cidala) SD.png
+|desc=Wearable Sleeping Bag
+|flavor=Prototype sleeping bags developed by Sierokarte in anticipation of a potential camping boom. On top of being supremely comfortable and soft to the touch, their two-legged design allows the wearer to make a quick escape in the event they are attacked by monsters or wild animals while sleeping. Testers have given such rave reviews as "My luck went through the roof the second I put this bad boy on" (female, 12 years old) and "My friends can't get enough of it" (female, 12 years old). To place an order, please see the attached form.
+|obtain=[[ZodiaCamp: The 2nd Divine Generals Assembly]]
+|release_date=2022-06-28
+|voice=Yes
+|sprite=Yes
+|ougi=Tigers Out of the Bag
+|music=
+}}
+
+==References==
+<references />
