@@ -34,7 +34,8 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   def version(character, kind, position, name)
-    CharacterSkillVersion.joins(:character_skill)
+    # Several versions of a slot can share a name (base and enhanced); take the first.
+    CharacterSkillVersion.joins(:character_skill).order(:ordinal)
                          .find_by!(character_skills: { character_id: character.id, kind: kind, position: position }, name_en: name)
   end
 
