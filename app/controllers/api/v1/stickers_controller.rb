@@ -6,13 +6,13 @@ module Api
     class StickersController < Api::V1::ApiController
       include EditorImageUpload
 
-      EDITOR_ACTIONS = %i[create update destroy upload_image reorder library].freeze
+      EDITOR_ACTIONS = %i[create update destroy upload_image remove_image reorder library].freeze
       MAX_IMAGE_DIMENSION = 512
       MAX_IMAGE_BYTES = 512 * 1024
 
       before_action :doorkeeper_authorize!, only: EDITOR_ACTIONS
       before_action :ensure_editor_role, only: EDITOR_ACTIONS
-      before_action :set_sticker, only: %i[update destroy upload_image]
+      before_action :set_sticker, only: %i[update destroy upload_image remove_image]
       before_action :set_library_entry, only: %i[create update]
 
       # GET /stickers
@@ -90,6 +90,21 @@ module Api
                                               max_bytes: MAX_IMAGE_BYTES)
         return unless stored
 
+        render json: render_editor(@sticker)
+      end
+
+      # DELETE /stickers/:id/image?language=ja
+      # Removes the Japanese image, so Japanese viewers see the English one.
+      # Its file is deleted only if it's the sticker's own, never a shared
+      # library image. The English image can be replaced but not removed.
+      def remove_image
+        unless params[:language].to_s == 'ja'
+          return render json: { error: 'Only the Japanese image can be removed' }, status: :unprocessable_entity
+        end
+
+        previous_key = @sticker.image_key_jp
+        @sticker.update!(image_key_jp: nil)
+        remove_replaced_image(previous_key) if owned_image?(previous_key, Sticker::IMAGE_PREFIX, "#{@sticker.slug}.ja")
         render json: render_editor(@sticker)
       end
 
