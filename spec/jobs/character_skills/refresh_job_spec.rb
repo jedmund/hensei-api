@@ -120,6 +120,16 @@ RSpec.describe CharacterSkills::RefreshJob do
       expect(reload_batch.status).to eq('failed')
     end
 
+    it 'codes a character deleted since it was picked as character_missing' do
+      first.destroy!
+
+      described_class.perform_now(batch.id, 'preview')
+
+      expect(reload_batch.item(first.id)).to include(status: 'failed', error_code: 'character_missing', error_status: nil,
+                                                     error: 'This character no longer exists')
+      expect(reload_batch.item(second.id)[:status]).to eq('previewed')
+    end
+
     it 'does nothing for an expired refresh' do
       id = batch.id
       CharacterSkills::RefreshStore.clear
@@ -143,6 +153,16 @@ RSpec.describe CharacterSkills::RefreshJob do
       expect(first.reload.wiki_raw).to eq(wiki(7))
     end
 
+    it 'codes a character deleted before the apply as character_missing' do
+      reload_batch.start_apply!(nil)
+      Character.without_skill_build { first.destroy! }
+
+      described_class.perform_now(batch.id, 'apply')
+
+      expect(reload_batch.item(first.id)).to include(status: 'failed', error_code: 'character_missing')
+      expect(reload_batch.item(second.id)[:status]).to eq('applied')
+    end
+
     it "marks a character failed when its previewed text has expired" do
       reload_batch.start_apply!(nil)
       CharacterSkills::RefreshStore.delete("batch:#{batch.id}:sources:#{first.id}")
@@ -151,7 +171,7 @@ RSpec.describe CharacterSkills::RefreshJob do
 
       state = reload_batch
       expect(state.item(first.id)).to include(status: 'failed', error: CharacterSkills::Refresh::EXPIRED_MESSAGE,
-                                              error_code: 'unexpected', error_status: nil)
+                                              error_code: 'preview_expired', error_status: nil)
       expect(state.item(second.id)[:status]).to eq('applied')
       expect(first.reload.wiki_raw).to eq(wiki(7))
     end
