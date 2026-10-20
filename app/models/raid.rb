@@ -3,6 +3,9 @@
 class Raid < ApplicationRecord
   belongs_to :group, class_name: 'RaidGroup', foreign_key: :group_id
 
+  has_many :event_raids, dependent: :destroy
+  has_many :events, through: :event_raids
+
   # Route Evokers whose Evoking Solomonis expeditions run in this zone.
   has_many :solomonis_evokers, class_name: 'Character', foreign_key: :solomonis_zone_id,
                                inverse_of: :solomonis_zone, dependent: :restrict_with_error
