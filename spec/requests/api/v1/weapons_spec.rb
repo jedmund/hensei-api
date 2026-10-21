@@ -191,4 +191,22 @@ RSpec.describe 'Weapons API', type: :request do
       end
     end
   end
+
+  describe 'GET /api/v1/weapons/:id/raw' do
+    it 'returns raw weapon data to an editor' do
+      weapon.update!(game_raw_en: { 'id' => weapon.granblue_id, 'name' => 'Sword' })
+      get "/api/v1/weapons/#{weapon.id}/raw", headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['game_raw_en']).to eq('id' => weapon.granblue_id, 'name' => 'Sword')
+    end
+
+    it 'is for editors only' do
+      get "/api/v1/weapons/#{weapon.id}/raw", headers: regular_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/api/v1/weapons/#{weapon.id}/raw"
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
 end

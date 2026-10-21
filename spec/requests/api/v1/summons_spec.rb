@@ -127,9 +127,17 @@ RSpec.describe 'Api::V1::Summons', type: :request do
   describe 'GET /api/v1/summons/:id/raw' do
     let!(:summon) { create(:summon) }
 
-    it 'returns raw summon data' do
-      get "/api/v1/summons/#{summon.id}/raw"
+    it 'returns raw summon data to an editor' do
+      get "/api/v1/summons/#{summon.id}/raw", headers: editor_headers
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'is for editors only' do
+      get "/api/v1/summons/#{summon.id}/raw", headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/api/v1/summons/#{summon.id}/raw"
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end
