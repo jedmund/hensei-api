@@ -21,13 +21,33 @@ module Granblue
       names.any? { |name| name.match?(JAPANESE) } ? 'jp' : 'en'
     end
 
+    # → the granblue_id, or nil (a malformed body included).
     def granblue_id(payload)
-      (payload.dig('master', 'id').presence || payload['id']).presence&.to_s
+      return unless payload.is_a?(Hash)
+
+      id = section(payload, 'master')['id'].presence || payload['id'].presence
+      id.to_s if id.is_a?(String) || id.is_a?(Integer)
     end
 
     # → "1", "2", … or "" when the payload doesn't say.
     def style(payload)
-      (payload['style'].presence || payload.dig('param', 'style')).to_s
+      return '' unless payload.is_a?(Hash)
+
+      style = payload['style'].presence || section(payload, 'param')['style']
+      style.is_a?(String) || style.is_a?(Integer) ? style.to_s : ''
+    end
+
+    # The series id from the payload (master.series_id is a list), or nil.
+    def series_id(payload)
+      return unless payload.is_a?(Hash)
+
+      value = payload['series_id'] || section(payload, 'master')['series_id']
+      value = value.first if value.is_a?(Array)
+      value.to_s if value.is_a?(String) || value.is_a?(Integer)
+    end
+
+    def section(payload, key)
+      payload[key].is_a?(Hash) ? payload[key] : {}
     end
 
     def skill_names(payload)

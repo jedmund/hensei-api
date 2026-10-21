@@ -321,7 +321,7 @@ module Api
           )
 
           # Parse series_id and create CharacterSeriesMembership (master.series_id is a list)
-          series_id = Array(body['series_id'] || body.dig('master', 'series_id')).first
+          series_id = Granblue::GamePayload.series_id(body)
           if series_id
             slug = GBF_SERIES_TO_SLUG[series_id.to_i]
             if slug

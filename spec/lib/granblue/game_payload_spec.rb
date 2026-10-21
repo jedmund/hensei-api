@@ -20,4 +20,13 @@ RSpec.describe Granblue::GamePayload do
     expect(described_class.style({ 'param' => { 'style' => '2' } })).to eq('2')
     expect(described_class.style({})).to eq('')
   end
+
+  it 'reads a malformed body as saying nothing' do
+    [nil, [], 'text', { 'master' => 'x', 'param' => [1] }, { 'master' => { 'id' => { 'a' => 1 } } }].each do |body|
+      expect([described_class.granblue_id(body), described_class.style(body), described_class.series_id(body)])
+        .to eq([nil, '', nil])
+    end
+    expect(described_class.series_id(jp)).to eq('6')
+    expect(described_class.series_id({ 'series_id' => { 'a' => 1 } })).to be_nil
+  end
 end

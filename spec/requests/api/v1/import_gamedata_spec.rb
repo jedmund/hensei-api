@@ -117,6 +117,21 @@ RSpec.describe 'Import gamedata', type: :request do
         expect(response.parsed_body['error']).to eq('style row missing for 3040377000')
       end
 
+      it 'is a 404, not a 500, for a malformed body' do
+        post '/api/v1/import/characters?lang=en', params: [1, 2].to_json, headers: headers_for(editor)
+        expect(response).to have_http_status(:not_found)
+
+        post '/api/v1/import/characters?lang=en', params: { 'master' => 'x' }.to_json, headers: headers_for(editor)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'stores a payload whose series_id has an odd shape' do
+        post '/api/v1/import/characters?lang=jp', params: jp_payload.merge('series_id' => { 'x' => 1 }).to_json,
+                                                  headers: headers_for(editor)
+        expect(response).to have_http_status(:ok)
+        expect(style.reload.game_raw_jp).to be_present
+      end
+
       it 'falls back to lang only for a payload with no skill names' do
         post '/api/v1/import/characters', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
         expect(response).to have_http_status(:unprocessable_content)
