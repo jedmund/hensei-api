@@ -17,5 +17,11 @@ module Granblue
       warn&.call("Wiki delay #{delay}s is below the #{MIN_DELAY}s minimum; using #{MIN_DELAY}s.")
       MIN_DELAY
     end
+
+    # Waits between two wiki requests. Every fetch loop sleeps through here, so a
+    # spec can stub this one method instead of Kernel#sleep.
+    def self.wait(seconds)
+      sleep(seconds) if seconds.to_f.positive?
+    end
   end
 end

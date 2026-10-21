@@ -22,13 +22,21 @@ namespace :granblue do
       ... rake granblue:fetch_game_data ids=3040377000,3040088000   # these characters only (always fetched)
       ... rake granblue:fetch_game_data ids=3040377000 style=2      # one style only (2 = the style_swap row)
       ... rake granblue:fetch_game_data lang=jp              # store in game_raw_jp
+      ... rake granblue:fetch_game_data delay=3              # seconds between requests (default and minimum 2)
+      ... rake granblue:fetch_game_data changed_out=tmp/game_changed.txt   # write the changed granblue_ids
+      ... rake granblue:fetch_game_data build=shadow         # Characters: build the changed ones afterwards (or build=write)
 
     Characters: style 1 lands on the base row, and every other open style in its
     style_list is fetched onto that style's row (style_swap: true).
     lang only picks the column: the game's language is an account setting, so set the
     account to Japanese before fetching with lang=jp.
 
-    Fetches only records missing the column by default; throttled ~1 req/sec.
+    Fetches only records missing the column by default; at least 2s between requests.
+    The run stops at the first authentication failure (expired cookies) and prints the
+    ids it didn't get to, so it can resume with ids=.
+    Prints a summary: fetched (unchanged = same payload as stored, changed), skipped, errors.
+    Character writes don't queue a build per row; without build= the task prints the
+    build command to run next.
   DESC
   task fetch_game_data: :environment do
     required = { 'ACCESS_TOKEN' => ENV.fetch('ACCESS_TOKEN', nil), 'WING' => ENV.fetch('WING', nil), 'MIDSHIP' => ENV.fetch('MIDSHIP', nil) }
@@ -57,6 +65,13 @@ namespace :granblue do
       exit 1
     end
 
+    begin
+      build = CharacterSkills::SourceFetch.build_mode(ENV.fetch('build', nil))
+    rescue CharacterSkills::SourceFetch::OptionError => e
+      abort "Error: #{e.message}"
+    end
+    abort 'Error: build= only applies to type=Character.' if build && type != 'Character'
+
     only_missing = ENV['force'] != 'true'
     miner = Dataminer.new(
       page: 'archive',
@@ -66,21 +81,45 @@ namespace :granblue do
       t: ENV['T'].presence || 'dummy',
       user_id: ENV['GAME_UID'].presence || Dataminer::BOT_UID,
       game_version: ENV['GAME_VERSION'].presence || Dataminer::GAME_VERSION,
-      debug: ENV['debug'] == 'true'
+      debug: ENV['debug'] == 'true',
+      delay: Dataminer.clamp_delay(ENV['delay'].presence, warn: method(:puts))
     )
 
-    if ids.any?
-      puts "Fetching game data (#{lang}) for #{ids.size} characters#{" (style #{style})" if style}..."
-      miner.fetch_characters(ids, style: style, lang: lang)
-    elsif style
+    if style && ids.empty?
       warn 'style= needs ids=.'
       exit 1
-    elsif type == 'Character'
-      puts "Fetching game data (#{lang}) for Characters#{' (missing only)' if only_missing}..."
-      miner.fetch_all_characters(only_missing: only_missing, lang: lang)
-    else
-      puts "Fetching game data for #{type.pluralize}#{' (missing only)' if only_missing}..."
-      miner.public_send(:"fetch_all_#{type.downcase.pluralize}", only_missing: only_missing)
+    end
+
+    Character.without_skill_build do
+      if ids.any?
+        puts "Fetching game data (#{lang}) for #{ids.size} characters#{" (style #{style})" if style}..."
+        miner.fetch_characters(ids, style: style, lang: lang)
+      elsif type == 'Character'
+        puts "Fetching game data (#{lang}) for Characters#{' (missing only)' if only_missing}..."
+        miner.fetch_all_characters(only_missing: only_missing, lang: lang)
+      else
+        puts "Fetching game data for #{type.pluralize}#{' (missing only)' if only_missing}..."
+        miner.public_send(:"fetch_all_#{type.downcase.pluralize}", only_missing: only_missing)
+      end
+    end
+
+    miner.summary.print($stdout)
+    if type == 'Character'
+      CharacterSkills::SourceFetch.finish(miner.summary, build: build, changed_out: ENV['changed_out'].presence)
+    elsif ENV['changed_out'].present?
+      miner.summary.write_changed(ENV['changed_out'])
+    end
+
+    if miner.remaining_ids
+      left = miner.remaining_ids
+      warn "\nStopped: the game rejected the session (cookies expired?). #{left.size} #{type.pluralize} not fetched."
+      if type == 'Character'
+        warn 'Refresh ACCESS_TOKEN / WING / MIDSHIP and resume with:'
+        warn "  ... rake granblue:fetch_game_data#{" lang=#{lang}" if lang != 'en'}#{" style=#{style}" if style} ids=#{left.join(',')}"
+      else
+        warn "Refresh ACCESS_TOKEN / WING / MIDSHIP and rerun type=#{type} without force=true: it fetches only the rows still missing."
+      end
+      exit 1
     end
   end
 end

@@ -5,7 +5,8 @@ class Dataminer
 
   BOT_UID = '39094985'
   GAME_VERSION = '1741068713'
-  THROTTLE = 1
+  # Seconds between two requests to the game, at least (the same pace as the wikis).
+  MIN_DELAY = 2.0
   LANG_COLUMNS = { 'en' => :game_raw_en, 'jp' => :game_raw_jp, 'ja' => :game_raw_jp }.freeze
 
   base_uri 'https://game.granbluefantasy.jp'
@@ -23,14 +24,27 @@ class Dataminer
     'X-Requested-With' => 'XMLHttpRequest'
   }.freeze
 
-  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version
+  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary, :delay,
+              :remaining_ids
+
+  # The delay to use for a requested value (nil → MIN_DELAY); a shorter one is raised
+  # to MIN_DELAY, and warn is called with a note.
+  def self.clamp_delay(requested, warn: nil)
+    return MIN_DELAY if requested.nil?
+
+    delay = requested.to_f
+    return delay if delay >= MIN_DELAY
+
+    warn&.call("Game delay #{delay}s is below the #{MIN_DELAY}s minimum; using #{MIN_DELAY}s.")
+    MIN_DELAY
+  end
 
   # user_id and game_version default to the baked-in constants but should be
   # overridden per session: uid is the logged-in account's player id and
   # game_version is the current game build (both change over time).
   # rubocop:disable-next Metrics/ParameterLists
   def initialize(page:, access_token:, wing:, midship:, t: 'dummy',
-                 user_id: BOT_UID, game_version: GAME_VERSION, debug: false)
+                 user_id: BOT_UID, game_version: GAME_VERSION, debug: false, delay: MIN_DELAY)
     @page = page
     @cookies = {
       access_gbtk: access_token,
@@ -41,6 +55,11 @@ class Dataminer
     @user_id = user_id
     @game_version = game_version
     @debug = debug
+    @delay = self.class.clamp_delay(delay)
+    # Set when a run stopped on an authentication failure: the ids it didn't get to.
+    @remaining_ids = nil
+    # What this instance fetched and stored: unchanged / changed / skipped / errors.
+    @summary = Granblue::SourceFetchSummary.new('fetch_game_data')
     setup_logger
   end
 
@@ -85,22 +104,29 @@ class Dataminer
     update_game_data('Character', granblue_id, response, style: style, lang: lang)
     if other_styles && style == 1
       other_open_styles(response).each do |other|
-        sleep(THROTTLE)
+        pause
         fetch_character(granblue_id, style: other, lang: lang, other_styles: false)
       end
     end
     response
   end
 
+  # Stops at the first authentication failure (expired cookies fail every later request
+  # too) and leaves the ids it didn't finish in remaining_ids; other errors are counted
+  # per character and the run carries on.
   def fetch_characters(granblue_ids, style: nil, lang: 'en')
     granblue_ids.each_with_index do |granblue_id, index|
-      sleep(THROTTLE) if index.positive?
+      pause if index.positive?
       if style
         fetch_character(granblue_id, style: style, lang: lang, other_styles: false)
       else
         fetch_character(granblue_id, lang: lang)
       end
+    rescue AuthenticationError => e
+      stop_run!('Character', granblue_ids, index, e)
+      break
     rescue StandardError => e
+      summary.error!(granblue_id, e.message)
       logger.error "Error processing Character #{granblue_id}: #{e.message}"
     end
   end
@@ -254,15 +280,18 @@ class Dataminer
     record = if model_name == 'Character'
                # Error and popup responses are hashes too; only a character payload is stored.
                unless response_data['id'].present? && response_data['ability'].present?
+                 summary.skipped!('no character payload')
                  logger.warn "Character #{granblue_id}: response has no id or ability; not stored"
                  return
                end
                response_style = response_data['style'].presence&.to_i
                if response_style && response_style != style.to_i
+                 summary.skipped!('style mismatch')
                  logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"
                  return
                end
                unless [1, 2].include?(style.to_i)
+                 summary.skipped!('no row for style')
                  logger.warn "Character #{granblue_id}: no row for style #{style}; not stored"
                  return
                end
@@ -272,12 +301,19 @@ class Dataminer
              end
 
     if record
-      record.update(column => response_data)
+      before = record[column]
+      unless record.update(column => response_data)
+        summary.error!(granblue_id, record.errors.full_messages.to_sentence)
+        return
+      end
+      summary.fetched!(granblue_id, before: before, after: record[column])
       logger.debug "Updated #{model_name} #{granblue_id} #{column}#{" (style #{style})" if model_name == 'Character'}"
     else
+      summary.skipped!('not in database')
       logger.warn "#{model_name} with granblue_id #{granblue_id}#{" (style #{style})" if model_name == 'Character'} not found in database"
     end
   rescue StandardError => e
+    summary.error!(granblue_id, e.message)
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
   end
 
@@ -298,37 +334,49 @@ class Dataminer
     scope = scope.where(style_swap: false) if model_name == 'Character'
     scope = scope.where(LANG_COLUMNS.fetch(lang.to_s) => nil) if only_missing
 
-    total = scope.count
+    granblue_ids = scope.order(:granblue_id).pluck(:granblue_id)
+    total = granblue_ids.size
     success_count = 0
     error_count = 0
 
     logger.info "Starting to fetch #{total} #{model_name.downcase}s#{' (missing data only)' if only_missing}..."
 
-    scope.find_each do |record|
-      logger.info "\nProcessing #{model_name} #{record.granblue_id} (#{success_count + error_count + 1}/#{total})"
+    granblue_ids.each_with_index do |granblue_id, index|
+      pause if index.positive?
+      logger.info "\nProcessing #{model_name} #{granblue_id} (#{index + 1}/#{total})"
 
-      response = case model_name
-                 when 'Character'
-                   fetch_character(record.granblue_id, lang: lang)
-                 when 'Weapon'
-                   fetch_weapon(record.granblue_id)
-                 when 'Summon'
-                   fetch_summon(record.granblue_id)
-                 end
+      case model_name
+      when 'Character' then fetch_character(granblue_id, lang: lang)
+      when 'Weapon' then fetch_weapon(granblue_id)
+      when 'Summon' then fetch_summon(granblue_id)
+      end
 
       success_count += 1
-      logger.debug "Successfully processed #{model_name} #{record.granblue_id}"
-
-      sleep(THROTTLE)
+      logger.debug "Successfully processed #{model_name} #{granblue_id}"
+    rescue AuthenticationError => e
+      stop_run!(model_name, granblue_ids, index, e)
+      break
     rescue StandardError => e
       error_count += 1
-      logger.error "Error processing #{model_name} #{record.granblue_id}: #{e.message}"
+      summary.error!(granblue_id, e.message)
+      logger.error "Error processing #{model_name} #{granblue_id}: #{e.message}"
     end
 
     logger.info "\nProcessing complete!"
     logger.info "Total: #{total}"
     logger.info "Successful: #{success_count}"
     logger.info "Failed: #{error_count}"
+  end
+
+  def pause
+    sleep(delay)
+  end
+
+  def stop_run!(model_name, granblue_ids, index, error)
+    @remaining_ids = granblue_ids[index..]
+    summary.error!(granblue_ids[index], "authentication failed: #{error.message.presence || 'session expired'}")
+    logger.error "Authentication failed at #{model_name} #{granblue_ids[index]} after #{index} of #{granblue_ids.size}; " \
+                 "stopping (#{@remaining_ids.size} left)."
   end
 
   class AuthenticationError < StandardError; end

@@ -18,4 +18,18 @@ RSpec.describe Granblue::WikiThrottle do
       expect(notes.first).to include('below the 2.0s minimum')
     end
   end
+
+  describe '.wait' do
+    it 'sleeps for the given time' do
+      allow(described_class).to receive(:sleep)
+      described_class.wait(2.0)
+      expect(described_class).to have_received(:sleep).with(2.0)
+    end
+
+    it 'does nothing for zero' do
+      allow(described_class).to receive(:sleep)
+      described_class.wait(0)
+      expect(described_class).not_to have_received(:sleep)
+    end
+  end
 end

@@ -49,7 +49,13 @@ module Granblue
 
       if (redirect = text.match(/#REDIRECT \[\[(.*?)\]\]/))
         title = redirect[1]
-        before_request&.call
+        # The target is a second request to the wiki: never right after the first. The
+        # caller's spacing does it when given; otherwise this fetcher's own delay (≥2s).
+        if before_request
+          before_request.call
+        else
+          WikiThrottle.wait(WikiThrottle.clamp(@delay))
+        end
         text = wiki.fetch(title)
       end
 

@@ -10,7 +10,8 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
       create(:character, name_jp: 'テスト', wiki_ja: nil, wiki_raw_jp: nil)
       allow(Granblue::Parsers::JpWiki).to receive(:new).and_return(client)
       allow(client).to receive(:fetch).and_return('<html></html>')
-      allow(described_class).to receive(:sleep)
+      allow(Granblue::WikiThrottle).to receive(:wait)
+      allow($stdout).to receive(:puts)
       allow(described_class).to receive(:puts)
       allow(described_class).to receive(:print)
     end
@@ -18,8 +19,8 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
     it 'waits at least 2 seconds between requests even when asked for less' do
       described_class.backfill(model: Character, throttle: 0.1)
 
-      expect(described_class).to have_received(:sleep).with(2.0).at_least(:once)
-      expect(described_class).not_to have_received(:sleep).with(0.1)
+      expect(Granblue::WikiThrottle).to have_received(:wait).with(2.0).at_least(:once)
+      expect(Granblue::WikiThrottle).not_to have_received(:wait).with(0.1)
     end
 
     it 'sleeps only after a real request' do
@@ -30,7 +31,7 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
       described_class.backfill(model: Character)
 
       expect(fetches).to be_positive
-      expect(described_class).to have_received(:sleep).exactly(fetches).times
+      expect(Granblue::WikiThrottle).to have_received(:wait).exactly(fetches).times
     end
 
     it 'defaults to 2 seconds' do

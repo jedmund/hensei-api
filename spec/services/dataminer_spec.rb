@@ -139,4 +139,75 @@ RSpec.describe Dataminer do
       end
     end
   end
+
+  describe 'pace' do
+    it 'waits at least 2 seconds between game requests' do
+      expect(miner.delay).to eq(2.0)
+      expect(described_class.new(page: 'archive', access_token: 't', wing: 'w', midship: 'm', delay: 0.5).delay).to eq(2.0)
+      expect(described_class.new(page: 'archive', access_token: 't', wing: 'w', midship: 'm', delay: 3).delay).to eq(3.0)
+    end
+
+    it 'says when a requested delay was raised' do
+      notes = []
+      expect(described_class.clamp_delay('1', warn: notes.method(:<<))).to eq(2.0)
+      expect(notes.first).to include('below the 2.0s minimum')
+      expect(described_class.clamp_delay(nil)).to eq(2.0)
+    end
+
+    it 'sleeps the delay between characters, and between styles' do
+      stub_style(1, style1_payload)
+      stub_style(2, style2_payload)
+      other = create(:character, granblue_id: '3040000901', game_raw_en: nil)
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => other.granblue_id))
+                                                 .to_return(status: 200, body: style1_payload.merge('id' => other.granblue_id,
+                                                                                                    'style_list' => []).to_json)
+
+      miner.fetch_characters(%w[3040377000 3040000901])
+
+      expect(miner).to have_received(:sleep).with(2.0).twice
+    end
+  end
+
+  describe 'authentication failure' do
+    let(:ids) { %w[3040000911 3040000912 3040000913] }
+
+    before do
+      ids.each { |id| create(:character, granblue_id: id, game_raw_en: nil) }
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000911'))
+                                                 .to_return(status: 200, body: style1_payload.merge('id' => '3040000911',
+                                                                                                    'style_list' => []).to_json)
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000912'))
+                                                 .to_return(status: 200, body: '{"auth_status":"require_auth"}')
+    end
+
+    it 'stops the run at the first one and keeps the ids it did not get to' do
+      miner.fetch_characters(ids)
+
+      expect(WebMock).not_to have_requested(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000913'))
+      expect(miner.remaining_ids).to eq(%w[3040000912 3040000913])
+      expect(miner.summary.fetched).to eq(1)
+      expect(miner.summary.errors.map(&:granblue_id)).to eq(['3040000912'])
+    end
+
+    it 'stops a fetch_all run the same way' do
+      # Only this example's characters are missing game data.
+      Character.where.not(granblue_id: ids).update_all(game_raw_en: { 'id' => 'x' })
+      miner.fetch_all_characters(only_missing: true)
+
+      expect(miner.remaining_ids).to eq(%w[3040000912 3040000913])
+    end
+
+    it 'carries on after other errors' do
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000912'))
+                                                 .to_timeout
+      stub_request(:post, %r{archive/npc_detail}).with(body: hash_including('character_id' => '3040000913'))
+                                                 .to_return(status: 200, body: style1_payload.merge('id' => '3040000913',
+                                                                                                    'style_list' => []).to_json)
+
+      miner.fetch_characters(ids)
+
+      expect(miner.remaining_ids).to be_nil
+      expect(miner.summary.fetched).to eq(2)
+    end
+  end
 end
