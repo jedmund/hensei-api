@@ -5,13 +5,7 @@
   "param": {
     "style": "1",
     "rarity": "4",
-    "image_id_9": "3040032000_04",
-    "max_level": 150,
-    "is_level_max": true,
-    "evolution": "6",
-    "phase": "5",
-    "has_npcaugment_constant": false,
-    "transcendence_pu_flag": true
+    "image_id_9": "3040032000_04"
   },
   "is_show_skill_change": true,
   "special_skill": {
@@ -26,24 +20,10 @@
     "recast": "100",
     "is_bgm_setting": false
   },
-  "temporary": {
-    "status": null,
-    "point": null,
-    "max_point": null,
-    "comment": null,
-    "is_release": null,
-    "sidestory_flag": null
-  },
-  "is_escort": false,
-  "is_exclude": false,
-  "is_not_attention": false,
-  "is_pushed": false,
   "is_numbers": true,
   "is_arcarum_npc": false,
   "has_combination": false,
   "has_additional_pose": true,
-  "open_npc_combination": null,
-  "open_additional_pose": null,
   "master": {
     "id": "3040032000",
     "name": "Threo",
@@ -1109,7 +1089,6 @@
   "appear_ability": {
     "1": null
   },
-  "is_zenith_open": true,
   "is_no_zenith_npc": false,
   "support_ability_of_npczenith": {
     "990010101": {
@@ -1175,10 +1154,6 @@
   },
   "support_ability_of_npcevoker": [],
   "support_ability_of_npcnumbers": [],
-  "npc_arousal_level": 9,
-  "npc_arousal_max_level": 9,
-  "npc_arousal_form": 4,
-  "npc_arousal_form_text": "Multiattack",
   "white": {
     "has_present": false
   },

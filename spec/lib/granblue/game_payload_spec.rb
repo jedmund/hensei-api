@@ -34,6 +34,11 @@ RSpec.describe Granblue::GamePayload do
       kept = described_class.sanitize(player_payload)
 
       expect(kept.keys).not_to include('id', 'user', 'pushed_npc', 'artifact', 'rank', 'possessed_lp', 'user_npc_id', '_note')
+      expect(described_class.sanitize(player_payload.merge('support_ability_of_npczenith' => { '1' => {} },
+                                                           'voice_acter' => 'x', 'pose_list' => [], 'is_zenith_open' => true,
+                                                           'episode_rate' => 50, 'npc_arousal_level' => 3)).keys)
+        .to include('support_ability_of_npczenith', 'voice_acter', 'pose_list')
+        .and(satisfy { |keys| !keys.intersect?(%w[is_zenith_open episode_rate npc_arousal_level]) })
       expect(kept['param'].keys).to contain_exactly('style', 'rarity', 'image_id_9')
       expect(kept.slice(*described_class::SKILL_KEYS, 'master', 'style', 'style_list'))
         .to eq(jp.slice(*described_class::SKILL_KEYS, 'master', 'style', 'style_list'))

@@ -11,13 +11,20 @@ module Granblue
   module GamePayload
     JAPANESE = /[\p{Hiragana}\p{Katakana}\p{Han}]/
     SKILL_KEYS = %w[ability special_skill power_up_special_skill support_ability backmember_ability appear_ability].freeze
-    # Top-level keys kept by .sanitize: the character's skills and catalogue data, and what
-    # CharacterWikiData, Dataminer and the import read. Everything else (the player's own
-    # instance, rank, story and voice progress, …) is dropped.
+    # Top-level keys kept by .sanitize: everything about the character itself (skills, master,
+    # styles, catalogue, voice, story and pose lists, related characters). What's dropped is
+    # the player's own copy: the user block, the instance id, pushed/arousal/zenith unlock
+    # state, rank and LP, episode progress, and param's stats.
     KEEP_KEYS = (SKILL_KEYS + %w[
+      support_ability_of_npczenith support_ability_of_npcevoker support_ability_of_npcnumbers
       master style style_list name evo_name comment type weapon rarity rarity_name attribute tribe tribe_2
       series_id specialty_weapon max_level default_attack default_hp max_attack max_hp kind_name
-      is_numbers is_arcarum_npc max_awakening_level is_show_skill_change
+      is_numbers is_arcarum_npc max_awakening_level is_show_skill_change voice_acter
+      pose_list scenes scenes_by_transcendence episode other_episode transcendence_episode entry_event_list
+      npc_list npc_id_list npc_relation_list next_id prev_id next_type prev_type image_suffix
+      is_other is_play_voice is_archive is_event_cut is_doll is_no_zenith_npc has_combination
+      has_additional_pose has_npcaugment_constant change_config_user_sex
+      white white2 halloween christmas newyear valentine valentine2 birthday
     ]).freeze
     # param keys kept (the rest are the player's stats for their copy).
     KEEP_PARAM_KEYS = %w[style rarity image_id_9].freeze
