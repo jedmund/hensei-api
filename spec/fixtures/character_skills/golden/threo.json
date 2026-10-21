@@ -35,8 +35,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Jammed",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%-90%",
               "amount_max": null,
               "duration": [
@@ -51,8 +57,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "DMG Amplified",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -67,8 +79,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Drain",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "(Healing cap: 3333)",
               "amount_max": null,
               "duration": [
@@ -83,8 +101,14 @@
             },
             {
               "type": "heal",
+              "category": null,
               "target": "caster",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -129,8 +153,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Jammed",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%-90%",
               "amount_max": null,
               "duration": [
@@ -145,8 +175,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "DMG Amplified",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -199,8 +235,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Counters on Dodge/DMG",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "200%",
               "amount_max": null,
               "duration": [
@@ -245,8 +287,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Guaranteed TA",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -261,8 +309,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Bonus Earth DMG",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -277,8 +331,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Full Hostility (Can't be removed)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -364,8 +424,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Shield",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "3000",
               "amount_max": null,
               "duration": [
@@ -413,8 +479,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Earth DEF Lowered",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": "1023",
               "amount": "25%",
               "amount_max": null,
               "duration": [
@@ -462,8 +534,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Shield",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "15,000",
               "amount_max": null,
               "duration": [
@@ -477,9 +555,15 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Tri-Slash",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -527,8 +611,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Shield",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "3000",
               "amount_max": null,
               "duration": [
@@ -582,8 +672,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "C.A. Instant Standby",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -598,8 +694,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Autoignition (Can't be removed)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -614,8 +716,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Tiger's Blessing",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -693,8 +801,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "C.A. Instant Standby",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -709,8 +823,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Autoignition (Can't be removed)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -725,8 +845,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Tiger's Blessing",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -776,8 +902,14 @@
           "effects": [
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -820,8 +952,14 @@
           "effects": [
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -864,8 +1002,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Earth ATK Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -880,8 +1024,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -924,8 +1074,14 @@
           "effects": [
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -968,8 +1124,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Earth ATK Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -984,8 +1146,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1000,8 +1168,14 @@
             },
             {
               "type": "dispel",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1044,8 +1218,14 @@
           "effects": [
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1088,8 +1268,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Earth ATK Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -1104,8 +1290,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1120,8 +1312,14 @@
             },
             {
               "type": "dispel",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1164,8 +1362,14 @@
           "effects": [
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1217,8 +1421,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
-              "status": "Undying (Can't be removed) 3",
+              "status": "Undying (Can't be removed)",
+              "status_variant": [
+                3,
+                "uses"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1263,8 +1473,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
-              "status": "ATK Lowered 2",
+              "status": "ATK Lowered",
+              "status_variant": [
+                2,
+                "turns"
+              ],
+              "game_status_id": null,
               "amount": "25%",
               "amount_max": null,
               "duration": [
@@ -1279,8 +1495,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
-              "status": "DEF Lowered 2",
+              "status": "DEF Lowered",
+              "status_variant": [
+                2,
+                "turns"
+              ],
+              "game_status_id": null,
               "amount": "25%",
               "amount_max": null,
               "duration": [

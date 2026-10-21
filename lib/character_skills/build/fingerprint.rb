@@ -8,7 +8,11 @@ module CharacterSkills
     #     `sources` rows ("-" when there is none), and of its jp_skill_text row when it has one
     #     (an optional input: absent, it adds nothing, so other characters' digests don't move);
     #   - the other characters columns the Builder reads: granblue_id, element, style_swap;
-    #   - the statuses catalogue, (id, name_en, category) sorted (a name resolves by category);
+    #   - the stored gbf.wiki status list (Source wiki_status_list, D34), by sha256 ("-" when missing);
+    #   - data/statuses/categories.json, aliases.json and numbered_exceptions.json, by sha256 (effects
+    #     read them directly: curated categories, display aliases, numbered names);
+    #   - the statuses catalogue, (id, name_en, category, game_status_id, variant_kind) sorted (effects
+    #     take their type, exact display id and variant kind from these);
     #   - the sha256 of the icon snapshot file, or "-" when it's absent.
     # Stored on characters.character_skill_build_fingerprint after a write; a run without
     # all: true skips characters whose fingerprint still matches.
@@ -58,8 +62,8 @@ module CharacterSkills
 
       def statuses_digest
         @statuses_digest ||= Digest::SHA256.hexdigest(
-          Status.pluck(:id, :name_en, :category).sort_by { |id, *| id.to_s }
-                .map { |id, name, category| "#{id}:#{name}:#{category}" }.join("\n")
+          Status.pluck(:id, :name_en, :category, :game_status_id, :variant_kind).sort_by { |id, *| id.to_s }
+                .map { |row| row.join(":") }.join("\n")
         )
       end
 
@@ -70,7 +74,11 @@ module CharacterSkills
       private
 
       def combine(digests, attributes)
-        parts = ["version:#{VERSION}", "statuses:#{statuses_digest}", "icons:#{icons_digest}"]
+        parts = ["version:#{VERSION}", "statuses:#{statuses_digest}", "icons:#{icons_digest}",
+                 "status_list:#{Granblue::Parsers::StatusList.sha256 || NONE}",
+                 "curated_statuses:#{Granblue::Parsers::CuratedStatusCategories.sha256}",
+                 "status_aliases:#{Granblue::Parsers::StatusAliases.sha256}",
+                 "numbered_exceptions:#{Granblue::Parsers::StatusName.exceptions_sha256}"]
         parts += REQUIRED_SOURCES.map { |kind| "#{kind}:#{digests.fetch(kind)}" }
         parts += OPTIONAL_SOURCES.filter_map { |kind| "#{kind}:#{digests[kind]}" if digests[kind] && digests[kind] != NONE }
         parts += ATTRIBUTES.map { |column| "#{column}:#{attributes[column].nil? ? NONE : attributes[column]}" }

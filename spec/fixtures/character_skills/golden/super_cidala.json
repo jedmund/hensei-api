@@ -33,8 +33,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Luck Goes Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -49,8 +55,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Tank-and-Counter",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "300%",
               "amount_max": null,
               "duration": [
@@ -102,8 +114,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Dispel Cancel",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -118,8 +136,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Mirror Image",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -134,8 +158,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
-              "status": "Dodge All 1",
+              "status": "Dodge All",
+              "status_variant": [
+                1,
+                "uses"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -185,8 +215,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
-              "status": "Luck Goes Down 5",
+              "status": "Luck Goes Down",
+              "status_variant": [
+                5,
+                "turns"
+              ],
+              "game_status_id": "7182_5",
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -236,8 +272,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "ATK Sharply Boosted (Can't be extended)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "50%",
               "amount_max": null,
               "duration": [
@@ -252,8 +294,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -337,8 +385,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Peach Scent",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -353,8 +407,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Peach Scent",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [

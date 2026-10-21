@@ -35,8 +35,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "ATK Lowered (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": "40%",
               "duration": [
@@ -51,8 +57,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "DEF Lowered (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": "40%",
               "duration": [
@@ -67,8 +79,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -83,8 +101,14 @@
             },
             {
               "type": "dispel",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -136,8 +160,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "ATK Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": "40%",
               "duration": [
@@ -152,8 +182,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "DEF Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": "40%",
               "duration": [
@@ -168,8 +204,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "DMG Cap Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "2%",
               "amount_max": "10%",
               "duration": [
@@ -184,8 +226,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "caster",
               "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -235,8 +283,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Dodge All",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -251,8 +305,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Substituted (All-Ally)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -267,8 +327,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Twin Tiger Feng Shui",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -283,8 +349,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "ATK Sharply Boosted",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "50%",
               "amount_max": null,
               "duration": [
@@ -299,8 +371,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Guaranteed TA",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -350,8 +428,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "High of the Tiger",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": "7774",
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -366,8 +450,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Silver Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -382,8 +472,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Gold Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -433,8 +529,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Twin Tiger Fury",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -449,8 +551,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -493,8 +601,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Twin Tiger Fury",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -508,9 +622,15 @@
               "damage_cap": null
             },
             {
-              "type": "grant_status",
+              "type": "inflict_status",
+              "category": "debuff",
               "target": "caster",
               "status": "Tiger Tape+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -525,8 +645,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -578,8 +704,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -594,8 +726,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -639,9 +777,15 @@
           "flags": [],
           "effects": [
             {
-              "type": "grant_status",
-              "target": "caster",
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
               "status": "Tiger Tape+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -655,9 +799,15 @@
               "damage_cap": null
             },
             {
-              "type": "grant_status",
-              "target": "caster",
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
               "status": "Tiger Tape+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -707,8 +857,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Double Strike",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -723,8 +879,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Bonus Earth DMG",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "40%",
               "amount_max": null,
               "duration": [
@@ -739,8 +901,14 @@
             },
             {
               "type": "heal",
+              "category": null,
               "target": null,
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -790,8 +958,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "one_foe",
               "status": "Silver Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -806,8 +980,14 @@
             },
             {
               "type": "dispel",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -857,8 +1037,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "one_foe",
               "status": "Triple Attack Rate Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "15%",
               "amount_max": "45%",
               "duration": [
@@ -873,8 +1059,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "one_foe",
               "status": "Gold Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [

@@ -251,7 +251,13 @@ module CharacterSkills
           "slots +#{c.slots_created} ~#{c.slots_updated} -#{c.slots_deleted}; " \
           "versions +#{c.versions_created} ~#{c.versions_updated} -#{c.versions_deleted}; " \
           "effects +#{c.effects_created} ~#{c.effects_updated} -#{c.effects_deleted}; " \
-          "links +#{c.links_created} -#{c.links_deleted}; #{format('%.1f', @summary.seconds)}s"
+          "links +#{c.links_created} -#{c.links_deleted}; #{format('%.1f', @summary.seconds)}s#{statuses_failed}"
+      end
+
+      # Statuses the catalogue couldn't save (logged by StatusCatalogBuilder; the build goes on).
+      def statuses_failed
+        failed = @summary.statuses.is_a?(Hash) ? @summary.statuses[:failed].to_i : 0
+        failed.positive? ? "; #{failed} statuses failed to save" : ""
       end
     end
   end

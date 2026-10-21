@@ -1,14 +1,31 @@
 # frozen_string_literal: true
 
+# A buff, debuff, field effect or instant effect a skill can apply. `category` is the status's
+# *usual* category: buff or debuff belongs to each skill effect (skill_effects.category, D36; the
+# game colours the same status per skill), and this is the majority over its effects, or gbf.wiki's
+# table when they tie or there are none. `mixed` is true when its effects really split (some buff,
+# some debuff, e.g. Hostility Up: Seox's buff, Clarisse (Light)'s self-inflicted debuff).
 class Status < ApplicationRecord
   has_many :skill_effects, dependent: :nullify
 
   enum :category, { buff: 'buff', debuff: 'debuff', field: 'field', special: 'special' }
 
+  # Also before_save: a save that skips validation still gets its key.
+  before_validation :assign_name_key
+  before_save :assign_name_key
+
   validates :name_en, presence: true
   validates :game_ailment_id, uniqueness: true, allow_nil: true
 
   scope :in_family, ->(name) { where(family: name) }
+  scope :named, ->(names) { where(name_key: Array(names).map { |name| normalize_name(name) }) }
+
+  # How a name is compared, computed in Ruby so it doesn't depend on the database's locale:
+  # Unicode-composed, any whitespace squished, Unicode-downcased. One status per key
+  # (statuses.name_key, unique).
+  def self.normalize_name(name)
+    name.to_s.unicode_normalize(:nfc).squish.downcase
+  end
 
   # Splits a leveled status name ("Paralyzed 2") into [family, level].
   # Returns [nil, nil] when the name carries no trailing level.
@@ -17,5 +34,11 @@ class Status < ApplicationRecord
     return [nil, nil] unless match
 
     [match[1], match[2].to_i]
+  end
+
+  private
+
+  def assign_name_key
+    self.name_key = self.class.normalize_name(name_en)
   end
 end

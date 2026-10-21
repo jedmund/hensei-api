@@ -248,12 +248,12 @@ subtitle: subtitle }
             # Where game_icon came from (see game_icon_for); reported, never written.
             game_icon_source: attrs[:game_icon] && icon_source,
             attrs: attrs.compact,
-            effects: effects_for(slot, raw_description_en)
+            effects: effects_for(slot, raw_description_en, key)
           }
         end
 
-        def effects_for(slot, description)
-          effects = effect_parser.parse(description)
+        def effects_for(slot, description, key)
+          effects = effect_parser.parse(description, game_details: game_details(key))
           return effects unless slot.dig(:attrs, :kind) == "support"
 
           element = Extractors::CharacterGridEffectExtractor::CHARACTER_ELEMENT_BY_ID[character.element]
@@ -264,6 +264,27 @@ subtitle: subtitle }
             effects << effect.merge(ordinal: next_ordinal + index + 1, raw: description.to_s[0, 240])
           end
           effects
+        end
+
+        # The skill's ability_detail entries ({ id:, category: }): each effect's exact icon variant,
+        # and whether the game shows its status as a buff, debuff or field effect in this skill.
+        def game_details(key)
+          details = data.game_action(key)&.dig('ability_detail')
+          return [] unless details.is_a?(Hash)
+
+          details.flat_map do |category, entries|
+            Array(entries).filter_map do |entry|
+              { id: entry['status'].to_s, category: detail_category(category) } if entry.is_a?(Hash) && entry['status'].present?
+            end
+          end
+        end
+
+        def detail_category(key)
+          case key.to_s
+          when /debuff/i then 'debuff'
+          when /field/i then 'field'
+          else 'buff'
+          end
         end
 
         def version_attrs(key, slot:, role:, ordinal:, raw_description_en:, overrides:)

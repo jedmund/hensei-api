@@ -41,8 +41,9 @@ module CharacterSkillGolden
 
   def normalize_effect(effect, lookup)
     {
-      'type' => effect[:effect_type], 'target' => effect[:target],
+      'type' => effect[:effect_type], 'category' => effect[:category], 'target' => effect[:target],
       'status' => (lookup[:by_id][effect[:status_id]]&.name_en if effect[:status_id]),
+      'status_variant' => [effect[:status_variant], effect[:status_variant_kind]], 'game_status_id' => effect[:game_status_id],
       'amount' => effect[:amount], 'amount_max' => effect[:amount_max],
       'duration' => [effect[:duration_value], effect[:duration_unit]],
       'accuracy' => effect[:accuracy], 'stacking_frame' => effect[:stacking_frame],

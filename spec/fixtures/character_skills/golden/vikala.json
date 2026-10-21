@@ -37,8 +37,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Dorrie",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -52,9 +58,15 @@
               "damage_cap": null
             },
             {
-              "type": "grant_status",
+              "type": "inflict_status",
+              "category": "debuff",
               "target": "all_foes",
-              "status": "Caught 2",
+              "status": "Caught",
+              "status_variant": [
+                2,
+                "turns"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -138,8 +150,14 @@
           "effects": [
             {
               "type": "field_effect",
+              "category": "field",
               "target": "field",
               "status": "Utopia",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -184,8 +202,14 @@
           "effects": [
             {
               "type": "field_effect",
+              "category": "field",
               "target": "field",
               "status": "Utopia",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -200,8 +224,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Utopia+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -216,8 +246,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Bonus Dark DMG (1 time)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -232,8 +268,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DMG Mitigation",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "2020",
               "amount_max": null,
               "duration": [
@@ -248,8 +290,14 @@
             },
             {
               "type": "heal",
+              "category": null,
               "target": "all_allies",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -295,8 +343,14 @@
           "effects": [
             {
               "type": "field_effect",
+              "category": "field",
               "target": "field",
               "status": "Utopia",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -348,8 +402,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
-              "status": "Fantasy Festival 2",
+              "status": "Fantasy Festival",
+              "status_variant": [
+                2,
+                "level"
+              ],
+              "game_status_id": "67612",
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -401,8 +461,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
-              "status": "Dodge All 1",
+              "status": "Dodge All",
+              "status_variant": [
+                1,
+                "uses"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -417,8 +483,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Double Strike",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -433,8 +505,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Hype",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -484,8 +562,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
-              "status": "Other Self 1",
+              "status": "Other Self",
+              "status_variant": [
+                1,
+                "uses"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -500,8 +584,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -544,8 +634,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
-              "status": "Other Self 1",
+              "status": "Other Self",
+              "status_variant": [
+                1,
+                "uses"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -560,8 +656,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -615,8 +717,14 @@
           "effects": [
             {
               "type": "field_effect",
+              "category": "field",
               "target": "field",
               "status": "Utopia",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -631,8 +739,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Hype",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -679,8 +793,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Dispel Cancel",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -734,8 +854,14 @@
           "effects": [
             {
               "type": "dispel",
+              "category": null,
               "target": "all_foes",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -782,8 +908,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Hype",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -798,8 +930,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Hype",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
