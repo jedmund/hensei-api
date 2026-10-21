@@ -96,6 +96,30 @@ class Source < ApplicationRecord
       kind = kind.to_s
       format_of(kind)
       fetched_at = type_for_attribute('fetched_at').cast(fetched_at) # a String from a stored preview, too
+      options = { key: key, fetched_at: fetched_at, skip_owner_hook: skip_owner_hook }
+      write_body(owner, kind, body, **options)
+    rescue ActiveRecord::RecordNotUnique
+      # Another writer created the row between the lookup and the insert: once more, which
+      # now finds it.
+      write_body(owner, kind, body, **options)
+    end
+
+    def format_of(kind)
+      KINDS.fetch(kind.to_s) { raise ArgumentError, "unknown source kind #{kind.inspect}" }
+    end
+
+    # value with every Hash's keys sorted (as strings), recursively.
+    def canonical(value)
+      case value
+      when Hash then value.sort_by { |k, _| k.to_s }.to_h { |k, v| [k.to_s, canonical(v)] }
+      when Array then value.map { |v| canonical(v) }
+      else value
+      end
+    end
+
+    private
+
+    def write_body(owner, kind, body, key:, fetched_at:, skip_owner_hook:)
       source = fetch(owner, kind, key: key)
       return remove(source, skip_owner_hook) if body.nil?
 
@@ -114,24 +138,10 @@ class Source < ApplicationRecord
       source.skip_owner_hook = skip_owner_hook
       source.assign_attributes(body: body, sha256: sha)
       source.fetched_at = fetched_at if fetched_at
-      source.save!
+      # A savepoint, so a lost race on the unique index leaves an outer transaction usable.
+      transaction(requires_new: true) { source.save! }
       PutResult.new(status: status, source: source)
     end
-
-    def format_of(kind)
-      KINDS.fetch(kind.to_s) { raise ArgumentError, "unknown source kind #{kind.inspect}" }
-    end
-
-    # value with every Hash's keys sorted (as strings), recursively.
-    def canonical(value)
-      case value
-      when Hash then value.sort_by { |k, _| k.to_s }.to_h { |k, v| [k.to_s, canonical(v)] }
-      when Array then value.map { |v| canonical(v) }
-      else value
-      end
-    end
-
-    private
 
     def scope_for(owner)
       owner ? owned_by(owner) : where(owner_type: nil, owner_id: nil)

@@ -87,6 +87,23 @@ RSpec.describe Source do
       expect(described_class.count).to eq(5)
     end
 
+    it 'retries once when another writer created the row first' do
+      other = described_class.new(owner_type: 'Weapon', owner_id: owner.id, kind: 'wiki_raw', key: '',
+                                  body: '{{Theirs}}', sha256: described_class.digest('{{Theirs}}'))
+      calls = 0
+      allow(described_class).to receive(:fetch).and_wrap_original do |original, *args, **kwargs|
+        calls += 1
+        other.save! if calls == 1 # the race: their insert lands after our lookup
+        calls == 1 ? nil : original.call(*args, **kwargs)
+      end
+
+      result = ActiveRecord::Base.transaction { described_class.put(owner, :wiki_raw, '{{Mine}}') }
+
+      expect(result.status).to eq(:changed)
+      expect(described_class.read(owner, :wiki_raw)).to eq('{{Mine}}')
+      expect(described_class.count).to eq(1)
+    end
+
     it 'refuses an unknown kind' do
       expect { described_class.put(owner, :html, 'x') }.to raise_error(ArgumentError, /unknown source kind/)
     end

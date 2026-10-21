@@ -29,6 +29,12 @@ RSpec.describe Granblue::JpWikiPage do
     expect(described_class.trim(trimmed)).to eq(trimmed)
   end
 
+  it 'leaves an already trimmed page byte for byte, even markup a parser would rewrite' do
+    trimmed = %(<div id="body"><p>開いたまま<table class="style_table"><tr><td>名称</div>)
+    expect(described_class.trim(trimmed)).to eq(trimmed)
+    expect(described_class.trim(described_class.trim(trimmed))).to eq(trimmed)
+  end
+
   it 'returns a page without div#body, and blank input, as given' do
     expect(described_class.trim('<html><body>Not found</body></html>')).to eq('<html><body>Not found</body></html>')
     expect(described_class.trim(nil)).to be_nil

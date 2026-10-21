@@ -17,12 +17,18 @@ module Granblue
     # an already-trimmed body parse the same either way). UTF-8 in and out, so kana
     # stay literal instead of turning into numeric entities.
     def trim(html)
-      return html if html.blank?
+      return html if html.blank? || trimmed?(html)
 
       body = Nokogiri::HTML(html, nil, 'UTF-8').at_css('div#body')
       return html if body.nil?
 
       body.to_html(encoding: 'UTF-8')
+    end
+
+    # Already a trimmed page (it starts with the div#body element), so trimming twice is
+    # the same as once: a refetch compares equal byte for byte.
+    def trimmed?(html)
+      html.match?(/\A<div\b[^>]*\bid="body"/)
     end
   end
 end
