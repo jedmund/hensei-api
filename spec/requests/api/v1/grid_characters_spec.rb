@@ -159,6 +159,7 @@ RSpec.describe 'GridCharacters API', type: :request do
                                        uncap_level: 3)
         resolve_params = {
           resolve: {
+            party_id: party.id,
             position: 4,
             incoming: incoming_character.id,
             conflicting: [conflicting_character.id]
@@ -346,10 +347,19 @@ RSpec.describe 'GridCharacters API', type: :request do
              position: 4,
              uncap_level: 3)
     end
+    let(:other_party) { create(:party, user: create(:user), edit_key: 'othersecret') }
+    let!(:other_conflicting_character) do
+      create(:grid_character,
+             party: other_party,
+             character: incoming_character,
+             position: 4,
+             uncap_level: 3)
+    end
 
     let(:resolve_params) do
       {
         resolve: {
+          party_id: party.id,
           position: 4,
           incoming: incoming_character.id,
           conflicting: [conflicting_character.id]
@@ -357,34 +367,120 @@ RSpec.describe 'GridCharacters API', type: :request do
       }
     end
 
+    def post_resolve(params = resolve_params, request_headers = headers)
+      post '/api/v1/grid_characters/resolve', params: params.to_json, headers: request_headers
+    end
+
     it 'resolves conflicts by replacing the existing grid character' do
       expect(GridCharacter.exists?(conflicting_character.id)).to be true
-      expect do
-        post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
-      end.to change(GridCharacter, :count).by(0) # one record deleted, one created
+      expect { post_resolve }.to change(GridCharacter, :count).by(0) # one record deleted, one created
       expect(response).to have_http_status(:created)
       json_response = response.parsed_body
       expect(json_response['grid_character']).to include('position' => 4)
       expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(GridCharacter.find_by(party_id: party.id, position: 4).character_id).to eq(incoming_character.id)
     end
 
-    it 'does not destroy conflicting character ids from another party' do
-      other_party = create(:party, user: create(:user))
-      other_conflicting_character = create(:grid_character,
-                                           party: other_party,
-                                           character: incoming_character,
-                                           position: 4,
-                                           uncap_level: 3)
-
+    it 'rejects a mix of own and foreign conflicting ids and changes nothing' do
       resolve_params[:resolve][:conflicting] = [conflicting_character.id, other_conflicting_character.id]
 
-      expect do
-        post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
-      end.to change(GridCharacter, :count).by(0)
+      expect { post_resolve }.not_to change(GridCharacter, :count)
 
-      expect(response).to have_http_status(:created)
-      expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
       expect(other_conflicting_character.reload).to be_persisted
+    end
+
+    it 'rejects the mixed ids in either order' do
+      resolve_params[:resolve][:conflicting] = [other_conflicting_character.id, conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+      expect(other_conflicting_character.reload).to be_persisted
+    end
+
+    it 'rejects conflicting ids that belong only to another party' do
+      resolve_params[:resolve][:conflicting] = [other_conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+      expect(other_conflicting_character.reload).to be_persisted
+    end
+
+    it "rejects a resolve targeting another user's party and leaves it unchanged" do
+      resolve_params[:resolve][:party_id] = other_party.id
+      resolve_params[:resolve][:conflicting] = [other_conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(other_conflicting_character.reload).to have_attributes(position: 4, uncap_level: 3)
+      expect(GridCharacter.where(party_id: other_party.id).pluck(:id)).to eq([other_conflicting_character.id])
+    end
+
+    it 'rejects a request without a target party' do
+      resolve_params[:resolve].delete(:party_id)
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+    end
+
+    it 'rejects an empty conflicting list' do
+      resolve_params[:resolve][:conflicting] = []
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'rejects an unauthenticated request' do
+      expect { post_resolve(resolve_params, { 'Content-Type' => 'application/json' }) }
+        .not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(conflicting_character.reload).to be_persisted
+    end
+
+    context 'when the party is anonymous' do
+      let(:anon_party) { create(:party, user: nil, edit_key: 'anonsecret') }
+      let!(:anon_conflicting_character) do
+        create(:grid_character,
+               party: anon_party,
+               character: incoming_character,
+               position: 2,
+               uncap_level: 3)
+      end
+      let(:anon_params) do
+        {
+          resolve: {
+            party_id: anon_party.id,
+            position: 2,
+            incoming: incoming_character.id,
+            conflicting: [anon_conflicting_character.id]
+          }
+        }
+      end
+
+      it 'resolves with the correct edit key' do
+        post_resolve(anon_params, { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' })
+
+        expect(response).to have_http_status(:created)
+        expect { anon_conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'rejects a wrong edit key' do
+        expect { post_resolve(anon_params, { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }) }
+          .not_to change(GridCharacter, :count)
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(anon_conflicting_character.reload).to be_persisted
+      end
     end
   end
 

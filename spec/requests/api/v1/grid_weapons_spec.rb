@@ -269,6 +269,7 @@ RSpec.describe 'GridWeapons API', type: :request do
     let(:resolve_params) do
       {
         resolve: {
+          party_id: party.id,
           position: 5,
           incoming: incoming_weapon.id,
           conflicting: [conflicting_weapon.id]
@@ -286,25 +287,35 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect { conflicting_weapon.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it 'does not destroy conflicting weapon ids from another party' do
-      conflicting_weapon.update!(id: 'ffffffff-ffff-4fff-afff-ffffffffffff')
-      other_party = create(:party, user: create(:user))
-      other_conflicting_weapon = create(:grid_weapon,
-                                        id: '00000000-0000-4000-a000-000000000001',
-                                        party: other_party,
-                                        weapon: weapon,
-                                        position: 5,
-                                        uncap_level: 3)
+    context 'with a grid weapon in another party' do
+      let(:other_party) { create(:party, user: create(:user)) }
+      let!(:other_conflicting_weapon) do
+        create(:grid_weapon, party: other_party, weapon: weapon, position: 5, uncap_level: 3)
+      end
 
-      resolve_params[:resolve][:conflicting] = [conflicting_weapon.id, other_conflicting_weapon.id]
+      it 'rejects a mix of own and foreign conflicting ids and changes nothing' do
+        resolve_params[:resolve][:conflicting] = [conflicting_weapon.id, other_conflicting_weapon.id]
 
-      expect do
-        post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers
-      end.to change(GridWeapon, :count).by(0)
+        expect do
+          post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers
+        end.not_to change(GridWeapon, :count)
 
-      expect(response).to have_http_status(:created)
-      expect { conflicting_weapon.reload }.to raise_error(ActiveRecord::RecordNotFound)
-      expect(other_conflicting_weapon.reload).to be_persisted
+        expect(response).to have_http_status(:not_found)
+        expect(conflicting_weapon.reload).to be_persisted
+        expect(other_conflicting_weapon.reload).to be_persisted
+      end
+
+      it "rejects a resolve targeting another user's party and leaves it unchanged" do
+        resolve_params[:resolve][:party_id] = other_party.id
+        resolve_params[:resolve][:conflicting] = [other_conflicting_weapon.id]
+
+        expect do
+          post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers
+        end.not_to change(GridWeapon, :count)
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(other_conflicting_weapon.reload).to have_attributes(position: 5, uncap_level: 3)
+      end
     end
   end
 
