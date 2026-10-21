@@ -313,7 +313,7 @@ RSpec.describe 'Api::V1::Characters', type: :request do
     let!(:character) { create(:character) }
 
     it 'returns raw character data with expected fields' do
-      get "/api/v1/characters/#{character.id}/raw"
+      get "/api/v1/characters/#{character.id}/raw", headers: editor_headers
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['id']).to eq(character.id)
@@ -325,10 +325,18 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       Source.put(character, :wiki_raw, '{{Character}}', skip_owner_hook: true)
       Source.put(character, :game_raw_en, payload, skip_owner_hook: true)
 
-      get "/api/v1/characters/#{character.id}/raw"
+      get "/api/v1/characters/#{character.id}/raw", headers: editor_headers
 
       json = response.parsed_body
       expect(json).to include('wiki_raw' => '{{Character}}', 'game_raw_en' => payload, 'game_raw_jp' => nil)
+    end
+
+    it 'is for editors only' do
+      get "/api/v1/characters/#{character.id}/raw", headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/api/v1/characters/#{character.id}/raw"
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

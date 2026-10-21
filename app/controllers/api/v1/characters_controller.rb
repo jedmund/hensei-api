@@ -7,7 +7,8 @@ module Api
       include BatchPreviewable
 
       before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview
+                                                  raw]
 
       # GET /characters/:id
       def show
@@ -285,7 +286,9 @@ module Api
       # it failed to load, not a deliberate clear: keep the stored text.
       def update_params
         attrs = character_params
-        attrs[:wiki_raw].blank? && @character.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
+        return attrs unless attrs.key?(:wiki_raw)
+
+        attrs[:wiki_raw].blank? && @character.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def character_params
