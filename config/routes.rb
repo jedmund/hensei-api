@@ -62,6 +62,9 @@ Rails.application.routes.draw do
         post 'reparse'
       end
     end
+    resources :character_skill_refreshes, only: %i[create show] do
+      member { post 'apply' }
+    end
     resources :statuses, only: %i[index show]
     resources :summons, only: %i[show create update] do
       collection do
