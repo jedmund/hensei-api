@@ -3,6 +3,7 @@
     {
       "kind": "ability",
       "position": 1,
+      "game_action_id": "244171",
       "versions": [
         {
           "name_en": "Luck Goes Up",
@@ -12,6 +13,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "2559_3",
+          "game_action_id": "244171",
           "cooldown": 5,
           "initial_cooldown": null,
           "duration": [
@@ -45,7 +48,7 @@
               "damage_cap": null
             },
             {
-              "type": "inflict_status",
+              "type": "grant_status",
               "target": "caster",
               "status": "Tank-and-Counter",
               "amount": "300%",
@@ -67,6 +70,7 @@
     {
       "kind": "ability",
       "position": 2,
+      "game_action_id": "244181",
       "versions": [
         {
           "name_en": "Bringer of Proarsperity",
@@ -76,6 +80,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "2560_3",
+          "game_action_id": "244181",
           "cooldown": 5,
           "initial_cooldown": null,
           "duration": [
@@ -149,6 +155,7 @@
     {
       "kind": "ability",
       "position": 3,
+      "game_action_id": "244191",
       "versions": [
         {
           "name_en": "Luck Goes Down",
@@ -158,6 +165,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "2561_1",
+          "game_action_id": "244191",
           "cooldown": 5,
           "initial_cooldown": null,
           "duration": [
@@ -197,6 +206,7 @@
     {
       "kind": "ougi",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Ascending Fur-tune",
@@ -206,6 +216,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -261,6 +273,7 @@
     {
       "kind": "support",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Divine Tiger United",
@@ -270,6 +283,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318661",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -292,6 +307,7 @@
     {
       "kind": "support",
       "position": 2,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Peach-Colored Date",
@@ -301,6 +317,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318671",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [

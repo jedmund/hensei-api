@@ -276,15 +276,16 @@ class Dataminer
     return unless response_data.is_a?(Hash)
 
     column = LANG_COLUMNS.fetch(lang.to_s) { raise ArgumentError, "unknown lang #{lang.inspect}" }
+    column = payload_column(model_name, granblue_id, response_data, column)
     model = Object.const_get(model_name)
     record = if model_name == 'Character'
                # Error and popup responses are hashes too; only a character payload is stored.
-               unless response_data['id'].present? && response_data['ability'].present?
+               unless Granblue::GamePayload.granblue_id(response_data).present? && response_data['ability'].present?
                  summary.skipped!('no character payload')
                  logger.warn "Character #{granblue_id}: response has no id or ability; not stored"
                  return
                end
-               response_style = response_data['style'].presence&.to_i
+               response_style = Granblue::GamePayload.style(response_data).presence&.to_i
                if response_style && response_style != style.to_i
                  summary.skipped!('style mismatch')
                  logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"
@@ -318,6 +319,18 @@ class Dataminer
   rescue StandardError => e
     summary.error!(granblue_id, e.message)
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
+  end
+
+  # A character payload's own language wins over the requested one (D39): the game answers
+  # in the session's language.
+  def payload_column(model_name, granblue_id, response_data, column)
+    return column unless model_name == 'Character'
+
+    detected = Granblue::GamePayload.language(response_data)
+    return column unless detected && LANG_COLUMNS[detected] != column
+
+    logger.warn "Character #{granblue_id}: asked for #{column}, but the payload is #{detected}; storing it as #{detected}"
+    LANG_COLUMNS[detected]
   end
 
   # Rows with no payload for column; a character's is a source.

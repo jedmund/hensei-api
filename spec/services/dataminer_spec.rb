@@ -2,12 +2,13 @@
 
 require 'rails_helper'
 
-# The style-2 payload (character-super-cidala-gamedata.json) is hand-made from the real
-# style-1 capture until the game's own style-2 response lands (board decision D9).
+# The style-2 payloads: character-super-cidala-gamedata-jp.json is the game's own JP-mode
+# response (D39); character-super-cidala-gamedata.json is its English-shaped copy.
 RSpec.describe Dataminer do
   let(:fixture_dir) { Rails.root.join('spec/fixtures/character_skills') }
   let(:style1_payload) { JSON.parse(fixture_dir.join('character-cidala-gamedata.json').read) }
   let(:style2_payload) { JSON.parse(fixture_dir.join('character-super-cidala-gamedata.json').read) }
+  let(:style2_jp_payload) { JSON.parse(fixture_dir.join('character-super-cidala-gamedata-jp.json').read) }
 
   let!(:base) { create(:character, granblue_id: '3040377000', game_raw_en: nil, game_raw_jp: nil) }
   let!(:style) do
@@ -100,12 +101,24 @@ RSpec.describe Dataminer do
       expect([base.reload.game_raw_en, style.reload.game_raw_en]).to eq([nil, nil])
     end
 
-    it 'writes game_raw_jp for lang: jp' do
-      stub_style(2, style2_payload)
+    it 'writes game_raw_jp for a Japanese payload' do
+      stub_style(2, style2_jp_payload)
 
       miner.fetch_character('3040377000', style: 2, lang: 'jp', other_styles: false)
 
       expect([style.reload.game_raw_jp['style'], style.game_raw_en]).to eq([2, nil])
+      expect(style.game_raw_jp.dig('ability', '1')).to include('name' => '運気揚々', 'action_id' => '244171')
+    end
+
+    # D39: the game answers in the session's language, whatever was asked for.
+    it "stores by the payload's language, not the requested one" do
+      stub_style(2, style2_jp_payload)
+      miner.fetch_character('3040377000', style: 2, lang: 'en', other_styles: false)
+      expect([style.reload.game_raw_jp&.dig('style'), style.game_raw_en]).to eq([2, nil])
+
+      stub_style(2, style2_payload)
+      miner.fetch_character('3040377000', style: 2, lang: 'jp', other_styles: false)
+      expect(style.reload.game_raw_en.dig('ability', '1', 'name')).to eq('Luck Goes Up')
     end
   end
 

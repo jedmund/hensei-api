@@ -3,6 +3,7 @@
     {
       "kind": "ability",
       "position": 1,
+      "game_action_id": "219761",
       "versions": [
         {
           "name_en": "Ring the Dormouse",
@@ -12,6 +13,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "1065_1",
+          "game_action_id": "219761",
           "cooldown": 11,
           "initial_cooldown": null,
           "duration": [
@@ -74,6 +77,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": "1065_1",
+          "game_action_id": "219761",
           "cooldown": 10,
           "initial_cooldown": null,
           "duration": [
@@ -100,6 +105,7 @@
     {
       "kind": "ability",
       "position": 2,
+      "game_action_id": "234811",
       "versions": [
         {
           "name_en": "Dazzling Dreams",
@@ -109,6 +115,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "field",
+          "game_icon": "1066_5",
+          "game_action_id": "234811",
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -154,6 +162,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "field",
+          "game_icon": "1066_5",
+          "game_action_id": "234811",
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -262,6 +272,8 @@
           "variant_role": "transform_alt",
           "ordinal": 3,
           "type_color": "field",
+          "game_icon": "1066_5",
+          "game_action_id": "234811",
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -304,6 +316,7 @@
     {
       "kind": "ability",
       "position": 3,
+      "game_action_id": "219791",
       "versions": [
         {
           "name_en": "Fantasy Festival",
@@ -313,6 +326,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "1067_3",
+          "game_action_id": "219791",
           "cooldown": 10,
           "initial_cooldown": null,
           "duration": [
@@ -354,6 +369,7 @@
     {
       "kind": "ability",
       "position": 4,
+      "game_action_id": "234831",
       "versions": [
         {
           "name_en": "Rat Shine and Rainbows",
@@ -363,6 +379,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "1947_3",
+          "game_action_id": "234831",
           "cooldown": 12,
           "initial_cooldown": null,
           "duration": [
@@ -436,6 +454,7 @@
     {
       "kind": "ougi",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Gilded Heaven Strike",
@@ -445,6 +464,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -503,6 +524,8 @@
           "variant_role": "uncap_upgrade",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -558,6 +581,7 @@
     {
       "kind": "support",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Queen of Rats",
@@ -567,6 +591,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "313151",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -629,6 +655,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "313151",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -672,6 +700,7 @@
     {
       "kind": "support",
       "position": 2,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Rodent Rhythm",
@@ -681,6 +710,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "313141",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -727,6 +758,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "313141",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [

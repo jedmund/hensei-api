@@ -3,6 +3,7 @@
     {
       "kind": "ability",
       "position": 1,
+      "game_action_id": "243591",
       "versions": [
         {
           "name_en": "Vorpal Rage",
@@ -12,6 +13,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "1189_1",
+          "game_action_id": "243591",
           "cooldown": 6,
           "initial_cooldown": null,
           "duration": [
@@ -104,6 +107,8 @@
           "variant_role": "form_alt",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": "1189_1",
+          "game_action_id": null,
           "cooldown": 6,
           "initial_cooldown": null,
           "duration": [
@@ -161,6 +166,7 @@
     {
       "kind": "ability",
       "position": 2,
+      "game_action_id": "243601",
       "versions": [
         {
           "name_en": "Berserk Forge",
@@ -170,6 +176,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "1190_1",
+          "game_action_id": "243601",
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -215,6 +223,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": "1190_1",
+          "game_action_id": "243601",
           "cooldown": 6,
           "initial_cooldown": null,
           "duration": [
@@ -291,6 +301,8 @@
           "variant_role": "form_alt",
           "ordinal": 3,
           "type_color": "damage",
+          "game_icon": "1190_1",
+          "game_action_id": null,
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -316,6 +328,7 @@
     {
       "kind": "ability",
       "position": 3,
+      "game_action_id": "243611",
       "versions": [
         {
           "name_en": "Ground Zero",
@@ -325,6 +338,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "391_1",
+          "game_action_id": "243611",
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -373,6 +388,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": "391_1",
+          "game_action_id": "243611",
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -420,6 +437,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 3,
           "type_color": "damage",
+          "game_icon": "391_1",
+          "game_action_id": "243611",
           "cooldown": 6,
           "initial_cooldown": null,
           "duration": [
@@ -483,6 +502,8 @@
           "variant_role": "form_alt",
           "ordinal": 4,
           "type_color": "damage",
+          "game_icon": "391_1",
+          "game_action_id": null,
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -527,6 +548,7 @@
     {
       "kind": "ability",
       "position": 4,
+      "game_action_id": "243621",
       "versions": [
         {
           "name_en": "Three-Tiger's Blessing",
@@ -536,6 +558,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "362_3",
+          "game_action_id": "243621",
           "cooldown": null,
           "initial_cooldown": 10,
           "duration": [
@@ -614,6 +638,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 2,
           "type_color": "buff",
+          "game_icon": "362_3",
+          "game_action_id": "243621",
           "cooldown": null,
           "initial_cooldown": 10,
           "duration": [
@@ -643,6 +669,8 @@
           "variant_role": "form_alt",
           "ordinal": 3,
           "type_color": "buff",
+          "game_icon": "362_3",
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": 10,
           "duration": [
@@ -718,6 +746,7 @@
     {
       "kind": "ougi",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Astro Divergence",
@@ -727,6 +756,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -769,6 +800,8 @@
           "variant_role": "form_alt",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -811,6 +844,8 @@
           "variant_role": "uncap_upgrade",
           "ordinal": 3,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -869,6 +904,8 @@
           "variant_role": "uncap_upgrade",
           "ordinal": 4,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -911,6 +948,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 5,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -985,6 +1024,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 6,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1027,6 +1068,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 7,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1101,6 +1144,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 8,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1140,6 +1185,7 @@
     {
       "kind": "support",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Supernatural",
@@ -1149,6 +1195,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318181",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1193,6 +1241,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318181",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1250,6 +1300,7 @@
     {
       "kind": "support",
       "position": 2,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Ferox Tigris",
@@ -1259,6 +1310,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318201",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1286,6 +1339,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318201",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1310,6 +1365,7 @@
     {
       "kind": "support",
       "position": 3,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Start Strong, End Strongest",
@@ -1319,6 +1375,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318211",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1346,6 +1404,8 @@
           "variant_role": "transcendence_upgrade",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "318211",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [

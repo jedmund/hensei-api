@@ -63,6 +63,68 @@ RSpec.describe 'Import gamedata', type: :request do
       expect(response).to have_http_status(:unauthorized)
       expect(base.reload.game_raw_en).to be_nil
     end
+
+    # D39: the game's real JP-mode style-2 capture for Super Cidala.
+    context 'with a payload captured in Japanese' do
+      let(:fixtures) { Rails.root.join('spec/fixtures/character_skills') }
+      # The top-level id is the player's own npc instance id, not the granblue_id.
+      let(:jp_payload) do
+        JSON.parse(fixtures.join('character-super-cidala-gamedata-jp.json').read).merge('id' => '194127733')
+      end
+
+      before do
+        Character.without_skill_build do
+          style.update!(wiki_raw: fixtures.join('character-super-cidala-wikidata.txt').read, style_name_en: 'Super Cidala')
+        end
+      end
+
+      it 'stores it as game_raw_jp on the style row, whatever lang says' do
+        post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
+
+        expect(response.parsed_body).to eq('message' => 'Character gamedata updated successfully')
+        expect(style.reload.game_raw_jp.dig('ability', '1', 'name')).to eq('運気揚々')
+        expect(style.game_raw_en).to be_nil
+        expect(base.reload.game_raw_jp).to be_nil
+      end
+
+      it 'builds the style from it: game icons, action ids, Japanese and English names' do
+        post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
+
+        slots = Granblue::Parsers::CharacterSkillParser.new(Character.find(style.id)).graph[:slots]
+        firsts = slots.map { |slot| slot[:versions].first[:attrs] }
+        abilities = firsts.first(3)
+
+        expect(abilities.map { |a| a[:game_icon] }).to eq(%w[2559_3 2560_3 2561_1])
+        expect(abilities.map { |a| a[:game_action_id] }).to eq(%w[244171 244181 244191])
+        expect(firsts.map { |a| a[:name_jp] }).to eq(%w[運気揚々 開寅招福 運気下々 寅気上昇 寅神合体 桃色なデート])
+        expect(abilities.map { |a| a[:name_en] }).to eq(['Luck Goes Up', 'Bringer of Proarsperity', 'Luck Goes Down'])
+      end
+
+      it 'takes English names from name_en when there is no English payload' do
+        post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
+
+        data = Granblue::Parsers::CharacterWikiData.new(Character.find(style.id))
+        expect(data.game_action('a1')).to include('name' => 'Luck Goes Up', 'class_name' => '2559_3', 'action_id' => '244171')
+        expect(data.game_action('a1')['comment']).not_to match(Granblue::GamePayload::JAPANESE)
+        expect(data.game_action('sa')).not_to have_key('name') # the support has no name_en
+      end
+
+      it 'refuses a style 2 payload when the style row is missing' do
+        style.destroy!
+        post '/api/v1/import/characters?lang=jp', params: jp_payload.to_json, headers: headers_for(editor)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.parsed_body['error']).to eq('style row missing for 3040377000')
+      end
+
+      it 'falls back to lang only for a payload with no skill names' do
+        post '/api/v1/import/characters', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
+        expect(response).to have_http_status(:unprocessable_content)
+
+        post '/api/v1/import/characters?lang=jp', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
+        expect(base.reload.game_raw_jp).to eq('id' => '3040377000')
+      end
+    end
   end
 
   describe 'POST /api/v1/import/weapons' do

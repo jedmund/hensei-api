@@ -6,9 +6,8 @@ require 'rails_helper'
 # granblue_id 3040377000 but have their own abilities. Each row builds from its own
 # wiki_raw and game_raw_en, and the base's icons never reach the style.
 #
-# PROVISIONAL: character-super-cidala-gamedata.json is hand-made from the real style-1
-# capture (board decision D9). Replace it with the game's style-2 response and
-# regenerate with REGENERATE=1.
+# character-super-cidala-gamedata.json is the English-shaped copy of the game's own style-2
+# response (character-super-cidala-gamedata-jp.json, D39). Regenerate with REGENERATE=1.
 RSpec.describe 'CharacterSkillParser golden snapshots for a style shift' do
   granblue_id = '3040377000'
   base_icons = %w[1640_1 1641_1 1642_3 2529_3]

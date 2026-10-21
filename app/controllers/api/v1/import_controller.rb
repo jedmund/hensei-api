@@ -295,20 +295,21 @@ module Api
         body = parse_request_body
         return unless body
 
-        style_row = body['style'].to_s == '2'
+        granblue_id = Granblue::GamePayload.granblue_id(body)
+        style_row = Granblue::GamePayload.style(body) == '2'
         character = gamedata_character(body)
-        if style_row && character.nil? && Character.exists?(granblue_id: body['id'])
-          Rails.logger.error "[IMPORT] Style row missing for character #{body['id']}"
-          return render json: { error: "style row missing for #{body['id']}" }, status: :unprocessable_content
+        if style_row && character.nil? && Character.exists?(granblue_id: granblue_id)
+          Rails.logger.error "[IMPORT] Style row missing for character #{granblue_id}"
+          return render json: { error: "style row missing for #{granblue_id}" }, status: :unprocessable_content
         end
         unless character
-          Rails.logger.error "[IMPORT] Character not found with ID: #{body['id']}"
+          Rails.logger.error "[IMPORT] Character not found with ID: #{granblue_id}"
           return render json: { error: 'Character not found' }, status: :not_found
         end
 
-        lang = params[:lang]
-        unless %w[en jp].include?(lang)
-          Rails.logger.error "[IMPORT] Invalid language: #{lang}"
+        lang = gamedata_language(body)
+        unless lang
+          Rails.logger.error "[IMPORT] Invalid language: #{params[:lang]}"
           return render json: { error: 'Invalid language' }, status: :unprocessable_content
         end
 
@@ -319,8 +320,8 @@ module Api
             "game_raw_#{lang}_fetched_at" => Time.current
           )
 
-          # Parse series_id and create CharacterSeriesMembership
-          series_id = body['series_id'] || body.dig('master', 'series_id')
+          # Parse series_id and create CharacterSeriesMembership (master.series_id is a list)
+          series_id = Array(body['series_id'] || body.dig('master', 'series_id')).first
           if series_id
             slug = GBF_SERIES_TO_SLUG[series_id.to_i]
             if slug
@@ -347,9 +348,22 @@ module Api
       # A style 2 payload never lands on the base row; anything else falls back to
       # any row with the id.
       def gamedata_character(body)
-        return Character.find_by(granblue_id: body['id'], style_swap: true) if body['style'].to_s == '2'
+        granblue_id = Granblue::GamePayload.granblue_id(body)
+        return if granblue_id.blank?
+        return Character.find_by(granblue_id: granblue_id, style_swap: true) if Granblue::GamePayload.style(body) == '2'
 
-        Character.find_by(granblue_id: body['id'], style_swap: false) || Character.find_by(granblue_id: body['id'])
+        Character.find_by(granblue_id: granblue_id, style_swap: false) || Character.find_by(granblue_id: granblue_id)
+      end
+
+      # The payload's own language (its skill names), not the lang param: the game answers in
+      # the account's language. lang decides only a payload with no skill names. → "en", "jp" or nil.
+      def gamedata_language(body)
+        param = params[:lang].presence_in(%w[en jp])
+        detected = Granblue::GamePayload.language(body)
+        if detected && param && detected != param
+          Rails.logger.info "[IMPORT] lang=#{param}, but the payload is #{detected}; storing it as #{detected}"
+        end
+        detected || param
       end
 
       def import_by_kind(body)
