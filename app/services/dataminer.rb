@@ -276,12 +276,11 @@ class Dataminer
     return unless response_data.is_a?(Hash)
 
     column = LANG_COLUMNS.fetch(lang.to_s) { raise ArgumentError, "unknown lang #{lang.inspect}" }
+    # The game answers in the session's language: a character payload is stored by its own.
     if model_name == 'Character' && (detected = Granblue::GamePayload.language(response_data)) &&
        LANG_COLUMNS[detected] != column
-      summary.skipped!('language mismatch')
-      logger.warn "Character #{granblue_id}: asked for #{column}, but the payload reads as #{detected}; not stored " \
-                  "(fetch with lang=#{detected})"
-      return
+      logger.info "Character #{granblue_id}: asked for #{column}, payload reads as #{detected}; stored as #{detected}"
+      column = LANG_COLUMNS[detected]
     end
     model = Object.const_get(model_name)
     record = if model_name == 'Character'

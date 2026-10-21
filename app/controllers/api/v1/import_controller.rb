@@ -352,15 +352,16 @@ module Api
         Character.find_by(granblue_id: granblue_id, style_swap: false) || Character.find_by(granblue_id: granblue_id)
       end
 
-      # The payload's language, judged from its skill names (the game answers in the account's
-      # language); lang decides only a payload that can't be judged, and a lang that disagrees
-      # is refused. → [lang, nil] or [nil, error body].
+      # The payload's language, judged from its skill names: the game answers in the account's
+      # language, while the extension's lang follows the site's, so the payload wins and a
+      # mismatch is only logged. lang decides a payload that can't be judged.
+      # → [lang, nil] or [nil, error body].
       def gamedata_language(body)
         detected = Granblue::GamePayload.language(body)
         requested = params[:lang].presence_in(%w[en jp])
         if detected && requested && detected != requested
-          Rails.logger.error "[IMPORT] lang=#{requested}, but the payload reads as #{detected}"
-          return [nil, { error: 'language_mismatch', message: "This game data is in #{detected}, not #{requested}" }]
+          Rails.logger.info "[IMPORT] #{Granblue::GamePayload.granblue_id(body)}: lang=#{requested}, payload reads as " \
+                            "#{detected}; stored as #{detected}"
         end
         return [detected || requested, nil] if detected || requested
 

@@ -87,12 +87,13 @@ RSpec.describe 'Import gamedata', type: :request do
         expect(base.reload.game_raw_jp).to be_nil
       end
 
-      it 'refuses a lang that disagrees with the payload' do
+      # The extension's lang follows the site's language, the payload the game's.
+      it 'stores under the payload language when lang disagrees' do
         post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
 
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(response.parsed_body['error']).to eq('language_mismatch')
-        expect(style.reload.game_raw_jp).to be_nil
+        expect(response).to have_http_status(:ok)
+        expect(style.reload.game_raw_jp.dig('ability', '1', 'name')).to eq('運気揚々')
+        expect(style.game_raw_en).to be_nil
       end
 
       it 'stores only character data' do
