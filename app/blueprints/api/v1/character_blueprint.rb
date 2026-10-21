@@ -94,12 +94,17 @@ module Api
                  :style_name, :base_character
       end
 
+      SOURCE_DATES = ->(_field, _character, options) { options[:source_dates] }
+
       view :full do
         include_view :stats
         include_view :rates
         include_view :dates
-        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com).
-        fields :wiki_raw_fetched_at, :wiki_raw_jp_fetched_at
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com). Read from
+        # `sources` (a query per character), so only when the character itself is rendered
+        # (source_dates: true), not for each character nested in a party or collection.
+        field :wiki_raw_fetched_at, if: SOURCE_DATES
+        field :wiki_raw_jp_fetched_at, if: SOURCE_DATES
 
         field :awakenings do
           AwakeningBlueprint.render_as_hash(

@@ -3,6 +3,7 @@
     {
       "kind": "ability",
       "position": 1,
+      "game_action_id": "229001",
       "versions": [
         {
           "name_en": "Jinx of the Tiger",
@@ -12,6 +13,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "1640_1",
+          "game_action_id": "229001",
           "cooldown": 3,
           "initial_cooldown": null,
           "duration": [
@@ -101,6 +104,7 @@
     {
       "kind": "ability",
       "position": 2,
+      "game_action_id": "229031",
       "versions": [
         {
           "name_en": "Tiger's Prosperity",
@@ -110,6 +114,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "1641_1",
+          "game_action_id": "229031",
           "cooldown": 3,
           "initial_cooldown": null,
           "duration": [
@@ -199,6 +205,7 @@
     {
       "kind": "ability",
       "position": 3,
+      "game_action_id": "229061",
       "versions": [
         {
           "name_en": "Twin Tiger Feng Shui",
@@ -208,6 +215,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "1642_3",
+          "game_action_id": "229061",
           "cooldown": 12,
           "initial_cooldown": null,
           "duration": [
@@ -311,6 +320,7 @@
     {
       "kind": "ability",
       "position": 4,
+      "game_action_id": "243401",
       "versions": [
         {
           "name_en": "High of the Tiger",
@@ -320,6 +330,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "2529_3",
+          "game_action_id": "243401",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -391,6 +403,7 @@
     {
       "kind": "ougi",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Gilded Heaven Strike",
@@ -400,6 +413,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -458,6 +473,8 @@
           "variant_role": "uncap_upgrade",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -529,6 +546,7 @@
     {
       "kind": "support",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Queen of Tigers",
@@ -538,6 +556,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "310701",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -598,6 +618,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "310701",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -655,6 +677,7 @@
     {
       "kind": "support",
       "position": 2,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Reversal of Fortune",
@@ -664,6 +687,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "310711",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -735,6 +760,7 @@
     {
       "kind": "support",
       "position": 3,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Belling the Silver Tiger",
@@ -744,6 +770,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -799,6 +827,7 @@
     {
       "kind": "support",
       "position": 4,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Belling the Gold Tiger",
@@ -808,6 +837,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [

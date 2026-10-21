@@ -654,7 +654,7 @@
       ]
     }
   ],
-  "lp_rank": 1,
+  "lp_rank": null,
   "newyear": {
     "has_present": false
   },
@@ -691,7 +691,7 @@
   "halloween": {
     "has_present": false
   },
-  "is_pushed": false,
+  "is_pushed": null,
   "kind_name": 0,
   "max_level": 80,
   "next_type": "npc",
@@ -747,7 +747,7 @@
   "rarity_name": "SS Rare",
   "user_npc_id": null,
   "voice_acter": "Ai Kakuma",
-  "episode_rate": 0,
+  "episode_rate": null,
   "image_suffix": {
     "01": null,
     "81": null

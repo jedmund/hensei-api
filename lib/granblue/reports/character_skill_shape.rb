@@ -15,7 +15,7 @@ module Granblue
         # as [character, report] pairs (highest score first).
         def most_complex(limit: 15)
           lookup = Granblue::Parsers::CharacterSkillParser.build_status_lookup
-          scored = Character.where.not(wiki_raw: [nil, '']).find_each.map do |character|
+          scored = Character.with_source(:wiki_raw).preload(:sources).find_each.map do |character|
             report = Granblue::Parsers::CharacterSkillParser.new(character, status_lookup: lookup).parse(persist: false)
             { character: character, report: report, score: complexity(report) }
           end

@@ -101,7 +101,7 @@ module Granblue
         # use_local re-parses the stored text; only a real fetch gets a new date.
         fetched = !(@use_local && @entity.wiki_raw.present?)
         @entity.wiki_raw = response
-        @entity.wiki_raw_fetched_at = Time.current if fetched && @entity.has_attribute?(:wiki_raw_fetched_at)
+        @entity.wiki_raw_fetched_at = Time.current if fetched && @entity.respond_to?(:wiki_raw_fetched_at=)
         @entity.save!
 
         ap "Successfully fetched info for #{@entity.wiki_en}" if @debug

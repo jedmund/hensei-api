@@ -12,8 +12,11 @@ module Granblue
       def initialize(character)
         @character = character
         @params = extract_template_params(character.wiki_raw.to_s)
-        @game_en = own_style(character.game_raw_en) || {}
         @game_jp = own_style(character.game_raw_jp) || {}
+        # Without an English payload, the Japanese one stands in (D39): class_name, action_id,
+        # ailment and ability_detail don't depend on the language, and a JP payload carries
+        # the English names and descriptions as name_en / comment_en.
+        @game_en = own_style(character.game_raw_en) || english_view(@game_jp)
       end
 
       attr_reader :params, :game_en, :game_jp
@@ -55,10 +58,26 @@ module Granblue
       # row's is ignored, so the row builds from its own wiki data instead of the other
       # style's icons and action ids. A payload without `style` is kept as is.
       def own_style(payload)
-        return payload unless payload.is_a?(Hash) && payload['style'].present?
+        return payload unless payload.is_a?(Hash) && Granblue::GamePayload.style(payload).present?
 
         row_style = character.style_swap ? 2 : 1
-        payload if payload['style'].to_i == row_style
+        payload if Granblue::GamePayload.style(payload).to_i == row_style
+      end
+
+      # A JP payload read as English: every action's name / comment become its name_en /
+      # comment_en (dropped when it has none, so no Japanese text passes as English).
+      def english_view(payload)
+        case payload
+        when Hash
+          view = payload.transform_values { |value| english_view(value) }
+          if payload.key?('name')
+            view['name'] = payload['name_en'].presence
+            view['comment'] = payload['comment_en'].presence if payload.key?('comment')
+          end
+          view.compact
+        when Array then payload.map { |value| english_view(value) }
+        else payload
+        end
       end
 
       def collection_entry(collection, position)

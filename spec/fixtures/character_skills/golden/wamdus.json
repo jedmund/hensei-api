@@ -3,6 +3,7 @@
     {
       "kind": "ability",
       "position": 1,
+      "game_action_id": "232431",
       "versions": [
         {
           "name_en": "Ravenous Drain",
@@ -12,6 +13,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "debuff",
+          "game_icon": "1822_4",
+          "game_action_id": "232431",
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -39,6 +42,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "debuff",
+          "game_icon": "1822_4",
+          "game_action_id": "232431",
           "cooldown": 6,
           "initial_cooldown": null,
           "duration": [
@@ -66,6 +71,8 @@
           "variant_role": "option",
           "ordinal": 3,
           "type_color": "debuff",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -156,6 +163,8 @@
           "variant_role": "option",
           "ordinal": 4,
           "type_color": "debuff",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -197,6 +206,7 @@
     {
       "kind": "ability",
       "position": 2,
+      "game_action_id": "232451",
       "versions": [
         {
           "name_en": "Innocence Toxin",
@@ -206,6 +216,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "damage",
+          "game_icon": "1823_1",
+          "game_action_id": "232451",
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -285,6 +297,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": "1823_1",
+          "game_action_id": "232451",
           "cooldown": 6,
           "initial_cooldown": null,
           "duration": [
@@ -312,6 +326,7 @@
     {
       "kind": "ability",
       "position": 3,
+      "game_action_id": "232461",
       "versions": [
         {
           "name_en": "The Azure's Halo",
@@ -321,6 +336,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "1824_3",
+          "game_action_id": "232461",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -362,6 +379,7 @@
     {
       "kind": "ougi",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Hydrozoa",
@@ -371,6 +389,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -428,6 +448,7 @@
     {
       "kind": "support",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Joys of Hard Work",
@@ -437,6 +458,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "312221",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -459,6 +482,7 @@
     {
       "kind": "support",
       "position": 2,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Limitless Azure",
@@ -468,6 +492,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "312231",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [

@@ -7,6 +7,21 @@ namespace :granblue do
     puts "Statuses - created: #{result[:created]}, updated: #{result[:updated]}, total: #{result[:total]}"
   end
 
+  desc "Once after the PR 7a deploy is live: copy into `sources` what the old code wrote to the characters " \
+       "source columns after the copy migration ran (missing rows, and rows not rewritten since the copy whose " \
+       "sha256 differs), then queues a skill build for each character it stored. Prints counts only; idempotent."
+  task sync_character_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    CharacterSkills::SourceSync.new.call
+  end
+
+  desc "Clean characters' stored game payloads down to character data (for a database where the copy " \
+       "migration ran before it did that). Counts only; idempotent; queues no builds."
+  task sanitize_character_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    CharacterSkills::SourceSanitizer.new.call
+  end
+
   desc "Build character skills from the stored sources (CharacterSkills::Build::Runner). " \
        "mode=shadow (default unless CHARACTER_SKILL_BUILD=write) builds in a rolled-back transaction and prints " \
        "the differences; mode=write keeps the result. Builds only characters whose fingerprint changed unless " \
@@ -65,7 +80,7 @@ namespace :granblue do
 
   desc 'Dry-run report on character skill parsing quality (no persistence).'
   task character_skill_report: :environment do
-    chars = Character.where.not(wiki_raw: [nil, ''])
+    chars = Character.with_source(:wiki_raw).preload(:sources)
     status_lookup = Granblue::Parsers::CharacterSkillParser.build_status_lookup
     reports = chars.find_each.map do |character|
       Granblue::Parsers::CharacterSkillParser.new(character, status_lookup: status_lookup).parse(persist: false)

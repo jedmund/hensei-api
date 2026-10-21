@@ -150,7 +150,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
       it 'refuses a reparse whose build makes no skills, and keeps the existing ones' do
         post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
         ids = version_ids
-        character.update_columns(wiki_raw: '#REDIRECT [[Somewhere]]')
+        put_source(character, :wiki_raw, '#REDIRECT [[Somewhere]]')
 
         post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
         expect(response).to have_http_status(:unprocessable_entity)
@@ -170,7 +170,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
         before do
           # Wiki icon stems that differ from the game's class_names, so only the snapshot
           # can bring the game's icons back.
-          character.update_columns(wiki_raw: character.wiki_raw.gsub(/^\|(a\d_icon)=.*$/, '|\1= Ability_m_9999_1.png'))
+          put_source(character, :wiki_raw, character.wiki_raw.gsub(/^\|(a\d_icon)=.*$/, '|\1= Ability_m_9999_1.png'))
           stub_const('CharacterSkills::IconSnapshot::DEFAULT_PATH', snapshot_path)
           CharacterSkills::IconSnapshot.reset!
         end
@@ -187,7 +187,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
           expect(with_game_data.map(&:last)).not_to include('9999_1')
 
           CharacterSkills::IconSnapshot.export(snapshot_path)
-          character.update_columns(game_raw_en: nil)
+          put_source(character, :game_raw_en, nil)
 
           post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
           expect(response).to have_http_status(:ok)
@@ -196,7 +196,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
 
         it 'falls back to the wiki stems without a snapshot entry' do
           post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
-          character.update_columns(game_raw_en: nil)
+          put_source(character, :game_raw_en, nil)
 
           post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
           expect(version_ids.map(&:last)).to include('9999_1')

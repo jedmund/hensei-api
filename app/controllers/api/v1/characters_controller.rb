@@ -7,11 +7,12 @@ module Api
       include BatchPreviewable
 
       before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview
+                                                  raw]
 
       # GET /characters/:id
       def show
-        render json: CharacterBlueprint.render(@character, view: :with_recruitment)
+        render json: CharacterBlueprint.render(@character, view: :with_recruitment, source_dates: true)
       end
 
       # GET /characters/:id/related
@@ -29,7 +30,7 @@ module Api
         character = Character.new(with_wiki_fetch_date(character_params))
 
         if character.save
-          render json: CharacterBlueprint.render(character, view: :full), status: :created
+          render json: CharacterBlueprint.render(character, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(character)
         end
@@ -39,7 +40,7 @@ module Api
       # Updates an existing character record
       def update
         if @character.update(with_wiki_fetch_date(update_params, @character))
-          render json: CharacterBlueprint.render(@character, view: :full)
+          render json: CharacterBlueprint.render(@character, view: :full, source_dates: true)
         else
           render_validation_error_response(@character)
         end
@@ -264,7 +265,7 @@ module Api
       def full_character
         character = Character.find(@character.id)
         ActiveRecord::Associations::Preloader.new(records: [character], associations: Character::SKILL_GRAPH_PRELOAD).call
-        CharacterBlueprint.render_as_hash(character, view: :full)
+        CharacterBlueprint.render_as_hash(character, view: :full, source_dates: true)
       end
 
       def set
@@ -285,7 +286,9 @@ module Api
       # it failed to load, not a deliberate clear: keep the stored text.
       def update_params
         attrs = character_params
-        attrs[:wiki_raw].blank? && @character.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
+        return attrs unless attrs.key?(:wiki_raw)
+
+        attrs[:wiki_raw].blank? && @character.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def character_params

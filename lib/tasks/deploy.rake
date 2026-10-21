@@ -104,7 +104,7 @@ namespace :deploy do
   task parse_characters: :environment do
     overwrite = ENV['OVERWRITE'] == 'true'
 
-    characters = Character.where.not(wiki_raw: [nil, ''])
+    characters = Character.with_source(:wiki_raw)
     characters = characters.where(series: [], season: nil) unless overwrite
 
     total = characters.count
@@ -112,7 +112,9 @@ namespace :deploy do
     skipped = 0
     puts "  Found #{total} characters to process#{' (overwrite mode)' if overwrite}"
 
-    characters.find_each.with_index do |character, index|
+    # Only the wikitext is read: load just that source with each batch.
+    loaded = characters.find_in_batches.lazy.flat_map { |batch| Character.preload_sources(batch, kinds: :wiki_raw) }
+    loaded.each_with_index do |character, index|
       print "\r  Processing #{index + 1}/#{total}: #{character.name_en.to_s.truncate(40)}".ljust(80)
 
       wiki_series = extract_wiki_field(character.wiki_raw, 'series')

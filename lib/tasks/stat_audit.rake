@@ -412,9 +412,9 @@ namespace :granblue do
 
     models.each do |model|
       total      = model.count
-      has_en_raw = model.where.not(wiki_raw: [nil, '']).count
+      has_en_raw = with_stored(model, :wiki_raw).count
       has_ja     = model.where.not(wiki_ja: [nil, '']).count
-      has_jp_raw = model.column_names.include?('wiki_raw_jp') ? model.where.not(wiki_raw_jp: [nil, '']).count : nil
+      has_jp_raw = model.method_defined?(:wiki_raw_jp) ? with_stored(model, :wiki_raw_jp).count : nil
 
       jp_display = has_jp_raw.nil? ? 'n/a' : "#{has_jp_raw}/#{total}"
 
@@ -436,6 +436,11 @@ namespace :granblue do
   end
 
   # ---------------------------------------------------------------------------
+
+  # Rows with a stored page; a character's lives in `sources` (D35).
+  def with_stored(model, attribute)
+    model.respond_to?(:with_source) ? model.with_source(attribute) : model.where.not(attribute => [nil, ''])
+  end
 
   # Scope that catches both conditions (min_hp==min_atk OR max_hp==max_atk).
   # Zero values are excluded — they indicate unpopulated rows, not corruption.

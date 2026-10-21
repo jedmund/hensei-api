@@ -669,13 +669,13 @@
         "recast": "200"
     },
     "power_up_special_skill": [],
-    "is_pushed": false,
+    "is_pushed": null,
     "is_not_attention": false,
     "max_awakening_level": 2,
     "attribute": 2,
-    "lp_rank": 135,
+    "lp_rank": null,
     "change_config_user_sex": null,
-    "user_npc_id": 203974541,
+    "user_npc_id": null,
     "image_suffix": {
         "01": null,
         "02": null,
@@ -755,7 +755,7 @@
         }
     ],
     "is_event_cut": 0,
-    "episode_rate": 100,
+    "episode_rate": null,
     "episode": [
         {
             "chapter_id": 20760,

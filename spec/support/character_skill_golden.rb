@@ -18,7 +18,7 @@ module CharacterSkillGolden
   end
 
   def normalize_slot(slot, lookup)
-    { 'kind' => slot[:attrs][:kind], 'position' => slot[:attrs][:position],
+    { 'kind' => slot[:attrs][:kind], 'position' => slot[:attrs][:position], 'game_action_id' => slot[:attrs][:game_action_id],
       'versions' => slot[:versions].map { |version| normalize_version(version, lookup) } }
   end
 
@@ -28,6 +28,7 @@ module CharacterSkillGolden
       'name_en' => attrs[:name_en], 'name_jp' => attrs[:name_jp],
       'description_en' => attrs[:description_en], 'description_jp' => attrs[:description_jp],
       'variant_role' => attrs[:variant_role], 'ordinal' => attrs[:ordinal], 'type_color' => attrs[:type_color],
+      'game_icon' => attrs[:game_icon], 'game_action_id' => attrs[:game_action_id],
       'cooldown' => attrs[:cooldown], 'initial_cooldown' => attrs[:initial_cooldown],
       'duration' => [attrs[:duration_value], attrs[:duration_unit]],
       'unlock_level' => attrs[:unlock_level], 'enhance_levels' => attrs[:enhance_levels],

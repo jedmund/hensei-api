@@ -3,7 +3,7 @@
 module Granblue
   module Downloaders
     # Fetches and caches raw HTML from the Japanese wiki (gbf-wiki.com) into
-    # <record>.wiki_raw_jp. Works for any model with name_jp + wiki_raw_jp
+    # <record>.wiki_raw_jp (a character's: its wiki_raw_jp source, div#body only). Works for any model with name_jp + wiki_raw_jp
     # (characters, summons, weapons). Once cached, parsing iterates offline
     # with no further network calls. The JP wiki has no API, so the batch
     # backfill is throttled to stay polite.
@@ -68,10 +68,20 @@ module Granblue
 
       def self.backfill_scope(model, ids:, missing:, force:)
         scope = if ids then model.where(granblue_id: ids)
-                elsif force && !missing then model.where.not(wiki_raw_jp: [nil, ''])
+                elsif force && !missing then with_page(model)
                 else eligible_scope(model)
                 end
-        missing ? scope.where(wiki_raw_jp: [nil, '']) : scope
+        missing ? scope.where.not(id: with_page(model).select(:id)) : scope
+      end
+
+      # Rows with a stored page. A character's lives in `sources` (D35).
+      def self.with_page(model)
+        model.respond_to?(:with_source) ? model.with_source(:wiki_raw_jp) : model.where.not(wiki_raw_jp: [nil, ''])
+      end
+
+      # What's stored for a page: a character keeps only div#body (Granblue::JpWikiPage).
+      def self.storable(record, html)
+        record.is_a?(Character) ? Granblue::JpWikiPage.trim(html) : html
       end
 
       # Records eligible for JP wiki download: have a clean wiki_ja, or have
@@ -158,19 +168,20 @@ module Granblue
         return @record.wiki_raw_jp if @record.wiki_raw_jp.present? && !force
         return if @jp_title.blank?
 
-        html = @client.fetch(@jp_title)
+        html = self.class.storable(@record, @client.fetch(@jp_title))
         @record.update!(wiki_raw_jp: html, wiki_raw_jp_fetched_at: Time.current)
         html
       end
 
       # Fetches the JP wiki page without storing it (the editor's refresh preview stores it
-      # later, if they apply). → the HTML, or nil when no title could be resolved.
+      # later, if they apply). → the HTML as it would be stored, or nil when no title could
+      # be resolved.
       # before_request is called before the request to gbf-wiki.com (the caller's spacing).
       def fetch(before_request: nil)
         return if @jp_title.blank?
 
         before_request&.call
-        @client.fetch(@jp_title)
+        self.class.storable(@record, @client.fetch(@jp_title))
       end
     end
   end

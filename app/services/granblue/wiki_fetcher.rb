@@ -28,7 +28,7 @@ module Granblue
       entity.update!(wiki_en: page.title) if page.title != entity.wiki_en
 
       attrs = { wiki_raw: page.text }
-      attrs[:wiki_raw_fetched_at] = Time.current if entity.has_attribute?(:wiki_raw_fetched_at)
+      attrs[:wiki_raw_fetched_at] = Time.current if entity.respond_to?(:wiki_raw_fetched_at=)
       entity.update!(attrs)
       page.text
     end

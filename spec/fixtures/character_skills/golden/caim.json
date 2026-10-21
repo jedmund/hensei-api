@@ -3,6 +3,7 @@
     {
       "kind": "ability",
       "position": 1,
+      "game_action_id": "213442",
       "versions": [
         {
           "name_en": "Double Deal",
@@ -12,6 +13,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "831_3",
+          "game_action_id": "213442",
           "cooldown": null,
           "initial_cooldown": 4,
           "duration": [
@@ -56,6 +59,7 @@
     {
       "kind": "ability",
       "position": 2,
+      "game_action_id": "213461",
       "versions": [
         {
           "name_en": "Beginning of Joker",
@@ -65,6 +69,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "832_3",
+          "game_action_id": "213461",
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -239,6 +245,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": "buff",
+          "game_icon": "832_3",
+          "game_action_id": "213461",
           "cooldown": 7,
           "initial_cooldown": null,
           "duration": [
@@ -268,6 +276,8 @@
           "variant_role": "transform_alt",
           "ordinal": 3,
           "type_color": "buff",
+          "game_icon": "832_3",
+          "game_action_id": "213461",
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -439,6 +449,7 @@
     {
       "kind": "ability",
       "position": 3,
+      "game_action_id": "213471",
       "versions": [
         {
           "name_en": "Blank Face",
@@ -448,6 +459,8 @@
           "variant_role": "conditional",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "834_3",
+          "game_action_id": "213471",
           "cooldown": 5,
           "initial_cooldown": null,
           "duration": [
@@ -473,6 +486,8 @@
           "variant_role": "transform_alt",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -517,6 +532,8 @@
           "variant_role": "transform_alt",
           "ordinal": 3,
           "type_color": "heal",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -578,6 +595,8 @@
           "variant_role": "transform_alt",
           "ordinal": 4,
           "type_color": "buff",
+          "game_icon": "837_3",
+          "game_action_id": "213474",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -639,6 +658,8 @@
           "variant_role": "transform_alt",
           "ordinal": 5,
           "type_color": "debuff",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -729,6 +750,7 @@
     {
       "kind": "ability",
       "position": 4,
+      "game_action_id": "235151",
       "versions": [
         {
           "name_en": "Secret Hands",
@@ -738,6 +760,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": "buff",
+          "game_icon": "1990_3",
+          "game_action_id": "235151",
           "cooldown": 8,
           "initial_cooldown": null,
           "duration": [
@@ -763,6 +787,8 @@
           "variant_role": "option",
           "ordinal": 2,
           "type_color": "damage",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -824,6 +850,8 @@
           "variant_role": "option",
           "ordinal": 3,
           "type_color": "heal",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -852,6 +880,8 @@
           "variant_role": "option",
           "ordinal": 4,
           "type_color": "buff",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -879,6 +909,8 @@
           "variant_role": "option",
           "ordinal": 5,
           "type_color": "debuff",
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -901,6 +933,7 @@
     {
       "kind": "ougi",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Golden Dawn",
@@ -910,6 +943,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -952,6 +987,8 @@
           "variant_role": "uncap_upgrade",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1057,6 +1094,7 @@
     {
       "kind": "support",
       "position": 1,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "Wild Card",
@@ -1066,6 +1104,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "37207",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1088,6 +1128,7 @@
     {
       "kind": "support",
       "position": 2,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "The Hanged Man's Charity",
@@ -1097,6 +1138,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "313271",
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1119,6 +1162,7 @@
     {
       "kind": "support",
       "position": 3,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "The Hanged Man Reversed",
@@ -1128,6 +1172,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1157,6 +1203,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1183,6 +1231,7 @@
     {
       "kind": "support",
       "position": 4,
+      "game_action_id": null,
       "versions": [
         {
           "name_en": "The Fool Upright",
@@ -1192,6 +1241,8 @@
           "variant_role": "base",
           "ordinal": 1,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [
@@ -1286,6 +1337,8 @@
           "variant_role": "enhanced",
           "ordinal": 2,
           "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
           "cooldown": null,
           "initial_cooldown": null,
           "duration": [

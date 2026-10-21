@@ -28,7 +28,7 @@ RSpec.describe CharacterSkills::BuildJob do
 
   it 'only reports for a character with skills in shadow mode' do
     described_class.perform_now(character.id)
-    character.update_columns(wiki_raw: wiki.sub('Fire', 'Blaze'))
+    put_source(character, :wiki_raw, wiki.sub('Fire', 'Blaze'))
     ENV['CHARACTER_SKILL_BUILD'] = 'shadow'
 
     summary = described_class.perform_now(character.id)
@@ -39,7 +39,7 @@ RSpec.describe CharacterSkills::BuildJob do
 
   it 'writes a character with skills in write mode' do
     described_class.perform_now(character.id)
-    character.update_columns(wiki_raw: wiki.sub('Fire', 'Blaze'))
+    put_source(character, :wiki_raw, wiki.sub('Fire', 'Blaze'))
     ENV['CHARACTER_SKILL_BUILD'] = 'write'
 
     described_class.perform_now(character.id)

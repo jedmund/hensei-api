@@ -38,4 +38,39 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
       expect(described_class::DEFAULT_THROTTLE).to eq(2.0)
     end
   end
+
+  describe 'storing a character page (D35)' do
+    let(:page) { '<html><head><title>t</title></head><body><div id="menu">m</div><div id="body"><p>本文</p></div></body></html>' }
+    let(:client) { instance_double(Granblue::Parsers::JpWiki, fetch: page) }
+    let(:character) { Character.without_skill_build { create(:character, name_jp: 'テスト', wiki_raw_jp: nil) } }
+
+    it 'stores only div#body, dated' do
+      described_class.new(character, client: client).download
+
+      expect(Source.read(character, :wiki_raw_jp)).to eq('<div id="body"><p>本文</p></div>')
+      expect(character.reload.wiki_raw_jp_fetched_at).to be_present
+    end
+
+    it 'returns the trimmed page from a fetch, so it compares equal to what is stored' do
+      described_class.new(character, client: client).download(force: true)
+
+      expect(described_class.new(character.reload, client: client).fetch).to eq(character.wiki_raw_jp)
+    end
+
+    it 'keeps a summon page whole' do
+      summon = create(:summon, name_jp: 'テスト')
+      described_class.new(summon, client: client).download
+
+      expect(summon.reload.wiki_raw_jp).to eq(page)
+    end
+
+    it 'picks characters with and without a stored page from the store' do
+      stored = Character.without_skill_build { create(:character, name_jp: '保存', wiki_raw_jp: '<div id="body"></div>') }
+      character
+
+      expect(described_class.backfill_scope(Character, ids: nil, missing: true, force: false)).to include(character)
+      expect(described_class.backfill_scope(Character, ids: nil, missing: true, force: false)).not_to include(stored)
+      expect(described_class.backfill_scope(Character, ids: nil, missing: false, force: true)).to contain_exactly(stored)
+    end
+  end
 end

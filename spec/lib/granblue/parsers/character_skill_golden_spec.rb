@@ -29,6 +29,23 @@ RSpec.describe 'CharacterSkillParser golden snapshots' do
     end
   end
 
+  # Stored game payloads keep only character data (Granblue::GamePayload.sanitize); the build
+  # must come out the same as from the whole payload.
+  it 'builds the same from the whole and the sanitized game payloads' do
+    Granblue::Parsers::StatusCatalogBuilder.build_all
+    samples.each do |key, sample|
+      raw = JSON.parse(File.read(fixture_dir.join("character-#{key}-gamedata.json")))
+      whole = create(:character, granblue_id: sample[:granblue_id], wiki_raw: File.read(fixture_dir.join("character-#{key}-wikidata.txt")))
+      sanitized = create(:character, granblue_id: sample[:granblue_id], style_swap: false,
+                                     wiki_raw: whole.wiki_raw, game_raw_en: raw)
+      Source.put(whole, :game_raw_en, raw, skip_owner_hook: true) # bypasses the attribute's sanitizer
+
+      expect(Source.read(sanitized, :game_raw_en).keys).to all(satisfy { |k| raw.key?(k) })
+      graph = ->(c) { Granblue::Parsers::CharacterSkillParser.new(Character.find(c.id)).graph }
+      expect(graph.call(sanitized)).to eq(graph.call(whole)), "#{key} differs"
+    end
+  end
+
   def fixture_dir
     Rails.root.join('spec/fixtures/character_skills')
   end

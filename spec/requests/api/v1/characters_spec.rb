@@ -275,6 +275,20 @@ RSpec.describe 'Api::V1::Characters', type: :request do
         expect(character.wiki_raw_fetched_at).to eq(fetched_at)
       end
 
+      it "doesn't read or touch the wikitext when the update doesn't send it" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('"sources"') }
+        ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
+          put "/api/v1/characters/#{character.id}", params: { character: { name_en: 'Renamed' } }.to_json,
+                                                    headers: editor_headers
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(queries.join).not_to include('"sources"."body"')
+        expect(character.reload).to have_attributes(name_en: 'Renamed', wiki_raw: '{{Character|name=Vikala}}',
+                                                    wiki_raw_fetched_at: fetched_at)
+      end
+
       it 'replaces the wikitext and stamps the fetch date when the update sends new text' do
         put "/api/v1/characters/#{character.id}",
             params: { character: { wiki_raw: '{{Character|name=Vikala (Summer)}}' } }.to_json,
@@ -288,15 +302,55 @@ RSpec.describe 'Api::V1::Characters', type: :request do
     end
   end
 
+  describe 'fetch dates (from sources)' do
+    let(:fetched_at) { Time.utc(2026, 10, 1, 9) }
+    let!(:character) { create(:character, wiki_raw: '{{Character}}', wiki_raw_fetched_at: fetched_at) }
+
+    it 'shows them on the character itself' do
+      get "/api/v1/characters/#{character.id}"
+      expect(Time.zone.parse(response.parsed_body['wiki_raw_fetched_at'])).to eq(fetched_at)
+      expect(response.parsed_body).to have_key('wiki_raw_jp_fetched_at')
+    end
+
+    it 'leaves them out of a nested render, which reads no sources' do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('"sources"') }
+      hash = ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
+        Api::V1::CharacterBlueprint.render_as_hash(Character.find(character.id), view: :full)
+      end
+      expect(hash).not_to have_key(:wiki_raw_fetched_at)
+      expect(queries).to be_empty
+    end
+  end
+
   describe 'GET /api/v1/characters/:id/raw' do
     let!(:character) { create(:character) }
 
     it 'returns raw character data with expected fields' do
-      get "/api/v1/characters/#{character.id}/raw"
+      get "/api/v1/characters/#{character.id}/raw", headers: editor_headers
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['id']).to eq(character.id)
       expect(json).to have_key('wiki_raw')
+    end
+
+    it 'reads the sources from the store, in the same shape' do
+      payload = { 'id' => character.granblue_id, 'ability' => { '1' => { 'name' => 'Fire' } } }
+      Source.put(character, :wiki_raw, '{{Character}}', skip_owner_hook: true)
+      Source.put(character, :game_raw_en, payload, skip_owner_hook: true)
+
+      get "/api/v1/characters/#{character.id}/raw", headers: editor_headers
+
+      json = response.parsed_body
+      expect(json).to include('wiki_raw' => '{{Character}}', 'game_raw_en' => payload, 'game_raw_jp' => nil)
+    end
+
+    it 'is for editors only' do
+      get "/api/v1/characters/#{character.id}/raw", headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/api/v1/characters/#{character.id}/raw"
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

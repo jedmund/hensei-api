@@ -18,7 +18,7 @@ module WeaponSkills
       weapons weapon_series weapon_series_variants weapon_awakenings awakenings weapon_stat_modifiers
       weapon_keys weapon_key_series
       skills weapon_skills weapon_skill_versions weapon_skill_data weapon_skill_effects
-      weapon_skill_families weapon_skill_boost_types panel_lines weapon_sources
+      weapon_skill_families weapon_skill_boost_types panel_lines weapon_sources sources
       summons summon_series summon_auras summon_calls
       characters character_series character_series_memberships character_skills character_skill_versions
       character_skill_version_links skill_effects skill_values charge_attacks
