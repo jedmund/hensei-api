@@ -16,7 +16,7 @@ module Api
       include SubstituteGridPreloading
       include PartyFullLoading
 
-      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position resolve destroy sync sync_to_collection duplicate]
+      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position destroy sync sync_to_collection duplicate]
       before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
       before_action :find_incoming_weapon, only: %i[create resolve]
       before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
@@ -229,8 +229,14 @@ module Api
       # @return [void]
       def resolve
         incoming = find_by_any_id(Weapon, resolve_params[:incoming])
-        conflicting_ids = resolve_params[:conflicting]
-        conflicting_weapons = GridWeapon.where(id: conflicting_ids, party_id: @party.id)
+        render_not_found_response('weapon') and return unless incoming
+
+        # Every conflicting id must be a grid weapon in the target party.
+        conflicting_ids = Array(resolve_params[:conflicting]).compact_blank.map(&:to_s).uniq
+        conflicting_weapons = GridWeapon.where(id: conflicting_ids, party_id: @party.id).to_a
+        if conflicting_ids.empty? || conflicting_weapons.size != conflicting_ids.size
+          render_not_found_response('grid_weapon') and return
+        end
 
         # Destroy each conflicting weapon
         conflicting_weapons.each(&:destroy)
@@ -540,7 +546,7 @@ module Api
       #
       # @return [void]
       def find_grid_weapon
-        grid_weapon_id = params[:id] || params.dig(:weapon, :id) || Array(params.dig(:resolve, :conflicting)).first
+        grid_weapon_id = params[:id] || params.dig(:weapon, :id)
         @grid_weapon = GridWeapon
                        .includes(*GridWeapon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
                        .find_by(id: grid_weapon_id)
@@ -569,7 +575,7 @@ module Api
       #
       # @return [void]
       def find_party
-        requested_party_id = params.dig(:weapon, :party_id) || params[:party_id]
+        requested_party_id = params.dig(:weapon, :party_id) || params.dig(:resolve, :party_id) || params[:party_id]
         @party = if @grid_weapon
                    # The party always comes from the row itself; a mismatched
                    # party id in the request is treated as not found.
@@ -660,7 +666,7 @@ module Api
       #
       # @return [ActionController::Parameters] the permitted parameters.
       def resolve_params
-        params.require(:resolve).permit(:position, :incoming, conflicting: [])
+        params.require(:resolve).permit(:party_id, :position, :incoming, conflicting: [])
       end
 
       ##

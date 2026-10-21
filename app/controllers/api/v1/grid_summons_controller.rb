@@ -19,9 +19,9 @@ module Api
       attr_reader :party, :incoming_summon
 
       before_action :find_grid_summon,
-                    only: %i[update update_uncap_level update_quick_summon update_position resolve destroy sync sync_to_collection duplicate]
+                    only: %i[update update_uncap_level update_quick_summon update_position destroy sync sync_to_collection duplicate]
       before_action :find_party,
-                    only: %i[create update update_uncap_level update_quick_summon update_position swap resolve destroy sync
+                    only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync
                              sync_to_collection duplicate]
       before_action :find_incoming_summon, only: :create
       before_action :authorize_party_edit!,
@@ -466,7 +466,7 @@ module Api
       #
       # @return [void]
       def find_grid_summon
-        grid_summon_id = params[:id] || params.dig(:summon, :id) || params.dig(:resolve, :conflicting)
+        grid_summon_id = params[:id] || params.dig(:summon, :id)
         @grid_summon = GridSummon
                        .includes(*GridSummon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
                        .find_by(id: grid_summon_id)

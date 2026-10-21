@@ -20,7 +20,7 @@ module Api
       include PartyFullLoading
 
       before_action :find_grid_character,
-                    only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
+                    only: %i[update update_uncap_level update_position destroy sync sync_to_collection switch_style]
       before_action :find_party,
                     only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
       before_action :find_incoming_character, only: :create
@@ -214,7 +214,13 @@ module Api
         incoming = find_by_any_id(Character, resolve_params[:incoming])
         render_not_found_response('character') and return unless incoming
 
-        conflicting = GridCharacter.where(id: resolve_params[:conflicting], party_id: @party.id)
+        # Every conflicting id must be a grid character in the target party.
+        conflicting_ids = Array(resolve_params[:conflicting]).compact_blank.map(&:to_s).uniq
+        conflicting = GridCharacter.where(id: conflicting_ids, party_id: @party.id).to_a
+        if conflicting_ids.empty? || conflicting.size != conflicting_ids.size
+          render_not_found_response('grid_character') and return
+        end
+
         conflicting.each(&:destroy)
 
         if (existing = GridCharacter.find_by(party_id: @party.id, position: resolve_params[:position]))
@@ -517,7 +523,7 @@ module Api
       #
       # @return [void]
       def find_party
-        requested_party_id = params.dig(:character, :party_id) || params[:party_id]
+        requested_party_id = params.dig(:character, :party_id) || params.dig(:resolve, :party_id) || params[:party_id]
         @party = if @grid_character
                    # The party always comes from the row itself; a mismatched
                    # party id in the request is treated as not found.
@@ -535,7 +541,7 @@ module Api
       #
       # @return [void]
       def find_grid_character
-        grid_character_id = params[:id] || params.dig(:character, :id) || params.dig(:resolve, :conflicting)
+        grid_character_id = params[:id] || params.dig(:character, :id)
         @grid_character = GridCharacter
                           .includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
                           .find_by(id: grid_character_id)
@@ -642,7 +648,7 @@ module Api
       #
       # @return [ActionController::Parameters] the permitted parameters.
       def resolve_params
-        params.require(:resolve).permit(:position, :incoming, conflicting: [])
+        params.require(:resolve).permit(:party_id, :position, :incoming, conflicting: [])
       end
     end
   end

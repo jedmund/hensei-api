@@ -142,7 +142,7 @@ RSpec.describe 'Party last_updated tracking', type: :request do
         conflicting = create(:grid_weapon, party: party, weapon: weapon, position: 5)
         original = last_updated_for(party)
 
-        params = { resolve: { position: 5, incoming: incoming_weapon.id, conflicting: [conflicting.id] } }
+        params = { resolve: { party_id: party.id, position: 5, incoming: incoming_weapon.id, conflicting: [conflicting.id] } }
         post '/api/v1/grid_weapons/resolve', params: params.to_json, headers: headers
         expect(response).to have_http_status(:created)
 
