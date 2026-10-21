@@ -12,7 +12,8 @@ module CharacterSkills
   #   - the row differs and hasn't been rewritten since the copy (updated_at <= the copy's
   #     time, recorded by the migration). A row written through the store after the copy is
   #     newer than any column and is kept.
-  # Idempotent; no skill builds are queued (the deploy build picks up the new fingerprints).
+  # Idempotent. The stores themselves queue nothing; afterwards one CharacterSkills::BuildJob
+  # is queued per character whose source it stored (the deploy build has already run by then).
   class SourceSync
     BATCH = 100
     # kind → [column, fetched_at column or nil]
@@ -22,7 +23,7 @@ module CharacterSkills
       "game_raw_en" => ["game_raw_en", nil],
       "game_raw_jp" => ["game_raw_jp", nil]
     }.freeze
-    # ar_internal_metadata key holding when the copy migration ran.
+    # ar_internal_metadata key holding when the copy migration ran (it writes it).
     COPIED_AT_KEY = "character_sources_copied_at"
 
     # The stored body for a column value (nil: nothing to store). JP pages are trimmed as
@@ -39,22 +40,17 @@ module CharacterSkills
       value && Time.iso8601(value)
     end
 
-    def self.record_copied_at(time = Time.current)
-      conn = ActiveRecord::Base.connection
-      conn.execute(<<~SQL.squish)
-        INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
-        VALUES ('#{COPIED_AT_KEY}', #{conn.quote(time.utc.iso8601(6))}, now(), now())
-        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
-      SQL
-    end
-
     Counts = Struct.new(:checked, :same, :missing, :changed, :newer, :blank, keyword_init: true) do
       def synced = missing + changed
     end
 
+    # Character ids whose sources this run stored (each got one build queued).
+    attr_reader :synced_ids
+
     def initialize(io: $stdout)
       @io = io
       @copied_at = self.class.copied_at
+      @synced_ids = Set.new
     end
 
     # → { kind => Counts }
@@ -62,11 +58,13 @@ module CharacterSkills
       results = Character.without_skill_build do
         COLUMNS.to_h { |kind, (column, fetched_column)| [kind, sync_kind(kind, column, fetched_column)] }
       end
+      @synced_ids.each { |id| CharacterSkills::BuildJob.perform_later(id) }
       @io.puts "copy time: #{@copied_at&.iso8601 || 'unknown (only missing rows are filled)'}"
       results.each do |kind, c|
         @io.puts "#{kind}: #{c.checked} checked, #{c.same} same, #{c.missing} missing → stored, " \
                  "#{c.changed} changed → stored, #{c.newer} kept (newer in the store), #{c.blank} blank"
       end
+      @io.puts "skill builds queued: #{@synced_ids.size}"
       results
     end
 
@@ -98,6 +96,7 @@ module CharacterSkills
         counts.missing += 1
       end
       Source.put_body(Character.select(:id).find(id), kind, body, fetched_at: fetched_at, skip_owner_hook: true)
+      @synced_ids << id
     end
 
     # [id, value, fetched_at] for characters with a non-null column, BATCH at a time by id.

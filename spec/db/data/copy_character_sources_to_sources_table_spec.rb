@@ -80,10 +80,14 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
     expect(Source.where(kind: 'wiki_raw').count).to eq(2)
   end
 
-  it 'records when it ran, for the sync task' do
+  it 'records when it first ran, for the sync task' do
     run
-    expect(CharacterSkills::SourceSync.copied_at).to be_within(1.minute).of(Time.current)
-    expect(Source.maximum(:updated_at)).to be <= CharacterSkills::SourceSync.copied_at
+    first = CharacterSkills::SourceSync.copied_at
+    expect(first).to be_within(1.minute).of(Time.current)
+    expect(Source.maximum(:updated_at)).to be <= first
+
+    travel_to(1.hour.from_now) { run }
+    expect(CharacterSkills::SourceSync.copied_at).to eq(first)
   end
 
   it 'is irreversible' do

@@ -4,7 +4,7 @@
 # no gbf-wiki.com page or section covers it and there's no game_raw_jp yet (D38). The
 # official blog's introduction gives each skill's name and effect line; this stores them as
 # the style row's jp_skill_text source, which the build applies after the JP wiki (game data
-# still wins). Writing it queues the row's build.
+# still wins). The deploy build rebuilds the row (its fingerprint changes); nothing is queued here.
 #
 # Slots follow the style row's wikitext order (a1–a3, ougi, s1–s2), one version each. The
 # ougi's description is the blog's first line; its Lv 5 note (秩序の凱旋Lv5: 碧の鎧) is left out.
@@ -34,12 +34,14 @@ class AddLeciaStyleJpSkillText < ActiveRecord::Migration[8.1]
     character = Character.find_by(granblue_id: GRANBLUE_ID, style_swap: true)
     return say("Lecia's style row (#{GRANBLUE_ID}, style 2) isn't here; nothing stored") unless character
 
-    result = Source.put(character, :jp_skill_text, TEXT, fetched_at: nil)
+    # No build job from a pre-deploy migration (old workers would build without the new text);
+    # the deploy build picks the row up through its fingerprint.
+    result = Character.without_skill_build { Source.put(character, :jp_skill_text, TEXT, fetched_at: nil) }
     say "Lecia style jp_skill_text: #{result.status}"
   end
 
   def down
     character = Character.find_by(granblue_id: GRANBLUE_ID, style_swap: true)
-    Source.put(character, :jp_skill_text, nil) if character
+    Character.without_skill_build { Source.put(character, :jp_skill_text, nil) } if character
   end
 end

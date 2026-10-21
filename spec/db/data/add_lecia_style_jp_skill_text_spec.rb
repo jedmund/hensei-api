@@ -16,7 +16,7 @@ RSpec.describe 'AddLeciaStyleJpSkillText' do
        create(:character, granblue_id: '3040101000', style_swap: true)]
     end
 
-    run
+    expect { run }.not_to have_enqueued_job(CharacterSkills::BuildJob)
     run
 
     text = Source.read(style, :jp_skill_text)

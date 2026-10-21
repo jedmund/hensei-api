@@ -18,7 +18,14 @@
 class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   BATCH = 100
   # kind → [column, fetched_at column or nil]
-  KINDS = CharacterSkills::SourceSync::COLUMNS
+  KINDS = {
+    'wiki_raw' => %w[wiki_raw wiki_raw_fetched_at],
+    'wiki_raw_jp' => %w[wiki_raw_jp wiki_raw_jp_fetched_at],
+    'game_raw_en' => ['game_raw_en', nil],
+    'game_raw_jp' => ['game_raw_jp', nil]
+  }.freeze
+  # Read by CharacterSkills::SourceSync (rake granblue:sync_character_sources).
+  COPIED_AT_KEY = 'character_sources_copied_at'
 
   def up
     KINDS.each do |kind, (column, fetched_column)|
@@ -26,7 +33,7 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
       skipped = 0
       each_batch(kind, column, fetched_column) do |rows|
         values = rows.filter_map do |id, value, fetched_at|
-          body = CharacterSkills::SourceSync.body_for(kind, value)
+          body = body_for(kind, value)
           if body.nil?
             skipped += 1
             next
@@ -39,7 +46,7 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
       end
       say "#{kind}: #{copied} copied, #{skipped} blank"
     end
-    CharacterSkills::SourceSync.record_copied_at
+    record_copied_at
   end
 
   # The rows can't be told from ones written through the store since, and the columns
@@ -73,6 +80,23 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
       yield rows
       last_id = rows.last.first
     end
+  end
+
+  # The stored body for a column value (nil: nothing to store): JP pages trimmed as the
+  # fetch path trims them, JSON canonical. Kept here (not shared with SourceSync) so this
+  # migration doesn't depend on code a later cleanup removes.
+  def body_for(kind, value)
+    value = Granblue::JpWikiPage.trim(value) if kind == 'wiki_raw_jp'
+    Source.serialize(kind, value)
+  end
+
+  # The first run's time only: a re-run must not move it past rows the old code changed since.
+  def record_copied_at
+    db.execute(<<~SQL.squish)
+      INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
+      VALUES (#{quote(COPIED_AT_KEY)}, #{quote(Time.current.utc.iso8601(6))}, now(), now())
+      ON CONFLICT (key) DO NOTHING
+    SQL
   end
 
   def insert(kind, values)

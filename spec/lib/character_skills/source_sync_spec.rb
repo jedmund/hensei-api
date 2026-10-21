@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe CharacterSkills::SourceSync do
+  include ActiveJob::TestHelper
+
   let(:copied_at) { 1.hour.ago }
   let(:fetched_at) { Time.utc(2026, 10, 20, 12) }
   let(:page) { '<html><head></head><body><div id="menu">m</div><div id="body"><p>本文</p></div></body></html>' }
@@ -25,7 +27,16 @@ RSpec.describe CharacterSkills::SourceSync do
 
   def run = described_class.new(io: io).call
 
-  before { described_class.record_copied_at(copied_at) }
+  # As the copy migration records it.
+  def record_copied_at(time)
+    ActiveRecord::Base.connection.execute(
+      "INSERT INTO ar_internal_metadata (key, value, created_at, updated_at) " \
+      "VALUES ('#{described_class::COPIED_AT_KEY}', '#{time.utc.iso8601(6)}', now(), now()) " \
+      'ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value'
+    )
+  end
+
+  before { record_copied_at(copied_at) }
 
   let!(:character) { Character.without_skill_build { create(:character) } }
 
@@ -67,11 +78,28 @@ RSpec.describe CharacterSkills::SourceSync do
     expect(counts['wiki_raw_jp']).to have_attributes(checked: 1, blank: 1, synced: 0)
   end
 
-  it 'is idempotent and queues no builds' do
-    set_columns(character, wiki_raw: '{{Missed}}')
+  it 'queues one build per character it stored, and none on a second run' do
+    other = Character.without_skill_build { create(:character) }
+    untouched = Character.without_skill_build { create(:character) }
+    set_columns(character, wiki_raw: '{{Missed}}', game_raw_en: { 'a' => 1 })
+    set_columns(other, wiki_raw: '{{Other}}')
+    copied_row(untouched, :wiki_raw, '{{Same}}')
+    set_columns(untouched, wiki_raw: '{{Same}}')
 
-    expect { run }.not_to have_enqueued_job(CharacterSkills::BuildJob)
-    expect(run['wiki_raw']).to have_attributes(same: 1, synced: 0)
+    expect { run }.to have_enqueued_job(CharacterSkills::BuildJob).exactly(2).times
+    expect(enqueued_jobs.map { |job| job['arguments'].first }).to contain_exactly(character.id, other.id)
+
+    clear_enqueued_jobs
+    expect { expect(run['wiki_raw']).to have_attributes(same: 3, synced: 0) }.not_to have_enqueued_job
+  end
+
+  it 'keeps a copied row a refetch confirmed after the copy' do
+    copied_row(character, :wiki_raw, '{{Old}}')
+    Source.put(character, :wiki_raw, '{{Old}}', fetched_at: Time.current, skip_owner_hook: true)
+    set_columns(character, wiki_raw: '{{Changed after the copy}}')
+
+    expect(run['wiki_raw'].newer).to eq(1)
+    expect(Source.read(character, :wiki_raw)).to eq('{{Old}}')
   end
 
   it 'without a recorded copy time, only fills missing rows' do

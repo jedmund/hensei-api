@@ -9,7 +9,7 @@ namespace :granblue do
 
   desc "Once after the PR 7a deploy is live: copy into `sources` what the old code wrote to the characters " \
        "source columns after the copy migration ran (missing rows, and rows not rewritten since the copy whose " \
-       "sha256 differs). Prints counts only; idempotent; queues no builds."
+       "sha256 differs), then queues a skill build for each character it stored. Prints counts only; idempotent."
   task sync_character_sources: :environment do
     ActiveRecord::Base.logger = nil
     CharacterSkills::SourceSync.new.call

@@ -16,6 +16,15 @@ RSpec.describe Source do
                                                sha256: Digest::SHA256.hexdigest('{{Weapon}}'), fetched_at: fetched_at)
     end
 
+    it 'marks a confirmed body as updated, without rewriting it' do
+      source = travel_to(1.day.ago) { described_class.put(owner, :wiki_raw, '{{Weapon}}', fetched_at: fetched_at).source }
+
+      expect { described_class.put(owner, :wiki_raw, '{{Weapon}}', fetched_at: fetched_at + 1.day) }
+        .to(change { source.reload.updated_at })
+      expect { described_class.put(owner, :wiki_raw, '{{Weapon}}', fetched_at: nil) }
+        .not_to(change { source.reload.updated_at })
+    end
+
     it 'leaves an unchanged body alone and only moves fetched_at forward' do
       described_class.put(owner, :wiki_raw, '{{Weapon}}', fetched_at: fetched_at)
       source = described_class.fetch(owner, :wiki_raw)
@@ -24,7 +33,7 @@ RSpec.describe Source do
       expect(result.status).to eq(:unchanged)
       expect(result).not_to be_changed
       expect(source.reload.fetched_at).to eq(fetched_at + 1.day)
-      expect(source.updated_at).to eq(described_class.find(source.id).updated_at)
+      expect(source.body).to eq('{{Weapon}}')
 
       described_class.put(owner, :wiki_raw, '{{Weapon}}', fetched_at: fetched_at)
       expect(source.reload.fetched_at).to eq(fetched_at + 1.day)
