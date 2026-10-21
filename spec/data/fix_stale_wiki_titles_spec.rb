@@ -96,7 +96,11 @@ RSpec.describe FixStaleWikiTitles do
 
   it 'skips a row with neither title and retitles the rest' do
     weapons['1040908300'].update_columns(wiki_en: 'Something Else')
-    expect { migration.up }.to output(/Skipped Weapon 1040908300: no row titled "Tsurumaru Kuninaga \(NPC\)"/).to_stdout
+    # say prints only while migrations are verbose, so check the call rather than stdout.
+    allow(migration).to receive(:say)
+    expect { migration.up }.not_to raise_error
+    expect(migration).to have_received(:say)
+      .with(/Skipped Weapon 1040908300: no row titled "Tsurumaru Kuninaga \(NPC\)"/)
     expect(weapons['1040908300'].reload.wiki_en).to eq('Something Else')
     expect(weapons['1040505700'].reload.wiki_en).to eq('Raphael (Weapon)')
     expect(characters['3040501000'].reload.wiki_en).to eq('Uriel')
