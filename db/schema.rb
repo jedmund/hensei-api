@@ -1249,7 +1249,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_160000) do
     t.index ["kind", "key"], name: "index_sources_on_shared_kind_key", unique: true, where: "(owner_id IS NULL)"
     t.index ["owner_type", "owner_id", "kind", "key"], name: "index_sources_on_owner_kind_key", unique: true, where: "(owner_id IS NOT NULL)"
     t.check_constraint "(owner_type IS NULL) = (owner_id IS NULL)", name: "sources_owner_pair"
-    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'wiki_raw_jp'::character varying, 'game_raw_en'::character varying, 'game_raw_jp'::character varying, 'wiki_status_list'::character varying]::text[])", name: "sources_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'wiki_raw_jp'::character varying, 'game_raw_en'::character varying, 'game_raw_jp'::character varying, 'wiki_status_list'::character varying, 'jp_skill_text'::character varying]::text[])", name: "sources_kind"
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

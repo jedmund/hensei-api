@@ -5,7 +5,8 @@ module CharacterSkills
     # What a character's skills are built from, as one SHA256 (contract C5, plus D15):
     #   - Build::VERSION;
     #   - the sha256 of the character's wiki_raw, wiki_raw_jp, game_raw_en and game_raw_jp
-    #     `sources` rows ("-" when there is none);
+    #     `sources` rows ("-" when there is none), and of its jp_skill_text row when it has one
+    #     (an optional input: absent, it adds nothing, so other characters' digests don't move);
     #   - the other characters columns the Builder reads: granblue_id, element, style_swap;
     #   - the statuses catalogue, (id, name_en, category) sorted (a name resolves by category);
     #   - the sha256 of the icon snapshot file, or "-" when it's absent.
@@ -20,7 +21,9 @@ module CharacterSkills
     #   - #for_relation(relation) reads only the rows' sha256, so a deploy loads no page text
     #     just to find nothing stale.
     class Fingerprint
-      SOURCES = %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp].freeze
+      REQUIRED_SOURCES = %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp].freeze
+      OPTIONAL_SOURCES = %w[jp_skill_text].freeze
+      SOURCES = (REQUIRED_SOURCES + OPTIONAL_SOURCES).freeze
       # Columns besides the sources that change the Builder's output (D15).
       ATTRIBUTES = %w[granblue_id element style_swap].freeze
       NONE = "-"
@@ -67,7 +70,8 @@ module CharacterSkills
 
       def combine(digests, attributes)
         parts = ["version:#{VERSION}", "statuses:#{statuses_digest}", "icons:#{icons_digest}"]
-        parts += SOURCES.map { |column| "#{column}:#{digests.fetch(column)}" }
+        parts += REQUIRED_SOURCES.map { |kind| "#{kind}:#{digests.fetch(kind)}" }
+        parts += OPTIONAL_SOURCES.filter_map { |kind| "#{kind}:#{digests[kind]}" if digests[kind] && digests[kind] != NONE }
         parts += ATTRIBUTES.map { |column| "#{column}:#{attributes[column].nil? ? NONE : attributes[column]}" }
         Digest::SHA256.hexdigest(parts.join("\n"))
       end

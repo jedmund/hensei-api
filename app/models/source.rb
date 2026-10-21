@@ -27,7 +27,9 @@ class Source < ApplicationRecord
     'wiki_raw_jp' => :text,
     'game_raw_en' => :json,
     'game_raw_jp' => :json,
-    'wiki_status_list' => :text
+    'wiki_status_list' => :text,
+    # Curated Japanese skill text for a character row no fetched page covers (D38).
+    'jp_skill_text' => :json
   }.freeze
 
   # What a put did: created | changed | unchanged (only fetched_at moved) | removed (blank

@@ -15,6 +15,8 @@ class Character < ApplicationRecord
   source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
   source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at
   source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at
+  # Curated Japanese skill text (D38): { "source" => …, "skills" => [{ kind, position, name_jp, … }] }.
+  source_attribute :jp_skill_text
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }

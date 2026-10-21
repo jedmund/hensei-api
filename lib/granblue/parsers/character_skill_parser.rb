@@ -4,7 +4,8 @@ module Granblue
   module Parsers
     # Public façade for parsing a character's wiki/game data into the normalized
     # skill graph. Orchestrates the CharacterSkills::* collaborators: Builder
-    # assembles the graph and JpLocalizer fills Japanese text (#graph, pure: it reads
+    # assembles the graph, JpLocalizer fills Japanese text and JpSkillText applies curated
+    # Japanese text over the wiki's (#graph, pure: it reads
     # the record and the statuses catalogue, never the network or skill rows), and
     # Reporter builds the diagnostic report (#report). Writing is
     # CharacterSkills::Build's job (::CharacterSkills::Build::Runner and Writer).
@@ -22,7 +23,9 @@ module Granblue
       # → { character_granblue_id:, slots:, links: }, built once per parser.
       def graph
         @graph ||= CharacterSkills::Builder.new(character, data: data, effect_parser: effect_parser).build.tap do |built|
+          game_fields = CharacterSkills::JpSkillText.game_fields(built[:slots])
           CharacterSkills::JpLocalizer.new(character).apply(built[:slots])
+          CharacterSkills::JpSkillText.new(character).apply(built[:slots], game_fields: game_fields)
         end
       end
 

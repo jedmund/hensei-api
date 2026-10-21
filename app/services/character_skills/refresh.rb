@@ -180,7 +180,7 @@ module CharacterSkills
     # The character's build inputs that the refresh doesn't fetch: if any of them changed
     # between the preview and the apply, the build would differ from what was shown.
     def inputs_digest(character, sources)
-      inputs = %w[game_raw_en game_raw_jp].map { |kind| character.source_sha256(kind) }
+      inputs = %w[game_raw_en game_raw_jp jp_skill_text].map { |kind| character.source_sha256(kind) }
       inputs += Build::Fingerprint::ATTRIBUTES.map { |column| character[column] }
       inputs << (sources.fetched_en ? nil : character.source_sha256(:wiki_raw))
       inputs << (sources.fetched_jp ? nil : character.source_sha256(:wiki_raw_jp))
