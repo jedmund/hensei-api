@@ -162,6 +162,16 @@ module Granblue
         @record.update!(wiki_raw_jp: html, wiki_raw_jp_fetched_at: Time.current)
         html
       end
+
+      # Fetches the JP wiki page without storing it (the editor's refresh preview stores it
+      # later, if they apply). → the HTML, or nil when no title could be resolved.
+      # before_request is called before the request to gbf-wiki.com (the caller's spacing).
+      def fetch(before_request: nil)
+        return if @jp_title.blank?
+
+        before_request&.call
+        @client.fetch(@jp_title)
+      end
     end
   end
 end
