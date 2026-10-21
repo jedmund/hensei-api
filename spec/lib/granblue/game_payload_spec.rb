@@ -21,6 +21,30 @@ RSpec.describe Granblue::GamePayload do
     expect(described_class.language(tie)).to be_nil
   end
 
+  describe '.sanitize_item' do
+    let(:item) do
+      { 'id' => 98_765_432, 'master' => { 'id' => '1040815000', 'name' => 'Sword' }, 'name' => 'Sword',
+        'skill1' => { 'name' => 'Might' }, 'special_skill' => { 'name' => 'Call' },
+        'param' => { 'level' => '150', 'evolution' => '4' }, 'user' => { 'param' => { 'viewer_id' => '1' } },
+        'user_weapon_id' => 5, 'is_favorite' => true }
+    end
+
+    it "keeps only the item's data" do
+      expect(described_class.sanitize_item(item)).to eq(item.slice('master', 'name', 'skill1', 'special_skill'))
+    end
+
+    it "keeps an archive payload's id, which is the item's" do
+      archive = { 'id' => '1040815000', 'name' => 'Sword', 'user' => { 'id' => 1 } }
+      expect(described_class.sanitize_item(archive)).to eq('id' => '1040815000', 'name' => 'Sword')
+    end
+
+    it 'is idempotent and leaves a non-object as is' do
+      once = described_class.sanitize_item(item)
+      expect(described_class.sanitize_item(once)).to eq(once)
+      expect(described_class.sanitize_item(nil)).to be_nil
+    end
+  end
+
   describe '.sanitize' do
     # A player-shaped payload, as the game sends it for the player's own copy.
     let(:player_payload) do

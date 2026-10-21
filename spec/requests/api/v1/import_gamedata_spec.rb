@@ -186,6 +186,22 @@ RSpec.describe 'Import gamedata', type: :request do
     end
   end
 
+  describe 'stored weapon and summon payloads' do
+    let!(:weapon) { create(:weapon, granblue_id: '1040815000') }
+    let!(:summon) { create(:summon, granblue_id: '2040001000') }
+    let(:account) { { 'user' => { 'param' => { 'viewer_id' => '1' } }, 'param' => { 'level' => '150' } } }
+
+    it 'keep only item data' do
+      post '/api/v1/import/weapons?lang=en', params: { 'id' => '1040815000', 'name' => 'Sword' }.merge(account).to_json,
+                                             headers: headers_for(editor)
+      post '/api/v1/import/summons?lang=en', params: { 'id' => '2040001000', 'name' => 'Call' }.merge(account).to_json,
+                                             headers: headers_for(editor)
+
+      expect(weapon.reload.game_raw_en).to eq('id' => '1040815000', 'name' => 'Sword')
+      expect(summon.reload.game_raw_en).to eq('id' => '2040001000', 'name' => 'Call')
+    end
+  end
+
   describe 'POST /api/v1/import/weapons' do
     let!(:weapon) { create(:weapon, granblue_id: '1040815000') }
     let(:payload) { { 'id' => '1040815000', 'name' => 'Test' } }

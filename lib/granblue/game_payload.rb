@@ -7,7 +7,8 @@ module Granblue
   #   judged from its skill names (most of them Japanese → jp, most not → en).
   # - Character: the top-level id can be the player's own npc instance id; master.id is the
   #   character's granblue_id. The style is `style`, or `param.style`.
-  # - Storing: .sanitize keeps the character's own data only (an allowlist).
+  # - Storing: .sanitize keeps the character's own data only (an allowlist); .sanitize_item
+  #   does the same for weapon and summon payloads.
   module GamePayload
     JAPANESE = /[\p{Hiragana}\p{Katakana}\p{Han}]/
     SKILL_KEYS = %w[ability special_skill power_up_special_skill support_ability backmember_ability appear_ability].freeze
@@ -28,6 +29,14 @@ module Granblue
     ]).freeze
     # param keys kept (the rest are the player's stats for their copy).
     KEEP_PARAM_KEYS = %w[style rarity image_id_9].freeze
+    # Top-level keys kept by .sanitize_item for a weapon or summon detail payload: the item's
+    # master data, its skills / aura / call and catalogue fields. Nothing reads these payloads
+    # yet (the raw view shows them), so the list is the item's own data only; a reader that
+    # needs more adds it here.
+    ITEM_KEEP_KEYS = %w[
+      master name comment rarity attribute kind type series_id max_level max_evolution_level
+      skill1 skill2 skill3 special_skill skill sub_skill support_ability
+    ].freeze
 
     module_function
 
@@ -76,6 +85,17 @@ module Granblue
       value = payload['series_id'] || section(payload, 'master')['series_id']
       value = value.first if value.is_a?(Array)
       value.to_s if value.is_a?(String) || value.is_a?(Integer)
+    end
+
+    # A weapon or summon payload with only the item's data (ITEM_KEEP_KEYS; the top-level id
+    # only when there's no master block; no param, which is the player's copy). A non-Hash
+    # is returned as is.
+    def sanitize_item(payload)
+      return payload unless payload.is_a?(Hash)
+
+      kept = payload.slice(*ITEM_KEEP_KEYS)
+      kept['id'] = payload['id'] if payload.key?('id') && !payload['master'].is_a?(Hash)
+      kept
     end
 
     def section(payload, key)
