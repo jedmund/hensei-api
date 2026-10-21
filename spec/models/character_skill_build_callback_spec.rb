@@ -21,8 +21,8 @@ RSpec.describe Character, 'skill build callback' do
     end
 
     {
-      'wiki_raw' => '{{Character|x=1}}', 'wiki_raw_jp' => '<p>x</p>', 'game_raw_en' => { 'a' => 1 },
-      'game_raw_jp' => { 'a' => 1 }, 'element' => 3, 'style_swap' => true, 'granblue_id' => '3040999999'
+      'wiki_raw' => '{{Character|x=1}}', 'wiki_raw_jp' => '<p>x</p>', 'game_raw_en' => { 'style' => 1 },
+      'game_raw_jp' => { 'style' => 1 }, 'element' => 3, 'style_swap' => true, 'granblue_id' => '3040999999'
     }.each do |column, value|
       it "queues a build when #{column} changes" do
         expect { character.update!(column => value) }

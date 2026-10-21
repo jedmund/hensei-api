@@ -13,6 +13,46 @@ RSpec.describe Granblue::GamePayload do
     expect(described_class.language({ 'special_skill' => { 'name' => '奥義' } })).to eq('jp')
   end
 
+  it 'goes by most names, so one Japanese skill name leaves an English payload English' do
+    en['ability']['1']['name'] = '運気揚々'
+    expect(described_class.language(en)).to eq('en')
+
+    tie = { 'ability' => { '1' => { 'name' => '炎' }, '2' => { 'name' => 'Fire' } } }
+    expect(described_class.language(tie)).to be_nil
+  end
+
+  describe '.sanitize' do
+    # A player-shaped payload, as the game sends it for the player's own copy.
+    let(:player_payload) do
+      jp.merge('id' => 194_127_733, 'user' => { 'param' => { 'user_id' => '1', 'viewer_id' => '2' } },
+               'pushed_npc' => { 'npc_id' => '3' }, 'artifact' => { 'id' => '4' }, 'rank' => '791',
+               'possessed_lp' => 7266, 'user_npc_id' => 5,
+               'param' => jp['param'].merge('attack' => '19333', 'hp' => '5483', 'level' => '150'))
+    end
+
+    it 'keeps only character data' do
+      kept = described_class.sanitize(player_payload)
+
+      expect(kept.keys).not_to include('id', 'user', 'pushed_npc', 'artifact', 'rank', 'possessed_lp', 'user_npc_id', '_note')
+      expect(kept['param'].keys).to contain_exactly('style', 'rarity', 'image_id_9')
+      expect(kept.slice(*described_class::SKILL_KEYS, 'master', 'style', 'style_list'))
+        .to eq(jp.slice(*described_class::SKILL_KEYS, 'master', 'style', 'style_list'))
+      expect([described_class.granblue_id(kept), described_class.style(kept), described_class.language(kept),
+              described_class.series_id(kept)]).to eq(%w[3040377000 2 jp 6])
+    end
+
+    it "keeps an archive payload's id, which is the character's" do
+      archive = JSON.parse(Rails.root.join('spec/fixtures/character_skills/character-vikala-gamedata.json').read)
+      expect(described_class.sanitize(archive)).to include('id' => '3040252000')
+      expect(described_class.sanitize(archive)).not_to have_key('user_npc_id')
+    end
+
+    it 'leaves a non-object as is' do
+      expect(described_class.sanitize(nil)).to be_nil
+      expect(described_class.sanitize([1])).to eq([1])
+    end
+  end
+
   it 'takes the character from master.id and the style from style or param.style' do
     expect(described_class.granblue_id(jp.merge('id' => '194127733'))).to eq('3040377000')
     expect(described_class.granblue_id({ 'id' => '3040377000' })).to eq('3040377000')

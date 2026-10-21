@@ -276,7 +276,13 @@ class Dataminer
     return unless response_data.is_a?(Hash)
 
     column = LANG_COLUMNS.fetch(lang.to_s) { raise ArgumentError, "unknown lang #{lang.inspect}" }
-    column = payload_column(model_name, granblue_id, response_data, column)
+    if model_name == 'Character' && (detected = Granblue::GamePayload.language(response_data)) &&
+       LANG_COLUMNS[detected] != column
+      summary.skipped!('language mismatch')
+      logger.warn "Character #{granblue_id}: asked for #{column}, but the payload reads as #{detected}; not stored " \
+                  "(fetch with lang=#{detected})"
+      return
+    end
     model = Object.const_get(model_name)
     record = if model_name == 'Character'
                # Error and popup responses are hashes too; only a character payload is stored.
@@ -302,15 +308,17 @@ class Dataminer
              end
 
     if record
-      # A character's payload is its game_raw_* source (D35); the others are columns.
-      before = record.public_send(column)
+      # A character's payload is its game_raw_* source (D35), compared by sha256 without
+      # loading it; the others are columns.
+      stored = ->(row) { row.is_a?(Character) ? row.source_sha256(column) : row.public_send(column) }
+      before = stored.call(record)
       attrs = { column => response_data }
       attrs[:"#{column}_fetched_at"] = Time.current if record.is_a?(Character)
       unless record.update(attrs)
         summary.error!(granblue_id, record.errors.full_messages.to_sentence)
         return
       end
-      summary.fetched!(granblue_id, before: before, after: record.public_send(column))
+      summary.fetched!(granblue_id, before: before, after: stored.call(record))
       logger.debug "Updated #{model_name} #{granblue_id} #{column}#{" (style #{style})" if model_name == 'Character'}"
     else
       summary.skipped!('not in database')
@@ -319,18 +327,6 @@ class Dataminer
   rescue StandardError => e
     summary.error!(granblue_id, e.message)
     logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
-  end
-
-  # A character payload's own language wins over the requested one (D39): the game answers
-  # in the session's language.
-  def payload_column(model_name, granblue_id, response_data, column)
-    return column unless model_name == 'Character'
-
-    detected = Granblue::GamePayload.language(response_data)
-    return column unless detected && LANG_COLUMNS[detected] != column
-
-    logger.warn "Character #{granblue_id}: asked for #{column}, but the payload is #{detected}; storing it as #{detected}"
-    LANG_COLUMNS[detected]
   end
 
   # Rows with no payload for column; a character's is a source.

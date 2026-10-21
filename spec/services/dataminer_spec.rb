@@ -110,15 +110,22 @@ RSpec.describe Dataminer do
       expect(style.game_raw_jp.dig('ability', '1')).to include('name' => '運気揚々', 'action_id' => '244171')
     end
 
-    # D39: the game answers in the session's language, whatever was asked for.
-    it "stores by the payload's language, not the requested one" do
+    # The game answers in the session's language: a payload in the other language is not
+    # stored under the asked-for one.
+    it 'skips a payload whose language disagrees with lang' do
       stub_style(2, style2_jp_payload)
       miner.fetch_character('3040377000', style: 2, lang: 'en', other_styles: false)
-      expect([style.reload.game_raw_jp&.dig('style'), style.game_raw_en]).to eq([2, nil])
 
-      stub_style(2, style2_payload)
+      expect([style.reload.game_raw_jp, style.game_raw_en]).to eq([nil, nil])
+      expect(miner.summary.skips).to include('language mismatch' => 1)
+    end
+
+    it 'stores only character data' do
+      player = style2_jp_payload.merge('id' => 194_127_733, 'user' => { 'param' => { 'viewer_id' => '1' } })
+      stub_style(2, player)
       miner.fetch_character('3040377000', style: 2, lang: 'jp', other_styles: false)
-      expect(style.reload.game_raw_en.dig('ability', '1', 'name')).to eq('Luck Goes Up')
+
+      expect(style.reload.game_raw_jp.keys).not_to include('id', 'user', '_note')
     end
   end
 

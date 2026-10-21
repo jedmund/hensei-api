@@ -933,7 +933,7 @@
   "attribute": 6,
   "lp_rank": 85,
   "change_config_user_sex": 0,
-  "user_npc_id": 227210357,
+  "user_npc_id": null,
   "image_suffix": {
       "01": "0",
       "02": "0"

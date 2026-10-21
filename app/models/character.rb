@@ -13,8 +13,9 @@ class Character < ApplicationRecord
   source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at
   # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
   source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
-  source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at
-  source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at
+  # Game payloads keep only character data (Granblue::GamePayload.sanitize), whoever writes them.
+  source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at, filter: Granblue::GamePayload.method(:sanitize)
+  source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at, filter: Granblue::GamePayload.method(:sanitize)
   # Curated Japanese skill text (D38): { "source" => …, "skills" => [{ kind, position, name_jp, … }] }.
   source_attribute :jp_skill_text
 

@@ -7,8 +7,8 @@
 #   - Blank text and JSON null / empty payloads get no row.
 #   - wiki_raw_jp is trimmed to div#body with Granblue::JpWikiPage.trim, the function the
 #     fetch path uses, so a later refetch of an unchanged page compares equal.
-#   - JSON is stored as canonical text (Source.serialize), so its sha256 is the digest the
-#     skill-build fingerprint already used for the jsonb value.
+#   - Game payloads keep only character data (Granblue::GamePayload.sanitize) and are stored
+#     as canonical JSON text (Source.serialize).
 #   - Idempotent: a character that already has a row of a kind is skipped for that kind
 #     (a newer fetch through the store wins). Batches by id; logs counts only.
 #   - Records when it ran (ar_internal_metadata), so rake granblue:sync_character_sources
@@ -87,6 +87,7 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   # migration doesn't depend on code a later cleanup removes.
   def body_for(kind, value)
     value = Granblue::JpWikiPage.trim(value) if kind == 'wiki_raw_jp'
+    value = Granblue::GamePayload.sanitize(value) if kind.start_with?('game_raw')
     Source.serialize(kind, value)
   end
 

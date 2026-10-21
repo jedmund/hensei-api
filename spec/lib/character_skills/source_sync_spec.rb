@@ -41,14 +41,15 @@ RSpec.describe CharacterSkills::SourceSync do
   let!(:character) { Character.without_skill_build { create(:character) } }
 
   it 'stores a column the copy missed, trimmed and dated' do
-    set_columns(character, wiki_raw_jp: page, wiki_raw_jp_fetched_at: fetched_at, game_raw_en: { 'b' => 1, 'a' => 2 })
+    set_columns(character, wiki_raw_jp: page, wiki_raw_jp_fetched_at: fetched_at,
+                           game_raw_en: { 'style' => 1, 'ability' => { '1' => { 'name' => 'Fire' } }, 'user' => { 'id' => 1 } })
 
     counts = run
 
     expect(counts['wiki_raw_jp'].missing).to eq(1)
     expect(Source.fetch(character, :wiki_raw_jp)).to have_attributes(body: '<div id="body"><p>本文</p></div>',
                                                                      fetched_at: fetched_at)
-    expect(Source.fetch(character, :game_raw_en).body).to eq('{"a":2,"b":1}')
+    expect(Source.fetch(character, :game_raw_en).body).to eq('{"ability":{"1":{"name":"Fire"}},"style":1}')
   end
 
   it 'replaces a copied row the old code changed afterwards' do
@@ -81,7 +82,7 @@ RSpec.describe CharacterSkills::SourceSync do
   it 'queues one build per character it stored, and none on a second run' do
     other = Character.without_skill_build { create(:character) }
     untouched = Character.without_skill_build { create(:character) }
-    set_columns(character, wiki_raw: '{{Missed}}', game_raw_en: { 'a' => 1 })
+    set_columns(character, wiki_raw: '{{Missed}}', game_raw_en: { 'style' => 1 })
     set_columns(other, wiki_raw: '{{Other}}')
     copied_row(untouched, :wiki_raw, '{{Same}}')
     set_columns(untouched, wiki_raw: '{{Same}}')
@@ -109,6 +110,17 @@ RSpec.describe CharacterSkills::SourceSync do
 
     expect(run['wiki_raw'].newer).to eq(1)
     expect(Source.read(character, :wiki_raw)).to eq('{{Old}}')
+  end
+
+  it 'skips a character deleted while it runs' do
+    set_columns(character, wiki_raw: '{{Missed}}')
+    allow(Character).to receive(:select).and_wrap_original do |original, *args|
+      original.call(*args).tap { |relation| allow(relation).to receive(:find_by).and_return(nil) }
+    end
+
+    counts = nil
+    expect { counts = run }.not_to have_enqueued_job(CharacterSkills::BuildJob)
+    expect(counts['wiki_raw']).to have_attributes(deleted: 1, synced: 0)
   end
 
   it 'prints counts only' do

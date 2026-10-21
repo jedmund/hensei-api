@@ -49,9 +49,9 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
                                                              sha256: Digest::SHA256.hexdigest('{{Character}}'))
     expect(Source.fetch(full, :wiki_raw_jp)).to have_attributes(body: Granblue::JpWikiPage.trim(page), fetched_at: fetched_at)
     expect(Source.fetch(full, :wiki_raw_jp).body).to eq('<div id="body"><p>本文</p></div>')
-    expect(Source.fetch(full, :game_raw_en)).to have_attributes(body: '{"ability":{"a":0,"z":1},"b":2,"id":"1"}',
+    expect(Source.fetch(full, :game_raw_en)).to have_attributes(body: '{"ability":{"a":0,"z":1},"id":"1"}',
                                                                 fetched_at: nil)
-    expect(full.reload.game_raw_en).to eq(payload)
+    expect(full.reload.game_raw_en).to eq(payload.except('b')) # not character data: sanitized away
   end
 
   it 'makes no row for blank text, JSON null or an empty payload' do

@@ -26,10 +26,11 @@ module CharacterSkills
     # ar_internal_metadata key holding when the copy migration ran (it writes it).
     COPIED_AT_KEY = "character_sources_copied_at"
 
-    # The stored body for a column value (nil: nothing to store). JP pages are trimmed as
-    # the fetch path trims them; JSON is canonical (Source.serialize).
+    # The stored body for a column value (nil: nothing to store), as the copy migration
+    # stores it: JP pages trimmed, game payloads sanitized, JSON canonical.
     def self.body_for(kind, value)
       value = Granblue::JpWikiPage.trim(value) if kind == "wiki_raw_jp"
+      value = Granblue::GamePayload.sanitize(value) if kind.start_with?("game_raw")
       Source.serialize(kind, value)
     end
 
@@ -40,7 +41,7 @@ module CharacterSkills
       value && Time.iso8601(value)
     end
 
-    Counts = Struct.new(:checked, :same, :missing, :changed, :newer, :blank, keyword_init: true) do
+    Counts = Struct.new(:checked, :same, :missing, :changed, :newer, :blank, :deleted, keyword_init: true) do
       def synced = missing + changed
     end
 
@@ -62,7 +63,8 @@ module CharacterSkills
       @io.puts "copy time: #{@copied_at&.iso8601 || 'unknown (only missing rows are filled)'}"
       results.each do |kind, c|
         @io.puts "#{kind}: #{c.checked} checked, #{c.same} same, #{c.missing} missing → stored, " \
-                 "#{c.changed} changed → stored, #{c.newer} kept (newer in the store), #{c.blank} blank"
+                 "#{c.changed} changed → stored, #{c.newer} kept (newer in the store), #{c.blank} blank, " \
+                 "#{c.deleted} deleted"
       end
       @io.puts "skill builds queued: #{@synced_ids.size}"
       results
@@ -71,7 +73,7 @@ module CharacterSkills
     private
 
     def sync_kind(kind, column, fetched_column)
-      counts = Counts.new(checked: 0, same: 0, missing: 0, changed: 0, newer: 0, blank: 0)
+      counts = Counts.new(checked: 0, same: 0, missing: 0, changed: 0, newer: 0, blank: 0, deleted: 0)
       each_batch(column, fetched_column) do |rows|
         stored = Source.where(owner_type: Character.polymorphic_name, owner_id: rows.map(&:first), kind: kind, key: "")
                        .pluck(:owner_id, :sha256, :updated_at).to_h { |id, sha, updated_at| [id, [sha, updated_at]] }
@@ -88,14 +90,14 @@ module CharacterSkills
       sha, updated_at = stored
       return counts.same += 1 if sha == Source.digest(body)
 
-      if sha
-        return counts.newer += 1 unless @copied_at && updated_at <= @copied_at
+      return counts.newer += 1 if sha && !(@copied_at && updated_at <= @copied_at)
 
-        counts.changed += 1
-      else
-        counts.missing += 1
-      end
-      Source.put_body(Character.select(:id).find(id), kind, body, fetched_at: fetched_at, skip_owner_hook: true)
+      # Deleted since the batch was read: nothing to store it on.
+      character = Character.select(:id).find_by(id: id)
+      return counts.deleted += 1 unless character
+
+      sha ? counts.changed += 1 : counts.missing += 1
+      Source.put_body(character, kind, body, fetched_at: fetched_at, skip_owner_hook: true)
       @synced_ids << id
     end
 

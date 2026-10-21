@@ -29,12 +29,13 @@ module HasSources
       @source_attributes ||= {}
     end
 
-    def source_attribute(name, kind: name, fetched_at: nil)
+    # filter: applied to every assigned value before it's staged (e.g. a sanitizer).
+    def source_attribute(name, kind: name, fetched_at: nil, filter: nil)
       kind = kind.to_s
       source_attributes[name.to_s] = kind
 
       define_method(name) { source_value(kind) }
-      define_method(:"#{name}=") { |value| stage_source(kind, value) }
+      define_method(:"#{name}=") { |value| stage_source(kind, filter ? filter.call(value) : value) }
       return unless fetched_at
 
       define_method(fetched_at) { source_fetched_at(kind) }

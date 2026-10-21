@@ -238,7 +238,7 @@ RSpec.describe 'character source fetch tasks' do
     let!(:unchanged) { create(:character, granblue_id: '3040000301', game_raw_en: nil) }
 
     before do
-      put_source(unchanged, :game_raw_en, payload.merge('id' => '3040000301'))
+      put_source(unchanged, :game_raw_en, Granblue::GamePayload.sanitize(payload.merge('id' => '3040000301')))
       %w[3040377000 3040000301].each do |id|
         stub_request(:post, %r{\Ahttps://game\.granbluefantasy\.jp/archive/npc_detail})
           .with(body: hash_including('character_id' => id, 'style' => 1))
