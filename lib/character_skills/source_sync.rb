@@ -13,7 +13,9 @@ module CharacterSkills
   #     time, recorded by the migration). A row written through the store after the copy is
   #     newer than any column and is kept.
   # Idempotent. The stores themselves queue nothing; afterwards one CharacterSkills::BuildJob
-  # is queued per character whose source it stored (the deploy build has already run by then).
+  # is queued per character whose source it stored (enqueue_builds: false leaves them to the
+  # deploy build, which finds them by fingerprint). Each completed run is recorded in
+  # ar_internal_metadata (SYNCED_AT_KEY), which the column-drop migration checks.
   class SourceSync
     BATCH = 100
     # kind → [column, fetched_at column or nil]
@@ -25,6 +27,8 @@ module CharacterSkills
     }.freeze
     # ar_internal_metadata key holding when the copy migration ran (it writes it).
     COPIED_AT_KEY = "character_sources_copied_at"
+    # When a sync last completed, and what it stored ("<iso8601> synced=<n>").
+    SYNCED_AT_KEY = "character_sources_synced_at"
 
     # The stored body for a column value (nil: nothing to store), as the copy migration
     # stores it: JP pages trimmed, game payloads sanitized, JSON canonical.
@@ -48,8 +52,16 @@ module CharacterSkills
     # Character ids whose sources this run stored (each got one build queued).
     attr_reader :synced_ids
 
-    def initialize(io: $stdout)
+    def self.synced_at
+      value = ActiveRecord::Base.connection.select_value(
+        "SELECT value FROM ar_internal_metadata WHERE key = '#{SYNCED_AT_KEY}'"
+      )
+      value && Time.iso8601(value.split.first)
+    end
+
+    def initialize(io: $stdout, enqueue_builds: true)
       @io = io
+      @enqueue_builds = enqueue_builds
       @copied_at = self.class.copied_at
       @synced_ids = Set.new
     end
@@ -59,18 +71,29 @@ module CharacterSkills
       results = Character.without_skill_build do
         COLUMNS.to_h { |kind, (column, fetched_column)| [kind, sync_kind(kind, column, fetched_column)] }
       end
-      @synced_ids.each { |id| CharacterSkills::BuildJob.perform_later(id) }
+      @synced_ids.each { |id| CharacterSkills::BuildJob.perform_later(id) } if @enqueue_builds
+      record_synced_at
       @io.puts "copy time: #{@copied_at&.iso8601 || 'unknown (only missing rows are filled)'}"
       results.each do |kind, c|
         @io.puts "#{kind}: #{c.checked} checked, #{c.same} same, #{c.missing} missing → stored, " \
                  "#{c.changed} changed → stored, #{c.newer} kept (newer in the store), #{c.blank} blank, " \
                  "#{c.deleted} deleted"
       end
-      @io.puts "skill builds queued: #{@synced_ids.size}"
+      @io.puts @enqueue_builds ? "skill builds queued: #{@synced_ids.size}" : "characters to rebuild: #{@synced_ids.size}"
       results
     end
 
     private
+
+    def record_synced_at
+      conn = ActiveRecord::Base.connection
+      value = "#{Time.current.utc.iso8601(6)} synced=#{@synced_ids.size}"
+      conn.execute(<<~SQL.squish)
+        INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
+        VALUES ('#{SYNCED_AT_KEY}', #{conn.quote(value)}, now(), now())
+        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
+      SQL
+    end
 
     def sync_kind(kind, column, fetched_column)
       counts = Counts.new(checked: 0, same: 0, missing: 0, changed: 0, newer: 0, blank: 0, deleted: 0)
