@@ -221,7 +221,7 @@ module Api
           )
 
           # Parse series_id and assign WeaponSeries
-          series_id = body['series_id'] || body.dig('master', 'series_id')
+          series_id = Granblue::GamePayload.series_id(body)
           if series_id
             slug = GBF_WEAPON_SERIES_TO_SLUG[series_id.to_i]
             if slug
@@ -235,9 +235,9 @@ module Api
 
           render json: { message: 'Weapon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
-          Rails.logger.error "[IMPORT] Failed to update weapon gamedata: #{e.message}"
+          Rails.logger.error "[IMPORT] Failed to update weapon gamedata (#{e.class})"
           report_unexpected_exception(e, phase: 'gamedata_update')
-          render json: { error: e.message }, status: :unprocessable_content
+          render json: { error: 'Could not store the game data' }, status: :unprocessable_content
         end
       end
 
@@ -265,7 +265,7 @@ module Api
           )
 
           # Parse series_id and assign SummonSeries
-          series_id = body['series_id'] || body.dig('master', 'series_id')
+          series_id = Granblue::GamePayload.series_id(body)
           if series_id
             slug = GBF_SUMMON_SERIES_TO_SLUG[series_id.to_i]
             if slug
@@ -279,9 +279,9 @@ module Api
 
           render json: { message: 'Summon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
-          Rails.logger.error "[IMPORT] Failed to update summon gamedata: #{e.message}"
+          Rails.logger.error "[IMPORT] Failed to update summon gamedata (#{e.class})"
           report_unexpected_exception(e, phase: 'gamedata_update')
-          render json: { error: e.message }, status: :unprocessable_content
+          render json: { error: 'Could not store the game data' }, status: :unprocessable_content
         end
       end
 
@@ -307,11 +307,8 @@ module Api
           return render json: { error: 'Character not found' }, status: :not_found
         end
 
-        lang = gamedata_language(body)
-        unless lang
-          Rails.logger.error "[IMPORT] Invalid language: #{params[:lang]}"
-          return render json: { error: 'Invalid language' }, status: :unprocessable_content
-        end
+        lang, error = gamedata_language(body)
+        return render json: error, status: :unprocessable_content if error
 
         begin
           # Stored as the character's game_raw_<lang> source (D35), dated now.
@@ -335,9 +332,9 @@ module Api
 
           render json: { message: 'Character gamedata updated successfully' }, status: :ok
         rescue StandardError => e
-          Rails.logger.error "[IMPORT] Failed to update character gamedata: #{e.message}"
+          Rails.logger.error "[IMPORT] Failed to update character gamedata (#{e.class})"
           report_unexpected_exception(e, phase: 'gamedata_update')
-          render json: { error: e.message }, status: :unprocessable_content
+          render json: { error: 'Could not store the game data' }, status: :unprocessable_content
         end
       end
 
@@ -355,15 +352,20 @@ module Api
         Character.find_by(granblue_id: granblue_id, style_swap: false) || Character.find_by(granblue_id: granblue_id)
       end
 
-      # The payload's own language (its skill names), not the lang param: the game answers in
-      # the account's language. lang decides only a payload with no skill names. → "en", "jp" or nil.
+      # The payload's language, judged from its skill names (the game answers in the account's
+      # language); lang decides only a payload that can't be judged, and a lang that disagrees
+      # is refused. → [lang, nil] or [nil, error body].
       def gamedata_language(body)
-        param = params[:lang].presence_in(%w[en jp])
         detected = Granblue::GamePayload.language(body)
-        if detected && param && detected != param
-          Rails.logger.info "[IMPORT] lang=#{param}, but the payload is #{detected}; storing it as #{detected}"
+        requested = params[:lang].presence_in(%w[en jp])
+        if detected && requested && detected != requested
+          Rails.logger.error "[IMPORT] lang=#{requested}, but the payload reads as #{detected}"
+          return [nil, { error: 'language_mismatch', message: "This game data is in #{detected}, not #{requested}" }]
         end
-        detected || param
+        return [detected || requested, nil] if detected || requested
+
+        Rails.logger.error '[IMPORT] Invalid language'
+        [nil, { error: 'Invalid language' }]
       end
 
       def import_by_kind(body)
@@ -474,12 +476,19 @@ module Api
       #
       # @return [Hash] Parsed JSON data.
       # @raise [JSON::ParserError] If the JSON is invalid.
+      # The request body as a Hash; anything else (an array, a number, null) renders a 422 and
+      # returns nil.
       def parse_request_body
-        raw_body = request.raw_post
-        JSON.parse(raw_body)
-      rescue JSON::ParserError => e
-        Rails.logger.error "[IMPORT] Invalid JSON: #{e.message}"
-        render json: { error: 'Invalid JSON data' }, status: :bad_request and return
+        body = JSON.parse(request.raw_post)
+        return body if body.is_a?(Hash)
+
+        Rails.logger.error "[IMPORT] Body is not a JSON object (#{body.class})"
+        render json: { error: 'Invalid JSON data' }, status: :unprocessable_content
+        nil
+      rescue JSON::ParserError
+        Rails.logger.error '[IMPORT] Invalid JSON'
+        render json: { error: 'Invalid JSON data' }, status: :bad_request
+        nil
       end
 
       ##

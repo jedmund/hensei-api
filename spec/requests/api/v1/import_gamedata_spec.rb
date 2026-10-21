@@ -78,8 +78,8 @@ RSpec.describe 'Import gamedata', type: :request do
         end
       end
 
-      it 'stores it as game_raw_jp on the style row, whatever lang says' do
-        post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
+      it 'stores it as game_raw_jp on the style row, without lang too' do
+        post '/api/v1/import/characters', params: jp_payload.to_json, headers: headers_for(editor)
 
         expect(response.parsed_body).to eq('message' => 'Character gamedata updated successfully')
         expect(style.reload.game_raw_jp.dig('ability', '1', 'name')).to eq('運気揚々')
@@ -87,8 +87,27 @@ RSpec.describe 'Import gamedata', type: :request do
         expect(base.reload.game_raw_jp).to be_nil
       end
 
-      it 'builds the style from it: game icons, action ids, Japanese and English names' do
+      it 'refuses a lang that disagrees with the payload' do
         post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.parsed_body['error']).to eq('language_mismatch')
+        expect(style.reload.game_raw_jp).to be_nil
+      end
+
+      it 'stores only character data' do
+        player = jp_payload.merge('user' => { 'param' => { 'viewer_id' => '1' } }, 'pushed_npc' => { 'npc_id' => '2' },
+                                  'param' => jp_payload['param'].merge('level' => '150'))
+        post '/api/v1/import/characters?lang=jp', params: player.to_json, headers: headers_for(editor)
+
+        stored = style.reload.game_raw_jp
+        expect(stored.keys).not_to include('id', 'user', 'pushed_npc', '_note')
+        expect(stored['param'].keys).to contain_exactly('style', 'rarity', 'image_id_9')
+        expect(stored['ability']).to eq(jp_payload['ability'])
+      end
+
+      it 'builds the style from it: game icons, action ids, Japanese and English names' do
+        post '/api/v1/import/characters?lang=jp', params: jp_payload.to_json, headers: headers_for(editor)
 
         slots = Granblue::Parsers::CharacterSkillParser.new(Character.find(style.id)).graph[:slots]
         firsts = slots.map { |slot| slot[:versions].first[:attrs] }
@@ -101,7 +120,7 @@ RSpec.describe 'Import gamedata', type: :request do
       end
 
       it 'takes English names from name_en when there is no English payload' do
-        post '/api/v1/import/characters?lang=en', params: jp_payload.to_json, headers: headers_for(editor)
+        post '/api/v1/import/characters?lang=jp', params: jp_payload.to_json, headers: headers_for(editor)
 
         data = Granblue::Parsers::CharacterWikiData.new(Character.find(style.id))
         expect(data.game_action('a1')).to include('name' => 'Luck Goes Up', 'class_name' => '2559_3', 'action_id' => '244171')
@@ -118,9 +137,6 @@ RSpec.describe 'Import gamedata', type: :request do
       end
 
       it 'is a 404, not a 500, for a malformed body' do
-        post '/api/v1/import/characters?lang=en', params: [1, 2].to_json, headers: headers_for(editor)
-        expect(response).to have_http_status(:not_found)
-
         post '/api/v1/import/characters?lang=en', params: { 'master' => 'x' }.to_json, headers: headers_for(editor)
         expect(response).to have_http_status(:not_found)
       end
@@ -139,6 +155,33 @@ RSpec.describe 'Import gamedata', type: :request do
         post '/api/v1/import/characters?lang=jp', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
         expect(base.reload.game_raw_jp).to eq('id' => '3040377000')
       end
+    end
+  end
+
+  describe 'a body that is not a JSON object' do
+    not_objects = ['[1, 2]', '42', 'null', 'false', '"text"']
+    %w[characters weapons summons].each do |kind|
+      not_objects.each do |body|
+        it "is a 422 for #{kind} with #{body}" do
+          post "/api/v1/import/#{kind}?lang=en", params: body, headers: headers_for(editor)
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.parsed_body['error']).to eq('Invalid JSON data')
+        end
+      end
+    end
+  end
+
+  describe 'a failure while storing' do
+    let!(:character) { create(:character, granblue_id: '3040377000') }
+
+    it 'answers with a generic message' do
+      allow_any_instance_of(Character).to receive(:update!).and_raise(StandardError, 'secret detail')
+      post '/api/v1/import/characters?lang=en', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).not_to include('secret detail')
+      expect(response.parsed_body['error']).to eq('Could not store the game data')
     end
   end
 
