@@ -5,14 +5,17 @@
 # exports and lookups by title missed them: Eternal weapon variants are named by color
 # (Incendo/Cardinal), Touken Ranbu and Raphael weapon pages carry "(Weapon)", and a few
 # characters dropped "(Grand)" or gained "(Promo)". Rows are matched on granblue_id and
-# their current title, so style shifts sharing a granblue_id keep theirs. Only wiki_en
-# changes; names stay as they are. Rerunnable; a row with neither title aborts the
-# migration before anything is written.
+# their current title, so style shifts sharing a granblue_id keep theirs; every row on the
+# old title is retitled. Only wiki_en changes; names stay as they are.
+#
+# Rerunnable and atomic: everything runs in one transaction. A granblue_id with no row on
+# either title is skipped and reported with say rather than raised, since this runs
+# before every API deploy and a raise would block the release.
 #
 # The weapon-skill build reads a weapon's page from weapon_sources by wiki_en. Where the
-# new page is already stored as a page the old one transcluded, it becomes the weapon's
+# new page is already stored as a page the old one transcluded, it becomes that weapon's
 # wiki_raw source, as a fresh fetch would store it, so the build keeps working without
-# fetching from the wiki.
+# fetching from the wiki. A weapon with no stored copy keeps its sources as they are.
 class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
   WEAPONS = {
     '1040002500' => ['Seven-Star Sword (Element Changed)', 'Seven-Star Sword Incendo'],
@@ -55,14 +58,13 @@ class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
   }.freeze
 
   def up
-    weapons = rows(Weapon, WEAPONS)
-    characters = rows(Character, CHARACTERS)
-
-    weapons.each { |weapon, title| weapon.update_columns(wiki_en: title) }
-    characters.each { |character, title| character.update_columns(wiki_en: title) }
-    promoted = weapons.keys.count { |weapon| promote_stored_page(weapon) }
-    say "weapons.wiki_en: #{weapons.size} retitled, #{promoted} stored pages became wiki_raw sources"
-    say "characters.wiki_en: #{characters.size} retitled"
+    transaction do
+      weapons = retitle(Weapon, WEAPONS)
+      characters = retitle(Character, CHARACTERS)
+      promoted = weapons.count { |weapon| promote_stored_page(weapon) }
+      say "weapons.wiki_en: #{weapons.size} retitled, #{promoted} stored pages became wiki_raw sources"
+      say "characters.wiki_en: #{characters.size} retitled"
+    end
   end
 
   def down
@@ -71,14 +73,15 @@ class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
 
   private
 
-  # Row → new title for each entry still on its old title. Raises when a row has neither.
-  def rows(model, titles)
-    titles.each_with_object({}) do |(granblue_id, (from, to)), found|
-      row = model.find_by(granblue_id: granblue_id, wiki_en: from)
-      next found[row] = to if row
-      next if model.exists?(granblue_id: granblue_id, wiki_en: to)
-
-      raise "Missing #{model.name} #{granblue_id} titled #{from.inspect} or #{to.inspect}"
+  # Retitles every row still on its old title and returns them. An id with no row on
+  # either title is skipped and reported.
+  def retitle(model, titles)
+    titles.flat_map do |granblue_id, (from, to)|
+      found = model.where(granblue_id: granblue_id, wiki_en: from).to_a
+      if found.empty? && !model.exists?(granblue_id: granblue_id, wiki_en: to)
+        say "Skipped #{model.name} #{granblue_id}: no row titled #{from.inspect} or #{to.inspect}"
+      end
+      found.each { |row| row.update_columns(wiki_en: to) }
     end
   end
 
@@ -87,16 +90,14 @@ class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
     page = WeaponSource.find_by(weapon_id: weapon.id, kind: 'transclusion', key: weapon.wiki_en)
     return false unless page
 
-    WeaponSource.transaction do
-      WeaponSource.where(weapon_id: weapon.id, kind: 'wiki_raw').delete_all
-      WeaponSkills::SourceStore::Database.new.put(
-        'wiki_raw', weapon.wiki_en, page.body,
-        page_kind: WeaponSkills::SourceStore::Fetcher.page_kind(page.body),
-        fetched_at: page.fetched_at, weapon_id: weapon.id
-      )
-      page.destroy!
-      weapon.update_columns(wiki_raw: page.body, wiki_raw_fetched_at: page.fetched_at)
-    end
+    WeaponSource.where(weapon_id: weapon.id, kind: 'wiki_raw').delete_all
+    WeaponSkills::SourceStore::Database.new.put(
+      'wiki_raw', weapon.wiki_en, page.body,
+      page_kind: WeaponSkills::SourceStore::Fetcher.page_kind(page.body),
+      fetched_at: page.fetched_at, weapon_id: weapon.id
+    )
+    page.destroy!
+    weapon.update_columns(wiki_raw: page.body, wiki_raw_fetched_at: page.fetched_at)
     true
   end
 end

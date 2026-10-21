@@ -53,9 +53,52 @@ RSpec.describe FixStaleWikiTitles do
     expect(weapon.reload.wiki_raw).to eq(stored.body)
   end
 
-  it 'aborts before writing when a row has neither title' do
+  it 'promotes per weapon and retitles every row sharing an id and the old title' do
+    first = weapons['1040505700']
+    second = create(:weapon, granblue_id: '1040505700', wiki_en: 'Raphael')
+    [first, second].each_with_index do |weapon, index|
+      WeaponSource.create!(weapon: weapon, kind: 'transclusion', key: 'Raphael (Weapon)',
+                           body: "{{Weapon\n|id=1040505700\n|copy=#{index}\n}}", fetched_at: index.days.ago)
+    end
+
+    migration.up
+
+    [first, second].each_with_index do |weapon, index|
+      expect(weapon.reload.wiki_en).to eq('Raphael (Weapon)')
+      expect(WeaponSource.where(weapon: weapon).pluck(:kind, :key)).to eq([['wiki_raw', 'Raphael (Weapon)']])
+      expect(weapon.wiki_raw).to include("|copy=#{index}")
+    end
+  end
+
+  it 'lets the build find the promoted page by its new title' do
+    body = "{{Weapon\n|id=1030902400\n}}"
+    WeaponSource.create!(weapon: weapons['1030902400'], kind: 'transclusion', key: 'Honebami Toushirou (Weapon)',
+                         body: body, fetched_at: 1.day.ago)
+
+    migration.up
+
+    expect(WeaponSkills::SourceStore::Database.new.fetch('wiki_raw', 'Honebami Toushirou (Weapon)').body).to eq(body)
+  end
+
+  it 'keeps the sources of a retitled weapon with no stored copy of its new page' do
+    weapon = weapons['1040908200']
+    old_page = WeaponSource.create!(weapon: weapon, kind: 'wiki_raw', key: 'Mikazuki Munechika',
+                                    body: '{{Character}}', fetched_at: 2.days.ago, page_kind: 'inline')
+    weapon.update_columns(wiki_raw: old_page.body)
+
+    migration.up
+
+    expect(weapon.reload.wiki_en).to eq('Mikazuki Munechika (Weapon)')
+    expect(WeaponSource.where(weapon: weapon).pluck(:id, :kind, :key, :body))
+      .to eq([[old_page.id, 'wiki_raw', 'Mikazuki Munechika', '{{Character}}']])
+    expect(weapon.wiki_raw).to eq('{{Character}}')
+  end
+
+  it 'skips a row with neither title and retitles the rest' do
     weapons['1040908300'].update_columns(wiki_en: 'Something Else')
-    expect { migration.up }.to raise_error(/Missing Weapon 1040908300/)
-    expect(weapons['1040505700'].reload.wiki_en).to eq('Raphael')
+    expect { migration.up }.to output(/Skipped Weapon 1040908300: no row titled "Tsurumaru Kuninaga \(NPC\)"/).to_stdout
+    expect(weapons['1040908300'].reload.wiki_en).to eq('Something Else')
+    expect(weapons['1040505700'].reload.wiki_en).to eq('Raphael (Weapon)')
+    expect(characters['3040501000'].reload.wiki_en).to eq('Uriel')
   end
 end
