@@ -114,12 +114,15 @@ RSpec.describe CharacterSkills::SourceSync do
 
   it 'skips a character deleted while it runs' do
     set_columns(character, wiki_raw: '{{Missed}}')
-    allow(Character).to receive(:select).and_wrap_original do |original, *args|
-      original.call(*args).tap { |relation| allow(relation).to receive(:find_by).and_return(nil) }
+    # The batch is read, then the row goes before its source is stored.
+    sync = described_class.new(io: io)
+    allow(sync).to receive(:sync_one).and_wrap_original do |original, *args|
+      Character.where(id: character.id).delete_all
+      original.call(*args)
     end
 
     counts = nil
-    expect { counts = run }.not_to have_enqueued_job(CharacterSkills::BuildJob)
+    expect { counts = sync.call }.not_to have_enqueued_job(CharacterSkills::BuildJob)
     expect(counts['wiki_raw']).to have_attributes(deleted: 1, synced: 0)
   end
 

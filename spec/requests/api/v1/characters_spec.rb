@@ -275,6 +275,20 @@ RSpec.describe 'Api::V1::Characters', type: :request do
         expect(character.wiki_raw_fetched_at).to eq(fetched_at)
       end
 
+      it "doesn't read or touch the wikitext when the update doesn't send it" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('"sources"') }
+        ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
+          put "/api/v1/characters/#{character.id}", params: { character: { name_en: 'Renamed' } }.to_json,
+                                                    headers: editor_headers
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(queries.join).not_to include('"sources"."body"')
+        expect(character.reload).to have_attributes(name_en: 'Renamed', wiki_raw: '{{Character|name=Vikala}}',
+                                                    wiki_raw_fetched_at: fetched_at)
+      end
+
       it 'replaces the wikitext and stamps the fetch date when the update sends new text' do
         put "/api/v1/characters/#{character.id}",
             params: { character: { wiki_raw: '{{Character|name=Vikala (Summer)}}' } }.to_json,

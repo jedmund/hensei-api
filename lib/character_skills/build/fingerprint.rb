@@ -13,8 +13,9 @@ module CharacterSkills
     # Stored on characters.character_skill_build_fingerprint after a write; a run without
     # all: true skips characters whose fingerprint still matches.
     #
-    # A source's sha256 is the digest of its stored body; JSON payloads are stored as
-    # canonical JSON, so their digest is the one the jsonb columns had before the move (D35).
+    # A source's sha256 is the digest of its stored body (game payloads sanitized, then
+    # canonical JSON), so it differs from the old jsonb columns' digest; moving changes each
+    # fingerprint once (D35).
     #
     # Two paths produce the same digest:
     #   - #for(character) reads an in-memory record (staged, unsaved text included, for previews);
