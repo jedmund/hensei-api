@@ -23,4 +23,13 @@ RSpec.describe 'config/sidekiq.yml schedule' do
       expect(queues).to include(job['queue']), "#{name}: queue #{job['queue']} isn't processed"
     end
   end
+
+  it 'refreshes the status list on the 2nd and the 20th, late evening JST' do
+    job = schedule.fetch('wiki_status_list')
+    cron = Fugit.parse_cron(job['cron'])
+    expect(job['class']).to eq('Sources::FetchWikiStatusListJob')
+    expect(cron.timezone.name).to eq('Asia/Tokyo')
+    expect(cron.monthdays).to eq([2, 20])
+    expect([cron.hours, cron.minutes]).to eq([[23], [30]])
+  end
 end
