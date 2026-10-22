@@ -124,7 +124,7 @@ module WeaponSkills
         ActiveRecord::Base.transaction do
           WeaponSource.where(id: plan.deletes).delete_all if plan.deletes.any?
           plan.inserts.each_slice(BATCH) do |batch|
-            WeaponSource.insert_all!(batch.map { |row| row.merge(created_at: now, updated_at: now) })
+            WeaponSource.insert_all!(batch.map { |row| stored_row(row).merge(created_at: now, updated_at: now) })
           end
           Weapon.where(id: plan.weapon_updates.keys).select(:id).find_each do |weapon|
             attrs = plan.weapon_updates.fetch(weapon.id)
@@ -132,6 +132,12 @@ module WeaponSkills
             ::Source.put(weapon, :wiki_raw, attrs[:wiki_raw], fetched_at: attrs[:fetched_at])
           end
         end
+      end
+
+      # A planned row as a `sources` row: the weapon is its owner.
+      def stored_row(row)
+        weapon_id = row[:weapon_id]
+        row.except(:weapon_id).merge(owner_id: weapon_id, owner_type: weapon_id && Weapon.polymorphic_name)
       end
     end
   end

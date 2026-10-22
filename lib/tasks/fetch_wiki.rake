@@ -81,7 +81,7 @@ namespace :granblue do
     count = 0
     weapons.each_with_index do |weapon, i|
       begin
-        Granblue::WikiFetcher.new(delay: delay).fetch_and_store(weapon) # also refreshes weapon_sources
+        Granblue::WikiFetcher.new(delay: delay).fetch_and_store(weapon) # also refreshes the stored sources
         count += 1
         puts "  (#{i + 1}/#{total}) #{weapon.name_en}"
       rescue StandardError => e

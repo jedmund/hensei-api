@@ -3,7 +3,7 @@
 module WeaponSkills
   module VersionText
     # Fills weapon_skill_versions.description_en/_jp with each tier's own text, read
-    # offline from stored sources (weapon_sources through Wiki.offline). Never fetches.
+    # offline from stored sources (WeaponSource through Wiki.offline). Never fetches.
     #
     # Where the English text comes from, in order:
     #   inline / key-determined pages:

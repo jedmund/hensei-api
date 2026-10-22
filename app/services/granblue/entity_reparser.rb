@@ -41,7 +41,7 @@ module Granblue
     end
 
     # → { skills:, built:, warnings:, counts: } (counts: the writer's report).
-    # Raises MissingWikiRawError when the weapon's page isn't in weapon_sources (a build
+    # Raises MissingWikiRawError when the weapon's page isn't stored (WeaponSource; a build
     # without it would delete the weapon's generated skills), and re-raises a build failure.
     def reparse_weapon
       unless stored_page?
@@ -57,7 +57,7 @@ module Granblue
         counts: summary.counts.to_h }
     end
 
-    # The build reads the weapon's page from weapon_sources, by wiki_en.
+    # The build reads the weapon's page from the stored sources, by wiki_en.
     def stored_page?
       return false if @entity.wiki_en.blank?
 

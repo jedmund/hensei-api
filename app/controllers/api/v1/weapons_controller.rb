@@ -196,7 +196,7 @@ module Api
       end
 
       # POST /weapons/:id/fetch_wiki
-      # Fetches the weapon's wiki sources into weapon_sources, then rebuilds its skills from
+      # Fetches the weapon's wiki sources into the stored sources, then rebuilds its skills from
       # them (the weapon-skill build).
       def fetch_wiki
         unless @weapon.wiki_en.present?

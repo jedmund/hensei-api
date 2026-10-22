@@ -10,7 +10,7 @@ module WeaponSkills
   # "key_determined"
   #
   # W0 defines the interface and an in-memory store for specs; W3 adds the database-backed
-  # store (weapon_sources table).
+  # store (WeaponSource: the store's rows of the `sources` table).
   module SourceStore
     KINDS = %w[wiki_raw expanded transclusion family_template].freeze
     PAGE_KINDS = %w[inline series_template key_determined].freeze

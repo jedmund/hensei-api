@@ -4,7 +4,7 @@ module WeaponSkills
   module SourceStore
     # The one step that talks to gbf.wiki. It fills a store with everything the weapon-skill
     # parse reads:
-    #   wiki_raw         a weapon's page (also written to weapons.wiki_raw)
+    #   wiki_raw         a weapon's page (also written to the weapon's own wiki_raw)
     #   expanded         expandtemplates output for series-template pages and pages whose
     #                    structural parse leaves {{…}} in skill names
     #   transclusion     pages and templates the structural parse follows
@@ -108,7 +108,7 @@ module WeaponSkills
       private
 
       # The weapon page, following a #REDIRECT once (and pointing wiki_en at the target),
-      # also written to weapons.wiki_raw like WikiFetcher always did.
+      # also written to the weapon's own wiki_raw like WikiFetcher always did.
       def fetch_page_text(weapon)
         text = request!("page #{weapon.wiki_en}") { @wiki.fetch(weapon.wiki_en) }
         if (redirect = text.match(/#REDIRECT \[\[(.*?)\]\]/))
