@@ -41,9 +41,9 @@ class Source < ApplicationRecord
     # not JSON: the body is the exported file byte for byte, so its sha256 is the file's.
     'icon_snapshot' => :text
   }.freeze
-  # A weapon page's kind, decided by the fetch (WeaponSkills::SourceStore::Fetcher.page_kind);
-  # only the weapon-skill store's wiki_raw and expanded rows have one.
-  PAGE_KINDS = %w[inline series_template key_determined].freeze
+  # page_kind belongs to the weapon-skill store's rows (WeaponSource validates it; a check
+  # constraint holds it). Source doesn't read it, so data migrations that run before the
+  # column exists still work.
 
   # What a put did: created | changed | unchanged (only fetched_at moved) | removed (blank
   # value, a row was deleted) | absent (blank value, nothing stored).
@@ -55,7 +55,6 @@ class Source < ApplicationRecord
 
   validates :kind, inclusion: { in: KINDS.keys }
   validates :body, :sha256, presence: true
-  validates :page_kind, inclusion: { in: PAGE_KINDS }, allow_nil: true
 
   # Set by an owner that writes its own sources and handles the change itself.
   attr_accessor :skip_owner_hook
