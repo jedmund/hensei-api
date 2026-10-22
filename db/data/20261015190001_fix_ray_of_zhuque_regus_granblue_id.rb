@@ -22,7 +22,14 @@ class FixRayOfZhuqueRegusGranblueId < ActiveRecord::Migration[8.0]
     end
 
     regus.update_columns(granblue_id: REGUS_ID)
-    stored_id = regus.wiki_raw.to_s[/^\|id=\s*(\d+)/, 1]
+    # The column this read (Weapon#wiki_raw reads `sources` since PR 7b, filled later by
+    # 20261022110000).
+    page = if column_exists?(:weapons, :wiki_raw)
+             Weapon.where(id: regus.id).pick(Arel.sql("wiki_raw"))
+           else
+             regus.wiki_raw
+           end
+    stored_id = page.to_s[/^\|id=\s*(\d+)/, 1]
     return say("stored wikitext is #{stored_id || 'missing'}, not Regus; skills not rebuilt") unless stored_id == REGUS_ID
 
     # Since W8 gate 4 a reparse is the weapon-skill build, which needs the stored source.

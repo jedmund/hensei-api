@@ -17,6 +17,14 @@
 # wiki_raw source, as a fresh fetch would store it, so the build keeps working without
 # fetching from the wiki. A weapon with no stored copy keeps its sources as they are.
 class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
+  # The weapon_sources table this ran on, and the weapons columns it wrote. WeaponSource and
+  # Weapon#wiki_raw read `sources` since PR 7b, and 20261022110000/20261022110100 copy the
+  # columns and weapon_sources there later, so a database that runs this late gets the same
+  # result.
+  class StoredSource < ApplicationRecord
+    self.table_name = 'weapon_sources'
+  end
+
   WEAPONS = {
     '1040002500' => ['Seven-Star Sword (Element Changed)', 'Seven-Star Sword Incendo'],
     '1040003700' => ['Seven-Star Sword (Awakened)', 'Seven-Star Sword Cardinal'],
@@ -87,17 +95,19 @@ class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
 
   # Returns whether the weapon's new page was stored and is now its wiki_raw source.
   def promote_stored_page(weapon) # rubocop:disable Naming/PredicateMethod
-    page = WeaponSource.find_by(weapon_id: weapon.id, kind: 'transclusion', key: weapon.wiki_en)
+    return false unless table_exists?(:weapon_sources)
+
+    page = StoredSource.find_by(weapon_id: weapon.id, kind: 'transclusion', key: weapon.wiki_en)
     return false unless page
 
-    WeaponSource.where(weapon_id: weapon.id, kind: 'wiki_raw').delete_all
-    WeaponSkills::SourceStore::Database.new.put(
-      'wiki_raw', weapon.wiki_en, page.body,
-      page_kind: WeaponSkills::SourceStore::Fetcher.page_kind(page.body),
-      fetched_at: page.fetched_at, weapon_id: weapon.id
-    )
+    StoredSource.where(weapon_id: weapon.id, kind: 'wiki_raw').delete_all
+    StoredSource.create!(weapon_id: weapon.id, kind: 'wiki_raw', key: Granblue::WikiTitle.normalize(weapon.wiki_en).to_s,
+                         body: page.body, sha256: Digest::SHA256.hexdigest(page.body), fetched_at: page.fetched_at,
+                         page_kind: WeaponSkills::SourceStore::Fetcher.page_kind(page.body))
     page.destroy!
-    Source.put(weapon, :wiki_raw, page.body, fetched_at: page.fetched_at)
+    if column_exists?(:weapons, :wiki_raw)
+      Weapon.where(id: weapon.id).update_all(wiki_raw: page.body, wiki_raw_fetched_at: page.fetched_at)
+    end
     true
   end
 end

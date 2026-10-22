@@ -7,6 +7,13 @@
 # keys that name the same pages. Where two stored sources normalize to the same title, the
 # newest is kept.
 class NormalizeWikiTitles < ActiveRecord::Migration[8.0]
+  # The weapon_sources table this ran on. WeaponSource reads `sources` since PR 7b, and
+  # 20261022110100 copies weapon_sources there later, so a database that runs this late
+  # still fixes the rows that get copied.
+  class StoredSource < ApplicationRecord
+    self.table_name = 'weapon_sources'
+  end
+
   def up
     [Weapon, Summon, Character].each do |model|
       changed = 0
@@ -30,19 +37,21 @@ class NormalizeWikiTitles < ActiveRecord::Migration[8.0]
   private
 
   def normalize_source_keys
-    rows = WeaponSource.pluck(:id, :weapon_id, :kind, :key, :fetched_at)
+    return unless table_exists?(:weapon_sources)
+
+    rows = StoredSource.pluck(:id, :weapon_id, :kind, :key, :fetched_at)
     renamed = 0
     removed = 0
     rows.group_by { |_, weapon_id, kind, key, _| [weapon_id, kind, Granblue::WikiTitle.normalize(key)] }
         .each do |(_, _, normalized), group|
       keep, *older = group.sort_by { |row| row[4] }.reverse
       if older.any?
-        WeaponSource.where(id: older.map(&:first)).delete_all
+        StoredSource.where(id: older.map(&:first)).delete_all
         removed += older.size
       end
       next if keep[3] == normalized
 
-      WeaponSource.where(id: keep[0]).update_all(key: normalized)
+      StoredSource.where(id: keep[0]).update_all(key: normalized)
       renamed += 1
     end
     say "weapon_sources keys: #{renamed} normalized, #{removed} duplicates removed"
