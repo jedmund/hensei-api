@@ -7,7 +7,8 @@ module Api
       include BatchPreviewable
 
       before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview
+                                                  raw]
 
       # GET /weapons/:id
       def show

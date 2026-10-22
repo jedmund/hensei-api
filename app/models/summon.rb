@@ -5,6 +5,8 @@ class Summon < ApplicationRecord
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).
+  normalizes :game_raw_en, :game_raw_jp, with: ->(payload) { Granblue::GamePayload.sanitize_item(payload) }
 
   belongs_to :summon_series, optional: true
   has_many :auras, class_name: "SummonAura", foreign_key: :summon_granblue_id,

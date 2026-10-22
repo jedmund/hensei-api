@@ -5,6 +5,8 @@ class Weapon < ApplicationRecord
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).
+  normalizes :game_raw_en, :game_raw_jp, with: ->(payload) { Granblue::GamePayload.sanitize_item(payload) }
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |weapon|
