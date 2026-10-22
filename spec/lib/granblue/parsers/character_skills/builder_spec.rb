@@ -33,7 +33,6 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
   end
 
   describe 'game_icon resolution' do
-    let(:snapshot_path) { Rails.root.join('tmp', "icon-snapshot-#{SecureRandom.hex(4)}.json") }
     let(:wiki_raw) do
       File.read(fixtures.join('character-vikala-wikidata.txt'))
           .sub(/^\|a1_icon=.*$/, '|a1_icon= Ability_m_9999_1.png')
@@ -53,16 +52,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
       { granblue_id: '3040252000', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: name_en, game_icon: game_icon }
     end
 
-    before do
-      File.write(snapshot_path, JSON.generate(snapshot_entries))
-      stub_const('CharacterSkills::IconSnapshot::DEFAULT_PATH', snapshot_path)
-      CharacterSkills::IconSnapshot.reset!
-    end
-
-    after do
-      FileUtils.rm_f(snapshot_path)
-      CharacterSkills::IconSnapshot.reset!
-    end
+    before { put_icon_snapshot(snapshot_entries) }
 
     context 'with game data' do
       let(:game_raw_en) { JSON.parse(File.read(fixtures.join('character-vikala-gamedata.json'))) }

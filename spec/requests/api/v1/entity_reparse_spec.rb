@@ -165,19 +165,10 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
       end
 
       context 'when the character has no game data' do
-        let(:snapshot_path) { Rails.root.join('tmp', "icon-snapshot-#{SecureRandom.hex(4)}.json") }
-
         before do
           # Wiki icon stems that differ from the game's class_names, so only the snapshot
           # can bring the game's icons back.
           put_source(character, :wiki_raw, character.wiki_raw.gsub(/^\|(a\d_icon)=.*$/, '|\1= Ability_m_9999_1.png'))
-          stub_const('CharacterSkills::IconSnapshot::DEFAULT_PATH', snapshot_path)
-          CharacterSkills::IconSnapshot.reset!
-        end
-
-        after do
-          FileUtils.rm_f(snapshot_path)
-          CharacterSkills::IconSnapshot.reset!
         end
 
         it 'a reparse of a character without game data keeps its icons (via the snapshot)' do
@@ -186,7 +177,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
           expect(with_game_data.map(&:last)).to include('1065_1', '1947_3')
           expect(with_game_data.map(&:last)).not_to include('9999_1')
 
-          CharacterSkills::IconSnapshot.export(snapshot_path)
+          CharacterSkills::IconSnapshot.export
           put_source(character, :game_raw_en, nil)
 
           post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
