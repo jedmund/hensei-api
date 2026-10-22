@@ -11,6 +11,9 @@ class BackfillWikiFetchDates < ActiveRecord::Migration[8.1]
     [Weapon, Summon, Character].each do |model|
       model.reset_column_information
       COLUMNS.each do |text, stamp|
+        # characters' columns are dropped later (20261022090000); their data lives in `sources`.
+        next unless connection.column_exists?(model.table_name, text)
+
         model.where.not(text => [nil, '']).where(stamp => nil).update_all(stamp => BACKFILL_AT)
       end
     end

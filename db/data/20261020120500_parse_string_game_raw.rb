@@ -11,6 +11,9 @@ class ParseStringGameRaw < ActiveRecord::Migration[8.0]
 
   def up
     TABLES.product(COLUMNS).each do |table, column|
+      # characters' columns are dropped later (20261022090000).
+      next unless db.column_exists?(table, column)
+
       parsed, skipped = parse_strings(table, column)
       nulled = db.exec_update("UPDATE #{table} SET #{column} = NULL WHERE jsonb_typeof(#{column}) = 'null'")
       say "#{table}.#{column}: #{parsed} strings parsed, #{skipped} skipped, #{nulled} JSON nulls cleared"

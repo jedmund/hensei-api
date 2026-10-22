@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
+  include CharacterSourceColumns
+
   let(:migration_class) do
     unless defined?(CopyCharacterSourcesToSourcesTable)
       require Rails.root.join('db/data/20261020210000_copy_character_sources_to_sources_table')
@@ -82,12 +84,12 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
 
   it 'records when it first ran, for the sync task' do
     run
-    first = CharacterSkills::SourceSync.copied_at
+    first = source_metadata_time('character_sources_copied_at')
     expect(first).to be_within(1.minute).of(Time.current)
     expect(Source.maximum(:updated_at)).to be <= first
 
     travel_to(1.hour.from_now) { run }
-    expect(CharacterSkills::SourceSync.copied_at).to eq(first)
+    expect(source_metadata_time('character_sources_copied_at')).to eq(first)
   end
 
   it 'is irreversible' do
@@ -102,5 +104,18 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
 
     expect(output.string).to include('wiki_raw: 1 copied, 1 blank', 'game_raw_en: 1 copied, 1 blank')
     expect(output.string).not_to include('Character}}', '本文')
+  end
+
+  it 'does nothing once the columns are gone' do
+    %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp wiki_raw_fetched_at wiki_raw_jp_fetched_at]
+      .each { |column| Character.connection.remove_column(:characters, column) }
+    Character.reset_column_information
+
+    output = StringIO.new
+    migration = migration_class.new
+    allow(migration).to receive(:write) { |text| output.puts(text) }
+    migration.up
+    expect(output.string).to include('characters source columns are gone')
+    expect(source_metadata_time('character_sources_copied_at')).to be_nil
   end
 end

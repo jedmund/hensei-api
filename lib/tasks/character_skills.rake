@@ -51,14 +51,6 @@ namespace :granblue do
     puts "#{list.groups.size} statuses renamed or merged, #{list.aliases.size} aliases → #{out}"
   end
 
-  desc "Once after the PR 7a deploy is live: copy into `sources` what the old code wrote to the characters " \
-       "source columns after the copy migration ran (missing rows, and rows not rewritten since the copy whose " \
-       "sha256 differs), then queues a skill build for each character it stored. Prints counts only; idempotent."
-  task sync_character_sources: :environment do
-    ActiveRecord::Base.logger = nil
-    CharacterSkills::SourceSync.new.call
-  end
-
   desc "Clean characters' stored game payloads down to character data (for a database where the copy " \
        "migration ran before it did that). Counts only; idempotent; queues no builds."
   task sanitize_character_sources: :environment do

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Copies characters.wiki_raw, wiki_raw_jp, game_raw_en and game_raw_jp (with their
-# fetched_at) into `sources` rows owned by the character (D35). The columns stay, unread,
-# until a follow-up migration drops them.
+# fetched_at) into `sources` rows owned by the character (D35). The columns were dropped
+# later (20261022090000).
 #
 #   - Blank text and JSON null / empty payloads get no row.
 #   - wiki_raw_jp is trimmed to div#body with Granblue::JpWikiPage.trim, the function the
@@ -11,10 +11,10 @@
 #     as canonical JSON text (Source.serialize).
 #   - Idempotent: a character that already has a row of a kind is skipped for that kind
 #     (a newer fetch through the store wins). Batches by id; logs counts only.
-#   - Records when it ran (ar_internal_metadata), so rake granblue:sync_character_sources
-#     can copy, after the deploy, what the old code wrote to the columns in the meantime.
+#   - Records when it ran (ar_internal_metadata), so the sync (20261021180000) could copy
+#     what the old code wrote to the columns in the meantime.
 #
-# Reads the columns with SQL: Character ignores them.
+# Reads the columns with SQL; a no-op once they're dropped (20261022090000).
 class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   BATCH = 100
   # kind → [column, fetched_at column or nil]
@@ -24,10 +24,12 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
     'game_raw_en' => ['game_raw_en', nil],
     'game_raw_jp' => ['game_raw_jp', nil]
   }.freeze
-  # Read by CharacterSkills::SourceSync (rake granblue:sync_character_sources).
+  # Read by the sync (20261021180000) and the column drop (20261022090000).
   COPIED_AT_KEY = 'character_sources_copied_at'
 
   def up
+    return say('characters source columns are gone; nothing to copy') unless connection.column_exists?(:characters, :wiki_raw)
+
     KINDS.each do |kind, (column, fetched_column)|
       copied = 0
       skipped = 0
@@ -83,7 +85,7 @@ class CopyCharacterSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   end
 
   # The stored body for a column value (nil: nothing to store): JP pages trimmed as the
-  # fetch path trims them, JSON canonical. Kept here (not shared with SourceSync) so this
+  # fetch path trims them, JSON canonical. Kept here so this
   # migration doesn't depend on code a later cleanup removes.
   def body_for(kind, value)
     value = Granblue::JpWikiPage.trim(value) if kind == 'wiki_raw_jp'
