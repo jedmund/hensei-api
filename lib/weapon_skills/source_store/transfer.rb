@@ -108,7 +108,7 @@ module WeaponSkills
           next unless weapon && r["kind"] == "wiki_raw"
           next if weapon.wiki_raw_fetched_at && weapon.wiki_raw_fetched_at >= fetched_at
 
-          weapon_updates[weapon.id] = { wiki_raw: r["body"], wiki_raw_fetched_at: fetched_at, wiki_en: key }
+          weapon_updates[weapon.id] = { wiki_raw: r["body"], fetched_at: fetched_at, wiki_en: key }
           counts[:weapon_checked] += 1
           counts[:weapon_pages] += 1 if weapon.wiki_raw != r["body"]
           counts[:weapon_renamed_pages] += 1 if weapon.wiki_en != key
@@ -117,8 +117,8 @@ module WeaponSkills
                  problems: problems)
       end
 
-      # Applies a plan in one transaction. weapons.wiki_raw follows the stored page, as a fetch
-      # would: the build checks stored expansions against it.
+      # Applies a plan in one transaction. The weapon's own wiki_raw follows the stored page, as
+      # a fetch would: the build checks stored expansions against it.
       def apply(plan)
         now = Time.current
         ActiveRecord::Base.transaction do
@@ -126,7 +126,11 @@ module WeaponSkills
           plan.inserts.each_slice(BATCH) do |batch|
             WeaponSource.insert_all!(batch.map { |row| row.merge(created_at: now, updated_at: now) })
           end
-          plan.weapon_updates.each { |id, attrs| Weapon.where(id: id).update_all(attrs) }
+          Weapon.where(id: plan.weapon_updates.keys).select(:id).find_each do |weapon|
+            attrs = plan.weapon_updates.fetch(weapon.id)
+            Weapon.where(id: weapon.id).update_all(wiki_en: attrs[:wiki_en])
+            ::Source.put(weapon, :wiki_raw, attrs[:wiki_raw], fetched_at: attrs[:fetched_at])
+          end
         end
       end
     end

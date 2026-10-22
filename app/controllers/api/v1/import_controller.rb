@@ -217,7 +217,8 @@ module Api
 
         begin
           weapon.update!(
-            "game_raw_#{lang}" => body
+            "game_raw_#{lang}" => body,
+            "game_raw_#{lang}_fetched_at" => Time.current
           )
 
           # Parse series_id and assign WeaponSeries
@@ -261,7 +262,8 @@ module Api
 
         begin
           summon.update!(
-            "game_raw_#{lang}" => body
+            "game_raw_#{lang}" => body,
+            "game_raw_#{lang}_fetched_at" => Time.current
           )
 
           # Parse series_id and assign SummonSeries

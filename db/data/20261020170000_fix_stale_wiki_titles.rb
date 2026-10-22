@@ -97,7 +97,7 @@ class FixStaleWikiTitles < ActiveRecord::Migration[8.0]
       fetched_at: page.fetched_at, weapon_id: weapon.id
     )
     page.destroy!
-    weapon.update_columns(wiki_raw: page.body, wiki_raw_fetched_at: page.fetched_at)
+    Source.put(weapon, :wiki_raw, page.body, fetched_at: page.fetched_at)
     true
   end
 end

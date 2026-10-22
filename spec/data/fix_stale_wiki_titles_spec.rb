@@ -84,7 +84,7 @@ RSpec.describe FixStaleWikiTitles do
     weapon = weapons['1040908200']
     old_page = WeaponSource.create!(weapon: weapon, kind: 'wiki_raw', key: 'Mikazuki Munechika',
                                     body: '{{Character}}', fetched_at: 2.days.ago, page_kind: 'inline')
-    weapon.update_columns(wiki_raw: old_page.body)
+    Source.put(weapon, :wiki_raw, old_page.body)
 
     migration.up
 

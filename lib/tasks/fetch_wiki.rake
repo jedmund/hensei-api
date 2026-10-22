@@ -62,11 +62,16 @@ namespace :granblue do
     limit = ENV['limit'].presence&.to_i
     delay = Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts))
 
-    base = Weapon.where.not(wiki_en: [nil, ''])
-    stale = base.where(
-      "wiki_raw IS NULL OR wiki_raw = '' OR wiki_raw_fetched_at IS NULL OR latest_date > wiki_raw_fetched_at"
+    # The stored page is the weapon's wiki_raw source (D35).
+    page = Weapon.owned_sources(:wiki_raw).where('sources.owner_id = weapons.id')
+    stale_sql = 'NOT EXISTS (:page) OR EXISTS (:undated) OR EXISTS (:older)'
+    stale_sql += ' OR weapons.latest_date > :since' if days
+    stale = Weapon.where.not(wiki_en: [nil, '']).where(
+      stale_sql,
+      page: page.select(1), undated: page.where(fetched_at: nil).select(1),
+      older: page.where('weapons.latest_date > sources.fetched_at').select(1),
+      since: days ? days.days.ago.to_date : nil
     )
-    stale = stale.or(base.where('latest_date > ?', days.days.ago.to_date)) if days
 
     weapons = (limit ? stale.limit(limit) : stale).to_a
     total = weapons.size

@@ -31,6 +31,17 @@ RSpec.describe 'Weapons API', type: :request do
       expect(json['max_exorcism_level']).to eq(5)
     end
 
+    it 'returns when its wikitext was fetched, which nested weapons leave out' do
+      fetched_at = Time.utc(2026, 10, 1, 9)
+      weapon.update!(wiki_raw: '{{Weapon}}', wiki_raw_fetched_at: fetched_at)
+
+      get "/api/v1/weapons/#{weapon.id}"
+
+      expect(response.parsed_body['wiki_raw_fetched_at']).to eq(fetched_at.iso8601(3))
+      expect(response.parsed_body).to have_key('wiki_raw_jp_fetched_at')
+      expect(Api::V1::WeaponBlueprint.render_as_hash(weapon, view: :full)).not_to have_key(:wiki_raw_fetched_at)
+    end
+
     it 'returns null for max_exorcism_level when not set' do
       weapon_without_exorcism = create(:weapon, max_exorcism_level: nil)
 

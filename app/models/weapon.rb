@@ -2,11 +2,23 @@
 
 class Weapon < ApplicationRecord
   include PgSearch::Model
+  include HasSources
+
+  # The fetched sources live in `sources` (D35, PR 7b); these columns are read-only leftovers
+  # until a follow-up migration drops them, and ignoring them keeps every load from dragging
+  # the page text along. db/data/20261022110000_copy_item_sources_to_sources_table reads them
+  # with SQL.
+  self.ignored_columns += %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp wiki_raw_fetched_at wiki_raw_jp_fetched_at]
+
+  source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at
+  # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
+  source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
+  # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).
+  source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at, filter: Granblue::GamePayload.method(:sanitize_item)
+  source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at, filter: Granblue::GamePayload.method(:sanitize_item)
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
-  # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).
-  normalizes :game_raw_en, :game_raw_jp, with: ->(payload) { Granblue::GamePayload.sanitize_item(payload) }
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |weapon|

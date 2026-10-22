@@ -57,11 +57,23 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
       expect(described_class.new(character.reload, client: client).fetch).to eq(character.wiki_raw_jp)
     end
 
-    it 'keeps a summon page whole' do
+    it 'stores only div#body of a summon or weapon page too' do
       summon = create(:summon, name_jp: 'テスト')
+      weapon = create(:weapon, name_jp: 'テスト')
       described_class.new(summon, client: client).download
+      described_class.new(weapon, client: client).download
 
-      expect(summon.reload.wiki_raw_jp).to eq(page)
+      expect(Source.read(summon, :wiki_raw_jp)).to eq('<div id="body"><p>本文</p></div>')
+      expect(Source.read(weapon, :wiki_raw_jp)).to eq('<div id="body"><p>本文</p></div>')
+      expect(summon.reload.wiki_raw_jp_fetched_at).to be_present
+    end
+
+    it 'picks summons with and without a stored page from the store' do
+      stored = create(:summon, name_jp: '保存', wiki_raw_jp: '<div id="body"></div>')
+      missing = create(:summon, name_jp: 'テスト')
+
+      expect(described_class.backfill_scope(Summon, ids: nil, missing: true, force: false)).to include(missing)
+      expect(described_class.backfill_scope(Summon, ids: nil, missing: true, force: false)).not_to include(stored)
     end
 
     it 'picks characters with and without a stored page from the store' do

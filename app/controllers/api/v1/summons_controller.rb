@@ -12,7 +12,7 @@ module Api
 
       # GET /summons/:id
       def show
-        render json: SummonBlueprint.render(@summon, view: :full)
+        render json: SummonBlueprint.render(@summon, view: :full, source_dates: true)
       end
 
       # POST /summons
@@ -21,7 +21,7 @@ module Api
         summon = Summon.new(with_wiki_fetch_date(summon_params))
 
         if summon.save
-          render json: SummonBlueprint.render(summon, view: :full), status: :created
+          render json: SummonBlueprint.render(summon, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(summon)
         end
@@ -31,7 +31,7 @@ module Api
       # Updates an existing summon record
       def update
         if @summon.update(with_wiki_fetch_date(update_params, @summon))
-          render json: SummonBlueprint.render(@summon, view: :full)
+          render json: SummonBlueprint.render(@summon, view: :full, source_dates: true)
         else
           render_validation_error_response(@summon)
         end
@@ -193,7 +193,7 @@ module Api
       # Re-parses the stored wikitext into structured rows; refetch=true fetches fresh wikitext first.
       def reparse
         Granblue::EntityReparser.new(@summon, refetch: params[:refetch] == 'true').reparse
-        render json: SummonBlueprint.render(@summon.reload, view: :full)
+        render json: SummonBlueprint.render(@summon.reload, view: :full, source_dates: true)
       rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
         render json: { error: e.message }, status: :unprocessable_entity
       rescue Granblue::WikiError => e
@@ -214,7 +214,9 @@ module Api
       # it failed to load, not a deliberate clear: keep the stored text.
       def update_params
         attrs = summon_params
-        attrs[:wiki_raw].blank? && @summon.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
+        return attrs unless attrs.key?(:wiki_raw)
+
+        attrs[:wiki_raw].blank? && @summon.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def summon_params

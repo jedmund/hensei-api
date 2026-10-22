@@ -16,7 +16,7 @@ RSpec.describe 'ParseStringGameRaw' do
     )
   end
 
-  # The column itself (a character's reader is its source now; the column stays until dropped).
+  # The column itself (the models read their sources now; the columns stay until dropped).
   def stored(record, column)
     record.class.where(id: record.id).pick(Arel.sql(column.to_s))
   end
@@ -42,7 +42,7 @@ RSpec.describe 'ParseStringGameRaw' do
       expect(stored(character, :game_raw_en)).to eq('id' => '1', 'ability' => {})
       expect(typeof(character, :game_raw_en)).to eq('object')
       expect(Character.where(id: character.id).pick(Arel.sql('game_raw_jp IS NULL'))).to be(true)
-      expect(weapon.reload.game_raw_jp).to eq('id' => '2')
+      expect(stored(weapon, :game_raw_jp)).to eq('id' => '2')
       expect(typeof(summon, :game_raw_en)).to eq('string')
       expect(stored(untouched, :game_raw_en)).to eq('id' => '3')
     end
@@ -62,7 +62,7 @@ RSpec.describe 'ParseStringGameRaw' do
     aggregate_failures do
       expect(typeof(nul, :game_raw_en)).to eq('string')
       expect(typeof(huge, :game_raw_en)).to eq('string')
-      expect(good.reload.game_raw_en).to eq('id' => '4')
+      expect(stored(good, :game_raw_en)).to eq('id' => '4')
     end
   end
 

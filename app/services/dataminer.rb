@@ -307,12 +307,11 @@ class Dataminer
              end
 
     if record
-      # A character's payload is its game_raw_* source (D35), compared by sha256 without
-      # loading it; the others are columns.
-      stored = ->(row) { row.is_a?(Character) ? row.source_sha256(column) : row.public_send(column) }
+      # The payload is the record's game_raw_* source (D35), compared by sha256 without
+      # loading it.
+      stored = ->(row) { row.source_sha256(column) }
       before = stored.call(record)
-      attrs = { column => response_data }
-      attrs[:"#{column}_fetched_at"] = Time.current if record.is_a?(Character)
+      attrs = { column => response_data, "#{column}_fetched_at": Time.current }
       unless record.update(attrs)
         summary.error!(granblue_id, record.errors.full_messages.to_sentence)
         return

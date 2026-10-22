@@ -43,9 +43,11 @@ module HasSources
     end
 
     # Loads records' source rows in one query. kinds: only those (a record then reads any
-    # other kind as absent, so pass every kind the caller reads).
+    # other kind as absent, so pass every kind the caller reads). Only the records' own
+    # attributes (key ''): a weapon also owns its weapon-skill store pages, keyed by title.
     def preload_sources(records, kinds: nil)
-      scope = kinds ? Source.where(kind: Array(kinds).map(&:to_s)) : nil
+      scope = Source.where(key: '')
+      scope = scope.where(kind: Array(kinds).map(&:to_s)) if kinds
       ActiveRecord::Associations::Preloader.new(records: Array(records), associations: :sources, scope: scope).call
       records
     end

@@ -168,11 +168,16 @@ module Api
         end
       end
 
+      SOURCE_DATES = ->(_field, _weapon, options) { options[:source_dates] }
+
       view :full do
         include_view :stats
         include_view :grid
-        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com).
-        fields :wiki_raw_fetched_at, :wiki_raw_jp_fetched_at
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com). Read from
+        # `sources` (a query per weapon), so only when the weapon itself is rendered
+        # (source_dates: true), not for each weapon nested in a party or collection.
+        field :wiki_raw_fetched_at, if: SOURCE_DATES
+        field :wiki_raw_jp_fetched_at, if: SOURCE_DATES
         field :awakenings do |weapon|
           AwakeningBlueprint.render_as_hash(weapon.awakenings)
         end

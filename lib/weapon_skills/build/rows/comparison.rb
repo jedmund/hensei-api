@@ -40,7 +40,7 @@ module WeaponSkills
         end
 
         def run
-          weapons = weapon_scope.pluck(:granblue_id, :wiki_raw, :id).to_h { |g, raw, id| [g, [raw.to_s, id]] }
+          weapons = weapon_pages(weapon_scope.pluck(:granblue_id, :id))
           registry = Registry.from_database
           curation = CurationView.from_database(weapon_granblue_ids: weapons.keys)
           versions = version_scope(weapons.keys).to_a
@@ -74,6 +74,12 @@ module WeaponSkills
         end
 
         private
+
+        # granblue_id → [the weapon's stored wikitext (its wiki_raw source), id]
+        def weapon_pages(ids)
+          bodies = Weapon.owned_sources(:wiki_raw).where(owner_id: ids.map(&:last)).pluck(:owner_id, :body).to_h
+          ids.to_h { |granblue_id, id| [granblue_id, [bodies[id].to_s, id]] }
+        end
 
         def weapon_scope
           scope = Weapon.all
