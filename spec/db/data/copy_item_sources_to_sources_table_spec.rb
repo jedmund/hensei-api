@@ -66,6 +66,26 @@ RSpec.describe 'CopyItemSourcesToSourcesTable' do
     expect(Source.owned_by(blank)).to be_empty
   end
 
+  it "skips and counts a game payload that isn't a JSON object" do
+    Summon.connection.execute("UPDATE summons SET game_raw_jp = to_jsonb('not json'::text) " \
+                              "WHERE id = #{Summon.connection.quote(summon.id)}")
+    output = StringIO.new
+    migration = migration_class.new
+    allow(migration).to receive(:write) { |text| output.puts(text) }
+    migration.up
+
+    expect(Source.fetch(summon, :game_raw_jp)).to be_nil
+    expect(output.string).to include('summons.game_raw_jp: 0 copied, 0 blank, 1 not an object')
+  end
+
+  it 'records when it started, before the rows it creates' do
+    run
+    started = Time.iso8601(ActiveRecord::Base.connection.select_value(
+                             "SELECT value FROM ar_internal_metadata WHERE key = 'item_sources_copy_started_at'"
+                           ))
+    expect(Source.where(owner_type: %w[Weapon Summon]).minimum(:created_at)).to be >= started
+  end
+
   it 'is idempotent and keeps a row already written through the store' do
     Source.put(weapon, :wiki_raw, '{{Weapon|newer=1}}')
     run

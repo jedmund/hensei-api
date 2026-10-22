@@ -35,16 +35,27 @@ RSpec.describe Granblue::ItemSourceSync do
     travel_to(copied_at - 1.hour) { Source.put(owner, kind, value, **) }
   end
 
-  before do
+  def record_copies
+    record_copy(described_class::ITEMS_COPY_STARTED_AT_KEY, copied_at - 2.hours)
     record_copy(described_class::ITEMS_COPIED_AT_KEY)
+    record_copy(described_class::STORE_COPY_STARTED_AT_KEY, copied_at - 2.hours)
     record_copy(described_class::STORE_COPIED_AT_KEY)
   end
+
+  # An old weapon_sources row written before the copy.
+  def old_row_before_copy(...)
+    old_row(...)
+    conn.execute("UPDATE weapon_sources SET updated_at = #{conn.quote(copied_at - 1.hour)}")
+  end
+
+  before { record_copies }
 
   describe 'item columns' do
     it 'stores what the old code wrote after the copy, and keeps rows the store wrote since' do
       copied(weapon, :wiki_raw, '{{Copied}}')
       set_columns(weapon, wiki_raw: '{{Written later}}', wiki_raw_fetched_at: fetched_at)
-      set_columns(summon, wiki_raw: '{{Missing}}', game_raw_jp: { 'name' => 'Call', 'user_id' => 1 })
+      set_columns(summon, wiki_raw: '{{Missing}}', wiki_raw_fetched_at: copied_at + 1.minute,
+                          game_raw_jp: { 'name' => 'Call', 'user_id' => 1 })
       newer = create(:summon, wiki_raw: '{{Store}}')
       set_columns(newer, wiki_raw: '{{Column}}')
 
@@ -60,19 +71,44 @@ RSpec.describe Granblue::ItemSourceSync do
     end
 
     it 'is idempotent' do
-      set_columns(summon, wiki_raw: '{{Missing}}')
+      set_columns(summon, wiki_raw: '{{Missing}}', wiki_raw_fetched_at: copied_at + 1.minute)
       sync
       expect(sync['summons.wiki_raw']).to have_attributes(same: 1, stored: 0)
     end
 
-    it 'only fills missing rows when the copy time is unknown' do
+    it 'keeps a row the new code deleted when the column predates the copy' do
+      set_columns(weapon, wiki_raw: '{{Old page}}', wiki_raw_fetched_at: copied_at - 1.hour)
+
+      expect(sync['weapons.wiki_raw']).to have_attributes(gone: 1, missing: 0)
+      expect(Source.read(weapon, :wiki_raw)).to be_nil
+    end
+
+    it "skips a game payload that isn't a JSON object" do
+      conn.execute("UPDATE summons SET game_raw_en = to_jsonb('not json'::text) WHERE id = #{conn.quote(summon.id)}")
+
+      expect(sync['summons.game_raw_en']).to have_attributes(invalid: 1, missing: 0)
+      expect(Source.read(summon, :game_raw_en)).to be_nil
+    end
+
+    it 'skips the columns when the copy times are unknown' do
       conn.execute("DELETE FROM ar_internal_metadata WHERE key = '#{described_class::ITEMS_COPIED_AT_KEY}'")
       copied(weapon, :wiki_raw, '{{Copied}}')
       set_columns(weapon, wiki_raw: '{{Written later}}')
 
-      sync
-
+      expect(sync.keys).to eq(['weapon_sources'])
       expect(Source.read(weapon, :wiki_raw)).to eq('{{Copied}}')
+    end
+
+    it 'skips the columns on a restored database, whose rows predate the recorded copy' do
+      travel_to(copied_at - 3.hours) { Source.put(weapon, :wiki_raw, '{{Written by the new code}}') }
+      set_columns(weapon, wiki_raw: '{{Column}}')
+
+      io = StringIO.new
+      results = described_class.new(io: io).call
+      expect(results.keys).to eq(['weapon_sources'])
+      expect(io.string).to include('items: skipped (rows older than the recorded copy')
+      expect(Source.read(weapon, :wiki_raw)).to eq('{{Written by the new code}}')
+      expect(described_class.metadata(described_class::SYNCED_AT_KEY)).to include('skipped=items')
     end
   end
 
@@ -98,6 +134,22 @@ RSpec.describe Granblue::ItemSourceSync do
       expect(store.exist?('transclusion', 'Gone')).to be(false)
       expect(result).to have_attributes(checked: 3, changed: 1, missing: 1, same: 1, removed: 1)
       expect(Source.read(weapon, :wiki_raw)).to be_nil # the weapon's own page is a column sync's business
+    end
+
+    it 'keeps a store row the new code deleted when the old row predates the copy' do
+      old_row_before_copy('wiki_raw', 'Old Title', 'old', weapon_id: weapon.id)
+
+      expect(sync['weapon_sources']).to have_attributes(gone: 1, missing: 0)
+      expect(WeaponSkills::SourceStore::Database.new.exist?('wiki_raw', 'Old Title')).to be(false)
+    end
+
+    it 'skips weapon_sources on a restored database, keeping the store rows' do
+      travel_to(copied_at - 3.hours) do
+        WeaponSource.create!(weapon: weapon, kind: 'transclusion', key: 'Post-7b page', body: 'x', fetched_at: fetched_at)
+      end
+
+      expect(sync).not_to have_key('weapon_sources')
+      expect(WeaponSkills::SourceStore::Database.new.exist?('transclusion', 'Post-7b page')).to be(true)
     end
 
     it 'keeps a row the store wrote since the copy' do
