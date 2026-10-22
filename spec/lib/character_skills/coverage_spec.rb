@@ -21,7 +21,7 @@ RSpec.describe CharacterSkills::Coverage do
   end
   let!(:json_null) do
     create(:character, granblue_id: '3030000004', name_en: 'Nulled', rarity: 2, wiki_raw: '{{Character}}',
-                       wiki_raw_fetched_at: nil).tap { |c| Character.where(id: c.id).update_all("game_raw_en = 'null'::jsonb") }
+                       wiki_raw_fetched_at: nil, game_raw_en: nil)
   end
   let!(:style_row) do
     create(:character, granblue_id: '3040000001', name_en: 'Complete', style_swap: true, rarity: 3,

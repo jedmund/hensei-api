@@ -4,12 +4,7 @@ class Character < ApplicationRecord
   include PgSearch::Model
   include HasSources
 
-  # The fetched sources live in `sources` (D35); these columns are read-only leftovers until
-  # the follow-up migration drops them, and ignoring them keeps every load from dragging
-  # ~200 KB of page text per row. db/data/20261020210000_copy_character_sources_to_sources_table
-  # reads them with SQL.
-  self.ignored_columns += %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp wiki_raw_fetched_at wiki_raw_jp_fetched_at]
-
+  # The fetched sources live in `sources` (D35).
   source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at
   # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
   source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at

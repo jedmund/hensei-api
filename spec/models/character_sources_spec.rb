@@ -15,9 +15,7 @@ RSpec.describe Character, 'sources' do
 
   it 'stores each source as an owned row, not in the columns' do
     expect(Source.owned_by(character).pluck(:kind)).to contain_exactly('wiki_raw', 'wiki_raw_jp', 'game_raw_en')
-    columns = described_class.where(id: character.id)
-                             .pick(Arel.sql('wiki_raw'), Arel.sql('wiki_raw_jp'), Arel.sql('game_raw_en'))
-    expect(columns).to eq([nil, nil, nil])
+    expect(described_class.column_names).not_to include('wiki_raw', 'wiki_raw_jp', 'game_raw_en', 'game_raw_jp')
   end
 
   it 'reads them back through the attribute names' do
@@ -27,12 +25,7 @@ RSpec.describe Character, 'sources' do
                                       wiki_raw_jp: '<div id="body">x</div>', game_raw_en: payload, game_raw_jp: nil)
   end
 
-  it 'never loads the old columns' do
-    sql = []
-    callback = ->(*, payload) { sql << payload[:sql] if payload[:sql].include?('"characters"') }
-    ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { described_class.find(character.id) }
-
-    expect(sql.join).not_to include('"characters".*', 'wiki_raw', 'game_raw')
+  it 'loads no source text with the character' do
     expect(described_class.find(character.id).attributes.keys).not_to include('wiki_raw', 'wiki_raw_jp', 'game_raw_en')
   end
 

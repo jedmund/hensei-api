@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_21_190100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -217,16 +217,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_190100) do
     t.string "kamigame", default: ""
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
-    t.text "wiki_raw"
-    t.jsonb "game_raw_en", comment: "JSON data from game (English)"
-    t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "season"
     t.integer "series", default: [], null: false, array: true
     t.boolean "style_swap", default: false, null: false
     t.string "style_name_en"
     t.string "style_name_jp"
     t.boolean "gender_variants", default: false, null: false
-    t.text "wiki_raw_jp", comment: "Raw HTML from gbf-wiki.com (Japanese)"
     t.boolean "ulb", default: false, null: false
     t.integer "max_hp_ulb"
     t.integer "max_atk_ulb"
@@ -234,8 +230,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_190100) do
     t.integer "max_transcendence_stage", default: 0, null: false
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.uuid "solomonis_zone_id"
-    t.datetime "wiki_raw_fetched_at"
-    t.datetime "wiki_raw_jp_fetched_at"
     t.string "character_skill_build_fingerprint"
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_characters_on_latest_date", order: { latest_date: :desc }
