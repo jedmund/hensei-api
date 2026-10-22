@@ -124,6 +124,11 @@ RSpec.describe Source do
       expect { duplicate.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
     end
 
+    it 'rejects a page_kind outside the list in the database' do
+      row = described_class.new(owner: owner, kind: 'wiki_raw', key: 'Page', body: 'b', sha256: 'x', page_kind: 'nope')
+      expect { row.save!(validate: false) }.to raise_error(ActiveRecord::StatementInvalid, /sources_page_kind/)
+    end
+
     it 'rejects a kind outside the list in the database' do
       row = described_class.new(kind: 'nope', body: 'b', sha256: 'x')
       expect { row.save!(validate: false) }.to raise_error(ActiveRecord::StatementInvalid, /sources_kind/)
