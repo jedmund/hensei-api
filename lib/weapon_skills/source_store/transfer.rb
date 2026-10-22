@@ -51,6 +51,9 @@ module WeaponSkills
         counts = Hash.new(0)
         problems = []
         weapons = Weapon.where(id: rows.filter_map { |r| r["weapon_id"] }.uniq).index_by(&:id)
+        # Each weapon's own page (its wiki_raw source): [sha256, fetched_at], without the bodies.
+        pages = Weapon.owned_sources(:wiki_raw).where(owner_id: weapons.keys).without_body
+                      .to_h { |row| [row.owner_id, [row.sha256, row.fetched_at]] }
         # Titles compare in Granblue::WikiTitle form, whichever form either side stored.
         existing = WeaponSource.pluck(:id, :weapon_id, :kind, :key, :fetched_at, :sha256)
                                .map { |id, w, kind, key, at, sha| [id, w, kind, Granblue::WikiTitle.normalize(key), at, sha] }
@@ -106,11 +109,13 @@ module WeaponSkills
           # wiki_raw_fetched_at records when the page was last checked, so it moves up to
           # the stored fetch even when the text is the same.
           next unless weapon && r["kind"] == "wiki_raw"
-          next if weapon.wiki_raw_fetched_at && weapon.wiki_raw_fetched_at >= fetched_at
+
+          page_sha, page_fetched_at = pages[weapon.id]
+          next if page_fetched_at && page_fetched_at >= fetched_at
 
           weapon_updates[weapon.id] = { wiki_raw: r["body"], fetched_at: fetched_at, wiki_en: key }
           counts[:weapon_checked] += 1
-          counts[:weapon_pages] += 1 if weapon.wiki_raw != r["body"]
+          counts[:weapon_pages] += 1 if page_sha != sha
           counts[:weapon_renamed_pages] += 1 if weapon.wiki_en != key
         end
         Plan.new(inserts: inserts, deletes: deletes.uniq, weapon_updates: weapon_updates, counts: counts,

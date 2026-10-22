@@ -44,7 +44,7 @@ module Granblue
     private
 
     def fetch_one(object, index, total)
-      return @summary.skipped!('has wiki_raw') if object.wiki_raw.present? && !@force
+      return @summary.skipped!('has wiki_raw') if object.source_sha256(:wiki_raw) && !@force
       return skip_no_page(object) if object.wiki_en.blank?
 
       requested = true
