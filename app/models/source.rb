@@ -125,8 +125,7 @@ class Source < ApplicationRecord
 
       sha = digest(body)
       if source&.sha256 == sha
-        # updated_at too: the row was confirmed now (SourceSync treats a row updated after the
-        # copy as newer than the old columns).
+        # updated_at too: the row was confirmed now.
         if fetched_at && (source.fetched_at.nil? || fetched_at > source.fetched_at)
           source.update_columns(fetched_at: fetched_at, updated_at: Time.current)
         end
