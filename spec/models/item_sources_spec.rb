@@ -55,7 +55,8 @@ RSpec.describe 'Weapon and Summon sources' do
 
   it "doesn't take a weapon's store pages for its own wiki_raw" do
     weapon = create(:weapon, wiki_raw: '{{Own}}')
-    Source.put(weapon, :wiki_raw, '{{Store page}}', key: 'Some Page', page_kind: 'inline')
+    WeaponSource.create!(weapon: weapon, kind: 'wiki_raw', key: 'Some Page', body: '{{Store page}}',
+                         fetched_at: Time.current, page_kind: 'inline')
 
     loaded = Weapon.preload_sources(Weapon.where(id: weapon.id).to_a, kinds: :wiki_raw).first
     expect(loaded.wiki_raw).to eq('{{Own}}')
