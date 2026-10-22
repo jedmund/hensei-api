@@ -32,7 +32,12 @@ class FixRayOfZhuqueRegusGranblueId < ActiveRecord::Migration[8.0]
     stored_id = page.to_s[/^\|id=\s*(\d+)/, 1]
     return say("stored wikitext is #{stored_id || 'missing'}, not Regus; skills not rebuilt") unless stored_id == REGUS_ID
 
-    # Since W8 gate 4 a reparse is the weapon-skill build, which needs the stored source.
+    # Since W8 gate 4 a reparse is the weapon-skill build, which needs the stored source. It reads
+    # `sources` since PR 7b: a database that runs this before that table exists builds them later.
+    unless table_exists?(:sources)
+      return say("skills not rebuilt (no sources table yet); granblue:build_weapon_skills builds them")
+    end
+
     begin
       Granblue::EntityReparser.new(regus.reload, refetch: false).reparse
     rescue Granblue::EntityReparser::MissingWikiRawError => e
