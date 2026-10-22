@@ -32,6 +32,40 @@ RSpec.describe Granblue::Parsers::CuratedStatusCategories do
     expect { load([{ name_en: 'Veil', reason: 'x' }]) }.to raise_error(described_class::Invalid, /neither/)
   end
 
+  describe 'entries scoped to characters' do
+    def scoped(entries)
+      file = Tempfile.new(['categories', '.json'])
+      file.write(JSON.generate(entries))
+      file.close
+      [described_class.load(file.path), described_class.scoped(file.path)]
+    ensure
+      file&.unlink
+    end
+
+    let(:entries) do
+      [{ name_en: 'Max HP Lowered', category: 'debuff', reason: 'x' },
+       { name_en: 'Max HP Lowered', category: 'buff', characters: ['3040291000'], reason: 'a buff for Silva' }]
+    end
+
+    it 'keeps them out of the plain entries and applies them only to those characters' do
+      curated, by_character = scoped(entries)
+      expect(curated).to eq('max hp lowered' => { category: 'debuff', game_status_id: nil })
+      expect(by_character).to eq('max hp lowered' => { '3040291000' => 'buff' })
+      expect(described_class.category_for(curated, by_character, 'max hp lowered', '3040291000')).to eq('buff')
+      expect(described_class.category_for(curated, by_character, 'max hp lowered', '3040001000')).to eq('debuff')
+      expect(described_class.category_for(curated, by_character, 'max hp lowered', nil)).to eq('debuff')
+    end
+
+    it 'needs granblue ids and a category, and no display id' do
+      expect { scoped([{ name_en: 'X', category: 'buff', characters: [], reason: 'x' }]) }
+        .to raise_error(described_class::Invalid, /granblue ids/)
+      expect { scoped([{ name_en: 'X', game_status_id: '1020', characters: ['3040291000'], reason: 'x' }]) }
+        .to raise_error(described_class::Invalid, /no category/)
+      expect { scoped([{ name_en: 'X', category: 'buff', game_status_id: '1020', characters: ['3040291000'], reason: 'x' }]) }
+        .to raise_error(described_class::Invalid, /game_status_id/)
+    end
+  end
+
   it 'treats a missing file as nothing curated' do
     expect(described_class.load('/nonexistent/categories.json')).to eq({})
   end

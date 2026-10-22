@@ -91,6 +91,7 @@ module Granblue
           @overwrite = overwrite
           @debug = debug
           @curated = CuratedStatusCategories.load
+          @scoped = CuratedStatusCategories.scoped
           @links = StatusLinker.new(skills).links.transform_values { |id| StatusName.base_game_id(id) }
           @arrays = game_arrays(skills)
           @skills = skills
@@ -234,10 +235,10 @@ module Granblue
         # Skills that list the id without naming the status (another status sharing the icon) don't count.
         def mention_categories(key, base_id, listed:)
           counts = Hash.new { |hash, category| hash[category] = [0, 0] }
-          curated = @curated.dig(key, :category)
           @mentions_by_key[key].each do |index, id, vote|
             family = StatusName.base_game_id(base_id) if !listed && base_id.present?
             game = { details: @skills[index][:details], ids: [id, base_id], family: family }
+            curated = CuratedStatusCategories.category_for(@curated, @scoped, key, @skills[index][:granblue_id])
             result = ::CharacterSkills::EffectCategory.call(game: game, vote: vote, curated: curated)
             next if result.category.nil?
 
@@ -339,6 +340,7 @@ module Granblue
 
       def initialize(character)
         @data = CharacterWikiData.new(character)
+        @granblue_id = character.granblue_id
       end
 
       # Per skill with text: its status mentions (named by status, without the variant number)
@@ -351,7 +353,7 @@ module Granblue
             raw_mentions: mentions,
             # [normalized status name, exact display id, text vote] per mention, for its category.
             resolved: resolved.zip(mentions).map { |r, m| [Status.normalize_name(r.name), r.game_status_id, m.vote] },
-            details: game_details(data.game_action(skill_key)) }
+            details: game_details(data.game_action(skill_key)), granblue_id: @granblue_id }
         end
       end
 

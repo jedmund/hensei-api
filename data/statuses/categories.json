@@ -1,8 +1,18 @@
 [
   {
+    "name_en": "Achillea",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Adamant Solace",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1; user overrode text verb"
+  },
+  {
+    "name_en": "Adoration (Can't be removed)",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Adorbs",
@@ -10,9 +20,24 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Aegis Merge",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Allure",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Alpha Decay",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D54; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Ammo-Pierced",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Ankh",
@@ -20,9 +45,39 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Arvess Fermare",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "ATK Sharply Boosted (Can't be removed / Can't be extended)",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Atomic Collapse",
+    "category": "field",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Atomic Decay",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D54; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Aubade Grynoth",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Aurora Crest",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Beta Decay",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D54; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Bewitching Petal",
@@ -65,14 +120,54 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Comatose",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Constricting Bite",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Convulsion",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Craving",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D52; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Crystallize",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Curse of the Mask",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Cursed",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1; user overrode rule starts_battle"
+  },
+  {
+    "name_en": "Dark Decay",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Dark Ensorcellment",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Death Sentence (Sariel)",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Death's Door 1",
@@ -85,9 +180,64 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Deft Blade",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Deluge Crest",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Divine Death Saw of Death",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1; user overrode text verb"
+  },
+  {
+    "name_en": "Doomglow",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D52; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Draco Exusta",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Draconic Awakening",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Dromos",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Eayan Al-Ramal",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Eden's Exile",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Elenchus",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Endflare",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D46; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Enigma Ablaze",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Enthrallment",
@@ -95,9 +245,34 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Examine",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Eye of Wadjet",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Fatigue",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1; user overrode text verb"
+  },
+  {
+    "name_en": "Feral Intuition",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Flare",
+    "category": "field",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Flash Point",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Flash Point (SR)",
@@ -110,9 +285,24 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Flower",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Flutterspirit's Blessing",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Forbidden Chalices",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Forewarning",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Gaze of Disillusionment",
@@ -120,9 +310,59 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Geass of Absolute Obedience (Active)",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Heat",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Hellfire Crest",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Henpecked",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Holy Spike",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Il Canto Azzurro",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Impetuous Blade",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Improv Duo",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D46; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Jade Crest 1",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Kahua Lepo Mauna",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Limiter Break",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Limiter Overload",
@@ -130,14 +370,47 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Magic Crest",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Manigance",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Max HP Lowered (Stackable / Can't be removed)",
+    "category": "buff",
+    "characters": [
+      "3040291000"
+    ],
+    "reason": "user review 2026-10-22, D52: a buff for Silva (her skill 1 self-inflicts it, her charge attack checks it); a debuff for everyone else"
+  },
+  {
+    "name_en": "Mizuzaru",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Moon",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Nasori Rite",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D46; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Nemone",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Nen Fish",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Nightshade Butterfly",
@@ -150,9 +423,34 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Nitro Sweat",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Onslaught Tactics",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Partnered Up",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Passage of Peace",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Petals of Sapphire",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Plan B",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Precept Purification",
@@ -165,6 +463,11 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Pumpkin",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Purification Brand",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
@@ -175,9 +478,24 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Rage of Tyranno",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Readying Skill (Double Strike)",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1; user overrode text verb"
+  },
+  {
+    "name_en": "Red-Handed",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Rekki Unleashed III",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Resonance",
@@ -190,6 +508,26 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Revelation of the Dunes",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Satiety",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Savage Claw",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Sealed Room",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Seaside Delight",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
@@ -198,6 +536,16 @@
     "name_en": "Seclusion",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Sharp Eye",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Singed",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Skill DMG Cap Boosted (1 time)",
@@ -210,9 +558,34 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Snakebit",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Snakeblaze",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Snakeflame Authority",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Solid Fortitude",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Spirit Blossom (Earth Lennah)",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Spirit Blossom 1",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Spiritual Unison",
@@ -220,9 +593,19 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Spooky Utopia",
+    "category": "field",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Star-Spangled Pummel",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Stared Stiff",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Strong Armed",
@@ -235,9 +618,29 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Surplus Bounty",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D47: a type of Bounty, a counter on a foe"
+  },
+  {
     "name_en": "Tangled Strings",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Tide Father's Judgment",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Tiger Tape",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D53; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Tiger Tape+",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D53; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Trance Absolution",
@@ -250,6 +653,46 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Tune",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D49; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Typhoon Crest",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Tyros Glacies",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Undead Curse",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D46; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Unrighteousness (Local)",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "V-Trigger (Karin)",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Wasted",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D51; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Wasteland Crest",
+    "category": "buff",
+    "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Weak Point",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
@@ -258,5 +701,15 @@
     "name_en": "Weakened (Can't be removed)",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Winter",
+    "category": "debuff",
+    "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "World of Death and Love",
+    "category": "field",
+    "reason": "user review 2026-10-22, D51; pinned so a status list refresh can't flip it"
   }
 ]

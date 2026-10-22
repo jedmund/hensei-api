@@ -39,8 +39,10 @@ module Granblue
 
         attr_reader :unmatched_statuses
 
-        def initialize(status_lookup)
+        # granblue_id: the character whose skills these are, for curated categories scoped to it.
+        def initialize(status_lookup, granblue_id: nil)
           @status_lookup = status_lookup
+          @granblue_id = granblue_id
           @unmatched_statuses = Set.new
         end
 
@@ -160,7 +162,8 @@ module Granblue
 
         def curated_category(name)
           @curated ||= CuratedStatusCategories.load
-          @curated.dig(Status.normalize_name(name), :category)
+          @scoped ||= CuratedStatusCategories.scoped
+          CuratedStatusCategories.category_for(@curated, @scoped, Status.normalize_name(name), @granblue_id)
         end
 
         # The category decides grant / inflict / field; an instant (special) or unknown effect
