@@ -44,27 +44,39 @@ module Granblue
           @unmatched_statuses = Set.new
         end
 
-        def parse(effdesc)
+        # game_details: the skill's ability_detail entries ({ id:, category: }). An effect whose
+        # status has one variant there records it as its exact game_status_id, and the array it
+        # sits in is the effect's category (D36: the same status can be a buff in one skill and a
+        # self-inflicted debuff in another).
+        def parse(effdesc, game_details: [])
+          game_status_ids = game_details.map { |detail| detail[:id] }.uniq
           description = effdesc.to_s
           clauses = clause_targets(description)
           effects = []
           ordinal = 0
 
-          scan_with_offsets(description, CharacterWikiData::STATUS_TEMPLATE).each do |inner, offset|
+          mentions = StatusMentions.in(description)
+          scan_with_offsets(description, CharacterWikiData::STATUS_TEMPLATE).each_with_index do |(inner, offset), index|
             ordinal += 1
             raw = "{{status|#{inner}}}"
             parts = inner.split('|')
-            name = FieldParser.clean_status_name(parts.shift)
+            full_name = FieldParser.clean_status_name(parts.shift)
+            resolved = StatusName.resolve(full_name)
+            name = resolved.name
+            variant = resolved.variant
             params = template_params(parts)
             status = find_status(name)
-            @unmatched_statuses << name if status.nil?
+            @unmatched_statuses << full_name if status.nil?
             duration = duration_from_status(params['t'])
-            effect_type = effect_type_for_status(local_context(description, offset), status)
+            mention = mentions[index]
+            category = effect_category(status, name, resolved, mention, game_details)
+            effect_type = effect_type_for(category, mention&.vote, local_context(description, offset))
 
             effects << {
               ordinal: ordinal,
               effect_type: effect_type,
-              target: target_at(clauses, offset) || DEFAULT_TARGETS[effect_type],
+              category: category,
+              target: effect_target(mention, clauses, offset, effect_type),
               status_id: status&.id,
               amount: params['a'],
               amount_max: params['am'],
@@ -72,6 +84,9 @@ module Granblue
               duration_unit: duration[:unit],
               accuracy: params['acc'],
               stacking_frame: STACKING_FRAMES[params['s'].to_s.downcase],
+              status_variant: variant,
+              status_variant_kind: variant && (StatusName.mention_kind(variant, params) || status&.variant_kind),
+              game_status_id: resolved.game_status_id || exact_game_status_id(status, game_status_ids),
               raw: raw
             }.compact
           end
@@ -133,12 +148,36 @@ module Granblue
           clauses.find { |range, _| range.cover?(offset) }&.last
         end
 
-        # The status's category decides the type (CATEGORY_EFFECT_TYPES); the text window is
-        # only for statuses whose category is unknown.
-        def effect_type_for_status(context, status)
-          CATEGORY_EFFECT_TYPES.fetch(status&.category.to_s) do
-            context.to_s.downcase.match?(/inflict|foe|enemy|lowered|delay/) ? 'inflict_status' : 'grant_status'
+        # The effect's category: CharacterSkills::EffectCategory (special; the game's array in this
+        # skill; curated; the text rule; the status's usual category), shared with the catalogue.
+        def effect_category(status, name, resolved, mention, game_details)
+          family = StatusName.base_game_id(status.game_status_id) if !resolved.from_status_list? && status&.game_status_id.present?
+          ::CharacterSkills::EffectCategory.call(
+            game: { details: game_details, ids: [resolved.game_status_id, status&.game_status_id], family: family },
+            special: status&.category == 'special', curated: curated_category(name), vote: mention&.vote, usual: status&.category
+          ).category
+        end
+
+        def curated_category(name)
+          @curated ||= CuratedStatusCategories.load
+          @curated.dig(Status.normalize_name(name), :category)
+        end
+
+        # The category decides grant / inflict / field; an instant (special) or unknown effect
+        # follows its own verb ("Gain …" grant, "Inflict …" inflict), and only then the text window.
+        def effect_type_for(category, vote, context)
+          CATEGORY_EFFECT_TYPES.fetch(category.to_s) do
+            CATEGORY_EFFECT_TYPES.fetch(vote.to_s) do
+              context.to_s.downcase.match?(/inflict|foe|enemy|lowered|delay/) ? 'inflict_status' : 'grant_status'
+            end
           end
+        end
+
+        # A self-inflicted debuff lands on the caster, whatever the clause's subject.
+        def effect_target(mention, clauses, offset, effect_type)
+          return 'caster' if mention&.kind == 'self_inflict'
+
+          target_at(clauses, offset) || DEFAULT_TARGETS[effect_type]
         end
 
         def scan_with_offsets(text, regex)
@@ -188,8 +227,17 @@ module Granblue
           end
         end
 
+        # The skill's one display id with the status's base id, if there is exactly one.
+        def exact_game_status_id(status, game_status_ids)
+          return if status&.game_status_id.blank?
+
+          base = StatusName.base_game_id(status.game_status_id)
+          ids = game_status_ids.select { |id| StatusName.base_game_id(id) == base }
+          ids.first if ids.one?
+        end
+
         def find_status(name)
-          status_lookup[:by_name][name.to_s.downcase]
+          status_lookup[:by_name][Status.normalize_name(name)]
         end
       end
     end

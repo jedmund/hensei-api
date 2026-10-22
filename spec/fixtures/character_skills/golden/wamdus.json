@@ -91,8 +91,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Fated Chain Bar",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -107,8 +113,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Tentakernel",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -123,8 +135,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Delay (Special)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -139,8 +157,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "one_foe",
               "status": "Charged",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -185,8 +209,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Tentaforce",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -241,8 +271,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
-              "status": "Paralyzed 2",
+              "status": "Paralyzed",
+              "status_variant": [
+                2,
+                "turns"
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -257,8 +293,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Poisoned",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "5000",
               "amount_max": null,
               "duration": [
@@ -273,8 +315,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "one_foe",
               "status": "Toxicosis",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -358,8 +406,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "The Azure's Halo",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": "7440",
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -411,8 +465,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DMG Mitigation",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "5000",
               "amount_max": null,
               "duration": [
@@ -427,8 +487,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -514,8 +580,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DMG Mitigation",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10000",
               "amount_max": null,
               "duration": [

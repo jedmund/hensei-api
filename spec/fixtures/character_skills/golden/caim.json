@@ -38,8 +38,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Double Deal",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": "6393",
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -93,8 +99,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "ATK Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -109,8 +121,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DEF Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -125,8 +143,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "TA Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -141,8 +165,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Revitalize",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "500 HP or 10% charge bar",
               "amount_max": null,
               "duration": [
@@ -157,8 +187,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Shield",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "2000",
               "amount_max": null,
               "duration": [
@@ -173,8 +209,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DMG Cap Boosted",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": null,
               "duration": [
@@ -189,8 +231,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Uplift",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "15%",
               "amount_max": null,
               "duration": [
@@ -205,8 +253,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Hype",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "1-4 stacks",
               "amount_max": null,
               "duration": [
@@ -221,8 +275,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Veil",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -300,8 +360,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "ATK Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -316,8 +382,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DEF Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "30%",
               "amount_max": null,
               "duration": [
@@ -332,8 +404,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "TA Up",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "20%",
               "amount_max": null,
               "duration": [
@@ -348,8 +426,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Revitalize",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "500 HP or 10% charge bar",
               "amount_max": null,
               "duration": [
@@ -364,8 +448,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Shield",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "2000",
               "amount_max": null,
               "duration": [
@@ -380,8 +470,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "DMG Cap Boosted",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": null,
               "duration": [
@@ -396,8 +492,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Uplift",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "15%",
               "amount_max": null,
               "duration": [
@@ -412,8 +514,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Hype",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "1-4 stacks",
               "amount_max": null,
               "duration": [
@@ -428,8 +536,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Veil",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -508,8 +622,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Spade",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -555,8 +675,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Heart",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -571,8 +697,14 @@
             },
             {
               "type": "heal",
+              "category": null,
               "target": "all_allies",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -618,8 +750,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Charge Boost",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "15%",
               "amount_max": null,
               "duration": [
@@ -634,8 +772,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Diamond",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -681,8 +825,14 @@
           "effects": [
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "all_foes",
               "status": "Delay",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -697,8 +847,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "all_foes",
               "status": "ATK Lowered (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": "40%",
               "duration": [
@@ -713,8 +869,14 @@
             },
             {
               "type": "inflict_status",
+              "category": "debuff",
               "target": "all_foes",
               "status": "DEF Lowered (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "10%",
               "amount_max": "40%",
               "duration": [
@@ -729,8 +891,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Club",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -810,8 +978,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "ATK Sharply Boosted",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": "50%",
               "amount_max": null,
               "duration": [
@@ -826,8 +1000,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Guaranteed TA",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -963,8 +1143,14 @@
           "effects": [
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1009,8 +1195,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Spade",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1025,8 +1217,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Heart",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1041,8 +1239,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Diamond",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1057,8 +1261,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "all_allies",
               "status": "Club",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1073,8 +1283,14 @@
             },
             {
               "type": "deal_damage",
+              "category": null,
               "target": "one_foe",
               "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1265,8 +1481,14 @@
           "effects": [
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Spade",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1281,8 +1503,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Heart",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1297,8 +1525,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Diamond",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [
@@ -1313,8 +1547,14 @@
             },
             {
               "type": "grant_status",
+              "category": "buff",
               "target": "caster",
               "status": "Club",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
               "amount": null,
               "amount_max": null,
               "duration": [

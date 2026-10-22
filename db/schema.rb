@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_21_190100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1166,6 +1166,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_160000) do
     t.datetime "updated_at", null: false
     t.string "frame"
     t.string "element"
+    t.integer "status_variant"
+    t.string "status_variant_kind"
+    t.string "game_status_id"
+    t.string "category"
     t.index ["character_skill_version_id"], name: "index_skill_effects_on_character_skill_version_id"
     t.index ["effect_type"], name: "index_skill_effects_on_effect_type"
     t.index ["status_id"], name: "index_skill_effects_on_status_id"
@@ -1277,9 +1281,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_160000) do
     t.string "wiki_slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "game_status_id"
+    t.string "name_key", null: false
+    t.string "variant_kind"
+    t.text "description"
+    t.boolean "mixed", default: false, null: false
     t.index ["family"], name: "index_statuses_on_family"
     t.index ["game_ailment_id"], name: "index_statuses_on_game_ailment_id", unique: true, where: "(game_ailment_id IS NOT NULL)"
+    t.index ["game_status_id"], name: "index_statuses_on_game_status_id"
     t.index ["name_en"], name: "index_statuses_on_name_en"
+    t.index ["name_key"], name: "index_statuses_on_name_key", unique: true
   end
 
   create_table "stickers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -25,4 +25,6 @@ class SkillEffect < ApplicationRecord
 
   validates :ordinal, presence: true
   validates :effect_type, presence: true
+  # This effect's own buff/debuff (D36): the same status can be a buff in one skill and a debuff in another.
+  validates :category, inclusion: { in: %w[buff debuff field special] }, allow_nil: true
 end
