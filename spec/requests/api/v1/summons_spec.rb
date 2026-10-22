@@ -150,4 +150,26 @@ RSpec.describe 'Api::V1::Summons', type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
   end
+
+  describe 'editor-only writes to a summon\'s sources' do
+    let!(:stored) { create(:summon, wiki_en: 'Stored Page', wiki_raw: '{{Stored}}') }
+
+    it 'rejects PUT /api/v1/summons/:id with new wikitext from a non-editor' do
+      put "/api/v1/summons/#{stored.id}", params: { summon: { wiki_raw: '{{Theirs}}' } }.to_json, headers: user_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+    end
+
+    it 'rejects POST /api/v1/summons/:id/fetch_wiki from a non-editor or without a session' do
+      post "/api/v1/summons/#{stored.id}/fetch_wiki", headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      post "/api/v1/summons/#{stored.id}/fetch_wiki"
+      expect(response).to have_http_status(:unauthorized)
+
+      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+      expect(WebMock).not_to have_requested(:any, /.*/)
+    end
+  end
 end
