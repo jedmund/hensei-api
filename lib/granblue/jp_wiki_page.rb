@@ -3,10 +3,11 @@
 require 'nokogiri'
 
 module Granblue
-  # The part of a gbf-wiki.com page worth storing (D35). Every reader of a character's
-  # JP page (JpWikiSkillParser, CharacterSkills::JpLocalizer, the stat audit's
-  # JpWikiStatParser) starts at div#body, so the rest (head, menus, sidebar, footer,
-  # scripts: about three quarters of the page) is dropped before the page is stored.
+  # The part of a gbf-wiki.com page worth storing (D35). Every reader of a JP page
+  # (JpWikiSkillParser, CharacterSkills::JpLocalizer, the stat audit's JpWikiStatParser)
+  # starts at div#body, so the rest (head, menus, sidebar, footer, scripts: about three
+  # quarters of the page) is dropped before the page is stored, for characters, weapons
+  # and summons alike.
   #
   # The fetch path (JpWikiDownloader) and the copy into `sources` both go through
   # .trim, so a refetch of an unchanged page compares equal to what's stored.

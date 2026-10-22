@@ -3,7 +3,7 @@
 module Granblue
   module Downloaders
     # Fetches and caches raw HTML from the Japanese wiki (gbf-wiki.com) into
-    # <record>.wiki_raw_jp (a character's: its wiki_raw_jp source, div#body only). Works for any model with name_jp + wiki_raw_jp
+    # <record>.wiki_raw_jp (its wiki_raw_jp source, div#body only). Works for any model with name_jp + wiki_raw_jp
     # (characters, summons, weapons). Once cached, parsing iterates offline
     # with no further network calls. The JP wiki has no API, so the batch
     # backfill is throttled to stay polite.
@@ -74,14 +74,14 @@ module Granblue
         missing ? scope.where.not(id: with_page(model).select(:id)) : scope
       end
 
-      # Rows with a stored page. A character's lives in `sources` (D35).
+      # Rows with a stored page (a `sources` row, D35).
       def self.with_page(model)
-        model.respond_to?(:with_source) ? model.with_source(:wiki_raw_jp) : model.where.not(wiki_raw_jp: [nil, ''])
+        model.with_source(:wiki_raw_jp)
       end
 
-      # What's stored for a page: a character keeps only div#body (Granblue::JpWikiPage).
-      def self.storable(record, html)
-        record.is_a?(Character) ? Granblue::JpWikiPage.trim(html) : html
+      # What's stored for a page: only div#body (Granblue::JpWikiPage).
+      def self.storable(_record, html)
+        Granblue::JpWikiPage.trim(html)
       end
 
       # Records eligible for JP wiki download: have a clean wiki_ja, or have

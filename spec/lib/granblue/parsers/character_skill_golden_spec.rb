@@ -15,6 +15,9 @@ RSpec.describe 'CharacterSkillParser golden snapshots' do
     orologia: { granblue_id: '3040536000', name: 'Orologia' }
   }
 
+  # The goldens were made with the icon snapshot in place: its entries for these characters.
+  before { put_icon_snapshot(fixture_dir.join('golden-icons.json').read) }
+
   samples.each do |key, sample|
     it "matches the golden snapshot for #{sample[:name]}" do
       snapshot = parse_snapshot(key, sample)

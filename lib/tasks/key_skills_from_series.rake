@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 namespace :granblue do
-  # The stored series pages (W3's weapon_sources). Extraction never falls back to the
+  # The stored series pages (W3's source store). Extraction never falls back to the
   # live wiki: without stored sources there is nothing to extract from.
   key_skill_source_store = lambda do
     unless defined?(WeaponSkills::SourceStore::Database)
       abort "Stored weapon sources are not available yet; run granblue:fetch_weapon_sources " \
-            "on a build with the weapon_sources store (pipeline W3, #541)."
+            "on a build with the weapon source store (pipeline W3, #541)."
     end
 
     WeaponSkills::SourceStore::Database.new

@@ -6,7 +6,6 @@ RSpec.describe CharacterSkills::Build::Runner do
   include ActiveJob::TestHelper
 
   let(:io) { StringIO.new }
-  let(:icons) { Pathname.new(Dir.mktmpdir).join("icons.json") }
 
   def wiki(name = "Fire", passive: "Boost.")
     <<~WIKI
@@ -30,7 +29,7 @@ RSpec.describe CharacterSkills::Build::Runner do
   end
 
   def run(mode: "write", **)
-    described_class.new(mode: mode, io: io, icon_snapshot_path: icons, **).call
+    described_class.new(mode: mode, io: io, **).call
   end
 
   def skill_ids(character)
@@ -39,8 +38,6 @@ RSpec.describe CharacterSkills::Build::Runner do
 
   let!(:first) { make("3040900001") }
   let!(:second) { make("3040900002") }
-
-  after { FileUtils.rm_rf(icons.dirname) }
 
   describe "scope" do
     it "covers characters with wiki_raw or skills, and leaves the rest out" do

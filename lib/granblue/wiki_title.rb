@@ -3,7 +3,7 @@
 module Granblue
   # A gbf.wiki page title in MediaWiki's canonical form: percent-decoded, trimmed, with
   # spaces rather than underscores ("Devil%27s_Finger" → "Devil's Finger"). Stored titles
-  # (wiki_en, weapon_sources keys) use it so every lookup compares like with like; URLs
+  # (wiki_en, stored source keys) use it so every lookup compares like with like; URLs
   # encode it when they're built.
   module WikiTitle
     PERCENT_ESCAPE = /%[0-9A-Fa-f]{2}/

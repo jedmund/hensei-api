@@ -12,7 +12,7 @@ module Api
 
       # GET /weapons/:id
       def show
-        render json: WeaponBlueprint.render(@weapon, view: :full)
+        render json: WeaponBlueprint.render(@weapon, view: :full, source_dates: true)
       end
 
       # POST /weapons
@@ -21,7 +21,7 @@ module Api
         weapon = Weapon.new(with_wiki_fetch_date(weapon_params))
 
         if weapon.save
-          render json: WeaponBlueprint.render(weapon, view: :full), status: :created
+          render json: WeaponBlueprint.render(weapon, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(weapon)
         end
@@ -32,7 +32,7 @@ module Api
       def update
         if @weapon.update(with_wiki_fetch_date(update_params, @weapon))
           @weapon.reload
-          render json: WeaponBlueprint.render(@weapon, view: :full)
+          render json: WeaponBlueprint.render(@weapon, view: :full, source_dates: true)
         else
           render_validation_error_response(@weapon)
         end
@@ -196,7 +196,7 @@ module Api
       end
 
       # POST /weapons/:id/fetch_wiki
-      # Fetches the weapon's wiki sources into weapon_sources, then rebuilds its skills from
+      # Fetches the weapon's wiki sources into the stored sources, then rebuilds its skills from
       # them (the weapon-skill build).
       def fetch_wiki
         unless @weapon.wiki_en.present?
@@ -227,7 +227,7 @@ module Api
       # refetch=true fetches fresh sources first.
       def reparse
         Granblue::EntityReparser.new(@weapon, refetch: params[:refetch] == 'true').reparse
-        render json: WeaponBlueprint.render(@weapon.reload, view: :full)
+        render json: WeaponBlueprint.render(@weapon.reload, view: :full, source_dates: true)
       rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
         render json: { error: e.message }, status: :unprocessable_entity
       rescue Granblue::WikiError => e
@@ -248,7 +248,9 @@ module Api
       # it failed to load, not a deliberate clear: keep the stored text.
       def update_params
         attrs = weapon_params
-        attrs[:wiki_raw].blank? && @weapon.wiki_raw.present? ? attrs.except(:wiki_raw) : attrs
+        return attrs unless attrs.key?(:wiki_raw)
+
+        attrs[:wiki_raw].blank? && @weapon.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def weapon_params

@@ -265,7 +265,7 @@ module Granblue
       end
 
       # The stored expansion of a weapon page. Refuses one made from different wikitext
-      # (weapons.wiki_raw changed without a source fetch), which would be silently stale.
+      # (the weapon's wiki_raw changed without a source fetch), which would be silently stale.
       def stored_expansion(text, page)
         raise WeaponSkills::SourceStore::SourceMissing.new('expanded', '(no page given)') if page.blank?
 

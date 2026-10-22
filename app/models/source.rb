@@ -29,8 +29,21 @@ class Source < ApplicationRecord
     'game_raw_jp' => :json,
     'wiki_status_list' => :text,
     # Curated Japanese skill text for a character row no fetched page covers (D38).
-    'jp_skill_text' => :json
+    'jp_skill_text' => :json,
+    # The weapon-skill build's gbf.wiki inputs (WeaponSkills::SourceStore, written through
+    # WeaponSource), keyed by page title: a weapon page's expandtemplates output, the pages
+    # its parse follows, and the Template:Weapon Skills/* family pages (shared). A weapon's
+    # page is a wiki_raw row keyed by its title, beside the weapon's own wiki_raw (key '').
+    'expanded' => :text,
+    'transclusion' => :text,
+    'family_template' => :text,
+    # The character skill icon snapshot (CharacterSkills::IconSnapshot), one shared row. Text,
+    # not JSON: the body is the exported file byte for byte, so its sha256 is the file's.
+    'icon_snapshot' => :text
   }.freeze
+  # page_kind belongs to the weapon-skill store's rows (WeaponSource validates it; a check
+  # constraint holds it). Source doesn't read it, so data migrations that run before the
+  # column exists still work.
 
   # What a put did: created | changed | unchanged (only fetched_at moved) | removed (blank
   # value, a row was deleted) | absent (blank value, nothing stored).

@@ -24,10 +24,28 @@ class RepairMangledSkillDescriptions < ActiveRecord::Migration[8.1]
   PARAMETER_DEFAULT = /\A\{\{\{(?:en)?s\d(?:_\w+?)?_desc\|(.*?)\}\}\}(?!\})/m
   TRAILING_PIPES = /\|+\s*\z/
 
+  # The weapon_sources table this read, as a SourceStore. WeaponSource reads `sources` since
+  # PR 7b, and 20261022110100 copies weapon_sources there later, so a database that runs this
+  # late reads the same pages.
+  class StoredSources
+    include WeaponSkills::SourceStore::Interface
+
+    def fetch(kind, key)
+      key = Granblue::WikiTitle.normalize(key).to_s
+      row = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.sanitize_sql([<<~SQL.squish, kind.to_s, key]))
+        SELECT kind, key, body, sha256, fetched_at, page_kind FROM weapon_sources
+        WHERE kind = ? AND key = ? ORDER BY fetched_at DESC LIMIT 1
+      SQL
+      raise WeaponSkills::SourceStore::SourceMissing.new(kind, key) if row.empty?
+
+      WeaponSkills::SourceStore::Source.new(**row.first.symbolize_keys)
+    end
+  end
+
   def up
     return unless defined?(WeaponSkills::Build::Structure) && table_exists?(:weapon_sources)
 
-    @store = WeaponSkills::SourceStore::Database.new
+    @store = StoredSources.new
     @builds = {}
     Skill.where(skill_type: :weapon).where("description_en ~ ?", '[0-9]+px\|link=').find_each { |s| rebuild(s) }
     # Template-form skills ("{{{s1_4s_name|…}}}", "Sephirath {{#switch:…") are the build's

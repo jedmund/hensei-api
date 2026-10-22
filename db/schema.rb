@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1244,10 +1244,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_090000) do
     t.uuid "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "page_kind"
+    t.index ["kind", "key", "fetched_at"], name: "index_sources_on_kind_key_fetched_at"
     t.index ["kind", "key"], name: "index_sources_on_shared_kind_key", unique: true, where: "(owner_id IS NULL)"
     t.index ["owner_type", "owner_id", "kind", "key"], name: "index_sources_on_owner_kind_key", unique: true, where: "(owner_id IS NOT NULL)"
     t.check_constraint "(owner_type IS NULL) = (owner_id IS NULL)", name: "sources_owner_pair"
-    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'wiki_raw_jp'::character varying, 'game_raw_en'::character varying, 'game_raw_jp'::character varying, 'wiki_status_list'::character varying, 'jp_skill_text'::character varying]::text[])", name: "sources_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'wiki_raw_jp'::character varying, 'game_raw_en'::character varying, 'game_raw_jp'::character varying, 'wiki_status_list'::character varying, 'jp_skill_text'::character varying, 'expanded'::character varying, 'transclusion'::character varying, 'family_template'::character varying, 'icon_snapshot'::character varying]::text[])", name: "sources_kind"
+    t.check_constraint "page_kind IS NULL OR (page_kind::text = ANY (ARRAY['inline'::character varying, 'series_template'::character varying, 'key_determined'::character varying]::text[]))", name: "sources_page_kind"
   end
 
   create_table "sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -2,10 +2,10 @@
 
 namespace :granblue do
   desc <<~DESC
-    Fetch every gbf.wiki input the weapon-skill parse reads into weapon_sources. This is
+    Fetch every gbf.wiki input the weapon-skill parse reads into the stored sources. This is
     the only step that talks to the wiki; parsing and building read the stored sources.
 
-    Stores each weapon's page (wiki_raw, also written to weapons.wiki_raw), the
+    Stores each weapon's page (wiki_raw, also written to the weapon's own wiki_raw), the
     expandtemplates output for series-template pages (expanded), the pages its structural
     parse follows (transclusion), the Template:Weapon Skills/* family pages
     (family_template) and the key series pages KeySkillExtractor reads (wiki_raw, no weapon).
@@ -77,7 +77,7 @@ namespace :granblue do
     puts
     puts "Requests: #{fetcher.stats['requests']}; stored this run: " \
          "#{fetcher.stats.except('requests').sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
-    puts "weapon_sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}; " \
+    puts "stored sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}; " \
          "page kinds: #{WeaponSource.where(kind: 'wiki_raw').where.not(weapon_id: nil).group(:page_kind).count}"
     failures = errors + fetcher.failures.map { |f| "#{f[:kind]} #{f[:key]} (weapon #{f[:weapon]}): #{f[:error]}" }
     puts "Failures: #{failures.size}"
@@ -102,7 +102,7 @@ namespace :granblue do
     Load sources exported by granblue:export_weapon_sources into this database. Dry run by
     default: prints what would change and writes nothing. Rows are matched by weapon UUID,
     kind and key; an existing row fetched later is kept. Each weapon's stored page is also
-    written to weapons.wiki_raw, as a fetch would. Never talks to the wiki.
+    written to the weapon's own wiki_raw, as a fetch would. Never talks to the wiki.
 
     Usage:
       bin/rails granblue:import_weapon_sources file=tmp/weapon_sources.jsonl.gz
@@ -124,7 +124,7 @@ namespace :granblue do
 
     if ENV["write"] == "true"
       transfer.apply(plan)
-      puts "Written. weapon_sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
+      puts "Written. stored sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
     else
       puts "Dry run; nothing written. Add write=true to apply."
     end
@@ -159,5 +159,16 @@ namespace :granblue do
       puts "Requests: #{stats['requests']}; failures: #{fetcher.failures.size}"
       fetcher.failures.each { |f| puts "  - #{f[:kind]} #{f[:key]} (weapon #{f[:weapon]}): #{f[:error]}" }
     end
+  end
+end
+
+namespace :granblue do
+  desc "After the PR 7b deploy is live (the column-drop PR runs it as a data migration): copy into `sources` what " \
+       "the old code wrote to the weapons/summons source columns and to weapon_sources after the copy migrations " \
+       "ran (missing rows, and rows not rewritten since the copy whose sha256 differs). Counts only; idempotent; " \
+       "queues no builds."
+  task sync_item_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    Granblue::ItemSourceSync.new.call
   end
 end

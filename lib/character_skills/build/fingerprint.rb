@@ -33,15 +33,8 @@ module CharacterSkills
       ATTRIBUTES = %w[granblue_id element style_swap].freeze
       NONE = "-"
 
-      # The snapshot the Builder reads its fallback icons from.
-      def self.icon_snapshot_path = IconSnapshot::DEFAULT_PATH
-
       # One instance per run: the statuses and icons digests are computed once, after the
       # status catalogue has been refreshed.
-      def initialize(icon_snapshot_path: self.class.icon_snapshot_path)
-        @icon_snapshot_path = icon_snapshot_path
-      end
-
       def for(character)
         digests = SOURCES.to_h { |kind| [kind, character.source_sha256(kind) || NONE] }
         combine(digests, ATTRIBUTES.to_h { |column| [column, character[column]] })
@@ -68,7 +61,9 @@ module CharacterSkills
       end
 
       def icons_digest
-        @icons_digest ||= File.file?(@icon_snapshot_path) ? Digest::SHA256.file(@icon_snapshot_path).hexdigest : NONE
+        # The snapshot the Builder reads its fallback icons from (its `sources` row), as this
+        # process has it loaded (refreshed first), so the build and its fingerprint agree.
+        @icons_digest ||= IconSnapshot.refresh! || NONE
       end
 
       private

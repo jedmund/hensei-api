@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe CharacterSkills::Coverage do
   let(:today) { Date.new(2026, 10, 20) }
-  let(:snapshot_path) { Rails.root.join('tmp', "coverage_spec_icons_#{Process.pid}.json") }
   let(:storage) { instance_double(AwsService) }
 
   let!(:complete) do
@@ -29,10 +28,10 @@ RSpec.describe CharacterSkills::Coverage do
   end
 
   before do
-    File.write(snapshot_path, JSON.generate([
-      { granblue_id: '3030000004', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Kept', game_icon: '100_1' }
-    ]))
-    CharacterSkills::IconSnapshot.reset!
+    put_icon_snapshot([
+      { granblue_id: '3030000004', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Kept',
+        game_icon: '100_1' }
+    ])
 
     ability = create(:character_skill, character: complete, kind: :ability, position: 1)
     create(:character_skill_version, character_skill: ability, ordinal: 1, name_en: 'Strike', name_jp: 'ストライク', game_icon: '1_1')
@@ -45,16 +44,11 @@ RSpec.describe CharacterSkills::Coverage do
     create(:character_skill_version, character_skill: nulled, ordinal: 2, name_en: 'Renamed', name_jp: 'b', game_icon: '200_1')
   end
 
-  after do
-    FileUtils.rm_f(snapshot_path)
-    CharacterSkills::IconSnapshot.reset!
-  end
-
   # The test database carries seeded characters; the report looks at this spec's only.
   let(:own_ids) { %w[3040000001 3040000002 3040000003 3030000004] }
 
   def coverage(**)
-    described_class.new(today: today, icon_snapshot_path: snapshot_path, ids: own_ids, **)
+    described_class.new(today: today, ids: own_ids, **)
   end
 
   def row(report, key) = report.rows.find { |r| r.key == key }

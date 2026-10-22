@@ -57,14 +57,13 @@ module CharacterSkills
     }.freeze
     VERSION_FIELDS = %i[character_id kind position ordinal name_en name_jp game_icon].freeze
 
-    def initialize(ids: nil, check_bucket: false, storage: nil, s3_delay: 0.05, today: Date.current, # rubocop:disable Metrics/ParameterLists
-                   icon_snapshot_path: IconSnapshot::DEFAULT_PATH, sleeper: ->(seconds) { sleep(seconds) })
+    def initialize(ids: nil, check_bucket: false, storage: nil, s3_delay: 0.05, today: Date.current,
+                   sleeper: ->(seconds) { sleep(seconds) })
       @ids = ids.presence&.map(&:to_s)
       @check_bucket = check_bucket
       @storage = storage
       @s3_delay = s3_delay.to_f
       @today = today
-      @icon_snapshot_path = icon_snapshot_path
       @sleeper = sleeper
     end
 
@@ -211,7 +210,7 @@ module CharacterSkills
 
       key = { granblue_id: owner[:granblue_id], style: owner[:style_swap] ? 2 : 1, kind: version[:kind],
               position: version[:position], ordinal: version[:ordinal] }
-      IconSnapshot.icon_for(key, name_en: version[:name_en], path: @icon_snapshot_path) != version[:game_icon]
+      IconSnapshot.icon_for(key, name_en: version[:name_en]) != version[:game_icon]
     end
 
     # Every stored stem, any kind, as granblue:download_ability_icons downloads them.

@@ -32,9 +32,13 @@ RSpec.describe 'RepairMangledSkillDescriptions' do
     migration_class.new.tap { |m| m.verbose = false }.up
   end
 
+  # weapon_sources, the table this migration read (WeaponSource reads `sources` since PR 7b).
   before do
-    WeaponSkills::SourceStore::Database.new.put('wiki_raw', 'Dread Scythe', page, page_kind: 'inline',
-                                                                                  weapon_id: weapon.id)
+    conn = ActiveRecord::Base.connection
+    conn.execute(ActiveRecord::Base.sanitize_sql([<<~SQL.squish, weapon.id, page, Digest::SHA256.hexdigest(page)]))
+      INSERT INTO weapon_sources (weapon_id, kind, key, body, sha256, fetched_at, page_kind, created_at, updated_at)
+      VALUES (?, 'wiki_raw', 'Dread Scythe', ?, ?, now(), 'inline', now(), now())
+    SQL
   end
 
   it 'rebuilds icon-flattened text from the stored page, without the network' do

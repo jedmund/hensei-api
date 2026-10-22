@@ -51,6 +51,9 @@ module WeaponSkills
         counts = Hash.new(0)
         problems = []
         weapons = Weapon.where(id: rows.filter_map { |r| r["weapon_id"] }.uniq).index_by(&:id)
+        # Each weapon's own page (its wiki_raw source): [sha256, fetched_at], without the bodies.
+        pages = Weapon.owned_sources(:wiki_raw).where(owner_id: weapons.keys).without_body
+                      .to_h { |row| [row.owner_id, [row.sha256, row.fetched_at]] }
         # Titles compare in Granblue::WikiTitle form, whichever form either side stored.
         existing = WeaponSource.pluck(:id, :weapon_id, :kind, :key, :fetched_at, :sha256)
                                .map { |id, w, kind, key, at, sha| [id, w, kind, Granblue::WikiTitle.normalize(key), at, sha] }
@@ -106,28 +109,40 @@ module WeaponSkills
           # wiki_raw_fetched_at records when the page was last checked, so it moves up to
           # the stored fetch even when the text is the same.
           next unless weapon && r["kind"] == "wiki_raw"
-          next if weapon.wiki_raw_fetched_at && weapon.wiki_raw_fetched_at >= fetched_at
 
-          weapon_updates[weapon.id] = { wiki_raw: r["body"], wiki_raw_fetched_at: fetched_at, wiki_en: key }
+          page_sha, page_fetched_at = pages[weapon.id]
+          next if page_fetched_at && page_fetched_at >= fetched_at
+
+          weapon_updates[weapon.id] = { wiki_raw: r["body"], fetched_at: fetched_at, wiki_en: key }
           counts[:weapon_checked] += 1
-          counts[:weapon_pages] += 1 if weapon.wiki_raw != r["body"]
+          counts[:weapon_pages] += 1 if page_sha != sha
           counts[:weapon_renamed_pages] += 1 if weapon.wiki_en != key
         end
         Plan.new(inserts: inserts, deletes: deletes.uniq, weapon_updates: weapon_updates, counts: counts,
                  problems: problems)
       end
 
-      # Applies a plan in one transaction. weapons.wiki_raw follows the stored page, as a fetch
-      # would: the build checks stored expansions against it.
+      # Applies a plan in one transaction. The weapon's own wiki_raw follows the stored page, as
+      # a fetch would: the build checks stored expansions against it.
       def apply(plan)
         now = Time.current
         ActiveRecord::Base.transaction do
           WeaponSource.where(id: plan.deletes).delete_all if plan.deletes.any?
           plan.inserts.each_slice(BATCH) do |batch|
-            WeaponSource.insert_all!(batch.map { |row| row.merge(created_at: now, updated_at: now) })
+            WeaponSource.insert_all!(batch.map { |row| stored_row(row).merge(created_at: now, updated_at: now) })
           end
-          plan.weapon_updates.each { |id, attrs| Weapon.where(id: id).update_all(attrs) }
+          Weapon.where(id: plan.weapon_updates.keys).select(:id).find_each do |weapon|
+            attrs = plan.weapon_updates.fetch(weapon.id)
+            Weapon.where(id: weapon.id).update_all(wiki_en: attrs[:wiki_en])
+            ::Source.put(weapon, :wiki_raw, attrs[:wiki_raw], fetched_at: attrs[:fetched_at])
+          end
         end
+      end
+
+      # A planned row as a `sources` row: the weapon is its owner.
+      def stored_row(row)
+        weapon_id = row[:weapon_id]
+        row.except(:weapon_id).merge(owner_id: weapon_id, owner_type: weapon_id && Weapon.polymorphic_name)
       end
     end
   end

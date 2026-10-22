@@ -1,13 +1,22 @@
 # frozen_string_literal: true
 
 module CharacterSkills
-  # A committed, read-only record of every character skill version's game icon
-  # (data/character_skills/icons.json). The builder falls back to it when a
-  # character has no game data, so a reparse from wikitext alone keeps the icons
-  # that came from the game. An entry applies only when its name_en matches the
-  # built version's name, so a reshaped wiki page can't move an icon.
+  # A record of every character skill version's game icon, kept as one shared
+  # `sources` row (kind icon_snapshot, PR 7b; it was data/character_skills/icons.json).
+  # The builder falls back to it when a character has no game data, so a reparse from
+  # wikitext alone keeps the icons that came from the game. An entry applies only when
+  # its name_en matches the built version's name, so a reshaped wiki page can't move an
+  # icon. The body is the JSON text as exported, so its sha256 (the build fingerprint's
+  # input) is the old file's digest.
+  #
+  # Loaded once and kept while the row's sha256 stays the same: refresh! (which the build
+  # fingerprint calls at the start of each run) reloads it when another process stored a new
+  # snapshot, so a build and the fingerprint it records always use the same snapshot.
   module IconSnapshot
-    DEFAULT_PATH = Rails.root.join('data/character_skills/icons.json')
+    KIND = 'icon_snapshot'
+    KEY = 'character_skills'
+    # The committed file the data migration loads into the row; deleted by a follow-up.
+    FILE = Rails.root.join('data/character_skills/icons.json')
     KEYS = %w[granblue_id style kind position ordinal name_en game_icon].freeze
 
     # Two stored versions share a snapshot key but disagree on name or icon.
@@ -36,62 +45,88 @@ module CharacterSkills
     SQL
 
     class << self
-      # Writes every stored version that has a game_icon. Returns the entry count.
-      def export(path = DEFAULT_PATH)
+      # Stores every stored version that has a game_icon as the snapshot. Returns the entry count.
+      def export
         entries = export_rows
         check_conflicts!(entries)
-        FileUtils.mkdir_p(File.dirname(path))
-        File.write(path, serialize(entries))
-        reset!
+        store(serialize(entries))
         entries.size
       end
 
+      # Stores text (the snapshot's JSON, as exported) as the snapshot row. A changed snapshot
+      # changes every character's fingerprint, so the stale build is queued (in
+      # CHARACTER_SKILL_BUILD's mode), as for a changed status list.
+      def store(text, fetched_at: nil)
+        result = Source.put(nil, KIND, text, key: KEY, fetched_at: fetched_at)
+        reset!
+        CharacterSkills::StaleBuildJob.perform_later if result.changed? && CharacterSkills.build_mode != 'off'
+        result
+      end
+
+      # The stored row's sha256 (the build fingerprint's input), or nil.
+      def sha256
+        Source.where(owner_type: nil, owner_id: nil, kind: KIND, key: KEY).pick(:sha256)
+      end
+
       # { [granblue_id, style, kind, position, ordinal] => { name_en:, game_icon: } },
-      # memoized per path. An absent file is an empty index.
-      def load(path = DEFAULT_PATH)
-        @indexes ||= {}
-        @indexes[path.to_s] ||= build_index(path)
+      # memoized (see refresh!). No row is an empty index.
+      def load
+        refresh! unless @loaded
+        @load
+      end
+
+      # Reloads the index when the stored row's sha256 differs from the loaded one. → the
+      # loaded snapshot's sha256, or nil when none is stored.
+      def refresh!
+        return @loaded_sha256 if @loaded && sha256 == @loaded_sha256
+
+        row = Source.fetch(nil, KIND, key: KEY)
+        @load = build_index(row&.body)
+        @slot_index = nil
+        @loaded = true
+        @loaded_sha256 = row&.sha256
       end
 
       # The entry for a version, or nil.
-      def lookup(granblue_id:, style:, kind:, position:, ordinal:, path: DEFAULT_PATH)
-        load(path)[[granblue_id.to_s, style.to_i, kind.to_s, position.to_i, ordinal.to_i]]
+      def lookup(granblue_id:, style:, kind:, position:, ordinal:)
+        load[[granblue_id.to_s, style.to_i, kind.to_s, position.to_i, ordinal.to_i]]
       end
 
       # The snapshot icon for a built version, or nil. The entry at the exact key
       # wins when it names the same ability. Otherwise (a rebuild renumbered the
       # slot's versions) the slot's entries with that name decide, but only when
       # they all agree on one icon. key: { granblue_id:, style:, kind:, position:, ordinal: }.
-      def icon_for(key, name_en:, path: DEFAULT_PATH)
+      def icon_for(key, name_en:)
         return if name_en.blank?
 
-        exact = lookup(**key, path: path)
+        exact = lookup(**key)
         return exact[:game_icon].presence if exact && exact[:name_en] == name_en
 
-        slot = slot_index(path)[[key[:granblue_id].to_s, key[:style].to_i, key[:kind].to_s, key[:position].to_i]] || []
+        slot = slot_index[[key[:granblue_id].to_s, key[:style].to_i, key[:kind].to_s, key[:position].to_i]] || []
         icons = slot.filter_map { |entry| entry[:game_icon].presence if entry[:name_en] == name_en }.uniq
         icons.first if icons.one?
       end
 
       def reset!
-        @indexes = {}
-        @slot_indexes = {}
+        @load = nil
+        @slot_index = nil
+        @loaded = false
+        @loaded_sha256 = nil
       end
 
       private
 
       # { [granblue_id, style, kind, position] => [{ name_en:, game_icon: }, ...] }
-      def slot_index(path)
-        @slot_indexes ||= {}
-        @slot_indexes[path.to_s] ||= load(path).each_with_object({}) do |(key, entry), index|
+      def slot_index
+        @slot_index ||= load.each_with_object({}) do |(key, entry), index|
           (index[key.first(4)] ||= []) << entry
         end
       end
 
-      def build_index(path)
-        return {} unless File.exist?(path)
+      def build_index(text)
+        return {} if text.blank?
 
-        JSON.parse(File.read(path)).each_with_object({}) do |entry, index|
+        JSON.parse(text).each_with_object({}) do |entry, index|
           key = [entry['granblue_id'].to_s, entry['style'].to_i, entry['kind'].to_s, entry['position'].to_i, entry['ordinal'].to_i]
           index[key] = { name_en: entry['name_en'], game_icon: entry['game_icon'] }
         end

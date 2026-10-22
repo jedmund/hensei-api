@@ -75,7 +75,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::JpSkillText do
 
   it 'joins the fingerprint only when present, and queues a build when written' do
     row = create_row
-    fingerprints = CharacterSkills::Build::Fingerprint.new(icon_snapshot_path: Pathname.new('/nonexistent'))
+    fingerprints = CharacterSkills::Build::Fingerprint.new
     before = fingerprints.for(Character.find(row.id))
 
     expect { Source.put(row, :jp_skill_text, text) }.to have_enqueued_job(CharacterSkills::BuildJob).with(row.id)

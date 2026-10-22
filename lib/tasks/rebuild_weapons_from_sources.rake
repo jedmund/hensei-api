@@ -25,11 +25,13 @@ namespace :granblue do
     english_s1_desc = '(^|\n)\|[[:space:]]*s1_desc[[:space:]]*=' # "|jps1_desc=" doesn't match
     scopes = {
       "misrouted" => lambda {
-        Weapon.where("wiki_raw LIKE ? AND wiki_raw ILIKE ? AND wiki_raw !~ ?", "%{{Weapon/Common/%", "%s1_desc=%",
-                     english_s1_desc)
+        pages = Weapon.owned_sources(:wiki_raw)
+                      .where("body LIKE ? AND body ILIKE ? AND body !~ ?", "%{{Weapon/Common/%", "%s1_desc=%",
+                             english_s1_desc)
+        Weapon.where(id: pages.select(:owner_id))
       },
       "skillless" => lambda {
-        Weapon.left_joins(:weapon_skills).where(weapon_skills: { id: nil }, rarity: 3).where.not(wiki_raw: [nil, ""])
+        Weapon.with_source(:wiki_raw).left_joins(:weapon_skills).where(weapon_skills: { id: nil }, rarity: 3)
       }
     }
     unknown = groups - scopes.keys

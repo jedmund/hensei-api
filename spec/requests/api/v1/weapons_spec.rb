@@ -31,6 +31,17 @@ RSpec.describe 'Weapons API', type: :request do
       expect(json['max_exorcism_level']).to eq(5)
     end
 
+    it 'returns when its wikitext was fetched, which nested weapons leave out' do
+      fetched_at = Time.utc(2026, 10, 1, 9)
+      weapon.update!(wiki_raw: '{{Weapon}}', wiki_raw_fetched_at: fetched_at)
+
+      get "/api/v1/weapons/#{weapon.id}"
+
+      expect(response.parsed_body['wiki_raw_fetched_at']).to eq(fetched_at.iso8601(3))
+      expect(response.parsed_body).to have_key('wiki_raw_jp_fetched_at')
+      expect(Api::V1::WeaponBlueprint.render_as_hash(weapon, view: :full)).not_to have_key(:wiki_raw_fetched_at)
+    end
+
     it 'returns null for max_exorcism_level when not set' do
       weapon_without_exorcism = create(:weapon, max_exorcism_level: nil)
 
@@ -207,6 +218,28 @@ RSpec.describe 'Weapons API', type: :request do
 
       get "/api/v1/weapons/#{weapon.id}/raw"
       expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'editor-only writes to a weapon\'s sources' do
+    let!(:stored) { create(:weapon, wiki_en: 'Stored Page', wiki_raw: '{{Stored}}') }
+
+    it 'rejects PUT /api/v1/weapons/:id with new wikitext from a non-editor' do
+      put "/api/v1/weapons/#{stored.id}", params: { weapon: { wiki_raw: '{{Theirs}}' } }.to_json, headers: regular_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+    end
+
+    it 'rejects POST /api/v1/weapons/:id/fetch_wiki from a non-editor or without a session' do
+      post "/api/v1/weapons/#{stored.id}/fetch_wiki", headers: regular_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      post "/api/v1/weapons/#{stored.id}/fetch_wiki"
+      expect(response).to have_http_status(:unauthorized)
+
+      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+      expect(WebMock).not_to have_requested(:any, /.*/)
     end
   end
 end

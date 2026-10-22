@@ -2,7 +2,7 @@
 
 module WeaponSkills
   module SourceStore
-    # The weapon_sources table as a SourceStore. A lookup matches (kind, key) whatever the
+    # The stored sources (WeaponSource, rows of `sources`) as a SourceStore. A lookup matches (kind, key) whatever the
     # owning weapon is, and returns the newest fetch: a page several weapons follow (a
     # shared base page, say) is stored once per weapon, with the same body from one run.
     # Keys are page titles in Granblue::WikiTitle form.

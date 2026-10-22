@@ -6,7 +6,7 @@ module Granblue
   # fetch_wiki endpoints and the wiki rake tasks.
   #
   # Weapons go through the source store: the refetch also refreshes the page's
-  # expansion and followed pages in weapon_sources, so a later reparse reads a
+  # expansion and followed pages in the stored sources, so a later reparse reads a
   # consistent set of sources.
   class WikiFetcher
     class MissingPageError < StandardError; end

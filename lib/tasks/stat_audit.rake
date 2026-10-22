@@ -372,7 +372,11 @@ namespace :granblue do
     models.each do |model|
       reporter.add_section(model.name)
 
-      suspicious_scope(model).find_each do |record|
+      # The audit reads each record's wikitext (EN and JP): load those sources with each batch.
+      records = suspicious_scope(model).find_in_batches.lazy.flat_map do |batch|
+        model.preload_sources(batch, kinds: %i[wiki_raw wiki_raw_jp])
+      end
+      records.each do |record|
         matches = detect_matches(record)
         next if matches.empty?
 

@@ -21,8 +21,8 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
     described_class.read(path).last
   end
 
-  it "round-trips every row and writes each weapon's page to weapons.wiki_raw" do
-    weapon.update_columns(wiki_raw_fetched_at: Time.utc(2026, 6, 17))
+  it "round-trips every row and writes each weapon's page to its wiki_raw" do
+    weapon.update!(wiki_raw_fetched_at: Time.utc(2026, 6, 17))
     source("wiki_raw", "Ray_of_Zhuque_Regus", "|id=1040906500", weapon: weapon)
     source("transclusion", "Template:Weapon/Common/Six", "{{template}}", weapon: weapon)
     source("family_template", "Template:Weapon Skills/Might", "family")
@@ -44,7 +44,7 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
   end
 
   it "stamps a weapon whose page is unchanged with the stored fetch time" do
-    weapon.update_columns(wiki_raw: "same", wiki_raw_fetched_at: Time.utc(2026, 6, 17))
+    weapon.update!(wiki_raw: "same", wiki_raw_fetched_at: Time.utc(2026, 6, 17))
     source("wiki_raw", "Ray of Zhuque Regus", "same", weapon: weapon)
     rows = export_and_clear
 
@@ -58,7 +58,7 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
     source("wiki_raw", "Ray_of_Zhuque_Regus", "exported", weapon: weapon)
     rows = export_and_clear
     source("wiki_raw", "Ray_of_Zhuque_Regus", "newer", weapon: weapon, at: fetched_at + 1.day)
-    weapon.update_columns(wiki_raw: "newer", wiki_raw_fetched_at: fetched_at + 1.day)
+    weapon.update!(wiki_raw: "newer", wiki_raw_fetched_at: fetched_at + 1.day)
 
     plan = described_class.plan(rows)
 

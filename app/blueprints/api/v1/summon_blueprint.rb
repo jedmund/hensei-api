@@ -77,11 +77,16 @@ module Api
         field :transcendence_date
       end
 
+      SOURCE_DATES = ->(_field, _summon, options) { options[:source_dates] }
+
       view :full do
         include_view :stats
         include_view :dates
-        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com).
-        fields :wiki_raw_fetched_at, :wiki_raw_jp_fetched_at
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com). Read from
+        # `sources` (a query per summon), so only when the summon itself is rendered
+        # (source_dates: true), not for each summon nested in a party or collection.
+        field :wiki_raw_fetched_at, if: SOURCE_DATES
+        field :wiki_raw_jp_fetched_at, if: SOURCE_DATES
 
         field :nicknames do |s|
           {

@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe CharacterSkills::Build::Fingerprint do
-  let(:icons) { Pathname.new(Dir.mktmpdir).join("icons.json") }
   let(:character) do
     create(:character, granblue_id: "3040999000", element: 2,
                        wiki_raw: "{{Character|a1_name=Fire}}", wiki_raw_jp: "<p>アビリティ「炎」</p>",
@@ -11,10 +10,8 @@ RSpec.describe CharacterSkills::Build::Fingerprint do
                        game_raw_jp: nil)
   end
 
-  def fingerprint(record = character.reload) = described_class.new(icon_snapshot_path: icons).for(record)
-  def fingerprints(relation = Character.where(id: character.id)) = described_class.new(icon_snapshot_path: icons).for_relation(relation)
-
-  after { FileUtils.rm_rf(icons.dirname) }
+  def fingerprint(record = character.reload) = described_class.new.for(record)
+  def fingerprints(relation = Character.where(id: character.id)) = described_class.new.for_relation(relation)
 
   it "is the same from the SQL path and the in-memory path, non-ASCII text included" do
     expect(fingerprints).to eq(character.id => fingerprint)
@@ -102,9 +99,9 @@ RSpec.describe CharacterSkills::Build::Fingerprint do
 
   it "changes when the icon snapshot appears or changes" do
     absent = fingerprint
-    icons.write("[]\n")
+    put_icon_snapshot("[]\n")
     present = fingerprint
-    icons.write("[{\"granblue_id\":\"3040999000\"}]\n")
+    put_icon_snapshot("[{\"granblue_id\":\"3040999000\"}]\n")
     expect([absent, present, fingerprint].uniq.size).to eq(3)
   end
 

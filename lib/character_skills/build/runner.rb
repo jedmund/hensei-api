@@ -63,7 +63,7 @@ module CharacterSkills
       end
 
       def initialize(mode:, ids: nil, characters: nil, all: false, diff_limit: nil, io: $stdout, # rubocop:disable Metrics/ParameterLists
-                     enqueue_icons: true, icon_snapshot_path: Fingerprint.icon_snapshot_path)
+                     enqueue_icons: true)
         raise ArgumentError, "mode must be one of #{MODES.join(', ')} (got #{mode.inspect})" unless MODES.include?(mode)
 
         @mode = mode
@@ -73,7 +73,6 @@ module CharacterSkills
         @diff_limit = diff_limit
         @io = io
         @enqueue_icons = enqueue_icons
-        @icon_snapshot_path = icon_snapshot_path
       end
 
       def call
@@ -108,7 +107,7 @@ module CharacterSkills
 
       def run
         @summary.statuses = refresh_statuses
-        fingerprints = Fingerprint.new(icon_snapshot_path: @icon_snapshot_path)
+        fingerprints = Fingerprint.new
         targets = @characters ? given_targets(fingerprints) : scoped_targets(fingerprints)
         ids = targets.map(&:first)
         before = Snapshot.capture(ids)
