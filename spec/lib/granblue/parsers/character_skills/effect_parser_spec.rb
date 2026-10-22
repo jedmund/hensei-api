@@ -154,4 +154,25 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
       expect(effect).to include(category: 'debuff', effect_type: 'inflict_status')
     end
   end
+
+  describe 'curated categories scoped to a character (D52)' do
+    let(:max_hp) { instance_double('Status', id: 'mhp', category: 'debuff', game_status_id: '6120', variant_kind: nil) }
+    let(:lookup) { { by_name: { 'max hp lowered' => max_hp }, by_id: {} } }
+
+    before do
+      allow(Granblue::Parsers::CuratedStatusCategories).to receive_messages(
+        load: {}, scoped: { 'max hp lowered' => { '3040291000' => 'buff' } }
+      )
+    end
+
+    it "makes the status a buff in that character's skills, over the self-inflict rule" do
+      effect = described_class.new(lookup, granblue_id: '3040291000').parse('Self-inflict {{status|Max HP Lowered}}.').first
+      expect(effect).to include(category: 'buff', effect_type: 'grant_status', target: 'caster')
+    end
+
+    it "leaves other characters' effects alone" do
+      effect = described_class.new(lookup, granblue_id: '3040001000').parse('Self-inflict {{status|Max HP Lowered}}.').first
+      expect(effect).to include(category: 'debuff', effect_type: 'inflict_status')
+    end
+  end
 end

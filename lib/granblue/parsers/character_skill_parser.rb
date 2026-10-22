@@ -63,7 +63,7 @@ module Granblue
       end
 
       def effect_parser
-        @effect_parser ||= CharacterSkills::EffectParser.new(status_lookup)
+        @effect_parser ||= CharacterSkills::EffectParser.new(status_lookup, granblue_id: character.granblue_id)
       end
     end
   end
