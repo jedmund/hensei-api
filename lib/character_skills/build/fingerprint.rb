@@ -61,8 +61,9 @@ module CharacterSkills
       end
 
       def icons_digest
-        # The snapshot the Builder reads its fallback icons from (its `sources` row).
-        @icons_digest ||= IconSnapshot.sha256 || NONE
+        # The snapshot the Builder reads its fallback icons from (its `sources` row), as this
+        # process has it loaded (refreshed first), so the build and its fingerprint agree.
+        @icons_digest ||= IconSnapshot.refresh! || NONE
       end
 
       private

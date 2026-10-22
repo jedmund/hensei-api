@@ -76,6 +76,48 @@ RSpec.describe CharacterSkills::IconSnapshot do
     end
   end
 
+  describe '.refresh!' do
+    let(:entry) { { granblue_id: '3040377000', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Jinx' } }
+    let(:key) { entry.slice(:granblue_id, :style, :kind, :position, :ordinal) }
+
+    it 'reloads the index when another process stored a new snapshot, and returns its sha256' do
+      put_icon_snapshot([entry.merge(game_icon: '1_1')])
+      expect(described_class.icon_for(key, name_en: 'Jinx')).to eq('1_1')
+
+      # Written past this process's cache, as another process's export would be.
+      Source.put(nil, :icon_snapshot, JSON.generate([entry.merge(game_icon: '2_1')]), key: described_class::KEY)
+      expect(described_class.icon_for(key, name_en: 'Jinx')).to eq('1_1')
+
+      expect(described_class.refresh!).to eq(described_class.sha256)
+      expect(described_class.icon_for(key, name_en: 'Jinx')).to eq('2_1')
+    end
+
+    it 'gives the fingerprint the sha256 of the snapshot it loaded' do
+      put_icon_snapshot([entry.merge(game_icon: '1_1')])
+      expect(CharacterSkills::Build::Fingerprint.new.icons_digest).to eq(described_class.sha256)
+    end
+  end
+
+  describe '.store' do
+    around do |example|
+      saved = ENV.fetch('CHARACTER_SKILL_BUILD', nil)
+      example.run
+    ensure
+      saved.nil? ? ENV.delete('CHARACTER_SKILL_BUILD') : ENV['CHARACTER_SKILL_BUILD'] = saved
+    end
+
+    it 'queues the stale build when the snapshot changed, in the build mode' do
+      ENV['CHARACTER_SKILL_BUILD'] = 'write'
+      expect { put_icon_snapshot([]) }.to have_enqueued_job(CharacterSkills::StaleBuildJob)
+      expect { put_icon_snapshot([]) }.not_to have_enqueued_job(CharacterSkills::StaleBuildJob)
+    end
+
+    it 'queues nothing when the build is off' do
+      ENV['CHARACTER_SKILL_BUILD'] = 'off'
+      expect { put_icon_snapshot([]) }.not_to have_enqueued_job(CharacterSkills::StaleBuildJob)
+    end
+  end
+
   describe '.icon_for' do
     let(:entries) do
       [

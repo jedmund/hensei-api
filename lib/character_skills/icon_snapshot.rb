@@ -9,8 +9,9 @@ module CharacterSkills
   # icon. The body is the JSON text as exported, so its sha256 (the build fingerprint's
   # input) is the old file's digest.
   #
-  # Loaded once per process (reset! after a change): the row changes only through export
-  # or a deploy's data migration.
+  # Loaded once and kept while the row's sha256 stays the same: refresh! (which the build
+  # fingerprint calls at the start of each run) reloads it when another process stored a new
+  # snapshot, so a build and the fingerprint it records always use the same snapshot.
   module IconSnapshot
     KIND = 'icon_snapshot'
     KEY = 'character_skills'
@@ -52,10 +53,13 @@ module CharacterSkills
         entries.size
       end
 
-      # Stores text (the snapshot's JSON, as exported) as the snapshot row.
+      # Stores text (the snapshot's JSON, as exported) as the snapshot row. A changed snapshot
+      # changes every character's fingerprint, so the stale build is queued (in
+      # CHARACTER_SKILL_BUILD's mode), as for a changed status list.
       def store(text, fetched_at: nil)
         result = Source.put(nil, KIND, text, key: KEY, fetched_at: fetched_at)
         reset!
+        CharacterSkills::StaleBuildJob.perform_later if result.changed? && CharacterSkills.build_mode != 'off'
         result
       end
 
@@ -65,9 +69,22 @@ module CharacterSkills
       end
 
       # { [granblue_id, style, kind, position, ordinal] => { name_en:, game_icon: } },
-      # memoized. No row is an empty index.
+      # memoized (see refresh!). No row is an empty index.
       def load
-        @load ||= build_index(Source.read(nil, KIND, key: KEY))
+        refresh! unless @loaded
+        @load
+      end
+
+      # Reloads the index when the stored row's sha256 differs from the loaded one. → the
+      # loaded snapshot's sha256, or nil when none is stored.
+      def refresh!
+        return @loaded_sha256 if @loaded && sha256 == @loaded_sha256
+
+        row = Source.fetch(nil, KIND, key: KEY)
+        @load = build_index(row&.body)
+        @slot_index = nil
+        @loaded = true
+        @loaded_sha256 = row&.sha256
       end
 
       # The entry for a version, or nil.
@@ -93,6 +110,8 @@ module CharacterSkills
       def reset!
         @load = nil
         @slot_index = nil
+        @loaded = false
+        @loaded_sha256 = nil
       end
 
       private
