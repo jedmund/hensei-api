@@ -38,12 +38,13 @@ namespace :granblue do
     fetch = Granblue::WikiDataFetch.new(type.constantize, ids: ids, rarities: rarities,
                                                           force: ENV['force'] == 'true', delay: delay)
 
-    summary = Character.without_skill_build { fetch.call }
+    summary = Character.without_skill_build { Summon.without_aura_build { fetch.call } }
     if type == 'Character'
       CharacterSkills::SourceFetch.finish(summary, build: build, changed_out: ENV['changed_out'].presence)
     elsif ENV['changed_out'].present?
       summary.write_changed(ENV['changed_out'])
     end
+    puts 'Next: bin/rails granblue:build_summon_auras mode=shadow (then mode=write)' if type == 'Summon'
   end
 
   desc <<~DESC

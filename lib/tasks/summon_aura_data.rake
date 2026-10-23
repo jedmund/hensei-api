@@ -1,48 +1,43 @@
 # frozen_string_literal: true
 
 namespace :granblue do
-  ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze # rubocop:disable Lint/ConstantDefinitionInBlock
-  AURA_KEYS = %w[summon_granblue_id slot target element value uncap_level transcendence_stage condition description_en].freeze # rubocop:disable Lint/ConstantDefinitionInBlock
+  desc "Build summon auras from the stored sources (SummonAuras::Build::Runner). " \
+       "mode=shadow (default unless SUMMON_AURA_BUILD=write) builds in a rolled-back transaction and prints " \
+       "the differences; mode=write keeps the result. Builds only summons whose fingerprint changed unless " \
+       "all=true; ids=GRANBLUE_ID,... narrows the run; limit=N caps the printed differences. " \
+       "Exits nonzero if any summon failed."
+  task build_summon_auras: :environment do
+    ActiveRecord::Base.logger = nil
+    mode = ENV["mode"].presence || (SummonAuras.build_mode == "write" ? "write" : "shadow")
+    abort "mode must be shadow or write (got #{mode.inspect})" unless SummonAuras::Build::Runner::MODES.include?(mode)
 
-  desc "Extract summon auras from each summon's stored wikitext (wiki_raw) -> data/summon_aura_data.json"
-  task extract_summon_aura_data: :environment do
-    require Rails.root.join("lib/granblue/extractors/summon_aura_extractor")
-    ex = Granblue::Extractors::SummonAuraExtractor.new
-
-    rows = []
-    no_aura = []
-    with_page = Summon.with_source(:wiki_raw)
-    with_page.find_in_batches.lazy.flat_map { |batch| Summon.preload_sources(batch, kinds: :wiki_raw) }.each do |s|
-      recs = ex.extract(s.wiki_raw, granblue_id: s.granblue_id,
-                        series: s.summon_series&.slug, element: ELEMENT_WORD[s.element])
-      recs.empty? ? no_aura << s.name_en : rows.concat(recs)
-    end
-
-    rows = rows.map { |r| r.transform_keys(&:to_s) }
-               .sort_by { |r| [r["summon_granblue_id"], r["slot"], r["uncap_level"], r["transcendence_stage"]] }
-    File.write(Rails.root.join("data", "summon_aura_data.json"), "#{JSON.pretty_generate(rows)}\n")
-    puts "Extracted #{rows.size} aura rows from #{with_page.count - no_aura.size} summons " \
-         "(#{no_aura.size} have no passive aura — call-only)."
+    summary = SummonAuras::Build::Runner.new(
+      mode: mode,
+      ids: ENV["ids"].to_s.split(",").map(&:strip).compact_blank.presence,
+      all: ENV["all"] == "true",
+      diff_limit: ENV["limit"].presence&.to_i
+    ).call
+    exit(1) if summary.failed.positive?
   end
 
-  desc "Sync summon_auras table from data/summon_aura_data.json (upsert + prune)"
-  task load_summon_aura_data: :environment do
-    records = JSON.parse(File.read(Rails.root.join("data", "summon_aura_data.json")))
-    keys = records.to_set { |r| r.values_at("summon_granblue_id", "slot", "uncap_level", "transcendence_stage") }
+  desc "Drift check: build every summon in shadow mode and exit nonzero if any summon's built auras differ " \
+       "from the stored ones (or a build failed or came out empty). limit=N caps the printed differences."
+  task summon_aura_drift: :environment do
+    ActiveRecord::Base.logger = nil
+    summary = SummonAuras::Build::Runner.new(mode: "shadow", all: true, diff_limit: (ENV["limit"] || 50).to_i).call
+    exit(1) if summary.drift?
+  end
 
-    records.each do |r|
-      a = SummonAura.find_or_initialize_by(
-        summon_granblue_id: r["summon_granblue_id"], slot: r["slot"],
-        uncap_level: r["uncap_level"], transcendence_stage: r["transcendence_stage"]
-      )
-      AURA_KEYS.each { |c| a[c] = r[c] }
-      a.save!
-    end
-    pruned = SummonAura.all.reject do |a|
-      keys.include?([a.summon_granblue_id, a.slot, a.uncap_level, a.transcendence_stage])
-    end
-    pruned.each(&:destroy)
-    puts "Loaded #{records.size} aura rows; pruned #{pruned.size}; total #{SummonAura.count}."
+  desc "Retired: use granblue:build_summon_auras (mode=write, all=true to rebuild everything)."
+  task extract_summon_aura_data: :environment do
+    abort "granblue:extract_summon_aura_data is retired: auras are built from the stored sources, with no JSON " \
+          "snapshot. Use: rake granblue:build_summon_auras mode=write (all=true to rebuild everything)."
+  end
+
+  desc "Retired: use granblue:build_summon_auras (mode=write, all=true to rebuild everything)."
+  task load_summon_aura_data: :environment do
+    abort "granblue:load_summon_aura_data is retired: auras are built from the stored sources, with no JSON " \
+          "snapshot. Use: rake granblue:build_summon_auras mode=write (all=true to rebuild everything)."
   end
 
   desc "Summon-aura coverage: target breakdown + how many real grid summons (main/friend/subaura) resolve to an aura"

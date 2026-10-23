@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # A summon's passive aura (main or sub) at a given uncap/transcendence tier, parsed from
-# the wiki. Populated by `rake granblue:load_summon_aura_data`; consumed by the grid
+# the wiki. Built by SummonAuras::Build (deploy, on save, Reparse); consumed by the grid
 # damage calculator (frame multipliers + the Elemental boost).
 class SummonAura < ApplicationRecord
   SLOTS = %w[main sub].freeze

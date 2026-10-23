@@ -41,6 +41,17 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
       expect(auras.find_by(slot: 'main', uncap_level: 0).value).to eq(50)
     end
 
+    it 'keeps the existing auras when the stored page has no aura fields' do
+      kept = create(:summon_aura, summon_granblue_id: summon.granblue_id, slot: 'main', target: 'elemental_atk', value: 50)
+      put_source(summon, :wiki_raw, "{{Character\n|name=Not a summon\n}}")
+
+      post "/api/v1/summons/#{summon.id}/reparse", headers: editor_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['error']).to match(/made no auras/)
+      expect(SummonAura.exists?(kept.id)).to be(true)
+    end
+
     it 'rejects non-editors' do
       post "/api/v1/summons/#{summon.id}/reparse", headers: user_headers
       expect(response).to have_http_status(:unauthorized)
