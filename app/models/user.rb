@@ -229,7 +229,7 @@ class User < ApplicationRecord
     return false if reset_password_token_digest.blank? || reset_password_sent_at.blank?
     return false if reset_password_sent_at < RESET_TOKEN_EXPIRY.ago
 
-    Digest::SHA256.hexdigest(raw_token) == reset_password_token_digest
+    ActiveSupport::SecurityUtils.secure_compare(Digest::SHA256.hexdigest(raw_token.to_s), reset_password_token_digest)
   end
 
   def clear_reset_token!
@@ -256,7 +256,7 @@ class User < ApplicationRecord
     return false if email_verification_token_digest.blank? || email_verification_sent_at.blank?
     return false if email_verification_sent_at < VERIFICATION_TOKEN_EXPIRY.ago
 
-    Digest::SHA256.hexdigest(raw_token) == email_verification_token_digest
+    ActiveSupport::SecurityUtils.secure_compare(Digest::SHA256.hexdigest(raw_token.to_s), email_verification_token_digest)
   end
 
   def verify_email!

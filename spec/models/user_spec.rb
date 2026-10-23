@@ -628,6 +628,44 @@ RSpec.describe User, type: :model do
         expect(user.reset_token_valid?(raw_token)).to be true
       end
     end
+
+    it 'returns false for a nil token' do
+      user.generate_reset_token!
+      expect(user.reset_token_valid?(nil)).to be false
+    end
+
+    it 'compares digests in constant time' do
+      raw_token = user.generate_reset_token!
+      allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_call_original
+      expect(user.reset_token_valid?(raw_token)).to be true
+      expect(ActiveSupport::SecurityUtils).to have_received(:secure_compare)
+    end
+  end
+
+  describe '#verification_token_valid?' do
+    let(:user) { create(:user) }
+
+    it 'returns false when no token has been generated' do
+      expect(user.verification_token_valid?('anything')).to be false
+    end
+
+    it 'returns true for the issued token' do
+      raw_token = user.generate_verification_token!
+      expect(user.verification_token_valid?(raw_token)).to be true
+    end
+
+    it 'returns false for a wrong or nil token' do
+      user.generate_verification_token!
+      expect(user.verification_token_valid?('wrong-token')).to be false
+      expect(user.verification_token_valid?(nil)).to be false
+    end
+
+    it 'compares digests in constant time' do
+      raw_token = user.generate_verification_token!
+      allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_call_original
+      expect(user.verification_token_valid?(raw_token)).to be true
+      expect(ActiveSupport::SecurityUtils).to have_received(:secure_compare)
+    end
   end
 
   describe '#clear_reset_token!' do
