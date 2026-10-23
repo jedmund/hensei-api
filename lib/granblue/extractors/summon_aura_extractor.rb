@@ -17,7 +17,8 @@ module Granblue
     #
     # Tier -> (uncap_level, transcendence_stage):
     #   aura1 -> (0,0)  aura2 -> (3,0)  aura3 -> (4,0)  aura4 -> (5,0)   [Template:Summon]
-    #   aurat0..5 -> (5, n+1)   (transcendence levels 200–250; stage mapping validated in calc phase)
+    #   auratN -> (5, N) for N in 1..5   (transcendence stages; stored as the wiki numbers them)
+    #   aurat0 is never read: it would collide with aura4's (5, 0) row, and no summon page uses it.
     class SummonAuraExtractor
       NORMAL_WORDS = Granblue::Parsers::WeaponSkillParser::NORMAL_AURAS.map(&:downcase).freeze
       OMEGA_WORDS  = Granblue::Parsers::WeaponSkillParser::OMEGA_AURAS.map(&:downcase).freeze
@@ -36,9 +37,9 @@ module Granblue
                         series: series, summon_element: element, granblue_id: granblue_id)
             records << rec if rec
           end
-          (0..5).each do |n|
+          (1..5).each do |n|
             txt = fields["#{prefix}aurat#{n}"]
-            rec = build(txt, slot: slot, uncap_level: 5, transcendence_stage: n + 1,
+            rec = build(txt, slot: slot, uncap_level: 5, transcendence_stage: n,
                         series: series, summon_element: element, granblue_id: granblue_id)
             records << rec if rec
           end

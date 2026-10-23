@@ -54,6 +54,14 @@ RSpec.describe Granblue::Extractors::SummonAuraExtractor do
     expect(recs.map { |r| [r[:uncap_level], r[:value]] }.sort).to eq([[0, 10.0], [3, 20.0], [4, 30.0], [5, 40.0]])
   end
 
+  it "maps aurat1..5 to transcendence stages 1..5 at uncap 5 and ignores aurat0" do
+    wt = summon("aura4" => "40% boost to Fire ATK.", "aurat0" => "45% boost to Fire ATK.",
+                "aurat1" => "50% boost to Fire ATK.", "aurat5" => "90% boost to Fire ATK.")
+    recs = ex.extract(wt, granblue_id: "9", series: nil, element: "fire").select { |r| r[:slot] == "main" }
+    expect(recs.map { |r| [r[:uncap_level], r[:transcendence_stage], r[:value]] }.sort)
+      .to eq([[5, 0, 40.0], [5, 1, 50.0], [5, 5, 90.0]])
+  end
+
   it "flags an element-less generic ATK buff as 'atk'" do
     wt = summon("aura1" => "20% boost to ATK.")
     expect(main0(ex.extract(wt, granblue_id: "8", series: nil, element: nil))).to include(target: "atk")
