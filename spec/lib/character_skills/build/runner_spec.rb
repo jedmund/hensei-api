@@ -39,6 +39,26 @@ RSpec.describe CharacterSkills::Build::Runner do
   let!(:first) { make("3040900001") }
   let!(:second) { make("3040900002") }
 
+  describe "instant statuses that last (D56)" do
+    it "lists the mentions it counted as buffs or debuffs after the summary, for review" do
+      Granblue::Parsers::StatusList.use(<<~LUA)
+        local effects = { ['Bomb'] = { status = '7097', detail = "All foes take DMG at end of turn (Can't be removed)" } }
+        return { buffs = {}, debuffs = {}, effects = effects, aliases = {} }
+      LUA
+      raw = wiki.sub("|a1_effdesc=Inflict {{status|Burned|a=5}}.", "|a1_effdesc={{InfoDes|num=0|des=Inflict {{status|Bomb}} on all foes.}}")
+      Character.without_skill_build { first.update!(wiki_raw: raw) }
+      summary = run(ids: %w[3040900001])
+      expect(summary.counted_instants).to contain_exactly(
+        include(status: "Bomb", reason: "description: end of turn", raw: "{{status|Bomb}}")
+      )
+      expect(io.string).to include("1 instant status mentions counted as buffs or debuffs (D56), for review:")
+      expect(io.string).to include("3040900001 #{first.name_en}: Bomb (description: end of turn) {{status|Bomb}}")
+      effect = SkillEffect.joins(character_skill_version: :character_skill)
+                          .find_by(character_skills: { character_id: first.id }, ordinal: 1)
+      expect(effect.category).to eq("debuff")
+    end
+  end
+
   describe "scope" do
     it "covers characters with wiki_raw or skills, and leaves the rest out" do
       make("3040900003", wiki_raw: nil)

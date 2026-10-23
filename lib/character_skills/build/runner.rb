@@ -24,6 +24,9 @@ module CharacterSkills
     #
     # Each Summary#results entry carries the character's writer report, its changes (Diff, the
     # C6 `changes`) and icon_fallbacks, for callers that report per character (PR 5's refresh).
+    #
+    # Instant statuses a build counted as buffs or debuffs (D56: mentioned with a duration, or
+    # described as lasting) are listed after the summary line in both modes, for review.
     class Runner
       MODES = %w[shadow write].freeze
       LOAD_BATCH = 50
@@ -34,7 +37,7 @@ module CharacterSkills
       end
 
       Summary = Struct.new(:mode, :in_scope, :stale, :built, :failed, :errors, :no_source, :empty, :counts,
-                           :results, :icon_stems, :statuses, :seconds, keyword_init: true) do
+                           :results, :icon_stems, :statuses, :seconds, :counted_instants, keyword_init: true) do
         def differing = results.count(&:changed?)
         def drift? = differing.positive? || failed.positive? || empty.positive?
       end
@@ -79,7 +82,7 @@ module CharacterSkills
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         Character.reset_column_information # the fingerprint column may be from this deploy's migration
         @summary = Summary.new(mode: @mode, in_scope: 0, stale: 0, built: 0, failed: 0, errors: [], no_source: 0, empty: 0,
-                               counts: Writer::Report.zero, results: [], icon_stems: Set.new)
+                               counts: Writer::Report.zero, results: [], icon_stems: Set.new, counted_instants: [])
 
         if @mode == "write"
           run
@@ -93,6 +96,7 @@ module CharacterSkills
         @summary.seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
         @mode == "write" ? enqueue_icon_downloads : Printer.new(@summary, io: @io, limit: @diff_limit).print
         @io.puts summary_line
+        print_counted_instants
         @summary
       end
 
@@ -174,7 +178,8 @@ module CharacterSkills
       end
 
       def build(character, fingerprint, lookup)
-        graph = Granblue::Parsers::CharacterSkillParser.new(character, status_lookup: lookup).graph
+        parser = Granblue::Parsers::CharacterSkillParser.new(character, status_lookup: lookup)
+        graph = parser.graph
         return empty(character) if graph[:slots].empty? && CharacterSkill.exists?(character_id: character.id)
 
         writer = Writer.new(character, graph)
@@ -186,6 +191,7 @@ module CharacterSkills
           character.update_columns(character_skill_build_fingerprint: fingerprint) if @mode == "write"
         end
         @summary.counts.merge!(report)
+        @summary.counted_instants.concat(parser.counted_instants.map { |instant| instant.merge(character: label(character)) })
         @summary.icon_stems.merge(writer.icon_stems)
         @summary.built += 1
         @summary.results << Result.new(character: character, status: "built", report: report,
@@ -251,6 +257,14 @@ module CharacterSkills
           "versions +#{c.versions_created} ~#{c.versions_updated} -#{c.versions_deleted}; " \
           "effects +#{c.effects_created} ~#{c.effects_updated} -#{c.effects_deleted}; " \
           "links +#{c.links_created} -#{c.links_deleted}; #{format('%.1f', @summary.seconds)}s#{statuses_failed}"
+      end
+
+      def print_counted_instants
+        instants = @summary.counted_instants
+        return if instants.empty?
+
+        @io.puts "#{instants.size} instant status mentions counted as buffs or debuffs (D56), for review:"
+        instants.each { |i| @io.puts "  #{i[:character]}: #{i[:status]} (#{i[:reason]}) #{i[:raw]}" }
       end
 
       # Statuses the catalogue couldn't save (logged by StatusCatalogBuilder; the build goes on).

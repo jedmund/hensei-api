@@ -37,13 +37,21 @@ module Granblue
         # clause ("…damage to a foe.\nGain Charge Boost."), so it can't override a known category.
         CATEGORY_EFFECT_TYPES = { 'buff' => 'grant_status', 'debuff' => 'inflict_status', 'field' => 'field_effect' }.freeze
 
-        attr_reader :unmatched_statuses
+        # An instant (special) status mentioned with a duration in turns, or whose description says it
+        # waits for the end of the turn or can't be removed, lasts: it counts as a buff or debuff by its
+        # verb (D56). Matches are kept for the build report, for review.
+        LASTING_DESCRIPTION = /end of (?:the )?turn|can['’]?t be removed/i
+
+        # unmatched_statuses: names the catalogue lacks. counted_instants: the instant mentions the D56
+        # rule counted as ordinary statuses ({ status:, raw:, reason: }).
+        attr_reader :unmatched_statuses, :counted_instants
 
         # granblue_id: the character whose skills these are, for curated categories scoped to it.
         def initialize(status_lookup, granblue_id: nil)
           @status_lookup = status_lookup
           @granblue_id = granblue_id
           @unmatched_statuses = Set.new
+          @counted_instants = []
         end
 
         # game_details: the skill's ability_detail entries ({ id:, category: }). An effect whose
@@ -71,7 +79,8 @@ module Granblue
             @unmatched_statuses << full_name if status.nil?
             duration = duration_from_status(params['t'])
             mention = mentions[index]
-            category = effect_category(status, name, resolved, mention, game_details)
+            special = special?(status, resolved, duration, raw)
+            category = effect_category(status, name, resolved, mention, game_details, special: special)
             effect_type = effect_type_for(category, mention&.vote, local_context(description, offset))
 
             effects << {
@@ -152,12 +161,30 @@ module Granblue
 
         # The effect's category: CharacterSkills::EffectCategory (special; the game's array in this
         # skill; curated; the text rule; the status's usual category), shared with the catalogue.
-        def effect_category(status, name, resolved, mention, game_details)
+        def effect_category(status, name, resolved, mention, game_details, special:)
           family = StatusName.base_game_id(status.game_status_id) if !resolved.from_status_list? && status&.game_status_id.present?
           ::CharacterSkills::EffectCategory.call(
             game: { details: game_details, ids: [resolved.game_status_id, status&.game_status_id], family: family },
-            special: status&.category == 'special', curated: curated_category(name), vote: mention&.vote, usual: status&.category
+            special: special, curated: curated_category(name), vote: mention&.vote, usual: status&.category
           ).category
+        end
+
+        # An instant (special) status stays instant unless this mention says it lasts (D56).
+        def special?(status, resolved, duration, raw)
+          return false unless status&.category == 'special'
+
+          reason = lasting_reason(status, resolved, duration)
+          return true if reason.nil?
+
+          @counted_instants << { status: status.name_en, raw: raw, reason: reason }
+          false
+        end
+
+        def lasting_reason(status, resolved, duration)
+          return "duration #{duration[:value]}T" if duration[:unit] == 'turns'
+
+          description = [resolved.resolution&.detail, status.description].compact.find { |text| text.match?(LASTING_DESCRIPTION) }
+          "description: #{description[LASTING_DESCRIPTION]}" if description
         end
 
         def curated_category(name)
