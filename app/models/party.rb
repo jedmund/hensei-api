@@ -236,6 +236,31 @@ class Party < ApplicationRecord
 
   after_create :create_remapped_substitutions
 
+  ##
+  # Parties the given user may view. The SQL counterpart of #viewable_by?;
+  # the two must stay in agreement. Composes onto association scopes such as
+  # `party.remixes` or `playlist.parties`.
+  #
+  # @param user [User, nil] the viewer.
+  # @param admin_mode [Boolean] whether an admin viewer is in admin mode.
+  scope :viewable_by, lambda { |user, admin_mode: false|
+    visible = where(visibility: [1, 2])
+
+    if user.nil?
+      visible
+    elsif user.admin? && admin_mode
+      all
+    else
+      visible = visible.or(where(user_id: user.id))
+      crew = user.crew
+      if crew
+        shared_ids = PartyShare.where(shareable_type: 'Crew', shareable_id: crew.id).select(:party_id)
+        visible = visible.or(where(id: shared_ids))
+      end
+      visible
+    end
+  }
+
   # ActiveRecord Validations
   validate :skills_are_unique
   validate :guidebooks_are_unique

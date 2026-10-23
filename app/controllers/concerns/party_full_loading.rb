@@ -18,7 +18,6 @@ module PartyFullLoading
       { summons: GridSummon::NESTED_BLUEPRINT_PRELOADS + [{ substitutions: :substitute_grid }] },
       :guidebook1, :guidebook2, :guidebook3,
       { source_party: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
-      { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
       :skill0, :skill1, :skill2, :skill3, :accessory,
       { party_shares: :shareable },
       { solomonis_expedition: :route_evoker },
