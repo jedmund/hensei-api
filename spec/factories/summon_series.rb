@@ -41,5 +41,12 @@ FactoryBot.define do
       name_jp { 'アーカルム' }
       order { 5 }
     end
+
+    trait :odious do
+      slug { 'odious' }
+      name_en { 'Odious' }
+      name_jp { '禁禍' }
+      order { 6 }
+    end
   end
 end
