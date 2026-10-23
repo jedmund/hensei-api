@@ -10,7 +10,7 @@ module Api
       before_action :set_crew_from_user, only: %i[gw_scores]
       before_action :set_membership, only: %i[update destroy promote demote]
       before_action :set_membership_for_scores, only: %i[gw_scores]
-      # update narrows officers to joined_at; captains may change the rest.
+      # update narrows vice captains to their own joined_at; captains may change the rest.
       before_action :authorize_crew_officer!, only: %i[update destroy history]
       before_action :authorize_crew_captain!, only: %i[promote demote]
       before_action :authorize_crew_member!, only: %i[gw_scores]
@@ -19,8 +19,10 @@ module Api
       def update
         allowed_params = if current_user.crew_captain?
                            membership_params
-                         else
+                         elsif @membership.user_id == current_user.id
                            membership_params.slice(:joined_at)
+                         else
+                           return render_unauthorized_response
                          end
 
         if @membership.update(allowed_params)
