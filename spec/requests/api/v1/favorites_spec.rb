@@ -57,6 +57,33 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
       expect(json['party']['id']).to eq(party.id)
     end
 
+    it 'returns the same 404 for a private party as for an unknown id' do
+      private_party = create(:party, user: other_user, visibility: 3)
+
+      expect {
+        post '/api/v1/favorites',
+             params: { favorite: { party_id: private_party.id } }.to_json,
+             headers: auth_headers
+      }.not_to change(Favorite, :count)
+      expect(response).to have_http_status(:not_found)
+      private_body = response.body
+
+      post '/api/v1/favorites',
+           params: { favorite: { party_id: SecureRandom.uuid } }.to_json,
+           headers: auth_headers
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to eq(private_body)
+    end
+
+    it 'allows favoriting an unlisted party' do
+      party = create(:party, user: other_user, visibility: 2)
+
+      post '/api/v1/favorites',
+           params: { favorite: { party_id: party.id } }.to_json,
+           headers: auth_headers
+      expect(response).to have_http_status(:created)
+    end
+
     it 'returns error when favorite already exists' do
       party = create(:party, user: other_user)
       create(:favorite, user: user, party: party)

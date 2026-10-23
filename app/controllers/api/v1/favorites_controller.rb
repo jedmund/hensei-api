@@ -7,7 +7,9 @@ module Api
 
       def create
         party_id = favorite_params[:party_id]
-        Party.find(party_id)
+        party = Party.find(party_id)
+        # A party the user can't see answers exactly like an unknown id.
+        raise ActiveRecord::RecordNotFound unless party.viewable_by?(current_user, admin_mode: admin_mode)
 
         raise Api::V1::UnauthorizedError unless current_user
         raise Api::V1::FavoriteAlreadyExistsError if Favorite.where(user_id: current_user.id,
