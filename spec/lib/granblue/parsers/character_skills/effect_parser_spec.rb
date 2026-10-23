@@ -152,6 +152,41 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
     end
   end
 
+  describe 'labels (D57)' do
+    let(:jammed_listed) { instance_double('Status', id: 'jm', category: 'debuff', game_status_id: '1037', variant_kind: nil, name_en: 'Jammed') }
+    let(:def_down) do
+      instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered')
+    end
+    let(:seal) { instance_double('Status', id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal 1') }
+    let(:lookup) { { by_name: { 'jammed' => jammed_listed, 'def lowered' => def_down, 'aetherial seal 1' => seal }, by_id: {} } }
+
+    before do
+      Granblue::Parsers::StatusList.use(<<~LUA)
+        local debuffs = {
+          ['Jammed'] = { page = 'Jammed', status = '1037' },
+          ['Guilty Break'] = { link = 'Jammed', name = 'Guilty Break' },
+          ['DEF Lowered'] = { page = 'DEF Down', status = '1020' },
+          ['DEF Lowered 2'] = { link = 'DEF Lowered', status = '1020_2' },
+          ['Aetherial Seal 1'] = { status = '1111' },
+          ['Aetherial Seal'] = { link = 'Aetherial Seal 1' },
+        }
+        local aliases = { ['DEF Down'] = 'DEF Lowered', ['DEF Down 2'] = 'DEF Lowered 2' }
+        return { buffs = {}, debuffs = debuffs, effects = {}, aliases = aliases }
+      LUA
+    end
+
+    it "keeps the skill's own name for a status the wiki list links to another" do
+      effect = parser.parse('Inflict {{status|Guilty Break|t=3T}} on a foe.').first
+      expect(effect).to include(status_id: 'jm', label: 'Guilty Break', category: 'debuff')
+    end
+
+    it "gives none when the mention names the status itself, another spelling of it, or a numbered variant" do
+      effects = parser.parse('Inflict {{status|Jammed}}, {{status|DEF Down}}, {{status|DEF Down 2|t=2T}} and {{status|Aetherial Seal}}.')
+      expect(effects.map { |e| e[:status_id] }).to eq(%w[jm dd dd as])
+      expect(effects.pluck(:label)).to all(be_nil)
+    end
+  end
+
   describe 'per-effect category (D36)' do
     let(:hostility) { instance_double('Status', id: 'h', category: 'buff', game_status_id: '1463', variant_kind: nil) }
     let(:lookup) { { by_name: { 'hostility boosted' => hostility }, by_id: {} } }
