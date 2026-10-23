@@ -22,14 +22,3 @@
       cron: "0 17 * * *"
       class: GachaSimulation::ExchangeRateJob
       queue: maintenance
-    wiki_status_list:
-      # The 2nd and the 20th at 23:30 JST, after that day's character releases land.
-      cron: "30 23 2,20 * * Asia/Tokyo"
-      class: Sources::FetchWikiStatusListJob
-      queue: maintenance
-    character_skill_icon_snapshot:
-      # The 2nd and the 20th at 23:45 JST, after the status list refresh. Both queue the stale
-      # build only when their input changed; a second build in a row finds nothing stale.
-      cron: "45 23 2,20 * * Asia/Tokyo"
-      class: CharacterSkills::ExportIconSnapshotJob
-      queue: maintenance

@@ -41,6 +41,27 @@ RSpec.describe CharacterSkills::ExportIconSnapshotJob do
     expect(stored_text).to be_present
   end
 
+  describe '.schedule' do
+    it 'queues one export DEBOUNCE from now and nothing more while it is pending' do
+      expect { expect(described_class.schedule).to be_present }
+        .to have_enqueued_job(described_class).at(a_value_within(1.second).of(described_class::DEBOUNCE.from_now))
+      expect { expect(described_class.schedule).to be_nil }.not_to have_enqueued_job(described_class)
+    end
+
+    it 'queues the next export once the pending one started' do
+      described_class.schedule
+      described_class.perform_now
+      expect { described_class.schedule }.to have_enqueued_job(described_class).exactly(:once)
+    end
+
+    it 'queues a new export when the pending one looks lost' do
+      described_class.schedule
+      travel(described_class::STALE_AFTER + 1.minute) do
+        expect { described_class.schedule }.to have_enqueued_job(described_class).exactly(:once)
+      end
+    end
+  end
+
   context 'when the export fails' do
     before { put_icon_snapshot([{ granblue_id: '1', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Old', game_icon: '9_9' }]) }
 
@@ -49,6 +70,14 @@ RSpec.describe CharacterSkills::ExportIconSnapshotJob do
     it 'discards conflicting versions (retrying will not help) and keeps the stored snapshot' do
       create(:character_skill_version, character_skill: slot, ordinal: 1, name_en: 'Other', game_icon: '3_1')
       expect { described_class.perform_now }.not_to have_enqueued_job(described_class)
+      expect(stored_text).to eq(stored)
+    end
+
+    it 'discards an export that would drop too many entries and keeps the stored snapshot' do
+      many = (1..30).map { |n| { granblue_id: '2', style: 1, kind: 'ability', position: 1, ordinal: n, name_en: 'Old', game_icon: '9_9' } }
+      put_icon_snapshot(many)
+      stored = stored_text
+      expect { described_class.perform_now }.not_to have_enqueued_job
       expect(stored_text).to eq(stored)
     end
 

@@ -141,6 +141,30 @@ RSpec.describe CharacterSkills::Build::Runner do
       expect { run }.to have_enqueued_job(CharacterSkills::IconDownloadJob).with(["100_1"]).exactly(:once)
       expect { run(all: true) }.not_to have_enqueued_job(CharacterSkills::IconDownloadJob)
     end
+
+    it "queues one debounced icon snapshot export when a write sets or changes a game icon" do
+      expect { run }.to have_enqueued_job(CharacterSkills::ExportIconSnapshotJob)
+        .exactly(:once).at(a_value_within(1.second).of(CharacterSkills::ExportIconSnapshotJob::DEBOUNCE.from_now))
+
+      # Another icon change while that export is pending queues nothing more.
+      put_source(first, :wiki_raw, wiki.sub("Ability_m_100_1", "Ability_m_200_1"))
+      expect { run }.not_to have_enqueued_job(CharacterSkills::ExportIconSnapshotJob)
+
+      # Once it ran, the next icon change queues the next export.
+      CharacterSkills::ExportIconSnapshotJob.clear_pending
+      put_source(first, :wiki_raw, wiki.sub("Ability_m_100_1", "Ability_m_300_1"))
+      expect { run }.to have_enqueued_job(CharacterSkills::ExportIconSnapshotJob).exactly(:once)
+    end
+
+    it "queues no icon snapshot export for a write that changed no icon, or a shadow build" do
+      run
+      CharacterSkills::ExportIconSnapshotJob.clear_pending
+      put_source(first, :wiki_raw, wiki(passive: "Boost more."))
+      expect { run }.not_to have_enqueued_job(CharacterSkills::ExportIconSnapshotJob)
+
+      put_source(first, :wiki_raw, wiki.sub("Ability_m_100_1", "Ability_m_200_1"))
+      expect { run(mode: "shadow") }.not_to have_enqueued_job(CharacterSkills::ExportIconSnapshotJob)
+    end
   end
 
   describe "missing sources" do
