@@ -12,6 +12,9 @@
 # ("Asleep" and "Asleep" (Turns)); (name_en, qualifier) is unique. CharacterSkills::StatusDisplayNames
 # sets both.
 class Status < ApplicationRecord
+  # Dropped in the next migration; ignored first so running code never reads it.
+  self.ignored_columns += ['game_ailment_id']
+
   has_many :skill_effects, dependent: :nullify
 
   enum :category, { buff: 'buff', debuff: 'debuff', field: 'field', special: 'special' }
@@ -21,7 +24,6 @@ class Status < ApplicationRecord
   before_save :assign_wiki_name, :assign_name_key
 
   validates :name_en, presence: true
-  validates :game_ailment_id, uniqueness: true, allow_nil: true
 
   scope :in_family, ->(name) { where(family: name) }
   scope :named, ->(names) { where(name_key: Array(names).map { |name| normalize_name(name) }) }

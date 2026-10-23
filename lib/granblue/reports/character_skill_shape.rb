@@ -211,12 +211,6 @@ module Granblue
         lines = []
         lines << "**unmatched statuses:** #{@report[:unmatched_statuses].join(', ')}" if @report[:unmatched_statuses].any?
         lines << "**missing fields:** #{@report[:missing_fields].join(', ')}" if @report[:missing_fields].any?
-        if @report[:cross_validation].any?
-          lines << "**cross-validation gaps (gamedata ailment ids not parsed as statuses):**"
-          @report[:cross_validation].each do |gap|
-            lines << "  - #{gap[:slot][:kind]} #{gap[:slot][:position]} \"#{gap[:version]}\": #{gap[:missing_game_ailment_ids].join(', ')}"
-          end
-        end
         lines.empty? ? [] : ['### diagnostics', *lines, '']
       end
     end

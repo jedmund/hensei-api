@@ -30,9 +30,8 @@ module Granblue
       end
 
       def report
-        CharacterSkills::Reporter.new(data: data, status_lookup: status_lookup)
-                                 .report_for(graph, unmatched_statuses: effect_parser.unmatched_statuses,
-                                                    counted_instants: counted_instants)
+        CharacterSkills::Reporter.new.report_for(graph, unmatched_statuses: effect_parser.unmatched_statuses,
+                                                        counted_instants: counted_instants)
       end
 
       # Instant statuses this character's skills count as buffs or debuffs (D56), for review.
