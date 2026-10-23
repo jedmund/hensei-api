@@ -185,6 +185,14 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
+    it 'rejects a body over the size limit before reading it' do
+      post "/api/v1/stickers/#{sticker.id}/upload_image",
+           params: 'x' * (Api::V1::StickersController::UPLOAD_REQUEST_MAX_BYTES + 1),
+           headers: editor_headers.merge('Content-Type' => 'application/json')
+      expect(response).to have_http_status(:payload_too_large)
+      expect(IconStorage).not_to have_received(:put)
+    end
+
     it 'returns 401 for non-editors' do
       post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: png_upload }, headers: member_headers
       expect(response).to have_http_status(:unauthorized)

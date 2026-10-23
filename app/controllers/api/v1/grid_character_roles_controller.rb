@@ -3,8 +3,15 @@
 module Api
   module V1
     class GridCharacterRolesController < ApiController
+      include UploadSizeLimit
+
       ICON_MAX_DIMENSION = 128
+      ICON_MAX_BYTES = 256 * 1024
+      # Base64 adds about a third to the icon, plus the JSON around it.
+      UPLOAD_REQUEST_MAX_BYTES = 512 * 1024
       ICON_S3_PREFIX = 'images/grid_character_roles'
+
+      limit_upload_size UPLOAD_REQUEST_MAX_BYTES, only: :upload_icon
 
       before_action :doorkeeper_authorize!, only: %i[create update destroy reorder upload_icon]
       before_action :ensure_editor_role, only: %i[create update destroy reorder upload_icon]
@@ -84,8 +91,8 @@ module Api
         return render json: { error: 'No image data provided' }, status: :unprocessable_entity if image_data.blank?
 
         decoded = Base64.decode64(image_data)
-        validation_error = validate_icon(decoded)
-        return render json: { error: validation_error }, status: :unprocessable_entity if validation_error
+        result = IconUploadValidator.call(decoded, max_dimension: ICON_MAX_DIMENSION, max_bytes: ICON_MAX_BYTES)
+        return render json: { error: result.error }, status: :unprocessable_entity unless result.valid?
 
         s3_key = "#{ICON_S3_PREFIX}/#{@role.id}.png"
         aws = AwsService.new
@@ -125,29 +132,6 @@ module Api
 
         Rails.logger.warn "[GRID_CHARACTER_ROLES] Unauthorized access attempt by user #{current_user&.id}"
         render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
-
-      # Returns nil on valid icon, otherwise an error message string.
-      def validate_icon(decoded)
-        return 'Icon must be a PNG' unless decoded.start_with?("\x89PNG\r\n\x1A\n".b)
-
-        Tempfile.create(['role_icon', '.png']) do |tmp|
-          tmp.binmode
-          tmp.write(decoded)
-          tmp.flush
-
-          # The PNG magic-byte check above is already sufficient for type; this
-          # MiniMagick handle is here for the dimension check.
-          image = MiniMagick::Image.open(tmp.path)
-
-          if image.width > ICON_MAX_DIMENSION || image.height > ICON_MAX_DIMENSION
-            return "Icon must be #{ICON_MAX_DIMENSION}x#{ICON_MAX_DIMENSION} or smaller"
-          end
-        end
-
-        nil
-      rescue MiniMagick::Invalid
-        'Icon could not be read as an image'
       end
     end
   end

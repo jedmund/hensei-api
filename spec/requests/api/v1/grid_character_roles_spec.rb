@@ -240,6 +240,27 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       expect(JSON.parse(response.body)['error']).to match(/128x128 or smaller/)
     end
 
+    it 'rejects an icon over the byte cap' do
+      # A valid PNG header followed by padding: refused on size before decoding
+      padded = IconUploadValidator::PNG_SIGNATURE + ("\0" * Api::V1::GridCharacterRolesController::ICON_MAX_BYTES)
+      post "/api/v1/grid_character_roles/#{role.id}/upload_icon",
+           params: { image: Base64.strict_encode64(padded), filename: 'icon.png' },
+           headers: editor_headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)['error']).to match(/256KB or smaller/)
+      expect(role.reload.icon_key).to be_nil
+    end
+
+    it 'rejects a body over the size limit before reading it' do
+      post "/api/v1/grid_character_roles/#{role.id}/upload_icon",
+           params: 'x' * (Api::V1::GridCharacterRolesController::UPLOAD_REQUEST_MAX_BYTES + 1),
+           headers: editor_headers.merge('Content-Type' => 'application/json')
+
+      expect(response).to have_http_status(:payload_too_large)
+      expect(role.reload.icon_key).to be_nil
+    end
+
     it 'returns unauthorized for regular user' do
       post "/api/v1/grid_character_roles/#{role.id}/upload_icon",
            params: { image: tiny_png_b64 },

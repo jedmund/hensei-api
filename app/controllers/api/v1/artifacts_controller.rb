@@ -3,6 +3,8 @@
 module Api
   module V1
     class ArtifactsController < Api::V1::ApiController
+      include ImageDownloadOptions
+
       before_action :set_artifact, only: %i[show download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[download_image download_images download_status]
 
@@ -51,7 +53,9 @@ module Api
       def download_images
         options = params[:options] || {}
         force = options[:force] == true || options[:force] == 'true'
-        size = options[:size] || 'all'
+        size = validated_download_size(options[:size] || 'all',
+                                       Granblue::Downloaders::ArtifactDownloader::SIZES, allow_all: true)
+        return unless size
 
         DownloadArtifactImagesJob.perform_later(@artifact.id, force: force, size: size)
 

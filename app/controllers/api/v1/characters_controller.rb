@@ -5,6 +5,7 @@ module Api
     class CharactersController < Api::V1::ApiController
       include IdResolvable
       include BatchPreviewable
+      include ImageDownloadOptions
 
       before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
@@ -73,17 +74,13 @@ module Api
       # POST /characters/:id/download_image
       # Synchronously downloads a single image for a character
       def download_image
-        size = params[:size]
+        size = validated_download_size(params[:size], Granblue::Downloaders::CharacterDownloader::SIZES)
+        return unless size
+
         transformation = params[:transformation]
         element = params[:element].present? ? params[:element].to_i : nil
         gender = params[:gender].present? ? params[:gender].to_i : 0
         force = params[:force] == true
-
-        # Validate size
-        valid_sizes = Granblue::Downloaders::CharacterDownloader::SIZES
-        unless valid_sizes.include?(size)
-          return render json: { error: "Invalid size. Must be one of: #{valid_sizes.join(', ')}" }, status: :unprocessable_entity
-        end
 
         # Validate transformation for characters (01, 02, 03, 04, or style for style swaps)
         valid_transformations = %w[01 02 03 04 style]
@@ -147,11 +144,15 @@ module Api
       # POST /characters/:id/download_images
       # Triggers async image download for a character
       def download_images
+        size = validated_download_size(params.dig(:options, :size) || 'all',
+                                       Granblue::Downloaders::CharacterDownloader::SIZES, allow_all: true)
+        return unless size
+
         # Queue the download job
         DownloadCharacterImagesJob.perform_later(
           @character.id,
           force: params.dig(:options, :force) == true,
-          size: params.dig(:options, :size) || 'all'
+          size: size
         )
 
         # Set initial status

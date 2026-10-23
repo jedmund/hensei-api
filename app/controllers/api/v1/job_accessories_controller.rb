@@ -3,6 +3,8 @@
 module Api
   module V1
     class JobAccessoriesController < Api::V1::ApiController
+      include ImageDownloadOptions
+
       before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
 
@@ -60,14 +62,10 @@ module Api
         accessory = find_accessory
         return render_not_found_response('job_accessory') unless accessory
 
-        size = params[:size]
-        force = params[:force] == true
+        size = validated_download_size(params[:size], Granblue::Downloaders::JobAccessoryDownloader::SIZES)
+        return unless size
 
-        valid_sizes = Granblue::Downloaders::JobAccessoryDownloader::SIZES
-        unless valid_sizes.include?(size)
-          return render json: { error: "Invalid size. Must be one of: #{valid_sizes.join(', ')}" },
-                        status: :unprocessable_entity
-        end
+        force = params[:force] == true
 
         begin
           downloader = Granblue::Downloaders::JobAccessoryDownloader.new(
@@ -89,7 +87,9 @@ module Api
         return render_not_found_response('job_accessory') unless accessory
 
         force = params.dig(:options, :force) == true
-        size = params.dig(:options, :size) || 'all'
+        size = validated_download_size(params.dig(:options, :size) || 'all',
+                                       Granblue::Downloaders::JobAccessoryDownloader::SIZES, allow_all: true)
+        return unless size
 
         DownloadJobAccessoryImagesJob.perform_later(accessory.id, force: force, size: size)
         DownloadJobAccessoryImagesJob.update_status(accessory.id, 'queued', progress: 0, images_downloaded: 0)
