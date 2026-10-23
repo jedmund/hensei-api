@@ -189,6 +189,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(user.reload.description).to be_nil
     end
 
+    it 'returns the validation errors when the update is invalid' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'a' * 141 } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['errors']).to include('description')
+    end
+
     it 'updates the current user via /users/me' do
       put '/api/v1/users/me',
           params: { user: { language: 'ja' } }.to_json,
@@ -323,10 +331,18 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'POST /api/v1/check/email' do
-    it 'checks email availability' do
+    it 'reports an unused email as available' do
       post '/api/v1/check/email', params: { email: 'available@example.com' }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq('available' => true)
+    end
+
+    it 'reports a registered email as unavailable' do
+      post '/api/v1/check/email', params: { email: user.email }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq('available' => false)
     end
   end
 

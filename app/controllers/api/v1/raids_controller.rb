@@ -4,7 +4,7 @@ module Api
   module V1
     class RaidsController < Api::V1::ApiController
       before_action :set_raid, only: %i[show update destroy download_image download_images download_status]
-      before_action :ensure_editor_role, only: %i[create update destroy download_image download_images]
+      before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
 
       # GET /raids
       def index

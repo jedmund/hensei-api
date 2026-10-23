@@ -73,7 +73,11 @@ module Api
       def update
         @user.assign_attributes(user_update_params)
         dismiss_password_prompt
-        render json: UserBlueprint.render(@user, view: :minimal) if @user.save
+        if @user.save
+          render json: UserBlueprint.render(@user, view: :minimal)
+        else
+          render_validation_error_response(@user)
+        end
       end
 
       def info
@@ -153,8 +157,11 @@ module Api
         end
       end
 
+      # Looks the email up and reports whether it is already registered. The
+      # register form relies on this; the endpoint is rate limited above.
       def check_email
-        render json: EmptyBlueprint.render_as_json(nil, email: params[:email], availability: true)
+        available = User.where('email = ?', params[:email]).none?
+        render json: { available: available }
       end
 
       def check_username

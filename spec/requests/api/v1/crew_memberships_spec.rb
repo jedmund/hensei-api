@@ -47,24 +47,45 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     context 'as vice captain' do
       let!(:vc_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
-      it 'cannot change role but request succeeds' do
-        put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
-            params: { membership: { role: 'vice_captain' } },
-            headers: auth_headers
-
-        # Vice captains can access update endpoint (for joined_at) but role param is ignored
-        expect(response).to have_http_status(:ok)
-        expect(target_membership.reload.role).to eq('member') # Role not changed
-      end
-
-      it 'can update joined_at' do
-        put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
+      it 'can update their own joined_at' do
+        put "/api/v1/crews/#{crew.id}/memberships/#{vc_membership.id}",
             params: { membership: { joined_at: '2024-01-15' } },
             headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-        json = response.parsed_body
-        expect(json['membership']['joined_at']).to include('2024-01-15')
+        expect(response.parsed_body['membership']['joined_at']).to include('2024-01-15')
+      end
+
+      it 'cannot change their own role' do
+        put "/api/v1/crews/#{crew.id}/memberships/#{vc_membership.id}",
+            params: { membership: { role: 'captain', joined_at: '2024-01-15' } },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(vc_membership.reload.role).to eq('vice_captain')
+      end
+
+      it "cannot update another member's joined_at" do
+        original = target_membership.joined_at
+
+        put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
+            params: { membership: { joined_at: '2024-01-15' } },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(target_membership.reload.joined_at).to eq(original)
+      end
+
+      it "cannot update the captain's joined_at" do
+        captain_membership = create(:crew_membership, crew: crew, role: :captain)
+        original = captain_membership.joined_at
+
+        put "/api/v1/crews/#{crew.id}/memberships/#{captain_membership.id}",
+            params: { membership: { joined_at: '2024-01-15' } },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(captain_membership.reload.joined_at).to eq(original)
       end
     end
   end

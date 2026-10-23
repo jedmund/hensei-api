@@ -123,7 +123,8 @@ module Api
 
       # Updates an existing party.
       def update
-        @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id)
+        # The collection source is set (and validated) on create only.
+        @party.attributes = party_params.except(:skill1_id, :skill2_id, :skill3_id, :collection_source_user_id)
         if party_params && party_params[:raid_id] && (raid = Raid.find_by(id: party_params[:raid_id]))
           @party.extra = raid.group.extra
         end
@@ -497,7 +498,7 @@ module Api
 
       # Loads the party by its id.
       def set
-        @party = Party.where('id = ?', params[:id]).first
+        @party = Party.find_by(id: params[:id].to_s[UUID_FORMAT])
       end
 
       # Sanitizes and permits party parameters.

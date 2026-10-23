@@ -3,8 +3,8 @@
 module Api
   module V1
     class BulletsController < Api::V1::ApiController
-      before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images]
-      before_action :ensure_editor_role, only: %i[create update destroy download_image download_images]
+      before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images download_status]
+      before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
       before_action :set_bullet, only: %i[download_image download_images download_status]
 
       # GET /bullets

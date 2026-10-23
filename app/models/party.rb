@@ -634,13 +634,14 @@ class Party < ApplicationRecord
   ##
   # Sets an edit key for the party before creation if no associated user is present.
   #
-  # The edit key is generated using a SHA1 hash based on the current time and a random value.
+  # The edit key is 128 bits from SecureRandom. Keys issued before this
+  # (40-character SHA1 hex) stay valid.
   #
   # @return [void]
   def set_edit_key
     return if user
 
-    self.edit_key ||= Digest::SHA1.hexdigest([Time.now, rand].join)
+    self.edit_key ||= SecureRandom.hex(16)
   end
 
   ##
