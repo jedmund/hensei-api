@@ -8,6 +8,13 @@ module Api
     # them to canonical via #commit. Editors live with their own draft set; one
     # user's drafts are invisible to another.
     class DifficultyDraftsController < Api::V1::ApiController
+      include UploadSizeLimit
+
+      # IconUploadValidator caps decoded bytes at 256KB; base64 expansion adds
+      # ~33%, so requests above 512KB are rejected on Content-Length.
+      UPLOAD_REQUEST_MAX_BYTES = 512 * 1024
+      limit_upload_size UPLOAD_REQUEST_MAX_BYTES, only: :upload_image
+
       before_action :doorkeeper_authorize!
       before_action :ensure_editor_role
       before_action :load_workspace
@@ -49,18 +56,7 @@ module Api
 
       # POST /difficulty_drafts/:id/upload_image
       # Body: { image: <base64-png>, filename: <string?> }
-      #
-      # IconUploadValidator caps decoded bytes at 256KB; base64 expansion adds
-      # ~33%, so reject requests above 512KB on Content-Length before reading
-      # the body so a misbehaving client can't pin a worker on a huge payload.
-      UPLOAD_REQUEST_MAX_BYTES = 512 * 1024
-
       def upload_image
-        if request.content_length.to_i > UPLOAD_REQUEST_MAX_BYTES
-          return render json: { error: "Request body exceeds #{UPLOAD_REQUEST_MAX_BYTES / 1024}KB" },
-                        status: :payload_too_large
-        end
-
         draft = DifficultyDraft.for_user(current_user).find_by(id: params[:id])
         return render_not_found_response('difficulty_draft') unless draft
 
