@@ -145,6 +145,11 @@
     "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
+    "name_en": "Corrosion (Local)",
+    "category": "debuff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Craving",
     "category": "buff",
     "reason": "user review 2026-10-22, D52; pinned so a status list refresh can't flip it"
@@ -215,6 +220,21 @@
     "reason": "user review 2026-10-22, D52; pinned so a status list refresh can't flip it"
   },
   {
+    "name_en": "Dope (Blue)",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Dope (Green)",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Dope (Red)",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Draco Exusta",
     "category": "debuff",
     "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
@@ -270,6 +290,16 @@
     "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
   },
   {
+    "name_en": "Fated Chain (Fire)",
+    "category": "debuff",
+    "reason": "user decision 2, 2026-10-22, D58: every Fated Chain variant is a debuff, whatever its element; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Fated Chain (Wind)",
+    "category": "debuff",
+    "reason": "user decision 2, 2026-10-22, D58: every Fated Chain variant is a debuff, whatever its element; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Fatigue",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1; user overrode text verb"
@@ -305,6 +335,16 @@
     "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
+    "name_en": "Flower Bud",
+    "category": "debuff",
+    "reason": "user decision 2, 2026-10-22, D58: set on a foe (Rosetta)"
+  },
+  {
+    "name_en": "Flower of Ice",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Flutterspirit's Blessing",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
@@ -328,6 +368,11 @@
     "name_en": "Geass of Absolute Obedience (Active)",
     "category": "buff",
     "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Grown Man",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58: \"Starts battle with\" means a buff (Negi Springfield)"
   },
   {
     "name_en": "Heat",
@@ -373,6 +418,11 @@
     "name_en": "Kahua Lepo Mauna",
     "category": "debuff",
     "reason": "user review 2026-10-22, D47; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Light Barrier",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58: a buff the foe holds; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Limiter Break",
@@ -446,6 +496,11 @@
     "name_en": "Onslaught Tactics",
     "category": "buff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Our Hair's in Your Hands!",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58: \"Starts battle with\" means a buff (Bobobo-bo Bo-bobo)"
   },
   {
     "name_en": "Partnered Up",
@@ -623,6 +678,11 @@
     "reason": "user review 2026-10-22, D45: local debuff the character inflicts on foes; pinned so a status list refresh can't flip it"
   },
   {
+    "name_en": "Stone",
+    "category": "debuff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Strong Armed",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1; user overrode rule starts_battle"
@@ -641,6 +701,11 @@
     "name_en": "Tangled Strings",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Temptation World",
+    "category": "debuff",
+    "reason": "user decision 2, 2026-10-22, D58; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Tide Father's Judgment",
@@ -708,6 +773,11 @@
     "reason": "user review 2026-10-22, D50; pinned so a status list refresh can't flip it"
   },
   {
+    "name_en": "Water Barrier",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58: a buff the foe holds; pinned so a status list refresh can't flip it"
+  },
+  {
     "name_en": "Weak Point",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
@@ -716,6 +786,11 @@
     "name_en": "Weakened (Can't be removed)",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
+  },
+  {
+    "name_en": "Wind Barrier",
+    "category": "buff",
+    "reason": "user decision 2, 2026-10-22, D58: a buff the foe holds; pinned so a status list refresh can't flip it"
   },
   {
     "name_en": "Winter",
