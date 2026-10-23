@@ -3,6 +3,8 @@
 module Api
   module V1
     class PlaylistsController < Api::V1::ApiController
+      include PlaylistRendering
+
       before_action :set_playlist, only: %i[update destroy]
       before_action :authorize_owner!, only: %i[update destroy]
 
@@ -15,13 +17,15 @@ module Api
                          .order(updated_at: :desc)
                          .paginate(page: params[:page], per_page: page_size)
 
-        raid_slugs_map = precompute_raid_slugs(playlists)
+        options = playlist_render_options(playlists)
+        raid_slugs_map = precompute_raid_slugs(playlists, options[:visible_party_ids])
 
         render json: PlaylistBlueprint.render(
           playlists,
           root: :results,
           meta: pagination_meta(playlists),
-          raid_slugs_map: raid_slugs_map
+          raid_slugs_map: raid_slugs_map,
+          **options
         )
       end
 
@@ -40,8 +44,8 @@ module Api
           playlist,
           view: :with_parties,
           root: :playlist,
-          current_user: current_user,
-          favorite_party_ids: favorite_party_ids
+          favorite_party_ids: favorite_party_ids,
+          **playlist_render_options([playlist])
         )
       end
 
@@ -52,7 +56,8 @@ module Api
         playlist = current_user.playlists.build(playlist_params)
 
         if playlist.save
-          render json: PlaylistBlueprint.render(playlist, root: :playlist), status: :created
+          render json: PlaylistBlueprint.render(playlist, root: :playlist, **playlist_render_options([playlist])),
+                 status: :created
         else
           render_validation_error_response(playlist)
         end
@@ -61,7 +66,7 @@ module Api
       # PATCH /playlists/:id
       def update
         if @playlist.update(playlist_params)
-          render json: PlaylistBlueprint.render(@playlist, root: :playlist)
+          render json: PlaylistBlueprint.render(@playlist, root: :playlist, **playlist_render_options([@playlist]))
         else
           render_validation_error_response(@playlist)
         end
@@ -87,8 +92,10 @@ module Api
         params.require(:playlist).permit(:title, :description, :video_url, :visibility)
       end
 
-      def precompute_raid_slugs(playlists)
+      # Raid slugs per playlist, from the parties the viewer may see.
+      def precompute_raid_slugs(playlists, visible_party_ids)
         all_party_ids = playlists.flat_map { |pl| pl.playlist_parties.map(&:party_id) }
+                                 .select { |id| visible_party_ids.include?(id) }
         return {} if all_party_ids.empty?
 
         # Build a map of party_id => raid_id

@@ -103,6 +103,71 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
     end
   end
 
+  describe 'party visibility inside a playlist' do
+    # The playlist belongs to `user`; the party belongs to `party_owner` and
+    # goes private after it was added.
+    let(:party_owner) { create(:user) }
+    let!(:playlist) { create(:playlist, user: user, visibility: 1) }
+    let!(:shown_party) { create(:party, user: user, visibility: 1, raid: create(:raid)) }
+    let!(:hidden_party) { create(:party, user: party_owner, visibility: 1, raid: create(:raid)) }
+
+    def headers_for(viewer)
+      token = Doorkeeper::AccessToken.create!(resource_owner_id: viewer.id, expires_in: 30.days, scopes: 'public')
+      { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
+    end
+
+    before do
+      create(:playlist_party, playlist: playlist, party: shown_party)
+      create(:playlist_party, playlist: playlist, party: hidden_party)
+      hidden_party.update!(visibility: 3)
+    end
+
+    it 'leaves the private party out for other viewers on show' do
+      [nil, user, other_user].each do |viewer|
+        get "/api/v1/users/#{user.username}/playlists/#{playlist.slug}",
+            headers: viewer ? headers_for(viewer) : unauth_headers
+        expect(response).to have_http_status(:ok)
+
+        body = response.parsed_body['playlist']
+        expect(body['party_ids']).to eq([shown_party.id])
+        expect(body['party_count']).to eq(1)
+        expect(body['parties'].map { |p| p['id'] }).to eq([shown_party.id])
+        expect(body['raid_slugs']).to eq([shown_party.raid.slug])
+      end
+    end
+
+    it 'leaves the private party out for other viewers on index' do
+      get "/api/v1/users/#{user.username}/playlists", headers: headers_for(other_user)
+
+      result = response.parsed_body['results'].find { |p| p['id'] == playlist.id }
+      expect(result['party_ids']).to eq([shown_party.id])
+      expect(result['party_count']).to eq(1)
+      expect(result['raid_slugs']).to eq([shown_party.raid.slug])
+    end
+
+    it "keeps the private party for the party's owner" do
+      get "/api/v1/users/#{user.username}/playlists/#{playlist.slug}", headers: headers_for(party_owner)
+
+      body = response.parsed_body['playlist']
+      expect(body['party_ids']).to contain_exactly(shown_party.id, hidden_party.id)
+      expect(body['party_count']).to eq(2)
+      expect(body['parties'].map { |p| p['id'] }).to contain_exactly(shown_party.id, hidden_party.id)
+
+      get "/api/v1/users/#{user.username}/playlists", headers: headers_for(party_owner)
+      result = response.parsed_body['results'].find { |p| p['id'] == playlist.id }
+      expect(result['party_count']).to eq(2)
+      expect(result['raid_slugs']).to contain_exactly(shown_party.raid.slug, hidden_party.raid.slug)
+    end
+
+    it 'filters the playlist returned after an update' do
+      patch "/api/v1/playlists/#{playlist.id}",
+            params: { playlist: { title: 'Renamed' } }.to_json,
+            headers: auth_headers
+
+      expect(response.parsed_body.dig('playlist', 'party_ids')).to eq([shown_party.id])
+    end
+  end
+
   describe 'POST /api/v1/playlists' do
     let(:valid_params) { { playlist: { title: 'My Playlist', description: 'A description' } } }
 

@@ -52,6 +52,47 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
+    it "returns 404 when adding someone else's private party" do
+      private_party = create(:party, user: other_user, visibility: 3)
+
+      expect {
+        post "/api/v1/playlists/#{playlist.id}/parties",
+             params: { party_id: private_party.id }.to_json,
+             headers: auth_headers
+      }.not_to change(PlaylistParty, :count)
+
+      expect(response).to have_http_status(:not_found)
+      private_body = response.body
+
+      post "/api/v1/playlists/#{playlist.id}/parties",
+           params: { party_id: SecureRandom.uuid }.to_json,
+           headers: auth_headers
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to eq(private_body)
+    end
+
+    it "adds someone else's unlisted party" do
+      unlisted_party = create(:party, user: other_user, visibility: 2)
+
+      post "/api/v1/playlists/#{playlist.id}/parties",
+           params: { party_id: unlisted_party.id }.to_json,
+           headers: auth_headers
+
+      expect(response).to have_http_status(:created)
+      expect(response.parsed_body.dig('playlist', 'party_ids')).to eq([unlisted_party.id])
+    end
+
+    it 'adds your own private party' do
+      private_party = create(:party, user: user, visibility: 3)
+
+      post "/api/v1/playlists/#{playlist.id}/parties",
+           params: { party_id: private_party.id }.to_json,
+           headers: auth_headers
+
+      expect(response).to have_http_status(:created)
+      expect(response.parsed_body.dig('playlist', 'party_count')).to eq(1)
+    end
+
     it 'returns 401 without authentication' do
       post "/api/v1/playlists/#{playlist.id}/parties",
            params: { party_id: party.id }.to_json,
