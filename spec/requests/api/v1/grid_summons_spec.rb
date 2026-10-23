@@ -311,4 +311,42 @@ RSpec.describe 'GridSummons API', type: :request do
       end
     end
   end
+
+  describe 'collection link access' do
+    let(:private_owner) { create(:user, collection_privacy: 'private_collection') }
+    let(:foreign_item) { create(:collection_summon, user: private_owner) }
+    let(:foreign_summon) { foreign_item.summon }
+
+    it 'rejects another user\'s private collection summon on create and writes no row' do
+      expect {
+        post '/api/v1/grid_summons', params: {
+          summon: {
+            party_id: party.id,
+            summon_id: foreign_summon.id,
+            position: 0,
+            main: true,
+            friend: false,
+            quick_summon: false,
+            uncap_level: 3,
+            transcendence_step: 0,
+            collection_summon_id: foreign_item.id
+          }
+        }.to_json, headers: headers
+      }.not_to change(GridSummon, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'rejects another user\'s private collection summon on update and leaves the item unlinked' do
+      grid_summon = create(:grid_summon, party: party, summon: summon, position: 0,
+                                         main: true, friend: false, quick_summon: false,
+                                         uncap_level: 3, transcendence_step: 0)
+
+      put "/api/v1/grid_summons/#{grid_summon.id}",
+          params: { summon: { collection_summon_id: foreign_item.id } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect(grid_summon.reload.collection_summon_id).to be_nil
+    end
+  end
 end

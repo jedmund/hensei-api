@@ -37,7 +37,9 @@ module CollectionSourceConcern
   # @return [Boolean] true if valid, false if a response was rendered (caller should return)
   def validate_collection_source!(party, collection_item)
     return true unless collection_item
-    return true unless validate_collection_access!(collection_item)
+    # validate_collection_access! renders the 403 and returns false when the
+    # item isn't linkable; stop so the caller doesn't save the foreign link.
+    return false unless validate_collection_access!(collection_item)
 
     owner = collection_item.user
 

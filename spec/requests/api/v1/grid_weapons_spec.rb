@@ -511,4 +511,39 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(json['conflicts']).to be_an(Array)
     end
   end
+
+  describe 'collection link access' do
+    let(:private_owner) { create(:user, collection_privacy: 'private_collection') }
+    let(:foreign_item) { create(:collection_weapon, user: private_owner) }
+
+    it 'rejects another user\'s private collection weapon on create and writes no row' do
+      expect {
+        post '/api/v1/grid_weapons', params: {
+          weapon: {
+            party_id: party.id,
+            weapon_id: weapon.id,
+            position: 0,
+            mainhand: true,
+            uncap_level: 3,
+            transcendence_step: 0,
+            element: weapon.element,
+            collection_weapon_id: foreign_item.id
+          }
+        }.to_json, headers: headers
+      }.not_to change(GridWeapon, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'rejects another user\'s private collection weapon on update and leaves the item unlinked' do
+      grid_weapon = create(:grid_weapon, party: party, weapon: weapon, position: 2,
+                                         uncap_level: 3, transcendence_step: 0, mainhand: false)
+
+      put "/api/v1/grid_weapons/#{grid_weapon.id}",
+          params: { weapon: { collection_weapon_id: foreign_item.id } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect(grid_weapon.reload.collection_weapon_id).to be_nil
+    end
+  end
 end
