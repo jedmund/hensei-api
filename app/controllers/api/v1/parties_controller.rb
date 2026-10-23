@@ -277,6 +277,7 @@ module Api
         new_party.local_id = party_params[:local_id] if party_params
         new_party.last_updated = Time.current
         new_party._source_party_for_remap = @party
+        new_party.keep_only_collection_links_of!(current_user)
         if new_party.save
           render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party,
                                                                             current_user: current_user,
