@@ -7,6 +7,9 @@ module Api
 
       # qualifier: tells apart two statuses that show the same name ("Turns", "Times"); null for most.
       fields :qualifier, :family, :level, :category, :icon
+
+      # What the status does, from the gbf.wiki status list (English).
+      field :description
     end
   end
 end
