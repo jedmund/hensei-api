@@ -194,17 +194,18 @@ module WikiImport
     end
 
     # "0"-"5" stars, "t1"-"t5" (uncap 6 at that transcendence step; "6" is t5),
-    # or nil for the item's max. Values past the item's max are lowered to it.
+    # or nil for what the wiki shows without one (#default_uncap). Values past
+    # the item's max are lowered to it.
     def resolve_uncap(kind, entry, record)
-      max_uncap, max_step = max_uncap(kind, record, explicit: !entry.uncap.nil?)
-      return [max_uncap, max_step] if entry.uncap.nil?
+      return default_uncap(kind, record) if entry.uncap.nil?
 
       uncap, step = parse_uncap(entry.uncap)
       if uncap.nil?
         add_warning('invalid_uncap', "#{kind} #{entry.position}")
-        return [max_uncap, max_step]
+        return default_uncap(kind, record)
       end
 
+      max_uncap, max_step = max_uncap(kind, record)
       if uncap > max_uncap || step > max_step
         add_warning('uncap_clamped', "#{kind} #{entry.position}")
         uncap = [uncap, max_uncap].min
@@ -221,21 +222,36 @@ module WikiImport
       end
     end
 
-    # [uncap_level, transcendence_step] at the item's max. A Dark Opus weapon
-    # left at the template's default is 5★: the wiki export omits its uncap
-    # there, even though it can transcend.
-    def max_uncap(kind, record, explicit:)
+    # [uncap_level, transcendence_step] for an item the template gives no
+    # uncap, matching what the wiki renders and when our exporter omits it:
+    # - characters: base art (the exporter omits uchar below 5★), so at most 4★;
+    # - weapons: level 200, the max without transcendence (the exporter always
+    #   writes u for transcendable weapons; Dark Opus at 5★ is the exception);
+    # - summons: the full max, transcendence included (omitted at t5).
+    def default_uncap(kind, record)
+      case kind
+      when :character then [[4, record.max_uncap_level].min, 0]
+      when :weapon then [untranscended_max(record), 0]
+      else max_uncap(kind, record)
+      end
+    end
+
+    # [uncap_level, transcendence_step] at the item's max.
+    def max_uncap(kind, record)
       if kind == :character
         uncap = record.max_uncap_level
         return [uncap, uncap == 6 ? record.max_transcendence_stage : 0]
       end
-
-      return [5, 0] if !explicit && kind == :weapon && record.weapon_series&.slug == WeaponSeries::DARK_OPUS
       return [6, 5] if record.transcendence
-      return [5, 0] if record.ulb
-      return [4, 0] if record.flb
 
-      [3, 0]
+      [untranscended_max(record), 0]
+    end
+
+    def untranscended_max(record)
+      return 5 if record.transcendence || record.ulb
+      return 4 if record.flb
+
+      3
     end
 
     def character_awakening(entry)

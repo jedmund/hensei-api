@@ -152,7 +152,7 @@ RSpec.describe WikiImport::Importer do
       expect(first).to have_attributes(character: seofon, uncap_level: 6, transcendence_step: 3,
                                        perpetuity: true, full_auto_skills: { '0' => false, '2' => false })
       expect(first.awakening.slug).to eq('character-atk')
-      expect(second).to have_attributes(character: tikoh, uncap_level: 5, transcendence_step: 0, perpetuity: false)
+      expect(second).to have_attributes(character: tikoh, uncap_level: 4, transcendence_step: 0, perpetuity: false)
       expect(second.awakening.slug).to eq('character-balanced')
     end
 
@@ -202,6 +202,35 @@ RSpec.describe WikiImport::Importer do
       expect(created.weapons.count).to eq(3)
       expect(report[:warnings]).to contain_exactly(hash_including(code: 'invalid_item'))
       expect(report[:warnings].first[:detail]).to start_with('weapon 10:')
+    end
+
+    it 'reads a missing uncap the way the wiki renders it, per kind' do
+      characters = [{ 'position' => 0, 'title' => 'WI Seofon' }]
+      weapons = [{ 'position' => 0, 'title' => 'WI Staff of Renunciation' },
+                 { 'position' => 1, 'title' => 'WI Ultima Sword' }]
+      summons = [{ 'position' => 6, 'title' => 'WI Lucifer' }, { 'position' => 0, 'title' => 'WI Agni' }]
+
+      created, report = importer('preview' => false, 'characters' => characters, 'weapons' => weapons,
+                                 'summons' => summons, 'bullets' => []).create!
+
+      expect(report[:warnings]).to eq([])
+      # Characters: base art, at most 4★, even when they can transcend.
+      expect(created.characters.sole).to have_attributes(uncap_level: 4, transcendence_step: 0)
+      # Weapons: max without transcendence.
+      expect(created.weapons.find_by(position: 0)).to have_attributes(uncap_level: 5, transcendence_step: 0)
+      expect(created.weapons.find_by(position: 1)).to have_attributes(uncap_level: 5, transcendence_step: 0)
+      # Summons: the full max, transcendence included.
+      expect(created.summons.find_by(position: 6)).to have_attributes(uncap_level: 6, transcendence_step: 5)
+      expect(created.summons.find_by(position: 0)).to have_attributes(uncap_level: 5, transcendence_step: 0)
+    end
+
+    it 'reads a missing uncap on a character below 4★ max as its max' do
+      low = create(:character, :r, name_en: 'WI Low', wiki_en: 'WI Low', flb: false, special: true)
+      characters = [{ 'position' => 0, 'title' => low.wiki_en }]
+
+      created, = importer('preview' => false, 'characters' => characters).create!
+
+      expect(created.characters.sole).to have_attributes(uncap_level: 3, transcendence_step: 0)
     end
 
     it 'lowers uncaps past the item max and says so' do
