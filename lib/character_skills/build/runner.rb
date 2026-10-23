@@ -65,6 +65,25 @@ module CharacterSkills
         end
       end
 
+      # How long a write-mode deploy build waits for a running build (BuildLock). A stale build
+      # takes about a minute and a character build seconds, so this only runs out when something
+      # is stuck.
+      DEPLOY_LOCK_WAIT = 5.minutes
+
+      # deploy under the exclusive build lock, for the db:migrate:with_data hook and the rake task.
+      # A write waits up to `wait` for a running build, then raises BuildLock::Busy: that fails the
+      # deploy loudly (the old release keeps serving and a redeploy retries) rather than skipping
+      # the build or writing alongside another one. Shadow writes nothing, so it takes no lock.
+      def self.deploy_locked(mode: CharacterSkills.build_mode, io: $stdout, wait: DEPLOY_LOCK_WAIT)
+        return deploy(mode: mode, io: io) unless mode == "write"
+
+        summary = nil
+        return summary if BuildLock.all(wait: wait) { summary = deploy(mode: mode, io: io) }
+
+        raise BuildLock::Busy, "build_character_skills (write): another character skill build held the lock " \
+                               "for #{format('%gs', wait.to_f)}; nothing was built"
+      end
+
       def initialize(mode:, ids: nil, characters: nil, all: false, diff_limit: nil, io: $stdout, # rubocop:disable Metrics/ParameterLists
                      enqueue_icons: true)
         raise ArgumentError, "mode must be one of #{MODES.join(', ')} (got #{mode.inspect})" unless MODES.include?(mode)

@@ -60,6 +60,6 @@ if Rake::Task.task_defined?("db:migrate:with_data")
 
     Rake::Task["granblue:sync_weapon_skill_curation"].invoke
     WeaponSkills::Build::Runner.deploy
-    CharacterSkills::Build::Runner.deploy
+    CharacterSkills::Build::Runner.deploy_locked
   end
 end

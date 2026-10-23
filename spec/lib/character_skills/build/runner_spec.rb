@@ -241,6 +241,42 @@ RSpec.describe CharacterSkills::Build::Runner do
     end
   end
 
+  describe ".deploy_locked" do
+    include BuildLockHelpers
+
+    def version_names_of(character)
+      CharacterSkillVersion.joins(:character_skill).where(character_skills: { character_id: character.id }).pluck(:name_en)
+    end
+
+    it "waits for a running build, then writes" do
+      held_elsewhere(:character, "another", release_after: 0.3) do
+        expect(described_class.deploy_locked(mode: "write", io: io, wait: 5).built).to eq(2)
+      end
+      expect(version_names_of(first)).to include("Fire")
+    end
+
+    it "raises when the wait runs out, and writes nothing" do
+      held_elsewhere(:all) do
+        expect { described_class.deploy_locked(mode: "write", io: io, wait: 0.2) }
+          .to raise_error(CharacterSkills::BuildLock::Busy, /held the lock for 0.2s; nothing was built/)
+      end
+      expect(CharacterSkill.count).to eq(0)
+    end
+
+    it "takes no lock in shadow, which writes nothing" do
+      held_elsewhere(:all) { expect(described_class.deploy_locked(mode: "shadow", io: io, wait: 0.2).stale).to eq(2) }
+    end
+
+    it "holds the lock while it builds, so queued jobs re-queue" do
+      allow(described_class).to receive(:deploy).and_wrap_original do |original, **kwargs|
+        expect(build_locks_free?).to be(false)
+        original.call(**kwargs)
+      end
+      described_class.deploy_locked(mode: "write", io: io, wait: 1)
+      expect(build_locks_free?).to be(true)
+    end
+  end
+
   describe ".deploy" do
     it "does nothing when off" do
       expect(described_class.deploy(mode: "off", io: io)).to be_nil
