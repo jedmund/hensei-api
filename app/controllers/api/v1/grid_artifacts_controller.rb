@@ -4,6 +4,7 @@ module Api
   module V1
     class GridArtifactsController < Api::V1::ApiController
       include PartyAuthorizationConcern
+      include CollectionSourceConcern
 
       before_action :find_grid_artifact, only: %i[update destroy sync]
       before_action :find_party, only: %i[create update destroy sync]
@@ -13,7 +14,7 @@ module Api
 
       # POST /grid_artifacts
       def create
-        return unless validate_collection_artifact_access!(collection_artifact_param)
+        return unless validate_collection_access!(collection_artifact_param)
 
         # Check if grid_character already has an artifact
         if @grid_character.grid_artifact.present?
@@ -36,7 +37,7 @@ module Api
 
       # PATCH/PUT /grid_artifacts/:id
       def update
-        return unless validate_collection_artifact_access!(collection_artifact_param)
+        return unless validate_collection_access!(collection_artifact_param)
 
         if @grid_artifact.update(grid_artifact_params)
           render json: GridArtifactBlueprint.render(@grid_artifact, view: :nested, root: :grid_artifact), status: :ok
@@ -104,23 +105,6 @@ module Api
       def collection_artifact_param
         id = grid_artifact_params[:collection_artifact_id]
         CollectionArtifact.find_by(id: id) if id.present?
-      end
-
-      # Artifacts render from their own linked collection item, not through the
-      # party's collection source, so they only need the access gate the other
-      # collection links get — not the party-wide source bookkeeping
-      # (validate_collection_source!'s collection_source_user_id write and
-      # single-source rule). Bookkeeping here would leave a stale source on
-      # artifact-only parties and 422 parties whose other items come from
-      # another (viewable) user's collection.
-      def validate_collection_artifact_access!(collection_item)
-        return true unless collection_item
-
-        owner = collection_item.user
-        return true if owner == current_user || owner.collection_viewable_by?(current_user)
-
-        render_forbidden_response('Collection is not accessible')
-        false
       end
 
       # A grid artifact belongs to its grid character and its catalogue
