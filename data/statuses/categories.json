@@ -115,6 +115,16 @@
     "reason": "user review 2026-10-21, decision 1"
   },
   {
+    "name_en": "Charge Boost (Can't be extended)",
+    "category": "buff",
+    "reason": "user decision 3, 2026-10-22, D56: lasts 2-3 turns, so it counts (Mirin (SSR))"
+  },
+  {
+    "name_en": "Charge Boost (Isaac)",
+    "category": "buff",
+    "reason": "user decision 3, 2026-10-22, D56: lasts 2-3 turns, so it counts (Isaac)"
+  },
+  {
     "name_en": "Cold Stare",
     "category": "debuff",
     "reason": "user review 2026-10-21, decision 1"
@@ -183,6 +193,11 @@
     "name_en": "Deft Blade",
     "category": "buff",
     "reason": "user review 2026-10-22, D48; pinned so a status list refresh can't flip it"
+  },
+  {
+    "name_en": "Delay-Action Explosives",
+    "category": "debuff",
+    "reason": "user decision 3, 2026-10-22, D56: lasts 2-3 turns, so it counts (Eustace (Dark); on foes)"
   },
   {
     "name_en": "Deluge Crest",
