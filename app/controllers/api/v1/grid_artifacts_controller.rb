@@ -65,6 +65,8 @@ module Api
           )
         end
 
+        return unless validate_collection_access!(@grid_artifact.collection_artifact)
+
         @grid_artifact.sync_from_collection!
         render json: GridArtifactBlueprint.render(@grid_artifact.reload,
                                                   root: :grid_artifact,

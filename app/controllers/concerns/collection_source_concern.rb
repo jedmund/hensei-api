@@ -19,13 +19,24 @@ module CollectionSourceConcern
   #   CollectionSummon, CollectionArtifact, nil]
   # @return [Boolean] true when accessible (or the item is nil); false after a response
   def validate_collection_access!(collection_item)
-    return true unless collection_item
-
-    owner = collection_item.user
-    return true if owner == current_user || owner.collection_viewable_by?(current_user)
+    return true if collection_accessible?(collection_item)
 
     render_forbidden_response('Collection is not accessible')
     false
+  end
+
+  ##
+  # The non-rendering form of validate_collection_access!, for callers that
+  # check many items and skip the ones that fail.
+  #
+  # @param collection_item [CollectionCharacter, CollectionWeapon,
+  #   CollectionSummon, CollectionArtifact, nil]
+  # @return [Boolean] true when accessible (or the item is nil)
+  def collection_accessible?(collection_item)
+    return true unless collection_item
+
+    owner = collection_item.user
+    owner == current_user || owner.collection_viewable_by?(current_user)
   end
 
   ##

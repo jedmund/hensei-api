@@ -289,6 +289,8 @@ module Api
           )
         end
 
+        return unless validate_collection_access!(@grid_summon.collection_summon)
+
         @grid_summon.sync_from_collection!(fields: sync_fields_param)
         render json: GridSummonBlueprint.render(@grid_summon.reload,
                                                 root: :grid_summon,

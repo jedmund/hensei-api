@@ -275,6 +275,8 @@ module Api
           )
         end
 
+        return unless validate_collection_access!(@grid_character.collection_character)
+
         @grid_character.sync_from_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
