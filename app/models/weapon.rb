@@ -5,7 +5,10 @@ class Weapon < ApplicationRecord
   include HasSources
 
   # The fetched sources live in `sources` (D35, PR 7b).
-  source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at
+  # The weapon's page is one row: keyed by its page title once the weapon-skill source store
+  # has fetched it (WeaponSource; the build reads it by title), key '' for a page stored
+  # without that fetch (e.g. pasted by an editor). A fetch replaces the latter with the former.
+  source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at, titled: true
   # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
   source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
   # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).

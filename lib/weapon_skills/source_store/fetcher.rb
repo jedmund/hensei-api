@@ -75,6 +75,9 @@ module WeaponSkills
           if kinds.include?("wiki_raw")
             put("wiki_raw", page, text, weapon, kind_of_page)
             WeaponSource.where(weapon_id: weapon.id, kind: "wiki_raw").where.not(key: page).delete_all
+            # The stored page is now the weapon's page (Weapon#wiki_raw): one stored without a
+            # fetch (key '') goes.
+            drop_untitled_page(weapon) if @store.is_a?(Database)
           end
           put("expanded", page, expanded, weapon, kind_of_page) if expanded && kinds.include?("expanded")
           store_followed(weapon, followed) if kinds.include?("transclusion")
@@ -177,6 +180,10 @@ module WeaponSkills
           Source.new(kind: "wiki_raw", key: @page, body: @text, sha256: Digest::SHA256.hexdigest(@text),
                      fetched_at: Time.current, page_kind: @page_kind)
         end
+      end
+
+      def drop_untitled_page(weapon)
+        ::Source.where(owner_type: Weapon.polymorphic_name, owner_id: weapon.id, kind: "wiki_raw", key: "").delete_all
       end
 
       def store_followed(weapon, followed)

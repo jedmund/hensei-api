@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'CopyWeaponSourcesToSourcesTable' do
+  include ItemSourceColumns
+
   let(:migration_class) do
     unless defined?(CopyWeaponSourcesToSourcesTable)
       require Rails.root.join('db/data/20261022110100_copy_weapon_sources_to_sources_table')
@@ -50,9 +52,9 @@ RSpec.describe 'CopyWeaponSourcesToSourcesTable' do
     expect(WeaponSkills::SourceStore::Database.new.fetch('expanded', 'Blade').page_kind).to eq('series_template')
   end
 
-  it 'leaves the weapon page alone as its own wiki_raw' do
+  it "makes the copied page the weapon's wiki_raw" do
     run
-    expect(weapon.reload.wiki_raw).to be_nil
+    expect(weapon.reload.wiki_raw).to eq('{{Weapon}}')
   end
 
   it 'is idempotent and keeps a row already written through the store' do

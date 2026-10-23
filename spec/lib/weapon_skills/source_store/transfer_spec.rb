@@ -40,6 +40,7 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
       ["family_template", "Template:Weapon Skills/Might", "family", fetched_at]
     )
     expect(weapon.reload).to have_attributes(wiki_raw: "|id=1040906500", wiki_raw_fetched_at: fetched_at)
+    expect(Source.owned_by(weapon).where(kind: "wiki_raw").pluck(:key)).to eq(["Ray of Zhuque Regus"])
     expect(described_class.plan(rows).counts).to eq(unchanged: 3)
   end
 
