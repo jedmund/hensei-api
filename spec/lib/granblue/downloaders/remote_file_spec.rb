@@ -49,6 +49,12 @@ RSpec.describe Granblue::Downloaders::RemoteFile do
     expect { described_class.open(url) }.to raise_error(described_class::RedirectRefused)
   end
 
+  it 'treats a 3xx without a location as a missing image' do
+    stub_request(:get, url).to_return(status: 304)
+
+    expect { described_class.open(url) }.to raise_error(OpenURI::HTTPError, /304/)
+  end
+
   it 'stops after too many redirects' do
     stub_request(:get, url).to_return(status: 302, headers: { 'Location' => url })
 

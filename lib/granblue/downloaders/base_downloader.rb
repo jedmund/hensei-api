@@ -10,7 +10,7 @@ module Granblue
     # @example Downloading assets for a specific ID
     #   class MyDownloader < BaseDownloader
     #     def object_type; "weapon"; end
-    #     def base_url; "http://example.com/assets"; end
+    #     def base_url; "https://example.com/assets"; end
     #     def directory_for_size(size)
     #       case size
     #       when "main" then "large"

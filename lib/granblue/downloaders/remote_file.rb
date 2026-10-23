@@ -94,7 +94,8 @@ module Granblue
 
         def redirect_target(uri, response)
           location = response['location']
-          raise RedirectRefused, "redirect without a location from #{uri}" if location.blank?
+          # A 3xx with nowhere to go (304, say) is an answer without an image, as open-uri had it.
+          raise HTTPError.new("#{response.code} #{response.message}".strip, StringIO.new) if location.blank?
 
           uri + location
         rescue URI::Error
