@@ -10,7 +10,7 @@ module Granblue
     # @example Downloading assets for a specific ID
     #   class MyDownloader < BaseDownloader
     #     def object_type; "weapon"; end
-    #     def base_url; "http://example.com/assets"; end
+    #     def base_url; "https://example.com/assets"; end
     #     def directory_for_size(size)
     #       case size
     #       when "main" then "large"
@@ -123,7 +123,7 @@ module Granblue
       # @param download_uri [String] Local destination path
       # @return [void]
       def download_to_local(url, download_uri)
-        download = URI.parse(url).open
+        download = RemoteFile.open(url)
         IO.copy_stream(download, download_uri)
       end
 
@@ -134,7 +134,7 @@ module Granblue
       def stream_to_s3(url, s3_key)
         return if !@force && @aws_service.file_exists?(s3_key)
 
-        URI.parse(url).open do |file|
+        RemoteFile.open(url) do |file|
           @aws_service.upload_stream(file, s3_key)
         end
       end
@@ -145,7 +145,7 @@ module Granblue
       # @param s3_key [String] S3 object key
       # @return [void]
       def download_to_both(url, download_uri, s3_key)
-        download = URI.parse(url).open
+        download = RemoteFile.open(url)
 
         # Write to local file
         IO.copy_stream(download, download_uri)
@@ -238,7 +238,7 @@ module Granblue
         return if @test_mode
 
         filepath = "#{path}/#{filename}"
-        URI.open(url) do |file|
+        RemoteFile.open(url) do |file|
           content = file.read
           raise "Failed to read content from #{url}" unless content
 

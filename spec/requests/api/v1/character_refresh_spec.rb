@@ -132,6 +132,14 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       preview
       expect(response).to have_http_status(:bad_gateway)
     end
+
+    it 'is a 502, not a 500, when the wiki times out' do
+      allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch).and_call_original
+      stub_request(:get, %r{\Ahttps://gbf\.wiki/api\.php}).to_timeout
+      preview
+      expect(response).to have_http_status(:bad_gateway)
+      expect(a_request(:get, %r{\Ahttps://gbf\.wiki/api\.php})).to have_been_made
+    end
   end
 
   describe 'POST /characters/:id/reparse with a preview token' do

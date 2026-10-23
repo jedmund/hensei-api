@@ -21,7 +21,9 @@ module Granblue
         url = url_for(title)
         Rails.logger.info "[JP_WIKI] fetching #{url}" if @debug
 
-        response = HTTParty.get(url, headers: headers, follow_redirects: true)
+        response = WikiHttp.with_timeouts(title) do
+          HTTParty.get(url, headers: headers, follow_redirects: true, **WikiHttp::OPTIONS)
+        end
         handle_response(response, title)
       end
 
