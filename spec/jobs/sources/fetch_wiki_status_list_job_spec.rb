@@ -52,4 +52,29 @@ RSpec.describe Sources::FetchWikiStatusListJob do
     expect { job.perform_now }.not_to have_enqueued_job(described_class)
     expect(Source.fetch(nil, Granblue::Parsers::StatusList::KIND, key: Granblue::Parsers::StatusList::KEY).body).to eq('stored')
   end
+
+  describe '.after_release' do
+    it 'queues refreshes 12 hours and 3 days after a 12:00 JST release' do
+      starts_at = Time.find_zone!('Asia/Tokyo').local(2026, 11, 2, 12, 0)
+      travel_to(starts_at - 1.day) do
+        expect { described_class.after_release(starts_at) }
+          .to have_enqueued_job(described_class).at(starts_at + 12.hours)
+          .and have_enqueued_job(described_class).at(starts_at + 3.days)
+      end
+    end
+
+    it 'queues only the refreshes still ahead' do
+      starts_at = Time.find_zone!('Asia/Tokyo').local(2026, 11, 2, 12, 0)
+      travel_to(starts_at + 1.day) do
+        expect { described_class.after_release(starts_at) }.to have_enqueued_job(described_class).exactly(:once).at(starts_at + 3.days)
+      end
+    end
+
+    it 'queues nothing for a 19:00 JST rollover' do
+      starts_at = Time.find_zone!('Asia/Tokyo').local(2026, 11, 2, 19, 0)
+      travel_to(starts_at - 1.day) do
+        expect { described_class.after_release(starts_at) }.not_to have_enqueued_job(described_class)
+      end
+    end
+  end
 end

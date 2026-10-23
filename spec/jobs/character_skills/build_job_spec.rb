@@ -54,4 +54,29 @@ RSpec.describe CharacterSkills::BuildJob do
   it 'is discarded when the character is gone' do
     expect { described_class.perform_now(SecureRandom.uuid) }.not_to raise_error
   end
+
+  context 'when another build is running' do
+    include BuildLockHelpers
+
+    it 're-queues itself while the same character is being built' do
+      held_elsewhere(:character, character.id) do
+        expect { described_class.perform_now(character.id) }
+          .to have_enqueued_job(described_class).with(character.id)
+          .at(a_value_within(1.second).of(described_class::RETRY_WAIT.from_now))
+      end
+      expect(names).to be_empty
+    end
+
+    it 're-queues itself during the stale build' do
+      held_elsewhere(:all) do
+        expect { described_class.perform_now(character.id) }.to have_enqueued_job(described_class).with(character.id)
+      end
+      expect(names).to be_empty
+    end
+
+    it 'builds while a different character is being built' do
+      held_elsewhere(:character, 'another') { described_class.perform_now(character.id) }
+      expect(names).to eq(['Fire'])
+    end
+  end
 end

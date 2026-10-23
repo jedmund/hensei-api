@@ -34,6 +34,25 @@ RSpec.describe GachaSimulation::BannerImport do
     end
   end
 
+  describe 'status list refresh after a character release' do
+    let(:release) { gacha_banner_payload(start: '2026/10/9 12:00') }
+
+    before { travel_to(Time.utc(2026, 10, 8)) }
+
+    it 'queues two refreshes for a new banner that starts at 12:00 JST' do
+      expect { described_class.call(release) }.to have_enqueued_job(Sources::FetchWikiStatusListJob).exactly(:twice)
+    end
+
+    it 'queues none for a 19:00 JST rollover' do
+      expect { described_class.call(gacha_banner_payload) }.not_to have_enqueued_job(Sources::FetchWikiStatusListJob)
+    end
+
+    it 'queues none when the release was seen before' do
+      described_class.call(release)
+      expect { described_class.call(release) }.not_to have_enqueued_job(Sources::FetchWikiStatusListJob)
+    end
+  end
+
   it 'replaces a banner imported again' do
     described_class.call(gacha_banner_payload)
     described_class.call(gacha_banner_payload(guaranteed: false))

@@ -35,8 +35,10 @@ module GachaSimulation
 
       tabs = @tabs.slice('1', '2').to_h { |tab, data| [tab.to_i, parse_tab(data)] }
       now = Time.current
+      created = false
       banner = GachaBanner.transaction do
         record = GachaBanner.lock.find_or_initialize_by(game_id: game_id)
+        created = record.new_record?
         record.update!(name: @lineup['name'].to_s.first(200).presence, starts_at: time(@lineup['service_start']),
                        ends_at: time(@lineup['service_end']) + 1.minute, fetched_at: now,
                        rarity_rates: tabs.to_h { |tab, data| [tab.to_s, data[:rarities]] })
@@ -47,6 +49,8 @@ module GachaSimulation
         GachaBannerRate.insert_all!(rows)
         record
       end
+      # A new character release: refresh the wiki's status list once the wiki has caught up.
+      Sources::FetchWikiStatusListJob.after_release(banner.starts_at) if created
       { 'game_id' => banner.game_id, 'items' => banner.rates.where(tab: 1).count,
         'unmatched' => Banner.unmatched(banner) }
     end

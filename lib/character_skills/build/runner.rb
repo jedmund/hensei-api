@@ -94,7 +94,7 @@ module CharacterSkills
         end
 
         @summary.seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
-        @mode == "write" ? enqueue_icon_downloads : Printer.new(@summary, io: @io, limit: @diff_limit).print
+        @mode == "write" ? enqueue_icon_jobs : Printer.new(@summary, io: @io, limit: @diff_limit).print
         @io.puts summary_line
         print_counted_instants
         print_display_review
@@ -232,10 +232,13 @@ module CharacterSkills
         end
       end
 
-      def enqueue_icon_downloads
-        return unless @enqueue_icons && @summary.icon_stems.any?
+      # A write that set or changed a version's game_icon downloads the new stems and (debounced)
+      # re-exports the icon snapshot. A write that changed no icon queues neither.
+      def enqueue_icon_jobs
+        return if @summary.icon_stems.empty?
 
-        CharacterSkills::IconDownloadJob.perform_later(@summary.icon_stems.to_a.sort)
+        CharacterSkills::IconDownloadJob.perform_later(@summary.icon_stems.to_a.sort) if @enqueue_icons
+        CharacterSkills::ExportIconSnapshotJob.schedule
       end
 
       def report_unknown_ids(found)
