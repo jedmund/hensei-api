@@ -161,3 +161,11 @@ namespace :granblue do
     end
   end
 end
+
+namespace :granblue do
+  desc "Remove `sources` rows whose owner is gone, and a weapon's untitled page beside its titled one. Counts only."
+  task remove_orphan_sources: :environment do
+    ActiveRecord::Base.logger = nil
+    Sources::OrphanCleanup.new.call.each { |label, n| puts "#{label}: #{n} removed" }
+  end
+end
