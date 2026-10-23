@@ -282,7 +282,10 @@ module Api
         association :source_party,
                     blueprint: PartyBlueprint,
                     view: :summary,
-                    if: ->(_field_name, party, _options) { party.source_party_id.present? }
+                    if: ->(_field_name, party, options) do
+                      party.source_party_id.present? &&
+                        party.source_party.viewable_by?(options[:current_user], admin_mode: options[:admin_mode])
+                    end
       end
 
       view :remix_metadata do
@@ -290,7 +293,11 @@ module Api
 
         association :remixes,
                     blueprint: PartyBlueprint,
-                    view: :summary
+                    view: :summary do |party, options|
+          # A public party's remix list must not expose private remixes'
+          # shortcodes; hidden remixes are simply left out.
+          party.remixes.select { |remix| remix.viewable_by?(options[:current_user], admin_mode: options[:admin_mode]) }
+        end
       end
 
       # Job-related views

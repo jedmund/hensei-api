@@ -11,6 +11,24 @@ module CollectionSourceConcern
   private
 
   ##
+  # The shared collection-access rule: an item is linkable when it belongs to
+  # the current user, or its owner's collection is viewable by them
+  # (crew_only/everyone). Renders 403 and returns false otherwise.
+  #
+  # @param collection_item [CollectionCharacter, CollectionWeapon,
+  #   CollectionSummon, CollectionArtifact, nil]
+  # @return [Boolean] true when accessible (or the item is nil); false after a response
+  def validate_collection_access!(collection_item)
+    return true unless collection_item
+
+    owner = collection_item.user
+    return true if owner == current_user || owner.collection_viewable_by?(current_user)
+
+    render_forbidden_response('Collection is not accessible')
+    false
+  end
+
+  ##
   # Validates that a collection item is accessible and consistent with the party's
   # existing collection source. Sets the collection source if not yet set.
   #
@@ -19,15 +37,11 @@ module CollectionSourceConcern
   # @return [Boolean] true if valid, false if a response was rendered (caller should return)
   def validate_collection_source!(party, collection_item)
     return true unless collection_item
+    # validate_collection_access! renders the 403 and returns false when the
+    # item isn't linkable; stop so the caller doesn't save the foreign link.
+    return false unless validate_collection_access!(collection_item)
 
     owner = collection_item.user
-
-    # The collection must be accessible: either owned by the current user,
-    # or the owner's collection is viewable by the current user (handles crew_only/everyone)
-    unless owner == current_user || owner.collection_viewable_by?(current_user)
-      render_forbidden_response('Collection is not accessible')
-      return false
-    end
 
     # All collection items in a party must come from the same user
     if party.collection_source_user_id.present? && party.collection_source_user_id != owner.id

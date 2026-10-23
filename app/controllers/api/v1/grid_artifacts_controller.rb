@@ -4,15 +4,18 @@ module Api
   module V1
     class GridArtifactsController < Api::V1::ApiController
       include PartyAuthorizationConcern
+      include CollectionSourceConcern
 
       before_action :find_grid_artifact, only: %i[update destroy sync]
       before_action :find_party, only: %i[create update destroy sync]
+      before_action :authorize_party_edit!, only: %i[create update destroy sync]
       before_action :find_grid_character, only: %i[create]
       before_action :find_artifact, only: %i[create]
-      before_action :authorize_party_edit!, only: %i[create update destroy sync]
 
       # POST /grid_artifacts
       def create
+        return unless validate_collection_access!(collection_artifact_param)
+
         # Check if grid_character already has an artifact
         if @grid_character.grid_artifact.present?
           @grid_character.grid_artifact.destroy
@@ -34,6 +37,8 @@ module Api
 
       # PATCH/PUT /grid_artifacts/:id
       def update
+        return unless validate_collection_access!(collection_artifact_param)
+
         if @grid_artifact.update(grid_artifact_params)
           render json: GridArtifactBlueprint.render(@grid_artifact, view: :nested, root: :grid_artifact), status: :ok
         else
@@ -83,7 +88,10 @@ module Api
       end
 
       def find_grid_character
-        @grid_character = GridCharacter.find_by(id: params.dig(:grid_artifact, :grid_character_id))
+        # The grid character must belong to the party being edited; a foreign
+        # id is treated as not found (the party always comes from the request
+        # here, so it can't vouch for a character from another party).
+        @grid_character = @party.all_characters.find_by(id: params.dig(:grid_artifact, :grid_character_id))
         render_not_found_response('grid_character') unless @grid_character
       end
 
@@ -93,9 +101,20 @@ module Api
         render_not_found_response('artifact') unless @artifact
       end
 
+      # The collection item a create/update wants to link, or nil.
+      def collection_artifact_param
+        id = grid_artifact_params[:collection_artifact_id]
+        CollectionArtifact.find_by(id: id) if id.present?
+      end
+
+      # A grid artifact belongs to its grid character and its catalogue
+      # artifact; both are resolved server-side on create (find_grid_character,
+      # find_artifact) and must never change through update, so they're kept
+      # out of the permit list (update would otherwise repoint the artifact at
+      # any character id, including one in another user's party).
       def grid_artifact_params
         params.require(:grid_artifact).permit(
-          :grid_character_id, :artifact_id, :collection_artifact_id,
+          :collection_artifact_id,
           :element, :proficiency, :level, :reroll_slot,
           skill1: %i[modifier quality level],
           skill2: %i[modifier quality level],

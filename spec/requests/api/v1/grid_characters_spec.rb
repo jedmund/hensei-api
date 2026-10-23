@@ -700,4 +700,39 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(subs.find { |s| s['position'] == 1 }['grid_character']['owned']).to be false
     end
   end
+
+  describe 'collection link access' do
+    let(:private_owner) { create(:user, collection_privacy: 'private_collection') }
+    let(:foreign_item) { create(:collection_character, user: private_owner) }
+
+    it 'rejects another user\'s private collection character on create and writes no row' do
+      expect {
+        post '/api/v1/grid_characters', params: {
+          character: {
+            party_id: party.id,
+            character_id: incoming_character.id,
+            position: 1,
+            uncap_level: 3,
+            transcendence_step: 0,
+            perpetuity: false,
+            collection_character_id: foreign_item.id
+          }
+        }.to_json, headers: headers
+      }.not_to change(GridCharacter, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'rejects another user\'s private collection character on update and leaves the item unlinked' do
+      grid_character = create(:grid_character, party: party, character: incoming_character,
+                                               position: 1, uncap_level: 3,
+                                               transcendence_step: 0, perpetuity: false)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { collection_character_id: foreign_item.id } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect(grid_character.reload.collection_character_id).to be_nil
+    end
+  end
 end
