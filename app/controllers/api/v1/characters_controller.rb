@@ -6,12 +6,13 @@ module Api
       include IdResolvable
       include BatchPreviewable
 
-      before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki batch_preview]
+      before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview
+                                                  raw]
 
       # GET /characters/:id
       def show
-        render json: CharacterBlueprint.render(@character, view: :with_recruitment)
+        render json: CharacterBlueprint.render(@character, view: :with_recruitment, source_dates: true)
       end
 
       # GET /characters/:id/related
@@ -26,10 +27,10 @@ module Api
       # POST /characters
       # Creates a new character record
       def create
-        character = Character.new(character_params)
+        character = Character.new(with_wiki_fetch_date(character_params))
 
         if character.save
-          render json: CharacterBlueprint.render(character, view: :full), status: :created
+          render json: CharacterBlueprint.render(character, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(character)
         end
@@ -38,8 +39,8 @@ module Api
       # PATCH/PUT /characters/:id
       # Updates an existing character record
       def update
-        if @character.update(character_params)
-          render json: CharacterBlueprint.render(@character, view: :full)
+        if @character.update(with_wiki_fetch_date(update_params, @character))
+          render json: CharacterBlueprint.render(@character, view: :full, source_dates: true)
         else
           render_validation_error_response(@character)
         end
@@ -214,17 +215,7 @@ module Api
         end
 
         begin
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(@character.wiki_en)
-
-          # Handle redirects
-          redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-          if redirect_match
-            redirect_target = redirect_match[1]
-            @character.update!(wiki_en: redirect_target)
-            wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect_target)
-          end
-
-          @character.update!(wiki_raw: wiki_text)
+          Granblue::WikiFetcher.new.fetch_and_store(@character)
           render json: CharacterBlueprint.render(@character, view: :raw)
         rescue Granblue::WikiError => e
           render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
@@ -234,7 +225,48 @@ module Api
         end
       end
 
+      # POST /characters/:id/reparse
+      # Body (contract C6): { refetch, refetch_jp, preview, preview_token }.
+      #   preview: true   fetches what's asked and builds in shadow mode; writes nothing and
+      #                   returns a preview_token that keeps the fetched text for 30 minutes.
+      #   preview_token   writes exactly the previewed text and builds, without fetching.
+      #   neither         fetches what's asked (refetch=true still works as a query param),
+      #                   then writes and builds.
+      # → { refresh: <C6 refresh>, character: <:full character when written, else null> }
+      def reparse
+        result =
+          if boolean_param(:preview)
+            CharacterSkills::Refresh.preview(@character, user: current_user, refetch: boolean_param(:refetch),
+                                                         refetch_jp: boolean_param(:refetch_jp))
+          elsif params[:preview_token].present?
+            CharacterSkills::Refresh.apply_preview(@character, user: current_user, token: params[:preview_token].to_s)
+          else
+            CharacterSkills::Refresh.reparse(@character, refetch: boolean_param(:refetch),
+                                                         refetch_jp: boolean_param(:refetch_jp))
+          end
+        render json: { refresh: result, character: result[:written] ? full_character : nil }
+      rescue CharacterSkills::Refresh::PreviewExpired => e
+        render json: { error: 'preview_expired', message: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiFetcher::MissingPageError, CharacterSkills::Refresh::BuildRefused => e
+        render json: { error: e.message, message: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiError => e
+        render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+      rescue StandardError => e
+        Rails.logger.error "[CHARACTERS] Reparse error for #{@character.id}: #{e.class}: #{e.message}"
+        render json: { error: "Failed to re-parse: #{e.message}" }, status: :internal_server_error
+      end
+
       private
+
+      def boolean_param(key)
+        ActiveModel::Type::Boolean.new.cast(params[key]) || false
+      end
+
+      def full_character
+        character = Character.find(@character.id)
+        ActiveRecord::Associations::Preloader.new(records: [character], associations: Character::SKILL_GRAPH_PRELOAD).call
+        CharacterBlueprint.render_as_hash(character, view: :full, source_dates: true)
+      end
 
       def set
         if params[:style_swap] == 'true' && !uuid_format?(params[:id])
@@ -242,26 +274,33 @@ module Api
         else
           @character = find_by_any_id(Character, params[:id])
         end
-        render_not_found_response('character') unless @character
+        return render_not_found_response('character') unless @character
+
+        # Preload the skill graph so the :full view's skills/skill_links don't N+1.
+        ActiveRecord::Associations::Preloader.new(
+          records: [@character], associations: Character::SKILL_GRAPH_PRELOAD
+        ).call
       end
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
+      # The edit form sends back the wikitext it loaded, so a blank wiki_raw means
+      # it failed to load, not a deliberate clear: keep the stored text.
+      def update_params
+        attrs = character_params
+        return attrs unless attrs.key?(:wiki_raw)
 
-        Rails.logger.warn "[CHARACTERS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+        attrs[:wiki_raw].blank? && @character.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def character_params
         params.require(:character).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element,
           :proficiency1, :proficiency2, :gender, :race1, :race2,
-          :flb, :transcendence, :special, :season, :style_swap, :gender_variants, :style_name_en, :style_name_jp,
-          :min_hp, :max_hp, :max_hp_flb, :max_hp_transcendence,
-          :min_atk, :max_atk, :max_atk_flb, :max_atk_transcendence,
+          :flb, :ulb, :transcendence, :max_transcendence_stage, :special, :season,
+          :style_swap, :gender_variants, :style_name_en, :style_name_jp,
+          :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb, :max_hp_transcendence,
+          :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb, :max_atk_transcendence,
           :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,
-          :release_date, :flb_date, :transcendence_date,
+          :release_date, :flb_date, :ulb_date, :transcendence_date,
           :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
           nicknames_en: [], nicknames_jp: [], character_id: [], series: []
         )

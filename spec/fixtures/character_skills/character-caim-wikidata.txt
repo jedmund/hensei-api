@@ -1,0 +1,441 @@
+{{CharacterTabs|base={{BASENAME}} }}
+{{Character
+|id=3040164000
+|charid=3103
+|series=evokers
+|jpname=カイム
+|jptitle=忘却の愚者
+|jpva=國立幸
+|name= Caim
+|release_date=2019-03-10
+|link_gamewith=144748
+|link_jpwiki=%A5%AB%A5%A4%A5%E0%20%28SSR%29
+|link_kamigame=SSR/カイム
+|gender=m
+|obtain=fate,arcarum
+|title= Forgotten Fool
+|title_source=
+|5star= yes
+|5star_date=2023-03-30
+|base_evo=4
+|max_evo=5
+|uncap_type=evokers
+|expedition_type=evokers
+|blush_value=1
+|base_da=7
+|base_ta=3
+|art1= {{PAGENAME}} A.png
+|art2= {{PAGENAME}} B.png 
+|art3= {{PAGENAME}} C.png 
+|art_story1=Npc_zoom_3040164000_81.png
+|art_bonus1=Npc_zoom_3040164000_91_0.png
+|art_bonus2=Npc_zoom_3040164000_91_1.png
+|sprite1= {{PAGENAME}} SDA.png
+|sprite2= {{PAGENAME}} SDB.png 
+|sprite3= {{PAGENAME}} SDC.png 
+|rarity= SSR
+|arcarum=hanged_man
+|element= Earth
+|type= Special
+|race= Human
+|va= Sachi Kokuryu
+|join= [[Arcarum: The World Beyond]]
+|join_weapon=
+|weapon= Dagger,Melee
+|min_atk=
+|max_atk=10000
+|flb_atk=11700
+|min_hp=
+|max_hp=1412
+|flb_hp=1612
+|ougi_count= 2
+|ougi_name= Golden Dawn
+|ougi_desc= {{tt|450%|Massive}} Earth damage to a foe.<ref name="GameWith"/><br />Caim's third skill resets to {{CharacterSkill2|Caim|3}}.<br />End cooldown for {{CharacterSkill2|Caim|3}}.
+|ougi2_label= {{InfoSkillUpgrade|uncap=5}}<br />
+|ougi2_name= Golden Twilight
+|ougi2_desc= {{tt|500%|Massive}} Earth damage to a foe (Damage cap: ~2,020,000).<ref name="GameWith"/><br />Caim's third skill resets to {{CharacterSkill2|Caim|3}}.<br />End cooldown for {{CharacterSkill2|Caim|3}}.<br/>Randomly raise one of {{Status|Spade|t=i|m=p}}, {{Status|Heart|t=i}}, {{Status|Diamond|t=i}}, or {{Status|Club|t=i}} rank by 1 for all Earth allies.
+|ougi3_name=
+|ougi3_desc=
+|ougi4_name=
+|ougi4_desc=
+|abilitysubtitle=
+|abilitycount= 4
+|a1_icon= Ability Double Deal.png
+|a1_color=yellow 
+|a1_name= Double Deal
+|a1_cd= {{ReadyIn|4}}<br />{{InfoSkillUpgrade|lvl=55}}<br />{{ReadyIn|3}}
+|a1_dur= -
+|a1_oblevel= {{InfoOb|obtained=1|enhanced=55}}
+|a1_effdesc= {{InfoDes|num=0|des=All Earth allies gain {{status|Double Deal|t=i|n=1}}.<br />(Can't recast.)|des1=|level1=55}}
+|a2_icon= Ability Beginning of Joker.png,Ability End of Joker.png
+|a2_color=yellow 
+|a2_name= Beginning of Joker / End of Joker
+|a2_name_custom= Beginning of Joker /<br />End of Joker
+|a2_cd= {{InfoCd|num=1|cooldown=8|cooldown1=7|level1=75}}
+|a2_dur= {{InfoSkillUpgrade|text=End of Joker:}}<br />{{InfoDur|type=t|duration=3}}
+|a2_oblevel= {{InfoOb|obtained=1|enhanced=75}}
+|a2_effdesc= {{InfoDes|num=0|des='''Beginning of Joker:'''<br />Copy an ally's skill.<br />(Skill changes to End of Joker upon casting.)<br />'''End of Joker:'''<br />All Earth allies gain {{status|ATK Up|a=30%|t=3T|s=smn|m=n}}, {{status|DEF Up|a=30%|t=3T|s=smn}}, {{status|TA Up|a=20%|t=3T|s=smn}}, {{Status|Revitalize|a=500 HP or 10% charge bar|t=3T|s=smn}}, {{Status|Shield|a=2000|t=3T}}, {{status|DMG Cap Boosted|a=10%|t=3T|s=smn}}, {{status|Uplift|a=15%|t=3T}}, {{status|Hype|a=1-4 stacks|t=3T}}, and {{Status|Veil|t=i}}.<ref name="jpokiehl">jpokiehl https://twitter.com/jpokiehl/status/1127124727263158272</ref><br />(Skill changes to Beginning of Joker upon casting.)|des1=|level1=75}}
+|a2_option=alt
+|a3_icon= Ability Blank Face.png
+|a3_color=yellow 
+|a3_name= Blank Face
+|a3_cd= {{InfoCd|num=0|cooldown=5}}
+|a3_dur= -
+|a3_oblevel= {{InfoOb|obtained=1}}
+|a3_effdesc= {{InfoDes|num=0|des=Skill effect changes based on the type of skill that is first used by a main ally.}}
+|a3_option=alt
+|a4_icon=Ability_m_1990_3.png
+|a4_color=yellow
+|a4_name=Secret Hands
+|a4_cd={{InfoCd|num=0|cooldown=8}}
+|a4_dur= -
+|a4_oblevel={{InfoOb|obtained=100}}
+|a4_effdesc={{InfoDes|num=0|des=Skill effect changes based on the card selected.<br />(Can only be used after {{CharacterSupportSkill|Caim|4}} activates.)}}
+|a4_option=options
+|abilitytitle_a={{CharacterSkill|{{PAGENAME}}|3}} {{Character/Skills/AltVer}}
+|abilitycount_a=4
+|a1a_icon= Ability Spade Trick.png
+|a1a_color=red 
+|a1a_name= Spade Trick
+|a1a_cd= -
+|a1a_dur= -
+|a1a_oblevel= {{InfoOb|obtained=1}}
+|a1a_effdesc= {{InfoDes|num=0|des=Instantly perform a normal attack without using up a turn.<br />Raise caster's {{status|Spade|t=i|m=p}} Rank by 1 (Max: 4). }}
+|a2a_icon= Ability Heart Trick.png
+|a2a_color=green 
+|a2a_name= Heart Trick
+|a2a_cd= -
+|a2a_dur= -
+|a2a_oblevel= {{InfoOb|obtained=1}}
+|a2a_effdesc= {{InfoDes|num=0|des=Restore 20% of all allies' HP (Healing cap: 2000).<ref name="jpokiehl" /><br />Raise caster's {{status|Heart|t=i}} Rank by 1 (Max: 4). }}
+|a3a_icon= Ability Diamond Trick.png
+|a3a_color=yellow 
+|a3a_name= Diamond Trick
+|a3a_cd= -
+|a3a_dur= -
+|a3a_oblevel= {{InfoOb|obtained=1}}
+|a3a_effdesc= {{InfoDes|num=0|des=All allies gain {{status|Charge Boost|a=15%}}.<br />Raise caster's {{status|Diamond|t=i}} Rank by 1 (Max: 4).}}
+|a4a_icon= Ability Club Trick.png
+|a4a_color=blue 
+|a4a_name= Club Trick
+|a4a_cd= -
+|a4a_dur= {{InfoDur|type=s|duration=180}}
+|a4a_oblevel= {{InfoOb|obtained=1}}
+|a4a_effdesc= {{InfoDes|num=0|des=Inflict {{status|Delay|acc=100%}}, {{status|ATK Lowered (Stackable)|a=10%|t=180s|acc=100%|am=40%}}, and {{status|DEF Lowered (Stackable)|a=10%|t=180s|acc=100%|am=40%}} on all foes.<ref name="jpokiehl /><br />Raise caster's {{status|Club|t=i}} Rank by 1 (Max: 4).}}
+
+|abilitytitle_b={{CharacterSkill|{{PAGENAME}}|4}} {{Character/Skills/Options}}
+|abilitycount_b= 4
+|a1b_icon= Ability_s_6_1.jpg
+|a1b_color=red
+|a1b_name= Beatdown
+|a1b_cd= -
+|a1b_dur= {{InfoDur|type=t|duration=1}}
+|a1b_oblevel= {{InfoOb|obtained=100}}
+|a1b_effdesc= {{InfoDes|num=0|des=850% Earth damage to all foes (Damage cap: ~1,200,000).<br />Gain {{Status|ATK Sharply Boosted|a=50%|m=ass|t=1T}} and {{Status|Guaranteed TA|t=1T}}.<ref name="GameWith"/>}}
+
+|a2b_icon= Ability_s_6_2.jpg
+|a2b_color=green
+|a2b_name= Life Gain
+|a2b_cd= -
+|a2b_dur= -
+|a2b_oblevel= {{InfoOb|obtained=100}}
+|a2b_effdesc= {{InfoDes|num=0|des=Create 1 green potion.<br/>Remove 1 debuff from all allies.}}
+
+|a3b_icon= Ability_s_6_3.jpg
+|a3b_color=yellow
+|a3b_name= Extra Turn
+|a3b_cd= -
+|a3b_dur= -
+|a3b_oblevel= {{InfoOb|obtained=100}}
+|a3b_effdesc= {{InfoDes|num=0|des=End cooldown for other skills.}}
+
+|a4b_icon= Ability_s_6_4.jpg
+|a4b_color=blue
+|a4b_name= Delay Act
+|a4b_cd= -
+|a4b_dur= -
+|a4b_oblevel= {{InfoOb|obtained=100}}
+|a4b_effdesc= {{InfoDes|num=0|des=Progress battle turn by 2 at end of turn.}}
+
+|s_abilitycount= 4
+|sa_name= Wild Card
+|sa_level= {{InfoOb|obtained=1}}
+|sa_desc= Subject to all specialty weapon-, style-, and {{tt|race|Officially called "type" in-game}}-related [[Weapon Skills|weapon skills]].
+|sa2_name= The Hanged Man's Charity
+|sa2_level= {{InfoOb|obtained=90}}
+|sa2_desc= '''When an Earth ally has 12 or more buffs at end of turn:'''<br/>Remove 1 debuff from that ally.
+|sa3_icon=Icon Arcarum Sub Support Skill.png
+|sa3_name=The Hanged Man Reversed
+|sa3_level={{InfoOb|obtained=1|enhanced=95}}
+|sa3_desc={{InfoDes|num=1|des='''When Sub Ally:'''<br />When all equipped weapons are different, 20% boost to Earth allies' {{atkmod|ATK|m=p}}, 50% boost to DEF, and 10% boost to damage cap.|level1=95|des1=Also supplement Earth allies' damage (Damage cap: 20,000).<ref name="GameWith" />}}
+|sa4_icon=Icon Arcarum Main Support Skill.png
+|sa4_name=The Fool Upright
+|sa4_level={{InfoOb|obtained=1|enhanced=95}}
+|sa4_desc={{InfoDes|num=1|des='''When Switching to Main Ally:'''<br />Caim's {{status|Spade|t=i|m=p}}, {{status|Heart|t=i}}, {{status|Diamond|t=i}}, and {{status|Club|t=i}} ranks all rise by a random number (Max: 4).<br />(Can't be reactivated.)|level1=95|des1=Now affects all Earth allies.}}
+|sa_emp_desc=Water damage reduction to all allies.
+|perk1=Def
+|perk2=HP
+|perk3=DA
+|perk4=Critical Hit
+|perk5=Healing
+|perk6=Def
+|perk7=HP
+|perk8=DA
+|perk9=Critical Hit
+|perk10=Healing
+|perk11=Debuff Success
+|perk12=Debuff Success
+|perk13=Hostility Up
+|perk14=Hostility Up
+|perk15=Support Skill
+|perk_a1=Domain Debuff Success
+|perk_a2=Domain Skill DMG Cap
+|perk_a3=Domain CA DMG Cap
+|perk_a4=Domain Healing
+|perk_a5=Domain Support Skill
+|perk_a5_desc='''Upon using charge attack:''' Randomly raise two of {{Status|Spade|t=i|m=p}}, {{Status|Heart|t=i}}, {{Status|Diamond|t=i}}, or {{Status|Club|t=i}} ranks by 1.
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=n
+|a2_mimic_notes=
+|a3_mimic=n
+|a3_mimic_notes=
+|a4_mimic=n
+|a4_mimic_notes=
+|a1a_mimic=y
+|a1a_mimic_notes=Can only be copied by {{CharacterSkill|Caim|2}}.
+|a2a_mimic=y
+|a2a_mimic_notes=Can only be copied by {{CharacterSkill|Caim|2}}.
+|a3a_mimic=y
+|a3a_mimic_notes=Can only be copied by {{CharacterSkill|Caim|2}}.
+|a4a_mimic=y
+|a4a_mimic_notes=Can only be copied by {{CharacterSkill|Caim|2}}.
+|a1b_mimic=y
+|a2b_mimic=y
+|a3b_mimic=y
+|a4b_mimic=n
+|profile=Better and more beautiful than any other. And thus always alone. This is how a fool is born. But one day, all his fragile mind had ever known was tossed into a forgotten abyss. Whether that has turned out for better or worse is anyone's guess. But when the upside down smile of a certain figure now peers into his eyes, the purity within almost seems to lighten up the skies.
+}}
+
+==Gameplay Notes==
+* {{PAGENAME}}'s associated [[New World Foundation Weapons|New World Foundation Weapon]] is {{itm|Binds of The Hanged Man}}.
+* Bonus Pose is unlocked by clearing the event story ending of [[Tales of Arcarum: The Hanged Man]].
+* Other Art is unlocked after uncapping to 5{{star}}.
+=== Double Deal ===
+* The initial cooldown ''will not'' count down if {{PAGENAME}} is a sub party member. 
+* Any remaining cooldown stays intact when switched into a sub party slot during battle.
+* {{status|Double Deal}} doesn't apply to skills that have no cooldown or skills that can only be used once during a battle. (This effect won't be consumed when casting those skills.)
+
+=== Beginning of Joker ===
+{{Facsimile|2}}
+* Even if Beginning of Joker fails, the skill still changes to End of Joker.
+
+=== End of Joker ===
+* Provides all of the buffs that a 4{{star}}/5{{star}} {{itm|The Hanged Man (SSR)}} can grant.
+* {{status|ATK Up|m=n|s=smn|a=30%}}, {{status|DEF Up|s=smn|a=30%}}, {{status|TA Up|a=20%|s=smn}}, {{status|Revitalize|a=500 HP or 10% charge bar|s=smn}}, and {{status|DMG Cap Boosted|a=10%|s=smn}} are in the Summon stacking frame.<ref name="jpokiehl" />
+
+=== Blank Face ===
+*Skill effect and name change based on the type of skill that was first used by a main ally.
+** This includes when Caim uses his other skills.
+** Auto-activations and [[field effect]] skills (purple border) don't count.
+* A skill's type can be distinguished by the color of its icon border. 
+*The changed skill names are as follows. (This skill can only be used after it changes to one of the following.)
+**When a damage skill (red border) is used: {{CharacterSkill|{{PAGENAME}}|1a}}
+**When a healing skill (green border) is used: {{CharacterSkill|{{PAGENAME}}|2a}}
+**When a buff skill (yellow border) is used: {{CharacterSkill|{{PAGENAME}}|3a}}
+**When a debuff skill (blue border) is used: {{CharacterSkill|{{PAGENAME}}|4a}}
+* When Blank Face changes to a Trick, the skill stays as that Trick permanently until Caim uses a charge attack or is knocked out.
+* Cooldown is reset upon Caim using his charge attack.
+* {{status|Spade|t=i|m=p}}, {{status|Heart|t=i}}, {{status|Diamond|t=i}}, and {{status|Club|t=i}} ranks last indefinitely and can't be removed. Each rank's maximum lvl is 4.
+** Ranks are shown in-game as J, Q, K, A (Ranks 1, 2, 3, 4 respectively)
+
+==== Spade Trick ====
+* Spade Trick performs a normal attack and takes into account any active buffs that would affect a normal attack.
+* It will not perform a charge attack.
+* {{status|Spade|m=p}} allows allies to always deal superior elemental damage and critically hit against any element.<ref name="jpokiehl" />
+** This effect is equivalent to {{status|Piercing Sight}}.
+* Boost to {{atkmod|ATK|m=p}} based on Spade rank.<ref name="jpokiehl" />
+{| class="wikitable"
+! Rank 
+! Status
+! {{atkmod|ATK Up|m=p}}
+! Piercing Sight
+|-
+! 1
+| {{status|Jack of Spades|m=p}}
+| style="text-align:center;" | 10%
+| style="text-align:center; max-width: 150px;" rowspan="4" | Elemental DMG dealt will be treated as superior to the target's element
+|-
+! 2
+| {{status|Queen of Spades|m=p}}
+| style="text-align:center;" | 20%
+|-
+! 3
+| {{status|King of Spades|m=p}}
+| style="text-align:center;" | 35%
+|-
+! 4
+| {{status|Ace of Spades|m=p}}
+| style="text-align:center;" | 50%
+|-
+|}
+
+==== Heart Trick ====
+* {{status|Heart}} grants a Drain effect to attacks. Like {{status|Drain}}, it is affected by boosts to healing specs.<ref name="jpokiehl" />
+* Boost to healing specs based on Heart rank.<ref name="jpokiehl" />
+{| class="wikitable"
+! Rank 
+! Status
+! {{tt|Healing Specs|Healing and healing cap}} Up
+! Drain
+|-
+! 1
+| {{status|Jack of Hearts}}
+| style="text-align:center;" | 10%
+| rowspan="4" | Restore HP based on 10% of<br />one-foe attack damage dealt<br />(Healing cap: 500)
+|-
+! 2
+| {{status|Queen of Hearts}}
+| style="text-align:center;" | 20%
+|-
+! 3
+| {{status|King of Hearts}}
+| style="text-align:center;" | 35%
+|-
+! 4
+| {{status|Ace of Hearts}}
+| style="text-align:center;" | 50%
+|-
+|}
+
+==== Diamond Trick ====
+* {{status|Diamond}}'s damage conversion effect is equivalent to {{status|Water Switch}}.
+* Boost to DEF based on Diamond rank.<ref name="jpokiehl" />
+{| class="wikitable"
+! Rank 
+! Status
+! DEF Up
+! Water Switch
+|-
+! 1
+| {{status|Jack of Diamonds}}
+| style="text-align:center;" | 25%
+| style="text-align:center; max-width: 120px;" rowspan="4" | Elemental DMG from foes turns into Water DMG
+|-
+! 2
+| {{status|Queen of Diamonds}}
+| style="text-align:center;" | 50%
+|-
+! 3
+| {{status|King of Diamonds}}
+| style="text-align:center;" | 75%
+|-
+! 4
+| {{status|Ace of Diamonds}}
+| style="text-align:center;" | 100%
+|-
+|}
+
+==== Club Trick ====
+* The {{status|Delay}} effect from Club Trick is affected by {{status|Club}}.
+* Boost to debuff success rate based on Club rank.<ref name="jpokiehl" />
+{| class="wikitable" style="text-align:center;" 
+! Rank 
+! Status
+! {{tt|DSR|Debuff Success Rate}} Up
+! Bonus Earth DMG
+|-
+! 1
+| style="text-align:left;" | {{status|Jack of Clubs}}
+| 10%
+| rowspan="4" | 10%
+|-
+! 2
+| style="text-align:left;" | {{status|Queen of Clubs}}
+| 20%
+|-
+! 3
+| style="text-align:left;" | {{status|King of Clubs}}
+| 35%
+|-
+! 4
+| style="text-align:left;" | {{status|Ace of Clubs}}
+| 50%
+|-
+|}
+
+=== Secret Hands ===
+* At level 100, one {{Itm|The World Card}} is required to play the [[Fate Episode]] which unlocks {{CharacterSkill|{{PAGENAME}}|4}}.
+* When this skill is selected, a new window appears which provides the option of selecting {{CharacterSkill|{{PAGENAME}}|1b}}, {{CharacterSkill|{{PAGENAME}}|2b}}, {{CharacterSkill|{{PAGENAME}}|3b}}, or {{CharacterSkill|{{PAGENAME}}|4b}}.
+** {{CharacterSkill|{{PAGENAME}}|1b}} counts as a damage skill (red border).
+** {{CharacterSkill|{{PAGENAME}}|2b}} counts as a healing skill (green border).
+** {{CharacterSkill|{{PAGENAME}}|3b}} counts as a buff skill (yellow border).
+** {{CharacterSkill|{{PAGENAME}}|4b}} counts as a debuff skill (blue border).
+* This skill is not used in [[Full Auto]].
+==== Beat Down ====
+{{AssassinBuff|{{status|ATK Sharply Boosted}}}}
+==== Delay Act ====
+* Progressing the battle turn affects the following:
+** Turn-based [[Status Effects|status effect]] durations
+** Character skill cooldowns
+** Summon cooldowns
+** Effects based on the number of turns passed (character skills, support skills, weapon skills, etc.) 
+** Foe charge diamonds (Foes gain 1 charge diamond per turn progressed)
+* Foe charge diamonds can still be prevented by effects such as {{status|Petrified}}.
+* Effects that activate at the end of a turn will only activate once regardless of the turns progressed.
+
+=== The Hanged Man Reversed ===
+* To meet the requirement, all equipped weapons must have different ID numbers. Weapons of the same type are allowed.
+** An empty slot on the grid can also fulfill the requirement.<ref name="jpokiehl" />
+* The damage cap increase does not stack with {{itm|Diantha}}'s {{CharacterSupportSkill|Diantha|2}} or {{itm|Beelzebub}}'s Main Aura. Only the highest boost takes effect.
+
+=== The Fool Upright ===
+* Randomly gains 1 to 4 ranks of {{status|Spade|t=i|m=p}}, {{status|Heart|t=i}}, {{status|Diamond|t=i}}, and {{status|Club|t=i}}.
+* The chances for each rank are:<ref name="jpokiehl" />
+** 10% to gain Rank J
+** 20% to gain Rank Q
+** 30% to gain Rank K
+** 40% to gain Rank A
+{{SupportSkillSwitchToMain}}
+
+===Extended Mastery Support Skill===
+* {{tt|Reduces Water damage taken|This is not a damage cut.<br /> Reduces Water damage taken on a multiplier separate from Damage Cuts.}} for all allies.<ref name="GameWith">GameWith, Caim. https://グランブルーファンタジー.gamewith.jp/article/show/144748</ref>
+{| class="wikitable" style="text-align: center;"
+! Rank || Reduction
+|-
+! 1★ 
+| 2%
+|-
+! 2★ 
+| 4%
+|-
+! 3★ 
+| 5%
+|}
+* If multiple allies have the same Extended Mastery Support Skill, the reductions are on separate multipliers.
+** For example, if there are two allies with 3★ skills, damage gets reduced by {{tt|9.75%|1 - (0.95 * 0.95)}}.
+
+=== Bonus DMG Stacking Information ===
+{{EchoTable/Info}}
+{{EchoTable|{{PAGENAME}}|title={{status|Club}}|1|skillu}}
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{ #var: character_template_bottom | }}
+
+== Outfits ==
+=== Treat Hunters ===
+{{CharSkin
+|id=3710152000
+|char= Caim
+|art= Treat Hunters (Caim).png
+|sd= Treat Hunters (Caim) SD.png
+|desc= Treat Hunters
+|flavor=A boy slips into his Halloween outfit, ready to enjoy the night's festivities. Licking his lollipop, he appears no different from any other child—just as long as you pay no heed to his upside-down friend, who flashes a grin at every passerby.
+|obtain= Treat Hunters Outfit Set<br />([[Shop#Outfit Sets|In-game purchase]])
+|release_date=2020-10-17
+|voice= Yes
+|sprite= Yes
+|ougi=Midnight Trick
+|music= 
+}}
+
+==References==
+[[Category:Sub Ally Support Skills]]

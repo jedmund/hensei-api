@@ -132,6 +132,8 @@ module Processors
       super(party, data, options)
       @party = party
       @data = data
+      @augment_parser = Granblue::AugmentSkillParser.new(log_tag: 'WeaponProcessor')
+      @game_sync_attrs = {}.compare_by_identity
     end
 
     ##
@@ -170,12 +172,38 @@ module Processors
             end
           end
         rescue ActiveRecord::RecordInvalid => e
+          if ax_present?(grid_weapon)
+            Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+            add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
+            clear_ax(grid_weapon)
+            retry
+          end
+
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+          add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
+          discard_unsaved(grid_weapon, :weapons)
         end
       end
     end
 
     private
+
+    AX_ATTRIBUTES = %i[ax_modifier1_id ax_strength1 ax_modifier2_id ax_strength2].freeze
+    private_constant :AX_ATTRIBUTES
+
+    def ax_present?(grid_weapon)
+      AX_ATTRIBUTES.any? { |attr| grid_weapon[attr].present? }
+    end
+
+    ##
+    # Clears AX skills so a weapon whose game AX data fails validation is still
+    # imported. Losing the whole weapon is worse than losing its AX skills.
+    #
+    # @param grid_weapon [GridWeapon] the unsaved grid weapon.
+    # @return [void]
+    def clear_ax(grid_weapon)
+      AX_ATTRIBUTES.each { |attr| grid_weapon[attr] = nil }
+    end
 
     ##
     # Updates a collection weapon's uncap_level and transcendence_step from game data
@@ -200,6 +228,8 @@ module Processors
       updates[:ax_modifier2_id] = grid_weapon.ax_modifier2_id
       updates[:ax_strength2] = grid_weapon.ax_strength2
       updates[:element] = grid_weapon.element
+      # Befoulment, permeation, exorcism and skill levels, only when the game sent them
+      updates.merge!(@game_sync_attrs.fetch(grid_weapon, {}))
 
       if grid_weapon.awakening_id.present?
         updates[:awakening_id] = grid_weapon.awakening_id
@@ -286,9 +316,7 @@ module Processors
         skill_ids = [raw_weapon['skill1'], raw_weapon['skill2'], raw_weapon['skill3']].compact.map { |s| s['id'] }
         process_weapon_keys(grid_weapon, skill_ids, raw_weapon) if skill_ids.length.positive?
 
-        if raw_weapon.dig('param', 'augment_skill_info').present?
-          process_weapon_ax(grid_weapon, raw_weapon.dig('param', 'augment_skill_info'))
-        end
+        process_augment_skills(grid_weapon, raw_weapon['param'])
 
         grid_weapon
       end.compact
@@ -329,6 +357,7 @@ module Processors
       3 => 'dark-opus', 13 => 'ultima', 17 => 'superlative',
       19 => 'class-champion', 27 => 'draconic', 40 => 'draconic-providence', 44 => 'destroyer'
     }.freeze
+    private_constant :GBF_WEAPON_SERIES_TO_SLUG
 
     ##
     # Processes weapon key data and assigns them to the grid_weapon.
@@ -385,77 +414,27 @@ module Processors
     def matches_key?(candidate_key, mapping_entry)
       if mapping_entry.include?('-')
         left, right = mapping_entry.split('-').map(&:to_i)
-        candidate_key.to_i >= left && candidate_key.to_i <= right
+        candidate_key.to_i.between?(left, right)
       else
         candidate_key == mapping_entry
       end
     end
 
     ##
-    # Processes AX (augment) skill data.
-    #
-    # The deck stores AX skills in an array of arrays under "augment_skill_info".
-    # This method flattens the data and assigns each skill's modifier and strength.
-    # Modifiers are now looked up by game_skill_id in the weapon_stat_modifiers table.
+    # Assigns augment skills and skill level from the game data: befoulment,
+    # permeation and exorcism level for Odious weapons, AX skills otherwise.
+    # The non-AX values are remembered so update_collection_from_game can push
+    # them to the linked collection weapon before sync_from_collection! copies
+    # the collection back. (AX is pushed from the grid weapon itself, since an
+    # invalid roll is cleared before save.)
     #
     # @param grid_weapon [GridWeapon] the grid weapon record being built.
-    # @param ax_skill_info [Array] the raw AX skill info.
+    # @param param [Hash] the raw weapon's `param` data.
     # @return [void]
-    def process_weapon_ax(grid_weapon, ax_skill_info)
-      # Flatten the nested array structure.
-      ax_skills = ax_skill_info.flatten
-      ax_skills.each_with_index do |ax, idx|
-        break if idx >= 2 # Only 2 AX skill slots
-
-        game_skill_id = ax['skill_id'].to_i
-        modifier = find_modifier_by_game_skill_id(game_skill_id)
-
-        unless modifier
-          Rails.logger.warn(
-            "[WeaponProcessor] Unknown augment skill_id=#{game_skill_id} " \
-            "icon=#{ax['augment_skill_icon_image']}"
-          )
-          next
-        end
-
-        strength = parse_augment_strength(ax['effect_value'], ax['show_value'])
-        grid_weapon["ax_modifier#{idx + 1}_id"] = modifier.id
-        grid_weapon["ax_strength#{idx + 1}"] = strength
-      end
-    end
-
-    ##
-    # Finds a WeaponStatModifier by its game_skill_id.
-    # Uses memoization to cache lookups.
-    #
-    # @param game_skill_id [Integer] the game's skill ID.
-    # @return [WeaponStatModifier, nil]
-    def find_modifier_by_game_skill_id(game_skill_id)
-      @modifier_cache ||= {}
-      @modifier_cache[game_skill_id] ||= WeaponStatModifier.find_by(game_skill_id: game_skill_id)
-    end
-
-    ##
-    # Parses the strength value from effect_value or show_value.
-    #
-    # @param effect_value [String, nil] the effect_value field.
-    # @param show_value [String, nil] the show_value field.
-    # @return [Float, nil]
-    def parse_augment_strength(effect_value, show_value)
-      if effect_value.present?
-        # Handle "1_3" format (seems to be "tier_value")
-        if effect_value.to_s.include?('_')
-          return effect_value.to_s.split('_').last.to_f
-        end
-        return effect_value.to_f if effect_value.to_s.match?(/\A[\d.]+\z/)
-      end
-
-      # Try show_value (e.g., "3%")
-      if show_value.present?
-        return show_value.to_s.gsub('%', '').to_f
-      end
-
-      nil
+    def process_augment_skills(grid_weapon, param)
+      attrs = @augment_parser.attributes(param)
+      grid_weapon.assign_attributes(attrs)
+      @game_sync_attrs[grid_weapon] = attrs.except(*AX_ATTRIBUTES)
     end
 
     ##
@@ -473,7 +452,7 @@ module Processors
       return nil unless raw_data.is_a?(Hash)
       return nil unless raw_data.has_key?('form')
 
-      id = (raw_data['form']).to_s
+      id = raw_data['form'].to_s
       return unless AWAKENING_MAPPING.key?(id)
 
       slug = AWAKENING_MAPPING[id]

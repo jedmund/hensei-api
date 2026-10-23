@@ -3,13 +3,19 @@
 class CollectionArtifact < ApplicationRecord
   include ArtifactSkillValidations
 
+  # raw_data held the full game payload and nothing read it. It is being cleared
+  # (CollectionArtifacts::RawDataClearer) and will be dropped in a later release.
+  self.ignored_columns += ['raw_data']
+
   # Associations
   belongs_to :user
   belongs_to :artifact
 
   has_many :grid_artifacts, dependent: :nullify
 
-  before_destroy :orphan_grid_items
+  # prepend: must run before dependent: :nullify clears the foreign key, or it
+  # finds no grid items to mark orphaned.
+  before_destroy :orphan_grid_items, prepend: true
 
   # Enums - using GranblueEnums::ELEMENTS values (excluding Null)
   # Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6

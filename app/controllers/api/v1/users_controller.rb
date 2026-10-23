@@ -5,9 +5,20 @@ module Api
     class UsersController < Api::V1::ApiController
       class ForbiddenError < StandardError; end
 
-      before_action :set, except: %w[create check_email check_username me search deposit_edit_keys]
+      include IssuesTokens
+
+      # update looks the user up by id (set_by_id); the rest look up by username
+      # (set). update must be excluded from set so its id isn't treated as a
+      # username (which now 404s on miss).
+      before_action :set, except: %w[create check_email check_username me search deposit_edit_keys update]
+      before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys update]
       before_action :set_by_id, only: %w[update]
-      before_action :doorkeeper_authorize!, only: %w[me search deposit_edit_keys]
+
+      # Signups arrive via the web app's server, so the per-IP limit is generous;
+      # the availability checks are called from browsers directly.
+      limit_requests 'signup', to: 60, within: 1.minute, only: :create
+      limit_requests 'availability', to: 30, within: 1.minute, only: %i[check_email check_username]
+      limit_requests 'social-signup', to: 20, within: 1.minute, only: :create, if: -> { params[:signup_ticket].present? }
 
       MAX_CHARACTERS = 5
       MAX_SUMMONS = 8
@@ -20,6 +31,8 @@ module Api
       DEFAULT_MAX_CLEAR_TIME = 5400
 
       def create
+        return create_from_signup_ticket if params[:signup_ticket].present?
+
         user = User.new(user_params)
 
         unless user.save
@@ -49,28 +62,46 @@ module Api
       rescue StandardError => e
         Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
-        render json: { error: 'Registration failed', message: e.message },
+        render json: { error: 'Registration failed' },
                status: :internal_server_error
       end
 
       # TODO: Allow admins to update other users
 
+      # Email and password are not updatable here; they change only through
+      # registration and the password reset flow.
       def update
-        render json: UserBlueprint.render(@user, view: :minimal) if @user.update(user_params)
+        @user.assign_attributes(user_update_params)
+        dismiss_password_prompt
+        render json: UserBlueprint.render(@user, view: :minimal) if @user.save
       end
 
       def info
-        render json: UserBlueprint.render(@user, view: :minimal)
+        payload = UserBlueprint.render_as_hash(@user, view: :minimal)
+        cast_bool = ActiveModel::Type::Boolean.new
+
+        if cast_bool.cast(params[:check_collection])
+          payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
+        end
+
+        if cast_bool.cast(params[:check_support_summons])
+          payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user)
+        end
+
+        render json: payload
       end
 
       def search
         query = params[:query].to_s.strip
         return render json: { users: [] } if query.length < 2
 
-        users = User.where('lower(username) LIKE ?', "#{query.downcase}%")
-                     .where.not(id: current_user.id)
-                     .includes(active_crew_membership: :crew)
-                     .limit(10)
+        escaped = query.downcase.gsub(/[\\%_]/) { |c| "\\#{c}" }
+        q = "#{escaped}%"
+        users = User
+                .where("LOWER(username) LIKE :q ESCAPE '\\' OR LOWER(display_name) LIKE :q ESCAPE '\\'", q: q)
+                .where.not(id: current_user.id)
+                .includes(active_crew_membership: :crew)
+                .limit(10)
         render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
       end
 
@@ -87,6 +118,7 @@ module Api
           base_query = Party.includes(
             { raid: :group },
             :job,
+            :solomonis_expedition,
             :user,
             :skill0,
             :skill1,
@@ -128,7 +160,7 @@ module Api
       def check_username
         username = params[:username].to_s.strip
         normalized = username.downcase
-        segments = normalized.split(/[_\-]+/)
+        segments = normalized.split(/[_-]+/)
         candidates = segments + [normalized]
 
         profane = candidates.any? { |c| ProfanityValidator.word_list(:en, tier: :strict).include?(c) }
@@ -138,7 +170,7 @@ module Api
                     username.match?(User::USERNAME_FORMAT) &&
                     !profane &&
                     !reserved &&
-                    User.where('lower(username) = ?', normalized).none?
+                    User.with_username(normalized).none?
         render json: { available: available }
       end
 
@@ -158,14 +190,48 @@ module Api
         render json: { deposited: entries.size }, status: :ok
       end
 
-      def destroy; end
-
       private
+
+      # POST /users with a signup_ticket from POST /auth/:provider: creates a
+      # passwordless account linked to the provider and returns the full token
+      # body (with a refresh token), like a sign-in.
+      def create_from_signup_ticket
+        ticket = SocialAuth::Ticket.read(params[:signup_ticket], purpose: :signup)
+        return render json: { error: 'invalid_ticket' }, status: :unauthorized unless ticket
+
+        attrs = params.fetch(:user, {})
+        attrs = attrs.respond_to?(:permit) ? attrs.permit(:username, :email) : {}
+        signup = SocialAuth::Signup.new(ticket, username: attrs[:username], email: attrs[:email])
+        unless signup.call
+          return render json: { error: 'Validation failed', messages: signup.user.errors.full_messages },
+                        status: :unprocessable_entity
+        end
+
+        send_verification_email(signup.user) unless signup.user.email_verified?
+        render_token_response(signup.user, status: :created)
+      rescue SocialAuth::Signup::IdentityTaken
+        render json: { error: 'invalid_ticket' }, status: :unauthorized
+      end
+
+      def send_verification_email(user)
+        raw_token = user.generate_verification_token!
+        SendEmailVerificationJob.perform_later(user.id, raw_token)
+      end
+
+      # The settings banner suggesting a password stays dismissed once
+      # dismissed. Only the flag is accepted, never the timestamp itself.
+      def dismiss_password_prompt
+        dismissed = params.dig(:user, :password_prompt_dismissed)
+        return unless ActiveModel::Type::Boolean.new.cast(dismissed)
+
+        @user.password_prompt_dismissed_at ||= Time.current
+      end
 
       def build_profile_query(profile_user)
         query = Party.includes(
           { raid: :group },
           :job,
+          :solomonis_expedition,
           :user,
           :skill0,
           :skill1,
@@ -279,17 +345,19 @@ module Api
         'visibility = 1' if current_user != @user
       end
 
-      # Specify whitelisted properties that can be modified.
+      # Loads the user named in the path. 404s for unknown usernames so bot
+      # probes (sitemap.xml, favicon.ico, ...) don't render a nil user through
+      # the blueprint and 500.
       def set
-        @user = User.includes(active_crew_membership: :crew).find_by('lower(username) = ?', params[:id].downcase)
+        @user = User.includes(active_crew_membership: :crew).with_username(params[:id]).first
+        render_not_found_response('user') unless @user
       end
 
+      # Users may only update themselves: accepts 'me' or the caller's own id.
       def set_by_id
-        if params[:id] == 'me'
-          @user = User.includes(active_crew_membership: :crew).find(current_user.id)
-        else
-          @user = User.includes(active_crew_membership: :crew).find_by('id = ?', params[:id])
-        end
+        return render_forbidden_response unless params[:id] == 'me' || params[:id] == current_user.id
+
+        @user = User.includes(active_crew_membership: :crew).find(current_user.id)
       end
 
       def user_params
@@ -298,8 +366,12 @@ module Api
           :description, :granblue_id, :picture, :element, :language, :gender, :private,
           :theme, :show_gamertag, :wiki_profile, :youtube, :collection_privacy,
           :import_weapons, :default_import_visibility, :simple_portraits,
-          :default_rep_view, :timezone
+          :default_rep_view, :timezone, :support_summons_public
         )
+      end
+
+      def user_update_params
+        user_params.except(:email, :password, :password_confirmation)
       end
     end
   end

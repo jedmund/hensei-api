@@ -1,0 +1,49 @@
+{
+  "party": "R1ckYi",
+  "captured_on": "2026-07-06",
+  "notes": "Dark grid (Lancer Origin). Ereshkigal MH transc5 (Illustrious — Disease Demon II u1 upgrade gives DA/TA 15, Gugalanna gives N.A. Amp 30 + Charge Gain -200), Eternal Signature x2, Pain and Suffering x2, Executioner x2 (Graphite Athos), Causality Driver x2, Katana of Repudiation transc5 (β Pendulum + Pendulum of Sagacity), Pain of Death, Demolition-Tiger Axe (Attack lv5), Doombringer Lyre unc5 (Anklet of Oblivion). Versusia main, Hades sub + friend. Estimated DMG 1841803 / to Light 2276285 / Max HP 104279.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 290,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": ["crit_dmg", "added_hit"],
+  "lines": [
+    { "label": "Might", "boost": "atk", "series": "normal", "value": 463 },
+    { "label": "EX Might", "boost": "atk", "series": "ex", "value": 230 },
+    { "label": "EX Might Sp.", "boost": "ex_atk_sp", "value": 80, "capped": true },
+    { "label": "E. ATK", "boost": "e_atk", "value": 10 },
+    { "label": "DA Rate", "boost": "da", "value": 55 },
+    { "label": "TA Rate", "boost": "ta", "value": 70.6 },
+    { "label": "Dark Optimus", "boost": "optimus_exalto", "value": 60 },
+    { "label": "Bonus Dark DMG", "boost": "bonus_elem_dmg", "value": 35.1 },
+    { "label": "Bonus Des. DMG", "boost": "bonus_des_dmg", "value": 20 },
+    { "label": "Bonus Des. DMG C.A.", "boost": "bonus_des_ca", "value": 10 },
+    { "label": "HP", "boost": "hp", "value": 295 },
+    { "label": "DEF", "boost": "def", "value": 75 },
+    { "label": "Light Reduc.", "boost": "elem_reduc", "value": 30, "capped": true },
+    { "label": "DMG Cap", "boost": "dmg_cap", "value": 20, "capped": true },
+    { "label": "DMG Cap (Sp.)", "boost": "dmg_cap_sp", "value": 14 },
+    { "label": "DMG Amp.", "boost": "dmg_amp", "series": "normal", "value": 7.8 },
+    { "label": "Elem. Amplify", "boost": "elem_amplify", "value": 30 },
+    { "label": "N.A. DMG Cap", "boost": "na_dmg_cap", "value": 20, "capped": true },
+    { "label": "N.A. Amp.", "boost": "na_amp", "value": 30, "capped": true },
+    { "label": "N.A. Amp. (Sp.)", "boost": "na_amp_sp", "value": 20, "capped": true },
+    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 50, "capped": false },
+    { "label": "Skill Cap (Sp.)", "boost": "skill_cap_sp", "value": 30, "capped": false },
+    { "label": "Skill Amp. (Sp.)", "boost": "skill_amp_sp", "value": 10 },
+    { "label": "C.A. DMG", "boost": "ca_dmg", "value": 20 },
+    { "label": "C.A. DMG Cap", "boost": "ca_dmg_cap", "value": 15 },
+    { "label": "DMG Supp.", "boost": "dmg_supp", "value": 100000, "capped": true },
+    { "label": "N.A. Supp.", "boost": "na_supp", "value": 100000, "capped": true },
+    { "label": "N.A. Supp. (Sp.)", "boost": "na_supp_sp", "value": 20000, "capped": false },
+    { "label": "Charge Gain", "boost": "charge_gain", "value": -200 },
+    { "label": "DEF Ignore", "boost": "def_ignore", "value": 15.6 },
+    { "label": "DMG Cap Pen.", "boost": "dmg_cap_pen", "value": 8, "capped": false }
+  ]
+}

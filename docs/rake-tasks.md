@@ -215,29 +215,6 @@ rake granblue:export:all
 # - job-*.txt
 ```
 
-## Preview Tasks
-
-### Generate Previews
-
-#### `previews:generate_all`
-Generate preview images for all parties without previews.
-
-```bash
-# Generate missing previews
-rake previews:generate_all
-
-# Processes parties with pending/failed/nil preview_state
-# Uploads to S3: previews/{shortcode}.png
-```
-
-#### `previews:regenerate_all`
-Regenerate preview images for all parties.
-
-```bash
-# Regenerate all previews (overwrites existing)
-rake previews:regenerate_all
-```
-
 ## Database Tasks
 
 ### Database Management
@@ -438,9 +415,6 @@ Example crontab entries:
 
 # Weekly image download on Sunday at 3 AM
 0 3 * * 0 cd /app && rake granblue:download_all_images[character,4]
-
-# Hourly preview generation
-0 * * * * cd /app && rake previews:generate_all
 ```
 
 ### Whenever Gem
@@ -455,10 +429,6 @@ end
 
 every :sunday, at: '3:00 am' do
   rake "granblue:download_all_images[character,4]"
-end
-
-every 1.hour do
-  rake "previews:generate_all"
 end
 ```
 

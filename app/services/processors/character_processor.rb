@@ -113,11 +113,16 @@ module Processors
         arousal_form = raw_character.dig('param', 'npc_arousal_form').to_i
         awakening_slug = CHARACTER_AWAKENING_MAPPING[arousal_form] || 'character-balanced'
         awakening = Awakening.find_by(slug: awakening_slug, object_type: 'Character')
+        transcendence_step = [raw_character.dig('param', 'phase').to_i,
+                              character.max_transcendence_stage].min
+        uncap_level = raw_character.dig('param', 'evolution').to_i
+        uncap_level = [uncap_level, character.max_uncap_level].min
+
         grid_character = GridCharacter.new(
           party_id: @party.id,
           character_id: character.id,
-          uncap_level: raw_character.dig('param', 'evolution').to_i,
-          transcendence_step: raw_character.dig('param', 'phase').to_i,
+          uncap_level: uncap_level,
+          transcendence_step: transcendence_step,
           position: position,
           perpetuity: raw_character.dig('param', 'has_npcaugment_constant'),
           awakening: awakening

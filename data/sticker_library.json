@@ -1,0 +1,3682 @@
+[
+  {
+    "id": 1,
+    "label": "Vyrn Here Goes!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp1.png",
+    "image_key_jp": "icons/stickers/stamp1.ja.png"
+  },
+  {
+    "id": 2,
+    "label": "Lyria Hooray Hurray!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp2.png",
+    "image_key_jp": "icons/stickers/stamp2.ja.png"
+  },
+  {
+    "id": 3,
+    "label": "Io Awesome!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp3.png",
+    "image_key_jp": "icons/stickers/stamp3.ja.png"
+  },
+  {
+    "id": 4,
+    "label": "Rackam Much Obliged Cheers!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp4.png",
+    "image_key_jp": "icons/stickers/stamp4.ja.png"
+  },
+  {
+    "id": 5,
+    "label": "Katalina Reporting In!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp5.png",
+    "image_key_jp": "icons/stickers/stamp5.ja.png"
+  },
+  {
+    "id": 6,
+    "label": "Lyria Come Forth!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp6.png",
+    "image_key_jp": "icons/stickers/stamp6.ja.png"
+  },
+  {
+    "id": 7,
+    "label": "Djeeta Jita Potions Please! Panacea Please!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp7.png",
+    "image_key_jp": "icons/stickers/stamp7.ja.png"
+  },
+  {
+    "id": 8,
+    "label": "Gran I Give Up...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp8.png",
+    "image_key_jp": "icons/stickers/stamp8.ja.png"
+  },
+  {
+    "id": 9,
+    "label": "Gran Thanks!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp9.png",
+    "image_key_jp": "icons/stickers/stamp9.ja.png"
+  },
+  {
+    "id": 10,
+    "label": "Djeeta Jita Good Work",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp10.png",
+    "image_key_jp": "icons/stickers/stamp10.ja.png"
+  },
+  {
+    "id": 11,
+    "label": "Eugen Strike Time!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp11.png",
+    "image_key_jp": "icons/stickers/stamp11.ja.png"
+  },
+  {
+    "id": 12,
+    "label": "Rosetta Let's Do It!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp12.png",
+    "image_key_jp": "icons/stickers/stamp12.ja.png"
+  },
+  {
+    "id": 13,
+    "label": "Eugen Heave Ho!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp13.png",
+    "image_key_jp": "icons/stickers/stamp13.ja.png"
+  },
+  {
+    "id": 14,
+    "label": "Jin Heave Ho!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp14.png",
+    "image_key_jp": "icons/stickers/stamp14.ja.png"
+  },
+  {
+    "id": 15,
+    "label": "Soriz Heave Ho!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp15.png",
+    "image_key_jp": "icons/stickers/stamp15.ja.png"
+  },
+  {
+    "id": 16,
+    "label": "Io Wait Up!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp16.png",
+    "image_key_jp": "icons/stickers/stamp16.ja.png"
+  },
+  {
+    "id": 17,
+    "label": "Lyria Sorry...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp17.png",
+    "image_key_jp": "icons/stickers/stamp17.ja.png"
+  },
+  {
+    "id": 18,
+    "label": "Gran Full Arsenal!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp18.png",
+    "image_key_jp": "icons/stickers/stamp18.ja.png"
+  },
+  {
+    "id": 19,
+    "label": "Djeeta Jita Phalanx!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp19.png",
+    "image_key_jp": "icons/stickers/stamp19.ja.png"
+  },
+  {
+    "id": 20,
+    "label": "Katalina Wait for Backup!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp20.png",
+    "image_key_jp": "icons/stickers/stamp20.ja.png"
+  },
+  {
+    "id": 21,
+    "label": "Vyrn Totally Crushed...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp21.png",
+    "image_key_jp": "icons/stickers/stamp21.ja.png"
+  },
+  {
+    "id": 22,
+    "label": "Gran Panacea!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp22.png",
+    "image_key_jp": "icons/stickers/stamp22.ja.png"
+  },
+  {
+    "id": 23,
+    "label": "Djeeta Jita Laser Focus!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp23.png",
+    "image_key_jp": "icons/stickers/stamp23.ja.png"
+  },
+  {
+    "id": 24,
+    "label": "Rackam Go Wild!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp24.png",
+    "image_key_jp": "icons/stickers/stamp24.ja.png"
+  },
+  {
+    "id": 25,
+    "label": "Walder I've Got Your Back!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp25.png",
+    "image_key_jp": "icons/stickers/stamp25.ja.png"
+  },
+  {
+    "id": 26,
+    "label": "Djeeta Jita Crack Shot!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp26.png",
+    "image_key_jp": "icons/stickers/stamp26.ja.png"
+  },
+  {
+    "id": 27,
+    "label": "Gran Gravity Wave!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp27.png",
+    "image_key_jp": "icons/stickers/stamp27.ja.png"
+  },
+  {
+    "id": 28,
+    "label": "Farrah I'm On It!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp28.png",
+    "image_key_jp": "icons/stickers/stamp28.ja.png"
+  },
+  {
+    "id": 29,
+    "label": "Mary Gimme Loot! Bounty Hunter Please!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp29.png",
+    "image_key_jp": "icons/stickers/stamp29.ja.png"
+  },
+  {
+    "id": 30,
+    "label": "Djeeta Jita Pandemonium!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp30.png",
+    "image_key_jp": "icons/stickers/stamp30.ja.png"
+  },
+  {
+    "id": 31,
+    "label": "Gran Bullseye Run!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp31.png",
+    "image_key_jp": "icons/stickers/stamp31.ja.png"
+  },
+  {
+    "id": 32,
+    "label": "Rackam Rackam!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp32.png",
+    "image_key_jp": "icons/stickers/stamp32.ja.png"
+  },
+  {
+    "id": 33,
+    "label": "Rackam Rackaaam!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp33.png",
+    "image_key_jp": "icons/stickers/stamp33.ja.png"
+  },
+  {
+    "id": 34,
+    "label": "Rackam Rackaaaaam!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp34.png",
+    "image_key_jp": "icons/stickers/stamp34.ja.png"
+  },
+  {
+    "id": 35,
+    "label": "Rackam Rackaaam!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp35.png",
+    "image_key_jp": "icons/stickers/stamp35.ja.png"
+  },
+  {
+    "id": 36,
+    "label": "Rackam Legend of Rackam",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp36.png",
+    "image_key_jp": "icons/stickers/stamp36.ja.png"
+  },
+  {
+    "id": 37,
+    "label": "Unknown Amazing!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp37.png",
+    "image_key_jp": "icons/stickers/stamp37.ja.png"
+  },
+  {
+    "id": 38,
+    "label": "Unknown There You Have It...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp38.png",
+    "image_key_jp": "icons/stickers/stamp38.ja.png"
+  },
+  {
+    "id": 39,
+    "label": "Farrah I'm On It!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp39.png",
+    "image_key_jp": "icons/stickers/stamp39.ja.png"
+  },
+  {
+    "id": 40,
+    "label": "Lyria Drool",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp40.png",
+    "image_key_jp": "icons/stickers/stamp40.ja.png"
+  },
+  {
+    "id": 41,
+    "label": "Lyria Hi!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp41.png",
+    "image_key_jp": "icons/stickers/stamp41.ja.png"
+  },
+  {
+    "id": 42,
+    "label": "Lyria Vyrn Congrats!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp42.png",
+    "image_key_jp": "icons/stickers/stamp42.ja.png"
+  },
+  {
+    "id": 43,
+    "label": "Katalina Stare",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp43.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 44,
+    "label": "Lyria OK!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp44.png",
+    "image_key_jp": "icons/stickers/stamp44.ja.png"
+  },
+  {
+    "id": 45,
+    "label": "Sierokarte Hello There! Welcome!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp45.png",
+    "image_key_jp": "icons/stickers/stamp45.ja.png"
+  },
+  {
+    "id": 46,
+    "label": "Lyria Let Me Help!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp46.png",
+    "image_key_jp": "icons/stickers/stamp46.ja.png"
+  },
+  {
+    "id": 47,
+    "label": "Unknown Sir Yes Sir!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp47.png",
+    "image_key_jp": "icons/stickers/stamp47.ja.png"
+  },
+  {
+    "id": 48,
+    "label": "Djeeta Jita Gotta Run!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp48.png",
+    "image_key_jp": "icons/stickers/stamp48.ja.png"
+  },
+  {
+    "id": 49,
+    "label": "Chronicle Vol 6 Rosetta Star ☆ * XP",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172441 Granblue Fantasy Chronicle Vol.06]",
+    "image_key": "icons/stickers/stamp49.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 50,
+    "label": "Chronicle Vol 6 Rosetta Shocked ?!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172441 Granblue Fantasy Chronicle Vol.06]",
+    "image_key": "icons/stickers/stamp50.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 51,
+    "label": "Chronicle Vol 7 Sturm ???",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172489 Granblue Fantasy Chronicle Vol.07]",
+    "image_key": "icons/stickers/stamp51.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 52,
+    "label": "Chronicle Vol 7 Drang Ouch!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172489 Granblue Fantasy Chronicle Vol.07]",
+    "image_key": "icons/stickers/stamp52.png",
+    "image_key_jp": "icons/stickers/stamp52.ja.png"
+  },
+  {
+    "id": 53,
+    "label": "Rupie Rosamia Let Me At 'Em! Feeling OK? We Can Still Fight! Are You a Wimp?",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp53.png",
+    "image_key_jp": "icons/stickers/stamp53.ja.png"
+  },
+  {
+    "id": 54,
+    "label": "Rupie Bonito Glub",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp54.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 55,
+    "label": "Chronicle Vol 8 Vira Vyrn Bam Bam",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172519 Granblue Fantasy Chronicle Vol.08]",
+    "image_key": "icons/stickers/stamp55.png",
+    "image_key_jp": "icons/stickers/stamp55.ja.png"
+  },
+  {
+    "id": 56,
+    "label": "Chronicle Vol 8 Vira It's a secret <3",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172519 Granblue Fantasy Chronicle Vol.08]",
+    "image_key": "icons/stickers/stamp56.png",
+    "image_key_jp": "icons/stickers/stamp56.ja.png"
+  },
+  {
+    "id": 57,
+    "label": "Chronicle Vol 9 Ferry Whoa!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172533 Granblue Fantasy Chronicle Vol.09]",
+    "image_key": "icons/stickers/stamp57.png",
+    "image_key_jp": "icons/stickers/stamp57.ja.png"
+  },
+  {
+    "id": 58,
+    "label": "Chronicle Vol 9 Pommern Mmm! Mmm!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172533 Granblue Fantasy Chronicle Vol.09]",
+    "image_key": "icons/stickers/stamp58.png",
+    "image_key_jp": "icons/stickers/stamp58.ja.png"
+  },
+  {
+    "id": 59,
+    "label": "Rupie So Cool!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp59.png",
+    "image_key_jp": "icons/stickers/stamp59.ja.png"
+  },
+  {
+    "id": 60,
+    "label": "Rupie Lyria Gong Gong",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp60.png",
+    "image_key_jp": "icons/stickers/stamp60.ja.png"
+  },
+  {
+    "id": 61,
+    "label": "Chronicle Vol 10 Lecia Salute",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172571 Granblue Fantasy Chronicle Vol.10]",
+    "image_key": "icons/stickers/stamp61.png",
+    "image_key_jp": "icons/stickers/stamp61.ja.png"
+  },
+  {
+    "id": 62,
+    "label": "Chronicle Vol 10 Noa Go Ahead!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172571 Granblue Fantasy Chronicle Vol.10]",
+    "image_key": "icons/stickers/stamp62.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 63,
+    "label": "Rupie Ferry Sigh...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp63.png",
+    "image_key_jp": "icons/stickers/stamp63.ja.png"
+  },
+  {
+    "id": 64,
+    "label": "Rupie Narmaya Can I Help?",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp64.png",
+    "image_key_jp": "icons/stickers/stamp64.ja.png"
+  },
+  {
+    "id": 65,
+    "label": "Rupie Percival Be My Vassal!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp65.png",
+    "image_key_jp": "icons/stickers/stamp65.ja.png"
+  },
+  {
+    "id": 66,
+    "label": "Music CD Lancelot I'll call the shots!",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd08/ The Dragon Knights - Music CD]",
+    "image_key": "icons/stickers/stamp66.png",
+    "image_key_jp": "icons/stickers/stamp66.ja.png"
+  },
+  {
+    "id": 67,
+    "label": "Music CD Vane Calm Down!",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd08/ The Dragon Knights - Music CD]",
+    "image_key": "icons/stickers/stamp67.png",
+    "image_key_jp": "icons/stickers/stamp67.ja.png"
+  },
+  {
+    "id": 68,
+    "label": "Music CD Percival I'll turn you into ashes!",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd08/ The Dragon Knights - Music CD]",
+    "image_key": "icons/stickers/stamp68.png",
+    "image_key_jp": "icons/stickers/stamp68.ja.png"
+  },
+  {
+    "id": 69,
+    "label": "Music CD Siegfried One radish, please.",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd08/ The Dragon Knights - Music CD]",
+    "image_key": "icons/stickers/stamp69.png",
+    "image_key_jp": "icons/stickers/stamp69.ja.png"
+  },
+  {
+    "id": 70,
+    "label": "Rupie Sutera Hey! Stop It!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp70.png",
+    "image_key_jp": "icons/stickers/stamp70.ja.png"
+  },
+  {
+    "id": 71,
+    "label": "Chronicle Vol 11 Lyria Vyrn Vyrncakes!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172618 Granblue Fantasy Chronicle Vol.11]",
+    "image_key": "icons/stickers/stamp71.png",
+    "image_key_jp": "icons/stickers/stamp71.ja.png"
+  },
+  {
+    "id": 72,
+    "label": "Chronicle Vol 11 Lyria Vyrn Bonito Go!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/s/?url=search-alias%3Daps&field-keywords=978-4861172618 Granblue Fantasy Chronicle Vol.11]",
+    "image_key": "icons/stickers/stamp72.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 73,
+    "label": "Light Novel 6 Ferry Yikes",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Light Novel 6",
+    "image_key": "icons/stickers/stamp73.png",
+    "image_key_jp": "icons/stickers/stamp73.ja.png"
+  },
+  {
+    "id": 74,
+    "label": "Rupie Societte Bully...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp74.png",
+    "image_key_jp": "icons/stickers/stamp74.ja.png"
+  },
+  {
+    "id": 75,
+    "label": "Manga Souken no Kizuna 1 Lancelot Let's Go!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/dp/4047343927/ Granblue Fantasy Manga \"Sōken no Kizuna\" Vol.1]",
+    "image_key": "icons/stickers/stamp75.png",
+    "image_key_jp": "icons/stickers/stamp75.ja.png"
+  },
+  {
+    "id": 76,
+    "label": "Manga Souken no Kizuna 1 Vane Feendra YAY!",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/dp/4047343927/ Granblue Fantasy Manga \"Sōken no Kizuna\" Vol.1]",
+    "image_key": "icons/stickers/stamp76.png",
+    "image_key_jp": "icons/stickers/stamp76.ja.png"
+  },
+  {
+    "id": 77,
+    "label": "Sierokarte About That...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp77.png",
+    "image_key_jp": "icons/stickers/stamp77.ja.png"
+  },
+  {
+    "id": 78,
+    "label": "Vyrn Nice",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp78.png",
+    "image_key_jp": "icons/stickers/stamp78.ja.png"
+  },
+  {
+    "id": 79,
+    "label": "Vyrn Zzz... Sleep",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp79.png",
+    "image_key_jp": "icons/stickers/stamp79.ja.png"
+  },
+  {
+    "id": 80,
+    "label": "Rosetta For You",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp80.png",
+    "image_key_jp": "icons/stickers/stamp80.ja.png"
+  },
+  {
+    "id": 81,
+    "label": "Unknown Drang Aww...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp81.png",
+    "image_key_jp": "icons/stickers/stamp81.ja.png"
+  },
+  {
+    "id": 82,
+    "label": "Sturm ...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp82.png",
+    "image_key_jp": "icons/stickers/stamp82.ja.png"
+  },
+  {
+    "id": 83,
+    "label": "Lyria Chomp chomp",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp83.png",
+    "image_key_jp": "icons/stickers/stamp83.ja.png"
+  },
+  {
+    "id": 84,
+    "label": "Mary Boom!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp84.png",
+    "image_key_jp": "icons/stickers/stamp84.ja.png"
+  },
+  {
+    "id": 85,
+    "label": "Jessica Achoo!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp85.png",
+    "image_key_jp": "icons/stickers/stamp85.ja.png"
+  },
+  {
+    "id": 86,
+    "label": "Helnar Ta-da! Tada!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp86.png",
+    "image_key_jp": "icons/stickers/stamp86.ja.png"
+  },
+  {
+    "id": 87,
+    "label": "Stan Whoops",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp87.png",
+    "image_key_jp": "icons/stickers/stamp87.ja.png"
+  },
+  {
+    "id": 88,
+    "label": "Vyrn Machovyrn",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp88.png",
+    "image_key_jp": "icons/stickers/stamp88.ja.png"
+  },
+  {
+    "id": 89,
+    "label": "Alec Vyrn Oh No...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp89.png",
+    "image_key_jp": "icons/stickers/stamp89.ja.png"
+  },
+  {
+    "id": 90,
+    "label": "Rackam Wobble",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp90.png",
+    "image_key_jp": "icons/stickers/stamp90.ja.png"
+  },
+  {
+    "id": 91,
+    "label": "Katalina Bop",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp91.png",
+    "image_key_jp": "icons/stickers/stamp91.ja.png"
+  },
+  {
+    "id": 92,
+    "label": "Lyria Vyrn Drip Drop",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp92.png",
+    "image_key_jp": "icons/stickers/stamp92.ja.png"
+  },
+  {
+    "id": 93,
+    "label": "Rupie Sen Meow!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp93.png",
+    "image_key_jp": "icons/stickers/stamp93.ja.png"
+  },
+  {
+    "id": 94,
+    "label": "Anime Twitter Djeeta Jita <3 Heart",
+    "section": "Promotional Stickers",
+    "group": "[https://app.aniplex.co.jp/gbf_valentine/ Anime Promotional Twitter Limited #1]",
+    "image_key": "icons/stickers/stamp94.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 96,
+    "label": "Gran Nailed It!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp96.png",
+    "image_key_jp": "icons/stickers/stamp96.ja.png"
+  },
+  {
+    "id": 97,
+    "label": "Katalina Please!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp97.png",
+    "image_key_jp": "icons/stickers/stamp97.ja.png"
+  },
+  {
+    "id": 98,
+    "label": "Lyria Peace!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp98.png",
+    "image_key_jp": "icons/stickers/stamp98.ja.png"
+  },
+  {
+    "id": 99,
+    "label": "Lyria Yummy",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp99.png",
+    "image_key_jp": "icons/stickers/stamp99.ja.png"
+  },
+  {
+    "id": 100,
+    "label": "Rackam Uh... Bye! I didn't see anything.",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp100.png",
+    "image_key_jp": "icons/stickers/stamp100.ja.png"
+  },
+  {
+    "id": 101,
+    "label": "Io Be Quiet! Shut up!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp101.png",
+    "image_key_jp": "icons/stickers/stamp101.ja.png"
+  },
+  {
+    "id": 102,
+    "label": "Sierokarte Stare",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp102.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 103,
+    "label": "Sierokarte Pffft",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp103.png",
+    "image_key_jp": "icons/stickers/stamp103.ja.png"
+  },
+  {
+    "id": 104,
+    "label": "Lowain Aww Yeah!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp104.png",
+    "image_key_jp": "icons/stickers/stamp104.ja.png"
+  },
+  {
+    "id": 105,
+    "label": "Vira Wiggle Wiggle",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp105.png",
+    "image_key_jp": "icons/stickers/stamp105.ja.png"
+  },
+  {
+    "id": 106,
+    "label": "Jin Command Me",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp106.png",
+    "image_key_jp": "icons/stickers/stamp106.ja.png"
+  },
+  {
+    "id": 107,
+    "label": "Drang Sturm Poke Poke Poke Poke",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp107.png",
+    "image_key_jp": "icons/stickers/stamp107.ja.png"
+  },
+  {
+    "id": 108,
+    "label": "Yuel What's Up!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp108.png",
+    "image_key_jp": "icons/stickers/stamp108.ja.png"
+  },
+  {
+    "id": 109,
+    "label": "Yuel Nope",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp109.png",
+    "image_key_jp": "icons/stickers/stamp109.ja.png"
+  },
+  {
+    "id": 110,
+    "label": "Vyrn Heyo",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp110.png",
+    "image_key_jp": "icons/stickers/stamp110.ja.png"
+  },
+  {
+    "id": 111,
+    "label": "Charlotta Nooooo!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp111.png",
+    "image_key_jp": "icons/stickers/stamp111.ja.png"
+  },
+  {
+    "id": 112,
+    "label": "Metera Bad! Slap",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp112.png",
+    "image_key_jp": "icons/stickers/stamp112.ja.png"
+  },
+  {
+    "id": 113,
+    "label": "Sutera FAIL Welp. So Much for That Idea...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp113.png",
+    "image_key_jp": "icons/stickers/stamp113.ja.png"
+  },
+  {
+    "id": 114,
+    "label": "Hazen 2Cool 4 School",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp114.png",
+    "image_key_jp": "icons/stickers/stamp114.ja.png"
+  },
+  {
+    "id": 115,
+    "label": "Katalina Ryan Will 10 10 10",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp115.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 116,
+    "label": "Seruel No Can Do",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp116.png",
+    "image_key_jp": "icons/stickers/stamp116.ja.png"
+  },
+  {
+    "id": 117,
+    "label": "Danua ???",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp117.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 118,
+    "label": "Zeta Wha- wha- what!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp118.png",
+    "image_key_jp": "icons/stickers/stamp118.ja.png"
+  },
+  {
+    "id": 119,
+    "label": "Vaseraga I've said too much...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp119.png",
+    "image_key_jp": "icons/stickers/stamp119.ja.png"
+  },
+  {
+    "id": 120,
+    "label": "Eustace Mission accomplished.",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp120.png",
+    "image_key_jp": "icons/stickers/stamp120.ja.png"
+  },
+  {
+    "id": 121,
+    "label": "Beatrix Why me! Darn it...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp121.png",
+    "image_key_jp": "icons/stickers/stamp121.ja.png"
+  },
+  {
+    "id": 122,
+    "label": "Beatrix Thwump",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp122.png",
+    "image_key_jp": "icons/stickers/stamp122.ja.png"
+  },
+  {
+    "id": 123,
+    "label": "Rupie Vania Vampy Chomp. Chomp!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp123.png",
+    "image_key_jp": "icons/stickers/stamp123.ja.png"
+  },
+  {
+    "id": 124,
+    "label": "Rupie Cagliostro Here I go!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp124.png",
+    "image_key_jp": "icons/stickers/stamp124.ja.png"
+  },
+  {
+    "id": 125,
+    "label": "Light Novel 7 Noa Hmm... I see!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Light Novel 7",
+    "image_key": "icons/stickers/stamp125.png",
+    "image_key_jp": "icons/stickers/stamp125.ja.png"
+  },
+  {
+    "id": 126,
+    "label": "Anime Twitter Djeeta Jita Finally!",
+    "section": "Promotional Stickers",
+    "group": "[https://app.aniplex.co.jp/gbf_onair/ Anime Promotional Twitter Limited #2]",
+    "image_key": "icons/stickers/stamp126.png",
+    "image_key_jp": "icons/stickers/stamp126.ja.png"
+  },
+  {
+    "id": 127,
+    "label": "Anime 1 Djeeta Jita Thanks For Waiting!",
+    "section": "Promotional Stickers",
+    "group": "[http://anime.granbluefantasy.jp/bddvd/option.html Granblue Fantasy The Animation Vol. 1 Purchase Bonus]",
+    "image_key": "icons/stickers/stamp127.png",
+    "image_key_jp": "icons/stickers/stamp127.ja.png"
+  },
+  {
+    "id": 128,
+    "label": "Rupie Lowain Elsam Tomoi Wheee!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp128.png",
+    "image_key_jp": "icons/stickers/stamp128.ja.png"
+  },
+  {
+    "id": 129,
+    "label": "Sky Compass Lyria Checked!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp129.png",
+    "image_key_jp": "icons/stickers/stamp129.ja.png"
+  },
+  {
+    "id": 130,
+    "label": "Sky Compass Djeeta Jita Pick a Class!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp130.png",
+    "image_key_jp": "icons/stickers/stamp130.ja.png"
+  },
+  {
+    "id": 131,
+    "label": "Sky Compass Lyria My Tummy...",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp131.png",
+    "image_key_jp": "icons/stickers/stamp131.ja.png"
+  },
+  {
+    "id": 132,
+    "label": "Sky Compass Pommern That's Absurd!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp132.png",
+    "image_key_jp": "icons/stickers/stamp132.ja.png"
+  },
+  {
+    "id": 133,
+    "label": "Sky Compass Djeeta Jita Take a Look!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp133.png",
+    "image_key_jp": "icons/stickers/stamp133.ja.png"
+  },
+  {
+    "id": 134,
+    "label": "Djeeta Jita Clarity!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp134.png",
+    "image_key_jp": "icons/stickers/stamp134.ja.png"
+  },
+  {
+    "id": 135,
+    "label": "Djeeta Jita Dispel!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp135.png",
+    "image_key_jp": "icons/stickers/stamp135.ja.png"
+  },
+  {
+    "id": 136,
+    "label": "Gran Double Trouble!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp136.png",
+    "image_key_jp": "icons/stickers/stamp136.ja.png"
+  },
+  {
+    "id": 137,
+    "label": "Gran Soul Soloist!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp137.png",
+    "image_key_jp": "icons/stickers/stamp137.ja.png"
+  },
+  {
+    "id": 138,
+    "label": "Gran Rage!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp138.png",
+    "image_key_jp": "icons/stickers/stamp138.ja.png"
+  },
+  {
+    "id": 139,
+    "label": "Gran Petrified",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp139.png",
+    "image_key_jp": "icons/stickers/stamp139.ja.png"
+  },
+  {
+    "id": 140,
+    "label": "Djeeta Jita Paralyzed",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp140.png",
+    "image_key_jp": "icons/stickers/stamp140.ja.png"
+  },
+  {
+    "id": 141,
+    "label": "Gran Nice Fight",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp141.png",
+    "image_key_jp": "icons/stickers/stamp141.ja.png"
+  },
+  {
+    "id": 142,
+    "label": "Rupie Cagliostro Tee-hee ☆",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp142.png",
+    "image_key_jp": "icons/stickers/stamp142.ja.png"
+  },
+  {
+    "id": 143,
+    "label": "Barawa You're Kidding Me!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp143.png",
+    "image_key_jp": "icons/stickers/stamp143.ja.png"
+  },
+  {
+    "id": 144,
+    "label": "Chat Noir It's Showtime!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp144.png",
+    "image_key_jp": "icons/stickers/stamp144.ja.png"
+  },
+  {
+    "id": 145,
+    "label": "Music CD Lowain Tubulariffic",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd09/ Cafe de Party Night: Solving Captain's Worries In A Blink - Music CD]",
+    "image_key": "icons/stickers/stamp145.png",
+    "image_key_jp": "icons/stickers/stamp145.ja.png"
+  },
+  {
+    "id": 146,
+    "label": "Music CD Elsam Not Good",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd09/ Cafe de Party Night: Solving Captain's Worries In A Blink - Music CD]",
+    "image_key": "icons/stickers/stamp146.png",
+    "image_key_jp": "icons/stickers/stamp146.ja.png"
+  },
+  {
+    "id": 147,
+    "label": "Music CD Tomoi Aye Aye!",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd09/ Cafe de Party Night: Solving Captain's Worries In A Blink - Music CD]",
+    "image_key": "icons/stickers/stamp147.png",
+    "image_key_jp": "icons/stickers/stamp147.ja.png"
+  },
+  {
+    "id": 148,
+    "label": "Rupie Clarisse Cutielicious!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp148.png",
+    "image_key_jp": "icons/stickers/stamp148.ja.png"
+  },
+  {
+    "id": 149,
+    "label": "Rupie Ippatsu Heavenly!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp149.png",
+    "image_key_jp": "icons/stickers/stamp149.ja.png"
+  },
+  {
+    "id": 150,
+    "label": "Light Novel 8 Apollonia Black Knight Humph...",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Light Novel 8",
+    "image_key": "icons/stickers/stamp150.png",
+    "image_key_jp": "icons/stickers/stamp150.ja.png"
+  },
+  {
+    "id": 151,
+    "label": "Anime Twitter Djeeta Jita Never Surrender!",
+    "section": "Promotional Stickers",
+    "group": "[http://app.aniplex.co.jp/gbf_djeeta/ Anime Promotional Twitter Limited #3]",
+    "image_key": "icons/stickers/stamp151.png",
+    "image_key_jp": "icons/stickers/stamp151.ja.png"
+  },
+  {
+    "id": 152,
+    "label": "Rupie Kaz Delightful!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp152.png",
+    "image_key_jp": "icons/stickers/stamp152.ja.png"
+  },
+  {
+    "id": 153,
+    "label": "Cagliostro I Know That Already!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp153.png",
+    "image_key_jp": "icons/stickers/stamp153.ja.png"
+  },
+  {
+    "id": 154,
+    "label": "Feena Go! Go! Pow! Pow!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp154.png",
+    "image_key_jp": "icons/stickers/stamp154.ja.png"
+  },
+  {
+    "id": 155,
+    "label": "Jeanne D'arc It's On Now",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp155.png",
+    "image_key_jp": "icons/stickers/stamp155.ja.png"
+  },
+  {
+    "id": 156,
+    "label": "Alec Electrifying!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp156.png",
+    "image_key_jp": "icons/stickers/stamp156.ja.png"
+  },
+  {
+    "id": 157,
+    "label": "Scathacha Humph",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp157.png",
+    "image_key_jp": "icons/stickers/stamp157.ja.png"
+  },
+  {
+    "id": 158,
+    "label": "Ladiva Luv Ya",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp158.png",
+    "image_key_jp": "icons/stickers/stamp158.ja.png"
+  },
+  {
+    "id": 159,
+    "label": "Robomi Input Command",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp159.png",
+    "image_key_jp": "icons/stickers/stamp159.ja.png"
+  },
+  {
+    "id": 160,
+    "label": "JJ My B",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp160.png",
+    "image_key_jp": "icons/stickers/stamp160.ja.png"
+  },
+  {
+    "id": 161,
+    "label": "Lyria Untz Untz Untz",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp161.png",
+    "image_key_jp": "icons/stickers/stamp161.ja.png"
+  },
+  {
+    "id": 162,
+    "label": "Vyrn Shoobity Bebop Boo",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp162.png",
+    "image_key_jp": "icons/stickers/stamp162.ja.png"
+  },
+  {
+    "id": 163,
+    "label": "Diantha!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp163.png",
+    "image_key_jp": "icons/stickers/stamp163.ja.png"
+  },
+  {
+    "id": 164,
+    "label": "Linaria!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp164.png",
+    "image_key_jp": "icons/stickers/stamp164.ja.png"
+  },
+  {
+    "id": 165,
+    "label": "Harie!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp165.png",
+    "image_key_jp": "icons/stickers/stamp165.ja.png"
+  },
+  {
+    "id": 166,
+    "label": "Canna!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp166.png",
+    "image_key_jp": "icons/stickers/stamp166.ja.png"
+  },
+  {
+    "id": 167,
+    "label": "Diola!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp167.png",
+    "image_key_jp": "icons/stickers/stamp167.ja.png"
+  },
+  {
+    "id": 168,
+    "label": "Rupie Ghandagoza Gahaha",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp168.png",
+    "image_key_jp": "icons/stickers/stamp168.ja.png"
+  },
+  {
+    "id": 169,
+    "label": "Rupie Chloe QT",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp169.png",
+    "image_key_jp": "icons/stickers/stamp169.ja.png"
+  },
+  {
+    "id": 170,
+    "label": "Manga Souken no Kizuna 2 Siegfried Follow Me!",
+    "section": "Promotional Stickers",
+    "group": "[http://amzn.asia/1SMUWwj Granblue Fantasy Manga \"Sōken no Kizuna\" Vol.2]",
+    "image_key": "icons/stickers/stamp170.png",
+    "image_key_jp": "icons/stickers/stamp170.ja.png"
+  },
+  {
+    "id": 171,
+    "label": "Sky Compass Gran Smile!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp171.png",
+    "image_key_jp": "icons/stickers/stamp171.ja.png"
+  },
+  {
+    "id": 172,
+    "label": "Sky Compass Gran Have One On Me!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp172.png",
+    "image_key_jp": "icons/stickers/stamp172.ja.png"
+  },
+  {
+    "id": 173,
+    "label": "Sky Compass Djeeta Jita Welcome!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp173.png",
+    "image_key_jp": "icons/stickers/stamp173.ja.png"
+  },
+  {
+    "id": 174,
+    "label": "Sky Compass Djeeta Jita Thank You Come Again!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp174.png",
+    "image_key_jp": "icons/stickers/stamp174.ja.png"
+  },
+  {
+    "id": 175,
+    "label": "Sky Compass Lyria Smile For Me!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp175.png",
+    "image_key_jp": "icons/stickers/stamp175.ja.png"
+  },
+  {
+    "id": 176,
+    "label": "Sky Compass Lyria Mmm... That Was Good!",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Sky Compass Shop",
+    "image_key": "icons/stickers/stamp176.png",
+    "image_key_jp": "icons/stickers/stamp176.ja.png"
+  },
+  {
+    "id": 177,
+    "label": "Music CD Societte Yip♪ Yip♪",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd10/ Souku Hana no Mai - Music CD]",
+    "image_key": "icons/stickers/stamp177.png",
+    "image_key_jp": "icons/stickers/stamp177.ja.png"
+  },
+  {
+    "id": 178,
+    "label": "Music CD Yuel Yip♪ Yip♪",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd10/ Souku Hana no Mai - Music CD]",
+    "image_key": "icons/stickers/stamp178.png",
+    "image_key_jp": "icons/stickers/stamp178.ja.png"
+  },
+  {
+    "id": 179,
+    "label": "Rupie Claudia Hee-Hee-Hee",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp179.png",
+    "image_key_jp": "icons/stickers/stamp179.ja.png"
+  },
+  {
+    "id": 180,
+    "label": "Light Novel 9 Yggdrasil Yugu Music Note Ring",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Light Novel 9",
+    "image_key": "icons/stickers/stamp180.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 181,
+    "label": "Rupie Sophia Aid Us",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp181.png",
+    "image_key_jp": "icons/stickers/stamp181.ja.png"
+  },
+  {
+    "id": 182,
+    "label": "Music CD Clarisse Go! Go!",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd11/ Merry Luv - Music CD]",
+    "image_key": "icons/stickers/stamp182.png",
+    "image_key_jp": "icons/stickers/stamp182.ja.png"
+  },
+  {
+    "id": 183,
+    "label": "Music CD Sen Mya hah hah",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd11/ Merry Luv - Music CD]",
+    "image_key": "icons/stickers/stamp183.png",
+    "image_key_jp": "icons/stickers/stamp183.ja.png"
+  },
+  {
+    "id": 184,
+    "label": "Music CD Ladiva Leave It To Me!",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd11/ Merry Luv - Music CD]",
+    "image_key": "icons/stickers/stamp184.png",
+    "image_key_jp": "icons/stickers/stamp184.ja.png"
+  },
+  {
+    "id": 185,
+    "label": "Rupie Joya Bell Gong...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp185.png",
+    "image_key_jp": "icons/stickers/stamp185.ja.png"
+  },
+  {
+    "id": 186,
+    "label": "Vira Gee, thank you",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp186.png",
+    "image_key_jp": "icons/stickers/stamp186.ja.png"
+  },
+  {
+    "id": 187,
+    "label": "Vira Good Work!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp187.png",
+    "image_key_jp": "icons/stickers/stamp187.ja.png"
+  },
+  {
+    "id": 188,
+    "label": "Vira Heave Ho!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp188.png",
+    "image_key_jp": "icons/stickers/stamp188.ja.png"
+  },
+  {
+    "id": 189,
+    "label": "Vira Phalanx!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp189.png",
+    "image_key_jp": "icons/stickers/stamp189.ja.png"
+  },
+  {
+    "id": 190,
+    "label": "Vira Drool",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp190.png",
+    "image_key_jp": "icons/stickers/stamp190.ja.png"
+  },
+  {
+    "id": 191,
+    "label": "Vira OK!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp191.png",
+    "image_key_jp": "icons/stickers/stamp191.ja.png"
+  },
+  {
+    "id": 192,
+    "label": "Vira That hurt...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp192.png",
+    "image_key_jp": "icons/stickers/stamp192.ja.png"
+  },
+  {
+    "id": 193,
+    "label": "Vira What's Up!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp193.png",
+    "image_key_jp": "icons/stickers/stamp193.ja.png"
+  },
+  {
+    "id": 194,
+    "label": "Rupie Zooey Zoi Playtime Is Over",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp194.png",
+    "image_key_jp": "icons/stickers/stamp194.ja.png"
+  },
+  {
+    "id": 195,
+    "label": "Rupie Umnogeeh!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp195.png",
+    "image_key_jp": "icons/stickers/stamp195.ja.png"
+  },
+  {
+    "id": 196,
+    "label": "Music CD Vyrn Vii Sing Giga Destruction",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd12/ Over the Sky - Music CD]",
+    "image_key": "icons/stickers/stamp196.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 197,
+    "label": "Music CD Vyrn Vii Sing You are macho vee",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd12/ Over the Sky - Music CD]",
+    "image_key": "icons/stickers/stamp197.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 198,
+    "label": "Music CD Vyrn Vii Sing Macho vee and vee",
+    "section": "Promotional Stickers",
+    "group": "[http://song.granbluefantasy.jp/cd12/ Over the Sky - Music CD]",
+    "image_key": "icons/stickers/stamp198.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 199,
+    "label": "Vyrn Buzzzz",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp199.png",
+    "image_key_jp": "icons/stickers/stamp199.ja.png"
+  },
+  {
+    "id": 200,
+    "label": "Vane Ooh!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp200.png",
+    "image_key_jp": "icons/stickers/stamp200.ja.png"
+  },
+  {
+    "id": 201,
+    "label": "Percival Who Laughed?",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp201.png",
+    "image_key_jp": "icons/stickers/stamp201.ja.png"
+  },
+  {
+    "id": 202,
+    "label": "Ifrit I'll Burn You",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp202.png",
+    "image_key_jp": "icons/stickers/stamp202.ja.png"
+  },
+  {
+    "id": 203,
+    "label": "Cocytus Hoo! Hah!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp203.png",
+    "image_key_jp": "icons/stickers/stamp203.ja.png"
+  },
+  {
+    "id": 204,
+    "label": "Saggitarius Amazing!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp204.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 205,
+    "label": "Heles I'll End It Swiftly",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp205.png",
+    "image_key_jp": "icons/stickers/stamp205.ja.png"
+  },
+  {
+    "id": 206,
+    "label": "Melissabelle Shing",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp206.png",
+    "image_key_jp": "icons/stickers/stamp206.ja.png"
+  },
+  {
+    "id": 207,
+    "label": "Lilele Lile Lilele!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp207.png",
+    "image_key_jp": "icons/stickers/stamp207.ja.png"
+  },
+  {
+    "id": 208,
+    "label": "Durray",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp208.png",
+    "image_key_jp": "icons/stickers/stamp208.ja.png"
+  },
+  {
+    "id": 209,
+    "label": "Naoise TGIF",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp209.png",
+    "image_key_jp": "icons/stickers/stamp209.ja.png"
+  },
+  {
+    "id": 210,
+    "label": "Korwa Happy Boost!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp210.png",
+    "image_key_jp": "icons/stickers/stamp210.ja.png"
+  },
+  {
+    "id": 211,
+    "label": "Jade Faaoh... Thanks...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp211.png",
+    "image_key_jp": "icons/stickers/stamp211.ja.png"
+  },
+  {
+    "id": 212,
+    "label": "Beatrix Heheh! Got That Right!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp212.png",
+    "image_key_jp": "icons/stickers/stamp212.ja.png"
+  },
+  {
+    "id": 213,
+    "label": "Eustace Nod... Points +50",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp213.png",
+    "image_key_jp": "icons/stickers/stamp213.ja.png"
+  },
+  {
+    "id": 214,
+    "label": "Mimlemel Good",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp214.png",
+    "image_key_jp": "icons/stickers/stamp214.ja.png"
+  },
+  {
+    "id": 215,
+    "label": "Lyria Bonito Satan Avatar Whoa-whoa yeaaah!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp215.png",
+    "image_key_jp": "icons/stickers/stamp215.ja.png"
+  },
+  {
+    "id": 216,
+    "label": "Percival A Wombo Combo?",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp216.png",
+    "image_key_jp": "icons/stickers/stamp216.ja.png"
+  },
+  {
+    "id": 217,
+    "label": "Heles Bingo",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp217.png",
+    "image_key_jp": "icons/stickers/stamp217.ja.png"
+  },
+  {
+    "id": 218,
+    "label": "Lunalu Ghost",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp218.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 219,
+    "label": "Rupie Yaia I Love You!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp219.png",
+    "image_key_jp": "icons/stickers/stamp219.ja.png"
+  },
+  {
+    "id": 220,
+    "label": "Rupie Feather Feel My Passion!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp220.png",
+    "image_key_jp": "icons/stickers/stamp220.ja.png"
+  },
+  {
+    "id": 221,
+    "label": "Rupie Lunalu Go For It!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp221.png",
+    "image_key_jp": "icons/stickers/stamp221.ja.png"
+  },
+  {
+    "id": 222,
+    "label": "Rupie Niyon Nio ...!?",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp222.png",
+    "image_key_jp": "icons/stickers/stamp222.ja.png"
+  },
+  {
+    "id": 223,
+    "label": "Manga Souken no Kizuna 3 Isabella You Son of a...!",
+    "section": "Promotional Stickers",
+    "group": "[http://amzn.asia/2ujWsKN Granblue Fantasy Manga \"Sōken no Kizuna\" Vol.3]",
+    "image_key": "icons/stickers/stamp223.png",
+    "image_key_jp": "icons/stickers/stamp223.ja.png"
+  },
+  {
+    "id": 224,
+    "label": "Rupie Vyrn Vee Vii",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp224.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 225,
+    "label": "Magazine Monthly Appli Style Lunalu My Evil Eye Approves!",
+    "section": "Promotional Stickers",
+    "group": "Monthly Appli Style (September 2018 Issue)",
+    "image_key": "icons/stickers/stamp225.png",
+    "image_key_jp": "icons/stickers/stamp225.ja.png"
+  },
+  {
+    "id": 226,
+    "label": "Music CD Vira Aegis Merge!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd14/ Another Sky - Music CD]",
+    "image_key": "icons/stickers/stamp226.png",
+    "image_key_jp": "icons/stickers/stamp226.ja.png"
+  },
+  {
+    "id": 227,
+    "label": "Music CD Vira Playboys Die!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd14/ Another Sky - Music CD]",
+    "image_key": "icons/stickers/stamp227.png",
+    "image_key_jp": "icons/stickers/stamp227.ja.png"
+  },
+  {
+    "id": 228,
+    "label": "Rupie Cerberus Coco Mimi Woof, Woof!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp228.png",
+    "image_key_jp": "icons/stickers/stamp228.ja.png"
+  },
+  {
+    "id": 229,
+    "label": "Rupie Tomoi Punish Me",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp229.png",
+    "image_key_jp": "icons/stickers/stamp229.ja.png"
+  },
+  {
+    "id": 230,
+    "label": "Rupie Aglovale It is I",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp230.png",
+    "image_key_jp": "icons/stickers/stamp230.ja.png"
+  },
+  {
+    "id": 231,
+    "label": "Rupie Suzaku Zhuque Blastphoenix SZK",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp231.png",
+    "image_key_jp": "icons/stickers/stamp231.ja.png"
+  },
+  {
+    "id": 232,
+    "label": "Rupie Odajumoki Gang Hee-haw!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp232.png",
+    "image_key_jp": "icons/stickers/stamp232.ja.png"
+  },
+  {
+    "id": 233,
+    "label": "Rupie Dante Cat Ears",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp233.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 234,
+    "label": "Light Novel 10 Lyria Shloop",
+    "section": "Promotional Stickers",
+    "group": "Granblue Fantasy Light Novel 10",
+    "image_key": "icons/stickers/stamp234.png",
+    "image_key_jp": "icons/stickers/stamp234.ja.png"
+  },
+  {
+    "id": 235,
+    "label": "Rupie Albert Whew...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp235.png",
+    "image_key_jp": "icons/stickers/stamp235.ja.png"
+  },
+  {
+    "id": 236,
+    "label": "Vyrn I've Got This!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp236.png",
+    "image_key_jp": "icons/stickers/stamp236.ja.png"
+  },
+  {
+    "id": 237,
+    "label": "Vyrn Not On My Watch!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp237.png",
+    "image_key_jp": "icons/stickers/stamp237.ja.png"
+  },
+  {
+    "id": 238,
+    "label": "Vyrn 'Scuse Me, Comin' Through",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp238.png",
+    "image_key_jp": "icons/stickers/stamp238.ja.png"
+  },
+  {
+    "id": 239,
+    "label": "Vyrn Time For A Death Game!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp239.png",
+    "image_key_jp": "icons/stickers/stamp239.ja.png"
+  },
+  {
+    "id": 240,
+    "label": "Vyrn Vyrnzilla!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp240.png",
+    "image_key_jp": "icons/stickers/stamp240.ja.png"
+  },
+  {
+    "id": 241,
+    "label": "Rosetta ? I Don't Get It",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp241.png",
+    "image_key_jp": "icons/stickers/stamp241.ja.png"
+  },
+  {
+    "id": 242,
+    "label": "Rosetta Pump It Up!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp242.png",
+    "image_key_jp": "icons/stickers/stamp242.ja.png"
+  },
+  {
+    "id": 243,
+    "label": "Io Thwack",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp243.png",
+    "image_key_jp": "icons/stickers/stamp243.ja.png"
+  },
+  {
+    "id": 244,
+    "label": "Narmaya Come Play With Me!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp244.png",
+    "image_key_jp": "icons/stickers/stamp244.ja.png"
+  },
+  {
+    "id": 245,
+    "label": "Narmaya I'm All Confused!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp245.png",
+    "image_key_jp": "icons/stickers/stamp245.ja.png"
+  },
+  {
+    "id": 246,
+    "label": "Tweyen Song Need Paralyze?",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp246.png",
+    "image_key_jp": "icons/stickers/stamp246.ja.png"
+  },
+  {
+    "id": 247,
+    "label": "Fif Funf Gimme a Gold Star!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp247.png",
+    "image_key_jp": "icons/stickers/stamp247.ja.png"
+  },
+  {
+    "id": 248,
+    "label": "Vania Vampy Porkin!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp248.png",
+    "image_key_jp": "icons/stickers/stamp248.ja.png"
+  },
+  {
+    "id": 249,
+    "label": "Veight So It Was a Pig Trotter...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp249.png",
+    "image_key_jp": "icons/stickers/stamp249.ja.png"
+  },
+  {
+    "id": 250,
+    "label": "Alexiel Godsworn Alexello!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp250.png",
+    "image_key_jp": "icons/stickers/stamp250.ja.png"
+  },
+  {
+    "id": 251,
+    "label": "Europa I'll Be Eur-Ol'-Pal",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp251.png",
+    "image_key_jp": "icons/stickers/stamp251.ja.png"
+  },
+  {
+    "id": 252,
+    "label": "Monika Monii!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp252.png",
+    "image_key_jp": "icons/stickers/stamp252.ja.png"
+  },
+  {
+    "id": 253,
+    "label": "Lecia Problem?",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp253.png",
+    "image_key_jp": "icons/stickers/stamp253.ja.png"
+  },
+  {
+    "id": 254,
+    "label": "Ilsa Way to Go!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp254.png",
+    "image_key_jp": "icons/stickers/stamp254.ja.png"
+  },
+  {
+    "id": 255,
+    "label": "Razia I'd Rather Die!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp255.png",
+    "image_key_jp": "icons/stickers/stamp255.ja.png"
+  },
+  {
+    "id": 256,
+    "label": "Arulumaya Destiny Rolls On",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp256.png",
+    "image_key_jp": "icons/stickers/stamp256.ja.png"
+  },
+  {
+    "id": 257,
+    "label": "Izmir Thrills and Chills",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp257.png",
+    "image_key_jp": "icons/stickers/stamp257.ja.png"
+  },
+  {
+    "id": 258,
+    "label": "Yaia Okay! I'll Do It!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp258.png",
+    "image_key_jp": "icons/stickers/stamp258.ja.png"
+  },
+  {
+    "id": 259,
+    "label": "Gisla Rocks!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp259.png",
+    "image_key_jp": "icons/stickers/stamp259.ja.png"
+  },
+  {
+    "id": 260,
+    "label": "I Like!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp260.png",
+    "image_key_jp": "icons/stickers/stamp260.ja.png"
+  },
+  {
+    "id": 261,
+    "label": "Anteater",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp261.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 262,
+    "label": "Rupie Gorilla Ooh-Ooh-Ahh!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp262.png",
+    "image_key_jp": "icons/stickers/stamp262.ja.png"
+  },
+  {
+    "id": 263,
+    "label": "Rupie Grimnir When my right arm breaks free of its curse, a perpetual tempest shall tear you into oblivion!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp263.png",
+    "image_key_jp": "icons/stickers/stamp263.ja.png"
+  },
+  {
+    "id": 264,
+    "label": "Rupie Veight Waaah!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp264.png",
+    "image_key_jp": "icons/stickers/stamp264.ja.png"
+  },
+  {
+    "id": 265,
+    "label": "Rupie Suframare Thumbs Up",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp265.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 266,
+    "label": "Rupie Cagliostro Rock-ar'-row! Get it? Rockfish Arrow",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp266.png",
+    "image_key_jp": "icons/stickers/stamp266.ja.png"
+  },
+  {
+    "id": 267,
+    "label": "Sandalphon Sandy I'm Going Out for a Bit! Ittekimasu",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp267.png",
+    "image_key_jp": "icons/stickers/stamp267.ja.png"
+  },
+  {
+    "id": 268,
+    "label": "Lucio But Why... Doushite",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp268.png",
+    "image_key_jp": "icons/stickers/stamp268.ja.png"
+  },
+  {
+    "id": 269,
+    "label": "Halluel and Malluel Halmal Hiya! Mornin'!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp269.png",
+    "image_key_jp": "icons/stickers/stamp269.ja.png"
+  },
+  {
+    "id": 270,
+    "label": "Belial Thank You",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp270.png",
+    "image_key_jp": "icons/stickers/stamp270.ja.png"
+  },
+  {
+    "id": 271,
+    "label": "Fried Shrimp Premium Friday",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp271.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 272,
+    "label": "Rupie Diola Ay-ay-ay Island!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp272.png",
+    "image_key_jp": "icons/stickers/stamp272.ja.png"
+  },
+  {
+    "id": 273,
+    "label": "Rupie Silva Aaaaaah!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp273.png",
+    "image_key_jp": "icons/stickers/stamp273.ja.png"
+  },
+  {
+    "id": 274,
+    "label": "Manga Souken no Kizuna 4 Percival I Shall Avenge You",
+    "section": "Promotional Stickers",
+    "group": "[https://www.amazon.co.jp/dp/4047357634/ Granblue Fantasy Manga \"Sōken no Kizuna\" Vol.4]",
+    "image_key": "icons/stickers/stamp274.png",
+    "image_key_jp": "icons/stickers/stamp274.ja.png"
+  },
+  {
+    "id": 275,
+    "label": "Rupie Grimnir's Greaaat!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp275.png",
+    "image_key_jp": "icons/stickers/stamp275.ja.png"
+  },
+  {
+    "id": 276,
+    "label": "Rupie Tezcatlipoca I Trustlipoca!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp276.png",
+    "image_key_jp": "icons/stickers/stamp276.ja.png"
+  },
+  {
+    "id": 277,
+    "label": "Rupie Lyria Gurgle Gurgle",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp277.png",
+    "image_key_jp": "icons/stickers/stamp277.ja.png"
+  },
+  {
+    "id": 278,
+    "label": "Rupie Kadomatsu Sheep Happy New Year",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp278.png",
+    "image_key_jp": "icons/stickers/stamp278.ja.png"
+  },
+  {
+    "id": 279,
+    "label": "Music CD Yuisis Let's Bash Some Heads!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd18/ Saika no Chigiri - Music CD]",
+    "image_key": "icons/stickers/stamp279.png",
+    "image_key_jp": "icons/stickers/stamp279.ja.png"
+  },
+  {
+    "id": 280,
+    "label": "Music CD Yuisis I Like Your Style!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd18/ Saika no Chigiri - Music CD]",
+    "image_key": "icons/stickers/stamp280.png",
+    "image_key_jp": "icons/stickers/stamp280.ja.png"
+  },
+  {
+    "id": 281,
+    "label": "Rupie Ladiva Fastiva I'm Stuck!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp281.png",
+    "image_key_jp": "icons/stickers/stamp281.ja.png"
+  },
+  {
+    "id": 282,
+    "label": "Quokka",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp282.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 283,
+    "label": "Rupie Rosetta Rose Queen Allow Me!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp283.png",
+    "image_key_jp": "icons/stickers/stamp283.ja.png"
+  },
+  {
+    "id": 284,
+    "label": "Rupie Ilsa Teehee... Sowwy",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp284.png",
+    "image_key_jp": "icons/stickers/stamp284.ja.png"
+  },
+  {
+    "id": 285,
+    "label": "Golden FRIED SHRIMP Premium Friday",
+    "section": "Event Stickers",
+    "group": "Premium Friday",
+    "image_key": "icons/stickers/stamp285.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 286,
+    "label": "Rupie Smaaash!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp286.png",
+    "image_key_jp": "icons/stickers/stamp286.ja.png"
+  },
+  {
+    "id": 287,
+    "label": "Rupie Vikala Vyrn Aw Yeeeah!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp287.png",
+    "image_key_jp": "icons/stickers/stamp287.ja.png"
+  },
+  {
+    "id": 288,
+    "label": "Rupie Wulf My Turn, Baby",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp288.png",
+    "image_key_jp": "icons/stickers/stamp288.ja.png"
+  },
+  {
+    "id": 289,
+    "label": "Rupie Belial Come to Papa!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp289.png",
+    "image_key_jp": "icons/stickers/stamp289.ja.png"
+  },
+  {
+    "id": 290,
+    "label": "Rupie Vyrn C'mere",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp290.png",
+    "image_key_jp": "icons/stickers/stamp290.ja.png"
+  },
+  {
+    "id": 291,
+    "label": "Rupie Beatrix Run Apron",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp291.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 292,
+    "label": "Granblue Fantasy: Versus GBVS Cagliosled",
+    "section": "Promotional Stickers",
+    "group": "Additional Character Set (Cagliostro)",
+    "image_key": "icons/stickers/stamp292.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 293,
+    "label": "Rupie Jin I've Seen the Light!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp293.png",
+    "image_key_jp": "icons/stickers/stamp293.ja.png"
+  },
+  {
+    "id": 294,
+    "label": "Granblue Fantasy: Versus GBVS Yuel Let's Finish It Off! Together, Everyone!",
+    "section": "Promotional Stickers",
+    "group": "Additional Character Set (Yuel)",
+    "image_key": "icons/stickers/stamp294.png",
+    "image_key_jp": "icons/stickers/stamp294.ja.png"
+  },
+  {
+    "id": 295,
+    "label": "Rupie Joy Ooh! Amazing!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp295.png",
+    "image_key_jp": "icons/stickers/stamp295.ja.png"
+  },
+  {
+    "id": 296,
+    "label": "Granblue Fantasy: Versus GBVS Anre Witness My Absolute Power",
+    "section": "Promotional Stickers",
+    "group": "Additional Character Set (Anre)",
+    "image_key": "icons/stickers/stamp296.png",
+    "image_key_jp": "icons/stickers/stamp296.ja.png"
+  },
+  {
+    "id": 297,
+    "label": "Rupie Vajra Dogs",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp297.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 298,
+    "label": "Music CD Robomi Exterminating Enemy Units",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd20/ The Robomi Song - Music CD]",
+    "image_key": "icons/stickers/stamp298.png",
+    "image_key_jp": "icons/stickers/stamp298.ja.png"
+  },
+  {
+    "id": 299,
+    "label": "Music CD Nicholas I've Got a Backup Plan!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd20/ The Robomi Song - Music CD]",
+    "image_key": "icons/stickers/stamp299.png",
+    "image_key_jp": "icons/stickers/stamp299.ja.png"
+  },
+  {
+    "id": 300,
+    "label": "Rupie Kumbhira",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp300.png",
+    "image_key_jp": "icons/stickers/stamp300.ja.png"
+  },
+  {
+    "id": 301,
+    "label": "Rupie Vikala Vicky I'm Dead...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp301.png",
+    "image_key_jp": "icons/stickers/stamp301.ja.png"
+  },
+  {
+    "id": 302,
+    "label": "Granblue Fantasy: Versus GBVS Eustace Execute Mission",
+    "section": "Promotional Stickers",
+    "group": "Additional Character Set (Eustace)",
+    "image_key": "icons/stickers/stamp302.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 303,
+    "label": "Rupie Valentin",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp303.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 304,
+    "label": "Rupie Zeta Kitty Waitress",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp304.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 305,
+    "label": "Rupie Joy You... Must Die!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp305.png",
+    "image_key_jp": "icons/stickers/stamp305.ja.png"
+  },
+  {
+    "id": 306,
+    "label": "Granblue Fantasy: Versus GBVS Seox Kiieeee!",
+    "section": "Promotional Stickers",
+    "group": "Additional Character Set (Seox)",
+    "image_key": "icons/stickers/stamp306.png",
+    "image_key_jp": "icons/stickers/stamp306.ja.png"
+  },
+  {
+    "id": 307,
+    "label": "Music CD Nier Do I look pretty now?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd21/ Shi ni Itaru Koi - Music CD]",
+    "image_key": "icons/stickers/stamp307.png",
+    "image_key_jp": "icons/stickers/stamp307.ja.png"
+  },
+  {
+    "id": 308,
+    "label": "Music CD Nier Won't you love me? Accept me?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd21/ Shi ni Itaru Koi - Music CD]",
+    "image_key": "icons/stickers/stamp308.png",
+    "image_key_jp": "icons/stickers/stamp308.ja.png"
+  },
+  {
+    "id": 309,
+    "label": "Rupie Seofon Aaaugh! My clothes! Siete",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp309.png",
+    "image_key_jp": "icons/stickers/stamp309.ja.png"
+  },
+  {
+    "id": 310,
+    "label": "Rupie Tien Mm... No Problem Esser",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp310.png",
+    "image_key_jp": "icons/stickers/stamp310.ja.png"
+  },
+  {
+    "id": 311,
+    "label": "Rupie Jin Enlightened",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp311.png",
+    "image_key_jp": "icons/stickers/stamp311.ja.png"
+  },
+  {
+    "id": 312,
+    "label": "Rupie Cucuroux Overhaul",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp312.png",
+    "image_key_jp": "icons/stickers/stamp312.ja.png"
+  },
+  {
+    "id": 313,
+    "label": "Music CD Vane Mind if I flex a bit?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd22/ Knights of Chivalry ～Chikai no Feendrache～ - Music CD]",
+    "image_key": "icons/stickers/stamp313.png",
+    "image_key_jp": "icons/stickers/stamp313.ja.png"
+  },
+  {
+    "id": 314,
+    "label": "Music CD Siegfried Your hand, please",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd22/ Knights of Chivalry ～Chikai no Feendrache～ - Music CD]",
+    "image_key": "icons/stickers/stamp314.png",
+    "image_key_jp": "icons/stickers/stamp314.ja.png"
+  },
+  {
+    "id": 315,
+    "label": "Music CD Percival But of course",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd22/ Knights of Chivalry ～Chikai no Feendrache～ - Music CD]",
+    "image_key": "icons/stickers/stamp315.png",
+    "image_key_jp": "icons/stickers/stamp315.ja.png"
+  },
+  {
+    "id": 316,
+    "label": "Music CD Lancelot Need an escort?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd22/ Knights of Chivalry ～Chikai no Feendrache～ - Music CD]",
+    "image_key": "icons/stickers/stamp316.png",
+    "image_key_jp": "icons/stickers/stamp316.ja.png"
+  },
+  {
+    "id": 317,
+    "label": "Rupie Arulumaya Only the best win this one!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp317.png",
+    "image_key_jp": "icons/stickers/stamp317.ja.png"
+  },
+  {
+    "id": 318,
+    "label": "Rupie Clarisse Love your stomach!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp318.png",
+    "image_key_jp": "icons/stickers/stamp318.ja.png"
+  },
+  {
+    "id": 319,
+    "label": "Rupie Yggdrasil Sparkle Juice",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp319.png",
+    "image_key_jp": "icons/stickers/stamp319.ja.png"
+  },
+  {
+    "id": 320,
+    "label": "Music CD Seruel Don't Get Careless",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd23/ Pray for the sky - Music CD]",
+    "image_key": "icons/stickers/stamp320.png",
+    "image_key_jp": "icons/stickers/stamp320.ja.png"
+  },
+  {
+    "id": 321,
+    "label": "Music CD Naoise I'll Protect You with My Life",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd23/ Pray for the sky - Music CD]",
+    "image_key": "icons/stickers/stamp321.png",
+    "image_key_jp": "icons/stickers/stamp321.ja.png"
+  },
+  {
+    "id": 322,
+    "label": "Rupie Ilsa Let's Get It Started!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp322.png",
+    "image_key_jp": "icons/stickers/stamp322.ja.png"
+  },
+  {
+    "id": 323,
+    "label": "Rupie Badb Morrigna Apolotea",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp323.png",
+    "image_key_jp": "icons/stickers/stamp323.ja.png"
+  },
+  {
+    "id": 324,
+    "label": "Rupie Catura Andira Vajra",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp324.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 325,
+    "label": "Music CD Tien I'll Fight till the End",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd24/ Stardust Children - Music CD]",
+    "image_key": "icons/stickers/stamp325.png",
+    "image_key_jp": "icons/stickers/stamp325.ja.png"
+  },
+  {
+    "id": 326,
+    "label": "Music CD Tien Target Locked",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd24/ Stardust Children - Music CD]",
+    "image_key": "icons/stickers/stamp326.png",
+    "image_key_jp": "icons/stickers/stamp326.ja.png"
+  },
+  {
+    "id": 327,
+    "label": "Music CD Feower Defending Allies Fuels My Fury",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd24/ Stardust Children - Music CD]",
+    "image_key": "icons/stickers/stamp327.png",
+    "image_key_jp": "icons/stickers/stamp327.ja.png"
+  },
+  {
+    "id": 328,
+    "label": "Music CD Feower Memento Mori",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd24/ Stardust Children - Music CD]",
+    "image_key": "icons/stickers/stamp328.png",
+    "image_key_jp": "icons/stickers/stamp328.ja.png"
+  },
+  {
+    "id": 329,
+    "label": "Rupie Zooey Zoi Driiing",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp329.png",
+    "image_key_jp": "icons/stickers/stamp329.ja.png"
+  },
+  {
+    "id": 330,
+    "label": "Rupie Lamretta Sorry I'm Late!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp330.png",
+    "image_key_jp": "icons/stickers/stamp330.ja.png"
+  },
+  {
+    "id": 331,
+    "label": "Rupie Cassius Let's Go Home",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp331.png",
+    "image_key_jp": "icons/stickers/stamp331.ja.png"
+  },
+  {
+    "id": 332,
+    "label": "Rupie Beelzebub Bam Pow Whack",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp332.png",
+    "image_key_jp": "icons/stickers/stamp332.ja.png"
+  },
+  {
+    "id": 333,
+    "label": "Music CD Vikala Vicky Having Fun?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd25/ Welcome to the PARADE! - Music CD]",
+    "image_key": "icons/stickers/stamp333.png",
+    "image_key_jp": "icons/stickers/stamp333.ja.png"
+  },
+  {
+    "id": 334,
+    "label": "Music CD Vikala Lucky! Cookie! Vicky!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd25/ Welcome to the PARADE! - Music CD]",
+    "image_key": "icons/stickers/stamp334.png",
+    "image_key_jp": "icons/stickers/stamp334.ja.png"
+  },
+  {
+    "id": 335,
+    "label": "Rupie Mireille Feeling Great!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp335.png",
+    "image_key_jp": "icons/stickers/stamp335.ja.png"
+  },
+  {
+    "id": 336,
+    "label": "Rupie Cosmos Cosmo Ding-Ding!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp336.png",
+    "image_key_jp": "icons/stickers/stamp336.ja.png"
+  },
+  {
+    "id": 337,
+    "label": "Rupie Freyr Tell me more!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp337.png",
+    "image_key_jp": "icons/stickers/stamp337.ja.png"
+  },
+  {
+    "id": 338,
+    "label": "Music CD Silva Let's finish it!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd26/ Vanishing Point - Music CD]",
+    "image_key": "icons/stickers/stamp338.png",
+    "image_key_jp": "icons/stickers/stamp338.ja.png"
+  },
+  {
+    "id": 339,
+    "label": "Music CD Tweyen Song I'll clear the path!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd26/ Vanishing Point - Music CD]",
+    "image_key": "icons/stickers/stamp339.png",
+    "image_key_jp": "icons/stickers/stamp339.ja.png"
+  },
+  {
+    "id": 340,
+    "label": "Rupie Yuni Yuniverse",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp340.png",
+    "image_key_jp": "icons/stickers/stamp340.ja.png"
+  },
+  {
+    "id": 341,
+    "label": "Rupie Shiva That's Hot!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp341.png",
+    "image_key_jp": "icons/stickers/stamp341.ja.png"
+  },
+  {
+    "id": 342,
+    "label": "Rupie Bai Cidala I Can't Even...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp342.png",
+    "image_key_jp": "icons/stickers/stamp342.ja.png"
+  },
+  {
+    "id": 343,
+    "label": "Music CD Grimnir Wh-Whoa! Time-Out!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd27/ Pledge of the Tempest - Music CD]",
+    "image_key": "icons/stickers/stamp343.png",
+    "image_key_jp": "icons/stickers/stamp343.ja.png"
+  },
+  {
+    "id": 344,
+    "label": "Music CD Grimnir The Time Has Come!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd27/ Pledge of the Tempest - Music CD]",
+    "image_key": "icons/stickers/stamp344.png",
+    "image_key_jp": "icons/stickers/stamp344.ja.png"
+  },
+  {
+    "id": 345,
+    "label": "Rupie Lich Ripperoni",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp345.png",
+    "image_key_jp": "icons/stickers/stamp345.ja.png"
+  },
+  {
+    "id": 346,
+    "label": "Rupie Erika Heheh",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp346.png",
+    "image_key_jp": "icons/stickers/stamp346.ja.png"
+  },
+  {
+    "id": 347,
+    "label": "Rupie Tikoh Huff Huff...",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp347.png",
+    "image_key_jp": "icons/stickers/stamp347.ja.png"
+  },
+  {
+    "id": 348,
+    "label": "Rupie Makura Is That a Call for Help?",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp348.png",
+    "image_key_jp": "icons/stickers/stamp348.ja.png"
+  },
+  {
+    "id": 349,
+    "label": "Rupie Vyrn Smells Like Success",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp349.png",
+    "image_key_jp": "icons/stickers/stamp349.ja.png"
+  },
+  {
+    "id": 350,
+    "label": "Music CD Milleore Sahli Lao Wh... What's going on here?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd28/ Hassuru Labyrinth! - Music CD]",
+    "image_key": "icons/stickers/stamp350.png",
+    "image_key_jp": "icons/stickers/stamp350.ja.png"
+  },
+  {
+    "id": 351,
+    "label": "Music CD Melissabelle Mahira Jungle explosion!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd28/ Hassuru Labyrinth! - Music CD]",
+    "image_key": "icons/stickers/stamp351.png",
+    "image_key_jp": "icons/stickers/stamp351.ja.png"
+  },
+  {
+    "id": 352,
+    "label": "Music CD Lunalu Sierokarte Handsome Gorilla! Boom!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd28/ Hassuru Labyrinth! - Music CD]",
+    "image_key": "icons/stickers/stamp352.png",
+    "image_key_jp": "icons/stickers/stamp352.ja.png"
+  },
+  {
+    "id": 353,
+    "label": "Rupie Korwa I Give Up on No One!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp353.png",
+    "image_key_jp": "icons/stickers/stamp353.ja.png"
+  },
+  {
+    "id": 354,
+    "label": "Music CD Meg No, no, no! I'm gonna be late!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd29/ Meccha Meccha Level Up - Music CD]",
+    "image_key": "icons/stickers/stamp354.png",
+    "image_key_jp": "icons/stickers/stamp354.ja.png"
+  },
+  {
+    "id": 355,
+    "label": "Music CD Mari That makes no sense...",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd29/ Meccha Meccha Level Up - Music CD]",
+    "image_key": "icons/stickers/stamp355.png",
+    "image_key_jp": "icons/stickers/stamp355.ja.png"
+  },
+  {
+    "id": 356,
+    "label": "Rupie Cupitan :o",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp356.png",
+    "image_key_jp": "icons/stickers/stamp356.ja.png"
+  },
+  {
+    "id": 357,
+    "label": "Rupie Cantate Urg!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp357.png",
+    "image_key_jp": "icons/stickers/stamp357.ja.png"
+  },
+  {
+    "id": 358,
+    "label": "Rupie Alexiel Futile!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp358.png",
+    "image_key_jp": "icons/stickers/stamp358.ja.png"
+  },
+  {
+    "id": 359,
+    "label": "All Might I Am Here!",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp359.png",
+    "image_key_jp": "icons/stickers/stamp359.ja.png"
+  },
+  {
+    "id": 360,
+    "label": "Izuku Midoriya I'll Save You!",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp360.png",
+    "image_key_jp": "icons/stickers/stamp360.ja.png"
+  },
+  {
+    "id": 361,
+    "label": "Katsuki Bakugo I'll Win Every Fight!",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp361.png",
+    "image_key_jp": "icons/stickers/stamp361.ja.png"
+  },
+  {
+    "id": 362,
+    "label": "Himiko Toga Sho Cute",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp362.png",
+    "image_key_jp": "icons/stickers/stamp362.ja.png"
+  },
+  {
+    "id": 363,
+    "label": "Shoto Todoroki Thanks",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp363.png",
+    "image_key_jp": "icons/stickers/stamp363.ja.png"
+  },
+  {
+    "id": 364,
+    "label": "Ochaco Uraraka Gyaa",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp364.png",
+    "image_key_jp": "icons/stickers/stamp364.ja.png"
+  },
+  {
+    "id": 365,
+    "label": "Tsuyu Asui Ribbit Ribbit",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp365.png",
+    "image_key_jp": "icons/stickers/stamp365.ja.png"
+  },
+  {
+    "id": 366,
+    "label": "Twice I Got This. Nah, I'm Out.",
+    "section": "Event Stickers",
+    "group": "My Hero Academia: Rescue Another World",
+    "image_key": "icons/stickers/stamp366.png",
+    "image_key_jp": "icons/stickers/stamp366.ja.png"
+  },
+  {
+    "id": 367,
+    "label": "Rupie Galleon Zoned Out",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp367.png",
+    "image_key_jp": "icons/stickers/stamp367.ja.png"
+  },
+  {
+    "id": 368,
+    "label": "Music CD Ewiyar Time to Thank Me!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd30/ The Six Dragons' Mini Album - Music CD]",
+    "image_key": "icons/stickers/stamp368.png",
+    "image_key_jp": "icons/stickers/stamp368.ja.png"
+  },
+  {
+    "id": 369,
+    "label": "Music CD Wilnas Bravo, Bravo!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd30/ The Six Dragons' Mini Album - Music CD]",
+    "image_key": "icons/stickers/stamp369.png",
+    "image_key_jp": "icons/stickers/stamp369.ja.png"
+  },
+  {
+    "id": 370,
+    "label": "Music CD Galleon Arrival (Pardon My Intrusion)",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd30/ The Six Dragons' Mini Album - Music CD]",
+    "image_key": "icons/stickers/stamp370.png",
+    "image_key_jp": "icons/stickers/stamp370.ja.png"
+  },
+  {
+    "id": 371,
+    "label": "Music CD Fediel Show Me the Dyad!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd30/ The Six Dragons' Mini Album - Music CD]",
+    "image_key": "icons/stickers/stamp371.png",
+    "image_key_jp": "icons/stickers/stamp371.ja.png"
+  },
+  {
+    "id": 372,
+    "label": "Music CD Lu Woh Intriguing...",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd30/ The Six Dragons' Mini Album - Music CD]",
+    "image_key": "icons/stickers/stamp372.png",
+    "image_key_jp": "icons/stickers/stamp372.ja.png"
+  },
+  {
+    "id": 373,
+    "label": "Music CD Wamdus Another Win for Wam",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd30/ The Six Dragons' Mini Album - Music CD]",
+    "image_key": "icons/stickers/stamp373.png",
+    "image_key_jp": "icons/stickers/stamp373.ja.png"
+  },
+  {
+    "id": 374,
+    "label": "Rupie Europa Puff",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp374.png",
+    "image_key_jp": "icons/stickers/stamp374.ja.png"
+  },
+  {
+    "id": 375,
+    "label": "Rupie Wilnas Burnin'",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp375.png",
+    "image_key_jp": "icons/stickers/stamp375.ja.png"
+  },
+  {
+    "id": 376,
+    "label": "Rupie Cagliostro Quick! Get'em!",
+    "section": "Rupie Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp376.png",
+    "image_key_jp": "icons/stickers/stamp376.ja.png"
+  },
+  {
+    "id": 377,
+    "label": "Music CD Europa Please, Allow Me",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd31/ Hoshihana - Music CD]",
+    "image_key": "icons/stickers/stamp377.png",
+    "image_key_jp": "icons/stickers/stamp377.ja.png"
+  },
+  {
+    "id": 378,
+    "label": "Music CD Europa Into My Heart",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd31/ Hoshihana - Music CD]",
+    "image_key": "icons/stickers/stamp378.png",
+    "image_key_jp": "icons/stickers/stamp378.ja.png"
+  },
+  {
+    "id": 379,
+    "label": "Music CD Anila Hee-hee",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp379.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 380,
+    "label": "Music CD Andira Watch this trick!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp380.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 381,
+    "label": "Music CD Vajra Wide open!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp381.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 382,
+    "label": "Music CD Vikala Aughsfkhsfh I failed so hard...",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp382.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 383,
+    "label": "Music CD Catura We should get married...",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp383.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 384,
+    "label": "Music CD Makura Roger that!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp384.png",
+    "image_key_jp": null
+  },
+  {
+    "id": 385,
+    "label": "Music CD Payila Hm, not bad.",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd32/ Shinsho Hokiuta Emban - Music CD]",
+    "image_key": "icons/stickers/stamp385.png",
+    "image_key_jp": "icons/stickers/stamp385.ja.png"
+  },
+  {
+    "id": 386,
+    "label": "Rimuru I won't lose.",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp386.png",
+    "image_key_jp": "icons/stickers/stamp386.ja.png"
+  },
+  {
+    "id": 387,
+    "label": "Raphael It's your imagination.",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp387.png",
+    "image_key_jp": "icons/stickers/stamp387.ja.png"
+  },
+  {
+    "id": 388,
+    "label": "Veldora Fully Revived!",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp388.png",
+    "image_key_jp": "icons/stickers/stamp388.ja.png"
+  },
+  {
+    "id": 389,
+    "label": "Shion I'll handle this!",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp389.png",
+    "image_key_jp": "icons/stickers/stamp389.ja.png"
+  },
+  {
+    "id": 390,
+    "label": "Diablo What a beautiful sound...",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp390.png",
+    "image_key_jp": "icons/stickers/stamp390.ja.png"
+  },
+  {
+    "id": 391,
+    "label": "Milim I'll play with you!",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp391.png",
+    "image_key_jp": "icons/stickers/stamp391.ja.png"
+  },
+  {
+    "id": 392,
+    "label": "Ranga PantPantPant",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp392.png",
+    "image_key_jp": "icons/stickers/stamp392.ja.png"
+  },
+  {
+    "id": 393,
+    "label": "Ramiris One punch!",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp393.png",
+    "image_key_jp": "icons/stickers/stamp393.ja.png"
+  },
+  {
+    "id": 394,
+    "label": "Benimaru Out of the way!",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp394.png",
+    "image_key_jp": "icons/stickers/stamp394.ja.png"
+  },
+  {
+    "id": 395,
+    "label": "Soei Understood.",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp395.png",
+    "image_key_jp": "icons/stickers/stamp395.ja.png"
+  },
+  {
+    "id": 396,
+    "label": "Shuna Please call me at any time.",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp396.png",
+    "image_key_jp": "icons/stickers/stamp396.ja.png"
+  },
+  {
+    "id": 397,
+    "label": "Hakuro It's all over for you.",
+    "section": "Event Stickers",
+    "group": "That Time I Got Reincarnated as a Slime: Wedges of the Sky",
+    "image_key": "icons/stickers/stamp397.png",
+    "image_key_jp": "icons/stickers/stamp397.ja.png"
+  },
+  {
+    "id": 398,
+    "label": "Negi Everything's Okay Now",
+    "section": "Event Stickers",
+    "group": "Negima! Magister Negi Magi: An Epic to Span a Sky",
+    "image_key": "icons/stickers/stamp398.png",
+    "image_key_jp": "icons/stickers/stamp398.ja.png"
+  },
+  {
+    "id": 399,
+    "label": "Asuna For Cryin' Out Loud!",
+    "section": "Event Stickers",
+    "group": "Negima! Magister Negi Magi: An Epic to Span a Sky",
+    "image_key": "icons/stickers/stamp399.png",
+    "image_key_jp": "icons/stickers/stamp399.ja.png"
+  },
+  {
+    "id": 400,
+    "label": "Setsuna Ojosamaaa!",
+    "section": "Event Stickers",
+    "group": "Negima! Magister Negi Magi: An Epic to Span a Sky",
+    "image_key": "icons/stickers/stamp400.png",
+    "image_key_jp": "icons/stickers/stamp400.ja.png"
+  },
+  {
+    "id": 401,
+    "label": "Konoka Huh?",
+    "section": "Event Stickers",
+    "group": "Negima! Magister Negi Magi: An Epic to Span a Sky",
+    "image_key": "icons/stickers/stamp401.png",
+    "image_key_jp": "icons/stickers/stamp401.ja.png"
+  },
+  {
+    "id": 402,
+    "label": "Evangeline You Owe Me One",
+    "section": "Event Stickers",
+    "group": "Negima! Magister Negi Magi: An Epic to Span a Sky",
+    "image_key": "icons/stickers/stamp402.png",
+    "image_key_jp": "icons/stickers/stamp402.ja.png"
+  },
+  {
+    "id": 403,
+    "label": "Jack I'm Stronger Unarmed",
+    "section": "Event Stickers",
+    "group": "Negima! Magister Negi Magi: An Epic to Span a Sky",
+    "image_key": "icons/stickers/stamp403.png",
+    "image_key_jp": "icons/stickers/stamp403.ja.png"
+  },
+  {
+    "id": 404,
+    "label": "Music CD Sandalphon That's nonsense.",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd33/ Orison - Music CD]",
+    "image_key": "icons/stickers/stamp404.png",
+    "image_key_jp": "icons/stickers/stamp404.ja.png"
+  },
+  {
+    "id": 405,
+    "label": "Music CD Sandalphon Don't underestimate an archangel's power!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd33/ Orison - Music CD]",
+    "image_key": "icons/stickers/stamp405.png",
+    "image_key_jp": "icons/stickers/stamp405.ja.png"
+  },
+  {
+    "id": 406,
+    "label": "Colossus Ira Fire",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp406.png",
+    "image_key_jp": "icons/stickers/stamp406.ja.png"
+  },
+  {
+    "id": 407,
+    "label": "Leviathan Mare Water",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp407.png",
+    "image_key_jp": "icons/stickers/stamp407.ja.png"
+  },
+  {
+    "id": 408,
+    "label": "Yggdrasil Arbos Earth",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp408.png",
+    "image_key_jp": "icons/stickers/stamp408.ja.png"
+  },
+  {
+    "id": 409,
+    "label": "Tiamat Aura Wind",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp409.png",
+    "image_key_jp": "icons/stickers/stamp409.ja.png"
+  },
+  {
+    "id": 410,
+    "label": "Luminiera Credo Light",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp410.png",
+    "image_key_jp": "icons/stickers/stamp410.ja.png"
+  },
+  {
+    "id": 411,
+    "label": "Celeste Ater Dark",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp411.png",
+    "image_key_jp": "icons/stickers/stamp411.ja.png"
+  },
+  {
+    "id": 412,
+    "label": "G-point Wamdus Hungy",
+    "section": "Promotional Stickers",
+    "group": "G-point Shop",
+    "image_key": "icons/stickers/stamp412.png",
+    "image_key_jp": "icons/stickers/stamp412.ja.png"
+  },
+  {
+    "id": 413,
+    "label": "G-point Ewiyar Smug",
+    "section": "Promotional Stickers",
+    "group": "G-point Shop",
+    "image_key": "icons/stickers/stamp413.png",
+    "image_key_jp": "icons/stickers/stamp413.ja.png"
+  },
+  {
+    "id": 414,
+    "label": "G-point Lu Woh Sparkle",
+    "section": "Promotional Stickers",
+    "group": "G-point Shop",
+    "image_key": "icons/stickers/stamp414.png",
+    "image_key_jp": "icons/stickers/stamp414.ja.png"
+  },
+  {
+    "id": 415,
+    "label": "G-point Fediel Wowie",
+    "section": "Promotional Stickers",
+    "group": "G-point Shop",
+    "image_key": "icons/stickers/stamp415.png",
+    "image_key_jp": "icons/stickers/stamp415.ja.png"
+  },
+  {
+    "id": 416,
+    "label": "Granblue Fantasy Versus: Rising GBVSR Galleon Support (Allow Me to Help)",
+    "section": "Promotional Stickers",
+    "group": "DLC Character (Galleon)",
+    "image_key": "icons/stickers/stamp416.png",
+    "image_key_jp": "icons/stickers/stamp416.ja.png"
+  },
+  {
+    "id": 417,
+    "label": "Music CD Cupitan Can we carry it together?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd34/ Kizuato - Music CD]",
+    "image_key": "icons/stickers/stamp417.png",
+    "image_key_jp": "icons/stickers/stamp417.ja.png"
+  },
+  {
+    "id": 418,
+    "label": "Music CD Tristette Fine, if you insist.",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd34/ Kizuato - Music CD]",
+    "image_key": "icons/stickers/stamp418.png",
+    "image_key_jp": "icons/stickers/stamp418.ja.png"
+  },
+  {
+    "id": 419,
+    "label": "Granblue Fantasy Versus: Rising GBVSR Wilnas Don't say I didn't warn you!",
+    "section": "Promotional Stickers",
+    "group": "DLC Character (Wilnas)",
+    "image_key": "icons/stickers/stamp419.png",
+    "image_key_jp": "icons/stickers/stamp419.ja.png"
+  },
+  {
+    "id": 420,
+    "label": "Music CD Yatima Have a nice trip.",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd35/ Promise by Moonlight - Music CD]",
+    "image_key": "icons/stickers/stamp420.png",
+    "image_key_jp": "icons/stickers/stamp420.ja.png"
+  },
+  {
+    "id": 421,
+    "label": "Music CD Raybury Don't overdo it.",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd35/ Promise by Moonlight - Music CD]",
+    "image_key": "icons/stickers/stamp421.png",
+    "image_key_jp": "icons/stickers/stamp421.ja.png"
+  },
+  {
+    "id": 422,
+    "label": "Music CD Orologia Like this, like that...",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd36/ Eternal Desire - Music CD]",
+    "image_key": "icons/stickers/stamp422.png",
+    "image_key_jp": "icons/stickers/stamp422.ja.png"
+  },
+  {
+    "id": 423,
+    "label": "Music CD Orologia Open it, close it...",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd36/ Eternal Desire - Music CD]",
+    "image_key": "icons/stickers/stamp423.png",
+    "image_key_jp": "icons/stickers/stamp423.ja.png"
+  },
+  {
+    "id": 424,
+    "label": "Granblue Fantasy Versus: Rising GBVSR Meg I'll Keep Auguste Safe!",
+    "section": "Promotional Stickers",
+    "group": "DLC Character (Meg)",
+    "image_key": "icons/stickers/stamp424.png",
+    "image_key_jp": "icons/stickers/stamp424.ja.png"
+  },
+  {
+    "id": 425,
+    "label": "Shinji A.T. Field, full power!",
+    "section": "Event Stickers",
+    "group": "EVANGELION: Bonds of Phantasmal Blue",
+    "image_key": "icons/stickers/stamp425.png",
+    "image_key_jp": "icons/stickers/stamp425.ja.png"
+  },
+  {
+    "id": 426,
+    "label": "Asuka Let me take care of that!",
+    "section": "Event Stickers",
+    "group": "EVANGELION: Bonds of Phantasmal Blue",
+    "image_key": "icons/stickers/stamp426.png",
+    "image_key_jp": "icons/stickers/stamp426.ja.png"
+  },
+  {
+    "id": 427,
+    "label": "Rei I Will Protect You.",
+    "section": "Event Stickers",
+    "group": "EVANGELION: Bonds of Phantasmal Blue",
+    "image_key": "icons/stickers/stamp427.png",
+    "image_key_jp": "icons/stickers/stamp427.ja.png"
+  },
+  {
+    "id": 428,
+    "label": "Kaworu Close one, huh?",
+    "section": "Event Stickers",
+    "group": "EVANGELION: Bonds of Phantasmal Blue",
+    "image_key": "icons/stickers/stamp428.png",
+    "image_key_jp": "icons/stickers/stamp428.ja.png"
+  },
+  {
+    "id": 429,
+    "label": "Mari Time to strike back!",
+    "section": "Event Stickers",
+    "group": "EVANGELION: Bonds of Phantasmal Blue",
+    "image_key": "icons/stickers/stamp429.png",
+    "image_key_jp": "icons/stickers/stamp429.ja.png"
+  },
+  {
+    "id": 430,
+    "label": "Music CD Seox You Called?",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd37/ Shirube - Music CD]",
+    "image_key": "icons/stickers/stamp430.png",
+    "image_key_jp": "icons/stickers/stamp430.ja.png"
+  },
+  {
+    "id": 431,
+    "label": "Music CD Nehan Spotlight's All Yours",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd37/ Shirube - Music CD]",
+    "image_key": "icons/stickers/stamp431.png",
+    "image_key_jp": "icons/stickers/stamp431.ja.png"
+  },
+  {
+    "id": 432,
+    "label": "Granblue Fantasy Versus: Rising GBVSR Ilsa Charge!",
+    "section": "Promotional Stickers",
+    "group": "DLC Character (Ilsa)",
+    "image_key": "icons/stickers/stamp432.png",
+    "image_key_jp": "icons/stickers/stamp432.ja.png"
+  },
+  {
+    "id": 433,
+    "label": "Indala Phew!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp433.png",
+    "image_key_jp": "icons/stickers/stamp433.ja.png"
+  },
+  {
+    "id": 434,
+    "label": "Izmir Pom-Poms",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp434.png",
+    "image_key_jp": "icons/stickers/stamp434.ja.png"
+  },
+  {
+    "id": 435,
+    "label": "Magisa Arulumaya Pout",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp435.png",
+    "image_key_jp": "icons/stickers/stamp435.ja.png"
+  },
+  {
+    "id": 436,
+    "label": "Magus Zzz...",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp436.png",
+    "image_key_jp": "icons/stickers/stamp436.ja.png"
+  },
+  {
+    "id": 437,
+    "label": "Skuld Nom Nom",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp437.png",
+    "image_key_jp": "icons/stickers/stamp437.ja.png"
+  },
+  {
+    "id": 438,
+    "label": "Mahira I Could Use Your Help",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp438.png",
+    "image_key_jp": "icons/stickers/stamp438.ja.png"
+  },
+  {
+    "id": 439,
+    "label": "Phos Squishykiiins",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp439.png",
+    "image_key_jp": "icons/stickers/stamp439.ja.png"
+  },
+  {
+    "id": 440,
+    "label": "Chichiri Rub Rub",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp440.png",
+    "image_key_jp": "icons/stickers/stamp440.ja.png"
+  },
+  {
+    "id": 441,
+    "label": "Huang It's Adventure Time",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp441.png",
+    "image_key_jp": "icons/stickers/stamp441.ja.png"
+  },
+  {
+    "id": 442,
+    "label": "Raziel Vanigma!",
+    "section": "Standard Stickers",
+    "group": null,
+    "image_key": "icons/stickers/stamp442.png",
+    "image_key_jp": "icons/stickers/stamp442.ja.png"
+  },
+  {
+    "id": 443,
+    "label": "Edward I'll Show You Who's the Novice!",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp443.png",
+    "image_key_jp": "icons/stickers/stamp443.ja.png"
+  },
+  {
+    "id": 444,
+    "label": "Alphonse You're So Mean!",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp444.png",
+    "image_key_jp": "icons/stickers/stamp444.ja.png"
+  },
+  {
+    "id": 445,
+    "label": "Greed I'll Take What I Want!",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp445.png",
+    "image_key_jp": "icons/stickers/stamp445.ja.png"
+  },
+  {
+    "id": 446,
+    "label": "Mustang Get Ready for Fire Tonight",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp446.png",
+    "image_key_jp": "icons/stickers/stamp446.ja.png"
+  },
+  {
+    "id": 447,
+    "label": "Olivier Shut Up and Follow Me",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp447.png",
+    "image_key_jp": "icons/stickers/stamp447.ja.png"
+  },
+  {
+    "id": 448,
+    "label": "Hawkeye If You So Desire",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp448.png",
+    "image_key_jp": "icons/stickers/stamp448.ja.png"
+  },
+  {
+    "id": 449,
+    "label": "Alex An Unconquerable Combination!",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp449.png",
+    "image_key_jp": "icons/stickers/stamp449.ja.png"
+  },
+  {
+    "id": 450,
+    "label": "May Chang Are They Giving You Trouble?",
+    "section": "Event Stickers",
+    "group": "Fullmetal Alchemist Brotherhood: The Blue Skies of Jannat",
+    "image_key": "icons/stickers/stamp450.png",
+    "image_key_jp": "icons/stickers/stamp450.ja.png"
+  },
+  {
+    "id": 451,
+    "label": "Music CD Satyr Hope you're ready for some fun!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd38/ Star☆Celebration - Music CD]",
+    "image_key": "icons/stickers/stamp451.png",
+    "image_key_jp": "icons/stickers/stamp451.ja.png"
+  },
+  {
+    "id": 452,
+    "label": "Music CD Medusa Come on, let's do this thing!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd38/ Star☆Celebration - Music CD]",
+    "image_key": "icons/stickers/stamp452.png",
+    "image_key_jp": "icons/stickers/stamp452.ja.png"
+  },
+  {
+    "id": 453,
+    "label": "Ichigo Please,Sir!",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp453.png",
+    "image_key_jp": "icons/stickers/stamp453.ja.png"
+  },
+  {
+    "id": 454,
+    "label": "Kisuke Well Done!",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp454.png",
+    "image_key_jp": "icons/stickers/stamp454.ja.png"
+  },
+  {
+    "id": 455,
+    "label": "Yoruichi I Had No Choice.",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp455.png",
+    "image_key_jp": "icons/stickers/stamp455.ja.png"
+  },
+  {
+    "id": 456,
+    "label": "Mayuri Great People Shine Bright.",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp456.png",
+    "image_key_jp": "icons/stickers/stamp456.ja.png"
+  },
+  {
+    "id": 457,
+    "label": "Nemu I Don't Know.",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp457.png",
+    "image_key_jp": "icons/stickers/stamp457.ja.png"
+  },
+  {
+    "id": 458,
+    "label": "Toshiro You've Got To Be Kidding...",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp458.png",
+    "image_key_jp": "icons/stickers/stamp458.ja.png"
+  },
+  {
+    "id": 459,
+    "label": "Nelliel I Missed You So Much!",
+    "section": "Event Stickers",
+    "group": "BLEACH: Echoes in the Blue Hollow",
+    "image_key": "icons/stickers/stamp459.png",
+    "image_key_jp": "icons/stickers/stamp459.ja.png"
+  },
+  {
+    "id": 460,
+    "label": "Music CD Zeta Am I Good or What!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd39/ Thermite - Music CD]",
+    "image_key": "icons/stickers/stamp460.png",
+    "image_key_jp": "icons/stickers/stamp460.ja.png"
+  },
+  {
+    "id": 461,
+    "label": "Music CD Zeta Let's Wrap It Up!",
+    "section": "Promotional Stickers",
+    "group": "[https://song.granbluefantasy.jp/cd39/ Thermite - Music CD]",
+    "image_key": "icons/stickers/stamp461.png",
+    "image_key_jp": "icons/stickers/stamp461.ja.png"
+  }
+]

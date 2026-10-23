@@ -2,11 +2,39 @@
 
 class Character < ApplicationRecord
   include PgSearch::Model
+  include HasSources
+
+  # The fetched sources live in `sources` (D35).
+  source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at
+  # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
+  source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
+  # Game payloads keep only character data (Granblue::GamePayload.sanitize), whoever writes them.
+  source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at, filter: Granblue::GamePayload.method(:sanitize)
+  source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at, filter: Granblue::GamePayload.method(:sanitize)
+  # Curated Japanese skill text (D38): { "source" => …, "skills" => [{ kind, position, name_jp, … }] }.
+  source_attribute :jp_skill_text
+
+  # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
+  normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  # A plain gbf-wiki.com title (Granblue::JpWikiTitle): a pasted percent-encoded one is decoded.
+  normalizes :wiki_ja, with: ->(title) { Granblue::JpWikiTitle.normalize(title) }
 
   has_many :character_series_memberships, dependent: :destroy
+
+  # The Evoking Solomonis zone this Evoker's expeditions run in. Set by data
+  # migration, by granblue_id; a character with a zone is a route-eligible Evoker.
+  belongs_to :solomonis_zone, class_name: 'Raid', optional: true, inverse_of: :solomonis_evokers
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
+  has_many :character_skills, -> { order(:position) }, inverse_of: :character, dependent: :destroy
   has_many :style_swap_variants, -> { where(style_swap: true) },
            class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id
+
+  # Eager-load spec for the serialized skill graph (CharacterBlueprint :full
+  # `skills` + `skill_links`). Preload this wherever :full is rendered to avoid
+  # N+1s on character_skills / versions / effects / statuses / version links.
+  SKILL_GRAPH_PRELOAD = {
+    character_skills: { character_skill_versions: [{ skill_effects: :status }, :outgoing_links] }
+  }.freeze
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |character|
@@ -48,23 +76,66 @@ class Character < ApplicationRecord
 
 
   # Validations
+  before_validation :normalize_max_transcendence_stage
+
+  # Skill build: a new character, or a change to anything its skills are built from
+  # (CharacterSkills::Build::Fingerprint: its sources and ATTRIBUTES), queues
+  # CharacterSkills::BuildJob. Covers every writer (controllers, the extractor import,
+  # Dataminer, wiki fetch tasks): a save of the character, or a Source.put for it
+  # (.source_changed). Bulk work can skip it with Character.without_skill_build { ... };
+  # the deploy build picks those characters up.
+  thread_cattr_accessor :skip_skill_build, instance_accessor: false
+  after_save :capture_skill_build
+  after_commit :enqueue_skill_build, on: %i[create update], if: :skill_inputs_changed?
+
+  def self.without_skill_build
+    previous = skip_skill_build
+    self.skip_skill_build = true
+    yield
+  ensure
+    self.skip_skill_build = previous
+  end
+
+  # Source hooks: a source written outside a save of the character (Source.put).
+  def self.source_change_hook?(kind)
+    !skip_skill_build && CharacterSkills::Build::Fingerprint::SOURCES.include?(kind)
+  end
+
+  def self.source_changed(character_id, _kind)
+    return unless Source.exists?(owner_type: polymorphic_name, owner_id: character_id, kind: 'wiki_raw') ||
+                  CharacterSkill.exists?(character_id: character_id)
+
+    CharacterSkills::BuildJob.perform_later(character_id)
+  end
+
   validates :season,
             numericality: { only_integer: true },
             inclusion: { in: GranblueEnums::CHARACTER_SEASONS.values },
             allow_nil: true
 
+  validates :max_transcendence_stage,
+            numericality: { only_integer: true },
+            inclusion: { in: 0..5 }
+
   validate :validate_series_values
+  validate :validate_uncap_capabilities
 
   # Scopes
+  scope :solomonis_route_evokers, -> { where.not(solomonis_zone_id: nil) }
   scope :by_season, ->(season) { where(season: season) }
+  # A subquery rather than join + DISTINCT: DISTINCT can't be combined with the
+  # pg_search rank ORDER BY, so a text search with a series filter raised.
   scope :by_series, lambda { |series_ids|
-    joins(:character_series_records)
-      .where(character_series: { id: series_ids })
-      .distinct
+    where(id: CharacterSeriesMembership.where(character_series_id: series_ids).select(:character_id))
   }
   scope :seasonal, -> { where.not(season: [nil, GranblueEnums::CHARACTER_SEASONS[:Standard]]) }
   scope :style_swap_variants, -> { where(style_swap: true) }
   scope :base_characters, -> { where(style_swap: false) }
+
+  # An Evoker that can be an Evoking Solomonis party's route Evoker.
+  def solomonis_route_eligible?
+    solomonis_zone_id.present?
+  end
 
   def blueprint
     CharacterBlueprint
@@ -85,20 +156,38 @@ class Character < ApplicationRecord
     GranblueEnums::CHARACTER_SEASONS.key(season)&.to_s
   end
 
-  def series_names
-    # Use new lookup table if available
-    if character_series_records.loaded? ? character_series_records.any? : character_series_records.exists?
-      if character_series_records.loaded?
-        character_series_records.sort_by(&:order).map(&:name_en)
-      else
-        character_series_records.ordered.pluck(:name_en)
-      end
-    elsif series.present?
-      # Legacy fallback
-      series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }
+  def max_uncap_level
+    if special?
+      return 5 if ulb?
+      return 4 if flb?
+
+      3
     else
-      []
+      return 6 if transcendence?
+      return 5 if flb?
+
+      4
     end
+  end
+
+  # Returns character_series_records sorted by `order`, reusing the loaded
+  # association when preloaded. Both the `series` and `series_names` blueprint
+  # fields read through here so a single query (or cache hit) feeds both.
+  def ordered_series_records
+    if character_series_records.loaded?
+      character_series_records.sort_by(&:order)
+    else
+      character_series_records.ordered.to_a
+    end
+  end
+
+  def series_names
+    records = ordered_series_records
+    return records.map(&:name_en) if records.any?
+    return [] unless series.present?
+
+    # Legacy fallback for rows that haven't been migrated to the lookup table.
+    series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }
   end
 
   def series_objects
@@ -177,6 +266,40 @@ class Character < ApplicationRecord
   end
 
   private
+
+  # Decided at the save, not the commit: without_skill_build may only wrap the save.
+  def capture_skill_build
+    fingerprint = CharacterSkills::Build::Fingerprint
+    @skill_build_pending = !self.class.skip_skill_build &&
+                           (saved_changes.keys.intersect?(fingerprint::ATTRIBUTES) ||
+                            saved_source_changes.intersect?(fingerprint::SOURCES))
+  end
+
+  def skill_inputs_changed?
+    return false unless @skill_build_pending
+
+    @skill_build_pending = false
+    # Nothing to build from and nothing to report on: the job would be a no-op.
+    source_sha256(:wiki_raw).present? || CharacterSkill.exists?(character_id: id)
+  end
+
+  def enqueue_skill_build
+    CharacterSkills::BuildJob.perform_later(id)
+  end
+
+  def normalize_max_transcendence_stage
+    self.max_transcendence_stage = 0 unless transcendence?
+  end
+
+  def validate_uncap_capabilities
+    if transcendence? && max_transcendence_stage.to_i.zero?
+      errors.add(:max_transcendence_stage, 'must be between 1 and 5 when transcendence is enabled')
+    end
+
+    errors.add(:transcendence, 'is not supported for special characters') if special? && transcendence?
+    errors.add(:ulb, 'is only supported for special characters') if ulb? && !special?
+    errors.add(:ulb, 'requires FLB') if ulb? && !flb?
+  end
 
   def validate_series_values
     return if series.blank?

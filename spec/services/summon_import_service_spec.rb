@@ -496,4 +496,57 @@ RSpec.describe SummonImportService, type: :service do
       end
     end
   end
+
+  describe '#preview_updates' do
+    def summon_item(game_id:, image_id:, evolution: '4', phase: '0')
+      {
+        'param' => {
+          'id' => game_id.to_s,
+          'image_id' => image_id,
+          'evolution' => evolution,
+          'phase' => phase
+        },
+        'master' => { 'id' => image_id }
+      }
+    end
+
+    it 'returns an empty array when the record is unchanged' do
+      described_class.new(user, { 'list' => [summon_item(game_id: 's1', image_id: standard_summon.granblue_id, evolution: '3')] }).import
+
+      updates = described_class.new(
+        user,
+        { 'list' => [summon_item(game_id: 's1', image_id: standard_summon.granblue_id, evolution: '3')] }
+      ).preview_updates
+
+      expect(updates).to be_empty
+    end
+
+    it 'surfaces an uncap_level change' do
+      described_class.new(user, { 'list' => [summon_item(game_id: 's2', image_id: standard_summon.granblue_id, evolution: '3')] }).import
+
+      updates = described_class.new(
+        user,
+        { 'list' => [summon_item(game_id: 's2', image_id: standard_summon.granblue_id, evolution: '4')] }
+      ).preview_updates
+
+      expect(updates.size).to eq(1)
+      entry = updates.first
+      expect(entry[:game_id]).to eq('s2')
+      expect(entry[:granblue_id]).to eq(standard_summon.granblue_id)
+
+      uncap_change = entry[:changes].find { |c| c[:field] == 'uncap_level' }
+      expect(uncap_change).to be_present
+      expect(uncap_change[:before][:raw]).to eq(3)
+      expect(uncap_change[:after][:raw]).to eq(4)
+    end
+
+    it 'skips summons the user does not own' do
+      updates = described_class.new(
+        user,
+        { 'list' => [summon_item(game_id: 's3', image_id: standard_summon.granblue_id)] }
+      ).preview_updates
+
+      expect(updates).to be_empty
+    end
+  end
 end

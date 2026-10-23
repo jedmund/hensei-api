@@ -1,14 +1,33 @@
 Rails.application.routes.draw do
   use_doorkeeper do
     controllers tokens: 'tokens'
-    skip_controllers :applications, :authorized_applications
+    skip_controllers :applications, :authorized_applications, :authorizations
   end
+
+  # The API isn't meant to be crawled. (public/ isn't served in production.)
+  get '/robots.txt', to: proc {
+    [200, { 'Content-Type' => 'text/plain', 'Cache-Control' => 'public, max-age=86400' }, ["User-agent: *\nDisallow: /\n"]]
+  }
 
   path_prefix = Rails.env.production? ? '/v1' : '/api/v1'
 
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
+    get 'gacha/catalogue', to: 'gacha#catalogue'
+    post 'gacha/simulations', to: 'gacha#simulations'
+    post 'gacha/until', to: 'gacha#until_result'
+    post 'gacha/odds', to: 'gacha#odds'
+    get 'gacha/jobs/:token', to: 'gacha#job'
+    post 'gacha/banners', to: 'gacha_banners#create'
     resources :parties, only: %i[index create update destroy]
     get 'users/me', to: 'users#me'
+    get 'users/me/identities', to: 'user_identities#index'
+    post 'users/me/identities', to: 'user_identities#create'
+    delete 'users/me/identities/:provider', to: 'user_identities#destroy'
+    post 'users/me/deletion', to: 'account_deletions#create'
+    delete 'users/me/deletion', to: 'account_deletions#destroy'
+    post 'auth/:provider', to: 'social_auth#create'
+    post 'extension_auth/codes', to: 'extension_auth#create_code'
+    post 'extension_auth/token', to: 'extension_auth#token'
     get 'users/search', to: 'users#search'
     resources :users, only: %i[create update show]
     resources :grid_weapons, only: %i[create update destroy]
@@ -18,6 +37,7 @@ Rails.application.routes.draw do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
         post 'batch_preview'
+        get 'element_variants'
       end
       member do
         post 'download_image'
@@ -25,6 +45,7 @@ Rails.application.routes.draw do
         get 'download_status'
         get 'raw'
         post 'fetch_wiki'
+        post 'reparse'
       end
     end
     resources :characters, only: %i[show create update] do
@@ -38,8 +59,13 @@ Rails.application.routes.draw do
         get 'download_status'
         get 'raw'
         post 'fetch_wiki'
+        post 'reparse'
       end
     end
+    resources :character_skill_refreshes, only: %i[create show] do
+      member { post 'apply' }
+    end
+    resources :statuses, only: %i[index show]
     resources :summons, only: %i[show create update] do
       collection do
         get 'validate/:granblue_id', action: :validate, as: :validate
@@ -51,9 +77,23 @@ Rails.application.routes.draw do
         get 'download_status'
         get 'raw'
         post 'fetch_wiki'
+        post 'reparse'
       end
     end
     resources :favorites, only: [:create]
+    resources :substitutions, only: %i[create update destroy] do
+      collection do
+        post 'reorder'
+      end
+    end
+    resources :grid_character_roles, only: %i[index show create update destroy] do
+      collection do
+        post 'reorder'
+      end
+      member do
+        post 'upload_icon'
+      end
+    end
 
     get 'version', to: 'api#version'
 
@@ -69,16 +109,26 @@ Rails.application.routes.draw do
     post 'parties/migrate', to: 'parties#migrate'
     post 'parties/preview_migrate', to: 'parties#preview_migrate'
     get 'parties/favorites', to: 'parties#favorites'
+    get 'parties/:id/skill_boosts', to: 'parties#skill_boosts'
     get 'parties/:id', to: 'parties#show'
-    get 'parties/:id/preview', to: 'parties#preview'
-    get 'parties/:id/preview_status', to: 'parties#preview_status'
-    post 'parties/:id/regenerate_preview', to: 'parties#regenerate_preview'
     post 'parties/:id/remix', to: 'parties#remix'
 
     # Party shares
     resources :parties, only: [] do
       resources :shares, controller: 'party_shares', only: [:index, :create, :destroy]
     end
+
+    # Evoking Solomonis: whole-list writes under a party, and the catalogues
+    put 'parties/:id/blessings', to: 'party_solomonis#blessings'
+    put 'parties/:id/guide_effects', to: 'party_solomonis#guide_effects'
+    put 'parties/:id/unseal_priority', to: 'party_solomonis#unseal_priority'
+    get 'solomonis/route_evokers', to: 'solomonis#route_evokers'
+    get 'solomonis/blessings', to: 'solomonis#blessings'
+    get 'solomonis/guide_effects', to: 'solomonis#guide_effects'
+
+    # Stickers on parties (:id is the party UUID)
+    put 'parties/:id/sticker', to: 'party_stickers#update'
+    delete 'parties/:id/sticker', to: 'party_stickers#destroy'
 
     put 'parties/:id/jobs', to: 'jobs#update_job'
     put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
@@ -145,6 +195,7 @@ Rails.application.routes.draw do
     end
     get 'raids/groups', to: 'raids#groups' # Legacy endpoint
 
+    patch 'weapon_keys/:id', to: 'weapon_keys#update'
     get 'weapon_keys', to: 'weapon_keys#all'
     get 'weapon_keys/skill_map', to: 'weapon_keys#skill_map'
     resources :bullets, only: %i[index show create update destroy] do
@@ -180,8 +231,50 @@ Rails.application.routes.draw do
         post :upload_image
       end
     end
-    resources :weapon_skill_data, only: %i[index show]
+    resources :weapon_skill_data, only: %i[index show create update destroy]
+    resources :weapon_skill_effects, only: %i[index create update destroy]
+    resources :weapon_skill_versions, only: %i[update]
+    resources :skills, only: %i[update]
+    post 'calculator/validate_panels', to: 'calculator#validate_panels'
+    get 'weapon_skill_families', to: 'weapon_skill_families#index'
+    get 'weapon_skill_families/*modifier', to: 'weapon_skill_families#show', format: false
     resources :weapon_skill_boost_types, only: %i[index show]
+
+    # The sticker catalogue (editors manage it)
+    resources :stickers, only: %i[index create update destroy] do
+      collection do
+        put :reorder
+        get :library
+      end
+      member do
+        post :upload_image
+        delete :image, action: :remove_image
+      end
+    end
+
+    # Party difficulty
+    resources :difficulties, only: %i[index show create update destroy]
+    resources :difficulty_components, only: %i[index show update]
+    resources :difficulty_rules, only: %i[index show create update destroy] do
+      collection do
+        get :types
+      end
+    end
+    resources :difficulty_previews, only: %i[create]
+
+    # Editor draft staging — `DELETE /difficulty_drafts` (collection) discards
+    # everything for the current user; the resourceful `destroy` handles
+    # single-draft drops.
+    resources :difficulty_drafts, only: %i[index create destroy] do
+      collection do
+        get :diff
+        post :commit
+        delete '', action: :discard_all
+      end
+      member do
+        post :upload_image
+      end
+    end
 
     # Grid artifacts
     resources :grid_artifacts, only: %i[create update destroy] do
@@ -344,6 +437,8 @@ Rails.application.routes.draw do
         resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
         resources :artifacts, only: [:index, :show], controller: '/api/v1/collection_artifacts'
       end
+
+      resources :support_summons, only: [:index], controller: '/api/v1/support_summons'
     end
 
     # Writing to collections - requires auth, operates on current_user
@@ -353,6 +448,7 @@ Rails.application.routes.draw do
           post :batch
           delete :batch_destroy
           post :import
+          post :check_updates
         end
       end
       resources :weapons, only: [:create, :update, :destroy], controller: '/api/v1/collection_weapons' do
@@ -362,6 +458,7 @@ Rails.application.routes.draw do
           post :import
           post :preview_sync
           post :check_conflicts
+          post :check_updates
         end
       end
       resources :summons, only: [:create, :update, :destroy], controller: '/api/v1/collection_summons' do
@@ -371,6 +468,7 @@ Rails.application.routes.draw do
           post :import
           post :preview_sync
           post :check_conflicts
+          post :check_updates
         end
       end
       resources :job_accessories, controller: '/api/v1/collection_job_accessories',
@@ -384,21 +482,13 @@ Rails.application.routes.draw do
         end
       end
     end
-  end
 
-  if Rails.env.development?
-    get '/party-previews/*filename', to: proc { |env|
-      filename = env['action_dispatch.request.path_parameters'][:filename]
-      path = Rails.root.join('storage', 'party-previews', filename)
-
-      if File.exist?(path)
-        [200, {
-          'Content-Type' => 'image/png',
-          'Cache-Control' => 'no-cache' # Prevent caching during development
-        }, [File.read(path)]]
-      else
-        [404, { 'Content-Type' => 'text/plain' }, ['Preview not found']]
+    # Writing support summons - requires auth, operates on current_user
+    resources :support_summons, only: [:create, :update, :destroy] do
+      collection do
+        post :import
       end
-    }
+    end
   end
+
 end

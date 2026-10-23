@@ -7,7 +7,7 @@ gem 'rails'
 gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
-gem 'puma'
+gem 'puma', '~> 8.0'
 
 # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem 'pg'
@@ -56,13 +56,12 @@ gem 'pg_search'
 gem 'redis'
 
 # Simple, efficient background processing for Ruby
-gem 'sidekiq'
-
-# scheduler for Ruby (at, in, cron and every jobs)
-gem 'rufus-scheduler'
+gem 'sidekiq', '~> 8.1'
+# Runs the recurring jobs under :scheduler: in config/sidekiq.yml
+gem 'sidekiq-scheduler', '~> 6.0'
 
 # Pagination library
-gem 'will_paginate', '~> 3.3'
+gem 'will_paginate', '~> 4.0'
 
 # Migrate and update data alongside your database structure.
 gem 'data_migrate'
@@ -72,6 +71,9 @@ gem 'amoeba'
 
 # Makes http fun again!
 gem 'httparty'
+
+# Verifies the ID tokens Google and Apple issue for social login
+gem 'jwt', '~> 3.3'
 
 # StringScanner provides for lexical scanning operations on a String.
 gem 'strscan'
@@ -87,13 +89,18 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 gem 'stackprof'
 
+# Loaded in all environments: the granblue parsers call `ap` in debug/error
+# branches that run via rake tasks and Sidekiq jobs in production.
+gem 'amazing_print'
+
 group :doc do
   gem 'apipie-rails'
   gem 'sdoc'
 end
 
 group :development, :test do
-  gem 'amazing_print'
+  gem 'brakeman', require: false
+  gem 'bundler-audit', require: false
   gem 'dotenv-rails'
   gem 'prosopite'
   gem 'pry'
@@ -124,4 +131,7 @@ group :test do
   gem 'rspec'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'webmock', require: false
 end
+
+gem "rack-attack", "~> 6.8"

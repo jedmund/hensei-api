@@ -1,0 +1,63 @@
+{{WsBox
+|name=Trium
+|desc=[{{wsSize}}] boost to [element] allies' multiattack rate
+|aura_boostable=yes
+|color=red
+|boost1=DA Rate
+|boost2=TA Rate
+
+|icon=ws_skill_ta_*_1.png
+}}
+
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="8" class="wsmod-title" | {{icon|normal aura}} {{icon|omega aura}} Normal & Omega<ref name="@Hecate_mk2 Lumi sword">@Hecate_mk2 Lumi Sword https://twitter.com/Hecate_mk2/status/977343036383379456</ref>
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20 !! 25
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_*_1.png|size=50|category=Trium}}{{WeaponSkillIconLink|icon=ws_skill_ta_m_*_1.png|size=50|category=Trium}}
+! class="wsmod-tier" | Small<ref name="Great Sundome Weapon Skills">Great Sundome Weapon Skills http://greatsundome.hatenablog.com/entry/2015/12/09/230544</ref><ref name="hiroxgbf DATA">hiroxgbf DATA http://hiroxgbf.blog.fc2.com/blog-entry-7.html</ref>
+! class="wsmod-stat" rowspan="5" | {{Label|DA Rate}}<br />{{Label|TA Rate}}
+| 0.25% || 2.5% || 3.5% || - || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_*_2.png|size=50|category=Trium}}{{WeaponSkillIconLink|icon=ws_skill_ta_m_*_2.png|size=50|category=Trium}}
+! class="wsmod-tier" | Medium<ref name="hiroxgbf Med DA">hiroxgbf Med DA http://hiroxgbf.blog.fc2.com/blog-entry-31.html</ref><ref name="Hecate_mk2 Dark Opus 5 star Strife">Hecate_mk2, Dark Opus 5★ Strife.  https://twitter.com/Hecate_mk2/status/1121709516997795842</ref><ref>Hecate_mk2, Dark Opus SL 25. https://twitter.com/Hecate_mk2/status/1760920019192758651</ref>
+| 0.8% || 3.5% || 5.0% || 6.0% || 7.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_*_3.png|size=50|category=Trium}}{{WeaponSkillIconLink|icon=ws_skill_ta_m_*_3.png|size=50|category=Trium}}
+! class="wsmod-tier" | Big<ref name="Great Sundome Weapon Skills" /><ref name="hiroxgbf DATA" />
+| 1.2% || 5.0% || 7.0% || - || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_*_3.png|size=50|category=Trium}}{{WeaponSkillIconLink|icon=ws_skill_ta_m_*_3.png|size=50|category=Trium}}
+! class="wsmod-tier" | Big II<ref name="Great Sundome Primacy II">https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/100413</ref>
+| ? || 7.0% || 9.0% || - || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_*_4.png|size=50|category=Trium}}
+! class="wsmod-tier" | Massive<ref name="GameWith">GameWith, Lu Woh's Horn https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/218580</ref>
+| 2.8% || 10.0% || 14.0% || - || -
+|}
+</div>
+
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="6" class="wsmod-title" | {{icon|odious aura}} Taboo
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_k_*_1.png|size=50|category=Trium}}
+! class="wsmod-tier" | Small<ref name="GameWith Ritesword">GameWith, Ritesword of Sanctity Verboten https://グランブルーファンタジー.gamewith.jp/article/show/557986</ref>
+! class="wsmod-stat" rowspan="2" | {{Label|DA Rate}}<br />{{Label|TA Rate}}
+| 0.3% || 3% || 4.2%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_ta_k_*_2.png|size=50|category=Trium}}
+! class="wsmod-tier" | Medium
+| 1.0% || 4.2% || 6.0%
+|-
+|}
+</div><noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

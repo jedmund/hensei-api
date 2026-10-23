@@ -118,6 +118,11 @@ module Granblue
         ODIOUS_AURAS.each { |a| h[a] = :odious }
       end.freeze
 
+      # Families that attach to arbitrary prefixes (not aura words): Ultima base
+      # skills are "<type word> Rubell" (Baculum, Ensis, …). Everything else needs
+      # a known aura so "Cyclonic Strike"/"Baculum Parity" don't false-join families.
+      ANY_PREFIX_FAMILIES = %w[Rubell].freeze
+
       # All known aura prefixes (for permissive matching).
       # If a possessive skill name uses a known aura, we accept the modifier
       # even if it's not in KNOWN_MODIFIERS (weapon-specific unique skills).
@@ -186,17 +191,15 @@ module Granblue
       # Multi-word special modifiers
       SPECIAL_MULTI_WORD_MODIFIERS = [
         'Covert Artistry',
-        'First Dash', 'Fortified Blade', 'Fortified Harp', 'Fortified Staff',
+        'First Dash', 'Fortified Blade', 'Fortified Gauntlet', 'Fortified Harp', 'Fortified Staff',
         'Fourth Pursuit',
-        'Frost Blade', 'Light Blade',
         'Mysterious ATK', 'Mysterious VIT',
-        'Saw of Death', 'Second Insignia', 'Shadow Blade',
+        "Rose's Refuge", 'Saw of Death', 'Second Insignia',
         'Staff Resonance',
         'Strike: Dark', 'Strike: Earth', 'Strike: Fire',
         'Strike: Light', 'Strike: Water', 'Strike: Wind',
         'Synchronized Artistry',
-        'Technical Artistry',
-        'Terra Blade', 'Third Spur'
+        'Technical Artistry', 'Third Spur'
       ].freeze
 
       KNOWN_MODIFIERS = (
@@ -246,7 +249,12 @@ module Granblue
       LATIN_ELEMENT_WORDS = Set.new(%w[Caliginis Aeros Luminis Aquae Terrae Ardendi]).freeze
 
       # Element words used in Preemptive element-specific patterns.
-      PREEMPTIVE_ELEMENT_WORDS = Set.new(%w[Fire Rock Shadow Ice Gale Silver Azure Amber Cloud]).freeze
+      PREEMPTIVE_ELEMENT_WORDS = Set.new(
+        %w[Fire Rock Shadow Ice Gale Silver Azure Amber Cloud Frost Light Terra]
+      ).freeze
+      PREEMPTIVE_BLADE_TAILS = Set.new(
+        ["Frost Blade", "Light Blade", "Shadow Blade", "Terra Blade"]
+      ).freeze
 
       # Modifiers that appear with element word suffixes (e.g. "Clawed Shadow" → "Clawed").
       ELEMENT_SUFFIXED_MODIFIERS = Set.new(%w[Armed Clawed Resilient Willed]).freeze
@@ -274,10 +282,27 @@ module Granblue
           base_name = clean_name.sub(NUMERAL_PATTERN, '')
         end
 
+        # A few complete family names are themselves possessive (Rose's Refuge).
+        # Resolve exact known names before interpreting the possessive as aura + tail.
+        if KNOWN_MODIFIERS.include?(base_name)
+          return {
+            aura: nil,
+            modifier: base_name,
+            series: nil,
+            size: NUMERAL_TO_SIZE[numeral],
+            skill_name: skill_name
+          }
+        end
+
         # Try possessive format: "Aura's Modifier" or "Multi Word Aura's Modifier"
         if (match = base_name.match(/^(.+?)'s\s+(.+)$/))
           aura = match[1]
           modifier = match[2]
+
+          # These names are Preemptive element aliases only when the full skill
+          # starts with "Preemptive". Mutiny uses the same tails for unrelated,
+          # unmodeled skills and must not acquire the Preemptive curve.
+          return empty_result(skill_name) if PREEMPTIVE_BLADE_TAILS.include?(modifier)
 
           # Accept if modifier is known, OR if aura is a known prefix
           # (weapon-specific skills use known auras with unique modifiers)
@@ -295,11 +320,16 @@ module Granblue
         # Try non-possessive format: check if the last word(s) match a known modifier
         words = base_name.split
         if words.size >= 2
-          # Try last 2+ words as multi-word modifier
+          # Try last 2+ words as multi-word modifier. The aura prefix must be a KNOWN
+          # aura word: weapon-unique names that merely END in a family word are not
+          # members of that family ("Cyclonic Strike" is not Strike, "Baculum Parity"
+          # is not Parity — the #62 durability check's biggest failure class).
           (FLAT_MULTI_WORD_MODIFIERS + SPECIAL_MULTI_WORD_MODIFIERS).each do |multi_mod|
             next unless base_name.end_with?(multi_mod) && base_name.length > multi_mod.length + 1
 
             aura = base_name[0..-(multi_mod.length + 2)]
+            next unless ALL_KNOWN_AURAS.include?(aura)
+
             return {
               aura: aura,
               modifier: multi_mod,
@@ -309,17 +339,23 @@ module Granblue
             }
           end
 
-          # Try last word as single-word modifier
+          # Try last word as single-word modifier — same known-aura requirement,
+          # except families that legitimately attach to non-aura prefixes (Ultima
+          # base skills are "<weapon-type word> Rubell": Baculum/Ensis/…).
           modifier = words.last
           if KNOWN_MODIFIERS.include?(modifier) && !FLAT_MULTI_WORD_MODIFIERS.include?(modifier)
             aura = words[0..-2].join(' ')
-            return {
-              aura: aura,
-              modifier: modifier,
-              series: AURA_TO_SERIES[aura]&.to_s,
-              size: NUMERAL_TO_SIZE[numeral],
-              skill_name: skill_name
-            }
+            if ALL_KNOWN_AURAS.include?(aura) || ANY_PREFIX_FAMILIES.include?(modifier)
+              return {
+                aura: aura,
+                modifier: modifier,
+                series: AURA_TO_SERIES[aura]&.to_s,
+                size: NUMERAL_TO_SIZE[numeral],
+                skill_name: skill_name
+              }
+            end
+
+            return empty_result(skill_name) unless KNOWN_MODIFIERS.include?(base_name)
           end
         end
 

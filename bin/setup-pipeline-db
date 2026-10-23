@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+# Create (or recreate) a private database for one pipeline workstream from the published
+# game-catalogue dump. Usage: bin/setup-pipeline-db NAME [TAG]
+#   NAME  workstream name, e.g. W3 -> database hensei_pipeline_w3
+#   TAG   catalogue release tag (default: newest catalogue-* release)
+# Needs: Postgres client tools on PATH, a superuser-capable role, and `gh` authenticated
+# with access to jedmund/hensei-api (the dumps are draft releases).
+# Also creates an empty test database, hensei_pipeline_<name>_test, for this workstream's
+# rspec runs (the test environment reads DATABASE_URL too, so never run rspec with the
+# pipeline database exported: the suite would wipe it).
+# Afterwards:
+#   export DATABASE_URL=postgres://localhost/hensei_pipeline_<name> CURATION_AUTO_EXPORT=0
+#   DATABASE_URL=postgres://localhost/hensei_pipeline_<name>_test bundle exec rspec
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+name="${1:?usage: bin/setup-pipeline-db NAME [TAG]}"
+db="hensei_pipeline_$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_\n' '_')"
+repo="jedmund/hensei-api"
+tag="${2:-${CATALOGUE_TAG:-}}"
+if [ -z "$tag" ]; then
+  tag="$(gh release list --repo "$repo" --limit 100 --json tagName --jq '[.[] | select(.tagName | startswith("catalogue-"))][0].tagName')"
+fi
+[ -n "$tag" ] || { echo "no catalogue-* release found on $repo" >&2; exit 1; }
+
+base="${PIPELINE_PG_URL:-postgres://localhost}"
+url="$base/$db"
+cache="tmp/catalogue/$tag"
+mkdir -p "$cache"
+if [ ! -s "$cache/catalogue.dump" ]; then
+  echo "Downloading ${tag}…"
+  gh release download "$tag" --repo "$repo" --pattern catalogue.dump --dir "$cache" --clobber
+fi
+
+echo "Recreating ${db}…"
+dropdb --if-exists --force --maintenance-db="$base/postgres" "$db"
+createdb --maintenance-db="$base/postgres" "$db"
+
+export DATABASE_URL="$url" CURATION_AUTO_EXPORT=0 DISABLE_DATABASE_ENVIRONMENT_CHECK=1 SKIP_SCHEMA_DUMP=1
+bin/rails db:schema:load >/dev/null
+psql "$url" -qc "TRUNCATE data_migrations"
+echo "Restoring the catalogue…"
+# Restore only tables this branch's schema has, so a newer dump (e.g. with
+# weapon_sources) still restores on an older branch.
+tables="$(psql "$url" -Atc "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")"
+pg_restore -l "$cache/catalogue.dump" > "$cache/toc.all"
+: > "$cache/toc.use"
+skipped=""
+while IFS= read -r line; do
+  case "$line" in
+    *"TABLE DATA public "*)
+      t="$(echo "$line" | sed -E 's/.*TABLE DATA public ([^ ]+) .*/\1/')"
+      if echo "$tables" | grep -qx "$t"; then echo "$line" >> "$cache/toc.use"; else skipped="$skipped $t"; fi ;;
+    *) echo "$line" >> "$cache/toc.use" ;;
+  esac
+done < "$cache/toc.all"
+[ -z "$skipped" ] || echo "Skipping tables this branch doesn't have:$skipped"
+# A dump from before skills were owned by a character row (K1) has no
+# character_skills.character_id: let the restore leave it NULL, then backfill it the
+# way the K1 migration does. Only NULLs are touched, so a newer dump passes through.
+psql "$url" -qc "ALTER TABLE character_skills ALTER COLUMN character_id DROP NOT NULL"
+# A dump from before statuses were one per name holds duplicate names and no name_key (or,
+# before shown names, no wiki_name): restore without those constraints, merge the duplicates and
+# set the shown names the way the repair migrations do (granblue:repair_status_catalogue), then put
+# them back.
+psql "$url" -qc "DROP INDEX IF EXISTS index_statuses_on_name_key" \
+            -c "DROP INDEX IF EXISTS index_statuses_on_name_en_and_qualifier" \
+            -c "ALTER TABLE statuses ALTER COLUMN name_key DROP NOT NULL" \
+            -c "ALTER TABLE statuses ALTER COLUMN wiki_name DROP NOT NULL"
+pg_restore --data-only --disable-triggers --no-owner --no-privileges --exit-on-error -L "$cache/toc.use" -d "$url" "$cache/catalogue.dump"
+psql "$url" -q -v ON_ERROR_STOP=1 <<'SQL'
+DO $$
+DECLARE
+  ambiguous text;
+  orphans integer;
+BEGIN
+  SELECT string_agg(granblue_id, ', ' ORDER BY granblue_id) INTO ambiguous FROM (
+    SELECT c.granblue_id FROM characters c
+    WHERE c.style_swap = false
+      AND EXISTS (SELECT 1 FROM character_skills cs
+                  WHERE cs.character_id IS NULL AND cs.character_granblue_id = c.granblue_id)
+    GROUP BY c.granblue_id HAVING count(*) > 1) dup;
+  IF ambiguous IS NOT NULL THEN
+    RAISE EXCEPTION 'character_skills can''t be backfilled: more than one base (style_swap: false) row for %', ambiguous;
+  END IF;
+
+  UPDATE character_skills cs SET character_id = c.id
+  FROM characters c
+  WHERE cs.character_id IS NULL AND c.granblue_id = cs.character_granblue_id AND c.style_swap = false;
+
+  SELECT count(*) INTO orphans FROM character_skills WHERE character_id IS NULL;
+  IF orphans > 0 THEN
+    RAISE EXCEPTION '% character_skills have no base (style_swap: false) character row', orphans;
+  END IF;
+END
+$$;
+ALTER TABLE character_skills ALTER COLUMN character_id SET NOT NULL;
+SQL
+bin/rails granblue:repair_status_catalogue
+psql "$url" -q -v ON_ERROR_STOP=1 -c "ALTER TABLE statuses ALTER COLUMN name_key SET NOT NULL" \
+            -c "CREATE UNIQUE INDEX index_statuses_on_name_key ON statuses (name_key)" \
+            -c "ALTER TABLE statuses ALTER COLUMN wiki_name SET NOT NULL" \
+            -c "CREATE UNIQUE INDEX index_statuses_on_name_en_and_qualifier ON statuses (name_en, qualifier) NULLS NOT DISTINCT"
+psql "$url" -qc "INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
+                 VALUES ('catalogue_tag', '$tag', now(), now())
+                 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()"
+
+echo "Migrating and syncing curation…"
+bin/rails db:migrate:with_data
+
+if bin/rails -T granblue:import_golden_fixtures 2>/dev/null | grep -q import_golden_fixtures; then
+  bin/rails granblue:import_golden_fixtures
+fi
+
+echo "Creating ${db}_test…"
+dropdb --if-exists --force --maintenance-db="$base/postgres" "${db}_test"
+createdb --maintenance-db="$base/postgres" "${db}_test"
+RAILS_ENV=test DATABASE_URL="${url}_test" bin/rails db:schema:load >/dev/null
+
+echo
+echo "Ready: ${db} (catalogue $tag) and ${db}_test"
+echo "  export DATABASE_URL=$url CURATION_AUTO_EXPORT=0"
+echo "  DATABASE_URL=${url}_test bundle exec rspec"

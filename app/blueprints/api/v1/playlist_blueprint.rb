@@ -34,15 +34,15 @@ module Api
       end
 
       view :with_parties do
-        field :parties do |playlist, _options|
+        field :parties do |playlist, options|
           ordered = playlist.parties.includes(
-            :job, { raid: :group },
+            :job, { raid: :group }, :solomonis_expedition,
             { characters: :character },
-            { weapons: :weapon },
+            { weapons: { weapon: :weapon_series } },
             { summons: :summon }
           ).order(last_updated: :desc)
 
-          PartyBlueprint.render_as_hash(ordered, view: :list)
+          PartyBlueprint.render_as_hash(ordered, view: :list, current_user: options[:current_user])
         end
       end
     end

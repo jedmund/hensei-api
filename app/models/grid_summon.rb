@@ -11,13 +11,27 @@
 # @!attribute [r] party
 #   @return [Party] the associated party.
 class GridSummon < ApplicationRecord
+  include SolomonisSealable
+
+  # The support (friend) summon's position.
+  FRIEND_POSITION = 6
   belongs_to :summon, foreign_key: :summon_id, primary_key: :id
 
   belongs_to :party,
-             counter_cache: :summons_count,
              inverse_of: :summons
   belongs_to :collection_summon, optional: true
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+  has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
   validates_presence_of :party
+
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :collection_summon,
+    { summon: :summon_series }
+  ].freeze
 
   # Orphan status scopes
   scope :orphaned, -> { where(orphaned: true) }
@@ -25,7 +39,8 @@ class GridSummon < ApplicationRecord
 
   # Validate that position is provided.
   validates :position, presence: true
-  validate :compatible_with_position, on: :create
+  validates :description, rich_text_description: true, if: :description_changed?
+  validate :compatible_with_position, on: :create, unless: :is_substitute?
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
@@ -34,11 +49,28 @@ class GridSummon < ApplicationRecord
   # Custom validation to enforce maximum uncap_level based on the associated Summon’s flags.
   validate :validate_uncap_level_based_on_summon_flags
 
-  validate :no_conflicts, on: :create
+  validate :no_conflicts, on: :create, unless: :is_substitute?
+  validate :no_friend_summon_on_solomonis_party, unless: :is_substitute?
 
   before_validation :set_default_uncap_level, on: :create
 
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
+
   after_commit :recompute_party_boost!, on: %i[create update destroy]
+
+  # Virtual attribute set by the controller for substitute renders. See
+  # GridCharacter#owned for the full rationale.
+  attr_accessor :owned
+
+  ##
+  # Whether this summon starts an Evoking Solomonis expedition unsealed: only
+  # the main summon does.
+  #
+  # @return [Boolean]
+  def solomonis_starting_slot?(justice: false) # rubocop:disable Lint/UnusedMethodArgument
+    main? || position.to_i == -1
+  end
 
   ##
   # Returns the blueprint for rendering the grid summon.
@@ -56,31 +88,42 @@ class GridSummon < ApplicationRecord
     update!(orphaned: true, collection_summon_id: nil)
   end
 
+  # Maps camelCase keys emitted by #out_of_sync_fields to column names so the
+  # frontend can sync individual sections instead of overwriting every field.
+  SYNC_FIELD_MAP = {
+    'uncapLevel' => %i[uncap_level],
+    'transcendenceStep' => %i[transcendence_step]
+  }.freeze
+
+  ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
+
   ##
   # Syncs customizations from the linked collection summon.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_from_collection!
+  def sync_from_collection!(fields: nil)
     return false unless collection_summon.present?
 
-    update!(
-      uncap_level: collection_summon.uncap_level,
-      transcendence_step: collection_summon.transcendence_step
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    update!(columns.index_with { |col| collection_summon.public_send(col) })
     true
   end
 
   ##
   # Syncs customizations from this grid summon to the linked collection summon.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_to_collection!
+  def sync_to_collection!(fields: nil)
     return false unless collection_summon.present?
 
-    collection_summon.update!(
-      uncap_level: uncap_level,
-      transcendence_step: transcendence_step
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    collection_summon.update!(columns.index_with { |col| public_send(col) })
     true
   end
 
@@ -89,10 +132,19 @@ class GridSummon < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_summon.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_summon.uncap_level ||
-      transcendence_step != collection_summon.transcendence_step
+  ##
+  # Returns the list of fields that differ from the linked collection summon.
+  # Uses camelCase keys matching the frontend's grid item shape.
+  def out_of_sync_fields
+    return [] unless collection_summon.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_summon.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_summon.transcendence_step
+    fields
   end
 
   ##
@@ -115,12 +167,29 @@ class GridSummon < ApplicationRecord
 
   private
 
+  def sync_columns_for(fields)
+    return ALL_SYNC_COLUMNS if fields.blank?
+
+    fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
+  end
+
   def set_default_uncap_level
     self.uncap_level ||= 0
   end
 
+  def increment_party_counter
+    Party.increment_counter(:summons_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:summons_count, party_id)
+  end
+
   def recompute_party_boost!
+    return if is_substitute?
     return unless main? || friend?
+    # destroying the party destroys its summons; there's nothing left to recompute
+    return unless Party.exists?(party_id)
 
     party.reload
     party.recompute_boost!
@@ -186,6 +255,17 @@ class GridSummon < ApplicationRecord
   def no_conflicts
     # Check if the grid summon conflicts with any of the other grid summons in the party
     errors.add(:series, 'must not conflict with existing summons') unless conflicts(party).nil?
+  end
+
+  ##
+  # Evoking Solomonis is single-player: there is no support summon.
+  #
+  # @return [void]
+  def no_friend_summon_on_solomonis_party
+    return unless party&.solomonis?
+    return unless friend? || position.to_i == FRIEND_POSITION
+
+    errors.add(:friend, 'summons are not used in Evoking Solomonis')
   end
 
   ##

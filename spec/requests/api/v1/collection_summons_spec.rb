@@ -73,6 +73,30 @@ RSpec.describe 'Collection Summons API', type: :request do
       get "/api/v1/users/#{private_user.id}/collection/summons"
       expect(response).to have_http_status(:forbidden)
     end
+
+    describe 'support_eligible filter' do
+      let(:eligible_summon) { create(:summon, support_eligible: true) }
+      let(:ineligible_summon) { create(:summon, support_eligible: false) }
+      let!(:eligible_cs) { create(:collection_summon, user: user, summon: eligible_summon) }
+      let!(:ineligible_cs) { create(:collection_summon, user: user, summon: ineligible_summon) }
+
+      it 'returns only support-eligible summons when filter is true' do
+        get "/api/v1/users/#{user.id}/collection/summons",
+            params: { support_eligible: 'true' },
+            headers: headers
+
+        expect(response).to have_http_status(:ok)
+        ids = response.parsed_body['summons'].map { |s| s['id'] }
+        expect(ids).to include(eligible_cs.id)
+        expect(ids).not_to include(ineligible_cs.id)
+      end
+
+      it 'ignores the filter when unset' do
+        get "/api/v1/users/#{user.id}/collection/summons", headers: headers
+        ids = response.parsed_body['summons'].map { |s| s['id'] }
+        expect(ids).to include(eligible_cs.id, ineligible_cs.id)
+      end
+    end
   end
 
   describe 'GET /api/v1/users/:user_id/collection/summons?unowned=true' do
@@ -106,8 +130,24 @@ RSpec.describe 'Collection Summons API', type: :request do
       expect(json['meta']['count']).to eq(0)
     end
 
-    it 'returns 403 when requesting another user\'s unowned summons' do
+    it 'returns unowned summons when requesting another user with public collection' do
+      owned_smn = create(:summon)
+      unowned_smn = create(:summon)
+      create(:collection_summon, user: other_user, summon: owned_smn)
+
       get "/api/v1/users/#{other_user.id}/collection/summons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['summons'].map { |s| s['id'] }
+      expect(returned_ids).to include(unowned_smn.id)
+      expect(returned_ids).not_to include(owned_smn.id)
+    end
+
+    it 'returns 403 when requesting unowned summons from a private collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+
+      get "/api/v1/users/#{private_user.id}/collection/summons", params: { unowned: true }, headers: headers
 
       expect(response).to have_http_status(:forbidden)
     end

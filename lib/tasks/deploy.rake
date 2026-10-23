@@ -40,15 +40,17 @@ namespace :deploy do
   task parse_weapons: :environment do
     overwrite = ENV['OVERWRITE'] == 'true'
 
-    weapons = Weapon.where.not(wiki_raw: [nil, ''])
+    weapons = Weapon.with_source(:wiki_raw)
     weapons = weapons.where(promotions: []) unless overwrite
 
     total = weapons.count
     updated = 0
     skipped = 0
-    puts "  Found #{total} weapons to process#{overwrite ? ' (overwrite mode)' : ''}"
+    puts "  Found #{total} weapons to process#{' (overwrite mode)' if overwrite}"
 
-    weapons.find_each.with_index do |weapon, index|
+    # Only the wikitext is read: load just that source with each batch.
+    loaded = weapons.find_in_batches.lazy.flat_map { |batch| Weapon.preload_sources(batch, kinds: :wiki_raw) }
+    loaded.each_with_index do |weapon, index|
       print "\r  Processing #{index + 1}/#{total}: #{weapon.name_en.to_s.truncate(40)}".ljust(80)
 
       obtain = extract_wiki_field(weapon.wiki_raw, 'obtain')
@@ -72,15 +74,17 @@ namespace :deploy do
   task parse_summons: :environment do
     overwrite = ENV['OVERWRITE'] == 'true'
 
-    summons = Summon.where.not(wiki_raw: [nil, ''])
+    summons = Summon.with_source(:wiki_raw)
     summons = summons.where(promotions: []) unless overwrite
 
     total = summons.count
     updated = 0
     skipped = 0
-    puts "  Found #{total} summons to process#{overwrite ? ' (overwrite mode)' : ''}"
+    puts "  Found #{total} summons to process#{' (overwrite mode)' if overwrite}"
 
-    summons.find_each.with_index do |summon, index|
+    # Only the wikitext is read: load just that source with each batch.
+    loaded = summons.find_in_batches.lazy.flat_map { |batch| Summon.preload_sources(batch, kinds: :wiki_raw) }
+    loaded.each_with_index do |summon, index|
       print "\r  Processing #{index + 1}/#{total}: #{summon.name_en.to_s.truncate(40)}".ljust(80)
 
       obtain = extract_wiki_field(summon.wiki_raw, 'obtain')
@@ -104,15 +108,17 @@ namespace :deploy do
   task parse_characters: :environment do
     overwrite = ENV['OVERWRITE'] == 'true'
 
-    characters = Character.where.not(wiki_raw: [nil, ''])
+    characters = Character.with_source(:wiki_raw)
     characters = characters.where(series: [], season: nil) unless overwrite
 
     total = characters.count
     updated = 0
     skipped = 0
-    puts "  Found #{total} characters to process#{overwrite ? ' (overwrite mode)' : ''}"
+    puts "  Found #{total} characters to process#{' (overwrite mode)' if overwrite}"
 
-    characters.find_each.with_index do |character, index|
+    # Only the wikitext is read: load just that source with each batch.
+    loaded = characters.find_in_batches.lazy.flat_map { |batch| Character.preload_sources(batch, kinds: :wiki_raw) }
+    loaded.each_with_index do |character, index|
       print "\r  Processing #{index + 1}/#{total}: #{character.name_en.to_s.truncate(40)}".ljust(80)
 
       wiki_series = extract_wiki_field(character.wiki_raw, 'series')
@@ -152,12 +158,7 @@ namespace :deploy do
   end
 
   def promotions_from_obtain(obtain)
-    return [] if obtain.blank?
-
-    mapping = Granblue::Parsers::Wiki.promotions
-    obtain.downcase.split(',').map(&:strip).filter_map do |value|
-      mapping[value]
-    end.uniq.sort
+    Granblue::Parsers::Wiki.promotions_from_obtain(obtain)
   end
 
   def series_from_wiki(wiki_series, obtain, wiki_en)

@@ -68,7 +68,70 @@ class CharacterImportService
     )
   end
 
+  ##
+  # Dry-run: returns the diff that `import` (with update_existing: true) would apply
+  # to each already-owned CollectionCharacter. Handles both the game inventory format
+  # (param/master) and the extension stats format (granblue_id at top level).
+  #
+  # @return [Array<Hash>] one entry per changed record: { granblue_id:, changes: [...] }
+  def preview_updates
+    items = extract_items
+    return [] if items.empty?
+
+    updates = []
+
+    items.each do |item|
+      update = if item['granblue_id'].present?
+                 preview_stats_format(item)
+               else
+                 preview_game_format(item)
+               end
+      updates << update if update
+    end
+
+    updates
+  end
+
   private
+
+  def preview_game_format(item)
+    master = item['master'] || {}
+    granblue_id = master['id']
+    return nil unless granblue_id.present?
+
+    character = find_character(granblue_id)
+    return nil unless character
+
+    existing = @user.collection_characters.find_by(character_id: character.id)
+    return nil unless existing
+
+    attrs = build_collection_character_attrs(item, character)
+    existing.assign_attributes(attrs)
+    return nil if existing.changes.empty?
+
+    {
+      granblue_id: character.granblue_id,
+      changes: CollectionImport::ChangeFormatter.format(existing.changes)
+    }
+  end
+
+  def preview_stats_format(item)
+    granblue_id = item['granblue_id']
+    character = find_character(granblue_id)
+    return nil unless character
+
+    existing = @user.collection_characters.find_by(character_id: character.id)
+    return nil unless existing
+
+    attrs = build_stats_attrs(item, character)
+    existing.assign_attributes(attrs)
+    return nil if existing.changes.empty?
+
+    {
+      granblue_id: character.granblue_id,
+      changes: CollectionImport::ChangeFormatter.format(existing.changes)
+    }
+  end
 
   def extract_items
     return @game_data if @game_data.is_a?(Array)
@@ -177,7 +240,7 @@ class CharacterImportService
     awakening_level = parse_awakening_level(param['arousal_level'])
 
     uncap = parse_uncap_level(param['evolution'])
-    transcendence = parse_transcendence_step(param['phase'])
+    transcendence = [parse_transcendence_step(param['phase']), character.max_transcendence_stage].min
 
     # Transcended characters have uncap_level 6 (beyond the normal 0-5 range)
     uncap = 6 if transcendence > 0 && uncap >= 5
@@ -260,7 +323,11 @@ class CharacterImportService
     # Uncap level and transcendence
     if item['uncap_level'].present?
       uncap = parse_uncap_level(item['uncap_level'])
-      transcendence = item['transcendence_step'].present? ? parse_transcendence_step(item['transcendence_step']) : 0
+      transcendence = if item['transcendence_step'].present?
+                        [parse_transcendence_step(item['transcendence_step']), character.max_transcendence_stage].min
+                      else
+                        0
+                      end
       uncap = 6 if transcendence > 0 && uncap >= 5
       attrs[:uncap_level] = uncap
       attrs[:transcendence_step] = transcendence

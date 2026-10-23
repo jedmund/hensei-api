@@ -127,12 +127,12 @@ module Granblue
         path = download_path('wide')
 
         # Download male variant (_a suffix, _01 in URL)
-        url_male = "https://prd-game-a3-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/m/#{@id}_01.jpg"
+        url_male = "#{base_url}/m/#{@id}_01.jpg"
         filename_male = "#{@id}_a.jpg"
         download_variant(url_male, 'wide', path, filename_male, 'wide-male', last: false)
 
         # Download female variant (_b suffix, _01 in URL - same as male for wide)
-        url_female = "https://prd-game-a3-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/m/#{@id}_01.jpg"
+        url_female = "#{base_url}/m/#{@id}_01.jpg"
         filename_female = "#{@id}_b.jpg"
         download_variant(url_female, 'wide', path, filename_female, 'wide-female', last: is_last)
       end

@@ -1,0 +1,105 @@
+{{Weapon/Common/Illustrious
+|id=1040022900
+|name=Hrunting
+|jpname=フルンティング
+|element=earth
+|weapon=sabre
+
+|link_gamewith=366908
+
+|image=
+|gran=
+|djeeta=
+
+|hp1=43
+|hp2=252
+|hp3=294
+|hp4=336
+|hp5=378
+
+|atk1=484
+|atk2=2927
+|atk3=3416
+|atk4=3905
+|atk5=4394
+
+|ougi_name=Here at Last
+|jpougi_name=ヒア・アット・ラスト
+|ougi_u1_name=Demise at Last
+|ougi_u1_uncap=5{{Star}}
+
+|enougi=Unworldly earth DMG to a foe / Blood Sacrifice effect to earth allies
+|enougi_4s=Unworldly earth DMG to a foe / Blood Sacrifice effect to earth allies / Mitigate DMG taken until end of turn
+|ougi={{Weapon/Ougi|Unworldly Earth damage to a foe (Damage cap: 2,527,500).|All Earth allies gain {{status|Blood Sacrifice|t=3.5T|a=10% of max HP (Damage cap: 1000)}}.}}
+|ougi_4s={{Weapon/Ougi|All Earth allies also gain {{status|DMG Mitigation|a=2000|t=0.5T}}.}}
+|jpougi=土属性ダメージ(極大)/土属性キャラに血の代償効果
+|jpougi_4s=
+|ougi_5s= {{Weapon/Ougi|All Earth allies also gain {{status|Immune (No Limit)|t=0.5T}}.}}
+
+|s1_name= Savage Mythology
+|s1_icon= ws_skill_job_weapon.png
+|ens1_desc=When main weapon (MC only): Savage Mythology effect at battle start (Takes DMG every turn / Boost to ATK / Sharp boost to DEF / Attack twice each turn)
+|s1_desc='''When main weapon (MC only):''' {{status|Savage Mythology|t=i|m=p}} to MC at battle start.
+
+|s1_4s_name= Savage Mythology II
+|s1_4s_icon=ws_skill_job_weapon.png
+|ens1_4s_desc=When main weapon (MC only): Savage Mythology effect at battle start (Takes DMG every turn / Boost to ATK / Sharp boost to DEF / Supplement Damage / Attack twice each turn)
+|s1_4s_desc='''When main weapon (MC only):''' {{status|Savage Mythology+|t=i|m=p}} to MC at battle start.
+|s1_4s_lvl=210
+
+|s1_5s_name= Savage Mythology III
+|s1_5s_icon=ws_skill_job_weapon.png
+|ens1_5s_desc=When main weapon (MC only): Savage Mythology effect at battle start (Takes DMG every turn / Boost to ATK / Sharp boost to DEF / Supplement Damage / Bonus Damage / Attack twice each turn)
+|s1_5s_desc='''When main weapon (MC only):''' {{status|Savage Mythology++|t=i|m=p}} to MC at battle start.
+|s1_5s_lvl=240
+
+|s2_name=Abandoned Role
+|s2_icon=ws_skill_job_weapon.png
+|ens2_desc=When main weapon: Reduce turn-based DMG taken by earth allies / Bonus Earth DMG effect (1 time) upon turn-based DMG
+|s2_desc='''When main weapon:''' <br /> Reduce turn-based damage taken by Earth allies by 50%.<ref name="GameWith, Hrunting">GameWith, Hrunting. https://グランブルーファンタジー.gamewith.jp/article/show/366908</ref> <br /> Gain {{status|Bonus Earth DMG|n=1|t=1T|a=30%}} upon taking turn-based damage.
+
+|s2_4s_name= Abandoned Role II
+|s2_4s_icon=ws_skill_job_weapon.png
+|ens2_4s_desc=When main weapon: Reduce turn-based DMG taken by earth allies / Bonus Earth DMG effect (1 time) and Boost to Dmg Cap (1 time) upon turn-based DMG
+|s2_4s_desc='''When main weapon:''' <br /> Reduce turn-based damage taken by Earth allies by 50%.<ref name="GameWith, Hrunting">GameWith, Hrunting. https://グランブルーファンタジー.gamewith.jp/article/show/366908</ref> <br /> Gain {{status|Bonus Earth DMG|n=1|t=1T|a=30%}} and {{status|DMG Cap Boosted|t=1T|n=1|a=10%}} upon taking turn-based damage.
+|s2_4s_lvl=220
+
+|s3_name=Terra's Enmity
+|s3_icon=ws_skill_backwater_3_3.png
+|s3_desc=Big boost to earth allies' ATK based on how low HP is
+|s3_lvl= 150
+
+|s4_name=Ravenous Bloodlust
+|s4_icon=ws_skill_job_weapon.png
+|ens4_desc=When main weapon (MC only): For every 5 triple attacls by earth allies : 2-hit earth DMG to a foe
+|s4_desc='''When main weapon (MC only):'''<br />'''For every 5 triple attacks by earth allies:'''<br/>2-hit, 400% Earth damage to a foe (Damage cap: ~635,000 per hit).<ref name="GameWith, Hrunting" />
+|s4_lvl = 230
+
+|s4_4s_name=Ravenous Bloodlust II
+|s4_4s_icon=ws_skill_job_weapon.png
+|ens4_4s_desc=When main weapon (MC only): For every 5 triple attacls by earth allies : 2-hit earth DMG to a foe / Agonies effect (Agonies effect specs increase with each activation [Max: Lvl 5])
+|s4_4s_desc='''When main weapon (MC only):'''<br />'''For every 5 triple attacks by earth allies:'''<br/>2-hit, 400% Earth damage to a foe (Damage cap: ~635,000 per hit).<br/>Inflict {{status|Agonies|t=i}}.<br/>({{status|Agonies|t=i}} effect specs increase up on each activation [Max: Lvl 5].)
+|s4_4s_lvl = 250
+
+|ensm_s1_desc=
+|sm_s1_desc=Gain {{status|ATK Sharply Boosted|t=1T|m=ass|a=50%}}.
+|jp_s1_desc=
+|sm_s1_dur=1T
+
+|ensm_s2_desc=
+|sm_s2_desc=All parties gain {{status|70% DMG Cut|t=1T}} and {{status|Debuff Resistance Boosted|a=40%|t=1T}}.
+|jpsm_s2_desc=
+|sm_s2_cd=5T
+|sm_s2_dur=1T
+|sm_s2_cost=2
+
+|sm_atk_desc=35% Bonus Earth DMG effect.
+|sm_atk_dur=-
+
+|sm_def_desc=All allies gain {{status|Water DMG Lowered|a=20%|t=2T}}.<ref name="GameWith, Hrunting" />
+|sm_def_dur=2T
+|sm_def_cost=3
+
+|flavor=This blade has drunk of so many veins, it's turned jet black. Yet oddly enough, the more it cuts, the sharper it gets.
+|jpflavor=幾千もの戦場で命を啜ったとされるその刀剣はどす黒い血に染まり、紅が深くなればなるほど、切れ味は更に増していくという。
+}}

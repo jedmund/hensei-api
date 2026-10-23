@@ -41,8 +41,8 @@ class BulletImageDownloadService
   def build_image_manifest
     sizes = Granblue::Downloaders::BulletDownloader::SIZES
 
-    sizes.each_with_object({}) do |size, manifest|
-      manifest[size] = ["#{@bullet.granblue_id}.jpg"]
+    sizes.to_h do |size|
+      [size, ["#{@bullet.granblue_id}.jpg"]]
     end
   end
 

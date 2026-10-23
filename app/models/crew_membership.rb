@@ -4,6 +4,8 @@ class CrewMembership < ApplicationRecord
   belongs_to :crew
   belongs_to :user
   has_many :gw_individual_scores, dependent: :nullify
+  has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_from_membership_id,
+                                     dependent: :nullify, inverse_of: :claimed_from_membership
 
   enum :role, { member: 0, vice_captain: 1, captain: 2 }
 

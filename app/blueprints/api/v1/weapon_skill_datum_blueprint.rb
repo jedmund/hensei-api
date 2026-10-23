@@ -30,6 +30,12 @@ module Api
       field :coefficient do |datum|
         datum.coefficient&.to_f
       end
+
+      field :max_value do |datum|
+        datum.max_value&.to_f
+      end
+
+      fields :weapon_skill_version_id, :manually_edited_at
     end
   end
 end

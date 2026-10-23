@@ -6,21 +6,22 @@ module Api
       include IdResolvable
       include BatchPreviewable
 
-      before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki batch_preview]
+      before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview
+                                                  raw]
 
       # GET /weapons/:id
       def show
-        render json: WeaponBlueprint.render(@weapon, view: :full)
+        render json: WeaponBlueprint.render(@weapon, view: :full, source_dates: true)
       end
 
       # POST /weapons
       # Creates a new weapon record
       def create
-        weapon = Weapon.new(weapon_params)
+        weapon = Weapon.new(with_wiki_fetch_date(weapon_params))
 
         if weapon.save
-          render json: WeaponBlueprint.render(weapon, view: :full), status: :created
+          render json: WeaponBlueprint.render(weapon, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(weapon)
         end
@@ -29,9 +30,9 @@ module Api
       # PATCH/PUT /weapons/:id
       # Updates an existing weapon record
       def update
-        if @weapon.update(weapon_params)
+        if @weapon.update(with_wiki_fetch_date(update_params, @weapon))
           @weapon.reload
-          render json: WeaponBlueprint.render(@weapon, view: :full)
+          render json: WeaponBlueprint.render(@weapon, view: :full, source_dates: true)
         else
           render_validation_error_response(@weapon)
         end
@@ -162,6 +163,18 @@ module Api
         render json: WeaponBlueprint.render(@weapon, view: :raw)
       end
 
+      # GET /weapons/element_variants
+      # Returns the variant-ID map for every element-changeable weapon.
+      # Consumed by the extension to fall back to base images when a game
+      # variant thumbnail is missing from the image bucket.
+      def element_variants
+        weapons = Weapon
+                  .joins(:weapon_series)
+                  .where(weapon_series: { element_changeable: true })
+                  .where.not(element_variant_ids: nil)
+        render json: WeaponBlueprint.render(weapons, view: :variants)
+      end
+
       # POST /weapons/batch_preview
       # Fetches wiki data and suggestions for multiple wiki page names
       def batch_preview
@@ -183,31 +196,45 @@ module Api
       end
 
       # POST /weapons/:id/fetch_wiki
-      # Fetches and stores wiki data for this weapon
+      # Fetches the weapon's wiki sources into the stored sources, then rebuilds its skills from
+      # them (the weapon-skill build).
       def fetch_wiki
         unless @weapon.wiki_en.present?
           return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_entity
         end
 
         begin
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(@weapon.wiki_en)
-
-          # Handle redirects
-          redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-          if redirect_match
-            redirect_target = redirect_match[1]
-            @weapon.update!(wiki_en: redirect_target)
-            wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect_target)
-          end
-
-          @weapon.update!(wiki_raw: wiki_text)
-          render json: WeaponBlueprint.render(@weapon, view: :raw)
+          Granblue::WikiFetcher.new.fetch_and_store(@weapon)
         rescue Granblue::WikiError => e
-          render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+          return render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         rescue StandardError => e
           Rails.logger.error "[WEAPONS] Wiki fetch error for #{@weapon.id}: #{e.message}"
-          render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+          return render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         end
+
+        begin
+          Granblue::EntityReparser.new(@weapon).reparse
+        rescue StandardError => e
+          Rails.logger.error "[WEAPONS] Skill build error after wiki fetch for #{@weapon.id}: #{e.message}"
+          return render json: { error: "Fetched the wiki page, but rebuilding skills failed: #{e.message}" },
+                        status: :internal_server_error
+        end
+        render json: WeaponBlueprint.render(@weapon.reload, view: :raw)
+      end
+
+      # POST /weapons/:id/reparse
+      # Rebuilds the weapon's skills from its stored wiki sources (the weapon-skill build);
+      # refetch=true fetches fresh sources first.
+      def reparse
+        Granblue::EntityReparser.new(@weapon, refetch: params[:refetch] == 'true').reparse
+        render json: WeaponBlueprint.render(@weapon.reload, view: :full, source_dates: true)
+      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiError => e
+        render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+      rescue StandardError => e
+        Rails.logger.error "[WEAPONS] Reparse error for #{@weapon.id}: #{e.message}"
+        render json: { error: "Failed to re-parse: #{e.message}" }, status: :internal_server_error
       end
 
       private
@@ -217,18 +244,19 @@ module Api
         render_not_found_response('weapon') unless @weapon
       end
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
+      # The edit form sends back the wikitext it loaded, so a blank wiki_raw means
+      # it failed to load, not a deliberate clear: keep the stored text.
+      def update_params
+        attrs = weapon_params
+        return attrs unless attrs.key?(:wiki_raw)
 
-        Rails.logger.warn "[WEAPONS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+        attrs[:wiki_raw].blank? && @weapon.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def weapon_params
         params.require(:weapon).permit(
           :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :new_series, :weapon_series_variant_id,
-          :flb, :ulb, :transcendence, :extra, :extra_prerequisite, :limit, :gacha,
+          :flb, :ulb, :transcendence, :extra, :extra_prerequisite, :limit,
           :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
           :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
           :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,

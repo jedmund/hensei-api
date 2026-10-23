@@ -5,6 +5,9 @@ module Api
     class PasswordResetsController < Api::V1::ApiController
       skip_before_action :current_user
 
+      limit_requests 'reset-request', to: 5, within: 1.hour, only: :create, by: -> { rate_limit_email_key }
+      limit_requests 'reset-submit', to: 10, within: 15.minutes, only: :update, by: -> { rate_limit_email_key }
+
       def create
         user = User.find_by(email: params[:email]&.downcase)
 

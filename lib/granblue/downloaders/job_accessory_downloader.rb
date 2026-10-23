@@ -55,6 +55,12 @@ module Granblue
         'accessory'
       end
 
+      # "accessory" does not pluralize as "accessorys"; use the correct bucket prefix.
+      # @return [String] S3 prefix
+      def bucket_directory
+        'accessories'
+      end
+
       # Gets base URL for job accessory assets.
       # This is set dynamically in #download based on accessory_type.
       # @return [String] Base URL for accessory images

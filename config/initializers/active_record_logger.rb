@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-# class CacheFreeLogger < ActiveSupport::Logger
-#   def add(severity, message = nil, progname = nil, &block)
-#     return true if progname&.include? 'CACHE'
-#
-#     super
-#   end
-# end
-#
-ActiveRecord::Base.logger = Logger.new(STDOUT)
-# ActiveRecord::Base.logger.level = 1
+# Echo SQL to STDOUT in development only. In other environments ActiveRecord
+# uses Rails.logger and its configured level, so production doesn't log SQL
+# (which includes raw OAuth tokens in the token lookup query).
+ActiveRecord::Base.logger = Logger.new($stdout) if Rails.env.development?

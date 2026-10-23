@@ -4,7 +4,9 @@ RSpec.describe GwIndividualScore, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:crew_gw_participation) }
     it { is_expected.to belong_to(:crew_membership).optional }
-    it { is_expected.to belong_to(:recorded_by).class_name('User') }
+    # Optional so a recorder can delete their account; still required on create.
+    it { is_expected.to belong_to(:recorded_by).class_name('User').without_validating_presence }
+    it { is_expected.to validate_presence_of(:recorded_by).on(:create) }
   end
 
   describe 'validations' do

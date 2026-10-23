@@ -46,6 +46,13 @@ RSpec.describe WeaponImageDownloadService do
         base_files = result.images['base']
         expect(base_files).to all(end_with('.png')) if base_files
       end
+
+      it 'lists gacha art as png for every variant' do
+        allow(weapon).to receive(:transcendence).and_return(true)
+        result = described_class.new(weapon).download
+
+        expect(result.images['gacha']).to eq(%w[1040001000.png 1040001000_02.png 1040001000_03.png])
+      end
     end
 
     it 'returns failure result on error' do

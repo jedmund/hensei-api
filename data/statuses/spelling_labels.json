@@ -1,0 +1,112 @@
+[
+  {
+    "label": "Absorb DMG",
+    "status": "DMG Absorption",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Autorevive",
+    "status": "Autorevived",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Bonus Superior Elemental DMG",
+    "status": "Extra Superior Element DMG",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Boost to healing cap",
+    "status": "Recovery Cap Boosted",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "C.A. Reactivation (1 time / Can't be removed)",
+    "status": "C.A. Reactivation (1 time / Unremovable)",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Charge Bar Gain Up",
+    "status": "Charge Bar Gain Boosted",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Charge Bar Slowed",
+    "status": "Charge Bar Gain Lowered",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Charge Bar Sped Up",
+    "status": "Charge Bar Gain Boosted",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Charge Boost",
+    "status": "Charge Bar",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Club",
+    "status": "Jack of Clubs",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "DEF Boosted (Stackable / Can't be removed)",
+    "status": "DEF Boosted (Stackable / Unremovable)",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "DEF Lowered (Stackable / Unremovable)",
+    "status": "DEF Lowered (Stackable / Can't be removed)",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Diamond",
+    "status": "Jack of Diamonds",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "DMG Boosted",
+    "status": "Supplemental DMG",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "DMG Supplemented",
+    "status": "Supplemental DMG",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Dodge",
+    "status": "Dodge All",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Heart",
+    "status": "Jack of Hearts",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Output",
+    "status": "Output 10%",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Paralysis",
+    "status": "Paralyzed",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Shield",
+    "status": "Shielded",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Sleep",
+    "status": "Asleep",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  },
+  {
+    "label": "Spade",
+    "status": "Jack of Spades",
+    "reason": "user review 2026-10-22, D60: only a different spelling or form of the status name"
+  }
+]

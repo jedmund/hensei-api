@@ -84,6 +84,50 @@ RSpec.describe 'GridCharacters API', type: :request do
         expect(json_response['grid_character']).to include('uncap_level' => 4, 'transcendence_step' => 1)
       end
 
+      it 'persists and serializes per-slot full_auto_skills' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '1' => false, '2' => true }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['grid_character']['full_auto_skills']).to eq('1' => false, '2' => true)
+      end
+
+      it 'rejects full_auto_skills with a non-boolean value' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '0' => 'maybe' }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'filters out-of-range full_auto_skills slots' do
+        grid_character = create(:grid_character, party: party, character: incoming_character, position: 2)
+        update_params = {
+          character: {
+            id: grid_character.id, party_id: party.id, character_id: incoming_character.id,
+            position: 2, full_auto_skills: { '3' => true, '4' => false }
+          }
+        }
+
+        put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(grid_character.reload.full_auto_skills).to eq('3' => true)
+      end
+
       it 'allows the owner to update the uncap level and transcendence step' do
         grid_character = create(:grid_character,
                                 party: party,
@@ -115,6 +159,7 @@ RSpec.describe 'GridCharacters API', type: :request do
                                        uncap_level: 3)
         resolve_params = {
           resolve: {
+            party_id: party.id,
             position: 4,
             incoming: incoming_character.id,
             conflicting: [conflicting_character.id]
@@ -302,10 +347,19 @@ RSpec.describe 'GridCharacters API', type: :request do
              position: 4,
              uncap_level: 3)
     end
+    let(:other_party) { create(:party, user: create(:user), edit_key: 'othersecret') }
+    let!(:other_conflicting_character) do
+      create(:grid_character,
+             party: other_party,
+             character: incoming_character,
+             position: 4,
+             uncap_level: 3)
+    end
 
     let(:resolve_params) do
       {
         resolve: {
+          party_id: party.id,
           position: 4,
           incoming: incoming_character.id,
           conflicting: [conflicting_character.id]
@@ -313,15 +367,120 @@ RSpec.describe 'GridCharacters API', type: :request do
       }
     end
 
+    def post_resolve(params = resolve_params, request_headers = headers)
+      post '/api/v1/grid_characters/resolve', params: params.to_json, headers: request_headers
+    end
+
     it 'resolves conflicts by replacing the existing grid character' do
       expect(GridCharacter.exists?(conflicting_character.id)).to be true
-      expect do
-        post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
-      end.to change(GridCharacter, :count).by(0) # one record deleted, one created
+      expect { post_resolve }.to change(GridCharacter, :count).by(0) # one record deleted, one created
       expect(response).to have_http_status(:created)
       json_response = response.parsed_body
       expect(json_response['grid_character']).to include('position' => 4)
       expect { conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(GridCharacter.find_by(party_id: party.id, position: 4).character_id).to eq(incoming_character.id)
+    end
+
+    it 'rejects a mix of own and foreign conflicting ids and changes nothing' do
+      resolve_params[:resolve][:conflicting] = [conflicting_character.id, other_conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+      expect(other_conflicting_character.reload).to be_persisted
+    end
+
+    it 'rejects the mixed ids in either order' do
+      resolve_params[:resolve][:conflicting] = [other_conflicting_character.id, conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+      expect(other_conflicting_character.reload).to be_persisted
+    end
+
+    it 'rejects conflicting ids that belong only to another party' do
+      resolve_params[:resolve][:conflicting] = [other_conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+      expect(other_conflicting_character.reload).to be_persisted
+    end
+
+    it "rejects a resolve targeting another user's party and leaves it unchanged" do
+      resolve_params[:resolve][:party_id] = other_party.id
+      resolve_params[:resolve][:conflicting] = [other_conflicting_character.id]
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(other_conflicting_character.reload).to have_attributes(position: 4, uncap_level: 3)
+      expect(GridCharacter.where(party_id: other_party.id).pluck(:id)).to eq([other_conflicting_character.id])
+    end
+
+    it 'rejects a request without a target party' do
+      resolve_params[:resolve].delete(:party_id)
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(conflicting_character.reload).to be_persisted
+    end
+
+    it 'rejects an empty conflicting list' do
+      resolve_params[:resolve][:conflicting] = []
+
+      expect { post_resolve }.not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'rejects an unauthenticated request' do
+      expect { post_resolve(resolve_params, { 'Content-Type' => 'application/json' }) }
+        .not_to change(GridCharacter, :count)
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(conflicting_character.reload).to be_persisted
+    end
+
+    context 'when the party is anonymous' do
+      let(:anon_party) { create(:party, user: nil, edit_key: 'anonsecret') }
+      let!(:anon_conflicting_character) do
+        create(:grid_character,
+               party: anon_party,
+               character: incoming_character,
+               position: 2,
+               uncap_level: 3)
+      end
+      let(:anon_params) do
+        {
+          resolve: {
+            party_id: anon_party.id,
+            position: 2,
+            incoming: incoming_character.id,
+            conflicting: [anon_conflicting_character.id]
+          }
+        }
+      end
+
+      it 'resolves with the correct edit key' do
+        post_resolve(anon_params, { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' })
+
+        expect(response).to have_http_status(:created)
+        expect { anon_conflicting_character.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'rejects a wrong edit key' do
+        expect { post_resolve(anon_params, { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }) }
+          .not_to change(GridCharacter, :count)
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(anon_conflicting_character.reload).to be_persisted
+      end
     end
   end
 
@@ -445,6 +604,100 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       expect(response).to have_http_status(:created)
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe 'rich-text description round-trip' do
+    let(:tiptap_doc) do
+      {
+        'type' => 'doc',
+        'content' => [
+          {
+            'type' => 'paragraph',
+            'content' => [
+              { 'type' => 'text', 'marks' => [{ 'type' => 'bold' }], 'text' => 'Swap' },
+              { 'type' => 'text', 'text' => ' for fire teams' }
+            ]
+          }
+        ]
+      }
+    end
+
+    it 'persists and reads back a Tiptap document on description' do
+      grid_character = create(:grid_character, party: party)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { description: tiptap_doc } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.description).to eq(tiptap_doc)
+    end
+  end
+
+  describe 'role assignments via role_ids' do
+    let!(:role_a) { create(:grid_character_role, sort_order: 1) }
+    let!(:role_b) { create(:grid_character_role, sort_order: 2) }
+    let!(:role_c) { create(:grid_character_role, sort_order: 3) }
+    let!(:role_d) { create(:grid_character_role, sort_order: 4) }
+
+    let(:grid_character) { create(:grid_character, party: party) }
+
+    it 'assigns multiple roles via role_ids and renders them sorted' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_b.id, role_a.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      body = JSON.parse(response.body)
+      expect(body['grid_character']['roles'].map { |r| r['id'] }).to eq([role_a.id, role_b.id])
+    end
+
+    it 'rejects more than three roles' do
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [role_a.id, role_b.id, role_c.id, role_d.id] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'clears assignments when role_ids is empty' do
+      grid_character.grid_character_roles << [role_a, role_b]
+      expect(grid_character.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
+
+      put "/api/v1/grid_characters/#{grid_character.id}",
+          params: { character: { role_ids: [] } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_character.reload.grid_character_role_ids).to eq([])
+    end
+  end
+
+  describe 'substitute ownership flag' do
+    let(:slot) { create(:grid_character, party: party) }
+    let(:owned_character) { Character.where.not(id: slot.character_id).first }
+    let(:unowned_character) { Character.where.not(id: [slot.character_id, owned_character.id]).first }
+
+    it 'sets owned: true on substitutes the current_user has in their collection' do
+      create(:collection_character, user: user, character: owned_character)
+      owned_sub = create(:grid_character, party: party, character: owned_character, is_substitute: true)
+      unowned_sub = create(:grid_character, party: party, character: unowned_character, is_substitute: true)
+      create(:substitution, grid: slot, substitute_grid: owned_sub, position: 0)
+      create(:substitution, grid: slot, substitute_grid: unowned_sub, position: 1)
+
+      put "/api/v1/grid_characters/#{slot.id}",
+          params: { character: { uncap_level: slot.uncap_level } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      subs = body['grid_character']['substitutions']
+      expect(subs.size).to eq(2)
+      expect(subs.find { |s| s['position'] == 0 }['grid_character']['owned']).to be true
+      expect(subs.find { |s| s['position'] == 1 }['grid_character']['owned']).to be false
     end
   end
 end

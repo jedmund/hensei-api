@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class TokensController < Doorkeeper::TokensController
+  include RateLimited
+
+  # Password logins: per account, plus a generous per-IP ceiling (most logins
+  # arrive via the web app's server IP).
+  limit_requests 'login-email', to: 10, within: 15.minutes, only: :create,
+                                by: -> { rate_limit_email_key }, if: -> { params[:grant_type] == 'password' }
+  limit_requests 'login-ip', to: 120, within: 1.minute, only: :create
+
   # Overriding create action
   # POST /oauth/token
   def create
@@ -23,11 +31,7 @@ class TokensController < Doorkeeper::TokensController
         # body[:user] = Oj.load(user_json)
 
         ### Or if you want to just append user using 'as_json'
-        body[:user] = {
-          id: user.id,
-          username: user.username,
-          role: user.role
-        }
+        body[:user] = user.token_payload
 
       end
     end

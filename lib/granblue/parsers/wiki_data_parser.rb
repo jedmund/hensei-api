@@ -23,7 +23,7 @@ module Granblue
         end
 
         # Rarity
-        suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
+        suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
 
         # Element - capitalize first letter for case-insensitive lookup
         if data['element'].present?
@@ -56,12 +56,7 @@ module Granblue
         suggestions[:max_atk] = data['max_atk'].to_i if data['max_atk'].present?
         suggestions[:max_atk_flb] = data['flb_atk'].to_i if data['flb_atk'].present?
 
-        # Uncap status - characters use max_evo (5=FLB, 6=transcendence)
-        if data['max_evo'].present?
-          evo = data['max_evo'].to_i
-          suggestions[:flb] = evo >= 5
-          suggestions[:transcendence] = evo >= 6
-        end
+        suggestions.merge!(parse_character_uncap(data))
         # Fallback to legacy 5star field if max_evo not present
         suggestions[:flb] ||= Wiki.boolean.fetch(data['5star'], false) if data['5star'].present?
 
@@ -75,8 +70,6 @@ module Granblue
 
         # Dates
         suggestions[:release_date] = parse_date(data['release_date']) if data['release_date'].present?
-        suggestions[:flb_date] = parse_date(data['5star_date']) if data['5star_date'].present?
-        suggestions[:transcendence_date] = parse_date(data['6star_date']) if data['6star_date'].present?
 
         # External links - parse URLs to extract values
         suggestions[:gamewith] = parse_gamewith_url(data['link_gamewith']) if data['link_gamewith'].present?
@@ -96,6 +89,46 @@ module Granblue
         suggestions.compact
       end
 
+      # Classify a character's uncap progression and route its uncap dates.
+      # Story characters have three base stars and use max_evo 4/5 for
+      # FLB/ULB; regular characters use max_evo 5/6 for FLB/transcendence.
+      def self.parse_character_uncap(data)
+        suggestions = {}
+
+        if data['max_evo'].present?
+          suggestions.merge!(character_uncap_classification(data['uncap_type'], data['max_evo'].to_i))
+        end
+
+        if suggestions[:special]
+          # Current story-character pages use max_evo=5 and 5star_date for
+          # their second blue star. Also accept the older 6star_date shape.
+          final_uncap_date = data['6star_date'].presence || data['5star_date'].presence
+          suggestions[:ulb_date] = parse_date(final_uncap_date) if suggestions[:ulb] && final_uncap_date
+          if data['6star_date'].present? && data['5star_date'].present?
+            suggestions[:flb_date] = parse_date(data['5star_date'])
+          end
+        else
+          suggestions[:flb_date] = parse_date(data['5star_date']) if data['5star_date'].present?
+          if data['6star_date'].present?
+            suggestions[:transcendence_date] = parse_date(data['6star_date'])
+          end
+        end
+
+        suggestions
+      end
+
+      def self.character_uncap_classification(uncap_type, max_evo)
+        story = uncap_type.to_s.strip.casecmp('story').zero?
+
+        {
+          flb: max_evo >= (story ? 4 : 5),
+          special: story,
+          ulb: story && max_evo >= 5,
+          transcendence: !story && max_evo >= 6
+        }
+      end
+      private_class_method :character_uncap_classification
+
       # Parse weapon wiki text into suggestion fields
       def self.parse_weapon(wiki_text)
         return {} if wiki_text.blank?
@@ -109,7 +142,7 @@ module Granblue
         suggestions[:granblue_id] = data['id'].sub(/_note\z/, '') if data['id'].present?
 
         # Rarity
-        suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
+        suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
 
         # Element - capitalize first letter for case-insensitive lookup
         if data['element'].present?
@@ -178,7 +211,7 @@ module Granblue
         suggestions[:summon_id] = data['summonid'] if data['summonid'].present?
 
         # Rarity
-        suggestions[:rarity] = Wiki.rarities[data['rarity']] if data['rarity'].present?
+        suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
 
         # Element - capitalize first letter for case-insensitive lookup
         if data['element'].present?
@@ -356,7 +389,7 @@ module Granblue
       }.freeze
 
       # Indicators in obtain field that mean character is gacha-available
-      GACHA_INDICATORS = %w[premium flash legend classic classic2 grand zodiac valentine summer halloween holiday formal normal].freeze
+      GACHA_INDICATORS = %w[premium flash legend classic classic2 classic3 grand zodiac valentine summer halloween holiday formal normal].freeze
 
       # Non-gacha obtain values
       NON_GACHA_INDICATORS = %w[rotb event side story promo eternal evoker archangel].freeze
@@ -415,26 +448,39 @@ module Granblue
           end
         end
 
-        # Standard characters get Premium, Flash, Legend by default
-        promotions << 1 # Premium
-        promotions << 4 # Flash
-        promotions << 5 # Legend
+        tokens = obtain.split(',').map(&:strip)
+        # Classic III-only imports must not restore ordinary availability.
+        unless tokens.include?('classic3') && !tokens.include?('premium')
+          promotions.push(1, 4, 5)
+        end
 
         # Add Classic pools only if explicitly mentioned
-        promotions << 2 if obtain.include?('classic') && !obtain.include?('classic2')
-        promotions << 3 if obtain.include?('classic2')
+        promotions << 2 if tokens.include?('classic')
+        promotions << 3 if tokens.include?('classic2')
+        promotions << 12 if tokens.include?('classic3')
 
         promotions.uniq.sort
       end
 
       # Calculate max level for weapons based on rarity and uncap status
+      # Wiki pages mostly write rarity in lowercase ("sr"), sometimes not at all.
+      # Granblue IDs carry rarity in their third digit (1030xxxxxx is an SR
+      # weapon, 3040xxxxxx an SSR character), which covers missing values.
+      # @return [Integer, nil] Rarity enum value, or nil when neither resolves
+      def self.rarity_from(value, granblue_id)
+        rarity = Wiki.rarities[value.to_s.strip.upcase]
+        rarity || { '2' => 1, '3' => 2, '4' => 3 }[granblue_id.to_s[2]]
+      end
+
       # R weapons: max 50
-      # SR weapons: max 75
+      # SR weapons: max 75 (FLB: 120)
       # SSR weapons: max 100 (FLB: 150, ULB: 200, Trans: 250)
+      # Unknown rarity has no max level, rather than defaulting to SSR's.
       def self.calculate_weapon_max_level(rarity, flb, ulb, transcendence)
         case rarity
-        when 1 then 50  # R
-        when 2 then 75  # SR
+        when nil then nil
+        when 1 then 50 # R
+        when 2 then flb ? 120 : 75 # SR
         else # SSR (3+)
           if transcendence
             250
@@ -449,13 +495,15 @@ module Granblue
       end
 
       # Calculate max level for summons based on rarity and uncap status
-      # R summons: max 30
-      # SR summons: max 60
+      # R summons: max 50
+      # SR summons: max 75
       # SSR summons: max 100 (FLB: 150, ULB: 200, Trans: 250)
+      # Unknown rarity has no max level, rather than defaulting to SSR's.
       def self.calculate_summon_max_level(rarity, flb, ulb, transcendence)
         case rarity
-        when 1 then 30  # R
-        when 2 then 60  # SR
+        when nil then nil
+        when 1 then 50  # R
+        when 2 then 75  # SR
         else # SSR (3+)
           if transcendence
             250

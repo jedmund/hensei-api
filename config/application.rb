@@ -35,8 +35,6 @@ module HenseiApi
     config.active_record.query_log_tags = [:application, :controller, :action, :job]
     config.active_record.cache_query_log_tags = true
 
-    config.active_support.to_time_preserves_timezone = :zone
-
     # Background jobs
     config.active_job.queue_adapter = :sidekiq
 

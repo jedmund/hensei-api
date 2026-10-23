@@ -55,7 +55,7 @@ module Api
 
           # Check for incompatible Base and EMP skills
           %w[skill1_id skill2_id skill3_id].each do |key|
-            @party[key] = nil if @party[key] && mismatched_skill(@party.job, JobSkill.find(@party[key]))
+            @party[key] = nil if @party[key] && mismatched_skill?(@party.job, JobSkill.find(@party[key]))
           end
 
           # Remove extra subskills if necessary
@@ -95,7 +95,7 @@ module Api
           new_skill_ids.each do |id|
             skill = new_skills_loaded[id]
             raise ActiveRecord::RecordNotFound.new("Couldn't find JobSkill") unless skill
-            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill(@party.job, skill)
+            raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill?(@party.job, skill)
           end
 
           existing_skills = {
@@ -156,7 +156,7 @@ module Api
         # Test if skill will exceed allowances of skill types
         skill_type = skill.sub ? 'sub' : 'emp'
 
-        unless can_add_skill_of_type(existing_skills, position, skill_type)
+        unless can_add_skill_of_type?(existing_skills, position, skill_type)
           raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
         end
 
@@ -192,7 +192,7 @@ module Api
         keys.map { |key| key['skill'.length].to_i }
       end
 
-      def can_add_skill_of_type(skills, position, type)
+      def can_add_skill_of_type?(skills, position, type)
         if %w[4 5 ex2].include?(@party.job.row) && skills.values.compact.length.positive?
           max_skill_of_type = 2
           skills_to_check = skills.compact.reject { |key, _| key == position }
@@ -204,10 +204,13 @@ module Api
         true
       end
 
-      def mismatched_skill(job, skill)
+      def mismatched_skill?(job, skill)
+        # Origin-row jobs (Lancer Origin, Rising Force) have no base_job — compare
+        # base jobs nil-safely, and let the skill-kind flag short-circuit first
+        # (equipping a cross-job subskill must not evaluate the EMP comparison).
         mismatched_main = (skill.job.id != job.id) && skill.main && !skill.sub
-        mismatched_emp = (skill.job.id != job.id && skill.job.base_job.id != job.base_job.id) && skill.emp
-        mismatched_base = skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job.id) && skill.base
+        mismatched_emp = skill.emp && skill.job.id != job.id && skill.job.base_job&.id != job.base_job&.id
+        mismatched_base = skill.base && skill.job.base_job && (job.row != 'ex2' || skill.job.base_job.id != job.base_job&.id)
 
         if %w[4 5 ex2].include?(job.row)
           if skill.base && !mismatched_base
@@ -230,14 +233,6 @@ module Api
       def set_job
         @job = Job.find_by(granblue_id: params[:id])
         render_not_found_response('job') unless @job
-      end
-
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[JOBS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
       end
 
       def job_update_params

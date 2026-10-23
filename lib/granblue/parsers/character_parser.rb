@@ -54,7 +54,10 @@ module Granblue
       # Handle the response from the wiki if the response is successful
       # If the save flag is set, it will persist the data to the database
       def handle_fetch_success(response, save)
+        # use_local re-parses the stored text; only a real fetch gets a new date.
+        fetched = !(@use_local && @character.wiki_raw.present?)
         @character.wiki_raw = response
+        @character.wiki_raw_fetched_at = Time.current if fetched
         @character.save!
 
         ap "#{@character.granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug
@@ -120,6 +123,7 @@ module Granblue
           rescue WikiError => e
             errors.push(e.page)
           end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
         ap 'The following pages were unable to be fetched:'
@@ -146,6 +150,7 @@ module Granblue
           rescue WikiError => e
             errors.push(e.page)
           end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
         ap 'The following pages were unable to be fetched:'
@@ -160,8 +165,11 @@ module Granblue
         info[:id] = hash['id']
         info[:charid] = hash['charid'].scan(/\b\d{4}\b/)
 
-        info[:flb] = Granblue::Parsers::Wiki.boolean.fetch(hash['5star'], false)
-        info[:transcendence] = hash['max_evo'].to_i == 6
+        uncap = WikiDataParser.parse_character_uncap(hash)
+        info[:flb] = uncap.fetch(:flb) { Granblue::Parsers::Wiki.boolean.fetch(hash['5star'], false) }
+        info[:special] = uncap.fetch(:special, @character.special?)
+        info[:ulb] = uncap.fetch(:ulb, false)
+        info[:transcendence] = uncap.fetch(:transcendence, false)
 
         info[:rarity] = Granblue::Parsers::Wiki.rarities.fetch(hash['rarity'], 0)
         info[:element] = Granblue::Parsers::Wiki.elements.fetch(hash['element'], 0)
@@ -184,8 +192,9 @@ module Granblue
 
         info[:dates] = {
           release_date: parse_date(hash['release_date']),
-          flb_date: parse_date(hash['5star_date']),
-          transcendence_date: parse_date(hash['6star_date'])
+          flb_date: uncap[:flb_date],
+          ulb_date: uncap[:ulb_date],
+          transcendence_date: uncap[:transcendence_date]
         }
 
         info[:links] = {
@@ -204,6 +213,7 @@ module Granblue
       def persist(hash)
         @character.release_date = hash[:dates][:release_date]
         @character.flb_date = hash[:dates][:flb_date] if hash[:dates].key?(:flb_date)
+        @character.ulb_date = hash[:dates][:ulb_date] if hash[:dates].key?(:ulb_date)
         @character.transcendence_date = hash[:dates][:transcendence_date] if hash[:dates].key?(:transcendence_date)
 
         @character.wiki_ja = hash[:links][:wiki][:ja] if hash[:links].key?(:wiki) && hash[:links][:wiki].key?(:ja)

@@ -1,5 +1,6 @@
 class CollectionWeapon < ApplicationRecord
   include WeaponCapabilityResolution
+  include AxSkillValidation
 
   belongs_to :user
   belongs_to :weapon
@@ -19,8 +20,11 @@ class CollectionWeapon < ApplicationRecord
 
   has_many :grid_weapons, dependent: :nullify
 
-  before_destroy :orphan_grid_items
+  # prepend: must run before dependent: :nullify clears the foreign key, or it
+  # finds no grid items to mark orphaned.
+  before_destroy :orphan_grid_items, prepend: true
   before_validation :set_default_exorcism_level, on: :create
+  before_validation :default_awakening_level
 
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
@@ -29,9 +33,10 @@ class CollectionWeapon < ApplicationRecord
   validates :transcendence_step, inclusion: { in: 0..10 }
   validates :awakening_level, inclusion: { in: 1..20 }
   validates :exorcism_level, inclusion: { in: 0..5 }, allow_nil: true
+  validates :befoulment_permeation, inclusion: { in: 1..6 }, allow_nil: true
+  validates :skill_level, inclusion: { in: 1..25 }, allow_nil: true
 
   validate :validate_weapon_keys
-  validate :validate_ax_skills
   validate :validate_befoulment
   validate :validate_element_change
   validate :validate_awakening_compatibility
@@ -71,6 +76,10 @@ class CollectionWeapon < ApplicationRecord
       joins(:weapon).order('weapons.proficiency ASC')
     when 'proficiency_desc'
       joins(:weapon).order('weapons.proficiency DESC')
+    when 'release_date_desc'
+      joins(:weapon).order(Arel.sql('weapons.latest_date DESC NULLS LAST'))
+    when 'release_date_asc'
+      joins(:weapon).order(Arel.sql('weapons.latest_date ASC NULLS LAST'))
     else
       order(created_at: :desc)
     end
@@ -110,28 +119,6 @@ class CollectionWeapon < ApplicationRecord
     slots = weapon_keys.map(&:slot)
     if slots.length != slots.uniq.length
       errors.add(:weapon_keys, "cannot have multiple keys for the same slot")
-    end
-  end
-
-  def validate_ax_skills
-    # AX skill 1: must have both modifier and strength
-    if (ax_modifier1.present? && ax_strength1.blank?) ||
-       (ax_modifier1.blank? && ax_strength1.present?)
-      errors.add(:base, "AX skill 1 must have both modifier and strength")
-    end
-
-    # AX skill 2: must have both modifier and strength
-    if (ax_modifier2.present? && ax_strength2.blank?) ||
-       (ax_modifier2.blank? && ax_strength2.present?)
-      errors.add(:base, "AX skill 2 must have both modifier and strength")
-    end
-
-    # Validate category is 'ax'
-    if ax_modifier1.present? && ax_modifier1.category != 'ax'
-      errors.add(:ax_modifier1, "must be an AX skill modifier")
-    end
-    if ax_modifier2.present? && ax_modifier2.category != 'ax'
-      errors.add(:ax_modifier2, "must be an AX skill modifier")
     end
   end
 
@@ -207,5 +194,13 @@ class CollectionWeapon < ApplicationRecord
     return unless weapon_augment_type == 'befoulment'
 
     self.exorcism_level = 1
+  end
+
+  # Clients send awakening_level: nil when clearing an awakening, but the column is
+  # NOT NULL (default 1) and the level is meaningless without an awakening.
+  #
+  # @return [void]
+  def default_awakening_level
+    self.awakening_level = 1 if awakening_level.nil?
   end
 end

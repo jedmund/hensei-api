@@ -1,0 +1,50 @@
+{
+  "format": 2,
+  "versions": [],
+  "effects": [
+    {
+      "weapon": "1040415800",
+      "skill": "Absolute Equality",
+      "ordinal": 0,
+      "modifier": "Absolute Equality",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 20.0,
+      "value_unit": "percent",
+      "condition": {
+        "type": "all_weapons_unique"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:07:08Z"
+    },
+    {
+      "weapon": "1040415800",
+      "skill": "Absolute Equality",
+      "ordinal": 0,
+      "modifier": "Absolute Equality",
+      "boost_type": "dmg_cap",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "condition": {
+        "type": "all_weapons_unique"
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-15T06:07:08Z"
+    }
+  ],
+  "data": [],
+  "ops": []
+}

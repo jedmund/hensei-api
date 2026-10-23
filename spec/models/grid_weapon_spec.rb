@@ -325,5 +325,34 @@ RSpec.describe GridWeapon, type: :model do
         end
       end
     end
+
+    describe '#out_of_sync_fields' do
+      context 'when collection_weapon is linked' do
+        let(:linked_grid_weapon) do
+          create(:grid_weapon,
+                 party: party,
+                 weapon: ec_weapon,
+                 position: 0,
+                 collection_weapon: collection_weapon,
+                 uncap_level: 3)
+        end
+
+        it 'reports drifted top-level fields with camelCase keys' do
+          # uncap_level differs (3 vs collection 5), element differs (default vs collection 2)
+          expect(linked_grid_weapon.out_of_sync_fields).to include('uncapLevel', 'element')
+        end
+
+        it 'returns [] after sync' do
+          linked_grid_weapon.sync_from_collection!
+          expect(linked_grid_weapon.out_of_sync_fields).to eq([])
+        end
+      end
+
+      context 'when no collection_weapon is linked' do
+        it 'returns []' do
+          expect(grid_weapon.out_of_sync_fields).to eq([])
+        end
+      end
+    end
   end
 end

@@ -1,0 +1,379 @@
+{{CharacterTabs|base={{BASENAME}} }}
+{{Character
+|id=3040032000
+|charid=4003
+|series=eternals
+|jpname=サラーサ
+|jptitle=十天衆
+|jpva=高山みなみ
+|name= Threo
+|release_date=2015-04-16
+|link_gamewith=21123
+|link_jpwiki=%A5%B5%A5%E9%A1%BC%A5%B5%20%28SSR%29
+|link_kamigame=SSR/サラーサ
+|gender=f
+|obtain=fate,unf
+|title= The Eternals
+|title_source=gbf
+|5star=yes
+|5star_date=2017-03-20
+|6star_date=2021-02-19
+|base_evo=4
+|max_evo=6
+|uncap_type=eternals
+|blush_value=0
+|base_da=5
+|base_ta=2
+|art1= {{PAGENAME}} A.png
+|art2= {{PAGENAME}} B.png
+|art3= {{PAGENAME}} C.png
+|art4= {{PAGENAME}} D.png
+|art_story1= {{PAGENAME}} ST.png
+|sprite1= {{PAGENAME}} SDA.png
+|sprite2= {{PAGENAME}} SDB.png
+|sprite3= {{PAGENAME}} SDC.png
+|sprite4= {{PAGENAME}} SDD.png
+|rarity= SSR
+|element= Earth
+|type= Attack
+|race= Draph
+|va= Minami Takayama
+|join= Fully-upgraded '''[[Revenant Weapons|Three-Tiger Axe]]'''
+|join_weapon=
+|weapon= Axe,Sabre
+|min_atk= 1880
+|max_atk= 11333
+|flb_atk= 13333
+|min_hp= 253
+|max_hp= 1533
+|flb_hp= 1833
+|ougi_count=8
+|ougi_label= {{InfoSkillUpgrade|text=Axe form:}}<br />
+|ougi_name= Astro Divergence
+|ougi_desc= {{tt|450%|Massive}} Earth damage to a foe.<ref name="Gamewith" /><br />Swap to Sword form.
+|ougi2_label= {{InfoSkillUpgrade|text=Sword form:}}<br />
+|ougi2_name= Meteor Thrust
+|ougi2_desc= {{tt|450%|Massive}} Earth damage to a foe.<ref name="Gamewith" /><br />Bonus Plain damage (Damage cap: 999,999).<br />Swap to Axe form.
+|ougi3_label= {{InfoSkillUpgrade|text=After 5★ - Axe form:}}<br />
+|ougi3_name= Astro Destruction
+|ougi3_desc= {{tt|500%|Massive}} Earth damage to a foe (Damage cap: ~2,020,000).<br />Gain {{status|Earth ATK Up|t=3.5T|a=20%}}.<ref name="threo_5_gw" /><br />Swap to Sword form.
+|ougi4_label= {{InfoSkillUpgrade|text=After 5★ - Sword form:}}<br />
+|ougi4_name= Annihilation Nova
+|ougi4_desc= {{tt|500%|Massive}} Earth damage to a foe (Damage cap: ~2,020,000).<ref name="threo_5_gw" /><br />2-hit Bonus Plain damage (Damage cap: {{tt|999,999 per hit|1,999,998 total}}).<br />Swap to Axe form.
+
+|ougi5_label= {{InfoSkillUpgrade|text=After Stage 1 Transcendence - Axe form:}}<br />
+|ougi5_name= Origin Breaker
+|ougi5_desc= {{tt|550%|Massive}} Earth damage to a foe (Damage cap: ~2,300,000) and remove 1 buff.<ref name="threo_5_gw" /><br />Gain {{status|Earth ATK Up|t=3.5T|a=20%}}.<ref name="threo_5_gw" /><br />Swap to Sword form.
+|ougi6_label= {{InfoSkillUpgrade|text=After Stage 1 Transcendence - Sword form:}}<br />
+|ougi6_name= Regression to Zero
+|ougi6_desc= {{tt|550%|Massive}} Earth damage to a foe (Damage cap: ~2,300,000).<ref name="threo_5_gw" /><br />3-hit Bonus Plain damage (Damage cap: {{tt|999,999 per hit|2,999,997 total}}).<br />Swap to Axe form.
+
+|ougi7_label={{InfoSkillUpgrade|text=After Stage 5 Transcendence - Axe form:}}<br />
+|ougi7_name=Origin Breaker +
+|ougi7_desc={{tt|1350%|Unworldly}} Earth damage to a foe (Damage cap: ~3,400,000) and remove 1 buff.<ref name="threo_5_gw" /><br />Gain {{status|Earth ATK Up|t=3.5T|a=20%}}.<ref name="threo_5_gw" /><br />Swap to Sword form.
+|ougi8_label={{InfoSkillUpgrade|text=After Stage 5 Transcendence - Sword form:}}<br />
+|ougi8_name=Regression to Zero +
+|ougi8_desc={{tt|1350%|Unworldly}} Earth damage to a foe (Damage cap: ~3,400,000).<ref name="threo_5_gw" /><br />3-hit Bonus Plain damage (Damage cap: {{tt|999,999 per hit|2,999,997 total}})<br />Swap to Axe form.
+|abilitysubtitle=({{tt|Axe Form|Cooldowns are shared with corresponding Sword form skills}})
+|abilitycount= 4
+|a1_icon= Ability_m_1189_1.png
+|a1_color=red
+|a1_name= Vorpal Rage
+|a1_cd= {{InfoCd|num=0|cooldown=6}}
+|a1_dur= {{InfoDur|type=t|duration=3}} /<br />{{InfoDur|type=t|duration=1}}
+|a1_oblevel= {{InfoOb|obtained=1|enhanced=55}}
+|a1_effdesc= {{InfoDes|num=0|des=350%-400% Earth damage to a foe (Damage cap: ~630,000).<br />Gain {{status|Jammed|t=3T|a=30%-90%}}, {{status|DMG Amplified|a=30%|t=3T}}, and {{status|Drain|t=1T|a= (Healing cap: 3333)}}.<ref name="threo_5_gw" />|des1=|level1=55}}
+|a2_icon= Ability_m_1190_1.png
+|a2_color=red
+|a2_name= Berserk Forge
+|a2_cd= {{InfoCd|num=1|cooldown=7|cooldown1=6|level1=75}}
+|a2_dur= {{InfoDur|type=t|duration=3}} /<br />{{InfoDur|type=t|duration=1}}
+|a2_oblevel= {{InfoOb|obtained=1|enhanced=75|enhanced2=85}}
+|a2_effdesc= {{InfoDes|num=1|des=Gain {{status|Counters on Dodge/DMG|a=200%|t=3T|n=3}}.|des1=Also gain {{status|Guaranteed TA|t=1T}}, {{status|Bonus Earth DMG|a=30%|t=3T}}, and {{Status|Full Hostility (Can't be removed)|t=1T}}.<ref name="threo_5_gw">GameWith, Threo 5{{star}} https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/54605</ref>|level1=85}}
+|a3_icon= Ability Ground Zero.png
+|a3_color=red
+|a3_name= Ground Zero
+|a3_cd= {{InfoCd|num=2|cooldown=8|cooldown1=7|cooldown2=6|level1=95|level2=130}}
+|a3_dur= {{InfoDur|type=s|duration=180}} /<br />{{InfoDur|type=t|duration=1}}
+|a3_oblevel= {{InfoOb|obtained=45|enhanced=95|enhanced2=130}}
+|a3_effdesc= {{InfoDes|num=2|des=Sacrifice 99% of caster's current HP to deal plain damage to all foes (Damage cap: ~820,000).<br />Damage dealt is based on HP consumed.<br />Gain {{Status|Shield|a=3000|t=Indefinite}}.|des1=Damage cap increased to ~1,230,000.<br />Also inflict {{status|Earth DEF Lowered|a=25%|t=180s|acc= ≥100%}}.<ref name="mid">https://gbf.wiki/User:Midokuni/data/Debuffs#Sarasa</ref>|level1=95|level2=130|des2=Damage increased and damage cap increased to ~2,040,000.<ref name="threo_5_gw" /><br />Shield endurance increased to {{Status|Shield|t=i|a=15,000}}.<br />('''When HP is below 25%:''' Also gain {{status|Tri-Slash|t=1T}}.)}}
+|a4_icon= Ability Three-Tiger's Blessing.png
+|a4_color=yellow
+|a4_name= Three-Tiger's Blessing
+|a4_cd={{ReadyIn|10}}<br />{{InfoSkillUpgrade|lvl=150}}<br />{{ReadyIn|10|10}}
+|a4_dur= {{InfoDur|type=t|duration=3}}
+|a4_oblevel={{InfoOb|obtained=100|enhanced=150}}
+|a4_effdesc={{InfoDes|num=1|des=Gain {{status|C.A. Instant Standby}}, {{status|Autoignition (Can't be removed)|t=3T}}, and {{status|Tiger's Blessing|t=1T|m=u}}.<ref name="Gamewith" /><br />End cooldown for other skills.<br />(Can't recast.)|level1=150|des1=Can now be recast.}}
+|abilitysubtitle_a=({{tt|Sword Form|Cooldowns are shared with corresponding Axe form skills}})
+|abilitycount_a= 4
+|a1a_icon= Ability_m_1189_1.png
+|a1a_color=red
+|a1a_name= Vorpal Rage
+|a1a_cd= {{InfoCd|num=0|cooldown=6}}
+|a1a_dur= {{InfoDur|type=t|duration=3}}
+|a1a_oblevel= {{InfoOb|obtained=1|enhanced=55}}
+|a1a_effdesc={{InfoDes|num=0|des=3-hit, 350%-400% Earth damage to a foe (Damage cap: ~630,000 per hit).<br />Gain {{status|Jammed|t=3T|a=30%-90%}} and {{status|DMG Amplified|t=3T|a=30%}}.<ref name="Gamewith" />|des1=|level1=55}}
+|a2a_icon= Ability_m_1190_1.png
+|a2a_color=red
+|a2a_name= Berserk Forge
+|a2a_cd= {{InfoCd|num=1|cooldown=7|cooldown1=6|level1=75}}
+|a2a_dur= {{InfoDur|type=t|duration=1}} /<br />{{InfoDur|type=t|duration=3}}
+|a2a_oblevel= {{InfoOb|obtained=1|enhanced=75|enhanced2=85}}
+|a2a_effdesc={{InfoDes|num=1|des=Instantly perform a normal attack without using up a turn.|des1=Before instantly performing a normal attack, also gain {{status|Guaranteed TA|t=1T}}, {{status|Bonus Earth DMG|a=30%|t=3T}}, and {{Status|ATK Sharply Boosted|a=50%|t=1T|n=1|m=ass}}.<ref name="Gamewith" />|level1=85}}
+|a3a_icon= Ability Ground Zero.png
+|a3a_color=red
+|a3a_name= Ground Zero
+|a3a_cd= {{InfoCd|num=2|cooldown=8|cooldown1=7|cooldown2=6|level1=95|level2=130}}
+|a3a_dur= {{InfoDur|type=s|duration=180}} /<br />{{InfoDur|type=t|duration=1}}
+|a3a_oblevel= {{InfoOb|obtained=45|enhanced=95|enhanced2=130}}
+|a3a_effdesc={{InfoDes|num=2|des=Sacrifice 99% of caster's current HP to deal plain damage to all foes (Damage cap: ~820,000).<br />Damage dealt is based on HP consumed.<br />Gain {{Status|Shield|a=3000|t=Indefinite}}. |des1=Damage cap increased to ~1,230,000.<br />Also inflict {{status|Earth DEF Lowered|a=25%|t=180s|acc= ≥100%}}.<ref name="mid" />|level1=95|level2=130|des2=Damage increased and damage cap increased to ~2,040,000.<ref name="threo_5_gw" /><br />Shield endurance increased to {{Status|Shield|t=i|a=15,000}}.<br />('''When HP is below 25%:''' Also gain {{status|Tri-Slash|t=1T}}.)}}
+|a4a_icon= Ability Three-Tiger's Blessing.png
+|a4a_color=yellow
+|a4a_name= Three-Tiger's Blessing
+|a4a_cd={{ReadyIn|10}}<br />{{InfoSkillUpgrade|lvl=150}}<br />{{ReadyIn|10|10}}
+|a4a_dur= {{InfoDur|type=t|duration=3}}
+|a4a_oblevel={{InfoOb|obtained=100|enhanced=150}}
+|a4a_effdesc={{InfoDes|num=1|des=Gain {{status|C.A. Instant Standby}}, {{status|Autoignition (Can't be removed)|t=3T}}, and {{status|Tiger's Blessing|t=1T|m=u}}.<ref name="Gamewith" /><br />End cooldown for other skills.<br />(Can't recast.)|level1=150|des1=Can now be recast.}}
+|s_abilitycount= 3
+|sa_name= Supernatural
+|sa_level= {{InfoOb|obtained=1|enhanced=90}}
+|sa_desc= {{InfoDes|num=1|des=Starts battle with {{status|Undying (Can't be removed) 3|t=i|n=3}}.|level1=90|des1=Also [[supplement damage]] dealt by third hit of triple attacks (Damage cap: 300,000).<ref name="Gamewith" /><br />'''Upon triple attacks:'''<br />400% Earth damage to a foe (Damage cap: ~635,000).<br />Inflict {{Status|ATK Lowered 2|a=25%|t=2T}} and {{Status|DEF Lowered 2|a=25%|t=2T}}.<ref name="threo_5_gw" />}}
+|sa2_name= Ferox Tigris
+|sa2_level= {{InfoOb|obtained=95|enhanced=150}}
+|sa2_desc={{InfoDes|num=1|des={{atkmod|Amplify}} damage against Water foes by 20%.<ref name="Gamewith" />|level1=150|des1='''When Threo is below 25% HP at end of turn:'''<br />1-turn cut to {{CharacterSkill2|Threo|4}}'s skill standby.}}
+|sa3_name= Start Strong, End Strongest
+|sa3_level= {{InfoOb|obtained=120|enhanced=150}}
+|sa3_desc= {{InfoDes|num=1|des='''When attacking while HP is below 25%:'''<br />Guaranteed triple attacks and 30% Bonus Earth DMG effect.|level1=150|des1=30% boost to max HP.<ref name="threo_5_gw" /><br />'''When attacking while HP is below 25%:'''<br />Also gain debuff immunity, buffs can't be removed, and cap Water damage taken at 3,333 per hit.}}
+|sa_emp_desc=Chance to gain {{status|ATK Up (Stackable)|a=10%|am=30%|t=i|m=us}} upon normal attacks.
+|sa_emp_1s=?%
+|sa_emp_2s=?%
+|sa_emp_3s=10%
+|sa2_emp_desc=Chance to end cooldown for Berserk Forge upon using a charge attack.
+|sa2_emp_1s=50%
+|sa2_emp_2s=80%
+|sa2_emp_3s=100%
+|perk11=ATK Up DEF Down
+|perk12=ATK Up DEF Down
+|perk13=C.A. DMG
+|perk14=C.A. DMG Cap
+|perk15=Support Skill
+|perk16=DMG Cap
+|perk17=Transcendence HP
+|perk18=Transcendence Support Skill
+|perk19=DMG Cap 5%
+|perk20=N.A. DMG
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=n
+|a2_mimic_notes=
+|a3_mimic=y
+|a3_mimic_notes=
+|a4_mimic=n
+|a4_mimic_notes=
+|a1a_mimic_hide=y
+|a2a_mimic_hide=y
+|a3a_mimic_hide=y
+|a4a_mimic_hide=y
+|profile= One of the Eternals—they who stand astride the skies and across the path of any would-be calamity. This fierce warrior understands the laws of nature far better than any other, and survival of the fittest has become her creed. She fights tooth and claw to remain at the top of the food chain, so that she'll never have to lose anything again.
+}}
+__NOTOC__
+==Gameplay Notes==
+* {{CharacterUpdateHistory|2020-06-09|2025-02-20}}
+* Threo starts battle with her weapon in Axe form.
+* Uncapping to Transcendence Stage 1 and Stage 4 permanently grants {{ClassBonus|Extended Mastery Star Cap|+5}}.
+
+===Berserk Forge===
+{{AssassinBuff|{{Status|ATK Sharply Boosted|a=50%|t=1T|n=1|m=ass}}}}
+
+===Ground Zero===
+* Buffs that last for one attack such as {{status|Salted Wound}} and {{status|Path of Destruction}} are not consumed when using this skill.
+* Due to soft capping mechanics, Ground Zero will do less damage per HP consumed as damage thresholds are hit.
+** Boost to damage cap effects will increase all HP thresholds by its percentage.
+{| class="wikitable" style="text-align:center;"
+|+ Level 45-94<ref name="Ground Zero 4*">Ground Zero 4* https://www.reddit.com/r/Granblue_en/comments/7e8d2t/weekly_questions_thread_november_20_26_2017/dqbihkc/?context=10000</ref>
+|-
+! colspan="2" | HP Consumed<br/>Threshold
+! DMG per HP
+! Reduction
+! Total DMG
+|-
+!style="text-align:right;" | 0 HP
+!style="text-align:right;" |7,000 HP
+| 100
+| 0%
+| 700,000
+|-
+!style="text-align:right;" | 7,000 HP
+!style="text-align:right;" |8,000 HP
+| 70
+| 30%
+| 770,000
+|-
+!style="text-align:right;" | 8,000 HP
+!style="text-align:right;" |9,000 HP
+| 40
+| 60%
+| 810,000
+|-
+!style="text-align:right;" | 9,000 HP
+!style="text-align:right;" |10,000 HP
+| 10
+| 90%
+| 820,000
+|-
+!style="text-align:right;" | 10,000 HP
+! -
+| 1
+| 99%
+| 820,000+
+|}
+
+{| class="wikitable" style="text-align:center;"
+|+ Level 95-129
+|-
+! colspan="2" | HP Consumed<br/>Threshold
+! DMG per HP
+! Reduction
+! Total DMG
+|-
+!style="text-align:right;" | 0 HP
+!style="text-align:right;" |10,500 HP
+| 100
+| 0%
+| 1,050,000
+|-
+!style="text-align:right;" | 10,500 HP
+!style="text-align:right;" |12,000 HP
+| 70
+| 30%
+| 1,155,000
+|-
+!style="text-align:right;" | 12,000 HP
+!style="text-align:right;" |13,500 HP
+| 40
+| 60%
+| 1,215,000
+|-
+!style="text-align:right;" | 13,500 HP
+!style="text-align:right;" |15,000 HP
+| 10
+| 90%
+| 1,230,000
+|-
+!style="text-align:right;" | 15,000 HP
+! -
+| 1
+| 99%
+| 1,230,000+
+|}
+
+{| class="wikitable" style="text-align:center;"
+|+ Level 130+<ref name="wakka transcendence ground zero">wakka, Transcendence Ground Zero https://gbf.wiki/User:PieFormation/Transcendence_Ground_Zero</ref>
+|-
+! colspan="2" | HP Consumed<br/>Threshold
+! DMG per HP
+! Reduction
+! Total DMG
+|-
+!style="text-align:right;" | 0 HP
+!style="text-align:right;" | 4,000 HP
+| 300
+| 0%
+| 1,200,000
+|-
+!style="text-align:right;" | 4,000 HP
+!style="text-align:right;" | 5,333.33 HP
+| 270
+| 10%
+| 1,560,000
+|-
+!style="text-align:right;" | 5,333.33 HP
+!style="text-align:right;" | 6,666.67 HP
+| 210
+| 30%
+| 1,840,000
+|-
+!style="text-align:right;" | 6,666.67 HP
+!style="text-align:right;" | 13,333.33 HP
+| 30
+| 90%
+| 2,040,000
+|-
+!style="text-align:right;" | 13,333.33 HP
+! -
+| 3
+| 99%
+| 2,040,000+
+|}
+
+=== Three-Tiger's Blessing ===
+* The 10-turn cooldown ''will not'' count down if {{PAGENAME}} is a sub party member.
+* Any remaining cooldown stays intact when switched into a sub party slot during battle.
+* {{status|Tiger's Blessing|t=1T|m=u}} grants the following effects:<ref name="threo_5_gw" />
+** 280% {{atkmod|ATK|m=u}} Up
+** 100% C.A. DMG Cap Up
+** 30% Special C.A. DMG Cap Up
+
+===Ferox Tigris===
+* This does not stack with {{ItmGSI|title=Gauntlet of Uriel|Gauntlet of Proudearth|Gauntlet of Uriel (SSR)|Gauntlet of Uriel (SR)}}'s Blessing weapon skill.
+
+===Start Strong, End Strongest===
+{{CapDamageTaken|element=Water|cap=3333}}
+
+===Extended Mastery Support Skill===
+* After every normal attack, has a chance to gain {{status|ATK Up (Stackable)|a=10%|am=30%|t=i|m=us}}.<ref name="Gamewith">Gamewith https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/21123</ref>
+
+{| class="wikitable" style="text-align: center;"
+! Rank || {{atkmod|ATK Up|m=us}} || Chance
+|-
+! 1★
+| rowspan="3" | 10%
+| ?%
+|-
+! 2★
+| ?%
+|-
+! 3★
+| 10%
+|}
+
+===Transcendence Extended Mastery Support Skill===
+* After every charge attack, has a chance to reset the cooldown of {{CharacterSkill|page=Threo|no=2|icon=true}}.<ref name="threo_5_gw" />
+
+{| class="wikitable" style="text-align: center;"
+! Rank || Chance
+|-
+! 1★
+| 50%
+|-
+! 2★
+| 80%
+|-
+! 3★
+| 100%
+|}
+=== Bonus DMG Stacking Information ===
+{{EchoTable/Info}}
+{{EchoTable|{{PAGENAME}}|2a|skillb}}
+{{EchoTable|{{PAGENAME}}|3|passiveu}}
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{ #var: character_template_bottom | }}
+
+== Outfits ==
+=== Eternal's Summer Vacation ===
+{{CharSkin
+|id=3710073000
+|char= Threo
+|art= Eternal's Summer Vacation (Threo).png
+|sd= Eternal's Summer Vacation (Threo) SD.png
+|desc= Eternal's Summer Vacation
+|obtain= Eternal's Summer Vacation Outfit Set<br />([[Shop#Outfit Sets|In-game purchase]])
+|release_date=2018-08-14
+|voice= Yes
+|sprite= Yes
+|music=
+|flavor=A summer outfit in a brilliant red. This comfy outfit is a must-have for Threo. Wet and wild? Not a problem for this Eternal.
+}}
+
+== References ==
+
+[[Category:The Eternals]]

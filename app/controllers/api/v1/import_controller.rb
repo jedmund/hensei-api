@@ -115,7 +115,15 @@ module Api
         20 => 'robur'
       }.freeze
 
-      before_action :ensure_admin_role, only: %i[weapons summons characters]
+      # POST /import `kind` values. Without a kind the body is a game deck.
+      SOLOMONIS_RUN = 'solomonis_run'
+      SOLOMONIS_PARTY = 'solomonis_party'
+      # Cap on POST /import bodies, checked before parsing. A game deck is
+      # around 100 KB; a Solomonis report with up to 300 guidebook entries and
+      # an optional party deck stays well under it too.
+      MAX_BODY_BYTES = 1.megabyte
+
+      before_action :ensure_editor_role, only: %i[weapons summons characters]
 
       ##
       # Processes an import request.
@@ -129,8 +137,13 @@ module Api
       def create
         Rails.logger.info '[IMPORT] Checking input...'
 
+        if request.raw_post.bytesize > MAX_BODY_BYTES
+          return render json: { error: 'payload_too_large' }, status: :payload_too_large
+        end
+
         body = parse_request_body
         return unless body
+        return import_by_kind(body) if body.is_a?(Hash) && body.key?('kind')
 
         raw_params = body['import']
         unless raw_params.is_a?(Hash)
@@ -150,6 +163,7 @@ module Api
         return if performed? # Rendered an error response already
 
         party = nil
+        warnings = []
         ActiveRecord::Base.transaction do
           party = Party.create!(
             user: current_user,
@@ -158,7 +172,7 @@ module Api
             last_updated: Time.current
           )
           deck_data = raw_params
-          process_data(party, deck_data)
+          warnings = process_data(party, deck_data)
 
           # Apply raid - explicit selection takes priority over auto-detect
           if body['raid_id'].present?
@@ -170,10 +184,16 @@ module Api
           assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
         end
 
-        render json: { shortcode: party.shortcode, party_id: party.id }, status: :created
+        render json: { shortcode: party.shortcode, party_id: party.id, warnings: warnings }, status: :created
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
+        report_unexpected_exception(e, phase: 'import_create')
+        render json: { error: 'invalid_data', details: e.record.errors.full_messages },
+               status: :unprocessable_content
       rescue StandardError => e
         Rails.logger.error "[IMPORT] Import failed: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
+        report_unexpected_exception(e, phase: 'import_create')
         render json: { error: 'Import failed due to an unexpected error. Please try again.' }, status: :unprocessable_content
       end
 
@@ -197,11 +217,12 @@ module Api
 
         begin
           weapon.update!(
-            "game_raw_#{lang}" => body.to_json
+            "game_raw_#{lang}" => body,
+            "game_raw_#{lang}_fetched_at" => Time.current
           )
 
           # Parse series_id and assign WeaponSeries
-          series_id = body['series_id'] || body.dig('master', 'series_id')
+          series_id = Granblue::GamePayload.series_id(body)
           if series_id
             slug = GBF_WEAPON_SERIES_TO_SLUG[series_id.to_i]
             if slug
@@ -215,8 +236,9 @@ module Api
 
           render json: { message: 'Weapon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
-          Rails.logger.error "[IMPORT] Failed to update weapon gamedata: #{e.message}"
-          render json: { error: e.message }, status: :unprocessable_content
+          Rails.logger.error "[IMPORT] Failed to update weapon gamedata (#{e.class})"
+          report_unexpected_exception(e, phase: 'gamedata_update')
+          render json: { error: 'Could not store the game data' }, status: :unprocessable_content
         end
       end
 
@@ -240,11 +262,12 @@ module Api
 
         begin
           summon.update!(
-            "game_raw_#{lang}" => body.to_json
+            "game_raw_#{lang}" => body,
+            "game_raw_#{lang}_fetched_at" => Time.current
           )
 
           # Parse series_id and assign SummonSeries
-          series_id = body['series_id'] || body.dig('master', 'series_id')
+          series_id = Granblue::GamePayload.series_id(body)
           if series_id
             slug = GBF_SUMMON_SERIES_TO_SLUG[series_id.to_i]
             if slug
@@ -258,8 +281,9 @@ module Api
 
           render json: { message: 'Summon gamedata updated successfully' }, status: :ok
         rescue StandardError => e
-          Rails.logger.error "[IMPORT] Failed to update summon gamedata: #{e.message}"
-          render json: { error: e.message }, status: :unprocessable_content
+          Rails.logger.error "[IMPORT] Failed to update summon gamedata (#{e.class})"
+          report_unexpected_exception(e, phase: 'gamedata_update')
+          render json: { error: 'Could not store the game data' }, status: :unprocessable_content
         end
       end
 
@@ -273,25 +297,30 @@ module Api
         body = parse_request_body
         return unless body
 
-        character = Character.find_by(granblue_id: body['id'])
+        granblue_id = Granblue::GamePayload.granblue_id(body)
+        style_row = Granblue::GamePayload.style(body) == '2'
+        character = gamedata_character(body)
+        if style_row && character.nil? && Character.exists?(granblue_id: granblue_id)
+          Rails.logger.error "[IMPORT] Style row missing for character #{granblue_id}"
+          return render json: { error: "style row missing for #{granblue_id}" }, status: :unprocessable_content
+        end
         unless character
-          Rails.logger.error "[IMPORT] Character not found with ID: #{body['id']}"
+          Rails.logger.error "[IMPORT] Character not found with ID: #{granblue_id}"
           return render json: { error: 'Character not found' }, status: :not_found
         end
 
-        lang = params[:lang]
-        unless %w[en jp].include?(lang)
-          Rails.logger.error "[IMPORT] Invalid language: #{lang}"
-          return render json: { error: 'Invalid language' }, status: :unprocessable_content
-        end
+        lang, error = gamedata_language(body)
+        return render json: error, status: :unprocessable_content if error
 
         begin
+          # Stored as the character's game_raw_<lang> source (D35), dated now.
           character.update!(
-            "game_raw_#{lang}" => body.to_json
+            "game_raw_#{lang}" => body,
+            "game_raw_#{lang}_fetched_at" => Time.current
           )
 
-          # Parse series_id and create CharacterSeriesMembership
-          series_id = body['series_id'] || body.dig('master', 'series_id')
+          # Parse series_id and create CharacterSeriesMembership (master.series_id is a list)
+          series_id = Granblue::GamePayload.series_id(body)
           if series_id
             slug = GBF_SERIES_TO_SLUG[series_id.to_i]
             if slug
@@ -305,28 +334,144 @@ module Api
 
           render json: { message: 'Character gamedata updated successfully' }, status: :ok
         rescue StandardError => e
-          Rails.logger.error "[IMPORT] Failed to update character gamedata: #{e.message}"
-          render json: { error: e.message }, status: :unprocessable_content
+          Rails.logger.error "[IMPORT] Failed to update character gamedata (#{e.class})"
+          report_unexpected_exception(e, phase: 'gamedata_update')
+          render json: { error: 'Could not store the game data' }, status: :unprocessable_content
         end
       end
 
       private
 
-      def resolve_import_visibility(body)
-        vis = body['visibility'].to_i
-        [1, 2, 3].include?(vis) ? vis : current_user.default_import_visibility
+      # The row a character detail payload belongs to. A style shift shares its
+      # granblue_id with the base character, so the payload's style picks the row.
+      # A style 2 payload never lands on the base row; anything else falls back to
+      # any row with the id.
+      def gamedata_character(body)
+        granblue_id = Granblue::GamePayload.granblue_id(body)
+        return if granblue_id.blank?
+        return Character.find_by(granblue_id: granblue_id, style_swap: true) if Granblue::GamePayload.style(body) == '2'
+
+        Character.find_by(granblue_id: granblue_id, style_swap: false) || Character.find_by(granblue_id: granblue_id)
+      end
+
+      # The payload's language, judged from its skill names: the game answers in the account's
+      # language, while the extension's lang follows the site's, so the payload wins and a
+      # mismatch is only logged. lang decides a payload that can't be judged.
+      # → [lang, nil] or [nil, error body].
+      def gamedata_language(body)
+        detected = Granblue::GamePayload.language(body)
+        requested = params[:lang].presence_in(%w[en jp])
+        if detected && requested && detected != requested
+          Rails.logger.info "[IMPORT] #{Granblue::GamePayload.granblue_id(body)}: lang=#{requested}, payload reads as " \
+                            "#{detected}; stored as #{detected}"
+        end
+        return [detected || requested, nil] if detected || requested
+
+        Rails.logger.error '[IMPORT] Invalid language'
+        [nil, { error: 'Invalid language' }]
+      end
+
+      def import_by_kind(body)
+        case body['kind']
+        when SOLOMONIS_RUN
+          import_solomonis_run(body)
+        when SOLOMONIS_PARTY
+          import_solomonis_party(body)
+        else
+          render json: { error: 'unknown_kind', message: 'kind must be solomonis_party, solomonis_run or left out' },
+                 status: :unprocessable_content
+        end
       end
 
       ##
-      # Ensures the current user has admin role (role 9).
-      # Renders an error if the user is not an admin.
-      #
-      # @return [void]
-      def ensure_admin_role
-        return if current_user&.role == 9
+      # Imports an Evoking Solomonis run from the game's expedition report.
+      # A report already imported by this user is a 409 unless update_existing
+      # is true, which updates that run in place.
+      def import_solomonis_run(body)
+        return render_unauthorized_response unless current_user
 
-        Rails.logger.error "[IMPORT] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized' }, status: :unauthorized
+        data = body['solomonis']
+        Processors::SolomonisProcessor.validate!(data)
+        existing = imported_run(Processors::SolomonisProcessor.report_id(data))
+        return render_duplicate_report(existing) if existing && body['update_existing'] != true
+
+        party = existing || Party.new(user: current_user, visibility: resolve_import_visibility(body))
+        apply_solomonis_party_options(party, body)
+
+        warnings = []
+        ActiveRecord::Base.transaction do
+          processor = Processors::SolomonisProcessor.new(party, data)
+          processor.process
+          warnings = processor.warnings
+          assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
+        end
+
+        render json: { party_id: party.id, shortcode: party.shortcode, warnings: warnings }, status: :created
+      rescue Processors::SolomonisProcessor::ImportError => e
+        render json: { error: e.code, message: e.message }, status: :unprocessable_content
+      rescue ActiveRecord::RecordNotUnique
+        # Another request imported the same report first.
+        existing = imported_run(Processors::SolomonisProcessor.report_id(data))
+        raise unless existing
+
+        render_duplicate_report(existing)
+      end
+
+      ##
+      # Imports an Evoking Solomonis party from the game's party deck. A new
+      # party each time, like the normal deck import.
+      def import_solomonis_party(body)
+        return render_unauthorized_response unless current_user
+
+        data = body['solomonis']
+        Processors::SolomonisPartyProcessor.validate!(data)
+        party = Party.new(user: current_user, visibility: resolve_import_visibility(body))
+        apply_solomonis_party_options(party, body)
+
+        warnings = []
+        ActiveRecord::Base.transaction do
+          processor = Processors::SolomonisPartyProcessor.new(party, data)
+          processor.process
+          warnings = processor.warnings
+          assign_playlists(party, body['playlist_ids']) if body['playlist_ids'].present?
+        end
+
+        render json: { party_id: party.id, shortcode: party.shortcode, warnings: warnings }, status: :created
+      rescue Processors::SolomonisProcessor::ImportError => e
+        render json: { error: e.code, message: e.message }, status: :unprocessable_content
+      end
+
+      # The current user's run imported from this report, if any. The
+      # expedition's user is always the party's owner; checked again anyway.
+      def imported_run(report_id)
+        party = SolomonisExpedition.find_by(user_id: current_user.id, game_report_id: report_id)&.party
+        party if party&.user_id == current_user.id
+      end
+
+      def render_duplicate_report(party)
+        render json: { error: 'duplicate_report', party_id: party.id, shortcode: party.shortcode },
+               status: :conflict
+      end
+
+      # Name and visibility only change when sent, so a re-import keeps the
+      # user's edits.
+      def apply_solomonis_party_options(party, body)
+        name = body['name']
+        party.name = name.squish.truncate(Solomonis::ReportParser::NAME_MAX_LENGTH, omission: '') if name.is_a?(String) && name.present?
+        visibility = requested_visibility(body)
+        party.visibility = visibility if party.persisted? && visibility
+      end
+
+      def resolve_import_visibility(body)
+        requested_visibility(body) || current_user.default_import_visibility
+      end
+
+      # The body's visibility (1, 2 or 3, as a number or digit string), or nil
+      # when it's missing or anything else.
+      def requested_visibility(body)
+        value = body['visibility']
+        value = value.to_i if value.is_a?(String) && value.match?(/\A\d\z/)
+        value if [1, 2, 3].include?(value)
       end
 
       ##
@@ -334,12 +479,19 @@ module Api
       #
       # @return [Hash] Parsed JSON data.
       # @raise [JSON::ParserError] If the JSON is invalid.
+      # The request body as a Hash; anything else (an array, a number, null) renders a 422 and
+      # returns nil.
       def parse_request_body
-        raw_body = request.raw_post
-        JSON.parse(raw_body)
-      rescue JSON::ParserError => e
-        Rails.logger.error "[IMPORT] Invalid JSON: #{e.message}"
-        render json: { error: 'Invalid JSON data' }, status: :bad_request and return
+        body = JSON.parse(request.raw_post)
+        return body if body.is_a?(Hash)
+
+        Rails.logger.error "[IMPORT] Body is not a JSON object (#{body.class})"
+        render json: { error: 'Invalid JSON data' }, status: :unprocessable_content
+        nil
+      rescue JSON::ParserError
+        Rails.logger.error '[IMPORT] Invalid JSON'
+        render json: { error: 'Invalid JSON data' }, status: :bad_request
+        nil
       end
 
       ##
@@ -356,15 +508,20 @@ module Api
       #
       # @param party [Party] The party to insert data into
       # @param data [Hash] The wrapped data.
-      # @return [Hash] The transformed deck data.
+      # @return [Array<Hash>] Warnings collected from the processors.
       def process_data(party, data)
         Rails.logger.info '[IMPORT] Transforming deck data'
 
-        Processors::JobProcessor.new(party, data).process
-        Processors::CharacterProcessor.new(party, data).process
-        Processors::SummonProcessor.new(party, data).process
-        Processors::WeaponProcessor.new(party, data).process
-        Processors::BulletProcessor.new(party, data).process
+        processors = [
+          Processors::JobProcessor,
+          Processors::CharacterProcessor,
+          Processors::SummonProcessor,
+          Processors::WeaponProcessor,
+          Processors::BulletProcessor
+        ].map { |klass| klass.new(party, data) }
+
+        processors.each(&:process)
+        processors.flat_map(&:warnings)
       end
 
       ##
@@ -391,7 +548,7 @@ module Api
           playlist = current_user.playlists.find_by(id: playlist_id)
           next unless playlist
 
-          PlaylistParty.create!(playlist: playlist, party: party)
+          PlaylistParty.find_or_create_by!(playlist: playlist, party: party)
         end
       end
 

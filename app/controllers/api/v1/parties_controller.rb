@@ -7,7 +7,8 @@ module Api
     class PartiesController < Api::V1::ApiController
       include PartyAuthorizationConcern
       include PartyQueryingConcern
-      include PartyPreviewConcern
+      include SubstituteGridPreloading
+      include PartyFullLoading
 
       # Constants used for filtering validations.
 
@@ -20,8 +21,9 @@ module Api
       # Maximum number of weapons allowed in a party
       MAX_WEAPONS = 13
 
-      # Default minimum number of characters required for filtering
-      DEFAULT_MIN_CHARACTERS = 3
+      # Default minimum number of characters required for filtering.
+      # 0 so MC-only teams (no characters) appear in the Gallery by default.
+      DEFAULT_MIN_CHARACTERS = 0
 
       # Default minimum number of summons required for filtering
       DEFAULT_MIN_SUMMONS = 2
@@ -32,9 +34,21 @@ module Api
       # Default maximum clear time in seconds
       DEFAULT_MAX_CLEAR_TIME = 5400
 
+      # Fields of `party[solomonis]` a client may write. ended_at, stats and
+      # game_report_id are import-only; ownership comes from the party.
+      SOLOMONIS_PARAMS = %i[route_evoker_id pledge_level outcome].freeze
+
+      # Validation error keys on the party's expedition, as the API contract
+      # names them (`solomonis.<field>`).
+      SOLOMONIS_ERROR_KEYS = {
+        'solomonis_expedition' => 'solomonis.route_evoker_id',
+        'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id'
+      }.freeze
+
       before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
+      before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
 
       # Primary CRUD Actions
 
@@ -59,23 +73,33 @@ module Api
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
           party.extra = raid.group.extra
         end
+        assign_solomonis_params(party)
+        return if performed?
+
         party.last_updated = Time.current
         if party.save
-          party.schedule_preview_generation if party.ready_for_preview?
-          render json: PartyBlueprint.render(party, view: :created, root: :party), status: :created
+          render json: PartyBlueprint.render(load_full_party(party.id), view: :created, root: :party,
+                                                                         current_user: current_user),
+                 status: :created
         else
-          render_validation_error_response(party)
+          render_party_errors(party)
         end
       end
 
       # Shows a specific party.
       # Uses viewable_by? to check visibility including crew sharing.
       # Also allows access via edit_key for anonymous parties.
-      def show
-        unless @party.viewable_by?(current_user, admin_mode: admin_mode) || !not_owner?
-          return render_unauthorized_response
-        end
+      # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
+      # GridDamage::Calculator and shaped for display. Battle-state params (the game's
+      # "Calculator Conditions"): hp_percent (0–100), turn (1+), foe_element, and
+      # ally_max_hp for max-HP-scaled effects, plus arcarum for venue-gated effects;
+      # the foe defaults to the grid element's advantaged target, like the in-game estimate.
+      def skill_boosts
+        state = skill_boost_state
+        render json: GridDamage::PanelPresenter.present(@party, state: state).merge(state: state)
+      end
 
+      def show
         if @party
           options = { view: :full, root: :party, current_user: current_user }
 
@@ -102,11 +126,15 @@ module Api
         if party_params && party_params[:raid_id] && (raid = Raid.find_by(id: party_params[:raid_id]))
           @party.extra = raid.group.extra
         end
+        assign_solomonis_params(@party)
+        return if performed?
+
         @party.last_updated = Time.current
         if @party.save
-          render json: PartyBlueprint.render(@party, view: :full, root: :party)
+          render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party,
+                                                                          current_user: current_user)
         else
-          render_validation_error_response(@party)
+          render_party_errors(@party)
         end
       end
 
@@ -171,8 +199,7 @@ module Api
 
         identifiers = entries.map { |e| e[:shortcode] }.uniq
         uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-        uuid_ids = identifiers.select { |i| i.match?(uuid_pattern) }
-        non_uuid_ids = identifiers.reject { |i| i.match?(uuid_pattern) }
+        uuid_ids, non_uuid_ids = identifiers.partition { |i| i.match?(uuid_pattern) }
 
         query = Party.includes(
           { raid: :group }, :job,
@@ -201,6 +228,10 @@ module Api
           party_lookup[p.id] = p
         end
 
+        # Each party renders on its own, so their stickers are looked up together
+        # here. Without current_user so `favorited` keeps its signed-out value.
+        sticker_options = PartyStickerSummary.batch_options(parties.to_a, current_user)
+
         # Deduplicate: skip entries that resolve to an already-seen party
         seen_party_ids = Set.new
         results = []
@@ -214,12 +245,13 @@ module Api
           result = if party.nil?
                      { party: nil, status: 'not_found' }
                    elsif party.user_id.present?
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'already_claimed' }
+                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options),
+                       status: 'already_claimed' }
                    elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
                                           party.edit_key.to_s.strip.force_encoding('UTF-8'))
                      { party: nil, status: 'invalid_key' }
                    else
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview), status: 'ready' }
+                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options), status: 'ready' }
                    end
 
           results << result
@@ -237,9 +269,9 @@ module Api
                                  remix: true }
         new_party.local_id = party_params[:local_id] if party_params
         new_party.last_updated = Time.current
+        new_party._source_party_for_remap = @party
         if new_party.save
-          new_party.schedule_preview_generation
-          render json: PartyBlueprint.render(new_party, view: :remixed, root: :party), status: :created
+          render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party), status: :created
         else
           render_validation_error_response(new_party)
         end
@@ -273,7 +305,7 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           operations_applied: changes.count,
           changes: changes
         }, status: :ok
@@ -320,7 +352,7 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           synced: synced
         }, status: :ok
       end
@@ -332,7 +364,7 @@ module Api
       def unlink_collection
         @party = Party.find_by(id: params[:id])
         return render_not_found_response('party') unless @party
-        return render_unauthorized_response unless @party.user_id == current_user&.id
+        return render_unauthorized_response unless current_user && @party.user_id == current_user.id
 
         ActiveRecord::Base.transaction do
           @party.characters.where.not(collection_character_id: nil)
@@ -345,7 +377,7 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full, current_user: current_user)
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full, current_user: current_user)
         }, status: :ok
       end
 
@@ -358,7 +390,8 @@ module Api
           @parties,
           view: :list,
           root: :results,
-          meta: pagination_meta(@parties)
+          meta: pagination_meta(@parties),
+          current_user: current_user
         )
       end
 
@@ -377,40 +410,44 @@ module Api
           @parties,
           view: :list,
           root: :results,
-          meta: pagination_meta(@parties)
+          meta: pagination_meta(@parties),
+          current_user: current_user
         )
       end
 
-      # Preview Management
-
-      # Serves the party's preview image
-      # @return [void]
-      # Serves the party's preview image.
-      def preview
-        party_preview(@party)
-      end
-
-      # Returns the current preview status of a party.
-      def preview_status
-        party = Party.find_by!(shortcode: params[:id])
-        render json: { state: party.preview_state, generated_at: party.preview_generated_at,
-                       ready_for_preview: party.ready_for_preview? }
-      end
-
-      # Forces regeneration of the party preview.
-      def regenerate_preview
-        party = Party.find_by!(shortcode: params[:id])
-        return render_unauthorized_response unless current_user && party.user_id == current_user.id
-
-        preview_service = PreviewService::Coordinator.new(party)
-        if preview_service.force_regenerate
-          render json: { status: 'Preview regeneration started' }
-        else
-          render json: { error: 'Preview regeneration failed' }, status: :unprocessable_entity
-        end
-      end
-
       private
+
+      # Private parties 404 for anyone who can't view them, so their existence
+      # isn't revealed. Anonymous parties are also viewable with their edit key.
+      def ensure_party_viewable!
+        return if performed?
+        return if can_view_party?
+
+        render_not_found_response('party')
+      end
+
+      def can_view_party?
+        return true if @party.viewable_by?(current_user, admin_mode: admin_mode)
+        return false unless @party.user_id.nil?
+
+        valid_edit_key?(edit_key.to_s.strip.force_encoding('UTF-8'),
+                        @party.edit_key.to_s.strip.force_encoding('UTF-8'))
+      end
+
+      # Sanitized battle state for skill_boosts: clamp HP/turn/max HP, cast Arcarum,
+      # whitelist the foe element, and default the foe to what the grid element is strong against.
+
+      def skill_boost_state
+        hp = params[:hp_percent].presence&.to_f&.clamp(0, 100) || 100.0
+        ally_max_hp = params[:ally_max_hp].presence&.to_f&.clamp(0, 999_999)
+        turn = params[:turn].presence&.to_i&.clamp(1, 999) || 1
+        arcarum = ActiveModel::Type::Boolean.new.cast(params[:arcarum]) || false
+        foe = params[:foe_element].presence&.downcase
+        # "null" is a real foe element (element-less foes) — advantaged effects turn off.
+        foe = nil unless foe == "null" || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
+        foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::Calculator.send(:grid_element, @party)]
+        { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe, arcarum: arcarum }.compact
+      end
 
       # Resolves edit key entries from params or the current user's deposited keys.
       # Returns nil if there are too many entries (> 100).
@@ -428,29 +465,13 @@ module Api
 
       # Loads the party by its shortcode.
       def set_from_slug
-        @party = Party.includes(
-          :user, :job, { raid: :group },
-          { characters: [{ character: [:character_series_records, :style_swap_variants] }, :awakening, :grid_artifact, :collection_character] },
-          { weapons: {
-            weapon: [:awakenings, :weapon_series, :weapon_series_variant, :weapon_skills, :recruited_character, :base_weapon, :forge_chain_weapons],
-            collection_weapon: { collection_weapon_bullets: {} },
-            awakening: {},
-            weapon_key1: {},
-            weapon_key2: {},
-            weapon_key3: {},
-            ax_modifier1: {},
-            ax_modifier2: {},
-            befoulment_modifier: {},
-            grid_weapon_bullets: :bullet
-          } },
-          { summons: [{ summon: :summon_series }, :collection_summon] },
-          :guidebook1, :guidebook2, :guidebook3,
-          { source_party: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
-          { remixes: [{ characters: :character }, { weapons: :weapon }, { summons: :summon }] },
-          :skill0, :skill1, :skill2, :skill3, :accessory,
-          { party_shares: :shareable }
-        ).find_by(shortcode: params[:id])
-        render_not_found_response('party') unless @party
+        @party = Party.includes(full_party_preloads).find_by(shortcode: params[:id])
+
+        return render_not_found_response('party') unless @party
+
+        # Most parties have zero substitutes; a single EXISTS lookup is far cheaper
+        # than the three collection-ownership queries `preload_substitute_grids!` runs.
+        preload_substitute_grids!(@party.characters + @party.weapons + @party.summons) if @party.has_substitutions?
       end
 
       # Loads the party by its id.
@@ -463,17 +484,57 @@ module Api
         return unless params[:party].present?
 
         params.require(:party).permit(
-          :user_id, :local_id, :edit_key, :extra, :name, :description, :raid_id, :job_id, :visibility,
+          :local_id, :extra, :name, :description, :raid_id, :job_id, :visibility,
           :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
           :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :solo, :clear_time, :button_count,
-          :turn_count, :chain_count, :summon_count, :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
-          characters_attributes: [:id, :party_id, :character_id, :position, :uncap_level,
+          :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,
+          :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
+          full_auto_skills: %w[0 1 2 3],
+          characters_attributes: [:id, :character_id, :position, :uncap_level,
                                   :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
                                   { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
                                     earring: %i[modifier strength] }],
-          summons_attributes: %i[id party_id summon_id position main friend quick_summon uncap_level transcendence_step],
-          weapons_attributes: %i[id party_id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength exorcism_level awakening_id awakening_level]
+          summons_attributes: %i[id summon_id position main friend quick_summon uncap_level transcendence_step],
+          weapons_attributes: %i[id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level]
         )
+      end
+
+      def solomonis_params
+        raw = params[:party].is_a?(ActionController::Parameters) ? params[:party][:solomonis] : nil
+        return nil unless raw.is_a?(ActionController::Parameters)
+
+        raw.permit(*SOLOMONIS_PARAMS)
+      end
+
+      # Applies `party[solomonis]` to the party's expedition (building one when
+      # the party has none).
+      def assign_solomonis_params(party)
+        attrs = solomonis_params&.to_h
+        return if attrs.nil?
+
+        party.solomonis_expedition_attributes = attrs
+      end
+
+      # Renders a party's validation errors in the usual format, with the
+      # expedition's keys renamed to the contract's `solomonis.*` names. A
+      # party moved into a Solomonis zone without a route Evoker fails on
+      # `solomonis.route_evoker_id` (D12).
+      def render_party_errors(party)
+        errors = Hash.new { |hash, key| hash[key] = [] }
+        party.errors.each do |error|
+          attribute = error.attribute.to_s
+          if attribute == 'solomonis_expedition'
+            errors['solomonis.route_evoker_id'] << 'is required to enter an Evoking Solomonis zone'
+          else
+            key = SOLOMONIS_ERROR_KEYS[attribute] || attribute.sub(/\Asolomonis_expedition\./, 'solomonis.')
+            errors[key] << error.message
+          end
+        end
+        render_solomonis_errors(errors)
+      end
+
+      def render_solomonis_errors(errors)
+        render json: ErrorBlueprint.render_as_json(nil, errors: errors.to_h), status: :unprocessable_entity
       end
 
       # Permits parameters for grid update operation.

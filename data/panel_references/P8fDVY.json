@@ -1,0 +1,196 @@
+{
+  "party": "P8fDVY",
+  "captured_on": "2026-10-15",
+  "notes": "Dark grid (Lancer Origin: spear/axe) from the capture plan, imported to prod and rebuilt locally with granblue:import_golden_party. Ereshkigal MH transc5, Causality Driver, Dagger of Bahamut Coda 5*, Executioner, Pain and Suffering, Advocatus Diaboli below level 200 at capture (SL15: the ATK-only Phantom's Supremacy, EX 23, no HP; the local copy is 4* to express that since imports carry no weapon level - atSjtJ is the same grid at level 200), Katana of Repudiation transc5 (beta Pendulum + Pendulum of Supremacy), Skeletal Eclipse, Doombringer Lyre 5* (Anklet of Oblivion), Covenant-Ruin Fist 5* (Attack awk 5; 'other' tier for a non-melee MC). Hades 6* main + friend. Established: Concrio is normal-frame Might on every Coda weapon; Pendulum of Supremacy has no Skill DMG Cap (78.05 = Tempering 28.05 + beta 50). Estimated DMG 531613 / to Light 812573 / Max HP 78296.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 410,
+    "omega": 0,
+    "taboo": 0
+  },
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp",
+    "dmg_cap_pen",
+    "ca_supp",
+    "e_atk"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 395
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 118
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 24
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 37.5
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 52.9
+    },
+    {
+      "label": "Dark Optimus",
+      "boost": "optimus_exalto",
+      "value": 30
+    },
+    {
+      "label": "Bonus Dark DMG",
+      "boost": "bonus_elem_dmg",
+      "value": 22.95
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 203
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 25
+    },
+    {
+      "label": "Light Reduc.",
+      "boost": "elem_reduc",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 19
+    },
+    {
+      "label": "DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "normal",
+      "value": 10.2
+    },
+    {
+      "label": "Elem. Amplify",
+      "boost": "elem_amplify",
+      "value": 30
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "N.A. Amp.",
+      "boost": "na_amp",
+      "value": 30,
+      "capped": true
+    },
+    {
+      "label": "N.A. Amp. (Sp.)",
+      "boost": "na_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 78.05
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 10
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 5
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 100
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 100
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 50000
+    },
+    {
+      "label": "N.A. Supp.",
+      "boost": "na_supp",
+      "value": 50000
+    },
+    {
+      "label": "N.A. Supp. (Sp.)",
+      "boost": "na_supp_sp",
+      "value": 20000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 127500
+    },
+    {
+      "label": "Charge Gain",
+      "boost": "charge_gain",
+      "value": -200
+    },
+    {
+      "label": "DEF Ignore",
+      "boost": "def_ignore",
+      "value": 10.2
+    },
+    {
+      "label": "DA Rate (AX)",
+      "boost": "da_ax",
+      "value": 2.5
+    },
+    {
+      "label": "TA Rate (AX)",
+      "boost": "ta_ax",
+      "value": 2.5
+    },
+    {
+      "label": "C.A. Supp. (AX)",
+      "boost": "ca_supp_ax",
+      "value": 30000
+    }
+  ]
+}

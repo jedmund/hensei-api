@@ -3,12 +3,18 @@ class CollectionCharacter < ApplicationRecord
   belongs_to :character
   belongs_to :awakening, optional: true
 
+  # prepend: the orphan callback must run before dependent: :nullify clears the
+  # foreign key, or it finds no grid characters to mark.
+  before_destroy :orphan_grid_items, prepend: true
+  has_many :grid_characters, dependent: :nullify
+
+  before_validation :clamp_transcendence_step
   before_save :add_default_awakening
 
   validates :character_id, uniqueness: { scope: :user_id,
     message: "already exists in your collection" }
   validates :uncap_level, inclusion: { in: 0..6 }
-  validates :transcendence_step, inclusion: { in: 0..10 }
+  validates :transcendence_step, inclusion: { in: 0..5 }
   validates :awakening_level, inclusion: { in: 1..10 }
 
   validate :validate_rings
@@ -52,6 +58,10 @@ class CollectionCharacter < ApplicationRecord
       joins(:character).order('characters.proficiency1 ASC')
     when 'proficiency_desc'
       joins(:character).order('characters.proficiency1 DESC')
+    when 'release_date_desc'
+      joins(:character).order(Arel.sql('characters.latest_date DESC NULLS LAST'))
+    when 'release_date_asc'
+      joins(:character).order(Arel.sql('characters.latest_date ASC NULLS LAST'))
     else
       order(created_at: :desc) # Default: newest first
     end
@@ -62,6 +72,12 @@ class CollectionCharacter < ApplicationRecord
   end
 
   private
+
+  def clamp_transcendence_step
+    return if transcendence_step.nil? || transcendence_step.negative? || character.nil?
+
+    self.transcendence_step = [transcendence_step, character.max_transcendence_stage].min
+  end
 
   def validate_rings
     [ring1, ring2, ring3, ring4, earring].each_with_index do |ring, index|
@@ -97,5 +113,12 @@ class CollectionCharacter < ApplicationRecord
     return unless awakening.nil?
 
     self.awakening = Awakening.where(slug: 'character-balanced').sole
+  end
+
+  # Marks party grid characters that used this collection character as orphaned, as the
+  # other collection models do. Without this, deleting a character that's in a party
+  # fails the grid_characters foreign key.
+  def orphan_grid_items
+    grid_characters.update_all(orphaned: true, collection_character_id: nil)
   end
 end

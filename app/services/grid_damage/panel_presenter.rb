@@ -1,0 +1,299 @@
+# frozen_string_literal: true
+
+module GridDamage
+  # rubocop:disable Metrics/ModuleLength -- the in-game panel order is intentionally explicit
+  # Shapes Calculator.boost_list into the in-game "Weapon Skill Boosts" panel: display
+  # lines in the game's group order (attack → HP → defense → special → overskill → AX)
+  # with panel labels, in-game label-image slugs (the gbf.wiki/game texture names, EN/JA
+  # variants resolved client-side), per-frame splits for the multiplicative types, and
+  # preformatted display strings.
+  module PanelPresenter
+    module_function
+
+    # Panel lines in game order: [key, series, label, image slug, group]. ELEMENT
+    # placeholders resolve against the grid's element (Exalto / Bonus DMG badges are
+    # element-specific). Multiplicative-by-series boosts list one entry per frame; keys
+    # missing here still render (text label) so new boost types are never hidden.
+    LINES = [
+      # Attack family (red labels)
+      ["atk", "normal", "Might", "might", "attack"],
+      ["atk", "omega", "Ω Might", "omega-might", "attack"],
+      ["atk", "odious", "Od Might", "od-might", "attack"],
+      ["atk", "ex", "EX Might", "ex-might", "attack"],
+      ["ex_atk_sp", nil, "EX Might Sp.", "ex-might-sp", "attack"],
+      ["stamina", "normal", "Stamina", "stamina", "attack"],
+      ["stamina", "omega", "Ω Stamina", "omega-stamina", "attack"],
+      ["stamina", "odious", "Od Stamina", "od-stamina", "attack"],
+      ["stamina", "ex", "Stamina", "stamina", "attack"],
+      ["enmity", "normal", "Enmity", "enmity", "attack"],
+      ["enmity", "omega", "Ω Enmity", "omega-enmity", "attack"],
+      ["enmity", "ex", "Enmity", "enmity", "attack"],
+      ["e_atk", nil, "E. ATK", "e-atk", "attack"],
+      ["e_atk_prog", nil, "E. ATK (Prog.)", "e-atk-prog", "attack"],
+      ["critical", nil, "Critical", "critical", "attack"],
+      ["da", nil, "DA Rate", "da-rate", "attack"],
+      ["ta", nil, "TA Rate", "ta-rate", "attack"],
+      ["optimus_exalto", nil, "ELEMENT Optimus", "ELEMENT-optimus", "attack"],
+      ["omega_exalto", nil, "ELEMENT Omega", "ELEMENT-omega", "attack"],
+      ["odious_exalto", nil, "ELEMENT Taboo", "ELEMENT-taboo", "attack"],
+      # Bonus DMG closes out the red group (SRiNSO panel order)
+      ["bonus_elem_dmg", nil, "Bonus ELEMENT DMG", "bonus-ELEMENT-dmg", "attack"],
+      ["bonus_des_dmg", nil, "Bonus Des. DMG", "bonus-des-dmg", "attack"],
+      ["bonus_ca", nil, "Bonus ELEMENT C.A.", "bonus-ELEMENT-ca", "attack"],
+      ["bonus_des_ca", nil, "Bonus Des. DMG C.A.", "bonus-des-dmg-ca", "attack"],
+      ["rigor", nil, "ELEMENT Rigor", "ELEMENT-rigor", "attack"],
+      # HP (green labels) — Heal Cap sits with HP in-game
+      ["hp", nil, "HP", "hp", "hp"],
+      ["hp_fixed", nil, "HP (Fixed)", "hp-fixed", "hp"],
+      ["heal_cap", nil, "Heal Cap", "heal-cap", "hp"],
+      ["hp_cut", nil, "HP Cut", "hp-cut", "hp"],
+      ["hp_dmg", nil, "HP DMG", "hp-dmg", "hp"],
+      # Defense (blue labels) — reduction is labeled with the foe's element ("Wind Reduc."
+      # on a fire grid)
+      ["def", nil, "DEF", "def", "defense"],
+      ["elem_reduc", nil, "FOE_ELEMENT Reduc.", "FOE_ELEMENT-reduc", "defense"],
+      ["fire_reduc", nil, "Fire Reduc.", "fire-reduc", "defense"],
+      ["water_reduc", nil, "Water Reduc.", "water-reduc", "defense"],
+      ["earth_reduc", nil, "Earth Reduc.", "earth-reduc", "defense"],
+      ["wind_reduc", nil, "Wind Reduc.", "wind-reduc", "defense"],
+      ["light_reduc", nil, "Light Reduc.", "light-reduc", "defense"],
+      ["dark_reduc", nil, "Dark Reduc.", "dark-reduc", "defense"],
+      ["debuff_res", nil, "Debuff Res.", "debuff-res", "defense"],
+      # Special (yellow labels). "(Arc)" lines are Arcarum-only boosts (Sephirath, Sephira
+      # Maxi); the game lists them apart from the always-on ones (F0MD7j).
+      ["dmg_cap", nil, "DMG Cap", "dmg-cap", "special"],
+      ["dmg_cap_sp", nil, "DMG Cap (Sp.)", "dmg-cap-sp", "special"],
+      ["dmg_cap_arc", nil, "DMG Cap (Arc)", "dmg-cap-arc", "special"],
+      ["dmg_amp", "normal", "DMG Amp.", "dmg-amp", "special"],
+      ["dmg_amp", "omega", "Ω DMG Amp.", "omega-dmg-amp", "special"],
+      ["dmg_amp", "ex", "DMG Amp.", "dmg-amp", "special"],
+      ["od_dmg_amp", nil, "Od DMG Amp.", "od-dmg-amp", "special"],
+      ["elem_amplify", nil, "Elem. Amplify", "elem-amplify", "special"],
+      ["plain_amp", nil, "DMG Amp. (Non-elem. Foe)", "plain-amp", "special"],
+      ["na_dmg_cap", nil, "N.A. DMG Cap", "na-dmg-cap", "special"],
+      ["na_amp", nil, "N.A. Amp.", "na-amp", "special"],
+      ["na_amp_sp", nil, "N.A. Amp. (Sp.)", "na-amp-sp", "special"],
+      ["na_amp_arc", nil, "N.A. Amp. (Arc)", "na-amp-arc", "special"],
+      ["skill_dmg", nil, "Skill DMG", "skill-dmg", "special"],
+      ["skill_dmg_cap", nil, "Skill DMG Cap", "skill-dmg-cap", "special"],
+      ["skill_cap_sp", nil, "Skill Cap (Sp.)", "skill-cap-sp", "special"],
+      ["skill_amp", nil, "Skill Amp.", "skill-amp", "special"],
+      ["skill_amp_sp", nil, "Skill Amp. (Sp.)", "skill-amp-sp", "special"],
+      ["skill_amp_arc", nil, "Skill Amp. (Arc)", "skill-amp-arc", "special"],
+      ["ca_dmg", nil, "C.A. DMG", "ca-dmg", "special"],
+      ["ca_dmg_cap", nil, "C.A. DMG Cap", "ca-dmg-cap", "special"],
+      ["ca_amp", nil, "C.A. Amp.", "ca-amp", "special"],
+      ["ca_amp_sp", nil, "C.A. Amp. (Sp.)", "ca-amp-sp", "special"],
+      ["ca_amp_arc", nil, "C.A. Amp. (Arc)", "ca-amp-arc", "special"],
+      ["sp_ca_cap", nil, "Sp. C.A. Cap", "sp-ca-cap", "special"],
+      ["cb_dmg", nil, "C.B. DMG", "cb-dmg", "special"],
+      ["cb_dmg_cap", nil, "C.B. DMG Cap", "cb-dmg-cap", "special"],
+      ["fc_dmg_cap", nil, "FC DMG Cap", "fc-dmg-cap", "special"],
+      ["cb_amp", nil, "C.B. Amp.", "cb-amp", "special"],
+      ["fc_amp", nil, "FC Amp.", "fc-amp", "special"],
+      ["crit_amp", nil, "Crit. Amp.", "crit-amp", "special"],
+      ["ca_supp", nil, "C.A. Supp.", "ca-supp", "special"],
+      ["dmg_supp", nil, "DMG Supp.", "dmg-supp", "special"],
+      ["na_supp", nil, "N.A. Supp.", "na-supp", "special"],
+      ["na_supp_sp", nil, "N.A. Supp. (Sp.)", "na-supp-sp", "special"],
+      ["skill_dmg_supp", nil, "Skill DMG Supp.", "skill-dmg-supp", "special"],
+      ["skill_supp_sp", nil, "Skill Supp. (Sp.)", "skill-supp-sp", "special"],
+      ["charge_gain", nil, "Charge Gain", "charge-gain", "special"],
+      ["def_ignore", nil, "DEF Ignore", "def-ignore", "special"],
+      # Overskill (teal labels)
+      ["crit_dmg", nil, "Crit. DMG", "crit-dmg", "overskill"],
+      ["added_hit", nil, "Added Hit", "added-hit", "overskill"],
+      ["dmg_cap_pen", nil, "DMG Cap Pen.", "dmg-cap-pen", "overskill"],
+      ["added_hp", nil, "HP", "added-hp", "overskill"],
+      # Befoulments (Odious weapons' negative skills)
+      ["atk_hit", nil, "ATK Hit", "bf-atk", "befoulment"],
+      ["da_hit", nil, "DA Rate Hit", "bf-da-rate", "befoulment"],
+      ["ta_hit", nil, "TA Rate Hit", "bf-ta-rate", "befoulment"],
+      ["skill_dmg_hit", nil, "Skill DMG Hit", "bf-skill-dmg", "befoulment"],
+      ["ca_dmg_hit", nil, "C.A. DMG Hit", "bf-ca-dmg", "befoulment"],
+      ["hp_hit", nil, "HP Hit", "bf-hp", "befoulment"],
+      ["def_hit", nil, "DEF Hit", "bf-def", "befoulment"],
+      ["debuff_hit", nil, "Debuff S. Hit", "bf-debuff", "befoulment"],
+      ["turn_dmg_hit", nil, "Turn DMG", "bf-turn-dmg", "befoulment"],
+      # AX skills (purple labels)
+      ["hp_ax", nil, "HP (AX)", "ax-hp", "ax"],
+      ["atk_ax", nil, "ATK (AX)", "ax-atk", "ax"],
+      ["stamina_ax", nil, "Stamina (AX)", "ax-stamina", "ax"],
+      ["enmity_ax", nil, "Enmity (AX)", "ax-enmity", "ax"],
+      ["def_ax", nil, "DEF (AX)", "ax-def", "ax"],
+      ["da_ax", nil, "DA Rate (AX)", "ax-da-rate", "ax"],
+      ["ta_ax", nil, "TA Rate (AX)", "ax-ta-rate", "ax"],
+      ["ele_atk_ax", nil, "Elemental ATK (AX)", "ax-ele-atk", "ax"],
+      ["ele_dmg_red_ax", nil, "Elemental Reduc. (AX)", "ax-ele-reduc", "ax"],
+      ["ca_dmg_ax", nil, "C.A. DMG (AX)", "ax-ca-dmg", "ax"],
+      ["ca_cap_ax", nil, "C.A. DMG Cap (AX)", "ax-ca-dmg-cap", "ax"],
+      ["ca_supp_ax", nil, "C.A. Supp. (AX)", "ax-ca-supp", "ax"],
+      ["skill_supp_ax", nil, "Skill DMG Supp. (AX)", "ax-skill-dmg-supp", "ax"],
+      ["skill_cap_ax", nil, "Skill DMG Cap (AX)", "ax-skill-dmg-cap", "ax"],
+      ["na_cap_ax", nil, "N.A. DMG Cap (AX)", "ax-na-dmg-cap", "ax"],
+      ["healing_ax", nil, "Healing (AX)", "ax-heal", "ax"],
+      ["debuff_res_ax", nil, "Debuff Res. (AX)", "ax-debuff-res", "ax"],
+      ["exp_ax", nil, "EXP Gain", "ax-exp-gain", "ax"],
+      ["rupie_ax", nil, "Rupie Gain", "ax-rupie-gain", "ax"]
+    ].freeze
+
+    FLAT_KEYS = %w[dmg_supp na_supp na_supp_sp skill_dmg_supp skill_supp_sp ca_supp
+                   ca_supp_ax skill_supp_ax hp_fixed].freeze
+
+    # → { enhancements: {optimus:, omega:, taboo:}, lines: [{key, series, label,
+    #    label_slug, group, value, display, capped}] } for the party at the given state.
+    def present(party, state: {})
+      computed = Calculator.panel(party, state: state)
+      agg = computed[:agg]
+      contributions = active_contributions(computed[:contributions])
+      element = Calculator.send(:grid_element, party)
+
+      lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
+      lines += leftover_lines(agg, contributions)
+      lines += hidden_lines(computed[:hidden_agg], computed[:hidden_contributions], element)
+      { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(2) }, lines: lines }
+    end
+
+    # Skills the game counts in Estimated DMG without a panel line (MjthwV: Advocatus
+    # Diaboli's main-hand Enmity). They keep their usual label in a "hidden" group.
+    def hidden_lines(agg, contributions, element)
+      return [] if agg.blank?
+
+      contributions = active_contributions(contributions)
+      lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
+      lines += leftover_lines(agg, contributions)
+      lines.map { |line| line.merge(group: "hidden", capped: false) }
+    end
+
+    def line_for(agg, contributions, spec, element)
+      key, series, label, slug, group = spec
+      result = agg[key] or return nil
+      value = series ? result.by_series&.dig(series)&.to_f : result.total.to_f
+      return nil if value.nil? || value.zero?
+
+      {
+        key: key, series: series,
+        label: resolve_element(label, element&.capitalize),
+        label_slug: resolve_element(slug, element),
+        group: group,
+        value: value.round(2),
+        display: display_value(key, value),
+        capped: series.nil? && result.capped == true,
+        sources: line_sources(result, series),
+        breakdown: breakdown_for(agg, contributions, key, series)
+      }
+    end
+
+    # The same activity filter the aggregator applies (main-hand gating, nil values).
+    def active_contributions(contributions)
+      active = contributions.reject { |c| c.value.nil? || (c.main_hand_only && !c.mainhand) }
+      Aggregator.apply_stacking_groups(active)
+    end
+
+    OVERSKILL_FEEDS = {
+      "crit_dmg" => [["Critical", "クリティカル確率", "critical", 0.5]],
+      "dmg_cap_pen" => [["DMG Cap", "ダメージ上限", "dmg_cap", 0.5], ["DMG Cap (Sp.)", "ダメージ上限(特殊)", "dmg_cap_sp", 0.5]],
+      "added_hit" => [["DA Rate", "DA確率", "da", 0.4], ["TA Rate", "TA確率", "ta", 0.6]],
+      "added_hp" => [["HP", "HP", "hp", 0.05]]
+    }.freeze
+
+    # Per-line contribution entries: [{name:{en,ja}, icon, value, base, multiplier,
+    # count}], identical skills coalesced (count > 1 ⇒ value is per copy). Overskill
+    # lines synthesize their over-cap conversion instead.
+    def breakdown_for(agg, contributions, key, series)
+      feeds = OVERSKILL_FEEDS[key]
+      return overskill_breakdown(agg, feeds) if feeds
+
+      matching = contributions.select { |c| c.boost_type == key && (series.nil? || c.series == series) }
+      matching.group_by { |c| [c.source_label, c.source_icon, c.value.to_f.round(2)] }
+              .map do |(label, icon, value), group|
+        first = group.first
+        {
+          name: label || { en: key.tr("_", " "), ja: nil },
+          icon: icon,
+          value: value,
+          base: first.base_value&.to_f&.round(2),
+          multiplier: first.multiplier&.to_f&.round(2),
+          count: group.size
+        }
+      end
+    end
+
+    # "Critical 45.6% over the 100% cap × 0.5" style entries for the derived lines.
+    def overskill_breakdown(agg, feeds)
+      feeds.filter_map do |label_en, label_ja, source_key, rate|
+        over = Calculator.send(:excess, agg, source_key)
+        next if over.zero?
+
+        { name: { en: "#{label_en} over cap", ja: "#{label_ja}の上限超過分" }, icon: nil,
+          value: (over * rate).round(2), base: over.round(2), multiplier: rate, count: 1 }
+      end
+    end
+
+    # Exalto and elemental Bonus DMG badges are element-specific in game; fall back to
+    # the generic form when the grid element can't be determined.
+    def resolve_element(text, element)
+      return text unless text.include?("ELEMENT")
+
+      # FOE_ELEMENT first — it contains "ELEMENT" as a substring. The foe's element is
+      # what the grid's element is strong against (fire grid → "Wind Reduc.").
+      if text.include?("FOE_ELEMENT")
+        foe = element && Calculator::ADVANTAGED_FOE[element.downcase]
+        return text.gsub("FOE_ELEMENT-reduc", "elem-reduc").gsub(/FOE_ELEMENT\s*/, "Elem. ").strip if foe.nil?
+
+        foe = foe.capitalize if element.match?(/\A[A-Z]/)
+        return text.gsub("FOE_ELEMENT", foe)
+      end
+      return text.gsub("ELEMENT", element) if element
+
+      text.gsub("bonus-ELEMENT-dmg", "bonus-elem-dmg").gsub(/\s*ELEMENT\s*/, " ").strip
+    end
+
+    # Grid weapon ids contributing to this line (per-frame for series-split lines).
+    def line_sources(result, series)
+      map = result.try(:source_map) || {}
+      ids = series ? Array(map[series]) : map.values.flatten
+      ids.uniq
+    end
+
+    # Supplements and fixed HP are flat counts (+100,000); everything else is a percent.
+    def display_value(key, value)
+      return format("%+d", value).gsub(/(\d)(?=(\d{3})+\z)/, '\1,') if FLAT_KEYS.include?(key)
+
+      rounded = value.round(2)
+      rounded = rounded.to_i if rounded == rounded.to_i
+      "#{rounded}%"
+    end
+
+    # Boost types not in the ordered map still render, so nothing is silently hidden.
+    # Enhancement-only boosts appear in the header, never as lines. Skill hit rate
+    # (β Pendulum's lv210/240 upgrade) is real but the game doesn't list it (g0gpOT).
+    HIDDEN_KEYS = %w[elemental_enhance skill_hit].freeze
+
+    # Registry rows override the code defaults (#62): a populated panel_lines table
+    # IS the panel — order, labels, badges, grouping. Empty table (tests, bare DBs)
+    # falls back to LINES.
+    def effective_lines
+      rows = PanelLine.order(:position).pluck(:boost_type, :series, :label_en, :slug, :group_name)
+      rows.presence || LINES
+    end
+
+    def hidden_keys
+      HIDDEN_KEYS | WeaponSkillBoostType.where(hidden: true).pluck(:key)
+    end
+
+    def leftover_lines(agg, contributions)
+      known = effective_lines.to_set(&:first) + hidden_keys
+      agg.except(*known).filter_map do |key, result|
+        value = result.total.to_f
+        next if value.zero?
+
+        { key: key, series: nil, label: key.tr("_", " "), label_slug: nil, group: "other",
+          value: value.round(2), display: display_value(key, value),
+          capped: result.capped == true, sources: line_sources(result, nil),
+          breakdown: breakdown_for(agg, contributions, key, nil) }
+      end
+    end
+  end
+  # rubocop:enable Metrics/ModuleLength
+end

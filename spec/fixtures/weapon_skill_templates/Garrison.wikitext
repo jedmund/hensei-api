@@ -1,0 +1,112 @@
+{{WsBox
+|name=Garrison
+|desc=[{{wsSize}}] boost to [element] allies' DEF based on how low HP is
+|aura_boostable=yes
+|color=blue
+|boost1=DEF
+
+|icon=ws_skill_guard_*_1.png
+
+|small=ws_skill_guard_*_1.png
+|medium=ws_skill_guard_*_2.png
+|big=ws_skill_guard_*_3.png
+}}
+
+* See [[Damage#Formula|Damage Formula]] for how DEF influences DMG received.
+* Total DEF boosts cap at 400%.
+
+:{| class="wikitable" style="text-align: center; width: 750px;"
+! style="font-size: 1.2em;" colspan="21" | {{Icon|normal aura}} {{Icon|omega aura}} Normal & Omega
+|-
+! style="width: 100px;" | Icons
+! style="width: 100px;" colspan="2" | Skill Level
+!1||10||15||20
+|-
+! {{WeaponSkillIconLink|icon=ws_skill_guard_*_1.png|size=50|category=Garrison}}{{WeaponSkillIconLink|icon=ws_skill_guard_m_*_1.png|size=50|category=Garrison}}
+! style="width: 150px" |Small<ref name="zekasyuz Small Garrison">zekasyuz, Small Garrison https://twitter.com/zekasyuz/status/1138774656008146944</ref>
+! rowspan="3" style="width: 150px" | Garrison Modifier
+| style="font-size: 1.3em;" |0.5
+| style="font-size: 1.3em;" |6.0
+| style="font-size: 1.3em;" |7.0
+| style="font-size: 1.3em;" | -
+|-
+! {{WeaponSkillIconLink|icon=ws_skill_guard_*_2.png|size=50|category=Garrison}}{{WeaponSkillIconLink|icon=ws_skill_guard_m_*_2.png|size=50|category=Garrison}}
+!Medium<ref name="zekasyuz Medium Garrison">zekasyuz, Medium Garrison https://twitter.com/zekasyuz/status/1077897021179261025</ref><ref name="konmatsuge, Medium Garrison SL20">konmatsuge, Medium Garrison SL20 https://twitter.com/konmatsuge/status/1260560599089471489</ref>
+| style="font-size: 1.3em;" |1.0
+| style="font-size: 1.3em;" |8.0
+| style="font-size: 1.3em;" |10.0
+| style="font-size: 1.3em;" |11.0
+|-
+! {{WeaponSkillIconLink|icon=ws_skill_guard_*_3.png|size=50|category=Garrison}}
+!Big<ref name="zekasyuz Garrison">zekasyuz Garrison https://twitter.com/zekasyuz/status/1018902289984057344</ref>
+| style="font-size: 1.3em;" |3.0
+| style="font-size: 1.3em;" |10.0
+| style="font-size: 1.3em;" |12.5
+| style="font-size: 1.3em;" |13.5
+|}
+
+:{| class="wikitable" style="text-align: center; width: 750px;"
+! style="font-size: 1.2em;" colspan="21" | Taboo
+|-
+! style="width: 100px;" | Icons
+! style="width: 100px;" colspan="2" | Skill Level
+!1||10||15
+|-
+! {{WeaponSkillIconLink|icon=ws_skill_guard_k_*_3.png|size=50|category=Garrison}}
+! style="width: 150px" | Big<ref name="GameWith, Blazefist of Prosperity Verboten">GameWith, Blazefist of Prosperity Verboten. https://グランブルーファンタジー.gamewith.jp/article/show/537536</ref>
+! rowspan="3" style="width: 150px" | Garrison Modifier
+| style="font-size: 1.3em;" | 3.6
+| style="font-size: 1.3em;" | 12.0
+| style="font-size: 1.3em;" | 15.0
+|}
+
+Formula for calculating Garrison:
+
+<pre>
+HP Ratio = (Current HP / Max HP)
+HP Modifier = -1 * (1 - HP Ratio)^3  + 4 * (1 - HP Ratio)
+Garrison DEF = Garrison Modifier * HP Modifier
+</pre>
+
+<dl><dd><table class="wikitable">
+  <tr>
+    <th colspan=12>Garrison {{Label|DEF}} based on HP</th>
+  </tr>
+  <tr>
+    <th rowspan=2>HP</th>
+    <th colspan=2>Small</th>
+    <th colspan=3>Medium</th>
+    <th colspan=3>Big</th>
+    <th colspan=1>Big<br />(Taboo)</th>
+  </tr>
+  <tr>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL15</th>
+  </tr>
+{{#vardefine: hp | 100 }}
+{{#while:
+  | {{ #ifexpr: {{ #var: hp }} >= 0 | true}}
+  | {{ #vardefine: hp_ratio | {{ #expr: {{ #var: hp }} / 100 }} }}
+  <tr style="text-align: right;">
+    <th>{{ #ifeq: {{ #var: hp}} | 0 | 1HP | {{ #var: hp}}% }}</th>
+    <td>{{ #expr: 6 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 7 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 8 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 10 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 11 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 10 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 12.5 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 13.5 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+    <td>{{ #expr: 15.0 * (-1 * (1 - {{ #var: hp_ratio }})^3 + 4 * (1 - {{ #var: hp_ratio }})) round 2 }}%</td>
+  </tr>{{
+  #vardefine: hp | {{ #expr: {{ #var: hp}} - 5 }}
+  }}
+}}
+</table></dd></dl><noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

@@ -2,6 +2,23 @@
 
 class Weapon < ApplicationRecord
   include PgSearch::Model
+  include HasSources
+
+  # The fetched sources live in `sources` (D35, PR 7b).
+  # The weapon's page is one row: keyed by its page title once the weapon-skill source store
+  # has fetched it (WeaponSource; the build reads it by title), key '' for a page stored
+  # without that fetch (e.g. pasted by an editor). A fetch replaces the latter with the former.
+  source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at, titled: true
+  # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
+  source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
+  # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).
+  source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at, filter: Granblue::GamePayload.method(:sanitize_item)
+  source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at, filter: Granblue::GamePayload.method(:sanitize_item)
+
+  # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
+  normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  # A plain gbf-wiki.com title (Granblue::JpWikiTitle): a pasted percent-encoded one is decoded.
+  normalizes :wiki_ja, with: ->(title) { Granblue::JpWikiTitle.normalize(title) }
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |weapon|
@@ -37,7 +54,8 @@ class Weapon < ApplicationRecord
   has_many :weapon_awakenings
   has_many :awakenings, through: :weapon_awakenings
   has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
-  has_many :skills, through: :weapon_skills
+  has_many :weapon_skill_versions, through: :weapon_skills
+  has_many :skills, through: :weapon_skill_versions
   belongs_to :weapon_series, optional: true
   belongs_to :weapon_series_variant, optional: true
   belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
@@ -119,6 +137,20 @@ class Weapon < ApplicationRecord
     return weapon_series_variant.augment_type unless weapon_series_variant&.augment_type.nil?
 
     weapon_series&.augment_type || 'no_augment'
+  end
+
+  # AX slot rules (gbf.wiki/AX_Skills) are defined by series: 'standard'
+  # (Omega/Ancestral — per-primary secondary pools), 'xeno' (different pools
+  # incl. supplementals), 'primal' (Primal and Ancient weapons — standard pools
+  # plus EXP/Rupie primaries, which have no secondary).
+  def effective_ax_type
+    return unless effective_augment_type == 'ax'
+
+    case weapon_series&.slug
+    when 'xeno' then 'xeno'
+    when 'primal', 'olden-primal' then 'primal'
+    else 'standard'
+    end
   end
 
   # Promotion scopes

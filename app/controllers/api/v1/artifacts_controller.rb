@@ -4,6 +4,7 @@ module Api
   module V1
     class ArtifactsController < Api::V1::ApiController
       before_action :set_artifact, only: %i[show download_image download_images download_status]
+      before_action :ensure_editor_role, only: %i[download_image download_images]
 
       # GET /artifacts
       def index

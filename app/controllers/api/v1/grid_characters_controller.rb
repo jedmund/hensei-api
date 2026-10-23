@@ -16,9 +16,11 @@ module Api
       include IdResolvable
       include CollectionSourceConcern
       include PartyAuthorizationConcern
+      include SubstituteGridPreloading
+      include PartyFullLoading
 
       before_action :find_grid_character,
-                    only: %i[update update_uncap_level update_position destroy resolve sync sync_to_collection switch_style]
+                    only: %i[update update_uncap_level update_position destroy sync sync_to_collection switch_style]
       before_action :find_party,
                     only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
       before_action :find_incoming_character, only: :create
@@ -56,7 +58,9 @@ module Api
           if grid_character.save
             @party.mark_updated!
             grid_character.sync_from_collection! if grid_character.collection_character_id.present?
-            grid_character.reload
+            # Re-fetch with blueprint preloads so the :full render avoids N+1s.
+            grid_character = GridCharacter.includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                                          .find(grid_character.id)
             render json: GridCharacterBlueprint.render(grid_character,
                                                        root: :grid_character,
                                                        view: :full), status: :created
@@ -74,6 +78,11 @@ module Api
       #
       # @return [void]
       def update
+        if character_params[:collection_character_id].present?
+          collection_item = CollectionCharacter.find_by(id: character_params[:collection_character_id])
+          return unless validate_collection_source!(@party, collection_item)
+        end
+
         processed_params = transform_character_params(character_params)
         assign_raw_attributes(@grid_character)
         assign_transformed_attributes(@grid_character, processed_params)
@@ -96,7 +105,7 @@ module Api
       # @return [void]
       def update_uncap_level
         @grid_character.uncap_level = character_params[:uncap_level]
-        @grid_character.transcendence_step = [character_params[:transcendence_step].to_i, 5].min
+        @grid_character.transcendence_step = character_params[:transcendence_step].to_i
 
         if @grid_character.save
           render json: GridCharacterBlueprint.render(@grid_character,
@@ -142,7 +151,7 @@ module Api
           reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
 
           render json: {
-            party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
             grid_character: GridCharacterBlueprint.render_as_hash(@grid_character.reload, view: :nested),
             reordered: reordered || false
           }, status: :ok
@@ -183,7 +192,7 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(@party.reload, view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
           swapped: {
             source: GridCharacterBlueprint.render_as_hash(source.reload, view: :nested),
             target: GridCharacterBlueprint.render_as_hash(target.reload, view: :nested)
@@ -205,7 +214,13 @@ module Api
         incoming = find_by_any_id(Character, resolve_params[:incoming])
         render_not_found_response('character') and return unless incoming
 
-        conflicting = resolve_params[:conflicting].map { |id| GridCharacter.find_by(id: id) }.compact
+        # Every conflicting id must be a grid character in the target party.
+        conflicting_ids = Array(resolve_params[:conflicting]).compact_blank.map(&:to_s).uniq
+        conflicting = GridCharacter.where(id: conflicting_ids, party_id: @party.id).to_a
+        if conflicting_ids.empty? || conflicting.size != conflicting_ids.size
+          render_not_found_response('grid_character') and return
+        end
+
         conflicting.each(&:destroy)
 
         if (existing = GridCharacter.find_by(party_id: @party.id, position: resolve_params[:position]))
@@ -233,9 +248,7 @@ module Api
       #
       # @return [void]
       def destroy
-        grid_character = GridCharacter.find_by('id = ?', params[:id])
-
-        return render_not_found_response('grid_character') if grid_character.nil?
+        grid_character = @grid_character
 
         if grid_character.destroy
           @party.mark_updated!
@@ -262,7 +275,7 @@ module Api
           )
         end
 
-        @grid_character.sync_from_collection!
+        @grid_character.sync_from_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
@@ -282,11 +295,12 @@ module Api
           )
         end
 
-        unless current_user.present? && @party.collection_source_user_id == current_user.id
+        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
+               @grid_character.collection_character.user_id == current_user.id
           return render_unauthorized_response
         end
 
-        @grid_character.sync_to_collection!
+        @grid_character.sync_to_collection!(fields: sync_fields_param)
         render json: GridCharacterBlueprint.render(@grid_character.reload,
                                                    root: :grid_character,
                                                    view: :nested)
@@ -324,6 +338,17 @@ module Api
       private
 
       ##
+      # Pulls the optional `fields` array (camelCase keys) from the request body
+      # used by per-section sync. Returns nil when omitted so the model falls
+      # back to syncing every tracked column.
+      def sync_fields_param
+        raw = params[:fields]
+        return nil if raw.blank?
+
+        Array(raw).map(&:to_s).reject(&:blank?)
+      end
+
+      ##
       # Builds a new grid character using the transformed parameters.
       #
       # @param processed_params [Hash] the transformed parameters.
@@ -345,23 +370,19 @@ module Api
       ##
       # Computes the maximum uncap level for a character based on its flags.
       #
-      # Special characters (limited/seasonal) have a different uncap progression:
-      # - Base: 3, FLB: 4, Transcendence: 5
+      # Special characters have a different uncap progression:
+      # - Base: 3, FLB: 4, ULB: 5
       # Regular characters:
       # - Base: 4, FLB: 5, Transcendence: 6
       #
       # @param character [Character] the character to compute max uncap for.
       # @return [Integer] the maximum uncap level.
       def compute_max_transcendence_step(character)
-        character.transcendence ? 5 : 0
+        character.max_transcendence_stage
       end
 
       def compute_max_uncap_level(character)
-        if character.special
-          character.transcendence ? 5 : character.flb ? 4 : 3
-        else
-          character.transcendence ? 6 : character.flb ? 5 : 4
-        end
+        character.max_uncap_level
       end
 
       ##
@@ -376,7 +397,17 @@ module Api
       def assign_raw_attributes(grid_character)
         grid_character.new_rings = character_params[:rings] if character_params[:rings].present?
         grid_character.new_awakening = character_params[:awakening] if character_params[:awakening].present?
-        grid_character.assign_attributes(character_params.except(:rings, :awakening, :character_id, :party_id))
+        # `role_ids` is the public param name; map it to the Rails-generated
+        # `grid_character_role_ids=` setter on the has_many :through association.
+        # Reset the through-association cache so the blueprint sees the new set
+        # (the cache was warmed by `find_grid_character`'s preload).
+        if character_params.key?(:role_ids)
+          grid_character.grid_character_role_ids = Array(character_params[:role_ids])
+          grid_character.grid_character_roles.reset
+        end
+        grid_character.assign_attributes(
+          character_params.except(:rings, :awakening, :character_id, :party_id, :role_ids)
+        )
       end
 
       ##
@@ -492,9 +523,14 @@ module Api
       #
       # @return [void]
       def find_party
-        @party = Party.find_by(id: params.dig(:character, :party_id)) ||
-          Party.find_by(id: params[:party_id]) ||
-          @grid_character&.party
+        requested_party_id = params.dig(:character, :party_id) || params.dig(:resolve, :party_id) || params[:party_id]
+        @party = if @grid_character
+                   # The party always comes from the row itself; a mismatched
+                   # party id in the request is treated as not found.
+                   @grid_character.party if requested_party_id.blank? || requested_party_id.to_s == @grid_character.party_id.to_s
+                 else
+                   Party.find_by(id: requested_party_id)
+                 end
         render_not_found_response('party') unless @party
       end
 
@@ -505,9 +541,13 @@ module Api
       #
       # @return [void]
       def find_grid_character
-        grid_character_id = params[:id] || params.dig(:character, :id) || params.dig(:resolve, :conflicting)
-        @grid_character = GridCharacter.includes(:awakening).find_by(id: grid_character_id)
-        render_not_found_response('grid_character') unless @grid_character
+        grid_character_id = params[:id] || params.dig(:character, :id)
+        @grid_character = GridCharacter
+                          .includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
+                          .find_by(id: grid_character_id)
+        return render_not_found_response('grid_character') unless @grid_character
+
+        preload_substitute_grids!([@grid_character])
       end
 
       ##
@@ -578,10 +618,13 @@ module Api
           :uncap_level,
           :transcendence_step,
           :perpetuity,
+          :brought_by_blessing,
+          role_ids: [],
           awakening: %i[id level],
           rings: %i[modifier strength],
-          earring: %i[modifier strength]
-        )
+          earring: %i[modifier strength],
+          full_auto_skills: %w[0 1 2 3]
+        ).then { |p| permit_description(p, params[:character]) }
       end
 
       ##
@@ -605,7 +648,7 @@ module Api
       #
       # @return [ActionController::Parameters] the permitted parameters.
       def resolve_params
-        params.require(:resolve).permit(:position, :incoming, conflicting: [])
+        params.require(:resolve).permit(:party_id, :position, :incoming, conflicting: [])
       end
     end
   end

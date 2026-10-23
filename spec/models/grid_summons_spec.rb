@@ -439,6 +439,39 @@ RSpec.describe GridSummon, type: :model do
         end
       end
     end
+
+    describe '#out_of_sync_fields' do
+      context 'when collection_summon is linked' do
+        let(:linked_grid_summon) do
+          summon.update!(transcendence: true, ulb: true, flb: true)
+          create(:grid_summon,
+                 party: party,
+                 summon: summon,
+                 position: 1,
+                 collection_summon: collection_summon,
+                 uncap_level: 3,
+                 transcendence_step: 0)
+        end
+
+        it 'reports drifted uncap_level as uncapLevel' do
+          expect(linked_grid_summon.out_of_sync_fields).to include('uncapLevel')
+        end
+
+        it 'returns [] after sync' do
+          linked_grid_summon.sync_from_collection!
+          expect(linked_grid_summon.out_of_sync_fields).to eq([])
+        end
+      end
+
+      context 'when no collection_summon is linked' do
+        it 'returns []' do
+          unlinked = build(:grid_summon, party: party, summon: summon, position: 1,
+                                         uncap_level: 3, transcendence_step: 0)
+          unlinked.save!
+          expect(unlinked.out_of_sync_fields).to eq([])
+        end
+      end
+    end
   end
 
   describe 'boost recomputation callback' do
@@ -466,6 +499,15 @@ RSpec.describe GridSummon, type: :model do
       party.reload
       expect(party.boost_mod).to eq('omega')
       expect(party.boost_side).to eq('double')
+    end
+
+    it 'skips the recompute when the party is destroyed with its main and friend summons' do
+      party = create(:party)
+      GridSummon.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
+      GridSummon.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+
+      expect { party.reload.destroy! }.not_to raise_error
+      expect(Party.exists?(party.id)).to be false
     end
   end
 end

@@ -81,12 +81,13 @@ FactoryBot.define do
     # Trait for AX weapon with skills
     trait :with_ax do
       ax_strength1 { 3.5 }
-      ax_strength2 { 10.0 }
+      ax_strength2 { 4.0 }
       after(:build) do |collection_weapon|
+        collection_weapon.weapon = FactoryBot.create(:weapon, :with_ax)
         collection_weapon.ax_modifier1 = WeaponStatModifier.find_by(slug: 'ax_atk') ||
                                          FactoryBot.create(:weapon_stat_modifier, :ax_atk)
-        collection_weapon.ax_modifier2 = WeaponStatModifier.find_by(slug: 'ax_hp') ||
-                                         FactoryBot.create(:weapon_stat_modifier, :ax_hp)
+        collection_weapon.ax_modifier2 = WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
+                                         FactoryBot.create(:weapon_stat_modifier, :ax_ca_dmg)
       end
     end
 

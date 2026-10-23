@@ -7,13 +7,11 @@ module Api
       before_action :set_collection_summon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts check_updates]
       before_action :set_collection_summon_for_write, only: %i[update destroy]
 
       def index
         if params[:unowned].present?
-          return head :forbidden unless current_user && @target_user.id == current_user.id
-
           owned_ids = @target_user.collection_summons.select(:summon_id).distinct
           @summons = Summon.where.not(id: owned_ids)
                            .includes(:summon_series)
@@ -21,6 +19,9 @@ module Api
           @summons = @summons.where(element: array_param(:element)) if params[:element]
           @summons = @summons.where(rarity: array_param(:rarity)) if params[:rarity]
           @summons = @summons.where(summon_series_id: array_param(:series)) if params[:series]
+          if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
+            @summons = @summons.where(support_eligible: true)
+          end
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
             @summons = @summons.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
@@ -48,6 +49,9 @@ module Api
         @collection_summons = @collection_summons.by_rarity(array_param(:rarity)) if params[:rarity]
         @collection_summons = @collection_summons.by_series(array_param(:series)) if params[:series]
         @collection_summons = @collection_summons.by_name(params[:search]) if params[:search].present?
+        if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
+          @collection_summons = @collection_summons.support_eligible
+        end
 
         @collection_summons = @collection_summons.sorted_by(params[:sort], current_user&.language || 'en')
 
@@ -258,6 +262,23 @@ module Api
         render json: { conflicts: conflicts }
       end
 
+      # POST /collection/summons/check_updates
+      # Returns field-level diffs for already-owned summons that differ from the
+      # state that the real import would apply. Non-owned summons are skipped.
+      #
+      # @param data [Hash] Game data containing summon list
+      # @return [JSON] { updates: [{ game_id, granblue_id, changes: [...] }, ...] }
+      def check_updates
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = SummonImportService.new(current_user, game_data)
+        render json: { updates: service.preview_updates }
+      end
+
       private
 
       def set_target_user
@@ -327,6 +348,10 @@ module Api
           scope.order(element: :asc)
         when 'element_desc'
           scope.order(element: :desc)
+        when 'release_date_desc'
+          scope.order(Arel.sql('latest_date DESC NULLS LAST'), id: :asc)
+        when 'release_date_asc'
+          scope.order(Arel.sql('latest_date ASC NULLS LAST'), id: :asc)
         else
           scope.order(latest_date: :desc, id: :asc)
         end

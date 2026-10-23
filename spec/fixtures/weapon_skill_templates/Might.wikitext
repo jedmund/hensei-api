@@ -1,0 +1,125 @@
+{{WsBox
+|name=Might
+|desc=[{{wsSize}}] boost to [element] allies' ATK
+|aura_boostable=yes
+|color=red
+|boost1=Might
+|boost2=Omega Might
+|boost3=EX Might
+
+|icon=ws_skill_atk_*_1.png
+
+|small=ws_skill_atk_*_1.png
+|medium=ws_skill_atk_*_2.png
+|big=ws_skill_atk_*_3.png
+|big2=ws_skill_atk_*_3_2.png
+|massive=ws_skill_atk_*_4_3.png
+|unworldly=
+
+|o_small=
+|o_medium=ws_skill_atk_m_*_2.png
+|o_big=ws_skill_atk_m_*_3.png
+|o_big2=
+|o_massive=
+|o_unworldly=
+
+|ex_small=ws_skill_atk_a_*_1.png
+|ex_medium=ws_skill_atk_a_*_2.png
+|ex_big=ws_skill_atk_a_*_3.png
+|ex_big2=ws_skill_atk_a_*_4.png
+|ex_massive=ws_skill_atk_a_*_5.png
+|ex_unworldly=
+}}
+*Different skill types (Normal, Omega, EX) are additive within their type, but multiplicative between types.<br />See [[Damage Formula]] for details.
+* EX weapon skills from [[event]] rewards are unboostable, but their skill values are listed under the EX table.
+
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="7" class="wsmod-title" | {{icon|normal aura}} Normal<ref name="@Hecate_mk2 Lumi sword">@Hecate_mk2 Lumi Sword https://twitter.com/Hecate_mk2/status/977343036383379456</ref>
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_*_1.png|size=50|category=Might}}
+! class="wsmod-tier" | Small
+! class="wsmod-stat" rowspan="6" | {{Label|Might}}
+| 1.0% || 10.0% || 12.0% || 13.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_*_2.png|size=50|category=Might}}
+! class="wsmod-tier" | Medium
+| 3.0% || 12.0% || 14.5% || 16.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_*_3.png|size=50|category=Might}}
+! class="wsmod-tier" | Big
+| 6.0% || 15.0% || 18.0% || 20.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_*_3_2.png|size=50|category=Might}}
+! class="wsmod-tier" | Big II
+| 7.0% || 16.0% || 20.0% || 22.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_*_4_3.png|size=50|category=Might}}
+! class="wsmod-tier" | Massive
+| 8.0% || 17.0% || 22.0% || 25.5%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=Ws_skill_atk_*_4.png|size=50|category=Might}}
+! class="wsmod-tier" | [[:Category:Ancestral Weapons|Ancestral]]
+| 16.0% || 25.0% || 33.0% || -
+|}
+</div>
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="7" class="wsmod-title" | {{icon|omega aura}} Omega<ref name="GameWith Tiamat Bolt SL20">GameWith Tiamat Bolt SL20 https://twitter.com/Granblue_GW/status/972768727073570816</ref><ref name="Metalgaldra Magna SL20">Metalgaldra Magna SL20 https://twitter.com/metalgaldra/status/972468950087778306</ref>
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_m_*_1.png|size=50|category=Might}}
+! class="wsmod-tier" | Small
+! class="wsmod-stat" rowspan="3" | {{Label|Omega Might}}
+| 1.0% || 10.0% || 12.0% || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_m_*_2.png|size=50|category=Might}}
+! class="wsmod-tier" | Medium
+| 3.0% || 12.0% || 14.5% || 16.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_m_*_3.png|size=50|category=Might}}
+! class="wsmod-tier" | Big
+| 6.0% || 15.0% || 18.0% || 20.0%
+|}
+</div>
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="7" class="wsmod-title" | EX<ref name="@Hecate_mk2 Huanglong Gauntlet 5LB">@Hecate_mk2 Huanglong Gauntlet 5LB https://twitter.com/Hecate_mk2/status/1066231622217822208</ref><ref name="Gamewith Astral Weapons">Gamewith, Astral Weapons https://グランブルーファンタジー.gamewith.jp/article/show/187438</ref><ref name="Hecate_mk2 Sol Remnant ULB">Hecate_mk2, Sol Remnant ULB https://twitter.com/Hecate_mk2/status/1265295353005260800</ref><ref name="Gamewith True Infernal Flamescythe ULB">Gamewith, True Infernal Flamescythe ULB https://twitter.com/Granblue_GW/status/1271718399832285185</ref>
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_a_*_1.png|size=50|category=Might}}
+! class="wsmod-tier" | Small
+! class="wsmod-stat" rowspan="6" | {{Label|EX Might}}
+| 1.0% || 10.0% || 12.0% || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_a_*_2.png|size=50|category=Might}}
+! class="wsmod-tier" | Medium
+| 3.0% || 12.0% || 14.5% || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_a_*_3.png|size=50|category=Might}}
+! class="wsmod-tier" | Big
+| 6.0% || 15.0% || 18.0% || 21.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_a_*_4.png|size=50|category=Might}}
+! class="wsmod-tier" | Massive
+| 9.0% || 18.0% || 23.0% || 25.5%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_atk_a_*_5.png|size=50|category=Might}}
+! class="wsmod-tier" | Unworldly
+| 16.0% || 25.0% || 33.0% || 37.0%
+|}
+</div>
+<noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

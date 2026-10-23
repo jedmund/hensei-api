@@ -1,0 +1,105 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe WeaponSkillVersion, type: :model do
+  describe 'associations' do
+    it { is_expected.to belong_to(:weapon_skill) }
+    it { is_expected.to belong_to(:skill) }
+  end
+
+  describe 'enums' do
+    it 'defines skill_series enum' do
+      expect(described_class.skill_series).to eq(
+        'normal' => 'normal', 'omega' => 'omega', 'ex' => 'ex', 'odious' => 'odious'
+      )
+    end
+
+    it 'defines skill_size enum' do
+      expect(described_class.skill_sizes).to eq(
+        'small' => 'small', 'medium' => 'medium', 'big' => 'big', 'big_ii' => 'big_ii',
+        'massive' => 'massive', 'unworldly' => 'unworldly', 'ancestral' => 'ancestral'
+      )
+    end
+  end
+
+  describe 'validations' do
+    subject { build(:weapon_skill_version) }
+
+    it { is_expected.to validate_presence_of(:ordinal) }
+    it { is_expected.to validate_numericality_of(:ordinal).only_integer.is_greater_than_or_equal_to(0) }
+
+    context 'skill_modifier inclusion' do
+      it 'allows nil' do
+        expect(build(:weapon_skill_version, skill_modifier: nil)).to be_valid
+      end
+
+      it 'allows a valid modifier' do
+        expect(build(:weapon_skill_version, skill_modifier: 'Might')).to be_valid
+      end
+
+      it 'rejects an invalid modifier' do
+        v = build(:weapon_skill_version, skill_modifier: 'NotARealModifier')
+        expect(v).not_to be_valid
+        expect(v.errors[:skill_modifier]).to include('is not included in the list')
+      end
+    end
+  end
+
+  describe 'name/description' do
+    let(:skill) { create(:skill, skill_type: :weapon, name_en: 'Optimus Exalto Aquae', description_en: '30% boost') }
+    let(:version) { create(:weapon_skill_version, skill: skill) }
+
+    it 'reads the name from the canonical Skill (no local copy)' do
+      expect(version.name_en).to eq('Optimus Exalto Aquae')
+      expect(described_class.column_names).not_to include('name_en')
+    end
+
+    it "reads the tier's own description, else the Skill's" do
+      expect(version.description_en).to eq('30% boost')
+
+      version.update_columns(description_en: 'Tier text')
+      expect(version.description_en).to eq('Tier text')
+    end
+  end
+
+  describe '#weapon_skill_data' do
+    it 'looks up scaling by modifier/series/size' do
+      version = build(:weapon_skill_version, skill_modifier: 'Might', skill_series: :normal, skill_size: :big)
+      expect(WeaponSkillDatum).to receive(:for_skill).with(modifier: 'Might', series: 'normal', size: 'big')
+      version.weapon_skill_data
+    end
+  end
+
+  describe '.in_family / .with_family' do
+    let(:cases) do
+      {
+        derived: [{ skill_modifier: 'Might' }, 'Might'],
+        overridden: [{ skill_modifier: 'Enmity', modifier_override: 'Might' }, 'Might'],
+        pinned_in: [{ skill_modifier: nil, modifier_override: 'Might' }, 'Might'],
+        blank_override: [{ skill_modifier: 'Might', modifier_override: '' }, 'Might'],
+        none: [{ skill_modifier: 'Might', modifier_override: 'none' }, nil],
+        unclassified: [{ skill_modifier: nil }, nil]
+      }
+    end
+
+    it 'agrees with #resolved_modifier' do
+      versions = cases.transform_values do |(attrs, expected)|
+        version = create(:weapon_skill_version, **attrs)
+        expect(version.resolved_modifier).to eq(expected)
+        version
+      end
+
+      in_might = versions.values_at(:derived, :overridden, :pinned_in, :blank_override)
+      expect(described_class.in_family('Might')).to match_array(in_might)
+      expect(described_class.in_family('Enmity')).to be_empty
+      expect(described_class.with_family).to match_array(in_might)
+    end
+  end
+
+  describe 'VALID_MODIFIERS' do
+    it 'equals WeaponSkillParser::KNOWN_MODIFIERS' do
+      expect(described_class::VALID_MODIFIERS).to eq(Granblue::Parsers::WeaponSkillParser::KNOWN_MODIFIERS)
+    end
+  end
+end

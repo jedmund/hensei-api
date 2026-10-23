@@ -8,7 +8,7 @@ module Api
       before_action :restrict_access
       before_action :set_crew, except: %i[gw_scores]
       before_action :set_crew_from_user, only: %i[gw_scores]
-      before_action :authorize_crew_member!, only: %i[index confirm_claim decline_claim gw_scores]
+      before_action :authorize_crew_member!, only: %i[index show confirm_claim decline_claim gw_scores]
       before_action :authorize_crew_officer!, only: %i[create bulk_create update destroy assign]
       before_action :set_phantom, only: %i[show update destroy assign confirm_claim decline_claim]
       before_action :set_phantom_for_scores, only: %i[gw_scores]

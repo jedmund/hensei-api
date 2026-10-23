@@ -125,13 +125,6 @@ module Api
       def job_accessory_params
         params.permit(:name_en, :name_jp, :granblue_id, :rarity, :release_date, :accessory_type, :job_id)
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[JOB_ACCESSORIES] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

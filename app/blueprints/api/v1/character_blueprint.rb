@@ -40,11 +40,9 @@ module Api
       end
 
       field :series do |c|
-        # Use new lookup table if available
-        records = c.character_series_records
-        if records.loaded? ? records.any? : records.exists?
-          sorted = records.loaded? ? records.sort_by(&:order) : records.ordered
-          sorted.map do |cs|
+        records = c.ordered_series_records
+        if records.any?
+          records.map do |cs|
             {
               id: cs.id,
               slug: cs.slug,
@@ -55,7 +53,7 @@ module Api
             }
           end
         else
-          # Legacy fallback - return integer array
+          # Legacy fallback for rows that haven't been migrated to the lookup table.
           c.series
         end
       end
@@ -67,7 +65,9 @@ module Api
       field :uncap do |c|
         {
           flb: c.flb,
-          transcendence: c.transcendence
+          ulb: c.ulb,
+          transcendence: c.transcendence,
+          max_transcendence_stage: c.max_transcendence_stage
         }
       end
 
@@ -80,22 +80,31 @@ module Api
       end
 
       view :preview do
-        excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
+        excludes :name, :character_id, :rarity, :element, :gender, :season,
                  :season_name, :series, :series_names, :uncap, :race, :proficiency,
                  :style_swap, :style_name, :base_character
       end
 
-      # Minimal view for party list cards — just enough for image rendering
+      # Minimal view for party list cards — just enough for image rendering.
+      # Keep :element: null-element characters (e.g. Lyria, Gran/Djeeta) need it to
+      # build the element-suffixed image filename in grid reps.
       view :list do
-        excludes :name, :character_id, :rarity, :element, :gender, :special, :season,
+        excludes :name, :character_id, :rarity, :gender, :season,
                  :season_name, :series, :series_names, :uncap, :race, :proficiency,
                  :style_name, :base_character
       end
+
+      SOURCE_DATES = ->(_field, _character, options) { options[:source_dates] }
 
       view :full do
         include_view :stats
         include_view :rates
         include_view :dates
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com). Read from
+        # `sources` (a query per character), so only when the character itself is rendered
+        # (source_dates: true), not for each character nested in a party or collection.
+        field :wiki_raw_fetched_at, if: SOURCE_DATES
+        field :wiki_raw_jp_fetched_at, if: SOURCE_DATES
 
         field :awakenings do
           AwakeningBlueprint.render_as_hash(
@@ -143,6 +152,25 @@ module Api
             }
           end
         end
+
+        # Reads the preloaded association (see Character::SKILL_GRAPH_PRELOAD);
+        # callers rendering this view must preload to avoid N+1s.
+        field :skills do |c|
+          CharacterSkillBlueprint.render_as_hash(c.character_skills)
+        end
+
+        # Edges between the skill versions serialized above (transforms_to /
+        # option_of / form_counterpart). Kept as a flat list rather than nested
+        # under each skill because form_counterpart links cross slots; `from`
+        # and `to` reference version ids in the `skills` graph. Built from the
+        # preloaded version `outgoing_links` (no per-character query).
+        field :skill_links do |c|
+          c.character_skills
+           .flat_map(&:character_skill_versions)
+           .flat_map(&:outgoing_links)
+           .sort_by { |link| [link.relation, link.from_version_id, link.to_version_id] }
+           .map { |link| { from: link.from_version_id, to: link.to_version_id, relation: link.relation } }
+        end
       end
 
       # Separate view for recruitment info - only include when needed (e.g., character detail page)
@@ -188,7 +216,9 @@ module Api
           {
             min_hp: c.min_hp,
             max_hp: c.max_hp,
-            max_hp_flb: c.max_hp_flb
+            max_hp_flb: c.max_hp_flb,
+            max_hp_ulb: c.max_hp_ulb,
+            max_hp_transcendence: c.max_hp_transcendence
           }
         end
 
@@ -196,7 +226,9 @@ module Api
           {
             min_atk: c.min_atk,
             max_atk: c.max_atk,
-            max_atk_flb: c.max_atk_flb
+            max_atk_flb: c.max_atk_flb,
+            max_atk_ulb: c.max_atk_ulb,
+            max_atk_transcendence: c.max_atk_transcendence
           }
         end
       end
@@ -215,6 +247,7 @@ module Api
       view :dates do
         field :release_date
         field :flb_date
+        field :ulb_date
         field :transcendence_date
       end
     end

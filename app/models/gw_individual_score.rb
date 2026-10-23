@@ -4,7 +4,10 @@ class GwIndividualScore < ApplicationRecord
   belongs_to :crew_gw_participation
   belongs_to :crew_membership, optional: true
   belongs_to :phantom_player, optional: true
-  belongs_to :recorded_by, class_name: 'User'
+  # Optional once saved: the user may delete their account later, which clears
+  # this. New records still need one.
+  belongs_to :recorded_by, class_name: 'User', optional: true
+  validates :recorded_by, presence: true, on: :create
 
   # Use same round enum as GwCrewScore
   enum :round, GwCrewScore::ROUNDS

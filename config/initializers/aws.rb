@@ -1,10 +1,11 @@
 Rails.application.config.after_initialize do
+  next if defined?(Rake) && Rake.application.top_level_tasks.any?
+
   Rails.logger.info "Initializing AWS Service..."
   begin
     AwsService.new
     Rails.logger.info "AWS Service initialized successfully"
-  rescue => e
-    Rails.logger.error "Failed to initialize AWS Service: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
+  rescue StandardError => e
+    Rails.logger.warn "Skipping AWS Service: #{e.message}"
   end
 end

@@ -1,0 +1,6199 @@
+{
+  "source": "User-provided in-game ordinary (tab_type 1) and SR-or-higher (tab_type 2) responses, received 2026-10-02. Compact projection of rarity, category, reward_id, and displayed percentage; not unrounded server probabilities. Banner ID not supplied.",
+  "entries": [
+    {
+      "type": "Weapon",
+      "granblue_id": "1040023600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040024600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040028400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040023200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040019800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040025700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040024900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040021800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040028600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040022700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040024500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040023900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040026700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040024000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040023100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040025300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040021700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040022500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040029300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040020100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040027600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040029700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040026600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040022100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040116500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040121900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040122100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040114800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040116100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040119100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040116000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040122700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040115200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040119300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040119600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040115800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040114900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040116900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040117400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040119400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040116700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040122200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040113300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040123000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040216400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040217600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040218700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040216100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040215900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040221000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040218400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040219000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040215700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040217500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040213900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040219200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040218300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040217900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040218200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040216500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040219900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040219500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040219800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040216700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040221300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040220100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040217100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040313900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040312800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040319600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040312600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040320100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040314500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040313600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040315800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040315000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040319400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040313400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040317000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040316200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040419100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040418900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040421600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040416900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040419900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040420100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040422400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040421400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040426300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040418100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040426400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040425300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040421800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040419800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040423700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040425700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040423000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040419300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040422500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040423900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040418500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040425800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040424200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040516600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040513200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040512500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040515600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040514400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040515700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040620000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040618900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040613000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040614900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040619800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040614800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040617800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040618500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040614600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040616500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040618100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040616700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040617700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040612800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040616800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040715300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040710800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040714300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040713500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040709900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040714200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040710900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040713900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040814300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040812800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040813000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040814200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040813200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040813600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040813400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040818400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040814100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040818700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040815500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040815600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040818000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040816800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040912900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040919000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040915300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040915800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040916600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040913100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040916400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040915500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040912800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040913000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040917000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040023700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040004600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040028500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040022000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040029400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040025900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040029200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040105400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040108200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": 4,
+      "remove_promotions": [
+        3
+      ],
+      "expected_recruits": "3040101000",
+      "expected_obtain": "premium,gala,normal",
+      "source": "Catalogue wiki_raw obtain=premium,gala,normal; Wiki.promotions maps gala to Flash (4). Grand weapons are excluded from Classic permanent pools."
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040112500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040216300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040216900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040315900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040314900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040312900",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040318400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040320400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040310400",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040404300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040418600",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040502500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040504300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040612700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040621800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040618200",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040619500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040617300",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040715000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040708700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040714800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040811800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040809100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040917100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040916800",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040910000",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040911500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040918100",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040221700",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1040320500",
+      "rarity": 3,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040094000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040416000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040457000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040306000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040361000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040185000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040436000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040338000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040448000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040398000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040167000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040363000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040225000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040311000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040114000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040340000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040435000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040100000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040413000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040417000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040438000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040342000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040401000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040205000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040285000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040368000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040084000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040392000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040203000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040443000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040326000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040344000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040406000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040261000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040424000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040366000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040202000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040098000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040381000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040462000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040442000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040065000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040275000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040350000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040409000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040056000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040330000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040188000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040425000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040080000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040003000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040408000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040347000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040418000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040090000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040352000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040433000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040327000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040441000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2040385000",
+      "rarity": 3,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030003400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030004500",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007700",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006000",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006500",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030005400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006100",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030008900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007500",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030008400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007000",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030005900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030008200",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030006300",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030002700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030007100",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000300",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030102400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030104900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030102600",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030102300",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030105400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030101800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030104700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030105100",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030202600",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030204500",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030201700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030204400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030206800",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030205000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030204800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030203500",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030206600",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030206400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030205700",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030207000",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030205600",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303300",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303600",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030303200",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030302800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401300",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404500",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030402900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404600",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030400700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030405300",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030400800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030406100",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030402100",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030404400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030405900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030405100",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403600",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030403800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504000",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030503000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030505500",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030503900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030502900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504200",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030505300",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030505400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030504500",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030601100",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030604700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603500",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606200",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606900",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600200",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030608700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030608200",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030601000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603400",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606700",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606500",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030606400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030604000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030603900",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030601500",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030605400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030605800",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030703200",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030702600",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700700",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030704100",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030802100",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030800000",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030800300",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030803400",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030902000",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030902800",
+      "rarity": 2,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030901800",
+      "rarity": 2,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030000100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030001500",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030100100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030100200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030101100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030101400",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200700",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200300",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030200000",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030300200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030300100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030300300",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030400200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030401400",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500800",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500000",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500300",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030500200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600800",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600000",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030600100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700600",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700000",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030700500",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030800200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030900000",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030900100",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1030900200",
+      "rarity": 2,
+      "category": 1,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030031000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030009000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030006000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030022000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030034000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030021000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030019000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030080000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030010000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030005000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030008000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030025000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030023000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030024000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030020000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030033000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030003000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030007000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030042000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030028000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2030039000",
+      "rarity": 2,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002700",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002100",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002400",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001900",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001800",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002200",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002300",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002900",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000400",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020002000",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102700",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102200",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102300",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201700",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301900",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301400",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301200",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402700",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402400",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402300",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402900",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400000",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401500",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501400",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501300",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500100",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601400",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020602000",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601600",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020602100",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601700",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600300",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601300",
+      "rarity": 1,
+      "category": 0,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601800",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601500",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601100",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700700",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020800300",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020800100",
+      "rarity": 1,
+      "category": 0,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020000300",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001600",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001700",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001400",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020001200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020102000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100400",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101100",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101800",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101300",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101700",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020100500",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020101900",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200500",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200400",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200900",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201500",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020201400",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020200200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301300",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300100",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300300",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301100",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301700",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300000",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020300200",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020301600",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020402000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400800",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400400",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401900",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401700",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020400100",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020401800",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500300",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020501100",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500900",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020500500",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600800",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600100",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600700",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600900",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020601200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600200",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020600600",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700300",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700400",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700600",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700500",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700100",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020700200",
+      "rarity": 1,
+      "category": 1,
+      "create": true,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020800000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020900000",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Weapon",
+      "granblue_id": "1020900100",
+      "rarity": 1,
+      "category": 1,
+      "create": false,
+      "add_promotion": 1
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020012000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020031000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020025000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020027000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020015000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020011000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020016000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020032000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020023000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020028000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020017000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020030000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020035000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020024000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020013000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020014000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020033000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020010000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020004000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020026000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020034000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020022000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020029000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    },
+    {
+      "type": "Summon",
+      "granblue_id": "2020009000",
+      "rarity": 1,
+      "category": 2,
+      "create": false,
+      "add_promotion": null
+    }
+  ],
+  "new_weapons": [
+    {
+      "granblue_id": "1030007700",
+      "name_en": "Time-Tested Iron",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 1,
+      "recruits": "3030256000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Rosine",
+        "catalogue_names": [
+          "Rosine (SR)"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030256000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030006000",
+      "name_en": "Aquablade",
+      "rarity": 2,
+      "element": 3,
+      "proficiency": 1,
+      "recruits": "3030176000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Mina",
+        "catalogue_names": [
+          "Mina"
+        ],
+        "rarity": 2,
+        "element": 3,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030176000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030006500",
+      "name_en": "Bottle o' Blossoms",
+      "rarity": 2,
+      "element": 3,
+      "proficiency": 1,
+      "recruits": "3030186000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Lamretta",
+        "catalogue_names": [
+          "Lamretta (Water)"
+        ],
+        "rarity": 2,
+        "element": 3,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030186000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030006900",
+      "name_en": "Sword of Sorcery",
+      "rarity": 2,
+      "element": 3,
+      "proficiency": 1,
+      "recruits": "3030207000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Owen",
+        "catalogue_names": [
+          "Owen"
+        ],
+        "rarity": 2,
+        "element": 3,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030207000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030006100",
+      "name_en": "Grand Edge",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 1,
+      "recruits": "3030175000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Herja",
+        "catalogue_names": [
+          "Herja (SR)"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030175000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030008900",
+      "name_en": "Lilac Comb",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 1,
+      "recruits": "3030275000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "La Coiffe",
+        "catalogue_names": [
+          "La Coiffe (SR)"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030275000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030007900",
+      "name_en": "Prideful Sword",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 1,
+      "recruits": "3030261000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Beatrix",
+        "catalogue_names": [
+          "Beatrix"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030261000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030007500",
+      "name_en": "Balisarde",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 1,
+      "recruits": "3030255000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Arthur and Mordred",
+        "catalogue_names": [
+          "Arthur and Mordred"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030255000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030008400",
+      "name_en": "Jeunesse",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 1,
+      "recruits": "3030266000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Korwa",
+        "catalogue_names": [
+          "Korwa (SR)"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030266000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030007400",
+      "name_en": "Kilij",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 1,
+      "recruits": "3030253000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Juri",
+        "catalogue_names": [
+          "Juri"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030253000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030007000",
+      "name_en": "Silver Fan",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 1,
+      "recruits": "3030222000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Karteira",
+        "catalogue_names": [
+          "Karteira (SR)"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030222000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030005900",
+      "name_en": "White Flag",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 1,
+      "recruits": "3030166000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Mimlemel and Stumpeye",
+        "catalogue_names": [
+          "Mimlemel and Stumpeye"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030166000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030008200",
+      "name_en": "Samurai Sword",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 1,
+      "recruits": "3030265000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Mirin",
+        "catalogue_names": [
+          "Mirin (Light)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030265000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030006300",
+      "name_en": "True Teardrop",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 1,
+      "recruits": "3030183000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Vermeil",
+        "catalogue_names": [
+          "Vermeil (SR)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030183000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030007100",
+      "name_en": "Silver Shotel",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 1,
+      "recruits": "3030234000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Randall",
+        "catalogue_names": [
+          "Randall (SR)"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030234000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030105400",
+      "name_en": "Katzbalger",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 2,
+      "recruits": "3030196000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 2,
+      "recruitment_evidence": {
+        "character_name": "Jamil",
+        "catalogue_names": [
+          "Jamil (Dark)"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030196000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030105100",
+      "name_en": "Wyrm Claw",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 2,
+      "recruits": "3030167000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 2,
+      "recruitment_evidence": {
+        "character_name": "Tanya",
+        "catalogue_names": [
+          "Tanya (SR)"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030167000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030206800",
+      "name_en": "Divine Spear",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 4,
+      "recruits": "3030257000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 3,
+      "recruitment_evidence": {
+        "character_name": "Razia",
+        "catalogue_names": [
+          "Razia (SR)"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030257000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030206600",
+      "name_en": "Macho Hunter Weapon",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 4,
+      "recruits": "3030252000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 3,
+      "recruitment_evidence": {
+        "character_name": "The Lowain Bros",
+        "catalogue_names": [
+          "The Lowain Bros"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030252000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030206400",
+      "name_en": "Serpentine Longspear",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 4,
+      "recruits": "3030241000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 3,
+      "recruitment_evidence": {
+        "character_name": "Leona",
+        "catalogue_names": [
+          "Leona"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030241000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030205700",
+      "name_en": "Lance d'Espoir",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 4,
+      "recruits": "3030195000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 3,
+      "recruitment_evidence": {
+        "character_name": "Jeanne d'Arc",
+        "catalogue_names": [
+          "Jeanne d'Arc (SR)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030195000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030207000",
+      "name_en": "Lumiel Banner",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 4,
+      "recruits": "3030269000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 3,
+      "recruitment_evidence": {
+        "character_name": "Bridgette and Cordelia",
+        "catalogue_names": [
+          "Bridgette and Cordelia"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030269000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030205600",
+      "name_en": "Brocken Lance",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 4,
+      "recruits": "3030188000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 3,
+      "recruitment_evidence": {
+        "character_name": "Deliford",
+        "catalogue_names": [
+          "Deliford (SR)"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030188000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030303900",
+      "name_en": "Holy Axe",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 3,
+      "recruits": "3030191000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 4,
+      "recruitment_evidence": {
+        "character_name": "Sevastien",
+        "catalogue_names": [
+          "Sevastien"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030191000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030404900",
+      "name_en": "Arson Link",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 6,
+      "recruits": "3030203000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Blazing Teacher Elmott",
+        "catalogue_names": [
+          "Blazing Teacher Elmott"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030203000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030404500",
+      "name_en": "Nature's Mystery",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 6,
+      "recruits": "3030156000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Dante",
+        "catalogue_names": [
+          "Dante (SR)"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030156000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030404600",
+      "name_en": "Ice Bough Staff",
+      "rarity": 2,
+      "element": 3,
+      "proficiency": 6,
+      "recruits": "3030164000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Erin",
+        "catalogue_names": [
+          "Erin"
+        ],
+        "rarity": 2,
+        "element": 3,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030164000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030405300",
+      "name_en": "Tughril",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 6,
+      "recruits": "3030237000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Nezahualpilli",
+        "catalogue_names": [
+          "Nezahualpilli (SR)"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030237000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030405900",
+      "name_en": "Staff of Refusal",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 6,
+      "recruits": "3030270000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Philosophia",
+        "catalogue_names": [
+          "Philosophia (SR)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030270000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030405100",
+      "name_en": "Staff of the Star Seeker",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 6,
+      "recruits": "3030225000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Sophia",
+        "catalogue_names": [
+          "Sophia (SR)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030225000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030504000",
+      "name_en": "Dolphin",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 9,
+      "recruits": "3030155000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Cucouroux",
+        "catalogue_names": [
+          "Cucouroux"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030155000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030505500",
+      "name_en": "Mythril Bolt",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 9,
+      "recruits": "3030268000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Aster",
+        "catalogue_names": [
+          "Aster"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030268000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030504900",
+      "name_en": "Signal Flare",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 9,
+      "recruits": "3030230000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Karva",
+        "catalogue_names": [
+          "Karva (SR)"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030230000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030504200",
+      "name_en": "Handy Arquebus",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 9,
+      "recruits": "3030159000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Jessica",
+        "catalogue_names": [
+          "Jessica"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030159000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030504400",
+      "name_en": "Standard Albion Bolt",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 9,
+      "recruits": "3030181000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Tyre",
+        "catalogue_names": [
+          "Tyre"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030181000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030505300",
+      "name_en": "Genius Squared",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 9,
+      "recruits": "3030263000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Skull",
+        "catalogue_names": [
+          "Skull"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030263000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030505400",
+      "name_en": "Goldie",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 9,
+      "recruits": "3030267000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Richard",
+        "catalogue_names": [
+          "Richard (SR)"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030267000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030504500",
+      "name_en": "Hunter's Rifle",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 9,
+      "recruits": "3030185000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 6,
+      "recruitment_evidence": {
+        "character_name": "Ludmila",
+        "catalogue_names": [
+          "Ludmila"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030185000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030606200",
+      "name_en": "Red-Hot Noodles",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 7,
+      "recruits": "3030232000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Ippatsu",
+        "catalogue_names": [
+          "Ippatsu (SR)"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030232000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030606900",
+      "name_en": "Epoxy Boogie Plates",
+      "rarity": 2,
+      "element": 3,
+      "proficiency": 7,
+      "recruits": "3030251000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Cailana",
+        "catalogue_names": [
+          "Cailana (SR)"
+        ],
+        "rarity": 2,
+        "element": 3,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030251000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030608200",
+      "name_en": "Demitasse",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 7,
+      "recruits": "3030264000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Catherine",
+        "catalogue_names": [
+          "Catherine (SR)"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030264000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030606700",
+      "name_en": "Mythril Tonfa",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 7,
+      "recruits": "3030243000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Vanzza",
+        "catalogue_names": [
+          "Vanzza (SR)"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030243000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030606500",
+      "name_en": "Sudarshana",
+      "rarity": 2,
+      "element": 4,
+      "proficiency": 7,
+      "recruits": "3030240000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Carmelina",
+        "catalogue_names": [
+          "Carmelina"
+        ],
+        "rarity": 2,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030240000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030606400",
+      "name_en": "Crocskin Glove",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 7,
+      "recruits": "3030239000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Barawa",
+        "catalogue_names": [
+          "Barawa (SR)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030239000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030605400",
+      "name_en": "Cruel Claw",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 7,
+      "recruits": "3030190000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Predator",
+        "catalogue_names": [
+          "Predator"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030190000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030605800",
+      "name_en": "Vampire's Nail",
+      "rarity": 2,
+      "element": 5,
+      "proficiency": 7,
+      "recruits": "3030221000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Vania",
+        "catalogue_names": [
+          "Vania (SR)"
+        ],
+        "rarity": 2,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030221000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030704100",
+      "name_en": "Slingshot",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 5,
+      "recruits": "3030209000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 8,
+      "recruitment_evidence": {
+        "character_name": "Sarya",
+        "catalogue_names": [
+          "Sarya"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030209000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030803400",
+      "name_en": "Humming Bard",
+      "rarity": 2,
+      "element": 6,
+      "proficiency": 8,
+      "recruits": "3030244000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 9,
+      "recruitment_evidence": {
+        "character_name": "Elta",
+        "catalogue_names": [
+          "Elta (Light)"
+        ],
+        "rarity": 2,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030244000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030902000",
+      "name_en": "Wandering Blade",
+      "rarity": 2,
+      "element": 2,
+      "proficiency": 10,
+      "recruits": "3030171000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 10,
+      "recruitment_evidence": {
+        "character_name": "Lucius",
+        "catalogue_names": [
+          "Lucius (Fire)"
+        ],
+        "rarity": 2,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030171000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1030902800",
+      "name_en": "Unsigned Blade",
+      "rarity": 2,
+      "element": 1,
+      "proficiency": 10,
+      "recruits": "3030224000",
+      "max_level": 75,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 10,
+      "recruitment_evidence": {
+        "character_name": "Mirin",
+        "catalogue_names": [
+          "Mirin"
+        ],
+        "rarity": 2,
+        "element": 1,
+        "season": null,
+        "matching_granblue_ids": [
+          "3030224000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020002700",
+      "name_en": "Vintage Flat Iron",
+      "rarity": 1,
+      "element": 2,
+      "proficiency": 1,
+      "recruits": "3020057000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Rosine",
+        "catalogue_names": [
+          "Rosine"
+        ],
+        "rarity": 1,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020057000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020002400",
+      "name_en": "White Sword",
+      "rarity": 1,
+      "element": 3,
+      "proficiency": 1,
+      "recruits": "3020048000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Bridgette",
+        "catalogue_names": [
+          "Bridgette"
+        ],
+        "rarity": 1,
+        "element": 3,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020048000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020001900",
+      "name_en": "Two-Handed Sword",
+      "rarity": 1,
+      "element": 4,
+      "proficiency": 1,
+      "recruits": "3020001000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Herja",
+        "catalogue_names": [
+          "Herja"
+        ],
+        "rarity": 1,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020001000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020001800",
+      "name_en": "Xiphos",
+      "rarity": 1,
+      "element": 4,
+      "proficiency": 1,
+      "recruits": "3020007000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Volenna",
+        "catalogue_names": [
+          "Volenna"
+        ],
+        "rarity": 1,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020007000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020000400",
+      "name_en": "Thunder Rapier",
+      "rarity": 1,
+      "element": 6,
+      "proficiency": 1,
+      "recruits": "3020018000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 1,
+      "recruitment_evidence": {
+        "character_name": "Rosamia",
+        "catalogue_names": [
+          "Rosamia"
+        ],
+        "rarity": 1,
+        "element": 6,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020018000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020402400",
+      "name_en": "Torch",
+      "rarity": 1,
+      "element": 2,
+      "proficiency": 6,
+      "recruits": "3020032000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Camieux",
+        "catalogue_names": [
+          "Camieux"
+        ],
+        "rarity": 1,
+        "element": 2,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020032000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020401500",
+      "name_en": "The Cross",
+      "rarity": 1,
+      "element": 5,
+      "proficiency": 6,
+      "recruits": "3020010000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 6,
+      "game_kind": 5,
+      "recruitment_evidence": {
+        "character_name": "Will",
+        "catalogue_names": [
+          "Will"
+        ],
+        "rarity": 1,
+        "element": 5,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020010000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020601300",
+      "name_en": "Tonfa",
+      "rarity": 1,
+      "element": 4,
+      "proficiency": 7,
+      "recruits": "3020037000",
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 7,
+      "recruitment_evidence": {
+        "character_name": "Vanzza",
+        "catalogue_names": [
+          "Vanzza"
+        ],
+        "rarity": 1,
+        "element": 4,
+        "season": null,
+        "matching_granblue_ids": [
+          "3020037000"
+        ]
+      }
+    },
+    {
+      "granblue_id": "1020100400",
+      "name_en": "Kila",
+      "rarity": 1,
+      "element": 3,
+      "proficiency": 2,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 2,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020101100",
+      "name_en": "Water Kukri",
+      "rarity": 1,
+      "element": 3,
+      "proficiency": 2,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 2,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020301700",
+      "name_en": "Wind Axe",
+      "rarity": 1,
+      "element": 1,
+      "proficiency": 3,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 4,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020300000",
+      "name_en": "Tabar",
+      "rarity": 1,
+      "element": 6,
+      "proficiency": 3,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 4,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020300200",
+      "name_en": "Thunder Kalinga Axe",
+      "rarity": 1,
+      "element": 6,
+      "proficiency": 3,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 5,
+      "game_kind": 4,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020400800",
+      "name_en": "Water Rod",
+      "rarity": 1,
+      "element": 3,
+      "proficiency": 6,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 5,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020401700",
+      "name_en": "Wind Rod",
+      "rarity": 1,
+      "element": 1,
+      "proficiency": 6,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 5,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020600100",
+      "name_en": "Pata",
+      "rarity": 1,
+      "element": 2,
+      "proficiency": 7,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 1,
+      "game_kind": 7,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020600900",
+      "name_en": "Tidal Wraps",
+      "rarity": 1,
+      "element": 3,
+      "proficiency": 7,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 2,
+      "game_kind": 7,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020600600",
+      "name_en": "Whirlwind Wraps",
+      "rarity": 1,
+      "element": 1,
+      "proficiency": 7,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 7,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020700100",
+      "name_en": "War Bow",
+      "rarity": 1,
+      "element": 4,
+      "proficiency": 5,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 3,
+      "game_kind": 8,
+      "recruitment_evidence": null
+    },
+    {
+      "granblue_id": "1020700200",
+      "name_en": "Wrapped Bow",
+      "rarity": 1,
+      "element": 1,
+      "proficiency": 5,
+      "recruits": null,
+      "max_level": 50,
+      "max_skill_level": 10,
+      "source": "Fields transcribed from user-provided ordinary and guaranteed in-game rate responses received 2026-10-02. Game element and weapon-kind enums retained; map explicitly to Hensei. No release dates or recruit Granblue IDs provided by game response.",
+      "game_attribute": 4,
+      "game_kind": 8,
+      "recruitment_evidence": null
+    }
+  ]
+}

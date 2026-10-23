@@ -1,11 +1,29 @@
 :queues:
   - default
   - downloads
+  - simulations
   - maintenance
-  - previews
 
 :scheduler:
-  cleanup_party_previews:
-    cron: '0 0 * * *'  # Daily at midnight
-    class: CleanupPartyPreviewsJob
-    queue: maintenance
+  :schedule:
+    party_difficulty_sweep:
+      cron: "0 4 * * *" # Daily at 04:00 UTC
+      class: PartyDifficulty::SweepJob
+      queue: maintenance
+    extension_auth_code_cleanup:
+      cron: "15 4 * * *" # Daily at 04:15 UTC
+      class: ExtensionAuthCodes::CleanupJob
+      queue: maintenance
+    account_deletion_purge:
+      cron: "30 4 * * *" # Daily at 04:30 UTC
+      class: AccountDeletion::PurgeJob
+      queue: maintenance
+    gacha_exchange_rate:
+      cron: "0 17 * * *"
+      class: GachaSimulation::ExchangeRateJob
+      queue: maintenance
+    wiki_status_list:
+      # The 2nd and the 20th at 23:30 JST, after that day's character releases land.
+      cron: "30 23 2,20 * * Asia/Tokyo"
+      class: Sources::FetchWikiStatusListJob
+      queue: maintenance

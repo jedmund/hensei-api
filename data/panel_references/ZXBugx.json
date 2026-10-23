@@ -1,0 +1,82 @@
+{
+  "party": "ZXBugx",
+  "captured_on": "2026-10-17",
+  "notes": "W9 #17 Odious below the cap, Fire: Blazing Mistral (MH) with three Odious weapons at exorcision 5 (two Demonspear, one Deathcannon of Prosperity Verboten), 15 exorcision levels; Belmervolk 4★ main, 5★ friend. Od reads 302.5%, the linear model's prediction (137.5 + 165). Estimated DMG 26607 / to Wind 38964, Max HP 45998.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 0,
+    "taboo": 302.5
+  },
+  "absent": [
+    "dmg_cap"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 22
+    },
+    {
+      "label": "Od Might",
+      "boost": "atk",
+      "series": "odious",
+      "value": 193
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 215
+    },
+    {
+      "label": "Od DMG Amp.",
+      "boost": "od_dmg_amp",
+      "value": 14.49
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 45.89
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 24.15
+    },
+    {
+      "label": "C.B. DMG",
+      "boost": "cb_dmg",
+      "value": 53.13
+    },
+    {
+      "label": "C.B. DMG Cap",
+      "boost": "cb_dmg_cap",
+      "value": 24.15
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 507150
+    },
+    {
+      "label": "ATK Hit",
+      "boost": "atk_hit",
+      "value": -6.2
+    },
+    {
+      "label": "C.A. DMG Hit",
+      "boost": "ca_dmg_hit",
+      "value": -19
+    },
+    {
+      "label": "Debuff S. Hit",
+      "boost": "debuff_hit",
+      "value": -10.2
+    }
+  ]
+}

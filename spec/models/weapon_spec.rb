@@ -7,7 +7,8 @@ RSpec.describe Weapon, type: :model do
     it { is_expected.to have_many(:weapon_awakenings) }
     it { is_expected.to have_many(:awakenings).through(:weapon_awakenings) }
     it { is_expected.to have_many(:weapon_skills) }
-    it { is_expected.to have_many(:skills).through(:weapon_skills) }
+    it { is_expected.to have_many(:weapon_skill_versions).through(:weapon_skills) }
+    it { is_expected.to have_many(:skills).through(:weapon_skill_versions) }
     it { is_expected.to belong_to(:weapon_series).optional }
     it { is_expected.to belong_to(:weapon_series_variant).optional }
   end

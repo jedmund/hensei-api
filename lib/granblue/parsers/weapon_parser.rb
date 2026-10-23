@@ -4,7 +4,8 @@ require 'pry'
 
 module Granblue
   module Parsers
-    # WeaponParser parses weapon data from gbf.wiki
+    # WeaponParser parses weapon info (dates, links, promotions) from gbf.wiki. Weapon
+    # skills come from the weapon-skill build (WeaponSkills::Build), not from here.
     class WeaponParser
       attr_reader :granblue_id
 
@@ -41,10 +42,8 @@ module Granblue
 
         result = parse(extracted)
 
-        if save
-          persist(result[:info])
-          persist_skills(result[:skills][:skills])
-        end
+        # Weapon skills are the weapon-skill build's (WeaponSkills::Build), not this parser's.
+        persist(result[:info]) if save
 
         true
       end
@@ -91,6 +90,7 @@ module Granblue
           rescue WikiError => e
             errors.push(e.page)
           end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
         ap 'The following pages were unable to be fetched:'
@@ -117,6 +117,7 @@ module Granblue
           rescue WikiError => e
             errors.push(e.page)
           end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
         ap 'The following pages were unable to be fetched:'
@@ -157,8 +158,12 @@ module Granblue
 
           key, value = line[1..].split('=', 2).map(&:strip)
 
-          regex = /\A\{\{\{.*\|\}\}\}\z/
-          next if value =~ regex
+          # Skip unresolved template-parameter placeholders. These only appear
+          # when parsing a Template: definition (e.g. Weapon/Common/Illustrious),
+          # never in real page values. Covers both empty defaults ({{{x|}}}) and
+          # nested defaults ({{{x|{{{y|}}}}}}) — the latter slip past a
+          # |}}}-anchored match and would otherwise overwrite real page values.
+          next if value =~ /\A\{\{\{.*\}\}\}\z/
 
           data[key] = value if value
         end
@@ -239,72 +244,9 @@ module Granblue
           }
         }
 
-        skills[:skills] = extract_weapon_skills(hash)
-
         {
           info: info.compact,
           skills: skills.compact
-        }
-      end
-
-      # Extracts weapon skill data from all 3 skill slots, including 4★ upgrades.
-      #
-      # For each slot, extracts:
-      #   - Base skill: s{n}_name, s{n}_desc/ens{n}_desc, s{n}_icon, s{n}_lvl
-      #   - 4★ upgrade: s{n}_4s_name, s{n}_4s_desc/ens{n}_4s_desc, s{n}_4s_icon, s{n}_4s_lvl
-      #
-      # Returns an array of skill hashes, one per occupied slot.
-      def extract_weapon_skills(hash)
-        (1..3).filter_map do |slot|
-          base_name = hash["s#{slot}_name"]
-          next unless base_name.present?
-
-          skill = {
-            position: slot - 1,
-            base: build_skill_entry(hash, slot, upgrade: false),
-            upgrade: nil
-          }
-
-          # Check for 4★ upgrade
-          upgrade_name = hash["s#{slot}_4s_name"]
-          skill[:upgrade] = build_skill_entry(hash, slot, upgrade: true) if upgrade_name.present?
-
-          skill
-        end
-      end
-
-      # Builds a single skill entry (base or upgrade) from wiki fields.
-      def build_skill_entry(hash, slot, upgrade: false)
-        prefix = upgrade ? "s#{slot}_4s" : "s#{slot}"
-
-        raw_name = hash["#{prefix}_name"]
-        return nil unless raw_name.present?
-
-        # Clean wiki template syntax and HTML comments from skill name
-        name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, '').gsub(/<!--.*?-->/, '').strip
-
-        # Description: prefer English-specific field, fall back to generic
-        description = if upgrade
-                        hash["ens#{slot}_4s_desc"].presence || hash["#{prefix}_desc"]
-                      else
-                        hash["ens#{slot}_desc"].presence || hash["#{prefix}_desc"]
-                      end
-
-        icon = hash["#{prefix}_icon"]
-        unlock_level = hash["#{prefix}_lvl"].presence&.to_i
-
-        # Parse the raw name (with template) for structured components
-        parsed = Granblue::Parsers::WeaponSkillParser.parse(raw_name)
-
-        {
-          name_en: name,
-          description_en: description,
-          icon: icon,
-          unlock_level: unlock_level,
-          modifier: parsed[:modifier],
-          series: parsed[:series],
-          size: parsed[:size],
-          aura: parsed[:aura]
         }
       end
 
@@ -329,141 +271,6 @@ module Granblue
         false
       end
 
-      # Persists weapon skills from parsed wiki data to the database.
-      # Creates Skill records (shared catalog) and WeaponSkill records (join table).
-      #
-      # For each skill slot, stores:
-      # - Base version at uncap_level 0
-      # - 4★ upgrade version at uncap_level 4 (if present)
-      # Removes any existing weapon skills for positions no longer present.
-      #
-      # @param skill_data [Array<Hash>] from extract_weapon_skills
-      # @return [Array<WeaponSkill>] persisted records
-      def persist_skills(skill_data)
-        return [] unless @weapon && skill_data.present?
-
-        persisted = []
-        occupied_positions = []
-
-        skill_data.each do |slot|
-          next unless slot[:base]
-
-          position = slot[:position]
-          occupied_positions << position
-
-          # Always persist the base version (uncap_level: 0)
-          persisted << persist_single_skill(slot[:base], position, uncap_level: 0)
-
-          # Persist the 4★ upgrade version (uncap_level: 4) if it exists
-          if slot[:upgrade]
-            persisted << persist_single_skill(slot[:upgrade], position, uncap_level: 4)
-          end
-        end
-
-        # Remove weapon skills at positions that no longer exist in wiki data
-        @weapon.weapon_skills.where.not(position: occupied_positions).destroy_all
-
-        persisted
-      end
-
-      # Persists a single weapon skill entry at a given position and uncap level.
-      #
-      # @param entry [Hash] skill entry from build_skill_entry
-      # @param position [Integer] skill slot index
-      # @param uncap_level [Integer] 0 for base, 4 for FLB upgrade
-      # @return [WeaponSkill] persisted record
-      def persist_single_skill(entry, position, uncap_level:)
-        # Find or create the Skill catalog record
-        skill = Skill.find_or_initialize_by(
-          name_en: entry[:name_en],
-          skill_type: :weapon
-        )
-        skill.description_en = entry[:description_en] if entry[:description_en].present?
-        skill.save!
-
-        # Find or initialize the WeaponSkill join record
-        weapon_skill = WeaponSkill.find_or_initialize_by(
-          weapon_granblue_id: @weapon.granblue_id,
-          position: position,
-          uncap_level: uncap_level
-        )
-
-        weapon_skill.skill = skill
-        # Only store standard modifiers that have WeaponSkillDatum entries.
-        # Weapon-specific modifiers (from permissive aura matching) get nil.
-        modifier = entry[:modifier]
-        weapon_skill.skill_modifier = WeaponSkill::VALID_MODIFIERS.include?(modifier) ? modifier : nil
-        weapon_skill.skill_series = entry[:series]
-        weapon_skill.skill_size = entry[:size]
-        weapon_skill.unlock_level = entry[:unlock_level]
-        weapon_skill.save!
-
-        ap "  Skill #{position} (uncap #{uncap_level}): #{entry[:name_en]} (#{entry[:series]} #{entry[:modifier]} #{entry[:size]})" if @debug
-
-        weapon_skill
-      end
-
-      # Parses weapon skills from stored wiki_raw and persists them.
-      # Can be called independently without fetching from the wiki.
-      #
-      # @return [Array<WeaponSkill>] persisted records, or empty array
-      def persist_skills_from_wiki_raw
-        return [] unless @weapon&.wiki_raw.present?
-
-        extracted = parse_string(@weapon.wiki_raw)
-
-        # Merge template data if referenced
-        unless extracted[:template].nil?
-          template_text = @wiki.fetch("Template:#{extracted[:template]}")
-          extracted.merge!(parse_string(template_text))
-        end
-
-        skill_data = extract_weapon_skills(extracted)
-        persist_skills(skill_data)
-      rescue StandardError => e
-        Rails.logger.error "[WEAPON_SKILLS] Error parsing skills for #{@weapon&.granblue_id}: #{e.message}"
-        []
-      end
-
-      # Batch process: parse and persist weapon skills for all weapons with wiki_raw data.
-      #
-      # @param debug [Boolean] print progress
-      # @param overwrite [Boolean] re-process weapons that already have skills
-      # @return [Hash] { processed: Integer, skipped: Integer, errors: Array<String> }
-      def self.persist_all_skills(debug: false, overwrite: false)
-        weapons = Weapon.where.not(wiki_raw: [nil, ''])
-        weapons = weapons.left_joins(:weapon_skills).where(weapon_skills: { id: nil }) unless overwrite
-
-        total = weapons.count
-        errors = []
-        processed = 0
-
-        weapons.find_each.with_index do |weapon, i|
-          if debug
-            percentage = ((i + 1) / total.to_f * 100).round(1)
-            ap "#{percentage}%: Processing skills for #{weapon.name_en} (#{weapon.granblue_id})... (#{i + 1}/#{total})"
-          end
-
-          parser = new(granblue_id: weapon.granblue_id, debug: debug)
-          results = parser.persist_skills_from_wiki_raw
-
-          if results.any?
-            processed += 1
-          end
-        rescue StandardError => e
-          errors << "#{weapon.granblue_id}: #{e.message}"
-          Rails.logger.error "[WEAPON_SKILLS] Failed for #{weapon.granblue_id}: #{e.message}"
-        end
-
-        if debug
-          ap "Done. Processed #{processed}/#{total} weapons."
-          ap "Errors (#{errors.size}):" if errors.any?
-          errors.each { |err| ap "  #{err}" }
-        end
-
-        { processed: processed, skipped: total - processed - errors.size, errors: errors }
-      end
-
       # Converts rarities from a string to a hash
       def rarity_from_hash(string)
         string ? Granblue::Parsers::Wiki.rarities[string.upcase] : nil
@@ -483,11 +290,7 @@ module Granblue
       # @param obtain [String] Comma-separated obtain values like "premium,gala,flash"
       # @return [Array<Integer>] Array of promotion IDs
       def promotions_from_obtain(obtain)
-        return [] if obtain.blank?
-
-        obtain.downcase.split(',').map(&:strip).filter_map do |value|
-          Granblue::Parsers::Wiki.promotions[value]
-        end.uniq.sort
+        Granblue::Parsers::Wiki.promotions_from_obtain(obtain)
       end
 
       # Parses a date string into a Date object

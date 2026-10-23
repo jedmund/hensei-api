@@ -127,22 +127,22 @@ RSpec.describe GridCharacter, type: :model do
     end
 
     context 'transcendence validation' do
-      it 'adds an error if transcendence_step is positive but character.transcendence is false' do
+      it 'clamps a positive stage to zero when the character cannot transcend' do
         @grid_char.character.update!(transcendence: false)
         @grid_char.transcendence_step = 1
         @grid_char.valid?(:update)
-        expect(@grid_char.errors[:transcendence_step]).to include('character has no transcendence')
+        expect(@grid_char.transcendence_step).to eq(0)
       end
 
-      it 'adds an error if transcendence_step is greater than 5 when character.transcendence is true' do
-        @grid_char.character.update!(transcendence: true)
-        @grid_char.transcendence_step = 6
+      it 'clamps transcendence_step to the character released-stage cap' do
+        @grid_char.character.update!(transcendence: true, max_transcendence_stage: 2)
+        @grid_char.transcendence_step = 5
         @grid_char.valid?(:update)
-        expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too high')
+        expect(@grid_char.transcendence_step).to eq(2)
       end
 
       it 'adds an error if transcendence_step is negative when character.transcendence is true' do
-        @grid_char.character.update!(transcendence: true)
+        @grid_char.character.update!(transcendence: true, max_transcendence_stage: 5)
         @grid_char.transcendence_step = -1
         @grid_char.valid?(:update)
         expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too low')
@@ -165,6 +165,43 @@ RSpec.describe GridCharacter, type: :model do
         expect(@grid_char.errors[:over_mastery]).to be_empty
       end
     end
+
+    context 'individual over mastery values' do
+      before do
+        @grid_char.ring1 = { 'modifier' => 1, 'strength' => 3000 }
+        @grid_char.ring2 = { 'modifier' => 2, 'strength' => 1500 }
+      end
+
+      it 'accepts a strength from the modifier value table' do
+        @grid_char.ring3 = { 'modifier' => 9, 'strength' => 30 }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring3]).to be_empty
+      end
+
+      it 'rejects a strength outside the modifier value table' do
+        @grid_char.ring3 = { 'modifier' => 9, 'strength' => 31 }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring3]).to include('invalid value')
+      end
+
+      it 'rejects an unknown modifier' do
+        @grid_char.ring4 = { 'modifier' => 99, 'strength' => 10 }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring4]).to include('invalid value')
+      end
+
+      it 'accepts numeric strings' do
+        @grid_char.ring3 = { 'modifier' => '4', 'strength' => '15' }
+        @grid_char.valid?(:update)
+        expect(@grid_char.errors[:ring3]).to be_empty
+      end
+
+      it 'adds an error instead of raising for a non-hash ring' do
+        @grid_char.ring3 = '{modifier: nil, strength: nil}'
+        expect { @grid_char.valid?(:update) }.not_to raise_error
+        expect(@grid_char.errors[:ring3]).to include('is malformed')
+      end
+    end
   end
 
   describe 'validate_aetherial_mastery_value (on :update)' do
@@ -182,6 +219,32 @@ RSpec.describe GridCharacter, type: :model do
       @grid_char.earring = { 'modifier' => nil, 'strength' => nil }
       @grid_char.valid?(:update)
       expect(@grid_char.errors[:earring]).to be_empty
+    end
+  end
+
+  describe 'duplication' do
+    let(:grid_character) do
+      create(:grid_character, party: party, character: character, position: 1,
+                              ring1: { 'modifier' => 1, 'strength' => 1500 },
+                              ring2: { 'modifier' => 2, 'strength' => 750 },
+                              earring: { 'modifier' => 3, 'strength' => 5 })
+    end
+
+    it 'resets rings and earring to empty hashes, not strings' do
+      copy = grid_character.amoeba_dup
+
+      %i[ring1 ring2 ring3 ring4 earring].each do |column|
+        expect(copy.public_send(column)).to eq('modifier' => nil, 'strength' => nil)
+      end
+    end
+
+    it 'can update the copy after saving it' do
+      copy = grid_character.amoeba_dup
+      copy.party = create(:party)
+      copy.save!
+
+      copy.reload.update!(uncap_level: 4)
+      expect(copy.reload.uncap_level).to eq(4)
     end
   end
 
@@ -206,7 +269,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#sync_from_collection!' do
       context 'when collection_character is linked' do
         before do
-          character.update!(transcendence: true) # Enable transcendence
+          character.update!(transcendence: true, max_transcendence_stage: 5) # Enable transcendence
           @grid_char = create(:grid_character,
                               valid_attributes.merge(
                                 collection_character: collection_character,
@@ -244,7 +307,7 @@ RSpec.describe GridCharacter, type: :model do
     describe '#out_of_sync?' do
       context 'when collection_character is linked' do
         before do
-          character.update!(transcendence: true)
+          character.update!(transcendence: true, max_transcendence_stage: 5)
           @grid_char = create(:grid_character,
                               valid_attributes.merge(collection_character: collection_character))
         end
@@ -277,6 +340,93 @@ RSpec.describe GridCharacter, type: :model do
 
         it 'returns false' do
           expect(@grid_char.out_of_sync?).to be false
+        end
+      end
+    end
+
+    describe '#sync_from_collection! with fields' do
+      before do
+        character.update!(transcendence: true, max_transcendence_stage: 5)
+        @grid_char = create(:grid_character,
+                            valid_attributes.merge(collection_character: collection_character))
+        # Start in sync, then drift simple value fields (no inter-field validators)
+        @grid_char.sync_from_collection!
+        @grid_char.update_columns(uncap_level: 3, perpetuity: false, awakening_level: 1)
+        @grid_char.reload
+      end
+
+      it 'only updates columns mapped from the supplied keys' do
+        @grid_char.sync_from_collection!(fields: ['uncapLevel'])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        # Other drifted fields stay drifted
+        expect(@grid_char.perpetuity).to be false
+        expect(@grid_char.awakening_level).to eq(1)
+      end
+
+      it 'handles multiple keys in one call' do
+        @grid_char.sync_from_collection!(fields: %w[uncapLevel perpetuity])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        expect(@grid_char.perpetuity).to eq(collection_character.perpetuity)
+        expect(@grid_char.awakening_level).to eq(1) # untouched
+      end
+
+      it 'is a no-op when no supplied key maps to a known field' do
+        @grid_char.sync_from_collection!(fields: ['bogus'])
+        @grid_char.reload
+
+        expect(@grid_char.uncap_level).to eq(3)
+        expect(@grid_char.perpetuity).to be false
+      end
+    end
+
+    describe '#out_of_sync_fields' do
+      context 'when collection_character is linked' do
+        before do
+          character.update!(transcendence: true, max_transcendence_stage: 5)
+          @grid_char = create(:grid_character,
+                              valid_attributes.merge(collection_character: collection_character))
+          @grid_char.sync_from_collection!
+          @grid_char.reload
+        end
+
+        it 'returns [] when everything matches' do
+          expect(@grid_char.out_of_sync_fields).to eq([])
+        end
+
+        it 'reports a single value drift by camelCase key' do
+          @grid_char.update!(uncap_level: 4)
+          expect(@grid_char.out_of_sync_fields).to eq(['uncapLevel'])
+        end
+
+        it 'reports multiple drifts together' do
+          @grid_char.update!(uncap_level: 4, perpetuity: false)
+          expect(@grid_char.out_of_sync_fields).to include('uncapLevel', 'perpetuity')
+        end
+
+        it 'reports ring drift with dotted overMastery keys' do
+          # Skip validations: we only care about field drift detection here, not
+          # the over-mastery ratio rule.
+          @grid_char.update_columns(ring2: { 'modifier' => '2', 'strength' => 1 })
+          expect(@grid_char.reload.out_of_sync_fields).to eq(['overMastery.1'])
+        end
+
+        it 'reports earring drift as aetherialMastery' do
+          @grid_char.update_columns(earring: { 'modifier' => '3', 'strength' => 1 })
+          expect(@grid_char.reload.out_of_sync_fields).to eq(['aetherialMastery'])
+        end
+      end
+
+      context 'when no collection_character is linked' do
+        before do
+          @grid_char = create(:grid_character, valid_attributes)
+        end
+
+        it 'returns []' do
+          expect(@grid_char.out_of_sync_fields).to eq([])
         end
       end
     end

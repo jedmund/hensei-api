@@ -50,6 +50,87 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(json['id']).to eq(user.id)
       expect(json['username']).to eq(user.username)
     end
+
+    # Regression: unknown usernames (bot probes like sitemap/favicon.ico) used
+    # to render a nil user through the blueprint -> 500. Now they 404.
+    it 'returns 404 for an unknown username instead of 500' do
+      get '/api/v1/users/info/sitemap', params: { check_collection: 'true', check_support_summons: 'true' }
+      expect(response).to have_http_status(:not_found)
+    end
+
+    context 'with check_collection=true' do
+      let(:private_user) { create(:user, collection_privacy: :private_collection) }
+
+      it 'returns collection_accessible=false for a private collection viewed by a stranger' do
+        get "/api/v1/users/info/#{private_user.username}", params: { check_collection: 'true' }
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(false)
+      end
+
+      it 'returns collection_accessible=false unauthenticated' do
+        get "/api/v1/users/info/#{private_user.username}?check_collection=true"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(false)
+      end
+
+      it 'returns collection_accessible=true for the owner' do
+        owner_token = Doorkeeper::AccessToken.create!(
+          resource_owner_id: private_user.id, expires_in: 30.days, scopes: 'public'
+        )
+        get "/api/v1/users/info/#{private_user.username}?check_collection=true",
+            headers: { 'Authorization' => "Bearer #{owner_token.token}" }
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(true)
+      end
+
+      it 'returns collection_accessible=true for a public collection unauthenticated' do
+        public_user = create(:user, collection_privacy: :everyone)
+        get "/api/v1/users/info/#{public_user.username}?check_collection=true"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['collection_accessible']).to eq(true)
+      end
+    end
+
+    it 'omits collection_accessible without check_collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+      get "/api/v1/users/info/#{private_user.username}"
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).not_to have_key('collection_accessible')
+    end
+
+    context 'with check_support_summons=true' do
+      it 'returns support_summons_accessible=false when private and viewed by a stranger' do
+        owner = create(:user, support_summons_public: false)
+        get "/api/v1/users/info/#{owner.username}?check_support_summons=true"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['support_summons_accessible']).to eq(false)
+      end
+
+      it 'returns support_summons_accessible=true for the owner' do
+        owner = create(:user, support_summons_public: false)
+        token = Doorkeeper::AccessToken.create!(
+          resource_owner_id: owner.id, expires_in: 30.days, scopes: 'public'
+        )
+        get "/api/v1/users/info/#{owner.username}?check_support_summons=true",
+            headers: { 'Authorization' => "Bearer #{token.token}" }
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['support_summons_accessible']).to eq(true)
+      end
+
+      it 'returns support_summons_accessible=true when public' do
+        owner = create(:user, support_summons_public: true)
+        get "/api/v1/users/info/#{owner.username}?check_support_summons=true"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['support_summons_accessible']).to eq(true)
+      end
+    end
+
+    it 'omits support_summons_accessible without check_support_summons' do
+      owner = create(:user, support_summons_public: false)
+      get "/api/v1/users/info/#{owner.username}"
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).not_to have_key('support_summons_accessible')
+    end
   end
 
   describe 'GET /api/v1/users/:id' do
@@ -85,6 +166,15 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(user.reload.description).to eq('Fire team enjoyer.')
     end
 
+    it 'updates the support summon privacy setting' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { support_summons_public: false } }.to_json,
+          headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.support_summons_public).to be(false)
+    end
+
     it 'does not persist a description that fails profanity validation' do
       put "/api/v1/users/#{user.id}",
           params: { user: { description: 'hello asshole world' } }.to_json,
@@ -97,6 +187,42 @@ RSpec.describe 'Api::V1::Users', type: :request do
           params: { user: { description: 'a' * 141 } }.to_json,
           headers: auth_headers
       expect(user.reload.description).to be_nil
+    end
+
+    it 'updates the current user via /users/me' do
+      put '/api/v1/users/me',
+          params: { user: { language: 'ja' } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.language).to eq('ja')
+    end
+
+    it 'rejects unauthenticated requests' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'Changed' } }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:unauthorized)
+      expect(user.reload.description).to be_nil
+    end
+
+    it 'rejects updates to another user' do
+      other = create(:user)
+      put "/api/v1/users/#{other.id}",
+          params: { user: { description: 'Changed' } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(other.reload.description).to be_nil
+    end
+
+    it 'ignores email and password changes' do
+      original_email = user.email
+      put "/api/v1/users/#{user.id}",
+          params: { user: { email: 'changed@example.com', password: 'newpassword1',
+                            password_confirmation: 'newpassword1' } }.to_json,
+          headers: auth_headers
+      user.reload
+      expect(user.email).to eq(original_email)
+      expect(user.authenticate('newpassword1')).to be(false)
     end
   end
 
@@ -147,6 +273,52 @@ RSpec.describe 'Api::V1::Users', type: :request do
     it 'is a no-op when unauthenticated' do
       get "/api/v1/users/info/#{user.username}", headers: { 'X-Extension-Version' => '42' }
       expect(user.reload.last_extension_version).to be_nil
+    end
+  end
+
+  describe 'GET /api/v1/users/search' do
+    it 'returns users matched by username prefix' do
+      create(:user, username: 'jedmund', display_name: 'Justin')
+      get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).to include('jedmund')
+    end
+
+    it 'returns users matched by display_name prefix' do
+      create(:user, username: 'someguy', display_name: 'Konami')
+      get '/api/v1/users/search', params: { query: 'kona' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).to include('someguy')
+    end
+
+    it 'is case-insensitive on both columns' do
+      create(:user, username: 'Sandalphon', display_name: 'Cocytus')
+      get '/api/v1/users/search', params: { query: 'COC' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).to include('Sandalphon')
+    end
+
+    it 'excludes the current user from results' do
+      user.update!(username: 'jedmund', display_name: 'Justin')
+      get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      expect(usernames).not_to include('jedmund')
+    end
+
+    it 'returns an empty array for queries shorter than 2 characters' do
+      create(:user, username: 'jedmund')
+      get '/api/v1/users/search', params: { query: 'j' }, headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['users']).to eq([])
     end
   end
 

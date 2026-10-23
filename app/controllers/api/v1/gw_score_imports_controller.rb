@@ -103,8 +103,8 @@ module Api
       end
 
       def build_phantom_map
-        @crew.phantom_players.not_deleted.active.where.not(granblue_id: [nil, '']).each_with_object({}) do |phantom, map|
-          map[phantom.granblue_id] = phantom.id
+        @crew.phantom_players.not_deleted.active.where.not(granblue_id: [nil, '']).to_h do |phantom|
+          [phantom.granblue_id, phantom.id]
         end
       end
 

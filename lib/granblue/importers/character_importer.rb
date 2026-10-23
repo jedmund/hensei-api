@@ -64,6 +64,10 @@ module Granblue
       #
       # @raise [ImportError] If required attributes are missing or invalid
       def build_attributes(row)
+        transcendence = parse_boolean(row['transcendence']) || false
+        max_transcendence_stage = parse_integer(row['max_transcendence_stage'])
+        max_transcendence_stage = 0 unless transcendence
+
         {
           name_en: parse_value(row['name_en']),
           name_jp: parse_value(row['name_jp']),
@@ -87,13 +91,18 @@ module Granblue
           ougi_ratio: parse_float(row['ougi_ratio']),
           ougi_ratio_flb: parse_float(row['ougi_ratio_flb']),
           special: parse_boolean(row['special']),
-          transcendence: parse_boolean(row['transcendence']),
+          ulb: parse_boolean(row['ulb']) || false,
+          transcendence: transcendence,
+          max_transcendence_stage: max_transcendence_stage,
+          max_hp_ulb: parse_integer(row['max_hp_ulb']),
+          max_atk_ulb: parse_integer(row['max_atk_ulb']),
           max_hp_transcendence: parse_integer(row['max_hp_transcendence']),
           max_atk_transcendence: parse_integer(row['max_atk_transcendence']),
           character_id: parse_integer_array(row['character_id']),
           wiki_en: parse_value(row['wiki_en']),
           release_date: parse_value(row['release_date']),
           flb_date: parse_value(row['flb_date']),
+          ulb_date: parse_value(row['ulb_date']),
           transcendence_date: parse_value(row['transcendence_date']),
           wiki_ja: parse_value(row['wiki_ja']),
           gamewith: parse_value(row['gamewith']),

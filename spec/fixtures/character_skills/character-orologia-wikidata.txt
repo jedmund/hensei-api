@@ -1,0 +1,206 @@
+{{About|the recruitable character|the summon stone|Orologia (Summon)}}
+{{CharacterTabs|base={{BASENAME}}}}
+{{Character
+|id=3040536000
+|charid=3254
+|series=grand
+|jpname=オロロジャイア
+|jptitle=時竜
+|jpva=日野聡/徳井青空
+|name=Orologia
+|release_date=2024-06-15
+|link_gamewith=453316
+|link_jpwiki=
+|link_kamigame=SSRオロロジャイア
+|gender=o
+|obtain=premium,grand,flash
+|title=Time Dragon
+|title_source=
+|5star=
+|5star_date=
+|base_evo=4
+|max_evo=4
+|uncap_type=SSR,high orb
+|base_da=7
+|base_ta=3
+|expedition_type=
+|art1={{PAGENAME}} A.png
+|art1_custom=
+{{GallerySwapImages|shuffle=yes
+|[[File:{{PAGENAME}} A.png|x400px]]
+|[[File:{{PAGENAME}} A2.png|x400px]]
+}}
+|artbase1_tab= Random
+|artbase2_tab= Base 1
+|artbase3_tab= Base 2
+|art1a={{PAGENAME}} A.png
+|art1b={{PAGENAME}} A2.png
+|art2={{PAGENAME}} B.png
+|art2a={{PAGENAME}} B2.png
+|art3=
+|art_story1=
+|sprite1={{PAGENAME}} SDA.png
+|sprite1a={{PAGENAME}} SDA2.png
+|sprite2={{PAGENAME}} SDB.png
+|sprite2a={{PAGENAME}} SDB2.png
+|sprite3=
+|rarity=SSR
+|element=Dark
+|type=Special
+|race=Other
+|va=Satoshi Hino, Sora Tokui
+|va_custom={{va|Satoshi Hino}} / {{va|Sora Tokui}}
+|join=[[Flash Gala]]
+|join_weapon=Causality Driver
+|weapon=Axe,Staff
+|min_atk=
+|max_atk=9600
+|flb_atk=
+|bonus_atk=
+|min_hp=
+|max_hp=1280
+|flb_hp=
+|bonus_hp=
+|ougi_count=1
+|ougi_name=Acies Falcis
+|ougi_desc={{tt|450%|Massive}} Dark damage to a foe. ('''When {{status|Causal Intervention}} is 4:''' 50% boost to C.A. damage and 30% boost to C.A. damage cap.)<ref name="GameWith" /><br />Extend all allies' {{status|Mysticus Candor}} duration by 1 turn.
+|ougi2_name=
+|ougi2_desc=
+|ougi3_name=
+|ougi3_desc=
+|ougi4_name=
+|ougi4_desc=
+|abilitysubtitle=
+|abilitycount=3
+|a1_icon=Ability_m_2364_3.png
+|a1_color=yellow
+|a1_name=Mysticus Candor
+|a1_cd={{InfoCd|num=1|cooldown=11|cooldown1=10|level1=55}}
+|a1_dur={{InfoDur|type=t|duration=5}}
+|a1_oblevel={{InfoOb|obtained=1|enhanced=55}}
+|a1_effdesc={{InfoDes|num=0|des=All Dark allies gain {{status|Mysticus Candor|t=5T}} and {{status|Veil|t=i}}.<br />('''While {{status|Mysticus Candor}} is in effect:'''<br />Boost to attack specs based on Orologia's {{status|Causal Intervention}}.)}}
+|a2_icon=Ability_m_2365_1.png
+|a2_color=red
+|a2_name=Nunc Distorqueo
+|a2_cd={{InfoCd|num=1|cooldown=8|cooldown1=7|level1=75}}
+|a2_dur={{InfoDur|type=s|duration=180}}
+|a2_oblevel={{InfoOb|obtained=1|enhanced=75}}
+|a2_effdesc={{InfoDes|num=0|des=800% Dark damage to a foe (Damage cap: ~820,000).<ref name="GameWith" /><br />Inflict {{status|ATK Lowered (Stackable)|t=180s|a=10%|am=40%|acc=100%}}.<br />Remove 1 buff.}}
+|a3_icon=Ability_m_2366_3.png,Ability_m_2367_3.png
+|a3_option1= alt ver
+|a3_option= options
+|a3_color=yellow
+|a3_name=Causa Temporis / Victoriae Calculus
+|a3_name_custom= Causa Temporis<br />{{InfoSkillUpgrade|text=Causal Intervention is at 4:}} <br />Victoriae Calculus
+|a3_cd={{InfoCd|num=0|cooldown=5}}
+|a3_dur= -
+|a3_oblevel={{InfoOb|obtained=45}}
+|a3_effdesc={{InfoDes|num=0|des='''Causa Temporis:'''<br />1-turn cut to Dark allies' skill cooldowns.<br />All Dark allies gain {{Status|ATK Boosted (Stackable)|t=i|m=us|s=tw|a=10%|am=30%}} and {{Status|DEF Boosted (Stackable)|t=i|a=10%|am=30%}}.<ref name="GameWith" /><br />('''When {{status|Causal Intervention}} is 4:'''<br />Skill changes to Victoriae Calculus.)<br />'''Victoriae Calculus:'''<br />Give causality a quick tweak for good blessings.<br />(The choice is yours! Can't recast.)}}
+|a4_icon=
+|a4_color=
+|a4_name=
+|a4_cd={{InfoCd|num=0|cooldown=}}
+|a4_dur={{InfoDur|type=t|duration=}}
+|a4_oblevel={{InfoOb|obtained=}}
+|a4_effdesc={{InfoDes|num=0|des=}}
+
+|abilitytitle_a={{CharacterSkill|{{PAGENAME}}|3|alt=true}} {{Character/Skills/Options}}
+|abilitycount_a=3
+|a1a_icon= Ability_m_15_1.jpg
+|a1a_color= yellow
+|a1a_name= Sapiens Motus
+|a1a_cd= -
+|a1a_dur= {{InfoDur|type=t|duration=1}}
+|a1a_oblevel= {{InfoOb|obtained=45}}
+|a1a_effdesc= {{InfoDes|num=0|des=End cooldown for another Dark ally's skills and grant {{status|Instant Recast|t=1T}}.}}
+|a2a_icon=Ability_m_15_2.jpg
+|a2a_color= yellow
+|a2a_name= Fortis Motus
+|a2a_cd= -
+|a2a_dur= {{InfoDur|type=t|duration=1}}
+|a2a_oblevel= {{InfoOb|obtained=45}}
+|a2a_effdesc= {{InfoDes|num=0|des=Grant another Dark ally {{status|Triple Strike|t=1T}} and {{status|TA Up|t=1T|a=100%}}.}}
+|a3a_icon= Ability_m_15_3.jpg
+|a3a_color= yellow
+|a3a_name= Certus Motus
+|a3a_cd= -
+|a3a_dur= {{InfoDur|type=t|duration=1}}
+|a3a_oblevel= {{InfoOb|obtained=45}}
+|a3a_effdesc= {{InfoDes|num=0|des=Grant another Dark ally  {{status|Instant Charge}}, {{status|C.A. Reactivation (1 time)|t=1T}}, {{status|C.A. DMG Boosted (1 time)|t=1T|a=50%}}, and {{status|C.A. DMG Cap Boosted (1 time)|t=1T|a=20%}}.<ref name="GameWith" />}}
+|s_abilitycount=3
+|sa_name=Wedge of Time and Causality
+|sa_level={{InfoOb|obtained=1}}
+|sa_desc='''Upon using buff skills:''' {{status|Causal Intervention|t=i}} rises by 1 (Max: 4).<br />('''Gain effects in order based on {{status|Causal Intervention}}:'''<br />1: 30% boost to {{atkmod|ATK|m=p}}.<br />2: Guaranteed triple attacks.<br />3: 20% Bonus Dark DMG effect upon triple attacks.<br />4: 20% boost to dodge rate.)<ref name="GameWith" />
+|sa2_name=Cras Es Noster
+|sa2_level={{InfoOb|obtained=1}}
+|sa2_desc='''When {{status|Causal Intervention}} reaches 4:'''<br />End cooldown for {{CharacterSkill|Orologia|3|alt=true}}.<br />'''When {{status|Causal Intervention}} is 4:'''<br />{{CharacterSkill|Orologia|3|alt=false}} activates every 5 turns.
+|sa3_name=Living Our Best Lives, Together
+|sa3_level={{InfoOb|obtained=1}}
+|sa3_desc=20% hit to max HP and 20% hit to debuff resistance.<br />'''Upon MC's normal attacks while {{status|Mysticus Candor}} is in effect:'''<br />Activate {{CharacterSkill|Orologia|2}}.<br />'''When an ally is below 25% HP at end of turn:'''<br />Set Dark allies' HP to full and remove all debuffs.<br /> All Dark allies gain {{status|DEF Boosted (Can't be removed)|a=50%|t=i}}.<ref name="GameWith" /><br />(Consumes {{status|Living Our Best Lives, Together|n=1|t=i}}.)
+|sa_emp_desc=
+|perk11=Skill DMG Cap
+|perk12=Skill DMG Cap
+|perk13=C.A. DMG Cap
+|perk14=Debuff Success
+|perk15=
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=y
+|a2_mimic_notes=
+|a3_mimic=n
+|a3_mimic_notes=
+|a4_mimic=
+|a4_mimic_notes=
+|a1a_mimic_hide=y
+|a2a_mimic_hide=y
+|a3a_mimic_hide=y
+|profile=A wedge equal in standing to the Six Dragons, controller of causality and the flow of time, and part of the pressure that shapes the Sky Realm. Possessing a heart that rivals the compassion of mortals, the countless permutations run to rid the world of sorrow take a heavy toll on this wedge. Clutching onto a handful of precious memories, Orologia now attempts to find new moments of joy despite still harboring pangs of guilt.
+}}
+
+==Gameplay Notes==
+* Orologia's appearance can be set manually. This setting will carry over even when using the outfit of a different character version.
+** The character's specs in battle, style, type, and gender won't be affected by the change in appearance.
+** To change Orologia's appearance, tap on the Change button on their details screen.
+
+=== Mysticus Candor ===
+* {{status|Mysticus Candor|t=5T}} grants the following cumulative effects in order based on Orologia's number of {{status|Causal Intervention}}:<ref name="GameWith">GameWith, Orologia. https://グランブルーファンタジー.gamewith.jp/article/show/453316</ref>
+{| class="wikitable" style="text-align: center;"
+|-
+! No. !! Status !! Effect
+|-
+! 1
+| {{status|Causal Intervention 1|icon}}
+| style="text-align: left;" | 50% Dark ATK Up
+|-
+! 2
+| {{status|Causal Intervention 2|icon}}
+| style="text-align: left;" | {{crit|Critical Up|100|20}}
+|-
+! 3
+| {{status|Causal Intervention 3|icon}}
+| style="text-align: left;" | 10% DMG Amplified
+|-
+! 4
+| {{status|Causal Intervention 4|icon}}
+| style="text-align: left;" | 10% DMG Cap Up
+|}
+
+=== Causa Temporis / Victoriae Calculus ===
+* When {{CharacterSkill|Orologia|3|alt=true}} is selected, a new window appears which provides the option of selecting {{CharacterSkill|Orologia|1a}}, {{CharacterSkill|Orologia|2a}}, or {{CharacterSkill|Orologia|3a}}.
+* In [[Full Auto]], {{CharacterSkill|Orologia|3|alt=false}} is used, but {{CharacterSkill|Orologia|3|alt=true}} is ''not'' used.
+=== Wedge of Time and Causality ===
+* {{status|Causal Intervention}} stacks are not removed when Orologia is knocked out or moved to a sub ally position.
+
+=== Living Our Best Lives, Together ===
+{{Autoskill|2|upon MC's normal attacks when {{status|Mysticus Candor|t=5}} is in effect.}}
+** Can auto-activate multiple times within a turn.
+* {{CharacterSupportSkill|Orologia|3}} sets Dark allies' HP to full, which ignores healing specs and healing reduction effects such as {{status|Strong Armed}}.
+** Activates when an ally of any element is below 25% HP at end of turn, but the effect only affects Dark allies.
+{{ReusableOneTimeBuff|{{status|Living Our Best Lives, Together|n=1|t=i}}}}
+=== Bonus DMG Stacking Information ===
+{{EchoTable/Info}}
+{{EchoTable|{{PAGENAME}}|1|passiveb}}
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{#var: character_template_bottom | }}
+
+==References==
+<references />

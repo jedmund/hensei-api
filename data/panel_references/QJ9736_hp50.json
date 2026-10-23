@@ -1,0 +1,87 @@
+{
+  "party": "QJ9736",
+  "captured_on": "2026-07-07",
+  "notes": "Dark Optimus HP sweep (Fighter Origin). Validates: normal stamina formula (exact at 100/75/50/25, line drops below 25), the Garrison curve -(1-ratio)^3+4(1-ratio) (50/116/176/224 exact; the 1-percent anchor reads 252 in-game vs 251.8 at hp=1 — slider-extreme rounding, omitted), Rightway Pathfinder C.A. 120 x hp/100 with the sub-25 cutoff, and Persistence supp 10000+200xHP exact at all five anchors. State hp_percent=50.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 50,
+    "foe_element": "light"
+  },
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "value": 620,
+      "series": "normal"
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "value": 80.0,
+      "series": "ex"
+    },
+    {
+      "label": "Stamina",
+      "boost": "stamina",
+      "value": 78.13,
+      "series": "normal"
+    },
+    {
+      "label": "E. ATK (Prog.)",
+      "boost": "e_atk_prog",
+      "value": 8.0
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 390
+    },
+    {
+      "label": "Heal Cap",
+      "boost": "heal_cap",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 176
+    },
+    {
+      "label": "Debuff Res.",
+      "boost": "debuff_res",
+      "value": 20.0
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 14.0
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 60.0
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 30.0
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 20000
+    },
+    {
+      "label": "Skill DMG Supp.",
+      "boost": "skill_dmg_supp",
+      "value": 100000
+    }
+  ]
+}

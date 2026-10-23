@@ -6,6 +6,7 @@ RSpec.describe LoggingHelper do
   let(:helper_class) do
     Class.new do
       include LoggingHelper
+
       attr_accessor :verbose
     end
   end

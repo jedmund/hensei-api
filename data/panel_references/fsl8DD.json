@@ -1,0 +1,45 @@
+{
+  "party": "fsl8DD",
+  "captured_on": "2026-07-09",
+  "notes": "Water Vitality bridge golden. One SL15 Calamitous Aquashade with Varuna/Varuna at 100% HP. The in-game panel showed Max HP 25425; this reference supplies ally_max_hp explicitly until the calculator computes Max HP internally. Validates Vitality formulas: EX Might = 25425 x 0.045% = 11.44, DEF = 25425 x 0.025% = 6.36, DMG Cap (Sp.) = 25425 x 0.01% = 2.54.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "ally_max_hp": 25425,
+    "foe_element": "fire"
+  },
+  "enhancements": {
+    "optimus": 340,
+    "omega": 0,
+    "taboo": 0
+  },
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 52.8
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 11.44
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 52.8
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 6.36
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 2.54
+    }
+  ]
+}

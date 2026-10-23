@@ -255,29 +255,6 @@ def seed_raid_groups
   puts "There are now #{RaidGroup.count} rows in the raid groups table."
 end
 
-# Gacha
-
-def seed_gacha
-  csv_text = File.read(Rails.root.join('lib', 'seeds', 'gacha.csv'))
-  csv = CSV.parse(csv_text, headers: true, encoding: 'UTF-8')
-  csv.each do |row|
-    g = Gacha.new
-    g.drawable_id = row['drawable_id']
-    g.drawable_type = row['drawable_type']
-    g.premium = row['premium']
-    g.classic = row['classic']
-    g.flash = row['flash']
-    g.legend = row['legend']
-    g.valentines = row['valentines']
-    g.summer = row['summer']
-    g.halloween = row['halloween']
-    g.holiday = row['holiday']
-    g.save
-  end
-
-  puts "There are now #{Gacha.count} rows in the gacha table."
-end
-
 # Guidebooks
 
 def seed_guidebooks

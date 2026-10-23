@@ -78,13 +78,6 @@ module Api
       def awakening_params
         params.require(:awakening).permit(:name_en, :name_jp, :slug, :object_type, :order)
       end
-
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
-
-        Rails.logger.warn "[AWAKENINGS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
-      end
     end
   end
 end

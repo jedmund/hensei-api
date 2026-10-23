@@ -3,6 +3,15 @@
 module Api
   module V1
     class WeaponKeysController < Api::V1::ApiController
+      before_action :ensure_editor_role, only: %i[update]
+
+      # PATCH /weapon_keys/:id
+      def update
+        key = WeaponKey.find(params[:id])
+        key.update!(params.require(:weapon_key).permit(:name_en, :name_jp))
+        render json: WeaponKeyBlueprint.render(key)
+      end
+
       def all
         weapon_keys = WeaponKey.all
 

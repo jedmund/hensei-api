@@ -1,0 +1,172 @@
+{{WsBox
+|name=Stamina 
+|desc= [{{wsSize}}] boost to [element] allies' ATK based on how high HP is
+|aura_boostable=yes
+|color=
+|boost1=Stamina
+|boost2=Omega Stamina
+|boost3=Od Stamina
+
+|icon=Ws_skill_whole_*_1.png
+}}
+*Stamina does not confer an ATK boost when HP is below 25%.
+*Formula for calculating Stamina:<ref>Stamina Formula http://binarysblog.blog.fc2.com/blog-entry-1.html</ref><ref>Hecate_mk2, Stamina above SL15 https://twitter.com/Hecate_mk2/status/1117394780109934592</ref>
+:{| class="wikitable" style="text-align: right;"
+!
+! colspan="5" |{{icon|normal aura}} Normal
+! colspan="2" |{{icon|omega aura}} Omega
+! {{icon|odious aura}} Odious
+|-
+!rowspan="2"| Skill
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_*_1.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_*_2.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_*_3.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_*_3_2.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_*_4.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_m_*_2.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_m_*_3.png|size=50|category=Stamina}}
+!{{WeaponSkillIconLink|icon=Ws_skill_whole_k_*_3.png|size=50|category=Stamina}}
+|- 
+!Small
+!Medium<ref name="Great Sundome Stamina">Great Sundome Stamina https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/86912</ref>
+!Big<ref name="suiton Stamina">suiton Stamina http://suiton.jp/2016_11/finburu/</ref><ref name="Hecate_mk2 Stamina">Hecate_mk2 Stamina http://gbf-verification.blog.jp/archives/2126115.html</ref>
+!Big II<ref name="Hecate_mk2 Galilei Insight rebalance">Hecate_mk2, Galilei's Insight rebalance https://twitter.com/Hecate_mk2/status/1369566801047121924</ref>
+![[:Category:Ancestral Weapons|Ancestral]]<ref name="Great Sundome Fediel's Spine">Great Sundome Fediel's Spine https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/86912</ref>
+!Medium<ref name="soufflex stamina">soufflex Stamina https://twitter.com/soufflex_/status/972514112268787712</ref>
+!Big<ref name="Hekate_mk2 Dark Opus ULB Stamina">Hecate_mk2, Dark Opus ULB Stamina https://twitter.com/Hecate_mk2/status/1117394778591612928</ref><ref>https://twitter.com/Hecate_mk2/status/1760920019192758651</ref>
+!Big
+|- 
+!Coefficient
+|85.0
+|65.0
+|56.4
+|53.7
+|50.4
+|60.4
+|56.4
+|53.5
+|}
+
+<pre>
+[25 ≤ HP Percentage ≤ 100]
+HP Percentage = (Current HP / Max HP) * 100
+
+[1 ≤ Skill Level ≤ 15 (10 for Small)]
+Stamina Strength = (HP Percentage / (Coefficient - Skill Level))^2.9 + 2.1
+
+[11 ≤ Skill Level ≤ 15 for Small]
+Stamina Strength = (HP Percentage / (Coefficient - (10 + (2 * (Skill Level-10)))))^2.9 + 2.1
+
+[15 < Skill Level ≤ 20]
+Stamina Strength = (HP Percentage / (Coefficient - (15 + (0.4 * (Skill Level-15)))))^2.9 + 2.1
+
+[20 < Skill Level ≤ 25]
+Stamina Strength = (HP Percentage / trunc(Coefficient - (17 + 0.34*(Skill Level-20)),1))^2.9 + 2.1) 
+
+[Skill Level = 25]
+Stamina Strength = (HP Percentage / (Coefficient - 18.7))^2.9 + 2.1
+
+</pre>
+
+<dl><dd><table class="wikitable" style="text-align: right;">
+<tr>
+  <tr>
+    <th rowspan=4>HP</th>
+    <th colspan=12>{{Label|Stamina}}</th>
+    <th colspan=4>{{Label|Omega Stamina}}</th>
+    <th colspan=2>{{Label|Od Stamina}}</th>
+  </tr>
+  <tr>
+    <th colspan=2>{{WeaponSkillIconLink|icon=Ws_skill_whole_*_1.png|size=50|category=Stamina}}</th>
+    <th colspan=3>{{WeaponSkillIconLink|icon=Ws_skill_whole_*_2.png|size=50|category=Stamina}}</th>
+    <th colspan=4>{{WeaponSkillIconLink|icon=Ws_skill_whole_*_3.png|size=50|category=Stamina}}</th>
+    <th colspan=2>{{WeaponSkillIconLink|icon=Ws_skill_whole_*_3_2.png|size=50|category=Stamina}}</th>
+    <th colspan=1>{{WeaponSkillIconLink|icon=Ws_skill_whole_*_4.png|size=50|category=Stamina}}</th>
+    <th colspan=2>{{WeaponSkillIconLink|icon=Ws_skill_whole_m_*_2.png|size=50|category=Stamina}}</th>
+    <th colspan=2>{{WeaponSkillIconLink|icon=Ws_skill_whole_m_*_3.png|size=50|category=Stamina}}</th>
+    <th colspan=2>{{WeaponSkillIconLink|icon=Ws_skill_whole_k_*_3.png|size=50|category=Stamina}}</th>
+  </tr>
+  <tr>
+    <th colspan=2>Small</th>
+    <th colspan=3>Medium</th>
+    <th colspan=4>Big</th>
+    <th colspan=2>Big II</th>
+    <th colspan=1>[[:Category:Ancestral Weapons|Ancestral]]</th>
+    <th colspan=2>Medium</th>
+    <th colspan=2>Big</th>
+    <th colspan=2>Big</th>
+  </tr>
+  <tr>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL25</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL15</th>
+    <th>SL10</th>
+    <th>SL15</th>
+    <th>SL15</th>
+    <th>SL20</th>
+    <th>SL10</th>
+    <th>SL15</th>
+  </tr>
+{{#vardefine: hp | 100 }}
+{{#while:
+  | {{ #ifexpr: {{ #var: hp }} >= 25 | true}}
+  | {{ #vardefine: hp_ratio | {{ #expr: ({{ #var: hp }} / 100) * 100 }} }}
+  <tr style="text-align: right;">
+    <th>{{ #var: hp }}%</th>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (85.0 - 10))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (85.0 - (10 + (2*(15-10)))))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (65.0 - 10))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (65.0 - 15))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (65.0 - (15 + (0.4*(20-15)))))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (56.4 - 10))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (56.4 - 15))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (56.4 - (15 + (0.4*(20-15)))))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (56.4 - (17 + (0.34*(20-15)))))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (53.7 - 10))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (53.7 - 15))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (50.4 - 15))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (60.4 - 10))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (60.4 - 15))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (56.4 - 15))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (56.4 - (15 + (0.4*(20-15)))))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (53.0 - 10))^2.9 + 2.1) round 2 }}%</td>
+    <td>{{ #expr: (({{ #var: hp_ratio }} / (53.0 - (10 + (0.9*(15-10)))))^2.9 + 2.1) round 2 }}%</td>
+    <!--td>{{ #var: hp_ratio }}</td-->
+  </tr>{{
+  #vardefine: hp | {{ #expr: {{ #var: hp}} - 5 }}
+  }}
+}}
+  <tr>
+    <th><25%</th>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+    <td>0.00%</td>
+  </tr>
+</table></dd></dl>
+
+*For the SL15 Medium graph, refer to the image at the bottom of [https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/86912 this link] by Great Sundome.
+*For the SL15 Big graph, refer to the image at the bottom of [http://gbf-verification.blog.jp/archives/2126115.html this link] by Hecate_Mk2.<noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

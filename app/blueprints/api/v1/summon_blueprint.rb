@@ -10,7 +10,7 @@ module Api
         }
       end
 
-      fields :granblue_id, :element, :rarity, :max_level, :subaura, :limit, :promotions
+      fields :granblue_id, :element, :rarity, :max_level, :subaura, :limit, :support_eligible, :promotions
 
       field :promotion_names do |s|
         s.promotion_names
@@ -39,13 +39,13 @@ module Api
 
       view :preview do
         excludes :name, :element, :rarity, :max_level, :promotions,
-                 :promotion_names, :series, :uncap
+                 :promotion_names, :series, :uncap, :support_eligible
       end
 
       # Minimal view for party list cards — just enough for image rendering
       view :list do
         excludes :name, :element, :rarity, :max_level, :promotions,
-                 :promotion_names, :series, :uncap, :subaura, :limit
+                 :promotion_names, :series, :uncap, :subaura, :limit, :support_eligible
       end
 
       view :stats do
@@ -77,9 +77,16 @@ module Api
         field :transcendence_date
       end
 
+      SOURCE_DATES = ->(_field, _summon, options) { options[:source_dates] }
+
       view :full do
         include_view :stats
         include_view :dates
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com). Read from
+        # `sources` (a query per summon), so only when the summon itself is rendered
+        # (source_dates: true), not for each summon nested in a party or collection.
+        field :wiki_raw_fetched_at, if: SOURCE_DATES
+        field :wiki_raw_jp_fetched_at, if: SOURCE_DATES
 
         field :nicknames do |s|
           {
@@ -96,6 +103,11 @@ module Api
         end
 
         fields :gamewith, :kamigame
+
+        # Structured per-tier auras (the calculator's source), main then sub.
+        association :auras, blueprint: SummonAuraBlueprint, name: :summon_auras do |s|
+          s.auras.sort_by { |a| [a.slot == 'main' ? 0 : 1, a.uncap_level, a.transcendence_stage] }
+        end
       end
 
       # Separate view for raw data - only used by dedicated endpoint

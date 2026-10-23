@@ -1,0 +1,137 @@
+{
+  "party": "XfBq6u",
+  "captured_on": "2026-10-16",
+  "notes": "W9 #5 HP sweep: XfBq6u at HP 1% (Calculator Conditions slider), everything else as at 100%. Checks Excalibur's normal stamina with Fediel's Spine's ancestral stamina, omega enmity, Excalibur's Garrison (DEF), Rightway Pathfinder (C.A. DMG 120 x HP) and the AX stamina levels. At 1% the Stamina line is gone (stamina's sub-25% cutoff) and C.A. DMG shows 0%. Open: Ω Enmity 350 and DEF 64.8 fit an effective HP of about 0.1-0.25%, not 1% (ours at 1%: 345.17 and 64.58; at 0.1%: 350.42 and 64.78; at 0%: 351.0 and 64.8). OlFQ2a's old 1% capture fits the same way (377 vs 371.73 at 1%). C.A. DMG shows 0% where we drop the line (Rightway Pathfinder's sub-25% cutoff). XfBq6u at 10% and 5% matches Ω Enmity, DEF and Rightway's C.A. DMG (12, 6) exactly, so both curves are right and Rightway has no sub-25% cutoff; the 1% slider point is the outlier (Ω Enmity, DEF and C.A. DMG all read as if HP were about 0.1-0.25%), though LqZ4tM's Persistence reads exactly 10,200 there. Open. Resolved 2026-10-17: the 1% point reads as 1 HP (Scaling.panel_hp, from 3LRS7C at 10/5/1%), and every line matches.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 1,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 60,
+    "omega": 420,
+    "taboo": 0
+  },
+  "absent": [
+    "stamina"
+  ],
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 644
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 82
+    },
+    {
+      "label": "Ω Enmity",
+      "boost": "enmity",
+      "series": "omega",
+      "value": 350
+    },
+    {
+      "label": "Dark Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 114
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 64.8
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 20,
+      "capped": true
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 9.1
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 50
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 0,
+      "capped": false
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 30
+    },
+    {
+      "label": "C.A. Amp. (Sp.)",
+      "boost": "ca_amp_sp",
+      "value": 10
+    },
+    {
+      "label": "C.B. Amp.",
+      "boost": "cb_amp",
+      "value": 100
+    },
+    {
+      "label": "FC Amp.",
+      "boost": "fc_amp",
+      "value": 100
+    },
+    {
+      "label": "C.A. Supp.",
+      "boost": "ca_supp",
+      "value": 1000000,
+      "capped": true
+    },
+    {
+      "label": "DMG Cap Pen.",
+      "boost": "dmg_cap_pen",
+      "value": 4
+    },
+    {
+      "label": "ATK (AX)",
+      "boost": "atk_ax",
+      "value": 2.5
+    },
+    {
+      "label": "Stamina (AX)",
+      "boost": "stamina_ax",
+      "value": 4
+    },
+    {
+      "label": "Elemental ATK (AX)",
+      "boost": "ele_atk_ax",
+      "value": 2
+    },
+    {
+      "label": "HP (AX)",
+      "boost": "hp_ax",
+      "value": 9
+    },
+    {
+      "label": "Skill DMG Cap (AX)",
+      "boost": "skill_cap_ax",
+      "value": 1
+    },
+    {
+      "label": "C.A. DMG (AX)",
+      "boost": "ca_dmg_ax",
+      "value": 6
+    }
+  ]
+}

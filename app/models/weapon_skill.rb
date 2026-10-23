@@ -1,43 +1,23 @@
 # frozen_string_literal: true
 
+# A weapon skill SLOT (position) on a weapon. The skill's content and how it
+# evolves across uncap/transcendence tiers live in weapon_skill_versions.
 class WeaponSkill < ApplicationRecord
   belongs_to :weapon, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon_skills
-  belongs_to :skill
-
-  # Skill series determines which summon auras boost this skill.
-  # normal  — boosted by Optimus summons (Agni, Varuna, Titan, Zephyrus, Zeus, Hades)
-  # omega   — boosted by Omega summons (Colossus, Leviathan, Yggdrasil, Tiamat, Luminiera, Celeste)
-  # ex      — not boosted by any summon aura
-  # odious  — boosted by Odious summons
-  # nil     — weapon-specific skills (Militis, CCW, Archangel, Ennead, Arcana, etc.)
-  enum :skill_series, {
-    normal: 'normal',
-    omega: 'omega',
-    ex: 'ex',
-    odious: 'odious'
-  }
-
-  # Skill size determines the base value of the skill effect.
-  enum :skill_size, {
-    small: 'small',
-    medium: 'medium',
-    big: 'big',
-    big_ii: 'big_ii',
-    massive: 'massive',
-    unworldly: 'unworldly',
-    ancestral: 'ancestral'
-  }
-
-  # Valid modifiers sourced from WeaponSkillParser.
-  # Each modifier represents a distinct effect type (e.g. Might = ATK, Enmity = ATK from low HP).
-  VALID_MODIFIERS = Granblue::Parsers::WeaponSkillParser::KNOWN_MODIFIERS
+  has_many :weapon_skill_versions, -> { order(:ordinal) }, dependent: :destroy, inverse_of: :weapon_skill
 
   validates :weapon_granblue_id, presence: true
-  validates :skill_id, presence: true
   validates :position, presence: true,
                        numericality: { only_integer: true, greater_than_or_equal_to: 0 },
-                       uniqueness: { scope: [:weapon_granblue_id, :uncap_level] }
-  validates :uncap_level, presence: true,
-                          numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :skill_modifier, inclusion: { in: VALID_MODIFIERS }, allow_nil: true
+                       uniqueness: { scope: :weapon_granblue_id }
+
+  # The version active at a grid weapon's current uncap/transcendence: the highest
+  # tier whose unlock (min_uncap / transcendence_stage) the weapon has reached.
+  # min_uncap 3 = base (always available, so uncap is clamped to >= 3).
+  def active_version(uncap_level:, transcendence_step: 0)
+    eff_uncap = [uncap_level.to_i, 3].max
+    weapon_skill_versions
+      .select { |v| (v.min_uncap || 3) <= eff_uncap && (v.transcendence_stage || 0) <= transcendence_step.to_i }
+      .max_by { |v| [v.min_uncap || 3, v.transcendence_stage || 0, v.ordinal] }
+  end
 end

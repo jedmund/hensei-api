@@ -74,7 +74,7 @@ module Granblue
       # @param filename [String] Image filename
       # @return [String] Complete S3 key
       def build_s3_key(size, filename)
-        "#{object_type}/#{filename}"
+        "icons/job-skills/#{filename}"
       end
 
       # Override download path to not append size

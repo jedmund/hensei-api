@@ -7,13 +7,11 @@ module Api
       before_action :set_collection_character_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import check_updates]
       before_action :set_collection_character_for_write, only: %i[update destroy]
 
       def index
         if params[:unowned].present?
-          return head :forbidden unless current_user && @target_user.id == current_user.id
-
           owned_ids = @target_user.collection_characters.select(:character_id)
           @characters = Character.where.not(id: owned_ids)
                                  .includes(:character_series_records)
@@ -32,7 +30,7 @@ module Api
           @characters = @characters.by_series(array_param(:series)) if params[:series]
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
-            @characters = @characters.where("name_en ILIKE :q OR name_jp ILIKE :q", q: q)
+            @characters = @characters.where("characters.name_en ILIKE :q OR characters.name_jp ILIKE :q", q: q)
           end
 
           lang = current_user&.language || 'en'
@@ -194,6 +192,24 @@ module Api
         }, status: status
       end
 
+      # POST /collection/characters/check_updates
+      # Returns field-level diffs for already-owned characters that differ from the
+      # state that the real import would apply. Accepts both the game inventory
+      # format and the extension stats format. Non-owned characters are skipped.
+      #
+      # @param data [Hash] Game data containing character list
+      # @return [JSON] { updates: [{ granblue_id, changes: [...] }, ...] }
+      def check_updates
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = CharacterImportService.new(current_user, game_data)
+        render json: { updates: service.preview_updates }
+      end
+
       private
 
       def set_target_user
@@ -264,9 +280,9 @@ module Api
         name_col = locale == 'ja' ? 'name_jp' : 'name_en'
         case sort_key
         when 'name_asc'
-          scope.order(Arel.sql("#{name_col} ASC NULLS LAST"))
+          scope.order(Arel.sql("characters.#{name_col} ASC NULLS LAST"))
         when 'name_desc'
-          scope.order(Arel.sql("#{name_col} DESC NULLS LAST"))
+          scope.order(Arel.sql("characters.#{name_col} DESC NULLS LAST"))
         when 'element_asc'
           scope.order(element: :asc)
         when 'element_desc'
@@ -275,6 +291,10 @@ module Api
           scope.order(proficiency1: :asc)
         when 'proficiency_desc'
           scope.order(proficiency1: :desc)
+        when 'release_date_desc'
+          scope.order(Arel.sql('latest_date DESC NULLS LAST'), id: :asc)
+        when 'release_date_asc'
+          scope.order(Arel.sql('latest_date ASC NULLS LAST'), id: :asc)
         else
           scope.order(latest_date: :desc, id: :asc)
         end

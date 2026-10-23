@@ -20,14 +20,20 @@ module Api
       # POST /crews/:crew_id/invitations
       # Send an invitation to a user (officers only)
       def create
-        user = User.find_by(id: params[:user_id]) || User.find_by(username: params[:username])
+        user = User.find_by(id: params[:user_id]) || User.with_username(params[:username]).first
         raise ActiveRecord::RecordNotFound, 'User not found' unless user
         raise CrewErrors::CannotInviteSelfError if user.id == current_user.id
         raise CrewErrors::AlreadyInCrewError if user.crew.present?
 
-        # Check for existing pending invitation
+        # Check for an existing pending invitation. Stale records still carry
+        # status :pending until something flips them, so transition expired ones
+        # before letting a fresh invite through.
         existing = @crew.crew_invitations.pending.find_by(user: user)
-        raise CrewErrors::UserAlreadyInvitedError if existing
+        if existing
+          raise CrewErrors::UserAlreadyInvitedError if existing.active?
+
+          existing.update!(status: :expired)
+        end
 
         invitation = @crew.crew_invitations.build(
           user: user,

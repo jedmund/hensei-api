@@ -6,11 +6,21 @@ module Api
       ##### Doorkeeper
       include Doorkeeper::Rails::Helpers
 
+      ##### Error reporting
+      include SentryReportable
+
+      ##### Rate limiting
+      include RateLimited
+
       ##### Constants
       COLLECTION_PER_PAGE = 15
       SEARCH_PER_PAGE = 10
+      # The web app requests at most 50 search results per page; a lower cap
+      # than other listings makes bulk copies of the item database slower.
+      SEARCH_MAX_PER_PAGE = 50
       MAX_PER_PAGE = 100
       MIN_PER_PAGE = 1
+      UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
       ##### Errors
       # Catch-all for unhandled exceptions - log details and return 500
@@ -18,7 +28,8 @@ module Api
       rescue_from StandardError do |e|
         Rails.logger.error "[500 Error] #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(20)&.join("\n")
-        render json: { error: 'Internal Server Error', message: e.message }, status: :internal_server_error
+        report_unexpected_exception(e)
+        render json: { error: 'Internal Server Error' }, status: :internal_server_error
       end
 
       rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
@@ -72,21 +83,17 @@ module Api
                          .select('DISTINCT ON (update_type) update_type, version, updated_at')
                          .order(:update_type, updated_at: :desc)
 
-        result = latest_updates.each_with_object({}) do |update, hash|
-          hash[update.update_type] = {
-            version: update.version,
-            updated_at: update.updated_at
-          }
+        result = latest_updates.to_h do |update|
+          [update.update_type, { version: update.version, updated_at: update.updated_at }]
         end
 
         render json: result
       end
 
-      # Assign the current user if the Doorkeeper token isn't nil, then
-      # update the current user's last seen datetime and last IP address
-      # before returning
+      # Assign the current user if the request carries a Doorkeeper token
+      # that is neither expired nor revoked
       def current_user
-        @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+        @current_user ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token&.accessible?
 
         @current_user
       end
@@ -185,6 +192,21 @@ module Api
                status: :unauthorized
       end
 
+      # Shared editor-role gate. Use as a before_action in any controller that
+      # exposes editor-only actions; logs the controller name and user id on
+      # rejection so unauthorized attempts are auditable.
+      def ensure_editor_role
+        return if current_user&.role && current_user.role >= 7
+
+        Rails.logger.warn "[#{controller_name.upcase}] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+      end
+
+      # True when the current user may use editor-only options on public reads.
+      def editor_role?
+        current_user&.role.to_i >= 7
+      end
+
       def render_forbidden_response(message = 'Forbidden')
         render json: ErrorBlueprint.render(nil, error: {
           message: message,
@@ -196,6 +218,27 @@ module Api
 
       def restrict_access
         raise UnauthorizedError unless current_user
+      end
+
+      # Strong params can't deeply permit arbitrary nested JSON, so accept the
+      # rich-text Tiptap doc by re-attaching the raw value (hash, string, or nil)
+      # after the standard `permit` call.
+      def permit_description(permitted, raw_params)
+        return permitted unless raw_params.is_a?(ActionController::Parameters) || raw_params.is_a?(Hash)
+        return permitted unless raw_params.key?(:description)
+
+        value = raw_params[:description]
+        permitted[:description] = value.is_a?(ActionController::Parameters) ? value.to_unsafe_h : value
+        permitted
+      end
+
+      # Evoking Solomonis seal state on a grid weapon/summon update, when sent.
+      # The model decides what's allowed (runs only, never on a starting slot).
+      def seal_state_params(key)
+        raw = params[key]
+        return {} unless raw.is_a?(ActionController::Parameters) && raw.key?(:seal_state)
+
+        raw.permit(:seal_state)
       end
 
       # Returns the requested page size within valid bounds
@@ -213,7 +256,7 @@ module Api
 
       # Returns the requested page size for search operations
       def search_page_size
-        page_size(SEARCH_PER_PAGE)
+        [page_size(SEARCH_PER_PAGE), SEARCH_MAX_PER_PAGE].min
       end
 
       # Returns a clamped page size from the `limit` query parameter

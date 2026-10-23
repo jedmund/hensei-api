@@ -55,9 +55,58 @@ RSpec.describe 'Parties API', type: :request do
     context 'when the party is private and not owned' do
       let!(:private_party) { create(:party, user: create(:user), visibility: 3, name: 'Private Party') }
 
-      it 'returns unauthorized' do
+      it 'returns not found to another user' do
         get "/api/v1/parties/#{private_party.shortcode}", headers: headers
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns not found to a logged-out visitor' do
+        get "/api/v1/parties/#{private_party.shortcode}"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'hides skill boosts from a logged-out visitor' do
+        get "/api/v1/parties/#{private_party.shortcode}/skill_boosts"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'refuses to remix it' do
+        expect do
+          post "/api/v1/parties/#{private_party.shortcode}/remix", headers: headers
+        end.not_to change(Party, :count)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when the party is private and owned' do
+      let!(:own_private) { create(:party, user: user, visibility: 3, name: 'Mine') }
+
+      it 'returns the party to its owner' do
+        get "/api/v1/parties/#{own_private.shortcode}", headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when the party is unlisted' do
+      let!(:unlisted) { create(:party, user: create(:user), visibility: 2) }
+
+      it 'is visible to a logged-out visitor' do
+        get "/api/v1/parties/#{unlisted.shortcode}"
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when an anonymous party is private' do
+      let!(:anon_private) { create(:party, user: nil, visibility: 3, edit_key: 'anonkey') }
+
+      it 'is visible with its edit key' do
+        get "/api/v1/parties/#{anon_private.shortcode}", headers: { 'X-Edit-Key' => 'anonkey' }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'is hidden without its edit key' do
+        get "/api/v1/parties/#{anon_private.shortcode}"
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -263,6 +312,33 @@ RSpec.describe 'Parties API', type: :request do
       put "/api/v1/parties/#{party.id}", params: update_attributes.to_json, headers: other_headers
       expect(response).to have_http_status(:unauthorized)
       expect(party.reload.name).to eq('Old Name')
+    end
+
+    it 'persists and serializes per-slot MC full_auto_skills' do
+      update_params = { party: { full_auto_skills: { '0' => false, '2' => true } } }
+
+      put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['party']['full_auto_skills']).to eq('0' => false, '2' => true)
+      expect(party.reload.full_auto_skills).to eq('0' => false, '2' => true)
+    end
+
+    it 'rejects MC full_auto_skills with a non-boolean value' do
+      update_params = { party: { full_auto_skills: { '0' => 'maybe' } } }
+
+      put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it 'filters out-of-range MC full_auto_skills slots' do
+      update_params = { party: { full_auto_skills: { '3' => true, '4' => false } } }
+
+      put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(party.reload.full_auto_skills).to eq('3' => true)
     end
   end
 
@@ -514,12 +590,28 @@ RSpec.describe 'Parties API', type: :request do
       end
     end
 
+    it 'includes the special flag needed to render story ULB character artwork' do
+      story_character = create(:character, :special_ulb)
+      party = create(:party, user: user, visibility: 1)
+      create(:grid_character, party: party, character: story_character, uncap_level: 5)
+      party.update_columns(characters_count: 4, weapons_count: 5, summons_count: 2)
+
+      get '/api/v1/parties', headers: headers
+
+      expect(response).to have_http_status(:ok)
+      result = response.parsed_body['results'].find { |candidate| candidate['id'] == party.id }
+      expect(result.dig('characters', 0, 'character', 'special')).to be true
+    end
+
     context 'with default filters' do
       let!(:good_party) do
         create(:party, user: user, weapons_count: 5, characters_count: 4, summons_count: 2, visibility: 1)
       end
       let!(:bad_party) do
         create(:party, user: user, weapons_count: 2, characters_count: 2, summons_count: 1, visibility: 1)
+      end
+      let!(:mc_only_party) do
+        create(:party, user: user, weapons_count: 5, characters_count: 0, summons_count: 2, visibility: 1)
       end
 
       it 'returns only parties meeting the default thresholds' do
@@ -529,6 +621,14 @@ RSpec.describe 'Parties API', type: :request do
         party_ids = response.parsed_body['results'].map { |p| p['id'] }
         expect(party_ids).to include(good_party.id)
         expect(party_ids).not_to include(bad_party.id)
+      end
+
+      it 'includes MC-only teams with no characters' do
+        get '/api/v1/parties', headers: headers
+        expect(response).to have_http_status(:ok)
+
+        party_ids = response.parsed_body['results'].map { |p| p['id'] }
+        expect(party_ids).to include(mc_only_party.id)
       end
     end
   end
@@ -553,51 +653,6 @@ RSpec.describe 'Parties API', type: :request do
       results = response.parsed_body['results']
       expect(results).not_to be_empty
       expect(results.first).to include('shortcode' => party.shortcode)
-    end
-  end
-
-  describe 'Preview Management Endpoints' do
-    let!(:party) { create(:party, user: user, shortcode: 'PREV01', element: 0) }
-
-    describe 'GET /api/v1/parties/:id/preview' do
-      before do
-        coordinator = instance_double(PreviewService::Coordinator)
-        allow(PreviewService::Coordinator).to receive(:new).and_return(coordinator)
-        allow(coordinator).to receive(:generation_in_progress?).and_return(false)
-        allow(coordinator).to receive(:local_preview_path).and_return('/tmp/fake_preview.png')
-
-        allow_any_instance_of(Api::V1::PartiesController).to receive(:send_file) do |instance, *_args|
-          instance.render plain: 'dummy image content', content_type: 'image/png', status: 200
-        end
-      end
-
-      it 'serves the preview image' do
-        get "/api/v1/parties/#{party.shortcode}/preview", headers: headers
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq('image/png; charset=utf-8')
-        expect(response.body).to eq('dummy image content')
-      end
-    end
-
-    describe 'GET /api/v1/parties/:id/preview_status' do
-      it 'returns the preview state' do
-        get "/api/v1/parties/#{party.shortcode}/preview_status", headers: headers
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).to have_key('state')
-      end
-    end
-
-    describe 'POST /api/v1/parties/:id/regenerate_preview' do
-      before do
-        coordinator = instance_double(PreviewService::Coordinator)
-        allow(PreviewService::Coordinator).to receive(:new).and_return(coordinator)
-        allow(coordinator).to receive(:force_regenerate).and_return(true)
-      end
-
-      it 'accepts the regeneration request' do
-        post "/api/v1/parties/#{party.shortcode}/regenerate_preview", headers: headers
-        expect(response).to have_http_status(:ok).or have_http_status(:unprocessable_entity)
-      end
     end
   end
 end

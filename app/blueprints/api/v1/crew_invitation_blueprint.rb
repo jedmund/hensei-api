@@ -5,10 +5,11 @@ module Api
     class CrewInvitationBlueprint < ApiBlueprint
       fields :status, :expires_at, :created_at
 
-      view :default do
-        field :crew do |invitation|
-          CrewBlueprint.render_as_hash(invitation.crew, view: :minimal)
-        end
+      # Base fields belong at the top level: an explicit `view :default` block
+      # makes Blueprinter 1.3 loop forever while rendering. Views below override
+      # :crew where they need a different shape.
+      field :crew do |invitation|
+        CrewBlueprint.render_as_hash(invitation.crew, view: :minimal)
       end
 
       view :with_user do

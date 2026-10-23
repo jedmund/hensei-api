@@ -1,2 +1,0 @@
-class Gacha < ApplicationRecord
-end

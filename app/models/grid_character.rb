@@ -17,48 +17,90 @@
 #   @return [Party] the associated party record.
 #
 class GridCharacter < ApplicationRecord
+  ROLE_CAP = 3
+
   # Associations
   belongs_to :character, foreign_key: :character_id, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
-             counter_cache: :characters_count,
              inverse_of: :characters
   belongs_to :collection_character, optional: true
 
+  has_many :grid_character_role_assignments, dependent: :destroy, inverse_of: :grid_character
+  has_many :grid_character_roles, through: :grid_character_role_assignments
+
+  has_many :substitutions, as: :grid, dependent: :destroy
+  has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
+
   has_one :grid_artifact, dependent: :destroy
+
+  # Associations the nested blueprint walks. Reused by controllers and the
+  # polymorphic substitute-grid preloader so a single source of truth keeps
+  # them in sync as the blueprint evolves.
+  NESTED_BLUEPRINT_PRELOADS = [
+    :awakening, :grid_artifact, :grid_character_roles, :collection_character,
+    { character: [:character_series_records, :style_swap_variants, Character::SKILL_GRAPH_PRELOAD] }
+  ].freeze
 
   # Validations
   validates_presence_of :party
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
+  validates :description, rich_text_description: true, if: :description_changed?
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
   
-  validate :validate_awakening_level, on: :update
-  validate :transcendence
-  validate :validate_over_mastery_values, on: :update
-  validate :validate_aetherial_mastery_value, on: :update
+  validate :validate_awakening_level, on: :update, unless: :is_substitute?
+  validate :transcendence, unless: :is_substitute?
+  validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
+  validate :validate_aetherial_mastery_value, on: :update, unless: :is_substitute?
+  validate :roles_within_cap
+  validate :within_solomonis_character_limit, on: :create, unless: :is_substitute?
+  validate :validate_brought_by_blessing
+  validate :validate_full_auto_skills
 
   # Virtual attributes
   attr_accessor :new_rings
   attr_accessor :new_awakening
+  # Set by the controller for substitute renders so the API can tell the
+  # client whether the substitute's underlying character is in current_user's
+  # collection. nil means "not stamped" (i.e., not a substitute render).
+  attr_accessor :owned
 
   ##### Amoeba configuration
   amoeba do
     enable
     include_association :grid_artifact
-    set ring1: { modifier: nil, strength: nil }
-    set ring2: { modifier: nil, strength: nil }
-    set ring3: { modifier: nil, strength: nil }
-    set ring4: { modifier: nil, strength: nil }
-    set earring: { modifier: nil, strength: nil }
+    exclude_association :grid_character_role_assignments
+    # Substitutions are remapped explicitly by Party#create_remapped_substitutions
+    # so the polymorphic foreign keys point at the new grid items. Letting amoeba
+    # also clone them produces duplicate rows that violate the uniqueness index
+    # on (grid_type, grid_id, position).
+    exclude_association :substitutions
+    exclude_association :substitute_of
+    # Amoeba's `set` stringifies its value (`to_s`), which would store a Ruby
+    # hash inspect string in the jsonb columns. Assign real hashes instead.
+    customize(lambda { |_original, copy|
+      %i[ring1 ring2 ring3 ring4 earring].each do |column|
+        copy[column] = { 'modifier' => nil, 'strength' => nil }
+      end
+    })
     set perpetuity: false
+    nullify :description
   end
+
+  # Orphan status scopes
+  scope :orphaned, -> { where(orphaned: true) }
+  scope :not_orphaned, -> { where(orphaned: false) }
 
   # Hooks
   before_validation :apply_new_rings, if: -> { new_rings.present? }
   before_validation :apply_new_awakening, if: -> { new_awakening.present? }
-  before_save :add_awakening
+  before_validation :clamp_transcendence_step
+  before_save :add_awakening, unless: :is_substitute?
+
+  after_create :increment_party_counter, unless: :is_substitute?
+  after_destroy :decrement_party_counter, unless: :is_substitute?
 
   ##
   # Validates the awakening level to ensure it falls within the allowed range.
@@ -83,9 +125,13 @@ class GridCharacter < ApplicationRecord
   # @return [void]
   def transcendence
     return if transcendence_step.nil?
-    errors.add(:transcendence_step, 'character has no transcendence') if transcendence_step.positive? && !character.transcendence
-    errors.add(:transcendence_step, 'transcendence step too high') if transcendence_step > 5 && character.transcendence
-    errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative? && character.transcendence
+    errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
+  end
+
+  def clamp_transcendence_step
+    return if transcendence_step.nil? || transcendence_step.negative? || character.nil?
+
+    self.transcendence_step = [transcendence_step, character.max_transcendence_stage].min
   end
 
   ##
@@ -128,17 +174,25 @@ class GridCharacter < ApplicationRecord
   ##
   # Validates individual over mastery values for each ring (ring1 to ring4).
   #
-  # Iterates over each ring and, if a modifier is present, uses a helper to verify that the associated strength
-  # is within the permitted range based on over mastery rules.
+  # For each ring with a modifier, checks that the strength is one of the allowed
+  # values for that modifier. Rings that aren't hashes get an error rather than
+  # raising, so a malformed row can't turn every update into a 500.
   #
   # @return [void]
   def validate_individual_over_mastery_values
-    # Iterate over rings 1-4 and check each ring’s value.
     [ring1, ring2, ring3, ring4].each_with_index do |ring, index|
-      next if ring['modifier'].nil?
-      modifier = over_mastery_modifiers[ring['modifier']]
-      # Use a helper to add errors if the value is out-of-range.
-      check_value({ "ring#{index}": { ring[modifier] => ring['strength'] } }, 'over_mastery')
+      column = :"ring#{index + 1}"
+
+      unless ring.is_a?(Hash)
+        errors.add(column, 'is malformed')
+        next
+      end
+      next if ring['modifier'].blank?
+
+      name = over_mastery_modifiers[ring['modifier'].to_i]
+      allowed = name && over_mastery_values[name.to_sym]
+      strength = Float(ring['strength'], exception: false)
+      errors.add(column, 'invalid value') unless allowed&.include?(strength)
     end
   end
 
@@ -151,6 +205,8 @@ class GridCharacter < ApplicationRecord
   #
   # @return [void]
   def validate_over_mastery_attack_matches_hp
+    return unless ring1.is_a?(Hash) && ring2.is_a?(Hash)
+
     # Convert ring1 and ring2 to use indifferent access so that keys (symbols or strings)
     # can be accessed uniformly.
     r1 = ring1.with_indifferent_access
@@ -172,6 +228,10 @@ class GridCharacter < ApplicationRecord
   #
   # @return [void]
   def validate_aetherial_mastery_value
+    unless earring.is_a?(Hash)
+      errors.add(:earring, 'is malformed')
+      return
+    end
     return if earring['modifier'].nil?
 
     return unless earring['modifier'].to_i.positive?
@@ -189,53 +249,58 @@ class GridCharacter < ApplicationRecord
     GridCharacterBlueprint
   end
 
+  # Maps the camelCase keys emitted by #out_of_sync_fields to the underlying
+  # column names. Used by the per-field sync flow so the frontend can target
+  # individual sections (Uncap & Transcendence, Awakening, a single ring)
+  # rather than overwriting every field on each sync.
+  SYNC_FIELD_MAP = {
+    'uncapLevel' => %i[uncap_level],
+    'transcendenceStep' => %i[transcendence_step],
+    'perpetuity' => %i[perpetuity],
+    'overMastery.0' => %i[ring1],
+    'overMastery.1' => %i[ring2],
+    'overMastery.2' => %i[ring3],
+    'overMastery.3' => %i[ring4],
+    'aetherialMastery' => %i[earring],
+    'awakeningId' => %i[awakening_id],
+    'awakeningLevel' => %i[awakening_level]
+  }.freeze
+
+  ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
+
   ##
   # Syncs customizations from the linked collection character.
   #
-  # Copies uncap level, transcendence, rings, earring, and awakening from the collection.
-  # No-op if no collection character is linked.
+  # When `fields:` is omitted, every tracked column is copied. When provided,
+  # only the columns mapped from those camelCase keys are touched, leaving
+  # other fields alone.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_from_collection!
+  def sync_from_collection!(fields: nil)
     return false unless collection_character.present?
 
-    update!(
-      uncap_level: collection_character.uncap_level,
-      transcendence_step: collection_character.transcendence_step,
-      perpetuity: collection_character.perpetuity,
-      ring1: collection_character.ring1,
-      ring2: collection_character.ring2,
-      ring3: collection_character.ring3,
-      ring4: collection_character.ring4,
-      earring: collection_character.earring,
-      awakening_id: collection_character.awakening_id,
-      awakening_level: collection_character.awakening_level
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    update!(columns.index_with { |col| collection_character.public_send(col) })
     true
   end
 
   ##
   # Syncs customizations from this grid character to the linked collection character.
   #
-  # Copies uncap level, transcendence, rings, earring, and awakening to the collection.
-  # No-op if no collection character is linked.
+  # Same field scoping as #sync_from_collection!.
   #
+  # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
-  def sync_to_collection!
+  def sync_to_collection!(fields: nil)
     return false unless collection_character.present?
 
-    collection_character.update!(
-      uncap_level: uncap_level,
-      transcendence_step: transcendence_step,
-      perpetuity: perpetuity,
-      ring1: ring1,
-      ring2: ring2,
-      ring3: ring3,
-      ring4: ring4,
-      earring: earring,
-      awakening_id: awakening_id,
-      awakening_level: awakening_level
-    )
+    columns = sync_columns_for(fields)
+    return true if columns.empty?
+
+    collection_character.update!(columns.index_with { |col| public_send(col) })
     true
   end
 
@@ -244,21 +309,104 @@ class GridCharacter < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_character.present?
+    out_of_sync_fields.any?
+  end
 
-    uncap_level != collection_character.uncap_level ||
-      transcendence_step != collection_character.transcendence_step ||
-      perpetuity != collection_character.perpetuity ||
-      ring1 != collection_character.ring1 ||
-      ring2 != collection_character.ring2 ||
-      ring3 != collection_character.ring3 ||
-      ring4 != collection_character.ring4 ||
-      earring != collection_character.earring ||
-      awakening_id != collection_character.awakening_id ||
-      awakening_level != collection_character.awakening_level
+  ##
+  # Returns the list of fields that differ from the linked collection character.
+  # Uses camelCase keys matching the frontend's grid item shape so the UI can
+  # mark exactly the sections/rows that drifted. Ring drift uses dotted keys
+  # (overMastery.0..3) so the corresponding ring rows can highlight individually.
+  def out_of_sync_fields
+    return [] unless collection_character.present?
+
+    fields = []
+    fields << 'uncapLevel' if uncap_level != collection_character.uncap_level
+    fields << 'transcendenceStep' if transcendence_step != collection_character.transcendence_step
+    fields << 'perpetuity' if perpetuity != collection_character.perpetuity
+    fields << 'overMastery.0' if ring1 != collection_character.ring1
+    fields << 'overMastery.1' if ring2 != collection_character.ring2
+    fields << 'overMastery.2' if ring3 != collection_character.ring3
+    fields << 'overMastery.3' if ring4 != collection_character.ring4
+    fields << 'aetherialMastery' if earring != collection_character.earring
+    fields << 'awakeningId' if awakening_id != collection_character.awakening_id
+    fields << 'awakeningLevel' if awakening_level != collection_character.awakening_level
+    fields
   end
 
   private
+
+  def sync_columns_for(fields)
+    return ALL_SYNC_COLUMNS if fields.blank?
+
+    fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
+  end
+
+  def increment_party_counter
+    Party.increment_counter(:characters_count, party_id)
+  end
+
+  def decrement_party_counter
+    Party.decrement_counter(:characters_count, party_id)
+  end
+
+  # Evoking Solomonis parties hold the route Evoker and up to 4 allies. Whether
+  # the route Evoker is actually in the grid is a completeness check, not
+  # validated.
+  def within_solomonis_character_limit
+    limit = party&.solomonis_character_limit
+    return if limit.nil?
+
+    others = party.characters.reject do |gc|
+      gc.equal?(self) || (id && gc.id == id) || gc.marked_for_destruction?
+    end
+    return if others.size < limit
+
+    errors.add(:base, "This Evoking Solomonis party can hold at most #{limit} characters")
+  end
+
+  # The ally chosen with The Hanged Man: at most one per party, only when The
+  # Hanged Man is equipped.
+  def validate_brought_by_blessing
+    return unless brought_by_blessing?
+
+    if is_substitute? || !party&.solomonis_blessing?(ArcarumBlessing::HANGED_MAN)
+      errors.add(:brought_by_blessing, 'needs The Hanged Man')
+      return
+    end
+
+    taken = GridCharacter.where(party_id: party_id, brought_by_blessing: true, is_substitute: false)
+    taken = taken.where.not(id: id) if id
+    in_memory = party.characters.any? { |gc| !gc.equal?(self) && gc.new_record? && gc.brought_by_blessing? }
+    errors.add(:brought_by_blessing, 'can only be set on one character') if taken.exists? || in_memory
+  end
+
+  def roles_within_cap
+    return if grid_character_role_assignments.size <= ROLE_CAP
+
+    errors.add(:roles, "may have at most #{ROLE_CAP}")
+  end
+
+  # full_auto_skills maps an ability slot ("0".."3") to whether it is used in
+  # Full Auto. Reject unknown slots or non-boolean values.
+  FULL_AUTO_SLOTS = %w[0 1 2 3].freeze
+  private_constant :FULL_AUTO_SLOTS
+  FULL_AUTO_VALUES = [true, false].freeze
+  private_constant :FULL_AUTO_VALUES
+
+  def validate_full_auto_skills
+    return if full_auto_skills.blank?
+
+    unless full_auto_skills.is_a?(Hash)
+      errors.add(:full_auto_skills, 'must be an object')
+      return
+    end
+
+    full_auto_skills.each do |slot, value|
+      errors.add(:full_auto_skills, "invalid slot #{slot}") unless FULL_AUTO_SLOTS.include?(slot.to_s)
+      errors.add(:full_auto_skills, "invalid value for slot #{slot}") unless FULL_AUTO_VALUES.include?(value)
+    end
+  end
 
   ##
   # Adds a default awakening to the character before saving if none is set.
@@ -308,26 +456,22 @@ class GridCharacter < ApplicationRecord
   # Checks that a given property value falls within the allowed range based on the specified mastery type.
   #
   # The +property+ parameter is expected to be a hash in the following format:
-  #   { ring1: { atk: 300 } }
+  #   { earring: { da: 15 } }
   #
-  # Depending on the +type+, it validates against either over mastery or aetherial mastery values.
+  # Only aetherial mastery is checked here; over mastery rings are validated in
+  # #validate_individual_over_mastery_values.
   # Adds an error to the record if the value is not within the permitted range.
   #
   # @param property [Hash] the property hash containing the attribute and its value.
-  # @param type [String] the type of mastery validation to perform ('over_mastery' or 'aetherial_mastery').
+  # @param type [String] the type of mastery validation to perform ('aetherial_mastery').
   # @return [void]
   def check_value(property, type)
-    # Input format
-    # { ring1: { atk: 300 } }
-
     key = property.keys.first
     modifier = property[key].keys.first
 
     return if modifier.nil?
 
     case type
-    when 'over_mastery'
-      errors.add(key, 'invalid value') unless over_mastery_values.include?(key['strength'])
     when 'aetherial_mastery'
       errors.add(key, 'value too low') if aetherial_mastery_values[modifier][:min] > self[key]['strength']
       errors.add(key, 'value too high') if aetherial_mastery_values[modifier][:max] < self[key]['strength']

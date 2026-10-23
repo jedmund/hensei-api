@@ -6,21 +6,22 @@ module Api
       include IdResolvable
       include BatchPreviewable
 
-      before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki]
-      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki batch_preview]
+      before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
+      before_action :ensure_editor_role, only: %i[create update validate download_image download_images fetch_wiki reparse batch_preview
+                                                  raw]
 
       # GET /summons/:id
       def show
-        render json: SummonBlueprint.render(@summon, view: :full)
+        render json: SummonBlueprint.render(@summon, view: :full, source_dates: true)
       end
 
       # POST /summons
       # Creates a new summon record
       def create
-        summon = Summon.new(summon_params)
+        summon = Summon.new(with_wiki_fetch_date(summon_params))
 
         if summon.save
-          render json: SummonBlueprint.render(summon, view: :full), status: :created
+          render json: SummonBlueprint.render(summon, view: :full, source_dates: true), status: :created
         else
           render_validation_error_response(summon)
         end
@@ -29,8 +30,8 @@ module Api
       # PATCH/PUT /summons/:id
       # Updates an existing summon record
       def update
-        if @summon.update(summon_params)
-          render json: SummonBlueprint.render(@summon, view: :full)
+        if @summon.update(with_wiki_fetch_date(update_params, @summon))
+          render json: SummonBlueprint.render(@summon, view: :full, source_dates: true)
         else
           render_validation_error_response(@summon)
         end
@@ -178,17 +179,7 @@ module Api
         end
 
         begin
-          wiki_text = Granblue::Parsers::Wiki.new.fetch(@summon.wiki_en)
-
-          # Handle redirects
-          redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-          if redirect_match
-            redirect_target = redirect_match[1]
-            @summon.update!(wiki_en: redirect_target)
-            wiki_text = Granblue::Parsers::Wiki.new.fetch(redirect_target)
-          end
-
-          @summon.update!(wiki_raw: wiki_text)
+          Granblue::WikiFetcher.new.fetch_and_store(@summon)
           render json: SummonBlueprint.render(@summon, view: :raw)
         rescue Granblue::WikiError => e
           render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
@@ -198,6 +189,20 @@ module Api
         end
       end
 
+      # POST /summons/:id/reparse
+      # Re-parses the stored wikitext into structured rows; refetch=true fetches fresh wikitext first.
+      def reparse
+        Granblue::EntityReparser.new(@summon, refetch: params[:refetch] == 'true').reparse
+        render json: SummonBlueprint.render(@summon.reload, view: :full, source_dates: true)
+      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue Granblue::WikiError => e
+        render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
+      rescue StandardError => e
+        Rails.logger.error "[SUMMONS] Reparse error for #{@summon.id}: #{e.message}"
+        render json: { error: "Failed to re-parse: #{e.message}" }, status: :internal_server_error
+      end
+
       private
 
       def set
@@ -205,12 +210,13 @@ module Api
         render_not_found_response('summon') unless @summon
       end
 
-      # Ensures the current user has editor role (role >= 7)
-      def ensure_editor_role
-        return if current_user&.role && current_user.role >= 7
+      # The edit form sends back the wikitext it loaded, so a blank wiki_raw means
+      # it failed to load, not a deliberate clear: keep the stored text.
+      def update_params
+        attrs = summon_params
+        return attrs unless attrs.key?(:wiki_raw)
 
-        Rails.logger.warn "[SUMMONS] Unauthorized access attempt by user #{current_user&.id}"
-        render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
+        attrs[:wiki_raw].blank? && @summon.source_sha256(:wiki_raw) ? attrs.except(:wiki_raw) : attrs
       end
 
       def summon_params

@@ -1,0 +1,106 @@
+{{WsBox
+|name=Aegis
+|desc=[{{wsSize}}] boost to [element] allies' HP
+|aura_boostable=yes
+|color=green
+|boost1=HP
+
+|icon=ws_skill_hp_*_1.png
+
+|small=ws_skill_hp_*_1.png
+|medium=ws_skill_hp_*_2.png
+|big=ws_skill_hp_*_3.png
+|big2=ws_skill_hp_*_3_2.png
+|massive=
+|unworldly=
+
+|o_small=ws_skill_hp_m_*_1.png
+|o_medium=ws_skill_hp_m_*_2.png
+|o_big=ws_skill_hp_m_*_3.png
+|o_big2=
+|o_massive=
+|o_unworldly=
+
+|ex_small=ws_skill_hp_a_*_1.png
+|ex_medium=ws_skill_hp_a_*_2.png
+|ex_big=ws_skill_hp_a_*_2.png
+|ex_big2=
+|ex_massive=
+|ex_unworldly=
+}}
+* HP boosts are additive between Normal, Omega, and EX.
+* Total HP boosts from weapon skills is capped at 400%
+* {{itm|Broadsword of Earth}}'s "Titan's Aegis" weapon skill is not a standard "Aegis" skill and is not boostable by auras. Instead, it is a flat +50 per skill level (+500 HP at skill level 10).
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="6" class="wsmod-title" | {{icon|normal aura}} Normal
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_*_1.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Small
+! class="wsmod-stat" rowspan="4" | {{Label|HP}}
+| 3.0% || 12.0% || 14.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_*_2.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Medium
+| 6.0% || 15.0% || 17.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_*_3.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Big
+| 9.0% || 18.0% || 21.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_*_3_2.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Big II
+| 10.0% || 19.0% || 24.0%
+|}
+</div>
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="7" class="wsmod-title" | {{icon|omega aura}} Omega
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_m_3_1.png|size=50|category=Aegis}}
+! class="wsmod-tier" | {{tt|Small|{{itm|Yggdrasil Dewbranch Omega}}}}<ref name="GameWith, Yggdrasil Dewbranch Omega">GameWith, Yggdrasil Dewbranch Omega. https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/72000</ref>
+! class="wsmod-stat" rowspan="3" | {{Label|HP}}
+| 1.0% || 10.0% || 12.0% || 13.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_m_*_1.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Small<ref name="GameWith, Scimitar of Brahman">GameWith, Scimitar of Brahman. https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/94206</ref>
+| 3.0% || 12.0% || 14.5% || -
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_m_*_2.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Medium<ref name="GameWith, Leviathan Bow Omega">GameWith, Leviathan Bow Omega. https://xn--bck3aza1a2if6kra4ee0hf.gamewith.jp/article/show/72107</ref>
+| 6.0% || 15.0% || 18.0% || 20.0%
+|}
+</div>
+<div class="wsmod-wrap">
+{| class="wikitable wsmod"
+|-
+! colspan="7" class="wsmod-title" | EX<ref name="Kamigame Aegis Page">Kamigame, Aegis. https://kamigame.jp/グラブル/ゲーム知識/スキル-守護.html</ref>
+|-
+! class="wsmod-icon" | Icons
+! class="wsmod-tier" colspan="2" | Skill Level
+! 1 !! 10 !! 15 !! 20
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_a_*_1.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Small
+! class="wsmod-stat" rowspan="3" | {{Label|HP}}
+| 1.0% || 10.0% || ? || 16.0%
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_a_*_2.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Medium
+| 3.0% || 12.0% || 14.5% || ?
+|-
+! class="wsmod-icon" | {{WeaponSkillIconLink|icon=ws_skill_hp_a_*_3.png|size=50|category=Aegis}}
+! class="wsmod-tier" | Big
+| 6.0% || 15.0% || ? || ?
+|}
+</div><noinclude>[[Category:Weapon Skill Tab Templates]]</noinclude>

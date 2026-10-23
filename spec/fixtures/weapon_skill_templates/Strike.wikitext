@@ -1,0 +1,16 @@
+:{| class="wikitable" style="text-align: center;"
+|-
+!Skill Level!!{{Label|N.A. DMG Cap}}
+|-
+!1
+|2.75%
+|-
+!10
+|5.0%
+|-
+!15
+|7.5%
+|}
+
+* Boosts normal attack damage cap of {{{element|{{WeaponElement}}}}} allies.
+** Caps at 20%.<includeonly>{{ #ifeq: {{{categories|}}}|no||{{ #if: {{NAMESPACE}}||[[Category:Strike Skill Weapons]][[Category:{{WeaponElement}} Strike Skill Weapons]]}}}}</includeonly><noinclude>[[Category:Templates]][[Category:WpnSkill Templates]]</noinclude>

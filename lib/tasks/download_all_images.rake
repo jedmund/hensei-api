@@ -10,6 +10,9 @@ namespace :granblue do
   #   rake granblue:download_all_images\[weapon\]
   # @example Download all character images
   #   rake granblue:download_all_images\[character\]
+  # @example Backfill only the gacha (draw animation) art for weapons and summons, straight to S3
+  #   rake granblue:download_all_images\[weapon,4,gacha,false,s3\]
+  #   rake granblue:download_all_images\[summon,4,gacha,false,s3\]
   task :download_all_images, %i[object threads size force storage] => :environment do |_t, args|
     require 'parallel'
     require 'logger'

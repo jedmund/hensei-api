@@ -94,6 +94,46 @@ RSpec.describe CollectionSummon, type: :model do
         expect(CollectionSummon.max_uncapped).not_to include(partial_uncapped)
       end
     end
+
+    describe '.sorted_by uncap' do
+      let!(:transcendable_summon) { create(:summon, :transcendable) }
+      let!(:plain_summon) { create(:summon) }
+      let!(:low_uncap) { create(:collection_summon, uncap_level: 2) }
+      let!(:mid_uncap) { create(:collection_summon, uncap_level: 4) }
+      let!(:max_uncap_plain) do
+        create(:collection_summon, summon: plain_summon, uncap_level: 5, transcendence_step: 0)
+      end
+      let!(:max_uncap_transcendable_no_step) do
+        create(:collection_summon, summon: transcendable_summon, uncap_level: 5, transcendence_step: 0)
+      end
+      let!(:max_uncap_transc) do
+        create(:collection_summon, summon: transcendable_summon, uncap_level: 5, transcendence_step: 5)
+      end
+
+      it 'uncap_desc ranks transcendable above non-transcendable at the same uncap level' do
+        scoped_ids = [
+          max_uncap_transc.id,
+          max_uncap_transcendable_no_step.id,
+          max_uncap_plain.id,
+          mid_uncap.id,
+          low_uncap.id
+        ]
+        ordered = CollectionSummon.sorted_by('uncap_desc').where(id: scoped_ids).pluck(:id)
+        expect(ordered).to eq(scoped_ids)
+      end
+
+      it 'uncap_asc orders by uncap_level asc' do
+        scoped_ids = [
+          low_uncap.id,
+          mid_uncap.id,
+          max_uncap_plain.id,
+          max_uncap_transcendable_no_step.id,
+          max_uncap_transc.id
+        ]
+        ordered = CollectionSummon.sorted_by('uncap_asc').where(id: scoped_ids).pluck(:id)
+        expect(ordered).to eq(scoped_ids)
+      end
+    end
   end
 
   describe 'factory traits' do

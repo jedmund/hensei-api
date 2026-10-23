@@ -46,7 +46,7 @@ module Granblue
           # All characters have 01 and 02 variants
           poses = %w[01 02]
           poses << '03' if character.flb
-          poses << '04' if character.transcendence
+          poses << '04' if character.ulb || character.transcendence
 
           variants = poses.map { |pose| "#{@id}_#{pose}" }
 

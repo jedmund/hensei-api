@@ -27,20 +27,7 @@ class ArtifactImportService
   }.freeze
 
   # Game artifact 'kind' values to our proficiency enum values
-  # Game: 1=Sabre, 2=Dagger, 3=Spear, 4=Axe, 5=Staff, 6=Gun, 7=Melee, 8=Bow, 9=Harp, 10=Katana
-  # Ours: 1=Sabre, 2=Dagger, 3=Axe, 4=Spear, 5=Bow, 6=Staff, 7=Melee, 8=Harp, 9=Gun, 10=Katana
-  PROFICIENCY_MAPPING = {
-    '1' => 1,   # Sabre
-    '2' => 2,   # Dagger
-    '3' => 4,   # Spear
-    '4' => 3,   # Axe
-    '5' => 6,   # Staff
-    '6' => 9,   # Gun
-    '7' => 7,   # Melee
-    '8' => 5,   # Bow
-    '9' => 8,   # Harp
-    '10' => 10  # Katana
-  }.freeze
+  PROFICIENCY_MAPPING = Granblue::GameIds::WEAPON_KIND_TO_PROFICIENCY.transform_keys(&:to_s).freeze
 
   def initialize(user, game_data, options = {})
     @user = user
@@ -238,8 +225,7 @@ class ArtifactImportService
       attack_score: score_info['attack_score'],
       defense_score: score_info['defense_score'],
       special_score: score_info['special_score'],
-      total_score: score_info['total_score'],
-      raw_data: data
+      total_score: score_info['total_score']
     }
   end
 
@@ -248,7 +234,7 @@ class ArtifactImportService
   end
 
   def map_proficiency(kind)
-    PROFICIENCY_MAPPING[kind.to_s]
+    Granblue::GameIds.proficiency_for_weapon_kind(kind)
   end
 
   def update_skill_score_categories(data)

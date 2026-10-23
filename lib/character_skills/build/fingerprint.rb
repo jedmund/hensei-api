@@ -1,0 +1,85 @@
+# frozen_string_literal: true
+
+module CharacterSkills
+  module Build
+    # What a character's skills are built from, as one SHA256 (contract C5, plus D15):
+    #   - Build::VERSION;
+    #   - the sha256 of the character's wiki_raw, wiki_raw_jp, game_raw_en and game_raw_jp
+    #     `sources` rows ("-" when there is none), and of its jp_skill_text row when it has one
+    #     (an optional input: absent, it adds nothing, so other characters' digests don't move);
+    #   - the other characters columns the Builder reads: granblue_id, element, style_swap;
+    #   - the stored gbf.wiki status list (Source wiki_status_list, D34), by sha256 ("-" when missing);
+    #   - data/statuses/categories.json, aliases.json, spelling_labels.json and numbered_exceptions.json, by sha256 (effects
+    #     read them directly: curated categories, display aliases, numbered names);
+    #   - the statuses catalogue, (id, name_en, category, game_status_id, variant_kind) sorted (effects
+    #     take their type, exact display id and variant kind from these);
+    #   - the sha256 of the icon snapshot file, or "-" when it's absent.
+    # Stored on characters.character_skill_build_fingerprint after a write; a run without
+    # all: true skips characters whose fingerprint still matches.
+    #
+    # A source's sha256 is the digest of its stored body (game payloads sanitized, then
+    # canonical JSON), so it differs from the old jsonb columns' digest; moving changes each
+    # fingerprint once (D35).
+    #
+    # Two paths produce the same digest:
+    #   - #for(character) reads an in-memory record (staged, unsaved text included, for previews);
+    #   - #for_relation(relation) reads only the rows' sha256, so a deploy loads no page text
+    #     just to find nothing stale.
+    class Fingerprint
+      REQUIRED_SOURCES = %w[wiki_raw wiki_raw_jp game_raw_en game_raw_jp].freeze
+      OPTIONAL_SOURCES = %w[jp_skill_text].freeze
+      SOURCES = (REQUIRED_SOURCES + OPTIONAL_SOURCES).freeze
+      # Columns besides the sources that change the Builder's output (D15).
+      ATTRIBUTES = %w[granblue_id element style_swap].freeze
+      NONE = "-"
+
+      # One instance per run: the statuses and icons digests are computed once, after the
+      # status catalogue has been refreshed.
+      def for(character)
+        digests = SOURCES.to_h { |kind| [kind, character.source_sha256(kind) || NONE] }
+        combine(digests, ATTRIBUTES.to_h { |column| [column, character[column]] })
+      end
+
+      # → { character id => fingerprint } for every character in relation, without loading
+      # any source body.
+      def for_relation(relation)
+        rows = relation.pluck(:id, *ATTRIBUTES)
+        shas = Source.where(owner_type: Character.polymorphic_name, owner_id: rows.map(&:first), kind: SOURCES, key: "")
+                     .pluck(:owner_id, :kind, :sha256)
+                     .each_with_object(Hash.new { |h, k| h[k] = {} }) { |(id, kind, sha), by_id| by_id[id][kind] = sha }
+        rows.to_h do |id, *values|
+          digests = SOURCES.to_h { |kind| [kind, shas.dig(id, kind) || NONE] }
+          [id, combine(digests, ATTRIBUTES.zip(values).to_h)]
+        end
+      end
+
+      def statuses_digest
+        @statuses_digest ||= Digest::SHA256.hexdigest(
+          Status.pluck(:id, :name_en, :category, :game_status_id, :variant_kind).sort_by { |id, *| id.to_s }
+                .map { |row| row.join(":") }.join("\n")
+        )
+      end
+
+      def icons_digest
+        # The snapshot the Builder reads its fallback icons from (its `sources` row), as this
+        # process has it loaded (refreshed first), so the build and its fingerprint agree.
+        @icons_digest ||= IconSnapshot.refresh! || NONE
+      end
+
+      private
+
+      def combine(digests, attributes)
+        parts = ["version:#{VERSION}", "statuses:#{statuses_digest}", "icons:#{icons_digest}",
+                 "status_list:#{Granblue::Parsers::StatusList.sha256 || NONE}",
+                 "curated_statuses:#{Granblue::Parsers::CuratedStatusCategories.sha256}",
+                 "status_aliases:#{Granblue::Parsers::StatusAliases.sha256}",
+                 "spelling_labels:#{Granblue::Parsers::SpellingLabels.sha256}",
+                 "numbered_exceptions:#{Granblue::Parsers::StatusName.exceptions_sha256}"]
+        parts += REQUIRED_SOURCES.map { |kind| "#{kind}:#{digests.fetch(kind)}" }
+        parts += OPTIONAL_SOURCES.filter_map { |kind| "#{kind}:#{digests[kind]}" if digests[kind] && digests[kind] != NONE }
+        parts += ATTRIBUTES.map { |column| "#{column}:#{attributes[column].nil? ? NONE : attributes[column]}" }
+        Digest::SHA256.hexdigest(parts.join("\n"))
+      end
+    end
+  end
+end

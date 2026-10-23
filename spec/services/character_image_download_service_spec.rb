@@ -3,7 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe CharacterImageDownloadService do
-  let(:character) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false, element: 1, gender_variants?: false) }
+  let(:character) do
+    double('Character', granblue_id: '3040001000', flb: false, ulb: false,
+                        transcendence: false, element: 1, gender_variants?: false)
+  end
   let(:downloader_double) { double('CharacterDownloader', download: nil) }
 
   before do
@@ -36,6 +39,12 @@ RSpec.describe CharacterImageDownloadService do
         expect(result.images['main']).to include('3040001000_04.jpg')
       end
 
+      it 'includes _04 variant when a story character has ULB' do
+        allow(character).to receive(:ulb).and_return(true)
+        result = described_class.new(character).download
+        expect(result.images['main']).to include('3040001000_04.jpg')
+      end
+
       it 'uses png extension for detail size' do
         result = described_class.new(character).download
         detail_files = result.images['detail']
@@ -59,7 +68,10 @@ RSpec.describe CharacterImageDownloadService do
     end
 
     context 'with gender_variants' do
-      let(:gendered_char) { double('Character', granblue_id: '3040001000', flb: false, transcendence: false, element: 1, gender_variants?: true) }
+      let(:gendered_char) do
+        double('Character', granblue_id: '3040001000', flb: false, ulb: false,
+                            transcendence: false, element: 1, gender_variants?: true)
+      end
 
       it 'includes gender suffixed files' do
         result = described_class.new(gendered_char).download
@@ -80,7 +92,7 @@ RSpec.describe CharacterImageDownloadService do
       context 'without gender_variants' do
         let(:null_element_char) do
           double('Character', granblue_id: '3040643000', flb: false,
-                              transcendence: false, element: 0, gender_variants?: false)
+                              ulb: false, transcendence: false, element: 0, gender_variants?: false)
         end
 
         it 'includes element-suffixed variants without gender' do
@@ -96,7 +108,7 @@ RSpec.describe CharacterImageDownloadService do
       context 'with gender_variants' do
         let(:null_element_gendered) do
           double('Character', granblue_id: '3040643000', flb: false,
-                              transcendence: false, element: 0, gender_variants?: true)
+                              ulb: false, transcendence: false, element: 0, gender_variants?: true)
         end
 
         it 'includes element-suffixed variants with gender' do

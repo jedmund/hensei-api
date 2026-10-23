@@ -15,7 +15,7 @@ module Api
       end
 
       view :minimal do
-        fields :username, :display_name, :description, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :wiki_profile, :youtube, :simple_portraits, :default_rep_view, :timezone
+        fields :username, :display_name, :description, :language, :private, :gender, :theme, :role, :granblue_id, :show_gamertag, :wiki_profile, :youtube, :simple_portraits, :default_rep_view, :timezone, :support_summons_public
         # Return collection_privacy as integer (enum returns string by default)
         field :collection_privacy do |user|
           User.collection_privacies[user.collection_privacy]
@@ -43,7 +43,7 @@ module Api
         include_view :minimal
 
         field :parties, if: ->(_fn, _obj, options) { options[:parties].length.positive? } do |_, options|
-          PartyBlueprint.render_as_hash(options[:parties], view: :list)
+          PartyBlueprint.render_as_hash(options[:parties], view: :list, current_user: options[:current_user])
         end
       end
 
@@ -62,6 +62,13 @@ module Api
         field :has_stored_edit_keys do |user|
           user.user_edit_keys.any?
         end
+        field :has_password do |user|
+          user.password?
+        end
+        field :password_prompt_dismissed do |user|
+          user.password_prompt_dismissed_at.present?
+        end
+        field :deletion_scheduled_at
       end
     end
   end

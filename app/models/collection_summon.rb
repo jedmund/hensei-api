@@ -3,8 +3,11 @@ class CollectionSummon < ApplicationRecord
   belongs_to :summon
 
   has_many :grid_summons, dependent: :nullify
+  has_many :support_summons, dependent: :destroy
 
-  before_destroy :orphan_grid_items
+  # prepend: must run before dependent: :nullify clears the foreign key, or it
+  # finds no grid items to mark orphaned.
+  before_destroy :orphan_grid_items, prepend: true
 
   validates :uncap_level, inclusion: { in: 0..6 }
   validates :transcendence_step, inclusion: { in: 0..10 }
@@ -15,6 +18,7 @@ class CollectionSummon < ApplicationRecord
   scope :by_element, ->(element) { joins(:summon).where(summons: { element: element }) }
   scope :by_rarity, ->(rarity) { joins(:summon).where(summons: { rarity: rarity }) }
   scope :by_series, ->(series_id) { joins(:summon).where(summons: { summon_series_id: series_id }) }
+  scope :support_eligible, -> { joins(:summon).where(summons: { support_eligible: true }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :max_uncapped, -> { where(uncap_level: 5) }
   scope :by_name, ->(query) {
@@ -32,6 +36,22 @@ class CollectionSummon < ApplicationRecord
       joins(:summon).order('summons.element ASC')
     when 'element_desc'
       joins(:summon).order('summons.element DESC')
+    when 'uncap_desc'
+      # uncap_level desc, then transcendable summons rank above non-transcendable
+      # at the same uncap level (e.g. a transcendence-capable uncap 5 beats a
+      # non-transcendable uncap 5), then transcendence_step desc as the final
+      # tie-breaker.
+      joins(:summon).order(uncap_level: :desc)
+                    .order(Arel.sql('summons.transcendence DESC'))
+                    .order(transcendence_step: :desc)
+    when 'uncap_asc'
+      joins(:summon).order(uncap_level: :asc)
+                    .order(Arel.sql('summons.transcendence ASC'))
+                    .order(transcendence_step: :asc)
+    when 'release_date_desc'
+      joins(:summon).order(Arel.sql('summons.latest_date DESC NULLS LAST'))
+    when 'release_date_asc'
+      joins(:summon).order(Arel.sql('summons.latest_date ASC NULLS LAST'))
     else
       order(created_at: :desc)
     end

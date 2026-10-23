@@ -1,0 +1,280 @@
+{
+  "_note": "English-shaped Super Cidala (3040377000, style 2) payload derived from character-super-cidala-gamedata-jp.json (the real JP-mode capture, D39): name/comment = name_en/comment_en. Where the JP payload has no English (style_list.0.name, style_list.1.name, special_skill.name, special_skill.comment, master.name, support_ability.1.name, support_ability.1.comment, support_ability.2.name, support_ability.2.comment), the English text comes from the earlier hand-made fixture. Skills, class_name and action_id are the game's.",
+  "style": 2,
+  "style_list": [
+    {
+      "name": "Normal Style",
+      "style": 1,
+      "open_conditions": [],
+      "is_open": true,
+      "set_conditions": [],
+      "can_set": true,
+      "image": "3040377000_01",
+      "specialty_weapon": [
+        "4",
+        "7"
+      ],
+      "is_secret": false
+    },
+    {
+      "name": "Super Cidala",
+      "style": 2,
+      "open_conditions": [],
+      "is_open": true,
+      "set_conditions": [],
+      "can_set": true,
+      "image": "3040377000_01_st2",
+      "specialty_weapon": [
+        "4",
+        "7"
+      ],
+      "is_secret": false
+    }
+  ],
+  "param": {
+    "style": "2",
+    "rarity": "4",
+    "image_id_9": "3040377000_01_st2"
+  },
+  "special_skill": {
+    "name": "Ascending Fur-tune",
+    "comment": "Massive Earth DMG to a foe / Gain ATK Sharply Boosted (Can't be extended)",
+    "recast": "100",
+    "is_bgm_setting": false
+  },
+  "power_up_special_skill": [],
+  "master": {
+    "id": "3040377000",
+    "name": "Cidala",
+    "evo_name": "[East-Northeast Guardian] Cidala",
+    "short_name": "Cidala",
+    "type": "2",
+    "rarity": "4",
+    "attribute": 3,
+    "awakening1": "3",
+    "awakening2": "5",
+    "awakening3": "",
+    "max_evolution_level": 5,
+    "release_max_evolution_level": 1,
+    "weapon": "4,7",
+    "series_id": [
+      "6"
+    ],
+    "specialty": [
+      "4",
+      "7"
+    ],
+    "specialty_weapon": [
+      "4",
+      "7"
+    ],
+    "tribe": "2",
+    "tribe_2": ""
+  },
+  "ability": {
+    "1": {
+      "action_id": "244171",
+      "action_sub_id": "244171",
+      "name": "Luck Goes Up",
+      "comment": "Luck Goes Up effect to caster / Full-force counter upon taking DMG (2 hits) <span class=text-blue>(Bonus Earth DMG effect while in effect / Attacks twice each turn)</span>",
+      "type": "concurrent_attack,multi_attack,max_counter_damaged",
+      "icon_type": "3",
+      "cjs_name": "ab_3040377000_11",
+      "class_name": "2559_3",
+      "ailment": "7181001001,7181002001,1062103001",
+      "attribute": "3,,",
+      "state": "1,1,1",
+      "recast": "5",
+      "turn": "2,2,2",
+      "param_min": "30,2,300",
+      "param_max": "30,2,300",
+      "rate": "100,100,100",
+      "frequency": ",,2",
+      "target1": "us,us,us",
+      "target2": "one,one,one",
+      "name_en": "Luck Goes Up",
+      "comment_en": "Luck Goes Up effect to caster / Full-force counter upon taking DMG (2 hits) <span class=text-blue>(Bonus Earth DMG effect while in effect / Attacks twice each turn)</span>",
+      "level": {
+        "release_level": 1,
+        "took_ability": true
+      },
+      "ability_detail": {
+        "buff": [
+          {
+            "status": "7181",
+            "detail": "通常攻撃時に土属性の追加ダメージが発生する状態(消去不可/延長不可)",
+            "effect": "2ターン",
+            "help_flag": ""
+          },
+          {
+            "status": "7181",
+            "detail": "ターン進行時に攻撃行動を2回行う状態(消去不可/延長不可)",
+            "effect": "2ターン",
+            "help_flag": ""
+          },
+          {
+            "status": "7485_1",
+            "detail": "ダメージを受けた際に必ず最大回数で相手に攻撃する状態",
+            "effect": "2ターン",
+            "help_flag": ""
+          }
+        ]
+      },
+      "is_available": true
+    },
+    "2": {
+      "action_id": "244181",
+      "action_sub_id": "244181",
+      "name": "Bringer of Proarsperity",
+      "comment": "Dispel Cancel effect (1 time) to earth allies / Mirror Image effect (1 hit) / Dodge all attacks from foes (1 time)",
+      "type": "despel_guard,illusion,dodge_count",
+      "icon_type": "3",
+      "cjs_name": "ab_all_3040377000_01",
+      "effect_all": "1",
+      "class_name": "2560_3",
+      "ailment": "6549001001,1313001001,1405002001",
+      "state": "1,1,1",
+      "recast": "5",
+      "turn": "9999,9999,9999",
+      "param_min": "100,100,100",
+      "param_max": "100,100,100",
+      "rate": "100,100,100",
+      "frequency": ",1,1",
+      "target1": "us,us,us",
+      "target2": "all,all,all",
+      "target_attribute": "3,3,3",
+      "name_en": "Bringer of Proarsperity",
+      "comment_en": "Dispel Cancel effect (1 time) to earth allies / Mirror Image effect (1 hit) / Dodge all attacks from foes (1 time)",
+      "level": {
+        "release_level": 1,
+        "took_ability": true
+      },
+      "ability_detail": {
+        "buff": [
+          {
+            "status": "6549",
+            "detail": "強化効果の無効化と短縮を1回防ぐ状態",
+            "effect": "",
+            "help_flag": ""
+          },
+          {
+            "status": "1313",
+            "detail": "次に受ける単体攻撃を無効化する状態(全体攻撃で効果消滅)",
+            "effect": "",
+            "help_flag": ""
+          },
+          {
+            "status": "1405_21",
+            "detail": "効果中に回数分、被ダメージと弱体効果を無効化する状態",
+            "effect": "",
+            "help_flag": ""
+          }
+        ]
+      },
+      "is_available": true
+    },
+    "3": {
+      "action_id": "244191",
+      "action_sub_id": "244191",
+      "name": "Luck Goes Down",
+      "comment": "1200% earth DMG to a foe / Luck Goes Down effect",
+      "type": "damage,summarize_draw_to_boss",
+      "icon_type": "1",
+      "cjs_name": "ab_3040377000_12",
+      "class_name": "2561_1",
+      "ailment": "1050001001,6261001001",
+      "attribute": "3,",
+      "state": "0,0",
+      "recast": "5",
+      "turn": ",5",
+      "param_min": "1200,",
+      "param_max": "1200,",
+      "param_free": ",244192",
+      "rate": "100,200",
+      "damage_limit_type": "8000007,",
+      "damage_limit1": "1100000,",
+      "damage_deduction1": "40,",
+      "damage_limit2": "1300000,",
+      "damage_deduction2": "30,",
+      "damage_limit3": "1700000,",
+      "damage_deduction3": "5,",
+      "damage_limit4": "1800000,",
+      "damage_deduction4": "1,",
+      "target1": "them,them",
+      "target2": "one,one",
+      "name_en": "Luck Goes Down",
+      "comment_en": "1200% earth DMG to a foe / Luck Goes Down effect",
+      "level": {
+        "release_level": 1,
+        "took_ability": true
+      },
+      "ability_detail": {
+        "debuff": [
+          {
+            "status": "7182_5",
+            "detail": "防御力が減少した状態(回復不可/延長不可)",
+            "effect": "5ターン",
+            "help_flag": ""
+          },
+          {
+            "status": "7182_5",
+            "detail": "受けるダメージが上昇している状態(回復不可/延長不可)",
+            "effect": "5ターン",
+            "help_flag": ""
+          },
+          {
+            "status": "7182_5",
+            "detail": "土属性通常攻撃ダメージを20,220,000与えるごとに、無属性ダメージ/敵の被ダメージを上昇させる効果を付与する状態(回復不可/延長不可)",
+            "effect": "5ターン",
+            "help_flag": ""
+          }
+        ]
+      },
+      "is_available": true
+    },
+    "4": null
+  },
+  "support_ability": {
+    "1": {
+      "action_id": "318661",
+      "id": "318661",
+      "name": "Divine Tiger United",
+      "comment": "Boost to hostility / Hit to charge bar gain / Guaranteed triple attacks / Amplify normal attack DMG",
+      "type": "hate_up_support,special_skill_gauge_enhance_down,triple_attack_rate_up,final_attack_rise_support",
+      "icon_type": "3",
+      "class_name": "55_3",
+      "turn": "9999,9999,9999,9999",
+      "level": {
+        "release_level": 1,
+        "took_ability": true
+      },
+      "is_available": true,
+      "name_en": "Divine Tiger United"
+    },
+    "2": {
+      "action_id": "318671",
+      "id": "318671",
+      "name": "Peach-Colored Date",
+      "comment": "Raise Peach Scent lvl by 1 upon using skills (Max: 5)",
+      "type": "ability_execute_trigger",
+      "icon_type": "3",
+      "class_name": "55_3",
+      "turn": "9999",
+      "level": {
+        "release_level": 1,
+        "took_ability": true
+      },
+      "is_available": true,
+      "name_en": "Peach-Colored Date"
+    },
+    "3": null,
+    "4": null
+  },
+  "backmember_ability": {
+    "1": null,
+    "2": null
+  },
+  "appear_ability": {
+    "1": null
+  }
+}

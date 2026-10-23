@@ -1,0 +1,43 @@
+{
+  "party": "SRiNSO",
+  "captured_on": "2026-07-06",
+  "notes": "PBHL Fire grid (Wizard Origin). Phoenix's Torch MH, Crimson Scale x2, Overrider, Sennen Goji x2, Doombringer Sword unc5 (Anklet of Ascendance), Nebula Gauntlets x2, Scythe of Repudiation transc5 (β Pendulum + Pendulum of Extremity). Agni 250 main + friend. capped:true = the line renders orange (at its display cap) in-game; 'absent' boosts must not render at all. Estimated DMG 675934 / to Wind 972062 / Max HP 91763 (for the Estimated DMG milestone).",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 430,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": ["dmg_cap_pen", "crit_dmg", "added_hit"],
+  "lines": [
+    { "label": "Might", "boost": "atk", "series": "normal", "value": 471 },
+    { "label": "EX Might", "boost": "atk", "series": "ex", "value": 75 },
+    { "label": "EX Might Sp.", "boost": "ex_atk_sp", "value": 48 },
+    { "label": "Critical", "boost": "critical", "value": 68.9 },
+    { "label": "DA Rate", "boost": "da", "value": 50 },
+    { "label": "TA Rate", "boost": "ta", "value": 50 },
+    { "label": "Fire Optimus", "boost": "optimus_exalto", "value": 30 },
+    { "label": "Bonus Fire DMG", "boost": "bonus_elem_dmg", "value": 23.85 },
+    { "label": "Bonus Des. DMG", "boost": "bonus_des_dmg", "value": 20 },
+    { "label": "Bonus Des. DMG C.A.", "boost": "bonus_des_ca", "value": 10 },
+    { "label": "HP", "boost": "hp", "value": 310 },
+    { "label": "Heal Cap", "boost": "heal_cap", "value": 79.5 },
+    { "label": "Wind Reduc.", "boost": "elem_reduc", "value": 30, "capped": true },
+    { "label": "DMG Cap", "boost": "dmg_cap", "value": 20, "capped": true },
+    { "label": "DMG Amp.", "boost": "dmg_amp", "series": "normal", "value": 10.6 },
+    { "label": "Elem. Amplify", "boost": "elem_amplify", "value": 30 },
+    { "label": "N.A. Amp. (Sp.)", "boost": "na_amp_sp", "value": 20, "capped": true },
+    { "label": "Skill DMG Cap", "boost": "skill_dmg_cap", "value": 50, "capped": false },
+    { "label": "Skill Cap (Sp.)", "boost": "skill_cap_sp", "value": 60, "capped": true },
+    { "label": "Skill Amp. (Sp.)", "boost": "skill_amp_sp", "value": 20, "capped": true },
+    { "label": "DMG Supp.", "boost": "dmg_supp", "value": 100000, "capped": true },
+    { "label": "N.A. Supp.", "boost": "na_supp", "value": 100000, "capped": true },
+    { "label": "Skill DMG Supp.", "boost": "skill_dmg_supp", "value": 200000, "capped": true },
+    { "label": "Skill Supp. (Sp.)", "boost": "skill_supp_sp", "value": 30000, "capped": false },
+    { "label": "DEF Ignore", "boost": "def_ignore", "value": 21.2 }
+  ]
+}

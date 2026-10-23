@@ -1,0 +1,107 @@
+{
+  "party": "JBDMhV",
+  "captured_on": "2026-07-08",
+  "notes": "Wind golden (user's own account, Manadiver MC), LINE-COMPLETE (16/16): FIRST Sp. C.A. Cap capture — 18.5 = 16 (Sword's Charge 1%/sabre x 4 sabres x 4 Settes) + 2.5 (γ Pendulum lv210 upgrade on the tr3 Spear of Renunciation; lv240 upgrades to 5, modeled as two additive +2.5 rows gated on transcendence_step 1/4, mirroring Δ). Grid: Petit Bouquet MH, 2x Sette di Spade (Attack15/Defense15), 2x Sette Mk II (Attack20/Defense20), Reunion (Healing4), Spear of Renunciation unc6 tr3 (γ + Chain of Restoration), double Zephyrus 6★ (optimus 340, omega 0). Decodes: (1) Wrath family ATK lands on EX Might Sp. (32 = 2 x 4 sabres x 4 weapons) like Voltage — pool keys unified (voltage_wrath_grand_epic; the two spellings never shared); (2) Wrath 'multiattack' grants DA AND TA (16 each); (3) Chain of Restoration = 15.5 ATK / 15.5 HP per the wiki value column (DB had 17.4/20.4), ATK riding the opus identity frame — Ω Might 37.5 = Apotheosis 22 + 15.5 flat at omega enh 0; Chain-of-Temperance values also corrected to wiki (16/7.5); (4) Grand Healing awakening lv3 grants Debuff Res +10 (Grand/Type template) — capture 15 = Reunion Healing4 10 + Revans Defense20 5, confirming the Revans Defense 16-20 sub-table (debuff 2+3, reduc 2+3 = Earth Reduc. 5); (5) Revans Defense 2-15 = HP 55/DEF 15 confirmed exactly (HP 280.1 -> 280, DEF 30 from two Defense weapons). Heal Cap sits orange at the 100 cap. Estimated 82667 / 113987 / 49246.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "earth"
+  },
+  "enhancements": {
+    "optimus": 340,
+    "omega": 0,
+    "taboo": 0
+  },
+  "absent": [
+    "crit_dmg",
+    "added_hit",
+    "added_hp"
+  ],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "value": 283,
+      "series": "normal"
+    },
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "value": 37.5,
+      "series": "omega"
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "value": 10.0,
+      "series": "ex"
+    },
+    {
+      "label": "EX Might Sp.",
+      "boost": "ex_atk_sp",
+      "value": 32.0
+    },
+    {
+      "label": "E. ATK",
+      "boost": "e_atk",
+      "value": 15.0
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 16.0
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 16.0
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 280
+    },
+    {
+      "label": "Heal Cap",
+      "boost": "heal_cap",
+      "value": 100,
+      "capped": true
+    },
+    {
+      "label": "DEF",
+      "boost": "def",
+      "value": 30.0
+    },
+    {
+      "label": "Earth Reduc.",
+      "boost": "elem_reduc",
+      "value": 5.0
+    },
+    {
+      "label": "Debuff Res.",
+      "boost": "debuff_res",
+      "value": 15.0
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "value": 1.75,
+      "series": "omega"
+    },
+    {
+      "label": "C.A. DMG",
+      "boost": "ca_dmg",
+      "value": 80.0
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 98.0
+    },
+    {
+      "label": "Sp. C.A. Cap",
+      "boost": "sp_ca_cap",
+      "value": 18.5
+    }
+  ]
+}

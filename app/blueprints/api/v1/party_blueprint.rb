@@ -3,6 +3,23 @@
 module Api
   module V1
     class PartyBlueprint < ApiBlueprint
+      # Rendering many parties looks up their sticker labels and the viewer's
+      # stickers in one query each, rather than one per party (see
+      # sticker_metadata). The viewer is `current_user`, or `sticker_viewer`
+      # where current_user has to stay out of the options.
+      module BatchStickers
+        %i[render render_as_hash render_as_json].each do |method|
+          define_method(method) do |object, options = {}|
+            if object.respond_to?(:map) && !object.is_a?(Hash) && !options.key?(:party_labels)
+              viewer = options.fetch(:sticker_viewer) { options[:current_user] }
+              options = options.merge(PartyStickerSummary.batch_options(object.to_a, viewer))
+            end
+            super(object, options)
+          end
+        end
+      end
+      singleton_class.prepend(BatchStickers)
+
       # Base fields that are always needed
       fields :local_id, :description, :shortcode, :visibility,
              :name, :element, :extra, :charge_attack,
@@ -36,6 +53,23 @@ module Api
         { mod: party.boost_mod, side: party.boost_side }
       end
 
+      # `score` is a weighted average over only those components whose
+      # weighted_score is strictly positive — components that are present but
+      # fired no rules are excluded from the denominator (see Calculator
+      # #composite_score). One consequence: adding a rule that fires for the
+      # first time on a previously-empty component can *lower* the score if
+      # that component's raw_score is below the existing composite.
+      field :difficulty do |party|
+        next nil unless party.difficulty_score.present?
+
+        {
+          tier: party.difficulty ? DifficultyBlueprint.render_as_hash(party.difficulty, view: :nested) : nil,
+          score: party.difficulty_score.to_f,
+          breakdown: party.difficulty_breakdown,
+          computed_at: party.difficulty_computed_at
+        }
+      end
+
       # Minimal view for embedding in grid item responses
       view :collection_source do
         field :collection_source_user_id
@@ -64,6 +98,16 @@ module Api
         association :characters, blueprint: GridCharacterBlueprint, view: :list
         association :weapons, blueprint: GridWeaponBlueprint, view: :list
         association :summons, blueprint: GridSummonBlueprint, view: :list
+
+        # Evoking Solomonis card/filter summary, or null. Callers preload
+        # :solomonis_expedition.
+        field :solomonis do |party|
+          next nil unless party.solomonis?
+
+          SolomonisExpeditionBlueprint.render_as_hash(party.solomonis_expedition, view: :summary)
+        end
+
+        include_view :sticker_metadata
       end
 
       # Summary view for embedding in remix/source lists — minimal party metadata
@@ -87,6 +131,7 @@ module Api
         include_view :preview_objects # Characters, Weapons, Summons
         include_view :preview_metadata # Object counts
         include_view :party_metadata # favorited, has_orphaned_items
+        include_view :sticker_metadata # labels, my_sticker
       end
 
       # For object views
@@ -96,6 +141,29 @@ module Api
         include_view :remix_metadata # Remixes, Source party
         include_view :job_metadata # Accessory, Skills, Guidebooks
         include_view :party_metadata # favorited, has_orphaned_items
+        include_view :sticker_metadata # labels, my_sticker
+
+        # Every given sticker, one per giver, for the
+        # sticker area. Givers stay anonymous; `mine` marks the viewer's own.
+        field :placed_stickers do |party, options|
+          PartyStickerSummary.placed_for(party.id, options[:current_user])
+        end
+
+        # Private sticker counts, only for the owner. Retired stickers are
+        # included because they still count.
+        field :sticker_breakdown, if: ->(_field_name, party, options) {
+          options[:current_user] && party.user_id.present? && party.user_id == options[:current_user].id
+        } do |party|
+          PartyStickerSummary.breakdown_for(party.id)
+        end
+
+        # Evoking Solomonis expedition, blessings and guidebook, or null.
+        field :solomonis do |party, options|
+          next nil unless party.solomonis?
+
+          SolomonisExpeditionBlueprint.render_as_hash(party.solomonis_expedition,
+                                                      view: :full, current_user: options[:current_user])
+        end
 
         # Shares (only visible to owner)
         field :shares, if: ->(_field_name, party, options) {
@@ -192,6 +260,24 @@ module Api
         end
       end
 
+      # Sticker labels (no counts) and the viewer's own sticker. Rendering
+      # many parties precomputes `party_labels` / `my_stickers` (see
+      # BatchStickers); without them each party is looked up on its own.
+      view :sticker_metadata do
+        field :labels do |party, options|
+          labels = options[:party_labels] || PartyStickerSummary.labels_for([party.id])
+          labels[party.id] || []
+        end
+
+        field :my_sticker do |party, options|
+          if options[:my_stickers]
+            options[:my_stickers][party.id]
+          elsif options[:current_user]
+            PartyStickerSummary.my_stickers_for(options[:current_user], [party.id])[party.id]
+          end
+        end
+      end
+
       view :source_party do
         association :source_party,
                     blueprint: PartyBlueprint,
@@ -216,6 +302,10 @@ module Api
             '2' => party.skill2 ? JobSkillBlueprint.render_as_hash(party.skill2) : nil,
             '3' => party.skill3 ? JobSkillBlueprint.render_as_hash(party.skill3) : nil
           }
+        end
+
+        field :full_auto_skills do |party|
+          party.full_auto_skills
         end
 
         field :guidebooks, cache: true do |party|

@@ -36,6 +36,17 @@ RSpec.describe SummonImageDownloadService do
           expect(result.images['main']).to include('2040001000_03.jpg', '2040001000_04.jpg')
         end
       end
+
+      it 'lists detail and gacha art as png for every variant' do
+        allow(summon).to receive_messages(ulb: true, transcendence: true)
+        result = described_class.new(summon).download
+
+        aggregate_failures do
+          expect(result.images['gacha']).to eq(%w[2040001000.png 2040001000_02.png 2040001000_03.png 2040001000_04.png])
+          expect(result.images['detail']).to all(end_with('.png'))
+          expect(result.images['main']).to all(end_with('.jpg'))
+        end
+      end
     end
 
     it 'returns failure result on error' do

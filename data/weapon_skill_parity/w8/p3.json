@@ -1,0 +1,146 @@
+{
+  "1040110300|1|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Excelsior is unboostable with one tier and no size; the stored size 'big' came from the retired icon derivation (0248b08f). Frame-only: the canonical Excelsior row is sizeless, so the resolved data is unchanged.",
+    "source": "w2-classification.md row 9 (accept). Stored Template:Weapon Skills/Excelsior: one row, tier '-', C.A. DMG Cap '5.5% || 10% || 15%' (no size tiers)."
+  },
+  "1040207000|0|0|Zion's Might II": {
+    "class": "intended",
+    "field": "frame|data",
+    "reason": "Hatnote page ({{About|the Grand weapon|...|Edem}}) the old parser couldn't read, so the stored sizes predate today's parser. The page's own descriptions give a 'II' Big (big_ii) and Massive; the rows follow the size: Might II big_ii 7/16/20/22, Might III massive 8/17/22/25.5. One of the W8 gate 2 '8 hatnote sizes'.",
+    "source": "w6a-classification.md accepted table '8 size … {{About}}-hatnote pages'; compare_structure_classifications.json '1040207000|0|0|Zion's Might II|skill_size' (accept). Stored page Eden: '|s1_name=Zion's Might II' / '|s1_desc=Big boost to light allies' ATK'."
+  },
+  "1040207000|0|1|Zion's Might III": {
+    "class": "intended",
+    "field": "frame|data",
+    "reason": "Hatnote page ({{About|the Grand weapon|...|Edem}}) the old parser couldn't read, so the stored sizes predate today's parser. The page's own descriptions give a 'II' Big (big_ii) and Massive; the rows follow the size: Might II big_ii 7/16/20/22, Might III massive 8/17/22/25.5. One of the W8 gate 2 '8 hatnote sizes'.",
+    "source": "w6a-classification.md accepted table '8 size'; compare_structure_classifications.json '1040207000|0|1|Zion's Might III|skill_size' (accept). Stored page Eden: '|s1_4s_name=Zion's Might III' / '|s1_4s_lvl=120' / '|s1_4s_desc=Massive boost to light allies' ATK'."
+  },
+  "1040208100|1|0|Terrae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Excelsior is unboostable with one tier and no size; the stored size 'big' came from the retired icon derivation (0248b08f). Frame-only: the canonical Excelsior row is sizeless, so the resolved data is unchanged.",
+    "source": "w2-classification.md row 16 (accept). Stored Template:Weapon Skills/Excelsior: one row, tier '-', C.A. DMG Cap '5.5% || 10% || 15%' (no size tiers)."
+  },
+  "1040213300|1|0|Undersky's Whispers": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Hatnote page ({{About|the Xeno weapon|...}}) the old parser couldn't read; the build reads the description's size word 'Big'. Frame-only: the existing data row is already enmity/ex/big. One of the W8 gate 2 '8 hatnote sizes'.",
+    "source": "w6a-classification.md accepted table '8 size' (Advocatus Diaboli); compare_structure_classifications.json '1040213300|1|0|Undersky's Whispers|skill_size' (accept). Stored page: '|s2_desc='''When main weapon:'''<br />Big boost to all allies' ATK based on how low MC's HP is.'"
+  },
+  "1040307100|1|0|Caliginis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Excelsior is unboostable with one tier and no size; the stored size 'big' came from the retired icon derivation (0248b08f). Frame-only: the canonical Excelsior row is sizeless, so the resolved data is unchanged.",
+    "source": "w2-classification.md row 20 (accept). Stored Template:Weapon Skills/Excelsior: one row, tier '-', C.A. DMG Cap '5.5% || 10% || 15%' (no size tiers)."
+  },
+  "1040400300|0|0|Grace of Healing": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "False 'Healing' family join: Template:Weapon Skills/Healing is heal cap ('[{{wsSize}}] boost to [element] allies' healing cap'), but Grace of Healing is a boost to healing (icon ws_skill_heal, not heal_limit). Frame-only; the linked rows don't change (their boost type is questioned for W10).",
+    "source": "w2-classification.md row 25 (accept). Stored page Asclepius Rod: '|s1_icon=ws_skill_heal.png' / '|s1_desc=Small boost to healing for healing type allies.'"
+  },
+  "1040400300|0|1|Grace of Healing II": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "False 'Healing' family join: Template:Weapon Skills/Healing is heal cap ('[{{wsSize}}] boost to [element] allies' healing cap'), but Grace of Healing is a boost to healing (icon ws_skill_heal, not heal_limit). Frame-only; the linked rows don't change (their boost type is questioned for W10).",
+    "source": "w2-classification.md row 26 (accept). Stored page Asclepius Rod: '|s1_4s_icon=ws_skill_heal.png' / '|s1_4s_desc=Big boost to healing for all allies.'"
+  },
+  "1040406900|1|0|Saving Grace": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "False 'Grace' family join: Template:Weapon Skills/Grace is '[{{wsSize}}] boost to [element] allies' max HP and debuff resistance', but Saving Grace is an MC-only cooldown cut. The link was inert (no rows); the 'medium' size on II came with it. Frame-only.",
+    "source": "w2-classification.md row 28 (accept). Stored page Caduceus: '|s2_desc='''When main weapon (MC only):''' Cut to skill cooldowns every turn when HP is 50% or below at end of turn.'"
+  },
+  "1040406900|1|1|Saving Grace II": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "False 'Grace' family join: Template:Weapon Skills/Grace is '[{{wsSize}}] boost to [element] allies' max HP and debuff resistance', but Saving Grace is an MC-only cooldown cut. The link was inert (no rows); the 'medium' size on II came with it. Frame-only.",
+    "source": "w2-classification.md row 29 (accept). Stored page Caduceus: '|s2_4s_desc='''When main weapon (MC only):''' Cut to skill cooldowns every turn when HP is 75% or below at end of turn.'"
+  },
+  "1040414100|1|0|Aquae Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Excelsior is unboostable with one tier and no size; the stored size 'big' came from the retired icon derivation (0248b08f). Frame-only: the canonical Excelsior row is sizeless, so the resolved data is unchanged.",
+    "source": "w2-classification.md row 32 (accept). Stored Template:Weapon Skills/Excelsior: one row, tier '-', C.A. DMG Cap '5.5% || 10% || 15%' (no size tiers)."
+  },
+  "1040416600|3|0|Astral Arts": {
+    "class": "intended",
+    "field": "frame|data",
+    "reason": "False 'Arts' family join (like Architect Battle Arts): Astral Arts is a main-weapon skill DMG cap boost per buff, not Template:Weapon Skills/Arts' flat skill-level curve. Dropping the link removes a wrong skill_dmg_cap 5.5/10/15/20 row and the 'medium' size that came with it. Listed in W8 gate 2 as the '2 false Astral Arts links'.",
+    "source": "w2-classification.md 'From W6a' (accept, Yggdrasil's Bough); w6a-classification.md accepted table. Stored expanded page (Yggdrasil's Bough): 'Astral Arts' — \"When main weapon: Boost to Earth allies' skill damage cap based on their number of buffs.\"; 'Astral Arts II' — \"Boost to Earth allies' skill damage cap based on their number of buffs.\""
+  },
+  "1040416600|4|0|Astral Arts II": {
+    "class": "intended",
+    "field": "frame|data",
+    "reason": "False 'Arts' family join (like Architect Battle Arts): Astral Arts is a main-weapon skill DMG cap boost per buff, not Template:Weapon Skills/Arts' flat skill-level curve. Dropping the link removes a wrong skill_dmg_cap 5.5/10/15/20 row and the 'medium' size that came with it. Listed in W8 gate 2 as the '2 false Astral Arts links'.",
+    "source": "w2-classification.md 'From W6a' (accept, Yggdrasil's Bough); w6a-classification.md accepted table. Stored expanded page (Yggdrasil's Bough): 'Astral Arts' — \"When main weapon: Boost to Earth allies' skill damage cap based on their number of buffs.\"; 'Astral Arts II' — \"Boost to Earth allies' skill damage cap based on their number of buffs.\""
+  },
+  "1040420400|0|0|Blaze's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Unboostable Crux has no size (only Boostable Normal/Taboo Crux are Big). Frame-only: Crux|ca_supp|ex|big is the only EX row and resolves without a size.",
+    "source": "w2-classification.md row 35 (accept). Stored Template:Weapon Skills/Crux: 'Crux can be either boostable or unboostable depending on the source', section '==== Unboostable Crux ===='."
+  },
+  "1040420400|1|0|Arsus Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Excelsior is unboostable with one tier and no size; the stored size 'big' came from the retired icon derivation (0248b08f). Frame-only: the canonical Excelsior row is sizeless, so the resolved data is unchanged.",
+    "source": "w2-classification.md row 36 (accept). Stored Template:Weapon Skills/Excelsior: one row, tier '-', C.A. DMG Cap '5.5% || 10% || 15%' (no size tiers)."
+  },
+  "1040424300|3|0|Solaris's Supremacy: Decimation": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Tier new on the wiki (page set 5star_date=2026-09-07); the database never had the version. The build emits it at position 3 with gate 200/5/0 and the same Supremacy: Decimation massive rows (atk 9/18/23/25.5, dmg_cap 5) as the 8 other Exo Decimations. Part of the W8 gate 2 '28 new tiers'.",
+    "source": "w2-classification.md offline re-check row 106 and parser case P6 (expected 200/5/0); w6a-classification.md 'parser' rows. Stored transclusion Template:Weapon/Common/Exo: '|s1_4s_name={{ #if: {{{5star_date|}}} |{{ #var: skill_name }}: Decimation }}', '|s1_4s_lvl={{ #if: {{{5star_date|}}} | 200 }}'; stored page: '|5star_date=2026-09-07'."
+  },
+  "1040618400|3|0|Solaris's Supremacy: Decimation": {
+    "class": "intended",
+    "field": "added",
+    "reason": "Tier new on the wiki (page set 5star_date=2026-09-07); the database never had the version. The build emits it at position 3 with gate 200/5/0 and the same Supremacy: Decimation massive rows (atk 9/18/23/25.5, dmg_cap 5) as the 8 other Exo Decimations. Part of the W8 gate 2 '28 new tiers'.",
+    "source": "w2-classification.md offline re-check row 107 and parser case P6 (expected 200/5/0); w6a-classification.md 'parser' rows. Stored transclusion Template:Weapon/Common/Exo: '|s1_4s_name={{ #if: {{{5star_date|}}} |{{ #var: skill_name }}: Decimation }}', '|s1_4s_lvl={{ #if: {{{5star_date|}}} | 200 }}'; stored page: '|5star_date=2026-09-07'."
+  },
+  "1040815000|3|0|Sephirath Eparc II": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "The Sephirath II tier unlocks at level 150; the world.json op (July recovery) set only min_uncap 4 for the same tier, leaving unlock_level nil. The build reads the series template's level. One of the W8 gate 2 '5 Sephirath levels'.",
+    "source": "w6a-classification.md accepted table '5 gate | World ×5 (Sephirath II) | unlock_level nil → 150'. Stored transclusion Template:Weapon/Common/World: '|s2_4s_name=Sephirath {{#switch: {{{element}}} |…' / '|s2_4s_lvl=150'."
+  },
+  "1040815100|3|0|Sephirath Fusame II": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "The Sephirath II tier unlocks at level 150; the world.json op (July recovery) set only min_uncap 4 for the same tier, leaving unlock_level nil. The build reads the series template's level. One of the W8 gate 2 '5 Sephirath levels'.",
+    "source": "w6a-classification.md accepted table '5 gate | World ×5 (Sephirath II) | unlock_level nil → 150'. Stored transclusion Template:Weapon/Common/World: '|s2_4s_name=Sephirath {{#switch: {{{element}}} |…' / '|s2_4s_lvl=150'."
+  },
+  "1040815200|3|0|Sephirath Brogue II": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "The Sephirath II tier unlocks at level 150; the world.json op (July recovery) set only min_uncap 4 for the same tier, leaving unlock_level nil. The build reads the series template's level. One of the W8 gate 2 '5 Sephirath levels'.",
+    "source": "w6a-classification.md accepted table '5 gate | World ×5 (Sephirath II) | unlock_level nil → 150'. Stored transclusion Template:Weapon/Common/World: '|s2_4s_name=Sephirath {{#switch: {{{element}}} |…' / '|s2_4s_lvl=150'."
+  },
+  "1040815300|3|0|Sephirath Corant II": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "The Sephirath II tier unlocks at level 150; the world.json op (July recovery) set only min_uncap 4 for the same tier, leaving unlock_level nil. The build reads the series template's level. One of the W8 gate 2 '5 Sephirath levels'.",
+    "source": "w6a-classification.md accepted table '5 gate | World ×5 (Sephirath II) | unlock_level nil → 150'. Stored transclusion Template:Weapon/Common/World: '|s2_4s_name=Sephirath {{#switch: {{{element}}} |…' / '|s2_4s_lvl=150'."
+  },
+  "1040815400|3|0|Sephirath Haton II": {
+    "class": "intended",
+    "field": "gate",
+    "reason": "The Sephirath II tier unlocks at level 150; the world.json op (July recovery) set only min_uncap 4 for the same tier, leaving unlock_level nil. The build reads the series template's level. One of the W8 gate 2 '5 Sephirath levels'.",
+    "source": "w6a-classification.md accepted table '5 gate | World ×5 (Sephirath II) | unlock_level nil → 150'. Stored transclusion Template:Weapon/Common/World: '|s2_4s_name=Sephirath {{#switch: {{{element}}} |…' / '|s2_4s_lvl=150'."
+  },
+  "1040913300|0|0|Glimmer's Crux": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Unboostable Crux has no size (only Boostable Normal/Taboo Crux are Big). Frame-only: Crux|ca_supp|ex|big is the only EX row and resolves without a size.",
+    "source": "w2-classification.md row 65 (accept). Stored Template:Weapon Skills/Crux: 'Crux can be either boostable or unboostable depending on the source', section '==== Unboostable Crux ===='."
+  },
+  "1040913300|1|0|Luminis Excelsior": {
+    "class": "intended",
+    "field": "frame",
+    "reason": "Excelsior is unboostable with one tier and no size; the stored size 'big' came from the retired icon derivation (0248b08f). Frame-only: the canonical Excelsior row is sizeless, so the resolved data is unchanged.",
+    "source": "w2-classification.md row 66 (accept). Stored Template:Weapon Skills/Excelsior: one row, tier '-', C.A. DMG Cap '5.5% || 10% || 15%' (no size tiers)."
+  }
+}

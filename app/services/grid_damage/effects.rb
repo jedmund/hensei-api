@@ -1,0 +1,256 @@
+# frozen_string_literal: true
+
+module GridDamage
+  # Phase 5: evaluates the grid's weapon_skill_effects (the conditional/special track) at a
+  # battle state into Aggregator::Contributions, to merge with the Phase 1/2 data
+  # contributions. Covers static/flat, conditional_flat, per_grid_count,
+  # supplemental_cap, bonus_dmg, and HP-scaled kinds. ATK-type effects carry their
+  # series so the frame math folds them into Normal/Omega/EX.
+  module Effects
+    REDUCTION_ELEMENTS = %w[fire water earth wind light dark].freeze
+    InlineCurve = Data.define(:formula_type, :size, :sl1, :sl10, :sl15, :sl20, :sl25,
+                              :coefficient, :max_value)
+
+    CAP_FORMULA_PATTERN = %r{
+      \A
+      (?<slope>\d+(?:\.\d+)?)
+      \*
+      (?<ratio>\(\(maxhp-curhp\)/maxhp\)|\(curhp/maxhp\))
+      \+
+      (?<base>\d+(?:\.\d+)?)
+      \z
+    }x
+
+    module_function
+
+    def contributions(party, state: {}, composition: nil)
+      composition ||= GridComposition.for_party(party)
+      out = []
+      party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
+        w = gw.weapon
+        next unless w
+
+        # Non-summon-boosted series land on the panel flat, like EX.
+        amplifiable = WeaponContributions.series_summon_boosted?(w.weapon_series)
+        WeaponContributions.active_versions(w, gw).each do |v|
+          # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
+          # skill; otherwise fall back to the effect's heuristic series.
+          v.weapon_skill_effects.each do |e|
+            frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
+            value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw,
+                                 levels: WeaponContributions.levels?(v))
+            next if value.nil? || value.zero?
+
+            out << Aggregator::Contribution.new(
+              boost_type: contribution_boost_type(e), series: frame || e.series, value: value,
+              main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
+              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f,
+              amplifiable: amplifiable && e.aura_boostable != false,
+              source_ids: [gw.id],
+              source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
+              source_icon: v.icon_stem,
+              stacking_group: stacking_group(e, v)
+            )
+          end
+        end
+      end
+      out
+    end
+
+    # Effect-level highest_only is narrower than the boost registry's global
+    # highest_only rule: copies of one named family do not stack, but separately
+    # named Betrayal skills do. Include the boost type because composite families
+    # can independently contribute several panel lines.
+    def stacking_group(effect, version)
+      return unless effect.stacking == "highest_only"
+
+      "effect|#{effect.boost_type}|#{version.skill&.name_en || effect.modifier}"
+    end
+
+    # Most reduction skills protect against the grid's default superior-element foe,
+    # so they use the generic elem_reduc line. Rose Crystal skills name a different
+    # protected element explicitly; preserve it as a distinct panel/cap bucket.
+    def contribution_boost_type(effect)
+      return effect.boost_type unless effect.boost_type == "elem_reduc"
+
+      element = effect.condition.to_h["reduced_element"].to_s.downcase
+      REDUCTION_ELEMENTS.include?(element) ? "#{element}_reduc" : effect.boost_type
+    end
+
+    # The per-copy value of one effect at the state (nil = doesn't apply / unmodeled).
+    # levels: whether the bearing skill has a skill level in game. Key-granted skills
+    # (no version) level with the weapon, so the default is true.
+    def value_for(effect, weapon:, state:, composition:, grid_weapon: nil, levels: true)
+      case effect.scaling_kind
+      when "static", "flat", "ally_hp_scaled", "current_hp_scaled"
+        # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
+        effect.value&.to_f
+      when "conditional_flat", "bonus_dmg"
+        met = Conditions.met?(effect.condition, state: state, composition: composition,
+                              weapon: weapon, grid_weapon: grid_weapon)
+        met ? effect.value&.to_f : nil
+      when "per_grid_count"
+        per_grid_count(effect, weapon: weapon, composition: composition)
+      # Persistence supplements scale with current HP: value x (1 + 2*hp/100)/3
+      # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
+      when "persistence_supp"
+        effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
+      # "Up to N%" boosts linear in current HP (Rightway Pathfinder: 120 x hp/100 ->
+      # 120/90/60/30 at 100/75/50/25, still 12 and 6 at 10 and 5% in XfBq6u: no cutoff).
+      # The kind keeps its old name; the 1% slider point reads 0 (Scaling.panel_hp).
+      when "hp_linear_cutoff"
+        effect.value.to_f * Scaling.panel_hp(state.fetch(:hp_percent, 100)) / 100.0
+      when "hp_current_linear"
+        hp_linear_value(effect, state: state, missing: false)
+      when "hp_missing_linear"
+        hp_linear_value(effect, state: state, missing: true)
+      when "weapon_skill_curve"
+        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
+                           composition: composition, levels: levels)
+      when "supplemental_cap"
+        supplemental_cap(effect, state: state)
+      when "ally_max_hp_scaled"
+        ally_max_hp_scaled(effect, state: state)
+      when "specialty_scaled"
+        specialty_value(effect, composition: composition, state: state)
+      when "per_buff_count"
+        per_buff_count(effect, state: state)
+      when "documentation"
+        nil
+      end
+    end
+
+    # Key-granted skills use the same SL/HP/turn evaluator as ordinary weapon skills.
+    # Most curve descriptors point at a canonical WeaponSkillDatum row; series-specific
+    # key tables (Ultima Rubell/Strife/Courage and elemental Telumas) may carry their
+    # documented anchors inline instead. A condition type beside the curve remains an
+    # ordinary gate (for example, Ultima's weapon-specialty restriction).
+    def weapon_skill_curve(effect, weapon:, grid_weapon:, state:, composition:, levels: true)
+      condition = effect.condition.to_h.with_indifferent_access
+      if condition[:type].present? &&
+         !Conditions.met?(condition, state: state, composition: composition,
+                                     weapon: weapon, grid_weapon: grid_weapon)
+        return nil
+      end
+
+      curve = condition[:curve]
+      return nil unless curve
+
+      config = curve.with_indifferent_access
+      datum = curve_datum(config, effect.boost_type)
+      return nil unless datum
+
+      skill_level = WeaponContributions.skill_level_for(weapon, grid_weapon)
+      skill_level = Scaling.fixed_level(datum) || skill_level unless levels
+      Scaling.value(
+        datum,
+        skill_level: skill_level,
+        hp_percent: state.fetch(:hp_percent, 100),
+        turn: state.fetch(:turn, 1)
+      )
+    end
+
+    def curve_datum(config, boost_type)
+      if config[:modifier].present?
+        return WeaponSkillDatum.for_skill(
+          modifier: config[:modifier], series: config[:series], size: config[:size]
+        ).find { |row| row.boost_type == boost_type }
+      end
+
+      fields = InlineCurve.members.index_with { |field| config[field] }
+      fields[:formula_type] ||= "flat"
+      InlineCurve.new(**fields)
+    end
+    private_class_method :curve_datum
+
+    def hp_linear_value(effect, state:, missing:)
+      floor = effect.value&.to_f
+      ceiling = effect.total_cap&.to_f
+      return nil if floor.nil? || ceiling.nil?
+
+      # Exertion shows 5% and Surge 35% at the 1% slider point (Scaling.panel_hp).
+      current_ratio = (Scaling.panel_hp(state.fetch(:hp_percent, 100), at_min: 0.0) / 100.0).clamp(0.0, 1.0)
+      ratio = missing ? 1.0 - current_ratio : current_ratio
+      floor + ((ceiling - floor) * ratio)
+    end
+
+    def ally_max_hp_scaled(effect, state:)
+      max_hp = state[:ally_max_hp]&.to_f
+      coefficient = effect.value&.to_f
+      return nil if max_hp.nil? || max_hp <= 0 || coefficient.nil?
+
+      value = max_hp * coefficient / 100.0
+      cap = effect.per_copy_cap&.to_f
+      cap ? [value, cap].min : value
+    end
+
+    def supplemental_cap(effect, state:)
+      return cap_formula_value(effect.cap_formula, state: state) if effect.cap_formula.present?
+
+      effect.per_copy_cap&.to_f # assume foe HP high enough to reach the per-copy cap (panel shows the cap)
+    end
+
+    def cap_formula_value(formula, state:)
+      match = formula.to_s.delete(" ").match(CAP_FORMULA_PATTERN)
+      return nil unless match
+
+      current_ratio = (Scaling.panel_hp(state.fetch(:hp_percent, 100), at_min: 0.0) / 100.0).clamp(0.0, 1.0)
+      ratio = match[:ratio].include?("maxhp-curhp") ? 1.0 - current_ratio : current_ratio
+      match[:base].to_f + (match[:slope].to_f * ratio)
+    end
+
+    # Per-specialty skills (e.g. Cloud of Howling Twilight) grant a value by the viewer's weapon
+    # specialty. The panel reflects the MC's specialties (either job proficiency counts);
+    # allies of that specialty get the larger boost, everyone else the "other" row.
+    # An "arcarum" flag in the condition venue-gates the row (Sephirath skills apply
+    # only in Arcarum: The World Beyond / Replicard Sandbox). A "turn_lte" limits the row to
+    # the opening turns (Hollowsky Staff's turns 1–10 EX ATK).
+    def specialty_value(effect, composition:, state: {})
+      return nil if effect.condition["arcarum"] && !state[:arcarum]
+      return nil if effect.condition["turn_lte"] && state.fetch(:turn, 1).to_i > effect.condition["turn_lte"].to_i
+
+      table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
+      specs = Array(composition && (composition[:mc_specialties] || composition[:mc_specialty]))
+      matched = specs.filter_map { |s| table[s] }.max
+      (matched || table["other"])&.to_f
+    end
+
+    def per_grid_count(effect, weapon:, composition:)
+      base = effect.value&.to_f
+      count = grid_count(effect.count_basis, effect: effect, weapon: weapon, composition: composition)
+      return nil if base.nil? || count.nil?
+
+      count = [count, effect.count_cap.to_i].min if effect.count_cap
+      total = base * count
+      # a non-shared per_grid_count caps its own total (per_copy_cap here acts as that cap);
+      # shared groups are capped by the aggregator instead.
+      individual = effect.per_copy_cap&.to_f
+      total = [total, individual].min if individual && effect.shared_cap_group.blank?
+      total
+    end
+
+    # "N% per buff (Max: M%)" (Astral Arts: 10% skill DMG cap per buff, max 50%): value x
+    # the ally's buff count, capped at total_cap. The panel is read outside battle, with no
+    # buffs, so the default state has none and the skill adds nothing (lCMBmU: Innocent Love's
+    # per-buff Astral Echo II shows no line). state[:buff_count] sets a count.
+    def per_buff_count(effect, state:)
+      count = state.fetch(:buff_count, 0).to_i
+      base = effect.value&.to_f
+      return nil if base.nil? || count <= 0
+
+      total = base * count
+      cap = effect.total_cap&.to_f
+      cap ? [total, cap].min : total
+    end
+
+    def grid_count(basis, weapon:, composition:, effect: nil)
+      GridComposition.count_for_basis(basis, weapon: weapon, composition: composition, effect: effect)
+    end
+
+    # Cap-group key: an explicit shared group, else a per-modifier group when the effect
+    # has its own total_cap (so the aggregator caps that modifier's summed contributions).
+    def cap_group(effect)
+      effect.shared_cap_group.presence || (effect.total_cap ? "#{effect.modifier}|#{effect.boost_type}" : nil)
+    end
+  end
+end

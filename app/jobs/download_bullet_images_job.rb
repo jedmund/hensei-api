@@ -3,7 +3,7 @@
 class DownloadBulletImagesJob < ApplicationJob
   queue_as :downloads
 
-  retry_on StandardError, wait: :exponentially_longer, attempts: 3
+  retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
   discard_on ActiveRecord::RecordNotFound do |job, _error|
     bullet_id = job.arguments.first

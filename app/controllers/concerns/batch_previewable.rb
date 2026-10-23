@@ -6,6 +6,19 @@ module BatchPreviewable
 
   private
 
+  # The batch preview hands the fetched wikitext to the client, which saves it
+  # through create/update. Date it when it's written: stamp wiki_raw_fetched_at
+  # whenever the submitted wiki_raw is non-blank and differs from what's stored.
+  # @param attrs [ActionController::Parameters] permitted entity params
+  # @param record [ApplicationRecord, nil] the existing entity (nil on create)
+  # @return [ActionController::Parameters] attrs, stamped when wiki_raw changes
+  def with_wiki_fetch_date(attrs, record = nil)
+    return attrs unless attrs.key?(:wiki_raw) && attrs[:wiki_raw].present?
+    return attrs if record && record.wiki_raw == attrs[:wiki_raw]
+
+    attrs.merge(wiki_raw_fetched_at: Time.current)
+  end
+
   # Process a single wiki page and return preview data
   # @param wiki_page [String] The wiki page name to fetch
   # @param entity_type [Symbol] The type of entity (:character, :weapon, :summon)

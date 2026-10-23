@@ -48,9 +48,9 @@ RSpec.describe Granblue::Downloaders::BaseDownloader do
   describe '#build_s3_key' do
     let(:downloader) { test_downloader_class.new('12345', test_mode: true) }
 
-    it 'constructs S3 key from object_type, size, and filename' do
+    it 'constructs S3 key from bucket_directory, size, and filename' do
       key = downloader.send(:build_s3_key, 'main', '12345.jpg')
-      expect(key).to eq('test_object-main/12345.jpg')
+      expect(key).to eq('test_objects/main/12345.jpg')
     end
   end
 

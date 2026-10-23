@@ -1,0 +1,1088 @@
+{
+  "slots": [
+    {
+      "kind": "ability",
+      "position": 1,
+      "game_action_id": "229001",
+      "versions": [
+        {
+          "name_en": "Jinx of the Tiger",
+          "name_jp": "悪運散虎(あくうんさんこ)",
+          "description_en": "450% Earth damage to a foe (Damage cap: ~635,000).\nRemove 1 buff.\nInflict ATK Lowered (Stackable) and DEF Lowered (Stackable).\n(Additional random debuffs based on foe's Tiger Tape lvl.)",
+          "description_jp": "敵に土属性ダメージ/強化効果を1つ無効化/攻防DOWN(累積)◆対象の虎帯Lvに応じた数の弱体効果を付与",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "game_icon": "1640_1",
+          "game_action_id": "229001",
+          "cooldown": 3,
+          "initial_cooldown": null,
+          "duration": [
+            180,
+            "seconds"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            55
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "ATK Lowered (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "DEF Lowered (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                180,
+                "seconds"
+              ],
+              "accuracy": "100%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "dispel",
+              "category": null,
+              "target": "one_foe",
+              "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 2,
+      "game_action_id": "229031",
+      "versions": [
+        {
+          "name_en": "Tiger's Prosperity",
+          "name_jp": "双虎風水(ふたごふうすい)",
+          "description_en": "450% Earth damage to a foe (Damage cap: ~635,000).\nGain ATK Boosted (Stackable), DEF Boosted (Stackable), and DMG Cap Boosted (Stackable).\n(Additional random buffs based on foe's Tiger Tape lvl.)",
+          "description_jp": "敵の全ての攻撃を回避/かばう効果(全体)/攻撃行動を行わない◆次のターン自分の攻撃大幅UP/必ずトリプルアタック",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "damage",
+          "game_icon": "1641_1",
+          "game_action_id": "229031",
+          "cooldown": 3,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            75
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "ATK Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "DEF Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "10%",
+              "amount_max": "40%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "DMG Cap Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "2%",
+              "amount_max": "10%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "caster",
+              "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 3,
+      "game_action_id": "229061",
+      "versions": [
+        {
+          "name_en": "Twin Tiger Feng Shui",
+          "name_jp": "戯遊絡虎(ぎゆうからこ)",
+          "description_en": "Gain Dodge All, Substituted (All-Ally), and Twin Tiger Feng Shui.\n(Can't attack. On next turn: Gain ATK Sharply Boosted and Guaranteed TA.)",
+          "description_jp": "自分に戯遊絡虎効果◆効果中、通常攻撃とアビリティの与ダメージUP/乱撃効果/通常攻撃後に敵に8倍土属性ダメージ/銀虎Lvと金虎Lvが3の時のみ使用可能",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "game_icon": "1642_3",
+          "game_action_id": "229061",
+          "cooldown": 12,
+          "initial_cooldown": null,
+          "duration": [
+            1,
+            "turns"
+          ],
+          "unlock_level": 45,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Dodge All",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Substituted (All-Ally)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Twin Tiger Feng Shui",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "ATK Sharply Boosted",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "50%",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Guaranteed TA",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ability",
+      "position": 4,
+      "game_action_id": "243401",
+      "versions": [
+        {
+          "name_en": "High of the Tiger",
+          "name_jp": null,
+          "description_en": "Gain High of the Tiger.\n(Can only be used when both Silver Stripes and Gold Stripes lvl are at 3. Can't be recast.)",
+          "description_jp": null,
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": "buff",
+          "game_icon": "2529_3",
+          "game_action_id": "243401",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            "none"
+          ],
+          "unlock_level": 100,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "High of the Tiger",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": "7774",
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Silver Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Gold Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "ougi",
+      "position": 1,
+      "game_action_id": null,
+      "versions": [
+        {
+          "name_en": "Gilded Heaven Strike",
+          "name_jp": "金牙神然",
+          "description_en": "500% Earth damage to a foe.\nGain Twin Tiger Fury. (Next use of either linked skill activates both.)\nEnd cooldowns for linked skills.",
+          "description_jp": "土属性ダメージ(特大)/次のリンクアビリティが両方発動/即時使用可能",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Twin Tiger Fury",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "category": null,
+              "target": "one_foe",
+              "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "500.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Her Royal Tigerness",
+          "name_jp": "威風寅寅(いふういんいん)(最終上限解放で習得)",
+          "description_en": "550% Earth damage to a foe.\nGain Twin Tiger Fury. (Next use of either linked skill activates both.)\nEnd cooldowns for linked skills.\n1-turn cut to 's cooldown.\n(Deal 100% Bonus Earth damage based on foe's Tiger Tape+ lvl [Damage cap: ~63,000 per hit / Max: 5 hits].)",
+          "description_jp": "土属性ダメージ(特大)/次のリンクアビリティが両方発動/即時使用可能/双虎風水の再使用間隔を1ターン短縮◆対象の虎帯Lvに応じて追加ダメージ(最大5回)",
+          "variant_role": "uncap_upgrade",
+          "ordinal": 2,
+          "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": null,
+          "enhance_levels": [],
+          "min_uncap": 5,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Twin Tiger Fury",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "caster",
+              "status": "Tiger Tape+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "deal_damage",
+              "category": null,
+              "target": "one_foe",
+              "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": "550.0",
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 1,
+      "game_action_id": null,
+      "versions": [
+        {
+          "name_en": "Queen of Tigers",
+          "name_jp": "寅神宮の主",
+          "description_en": "+20 boost to hostility, 20% hit to debuff resistance, 30% boost to , and guaranteed double attacks.\nRaise foe's Tiger Tape lvl by 1 upon triple attacks (Max: 5).\n(Based on Tiger Tape lvl: Hit to foe's ATK and DEF.)",
+          "description_jp": "敵対心が高く弱体耐性が低いが攻撃UP/必ず連続攻撃/トリプルアタック発動時(+で/奥義発動時)に敵の虎帯Lvが1上昇(最大5)◆敵が虎帯Lvに応じて攻撃DOWN/防御DOWN(+で/被ダメージ上昇)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "310701",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": "200%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "Tiger Tape",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        },
+        {
+          "name_en": "Queen of Tigers",
+          "name_jp": "寅神宮の主",
+          "description_en": "Also raise foe's Tiger Tape+ lvl by 1 upon charge attacks.\n(Based on Tiger Tape+ lvl: Also supplement damage taken by foe.)",
+          "description_jp": "敵対心が高く弱体耐性が低いが攻撃UP/必ず連続攻撃/トリプルアタック発動時(+で/奥義発動時)に敵の虎帯Lvが1上昇(最大5)◆敵が虎帯Lvに応じて攻撃DOWN/防御DOWN(+で/被ダメージ上昇)",
+          "variant_role": "enhanced",
+          "ordinal": 2,
+          "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "310701",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 90,
+          "enhance_levels": [
+            90
+          ],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "Tiger Tape+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": "200%",
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "inflict_status",
+              "category": "debuff",
+              "target": "one_foe",
+              "status": "Tiger Tape+",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 2,
+      "game_action_id": null,
+      "versions": [
+        {
+          "name_en": "Reversal of Fortune",
+          "name_jp": "災転福為(さいてんふくい)",
+          "description_en": "At end of turn if Cidala didn't attack:\nRestore HP (Healing cap: 2022) and remove all debuffs.\nGain Double Strike and Bonus Earth DMG.",
+          "description_jp": "シンダラが攻撃行動を行わなかった場合、ターン終了時に自分のHP回復/弱体効果を全て回復/再攻撃効果/土属性追撃効果",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "game_icon": "55_3",
+          "game_action_id": "310711",
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 1,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Double Strike",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "caster",
+              "status": "Bonus Earth DMG",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "40%",
+              "amount_max": null,
+              "duration": [
+                1,
+                "turns"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "heal",
+              "category": null,
+              "target": null,
+              "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 3,
+      "game_action_id": null,
+      "versions": [
+        {
+          "name_en": "Belling the Silver Tiger",
+          "name_jp": "銀鈴揺鳴(ぎんりんようめい)",
+          "description_en": "When Earth MC uses a buff skill:\n450% Earth damage to a foe (Damage cap: ~450,000).\nRemove 1 buff.\nRaise Cidala's Silver Stripes lvl by 1 (Max: 3).",
+          "description_jp": "土属性の主人公が強化アビリティを使用時、敵に土属性ダメージ/強化効果を1つ無効化/自分の銀虎Lvが1上昇(最大3)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 95,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "one_foe",
+              "status": "Silver Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "dispel",
+              "category": null,
+              "target": "one_foe",
+              "status": null,
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                null
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "support",
+      "position": 4,
+      "game_action_id": null,
+      "versions": [
+        {
+          "name_en": "Belling the Gold Tiger",
+          "name_jp": "金鈴揺鳴(きんりんようめい)",
+          "description_en": "When Earth MC uses a damage skill:\n450% Earth damage to a foe (Damage cap: ~450,000).\nCidala gains Triple Attack Rate Boosted (Stackable).\nRaise Cidala's Gold Stripes lvl by 1 (Max: 3).",
+          "description_jp": "土属性の主人公がダメージアビリティを使用時、敵に土属性ダメージ/自分のトリプルアタック確率UP(累積)/金虎Lvが1上昇(最大3)",
+          "variant_role": "base",
+          "ordinal": 1,
+          "type_color": null,
+          "game_icon": null,
+          "game_action_id": null,
+          "cooldown": null,
+          "initial_cooldown": null,
+          "duration": [
+            null,
+            null
+          ],
+          "unlock_level": 95,
+          "enhance_levels": [],
+          "min_uncap": 4,
+          "transcendence_stage": null,
+          "trigger": [
+            "none",
+            null
+          ],
+          "flags": [],
+          "effects": [
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "one_foe",
+              "status": "Triple Attack Rate Boosted (Stackable)",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": "15%",
+              "amount_max": "45%",
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            },
+            {
+              "type": "grant_status",
+              "category": "buff",
+              "target": "one_foe",
+              "status": "Gold Stripes",
+              "status_variant": [
+                null,
+                null
+              ],
+              "game_status_id": null,
+              "amount": null,
+              "amount_max": null,
+              "duration": [
+                null,
+                "indefinite"
+              ],
+              "accuracy": null,
+              "stacking_frame": null,
+              "damage_pct": null,
+              "hit_count": null,
+              "damage_cap": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": []
+}

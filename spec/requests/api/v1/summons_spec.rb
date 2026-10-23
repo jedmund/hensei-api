@@ -33,6 +33,16 @@ RSpec.describe 'Api::V1::Summons', type: :request do
       expect(json['element']).to eq(summon.element)
     end
 
+    it 'returns when its wikitext was fetched, which nested summons leave out' do
+      fetched_at = Time.utc(2026, 10, 1, 9)
+      summon.update!(wiki_raw: '{{Summon}}', wiki_raw_fetched_at: fetched_at)
+
+      get "/api/v1/summons/#{summon.id}"
+
+      expect(response.parsed_body['wiki_raw_fetched_at']).to eq(fetched_at.iso8601(3))
+      expect(Api::V1::SummonBlueprint.render_as_hash(summon, view: :full)).not_to have_key(:wiki_raw_fetched_at)
+    end
+
     it 'returns the summon by granblue_id' do
       get "/api/v1/summons/#{summon.granblue_id}"
       expect(response).to have_http_status(:ok)
@@ -94,14 +104,72 @@ RSpec.describe 'Api::V1::Summons', type: :request do
       expect(response).to have_http_status(:unauthorized)
       expect(summon.reload.name_en).not_to eq('Updated Summon')
     end
+
+    context 'when the summon has stored wikitext' do
+      let(:fetched_at) { 2.days.ago.change(usec: 0) }
+      let!(:stored) { create(:summon, wiki_raw: '{{Stored}}', wiki_raw_fetched_at: fetched_at) }
+
+      it 'keeps the wikitext when the update sends a blank one' do
+        put "/api/v1/summons/#{stored.id}",
+            params: { summon: { name_en: 'Renamed', wiki_raw: '' } }.to_json,
+            headers: editor_headers
+
+        expect(response).to have_http_status(:ok)
+        stored.reload
+        expect(stored.name_en).to eq('Renamed')
+        expect(stored.wiki_raw).to eq('{{Stored}}')
+        expect(stored.wiki_raw_fetched_at).to eq(fetched_at)
+      end
+
+      it 'replaces the wikitext and stamps the fetch date when the update sends new text' do
+        put "/api/v1/summons/#{stored.id}",
+            params: { summon: { wiki_raw: '{{New}}' } }.to_json,
+            headers: editor_headers
+
+        expect(response).to have_http_status(:ok)
+        stored.reload
+        expect(stored.wiki_raw).to eq('{{New}}')
+        expect(stored.wiki_raw_fetched_at).to be > fetched_at
+      end
+    end
   end
 
   describe 'GET /api/v1/summons/:id/raw' do
     let!(:summon) { create(:summon) }
 
-    it 'returns raw summon data' do
-      get "/api/v1/summons/#{summon.id}/raw"
+    it 'returns raw summon data to an editor' do
+      get "/api/v1/summons/#{summon.id}/raw", headers: editor_headers
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'is for editors only' do
+      get "/api/v1/summons/#{summon.id}/raw", headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/api/v1/summons/#{summon.id}/raw"
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'editor-only writes to a summon\'s sources' do
+    let!(:stored) { create(:summon, wiki_en: 'Stored Page', wiki_raw: '{{Stored}}') }
+
+    it 'rejects PUT /api/v1/summons/:id with new wikitext from a non-editor' do
+      put "/api/v1/summons/#{stored.id}", params: { summon: { wiki_raw: '{{Theirs}}' } }.to_json, headers: user_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+    end
+
+    it 'rejects POST /api/v1/summons/:id/fetch_wiki from a non-editor or without a session' do
+      post "/api/v1/summons/#{stored.id}/fetch_wiki", headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      post "/api/v1/summons/#{stored.id}/fetch_wiki"
+      expect(response).to have_http_status(:unauthorized)
+
+      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+      expect(WebMock).not_to have_requested(:any, /.*/)
     end
   end
 end

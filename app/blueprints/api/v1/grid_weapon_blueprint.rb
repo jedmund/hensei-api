@@ -3,12 +3,17 @@
 module Api
   module V1
     class GridWeaponBlueprint < ApiBlueprint
-      fields :mainhand, :position, :uncap_level, :transcendence_step, :element, :exorcism_level, :orphaned
+      fields :mainhand, :position, :uncap_level, :transcendence_step, :element, :exorcism_level, :orphaned,
+             :notes_synced, :seal_state, :unseal_priority
 
       field :collection_weapon_id
       field :out_of_sync, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
         gw.out_of_sync?
       end
+      field :out_of_sync_fields, if: ->(_field, gw, _options) { gw.collection_weapon_id.present? } do |gw|
+        gw.out_of_sync_fields
+      end
+      field :owned, if: ->(_field, gw, _options) { !gw.owned.nil? }
 
       view :preview do
         association :weapon, blueprint: WeaponBlueprint, view: :preview
@@ -17,7 +22,8 @@ module Api
       # Minimal view for party list cards
       view :list do
         excludes :exorcism_level,
-                 :orphaned, :collection_weapon_id, :out_of_sync
+                 :orphaned, :collection_weapon_id, :out_of_sync, :out_of_sync_fields, :notes_synced,
+                 :seal_state, :unseal_priority
         association :weapon, blueprint: WeaponBlueprint, view: :list
       end
 
@@ -39,10 +45,13 @@ module Api
           skills
         end
 
+        field :skill_level, if: ->(_field_name, w, _options) { w.skill_level.present? }, &:skill_level
+
         field :befoulment, if: ->(_field_name, w, _options) { w.befoulment_modifier.present? } do |w|
           {
             modifier: WeaponStatModifierBlueprint.render_as_hash(w.befoulment_modifier),
             strength: w.befoulment_strength,
+            permeation: w.befoulment_permeation,
             exorcism_level: w.exorcism_level
           }
         end
@@ -69,6 +78,10 @@ module Api
             { position: gwb.position, bullet: BulletBlueprint.render_as_hash(gwb.bullet) }
           end
         end
+
+        field :description, if: ->(_field_name, gw, _options) { gw.description.present? }
+        association :substitutions, blueprint: SubstitutionBlueprint,
+                    if: ->(_field_name, gw, _options) { !gw.is_substitute? && gw.substitutions.any? }
       end
 
       view :full do

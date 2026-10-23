@@ -1,0 +1,256 @@
+{
+  "format": 2,
+  "versions": [
+    {
+      "weapon": "1040016300",
+      "skill": "Voidbroken Wing",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040211900",
+      "skill": "Voidforged Lance",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040310300",
+      "skill": "Voidfeigned Crag",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040414700",
+      "skill": "Voidsung Grasp",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "edited_at": "2026-10-15T11:19:53Z"
+    },
+    {
+      "weapon": "1040708900",
+      "skill": "Voidcast Arrow",
+      "ordinal": 0,
+      "modifier_override": "none",
+      "suppressed_boosts": [
+        "critical"
+      ],
+      "edited_at": "2026-10-15T11:19:53Z"
+    }
+  ],
+  "effects": [
+    {
+      "weapon": "1040016300",
+      "skill": "Voidbroken Wing",
+      "ordinal": 0,
+      "modifier": "Voidbroken Wing",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "sabre": 20.0,
+          "dagger": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040211900",
+      "skill": "Voidforged Lance",
+      "ordinal": 0,
+      "modifier": "Voidforged Lance",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "spear": 20.0,
+          "katana": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040211900",
+      "skill": "Voidforged Lance",
+      "ordinal": 0,
+      "modifier": "Voidforged Lance",
+      "boost_type": "hp",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "spear": 10.0,
+          "katana": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040310300",
+      "skill": "Voidfeigned Crag",
+      "ordinal": 0,
+      "modifier": "Voidfeigned Crag",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 20.0,
+          "melee": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040310300",
+      "skill": "Voidfeigned Crag",
+      "ordinal": 0,
+      "modifier": "Voidfeigned Crag",
+      "boost_type": "ta",
+      "series": "normal",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "axe": 10.0,
+          "melee": 10.0
+        }
+      },
+      "aura_boostable": true,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040414700",
+      "skill": "Voidsung Grasp",
+      "ordinal": 0,
+      "modifier": "Voidsung Grasp",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "turn_lte": 10,
+        "specialties": {
+          "harp": 10.0,
+          "staff": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "notes": "Turns 1-10 only.",
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040414700",
+      "skill": "Voidsung Grasp",
+      "ordinal": 0,
+      "modifier": "Voidsung Grasp",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "harp": 20.0,
+          "staff": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040708900",
+      "skill": "Voidcast Arrow",
+      "ordinal": 0,
+      "modifier": "Voidcast Arrow",
+      "boost_type": "atk",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 20.0,
+          "gun": 20.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    },
+    {
+      "weapon": "1040708900",
+      "skill": "Voidcast Arrow",
+      "ordinal": 0,
+      "modifier": "Voidcast Arrow",
+      "boost_type": "critical",
+      "series": "ex",
+      "scaling_kind": "specialty_scaled",
+      "value_unit": "percent",
+      "condition": {
+        "specialties": {
+          "bow": 10.0,
+          "gun": 10.0
+        }
+      },
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "all_allies",
+      "battle_interaction": false,
+      "provenance": "manual",
+      "edited_at": "2026-10-16T00:00:00Z"
+    }
+  ],
+  "data": [],
+  "ops": []
+}

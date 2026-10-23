@@ -69,14 +69,41 @@ RSpec.describe AwsService do
       end
     end
 
-    context 'with no credentials' do
+    context 'with no static keys' do
+      let(:chain_credentials) { instance_double(Aws::Credentials, set?: true) }
+
       before do
         allow(Rails.application.credentials).to receive(:dig).and_return(nil)
         stub_const('ENV', {})
+        allow(s3_client_double).to receive(:config).and_return(double(credentials: chain_credentials))
       end
 
-      it 'raises ConfigurationError' do
+      it 'uses the SDK default credential chain (e.g. an aws login session)' do
+        service = described_class.new
+
+        expect(Aws::S3::Client).to have_received(:new).with(region: kind_of(String))
+        expect(service.bucket).to eq('siero-img')
+      end
+
+      it 'raises ConfigurationError when the chain finds nothing' do
+        allow(s3_client_double).to receive(:config).and_return(double(credentials: nil))
+
         expect { described_class.new }.to raise_error(AwsService::ConfigurationError, /No AWS credentials/)
+      end
+    end
+
+    context 'with temporary credentials in environment variables' do
+      before do
+        allow(Rails.application.credentials).to receive(:dig).and_return(nil)
+        stub_const('ENV', { 'AWS_ACCESS_KEY_ID' => 'ASIA_TEMP', 'AWS_SECRET_ACCESS_KEY' => 'secret',
+                            'AWS_SESSION_TOKEN' => 'token', 'AWS_REGION' => 'us-west-2' })
+      end
+
+      it 'passes the session token through' do
+        service = described_class.new
+
+        expect(Aws::S3::Client).to have_received(:new).with(hash_including(session_token: 'token'))
+        expect(service.bucket).to eq('siero-img')
       end
     end
   end

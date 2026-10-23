@@ -13,7 +13,7 @@ module Api
       # Primary information
       fields :granblue_id, :element, :proficiency,
              :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
-             :limit, :rarity, :gacha, :promotions, :forge_order, :extra,
+             :limit, :rarity, :promotions, :forge_order, :extra,
              :element_variant_ids
 
       field :bullet_slots, if: ->(_field_name, w, _options) { w.bullet_slots.present? }
@@ -32,6 +32,7 @@ module Api
           has_weapon_keys: w.effective_has_weapon_keys,
           has_awakening: w.effective_has_awakening,
           augment_type: w.effective_augment_type,
+          ax_type: w.effective_ax_type,
           num_weapon_keys: w.effective_num_weapon_keys,
           extra: w.effective_extra,
           element_changeable: w.effective_element_changeable,
@@ -56,15 +57,32 @@ module Api
 
       view :preview do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
-                 :max_exorcism_level, :limit, :rarity, :gacha, :promotions,
+                 :max_exorcism_level, :limit, :rarity, :promotions,
                  :forge_order, :extra, :series, :promotion_names
       end
 
-      # Minimal view for party list cards — just enough for image rendering
+      # Minimal view for party list cards — just enough for image rendering.
+      # Series is trimmed to id/slug so reps can pick transcendence-stage art.
       view :list do
         excludes :name, :proficiency, :max_level, :max_skill_level, :max_awakening_level,
-                 :max_exorcism_level, :limit, :rarity, :gacha, :promotions,
-                 :forge_order, :extra, :series, :promotion_names
+                 :max_exorcism_level, :limit, :rarity, :promotions,
+                 :forge_order, :extra, :promotion_names
+
+        field :series do |w|
+          next nil unless w.weapon_series.present?
+
+          { id: w.weapon_series_id, slug: w.weapon_series.slug }
+        end
+      end
+
+      # Minimal view for the element-variant lookup endpoint.
+      # Retains only granblue_id and element_variant_ids — consumed by the
+      # extension to map variant game-ids back to base granblue_ids.
+      view :variants do
+        excludes :name, :element, :proficiency, :max_level, :max_skill_level,
+                 :max_awakening_level, :max_exorcism_level, :limit, :rarity,
+                 :promotions, :forge_order, :extra, :series,
+                 :promotion_names, :uncap, :bullet_slots
       end
 
       view :stats do
@@ -119,20 +137,47 @@ module Api
           character = w.recruited_character
           next nil unless character
 
+          series_records = character.ordered_series_records
+          series = if series_records.any?
+                     series_records.map do |record|
+                       {
+                         id: record.id,
+                         slug: record.slug,
+                         name: {
+                           en: record.name_en,
+                           ja: record.name_jp
+                         }
+                       }
+                     end
+                   else
+                     character.series
+                   end
+
           {
             id: character.id,
             granblue_id: character.granblue_id,
             name: {
               en: character.name_en,
               ja: character.name_jp
-            }
+            },
+            element: character.element,
+            season: character.season,
+            series: series,
+            style_swap: character.style_swap
           }
         end
       end
 
+      SOURCE_DATES = ->(_field, _weapon, options) { options[:source_dates] }
+
       view :full do
         include_view :stats
         include_view :grid
+        # When the stored wikitext was fetched (EN gbf.wiki / JP gbf-wiki.com). Read from
+        # `sources` (a query per weapon), so only when the weapon itself is rendered
+        # (source_dates: true), not for each weapon nested in a party or collection.
+        field :wiki_raw_fetched_at, if: SOURCE_DATES
+        field :wiki_raw_jp_fetched_at, if: SOURCE_DATES
         field :awakenings do |weapon|
           AwakeningBlueprint.render_as_hash(weapon.awakenings)
         end

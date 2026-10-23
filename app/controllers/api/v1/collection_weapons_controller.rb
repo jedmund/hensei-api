@@ -7,16 +7,18 @@ module Api
       before_action :set_collection_weapon_for_read, only: %i[show]
 
       # Write actions: require auth, use current_user
-      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts]
+      before_action :restrict_access, only: %i[create update destroy batch batch_destroy import preview_sync check_conflicts check_updates]
       before_action :set_collection_weapon_for_write, only: %i[update destroy]
 
       def index
         if params[:unowned].present?
-          return head :forbidden unless current_user && @target_user.id == current_user.id
-
           owned_ids = @target_user.collection_weapons.select(:weapon_id).distinct
           @weapons = Weapon.where.not(id: owned_ids)
-                           .includes(:weapon_series, :weapon_series_variant)
+                           .includes(
+                             :weapon_series,
+                             :weapon_series_variant,
+                             recruited_character: :character_series_records
+                           )
 
           @weapons = @weapons.where(element: array_param(:element)) if params[:element]
           @weapons = @weapons.where(rarity: array_param(:rarity)) if params[:rarity]
@@ -264,6 +266,23 @@ module Api
         render json: { conflicts: conflicts }
       end
 
+      # POST /collection/weapons/check_updates
+      # Returns field-level diffs for already-owned weapons that differ from the
+      # state that the real import would apply. Non-owned weapons are skipped.
+      #
+      # @param data [Hash] Game data containing weapon list
+      # @return [JSON] { updates: [{ game_id, granblue_id, changes: [...] }, ...] }
+      def check_updates
+        game_data = import_params[:data]
+
+        unless game_data.present?
+          return render json: { error: 'No data provided' }, status: :bad_request
+        end
+
+        service = WeaponImportService.new(current_user, game_data)
+        render json: { updates: service.preview_updates }
+      end
+
       private
 
       def set_target_user
@@ -297,7 +316,7 @@ module Api
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id, :weapon_key4_id,
           :awakening_id, :awakening_level,
           :ax_modifier1_id, :ax_strength1, :ax_modifier2_id, :ax_strength2,
-          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
+          :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level, :skill_level,
           :element
         )
       end
@@ -308,7 +327,7 @@ module Api
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id, :weapon_key4_id,
           :awakening_id, :awakening_level,
           :ax_modifier1_id, :ax_strength1, :ax_modifier2_id, :ax_strength2,
-          :befoulment_modifier_id, :befoulment_strength, :exorcism_level,
+          :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level, :skill_level,
           :element
         ])
       end
@@ -347,6 +366,10 @@ module Api
           scope.order(proficiency: :asc)
         when 'proficiency_desc'
           scope.order(proficiency: :desc)
+        when 'release_date_desc'
+          scope.order(Arel.sql('latest_date DESC NULLS LAST'), id: :asc)
+        when 'release_date_asc'
+          scope.order(Arel.sql('latest_date ASC NULLS LAST'), id: :asc)
         else
           scope.order(latest_date: :desc, id: :asc)
         end

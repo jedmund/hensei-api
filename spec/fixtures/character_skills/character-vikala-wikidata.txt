@@ -1,0 +1,213 @@
+{{CharacterTabs|base={{BASENAME}}|rising=Vikala}}
+{{Character
+|id=3040252000
+|charid=3150
+|series=12generals
+|jpname=ビカラ
+|jptitle=北の守護神
+|jpva=種﨑敦美
+|name= Vikala
+|release_date=2019-12-31
+|link_gamewith=180303
+|link_jpwiki=%A5%D3%A5%AB%A5%E9%20%28SSR%29
+|link_kamigame=SSR/ビカラ
+|gender=f
+|obtain=premium,zodiac
+|title= Guardian of the North
+|title_source=
+|5star=yes
+|5star_date=2023-02-07
+|base_evo=4
+|max_evo=5
+|uncap_type=ssr,high orb
+|expedition_type=bloodhound
+|blush_value=0
+|base_da=7
+|base_ta=3
+|art1= {{PAGENAME}} A.png
+|art2= {{PAGENAME}} B.png
+|art3= {{PAGENAME}} C.png
+|art_story1= {{PAGENAME}} ST.png
+|sprite1= {{PAGENAME}} SDA.png
+|sprite2= {{PAGENAME}} SDB.png
+|sprite3= {{PAGENAME}} SDC.png
+|rarity= SSR
+|element= Dark
+|type= Balanced
+|race= Human
+|va= Atsumi Tanezaki
+|join= [[Premium Gala]] (2020 Zodiac Character)
+|join_weapon= Rodentius
+|weapon= Axe,Melee
+|min_atk= 
+|max_atk=8500
+|flb_atk=9618
+|bonus_atk=500
+|min_hp= 
+|max_hp=1500
+|flb_hp=1877
+|bonus_hp=250
+|ougi_count= 2
+|ougi_name= Gilded Heaven Strike
+|ougi_desc= {{tt|500%|Massive}} Dark damage to a foe.<ref name="Gamewith" /><br />Gain {{status|Other Self 1|n=1|t=Indefinite}}.
+|ougi2_label={{InfoSkillUpgrade|text=After 5★:}}<br />
+|ougi2_name=Pandemousium
+|ougi2_desc={{tt|550%|Massive}} Dark damage to a foe.<ref name="Gamewith" /><br />Gain {{status|Other Self 1|n=1|t=Indefinite}}.<br />Activate second-slot skill. 
+|ougi3_name=
+|ougi3_desc=
+|ougi4_name=
+|ougi4_desc=
+|abilitysubtitle=
+|abilitycount= 4
+|a1_icon= Ability Ring the Dormouse.png
+|a1_color=red 
+|a1_name= Ring the Dormouse
+|a1_cd= {{InfoCd|num=1|cooldown=11|cooldown1=10|level1=55}}
+|a1_dur= -
+|a1_oblevel= {{InfoOb|obtained=1|enhanced=55}}
+|a1_effdesc= {{InfoDes|num=0|des=5-hit, 100% Dark damage to a foe (Damage cap: {{tt|~110,000 per hit|~550,000 total}}).<ref name="Gamewith">GameWith, Vikala. https://グランブルーファンタジー.gamewith.jp/article/show/180303</ref><br />Sic {{status|Dorrie|t=Indefinite|acc=g}} on a foe.<br />('''When the foe uses a special attack:''' The trap is sprung. 999,999 Plain damage to all foes and inflict {{status|Caught 2|t=2.5T|acc=120%}}.)|des1=|level1=55}}
+|a2_icon= Ability Dazzling Dreams.png,Ability_m_1946_3.png
+|a2_color=purple
+|a2_color2=yellow
+|a2_name= Dazzling Dreams / Eccentric Parade
+|a2_name_custom=Dazzling Dreams<br />{{InfoSkillUpgrade|text=After level 95 and when Utopia is active:}}<br />Eccentric Parade
+|a2_cd= {{InfoCd|num=1|cooldown=8|cooldown1=7|level1=75}}
+|a2_dur= {{InfoDur|type=t|duration=5}} /<br />{{InfoDur|type=t|duration=1}}
+|a2_oblevel= {{InfoOb|obtained=1|enhanced=75|enhanced2=95}}
+|a2_effdesc= {{InfoDes|num=1|level1=95|des='''Dazzling Dreams''':<br />Razzle, dazzle, dream! Welcome to Utopia!<br />({{status|Utopia|t=5T}} to the [[Field Effect|field]].)|des1={{status|Utopia|t=5T}} upgraded to {{status|Utopia+|t=5T}}. (Foes' ATK is no longer boosted.)<br />(When Utopia is active: Skill changes to Eccentric Parade.)<br />'''Eccentric Parade:'''<br />All Dark allies gain {{Status|Bonus Dark DMG (1 time)|a=20%|t=i}} and {{Status|DMG Mitigation|t=1T|a=2020}}.<ref name="Gamewith" /><br />Restore 10% of all Dark allies' HP (Healing cap: 2020).}}
+|a2_option=alt
+|a3_icon= Ability Fantasy Festival.png
+|a3_color=yellow 
+|a3_name= Fantasy Festival
+|a3_cd= {{InfoCd|num=0|cooldown=10}}
+|a3_dur= -
+|a3_oblevel= {{InfoOb|obtained=45}}
+|a3_effdesc= {{InfoDes|num=0|des=All Dark allies gain {{status|Fantasy Festival 2|t=Indefinite}}.<br />(Ends upon taking damage 2 times.)}}
+|a4_icon=Ability_m_1947_3.png
+|a4_color=yellow
+|a4_name=Rat Shine and Rainbows
+|a4_cd={{InfoCd|num=0|cooldown=12}}
+|a4_dur={{InfoDur|type=t|duration=1}} 
+|a4_oblevel={{InfoOb|obtained=100}}
+|a4_effdesc={{InfoDes|num=0|des=All Dark allies gain {{Status|Dodge All 1|t=i|n=1}} and {{Status|Double Strike|t=1T}}.<br />(Can only be used when all allies' {{Status|Hype}} is 4.)}}
+|s_abilitycount= 2
+|sa_name= Queen of Rats
+|sa_level= {{InfoOb|obtained=1|enhanced=90}}
+|sa_desc={{InfoDes|num=1|level1=90|des='''When {{status|Utopia}} is in effect before attacking:'''<br />Guaranteed triple attacks, +30 boost to hostility, and 50% boost to dodge rate.<ref name="Gamewith" /><ref name="zekasyuz">zekasyuz, Vikala https://twitter.com/zekasyuz/status/1212343238050189313</ref><br />All allies gain {{status|Hype|t=1.5T}} upon Vikala's charge attack.|des1=All allies also gain {{Status|Dispel Cancel|t=i|n=1}} upon Vikala's charge attack.}}
+|sa2_name= Rodent Rhythm
+|sa2_level= {{InfoOb|obtained=1|enhanced=90}}
+|sa2_desc={{InfoDes|num=1|level1=90|des='''Upon dodging:'''<br />500% Dark damage to all foes (Damage cap: ~635,000) and remove 1 buff.<ref name="Gamewith" />|des1=Extends all allies' {{status|Hype}} by 1 turn.<br />(Activates twice when Vikala's {{status|Hype}} is 4.)}}
+|sa_emp_desc=When {{status|Utopia}} is in effect: Bonus Elemental DMG effect.
+|perk11=C.A. DMG
+|perk12=C.A. DMG Cap
+|perk13=Dodge
+|perk14=Hostility Up
+|perk15=Support Skill
+|a1_mimic=n
+|a1_mimic_notes=
+|a2_mimic=n
+|a2_mimic_notes=
+|a3_mimic=n
+|a3_mimic_notes=
+|a4_mimic=n
+|a4_mimic_notes=
+|xfate1=26088
+|xfate_bonus1=ATK +500 
+|xfate2=26090
+|xfate_bonus2=HP +250 
+|profile= One of the Twelve Divine Generals and guardian of the north. Her "yang" side is determined to bring hope, dreams, and wonderment to the world. Her "yin" side wants nothing more than to hide away from it. Caught between two extremes, the divine rat pins her hopes on the wide-open skies and chooses to trust in her new friends.
+}} 
+
+==Gameplay Notes==
+===Pandemousium===
+{{Autoskill|2|ca|useslotnumber=yes}}
+** If {{CharacterSkill|Vikala|2|alt=true}} is activated, all Dark allies gain {{status|DMG Mitigation|t=0.5T}} for [[Half Turns|0.5 turns]], resulting in the buff ending by the next turn.
+
+===Ring the Dormouse===
+*{{status|Dorrie|t=Indefinite|acc=g}} is guaranteed to land if the foe does not have 100% debuff resistance or immunity to Paralyzed.<ref name="Gamewith" />
+*{{status|Caught}} is identical to {{status|Paralyzed 1}}.
+
+===Dazzling Dreams===
+*{{status|Utopia|t=5T}} grants the following effects:<ref name="Gamewith" />
+**20% ATK Up to all foes.
+**All allies gain {{status|Hype|t=0.5T}} for [[Half Turns|0.5 turns]] when the Attack button is pressed.
+*After level 95, {{status|Utopia+|t=5T}} no longer boosts the foes' ATK.
+*Casting Dazzling Dreams {{tt|changes the battle background|[[File:raid_bg_event_386.jpg|300px]]}}.
+
+===Fantasy Festival===
+*{{status|Fantasy Festival 2|t=Indefinite}} only loses 1 stack when damaged multiple times in a single turn.
+*{{status|Fantasy Festival 2|t=Indefinite}} grants the following effects:<ref name="Gamewith" />
+**50% Charge Bar Gain Up
+**30% C.A. DMG Up
+**10% C.A. DMG Cap Up
+**30% Dodge Rate Up
+*Does not stack with other dodge rate boosts. Only the highest boost takes effect.
+
+===Queen of Rats===
+*In a 4-man party, the probability she is targeted when {{status|Utopia}} is active equals 57.14% (Hostility increased by +30).<ref name="zekasyuz" />
+===Rodent Rhythm===
+*The 500% Dark damage is treated as skill damage.
+
+===Extended Mastery Support Skill===
+*Adds bonus damage when {{status|Utopia}} is in effect.<ref name="Gamewith" />
+**Does not apply to Charge Attacks.
+{| class="wikitable" style="text-align:center;"
+!Rank
+!Bonus DMG
+|-
+!1★
+|5%
+|-
+!2★
+|8%
+|-
+!3★
+|10%
+|}
+=== Bonus DMG Stacking Information ===
+{{EchoTable/Info}}
+{{EchoTable|{{PAGENAME}}|2|skilld}}
+{{EchoTable|{{PAGENAME}}|emp|passiveu}}
+<!-- Gameplay Notes end here! Don't touch lines below! -->{{#var: character_template_bottom | }}
+
+==Outfits==
+===Blooming Summer Wallflower===
+{{CharSkin
+|id=3710143000
+|char=Vikala
+|art_tab=Default
+|art=Blooming Summer Wallflower (Vikala).png
+|art2_tab=Alternate
+|art2=Blooming Summer Wallflower (Vikala) alt.png
+|sd=Blooming Summer Wallflower (Vikala) SD.png
+|desc=Blooming Summer Wallflower
+|flavor=Unable to pluck up the courage to go shopping, this introvert decides to fashion herself an original summer outfit. With practiced hands from making rat ears, she designs a charming and cheerful ensemble that brings her closer to her ideal self.
+|obtain=Blooming Summer Wallflower Outfit Set<br />([[Shop#Outfit Sets|In-game purchase]])
+|release_date=2020-07-22
+|voice=Yes
+|sprite=Yes
+|ougi=Latent Ferocity
+|music= 
+|notes=Has three different outfit thumbnails:<br />{{tt|Default|[[File:Npc_f_3710143000_01.jpg]]}}, {{tt|Alternate 1|[[File:Npc_f_3710143000_81.jpg]]}}, {{tt|Alternate 2|[[File:Npc_f_3710143000_82.jpg]]}}<br />The thumbnail chosen does not affect the battle sprite.
+}}
+
+===Parade Master===
+{{CharSkin
+|id=3710199000
+|char=Vikala
+|art_tab=Default
+|art=Parade Master (Vikala).png
+|sd=Parade Master (Vikala) SD.png
+|desc=Parade Master
+|flavor=Welcome to the Eccentrical Parade, a place where hopes and dreams come true! Our parade master— the divine rat of the Twelve Divine Generals— will be sure to dazzle with her singing and dancing! Don't miss out on the lights show and lively music! Come join the fun!
+|obtain=「[[Welcome to the PARADE!]]」CD - Bonus Serial Code
+|release_date=2023-01-25
+|voice=Yes
+|sprite=Yes
+|ougi=Welcome to the Parade
+|music= 
+|notes=
+}}
+
+==References==
+<references />

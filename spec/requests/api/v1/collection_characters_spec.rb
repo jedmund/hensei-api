@@ -10,7 +10,7 @@ RSpec.describe 'Collection Characters API', type: :request do
     { 'Authorization' => "Bearer #{access_token.token}", 'Content-Type' => 'application/json' }
   end
 
-  let(:character) { create(:character) }
+  let(:character) { create(:character, :transcendable) }
   let(:awakening) { create(:awakening, object_type: 'Character') }
 
   describe 'GET /api/v1/users/:user_id/collection/characters' do
@@ -134,8 +134,24 @@ RSpec.describe 'Collection Characters API', type: :request do
       expect(returned_ids).not_to include(owned_char.id)
     end
 
-    it 'returns 403 when requesting another user\'s unowned characters' do
+    it 'returns unowned characters when requesting another user with public collection' do
+      owned_char = create(:character)
+      unowned_char = create(:character)
+      create(:collection_character, user: other_user, character: owned_char)
+
       get "/api/v1/users/#{other_user.id}/collection/characters", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(unowned_char.id)
+      expect(returned_ids).not_to include(owned_char.id)
+    end
+
+    it 'returns 403 when requesting unowned characters from a private collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+
+      get "/api/v1/users/#{private_user.id}/collection/characters", params: { unowned: true }, headers: headers
 
       expect(response).to have_http_status(:forbidden)
     end
@@ -170,6 +186,36 @@ RSpec.describe 'Collection Characters API', type: :request do
       returned_ids = json['characters'].map { |c| c['id'] }
       expect(returned_ids).to include(matching_char.id)
       expect(returned_ids).not_to include(other_char.id)
+    end
+
+    it 'sorts by name while filtering by series in unowned mode' do
+      grand_series = create(:character_series, :grand)
+      grand_char = create(:character)
+      create(:character_series_membership, character: grand_char, character_series: grand_series)
+
+      # Both name sort and the series join reference name_en/name_jp; without
+      # qualifying the column this 500s with PG::AmbiguousColumn.
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, series: grand_series.id, sort: 'name_asc' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(grand_char.id)
+    end
+
+    it 'searches by name while filtering by series in unowned mode' do
+      grand_series = create(:character_series, :grand)
+      matching_char = create(:character, name_en: 'Zeta Unique Name')
+      create(:character_series_membership, character: matching_char, character_series: grand_series)
+
+      get "/api/v1/users/#{user.id}/collection/characters",
+          params: { unowned: true, series: grand_series.id, search: 'Unique' }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['characters'].map { |c| c['id'] }
+      expect(returned_ids).to include(matching_char.id)
     end
 
     it 'does not return a character the user owns when requesting unowned' do
@@ -301,7 +347,8 @@ RSpec.describe 'Collection Characters API', type: :request do
       json = response.parsed_body
       expect(json['uncap_level']).to eq(5)
       expect(json['transcendence_step']).to eq(3)
-      expect(json['ring1']['modifier']).to eq(1)
+      # ring1 is now serialized at over_mastery[0] in the unified shape.
+      expect(json['over_mastery'][0]['modifier']).to eq(1)
     end
 
     it 'returns not found for other user\'s character' do
@@ -351,4 +398,21 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
   end
 
+  describe 'DELETE /api/v1/collection/characters/batch_destroy' do
+    let!(:collection_character) { create(:collection_character, user: user, character: character) }
+    let!(:grid_character) do
+      create(:grid_character, party: create(:party, user: user), character: character,
+                              collection_character: collection_character)
+    end
+
+    it 'deletes characters that are used in a party and orphans their grid characters' do
+      delete '/api/v1/collection/characters/batch_destroy',
+             params: { ids: [collection_character.id] }.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['meta']['deleted']).to eq(1)
+      expect(CollectionCharacter.exists?(collection_character.id)).to be false
+      expect(grid_character.reload).to have_attributes(orphaned: true, collection_character_id: nil)
+    end
+  end
 end

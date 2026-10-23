@@ -25,6 +25,7 @@ RSpec.describe 'ImportController', type: :request do
         }.to change(Party, :count).by(1)
         expect(response).to have_http_status(:created)
         expect(response.parsed_body['shortcode']).to be_present
+        expect(response.parsed_body['warnings']).to eq([])
       end
     end
 
@@ -104,6 +105,32 @@ RSpec.describe 'ImportController', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body['error']).to eq('Import failed due to an unexpected error. Please try again.')
       end
+    end
+
+    context 'when a record fails validation' do
+      it 'returns the validation messages' do
+        record = GridWeapon.new
+        record.errors.add(:ax_strength2, 'must be between 1.0 and 3.0')
+        failing_processor = instance_double(Processors::JobProcessor)
+        allow(Processors::JobProcessor).to receive(:new).and_return(failing_processor)
+        allow(failing_processor).to receive(:process).and_raise(ActiveRecord::RecordInvalid.new(record))
+
+        post '/api/v1/import', params: valid_deck_json, headers: headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['error']).to eq('invalid_data')
+        expect(response.parsed_body['details']).to eq(['Ax strength2 must be between 1.0 and 3.0'])
+      end
+    end
+  end
+
+  it "keeps the player's user ID in a deck out of the logs" do
+    filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+    deck = { 'deck' => { 'pc' => { 'param' => { 'id' => '123' }, 'quick_user_summon_id' => '9' } } }
+    filtered = filter.filter(deck.merge('import' => deck))
+
+    [filtered['deck'], filtered.dig('import', 'deck')].each do |filtered_deck|
+      expect(filtered_deck.dig('pc', 'param', 'id')).to eq('[FILTERED]')
+      expect(filtered_deck.dig('pc', 'quick_user_summon_id')).to eq('9')
     end
   end
 end

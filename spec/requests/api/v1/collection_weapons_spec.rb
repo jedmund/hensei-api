@@ -108,8 +108,24 @@ RSpec.describe 'Collection Weapons API', type: :request do
       expect(json['meta']['count']).to eq(0)
     end
 
-    it 'returns 403 when requesting another user\'s unowned weapons' do
+    it 'returns unowned weapons when requesting another user with public collection' do
+      owned_wpn = create(:weapon)
+      unowned_wpn = create(:weapon)
+      create(:collection_weapon, user: other_user, weapon: owned_wpn)
+
       get "/api/v1/users/#{other_user.id}/collection/weapons", params: { unowned: true }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      json = response.parsed_body
+      returned_ids = json['weapons'].map { |w| w['id'] }
+      expect(returned_ids).to include(unowned_wpn.id)
+      expect(returned_ids).not_to include(owned_wpn.id)
+    end
+
+    it 'returns 403 when requesting unowned weapons from a private collection' do
+      private_user = create(:user, collection_privacy: :private_collection)
+
+      get "/api/v1/users/#{private_user.id}/collection/weapons", params: { unowned: true }, headers: headers
 
       expect(response).to have_http_status(:forbidden)
     end
@@ -253,17 +269,19 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'creates weapon with AX skills' do
+      ax_weapon = create(:weapon, :with_ax)
       ax_atk = WeaponStatModifier.find_by(slug: 'ax_atk') ||
                create(:weapon_stat_modifier, :ax_atk)
-      ax_hp = WeaponStatModifier.find_by(slug: 'ax_hp') ||
-              create(:weapon_stat_modifier, :ax_hp)
+      ax_ca_dmg = WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
+                  create(:weapon_stat_modifier, :ax_ca_dmg)
 
       ax_attributes = valid_attributes.deep_merge(
         collection_weapon: {
+          weapon_id: ax_weapon.id,
           ax_modifier1_id: ax_atk.id,
           ax_strength1: 3.5,
-          ax_modifier2_id: ax_hp.id,
-          ax_strength2: 2.0
+          ax_modifier2_id: ax_ca_dmg.id,
+          ax_strength2: 4.0
         }
       )
 
@@ -277,11 +295,13 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'returns error with incomplete AX skills' do
+      ax_weapon = create(:weapon, :with_ax)
       ax_atk = WeaponStatModifier.find_by(slug: 'ax_atk') ||
                create(:weapon_stat_modifier, :ax_atk)
 
       invalid_ax = valid_attributes.deep_merge(
         collection_weapon: {
+          weapon_id: ax_weapon.id,
           ax_modifier1_id: ax_atk.id
           # Missing ax_strength1
         }

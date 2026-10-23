@@ -12,6 +12,24 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
   let!(:target_membership) { create(:crew_membership, crew: crew, user: target_user, role: :member) }
 
   describe 'PUT /api/v1/crews/:crew_id/memberships/:id' do
+    context 'as an officer of a different crew' do
+      %i[captain vice_captain].each do |role|
+        it "rejects updates from a #{role}" do
+          create(:crew_membership, crew: create(:crew), user: user, role: role)
+
+          put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
+              params: { membership: { role: 'vice_captain', retired: true, joined_at: '2020-01-01' } },
+              headers: auth_headers
+
+          expect(response).to have_http_status(:unauthorized)
+          target_membership.reload
+          expect(target_membership.role).to eq('member')
+          expect(target_membership.retired).to be(false)
+          expect(target_membership.joined_at&.to_date).not_to eq(Date.new(2020, 1, 1))
+        end
+      end
+    end
+
     context 'as captain' do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
 

@@ -71,6 +71,8 @@ module Processors
           end
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
+          add_warning('item_skipped', summon, summon.summon)
+          discard_unsaved(summon, :summons)
         end
       end
     end
@@ -100,7 +102,11 @@ module Processors
     # @param sub [Boolean] true if we are polling sub summons
     # @return [Array<GridSummon>]
     def process_summons(summons, sub: false)
-      internal_quick_summon_id = @data.dig('deck', 'pc', 'quick_user_summon_id').to_i unless sub
+      # Only main-grid summons can be quick summons. A missing or zero ID never
+      # matches, so a deck without a quick summon (or summons without IDs)
+      # marks none.
+      quick_summon_id = sub ? nil : @data.dig('deck', 'pc', 'quick_user_summon_id').to_i
+      quick_summon_id = nil unless quick_summon_id&.positive?
 
       summons.filter_map do |key, raw_summon|
         next if raw_summon.nil? || raw_summon['param'].nil? || raw_summon['master'].nil?
@@ -124,9 +130,9 @@ module Processors
                                        party: @party,
                                        summon: summon,
                                        position: position,
-                                       main: key.to_i == 1,
+                                       main: !sub && key.to_i == 1,
                                        friend: false,
-                                       quick_summon: summon_params['id'].to_i == internal_quick_summon_id,
+                                       quick_summon: !quick_summon_id.nil? && summon_params['id'].to_i == quick_summon_id,
                                        uncap_level: summon_params['evolution'].to_i,
                                        transcendence_step: level_to_transcendence(summon_params['level'].to_i),
                                        created_at: Time.now,

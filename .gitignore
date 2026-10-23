@@ -65,3 +65,13 @@ config/application.yml
 codebase.md
 mise.toml
 public/assets
+
+# Dev-only uploaded icons (live in S3 in production)
+public/images/difficulties/
+data/weapon_skill_parity/last_diff.json
+# Reports the compare and parity tasks rewrite on every run. Snapshots worth keeping go
+# to a catalogue release as assets (the 2026-10-15 ones are on catalogue-20261015-sources).
+data/weapon_skill_parity/*_last.json
+data/weapon_skill_parity/full_reparse_*.json
+data/weapon_skill_parity/w5_key_diff.json
+data/weapon_skill_parity/version_description_backfill.json

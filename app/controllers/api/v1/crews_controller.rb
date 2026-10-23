@@ -86,7 +86,8 @@ module Api
       # Params: character_ids[], weapon_ids[], summon_ids[]
       def roster
         members = @crew.active_memberships.includes(:user)
-        user_ids = members.map(&:user_id)
+        # Respect each member's collection privacy; private collections stay empty.
+        user_ids = members.select { |m| m.user.collection_viewable_by?(current_user) }.map(&:user_id)
 
         # Batch-load all collection items for all members at once
         @roster_cache = preload_roster_collections(user_ids)
@@ -116,16 +117,16 @@ module Api
       def shared_parties
         parties = @crew.shared_parties
                        .includes(
-                         :job, { raid: :group },
+                         :job, { raid: :group }, :solomonis_expedition,
                          { characters: :character },
-                         { weapons: :weapon },
+                         { weapons: { weapon: :weapon_series } },
                          { summons: :summon }
                        )
                        .order(created_at: :desc)
                        .paginate(page: params[:page], per_page: page_size)
 
         render json: {
-          parties: PartyBlueprint.render_as_hash(parties, view: :list),
+          parties: PartyBlueprint.render_as_hash(parties, view: :list, current_user: current_user),
           meta: pagination_meta(parties)
         }
       end

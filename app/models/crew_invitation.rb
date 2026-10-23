@@ -26,6 +26,8 @@ class CrewInvitation < ApplicationRecord
   # If a phantom was pre-assigned, auto-assign it to the new member
   def accept!
     raise CrewErrors::InvitationExpiredError if expired? || (expires_at.present? && expires_at < Time.current)
+    # Accepted or rejected invitations can't be reused (e.g. to rejoin after removal).
+    raise CrewErrors::InvitationNotFoundError unless pending?
     raise CrewErrors::AlreadyInCrewError if user.reload.crew.present?
 
     transaction do
@@ -42,6 +44,7 @@ class CrewInvitation < ApplicationRecord
   # Reject the invitation
   def reject!
     raise CrewErrors::InvitationExpiredError if expired?
+    raise CrewErrors::InvitationNotFoundError unless pending?
 
     update!(status: :rejected)
   end

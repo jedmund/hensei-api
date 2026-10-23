@@ -58,6 +58,16 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
       end
     end
 
+    context 'with the username in a different case' do
+      it 'finds the user' do
+        get "/api/v1/users/#{user.username.upcase}/parties", headers: unauth_headers
+        expect(response).to have_http_status(:ok)
+
+        ids = response.parsed_body['results'].map { |p| p['id'] }
+        expect(ids).to include(public_party.id)
+      end
+    end
+
     context 'with element filter' do
       it 'filters parties by element' do
         get "/api/v1/users/#{user.username}/parties", params: { element: 1 }, headers: auth_headers
