@@ -25,11 +25,6 @@ module HenseiApi
     config.autoload_paths << Rails.root.join("lib")
     config.eager_load_paths << Rails.root.join("lib")
 
-    # Configure asset handling for API mode
-    config.paths["app/assets"] ||= []
-    config.paths["app/assets"].unshift(Rails.root.join("app", "assets").to_s)
-    config.assets.paths << Rails.root.join("app", "assets", "fonts")
-
     # Enable query logging
     config.active_record.query_log_tags_enabled = true
     config.active_record.query_log_tags = [:application, :controller, :action, :job]
