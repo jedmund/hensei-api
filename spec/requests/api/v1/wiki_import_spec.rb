@@ -93,6 +93,32 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
       expect(response.parsed_body['report']['warnings']).to eq([])
     end
 
+    it 'stores the local id on an anonymous party' do
+      local_id = SecureRandom.uuid
+      wiki['localId'] = local_id
+
+      import({ wiki: wiki })
+
+      expect(Party.find(response.parsed_body.dig('party', 'id')).local_id).to eq(local_id)
+    end
+
+    it 'reads local_id as well' do
+      local_id = SecureRandom.uuid
+      wiki['local_id'] = local_id
+
+      import({ wiki: wiki })
+
+      expect(Party.find(response.parsed_body.dig('party', 'id')).local_id).to eq(local_id)
+    end
+
+    it 'ignores the local id for a signed-in user' do
+      wiki['localId'] = SecureRandom.uuid
+
+      import({ wiki: wiki }, headers: auth_headers)
+
+      expect(Party.find(response.parsed_body.dig('party', 'id')).local_id).to be_nil
+    end
+
     it 'gives an anonymous party an edit key' do
       import({ wiki: wiki })
 
@@ -150,6 +176,13 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to eq('invalid_payload')
       expect(response.parsed_body['detail']).to eq('characters[0].position must be an integer')
+    end
+
+    it 'returns 422 for a local id that is not a string' do
+      import({ wiki: { localId: 12 } })
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body['detail']).to eq('localId must be a string')
     end
 
     it 'returns 422 for a body that is not JSON' do

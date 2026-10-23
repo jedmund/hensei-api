@@ -20,7 +20,7 @@ module WikiImport
     Item = Struct.new(:position, :title, :uncap, :awakening, :ring, :full_auto_off, keyword_init: true)
     Job = Struct.new(:name, :accessory, :skills, :full_auto_off, keyword_init: true)
 
-    attr_reader :preview, :job, :bullets, :characters, :weapons, :summons, :key_sets, :quick
+    attr_reader :preview, :job, :bullets, :characters, :weapons, :summons, :key_sets, :quick, :local_id
 
     ##
     # @param body [Object] the parsed JSON body.
@@ -44,6 +44,7 @@ module WikiImport
       @summons = parse_items(wiki['summons'], 'summons')
       @key_sets = parse_keys(wiki['keys'])
       @quick = optional_integer(wiki['quick'], 'quick')
+      @local_id = parse_local_id(camel(wiki, 'localId'))
     end
 
     private
@@ -56,6 +57,14 @@ module WikiImport
       raise Invalid, 'preview must be a boolean' unless [true, false].include?(value)
 
       value
+    end
+
+    # The browser's id for an anonymous party (parties.local_id, a uuid). A
+    # string that isn't a uuid is dropped, as the column cast drops it on
+    # PartiesController#create.
+    def parse_local_id(value)
+      value = optional_string(value, 'localId')
+      value if value&.match?(Api::V1::ApiController::UUID_FORMAT)
     end
 
     def parse_job(value)

@@ -430,6 +430,8 @@ module WikiImport
     def create_party
       Party.create!(
         user: @user,
+        # Lets an anonymous creator keep edit rights after a reload.
+        local_id: @user ? nil : @payload.local_id,
         last_updated: Time.current,
         job: @job,
         skill0: @skill0,
