@@ -93,16 +93,16 @@ RSpec.describe WikiImport::Importer do
       report = importer('keys' => keys).preview
 
       expect(report[:warnings]).to contain_exactly(
-        { code: 'unknown_key', detail: 'opus slot 0' },
-        { code: 'unknown_key', detail: 'opus slot 1' },
-        { code: 'unknown_key', detail: 'ultima slot 1' },
-        { code: 'unknown_key', detail: 'befoulment' }
+        { code: 'unknown_key', detail: 'opus slot 0', kind: 'key', position: 0, title: '915001' },
+        { code: 'unknown_key', detail: 'opus slot 1', kind: 'key', position: 1, title: '913002' },
+        { code: 'unknown_key', detail: 'ultima slot 1', kind: 'key', position: 1, title: '999999' },
+        { code: 'unknown_key', detail: 'befoulment', kind: 'key', title: 'befoulment' }
       )
       expect(report[:matched].none? { |m| m[:kind] == 'key' }).to be(true)
     end
 
     it 'warns on unknown bullets, classes, skills and accessories' do
-      job_spec = { 'name' => 'Not A Class', 'accessory' => 'Shield', 'skills' => ['Rage IV'] }
+      job_spec = { 'name' => 'Not A Class', 'accessory' => 'Not A Shield', 'skills' => ['Not A Skill'] }
 
       report = importer('job' => job_spec, 'bullets' => %w[forged-bullet]).preview
 
@@ -110,19 +110,46 @@ RSpec.describe WikiImport::Importer do
                                                'unknown_bullet')
     end
 
+    it 'tells a skill or accessory that exists but does not fit apart from an unknown one' do
+      other_job = create(:job, name_en: 'WI Viking', accessory: false, accessory_type: 0)
+
+      report = importer('job' => wiki['job'].merge('name' => 'WI Viking', 'skills' => ['WI Bazooka'])).preview
+
+      expect(report[:warnings]).to contain_exactly(
+        { code: 'skill_not_allowed', detail: other_job.name_en, kind: 'skill', position: 1, title: 'WI Bazooka' },
+        { code: 'accessory_not_allowed', detail: other_job.name_en, kind: 'accessory', position: 0,
+          title: " WI Hero's Shield " }
+      )
+    end
+
+    it 'tells an awakening the weapon cannot take apart from an unknown one' do
+      weapons = [{ 'position' => -1, 'title' => 'WI Ultima Gun (Fire)', 'awakening' => 'defense' },
+                 { 'position' => 0, 'title' => 'WI Staff of Renunciation', 'awakening' => 'sparkle' }]
+
+      report = importer('weapons' => weapons).preview
+
+      expect(report[:warnings]).to contain_exactly(
+        { code: 'awakening_not_allowed', detail: 'defense', kind: 'weapon', position: -1,
+          title: 'WI Ultima Gun (Fire)' },
+        { code: 'unknown_awakening', detail: 'sparkle', kind: 'weapon', position: 0,
+          title: 'WI Staff of Renunciation' }
+      )
+    end
+
     it 'rejects a skill the class cannot equip' do
       other_main = create(:job_skill, job: create(:job), name_en: 'WI Other Main', main: true)
 
       report = importer('job' => wiki['job'].merge('skills' => [other_main.name_en])).preview
 
-      expect(report[:warnings]).to eq([{ code: 'unknown_skill', detail: 'WI Other Main' }])
+      expect(report[:warnings]).to eq([{ code: 'skill_not_allowed', detail: 'WI Soldier', kind: 'skill',
+                                        position: 1, title: 'WI Other Main' }])
     end
 
     it 'reports two entries in one position as a slot conflict' do
       summons = wiki['summons'] + [{ 'position' => 0, 'title' => 'WI Lucifer' }]
 
       expect(importer('summons' => summons).preview[:warnings])
-        .to eq([{ code: 'slot_conflict', detail: 'summon 0' }])
+        .to eq([{ code: 'slot_conflict', detail: 'summon 0', kind: 'summon', position: 0, title: 'WI Lucifer' }])
     end
   end
 
@@ -200,7 +227,9 @@ RSpec.describe WikiImport::Importer do
       created, report = importer('preview' => false, 'weapons' => weapons).create!
 
       expect(created.weapons.count).to eq(3)
-      expect(report[:warnings]).to contain_exactly(hash_including(code: 'invalid_item'))
+      expect(report[:warnings]).to contain_exactly(
+        hash_including(code: 'invalid_item', kind: 'weapon', position: 10, title: 'WI Agni Sword')
+      )
       expect(report[:warnings].first[:detail]).to start_with('weapon 10:')
     end
 
@@ -239,7 +268,8 @@ RSpec.describe WikiImport::Importer do
       created, report = importer('preview' => false, 'characters' => characters).create!
 
       expect(created.characters.first).to have_attributes(uncap_level: 5, transcendence_step: 0)
-      expect(report[:warnings]).to eq([{ code: 'uncap_clamped', detail: 'character 0' }])
+      expect(report[:warnings]).to eq([{ code: 'uncap_clamped', detail: 'character 0', kind: 'character',
+                                        position: 0, title: 'WI Tikoh' }])
     end
   end
 end

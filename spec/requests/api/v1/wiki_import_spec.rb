@@ -49,7 +49,8 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
       expect(report['unmatched']).to eq([{ 'kind' => 'character', 'position' => 3, 'title' => 'Not A Character' }])
       expect(report['ambiguous'].sole.keys).to eq(%w[kind position title candidates])
       expect(report['ambiguous'].sole['candidates'].first.keys).to eq(%w[id granblueId name element])
-      expect(report['warnings']).to eq([{ 'code' => 'unknown_key', 'detail' => 'opus slot 1' }])
+      expect(report['warnings']).to eq([{ 'code' => 'unknown_key', 'detail' => 'opus slot 1',
+                                         'kind' => 'key', 'position' => 1, 'title' => '999999' }])
     end
 
     it 'returns an empty report for an empty paste' do
@@ -146,8 +147,10 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['report']['warnings']).to contain_exactly(
-        { 'code' => 'unknown_bullet', 'detail' => 'not-a-bullet' },
-        { 'code' => 'unknown_key', 'detail' => 'ultima slot 0' }
+        { 'code' => 'unknown_bullet', 'detail' => 'not-a-bullet', 'kind' => 'bullet', 'position' => 1,
+          'title' => 'not-a-bullet' },
+        { 'code' => 'unknown_key', 'detail' => 'ultima slot 0', 'kind' => 'key', 'position' => 0,
+          'title' => '915001' }
       )
       party = Party.find(response.parsed_body.dig('party', 'id'))
       expect(party.weapons.find_by(position: -1)).to have_attributes(weapon_key1_id: nil, weapon_key2_id: ca_key.id)

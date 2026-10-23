@@ -111,11 +111,11 @@ module WikiImport
       taken = Set.new
       entries.filter_map do |entry|
         unless POSITIONS[kind].cover?(entry.position)
-          add_warning('invalid_position', "#{kind} #{entry.position}")
+          add_warning('invalid_position', "#{kind} #{entry.position}", **at(kind, entry))
           next
         end
         unless taken.add?(entry.position)
-          add_warning('slot_conflict', "#{kind} #{entry.position}")
+          add_warning('slot_conflict', "#{kind} #{entry.position}", **at(kind, entry))
           next
         end
 
@@ -176,7 +176,7 @@ module WikiImport
 
     def plan_weapon(entry, record, element)
       if element && !record.effective_element_changeable
-        add_warning('element_not_changeable', "weapon #{entry.position}")
+        add_warning('element_not_changeable', "weapon #{entry.position}", **at(:weapon, entry))
         element = nil
       end
       uncap, step = resolve_uncap(:weapon, entry, record)
@@ -201,13 +201,13 @@ module WikiImport
 
       uncap, step = parse_uncap(entry.uncap)
       if uncap.nil?
-        add_warning('invalid_uncap', "#{kind} #{entry.position}")
+        add_warning('invalid_uncap', "#{kind} #{entry.position}", **at(kind, entry))
         return default_uncap(kind, record)
       end
 
       max_uncap, max_step = max_uncap(kind, record)
       if uncap > max_uncap || step > max_step
-        add_warning('uncap_clamped', "#{kind} #{entry.position}")
+        add_warning('uncap_clamped', "#{kind} #{entry.position}", **at(kind, entry))
         uncap = [uncap, max_uncap].min
         step = uncap == 6 ? [step, max_step].min : 0
       end
@@ -259,7 +259,7 @@ module WikiImport
 
       slug = CHARACTER_AWAKENINGS[entry.awakening]
       awakening = slug && Awakening.find_by(slug: slug, object_type: 'Character')
-      add_warning('unknown_awakening', "character #{entry.position}") unless awakening
+      add_warning('unknown_awakening', entry.awakening, **at(:character, entry)) unless awakening
       awakening
     end
 
@@ -267,8 +267,10 @@ module WikiImport
       return nil if entry.awakening.nil?
 
       slug = WEAPON_AWAKENINGS[entry.awakening]
-      awakening = record.awakenings.find { |a| a.slug == slug } if slug && record.effective_has_awakening
-      add_warning('unknown_awakening', "weapon #{entry.position}") unless awakening
+      return add_warning('unknown_awakening', entry.awakening, **at(:weapon, entry)) unless slug
+
+      awakening = record.awakenings.find { |a| a.slug == slug } if record.effective_has_awakening
+      add_warning('awakening_not_allowed', entry.awakening, **at(:weapon, entry)) unless awakening
       awakening
     end
 
@@ -282,7 +284,7 @@ module WikiImport
       @payload.key_sets.each do |group, ids|
         slugs = KEY_SERIES[group]
         unless slugs
-          add_warning('unknown_key', group)
+          add_warning('unknown_key', group, kind: 'key', title: group)
           next
         end
 
@@ -291,7 +293,7 @@ module WikiImport
 
           key = find_key(slugs, id)
           if key.nil? || key.slot != slot
-            add_warning('unknown_key', "#{group} slot #{slot}")
+            add_warning('unknown_key', "#{group} slot #{slot}", kind: 'key', position: slot, title: id.to_s)
             next
           end
           @report[:matched] << { kind: 'key', position: slot, title: id.to_s, item: named_json(key) }
@@ -329,11 +331,11 @@ module WikiImport
       bullets = @payload.bullets.each_with_index.filter_map do |slug, index|
         bullet = known[slug]
         unless bullet
-          add_warning('unknown_bullet', slug)
+          add_warning('unknown_bullet', slug, kind: 'bullet', position: index, title: slug)
           next
         end
         @report[:matched] << { kind: 'bullet', position: index, title: slug, item: named_json(bullet) }
-        bullet
+        [bullet, index]
       end
       place_bullets(bullets)
     end
@@ -344,18 +346,19 @@ module WikiImport
       mainhand = @weapons.find { |plan| plan[:entry].position == -1 }
       slots = mainhand ? Array(mainhand[:record].bullet_slots) : []
       if slots.empty?
-        add_warning('invalid_item', 'bullets: the mainhand takes no bullets')
+        add_warning('invalid_item', 'bullets: the mainhand takes no bullets', kind: 'bullet')
         return
       end
 
       free = slots.each_index.to_a
-      bullets.each do |bullet|
-        slot = free.find { |index| slots[index] == bullet.bullet_type }
+      bullets.each do |bullet, index|
+        slot = free.find { |free_slot| slots[free_slot] == bullet.bullet_type }
         if slot
           free.delete(slot)
-          @bullets << [bullet, slot]
+          @bullets << [bullet, slot, index]
         else
-          add_warning('invalid_item', "bullet #{bullet.slug}: no free slot")
+          add_warning('invalid_item', "bullet #{bullet.slug}: no free slot",
+                      kind: 'bullet', position: index, title: bullet.slug)
         end
       end
     end
@@ -373,7 +376,7 @@ module WikiImport
           @report[:matched] << { kind: 'job', position: 0, title: spec.name, item: named_json(@job) }
           @skill0 = JobSkill.find_by(job_id: @job.id, main: true)
         else
-          add_warning('unknown_job', spec.name)
+          add_warning('unknown_job', spec.name, kind: 'job', position: 0, title: spec.name)
         end
       end
 
@@ -383,23 +386,25 @@ module WikiImport
     end
 
     # Subskills match by English name among the skills this class may equip.
+    # A name no skill has is unknown; one the class can't equip here (another
+    # class's skill, already equipped, or over the row's limit) isn't allowed.
     def resolve_skill(name, slot)
       return if name.blank?
 
-      skill = @job && skill_for(name)
-      unless skill
-        add_warning('unknown_skill', name)
-        return
-      end
+      candidates = JobSkill.includes(job: :base_job).where('LOWER(name_en) = ?', name.strip.downcase).to_a
+      about = { kind: 'skill', position: slot, title: name }
+      return add_warning('unknown_skill', name, **about) if candidates.empty?
+
+      skill = @job && skill_for(candidates)
+      return add_warning('skill_not_allowed', @job&.name_en || 'no class', **about) unless skill
 
       @skills[slot - 1] = skill
       @report[:matched] << { kind: 'skill', position: slot, title: name, item: named_json(skill) }
     end
 
-    def skill_for(name)
+    def skill_for(candidates)
       taken = [@skill0, *@skills].compact
-      candidates = JobSkill.includes(job: :base_job).where('LOWER(name_en) = ?', name.strip.downcase).to_a
-      candidates.reject! { |skill| taken.include?(skill) || skill.incompatible_with?(@job) }
+      candidates = candidates.reject { |skill| taken.include?(skill) || skill.incompatible_with?(@job) }
       skill = candidates.find { |s| s.job_id == @job.id } || candidates.first
       skill if skill && room_for_skill?(skill)
     end
@@ -414,15 +419,16 @@ module WikiImport
     def resolve_accessory(name)
       return if name.blank?
 
+      rows = JobAccessory.where('LOWER(TRIM(name_en)) = ?', name.strip.downcase).to_a
+      about = { kind: 'accessory', position: 0, title: name }
+      return add_warning('unknown_accessory', name, **about) if rows.empty?
+
       if @job&.accessory && @job.accessory_type.to_i.positive?
-        @accessory = JobAccessory.where('LOWER(TRIM(name_en)) = ?', name.strip.downcase)
-                                 .where(accessory_type: @job.accessory_type).first
+        @accessory = rows.find { |row| row.accessory_type == @job.accessory_type }
       end
-      if @accessory
-        @report[:matched] << { kind: 'accessory', position: 0, title: name, item: named_json(@accessory) }
-      else
-        add_warning('unknown_accessory', name)
-      end
+      return add_warning('accessory_not_allowed', @job&.name_en || 'no class', **about) unless @accessory
+
+      @report[:matched] << { kind: 'accessory', position: 0, title: name, item: named_json(@accessory) }
     end
 
     # ----------------------------------------------------------------- create
@@ -446,7 +452,8 @@ module WikiImport
     def create_character(party, plan)
       party.characters.reset
       if party.characters.any? { |gc| gc.character_id == plan[:record].id }
-        return add_warning('invalid_item', "character #{plan[:entry].position}: already in the party")
+        return add_warning('invalid_item', "character #{plan[:entry].position}: already in the party",
+                           **at(:character, plan[:entry]))
       end
 
       grid_character = GridCharacter.new(
@@ -498,11 +505,12 @@ module WikiImport
     end
 
     def create_bullets(grid_weapon)
-      @bullets.each do |bullet, slot|
+      @bullets.each do |bullet, slot, index|
         record = GridWeaponBullet.new(grid_weapon: grid_weapon, bullet: bullet, position: slot)
         next if record.save
 
-        add_warning('invalid_item', "bullet #{bullet.slug}: #{record.errors.full_messages.to_sentence}")
+        add_warning('invalid_item', "bullet #{bullet.slug}: #{record.errors.full_messages.to_sentence}",
+                    kind: 'bullet', position: index, title: bullet.slug)
       end
     end
 
@@ -511,15 +519,23 @@ module WikiImport
     def saved_item?(kind, plan, record)
       return true if record.save
 
-      add_warning('invalid_item', "#{kind} #{plan[:entry].position}: #{record.errors.full_messages.to_sentence}")
+      add_warning('invalid_item', "#{kind} #{plan[:entry].position}: #{record.errors.full_messages.to_sentence}",
+                  **at(kind, plan[:entry]))
       false
     end
 
     # ----------------------------------------------------------------- report
 
-    def add_warning(code, detail)
-      @report[:warnings] << { code: code, detail: detail }
+    # Every warning has a code and a detail; kind, position and title (as
+    # pasted) say what it's about, with the same conventions as matched.
+    def add_warning(code, detail, kind: nil, position: nil, title: nil)
+      about = { kind: kind&.to_s, position: position, title: title }.compact
+      @report[:warnings] << { code: code, detail: detail.to_s, **about }
       nil
+    end
+
+    def at(kind, entry)
+      { kind: kind, position: entry.position, title: entry.title }
     end
 
     def item_json(record, element)
