@@ -54,7 +54,6 @@ RSpec.describe 'Api::V1::Statuses', type: :request do
   describe 'GET /api/v1/statuses/:id' do
     it 'returns a status by id' do
       status = Status.create!(
-        game_ailment_id: '1558014001',
         name_en: 'Causal Intervention',
         name_jp: '因果干渉',
         family: 'Causal Intervention',

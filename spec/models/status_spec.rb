@@ -22,7 +22,6 @@ RSpec.describe Status, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name_en) }
-    it { is_expected.to validate_uniqueness_of(:game_ailment_id).allow_nil }
   end
 
   describe '.in_family' do

@@ -45,7 +45,6 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
                              "(Steal the foe's heart and land {{status|Charmed|t=180S}} when the foe uses a special attack.)",
                 game: game)
       described_class.build_all
-      expect(Status.where.not(game_ailment_id: nil)).to be_empty
       expect(category("Nightsmoke's Victim")).to eq('debuff')
       expect(category('Charmed')).to eq('debuff')
     end
@@ -54,7 +53,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
       game = ability(ailment: '1041001001', type: 'heal', details: { 'buff' => [{ 'status' => '1041', 'detail' => 'Heal' }] })
       character('Anila', "Restore all allies' HP.<br />All allies gain {{status|Charge Bar|a=10%}}.", game: game)
       described_class.build_all
-      expect(Status.pluck(:name_en, :game_ailment_id, :category)).to eq([['Charge Bar', nil, 'buff']])
+      expect(Status.pluck(:name_en, :category)).to eq([['Charge Bar', 'buff']])
     end
 
     it 'uses the curated category over the texts' do
