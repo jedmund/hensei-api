@@ -34,4 +34,17 @@ RSpec.describe CharacterSkills::StaleBuildJob do
     # Without the list, names use the fallbacks and statuses have no game display id yet.
     expect(Status.find_by(name_en: 'Shield')).to have_attributes(game_status_id: nil)
   end
+
+  context 'when another build is running' do
+    include BuildLockHelpers
+
+    it 're-queues itself a few minutes later instead of building' do
+      ENV['CHARACTER_SKILL_BUILD'] = 'write'
+      held_elsewhere(:character, 'another') do
+        expect { expect(described_class.perform_now).to be_nil }
+          .to have_enqueued_job(described_class).at(a_value_within(1.second).of(described_class::RETRY_WAIT.from_now))
+      end
+      expect(names).to be_empty
+    end
+  end
 end
