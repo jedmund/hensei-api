@@ -183,7 +183,7 @@ module Granblue
 
       # Download element variant to local storage
       def download_element_to_local(url, local_path)
-        URI.parse(url).open do |file|
+        RemoteFile.open(url) do |file|
           IO.copy_stream(file, local_path)
         end
       end
@@ -195,14 +195,14 @@ module Granblue
           return
         end
 
-        URI.parse(url).open do |file|
+        RemoteFile.open(url) do |file|
           @aws_service.upload_stream(file, s3_key)
         end
       end
 
       # Download element variant to both local and S3
       def download_element_to_both(url, local_path, s3_key)
-        download = URI.parse(url).open
+        download = RemoteFile.open(url)
 
         # Write to local file
         IO.copy_stream(download, local_path)

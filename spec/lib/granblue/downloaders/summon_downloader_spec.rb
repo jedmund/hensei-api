@@ -14,14 +14,9 @@ RSpec.describe Granblue::Downloaders::SummonDownloader do
     allow(Summon).to receive(:find_by).and_return(summon)
 
     # Stub the game CDN: record each URL and hand back a fake image stream
-    allow(URI).to receive(:parse).and_wrap_original do |original, url|
-      uri = original.call(url)
-      next uri unless url.to_s.start_with?(cdn)
-
+    allow(Granblue::Downloaders::RemoteFile).to receive(:open) do |url, &block|
       opened_urls << url
-      remote = double('RemoteImage')
-      allow(remote).to receive(:open) { |&block| block ? block.call(StringIO.new('png')) : StringIO.new('png') }
-      remote
+      block ? block.call(StringIO.new('png')) : StringIO.new('png')
     end
   end
 

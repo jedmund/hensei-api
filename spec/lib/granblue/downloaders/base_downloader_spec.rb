@@ -129,6 +129,36 @@ RSpec.describe Granblue::Downloaders::BaseDownloader do
     end
   end
 
+  describe '#download to S3 through the CDN fetch' do
+    let(:downloader) { test_downloader_class.new('12345', storage: :s3, force: true) }
+
+    it 'uploads each size it fetches' do
+      stub_request(:get, %r{\Ahttps://example\.com/assets/}).to_return(status: 200, body: 'jpg')
+
+      downloader.download
+
+      expect(aws_double).to have_received(:upload_stream).with(kind_of(StringIO), 'test_objects/main/12345.jpg')
+      expect(aws_double).to have_received(:upload_stream).with(kind_of(StringIO), 'test_objects/grid/12345.jpg')
+    end
+
+    it 'skips a size the CDN does not serve and carries on' do
+      stub_request(:get, %r{\Ahttps://example\.com/assets/}).to_return(status: 200, body: 'jpg')
+      stub_request(:get, 'https://example.com/assets/large/12345.jpg').to_return(status: 404)
+
+      expect { downloader.download }.not_to raise_error
+      expect(aws_double).not_to have_received(:upload_stream).with(anything, 'test_objects/main/12345.jpg')
+      expect(aws_double).to have_received(:upload_stream).with(kind_of(StringIO), 'test_objects/grid/12345.jpg')
+    end
+
+    it 'does not follow a redirect to another host' do
+      stub_request(:get, 'https://example.com/assets/large/12345.jpg')
+        .to_return(status: 302, headers: { 'Location' => 'https://elsewhere.example/x.jpg' })
+
+      expect { downloader.download('main') }.to raise_error(Granblue::Downloaders::RemoteFile::RedirectRefused)
+      expect(aws_double).not_to have_received(:upload_stream)
+    end
+  end
+
   describe 'abstract methods' do
     it 'raises NotImplementedError for object_type' do
       expect { described_class.new('12345', test_mode: true) }.to raise_error(NotImplementedError)
