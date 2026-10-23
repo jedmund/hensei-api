@@ -24,6 +24,8 @@ if sentry_dsn && !one_off_process
   # Expected / user-facing exceptions that must never be reported as bugs.
   # excluded_exceptions matches subclasses, so a base class covers its leaves
   # (e.g. Api::V1::GranblueError covers FavoriteAlreadyExistsError, etc.).
+  # SignalException (and its subclass Interrupt) is a process being stopped, not a
+  # bug: Ctrl-C or a dropped SSH session during a rake task, or a TERM on redeploy.
   ignored_exceptions = %w[
     ActiveRecord::RecordNotFound
     ActiveRecord::RecordInvalid
@@ -38,6 +40,8 @@ if sentry_dsn && !one_off_process
     CollectionErrors::CollectionError
     CrewErrors::CrewError
     PartyShareErrors::PartyShareError
+    SignalException
+    Interrupt
   ].freeze
 
   Sentry.init do |config|
