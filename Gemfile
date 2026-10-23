@@ -4,7 +4,6 @@ ruby '3.4.4'
 gem 'bootsnap'
 gem 'rack-cors'
 gem 'rails'
-gem 'sprockets-rails'
 
 # A Ruby Web Server Built For Concurrency
 gem 'puma', '~> 8.0'
