@@ -1,0 +1,37 @@
+[
+  {
+    "wiki_name": "Aetherial Shaft 1",
+    "qualifier": "Stackable",
+    "reason": "user decision 2026-10-22, D60 (kept): the game's text adds (Max: 2); Aetherial Shaft (4019) doesn't stack"
+  },
+  {
+    "wiki_name": "Asleep 1",
+    "qualifier": "Local",
+    "reason": "user decision 2026-10-22, D60: the second status of the pair (decision 4 pattern)"
+  },
+  {
+    "wiki_name": "Blinded 1",
+    "qualifier": "Local",
+    "reason": "user decision 2026-10-22, D60: the second status of the pair (decision 4 pattern)"
+  },
+  {
+    "wiki_name": "Closing Dance: Tokiyomi-aratame 1",
+    "qualifier": "Allies",
+    "reason": "user decision 2026-10-22, D60 (kept): boosts Fire allies' multiattack rate; the plain one is the dancer's own can't-attack state"
+  },
+  {
+    "wiki_name": "Dodge All 1",
+    "qualifier": "Times",
+    "reason": "user decision 2026-10-22, D60 (kept): lasts a number of hits"
+  },
+  {
+    "wiki_name": "No Turning Back 1",
+    "qualifier": "Level",
+    "reason": "user decision 2026-10-22, D60 (kept): the game's text adds (Max: Lvl 3); the plain one (1012_2) has no levels"
+  },
+  {
+    "wiki_name": "Petrified 1",
+    "qualifier": "Local",
+    "reason": "user decision 2026-10-22, D60: the second status of the pair (decision 4 pattern)"
+  }
+]

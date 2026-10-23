@@ -270,4 +270,21 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
       expect(Status.pluck(:name_en)).to eq(['Burned'])
     end
   end
+
+  describe 'shown names (D59)' do
+    it 'shows a numbered wiki status without its number and qualifies the one that would clash, for review' do
+      Granblue::Parsers::StatusList.use(<<~LUA)
+        local debuffs = { ['Drowsy'] = { status = '1263' }, ['Drowsy 1'] = { status = '1263_11' }, ['Jade Crest 1'] = { status = '14811' } }
+        return { buffs = {}, debuffs = debuffs, effects = {}, aliases = {} }
+      LUA
+      character('One', 'Inflict {{status|Drowsy}} and {{status|Drowsy 1|t=2T}} on a foe. Gain {{status|Jade Crest 1}}.')
+      counts = described_class.build_all
+
+      # Nothing curated and no variant kind: the display id tells them apart, and the build lists it.
+      expect(Status.order(:wiki_name).pluck(:wiki_name, :name_en, :qualifier))
+        .to eq([['Drowsy', 'Drowsy', nil], ['Drowsy 1', 'Drowsy', '1263_11'], ['Jade Crest 1', 'Jade Crest', nil]])
+      expect(counts[:display][:review]).to eq(['Drowsy 1'])
+      expect(described_class.build_all).to include(created: 0, updated: 0, display: include(renamed: 0))
+    end
+  end
 end

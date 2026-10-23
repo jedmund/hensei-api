@@ -5,7 +5,8 @@ module Api
     class StatusBlueprint < ApiBlueprint
       field(:name) { |status| { en: status.name_en, ja: status.name_jp } }
 
-      fields :family, :level, :category, :icon
+      # qualifier: tells apart two statuses that show the same name ("Turns", "Times"); null for most.
+      fields :qualifier, :family, :level, :category, :icon
     end
   end
 end

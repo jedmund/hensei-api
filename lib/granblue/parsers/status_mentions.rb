@@ -24,6 +24,16 @@ module Granblue
         new(text).to_a
       end
 
+      # A {{status}} template's inner text → [name, the other parts]. The name is the first part
+      # that isn't a key=value parameter: some pages put a parameter first
+      # ({{status|a=10%|Water DEF Lowered}}).
+      def self.split_template(inner)
+        parts = inner.to_s.split('|')
+        index = parts.index { |part| !part.match?(/\A\s*\w+\s*=/) }
+        name = index ? parts.delete_at(index) : ''
+        [name.to_s.strip, parts]
+      end
+
       def initialize(text)
         @text = text.to_s
       end
@@ -40,14 +50,14 @@ module Granblue
       private
 
       def params(inner)
-        inner.split('|').drop(1).each_with_object({}) do |part, params|
+        self.class.split_template(inner).last.each_with_object({}) do |part, params|
           key, value = part.split('=', 2)
           params[key.to_s.strip.downcase] = value.to_s.strip if value
         end
       end
 
       def clean_name(inner)
-        inner.split('|').first.to_s.strip
+        self.class.split_template(inner).first
       end
 
       # The first matching rule (CharacterSkills::StatusVerbRules, D40) for the clause before the

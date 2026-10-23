@@ -27,7 +27,7 @@ module Granblue
       def resolve(name)
         name = name.to_s.squish
         listed = StatusList.resolve(name)
-        return Resolved.new(name: StatusAliases.canonical(listed.base), variant: listed.variant, resolution: listed) if listed
+        return listed_resolution(listed) if listed
 
         match = NUMBERED.match(name)
         if match.nil? || exceptions.include?(Status.normalize_name(match[1]))
@@ -38,6 +38,18 @@ module Granblue
         Resolved.new(name: StatusAliases.canonical(listed ? listed.base : match[1]), variant: match[2].to_i, resolution: listed)
       end
 
+      # A listed name, through the approved aliases. When an alias folds a numbered base entry into
+      # another status (D60: Spirit 1 and Spirit 5 are one Spirit) and the mention names that entry,
+      # its number is the effect's variant.
+      def listed_resolution(listed)
+        canonical = StatusAliases.canonical(listed.base)
+        variant = listed.variant
+        if variant.nil? && listed.entry == listed.base && Status.normalize_name(canonical) != Status.normalize_name(listed.base)
+          variant = NUMBERED.match(listed.base)&.[](2)&.to_i
+        end
+        Resolved.new(name: canonical, variant: variant, resolution: listed)
+      end
+
       # → [status name, variant number or nil]
       def split(name)
         resolved = resolve(name)
@@ -46,6 +58,16 @@ module Granblue
 
       def base(name)
         split(name).first
+      end
+
+      # The name shown for a status (D59): its wiki name without the trailing level number the wiki
+      # gives some base entries ("Jade Crest 1" → Jade Crest). Bases in numbered_exceptions.json keep it.
+      def display(name)
+        name = name.to_s.squish
+        match = NUMBERED.match(name)
+        return name if match.nil? || exceptions.include?(Status.normalize_name(match[1]))
+
+        match[1]
       end
 
       def exceptions

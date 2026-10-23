@@ -5,14 +5,20 @@
 # game colours the same status per skill), and this is the majority over its effects, or gbf.wiki's
 # table when they tie or there are none. `mixed` is true when its effects really split (some buff,
 # some debuff, e.g. Hostility Up: Seox's buff, Clarisse (Light)'s self-inflicted debuff).
+#
+# `wiki_name` is the status's identity, the wiki name the skill build keys it by (`name_key` is it
+# normalized); `name_en` is the name shown, without the wiki's trailing level number ("Jade Crest 1"
+# shows as Jade Crest, D59). Two statuses that show the same name are told apart by `qualifier`
+# ("Asleep" and "Asleep" (Turns)); (name_en, qualifier) is unique. CharacterSkills::StatusDisplayNames
+# sets both.
 class Status < ApplicationRecord
   has_many :skill_effects, dependent: :nullify
 
   enum :category, { buff: 'buff', debuff: 'debuff', field: 'field', special: 'special' }
 
   # Also before_save: a save that skips validation still gets its key.
-  before_validation :assign_name_key
-  before_save :assign_name_key
+  before_validation :assign_wiki_name, :assign_name_key
+  before_save :assign_wiki_name, :assign_name_key
 
   validates :name_en, presence: true
   validates :game_ailment_id, uniqueness: true, allow_nil: true
@@ -38,7 +44,11 @@ class Status < ApplicationRecord
 
   private
 
+  def assign_wiki_name
+    self.wiki_name = name_en if wiki_name.blank?
+  end
+
   def assign_name_key
-    self.name_key = self.class.normalize_name(name_en)
+    self.name_key = self.class.normalize_name(wiki_name.presence || name_en)
   end
 end

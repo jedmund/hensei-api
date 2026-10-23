@@ -59,11 +59,14 @@ done < "$cache/toc.all"
 # character_skills.character_id: let the restore leave it NULL, then backfill it the
 # way the K1 migration does. Only NULLs are touched, so a newer dump passes through.
 psql "$url" -qc "ALTER TABLE character_skills ALTER COLUMN character_id DROP NOT NULL"
-# A dump from before statuses were one per name holds duplicate names and no name_key:
-# restore without name_key's constraints, merge the duplicates the way the repair migration
-# does (granblue:repair_status_catalogue), then put them back.
+# A dump from before statuses were one per name holds duplicate names and no name_key (or,
+# before shown names, no wiki_name): restore without those constraints, merge the duplicates and
+# set the shown names the way the repair migrations do (granblue:repair_status_catalogue), then put
+# them back.
 psql "$url" -qc "DROP INDEX IF EXISTS index_statuses_on_name_key" \
-            -c "ALTER TABLE statuses ALTER COLUMN name_key DROP NOT NULL"
+            -c "DROP INDEX IF EXISTS index_statuses_on_name_en_and_qualifier" \
+            -c "ALTER TABLE statuses ALTER COLUMN name_key DROP NOT NULL" \
+            -c "ALTER TABLE statuses ALTER COLUMN wiki_name DROP NOT NULL"
 pg_restore --data-only --disable-triggers --no-owner --no-privileges --exit-on-error -L "$cache/toc.use" -d "$url" "$cache/catalogue.dump"
 psql "$url" -q -v ON_ERROR_STOP=1 <<'SQL'
 DO $$
@@ -95,7 +98,9 @@ ALTER TABLE character_skills ALTER COLUMN character_id SET NOT NULL;
 SQL
 bin/rails granblue:repair_status_catalogue
 psql "$url" -q -v ON_ERROR_STOP=1 -c "ALTER TABLE statuses ALTER COLUMN name_key SET NOT NULL" \
-            -c "CREATE UNIQUE INDEX index_statuses_on_name_key ON statuses (name_key)"
+            -c "CREATE UNIQUE INDEX index_statuses_on_name_key ON statuses (name_key)" \
+            -c "ALTER TABLE statuses ALTER COLUMN wiki_name SET NOT NULL" \
+            -c "CREATE UNIQUE INDEX index_statuses_on_name_en_and_qualifier ON statuses (name_en, qualifier) NULLS NOT DISTINCT"
 psql "$url" -qc "INSERT INTO ar_internal_metadata (key, value, created_at, updated_at)
                  VALUES ('catalogue_tag', '$tag', now(), now())
                  ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()"

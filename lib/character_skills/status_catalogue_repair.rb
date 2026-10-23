@@ -12,6 +12,11 @@ module CharacterSkills
   # status_variant, then move to the kept row; the others are deleted and the kept row takes
   # the plain name. Then it recomputes family/level from the name and fills name_key. Plain
   # SQL and Ruby, so it doesn't depend on the model's callbacks or on name_key's index.
+  #
+  # A status's name here is its identity: statuses.wiki_name where the column exists (D59; name_en
+  # is then only what's shown, StatusDisplayNames), else name_en. Rows named like a template
+  # parameter ("a=10%", from a misread {{status}}) are deleted, their effects left without a status
+  # until the next build links them. Last, StatusDisplayNames sets the shown names and qualifiers.
   class StatusCatalogueRepair
     TIE_ORDER = %w[field buff debuff special].freeze
 
@@ -23,11 +28,17 @@ module CharacterSkills
       @db = connection
     end
 
-    # → { merged_names:, deleted:, effects_repointed:, variants_set:, renamed:, families_fixed:, keys_set: }
+    JUNK_NAME = /\A\s*\w+\s*=/
+
+    # → { merged_names:, deleted:, effects_repointed:, variants_set:, renamed:, junk_deleted:, families_fixed:,
+    #     keys_set:, display: StatusDisplayNames's result }
     def call
+      fill_wiki_names
       counts = merge_duplicates
+      counts[:junk_deleted] = delete_junk
       counts[:families_fixed] = recompute_families
       counts[:keys_set] = fill_name_keys
+      counts[:display] = StatusDisplayNames.call(db)
       counts
     end
 
@@ -35,12 +46,37 @@ module CharacterSkills
 
     attr_reader :db
 
+    # Each row's 'name' is its identity (see above).
     def rows
-      db.select_all('SELECT id, name_en, category, family, level, name_key FROM statuses ORDER BY created_at, id').to_a
+      identity = wiki_names? ? "COALESCE(NULLIF(wiki_name, ''), name_en)" : 'name_en'
+      db.select_all(<<~SQL.squish).to_a
+        SELECT id, #{identity} AS name, category, family, level, name_key FROM statuses ORDER BY created_at, id
+      SQL
+    end
+
+    # wiki_name and qualifier arrive together (D59): StatusDisplayNames needs both to replace a placeholder.
+    def wiki_names?
+      if @wiki_names.nil?
+        @wiki_names = db.column_exists?(:statuses, :wiki_name) && db.column_exists?(:statuses, :qualifier)
+      end
+      @wiki_names
+    end
+
+    # Rows from a dump older than wiki_name are named by name_en.
+    def fill_wiki_names
+      db.exec_update("UPDATE statuses SET wiki_name = name_en WHERE wiki_name IS NULL OR wiki_name = ''") if wiki_names?
+    end
+
+    def delete_junk
+      ids = rows.select { |row| row['name'].match?(JUNK_NAME) }.map { |row| db.quote(row['id']) }
+      return 0 if ids.empty?
+
+      db.exec_update("UPDATE skill_effects SET status_id = NULL, updated_at = now() WHERE status_id IN (#{ids.join(', ')})")
+      db.exec_delete("DELETE FROM statuses WHERE id IN (#{ids.join(', ')})")
     end
 
     def merge_duplicates
-      groups = rows.group_by { |row| Status.normalize_name(Granblue::Parsers::StatusName.base(row['name_en'])) }.values
+      groups = rows.group_by { |row| Status.normalize_name(Granblue::Parsers::StatusName.base(row['name'])) }.values
                    .select { |group| group.size > 1 || numbered?(group.first) || aliased?(group.first) }
       counts = { merged_names: groups.count { |group| group.size > 1 }, deleted: 0, effects_repointed: 0,
                  variants_set: 0, renamed: 0 }
@@ -56,17 +92,17 @@ module CharacterSkills
     end
 
     def aliased?(row)
-      Granblue::Parsers::StatusName.base(row['name_en']) != row['name_en'].to_s.squish && !numbered?(row)
+      Granblue::Parsers::StatusName.base(row['name']) != row['name'].to_s.squish && !numbered?(row)
     end
 
     def numbered?(row)
-      Granblue::Parsers::StatusName.split(row['name_en']).last.present?
+      Granblue::Parsers::StatusName.split(row['name']).last.present?
     end
 
     # Effects on "DEF Down 4" keep the 4 as their variant (unless the build already set one),
     # with its kind where the effect's own template says (t= or n=); the build fills the rest.
     def variants_to_effects(row)
-      variant = Granblue::Parsers::StatusName.split(row['name_en']).last
+      variant = Granblue::Parsers::StatusName.split(row['name']).last
       return 0 if variant.nil?
 
       effects = db.select_all(<<~SQL.squish).to_a
@@ -97,10 +133,13 @@ module CharacterSkills
     # mapped through the approved aliases (DEF Lowered → DEF Down).
     def rename(keep, group)
       plain = group.find { |row| !numbered?(row) }
-      name = Granblue::Parsers::StatusName.base((plain || keep)['name_en'])
-      return 0 if name == keep['name_en']
+      name = Granblue::Parsers::StatusName.base((plain || keep)['name'])
+      return 0 if name == keep['name']
 
-      update(keep['id'], name_en: name, name_key: Status.normalize_name(name), wiki_slug: name.tr(' ', '_'))
+      # With wiki_name, the shown name is StatusDisplayNames's to set: until then the row holds its id,
+      # so the rename can't meet another status's shown name in the unique index.
+      names = wiki_names? ? { name_en: keep['id'], wiki_name: name } : { name_en: name }
+      update(keep['id'], **names, name_key: Status.normalize_name(name), wiki_slug: name.tr(' ', '_'))
     end
 
     def canonical(group)
@@ -116,7 +155,7 @@ module CharacterSkills
 
     def recompute_families
       rows.count do |row|
-        family, level = Status.split_family_and_level(row['name_en'])
+        family, level = Status.split_family_and_level(row['name'])
         next false if row['family'] == family && row['level'].to_s == level.to_s
 
         update(row['id'], family: family, level: level).positive?
@@ -125,7 +164,7 @@ module CharacterSkills
 
     def fill_name_keys
       rows.count do |row|
-        key = Status.normalize_name(row['name_en'])
+        key = Status.normalize_name(row['name'])
         next false if row['name_key'] == key
 
         update(row['id'], name_key: key).positive?

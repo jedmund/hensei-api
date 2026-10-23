@@ -97,6 +97,7 @@ module CharacterSkills
         @mode == "write" ? enqueue_icon_downloads : Printer.new(@summary, io: @io, limit: @diff_limit).print
         @io.puts summary_line
         print_counted_instants
+        print_display_review
         @summary
       end
 
@@ -265,6 +266,14 @@ module CharacterSkills
 
         @io.puts "#{instants.size} instant status mentions counted as buffs or debuffs (D56), for review:"
         instants.each { |i| @io.puts "  #{i[:character]}: #{i[:status]} (#{i[:reason]}) #{i[:raw]}" }
+      end
+
+      # Statuses that show the same name and could only be told apart by their display id (D59).
+      def print_display_review
+        review = @summary.statuses.is_a?(Hash) ? Array(@summary.statuses.dig(:display, :review)) : []
+        return if review.empty?
+
+        @io.puts "#{review.size} statuses share a shown name and are qualified by their display id, for review: #{review.join(', ')}"
       end
 
       # Statuses the catalogue couldn't save (logged by StatusCatalogBuilder; the build goes on).

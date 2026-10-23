@@ -57,6 +57,11 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
     end
   end
 
+  it 'reads the status name when a parameter comes before it' do
+    effect = parser.parse('Inflict {{status|a=30%|Jammed|t=3T}} on a foe.').first
+    expect(effect).to include(status_id: 'jammed-id', amount: '30%', duration_value: 3)
+  end
+
   it 'parses damage with hit count and cap' do
     damage = parser.parse('5-hit, {{tt|100%|Massive}} damage to a foe (Damage cap: ~110,000).')
                    .find { |e| e[:effect_type] == 'deal_damage' }
@@ -153,13 +158,20 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'labels (D57)' do
-    let(:jammed_listed) { instance_double('Status', id: 'jm', category: 'debuff', game_status_id: '1037', variant_kind: nil, name_en: 'Jammed') }
-    let(:def_down) do
-      instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered')
+    let(:jammed_listed) do
+      instance_double('Status', id: 'jm', category: 'debuff', game_status_id: '1037', variant_kind: nil, name_en: 'Jammed', wiki_name: 'Jammed')
     end
-    let(:seal) { instance_double('Status', id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal 1') }
+    let(:def_down) do
+      instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered',
+                                wiki_name: 'DEF Lowered')
+    end
+    let(:seal) do
+      instance_double('Status', id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal',
+                                wiki_name: 'Aetherial Seal 1')
+    end
     let(:shielded) do
-      instance_double('Status', id: 'sh', category: 'buff', game_status_id: '1022', variant_kind: nil, name_en: 'Shielded')
+      instance_double('Status', id: 'sh', category: 'buff', game_status_id: '1022', variant_kind: nil, name_en: 'Shielded',
+                                wiki_name: 'Shielded')
     end
     let(:lookup) do
       { by_name: { 'jammed' => jammed_listed, 'def lowered' => def_down, 'aetherial seal 1' => seal, 'shielded' => shielded }, by_id: {} }
