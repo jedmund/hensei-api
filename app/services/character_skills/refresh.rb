@@ -21,6 +21,9 @@ module CharacterSkills
     class BuildRefused < Error; end
     # The build raised; nothing was written.
     class BuildFailed < Error; end
+    # Another build of this character (or the stale build) held the build lock past lock_wait:
+    # nothing was built or written.
+    class BuildBusy < Error; end
 
     COUNTS = %i[slots_created slots_deleted versions_created versions_updated versions_deleted
                 effects_created effects_updated effects_deleted links_created links_deleted].freeze
@@ -28,6 +31,9 @@ module CharacterSkills
     HIDDEN_FIELDS = %w[duplicates slot_game_action_id].freeze
     EXPIRED_MESSAGE = 'This preview has expired. Preview again to refresh.'
     NO_SOURCE_MESSAGE = 'No stored wikitext — fetch the wiki page first'
+    BUSY_MESSAGE = 'Another skill build is running for this character. Try again in a minute.'
+    # How long a request waits for a running build (BuildLock) before answering BuildBusy.
+    LOCK_WAIT = 5.seconds
 
     # What a refresh builds from. wiki_raw / wiki_raw_jp are the text the build reads
     # (fetched, or the stored text when that page wasn't fetched); inputs_digest covers the
@@ -67,9 +73,10 @@ module CharacterSkills
 
     def self.preview_key(token) = "preview:#{token}"
 
-    def initialize(character, pacer: WikiPacer.instance)
+    def initialize(character, pacer: WikiPacer.instance, lock_wait: LOCK_WAIT)
       @character = character
       @pacer = pacer
+      @lock_wait = lock_wait
     end
 
     # Fetches the asked pages, ≥2s apart per site (WikiPacer). Stores nothing.
@@ -101,7 +108,7 @@ module CharacterSkills
       record = Character.find(@character.id)
       record.wiki_raw = sources.wiki_raw
       record.wiki_raw_jp = sources.wiki_raw_jp
-      result = run_build(record, mode: 'shadow')
+      result = locked { run_build(record, mode: 'shadow') }
       to_c6(sources, result, written: false)
     end
 
@@ -114,16 +121,27 @@ module CharacterSkills
       end
 
       changed = text_changes(sources)
-      result = Character.without_skill_build do
-        ActiveRecord::Base.transaction do
-          @character.update!(source_attributes(sources)) if sources.fetched_en || sources.fetched_jp
-          run_build(@character, mode: 'write')
+      result = locked do
+        Character.without_skill_build do
+          ActiveRecord::Base.transaction do
+            @character.update!(source_attributes(sources)) if sources.fetched_en || sources.fetched_jp
+            run_build(@character, mode: 'write')
+          end
         end
       end
       to_c6(sources, result, written: true, changed: changed)
     end
 
     private
+
+    # Runs the block under this character's build lock (BuildLock), waiting up to lock_wait for a
+    # running build. → the block's value; raises BuildBusy when the wait ran out.
+    def locked
+      result = nil
+      raise BuildBusy, BUSY_MESSAGE unless BuildLock.character(@character.id, wait: @lock_wait) { result = yield }
+
+      result
+    end
 
     def run_build(record, mode:)
       summary = Build::Runner.new(mode: mode, characters: [record], all: true, io: StringIO.new).call

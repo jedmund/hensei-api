@@ -10,6 +10,9 @@ module CharacterSkills
   class RefreshJob < ApplicationJob
     queue_as :default
 
+    # A batch runs in the background, so it waits longer than a request for a running build.
+    LOCK_WAIT = 1.minute
+
     # Raised by HTTParty when gbf.wiki or gbf-wiki.com can't be reached at all.
     NETWORK_ERRORS = [SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EHOSTUNREACH,
                       OpenSSL::SSL::SSLError, HTTParty::Error].freeze
@@ -37,7 +40,7 @@ module CharacterSkills
         end
 
         batch.update_item!(character.id, status: 'fetching')
-        refresh = Refresh.new(character)
+        refresh = Refresh.new(character, lock_wait: LOCK_WAIT)
         sources = refresh.fetch(refetch: true, refetch_jp: batch.refetch_jp)
         result = refresh.preview(sources)
         batch.store_sources(character.id, sources)
@@ -68,7 +71,7 @@ module CharacterSkills
       sources = batch.sources(character.id)
       raise Refresh::PreviewExpired, Refresh::EXPIRED_MESSAGE unless sources
 
-      result = Refresh.new(character).apply(sources)
+      result = Refresh.new(character, lock_wait: LOCK_WAIT).apply(sources)
       batch.update_item!(character.id, status: 'applied', refresh: result)
     rescue StandardError => e
       batch.update_item!(item[:character_id], status: 'failed', **failure(e))

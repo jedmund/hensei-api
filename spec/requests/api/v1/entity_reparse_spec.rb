@@ -123,6 +123,8 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
     end
 
     context 'with stored wikitext' do
+      include BuildLockHelpers
+
       let(:fixtures) { Rails.root.join('spec/fixtures/character_skills') }
       let(:character) do
         create(:character, granblue_id: '3040252000', name_en: 'Vikala',
@@ -145,6 +147,16 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
         post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
         expect(response).to have_http_status(:ok)
         expect(version_ids).to eq(first)
+      end
+
+      it 'raises Busy from EntityReparser while another build of the character runs' do
+        stub_const('Granblue::EntityReparser::LOCK_WAIT', 0.2)
+        held_elsewhere(:character, character.id) do
+          expect { Granblue::EntityReparser.new(character).reparse }
+            .to raise_error(CharacterSkills::BuildLock::Busy, /Try again in a minute/)
+        end
+        expect(CharacterSkill.where(character_id: character.id)).to be_empty
+        expect(Granblue::EntityReparser.new(character).reparse[:built]).to eq(1)
       end
 
       it 'refuses a reparse whose build makes no skills, and keeps the existing ones' do

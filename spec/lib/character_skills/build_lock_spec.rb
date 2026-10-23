@@ -38,4 +38,32 @@ RSpec.describe CharacterSkills::BuildLock do
     expect { described_class.all { raise 'boom' } }.to raise_error('boom')
     expect(build_locks_free?).to be(true)
   end
+
+  describe 'with wait:' do
+    it 'waits for a build that finishes in time, then runs' do
+      ran = false
+      held_elsewhere(:character, 'a', release_after: 0.3) do
+        expect(described_class.character('a', wait: 5) { ran = true }).to be(true)
+      end
+      expect(ran).to be(true)
+    end
+
+    it 'gives up after the wait and runs nothing' do
+      ran = false
+      held_elsewhere(:all) do
+        started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        expect(described_class.character('a', wait: 0.3) { ran = true }).to be(false)
+        expect(Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).to be_between(0.25, 2)
+      end
+      expect(ran).to be(false)
+      expect(build_locks_free?).to be(true)
+    end
+
+    it 'puts lock_timeout back after waiting' do
+      before = ActiveRecord::Base.connection.select_value("SELECT current_setting('lock_timeout')")
+      described_class.all(wait: 1) { nil }
+      held_elsewhere(:all) { described_class.all(wait: 0.2) { nil } }
+      expect(ActiveRecord::Base.connection.select_value("SELECT current_setting('lock_timeout')")).to eq(before)
+    end
+  end
 end

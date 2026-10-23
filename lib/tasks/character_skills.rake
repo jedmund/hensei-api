@@ -62,19 +62,28 @@ namespace :granblue do
        "mode=shadow (default unless CHARACTER_SKILL_BUILD=write) builds in a rolled-back transaction and prints " \
        "the differences; mode=write keeps the result. Builds only characters whose fingerprint changed unless " \
        "all=true; ids=GRANBLUE_ID,... narrows the run (both styles); icons=false skips queueing icon downloads " \
-       "(e.g. on a local copy). Exits nonzero if any character failed."
+       "(e.g. on a local copy). A write waits for a running build (up to 5 minutes, then aborts). " \
+       "Exits nonzero if any character failed."
   task build_character_skills: :environment do
     ActiveRecord::Base.logger = nil
     mode = ENV['mode'].presence || (CharacterSkills.build_mode == 'write' ? 'write' : 'shadow')
     abort "mode must be shadow or write (got #{mode.inspect})" unless CharacterSkills::Build::Runner::MODES.include?(mode)
 
-    summary = CharacterSkills::Build::Runner.new(
+    runner = CharacterSkills::Build::Runner.new(
       mode: mode,
       ids: ENV['ids'].to_s.split(',').map(&:strip).compact_blank.presence,
       all: ENV['all'] == 'true',
       diff_limit: ENV['limit'].presence&.to_i,
       enqueue_icons: ENV['icons'] != 'false'
-    ).call
+    )
+    summary = nil
+    if mode == 'write'
+      wait = CharacterSkills::Build::Runner::DEPLOY_LOCK_WAIT
+      locked = CharacterSkills::BuildLock.all(wait: wait) { summary = runner.call }
+      abort "Another character skill build held the lock for #{format('%gs', wait.to_f)}; nothing was built" unless locked
+    else
+      summary = runner.call
+    end
     exit(1) if summary.failed.positive?
   end
 
