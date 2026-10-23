@@ -137,11 +137,56 @@ RSpec.describe Granblue::Parsers::Wiki do
       end
     end
 
-    context 'when network error occurs' do
+    context 'when the connection fails' do
       it 'raises the underlying error' do
-        allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
-        expect { wiki.fetch('Timeout') }.to raise_error(Net::ReadTimeout)
+        allow(HTTParty).to receive(:get).and_raise(Errno::ECONNREFUSED)
+        expect { wiki.fetch('Refused') }.to raise_error(Errno::ECONNREFUSED)
       end
+    end
+
+    context 'when the wiki does not answer in time' do
+      it 'sets open and read timeouts on the request' do
+        response = double('Response', code: 404)
+        expect(HTTParty).to receive(:get)
+          .with(anything, hash_including(open_timeout: Granblue::WikiHttp::OPEN_TIMEOUT,
+                                         read_timeout: Granblue::WikiHttp::READ_TIMEOUT))
+          .and_return(response)
+        expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError)
+      end
+
+      it 'raises a WikiError with a 5xx code, so callers and the fetcher retry handle it' do
+        stub_request(:get, %r{\Ahttps://gbf\.wiki/api\.php}).to_timeout
+        expect { wiki.fetch('Slow') }.to raise_error(Granblue::WikiError) { |e|
+          expect(e.code).to eq(504)
+          expect(e.page).to eq('Slow')
+        }
+      end
+    end
+  end
+
+  describe 'timeouts on the other requests' do
+    let(:wiki) { described_class.new(store: nil) }
+
+    before do
+      allow(Rails.application.credentials).to receive(:wiki_user_agent).and_return('TestBot/1.0')
+    end
+
+    it 'raises a 504 WikiError when expandtemplates times out' do
+      stub_request(:post, 'https://gbf.wiki/api.php').to_timeout
+      expect { wiki.expand('{{Weapon}}', page: 'Sword') }
+        .to raise_error(Granblue::WikiError) { |e| expect(e.code).to eq(504) }
+    end
+
+    it 'raises a 504 WikiError when a raw page times out' do
+      stub_request(:get, %r{\Ahttps://gbf\.wiki/Template:Foo}).to_timeout
+      expect { wiki.fetch_raw('Template:Foo') }
+        .to raise_error(Granblue::WikiError) { |e| expect(e.code).to eq(504) }
+    end
+
+    it 'raises a 504 WikiError when the last-edited query times out' do
+      stub_request(:get, %r{\Ahttps://gbf\.wiki/api\.php}).to_timeout
+      expect { wiki.last_edited(['Sword']) }
+        .to raise_error(Granblue::WikiError) { |e| expect(e.code).to eq(504) }
     end
   end
 end

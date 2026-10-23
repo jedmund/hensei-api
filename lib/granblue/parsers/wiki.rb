@@ -195,23 +195,30 @@ module Granblue
         ap "--> Fetching #{page}" if @debug
 
         # The title goes in as a query parameter, encoded by HTTParty.
-        response = HTTParty.get(base_uri, query: params(page),
-                                          headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
+        response = WikiHttp.with_timeouts(page) do
+          HTTParty.get(base_uri, query: params(page),
+                                 headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
+                                 **WikiHttp::OPTIONS)
+        end
 
         handle_response(response, page)
       end
 
       # Expand the templates in a chunk of wikitext (action=expandtemplates) — resolves the
       # {{Weapon/Common/<Series>}} wrapper so series-template skills (Bahamut/Xeno/Militis/…)
-      # render their skill rows. Returns the expanded wikitext/HTML, or nil on error.
+      # render their skill rows. Returns the expanded wikitext/HTML, or nil on an error response
+      # (a timeout raises WikiError, like the other requests here).
       # page: the weapon page the text came from, which keys the stored expansion.
       def expand(text, page: nil)
         return stored_expansion(text, page) if store
 
-        response = HTTParty.post(base_uri,
-                                 body: { action: 'expandtemplates', format: 'json',
-                                         prop: 'wikitext', text: text },
-                                 headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
+        response = WikiHttp.with_timeouts(page) do
+          HTTParty.post(base_uri,
+                        body: { action: 'expandtemplates', format: 'json',
+                                prop: 'wikitext', text: text },
+                        headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
+                        **WikiHttp::OPTIONS)
+        end
         return nil unless response.code == 200
 
         JSON.parse(response.body).dig('expandtemplates', 'wikitext')
@@ -224,9 +231,11 @@ module Granblue
         return store.fetch(kind, title).body if store
 
         path = title.tr(' ', '_').split('/').map { |segment| ERB::Util.url_encode(segment) }.join('/')
-        response = HTTParty.get("https://gbf.wiki/#{path}?action=raw",
-                                headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
-                                format: :plain)
+        response = WikiHttp.with_timeouts(title) do
+          HTTParty.get("https://gbf.wiki/#{path}?action=raw",
+                       headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
+                       format: :plain, **WikiHttp::OPTIONS)
+        end
         response.code == 200 ? response.body.to_s.dup.force_encoding('UTF-8').scrub : nil
       end
 
@@ -238,10 +247,13 @@ module Granblue
 
         # Keys stored before titles were normalized can be percent-encoded ("Devil%27s Finger").
         plain = titles.index_with { |t| Granblue::WikiTitle.normalize(t) }
-        response = HTTParty.get(base_uri,
-                                query: { action: 'query', format: 'json', formatversion: 2, prop: 'revisions',
-                                         rvprop: 'timestamp', titles: plain.values.uniq.join('|') },
-                                headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent })
+        response = WikiHttp.with_timeouts(titles.first) do
+          HTTParty.get(base_uri,
+                       query: { action: 'query', format: 'json', formatversion: 2, prop: 'revisions',
+                                rvprop: 'timestamp', titles: plain.values.uniq.join('|') },
+                       headers: { 'User-Agent' => Rails.application.credentials.wiki_user_agent },
+                       **WikiHttp::OPTIONS)
+        end
         raise WikiError.new(code: response.code, message: 'Unexpected response', page: titles.first) unless response.code == 200
 
         query = JSON.parse(response.body).fetch('query', {})
