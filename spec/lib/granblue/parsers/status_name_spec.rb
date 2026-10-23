@@ -74,4 +74,20 @@ RSpec.describe Granblue::Parsers::StatusName do
   it 'gives the base of a display id' do
     expect(%w[1020_14 1019_0_40 61433 1020].map { |id| described_class.base_game_id(id) }).to eq(%w[1020 1019 6143 1020])
   end
+
+  it "shows a name without the wiki's trailing level number, unless it's an exception" do
+    allow(described_class).to receive(:exceptions).and_return(Set['other self'])
+    expect(['Jade Crest 1', 'Spirit (Anne) 1', 'Output 10%', 'Veil', 'Other Self 1'].map { |name| described_class.display(name) })
+      .to eq(['Jade Crest', 'Spirit (Anne)', 'Output 10%', 'Veil', 'Other Self 1'])
+  end
+
+  it 'keeps the number as the variant when an alias folds a numbered entry into another status (D60)' do
+    Granblue::Parsers::StatusList.use(<<~LUA)
+      local buffs = { ['Spirit 1'] = { status = '16401' }, ['Spirit 5'] = { status = '16405' }, ['Spirit'] = { link = 'Spirit 5' } }
+      return { buffs = buffs, debuffs = {}, effects = {}, aliases = {} }
+    LUA
+    allow(Granblue::Parsers::StatusAliases).to receive(:map).and_return('spirit 1' => 'Spirit', 'spirit 5' => 'Spirit')
+    expect(['Spirit 1', 'Spirit 5', 'Spirit'].map { |name| described_class.resolve(name).then { |r| [r.name, r.variant, r.game_status_id] } })
+      .to eq([['Spirit', 1, '16401'], ['Spirit', 5, '16405'], ['Spirit', nil, '16405']])
+  end
 end

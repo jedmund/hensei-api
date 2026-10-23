@@ -7,6 +7,12 @@ RSpec.describe Granblue::Parsers::StatusMentions do
     described_class.in(text).map { |mention| [mention.name, mention.vote] }
   end
 
+  it 'takes the name from the first part that is not a parameter' do
+    mention = described_class.in('Inflict {{status|a=10%|Water DEF Lowered|t=3T}} on a foe.').sole
+    expect(mention.name).to eq('Water DEF Lowered')
+    expect(mention.params).to eq('a' => '10%', 't' => '3T')
+  end
+
   it 'reads gained statuses as buffs, on allies or on foes' do
     expect(votes('All allies gain {{status|DEF Up|t=3T}} and {{status|Veil}}.')).to eq([['DEF Up', 'buff'], ['Veil', 'buff']])
     expect(votes('All foes gain {{status|ATK Up 2|t=2T}}.')).to eq([['ATK Up 2', 'buff']])

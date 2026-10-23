@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :status do
     sequence(:game_ailment_id) { |n| "ailment-#{n}" }
-    sequence(:name_en) { |n| "Status #{n}" }
+    sequence(:name_en) { |n| "Status (#{n})" }
     name_jp { nil }
     family { nil }
     level { nil }

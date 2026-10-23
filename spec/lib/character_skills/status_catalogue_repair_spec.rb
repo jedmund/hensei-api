@@ -10,6 +10,7 @@ RSpec.describe CharacterSkills::StatusCatalogueRepair do
     allow(Granblue::Parsers::StatusName).to receive(:exceptions).and_return(Set['other self'])
     connection = ActiveRecord::Base.connection
     connection.remove_index :statuses, :name_key
+    connection.remove_index :statuses, %i[name_en qualifier]
     connection.change_column_null :statuses, :name_key, true
   end
 
@@ -101,7 +102,54 @@ RSpec.describe CharacterSkills::StatusCatalogueRepair do
   it 'changes nothing on a repaired catalogue' do
     create(:status, name_en: 'Veil')
     expect(described_class.call).to eq(merged_names: 0, deleted: 0, effects_repointed: 0, variants_set: 0, renamed: 0,
-                                       families_fixed: 0, keys_set: 0)
+                                       junk_deleted: 0, families_fixed: 0, keys_set: 0,
+                                       display: { renamed: 0, qualified: [], review: [] })
+  end
+
+  describe 'shown names (D59)' do
+    before do
+      Granblue::Parsers::StatusList.use(<<~LUA)
+        local buffs = { ['Jade Crest 1'] = { status = '14811' }, ['Mana 1'] = { status = '14871' } }
+        local debuffs = { ['Drowsy'] = { status = '1263' }, ['Drowsy 1'] = { status = '1263_11' } }
+        return { buffs = buffs, debuffs = debuffs, effects = {}, aliases = {} }
+      LUA
+    end
+
+    it 'drops the trailing level number from the shown name, keeping the wiki name as the key' do
+      crest = status('Jade Crest 1', 'buff', 1.day.ago)
+      counts = described_class.call
+      expect(crest.reload.attributes.slice('name_en', 'wiki_name', 'name_key', 'family', 'level', 'qualifier'))
+        .to eq('name_en' => 'Jade Crest', 'wiki_name' => 'Jade Crest 1', 'name_key' => 'jade crest 1',
+               'family' => 'Jade Crest', 'level' => 1, 'qualifier' => nil)
+      expect(counts[:display]).to include(renamed: 1)
+    end
+
+    it 'tells apart two statuses that would show the same name with a qualifier, and keeps both' do
+      plain = status('Drowsy', 'debuff', 2.days.ago)
+      timed = status('Drowsy 1', 'debuff', 1.day.ago).tap { |s| s.update_columns(variant_kind: 'turns') }
+      effects = [plain, timed].map { |s| create(:skill_effect, status: s) }
+
+      2.times { described_class.call }
+
+      expect(Status.order(:created_at).pluck(:id, :name_en, :qualifier)).to eq([[plain.id, 'Drowsy', nil], [timed.id, 'Drowsy', 'Turns']])
+      expect(effects.map { |e| e.reload.status_id }).to eq([plain.id, timed.id])
+      expect(described_class.call[:display]).to include(renamed: 0)
+    end
+
+    it "qualifies a status the wiki list doesn't have before a listed one" do
+      unused = status('Mana', 'buff', 2.days.ago)
+      used = status('Mana 1', 'buff', 1.day.ago)
+      described_class.call
+      expect([unused, used].map { |s| s.reload.qualifier }).to eq(['Unlisted', nil])
+    end
+
+    it 'deletes a status named like a template parameter, unlinking its effects' do
+      junk = status('a=10%', 'debuff', 1.day.ago)
+      effect = create(:skill_effect, status: junk)
+      expect(described_class.call).to include(junk_deleted: 1)
+      expect(Status.exists?(junk.id)).to be(false)
+      expect(effect.reload.status_id).to be_nil
+    end
   end
 
   it "is irreversible: the migration's down raises" do

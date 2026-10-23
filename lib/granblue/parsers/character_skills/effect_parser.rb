@@ -69,8 +69,8 @@ module Granblue
           scan_with_offsets(description, CharacterWikiData::STATUS_TEMPLATE).each_with_index do |(inner, offset), index|
             ordinal += 1
             raw = "{{status|#{inner}}}"
-            parts = inner.split('|')
-            full_name = FieldParser.clean_status_name(parts.shift)
+            name_part, parts = StatusMentions.split_template(inner)
+            full_name = FieldParser.clean_status_name(name_part)
             resolved = StatusName.resolve(full_name)
             name = resolved.name
             variant = resolved.variant
@@ -198,8 +198,10 @@ module Granblue
           return if status.nil? || resolved.resolution.nil? || resolved.variant
 
           own = resolved.resolution.entry.to_s
-          names = [status.name_en.to_s, status.name_en.to_s.sub(/ \d+\z/, '')].map { |name| Status.normalize_name(name) }
-          own unless names.include?(Status.normalize_name(own)) || SpellingLabels.spelling?(own, status.name_en)
+          names = [status.wiki_name, status.name_en].map { |name| Status.normalize_name(StatusName.display(name)) }
+          return if names.include?(Status.normalize_name(StatusName.display(own)))
+
+          own unless [status.wiki_name, status.name_en].any? { |name| SpellingLabels.spelling?(own, name) }
         end
 
         def curated_category(name)

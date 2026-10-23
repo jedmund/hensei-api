@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1284,9 +1284,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_130000) do
     t.string "variant_kind"
     t.text "description"
     t.boolean "mixed", default: false, null: false
+    t.string "wiki_name", null: false
+    t.string "qualifier"
     t.index ["family"], name: "index_statuses_on_family"
     t.index ["game_ailment_id"], name: "index_statuses_on_game_ailment_id", unique: true, where: "(game_ailment_id IS NOT NULL)"
     t.index ["game_status_id"], name: "index_statuses_on_game_status_id"
+    t.index ["name_en", "qualifier"], name: "index_statuses_on_name_en_and_qualifier", unique: true, nulls_not_distinct: true
     t.index ["name_en"], name: "index_statuses_on_name_en"
     t.index ["name_key"], name: "index_statuses_on_name_key", unique: true
   end

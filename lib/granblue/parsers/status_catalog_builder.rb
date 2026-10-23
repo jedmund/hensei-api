@@ -60,7 +60,16 @@ module Granblue
             puts "[STATUS_CATALOG] #{character.granblue_id}: #{e.message}" if debug
           end
 
-          Persister.new(tallies, skills, overwrite: overwrite, debug: debug).call
+          Persister.new(tallies, skills, overwrite: overwrite, debug: debug).call.merge(display: display_names(debug))
+        end
+
+        # The shown names and qualifiers (D59), after any new statuses are in.
+        def display_names(debug)
+          ::CharacterSkills::StatusDisplayNames.call
+        rescue StandardError => e
+          Rails.logger.error "[STATUS_CATALOG] display names failed: #{e.class}: #{e.message}"
+          puts "[STATUS_CATALOG] display names failed: #{e.class}: #{e.message}" if debug
+          nil
         end
 
         # In a savepoint: a failure rolls the repair back whole and is logged, so it can neither
@@ -106,7 +115,7 @@ module Granblue
           existing = existing_statuses
 
           @tallies.sort.each do |key, tally|
-            status = existing[key] || Status.new(name_en: tally.name_en)
+            status = existing[key] || Status.new(wiki_name: tally.name_en, name_en: tally.name_en)
             was_new = status.new_record?
             assign(status, key, tally, was_new || @overwrite)
             next unless status.changed?
@@ -138,10 +147,10 @@ module Granblue
         def refresh_unmentioned(mentioned_keys, counts)
           Status.where.not(name_key: mentioned_keys).find_each do |status|
             key = status.name_key
-            listed = StatusList.resolve(status.name_en)
+            listed = StatusList.resolve(status.wiki_name)
             next if listed.nil? && @curated[key].nil?
 
-            tally = Tally.new.tap { |t| t.add(name_en: status.name_en, listed: listed) }
+            tally = Tally.new.tap { |t| t.add(name_en: status.wiki_name, listed: listed) }
             assign(status, key, tally, true)
             save(status, false, counts) if status.changed?
           end
@@ -158,7 +167,7 @@ module Granblue
 
         def assign(status, key, tally, overwrite)
           game_status_id = display_id(key, tally)
-          family, level = Status.split_family_and_level(status.name_en)
+          family, level = Status.split_family_and_level(status.wiki_name)
           status.family = family
           status.level = level
           fill(status, :wiki_slug, wiki_slug(status, tally), overwrite)
@@ -175,7 +184,7 @@ module Granblue
         end
 
         def wiki_slug(status, tally)
-          (tally.listed&.page.presence || status.name_en).tr(' ', '_')
+          (tally.listed&.page.presence || status.wiki_name).tr(' ', '_')
         end
 
         # Curated, else the StatusList base entry's id, else the in-skill link (names the list lacks).
