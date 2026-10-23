@@ -66,6 +66,49 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
       }.to_json, headers: { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:unauthorized)
     end
+
+    it 'does not attach an artifact to another user\'s grid character' do
+      stranger = create(:user)
+      stranger_party = create(:party, user: stranger)
+      stranger_character = create(:grid_character, party: stranger_party)
+      stranger_artifact = create(:grid_artifact, grid_character: stranger_character, artifact: artifact)
+
+      expect {
+        post '/api/v1/grid_artifacts', params: {
+          party_id: party.id,
+          grid_artifact: {
+            grid_character_id: stranger_character.id,
+            artifact_id: artifact.id,
+            element: 'light',
+            level: 1
+          }
+        }.to_json, headers: headers
+      }.not_to change(GridArtifact, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect { stranger_artifact.reload }.not_to raise_error
+      expect(stranger_character.reload.grid_artifact).to eq(stranger_artifact)
+    end
+
+    it 'rejects linking another user\'s private collection artifact on create' do
+      private_owner = create(:user, collection_privacy: 'private_collection')
+      foreign_collection_artifact = create(:collection_artifact, user: private_owner)
+      existing = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
+
+      post '/api/v1/grid_artifacts', params: {
+        party_id: party.id,
+        grid_artifact: {
+          grid_character_id: grid_character.id,
+          artifact_id: artifact.id,
+          collection_artifact_id: foreign_collection_artifact.id,
+          element: 'light',
+          level: 1
+        }
+      }.to_json, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect { existing.reload }.not_to raise_error
+    end
   end
 
   describe 'PUT /api/v1/grid_artifacts/:id' do
@@ -87,6 +130,18 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
           params: { grid_artifact: { level: 5 } }.to_json,
           headers: { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'rejects linking another user\'s private collection artifact on update' do
+      private_owner = create(:user, collection_privacy: 'private_collection')
+      foreign_collection_artifact = create(:collection_artifact, user: private_owner)
+
+      put "/api/v1/grid_artifacts/#{grid_artifact.id}",
+          params: { grid_artifact: { collection_artifact_id: foreign_collection_artifact.id } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect(grid_artifact.reload.collection_artifact_id).to be_nil
     end
   end
 

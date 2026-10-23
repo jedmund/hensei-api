@@ -4,6 +4,7 @@ module Api
   module V1
     class GridArtifactsController < Api::V1::ApiController
       include PartyAuthorizationConcern
+      include CollectionSourceConcern
 
       before_action :find_grid_artifact, only: %i[update destroy sync]
       before_action :find_party, only: %i[create update destroy sync]
@@ -13,6 +14,9 @@ module Api
 
       # POST /grid_artifacts
       def create
+        collection_item = CollectionArtifact.find_by(id: grid_artifact_params[:collection_artifact_id])
+        return unless validate_collection_source!(@party, collection_item)
+
         # Check if grid_character already has an artifact
         if @grid_character.grid_artifact.present?
           @grid_character.grid_artifact.destroy
@@ -34,6 +38,9 @@ module Api
 
       # PATCH/PUT /grid_artifacts/:id
       def update
+        collection_item = CollectionArtifact.find_by(id: grid_artifact_params[:collection_artifact_id])
+        return unless validate_collection_source!(@party, collection_item)
+
         if @grid_artifact.update(grid_artifact_params)
           render json: GridArtifactBlueprint.render(@grid_artifact, view: :nested, root: :grid_artifact), status: :ok
         else
@@ -83,7 +90,10 @@ module Api
       end
 
       def find_grid_character
-        @grid_character = GridCharacter.find_by(id: params.dig(:grid_artifact, :grid_character_id))
+        # The grid character must belong to the party being edited; a foreign
+        # id is treated as not found (the party always comes from the request
+        # here, so it can't vouch for a character from another party).
+        @grid_character = @party.all_characters.find_by(id: params.dig(:grid_artifact, :grid_character_id))
         render_not_found_response('grid_character') unless @grid_character
       end
 
