@@ -21,6 +21,37 @@ class Summon < ApplicationRecord
   has_many :auras, class_name: "SummonAura", foreign_key: :summon_granblue_id,
                    primary_key: :granblue_id, inverse_of: :summon, dependent: :destroy
 
+  # Aura build: a new summon, or a change to anything its auras are built from
+  # (SummonAuras::Build::Fingerprint: its wiki_raw and ATTRIBUTES), queues
+  # SummonAuras::BuildJob. Covers every writer: a save of the summon, or a Source.put for it
+  # (.source_changed). Bulk work can skip it with Summon.without_aura_build { ... }; the
+  # deploy build picks those summons up.
+  thread_cattr_accessor :skip_aura_build, instance_accessor: false
+  after_save :capture_aura_build
+  after_commit :enqueue_aura_build, on: %i[create update], if: :aura_inputs_changed?
+
+  def self.without_aura_build
+    previous = skip_aura_build
+    self.skip_aura_build = true
+    yield
+  ensure
+    self.skip_aura_build = previous
+  end
+
+  # Source hooks: a source written outside a save of the summon (Source.put).
+  def self.source_change_hook?(kind)
+    !skip_aura_build && SummonAuras::Build::Fingerprint::SOURCES.include?(kind)
+  end
+
+  def self.source_changed(summon_id, _kind)
+    granblue_id = where(id: summon_id).pick(:granblue_id)
+    return unless granblue_id
+    return unless Source.exists?(owner_type: polymorphic_name, owner_id: summon_id, kind: "wiki_raw") ||
+                  SummonAura.exists?(summon_granblue_id: granblue_id)
+
+    SummonAuras::BuildJob.perform_later(summon_id)
+  end
+
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |summon|
                     {
@@ -96,5 +127,26 @@ class Summon < ApplicationRecord
     # Try to find by ID first, then by slug
     found = SummonSeries.find_by(id: value) || SummonSeries.find_by(slug: value)
     self.summon_series = found
+  end
+
+  private
+
+  def capture_aura_build
+    fingerprint = SummonAuras::Build::Fingerprint
+    @aura_build_pending = !self.class.skip_aura_build &&
+                          (saved_changes.keys.intersect?(fingerprint::ATTRIBUTES) ||
+                           saved_source_changes.intersect?(fingerprint::SOURCES))
+  end
+
+  def aura_inputs_changed?
+    return false unless @aura_build_pending
+
+    @aura_build_pending = false
+    # Nothing to build from and nothing to keep: the job would be a no-op.
+    source_sha256(:wiki_raw).present? || SummonAura.exists?(summon_granblue_id: granblue_id)
+  end
+
+  def enqueue_aura_build
+    SummonAuras::BuildJob.perform_later(id)
   end
 end

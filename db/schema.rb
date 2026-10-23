@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1381,7 +1381,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_140000) do
     t.text "description_jp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["summon_granblue_id", "slot", "uncap_level", "transcendence_stage"], name: "index_summon_auras_on_summon_tier"
+    t.index ["summon_granblue_id", "slot", "uncap_level", "transcendence_stage"], name: "index_summon_auras_on_summon_tier", unique: true
     t.index ["summon_granblue_id"], name: "index_summon_auras_on_summon_granblue_id"
   end
 
@@ -1447,6 +1447,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_140000) do
     t.uuid "summon_series_id"
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.boolean "support_eligible", default: true, null: false
+    t.string "summon_aura_build_fingerprint"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin

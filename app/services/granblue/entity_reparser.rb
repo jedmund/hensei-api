@@ -11,8 +11,6 @@ module Granblue
   class EntityReparser
     class MissingWikiRawError < StandardError; end
 
-    ELEMENT_WORD = { 1 => 'wind', 2 => 'fire', 3 => 'water', 4 => 'earth', 5 => 'dark', 6 => 'light' }.freeze
-    AURA_COLUMNS = %w[target element value condition description_en].freeze
     LOCK_WAIT = 5.seconds
 
     def initialize(entity, refetch: false)
@@ -21,9 +19,9 @@ module Granblue
     end
 
     def reparse
-      # The fetch saves wiki_raw, which would also queue CharacterSkills::BuildJob; this
-      # reparse builds the character itself.
-      Character.without_skill_build { WikiFetcher.new.fetch_and_store(@entity) } if @refetch
+      # The fetch saves wiki_raw, which would also queue CharacterSkills::BuildJob or
+      # SummonAuras::BuildJob; this reparse builds the entity itself.
+      Character.without_skill_build { Summon.without_aura_build { WikiFetcher.new.fetch_and_store(@entity) } } if @refetch
 
       case @entity
       when Weapon then reparse_weapon
@@ -68,29 +66,18 @@ module Granblue
       false
     end
 
-    # Extract aura rows from the wikitext, upsert them, and prune this summon's
-    # rows that the fresh parse no longer produces.
+    # Summons go through the summon-aura build (SummonAuras::Build::Runner in write mode, for
+    # this summon only, even when it isn't stale): its stored wiki_raw in, its auras upserted by
+    # natural key, so ids survive. → { auras:, built:, counts: }. Re-raises a build failure, and
+    # raises MissingWikiRawError when the build was held back (it made no auras, so the existing
+    # ones were kept) rather than reporting success.
     def reparse_summon
-      records = Extractors::SummonAuraExtractor.new.extract(
-        @entity.wiki_raw,
-        granblue_id: @entity.granblue_id,
-        series: @entity.summon_series&.slug,
-        element: ELEMENT_WORD[@entity.element]
-      ).map { |r| r.transform_keys(&:to_s) }
+      log = StringIO.new
+      summary = SummonAuras::Build::Runner.new(mode: 'write', ids: [@entity.granblue_id], all: true, io: log).call
+      raise summary.errors.first.last if summary.errors.any?
+      raise MissingWikiRawError, log.string.lines.first.to_s.strip.sub(/\A\S+ /, '') if summary.built.zero?
 
-      keys = records.to_set { |r| r.values_at('slot', 'uncap_level', 'transcendence_stage') }
-      records.each do |r|
-        aura = SummonAura.find_or_initialize_by(
-          summon_granblue_id: @entity.granblue_id, slot: r['slot'],
-          uncap_level: r['uncap_level'], transcendence_stage: r['transcendence_stage']
-        )
-        AURA_COLUMNS.each { |c| aura[c] = r[c] }
-        aura.save!
-      end
-      SummonAura.where(summon_granblue_id: @entity.granblue_id)
-                .reject { |a| keys.include?([a.slot, a.uncap_level, a.transcendence_stage]) }
-                .each(&:destroy)
-      { auras: records.size }
+      { auras: @entity.auras.reload.count, built: summary.built, counts: summary.counts.to_h.except(:changes) }
     end
 
     # Characters go through the character-skill build (CharacterSkills::Build::Runner in write
