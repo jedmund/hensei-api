@@ -169,7 +169,7 @@ module Api
             if party.nil?
               results << { shortcode: shortcode, status: 'not_found' }
             elsif party.user_id.present?
-              results << { shortcode: shortcode, status: 'already_claimed' }
+              results << { shortcode: shortcode, status: claimed_status(party) }
             elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
                                    party.edit_key.to_s.strip.force_encoding('UTF-8'))
               results << { shortcode: shortcode, status: 'invalid_key' }
@@ -245,8 +245,12 @@ module Api
           result = if party.nil?
                      { party: nil, status: 'not_found' }
                    elsif party.user_id.present?
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options),
-                       status: 'already_claimed' }
+                     if party.viewable_by?(current_user, admin_mode: admin_mode)
+                       { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options),
+                         status: 'already_claimed' }
+                     else
+                       { party: nil, status: 'not_found' }
+                     end
                    elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
                                           party.edit_key.to_s.strip.force_encoding('UTF-8'))
                      { party: nil, status: 'invalid_key' }
@@ -461,6 +465,13 @@ module Api
         return nil if entries.size > 100
 
         entries
+      end
+
+      # A claimed party only confirms itself (and previews) to users who can
+      # view it; someone else's private party reports not_found, matching
+      # GET /parties/:shortcode, so its existence isn't revealed here either.
+      def claimed_status(party)
+        party.viewable_by?(current_user, admin_mode: admin_mode) ? 'already_claimed' : 'not_found'
       end
 
       # Loads the party by its shortcode.

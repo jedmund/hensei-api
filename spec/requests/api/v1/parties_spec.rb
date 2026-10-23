@@ -455,6 +455,19 @@ RSpec.describe 'Parties API', type: :request do
       expect(response.parsed_body['results'].first['status']).to eq('already_claimed')
     end
 
+    it 'reports another user\'s private party as not_found' do
+      stranger = create(:user)
+      private_party = create(:party, user: stranger, name: 'Sneaky', visibility: 3)
+
+      post '/api/v1/parties/migrate',
+           params: { parties: [{ shortcode: private_party.shortcode, edit_key: 'anything' }] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results'].first['status']).to eq('not_found')
+      expect(private_party.reload.user_id).to eq(stranger.id)
+    end
+
     it 'returns invalid_key for wrong edit key' do
       post '/api/v1/parties/migrate',
            params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'wrong' }] }.to_json,
@@ -536,6 +549,35 @@ RSpec.describe 'Parties API', type: :request do
       expect(response.parsed_body['parties'].first['party']).to be_present
     end
 
+    it 'hides another user\'s private party behind not_found' do
+      stranger = create(:user)
+      private_party = create(:party, user: stranger, name: 'Sneaky', visibility: 3)
+
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [{ shortcode: private_party.shortcode, edit_key: 'anything' }] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      entry = response.parsed_body['parties'].first
+      expect(entry['status']).to eq('not_found')
+      expect(entry['party']).to be_nil
+      expect(response.body).not_to include('Sneaky')
+    end
+
+    it 'previews another user\'s public party as already_claimed' do
+      stranger = create(:user)
+      public_party = create(:party, user: stranger, name: 'Their public', visibility: 1)
+
+      post '/api/v1/parties/preview_migrate',
+           params: { parties: [{ shortcode: public_party.shortcode, edit_key: 'anything' }] }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:ok)
+      entry = response.parsed_body['parties'].first
+      expect(entry['status']).to eq('already_claimed')
+      expect(entry['party']['name']).to eq('Their public')
+    end
+
     it 'returns not_found for bad shortcode' do
       post '/api/v1/parties/preview_migrate',
            params: { parties: [{ shortcode: 'NOPE99', edit_key: 'key1' }] }.to_json,
@@ -562,6 +604,35 @@ RSpec.describe 'Parties API', type: :request do
            headers: { 'Content-Type' => 'application/json' }
 
       expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'GET /api/v1/parties/:shortcode remix visibility' do
+    it 'leaves other users\' private remixes out of a public party\'s remix list' do
+      public_party = create(:party, user: user, name: 'Public original', visibility: 1)
+      stranger = create(:user)
+      create(:party, user: stranger, source_party: public_party, remix: true, visibility: 3, name: 'Hidden remix')
+      create(:party, user: stranger, source_party: public_party, remix: true, visibility: 1, name: 'Shown remix')
+
+      get "/api/v1/parties/#{public_party.shortcode}"
+
+      expect(response).to have_http_status(:ok)
+      remixes = response.parsed_body['party']['remixes']
+      names = remixes.map { |r| r['name'] }
+      expect(names).to include('Shown remix')
+      expect(names).not_to include('Hidden remix')
+    end
+
+    it 'hides a private source party from its remix\'s response' do
+      owner = create(:user)
+      private_source = create(:party, user: owner, name: 'Private source', visibility: 3)
+      remixer = create(:user)
+      remix = create(:party, user: remixer, source_party: private_source, remix: true, visibility: 1, name: 'Remix of hidden')
+
+      get "/api/v1/parties/#{remix.shortcode}"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['party']['source_party']).to be_nil
     end
   end
 
