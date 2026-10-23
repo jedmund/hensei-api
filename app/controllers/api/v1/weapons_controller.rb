@@ -5,6 +5,7 @@ module Api
     class WeaponsController < Api::V1::ApiController
       include IdResolvable
       include BatchPreviewable
+      include ImageDownloadOptions
 
       before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
@@ -65,15 +66,11 @@ module Api
       # POST /weapons/:id/download_image
       # Synchronously downloads a single image for a weapon
       def download_image
-        size = params[:size]
+        size = validated_download_size(params[:size], Granblue::Downloaders::WeaponDownloader::SIZES)
+        return unless size
+
         transformation = params[:transformation]
         force = params[:force] == true
-
-        # Validate size
-        valid_sizes = Granblue::Downloaders::WeaponDownloader::SIZES
-        unless valid_sizes.include?(size)
-          return render json: { error: "Invalid size. Must be one of: #{valid_sizes.join(', ')}" }, status: :unprocessable_entity
-        end
 
         # Validate transformation for weapons (none, 02, 03)
         valid_transformations = [nil, '', '02', '03']
@@ -113,7 +110,15 @@ module Api
       # Triggers async image download for a weapon
       def download_images
         force = params.dig(:options, :force) == true
-        size = params.dig(:options, :size) || 'all'
+        size = validated_download_size(params.dig(:options, :size) || 'all',
+                                       Granblue::Downloaders::WeaponDownloader::SIZES, allow_all: true)
+        return unless size
+
+        # Element variant ids become image filenames; rows saved before they
+        # were validated are refused here rather than in the job
+        unless Weapon.valid_element_variant_ids?(@weapon.element_variant_ids)
+          return render json: { error: 'Weapon has invalid element variant ids' }, status: :unprocessable_entity
+        end
 
         Rails.logger.info "[WEAPONS] Enqueueing download_images for #{@weapon.id} " \
                           "(granblue_id=#{@weapon.granblue_id}, force=#{force}, size=#{size}, " \

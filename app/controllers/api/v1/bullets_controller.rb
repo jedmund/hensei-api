@@ -3,6 +3,8 @@
 module Api
   module V1
     class BulletsController < Api::V1::ApiController
+      include ImageDownloadOptions
+
       before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
       before_action :set_bullet, only: %i[download_image download_images download_status]
@@ -77,7 +79,9 @@ module Api
       def download_images
         options = params[:options] || {}
         force = [true, 'true'].include?(options[:force])
-        size = options[:size] || 'all'
+        size = validated_download_size(options[:size] || 'all',
+                                       Granblue::Downloaders::BulletDownloader::SIZES, allow_all: true)
+        return unless size
 
         DownloadBulletImagesJob.perform_later(@bullet.id, force: force, size: size)
 

@@ -3,6 +3,8 @@
 module Api
   module V1
     class RaidsController < Api::V1::ApiController
+      include ImageDownloadOptions
+
       before_action :set_raid, only: %i[show update destroy download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
 
@@ -60,13 +62,10 @@ module Api
       # POST /raids/:id/download_image
       # Synchronously downloads a single image for a raid
       def download_image
-        size = params[:size]
-        force = params[:force] == true
+        size = validated_download_size(params[:size], Granblue::Downloaders::RaidDownloader::SIZES)
+        return unless size
 
-        valid_sizes = Granblue::Downloaders::RaidDownloader::SIZES
-        unless valid_sizes.include?(size)
-          return render json: { error: "Invalid size. Must be one of: #{valid_sizes.join(', ')}" }, status: :unprocessable_entity
-        end
+        force = params[:force] == true
 
         # Check if the required ID exists
         if size == 'icon' && @raid.enemy_id.blank?
@@ -105,10 +104,14 @@ module Api
       # POST /raids/:id/download_images
       # Triggers async image download for a raid
       def download_images
+        size = validated_download_size(params.dig(:options, :size) || 'all',
+                                       Granblue::Downloaders::RaidDownloader::SIZES, allow_all: true)
+        return unless size
+
         DownloadRaidImagesJob.perform_later(
           @raid.id,
           force: params.dig(:options, :force) == true,
-          size: params.dig(:options, :size) || 'all'
+          size: size
         )
 
         DownloadRaidImagesJob.update_status(

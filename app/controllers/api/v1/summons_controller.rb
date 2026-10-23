@@ -5,6 +5,7 @@ module Api
     class SummonsController < Api::V1::ApiController
       include IdResolvable
       include BatchPreviewable
+      include ImageDownloadOptions
 
       before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
@@ -64,15 +65,11 @@ module Api
       # POST /summons/:id/download_image
       # Synchronously downloads a single image for a summon
       def download_image
-        size = params[:size]
+        size = validated_download_size(params[:size], Granblue::Downloaders::SummonDownloader::SIZES)
+        return unless size
+
         transformation = params[:transformation]
         force = params[:force] == true
-
-        # Validate size
-        valid_sizes = Granblue::Downloaders::SummonDownloader::SIZES
-        unless valid_sizes.include?(size)
-          return render json: { error: "Invalid size. Must be one of: #{valid_sizes.join(', ')}" }, status: :unprocessable_entity
-        end
 
         # Validate transformation for summons (none, 02, 03, 04)
         valid_transformations = [nil, '', '02', '03', '04']
@@ -111,11 +108,15 @@ module Api
       # POST /summons/:id/download_images
       # Triggers async image download for a summon
       def download_images
+        size = validated_download_size(params.dig(:options, :size) || 'all',
+                                       Granblue::Downloaders::SummonDownloader::SIZES, allow_all: true)
+        return unless size
+
         # Queue the download job
         DownloadSummonImagesJob.perform_later(
           @summon.id,
           force: params.dig(:options, :force) == true,
-          size: params.dig(:options, :size) || 'all'
+          size: size
         )
 
         # Set initial status

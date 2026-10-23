@@ -216,6 +216,29 @@ class Weapon < ApplicationRecord
     self.weapon_series = found
   end
 
+  # element_variant_ids maps an element id ("0".."6") to the game's weapon id
+  # for that element's art. The ids become image filenames, so only plain
+  # 10-digit ids are accepted.
+  ELEMENT_VARIANT_KEY_FORMAT = /\A[0-6]\z/
+  ELEMENT_VARIANT_ID_FORMAT = /\A\d{10}\z/
+
+  def self.valid_element_variant_ids?(value)
+    return true if value.nil?
+    return false unless value.is_a?(Hash)
+
+    value.all? do |key, id|
+      key.to_s.match?(ELEMENT_VARIANT_KEY_FORMAT) && id.is_a?(String) && id.match?(ELEMENT_VARIANT_ID_FORMAT)
+    end
+  end
+
+  validate :element_variant_ids_format
+
+  def element_variant_ids_format
+    return if self.class.valid_element_variant_ids?(element_variant_ids)
+
+    errors.add(:element_variant_ids, 'must map element ids (0-6) to 10-digit weapon ids')
+  end
+
   # Validation to prevent circular forge chains
   validate :no_circular_forge_chain
 

@@ -3,6 +3,23 @@
 require 'rails_helper'
 
 RSpec.describe Weapon, type: :model do
+  describe 'element_variant_ids' do
+    it 'accepts element ids mapped to 10-digit weapon ids, or nothing' do
+      expect(build(:weapon, element_variant_ids: { '1' => '1040804100', '6' => '1040804500' })).to be_valid
+      expect(build(:weapon, element_variant_ids: nil)).to be_valid
+      expect(build(:weapon, element_variant_ids: {})).to be_valid
+    end
+
+    it 'rejects anything else' do
+      [{ '7' => '1040804100' }, { '1' => '1040804100_02' }, { '1' => '../1040804100' }, { '1' => 1_040_804_100 },
+       ['1040804100']].each do |ids|
+        weapon = build(:weapon, element_variant_ids: ids)
+        expect(weapon).not_to be_valid, "expected #{ids.inspect} to be invalid"
+        expect(weapon.errors[:element_variant_ids]).to be_present
+      end
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to have_many(:weapon_awakenings) }
     it { is_expected.to have_many(:awakenings).through(:weapon_awakenings) }
