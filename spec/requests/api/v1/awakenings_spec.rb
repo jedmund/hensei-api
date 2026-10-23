@@ -21,6 +21,17 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
     end
   end
 
+  def jpeg_of(size)
+    Tempfile.create(['awakening', '.jpg']) do |tmp|
+      MiniMagick::Tool::Convert.new do |c|
+        c.size size
+        c << 'xc:white'
+        c << tmp.path
+      end
+      File.binread(tmp.path)
+    end
+  end
+
   describe 'POST /api/v1/awakenings/:id/upload_image' do
     let!(:awakening) { create(:awakening, slug: 'weapon-atk', object_type: 'Weapon') }
     let(:url) { "/api/v1/awakenings/#{awakening.id}/upload_image" }
@@ -46,19 +57,31 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       expect(IconStorage).not_to have_received(:put)
     end
 
-    it 'rejects a JPEG' do
-      jpeg = Tempfile.create(['awakening', '.jpg']) do |tmp|
-        MiniMagick::Tool::Convert.new do |c|
-          c.size '50x50'
-          c << 'xc:white'
-          c << tmp.path
-        end
-        File.binread(tmp.path)
-      end
-      post url, params: { image: Base64.strict_encode64(jpeg) }, headers: editor_headers, as: :json
+    it 'rejects a JPEG for a weapon awakening' do
+      post url, params: { image: Base64.strict_encode64(jpeg_of('50x50')) }, headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(IconStorage).not_to have_received(:put)
+    end
+
+    context 'with a character awakening' do
+      let!(:awakening) { create(:awakening, slug: 'character-multi', object_type: 'Character') }
+
+      it 'stores the JPEG under icons/awakening/<slug>.jpg' do
+        post url, params: { image: Base64.strict_encode64(jpeg_of('50x50')) }, headers: editor_headers, as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(IconStorage).to have_received(:put)
+          .with('icons/awakening/character-multi.jpg', start_with(IconUploadValidator::JPEG_SIGNATURE),
+                content_type: 'image/jpeg')
+      end
+
+      it 'rejects a PNG' do
+        post url, params: { image: Base64.strict_encode64(png_of('50x50')) }, headers: editor_headers, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(IconStorage).not_to have_received(:put)
+      end
     end
 
     it 'rejects an image larger than an icon' do

@@ -21,4 +21,11 @@ RSpec.describe Awakening, type: :model do
       end
     end
   end
+
+  describe '#image_formats' do
+    it 'takes a JPEG for character awakenings and a PNG for the rest' do
+      expect(build(:awakening, slug: 'character-atk').image_formats).to eq(%w[JPEG])
+      expect(build(:awakening, slug: 'weapon-atk').image_formats).to eq(%w[PNG])
+    end
+  end
 end

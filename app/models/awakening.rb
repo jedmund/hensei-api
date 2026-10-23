@@ -11,6 +11,12 @@ class Awakening < ApplicationRecord
 
   validates :slug, presence: true, format: { with: SLUG_FORMAT }, length: { maximum: 64 }
 
+  # The web app reads character awakening icons as JPG and the rest as PNG
+  # (getAwakeningImage in hensei-svelte), so uploads must match by slug.
+  def image_formats
+    slug.to_s.start_with?('character-') ? %w[JPEG] : %w[PNG]
+  end
+
   def awakening
     AwakeningBlueprint
   end

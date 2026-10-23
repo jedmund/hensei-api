@@ -66,8 +66,9 @@ module Api
       end
 
       # POST /awakenings/:id/upload_image
-      # Body: { image: <base64-png>, filename: <string?> }
-      # Stored at icons/awakening/<slug>.png, where the web app reads it.
+      # Body: { image: <base64>, filename: <string?> }
+      # Character awakenings take a JPEG and the rest a PNG (Awakening#image_formats),
+      # stored at icons/awakening/<slug>.<jpg|png>, where the web app reads them.
       def upload_image
         awakening = Awakening.find_by(id: params[:id])
         return render_not_found_response('awakening') unless awakening
@@ -77,7 +78,8 @@ module Api
         end
 
         bytes = uploaded_image_bytes(params[:image])
-        result = IconUploadValidator.call(bytes, max_dimension: MAX_IMAGE_DIMENSION, max_bytes: MAX_IMAGE_BYTES)
+        result = IconUploadValidator.call(bytes, max_dimension: MAX_IMAGE_DIMENSION, max_bytes: MAX_IMAGE_BYTES,
+                                                 formats: awakening.image_formats)
         return render json: { error: result.error }, status: :unprocessable_entity unless result.valid?
 
         IconStorage.put("#{Awakening::IMAGE_PREFIX}/#{awakening.slug}.#{result.extension}", bytes,
