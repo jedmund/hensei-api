@@ -5,6 +5,7 @@ module Api
     # Controller for managing party-related operations in the API
     # @api public
     class PartiesController < Api::V1::ApiController
+      include CollectionSourceConcern
       include PartyAuthorizationConcern
       include PartyQueryingConcern
       include SubstituteGridPreloading
@@ -277,6 +278,7 @@ module Api
         new_party.local_id = party_params[:local_id] if party_params
         new_party.last_updated = Time.current
         new_party._source_party_for_remap = @party
+        new_party.keep_only_collection_links_of!(current_user)
         if new_party.save
           render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party,
                                                                             current_user: current_user,
@@ -336,37 +338,44 @@ module Api
         return if performed?
 
         synced = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
+        skipped = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
+
+        # Items whose collection the current user can no longer see are left
+        # as they are and counted, rather than failing the whole party.
+        sync_linked = lambda do |rows, kind, link|
+          rows.each do |row|
+            if collection_accessible?(row.public_send(link))
+              row.sync_from_collection!
+              synced[kind] += 1
+            else
+              skipped[kind] += 1
+            end
+          end
+        end
 
         ActiveRecord::Base.transaction do
-          @party.characters.where.not(collection_character_id: nil).each do |gc|
-            gc.sync_from_collection!
-            synced[:characters] += 1
-          end
-
-          @party.weapons.where.not(collection_weapon_id: nil).each do |gw|
-            gw.sync_from_collection!
-            synced[:weapons] += 1
-          end
-
-          @party.summons.where.not(collection_summon_id: nil).each do |gs|
-            gs.sync_from_collection!
-            synced[:summons] += 1
-          end
-
-          GridArtifact.joins(:grid_character)
-                      .where(grid_characters: { party_id: @party.id })
-                      .where.not(collection_artifact_id: nil)
-                      .each do |ga|
-            ga.sync_from_collection!
-            synced[:artifacts] += 1
-          end
+          sync_linked.call(@party.characters.where.not(collection_character_id: nil)
+                                 .includes(collection_character: :user),
+                           :characters, :collection_character)
+          sync_linked.call(@party.weapons.where.not(collection_weapon_id: nil)
+                                 .includes(collection_weapon: :user),
+                           :weapons, :collection_weapon)
+          sync_linked.call(@party.summons.where.not(collection_summon_id: nil)
+                                 .includes(collection_summon: :user),
+                           :summons, :collection_summon)
+          sync_linked.call(GridArtifact.joins(:grid_character)
+                                       .where(grid_characters: { party_id: @party.id })
+                                       .where.not(collection_artifact_id: nil)
+                                       .includes(collection_artifact: :user),
+                           :artifacts, :collection_artifact)
         end
 
         render json: {
           party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
                                                                            current_user: current_user,
                                                                            admin_mode: admin_mode),
-          synced: synced
+          synced: synced,
+          skipped: skipped
         }, status: :ok
       end
 

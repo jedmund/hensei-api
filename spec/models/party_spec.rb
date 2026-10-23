@@ -545,6 +545,79 @@ RSpec.describe Party, type: :model do
     end
   end
 
+  describe '.viewable_by' do
+    let(:owner) { create(:user) }
+    let(:stranger) { create(:user) }
+    let(:admin) { create(:user, role: 9) }
+    let(:crew) { create(:crew) }
+    let(:other_crew) { create(:crew) }
+    let(:crewmate) { create(:user).tap { |u| create(:crew_membership, crew: crew, user: u) } }
+    let(:other_crew_member) { create(:user).tap { |u| create(:crew_membership, crew: other_crew, user: u) } }
+
+    let!(:public_party) { create(:party, user: owner, visibility: 1) }
+    let!(:unlisted_party) { create(:party, user: owner, visibility: 2) }
+    let!(:private_party) { create(:party, user: owner, visibility: 3) }
+    let!(:shared_party) do
+      create(:party, user: owner, visibility: 3).tap do |party|
+        create(:party_share, party: party, shareable: crew, shared_by: owner)
+      end
+    end
+
+    let(:parties) { [public_party, unlisted_party, private_party, shared_party] }
+
+    def expect_agreement(viewer, admin_mode: false)
+      visible_ids = Party.viewable_by(viewer, admin_mode: admin_mode).where(id: parties.map(&:id)).pluck(:id)
+      parties.each do |party|
+        expect(visible_ids.include?(party.id)).to eq(party.viewable_by?(viewer, admin_mode: admin_mode)),
+                                                  "disagreement on visibility #{party.visibility} " \
+                                                  "(shared: #{party == shared_party})"
+      end
+      visible_ids
+    end
+
+    it 'matches #viewable_by? for an anonymous viewer' do
+      expect(expect_agreement(nil)).to contain_exactly(public_party.id, unlisted_party.id)
+    end
+
+    it 'matches #viewable_by? for the owner' do
+      expect(expect_agreement(owner)).to match_array(parties.map(&:id))
+    end
+
+    it 'matches #viewable_by? for a stranger with no crew' do
+      expect(expect_agreement(stranger)).to contain_exactly(public_party.id, unlisted_party.id)
+    end
+
+    it 'matches #viewable_by? for a member of the crew the party is shared with' do
+      expect(expect_agreement(crewmate)).to contain_exactly(public_party.id, unlisted_party.id, shared_party.id)
+    end
+
+    it 'matches #viewable_by? for a member of a different crew' do
+      expect(expect_agreement(other_crew_member)).to contain_exactly(public_party.id, unlisted_party.id)
+    end
+
+    it 'matches #viewable_by? for a retired member of the shared crew' do
+      retired = create(:user)
+      create(:crew_membership, :retired, crew: crew, user: retired)
+      expect(expect_agreement(retired)).to contain_exactly(public_party.id, unlisted_party.id)
+    end
+
+    it 'matches #viewable_by? for an admin outside admin mode' do
+      expect(expect_agreement(admin)).to contain_exactly(public_party.id, unlisted_party.id)
+    end
+
+    it 'matches #viewable_by? for an admin in admin mode' do
+      expect(expect_agreement(admin, admin_mode: true)).to match_array(parties.map(&:id))
+    end
+
+    it 'composes onto an association scope' do
+      remix = create(:party, user: stranger, source_party: public_party, remix: true, visibility: 3)
+      create(:party, user: stranger, source_party: private_party, remix: true, visibility: 1)
+
+      expect(public_party.remixes.viewable_by(nil)).to be_empty
+      expect(public_party.remixes.viewable_by(stranger)).to contain_exactly(remix)
+    end
+  end
+
   describe '#shared_with_crew?' do
     it 'returns false when crew is nil' do
       party = create(:party)

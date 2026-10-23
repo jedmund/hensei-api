@@ -296,7 +296,9 @@ module Api
                     view: :summary do |party, options|
           # A public party's remix list must not expose private remixes'
           # shortcodes; hidden remixes are simply left out.
-          party.remixes.select { |remix| remix.viewable_by?(options[:current_user], admin_mode: options[:admin_mode]) }
+          party.remixes
+               .viewable_by(options[:current_user], admin_mode: options[:admin_mode])
+               .includes(:user)
         end
       end
 

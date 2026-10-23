@@ -297,6 +297,8 @@ module Api
           )
         end
 
+        return unless validate_collection_access!(@grid_weapon.collection_weapon)
+
         @grid_weapon.sync_from_collection!(fields: sync_fields_param)
         render json: GridWeaponBlueprint.render(@grid_weapon.reload,
                                                 root: :grid_weapon,
