@@ -73,7 +73,11 @@ module Api
       def update
         @user.assign_attributes(user_update_params)
         dismiss_password_prompt
-        render json: UserBlueprint.render(@user, view: :minimal) if @user.save
+        if @user.save
+          render json: UserBlueprint.render(@user, view: :minimal)
+        else
+          render_validation_error_response(@user)
+        end
       end
 
       def info

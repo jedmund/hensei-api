@@ -189,6 +189,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(user.reload.description).to be_nil
     end
 
+    it 'returns the validation errors when the update is invalid' do
+      put "/api/v1/users/#{user.id}",
+          params: { user: { description: 'a' * 141 } }.to_json,
+          headers: auth_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['errors']).to include('description')
+    end
+
     it 'updates the current user via /users/me' do
       put '/api/v1/users/me',
           params: { user: { language: 'ja' } }.to_json,
