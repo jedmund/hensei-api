@@ -109,6 +109,26 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
       expect(response).to have_http_status(:forbidden)
       expect { existing.reload }.not_to raise_error
     end
+
+    it 'accepts your own collection artifact on a party sourced from another user' do
+      source_user = create(:user)
+      party.update_columns(collection_source_user_id: source_user.id)
+      own_collection_artifact = create(:collection_artifact, user: user)
+
+      post '/api/v1/grid_artifacts', params: {
+        party_id: party.id,
+        grid_artifact: {
+          grid_character_id: grid_character.id,
+          artifact_id: artifact.id,
+          collection_artifact_id: own_collection_artifact.id,
+          element: 'light',
+          level: 1
+        }
+      }.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(party.reload.collection_source_user_id).to eq(source_user.id)
+    end
   end
 
   describe 'PUT /api/v1/grid_artifacts/:id' do
@@ -142,6 +162,28 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
 
       expect(response).to have_http_status(:forbidden)
       expect(grid_artifact.reload.collection_artifact_id).to be_nil
+    end
+
+    it 'ignores grid_character_id and artifact_id on update' do
+      stranger = create(:user)
+      stranger_party = create(:party, user: stranger, visibility: 3)
+      stranger_character = create(:grid_character, party: stranger_party)
+      other_artifact = create(:artifact)
+
+      put "/api/v1/grid_artifacts/#{grid_artifact.id}",
+          params: { grid_artifact: {
+            grid_character_id: stranger_character.id,
+            artifact_id: other_artifact.id,
+            level: 3
+          } }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      reloaded = grid_artifact.reload
+      expect(reloaded.grid_character_id).to eq(grid_character.id)
+      expect(reloaded.artifact_id).to eq(artifact.id)
+      expect(reloaded.level).to eq(3)
+      expect(stranger_character.reload.grid_artifact).to be_nil
     end
   end
 
