@@ -5,10 +5,15 @@ module Api
     # The sticker catalogue. Reading is public; editors manage it.
     class StickersController < Api::V1::ApiController
       include EditorImageUpload
+      include UploadSizeLimit
 
       EDITOR_ACTIONS = %i[create update destroy upload_image remove_image reorder library].freeze
       MAX_IMAGE_DIMENSION = 512
       MAX_IMAGE_BYTES = 512 * 1024
+      # Room for a base64-encoded image (a third larger) and the form around it.
+      UPLOAD_REQUEST_MAX_BYTES = 768 * 1024
+
+      limit_upload_size UPLOAD_REQUEST_MAX_BYTES, only: :upload_image
 
       before_action :doorkeeper_authorize!, only: EDITOR_ACTIONS
       before_action :ensure_editor_role, only: EDITOR_ACTIONS
