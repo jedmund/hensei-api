@@ -476,7 +476,14 @@ RSpec.describe Party, type: :model do
     it 'sets edit_key for an anonymous party (when user is nil)' do
       party = build(:party, user: nil, edit_key: nil)
       party.send(:set_edit_key)
-      expect(party.edit_key).not_to be_nil
+      expect(party.edit_key).to match(/\A\h{32}\z/)
+    end
+
+    it 'keeps an existing edit_key' do
+      legacy_key = 'a' * 40
+      party = build(:party, user: nil, edit_key: legacy_key)
+      party.send(:set_edit_key)
+      expect(party.edit_key).to eq(legacy_key)
     end
 
     it 'does not set edit_key when a user is present' do
