@@ -20,6 +20,15 @@ module CharacterSkills
     # Two stored versions share a snapshot key but disagree on name or icon.
     class ConflictError < StandardError; end
 
+    # An export would drop more entries than MAX_REMOVED from the stored snapshot.
+    class ShrinkError < StandardError; end
+
+    # The most entries an export may drop from the stored snapshot. An entry is one ability or
+    # support version, so one character is about ten; a reshaped wiki page or a renumbered slot
+    # drops a few. Losing more means a failed build or wiped rows, and the snapshot is the only
+    # copy of those icons, so the export keeps the stored one (max_removed: nil overrides).
+    MAX_REMOVED = 20
+
     # Before slots carry their owner row (character_id), every slot belongs to
     # the base row (style_swap: false) for its granblue_id, so every entry is style 1.
     EXPORT_SQL_BY_GRANBLUE_ID = <<~SQL.squish.freeze
@@ -44,9 +53,11 @@ module CharacterSkills
 
     class << self
       # Stores every stored version that has a game_icon as the snapshot. Returns the entry count.
-      def export
+      # Raises ConflictError or ShrinkError, storing nothing, when the export is suspect.
+      def export(max_removed: MAX_REMOVED)
         entries = export_rows
         check_conflicts!(entries)
+        check_shrink!(entries, max_removed) if max_removed
         store(serialize(entries))
         entries.size
       end
@@ -124,10 +135,7 @@ module CharacterSkills
       def build_index(text)
         return {} if text.blank?
 
-        JSON.parse(text).each_with_object({}) do |entry, index|
-          key = [entry['granblue_id'].to_s, entry['style'].to_i, entry['kind'].to_s, entry['position'].to_i, entry['ordinal'].to_i]
-          index[key] = { name_en: entry['name_en'], game_icon: entry['game_icon'] }
-        end
+        JSON.parse(text).to_h { |entry| [index_key(entry), { name_en: entry['name_en'], game_icon: entry['game_icon'] }] }
       end
 
       # One entry per (granblue_id, style, kind, position, ordinal). Older parses
@@ -147,6 +155,18 @@ module CharacterSkills
 
         sample = conflicts.first(5).map { |key, group| "#{key.join('/')}: #{group.map { |e| e.values_at('name_en', 'game_icon') }}" }
         raise ConflictError, "#{conflicts.size} snapshot keys have conflicting versions, e.g. #{sample.join('; ')}"
+      end
+
+      def check_shrink!(entries, max_removed)
+        stored = build_index(Source.fetch(nil, KIND, key: KEY)&.body)
+        removed = (stored.keys - entries.map { |entry| index_key(entry) }).size
+        return if removed <= max_removed
+
+        raise ShrinkError, "the export would remove #{removed} of #{stored.size} snapshot entries (limit #{max_removed})"
+      end
+
+      def index_key(entry)
+        [entry['granblue_id'].to_s, entry['style'].to_i, entry['kind'].to_s, entry['position'].to_i, entry['ordinal'].to_i]
       end
 
       def owner_key?

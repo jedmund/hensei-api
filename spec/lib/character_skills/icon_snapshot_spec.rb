@@ -60,6 +60,48 @@ RSpec.describe CharacterSkills::IconSnapshot do
     end
   end
 
+  describe '.export with a shrinking snapshot' do
+    let(:slot) { create(:character_skill, character: create(:character, granblue_id: '3040001000'), kind: 'ability', position: 1) }
+
+    def entries(count, from: 1)
+      (from...(from + count)).map do |ordinal|
+        { granblue_id: '3040001000', style: 1, kind: 'ability', position: 1, ordinal: ordinal, name_en: "V#{ordinal}", game_icon: "#{ordinal}_1" }
+      end
+    end
+
+    before do
+      create(:character_skill_version, character_skill: slot, ordinal: 1, name_en: 'V1', game_icon: '1_1')
+    end
+
+    it 'keeps the stored snapshot and queues nothing when it would drop more than MAX_REMOVED entries' do
+      ENV['CHARACTER_SKILL_BUILD'] = 'write'
+      put_icon_snapshot(entries(described_class::MAX_REMOVED + 2))
+      stored = stored_text
+
+      expect do
+        expect { described_class.export }
+          .to raise_error(described_class::ShrinkError, /remove 21 of 22 snapshot entries \(limit 20\)/)
+      end.not_to have_enqueued_job(CharacterSkills::StaleBuildJob)
+      expect(stored_text).to eq(stored)
+    ensure
+      ENV.delete('CHARACTER_SKILL_BUILD')
+    end
+
+    it 'stores an export that drops up to MAX_REMOVED entries, or any number when overridden' do
+      put_icon_snapshot(entries(described_class::MAX_REMOVED + 1))
+      expect(described_class.export).to eq(1)
+
+      put_icon_snapshot(entries(50))
+      expect(described_class.export(max_removed: nil)).to eq(1)
+    end
+
+    it 'counts changed names or icons at a kept key as changes, not removals' do
+      put_icon_snapshot(entries(1).map { |entry| entry.merge(name_en: 'Old', game_icon: '9_9') } + entries(5, from: 2))
+      expect(described_class.export(max_removed: 5)).to eq(1)
+      expect(JSON.parse(stored_text).first['game_icon']).to eq('1_1')
+    end
+  end
+
   describe '.load' do
     it 'indexes entries by granblue_id, style, kind, position and ordinal' do
       put_icon_snapshot([{ granblue_id: '3040377000', style: 2, kind: 'ability', position: 1, ordinal: 1,
