@@ -255,4 +255,45 @@ RSpec.describe 'Character refresh (C6)', type: :request do
                                                          'fetched_at' => nil)
     end
   end
+
+  describe 'POST /characters/:id/reparse while another build is running' do
+    include BuildLockHelpers
+
+    before do
+      stub_wiki(fetched_text)
+      stub_const('CharacterSkills::Refresh::LOCK_WAIT', 0.2)
+    end
+
+    let(:busy) { CharacterSkills::Refresh::BUSY_MESSAGE }
+
+    it 'is a 422 with the build refusal shape for a preview' do
+      held_elsewhere(:character, character.id) { preview }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body).to eq('error' => busy, 'message' => busy)
+    end
+
+    it 'is a 422 and writes nothing for an apply' do
+      token = preview['refresh']['preview_token']
+      before_versions = versions
+      held_elsewhere(:all) { apply(token) }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['message']).to eq(busy)
+      expect(versions).to eq(before_versions)
+      expect(character.reload.wiki_raw).to eq(stored_text)
+    end
+
+    it 'waits for a build that finishes in time, then writes' do
+      stub_const('CharacterSkills::Refresh::LOCK_WAIT', 5.seconds)
+      held_elsewhere(:character, character.id, release_after: 0.3) do
+        post "/api/v1/characters/#{character.id}/reparse?refetch=true", headers: auth_headers(editor)
+      end
+      expect(response).to have_http_status(:ok)
+      expect(ring_cooldown).to eq(9)
+    end
+
+    it 'runs alongside a build of another character' do
+      held_elsewhere(:character, 'another') { preview }
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end

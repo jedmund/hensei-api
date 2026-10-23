@@ -13,6 +13,7 @@ module Granblue
 
     ELEMENT_WORD = { 1 => 'wind', 2 => 'fire', 3 => 'water', 4 => 'earth', 5 => 'dark', 6 => 'light' }.freeze
     AURA_COLUMNS = %w[target element value condition description_en].freeze
+    LOCK_WAIT = 5.seconds
 
     def initialize(entity, refetch: false)
       @entity = entity
@@ -97,10 +98,15 @@ module Granblue
     # upserted by natural key, so ids survive and nothing the sources still make is lost.
     # → { skills:, built:, counts: } (counts: the writer's report). Re-raises a build failure, and
     # raises MissingWikiRawError when the build was held back (it made no skills, so the
-    # existing ones were kept) rather than reporting success.
+    # existing ones were kept) rather than reporting success. Waits up to LOCK_WAIT for a running
+    # build of the character (CharacterSkills::BuildLock), then raises BuildLock::Busy.
     def reparse_character
       log = StringIO.new
-      summary = ::CharacterSkills::Build::Runner.new(mode: 'write', characters: [@entity], all: true, io: log).call
+      summary = nil
+      locked = ::CharacterSkills::BuildLock.character(@entity.id, wait: LOCK_WAIT) do
+        summary = ::CharacterSkills::Build::Runner.new(mode: 'write', characters: [@entity], all: true, io: log).call
+      end
+      raise ::CharacterSkills::BuildLock::Busy, ::CharacterSkills::Refresh::BUSY_MESSAGE unless locked
       raise summary.errors.first.last if summary.errors.any?
       raise MissingWikiRawError, log.string.lines.first.to_s.strip.sub(/\A\S+ /, '') if summary.built.zero?
 

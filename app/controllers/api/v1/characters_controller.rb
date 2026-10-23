@@ -248,7 +248,8 @@ module Api
         render json: { refresh: result, character: result[:written] ? full_character : nil }
       rescue CharacterSkills::Refresh::PreviewExpired => e
         render json: { error: 'preview_expired', message: e.message }, status: :unprocessable_entity
-      rescue Granblue::WikiFetcher::MissingPageError, CharacterSkills::Refresh::BuildRefused => e
+      rescue Granblue::WikiFetcher::MissingPageError, CharacterSkills::Refresh::BuildRefused,
+             CharacterSkills::Refresh::BuildBusy => e
         render json: { error: e.message, message: e.message }, status: :unprocessable_entity
       rescue Granblue::WikiError => e
         render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
