@@ -153,6 +153,38 @@ RSpec.describe WikiImport::Importer do
     end
   end
 
+  describe 'preview and create on items the grid models reject' do
+    let(:limited_series) { create(:weapon_series) }
+    let(:messy) do
+      create(:weapon, name_en: 'WI Katana', wiki_en: 'WI Katana', proficiency: 10)
+      create(:weapon, name_en: 'WI Limited A', wiki_en: 'WI Limited A', limit: true, weapon_series: limited_series)
+      create(:weapon, name_en: 'WI Limited B', wiki_en: 'WI Limited B', limit: true, weapon_series: limited_series)
+      {
+        'characters' => wiki['characters'] + [{ 'position' => 2, 'title' => 'WI Seofon' }],
+        'bullets' => [],
+        'weapons' => [
+          { 'position' => -1, 'title' => 'WI Katana' },
+          { 'position' => 0, 'title' => 'WI Limited A' },
+          { 'position' => 1, 'title' => 'WI Limited B' }
+        ]
+      }
+    end
+
+    def counts
+      [Party, GridCharacter, GridWeapon, GridSummon, GridWeaponBullet, WeaponKeySeries].map(&:count)
+    end
+
+    it 'reports the same warnings in both modes and preview leaves nothing behind' do
+      preview_report = nil
+      expect { preview_report = importer(messy).preview }.not_to(change { counts })
+      _party, create_report = importer(messy.merge('preview' => false)).create!
+
+      expect(preview_report[:warnings]).to eq(create_report[:warnings])
+      expect(preview_report[:warnings].select { |w| w[:code] == 'invalid_item' }
+        .map { |w| [w[:kind], w[:position]] }).to contain_exactly(['character', 2], ['weapon', -1], ['weapon', 1])
+    end
+  end
+
   describe '#create!' do
     subject(:result) { importer({ 'preview' => false }, user).create! }
 

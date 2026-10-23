@@ -7,8 +7,9 @@ module WikiImport
   #
   # Resolution runs first and only reads: it matches wiki titles to catalogue
   # rows and re-checks every identifier the client sent (key ids, bullet slugs,
-  # class, subskill and accessory names). #preview stops there. #create! then
-  # builds the party and its grid in one transaction.
+  # class, subskill and accessory names). Both modes then build the party and
+  # its grid in one transaction; #preview rolls it back, so it reports exactly
+  # what #create! would.
   #
   # Nothing in a paste is fatal. Unknown values, unmatched titles and grid
   # items the models reject are skipped and reported, and the rest imports.
@@ -66,11 +67,19 @@ module WikiImport
     end
 
     ##
-    # Resolves the paste and reports what would import. Writes nothing.
+    # Resolves the paste and reports what would import. Runs the same build
+    # as #create! and rolls it back, so the grid models' rejections show up
+    # here too and both modes report the same warnings. Nothing persists:
+    # the build's only side effects outside the database are after_commit
+    # callbacks, which a rollback never runs.
     #
     # @return [Hash] the report.
     def preview
       resolve
+      ActiveRecord::Base.transaction(requires_new: true) do
+        build_party
+        raise ActiveRecord::Rollback
+      end
       @report
     end
 
@@ -81,16 +90,7 @@ module WikiImport
     def create!
       resolve
       party = nil
-      ActiveRecord::Base.transaction do
-        party = create_party
-        @characters.each { |plan| create_character(party, plan) }
-        @summons.each { |plan| create_summon(party, plan) }
-        @weapons.each { |plan| create_weapon(party, plan) }
-        # Party's after_commit callbacks read these; drop anything cached mid-import.
-        party.characters.reset
-        party.weapons.reset
-        party.summons.reset
-      end
+      ActiveRecord::Base.transaction(requires_new: true) { party = build_party }
       [party, @report]
     end
 
@@ -432,6 +432,19 @@ module WikiImport
     end
 
     # ----------------------------------------------------------------- create
+
+    # Creates the party and its grid. Callers own the transaction.
+    def build_party
+      party = create_party
+      @characters.each { |plan| create_character(party, plan) }
+      @summons.each { |plan| create_summon(party, plan) }
+      @weapons.each { |plan| create_weapon(party, plan) }
+      # Party's after_commit callbacks read these; drop anything cached mid-import.
+      party.characters.reset
+      party.weapons.reset
+      party.summons.reset
+      party
+    end
 
     def create_party
       Party.create!(
