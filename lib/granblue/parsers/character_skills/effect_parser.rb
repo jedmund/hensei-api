@@ -192,13 +192,14 @@ module Granblue
         # "Guilty Break" is a Jammed effect and keeps its name for display. The list's aliases are only
         # other spellings ("ATK Up" → ATK Boosted), so the name is the entry they lead to. A numbered
         # variant ("DEF Lowered 2") is its status's icon variant, not a name of its own, and a status
-        # named with its first level ("Aetherial Seal 1") is the same name.
+        # named with its first level ("Aetherial Seal 1") is the same name, and a label that's only another
+        # spelling of the status's name (data/statuses/spelling_labels.json: "Shield" on Shielded, D60) is dropped.
         def effect_label(resolved, status)
           return if status.nil? || resolved.resolution.nil? || resolved.variant
 
           own = resolved.resolution.entry.to_s
           names = [status.name_en.to_s, status.name_en.to_s.sub(/ \d+\z/, '')].map { |name| Status.normalize_name(name) }
-          own unless names.include?(Status.normalize_name(own))
+          own unless names.include?(Status.normalize_name(own)) || SpellingLabels.spelling?(own, status.name_en)
         end
 
         def curated_category(name)

@@ -158,7 +158,12 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
       instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered')
     end
     let(:seal) { instance_double('Status', id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal 1') }
-    let(:lookup) { { by_name: { 'jammed' => jammed_listed, 'def lowered' => def_down, 'aetherial seal 1' => seal }, by_id: {} } }
+    let(:shielded) do
+      instance_double('Status', id: 'sh', category: 'buff', game_status_id: '1022', variant_kind: nil, name_en: 'Shielded')
+    end
+    let(:lookup) do
+      { by_name: { 'jammed' => jammed_listed, 'def lowered' => def_down, 'aetherial seal 1' => seal, 'shielded' => shielded }, by_id: {} }
+    end
 
     before do
       Granblue::Parsers::StatusList.use(<<~LUA)
@@ -169,6 +174,8 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
           ['DEF Lowered 2'] = { link = 'DEF Lowered', status = '1020_2' },
           ['Aetherial Seal 1'] = { status = '1111' },
           ['Aetherial Seal'] = { link = 'Aetherial Seal 1' },
+          ['Shielded'] = { status = '1022' },
+          ['Shield'] = { link = 'Shielded' },
         }
         local aliases = { ['DEF Down'] = 'DEF Lowered', ['DEF Down 2'] = 'DEF Lowered 2' }
         return { buffs = {}, debuffs = debuffs, effects = {}, aliases = aliases }
@@ -184,6 +191,12 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
       effects = parser.parse('Inflict {{status|Jammed}}, {{status|DEF Down}}, {{status|DEF Down 2|t=2T}} and {{status|Aetherial Seal}}.')
       expect(effects.map { |e| e[:status_id] }).to eq(%w[jm dd dd as])
       expect(effects.pluck(:label)).to all(be_nil)
+    end
+
+    it 'drops a label that is only another spelling of the status name (D60)' do
+      effect = parser.parse('Gain {{status|Shield|a=1000}}.').first
+      expect(effect).to include(status_id: 'sh')
+      expect(effect).not_to have_key(:label)
     end
   end
 
