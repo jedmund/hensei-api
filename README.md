@@ -85,6 +85,27 @@ rails data:import
 rails server
 ```
 
+### Testing from a phone
+
+Connect your Mac and phone to the same Wi-Fi network. Find your Mac's Wi-Fi address
+with `ipconfig getifaddr en0` (use the active network interface if it is not `en0`).
+For an address of `192.168.1.50`, start the development API with:
+
+```bash
+DEV_CORS_ORIGINS=http://192.168.1.50:5174 bin/rails server -b 0.0.0.0
+```
+
+`DEV_CORS_ORIGINS` accepts comma-separated frontend origins, including the scheme
+and port, with no path or trailing slash. It adds only those exact origins in
+development; it is ignored in other environments. Restart the API after changing
+it. Rails already allows IP address hosts in development.
+
+In the web app, set `PUBLIC_SIERO_API_URL=http://192.168.1.50:3000` in the existing
+gitignored `.env.local` file, then run `pnpm dev:mobile`. Open
+`http://192.168.1.50:5174` on your phone. The web app adds `/api/v1` and `/oauth`
+to the API base URL itself. See the web app README for image configuration and
+troubleshooting.
+
 ## Environment Variables
 
 While most configurations use Rails credentials, you may need to set:
@@ -92,6 +113,7 @@ While most configurations use Rails credentials, you may need to set:
 - `DATABASE_URL`
 - `RAILS_MASTER_KEY`
 - `REDIS_URL`
+- `DEV_CORS_ORIGINS` (optional, development only; see phone testing above)
 
 ## Performance Considerations
 

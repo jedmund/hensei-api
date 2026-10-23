@@ -11,7 +11,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       origins %w[granblue.team app.granblue.team next.granblue.team hensei-web-production.up.railway.app
                  game.granbluefantasy.jp chrome-extension://ahacbogimbikgiodaahmacboojcpdfpf]
     else
-      origins %w[
+      allowed_origins = %w[
         localhost:5174
         127.0.0.1:5174
         localhost:5173
@@ -21,6 +21,11 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
         game.granbluefantasy.jp
         chrome-extension://ahacbogimbikgiodaahmacboojcpdfpf
       ]
+      if Rails.env.development?
+        # Opt in to exact frontend origins when testing from a phone on the LAN.
+        allowed_origins.concat(ENV.fetch('DEV_CORS_ORIGINS', '').split(',').map(&:strip).reject(&:empty?))
+      end
+      origins allowed_origins
     end
 
     resource '*',
