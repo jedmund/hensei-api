@@ -79,7 +79,8 @@ module Api
         party.last_updated = Time.current
         if party.save
           render json: PartyBlueprint.render(load_full_party(party.id), view: :created, root: :party,
-                                                                         current_user: current_user),
+                                                                         current_user: current_user,
+                                                                         admin_mode: admin_mode),
                  status: :created
         else
           render_party_errors(party)
@@ -101,7 +102,7 @@ module Api
 
       def show
         if @party
-          options = { view: :full, root: :party, current_user: current_user }
+          options = { view: :full, root: :party, current_user: current_user, admin_mode: admin_mode }
 
           if current_user
             options[:viewer_collection] = fetch_collection_for(@party, current_user)
@@ -132,7 +133,8 @@ module Api
         @party.last_updated = Time.current
         if @party.save
           render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party,
-                                                                          current_user: current_user)
+                                                                          current_user: current_user,
+                                                                          admin_mode: admin_mode)
         else
           render_party_errors(@party)
         end
@@ -275,7 +277,9 @@ module Api
         new_party.last_updated = Time.current
         new_party._source_party_for_remap = @party
         if new_party.save
-          render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party), status: :created
+          render json: PartyBlueprint.render(load_full_party(new_party.id), view: :remixed, root: :party,
+                                                                            current_user: current_user,
+                                                                            admin_mode: admin_mode), status: :created
         else
           render_validation_error_response(new_party)
         end
@@ -309,7 +313,9 @@ module Api
         @party.mark_updated!
 
         render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
+                                                                           current_user: current_user,
+                                                                           admin_mode: admin_mode),
           operations_applied: changes.count,
           changes: changes
         }, status: :ok
@@ -356,7 +362,9 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
+                                                                           current_user: current_user,
+                                                                           admin_mode: admin_mode),
           synced: synced
         }, status: :ok
       end
@@ -381,7 +389,9 @@ module Api
         end
 
         render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full, current_user: current_user)
+          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
+                                                                           current_user: current_user,
+                                                                           admin_mode: admin_mode)
         }, status: :ok
       end
 

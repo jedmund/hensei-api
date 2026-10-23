@@ -634,6 +634,21 @@ RSpec.describe 'Parties API', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['party']['source_party']).to be_nil
     end
+
+    it 'shows private remixes to an admin in admin mode' do
+      public_party = create(:party, user: user, name: 'Admin view', visibility: 1)
+      stranger = create(:user)
+      create(:party, user: stranger, source_party: public_party, remix: true, visibility: 3, name: 'Admin remix')
+
+      admin = create(:user, role: 9)
+      admin_token = Doorkeeper::AccessToken.create!(resource_owner_id: admin.id, expires_in: 30.days, scopes: 'public')
+      get "/api/v1/parties/#{public_party.shortcode}",
+          headers: { 'Authorization' => "Bearer #{admin_token.token}", 'X-Admin-Mode' => 'true' }
+
+      expect(response).to have_http_status(:ok)
+      names = response.parsed_body['party']['remixes'].map { |r| r['name'] }
+      expect(names).to include('Admin remix')
+    end
   end
 
   describe 'POST /api/v1/parties/:id/remix' do
