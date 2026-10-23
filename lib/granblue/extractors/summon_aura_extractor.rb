@@ -63,6 +63,11 @@ module Granblue
       TARGET_PRIORITY = %w[normal_frame omega_frame odious_frame elemental_atk normal_atk omega_atk multiattack atk other].freeze
       private_constant :TARGET_PRIORITY
 
+      # Conditions that only hold in some battle states; a clause carrying one loses a
+      # target tie to an always-on clause.
+      SITUATIONAL = %w[defense_order].freeze
+      private_constant :SITUATIONAL
+
       def build(text, slot:, uncap_level:, transcendence_stage:, series:, summon_element:, granblue_id:) # rubocop:disable Metrics/ParameterLists
         return nil if text.blank?
 
@@ -73,8 +78,12 @@ module Granblue
         # each and keep the most grid-relevant (frame > elemental > … > other).
         clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).reject(&:blank?)
         clauses = [clean] if clauses.empty?
+        # Ties on target go to the unconditional clause ("40% boost to ATK" over "During
+        # Defense Order: 80% boost to ATK"), then to the earlier clause.
         best = clauses.map { |c| parse_clause(c, series: series, summon_element: summon_element) }
-                      .min_by { |pc| TARGET_PRIORITY.index(pc[:target]) }
+                      .each_with_index
+                      .min_by { |pc, i| [TARGET_PRIORITY.index(pc[:target]), SITUATIONAL.include?(pc[:condition]) ? 1 : 0, i] }
+                      .first
 
         {
           summon_granblue_id: granblue_id, slot: slot, target: best[:target], element: best[:element],
@@ -118,23 +127,57 @@ module Granblue
           return ["omega_frame", nil] if OMEGA_WORDS.any? { |w| p.include?(w) } || series == "magna"
           return ["normal_frame", nil]
         end
-        return ["normal_atk", nil] if p.include?("normal atk")
+        # A DMG cap or a damage supplement is not an ATK boost, even when it names
+        # "normal attack" ("5% boost to light allies' normal attack DMG cap").
+        return ["other", nil] if cap_or_supplement?(p)
+        return ["normal_atk", nil] if /\bnormal (atk|attack)\b(?!\s+(dmg|damage))/.match?(p)
         return ["omega_atk", nil] if p.include?("omega atk")
-        return ["multiattack", nil] if p.include?("multiattack")
+        return ["multiattack", nil] if p.include?("multiattack") || da_ta_rate?(p)
+        # Battle-start statuses ("starts battle with … ATK Up") and boosts to named
+        # characters ("Gachapin's ATK", "Cinderella girls' ATK") don't scale the grid.
+        return ["other", nil] if p =~ /\bstarts? battle with\b/ || restricted_subject?(p)
+
         # ATK boosts: the wiki writes "[element] Elemental ATK", "[element] ATK", or
         # "[element] Elemental attack" (varied phrasing) — all feed the Elemental
         # category. Guard against "charge attack" (CA) and "attack critical" (crit).
-        # Element-less generic "ATK" is an ATK-up buff (target "atk"; flagged for panel
+        # A subject-less "X% boost to ATK" is party-wide, like "all allies' ATK".
+        # Other element-less ATK is an ATK-up buff (target "atk"; flagged for panel
         # validation).
         attack_ish = (p =~ /\b(atk|attack)\b/) && !p.include?("charge attack") && !p.include?("critical")
         if attack_ish || p.include?("elemental atk")
           el = elements_in(p)
           return ["elemental_atk", el || summon_element] if el || p.include?("elemental")
+          return %w[elemental_atk all] if /\A(atk|attack)\b/.match?(p)
 
           return ["atk", nil]
         end
 
         ["other", nil]
+      end
+
+      # The boosted noun: the phrase up to the first comma or period. Tests that look only
+      # at it keep a later "… C.A. DMG Cap" or "penalty to Double Attack Rate" in the same
+      # sentence from reclassifying "80% boost to Light Elemental ATK, …".
+      def head(phrase)
+        phrase[/\A[^,.]*/]
+      end
+
+      def cap_or_supplement?(phrase)
+        phrase.start_with?("supplement") || /\b(dmg|damage) cap\b/.match?(head(phrase))
+      end
+
+      # "boost to double attack rate", not a "{{status|Triple Attack Rate Boosted}}" grant.
+      def da_ta_rate?(phrase)
+        /(?<!\|)\b(double|triple) attack rate\b/.match?(head(phrase))
+      end
+
+      # "X's ATK" / "Xs' ATK" where X is neither an element nor allies (MC's, Gachapin's,
+      # Cinderella girls', Lumiel Order characters'). "{{atkmod|ATK…}}" may sit between.
+      def restricted_subject?(phrase)
+        owner = phrase[/(\S+?)(?:'s|')\s+(?:\{\{atkmod\|)?(?:elemental\s+)?(?:atk|attack)\b/, 1]
+        return false unless owner
+
+        !(ELEMENTS + %w[all ally allies]).include?(owner)
       end
 
       # "Dark and Earth" -> "dark,earth"; "all" -> "all"; else nil.
@@ -148,6 +191,7 @@ module Granblue
         t = text.downcase
         return "main_summon" if t.include?("main summon")
         return "per_weapon_group" if t.include?("weapon group")
+        return "defense_order" if t.include?("defense order")
 
         nil
       end
