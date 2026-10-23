@@ -4,9 +4,9 @@ require "rails_helper"
 
 RSpec.describe GridDamage::SummonAuras do
   Row = Struct.new(:uncap_level, :transcendence_stage, :value, :element, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
-  # Varuna's normal_frame tiers: base 0/3/4/5 = 80/120/140/150; transcendence stages = 160/160/170.
+  # Varuna's normal_frame tiers: base 0/3/4/5 = 80/120/140/150; transcendence stages 3/4/5 = 160/160/170.
   def varuna
-    [[0, 0, 80], [3, 0, 120], [4, 0, 140], [5, 0, 150], [5, 4, 160], [5, 5, 160], [5, 6, 170]]
+    [[0, 0, 80], [3, 0, 120], [4, 0, 140], [5, 0, 150], [5, 3, 160], [5, 4, 160], [5, 5, 170]]
       .map { |u, t, v| Row.new(uncap_level: u, transcendence_stage: t, value: v) }
   end
 
@@ -17,6 +17,14 @@ RSpec.describe GridDamage::SummonAuras do
 
     it "uses the transcended value at full transcendence (the 150->170 fix)" do
       expect(described_class.best_value(varuna, uncap: 6, transcendence_step: 5)).to eq(170.0)
+    end
+
+    it "uses the stage-4 row at transcendence step 4, not the stage-5 row" do
+      expect(described_class.best_value(varuna, uncap: 6, transcendence_step: 4)).to eq(160.0)
+    end
+
+    it "keeps the ULB value below the first transcended tier" do
+      expect(described_class.best_value(varuna, uncap: 6, transcendence_step: 2)).to eq(150.0)
     end
 
     it "respects the uncap level (MLB only)" do

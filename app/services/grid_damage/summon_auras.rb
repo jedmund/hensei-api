@@ -77,13 +77,13 @@ module GridDamage
     end
 
     # Pure: the highest aura value among rows applicable at (uncap, transcendence_step).
-    # A transcended summon (step > 0) may use the aurat tiers (stored at stage = aurat+1);
-    # otherwise only the base tiers (stage 0) up to the uncap apply.
+    # A transcended summon at step t may also use the aurat tiers up to stage t (auratN is
+    # stored at stage N); otherwise only the base tiers (stage 0) up to the uncap apply.
     def best_row(rows, uncap:, transcendence_step:)
       applicable = rows.select do |r|
         r.uncap_level.to_i <= uncap &&
           (r.transcendence_stage.to_i.zero? ||
-           (transcendence_step.positive? && r.transcendence_stage.to_i <= transcendence_step + 1))
+           (transcendence_step.positive? && r.transcendence_stage.to_i <= transcendence_step))
       end
       applicable.max_by { |r| [r.transcendence_stage.to_i, r.uncap_level.to_i, r.value.to_f] }
     end
