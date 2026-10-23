@@ -10,13 +10,15 @@
 # Idempotent: a row whose (owner, kind, key) is already in `sources` is skipped (a newer fetch
 # through the store wins). Batches by id in SQL; logs counts only. No callbacks or jobs.
 # Records when it started and finished (ar_internal_metadata weapon_sources_copy_started_at,
-# weapon_sources_copied_at) for the post-deploy sync (Granblue::ItemSourceSync).
+# weapon_sources_copied_at) for the post-deploy sync (20261022120000).
 class CopyWeaponSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   BATCH = 200
   COPIED_AT_KEY = 'weapon_sources_copied_at'
   STARTED_AT_KEY = 'weapon_sources_copy_started_at'
 
   def up
+    return say('weapon_sources is gone; nothing to copy') unless db.table_exists?(:weapon_sources)
+
     record_time(STARTED_AT_KEY)
     copied = Hash.new(0)
     kept = Hash.new(0)

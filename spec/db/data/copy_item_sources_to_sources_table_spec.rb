@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'CopyItemSourcesToSourcesTable' do
+  include ItemSourceColumns
+
   let(:migration_class) do
     unless defined?(CopyItemSourcesToSourcesTable)
       require Rails.root.join('db/data/20261022110000_copy_item_sources_to_sources_table')

@@ -2,6 +2,8 @@ require 'rails_helper'
 require Rails.root.join('db/data/20261020170000_fix_stale_wiki_titles')
 
 RSpec.describe FixStaleWikiTitles do
+  include ItemSourceColumns
+
   subject(:migration) { described_class.new }
 
   # weapon_sources and the weapons columns, which this migration wrote (WeaponSource and

@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'RepairMangledSkillDescriptions' do
+  include ItemSourceColumns
+
   let(:migration_class) do
     unless defined?(RepairMangledSkillDescriptions)
       require Rails.root.join('db/data/20261016170101_repair_mangled_skill_descriptions')

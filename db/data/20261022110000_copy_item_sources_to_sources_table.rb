@@ -14,10 +14,10 @@
 #   - Idempotent: an item that already has a row of a kind is skipped for that kind (a newer
 #     fetch through the store wins). Batches by id; logs counts only. No callbacks or jobs.
 #   - Records when it started and finished (ar_internal_metadata item_sources_copy_started_at,
-#     item_sources_copied_at), so the sync after the deploy (Granblue::ItemSourceSync) can copy
+#     item_sources_copied_at), so the sync after the deploy (20261022120000) could copy
 #     what the old code wrote to the columns in the meantime, and tell its own rows.
 #
-# Reads the columns with SQL: Weapon and Summon ignore them.
+# Reads the columns with SQL. A no-op once they're dropped (20261023100000).
 class CopyItemSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   BATCH = 100
   TABLES = { 'weapons' => 'Weapon', 'summons' => 'Summon' }.freeze
@@ -32,6 +32,8 @@ class CopyItemSourcesToSourcesTable < ActiveRecord::Migration[8.1]
   STARTED_AT_KEY = 'item_sources_copy_started_at'
 
   def up
+    return say('weapons/summons source columns are gone; nothing to copy') unless db.column_exists?(:weapons, :wiki_raw)
+
     record_time(STARTED_AT_KEY)
     TABLES.each do |table, owner_type|
       KINDS.each do |kind, (column, fetched_column)|
