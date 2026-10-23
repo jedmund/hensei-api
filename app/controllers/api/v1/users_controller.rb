@@ -157,8 +157,11 @@ module Api
         end
       end
 
+      # Looks the email up and reports whether it is already registered. The
+      # register form relies on this; the endpoint is rate limited above.
       def check_email
-        render json: EmptyBlueprint.render_as_json(nil, email: params[:email], availability: true)
+        available = User.where('email = ?', params[:email]).none?
+        render json: { available: available }
       end
 
       def check_username

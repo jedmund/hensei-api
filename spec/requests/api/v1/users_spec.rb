@@ -331,10 +331,18 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'POST /api/v1/check/email' do
-    it 'checks email availability' do
+    it 'reports an unused email as available' do
       post '/api/v1/check/email', params: { email: 'available@example.com' }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq('available' => true)
+    end
+
+    it 'reports a registered email as unavailable' do
+      post '/api/v1/check/email', params: { email: user.email }.to_json,
+           headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq('available' => false)
     end
   end
 
