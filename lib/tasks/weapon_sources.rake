@@ -163,12 +163,9 @@ namespace :granblue do
 end
 
 namespace :granblue do
-  desc "After the PR 7b deploy is live (the column-drop PR runs it as a data migration): copy into `sources` what " \
-       "the old code wrote to the weapons/summons source columns and to weapon_sources after the copy migrations " \
-       "ran (missing rows, and rows not rewritten since the copy whose sha256 differs). Counts only; idempotent; " \
-       "queues no builds."
-  task sync_item_sources: :environment do
+  desc "Remove `sources` rows whose owner is gone, and a weapon's untitled page beside its titled one. Counts only."
+  task remove_orphan_sources: :environment do
     ActiveRecord::Base.logger = nil
-    Granblue::ItemSourceSync.new.call
+    Sources::OrphanCleanup.new.call.each { |label, n| puts "#{label}: #{n} removed" }
   end
 end

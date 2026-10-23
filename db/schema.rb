@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1396,16 +1396,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.date "transcendence_date"
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
-    t.text "wiki_raw"
-    t.jsonb "game_raw_en", comment: "JSON data from game (English)"
-    t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "summon_series_id"
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.boolean "support_eligible", default: true, null: false
-    t.text "wiki_raw_jp", comment: "Raw HTML from gbf-wiki.com (Japanese)"
-    t.datetime "wiki_raw_fetched_at"
-    t.datetime "wiki_raw_jp_fetched_at"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
@@ -1680,23 +1674,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.index ["weapon_granblue_id"], name: "index_weapon_skills_on_weapon_granblue_id"
   end
 
-  create_table "weapon_sources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "weapon_id"
-    t.string "kind", null: false
-    t.string "key", null: false
-    t.text "body", null: false
-    t.string "sha256", null: false
-    t.datetime "fetched_at", null: false
-    t.string "page_kind"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["kind", "key", "fetched_at"], name: "index_weapon_sources_lookup"
-    t.index ["kind", "key"], name: "index_weapon_sources_on_shared_kind_key", unique: true, where: "(weapon_id IS NULL)"
-    t.index ["weapon_id", "kind", "key"], name: "index_weapon_sources_on_weapon_kind_key", unique: true, where: "(weapon_id IS NOT NULL)"
-    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'expanded'::character varying, 'transclusion'::character varying, 'family_template'::character varying]::text[])", name: "weapon_sources_kind"
-    t.check_constraint "page_kind IS NULL OR (page_kind::text = ANY (ARRAY['inline'::character varying, 'series_template'::character varying, 'key_determined'::character varying]::text[]))", name: "weapon_sources_page_kind"
-  end
-
   create_table "weapon_stat_modifiers", force: :cascade do |t|
     t.string "slug", null: false
     t.string "name_en", null: false
@@ -1755,9 +1732,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.date "transcendence_date"
     t.string "recruits"
     t.integer "new_series"
-    t.text "wiki_raw"
-    t.jsonb "game_raw_en", comment: "JSON data from game (English)"
-    t.jsonb "game_raw_jp", comment: "JSON data from game (Japanese)"
     t.integer "promotions", default: [], null: false, array: true
     t.uuid "weapon_series_id"
     t.integer "extra_prerequisite"
@@ -1769,9 +1743,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.jsonb "element_variant_ids"
     t.integer "bullet_slots", default: [], null: false, array: true
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
-    t.datetime "wiki_raw_fetched_at"
-    t.text "wiki_raw_jp"
-    t.datetime "wiki_raw_jp_fetched_at"
     t.string "weapon_skill_build_fingerprint"
     t.datetime "weapon_skill_built_at"
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
@@ -1783,7 +1754,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.index ["recruits"], name: "index_weapons_on_recruits"
     t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
     t.index ["weapon_series_variant_id"], name: "index_weapons_on_weapon_series_variant_id"
-    t.index ["wiki_raw_fetched_at"], name: "index_weapons_on_wiki_raw_fetched_at"
   end
 
   add_foreign_key "arcarum_blessing_levels", "arcarum_blessings", on_delete: :cascade
@@ -1917,7 +1887,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   add_foreign_key "weapon_skill_effects", "weapon_skill_versions", on_delete: :cascade
   add_foreign_key "weapon_skill_versions", "skills"
   add_foreign_key "weapon_skill_versions", "weapon_skills"
-  add_foreign_key "weapon_sources", "weapons", on_delete: :cascade
   add_foreign_key "weapons", "weapon_series"
   add_foreign_key "weapons", "weapon_series_variants"
 end

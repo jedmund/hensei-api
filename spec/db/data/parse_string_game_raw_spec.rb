@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'ParseStringGameRaw' do
   include CharacterSourceColumns
+  include ItemSourceColumns
 
   let(:migration_class) do
     require Rails.root.join('db/data/20261020120500_parse_string_game_raw') unless defined?(ParseStringGameRaw)

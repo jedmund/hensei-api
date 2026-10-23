@@ -51,8 +51,9 @@ module WeaponSkills
         counts = Hash.new(0)
         problems = []
         weapons = Weapon.where(id: rows.filter_map { |r| r["weapon_id"] }.uniq).index_by(&:id)
-        # Each weapon's own page (its wiki_raw source): [sha256, fetched_at], without the bodies.
-        pages = Weapon.owned_sources(:wiki_raw).where(owner_id: weapons.keys).without_body
+        # Each weapon's page (Weapon#wiki_raw): [sha256, fetched_at], without the bodies. Its
+        # titled row wins over a '' one (ordered last).
+        pages = Weapon.owned_sources(:wiki_raw).where(owner_id: weapons.keys).without_body.order(:key)
                       .to_h { |row| [row.owner_id, [row.sha256, row.fetched_at]] }
         # Titles compare in Granblue::WikiTitle form, whichever form either side stored.
         existing = WeaponSource.pluck(:id, :weapon_id, :kind, :key, :fetched_at, :sha256)
@@ -122,8 +123,9 @@ module WeaponSkills
                  problems: problems)
       end
 
-      # Applies a plan in one transaction. The weapon's own wiki_raw follows the stored page, as
-      # a fetch would: the build checks stored expansions against it.
+      # Applies a plan in one transaction. The stored page is the weapon's page (Weapon#wiki_raw),
+      # as after a fetch: a page stored without a fetch (key '') goes, and the page's fetch time
+      # moves up to the file's.
       def apply(plan)
         now = Time.current
         ActiveRecord::Base.transaction do
@@ -134,7 +136,9 @@ module WeaponSkills
           Weapon.where(id: plan.weapon_updates.keys).select(:id).find_each do |weapon|
             attrs = plan.weapon_updates.fetch(weapon.id)
             Weapon.where(id: weapon.id).update_all(wiki_en: attrs[:wiki_en])
-            ::Source.put(weapon, :wiki_raw, attrs[:wiki_raw], fetched_at: attrs[:fetched_at])
+            ::Source.where(owner_type: Weapon.polymorphic_name, owner_id: weapon.id, kind: "wiki_raw", key: "").delete_all
+            WeaponSource.where(weapon_id: weapon.id, kind: "wiki_raw", key: attrs[:wiki_en])
+                        .where(fetched_at: ...attrs[:fetched_at]).update_all(fetched_at: attrs[:fetched_at])
           end
         end
       end

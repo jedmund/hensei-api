@@ -15,8 +15,6 @@ module CharacterSkills
   module IconSnapshot
     KIND = 'icon_snapshot'
     KEY = 'character_skills'
-    # The committed file the data migration loads into the row; deleted by a follow-up.
-    FILE = Rails.root.join('data/character_skills/icons.json')
     KEYS = %w[granblue_id style kind position ordinal name_en game_icon].freeze
 
     # Two stored versions share a snapshot key but disagree on name or icon.

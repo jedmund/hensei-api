@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'BackfillWikiFetchDates' do
   include CharacterSourceColumns
+  include ItemSourceColumns
 
   let(:migration_class) do
     require Rails.root.join('db/data/20261016100003_backfill_wiki_fetch_dates') unless defined?(BackfillWikiFetchDates)

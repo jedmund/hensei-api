@@ -14,6 +14,10 @@
 #   - #source_sha256(kind) is the stored (or staged) body's digest without loading a body.
 #
 # SQL scopes can't see these attributes: use with_source(kind) / without_source(kind).
+#
+# A record's row of a kind has key ''. With titled: true the row may instead be keyed by a page
+# title (a weapon's page, which the weapon-skill store looks up by title): a record has one row
+# of the kind, a titled one preferred, and an assignment rewrites the row it has.
 module HasSources
   extend ActiveSupport::Concern
 
@@ -29,10 +33,17 @@ module HasSources
       @source_attributes ||= {}
     end
 
+    # Kinds whose row may be keyed by a title (titled: true).
+    def titled_source_kinds
+      @titled_source_kinds ||= Set.new
+    end
+
     # filter: applied to every assigned value before it's staged (e.g. a sanitizer).
-    def source_attribute(name, kind: name, fetched_at: nil, filter: nil)
+    # titled: the row may be keyed by a page title (see above).
+    def source_attribute(name, kind: name, fetched_at: nil, filter: nil, titled: false)
       kind = kind.to_s
       source_attributes[name.to_s] = kind
+      titled_source_kinds << kind if titled
 
       define_method(name) { source_value(kind) }
       define_method(:"#{name}=") { |value| stage_source(kind, filter ? filter.call(value) : value) }
@@ -44,9 +55,11 @@ module HasSources
 
     # Loads records' source rows in one query. kinds: only those (a record then reads any
     # other kind as absent, so pass every kind the caller reads). Only the records' own
-    # attributes (key ''): a weapon also owns its weapon-skill store pages, keyed by title.
+    # attribute rows: key '', or any key for a titled kind (a weapon's other store pages, its
+    # expansions and followed pages, stay out).
     def preload_sources(records, kinds: nil)
       scope = Source.where(key: '')
+      scope = scope.or(Source.where(kind: titled_source_kinds.to_a)) if titled_source_kinds.any?
       scope = scope.where(kind: Array(kinds).map(&:to_s)) if kinds
       ActiveRecord::Associations::Preloader.new(records: Array(records), associations: :sources, scope: scope).call
       records
@@ -62,7 +75,8 @@ module HasSources
 
     # The class's rows of kind.
     def owned_sources(kind)
-      Source.where(owner_type: polymorphic_name, kind: kind.to_s, key: '')
+      rows = Source.where(owner_type: polymorphic_name, kind: kind.to_s)
+      titled_source_kinds.include?(kind.to_s) ? rows : rows.where(key: '')
     end
   end
 
@@ -120,21 +134,28 @@ module HasSources
 
   # The full row (body included).
   def source_row(kind)
-    return sources.find { |source| source.kind == kind && source.key == '' } if association(:sources).loaded?
+    return own_rows(sources).find { |source| source.kind == kind } if association(:sources).loaded?
     return if new_record?
 
-    sources.find_by(kind: kind, key: '')
+    own_rows(self.class.owned_sources(kind).where(owner_id: id)).first
   end
 
-  # kind → row without its body (sha256, fetched_at), one query per record.
+  # kind → row without its body (sha256, fetched_at, key), one query per record.
   def source_meta
-    @source_meta ||= if association(:sources).loaded?
-                       sources.select { |source| source.key == '' }.index_by(&:kind)
-                     elsif new_record?
+    @source_meta ||= if new_record? && !association(:sources).loaded?
                        {}
                      else
-                       Source.owned_by(self).where(key: '').without_body.index_by(&:kind)
+                       rows = association(:sources).loaded? ? sources : Source.owned_by(self).without_body
+                       own_rows(rows).reverse.index_by(&:kind) # index_by keeps the last: the preferred row
                      end
+  end
+
+  # The record's attribute rows among rows, preferred first: key '' for a plain kind; for a
+  # titled kind, a titled row before a '' one, then the latest fetch.
+  def own_rows(rows)
+    titled = self.class.titled_source_kinds
+    rows.select { |source| source.key == '' || titled.include?(source.kind) }
+        .sort_by { |source| [source.key == '' ? 1 : 0, -(source.fetched_at || Time.zone.at(0)).to_f] }
   end
 
   def write_staged_sources
@@ -146,15 +167,17 @@ module HasSources
     reset_sources
   end
 
-  # → the Source::PutResult, or nil when only a fetch time was assigned.
+  # → the Source::PutResult, or nil when only a fetch time was assigned. Writes the row the
+  # record has (a titled kind's titled row), or a new one with key ''.
   def store_staged_source(kind, staged)
+    key = source_meta[kind]&.key || ''
     if staged.key?(:body)
       # No fetch time assigned: an edit, which keeps the stored fetch time.
-      return Source.put_body(self, kind, staged[:body], fetched_at: staged[:fetched_at], skip_owner_hook: true)
+      return Source.put_body(self, kind, staged[:body], key: key, fetched_at: staged[:fetched_at], skip_owner_hook: true)
     end
 
     # Only a fetch time was assigned: date the stored row, if there is one.
-    Source.owned_by(self).where(kind: kind, key: '').update_all(fetched_at: staged[:fetched_at])
+    Source.owned_by(self).where(kind: kind, key: key).update_all(fetched_at: staged[:fetched_at])
     nil
   end
 

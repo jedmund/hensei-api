@@ -3,7 +3,7 @@
 # Weapon and summon game payloads keep only the item's data (Granblue::GamePayload.sanitize_item),
 # as the models now store them. Cleans the stored rows in place: batched by id, idempotent
 # (a row already clean is left alone), with SQL updates, so no model callbacks or build jobs run.
-# Logs counts only.
+# Logs counts only. A no-op once the columns are dropped (20261023100000).
 class SanitizeItemGamePayloads < ActiveRecord::Migration[8.1]
   BATCH = 200
   TABLES = %w[weapons summons].freeze
@@ -11,6 +11,8 @@ class SanitizeItemGamePayloads < ActiveRecord::Migration[8.1]
 
   def up
     TABLES.product(COLUMNS).each do |table, column|
+      next say("#{table}.#{column} is gone; nothing to clean") unless db.column_exists?(table, column)
+
       checked, cleaned = sanitize(table, column)
       say "#{table}.#{column}: #{checked} checked, #{cleaned} cleaned"
     end

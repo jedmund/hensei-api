@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'SanitizeItemGamePayloads' do
+  include ItemSourceColumns
+
   include ActiveJob::TestHelper
 
   let(:migration_class) do

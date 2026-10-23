@@ -62,6 +62,8 @@ RSpec.describe WeaponSkills::SourceStore::Fetcher do
       expect(sources["transclusion"].key).to eq("Template:Weapon/Common/Illustrious")
       expect(weapon.reload.wiki_raw).to eq(fixture)
       expect(weapon.wiki_raw_fetched_at).to be_present
+      # one page row: the stored page replaced the one stored without a fetch
+      expect(Source.owned_by(weapon).where(kind: "wiki_raw").pluck(:key)).to eq(["Hrunting"])
       # the structural parse that found the followed page was rolled back
       expect(weapon.weapon_skills).to be_empty
     end
