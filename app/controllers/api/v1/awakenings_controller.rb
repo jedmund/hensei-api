@@ -3,6 +3,17 @@
 module Api
   module V1
     class AwakeningsController < Api::V1::ApiController
+      include EditorImageUpload
+      include UploadSizeLimit
+
+      # The game's awakening icons are 80x80 PNGs of about 3KB, so these leave
+      # plenty of room while keeping uploads icon-sized.
+      MAX_IMAGE_DIMENSION = 128
+      MAX_IMAGE_BYTES = 64 * 1024
+      # Base64 adds about a third to the image, plus the JSON around it.
+      UPLOAD_REQUEST_MAX_BYTES = 128 * 1024
+
+      limit_upload_size UPLOAD_REQUEST_MAX_BYTES, only: :upload_image
       before_action :doorkeeper_authorize!, only: %i[create update destroy upload_image]
       before_action :ensure_editor_role, only: %i[create update destroy upload_image]
 
@@ -55,22 +66,25 @@ module Api
       end
 
       # POST /awakenings/:id/upload_image
+      # Body: { image: <base64-png>, filename: <string?> }
+      # Stored at icons/awakening/<slug>.png, where the web app reads it.
       def upload_image
         awakening = Awakening.find_by(id: params[:id])
         return render_not_found_response('awakening') unless awakening
 
-        image_data = params[:image]
-        content_type = params[:content_type] || 'image/png'
+        unless awakening.slug.to_s.match?(Awakening::SLUG_FORMAT)
+          return render json: { error: 'Awakening slug is invalid' }, status: :unprocessable_entity
+        end
 
-        return render json: { error: 'No image data provided' }, status: :unprocessable_entity if image_data.blank?
+        bytes = uploaded_image_bytes(params[:image])
+        result = IconUploadValidator.call(bytes, max_dimension: MAX_IMAGE_DIMENSION, max_bytes: MAX_IMAGE_BYTES)
+        return render json: { error: result.error }, status: :unprocessable_entity unless result.valid?
 
-        decoded_image = Base64.decode64(image_data)
-        s3_key = "images/awakening/#{awakening.slug}.png"
+        IconStorage.put("#{Awakening::IMAGE_PREFIX}/#{awakening.slug}.#{result.extension}", bytes,
+                        content_type: result.content_type)
+        awakening.touch
 
-        aws = AwsService.new
-        aws.upload_stream(StringIO.new(decoded_image), s3_key)
-
-        render json: { success: true, url: s3_key }
+        render json: AwakeningBlueprint.render(awakening)
       end
 
       private
