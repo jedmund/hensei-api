@@ -8,7 +8,7 @@ module Granblue
     # Fetches raw HTML pages from the Japanese wiki (gbf-wiki.com). Unlike gbf.wiki
     # (English) this is a PukiWiki site with no structured API, so we fetch the
     # rendered HTML page and parse it elsewhere. Pages are served UTF-8; titles are
-    # stored decoded in wiki_ja (a few legacy rows are EUC-JP percent-encoded).
+    # stored plain in wiki_ja (Granblue::JpWikiTitle decodes any left percent-encoded).
     class JpWiki
       class_attribute :base_uri
       self.base_uri = 'https://gbf-wiki.com/'
@@ -35,16 +35,10 @@ module Granblue
         { 'User-Agent' => Rails.application.credentials.wiki_user_agent.presence || 'hensei-api' }
       end
 
-      # Current wiki_ja rows are plain Japanese; legacy rows may be EUC-JP
-      # percent-encoded. Decode the latter, pass the former through untouched.
+      # Stored titles may still be percent-encoded (UTF-8 or legacy EUC-JP); raises
+      # Granblue::JpWikiTitle::InvalidTitle rather than fetching a garbled title.
       def resolve_title(title)
-        text = title.to_s
-        return text unless text.match?(/%[0-9A-Fa-f]{2}/)
-
-        bytes = text.gsub(/%([0-9A-Fa-f]{2})/) { Regexp.last_match(1).hex.chr }.b
-        bytes.force_encoding('EUC-JP').encode('UTF-8')
-      rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
-        text
+        Granblue::JpWikiTitle.decode!(title.to_s)
       end
 
       # PukiWiki query string: UTF-8 percent-encoded title.

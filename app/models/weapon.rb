@@ -17,6 +17,8 @@ class Weapon < ApplicationRecord
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  # A plain gbf-wiki.com title (Granblue::JpWikiTitle): a pasted percent-encoded one is decoded.
+  normalizes :wiki_ja, with: ->(title) { Granblue::JpWikiTitle.normalize(title) }
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |weapon|

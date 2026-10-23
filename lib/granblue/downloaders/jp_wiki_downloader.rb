@@ -17,8 +17,8 @@ module Granblue
       }.freeze
 
       # Backfill wiki_raw_jp for a model. Skips rows already cached unless force.
-      # Uses wiki_ja when it's clean Japanese; falls back to name_jp + rarity
-      # suffix when wiki_ja is blank or a legacy percent-encoded path.
+      # Uses wiki_ja (decoded if still percent-encoded); falls back to name_jp +
+      # rarity suffix when wiki_ja is blank.
       #
       #   ids:     granblue_ids, taken as given (a row with no resolvable title is skipped)
       #   missing: only rows with a blank wiki_raw_jp (force then changes nothing:
@@ -93,13 +93,14 @@ module Granblue
       end
 
       # Resolve the JP wiki page title for a record.
-      #   - Percent-encoded wiki_ja: pass through (JpWiki decodes it)
-      #   - Clean wiki_ja (plain Japanese): use as-is
+      #   - wiki_ja: decoded to the plain title if it's still percent-encoded (UTF-8 or
+      #     EUC-JP); raises Granblue::JpWikiTitle::InvalidTitle when it can't be decoded,
+      #     so the backfill reports the row instead of fetching a garbled title
       #   - Otherwise: construct from name_jp + rarity suffix
-      # Weapons get a 武器/ prefix on gbf-wiki.com; characters/summons do not.
+      # Weapons get a 武器/ prefix on gbf-wiki.com unless the title already names a path
+      # (武器/…, or a series page like 武器概要/…); characters/summons do not.
       def self.resolve_title(record)
-        wiki_ja = record.wiki_ja.to_s
-        return wiki_ja if wiki_ja.present? && wiki_ja.match?(/%[0-9A-Fa-f]{2}/)
+        wiki_ja = Granblue::JpWikiTitle.decode!(record.wiki_ja.to_s)
 
         title = if wiki_ja.present?
                   wiki_ja
@@ -111,7 +112,7 @@ module Granblue
                   "#{name_jp} #{suffix}".strip
                 end
 
-        record.is_a?(Weapon) && !title.start_with?('武器/') ? "武器/#{title}" : title
+        record.is_a?(Weapon) && !title.include?('/') ? "武器/#{title}" : title
       end
 
       def self.print_progress(current, total, name, status, start_time)

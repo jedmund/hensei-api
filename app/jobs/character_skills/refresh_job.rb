@@ -78,7 +78,8 @@ module CharacterSkills
     # error_code is what the UI localizes:
     #   wiki_fetch_failed: the wiki answered with an error (error_status: its HTTP status) or
     #                      couldn't be reached (error_status: nil);
-    #   build_refused:     no wikitext, the build made no skills, or no page / JP title;
+    #   build_refused:     no wikitext, the build made no skills, or no page / JP title
+    #                      (or an undecodable stored one);
     #   preview_expired:   at apply, the previewed text has expired (24 hours);
     #   character_missing: the character was deleted after it was picked;
     #   unexpected:        anything else (a build that raised, a bug).
@@ -90,7 +91,7 @@ module CharacterSkills
       when *NETWORK_ERRORS
         { error: "The wiki could not be reached (#{error.class}: #{error.message})",
           error_code: 'wiki_fetch_failed', error_status: nil }
-      when Refresh::BuildRefused, Granblue::WikiFetcher::MissingPageError
+      when Refresh::BuildRefused, Granblue::WikiFetcher::MissingPageError, Granblue::JpWikiTitle::InvalidTitle
         { error: error.message, error_code: 'build_refused', error_status: nil }
       when Refresh::PreviewExpired
         { error: error.message, error_code: 'preview_expired', error_status: nil }

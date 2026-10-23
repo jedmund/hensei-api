@@ -14,6 +14,8 @@ class Summon < ApplicationRecord
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  # A plain gbf-wiki.com title (Granblue::JpWikiTitle): a pasted percent-encoded one is decoded.
+  normalizes :wiki_ja, with: ->(title) { Granblue::JpWikiTitle.normalize(title) }
 
   belongs_to :summon_series, optional: true
   has_many :auras, class_name: "SummonAura", foreign_key: :summon_granblue_id,
