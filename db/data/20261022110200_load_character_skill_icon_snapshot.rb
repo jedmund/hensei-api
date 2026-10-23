@@ -3,7 +3,8 @@
 # Loads the committed character skill icon snapshot (data/character_skills/icons.json) into its
 # `sources` row (kind icon_snapshot, key character_skills), where CharacterSkills::IconSnapshot
 # reads it now (D34, PR 7b). The body is the file byte for byte, so the row's sha256 is the
-# file's digest and character build fingerprints don't change. A follow-up deletes the file.
+# file's digest and character build fingerprints don't change. The file is gone since the
+# follow-up (PR 7b drop), so this stores nothing where it hadn't run yet.
 #
 # Idempotent: an existing row is kept (an export through the store since wins). Logs counts only.
 class LoadCharacterSkillIconSnapshot < ActiveRecord::Migration[8.1]

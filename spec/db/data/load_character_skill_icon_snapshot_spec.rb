@@ -14,7 +14,14 @@ RSpec.describe 'LoadCharacterSkillIconSnapshot' do
     migration_class.new.tap { |m| m.verbose = false }.up
   end
 
-  it 'stores the committed file byte for byte, so fingerprints keep its digest' do
+  # The committed file is gone (PR 7b drop); a stand-in as it was exported.
+  let(:path) { Rails.root.join('tmp', "icons-#{SecureRandom.hex(4)}.json") }
+
+  after { FileUtils.rm_f(path) }
+
+  it 'stores the file byte for byte, so fingerprints keep its digest' do
+    File.write(path, "[\n  {\"granblue_id\":\"3040377000\",\"name_en\":\"Jinx\",\"game_icon\":\"2559_3\"}\n]\n")
+    stub_const("#{migration_class}::PATH", path)
     run
 
     row = Source.fetch(nil, :icon_snapshot, key: CharacterSkills::IconSnapshot::KEY)
@@ -30,7 +37,7 @@ RSpec.describe 'LoadCharacterSkillIconSnapshot' do
   end
 
   it 'stores nothing without the file' do
-    stub_const("#{migration_class}::PATH", Rails.root.join('tmp/no-such-icons.json'))
+    expect(File.exist?(migration_class::PATH)).to be(false)
     run
     expect(CharacterSkills::IconSnapshot.sha256).to be_nil
   end
