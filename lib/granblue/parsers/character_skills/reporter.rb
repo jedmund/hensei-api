@@ -12,7 +12,7 @@ module Granblue
           @status_lookup = status_lookup
         end
 
-        def report_for(graph, unmatched_statuses:, missing_fields: [])
+        def report_for(graph, unmatched_statuses:, counted_instants: [], missing_fields: [])
           {
             character_granblue_id: graph[:character_granblue_id],
             counts: {
@@ -22,6 +22,7 @@ module Granblue
               links: graph[:links].size
             },
             unmatched_statuses: unmatched_statuses.to_a.sort,
+            counted_instants: counted_instants,
             missing_fields: missing_fields.uniq,
             cross_validation: cross_validate_statuses(graph),
             slots: graph[:slots],

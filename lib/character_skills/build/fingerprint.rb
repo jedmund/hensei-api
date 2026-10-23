@@ -9,7 +9,7 @@ module CharacterSkills
     #     (an optional input: absent, it adds nothing, so other characters' digests don't move);
     #   - the other characters columns the Builder reads: granblue_id, element, style_swap;
     #   - the stored gbf.wiki status list (Source wiki_status_list, D34), by sha256 ("-" when missing);
-    #   - data/statuses/categories.json, aliases.json and numbered_exceptions.json, by sha256 (effects
+    #   - data/statuses/categories.json, aliases.json, spelling_labels.json and numbered_exceptions.json, by sha256 (effects
     #     read them directly: curated categories, display aliases, numbered names);
     #   - the statuses catalogue, (id, name_en, category, game_status_id, variant_kind) sorted (effects
     #     take their type, exact display id and variant kind from these);
@@ -73,6 +73,7 @@ module CharacterSkills
                  "status_list:#{Granblue::Parsers::StatusList.sha256 || NONE}",
                  "curated_statuses:#{Granblue::Parsers::CuratedStatusCategories.sha256}",
                  "status_aliases:#{Granblue::Parsers::StatusAliases.sha256}",
+                 "spelling_labels:#{Granblue::Parsers::SpellingLabels.sha256}",
                  "numbered_exceptions:#{Granblue::Parsers::StatusName.exceptions_sha256}"]
         parts += REQUIRED_SOURCES.map { |kind| "#{kind}:#{digests.fetch(kind)}" }
         parts += OPTIONAL_SOURCES.filter_map { |kind| "#{kind}:#{digests[kind]}" if digests[kind] && digests[kind] != NONE }

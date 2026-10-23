@@ -27,7 +27,10 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   describe 'effect_type' do
     let(:charge_boost) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'cb-id', category: 'buff') }
     let(:paradise) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'field-id', category: 'field') }
-    let(:mystery) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'mystery-id', category: 'special') }
+    let(:mystery) do
+      instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'mystery-id', category: 'special', name_en: 'Mystery',
+                                description: nil)
+    end
     let(:lookup) do
       { by_name: { 'veil' => veil, 'jammed' => jammed, 'charge boost' => charge_boost, 'paradise' => paradise,
                    'mystery' => mystery }, by_id: {} }
@@ -105,13 +108,95 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'instant effects (category special)' do
-    let(:charge) { instance_double('Status', id: 'cb', category: 'special', game_status_id: '1061', variant_kind: nil) }
-    let(:delay) { instance_double('Status', id: 'dl', category: 'special', game_status_id: '1040', variant_kind: nil) }
-    let(:lookup) { { by_name: { 'charge boost' => charge, 'delay' => delay }, by_id: {} } }
+    let(:charge) do
+      instance_double('Status', id: 'cb', category: 'special', game_status_id: '1061', variant_kind: nil, name_en: 'Charge Boost',
+                                description: 'Instantly boosts Charge Bar by %a%')
+    end
+    let(:delay) do
+      instance_double('Status', id: 'dl', category: 'special', game_status_id: '1040', variant_kind: nil, name_en: 'Delay',
+                                description: "Reduce a foe's filled charge diamonds by 1")
+    end
+    let(:bomb) do
+      instance_double('Status', id: 'bm', category: 'special', game_status_id: '7097', variant_kind: nil, name_en: 'Bomb',
+                                description: "All foes take DMG at end of turn (Can't be removed)")
+    end
+    let(:lookup) { { by_name: { 'charge boost' => charge, 'delay' => delay, 'bomb' => bomb }, by_id: {} } }
 
     it "types each by its own mention's verb, not the previous clause" do
       effects = parser.parse("Big damage to a foe.\nAll allies gain {{status|Charge Boost|a=10%}}.\nInflict {{status|Delay}}.")
       expect(effects.map { |e| [e[:status_id], e[:effect_type]] }).to eq([%w[cb grant_status], %w[dl inflict_status]])
+      expect(effects.map { |e| e[:category] }).to eq(%w[special special])
+      expect(parser.counted_instants).to be_empty
+    end
+
+    describe 'one that lasts (D56)' do
+      it 'counts a mention with a duration in turns as a buff or debuff by its verb, and flags it' do
+        effects = parser.parse("Gain {{status|Charge Boost|t=3T}}.\nInflict {{status|Delay|t=2T}} on a foe.")
+        expect(effects.map { |e| e[:category] }).to eq(%w[buff debuff])
+        expect(parser.counted_instants).to eq(
+          [{ status: 'Charge Boost', raw: '{{status|Charge Boost|t=3T}}', reason: 'duration 3T' },
+           { status: 'Delay', raw: '{{status|Delay|t=2T}}', reason: 'duration 2T' }]
+        )
+      end
+
+      it "counts one whose description says end of turn or can't be removed" do
+        effect = parser.parse('Inflict {{status|Bomb}} on all foes.').first
+        expect(effect).to include(category: 'debuff', effect_type: 'inflict_status')
+        expect(parser.counted_instants.sole).to include(status: 'Bomb', reason: 'description: end of turn')
+      end
+
+      it "still lets the game's array in the skill win" do
+        effect = parser.parse('Gain {{status|Bomb}}.', game_details: [{ id: '7097', category: 'debuff' }]).first
+        expect(effect[:category]).to eq('debuff')
+      end
+    end
+  end
+
+  describe 'labels (D57)' do
+    let(:jammed_listed) { instance_double('Status', id: 'jm', category: 'debuff', game_status_id: '1037', variant_kind: nil, name_en: 'Jammed') }
+    let(:def_down) do
+      instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered')
+    end
+    let(:seal) { instance_double('Status', id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal 1') }
+    let(:shielded) do
+      instance_double('Status', id: 'sh', category: 'buff', game_status_id: '1022', variant_kind: nil, name_en: 'Shielded')
+    end
+    let(:lookup) do
+      { by_name: { 'jammed' => jammed_listed, 'def lowered' => def_down, 'aetherial seal 1' => seal, 'shielded' => shielded }, by_id: {} }
+    end
+
+    before do
+      Granblue::Parsers::StatusList.use(<<~LUA)
+        local debuffs = {
+          ['Jammed'] = { page = 'Jammed', status = '1037' },
+          ['Guilty Break'] = { link = 'Jammed', name = 'Guilty Break' },
+          ['DEF Lowered'] = { page = 'DEF Down', status = '1020' },
+          ['DEF Lowered 2'] = { link = 'DEF Lowered', status = '1020_2' },
+          ['Aetherial Seal 1'] = { status = '1111' },
+          ['Aetherial Seal'] = { link = 'Aetherial Seal 1' },
+          ['Shielded'] = { status = '1022' },
+          ['Shield'] = { link = 'Shielded' },
+        }
+        local aliases = { ['DEF Down'] = 'DEF Lowered', ['DEF Down 2'] = 'DEF Lowered 2' }
+        return { buffs = {}, debuffs = debuffs, effects = {}, aliases = aliases }
+      LUA
+    end
+
+    it "keeps the skill's own name for a status the wiki list links to another" do
+      effect = parser.parse('Inflict {{status|Guilty Break|t=3T}} on a foe.').first
+      expect(effect).to include(status_id: 'jm', label: 'Guilty Break', category: 'debuff')
+    end
+
+    it "gives none when the mention names the status itself, another spelling of it, or a numbered variant" do
+      effects = parser.parse('Inflict {{status|Jammed}}, {{status|DEF Down}}, {{status|DEF Down 2|t=2T}} and {{status|Aetherial Seal}}.')
+      expect(effects.map { |e| e[:status_id] }).to eq(%w[jm dd dd as])
+      expect(effects.pluck(:label)).to all(be_nil)
+    end
+
+    it 'drops a label that is only another spelling of the status name (D60)' do
+      effect = parser.parse('Gain {{status|Shield|a=1000}}.').first
+      expect(effect).to include(status_id: 'sh')
+      expect(effect).not_to have_key(:label)
     end
   end
 
