@@ -101,6 +101,7 @@ Rails.application.routes.draw do
     post 'import/weapons', to: 'import#weapons'
     post 'import/summons', to: 'import#summons'
     post 'import/characters', to: 'import#characters'
+    post 'import/wiki', to: 'wiki_import#create'
 
     get 'users/info/:id', to: 'users#info'
 
