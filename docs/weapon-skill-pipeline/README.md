@@ -49,6 +49,7 @@ The new pipeline must reproduce today's calculator data **exactly** before anyth
    The script restores the latest `catalogue-YYYYMMDD` release asset, migrates, syncs curation and loads the golden fixtures (once W4 adds them). Restoring takes about 15 s.
    - **The dump:** game catalogue only, no user data. It's a **draft** release on `jedmund/hensei-api`, so it's private to repo collaborators; any machine with `gh` auth can download it.
    - Run the script again when the lead announces a new dump.
+   - **The dump must match your branch's schema.** The restore stops at the first table whose columns differ (`--exit-on-error`). On an older branch, pin a catalogue tag from before the schema change: `bin/setup-pipeline-db W<n> catalogue-YYYYMMDD` (or `CATALOGUE_TAG=…`). A dump from before a branch's change (for example, one that still has `weapons.wiki_raw` or `weapon_sources`, dropped in PR 7b's follow-up) doesn't restore on that branch either; publish a new dump after such a change deploys.
    - **Never** run rake tasks against `hensei_dev` from a pipeline branch. The dev curation auto-export would write that database's curation into your branch.
 5. **Your own branch:** `pipeline/W<n>-<slug>`, branched from **`origin/pipeline/integration`**, in its own worktree or clone.
    - `pipeline/integration` is W0 plus every workstream the lead has reviewed. Nobody merges into it but the lead.
