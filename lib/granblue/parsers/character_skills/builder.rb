@@ -241,6 +241,8 @@ subtitle: subtitle }
           @version_keys << version_key
           attrs = version_attrs(key, slot: slot, role: role, ordinal: ordinal, raw_description_en: raw_description_en, overrides: overrides)
           icon_source = attrs.delete(:game_icon_source)
+          effects = effects_for(slot, raw_description_en, key)
+          attrs[:description_segments] = description_segments(raw_description_en, effects)
 
           {
             key: version_key,
@@ -248,8 +250,39 @@ subtitle: subtitle }
             # Where game_icon came from (see game_icon_for); reported, never written.
             game_icon_source: attrs[:game_icon] && icon_source,
             attrs: attrs.compact,
-            effects: effects_for(slot, raw_description_en, key)
+            effects: effects
           }
+        end
+
+        # The English description as display segments (::CharacterSkills::DescriptionMarkup),
+        # string-keyed as they read back from the jsonb column.
+        def description_segments(raw_description_en, effects)
+          segments = ::CharacterSkills::DescriptionMarkup.segments(
+            raw_description_en, effects: effects, skill_name: method(:referenced_skill_name)
+          )
+          segments.map(&:deep_stringify_keys).presence
+        end
+
+        # The name of the skill a {{CharacterSkill2|Page|n}}-style template points at: this
+        # character's own wiki fields, or another character's built skill (nil when it isn't
+        # built yet, or the page isn't a character we know).
+        def referenced_skill_name(kind, page, position)
+          if page.blank? || [character.wiki_en, character.name_en].include?(page)
+            key = if kind == 'support'
+                    position == 1 ? 'sa' : "sa#{position}"
+                  else
+                    "a#{position}"
+                  end
+            return FieldParser.split_name(wiki_params["#{key}_name"]).first.presence
+          end
+
+          @referenced_characters ||= {}
+          other = @referenced_characters.fetch(page) { @referenced_characters[page] = Character.find_by(wiki_en: page) }
+          return if other.nil?
+
+          CharacterSkillVersion.joins(:character_skill)
+                               .where(character_skills: { character_id: other.id, kind: kind, position: position })
+                               .order(:ordinal).pick(:name_en)
         end
 
         def effects_for(slot, description, key)
