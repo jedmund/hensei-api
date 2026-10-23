@@ -42,10 +42,17 @@ module Api
                  :promotion_names, :series, :uncap, :support_eligible
       end
 
-      # Minimal view for party list cards — just enough for image rendering
+      # Minimal view for party list cards — just enough for image rendering.
+      # Series is trimmed to id/slug so reps can pick uncap-stage art.
       view :list do
         excludes :name, :element, :rarity, :max_level, :promotions,
-                 :promotion_names, :series, :uncap, :subaura, :limit, :support_eligible
+                 :promotion_names, :uncap, :subaura, :limit, :support_eligible
+
+        field :series do |s|
+          next nil unless s.summon_series.present?
+
+          { id: s.summon_series_id, slug: s.summon_series.slug }
+        end
       end
 
       view :stats do

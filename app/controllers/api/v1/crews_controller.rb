@@ -120,7 +120,7 @@ module Api
                          :job, { raid: :group }, :solomonis_expedition,
                          { characters: :character },
                          { weapons: { weapon: :weapon_series } },
-                         { summons: :summon }
+                         { summons: { summon: :summon_series } }
                        )
                        .order(created_at: :desc)
                        .paginate(page: params[:page], per_page: page_size)

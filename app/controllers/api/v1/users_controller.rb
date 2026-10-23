@@ -133,7 +133,7 @@ module Api
             :guidebook3,
             { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
             { weapons: [{ weapon: [:weapon_series, :weapon_series_variant], collection_weapon: {} }, :awakening] },
-            { summons: [:summon, :collection_summon] }
+            { summons: [{ summon: :summon_series }, :collection_summon] }
           )
           # Restrict to parties belonging to the profile owner
           base_query = base_query.where(user_id: @user.id)
@@ -249,7 +249,7 @@ module Api
           :guidebook3,
           { characters: [{ character: :character_series_records }, :awakening] },
           { weapons: [{ weapon: [:weapon_series, :weapon_series_variant] }, :awakening] },
-          { summons: :summon }
+          { summons: { summon: :summon_series } }
         )
         # Restrict to parties belonging to the profile’s owner.
         query = query.where(user_id: profile_user.id)

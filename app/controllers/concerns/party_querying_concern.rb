@@ -15,7 +15,7 @@ module PartyQueryingConcern
       { user: { active_crew_membership: :crew } },
       { characters: [:character, :awakening] },
       { weapons: [{ weapon: :weapon_series }, :awakening] },
-      { summons: :summon }
+      { summons: { summon: :summon_series } }
     )
   end
 
