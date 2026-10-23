@@ -39,7 +39,10 @@ class Source < ApplicationRecord
     'family_template' => :text,
     # The character skill icon snapshot (CharacterSkills::IconSnapshot), one shared row. Text,
     # not JSON: the body is the exported file byte for byte, so its sha256 is the file's.
-    'icon_snapshot' => :text
+    'icon_snapshot' => :text,
+    # gbf.wiki Cargo query rows, one shared row per Cargo table (key: the table name), so a
+    # backfill parses a stored copy (Granblue::WeaponWikiBackfill).
+    'wiki_cargo' => :json
   }.freeze
   # page_kind belongs to the weapon-skill store's rows (WeaponSource validates it; a check
   # constraint holds it). Source doesn't read it, so data migrations that run before the
