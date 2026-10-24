@@ -177,6 +177,7 @@ class Party < ApplicationRecord
 
   has_many :favorites, dependent: :destroy
   has_many :party_stickers, dependent: :delete_all
+  has_many :featured_parties, dependent: :delete_all
   has_many :playlist_parties, dependent: :destroy
   has_many :playlists, through: :playlist_parties
   has_many :party_shares, dependent: :destroy

@@ -36,7 +36,7 @@ class PartyQueryBuilder
     query = apply_includes(query, @params[:includes]) if @params[:includes].present?
     query = apply_excludes(query, @params[:excludes]) if @params[:excludes].present?
     query = apply_collection_filter(query) if @params[:collection_filter].present? && @current_user
-    query.order(created_at: :desc)
+    apply_sort(query)
   end
 
   private
@@ -61,8 +61,18 @@ class PartyQueryBuilder
     query
   end
 
-  # `label=<slug>`: parties where that active sticker has reached the label
-  # threshold.
+  # `sort=participation` orders by the stored participation score (never
+  # rendered); anything else keeps newest first.
+  def apply_sort(query)
+    if @params[:sort] == 'participation'
+      query.order(Party.arel_table[:participation_score].desc.nulls_last, created_at: :desc)
+    else
+      query.order(created_at: :desc)
+    end
+  end
+
+  # `label=<slug>`: parties whose label is that sticker (see
+  # PartyStickerSummary.labels_for).
   def apply_label_filter(query)
     return query unless @params[:label].present?
 

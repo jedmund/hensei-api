@@ -253,6 +253,20 @@ Rails.application.routes.draw do
       end
     end
 
+    # Events (the schedule) and staff picks; editors manage both
+    resources :events, only: %i[index show create update] do
+      collection do
+        post :sync
+      end
+      member do
+        post :approve
+        post :hide
+        post :upload_image
+      end
+    end
+    resources :featured_parties, only: %i[index create update destroy]
+    get 'home', to: 'home#show'
+
     # Party difficulty
     resources :difficulties, only: %i[index show create update destroy]
     resources :difficulty_components, only: %i[index show update]
