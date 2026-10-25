@@ -80,6 +80,12 @@ class RenumberEnumsToGameIds < ActiveRecord::Migration[8.1]
   end
 
   def remap_column(table, column, map, unique: false)
+    # schema.rb lists tables that some databases never created (events, in production).
+    unless connection.table_exists?(table)
+      say "#{table}.#{column}: skipped, no such table"
+      return
+    end
+
     col = connection.quote_column_name(column)
     tbl = connection.quote_table_name(table)
     keys = map.keys.join(', ')

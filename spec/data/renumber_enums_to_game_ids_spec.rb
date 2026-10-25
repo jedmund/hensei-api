@@ -100,6 +100,13 @@ RSpec.describe RenumberEnumsToGameIds do
     expect(race_target.reload.target_values).to eq([5, 6])
   end
 
+  it 'skips tables the database never created' do
+    ActiveRecord::Base.connection.drop_table(:events, force: :cascade)
+
+    expect { migration.up }.not_to raise_error
+    expect(fediel.reload.element).to eq(6)
+  end
+
   it 'renumbers rich-text mention tokens' do
     migration.up
 
