@@ -138,7 +138,7 @@ RSpec.describe CollectionCharacter, type: :model do
 
   describe 'scopes' do
     let!(:fire_char) { create(:character, element: 0) }
-    let!(:water_char) { create(:character, element: 1) }
+    let!(:water_char) { create(:character, element: 4) }
     let!(:ssr_char) { create(:character, rarity: 4) }
     let!(:sr_char) { create(:character, rarity: 3) }
 

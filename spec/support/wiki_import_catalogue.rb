@@ -18,9 +18,9 @@ RSpec.shared_context 'with a wiki import catalogue' do
   let!(:accessory) { create(:job_accessory, job: job, name_en: "WI Hero's Shield", accessory_type: 1) }
 
   let!(:seofon) do
-    create(:character, :transcendable, name_en: 'WI Seofon', wiki_en: 'WI Seofon', element: 1)
+    create(:character, :transcendable, name_en: 'WI Seofon', wiki_en: 'WI Seofon', element: 4)
   end
-  let!(:tikoh) { create(:character, name_en: 'WI Tikoh', wiki_en: 'WI Tikoh', element: 1) }
+  let!(:tikoh) { create(:character, name_en: 'WI Tikoh', wiki_en: 'WI Tikoh', element: 4) }
 
   let!(:ultima_gun) do
     create(:weapon, name_en: 'WI Ultima Gun', wiki_en: 'WI Ultima Gun', weapon_series: ultima_series,
@@ -32,7 +32,7 @@ RSpec.shared_context 'with a wiki import catalogue' do
   end
   let!(:opus_staff) do
     create(:weapon, :transcendable, name_en: 'WI Staff of Renunciation', wiki_en: 'WI Staff of Renunciation',
-                                    weapon_series: opus_series, element: 5)
+                                    weapon_series: opus_series, element: 6)
   end
   let!(:weapon_skill_awakening) { Awakening.find_by!(slug: 'weapon-skill') }
   let!(:opus_awakening) { create(:weapon_awakening, weapon: opus_staff, awakening: weapon_skill_awakening) }

@@ -13,9 +13,7 @@ module Granblue
     class CharacterGridEffectExtractor
       P = Granblue::Parsers::WeaponSkillParser
       ELEMENTS = %w[fire water wind earth light dark].freeze
-      CHARACTER_ELEMENT_BY_ID = {
-        1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light"
-      }.freeze
+      CHARACTER_ELEMENT_BY_ID = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
 
       # aura-word (downcased) => [frame, element]
       WORD_MAP = {}.tap do |m|

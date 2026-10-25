@@ -14,11 +14,11 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
   let(:zone) { create(:raid, :solomonis_zone, name_en: 'Allotropic Microcosm', slug: 'allotropic-microcosm') }
   let(:nier) do
     create(:character, :solomonis_evoker, solomonis_zone: zone, name_en: 'Nier', name_jp: 'ニーア',
-                                          granblue_id: '3040169000', element: 5)
+                                          granblue_id: '3040169000', element: 6)
   end
   let(:caim) do
     create(:character, :solomonis_evoker, solomonis_zone: zone, name_en: 'Caim', name_jp: 'カイム',
-                                          granblue_id: '3040164000', element: 4)
+                                          granblue_id: '3040164000', element: 3)
   end
   let(:justice) { create(:arcarum_blessing, :justice) }
   let(:justice_level) { create(:arcarum_blessing_level, arcarum_blessing: justice, level: 3, cost: 50) }
@@ -35,7 +35,7 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       evokers = response.parsed_body['route_evokers']
       expect(evokers.size).to eq(1)
       expect(evokers.first).to include(
-        'id' => nier.id, 'granblue_id' => '3040169000', 'element' => 5,
+        'id' => nier.id, 'granblue_id' => '3040169000', 'element' => 6,
         'name' => { 'en' => 'Nier', 'ja' => 'ニーア' }
       )
       expect(evokers.first['zone']).to eq(
@@ -128,7 +128,7 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       )
       expect(solomonis.keys).not_to include('kind', 'bosses_defeated', 'midboss', 'expedition_level', 'build_party')
       expect(solomonis['route_evoker']).to eq('id' => nier.id, 'granblue_id' => '3040169000',
-                                              'name' => { 'en' => 'Nier', 'ja' => 'ニーア' }, 'element' => 5)
+                                              'name' => { 'en' => 'Nier', 'ja' => 'ニーア' }, 'element' => 6)
       expect(solomonis['zone']).to include('id' => zone.id, 'slug' => 'allotropic-microcosm')
       expect(solomonis['blessings']).to eq([{
                                              'blessing' => { 'id' => justice.id, 'slug' => 'justice',

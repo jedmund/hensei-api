@@ -39,10 +39,10 @@ RSpec.describe WikiImport::Importer do
       seofon_entry = matched.find { |m| m[:kind] == 'character' && m[:position] == 0 }
 
       expect(gun[:item]).to eq(id: ultima_gun.id, granblueId: ultima_gun.granblue_id,
-                               name: { en: 'WI Ultima Gun', ja: ultima_gun.name_jp }, element: 2)
+                               name: { en: 'WI Ultima Gun', ja: ultima_gun.name_jp }, element: 1)
       expect(gun[:title]).to eq('WI Ultima Gun (Fire)')
       expect(sword[:item][:element]).to be_nil
-      expect(seofon_entry[:item][:element]).to eq(1)
+      expect(seofon_entry[:item][:element]).to eq(4)
     end
 
     it 'writes nothing' do
@@ -220,7 +220,7 @@ RSpec.describe WikiImport::Importer do
       staff = party.weapons.find_by(position: 0)
       sword = party.weapons.find_by(position: 1)
 
-      expect(mainhand).to have_attributes(weapon: ultima_gun, mainhand: true, uncap_level: 4, element: 2,
+      expect(mainhand).to have_attributes(weapon: ultima_gun, mainhand: true, uncap_level: 4, element: 1,
                                           weapon_key1_id: will_key.id, weapon_key2_id: ca_key.id)
       expect(sword).to have_attributes(uncap_level: 5, element: nil,
                                        weapon_key1_id: will_key.id, weapon_key2_id: ca_key.id)

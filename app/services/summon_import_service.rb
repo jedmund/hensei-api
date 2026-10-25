@@ -20,7 +20,7 @@ class SummonImportService
     @update_existing = options[:update_existing] || false
     @is_full_inventory = options[:is_full_inventory] || false
     @reconcile_deletions = options[:reconcile_deletions] || false
-    @filter = options[:filter] # { elements: [...] }
+    @filter = CollectionImportFilter.from(options[:filter])
     @conflict_resolutions = options[:conflict_resolutions] || {}
     @created = []
     @updated = []
@@ -304,8 +304,8 @@ class SummonImportService
     return scope unless @filter.present?
 
     # Element: always join through summon (no element on collection_summons)
-    if @filter[:elements].present? || @filter['elements'].present?
-      elements = @filter[:elements] || @filter['elements']
+    if @filter.elements.present?
+      elements = @filter.elements
       scope = scope.joins(:summon).where(summons: { element: elements })
     end
 

@@ -92,6 +92,10 @@ RSpec.configure do |config|
       load migration_file
     end
     PopulateElementVariantIds.new.up
+    # Its keys are the old element numbers; move them to the game's, as production did.
+    ActiveRecord::Migration.suppress_messages do
+      RenumberEnumsToGameIds.new.send(:remap_element_variant_ids, RenumberEnumsToGameIds::ELEMENT)
+    end
   end
 
   # -----------------------------------------------------------------------------

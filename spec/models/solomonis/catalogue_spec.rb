@@ -134,14 +134,4 @@ RSpec.describe 'Evoking Solomonis catalogues', type: :model do
       expect(build(:expedition_guide_effect, party: create(:party))).not_to be_valid
     end
   end
-
-  describe Granblue::GameIds do
-    it "maps the game's weapon kinds to Hensei proficiencies" do
-      expect(described_class.proficiency_for_weapon_kind(3)).to eq(4)
-      expect(described_class.proficiency_for_weapon_kind('6')).to eq(9)
-      expect(described_class.proficiency_for_weapon_kind(11)).to be_nil
-      expect(described_class.proficiency_for_weapon_kind('x')).to be_nil
-      expect(described_class.weapon_kind_for_proficiency(9)).to eq(6)
-    end
-  end
 end

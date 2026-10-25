@@ -5,17 +5,17 @@ FactoryBot.define do
     crew
     association :created_by, factory: :user
     name { "Fire" }
-    element { 2 }
+    element { 1 }
     items { [] }
 
     trait :fire do
       name { "Fire" }
-      element { 2 }
+      element { 1 }
     end
 
     trait :water do
       name { "Water" }
-      element { 3 }
+      element { 2 }
     end
 
     trait :with_items do

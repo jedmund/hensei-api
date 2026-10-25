@@ -13,8 +13,7 @@
 #   ]
 #
 # - `gbf_section` uses Granblue's element ordering (0=Misc/Null, 1=Fire, 2=Water,
-#   3=Earth, 4=Wind, 5=Light, 6=Dark) and is translated to our internal
-#   SupportSummon section enum.
+#   3=Earth, 4=Wind, 5=Light, 6=Dark), which is also the SupportSummon section enum.
 # - `level` is the in-game level scraped from the profile HTML. Used only when
 #   auto-creating a missing CollectionSummon — existing rows are not touched, on
 #   the assumption the user's collection import is more authoritative.
@@ -25,18 +24,6 @@
 #
 class SupportSummonImportService
   Result = Struct.new(:success?, :created, :errors, keyword_init: true)
-
-  # GBF section index → SupportSummon enum symbol.
-  # 0 is GBF's Null/None bucket, which we use for the Misc section.
-  SECTION_MAP = {
-    0 => :misc,
-    1 => :fire,
-    2 => :water,
-    3 => :earth,
-    4 => :wind,
-    5 => :light,
-    6 => :dark
-  }.freeze
 
   def initialize(user, items)
     @user = user
@@ -85,7 +72,7 @@ class SupportSummonImportService
     position = item['position']
     level = item['level']
 
-    section = SECTION_MAP[gbf_section.to_i]
+    section = SupportSummon.sections.key(gbf_section.to_i)
     if section.nil?
       @errors << { index: index, granblue_id: granblue_id, error: "Unknown GBF section #{gbf_section.inspect}" }
       return

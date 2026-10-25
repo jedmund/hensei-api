@@ -17,14 +17,7 @@ class CrewRoster < ApplicationRecord
     self.items ||= []
   end
 
-  ELEMENT_NAMES = {
-    1 => 'Wind',
-    2 => 'Fire',
-    3 => 'Water',
-    4 => 'Earth',
-    5 => 'Dark',
-    6 => 'Light'
-  }.freeze
+  ELEMENT_NAMES = GranblueEnums::ELEMENTS.except(:Null).invert.transform_values(&:to_s).freeze
 
   def self.seed_for_crew!(crew, user)
     ELEMENT_NAMES.each do |element, name|

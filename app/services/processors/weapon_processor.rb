@@ -112,15 +112,6 @@ module Processors
     # Game series IDs for element-changeable weapon series (Revenant, Ultima, Superlative, Class Champion)
     ELEMENT_CHANGEABLE_GAME_SERIES_IDS = [4, 13, 17, 19].freeze
 
-    ELEMENT_MAPPING = {
-      0 => nil,
-      1 => 2, # Fire -> Fire
-      2 => 3, # Water -> Water
-      3 => 4, # Earth -> Earth
-      4 => 1, # Wind -> Wind
-      5 => 6, # Light -> Light
-      6 => 5  # Dark -> Dark
-    }.freeze
     ##
     # Initializes a new WeaponProcessor.
     #
@@ -262,9 +253,8 @@ module Processors
 
         element_changeable = ELEMENT_CHANGEABLE_GAME_SERIES_IDS.include?(series)
 
-        processed_element = if element_changeable
-                              ELEMENT_MAPPING[raw_weapon.dig('master', 'attribute').to_i]
-                            end
+        attribute = raw_weapon.dig('master', 'attribute').to_i
+        processed_element = attribute if element_changeable && attribute.positive? && GranblueEnums::ELEMENTS.value?(attribute)
 
         weapon = find_weapon(weapon_id, element_changeable, raw_weapon.dig('master', 'name'))
 

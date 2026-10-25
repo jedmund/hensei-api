@@ -8,7 +8,7 @@ module GridDamage
   module Calculator
     module_function
 
-    ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
+    ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
     # What each grid element is strong against — the default foe, and the element named
     # by the panel's reduction line ("Wind Reduc." on a fire grid).
     ADVANTAGED_FOE = { "fire" => "wind", "water" => "fire", "earth" => "water",

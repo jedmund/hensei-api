@@ -32,12 +32,10 @@ module Solomonis
       'devil' => 'セフィラコインを%d獲得する'
     }.freeze
 
-    # Game weapon kind -> Hensei proficiency.
-    WEAPON_KIND_TO_PROFICIENCY = { 1 => 1, 2 => 2, 3 => 4, 4 => 3, 5 => 6, 6 => 9, 7 => 7, 8 => 5, 9 => 8, 10 => 10 }.freeze
     TARGET_TYPES = { 'race' => 'race', 'weapon_kind' => 'proficiency', 'proficiency' => 'proficiency', 'character' => 'character' }.freeze
 
     # Route Evokers' elements (decision D4), to pick the Evoker version among characters sharing a short id.
-    EVOKER_ELEMENTS = { 3099 => 3, 3100 => 2, 3102 => 1, 3103 => 4, 3108 => 5 }.freeze
+    EVOKER_ELEMENTS = { 3099 => 2, 3100 => 1, 3102 => 4, 3103 => 3, 3108 => 6 }.freeze
 
     MATCH_THRESHOLD = 0.55
 
@@ -197,17 +195,12 @@ module Solomonis
         name_en: effect['name_en'], name_jp: effect['name_jp'],
         icon_category: effect['icon_category'], icon_type: effect['icon_type'],
         target_type: target_type,
-        target_values: target_values(effect['target_type'], effect['target_values']),
+        target_values: Array(effect['target_values']).map(&:to_i), # the game's weapon kinds and tribes are ours
         character_granblue_id: target_type == 'character' ? evoker_granblue_id(effect['target_values'].first) : nil,
         availability: row&.fetch(:availability),
         type_tags: row&.fetch(:type_tags),
         effect_tags: row&.fetch(:effect_tags)
       }
-    end
-
-    def target_values(type, values)
-      values = Array(values).map(&:to_i)
-      type == 'weapon_kind' ? values.map { |v| WEAPON_KIND_TO_PROFICIENCY.fetch(v) } : values
     end
 
     def evoker_granblue_id(short_id)

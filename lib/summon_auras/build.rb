@@ -9,7 +9,7 @@ module SummonAuras
     # the next deploy rebuilds it.
     VERSION = 1
 
-    ELEMENT_WORD = { 1 => "wind", 2 => "fire", 3 => "water", 4 => "earth", 5 => "dark", 6 => "light" }.freeze
+    ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
 
     # The natural key of a summon_auras row, and the columns the build writes. description_jp
     # isn't built yet, so the writer leaves it alone.

@@ -216,7 +216,7 @@ RSpec.describe 'Character refresh (C6)', type: :request do
     it "is a 422 when the character's other inputs changed since the preview" do
       stub_wiki(fetched_text)
       token = preview['refresh']['preview_token']
-      character.update_columns(element: 3)
+      character.update_columns(element: 2)
       apply(token)
       expect(response.parsed_body['error']).to eq('preview_expired')
       expect(character.reload.wiki_raw).to eq(stored_text)

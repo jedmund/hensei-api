@@ -17,8 +17,8 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
   let(:other_headers) { auth_headers(other_user) }
 
   let(:zone) { create(:raid, :solomonis_zone) }
-  let(:nier) { create(:character, :solomonis_evoker, solomonis_zone: zone, element: 5) }
-  let(:caim) { create(:character, :solomonis_evoker, solomonis_zone: zone, element: 4) }
+  let(:nier) { create(:character, :solomonis_evoker, solomonis_zone: zone, element: 6) }
+  let(:caim) { create(:character, :solomonis_evoker, solomonis_zone: zone, element: 3) }
 
   let(:justice) { create(:arcarum_blessing, :justice) }
   let(:justice_level) { create(:arcarum_blessing_level, arcarum_blessing: justice, level: 3, cost: 50) }
@@ -46,7 +46,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       expect(response).to have_http_status(:created)
       party = Party.find(body.dig('party', 'id'))
       expect(party.raid_id).to eq(zone.id)
-      expect(party.element).to eq(5)
+      expect(party.element).to eq(6)
       expect(body.dig('party', 'raid', 'id')).to eq(zone.id)
       expect(body.dig('party', 'solomonis')).to include('pledge_level' => 0, 'outcome' => nil)
       expect(body.dig('party', 'solomonis', 'route_evoker', 'id')).to eq(nier.id)
@@ -150,7 +150,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
                                          headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(party.reload.element).to eq(4)
+      expect(party.reload.element).to eq(3)
       expect(body.dig('party', 'solomonis', 'route_evoker', 'id')).to eq(caim.id)
     end
 

@@ -81,8 +81,8 @@ module Granblue
         end
       end
 
-      # Downloads element-suffixed variants for null-element characters.
-      # Fetches from game CDN using GBF element IDs but stores with internal element IDs.
+      # Downloads element-suffixed variants for null-element characters. The game CDN and our
+      # storage use the same element numbers.
       #
       # @param poses [Array<String>] Available poses (e.g., ["01", "02", "03"])
       # @param selected_size [String] The size to download. If nil, downloads all sizes.
@@ -91,61 +91,13 @@ module Granblue
         log_info "Downloading element variants for null-element character #{@id}"
 
         (1..6).each do |element|
-          gbf_element = GranblueEnums::INTERNAL_TO_GBF_ELEMENT[element] || element
           poses.each do |pose|
             if character.gender_variants?
-              (0..1).each do |gender|
-                source_id = "#{@id}_#{pose}_0#{gbf_element}_#{gender}"
-                storage_id = "#{@id}_#{pose}_0#{element}_#{gender}"
-                download_remapped_variant(source_id, storage_id, selected_size)
-              end
+              (0..1).each { |gender| download_variant("#{@id}_#{pose}_0#{element}_#{gender}", selected_size) }
             else
-              source_id = "#{@id}_#{pose}_0#{gbf_element}"
-              storage_id = "#{@id}_#{pose}_0#{element}"
-              download_remapped_variant(source_id, storage_id, selected_size)
+              download_variant("#{@id}_#{pose}_0#{element}", selected_size)
             end
           end
-        end
-      end
-
-      # Downloads a variant where source URL and storage filename differ.
-      # Used for element variants where GBF element IDs differ from internal IDs.
-      #
-      # @param source_id [String] Variant ID for the game CDN URL
-      # @param storage_id [String] Variant ID for S3/local storage
-      # @param selected_size [String] The size to download. If nil, downloads all sizes.
-      # @return [void]
-      def download_remapped_variant(source_id, storage_id, selected_size = nil)
-        return if @test_mode
-
-        sizes = selected_size ? [selected_size] : SIZES
-
-        sizes.each_with_index do |size, index|
-          source_url = build_variant_url(source_id, size)
-          ext = size == 'detail' ? '.png' : '.jpg'
-          storage_filename = "#{storage_id}#{ext}"
-          path = download_path(size)
-          s3_key = build_s3_key(size, storage_filename)
-          local_path = "#{path}/#{storage_filename}"
-
-          next unless should_download?(local_path, s3_key)
-
-          if index == sizes.size - 1
-            log_info "\t└ #{size}: #{source_url} -> #{storage_filename}..."
-          else
-            log_info "\t├ #{size}: #{source_url} -> #{storage_filename}..."
-          end
-
-          case @storage
-          when :local
-            download_to_local(source_url, local_path)
-          when :s3
-            stream_to_s3(source_url, s3_key)
-          when :both
-            download_to_both(source_url, local_path, s3_key)
-          end
-        rescue OpenURI::HTTPError
-          log_info "\t404 returned\t#{source_url}"
         end
       end
 

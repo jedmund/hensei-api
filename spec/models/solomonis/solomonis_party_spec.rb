@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Party, 'Evoking Solomonis', type: :model do
-  let(:evoker) { create(:character, :solomonis_evoker, element: 5) }
+  let(:evoker) { create(:character, :solomonis_evoker, element: 6) }
   let(:zone) { evoker.solomonis_zone }
 
   def blessing_level(slug, cost: 50)
@@ -24,9 +24,9 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
 
   describe 'route Evoker' do
     it "sets the party's raid and element from the route Evoker" do
-      party = create(:party, :solomonis, route_evoker: evoker, element: 2)
+      party = create(:party, :solomonis, route_evoker: evoker, element: 1)
       expect(party.raid).to eq(zone)
-      expect(party.element).to eq(5)
+      expect(party.element).to eq(6)
       expect(party).to be_solomonis
     end
 
@@ -39,15 +39,15 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
 
     it 'moves the party when the route changes' do
       party = create(:party, :solomonis, route_evoker: evoker)
-      other = create(:character, :solomonis_evoker, element: 2)
+      other = create(:character, :solomonis_evoker, element: 1)
       party.update!(solomonis_expedition_attributes: { route_evoker_id: other.id })
       expect(party.reload.raid_id).to eq(other.solomonis_zone_id)
-      expect(party.element).to eq(2)
+      expect(party.element).to eq(1)
     end
 
     it 'rejects a different element' do
       party = create(:party, :solomonis, route_evoker: evoker)
-      expect(party.update(element: 3)).to be(false)
+      expect(party.update(element: 2)).to be(false)
       expect(party.errors[:element]).to be_present
     end
 
@@ -72,9 +72,9 @@ RSpec.describe Party, 'Evoking Solomonis', type: :model do
 
     it "keeps the element when the mainhand's element differs" do
       party = create(:party, :solomonis, route_evoker: evoker)
-      create(:grid_weapon, party: party, weapon: create(:weapon, element: 2), position: -1)
+      create(:grid_weapon, party: party, weapon: create(:weapon, element: 1), position: -1)
       party.reload.save!
-      expect(party.reload.element).to eq(5)
+      expect(party.reload.element).to eq(6)
     end
   end
 

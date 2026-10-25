@@ -10,11 +10,11 @@ RSpec.describe Granblue::Transformers::BaseDeckTransformer do
   describe '#transform' do
     context 'with ActionController::Parameters input' do
       it 'returns symbolized hash as-is when :name key present' do
-        params = ActionController::Parameters.new(name: 'My Party', element: 3)
+        params = ActionController::Parameters.new(name: 'My Party', element: 2)
         params.permit!
         result = described_class.new(params).transform
         expect(result[:name]).to eq('My Party')
-        expect(result[:element]).to eq(3)
+        expect(result[:element]).to eq(2)
       end
     end
 

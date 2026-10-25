@@ -20,27 +20,9 @@ module Granblue
 
       self.base_uri = 'https://gbf.wiki/api.php'
 
-      self.proficiencies = {
-        'Sabre' => 1,
-        'Dagger' => 2,
-        'Axe' => 3,
-        'Spear' => 4,
-        'Bow' => 5,
-        'Staff' => 6,
-        'Melee' => 7,
-        'Harp' => 8,
-        'Gun' => 9,
-        'Katana' => 10
-      }.freeze
+      self.proficiencies = GranblueEnums::PROFICIENCY.except(:None).transform_keys(&:to_s).freeze
 
-      self.elements = {
-        'Wind' => 1,
-        'Fire' => 2,
-        'Water' => 3,
-        'Earth' => 4,
-        'Dark' => 5,
-        'Light' => 6
-      }.freeze
+      self.elements = GranblueEnums::ELEMENTS.except(:Null).transform_keys(&:to_s).freeze
 
       self.rarities = {
         'R' => 1,
@@ -48,14 +30,7 @@ module Granblue
         'SSR' => 3
       }.freeze
 
-      self.races = {
-        'Other' => 0,
-        'Human' => 1,
-        'Erune' => 2,
-        'Draph' => 3,
-        'Harvin' => 4,
-        'Primal' => 5
-      }.freeze
+      self.races = GranblueEnums::RACES.transform_keys(&:to_s).freeze
 
       self.genders = {
         'o' => 0,

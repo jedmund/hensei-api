@@ -140,7 +140,7 @@ RSpec.describe CollectionWeapon, type: :model do
     describe 'element change validations' do
       context 'when element is set on non-element-changeable weapon' do
         it 'is invalid' do
-          collection_weapon = build(:collection_weapon, element: 1)
+          collection_weapon = build(:collection_weapon, element: 4)
           expect(collection_weapon).not_to be_valid
           expect(collection_weapon.errors[:element]).to include('can only be set on element-changeable weapons')
         end
@@ -150,7 +150,7 @@ RSpec.describe CollectionWeapon, type: :model do
         let(:revenant_weapon) { create(:weapon, :revenant) }
 
         it 'is valid' do
-          collection_weapon = build(:collection_weapon, weapon: revenant_weapon, element: 2)
+          collection_weapon = build(:collection_weapon, weapon: revenant_weapon, element: 1)
           expect(collection_weapon).to be_valid
         end
       end
@@ -191,7 +191,7 @@ RSpec.describe CollectionWeapon, type: :model do
       let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: variant) }
 
       it 'rejects element change despite series allowing it' do
-        cw = build(:collection_weapon, weapon: weapon, element: 2)
+        cw = build(:collection_weapon, weapon: weapon, element: 1)
         expect(cw).not_to be_valid
         expect(cw.errors[:element]).to be_present
       end
@@ -201,7 +201,7 @@ RSpec.describe CollectionWeapon, type: :model do
       let(:weapon) { create(:weapon, weapon_series: ccw_series) }
 
       it 'allows element change from series' do
-        cw = build(:collection_weapon, weapon: weapon, element: 2)
+        cw = build(:collection_weapon, weapon: weapon, element: 1)
         expect(cw).to be_valid
       end
 
@@ -214,7 +214,7 @@ RSpec.describe CollectionWeapon, type: :model do
 
   describe 'scopes' do
     let!(:fire_weapon) { create(:weapon, element: 0) }
-    let!(:water_weapon) { create(:weapon, element: 1) }
+    let!(:water_weapon) { create(:weapon, element: 4) }
     let!(:ssr_weapon) { create(:weapon, rarity: 4) }
     let!(:sr_weapon) { create(:weapon, rarity: 3) }
 
@@ -233,12 +233,12 @@ RSpec.describe CollectionWeapon, type: :model do
       end
 
       it 'returns element-changeable weapons by collection_weapon.element override' do
-        # Null-element weapon (element 0) on an element-changeable series, with element override set to Water (1)
+        # Null-element weapon (element 0) on an element-changeable series, with element override set to Wind (4)
         ec_series = create(:weapon_series, :element_changeable)
         null_element_weapon = create(:weapon, element: 0, weapon_series: ec_series)
-        cw_with_override = create(:collection_weapon, weapon: null_element_weapon, element: 1)
+        cw_with_override = create(:collection_weapon, weapon: null_element_weapon, element: 4)
 
-        expect(CollectionWeapon.by_element(1)).to include(cw_with_override)
+        expect(CollectionWeapon.by_element(4)).to include(cw_with_override)
         # Should NOT appear under element 0 since override takes precedence
         expect(CollectionWeapon.by_element(0)).not_to include(cw_with_override)
       end

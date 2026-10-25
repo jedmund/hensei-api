@@ -24,7 +24,7 @@ RSpec.describe 'Character skill refreshes', type: :request do
 
   def make(granblue_id, **attrs)
     Character.without_skill_build do
-      create(:character, granblue_id: granblue_id, element: 2, wiki_en: "Page #{granblue_id}", wiki_raw: wiki(7), **attrs)
+      create(:character, granblue_id: granblue_id, element: 1, wiki_en: "Page #{granblue_id}", wiki_raw: wiki(7), **attrs)
     end
   end
 

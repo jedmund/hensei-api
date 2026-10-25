@@ -6,7 +6,7 @@ RSpec.describe SummonAuras::Build::Fingerprint do
   let(:series) { create(:summon_series, slug: "spec-series") }
   let(:summon) do
     Summon.without_aura_build do
-      create(:summon, granblue_id: "2040900001", element: 3, wiki_raw: "{{Summon\n|aura1=50% boost to Water Elemental ATK.\n}}",
+      create(:summon, granblue_id: "2040900001", element: 2, wiki_raw: "{{Summon\n|aura1=50% boost to Water Elemental ATK.\n}}",
                       summon_series: series)
     end
   end
@@ -25,7 +25,7 @@ RSpec.describe SummonAuras::Build::Fingerprint do
 
   it "changes with the element and the series slug" do
     before = digest
-    summon.update_columns(element: 2)
+    summon.update_columns(element: 1)
     after_element = digest
     series.update_columns(slug: "renamed")
 

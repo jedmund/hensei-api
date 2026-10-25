@@ -69,7 +69,7 @@ RSpec.describe 'Wiki fetch dates' do
 
     it 'stamps wiki_raw_fetched_at when a summon is created with wikitext' do
       post '/api/v1/summons', headers: headers, params: {
-        summon: { granblue_id: '2040999000', name_en: 'Test Summon', rarity: 3, element: 1, wiki_raw: '{{Summon}}' }
+        summon: { granblue_id: '2040999000', name_en: 'Test Summon', rarity: 3, element: 4, wiki_raw: '{{Summon}}' }
       }.to_json
 
       expect(response).to have_http_status(:created)

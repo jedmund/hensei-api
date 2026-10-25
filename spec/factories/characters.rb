@@ -32,7 +32,7 @@ FactoryBot.define do
 
     # A route-eligible Evoker (has an Evoking Solomonis zone). Dark, like Nier.
     trait :solomonis_evoker do
-      element { 5 }
+      element { 6 }
       transcendence { true }
       max_transcendence_stage { 5 }
       solomonis_zone { association :raid, :solomonis_zone, strategy: :create }

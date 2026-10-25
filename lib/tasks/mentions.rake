@@ -1,15 +1,5 @@
 # frozen_string_literal: true
 
-MENTION_ELEMENT_SLUGS = {
-  0 => 'null',
-  1 => 'wind',
-  2 => 'fire',
-  3 => 'water',
-  4 => 'earth',
-  5 => 'dark',
-  6 => 'light'
-}.freeze
-
 namespace :mentions do
   desc "Backfill entity mention data in party descriptions (proficiency, style_swap, series, season)"
   task backfill: :environment do
@@ -123,5 +113,5 @@ def ensure_element_format(attrs, entity)
   return if attrs['element'].is_a?(Hash)
 
   el = entity.element.to_i
-  attrs['element'] = { 'id' => el, 'slug' => MENTION_ELEMENT_SLUGS[el] || 'null' }
+  attrs['element'] = { 'id' => el, 'slug' => GranblueEnums::ELEMENTS.key(el)&.to_s&.downcase || 'null' }
 end

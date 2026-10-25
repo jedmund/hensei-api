@@ -9,12 +9,12 @@ RSpec.describe SupportSummon, type: :model do
 
   describe 'enums' do
     it 'defines the seven sections' do
-      expect(SupportSummon.sections.keys).to match_array(%w[wind fire water earth dark light misc])
+      expect(SupportSummon.sections.keys).to match_array(%w[misc fire water earth wind light dark])
     end
 
-    it 'maps section integers to mirror the ELEMENTS enum plus misc' do
+    it "maps section integers to the game's element numbers, with misc as 0" do
       expect(SupportSummon.sections).to eq(
-        'wind' => 1, 'fire' => 2, 'water' => 3, 'earth' => 4, 'dark' => 5, 'light' => 6, 'misc' => 7
+        'misc' => 0, 'fire' => 1, 'water' => 2, 'earth' => 3, 'wind' => 4, 'light' => 5, 'dark' => 6
       )
     end
   end
@@ -98,14 +98,14 @@ RSpec.describe SupportSummon, type: :model do
 
     describe 'element / section independence' do
       it 'allows a Wind summon in the Fire section (strategic off-element placement)' do
-        wind_summon = create(:summon, element: 1) # Wind
+        wind_summon = create(:summon, element: 4) # Wind
         wind_cs = create(:collection_summon, user: user, summon: wind_summon)
         row = build(:support_summon, user: user, collection_summon: wind_cs, section: :fire, position: 0)
         expect(row).to be_valid
       end
 
       it 'allows any element in the misc section' do
-        light_summon = create(:summon, element: 6)
+        light_summon = create(:summon, element: 5)
         light_cs = create(:collection_summon, user: user, summon: light_summon)
         row = build(:support_summon, user: user, collection_summon: light_cs, section: :misc, position: 3)
         expect(row).to be_valid
@@ -139,7 +139,7 @@ RSpec.describe SupportSummon, type: :model do
         fire0 = create(:support_summon, user: user, section: :fire, position: 0)
         wind1 = create(:support_summon, user: user, section: :wind, position: 1)
 
-        expect(user.support_summons.ordered).to eq([wind1, fire0, fire2, misc0])
+        expect(user.support_summons.ordered).to eq([misc0, fire0, fire2, wind1])
       end
     end
 

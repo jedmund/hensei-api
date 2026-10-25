@@ -34,12 +34,12 @@ RSpec.describe CollectionArtifact, type: :model do
   describe 'enums' do
     it 'defines element enum' do
       expect(CollectionArtifact.elements).to include(
-        'wind' => 1,
-        'fire' => 2,
-        'water' => 3,
-        'earth' => 4,
-        'dark' => 5,
-        'light' => 6
+        'fire' => 1,
+        'water' => 2,
+        'earth' => 3,
+        'wind' => 4,
+        'light' => 5,
+        'dark' => 6
       )
     end
 

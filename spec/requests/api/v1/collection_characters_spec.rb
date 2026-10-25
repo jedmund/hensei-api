@@ -64,7 +64,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
     it 'supports filtering by both element and rarity' do
       fire_ssr = create(:character, element: 0, rarity: 4)
-      water_ssr = create(:character, element: 1, rarity: 4)
+      water_ssr = create(:character, element: 4, rarity: 4)
       fire_sr = create(:character, element: 0, rarity: 3)
 
       create(:collection_character, user: user, character: fire_ssr)
@@ -102,7 +102,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       fire_character = create(:character, element: 0, rarity: 4)
       create(:collection_character, user: user, character: fire_character)
 
-      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 1, rarity: 3 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 4, rarity: 3 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -158,7 +158,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
     it 'filters by element in unowned mode' do
       fire_char = create(:character, element: 0)
-      water_char = create(:character, element: 1)
+      water_char = create(:character, element: 4)
       owned_fire_char = create(:character, element: 0)
       create(:collection_character, user: user, character: owned_fire_char)
 

@@ -100,17 +100,35 @@ class WeaponSkillVersion < ApplicationRecord
     WeaponSkillEffect.where(id: resolve_by_boost_type(family, linked_rows(WeaponSkillEffect)).map(&:id))
   end
 
-  # Normalized icon stem using OUR INTERNAL element numbering — the name files
-  # are stored under and the frontend recreates (e.g. "skill_atk_4_4"). Nil when
-  # the wiki icon is missing or can't be resolved. See WeaponSkillIconDownloader.
+  # Normalized icon stem, the file name on the game CDN and in our bucket (e.g.
+  # "skill_atk_3_4"), with an element wildcard resolved against the parent weapon's
+  # element. Nil when the wiki icon is missing or can't be resolved. See
+  # WeaponSkillIconDownloader.
   def icon_stem
-    resolved_icon_stem(internal: true)
+    stem = icon_template
+    return nil if stem.blank?
+
+    if stem.include?('*')
+      element = weapon_skill&.weapon&.element
+      return nil unless element.is_a?(Integer) && element.between?(1, 6)
+
+      stem = stem.gsub('*', element.to_s)
+    end
+
+    stem.match?(/[{}*|]/) ? nil : stem
   end
 
-  # Same stem but using GRANBLUE element numbering — the name on the game CDN we
-  # download from. Differs from #icon_stem only for element-wildcard icons.
-  def icon_source_stem
-    resolved_icon_stem(internal: false)
+  # Cleans the wiki icon name to a CDN stem template, possibly still containing
+  # the element wildcard "*": strips the {{WeaponSkillIcon|…}} wrapper and the
+  # Ws_/ws_ prefix, lowercases, and drops the .png extension.
+  def icon_template
+    raw = icon.to_s.strip
+    return nil if raw.blank?
+
+    raw = Regexp.last_match(1).strip if raw =~ /\{\{WeaponSkillIcon\|([^}]+)\}\}/i
+    # Strip the Ws_/ws_ prefix, tolerating the occasional "ws " typo on the wiki.
+    stem = raw.downcase.strip.delete_suffix('.png').sub(/\Aws[ _]/, '')
+    stem.presence
   end
 
   private
@@ -133,35 +151,5 @@ class WeaponSkillVersion < ApplicationRecord
         family_types.include?(boost)
     end
     kept_family + curated + kept_generated
-  end
-
-  # Cleans the wiki icon name to a CDN stem template, possibly still containing
-  # the element wildcard "*": strips the {{WeaponSkillIcon|…}} wrapper and the
-  # Ws_/ws_ prefix, lowercases, and drops the .png extension.
-  def icon_template
-    raw = icon.to_s.strip
-    return nil if raw.blank?
-
-    raw = Regexp.last_match(1).strip if raw =~ /\{\{WeaponSkillIcon\|([^}]+)\}\}/i
-    # Strip the Ws_/ws_ prefix, tolerating the occasional "ws " typo on the wiki.
-    stem = raw.downcase.strip.delete_suffix('.png').sub(/\Aws[ _]/, '')
-    stem.presence
-  end
-
-  # Resolves the element wildcard against the parent weapon's element, in either
-  # internal or Granblue numbering. Returns nil if anything is unresolved.
-  def resolved_icon_stem(internal:)
-    stem = icon_template
-    return nil if stem.blank?
-
-    if stem.include?('*')
-      element = weapon_skill&.weapon&.element
-      return nil unless element.is_a?(Integer) && element.between?(1, 6)
-
-      number = internal ? element : (GranblueEnums::INTERNAL_TO_GBF_ELEMENT[element] || element)
-      stem = stem.gsub('*', number.to_s)
-    end
-
-    stem.match?(/[{}*|]/) ? nil : stem
   end
 end

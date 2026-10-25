@@ -4,8 +4,7 @@ namespace :granblue do
   desc <<~DESC
     Download weapon skill icons (EN + JA) from the game CDN to S3/local, keyed by
     the distinct normalized stems on weapon skill versions. Files are stored under
-    weapon-skill-icons/{en,ja}/ using our INTERNAL element numbering; the CDN is
-    fetched using Granblue element numbering.
+    icons/weapon-skills/{en,ja}/ with the CDN's own file names.
     Usage:
       rake granblue:download_weapon_skill_icons                 # storage=both
       rake granblue:download_weapon_skill_icons storage=s3
@@ -19,30 +18,20 @@ namespace :granblue do
     force = ENV['force'] == 'true'
     throttle = (ENV['throttle'] || '0.2').to_f
 
-    # target stem (internal numbering, stored name) => source stem (Granblue
-    # numbering, CDN name). Deduped across all versions.
-    pairs = {}
-    WeaponSkillVersion.includes(weapon_skill: :weapon)
-                      .where.not(icon: [nil, ''])
-                      .find_each do |version|
-      target = version.icon_stem
-      source = version.icon_source_stem
-      next if target.blank? || source.blank?
+    stems = WeaponSkillVersion.includes(weapon_skill: :weapon)
+                              .where.not(icon: [nil, ''])
+                              .find_each.filter_map(&:icon_stem)
+                              .uniq
 
-      pairs[target] ||= source
-    end
-
-    puts "Distinct weapon skill icons: #{pairs.size} (storage=#{storage}, force=#{force}, throttle=#{throttle})"
+    puts "Distinct weapon skill icons: #{stems.size} (storage=#{storage}, force=#{force}, throttle=#{throttle})"
 
     downloaded = Hash.new(0)
     skipped = Hash.new(0)
     failed = Hash.new(0)
     failures = []
 
-    pairs.each_with_index do |(target, source), index|
-      results = Granblue::Downloaders::WeaponSkillIconDownloader.new(
-        target, source_stem: source, storage: storage, force: force
-      ).download
+    stems.each_with_index do |stem, index|
+      results = Granblue::Downloaders::WeaponSkillIconDownloader.new(stem, storage: storage, force: force).download
 
       results.each do |lang, result|
         if result[:skipped]
@@ -51,12 +40,12 @@ namespace :granblue do
           downloaded[lang] += 1
         else
           failed[lang] += 1
-          failures << "#{lang}: #{source} -> #{target}"
+          failures << "#{lang}: #{stem}"
         end
       end
 
       sleep(throttle) if throttle.positive?
-      puts "  [#{index + 1}/#{pairs.size}] processed" if ((index + 1) % 100).zero?
+      puts "  [#{index + 1}/#{stems.size}] processed" if ((index + 1) % 100).zero?
     end
 
     puts "Done."

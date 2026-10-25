@@ -11,29 +11,9 @@ namespace :granblue do
       base_url = 'https://prd-game-a1-granbluefantasy.akamaized.net/assets_en/img/sp/assets/leader/quest'
       extension = '.jpg'
 
-      prefix = ""
-      case proficiency
-      when 1
-        prefix = "sw"
-      when 2
-        prefix = "kn"
-      when 3
-        prefix = "ax"
-      when 4
-        prefix = "sp"
-      when 5
-        prefix = "bw"
-      when 6
-        prefix = "wa"
-      when 7
-        prefix = "me"
-      when 8
-        prefix = "mc"
-      when 9
-        prefix = "gu"
-      when 10
-        prefix = "kt"
-      end
+      # The game's weapon kind (our proficiency) -> its file name prefix
+      prefix = { 1 => 'sw', 2 => 'kn', 3 => 'sp', 4 => 'ax', 5 => 'wa', 6 => 'gu', 7 => 'me', 8 => 'bw', 9 => 'mc',
+                 10 => 'kt' }.fetch(proficiency, '')
 
       "#{base_url}/#{id}_#{prefix}_#{gender}_01#{extension}"
     end

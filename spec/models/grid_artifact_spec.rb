@@ -35,19 +35,19 @@ RSpec.describe GridArtifact, type: :model do
   describe 'enums' do
     it 'defines element enum with all 6 elements' do
       expect(GridArtifact.elements).to eq(
-        'wind' => 1,
-        'fire' => 2,
-        'water' => 3,
-        'earth' => 4,
-        'dark' => 5,
-        'light' => 6
+        'fire' => 1,
+        'water' => 2,
+        'earth' => 3,
+        'wind' => 4,
+        'light' => 5,
+        'dark' => 6
       )
     end
 
     it 'defines proficiency enum' do
       expect(GridArtifact.proficiencies).to include(
         'sabre' => 1,
-        'spear' => 4,
+        'spear' => 3,
         'melee' => 7
       )
     end
@@ -60,7 +60,7 @@ RSpec.describe GridArtifact, type: :model do
     context 'when element does not match character' do
       it 'adds an error for mismatched element' do
         # Set character to fire element (2)
-        character.update_columns(element: 2, proficiency1: 1)
+        character.update_columns(element: 1, proficiency1: 1)
         artifact = create(:artifact, proficiency: :sabre)
 
         grid_artifact = build(:grid_artifact,

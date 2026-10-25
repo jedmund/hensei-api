@@ -7,24 +7,6 @@ RSpec.describe Granblue::Transformers::BaseTransformer do
     allow(Rails.logger).to receive_messages(info: nil, debug: nil, error: nil)
   end
 
-  describe 'ELEMENT_MAPPING' do
-    it 'maps game elements to internal element IDs' do
-      aggregate_failures do
-        expect(described_class::ELEMENT_MAPPING[0]).to be_nil
-        expect(described_class::ELEMENT_MAPPING[1]).to eq(4) # Wind -> Earth
-        expect(described_class::ELEMENT_MAPPING[2]).to eq(2) # Fire -> Fire
-        expect(described_class::ELEMENT_MAPPING[3]).to eq(3) # Water -> Water
-        expect(described_class::ELEMENT_MAPPING[4]).to eq(1) # Earth -> Wind
-        expect(described_class::ELEMENT_MAPPING[5]).to eq(6) # Dark -> Light
-        expect(described_class::ELEMENT_MAPPING[6]).to eq(5) # Light -> Dark
-      end
-    end
-
-    it 'is frozen' do
-      expect(described_class::ELEMENT_MAPPING).to be_frozen
-    end
-  end
-
   describe '#initialize' do
     it 'stores data and options' do
       transformer = described_class.new({ 'key' => 'val' }, language: 'ja')

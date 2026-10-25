@@ -51,7 +51,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
     it 'supports filtering by both element and rarity' do
       fire_ssr = create(:weapon, element: 0, rarity: 4)
-      water_ssr = create(:weapon, element: 1, rarity: 4)
+      water_ssr = create(:weapon, element: 4, rarity: 4)
       fire_sr = create(:weapon, element: 0, rarity: 3)
 
       create(:collection_weapon, user: user, weapon: fire_ssr)
@@ -132,7 +132,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
     it 'filters by element in unowned mode' do
       fire_wpn = create(:weapon, element: 0)
-      water_wpn = create(:weapon, element: 1)
+      water_wpn = create(:weapon, element: 4)
       owned_fire_wpn = create(:weapon, element: 0)
       create(:collection_weapon, user: user, weapon: owned_fire_wpn)
 

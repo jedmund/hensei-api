@@ -21,7 +21,7 @@ module Api
         end
       end
 
-      # Normalized CDN icon stem (internal element numbering) — the frontend
+      # Normalized CDN icon stem — the frontend
       # builds /weapon-skill-icons/{locale}/{stem}.png from it. The raw wiki
       # icon name is intentionally not exposed.
       field :icon_stem

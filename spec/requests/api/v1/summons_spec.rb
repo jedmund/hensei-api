@@ -60,7 +60,7 @@ RSpec.describe 'Api::V1::Summons', type: :request do
       {
         summon: {
           granblue_id: '2040999000', name_en: 'Test Summon', name_jp: 'テスト召喚',
-          rarity: 3, element: 1
+          rarity: 3, element: 4
         }
       }
     end
@@ -74,7 +74,7 @@ RSpec.describe 'Api::V1::Summons', type: :request do
       json = response.parsed_body
       expect(json['granblue_id']).to eq('2040999000')
       expect(json['name']['en']).to eq('Test Summon')
-      expect(json['element']).to eq(1)
+      expect(json['element']).to eq(4)
     end
 
     it 'rejects creation by regular user' do

@@ -20,18 +20,17 @@ module Granblue
       # Sizes the game serves as transparent PNGs; every other size is a JPG
       PNG_SIZES = %w[base gacha].freeze
 
-      # Maps internal element ID to game source offset
+      # Maps element to the game's source offset
       # :note means use _note suffix on base ID, integer means add offset to base ID
-      # Internal: 0=Null, 1=Wind, 2=Fire, 3=Water, 4=Earth, 5=Dark, 6=Light
-      # Game order: Fire (base), Water (+100), Earth (+200), Wind (+300), Light (+400), Dark (+500)
+      # The game's element N is the base ID + (N - 1) * 100, starting from Fire
       ELEMENT_SOURCE_MAP = {
         0 => :note,  # {id}_note -> {id}_0 (Null/no element)
-        1 => 300,    # {id+300} -> {id}_1 (Wind)
-        2 => 0,      # {id}     -> {id}_2 (Fire)
-        3 => 100,    # {id+100} -> {id}_3 (Water)
-        4 => 200,    # {id+200} -> {id}_4 (Earth)
-        5 => 500,    # {id+500} -> {id}_5 (Dark)
-        6 => 400     # {id+400} -> {id}_6 (Light)
+        1 => 0,      # {id}     -> {id}_1 (Fire)
+        2 => 100,    # {id+100} -> {id}_2 (Water)
+        3 => 200,    # {id+200} -> {id}_3 (Earth)
+        4 => 300,    # {id+300} -> {id}_4 (Wind)
+        5 => 400,    # {id+400} -> {id}_5 (Light)
+        6 => 500     # {id+500} -> {id}_6 (Dark)
       }.freeze
       # Downloads images for all variants of a weapon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle weapon-specific variants.

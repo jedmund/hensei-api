@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe CharacterImageDownloadService do
   let(:character) do
     double('Character', granblue_id: '3040001000', flb: false, ulb: false,
-                        transcendence: false, element: 1, gender_variants?: false)
+                        transcendence: false, element: 4, gender_variants?: false)
   end
   let(:downloader_double) { double('CharacterDownloader', download: nil) }
 
@@ -70,7 +70,7 @@ RSpec.describe CharacterImageDownloadService do
     context 'with gender_variants' do
       let(:gendered_char) do
         double('Character', granblue_id: '3040001000', flb: false, ulb: false,
-                            transcendence: false, element: 1, gender_variants?: true)
+                            transcendence: false, element: 4, gender_variants?: true)
       end
 
       it 'includes gender suffixed files' do

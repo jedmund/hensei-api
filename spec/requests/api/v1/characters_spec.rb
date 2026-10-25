@@ -215,7 +215,7 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       {
         character: {
           granblue_id: '3040999000', name_en: 'Test Character', name_jp: 'テストキャラ',
-          rarity: 3, element: 1, proficiency1: 1
+          rarity: 3, element: 4, proficiency1: 1
         }
       }
     end
@@ -229,7 +229,7 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       json = response.parsed_body
       expect(json['granblue_id']).to eq('3040999000')
       expect(json['name']['en']).to eq('Test Character')
-      expect(json['element']).to eq(1)
+      expect(json['element']).to eq(4)
     end
 
     it 'rejects creation by regular user' do

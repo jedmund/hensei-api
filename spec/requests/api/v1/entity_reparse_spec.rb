@@ -23,7 +23,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
         }}
       WIKI
     end
-    let(:summon) { create(:summon, element: 3, wiki_raw: wiki_raw) }
+    let(:summon) { create(:summon, element: 2, wiki_raw: wiki_raw) }
 
     it 'parses auras into structured rows and prunes stale ones' do
       create(:summon_aura, summon_granblue_id: summon.granblue_id, slot: 'main',
@@ -77,7 +77,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
         }}
       WIKI
     end
-    let(:weapon) { create(:weapon, element: 3, wiki_en: 'Spec Blade', wiki_raw: wiki_raw) }
+    let(:weapon) { create(:weapon, element: 2, wiki_en: 'Spec Blade', wiki_raw: wiki_raw) }
 
     def store_source
       WeaponSkills::SourceStore::Database.new.put('wiki_raw', weapon.wiki_en, wiki_raw, weapon_id: weapon.id,
