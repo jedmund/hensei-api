@@ -32,7 +32,7 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
       expect(body['report']['matched'].find { |m| m['kind'] == 'weapon' && m['position'] == -1 }).to eq(
         'kind' => 'weapon', 'position' => -1, 'title' => 'WI Ultima Gun (Fire)',
         'item' => { 'id' => ultima_gun.id, 'granblueId' => ultima_gun.granblue_id,
-                    'name' => { 'en' => 'WI Ultima Gun', 'ja' => ultima_gun.name_jp }, 'element' => 2 }
+                    'name' => { 'en' => 'WI Ultima Gun', 'ja' => ultima_gun.name_jp }, 'element' => 1 }
       )
     end
 

@@ -14,7 +14,7 @@ RSpec.describe Character, 'skill build callback' do
   end
 
   context 'with an existing character' do
-    let!(:character) { described_class.without_skill_build { create(:character, wiki_raw: '{{Character}}', element: 2) } }
+    let!(:character) { described_class.without_skill_build { create(:character, wiki_raw: '{{Character}}', element: 1) } }
 
     it 'queues none when name_en changes' do
       expect { character.update!(name_en: 'Renamed') }.not_to have_enqueued_job(CharacterSkills::BuildJob)
@@ -22,7 +22,7 @@ RSpec.describe Character, 'skill build callback' do
 
     {
       'wiki_raw' => '{{Character|x=1}}', 'wiki_raw_jp' => '<p>x</p>', 'game_raw_en' => { 'style' => 1 },
-      'game_raw_jp' => { 'style' => 1 }, 'element' => 3, 'style_swap' => true, 'granblue_id' => '3040999999'
+      'game_raw_jp' => { 'style' => 1 }, 'element' => 2, 'style_swap' => true, 'granblue_id' => '3040999999'
     }.each do |column, value|
       it "queues a build when #{column} changes" do
         expect { character.update!(column => value) }
@@ -31,7 +31,7 @@ RSpec.describe Character, 'skill build callback' do
     end
 
     it 'queues one build when a source and a build column change in one save' do
-      expect { character.update!(wiki_raw: '{{Character|z=1}}', element: 4) }
+      expect { character.update!(wiki_raw: '{{Character|z=1}}', element: 3) }
         .to have_enqueued_job(CharacterSkills::BuildJob).with(character.id).exactly(:once)
     end
 

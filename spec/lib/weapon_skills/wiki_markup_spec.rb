@@ -4,7 +4,7 @@ require "rails_helper"
 
 # Each example is a form found in the stored gbf.wiki descriptions.
 RSpec.describe WeaponSkills::WikiMarkup do
-  def segments(text, element: 2, locale: :en) = described_class.segments(text, element: element, locale: locale)
+  def segments(text, element: 1, locale: :en) = described_class.segments(text, element: element, locale: locale)
 
   it "returns plain text unchanged" do
     expect(segments("Big boost to fire allies' ATK")).to eq([{ text: "Big boost to fire allies' ATK" }])
@@ -27,7 +27,7 @@ RSpec.describe WeaponSkills::WikiMarkup do
   end
 
   it "resolves the weapon's element, including through an empty template parameter" do
-    expect(described_class.plain("Small boost to {{WeaponElement|wpn}} allies", element: 2)).to eq("Small boost to Fire allies")
+    expect(described_class.plain("Small boost to {{WeaponElement|wpn}} allies", element: 1)).to eq("Small boost to Fire allies")
     expect(segments("Big boost to {{WeaponElement|{{{element|}}}}} allies' ATK")).to eq([{ text: "Big boost to Fire allies' ATK" }])
     expect(segments("{{WeaponElement}} allies", locale: :ja)).to eq([{ text: "火 allies" }])
   end

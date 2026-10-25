@@ -11,8 +11,8 @@ RSpec.describe Granblue::Parsers::Wiki do
 
     it 'maps elements to integers' do
       expect(described_class.elements).to include(
-        'Wind' => 1, 'Fire' => 2, 'Water' => 3,
-        'Earth' => 4, 'Dark' => 5, 'Light' => 6
+        'Fire' => 1, 'Water' => 2, 'Earth' => 3,
+        'Wind' => 4, 'Light' => 5, 'Dark' => 6
       )
     end
 
@@ -21,7 +21,7 @@ RSpec.describe Granblue::Parsers::Wiki do
     end
 
     it 'maps races to integers' do
-      expect(described_class.races).to include('Human' => 1, 'Primal' => 5)
+      expect(described_class.races).to include('Human' => 1, 'Other' => 5, 'Primal' => 6)
     end
 
     it 'maps genders to integers' do

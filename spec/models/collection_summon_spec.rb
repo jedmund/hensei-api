@@ -54,7 +54,7 @@ RSpec.describe CollectionSummon, type: :model do
 
   describe 'scopes' do
     let!(:fire_summon) { create(:summon, element: 0) }
-    let!(:water_summon) { create(:summon, element: 1) }
+    let!(:water_summon) { create(:summon, element: 4) }
     let!(:ssr_summon) { create(:summon, rarity: 4) }
     let!(:sr_summon) { create(:summon, rarity: 3) }
 

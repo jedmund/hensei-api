@@ -8,7 +8,7 @@ RSpec.describe 'Party skill boosts API', type: :request do
 
     before do
       create(:weapon_skill_boost_type, key: 'atk', stacking_rule: 'multiplicative_by_series')
-      weapon = create(:weapon, max_skill_level: 15, element: 6)
+      weapon = create(:weapon, max_skill_level: 15, element: 5)
       ws = create(:weapon_skill, weapon: weapon)
       create(:weapon_skill_version, weapon_skill: ws, skill_modifier: 'Might',
                                     skill_series: 'normal', skill_size: 'big')
@@ -30,14 +30,14 @@ RSpec.describe 'Party skill boosts API', type: :request do
     end
 
     it 'includes Light Grand Sandalphon from the backline in a Zeus grid' do
-      summon = create(:summon, element: 6)
+      summon = create(:summon, element: 5)
       SummonAura.create!(summon_granblue_id: summon.granblue_id, slot: 'main',
                          target: 'normal_frame', uncap_level: 0,
                          transcendence_stage: 0, value: 150)
       create(:grid_summon, party: party, summon: summon, main: true,
                            position: 0, uncap_level: 0)
 
-      sandalphon = create(:character, granblue_id: '3040515000', element: 6,
+      sandalphon = create(:character, granblue_id: '3040515000', element: 5,
                                       name_en: 'Sandalphon (Grand)')
       skill = create(:character_skill, :support, character: sandalphon, position: 2)
       version = create(:character_skill_version, character_skill: skill, name_en: 'Selas Arche')

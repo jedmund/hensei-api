@@ -144,15 +144,17 @@ Place CSV files in: `db/seed/updates/`
 
 ## Field Mappings
 
+Element, weapon type and race values are the game's own numbers (`GranblueEnums`).
+
 ### Element Values
 ```
 0 = Null/None
-1 = Wind
-2 = Fire
-3 = Water
-4 = Earth
-5 = Dark
-6 = Light
+1 = Fire
+2 = Water
+3 = Earth
+4 = Wind
+5 = Light
+6 = Dark
 ```
 
 ### Weapon Types
@@ -167,6 +169,20 @@ Place CSV files in: `db/seed/updates/`
 8 = Bow
 9 = Harp
 10 = Katana
+```
+
+### Race Values
+```
+1 = Human
+2 = Erune
+3 = Draph
+4 = Harvin
+5 = Other
+6 = Primal
+7 = Geonoid
+8 = Levleath
+9 = Grokkle
+10 = Wolvir
 ```
 
 ### Rarity Values

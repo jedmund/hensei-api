@@ -14,28 +14,13 @@
 class ArtifactImportService
   Result = Struct.new(:success?, :created, :updated, :skipped, :errors, :reconciliation, keyword_init: true)
 
-  # Game element values to our element enum values
-  # Game: 1=Fire, 2=Water, 3=Earth, 4=Wind, 5=Light, 6=Dark
-  # Ours: wind=1, fire=2, water=3, earth=4, dark=5, light=6
-  ELEMENT_MAPPING = {
-    '1' => 2,  # Fire
-    '2' => 3,  # Water
-    '3' => 4,  # Earth
-    '4' => 1,  # Wind
-    '5' => 6,  # Light
-    '6' => 5   # Dark
-  }.freeze
-
-  # Game artifact 'kind' values to our proficiency enum values
-  PROFICIENCY_MAPPING = Granblue::GameIds::WEAPON_KIND_TO_PROFICIENCY.transform_keys(&:to_s).freeze
-
   def initialize(user, game_data, options = {})
     @user = user
     @game_data = game_data
     @update_existing = options[:update_existing] || false
     @is_full_inventory = options[:is_full_inventory] || false
     @reconcile_deletions = options[:reconcile_deletions] || false
-    @filter = options[:filter] # { elements: [...], proficiencies: [...] }
+    @filter = CollectionImportFilter.from(options[:filter])
     @created = []
     @updated = []
     @skipped = []
@@ -229,12 +214,18 @@ class ArtifactImportService
     }
   end
 
+  # The game's attribute and kind are our element and proficiency numbers.
   def map_element(game_element)
-    ELEMENT_MAPPING[game_element.to_s]
+    game_id(game_element, GranblueEnums::ELEMENTS)
   end
 
   def map_proficiency(kind)
-    Granblue::GameIds.proficiency_for_weapon_kind(kind)
+    game_id(kind, GranblueEnums::PROFICIENCY)
+  end
+
+  def game_id(value, enum)
+    id = Integer(value.to_s, exception: false)
+    id if id&.positive? && enum.value?(id)
   end
 
   def update_skill_score_categories(data)
@@ -320,14 +311,14 @@ class ArtifactImportService
     return scope unless @filter.present?
 
     # Filter by elements if specified
-    if @filter[:elements].present? || @filter['elements'].present?
-      elements = @filter[:elements] || @filter['elements']
+    if @filter.elements.present?
+      elements = @filter.elements
       scope = scope.where(element: elements)
     end
 
     # Filter by proficiencies if specified
-    if @filter[:proficiencies].present? || @filter['proficiencies'].present?
-      proficiencies = @filter[:proficiencies] || @filter['proficiencies']
+    if @filter.proficiencies.present?
+      proficiencies = @filter.proficiencies
       scope = scope.where(proficiency: proficiencies)
     end
 

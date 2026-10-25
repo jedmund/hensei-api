@@ -268,7 +268,7 @@ RSpec.describe GridWeapon, type: :model do
              weapon: ec_weapon,
              uncap_level: 5,
              transcendence_step: 0,
-             element: 2)
+             element: 1)
     end
 
     describe '#sync_from_collection!' do
@@ -287,7 +287,7 @@ RSpec.describe GridWeapon, type: :model do
           linked_grid_weapon.reload
 
           expect(linked_grid_weapon.uncap_level).to eq(5)
-          expect(linked_grid_weapon.element).to eq(2)
+          expect(linked_grid_weapon.element).to eq(1)
         end
       end
 

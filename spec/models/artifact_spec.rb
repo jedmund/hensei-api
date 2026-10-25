@@ -47,7 +47,7 @@ RSpec.describe Artifact, type: :model do
       expect(Artifact.proficiencies).to include(
         'sabre' => 1,
         'dagger' => 2,
-        'spear' => 4
+        'spear' => 3
       )
     end
 

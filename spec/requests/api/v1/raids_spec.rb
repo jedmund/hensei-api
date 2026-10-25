@@ -20,8 +20,8 @@ RSpec.describe 'Api::V1::Raids', type: :request do
 
   describe 'GET /api/v1/raids' do
     let!(:group) { create(:raid_group) }
-    let!(:raid1) { create(:raid, group: group, element: 1) }
-    let!(:raid2) { create(:raid, group: group, element: 2) }
+    let!(:raid1) { create(:raid, group: group, element: 4) }
+    let!(:raid2) { create(:raid, group: group, element: 1) }
 
     it 'returns all raids with correct fields' do
       get '/api/v1/raids'
@@ -38,12 +38,12 @@ RSpec.describe 'Api::V1::Raids', type: :request do
     end
 
     it 'filters by element and excludes non-matching' do
-      get '/api/v1/raids', params: { element: 1 }
+      get '/api/v1/raids', params: { element: 4 }
       expect(response).to have_http_status(:ok)
 
       json = response.parsed_body
       json.each do |r|
-        expect(r['element']).to eq(1)
+        expect(r['element']).to eq(4)
       end
       ids = json.map { |r| r['id'] }
       expect(ids).to include(raid1.id)

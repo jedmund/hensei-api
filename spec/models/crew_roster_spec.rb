@@ -21,8 +21,8 @@ RSpec.describe CrewRoster, type: :model do
     it { is_expected.to validate_presence_of(:element) }
 
     it 'validates element uniqueness per crew' do
-      create(:crew_roster, crew: crew, created_by: user, element: 2)
-      duplicate = build(:crew_roster, crew: crew, created_by: user, element: 2)
+      create(:crew_roster, crew: crew, created_by: user, element: 1)
+      duplicate = build(:crew_roster, crew: crew, created_by: user, element: 1)
 
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:element]).to be_present
@@ -30,8 +30,8 @@ RSpec.describe CrewRoster, type: :model do
 
     it 'allows same element across different crews' do
       other_crew = create(:crew)
-      create(:crew_roster, crew: crew, created_by: user, element: 2)
-      other_roster = build(:crew_roster, crew: other_crew, created_by: user, element: 2)
+      create(:crew_roster, crew: crew, created_by: user, element: 1)
+      other_roster = build(:crew_roster, crew: other_crew, created_by: user, element: 1)
 
       expect(other_roster).to be_valid
     end

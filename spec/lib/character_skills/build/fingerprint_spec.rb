@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe CharacterSkills::Build::Fingerprint do
   let(:character) do
-    create(:character, granblue_id: "3040999000", element: 2,
+    create(:character, granblue_id: "3040999000", element: 1,
                        wiki_raw: "{{Character|a1_name=Fire}}", wiki_raw_jp: "<p>アビリティ「炎」</p>",
                        game_raw_en: { "ability" => { "1" => { "name" => "Fire", "class_name" => "1_1" } } },
                        game_raw_jp: nil)
@@ -66,7 +66,7 @@ RSpec.describe CharacterSkills::Build::Fingerprint do
     "wiki_raw_jp" => "<p>氷</p>",
     "game_raw_en" => { "ability" => {} },
     "game_raw_jp" => { "ability" => {} },
-    "element" => 3,
+    "element" => 2,
     "granblue_id" => "3040999001",
     "style_swap" => true
   }.each do |column, value|

@@ -17,7 +17,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
   # The canonical test data may already hold some of these characters.
   let!(:nier) do
     character = Character.find_by(granblue_id: '3040169000') || create(:character, granblue_id: '3040169000')
-    character.update!(solomonis_zone: zone, element: 5, transcendence: true, max_transcendence_stage: 5)
+    character.update!(solomonis_zone: zone, element: 6, transcendence: true, max_transcendence_stage: 5)
     character
   end
   let!(:allies) do
@@ -77,7 +77,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       expect(party.shortcode).to eq(response.parsed_body['shortcode'])
       expect(party.name).to eq('Nier Party')
       expect(party.raid).to eq(zone)
-      expect(party.element).to eq(5)
+      expect(party.element).to eq(6)
       expect(party.turn_count).to eq(109)
       expect(party.job).to eq(job)
       expect(party.characters.map { |gc| gc.character.granblue_id })

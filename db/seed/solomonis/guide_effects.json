@@ -1603,9 +1603,9 @@
       "target_values": [
         1,
         2,
-        4,
         3,
-        6
+        4,
+        5
       ],
       "character_granblue_id": null,
       "availability": "global",
@@ -1627,10 +1627,10 @@
       "icon_type": 401,
       "target_type": "proficiency",
       "target_values": [
-        9,
+        6,
         7,
-        5,
         8,
+        9,
         10
       ],
       "character_granblue_id": null,

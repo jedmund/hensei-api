@@ -34,11 +34,11 @@ RSpec.describe SupportSummonImportService do
 
   describe '#import' do
     let(:user) { create(:user) }
-    let(:fire_summon) { create(:summon, element: 2) } # internal 2=Fire
-    let(:water_summon) { create(:summon, element: 3) }
+    let(:fire_summon) { create(:summon, element: 1) } # internal 2=Fire
+    let(:water_summon) { create(:summon, element: 2) }
     let(:misc_summon) { create(:summon, element: 0) }
 
-    it 'translates GBF section indices to internal section enums' do
+    it 'maps GBF section indices to section enums' do
       service = described_class.new(user, [
         { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 250 },
         { 'gbf_section' => 2, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 200 },
@@ -49,7 +49,7 @@ RSpec.describe SupportSummonImportService do
 
       expect(result.success?).to be(true)
       sections = user.support_summons.ordered.map(&:section)
-      expect(sections).to eq(%w[fire water misc])
+      expect(sections).to eq(%w[misc fire water])
     end
 
     it 'maps all 7 GBF section indices correctly' do

@@ -6,7 +6,7 @@ RSpec.describe SummonAuras::BuildJob do
   include ActiveJob::TestHelper
 
   let(:wiki) { "{{Summon\n|aura1=50% boost to Water Elemental ATK.\n}}" }
-  let(:summon) { Summon.without_aura_build { create(:summon, granblue_id: '2040900001', element: 3, wiki_raw: wiki) } }
+  let(:summon) { Summon.without_aura_build { create(:summon, granblue_id: '2040900001', element: 2, wiki_raw: wiki) } }
 
   around do |example|
     saved = ENV.fetch('SUMMON_AURA_BUILD', nil)
@@ -58,7 +58,7 @@ RSpec.describe SummonAuras::BuildJob do
     it 'queues a build when the page or the element changes' do
       summon
       expect { summon.update!(wiki_raw: wiki.sub('50%', '60%')) }.to have_enqueued_job(described_class).with(summon.id)
-      expect { summon.update!(element: 2) }.to have_enqueued_job(described_class).with(summon.id)
+      expect { summon.update!(element: 1) }.to have_enqueued_job(described_class).with(summon.id)
     end
 
     it 'queues a build when the page is stored outside a save' do
@@ -70,7 +70,7 @@ RSpec.describe SummonAuras::BuildJob do
       summon
       expect { summon.update!(name_en: 'Renamed') }.not_to have_enqueued_job(described_class)
       expect { create(:summon) }.not_to have_enqueued_job(described_class)
-      expect { Summon.without_aura_build { summon.update!(element: 4) } }.not_to have_enqueued_job(described_class)
+      expect { Summon.without_aura_build { summon.update!(element: 3) } }.not_to have_enqueued_job(described_class)
     end
   end
 end

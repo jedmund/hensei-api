@@ -30,7 +30,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body['grid_artifact']
-      expect(json['element']).to eq(6) # light = 6
+      expect(json['element']).to eq(5) # light = 6
       expect(json['level']).to eq(1)
     end
 

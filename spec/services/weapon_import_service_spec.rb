@@ -774,6 +774,26 @@ RSpec.describe WeaponImportService, type: :service do
     end
   end
 
+  describe '#preview_deletions with a game filter' do
+    let(:fire_weapon) { create(:weapon, element: 1) }
+    let(:water_weapon) { create(:weapon, element: 2) }
+    let!(:fire_copy) { create(:collection_weapon, user: user, weapon: fire_weapon, game_id: '8001') }
+    let!(:water_copy) { create(:collection_weapon, user: user, weapon: water_weapon, game_id: '8002') }
+    let(:game_data) { { 'list' => [{ 'param' => { 'id' => '8999' }, 'master' => { 'id' => fire_weapon.granblue_id } }] } }
+
+    it "scopes deletions to the game's element ids" do
+      service = described_class.new(user, game_data, filter: { 'element_ids' => [1] })
+
+      expect(service.preview_deletions).to contain_exactly(fire_copy)
+    end
+
+    it 'converts the old element numbers an earlier extension build sends' do
+      service = described_class.new(user, game_data, filter: { 'elements' => [2] }) # old Fire
+
+      expect(service.preview_deletions).to contain_exactly(fire_copy)
+    end
+  end
+
   describe 'element-changeable weapons' do
     let(:ccw_series) do
       WeaponSeries.find_by(slug: 'class-champion') ||
@@ -789,12 +809,12 @@ RSpec.describe WeaponImportService, type: :service do
              element: 0,
              weapon_series: ccw_series,
              element_variant_ids: {
-               '1' => '1040005500', # Wind
-               '2' => '1040005200', # Fire (same as base granblue_id)
-               '3' => '1040005300', # Water
-               '4' => '1040005400', # Earth
-               '5' => '1040005700', # Dark
-               '6' => '1040005600'  # Light
+               '1' => '1040005200', # Fire (same as base granblue_id)
+               '2' => '1040005300', # Water
+               '3' => '1040005400', # Earth
+               '4' => '1040005500', # Wind
+               '5' => '1040005600', # Light
+               '6' => '1040005700'  # Dark
              })
     end
 
@@ -858,25 +878,25 @@ RSpec.describe WeaponImportService, type: :service do
     context 'element assignment' do
       it 'stores the correct element for each variant' do
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6001, image_id: '1040005500'), # Wind = 1
-          weapon_item(game_id: 6002, image_id: '1040005300'), # Water = 3
-          weapon_item(game_id: 6003, image_id: '1040005700')  # Dark = 5
+          weapon_item(game_id: 6001, image_id: '1040005500'), # Wind = 4
+          weapon_item(game_id: 6002, image_id: '1040005300'), # Water = 2
+          weapon_item(game_id: 6003, image_id: '1040005700')  # Dark = 6
         ] }).import
 
         expect(result.errors).to be_empty
 
         by_game_id = result.created.index_by(&:game_id)
-        expect(by_game_id['6001'].element).to eq(1)
-        expect(by_game_id['6002'].element).to eq(3)
-        expect(by_game_id['6003'].element).to eq(5)
+        expect(by_game_id['6001'].element).to eq(4)
+        expect(by_game_id['6002'].element).to eq(2)
+        expect(by_game_id['6003'].element).to eq(6)
       end
 
       it 'stores the correct element when variant ID matches base granblue_id' do
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6004, image_id: '1040005200') # Fire = 2
+          weapon_item(game_id: 6004, image_id: '1040005200') # Fire = 1
         ] }).import
 
-        expect(result.created.first.element).to eq(2)
+        expect(result.created.first.element).to eq(1)
       end
 
       it 'does not set element for non-element-changeable weapons' do
@@ -889,11 +909,11 @@ RSpec.describe WeaponImportService, type: :service do
 
       it 'persists element to the database' do
         described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6006, image_id: '1040005400') # Earth = 4
+          weapon_item(game_id: 6006, image_id: '1040005400') # Earth = 3
         ] }).import
 
         cw = user.collection_weapons.find_by(game_id: '6006')
-        expect(cw.element).to eq(4)
+        expect(cw.element).to eq(3)
       end
     end
 
@@ -918,7 +938,7 @@ RSpec.describe WeaponImportService, type: :service do
         game_ids = result.created.map(&:game_id)
         elements = result.created.map(&:element).sort
         expect(game_ids).to contain_exactly('7001', '7002', '7003')
-        expect(elements).to eq([1, 2, 6]) # Wind, Fire, Light
+        expect(elements).to eq([1, 4, 5]) # Fire, Wind, Light
       end
 
       it 'can re-import the same variants without duplicating (skip by game_id)' do
@@ -954,7 +974,7 @@ RSpec.describe WeaponImportService, type: :service do
 
         cw.reload
         expect(cw.uncap_level).to eq(5)
-        expect(cw.element).to eq(1) # Wind element preserved
+        expect(cw.element).to eq(4) # Wind element preserved
       end
     end
 
@@ -978,9 +998,9 @@ RSpec.describe WeaponImportService, type: :service do
 
         # Element variants: correct weapon and element
         expect(by_game_id['9002'].weapon_id).to eq(ccw_weapon.id)
-        expect(by_game_id['9002'].element).to eq(1) # Wind
+        expect(by_game_id['9002'].element).to eq(4) # Wind
         expect(by_game_id['9003'].weapon_id).to eq(ccw_weapon.id)
-        expect(by_game_id['9003'].element).to eq(4) # Earth
+        expect(by_game_id['9003'].element).to eq(3) # Earth
       end
     end
   end

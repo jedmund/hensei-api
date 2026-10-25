@@ -48,8 +48,8 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       Weapon.find_by(granblue_id: '1040307800') ||
         create(:weapon, name_en: 'Ultima Axe', granblue_id: '1040307800', element: 0, weapon_series: element_changeable_series,
                         element_variant_ids: {
-                          '1' => '1040308100', '2' => '1040307800', '3' => '1040307900',
-                          '4' => '1040308000', '5' => '1040308300', '6' => '1040308200'
+                          '1' => '1040307800', '2' => '1040307900', '3' => '1040308000',
+                          '4' => '1040308100', '5' => '1040308200', '6' => '1040308300'
                         })
     end
 
@@ -424,14 +424,14 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
 
     it 'resolves via element_variant_ids when populated' do
-      excalibur.update!(element_variant_ids: { '5' => '1040007900' })
+      excalibur.update!(element_variant_ids: { '6' => '1040007900' })
 
       proc = described_class.new(party, dark_excalibur_deck)
       expect { proc.process }.to change(GridWeapon, :count).by(1)
 
       grid_weapon = party.weapons.find_by(position: -1)
       expect(grid_weapon.weapon).to eq(excalibur)
-      expect(grid_weapon.element).to eq(5)
+      expect(grid_weapon.element).to eq(6)
     end
 
     it 'resolves a null-element weapon variant by name when element_variant_ids is empty' do
@@ -441,7 +441,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       grid_weapon = party.weapons.find_by(position: -1)
       expect(grid_weapon).not_to be_nil
       expect(grid_weapon.weapon).to eq(excalibur)
-      expect(grid_weapon.element).to eq(5) # Dark
+      expect(grid_weapon.element).to eq(6) # Dark
     end
   end
 

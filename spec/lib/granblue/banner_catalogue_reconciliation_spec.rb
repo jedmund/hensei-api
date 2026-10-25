@@ -3,9 +3,9 @@ require Rails.root.join('lib/granblue/banner_catalogue_reconciliation')
 
 RSpec.describe Granblue::BannerCatalogueReconciliation do
   let!(:existing) { create(:weapon, granblue_id: '1040999901', rarity: 3, promotions: [3, 10, 99]) }
-  let!(:character) { create(:character, granblue_id: '3030999901', rarity: 2, element: 2, season: nil) }
+  let!(:character) { create(:character, granblue_id: '3030999901', rarity: 2, element: 1, season: nil) }
   let(:attributes) do
-    { 'granblue_id' => '1030999901', 'name_en' => 'Reviewed Weapon', 'rarity' => 2, 'element' => 2, 'proficiency' => 4,
+    { 'granblue_id' => '1030999901', 'name_en' => 'Reviewed Weapon', 'rarity' => 2, 'element' => 1, 'proficiency' => 3,
       'recruits' => character.granblue_id, 'max_level' => 75, 'max_skill_level' => 10, 'source' => 'Game response' }
   end
   let(:manifest) do

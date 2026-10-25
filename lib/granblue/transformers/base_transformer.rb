@@ -14,18 +14,6 @@ module Granblue
     # Base class for transforming game data into standardized format
     # @abstract
     class BaseTransformer
-      # Mapping of game element IDs to internal element IDs
-      # @return [Hash<Integer, Integer?>]
-      ELEMENT_MAPPING = {
-        0 => nil,
-        1 => 4, # Wind -> Earth
-        2 => 2, # Fire -> Fire
-        3 => 3, # Water -> Water
-        4 => 1, # Earth -> Wind
-        5 => 6, # Dark -> Light
-        6 => 5 # Light -> Dark
-      }.freeze
-
       # Initialize a new transformer
       # @param data [Object] Raw game data to transform
       # @param options [Hash<Symbol, Object>] Optional configuration settings

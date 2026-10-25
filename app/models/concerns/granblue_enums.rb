@@ -3,54 +3,44 @@ module GranblueEnums
 
   # Define constants for shared enum mappings.
   RARITIES = { R: 1, SR: 2, SSR: 3 }.freeze
-  ELEMENTS = { Null: 0, Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6 }.freeze
-
-  # Maps internal element IDs to official GBF element IDs for image URLs.
-  # Internal: 0=Null, 1=Wind, 2=Fire, 3=Water, 4=Earth, 5=Dark, 6=Light
-  # GBF:      0=Null, 1=Fire, 2=Water, 3=Earth, 4=Wind, 5=Light, 6=Dark
-  INTERNAL_TO_GBF_ELEMENT = { 0 => 0, 1 => 4, 2 => 1, 3 => 2, 4 => 3, 5 => 6, 6 => 5 }.freeze
-  GBF_TO_INTERNAL_ELEMENT = INTERNAL_TO_GBF_ELEMENT.invert.freeze
-
-  included do
-    def self.to_granblue_element(internal_element)
-      INTERNAL_TO_GBF_ELEMENT[internal_element] || internal_element
-    end
-
-    def self.to_internal_element(gbf_element)
-      GBF_TO_INTERNAL_ELEMENT[gbf_element] || gbf_element
-    end
-  end
+  # Element, proficiency and race values are the game's own numbers, so data
+  # read from the game needs no conversion.
+  ELEMENTS = { Null: 0, Fire: 1, Water: 2, Earth: 3, Wind: 4, Light: 5, Dark: 6 }.freeze
   GENDERS = { Unknown: 0, Male: 1, Female: 2, "Male/Female": 3 }.freeze
 
   # Single proficiency enum mapping used for both proficiency1 and proficiency2.
+  # Matches the game's weapon kind.
   PROFICIENCY = {
     None: 0,
     Sabre: 1,
     Dagger: 2,
-    Axe: 3,
-    Spear: 4,
-    Bow: 5,
-    Staff: 6,
+    Spear: 3,
+    Axe: 4,
+    Staff: 5,
+    Gun: 6,
     Melee: 7,
-    Harp: 8,
-    Gun: 9,
+    Bow: 8,
+    Harp: 9,
     Katana: 10
   }.freeze
 
-  # Single race enum mapping used for both race1 and race2.
+  # Single race enum mapping used for both race1 and race2. Matches the game's tribe.
   RACES = {
-    Unknown: 0,
     Human: 1,
     Erune: 2,
     Draph: 3,
     Harvin: 4,
-    Primal: 5,
-    None: 6,
+    Other: 5,
+    Primal: 6,
     Geonoid: 7,
     Levleath: 8,
     Grokkle: 9,
     Wolvir: 10
   }.freeze
+
+  # Lowercase element and proficiency names for Rails enums (no Null/None).
+  ELEMENT_ENUM = ELEMENTS.except(:Null).transform_keys { |k| k.to_s.downcase.to_sym }.freeze
+  PROFICIENCY_ENUM = PROFICIENCY.except(:None).transform_keys { |k| k.to_s.downcase.to_sym }.freeze
 
   # Character seasons - display disambiguation for seasonal variants (e.g., "Vane [Halloween]")
   # If no season, value should be nil (not a default value)

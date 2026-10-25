@@ -15,9 +15,9 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
   let(:unauth_headers) { { 'Content-Type' => 'application/json' } }
 
   describe 'GET /api/v1/users/:user_id/parties' do
-    let!(:public_party) { create(:party, user: user, visibility: 1, raid: raid, element: 1) }
-    let!(:unlisted_party) { create(:party, user: user, visibility: 2, raid: raid, element: 2) }
-    let!(:private_party) { create(:party, user: user, visibility: 3, raid: raid, element: 1) }
+    let!(:public_party) { create(:party, user: user, visibility: 1, raid: raid, element: 4) }
+    let!(:unlisted_party) { create(:party, user: user, visibility: 2, raid: raid, element: 1) }
+    let!(:private_party) { create(:party, user: user, visibility: 3, raid: raid, element: 4) }
 
     context 'as the owner' do
       it 'returns all parties including private' do
@@ -70,7 +70,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
 
     context 'with element filter' do
       it 'filters parties by element' do
-        get "/api/v1/users/#{user.username}/parties", params: { element: 1 }, headers: auth_headers
+        get "/api/v1/users/#{user.username}/parties", params: { element: 4 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
 
         ids = response.parsed_body['results'].map { |p| p['id'] }

@@ -53,7 +53,7 @@ RSpec.describe 'Weapons API', type: :request do
     end
 
     it 'returns recruit metadata needed to distinguish character variants' do
-      recruited_character = create(:character, element: 5, season: 4, style_swap: true)
+      recruited_character = create(:character, element: 6, season: 4, style_swap: true)
       character_series = create(:character_series, :grand)
       create(:character_series_membership,
              character: recruited_character,
@@ -71,7 +71,7 @@ RSpec.describe 'Weapons API', type: :request do
           'en' => recruited_character.name_en,
           'ja' => recruited_character.name_jp
         },
-        'element' => 5,
+        'element' => 6,
         'season' => 4,
         'style_swap' => true
       )
@@ -102,7 +102,7 @@ RSpec.describe 'Weapons API', type: :request do
           granblue_id: '1040000001',
           name_en: 'Test Weapon',
           rarity: 4,
-          element: 1,
+          element: 4,
           proficiency: 1,
           max_exorcism_level: 5
         }
@@ -119,7 +119,7 @@ RSpec.describe 'Weapons API', type: :request do
       expect(json['max_exorcism_level']).to eq(5)
       expect(json['granblue_id']).to eq('1040000001')
       expect(json['name']['en']).to eq('Test Weapon')
-      expect(json['element']).to eq(1)
+      expect(json['element']).to eq(4)
     end
 
     it 'creates a weapon with null max_exorcism_level' do

@@ -40,21 +40,21 @@ RSpec.describe 'Api::V1::Search', type: :request do
 
     it 'filters by element and returns only matching results' do
       post '/api/v1/search/characters',
-           params: { search: { filters: { element: [1] }, page: 1 } }.to_json,
+           params: { search: { filters: { element: [4] }, page: 1 } }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
 
       results = response.parsed_body['results']
       results.each do |r|
-        expect(r['element']).to eq(1)
+        expect(r['element']).to eq(4)
       end
     end
 
     context 'when filtering by proficiency' do
       # Sabre = 1, Dagger = 2, Axe = 3
       let!(:sabre_primary) { create(:character, proficiency1: 1, proficiency2: nil) }
-      let!(:sabre_secondary) { create(:character, proficiency1: 3, proficiency2: 1) }
-      let!(:no_sabre) { create(:character, proficiency1: 2, proficiency2: 3) }
+      let!(:sabre_secondary) { create(:character, proficiency1: 4, proficiency2: 1) }
+      let!(:no_sabre) { create(:character, proficiency1: 2, proficiency2: 4) }
 
       it 'matches characters with the proficiency in either slot' do
         post '/api/v1/search/characters',

@@ -130,7 +130,7 @@ RSpec.describe Granblue::Parsers::CharacterSkillParser do
       end
 
       it 'keeps the same effects, with the same ids, whenever the character is reparsed' do
-        character = create(:character, granblue_id: '3990515000', element: 6, wiki_raw: wiki_raw)
+        character = create(:character, granblue_id: '3990515000', element: 5, wiki_raw: wiki_raw)
         effects = SkillEffect.joins(character_skill_version: :character_skill)
                              .where(character_skills: { character_id: character.id })
                              .effect_weapon_skill_boost
@@ -146,7 +146,7 @@ RSpec.describe Granblue::Parsers::CharacterSkillParser do
       end
 
       it 'does not apply Light Grand Sandalphon data to an Earth character' do
-        character = create(:character, granblue_id: '3990312000', element: 4, wiki_raw: wiki_raw)
+        character = create(:character, granblue_id: '3990312000', element: 3, wiki_raw: wiki_raw)
 
         described_class.new(character).parse(persist: true)
 

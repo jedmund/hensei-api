@@ -39,12 +39,7 @@ module CollectionImport
       'earring'                => 'Earring'
     }.freeze
 
-    # Internal element IDs: 0=Null, 1=Wind, 2=Fire, 3=Water, 4=Earth, 5=Dark, 6=Light
-    # (See GranblueEnums::ELEMENTS.)
-    INTERNAL_ELEMENT_NAMES = {
-      0 => 'Null', 1 => 'Wind', 2 => 'Fire', 3 => 'Water',
-      4 => 'Earth', 5 => 'Dark', 6 => 'Light'
-    }.freeze
+    ELEMENT_NAMES = GranblueEnums::ELEMENTS.invert.transform_values(&:to_s).freeze
 
     module_function
 
@@ -76,7 +71,7 @@ module CollectionImport
       when /\Aax_modifier\d_id\z/, 'befoulment_modifier_id'
         resolve_stat_modifier(value)
       when 'element'
-        INTERNAL_ELEMENT_NAMES[value.to_i] || value.to_s
+        ELEMENT_NAMES[value.to_i] || value.to_s
       when 'perpetuity'
         value ? 'Yes' : 'No'
       when /\Aring\d\z/, 'earring'

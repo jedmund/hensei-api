@@ -28,13 +28,13 @@ RSpec.describe 'Support Summons API', type: :request do
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       ids = json['support_summons'].map { |s| s['id'] }
-      expect(ids).to eq([fire0.id, misc2.id])
+      expect(ids).to eq([misc2.id, fire0.id])
     end
 
     it 'serializes section as a string and position as an integer' do
       get "/api/v1/users/#{user.id}/support_summons"
       json = response.parsed_body
-      first = json['support_summons'].first
+      first = json['support_summons'].find { |s| s['id'] == fire0.id }
       expect(first['section']).to eq('fire')
       expect(first['position']).to eq(0)
       expect(first['collection_summon']).to be_present
@@ -70,7 +70,7 @@ RSpec.describe 'Support Summons API', type: :request do
       get "/api/v1/users/#{user.username}/support_summons"
       expect(response).to have_http_status(:ok)
       ids = response.parsed_body['support_summons'].map { |s| s['id'] }
-      expect(ids).to eq([fire0.id, misc2.id])
+      expect(ids).to eq([misc2.id, fire0.id])
     end
 
     it 'matches usernames case-insensitively' do
@@ -155,8 +155,8 @@ RSpec.describe 'Support Summons API', type: :request do
   end
 
   describe 'POST /api/v1/support_summons/import' do
-    let!(:fire_summon) { create(:summon, element: 2) }
-    let!(:water_summon) { create(:summon, element: 3) }
+    let!(:fire_summon) { create(:summon, element: 1) }
+    let!(:water_summon) { create(:summon, element: 2) }
 
     it 'imports the parsed extension payload and atomically replaces existing slots' do
       existing_cs = create(:collection_summon, user: user, summon: water_summon)
@@ -174,7 +174,7 @@ RSpec.describe 'Support Summons API', type: :request do
       expect(response).to have_http_status(:ok)
       expect(SupportSummon.find_by(id: stale.id)).to be_nil
       sections = user.support_summons.ordered.pluck(:section)
-      expect(sections).to eq(%w[fire misc])
+      expect(sections).to eq(%w[misc fire])
     end
 
     it 'auto-creates a CollectionSummon when the user does not yet own the imported summon' do

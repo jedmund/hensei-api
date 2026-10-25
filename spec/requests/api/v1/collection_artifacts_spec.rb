@@ -83,8 +83,8 @@ RSpec.describe 'Collection Artifacts API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      # Blueprint returns element as integer (water = 3)
-      expect(json['artifacts'].all? { |a| a['element'] == 3 }).to be true
+      # Blueprint returns element as integer (water = 2)
+      expect(json['artifacts'].all? { |a| a['element'] == 2 }).to be true
     end
 
     it 'returns forbidden for private collection without authentication' do
@@ -132,7 +132,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       json = response.parsed_body
       expect(json['artifact']['id']).to eq(artifact.id)
       # Blueprint returns element as integer (fire = 2)
-      expect(json['element']).to eq(2)
+      expect(json['element']).to eq(1)
     end
 
     it 'allows multiple copies of the same artifact' do
@@ -176,7 +176,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       expect(response).to have_http_status(:created)
       json = response.parsed_body
       # Blueprint returns proficiency as integer (staff = 6)
-      expect(json['proficiency']).to eq(6)
+      expect(json['proficiency']).to eq(5)
     end
 
     it 'returns error when skill1 and skill2 have same modifier' do
@@ -223,7 +223,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       json = response.parsed_body
       expect(json['nickname']).to eq('Updated Name')
       # Blueprint returns element as integer (water = 3)
-      expect(json['element']).to eq(3)
+      expect(json['element']).to eq(2)
     end
 
     it 'returns not found for other user\'s artifact' do

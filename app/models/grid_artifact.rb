@@ -15,30 +15,10 @@ class GridArtifact < ApplicationRecord
   scope :orphaned, -> { where(orphaned: true) }
   scope :not_orphaned, -> { where(orphaned: false) }
 
-  # Enums - using GranblueEnums::ELEMENTS values (excluding Null)
-  # Wind: 1, Fire: 2, Water: 3, Earth: 4, Dark: 5, Light: 6
-  enum :element, {
-    wind: 1,
-    fire: 2,
-    water: 3,
-    earth: 4,
-    dark: 5,
-    light: 6
-  }
+  enum :element, GranblueEnums::ELEMENT_ENUM
 
   # Proficiency enum - only used for quirk artifacts (game assigns random proficiency)
-  enum :proficiency, {
-    sabre: 1,
-    dagger: 2,
-    axe: 3,
-    spear: 4,
-    bow: 5,
-    staff: 6,
-    melee: 7,
-    harp: 8,
-    gun: 9,
-    katana: 10
-  }
+  enum :proficiency, GranblueEnums::PROFICIENCY_ENUM
 
   # Validations
   validates :element, presence: true

@@ -6,7 +6,7 @@ RSpec.describe GridDamage::CharacterAuras do
   let(:party) { create(:party) }
 
   def add_passive(granblue_id:, name:, position:, frames:, amount:)
-    character = create(:character, granblue_id: granblue_id, name_en: name, element: 6)
+    character = create(:character, granblue_id: granblue_id, name_en: name, element: 5)
     skill = create(:character_skill, :support, character: character, position: 2)
     version = create(:character_skill_version, character_skill: skill)
     frames.each_with_index do |frame, index|
@@ -42,8 +42,8 @@ RSpec.describe GridDamage::CharacterAuras do
                             frame: 'omega', element: 'light', amount: amount)
     end
 
-    let(:base) { create(:character, granblue_id: '3040377000', element: 6) }
-    let(:style) { create(:character, granblue_id: '3040377000', style_swap: true, element: 6) }
+    let(:base) { create(:character, granblue_id: '3040377000', element: 5) }
+    let(:style) { create(:character, granblue_id: '3040377000', style_swap: true, element: 5) }
 
     before do
       boost(base, 10)

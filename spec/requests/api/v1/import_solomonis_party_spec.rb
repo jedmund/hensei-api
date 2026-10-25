@@ -19,7 +19,7 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
   let!(:fraux) do
     character = Character.find_by!(granblue_id: '3040161000')
     zone = character.solomonis_zone || create(:raid, :solomonis_zone)
-    character.update!(solomonis_zone: zone, element: 2)
+    character.update!(solomonis_zone: zone, element: 1)
     character
   end
   let!(:job) { create(:job, granblue_id: '300301') }

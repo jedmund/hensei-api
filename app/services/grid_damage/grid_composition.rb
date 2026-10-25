@@ -8,8 +8,7 @@ module GridDamage
     module_function
 
     # Weapon-type proficiency id → specialty name (matches Cloud-style per-specialty tables).
-    PROFICIENCY_NAME = { 1 => "sabre", 2 => "dagger", 3 => "axe", 4 => "spear", 5 => "bow",
-                         6 => "staff", 7 => "melee", 8 => "harp", 9 => "gun", 10 => "katana" }.freeze
+    PROFICIENCY_NAME = GranblueEnums::PROFICIENCY_ENUM.invert.transform_values(&:to_s).freeze
     ALL_WEAPON_TYPE_COUNT = PROFICIENCY_NAME.size
 
     CANONICAL_COUNT_BASES = %w[

@@ -14,8 +14,8 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
   describe 'GET /api/v1/crew/crew_rosters' do
     context 'as captain' do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
-      let!(:fire_roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Fire') }
-      let!(:water_roster) { create(:crew_roster, crew: crew, created_by: user, element: 3, name: 'Water') }
+      let!(:fire_roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
+      let!(:water_roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Water') }
 
       it 'returns all rosters ordered by element' do
         get '/api/v1/crew/crew_rosters', headers: auth_headers
@@ -24,13 +24,13 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         json = response.parsed_body
         rosters = json['crew_rosters']
         expect(rosters.length).to eq(2)
-        expect(rosters.map { |r| r['element'] }).to eq([2, 3])
+        expect(rosters.map { |r| r['element'] }).to eq([1, 2])
       end
     end
 
     context 'as regular member' do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
-      let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Fire') }
+      let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
 
       it 'returns rosters (visible to all crew members)' do
         get '/api/v1/crew/crew_rosters', headers: auth_headers
@@ -54,26 +54,26 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
     context 'with an empty roster' do
-      let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Fire') }
+      let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
 
       it 'returns the roster with empty items and members' do
         get "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
 
         expect(response).to have_http_status(:ok)
         json = response.parsed_body
-        expect(json['roster']['element']).to eq(2)
+        expect(json['roster']['element']).to eq(1)
         expect(json['items']).to eq([])
         expect(json['members']).to eq([])
       end
     end
 
     context 'with items' do
-      let(:character) { create(:character, element: 2, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
-      let(:weapon) { create(:weapon, element: 2, flb: true, ulb: true, transcendence: false) }
-      let(:summon) { create(:summon, element: 2, flb: true, ulb: false, transcendence: false) }
+      let(:character) { create(:character, element: 1, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
+      let(:weapon) { create(:weapon, element: 1, flb: true, ulb: true, transcendence: false) }
+      let(:summon) { create(:summon, element: 1, flb: true, ulb: false, transcendence: false) }
 
       let!(:roster) do
-        create(:crew_roster, :with_items, crew: crew, created_by: user, element: 2, name: 'Fire',
+        create(:crew_roster, :with_items, crew: crew, created_by: user, element: 1, name: 'Fire',
                                           characters: [character], weapons: [weapon], summons: [summon])
       end
 
@@ -115,12 +115,12 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'with member collection data' do
-      let(:character) { create(:character, element: 2, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
-      let(:story_character) { create(:character, :special_ulb, element: 2) }
-      let(:weapon) { create(:weapon, element: 2, flb: true, ulb: true, transcendence: true) }
+      let(:character) { create(:character, element: 1, flb: true, transcendence: true, max_transcendence_stage: 5, special: false) }
+      let(:story_character) { create(:character, :special_ulb, element: 1) }
+      let(:weapon) { create(:weapon, element: 1, flb: true, ulb: true, transcendence: true) }
 
       let!(:roster) do
-        create(:crew_roster, :with_items, crew: crew, created_by: user, element: 2, name: 'Fire',
+        create(:crew_roster, :with_items, crew: crew, created_by: user, element: 1, name: 'Fire',
                                           characters: [character, story_character], weapons: [weapon])
       end
 
@@ -200,9 +200,9 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
   end
 
   describe 'PUT /api/v1/crew/crew_rosters/:id' do
-    let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Fire') }
-    let(:character) { create(:character, element: 2) }
-    let(:weapon) { create(:weapon, element: 2) }
+    let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
+    let(:character) { create(:character, element: 1) }
+    let(:weapon) { create(:weapon, element: 1) }
 
     context 'as captain' do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
@@ -266,7 +266,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
   end
 
   describe 'DELETE /api/v1/crew/crew_rosters/:id' do
-    let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Fire') }
+    let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
 
     context 'as captain' do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }

@@ -30,7 +30,7 @@ class WeaponImportService
     @update_existing = options[:update_existing] || false
     @is_full_inventory = options[:is_full_inventory] || false
     @reconcile_deletions = options[:reconcile_deletions] || false
-    @filter = options[:filter] # { elements: [...], proficiencies: [...] }
+    @filter = CollectionImportFilter.from(options[:filter])
     @conflict_resolutions = options[:conflict_resolutions] || {}
     @created = []
     @updated = []
@@ -382,8 +382,8 @@ class WeaponImportService
 
     # Element: check collection_weapon.element first (for element-changeable weapons),
     # fall back to weapon.element if nil
-    if @filter[:elements].present? || @filter['elements'].present?
-      elements = @filter[:elements] || @filter['elements']
+    if @filter.elements.present?
+      elements = @filter.elements
       scope = scope.joins(:weapon).where(
         'collection_weapons.element IN (?) OR (collection_weapons.element IS NULL AND weapons.element IN (?))',
         elements, elements
@@ -391,8 +391,8 @@ class WeaponImportService
     end
 
     # Proficiency: join through weapon
-    if @filter[:proficiencies].present? || @filter['proficiencies'].present?
-      proficiencies = @filter[:proficiencies] || @filter['proficiencies']
+    if @filter.proficiencies.present?
+      proficiencies = @filter.proficiencies
       scope = scope.joins(:weapon).where(weapons: { proficiency: proficiencies })
     end
 

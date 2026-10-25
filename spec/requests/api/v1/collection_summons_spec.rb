@@ -49,7 +49,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
     it 'supports filtering by both element and rarity' do
       fire_ssr = create(:summon, element: 0, rarity: 4)
-      water_ssr = create(:summon, element: 1, rarity: 4)
+      water_ssr = create(:summon, element: 4, rarity: 4)
       fire_sr = create(:summon, element: 0, rarity: 3)
 
       create(:collection_summon, user: user, summon: fire_ssr)
@@ -154,7 +154,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
     it 'filters by element in unowned mode' do
       fire_smn = create(:summon, element: 0)
-      water_smn = create(:summon, element: 1)
+      water_smn = create(:summon, element: 4)
       owned_fire_smn = create(:summon, element: 0)
       create(:collection_summon, user: user, summon: owned_fire_smn)
 

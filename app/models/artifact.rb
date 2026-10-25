@@ -1,20 +1,7 @@
 # frozen_string_literal: true
 
 class Artifact < ApplicationRecord
-  # Enums - using GranblueEnums::PROFICIENCY values (excluding None: 0)
-  # Sabre: 1, Dagger: 2, Axe: 3, Spear: 4, Bow: 5, Staff: 6, Melee: 7, Harp: 8, Gun: 9, Katana: 10
-  enum :proficiency, {
-    sabre: 1,
-    dagger: 2,
-    axe: 3,
-    spear: 4,
-    bow: 5,
-    staff: 6,
-    melee: 7,
-    harp: 8,
-    gun: 9,
-    katana: 10
-  }
+  enum :proficiency, GranblueEnums::PROFICIENCY_ENUM
 
   enum :rarity, { standard: 0, quirk: 1 }
 

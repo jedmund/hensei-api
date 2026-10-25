@@ -18,7 +18,7 @@ RSpec.describe SummonAuras::Build::Runner do
   end
 
   def make(granblue_id, raw = wiki, **attrs)
-    Summon.without_aura_build { create(:summon, granblue_id: granblue_id, element: 3, wiki_raw: raw, **attrs) }
+    Summon.without_aura_build { create(:summon, granblue_id: granblue_id, element: 2, wiki_raw: raw, **attrs) }
   end
 
   def run(mode: "write", **)

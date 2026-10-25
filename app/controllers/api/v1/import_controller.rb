@@ -17,16 +17,6 @@ module Api
     #     }
     #   }
     class ImportController < Api::V1::ApiController
-      ELEMENT_MAPPING = {
-        0 => nil,
-        1 => 2, # Fire -> Fire
-        2 => 3, # Water -> Water
-        3 => 4, # Earth -> Earth
-        4 => 1, # Wind -> Wind
-        5 => 6, # Light -> Light
-        6 => 5  # Dark -> Dark
-      }.freeze
-
       # GBF series_id to CharacterSeries slug mapping
       GBF_SERIES_TO_SLUG = {
         1 => 'summer',

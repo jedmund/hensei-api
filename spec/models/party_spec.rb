@@ -427,20 +427,20 @@ RSpec.describe Party, type: :model do
 
   describe '#update_element!' do
     it 'updates the party element if a main weapon (position -1) with a different element is present' do
-      # Create a party with element 3 (Water) initially.
-      party = create(:party, element: 3)
-      # Create a dummy weapon (using an instance double) with element 2 (Fire).
-      fire_weapon = instance_double('Weapon', element: 2)
+      # Create a party with element 2 (Water) initially.
+      party = create(:party, element: 2)
+      # Create a dummy weapon (using an instance double) with element 1 (Fire).
+      fire_weapon = instance_double('Weapon', element: 1)
       # Create a dummy grid weapon with position -1 and the fire_weapon.
       grid_weapon = instance_double('GridWeapon', position: -1, weapon: fire_weapon)
       allow(party).to receive(:weapons).and_return([grid_weapon])
       # Expect update_column to be called with the new element.
-      expect(party).to receive(:update_column).with(:element, 2)
+      expect(party).to receive(:update_column).with(:element, 1)
       party.send(:update_element!)
     end
 
     it 'does not update the party element if no main weapon is found' do
-      party = create(:party, element: 3)
+      party = create(:party, element: 2)
       allow(party).to receive(:weapons).and_return([])
       expect(party).not_to receive(:update_column)
       party.send(:update_element!)

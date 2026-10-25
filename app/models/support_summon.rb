@@ -4,7 +4,8 @@ class SupportSummon < ApplicationRecord
 
   has_one :summon, through: :collection_summon
 
-  enum :section, { wind: 1, fire: 2, water: 3, earth: 4, dark: 5, light: 6, misc: 7 }
+  # Element sections use the element numbers; Misc is the game's 0 bucket.
+  enum :section, { misc: 0, fire: 1, water: 2, earth: 3, wind: 4, light: 5, dark: 6 }
 
   validates :section, presence: true
   validates :position, presence: true
