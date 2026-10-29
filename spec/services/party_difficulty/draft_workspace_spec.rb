@@ -58,6 +58,28 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       expect(reloaded.merged_rules.map(&:id)).not_to include(rule.id)
     end
 
+    it 'merges partial rule edits and preserves the draft after a validation failure' do
+      draft = workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { name: 'Renamed' })
+      workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { weight: 3 })
+      expect(draft.reload.attributes_payload).to eq('name' => 'Renamed', 'weight' => 3)
+      expect {
+        workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { params: {} })
+      }.to raise_error(ActiveRecord::RecordInvalid)
+      expect(draft.reload.attributes_payload).to eq('name' => 'Renamed', 'weight' => 3)
+      expect(rule.reload.name).to eq('Spec base rule')
+    end
+
+    it 'refreshes merged rules after editing and canceling a creation in the same workspace' do
+      draft = workspace.stage!(target_type: 'DifficultyRule', target_id: nil, operation: 'create', attributes: {
+                                 name: 'New', component: 'weapon', rule_type: 'weapon_uncap_at_least', weight: 1, params: { min_uncap_level: 5 }
+                               })
+      expect(workspace.merged_rules.map(&:name)).to include('New')
+      workspace.update_created_rule!(draft, name: 'Edited')
+      expect(workspace.merged_rules.map(&:name)).to include('Edited')
+      workspace.delete_draft!(draft)
+      expect(workspace.merged_rules.map(&:name)).not_to include('Edited')
+    end
+
     it 'accepts ActionController::Parameters from controllers' do
       params = ActionController::Parameters.new(name: 'Hard', sort_order: 5).permit(:name, :sort_order)
 
