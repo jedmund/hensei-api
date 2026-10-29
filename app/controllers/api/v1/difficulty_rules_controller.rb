@@ -44,6 +44,11 @@ module Api
 
       def update
         rule = DifficultyRule.find_by(id: params[:id])
+        workspace = PartyDifficulty::DraftWorkspace.for(current_user)
+        if !rule && (creation = workspace.created_rule_draft(params[:id]))
+          draft = workspace.update_created_rule!(creation, rule_params)
+          return render json: draft_envelope(draft)
+        end
         return render_not_found_response('difficulty_rule') unless rule
 
         draft = PartyDifficulty::DraftWorkspace.for(current_user).stage!(
@@ -54,6 +59,11 @@ module Api
 
       def destroy
         rule = DifficultyRule.find_by(id: params[:id])
+        workspace = PartyDifficulty::DraftWorkspace.for(current_user)
+        if !rule && (creation = workspace.created_rule_draft(params[:id]))
+          workspace.delete_draft!(creation)
+          return head :no_content
+        end
         return render_not_found_response('difficulty_rule') unless rule
 
         PartyDifficulty::DraftWorkspace.for(current_user).stage!(
@@ -65,7 +75,8 @@ module Api
       def types
         render json: {
           types: PartyDifficulty::Rules.registered_types,
-          grouped: PartyDifficulty::Rules.types_grouped_by_component
+          grouped: PartyDifficulty::Rules.types_grouped_by_component,
+          definitions: PartyDifficulty::Rules::EditorDefinitions.all
         }
       end
 

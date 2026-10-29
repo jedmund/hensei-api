@@ -133,6 +133,7 @@ module PartyDifficulty
       remove_temp_images([draft])
       destroyed = draft.destroy
       @drafts.reject! { |d| d.id == draft.id }
+      @grouped_drafts = nil
       destroyed
     end
 
@@ -172,6 +173,9 @@ module PartyDifficulty
 
       payload = sanitize_attributes(target_type, attributes || {})
 
+      @grouped_drafts = nil
+      DifficultyRule.new(payload).validate! if target_type == 'DifficultyRule' && operation == 'create'
+
       if operation == 'create'
         DifficultyDraft.create!(
           user: @user,
@@ -189,6 +193,14 @@ module PartyDifficulty
           target_type: target_type,
           target_id: target_id
         )
+        if target_type == 'DifficultyRule' && operation == 'update'
+          payload = draft.attributes_payload.merge(payload)
+          raise ActiveRecord::RecordNotFound unless target
+
+          candidate = target.dup
+          candidate.assign_attributes(payload)
+          candidate.validate!
+        end
         draft.operation = operation
         draft.attributes_payload = operation == 'destroy' ? {} : payload
         draft.target_updated_at = target&.updated_at
@@ -197,6 +209,23 @@ module PartyDifficulty
         @drafts << draft
         draft
       end
+    end
+
+    # Pending creations use their draft UUID as the virtual rule ID.
+    def created_rule_draft(id)
+      DifficultyDraft.for_user(@user).find_by(id: id, target_type: 'DifficultyRule', operation: 'create')
+    end
+
+    def update_created_rule!(draft, attributes)
+      draft = created_rule_draft(draft.id)
+      raise ActiveRecord::RecordNotFound unless draft
+
+      payload = draft.attributes_payload.merge(sanitize_attributes('DifficultyRule', attributes))
+      DifficultyRule.new(payload).validate!
+      draft.update!(attributes_payload: payload)
+      @drafts.map! { |entry| entry.id == draft.id ? draft : entry }
+      @grouped_drafts = nil
+      draft
     end
 
     private
