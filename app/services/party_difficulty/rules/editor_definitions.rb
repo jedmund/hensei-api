@@ -40,7 +40,7 @@ module PartyDifficulty
         'weapon_tier_match' => 'Matches weapons satisfying every supplied tier filter',
         'weapon_specific_match' => 'Matches copies of the supplied weapons',
         'weapon_awakening_at_least' => 'Matches weapons with an awakening at or above the minimum level',
-        'weapon_transcendence_at_least' => 'Matches weapons at or above the minimum transcendence step',
+        'weapon_transcendence_at_least' => 'Matches any weapon at or above the minimum step. Use weapon_tier_match to also filter by series',
         'weapon_uncap_at_least' => 'Matches weapons at or above the minimum uncap level',
         'weapon_promotion_includes' => 'Matches weapons with any of the supplied promotions',
         'weapon_ax_filled' => 'Matches weapons with at least the specified number of filled AX slots',
@@ -68,7 +68,8 @@ module PartyDifficulty
         max_count: 'Optional denominator cap when scaling by count (default 1); does not cap the number of scored matches.',
         slugs: 'Supply series slugs, or use series_ids with catalogue UUIDs. At least one list must be nonempty.',
         series_ids: 'Optional series UUIDs; combined with the slug list.',
-        series_slugs: 'Optional weapon series slugs. All supplied tier filters must match; supply a series or positive minimum level.',
+        series_slugs: 'Series slugs, e.g. ["illustrious"]. Combined with every supplied level filter on the SAME weapon. ' \
+                      'Use series_ids as an alternative. Empty series lists leave the series unrestricted.',
         seasons: 'Seasons: 1 Valentine, 2 Formal, 3 Summer, 4 Halloween, 5 Holiday. ' \
                  'Weapon rules require a nonempty list; empty character seasons matches any seasonal character.',
         weapon_ids: 'Required nonempty list of weapon catalogue UUIDs.',
@@ -80,8 +81,10 @@ module PartyDifficulty
         min_step: 'Required positive minimum transcendence step.',
         min_uncap_level: 'Positive minimum uncap level (required for uncap rules).',
         max_uncap_level: 'Optional inclusive maximum uncap level for summon uncap and weapon tier rules.',
-        min_transcendence_step: 'Optional positive minimum transcendence step.',
-        max_transcendence_step: 'Optional inclusive maximum transcendence step.',
+        min_transcendence_step: 'Inclusive minimum step. Set 3 with maximum 4 for steps 3–4, ' \
+                                'or set both bounds to 5 for exactly step 5.',
+        max_transcendence_step: 'Inclusive maximum step. Omit for no upper limit. ' \
+                                'Set this to 4 on a step-3 rule to avoid also scoring step-5 weapons.',
         min_awakening_level: 'Optional positive minimum awakening level.',
         max_awakening_level: 'Optional inclusive maximum awakening level.',
         gacha_filter: 'Optional: "gacha", "free", or "any" (default).',
@@ -96,6 +99,43 @@ module PartyDifficulty
         decay_per_year: 'Optional yearly reduction per match (e.g. 0.1 = 10%); default 0.',
         decay_floor: 'Optional minimum age multiplier (default 0.1).'
       }.freeze
+
+      EXAMPLE_VALUES = {
+        min_count: 1, scale_by_count: true, max_count: 4,
+        slugs: ['illustrious'], series_ids: ['series-uuid'], series_slugs: ['illustrious'],
+        seasons: [3, 5], weapon_ids: ['weapon-uuid'], bullet_ids: ['bullet-uuid'],
+        accessory_ids: ['accessory-uuid'], accessory_types: [1], min_level: 5,
+        awakening_id: 'awakening-uuid', min_step: 5, min_uncap_level: 5, max_uncap_level: 5,
+        min_transcendence_step: 3, max_transcendence_step: 4, min_awakening_level: 5,
+        max_awakening_level: 10, gacha_filter: 'any', promotions: %w[Flash Legend],
+        min_filled: 1, days: 30, min_days_ago: 14, single_series_only: true,
+        min_strength: 17, rows: ['V'], requires_ultimate_mastery: true,
+        decay_per_year: 0.1, decay_floor: 0.1
+      }.freeze
+
+      def self.examples_for(type)
+        return [] unless type == 'weapon_tier_match'
+
+        [
+          { name: 'Illustrious: transcendence 5',
+            params: { series_slugs: ['illustrious'], min_transcendence_step: 5, max_transcendence_step: 5, min_count: 1 } },
+          { name: 'Illustrious: transcendence 3–4 (excludes 5)',
+            params: { series_slugs: ['illustrious'], min_transcendence_step: 3, max_transcendence_step: 4, min_count: 1 } }
+        ]
+      end
+
+      def self.parameter_reference(key, rule_type)
+        example = EXAMPLE_VALUES.fetch(key)
+        example = ['grand'] if key == :slugs && rule_type.start_with?('character_')
+        example = ['providence'] if key == :slugs && rule_type.start_with?('summon_')
+        type = case example
+               when Array then example.first.is_a?(String) ? 'string[]' : 'number[]'
+               when String then 'string'
+               when TrueClass, FalseClass then 'boolean'
+               else 'number'
+               end
+        { key: key.to_s, description: HELP.fetch(key), value_type: type, example: example }
+      end
 
       def self.all
         Rules.registered_types.map do |type|
@@ -114,7 +154,8 @@ module PartyDifficulty
             rule_type: type, component: Rules.component_for(type),
             description: DESCRIPTIONS.fetch(type),
             params: template.deep_dup,
-            parameters: keys.uniq.map { |key| { key: key.to_s, description: HELP.fetch(key) } }
+            parameters: keys.uniq.map { |key| parameter_reference(key, type) },
+            examples: examples_for(type)
           }
         end
       end
