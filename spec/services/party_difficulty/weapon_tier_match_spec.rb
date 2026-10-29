@@ -39,4 +39,15 @@ RSpec.describe PartyDifficulty::Rules::WeaponTierMatch do
     implementation = described_class.new(min_transcendence_step: 5)
     expect(implementation.matching_count(party_with(grid_weapon(series.id, 5)))).to eq(1)
   end
+
+  it 'documents the type and example value for every exposed parameter' do
+    examples = PartyDifficulty::Rules::EditorDefinitions.examples_for('weapon_tier_match')
+    expect(examples.map { |example| example[:params].values_at(:min_transcendence_step, :max_transcendence_step) }).to eq([[5, 5], [3, 4]])
+    PartyDifficulty::Rules::EditorDefinitions.all.each do |definition|
+      definition.fetch(:parameters).each do |parameter|
+        expect(parameter.fetch(:value_type)).to be_present
+        expect(parameter).to have_key(:example)
+      end
+    end
+  end
 end
