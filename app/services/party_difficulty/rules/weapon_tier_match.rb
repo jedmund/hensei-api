@@ -57,10 +57,9 @@ module PartyDifficulty
       end
 
       def matches_series?(weapon)
-        ids = resolved_series_ids
-        return true if ids.empty?
+        return true if string_array_param(:series_ids).empty? && string_array_param(:series_slugs).empty?
 
-        ids.include?(weapon.weapon_series_id)
+        resolved_series_ids.include?(weapon.weapon_series_id)
       end
 
       def matches_gacha?(weapon)
