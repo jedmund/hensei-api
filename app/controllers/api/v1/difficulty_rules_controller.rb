@@ -75,7 +75,8 @@ module Api
       def types
         render json: {
           types: PartyDifficulty::Rules.registered_types,
-          grouped: PartyDifficulty::Rules.types_grouped_by_component
+          grouped: PartyDifficulty::Rules.types_grouped_by_component,
+          definitions: PartyDifficulty::Rules::EditorDefinitions.all
         }
       end
 

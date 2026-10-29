@@ -79,4 +79,15 @@ RSpec.describe 'Difficulty rule drafts', type: :request do
     post '/api/v1/difficulty_rules', params: { difficulty_rule: attributes }, headers: headers, as: :json
     expect(response).to have_http_status(:unauthorized)
   end
+
+  it 'returns editor metadata for every registered type' do
+    get '/api/v1/difficulty_rules/types', headers: headers
+    expect(response).to have_http_status(:ok)
+    body = response.parsed_body
+    expect(body['definitions'].pluck('rule_type')).to match_array(body['types'])
+    body['definitions'].each do |definition|
+      expect(definition['component']).to eq(PartyDifficulty::Rules.component_for(definition['rule_type']))
+      expect(definition['parameters'].pluck('key')).to include(*definition['params'].keys)
+    end
+  end
 end
