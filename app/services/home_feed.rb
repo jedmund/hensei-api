@@ -12,9 +12,6 @@ class HomeFeed
   RISING_LIMIT = 9
   # Rising is hidden with fewer teams than this
   RISING_MINIMUM = 3
-  # A team's Rising rank halves for every this much of its age, so new teams
-  # rank well above older ones with the same score
-  RISING_AGE_HALF_LIFE = 14.days
   UPCOMING_WINDOW = 14.days
   UPCOMING_LIMIT = 3
   CURRENT_LIMIT = 6
@@ -120,21 +117,11 @@ class HomeFeed
     raids.map { |raid| RaidSection.new(raid: raid, party_ids: ranked.fetch(raid.id, [])) }
   end
 
-  # Public teams with a participation score (which already decays with the
-  # age of each sticker, remix and favorite), ranked by that score discounted
-  # by the team's own age. Empty unless at least RISING_MINIMUM qualify.
+  # The top teams by Party.rising (shared with the Gallery's `sort=rising`).
+  # Empty unless at least RISING_MINIMUM qualify.
   def rising_ids
-    ids = Party.where(visibility: 1).where('participation_score > 0')
-               .order(Arel.sql(rising_rank_sql), id: :asc)
-               .limit(RISING_LIMIT).pluck(:id)
+    ids = Party.rising(now: @now).limit(RISING_LIMIT).pluck(:id)
     ids.size >= RISING_MINIMUM ? ids : []
-  end
-
-  def rising_rank_sql
-    Party.sanitize_sql_array([
-      'parties.participation_score * POWER(0.5, GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
-      @now, RISING_AGE_HALF_LIFE.to_i
-    ])
   end
 
   # Items whose latest date (release, FLB, ULB or transcendence) is in the

@@ -61,11 +61,15 @@ class PartyQueryBuilder
     query
   end
 
-  # `sort=participation` orders by the stored participation score (never
-  # rendered); anything else keeps newest first.
+  # `sort=rising` lists only teams in Rising, in Home's Rising order (see
+  # Party.rising). `participation` is its old name, kept for old links.
+  # Anything else keeps newest first.
+  RISING_SORTS = %w[rising participation].freeze
+  private_constant :RISING_SORTS
+
   def apply_sort(query)
-    if @params[:sort] == 'participation'
-      query.order(Party.arel_table[:participation_score].desc.nulls_last, created_at: :desc)
+    if RISING_SORTS.include?(@params[:sort])
+      query.rising
     else
       query.order(created_at: :desc)
     end
