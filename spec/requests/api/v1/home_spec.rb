@@ -216,6 +216,18 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(battles.first['recent'].map { |p| p['id'] }).to eq([newer_team.id, older_team.id])
       expect(battles.first['trending'].map { |p| p['id'] }).to eq([older_team.id, newer_team.id])
     end
+
+    it 'orders trending teams like Rising, so a newer team can outrank a higher score' do
+      veteran = create(:party, raid: new_raid, visibility: 1, created_at: 30.days.ago)
+      veteran.update_columns(participation_score: 2.0)
+      newer_team.update_columns(participation_score: 1.0)
+      older_team.update_columns(participation_score: 0)
+
+      get '/api/v1/home'
+
+      trending = json_response['new_battles'].first['trending'].map { |p| p['id'] }
+      expect(trending).to eq([newer_team.id, veteran.id, older_team.id])
+    end
   end
 
   describe 'new items' do

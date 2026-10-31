@@ -138,8 +138,9 @@ class HomeFeed
   end
 
   # Raids released in the last 4 weeks (JST), newest first, each with its
-  # public teams twice: most recent first, and trending (participation score
-  # first, then most recent, so it's never emptier than the recent list).
+  # public teams twice: most recent first, and trending (Rising order, then
+  # unscored teams most recent first, so it's never emptier than the recent
+  # list).
   def new_battles
     since = @now.in_time_zone('Asia/Tokyo').to_date - NEW_BATTLES_WINDOW
     Raid.includes(:group).where(released_at: since..)
@@ -149,7 +150,7 @@ class HomeFeed
         raid: raid,
         recent_ids: teams.order(created_at: :desc, id: :asc).pluck(:id),
         trending_ids: teams.order(
-          Arel.sql('parties.participation_score DESC NULLS LAST, parties.created_at DESC, parties.id ASC')
+          Arel.sql("#{Party.rising_rank_sql(@now)} NULLS LAST, parties.created_at DESC, parties.id ASC")
         ).pluck(:id)
       )
     end
