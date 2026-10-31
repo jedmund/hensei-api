@@ -40,8 +40,11 @@ module Api
 
       private
 
-      # The deduplicated element ids, or nil when any isn't a game element.
+      # The deduplicated element ids, or nil when the list is missing or any
+      # isn't a game element. An empty list clears the raid.
       def requested_elements
+        return nil unless params.key?(:elements)
+
         raw = params[:elements]
         return [] if raw.blank?
         return nil unless raw.is_a?(Array)
