@@ -22,13 +22,14 @@ module Granblue
 
       # Maps element to the game's source offset
       # :note means use _note suffix on base ID, integer means add offset to base ID
-      # The game's element N is the base ID + (N - 1) * 100, starting from Fire
+      # The game's variant IDs go Fire, Water, Wind, Earth, Light, Dark in steps of
+      # 100 from the base ID, so Wind (+200) comes before Earth (+300)
       ELEMENT_SOURCE_MAP = {
         0 => :note,  # {id}_note -> {id}_0 (Null/no element)
         1 => 0,      # {id}     -> {id}_1 (Fire)
         2 => 100,    # {id+100} -> {id}_2 (Water)
-        3 => 200,    # {id+200} -> {id}_3 (Earth)
-        4 => 300,    # {id+300} -> {id}_4 (Wind)
+        3 => 300,    # {id+300} -> {id}_3 (Earth)
+        4 => 200,    # {id+200} -> {id}_4 (Wind)
         5 => 400,    # {id+400} -> {id}_5 (Light)
         6 => 500     # {id+500} -> {id}_6 (Dark)
       }.freeze
