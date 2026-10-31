@@ -14,9 +14,11 @@ module Granblue
     # @note Handles weapons that have variants for all six elements
     # @note Uses specific suffix mappings for element art variants
     class ElementalWeaponDownloader < WeaponDownloader
-      # Element variant suffix mapping
+      # Element number (GranblueEnums::ELEMENTS) for each variant, in source id
+      # order: base, +100 … +500 are Fire, Water, Earth, Wind, Light, Dark, the
+      # same order as WeaponDownloader::ELEMENT_SOURCE_MAP.
       # @return [Array<Integer>] Ordered list of suffixes for element variants
-      SUFFIXES = [2, 3, 4, 1, 6, 5].freeze
+      SUFFIXES = [1, 2, 3, 4, 5, 6].freeze
 
       # Initialize downloader with base weapon ID
       # @param id_base [Integer] Base ID for the elemental weapon series
