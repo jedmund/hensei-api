@@ -111,11 +111,11 @@ RSpec.describe 'Api::V1::Events', type: :request do
                  raid_ids: [raids.second.id, raids.first.id] } }
     end
 
-    it 'creates a draft event with ordered raids' do
+    it 'creates an approved event with ordered raids' do
       post '/api/v1/events', params: params, headers: editor_headers
 
       expect(response).to have_http_status(:created)
-      expect(json_response).to include('status' => 'draft', 'kind' => 'unite_and_fight',
+      expect(json_response).to include('status' => 'approved', 'kind' => 'unite_and_fight',
                                        'element' => GranblueEnums::ELEMENTS[:Fire])
       expect(json_response['raids'].map { |r| r['id'] }).to eq([raids.second.id, raids.first.id])
     end

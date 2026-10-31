@@ -35,9 +35,10 @@ module Api
       end
 
       # POST /events
-      # Editor-created events land as drafts; approve them separately.
+      # Events made by hand are live straight away (approved); only the
+      # schedule sync's events wait as drafts for review.
       def create
-        event = Event.new(event_attributes)
+        event = Event.new(event_attributes.merge(status: :approved))
         saved = Event.transaction do
           next false unless event.save
           next true unless params[:event].key?(:raid_ids)
