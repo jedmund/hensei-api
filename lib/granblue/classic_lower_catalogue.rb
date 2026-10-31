@@ -37,7 +37,7 @@ module Granblue
         preview.each do |entry|
           next if entry[:before] == entry[:after]
 
-          entry[:type].constantize.where(id: entry[:id]).update_all(promotions: entry[:after])
+          entry[:type].constantize.where(id: entry[:id]).update_all(promotions: entry[:after], updated_at: Time.current)
         end
       end
     end

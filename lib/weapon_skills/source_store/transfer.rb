@@ -135,7 +135,7 @@ module WeaponSkills
           end
           Weapon.where(id: plan.weapon_updates.keys).select(:id).find_each do |weapon|
             attrs = plan.weapon_updates.fetch(weapon.id)
-            Weapon.where(id: weapon.id).update_all(wiki_en: attrs[:wiki_en])
+            Weapon.where(id: weapon.id).update_all(wiki_en: attrs[:wiki_en], updated_at: now)
             ::Source.where(owner_type: Weapon.polymorphic_name, owner_id: weapon.id, kind: "wiki_raw", key: "").delete_all
             WeaponSource.where(weapon_id: weapon.id, kind: "wiki_raw", key: attrs[:wiki_en])
                         .where(fetched_at: ...attrs[:fetched_at]).update_all(fetched_at: attrs[:fetched_at])

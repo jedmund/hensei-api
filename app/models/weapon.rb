@@ -293,7 +293,7 @@ class Weapon < ApplicationRecord
         updates = {}
         updates[:forge_chain_id] = root_chain_id if weapon.forge_chain_id != root_chain_id
         updates[:forge_order] = index if weapon.forge_order != index
-        weapon.update_columns(updates) if updates.any?
+        weapon.update_columns(updates.merge(updated_at: Time.current)) if updates.any?
       end
     else
       # Clearing forged_from - reset forge_order if part of a chain

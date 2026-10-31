@@ -64,7 +64,7 @@ module CharacterSkills
 
     # Rows from a dump older than wiki_name are named by name_en.
     def fill_wiki_names
-      db.exec_update("UPDATE statuses SET wiki_name = name_en WHERE wiki_name IS NULL OR wiki_name = ''") if wiki_names?
+      db.exec_update("UPDATE statuses SET wiki_name = name_en, updated_at = now() WHERE wiki_name IS NULL OR wiki_name = ''") if wiki_names?
     end
 
     def delete_junk
