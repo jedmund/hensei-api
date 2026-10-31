@@ -89,6 +89,53 @@ RSpec.describe GachaRatesFetcher do
     expect(JSON.parse(File.read(File.join(dir, 'cookies-state.json')))['ends_at']).to eq('2026-10-12T19:00:00+09:00')
   end
 
+  context 'when the upload fails' do
+    let(:state_file) { File.join(dir, 'cookies-state.json') }
+
+    before do
+      travel_to Time.zone.parse('2026-10-10 12:00 JST')
+      allow(fetcher).to receive(:upload).and_raise(RuntimeError, 'The API returned 422')
+      allow(fetcher).to receive(:alert)
+    end
+
+    it "alerts, and doesn't contact the game again until the banner ends" do
+      expect { fetcher.run }.to raise_error(SystemExit).and output(/422.*--force/).to_stderr
+      expect(fetcher).to have_received(:alert).with(/422/)
+      expect(JSON.parse(File.read(state_file)))
+        .to eq('game_id' => '211960', 'ends_at' => '2026-10-12T19:00:00+09:00', 'uploaded' => false)
+
+      requests.clear
+      expect { fetcher.run }.to output(/runs until/).to_stdout
+      expect(requests).to be_empty
+    end
+
+    it 'tries the upload again once the banner ends, even if the game extended it' do
+      expect { fetcher.run }.to raise_error(SystemExit).and output.to_stderr
+      travel_to Time.zone.parse('2026-10-12 19:05 JST')
+      payload['banner']['service_end'] = '6:59 p.m., Oct 15, 2026 (JST)'
+      allow(fetcher).to receive(:upload).and_return({ 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 })
+      expect { fetcher.run }.to output(/Uploaded banner 211960/).to_stdout
+      expect(JSON.parse(File.read(state_file))).to eq('game_id' => '211960', 'ends_at' => '2026-10-15T19:00:00+09:00')
+    end
+  end
+
+  it "waits a day when it can't read the banner's end" do
+    travel_to Time.zone.parse('2026-10-10 12:00 JST')
+    allow(fetcher).to receive(:alert)
+    payload['banner']['service_end'] = 'sometime soon'
+    expect { fetcher.run }.to output(/Uploaded/).to_stdout.and output(/Couldn't read/).to_stderr
+    expect(fetcher).to have_received(:alert).with(/checking again in a day/)
+    ends_at = Time.iso8601(JSON.parse(File.read(File.join(dir, 'cookies-state.json')))['ends_at'])
+    expect(ends_at).to eq(Time.current + 1.day)
+  end
+
+  it 'reads banner ends at noon and midnight' do
+    { '12 noon, Nov 4, 2026 (JST)' => '2026-11-04T12:01:00+09:00', '2026/11/4 12:00' => '2026-11-04T12:01:00+09:00',
+      '12 midnight, Nov 4, 2026 (JST)' => '2026-11-04T00:01:00+09:00' }.each do |text, expected|
+      expect(fetcher.send(:banner_end, 'service_end' => text).iso8601).to eq(expected)
+    end
+  end
+
   it 'fails, and alerts, when the account is signed out' do
     allow(fetcher).to receive(:get).and_return('<html>login</html>')
     allow(fetcher).to receive(:alert)
