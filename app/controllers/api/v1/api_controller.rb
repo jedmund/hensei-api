@@ -202,9 +202,23 @@ module Api
         render json: { error: 'Unauthorized - Editor role required' }, status: :unauthorized
       end
 
+      # Curator-role gate for staff picks; editors and admins pass too.
+      def ensure_curator_role
+        return if current_user&.curator?
+
+        Rails.logger.warn "[#{controller_name.upcase}] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized - Curator role required' }, status: :unauthorized
+      end
+
       # True when the current user may use editor-only options on public reads.
       def editor_role?
         current_user&.role.to_i >= 7
+      end
+
+      # True when the current user may read what editors read (curators can
+      # see every event to pick teams for it, but can't change them).
+      def curator_role?
+        current_user&.curator? || false
       end
 
       def render_forbidden_response(message = 'Forbidden')

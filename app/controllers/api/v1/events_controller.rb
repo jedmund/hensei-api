@@ -2,8 +2,9 @@
 
 module Api
   module V1
-    # Game events. The public sees approved events; editors see and manage
-    # all of them, and get the sync bookkeeping fields.
+    # Game events. The public sees approved events; curators and editors see
+    # all of them with the sync bookkeeping fields, and only editors manage
+    # them.
     class EventsController < Api::V1::ApiController
       include EditorImageUpload
 
@@ -17,18 +18,18 @@ module Api
       before_action :set_event, only: %i[show update approve hide upload_image]
 
       # GET /events?scope=current|upcoming|past&kind=…
-      # Editors may pass status=draft|approved|hidden|all.
+      # Curators and editors may pass status=draft|approved|hidden|all.
       def index
         events = filter_by_status(Event.includes(event_raids: { raid: :group }))
         events = filter_by_kind(events)
         events = filter_by_scope(events)
 
-        render json: EventBlueprint.render(events, root: :events, editor: editor_role?)
+        render json: EventBlueprint.render(events, root: :events, editor: curator_role?)
       end
 
       # GET /events/:id
       def show
-        return render_not_found_response('event') unless @event.approved? || editor_role?
+        return render_not_found_response('event') unless @event.approved? || curator_role?
 
         render_event
       end
@@ -103,11 +104,11 @@ module Api
 
       def render_event(status: :ok)
         event = Event.includes(event_raids: { raid: :group }).find(@event.id)
-        render json: EventBlueprint.render(event, editor: editor_role?), status: status
+        render json: EventBlueprint.render(event, editor: curator_role?), status: status
       end
 
       def filter_by_status(events)
-        return events.approved unless editor_role? && params[:status].present?
+        return events.approved unless curator_role? && params[:status].present?
         return events if params[:status] == 'all'
         return events.where(status: params[:status]) if Event.statuses.key?(params[:status])
 

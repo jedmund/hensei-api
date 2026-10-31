@@ -31,6 +31,11 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
       expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([eventless.id, first.id, second.id])
     end
 
+    it "filters by party_id to show where a team is featured" do
+      get '/api/v1/featured_parties', params: { party_id: first.party_id }, headers: editor_headers
+      expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([first.id])
+    end
+
     it 'returns 401 for non-editors' do
       get '/api/v1/featured_parties', headers: member_headers
       expect(response).to have_http_status(:unauthorized)
@@ -95,6 +100,116 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
       delete "/api/v1/featured_parties/#{featured.id}", headers: member_headers
       expect(response).to have_http_status(:unauthorized)
       expect(FeaturedParty.exists?(featured.id)).to be(true)
+    end
+  end
+
+  describe 'as a curator' do
+    let(:curator_headers) { bearer_headers(create(:user, role: 6)) }
+    let(:upcoming) { create(:event, :upcoming) }
+    let(:ended) { create(:event, :past) }
+
+    it 'lists picks' do
+      pick = create(:featured_party, event: event)
+      get '/api/v1/featured_parties', params: { party_id: pick.party_id }, headers: curator_headers
+      expect(response).to have_http_status(:ok)
+      expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([pick.id])
+    end
+
+    it 'creates picks for running and upcoming events and general picks' do
+      [event.id, upcoming.id, nil].each do |event_id|
+        post '/api/v1/featured_parties', params: { featured_party: { event_id: event_id, party_id: party.id } },
+                                         headers: curator_headers
+        expect(response).to have_http_status(:created)
+      end
+      expect(FeaturedParty.count).to eq(3)
+    end
+
+    it 'updates and deletes a pick for a running event' do
+      pick = create(:featured_party, event: event, party: party)
+      put "/api/v1/featured_parties/#{pick.id}", params: { featured_party: { note_en: 'Updated', event_id: upcoming.id } },
+                                                 headers: curator_headers
+      expect(response).to have_http_status(:ok)
+      expect(json_response).to include('event_id' => upcoming.id)
+
+      delete "/api/v1/featured_parties/#{pick.id}", headers: curator_headers
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'updates and deletes a general pick' do
+      pick = create(:featured_party, party: party)
+      put "/api/v1/featured_parties/#{pick.id}", params: { featured_party: { position: 4 } }, headers: curator_headers
+      expect(response).to have_http_status(:ok)
+
+      delete "/api/v1/featured_parties/#{pick.id}", headers: curator_headers
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'cannot create a pick for an ended event' do
+      post '/api/v1/featured_parties', params: { featured_party: { event_id: ended.id, party_id: party.id } },
+                                       headers: curator_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response['error']).to be_present
+      expect(FeaturedParty.count).to eq(0)
+    end
+
+    it "cannot update or delete an ended event's pick" do
+      pick = create(:featured_party, event: ended, party: party)
+      put "/api/v1/featured_parties/#{pick.id}", params: { featured_party: { note_en: 'x' } }, headers: curator_headers
+      expect(response).to have_http_status(:forbidden)
+
+      put "/api/v1/featured_parties/#{pick.id}", params: { featured_party: { event_id: event.id } },
+                                                 headers: curator_headers
+      expect(response).to have_http_status(:forbidden)
+
+      delete "/api/v1/featured_parties/#{pick.id}", headers: curator_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(pick.reload.note_en).to eq('A great team')
+    end
+
+    it 'cannot move a pick into an ended event' do
+      pick = create(:featured_party, event: event, party: party)
+      put "/api/v1/featured_parties/#{pick.id}", params: { featured_party: { event_id: ended.id } },
+                                                 headers: curator_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(pick.reload.event_id).to eq(event.id)
+    end
+
+    it 'rejects a non-public party' do
+      party.update!(visibility: 2)
+      post '/api/v1/featured_parties', params: { featured_party: { party_id: party.id } }, headers: curator_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "leaves editors free to change an ended event's picks" do
+      pick = create(:featured_party, event: ended, party: party)
+      put "/api/v1/featured_parties/#{pick.id}", params: { featured_party: { note_en: 'Edited' } }, headers: editor_headers
+      expect(response).to have_http_status(:ok)
+
+      delete "/api/v1/featured_parties/#{pick.id}", headers: editor_headers
+      expect(response).to have_http_status(:no_content)
+    end
+  end
+
+  describe 'without the curator role' do
+    let!(:pick) { create(:featured_party, event: event, party: party) }
+
+    it 'rejects role 5' do
+      headers = bearer_headers(create(:user, role: 5))
+      get '/api/v1/featured_parties', headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      post '/api/v1/featured_parties', params: { featured_party: { party_id: party.id } }, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      delete "/api/v1/featured_parties/#{pick.id}", headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(FeaturedParty.count).to eq(1)
+    end
+
+    it 'rejects signed-out requests' do
+      get '/api/v1/featured_parties'
+      expect(response).to have_http_status(:unauthorized)
+      delete "/api/v1/featured_parties/#{pick.id}"
+      expect(response).to have_http_status(:unauthorized)
+      expect(FeaturedParty.exists?(pick.id)).to be(true)
     end
   end
 end

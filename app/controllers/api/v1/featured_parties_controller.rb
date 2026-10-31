@@ -2,19 +2,23 @@
 
 module Api
   module V1
-    # Staff picks. Editor-only; the public reads them through GET /home.
+    # Staff picks, managed by curators; the public reads them through GET /home.
+    # Curators who aren't editors can only touch general picks and picks for
+    # events that haven't ended, so past events' picks stay as they were.
     class FeaturedPartiesController < Api::V1::ApiController
       include PartyQueryingConcern
 
       before_action :doorkeeper_authorize!
-      before_action :ensure_editor_role
+      before_action :ensure_curator_role
       before_action :set_featured_party, only: %i[update destroy]
+      before_action :ensure_event_open, only: %i[create update destroy]
 
-      # GET /featured_parties?event_id=<uuid>
-      # All picks, or one event's, ordered by position.
+      # GET /featured_parties?event_id=<uuid>&party_id=<uuid>
+      # All picks, or one event's or one party's, ordered by position.
       def index
         picks = FeaturedParty.order(:position, :created_at)
         picks = picks.where(event_id: params[:event_id].to_s[UUID_FORMAT]) if params[:event_id].present?
+        picks = picks.where(party_id: params[:party_id].to_s[UUID_FORMAT]) if params[:party_id].present?
         picks = picks.to_a
 
         parties = build_preview_base_query.where(id: picks.map(&:party_id)).index_by(&:id)
@@ -50,6 +54,24 @@ module Api
       def set_featured_party
         @featured = FeaturedParty.find_by(id: params[:id].to_s[UUID_FORMAT])
         render_not_found_response('featured party') unless @featured
+      end
+
+      # Checks the pick's current event and, on create or update, the event it
+      # is being moved to. Unknown event ids are left to the model's validation.
+      def ensure_event_open
+        return if current_user.editor?
+
+        event_ids = []
+        event_ids << @featured.event_id if @featured
+        event_ids << requested_event_id unless action_name == 'destroy'
+        event_ids.compact!
+        return if event_ids.empty? || !Event.past.exists?(id: event_ids)
+
+        render json: { error: 'Only editors can change picks for events that have ended' }, status: :forbidden
+      end
+
+      def requested_event_id
+        params.dig(:featured_party, :event_id).presence&.to_s&.[](UUID_FORMAT)
       end
 
       def render_featured(featured, status: :ok)
