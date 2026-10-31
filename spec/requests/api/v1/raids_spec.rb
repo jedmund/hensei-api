@@ -126,6 +126,15 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       expect(raid.reload.level).to eq(200)
     end
 
+    it 'sets the release date as editor' do
+      put "/api/v1/raids/#{raid.id}",
+          params: { raid: { released_at: '2026-10-20' } }.to_json,
+          headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['released_at']).to eq('2026-10-20')
+      expect(raid.reload.released_at).to eq(Date.new(2026, 10, 20))
+    end
+
     it 'rejects update by regular user' do
       put "/api/v1/raids/#{raid.id}",
           params: { raid: { level: 200 } }.to_json,

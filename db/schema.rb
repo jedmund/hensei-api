@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1185,6 +1185,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_200000) do
     t.bigint "quest_id"
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
+    t.date "released_at"
+    t.index ["released_at"], name: "index_raids_on_released_at"
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
