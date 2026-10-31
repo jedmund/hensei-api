@@ -38,6 +38,11 @@ FactoryBot.define do
       element { 0 }
     end
 
+    # Crew members can record element coverage for it.
+    trait :trackable do
+      trackable { true }
+    end
+
     # An Evoking Solomonis zone.
     trait :solomonis_zone do
       association :group, factory: %i[raid_group solomonis]

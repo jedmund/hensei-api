@@ -1215,6 +1215,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_150000) do
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
     t.date "released_at"
+    t.boolean "trackable", default: false, null: false
     t.string "short_name_en"
     t.string "short_name_jp"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -1533,6 +1534,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_150000) do
     t.datetime "updated_at", null: false
     t.index ["provider", "provider_uid"], name: "index_user_identities_on_provider_and_provider_uid", unique: true
     t.index ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true
+  end
+
+  create_table "user_raid_elements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "raid_id", null: false
+    t.integer "element", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["raid_id"], name: "index_user_raid_elements_on_raid_id"
+    t.index ["user_id", "raid_id", "element"], name: "index_user_raid_elements_unique", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1999,6 +2010,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_150000) do
   add_foreign_key "support_summons", "users"
   add_foreign_key "user_edit_keys", "users"
   add_foreign_key "user_identities", "users"
+  add_foreign_key "user_raid_elements", "raids"
+  add_foreign_key "user_raid_elements", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"
