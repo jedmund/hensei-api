@@ -47,6 +47,13 @@ module Api
           end,
           new_items: feed[:new_items].map do |entry|
             { item: render_item(entry), parties: entry.party_ids.filter_map { |id| rendered[id] } }
+          end,
+          new_battles: feed[:new_battles].map do |battle|
+            {
+              raid: RaidBlueprint.render_as_hash(battle.raid, view: :nested),
+              recent: battle.recent_ids.filter_map { |id| rendered[id] },
+              trending: battle.trending_ids.filter_map { |id| rendered[id] }
+            }
           end
         }
         JSON.parse(payload.to_json)
@@ -85,6 +92,7 @@ module Api
         ids.concat(feed[:rising])
         ids.concat(feed[:staff_picks].map(&:party_id))
         ids.concat(feed[:new_items].flat_map(&:party_ids))
+        ids.concat(feed[:new_battles].flat_map { |battle| battle.recent_ids + battle.trending_ids })
         ids.uniq
       end
 
@@ -94,7 +102,8 @@ module Api
         sections.flat_map { |section| section['raids'].flat_map { |raid| raid['parties'] } } +
           payload['rising'] +
           payload['staff_picks'].map { |featured| featured['party'] } +
-          payload['new_items'].flat_map { |entry| entry['parties'] }
+          payload['new_items'].flat_map { |entry| entry['parties'] } +
+          payload['new_battles'].flat_map { |battle| battle['recent'] + battle['trending'] }
       end
 
       def with_my_stickers(payload)
