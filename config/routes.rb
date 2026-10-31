@@ -131,6 +131,9 @@ Rails.application.routes.draw do
     put 'parties/:id/sticker', to: 'party_stickers#update'
     delete 'parties/:id/sticker', to: 'party_stickers#destroy'
 
+    # Team page views, reported by the web app's server (:id is the party UUID)
+    post 'parties/:id/view', to: 'party_views#create'
+
     put 'parties/:id/jobs', to: 'jobs#update_job'
     put 'parties/:id/job_skills', to: 'jobs#update_job_skills'
     delete 'parties/:id/job_skills', to: 'jobs#destroy_job_skill'

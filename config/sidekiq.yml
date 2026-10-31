@@ -14,6 +14,10 @@
       cron: "45 4 * * *" # Daily at 04:45 UTC
       class: PartyParticipation::SweepJob
       queue: maintenance
+    party_view_flush:
+      cron: "*/10 * * * *" # Every 10 minutes
+      class: PartyViews::FlushJob
+      queue: maintenance
     extension_auth_code_cleanup:
       cron: "15 4 * * *" # Daily at 04:15 UTC
       class: ExtensionAuthCodes::CleanupJob
