@@ -18,9 +18,9 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
   describe 'GET /api/v1/home' do
     let!(:current) { create(:event, :current, created_at: 3.days.ago) }
-    let!(:top) { create(:party, raid: raid, visibility: 1) }
-    let!(:second) { create(:party, raid: raid, visibility: 1) }
-    let!(:private_party) { create(:party, raid: raid, visibility: 3) }
+    let!(:top) { create(:party, :complete, raid: raid, visibility: 1) }
+    let!(:second) { create(:party, :complete, raid: raid, visibility: 1) }
+    let!(:private_party) { create(:party, :complete, raid: raid, visibility: 3) }
 
     before do
       create(:event_raid, event: current, raid: raid, position: 0)
@@ -54,7 +54,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
     it 'lists rising parties by stored score, at most 9, with last_updated' do
       PartyParticipation::Persister.call([top.id, second.id, private_party.id])
-      10.times { create(:party, visibility: 1).update_columns(participation_score: 0.01) }
+      10.times { create(:party, :complete, visibility: 1).update_columns(participation_score: 0.01) }
 
       get '/api/v1/home'
 
@@ -66,9 +66,9 @@ RSpec.describe 'Api::V1::Home', type: :request do
     end
 
     it 'ranks newer teams above older ones with the same score' do
-      old = create(:party, visibility: 1, created_at: 30.days.ago)
-      newer = create(:party, visibility: 1, created_at: 2.days.ago)
-      newest = create(:party, visibility: 1, created_at: 1.hour.ago)
+      old = create(:party, :complete, visibility: 1, created_at: 30.days.ago)
+      newer = create(:party, :complete, visibility: 1, created_at: 2.days.ago)
+      newest = create(:party, :complete, visibility: 1, created_at: 1.hour.ago)
       # Half the score of the others, but 30 days (two half-lives) older
       # loses to it by more than that
       old.update_columns(participation_score: 2.0)
@@ -80,9 +80,22 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(json_response['rising'].map { |p| p['id'] }).to eq([newest.id, newer.id, old.id])
     end
 
+    it 'leaves teams below the quality bar out of Rising' do
+      kept = Array.new(3) { create(:party, :complete, visibility: 1) }
+      unfilled = create(:party, visibility: 1)
+      untitled = create(:party, :complete, visibility: 1, name: '無題')
+      new_team = create(:party, :complete, visibility: 1, name: 'new TEAM')
+      anonymous = create(:party, :complete, visibility: 1, user: nil)
+      (kept + [unfilled, untitled, new_team, anonymous]).each { |p| p.update_columns(participation_score: 1.0) }
+
+      get '/api/v1/home'
+
+      expect(json_response['rising'].map { |p| p['id'] }).to match_array(kept.map(&:id))
+    end
+
     it 'hides Rising when fewer than 3 teams have a score' do
-      2.times { create(:party, visibility: 1).update_columns(participation_score: 1.0) }
-      create(:party, visibility: 1)
+      2.times { create(:party, :complete, visibility: 1).update_columns(participation_score: 1.0) }
+      create(:party, :complete, visibility: 1)
 
       get '/api/v1/home'
 
@@ -98,8 +111,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
   shared_examples 'advantage ordering' do |kind|
     let!(:gw) { create(:event, :current, kind, element: 'Water', created_at: 3.days.ago) }
-    let!(:fire_party) { create(:party, raid: raid, visibility: 1) }
-    let!(:earth_party) { create(:party, raid: raid, visibility: 1) }
+    let!(:fire_party) { create(:party, :complete, raid: raid, visibility: 1) }
+    let!(:earth_party) { create(:party, :complete, raid: raid, visibility: 1) }
 
     before do
       create(:event_raid, event: gw, raid: raid)
@@ -126,8 +139,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
   describe 'non-themed events' do
     let!(:event) { create(:event, :current, kind: :farming, element: 'Water', created_at: 3.days.ago) }
-    let!(:fire_party) { create(:party, raid: raid, visibility: 1) }
-    let!(:earth_party) { create(:party, raid: raid, visibility: 1) }
+    let!(:fire_party) { create(:party, :complete, raid: raid, visibility: 1) }
+    let!(:earth_party) { create(:party, :complete, raid: raid, visibility: 1) }
 
     before do
       create(:event_raid, event: event, raid: raid)
@@ -148,7 +161,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
     let!(:previous) { create(:event, :past, created_at: 45.days.ago) }
     let!(:upcoming) { create(:event, :upcoming) }
     let!(:far_future) { create(:event, starts_at: 30.days.from_now, ends_at: 37.days.from_now) }
-    let!(:party) { create(:party, raid: raid, visibility: 1) }
+    let!(:party) { create(:party, :complete, raid: raid, visibility: 1) }
 
     before do
       create(:event_raid, event: previous, raid: raid)
@@ -175,6 +188,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
   end
 
   describe 'staff picks' do
+    # Hand-picked, so exempt from the quality bar: these parties have no
+    # weapons or summons
     let(:party) { create(:party, visibility: 1) }
 
     it 'shows eventless picks and picks for running or upcoming events' do
@@ -198,12 +213,12 @@ RSpec.describe 'Api::V1::Home', type: :request do
     let!(:new_raid) { create(:raid, released_at: 10.days.ago.to_date) }
     let!(:old_raid) { create(:raid, released_at: 40.days.ago.to_date) }
     let!(:undated_raid) { create(:raid) }
-    let!(:older_team) { create(:party, raid: new_raid, visibility: 1, created_at: 3.days.ago) }
-    let!(:newer_team) { create(:party, raid: new_raid, visibility: 1, created_at: 1.day.ago) }
+    let!(:older_team) { create(:party, :complete, raid: new_raid, visibility: 1, created_at: 3.days.ago) }
+    let!(:newer_team) { create(:party, :complete, raid: new_raid, visibility: 1, created_at: 1.day.ago) }
 
     before do
-      create(:party, raid: new_raid, visibility: 3)
-      create(:party, raid: old_raid, visibility: 1)
+      create(:party, :complete, raid: new_raid, visibility: 3)
+      create(:party, :complete, raid: old_raid, visibility: 1)
       older_team.update_columns(participation_score: 1.5)
     end
 
@@ -217,8 +232,24 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(battles.first['trending'].map { |p| p['id'] }).to eq([older_team.id, newer_team.id])
     end
 
+    it 'leaves out teams below the quality bar, except in Solomonis zones' do
+      create(:party, raid: new_raid, visibility: 1)
+      create(:party, :complete, raid: new_raid, visibility: 1, name: 'Untitled')
+      create(:party, :complete, raid: new_raid, visibility: 1, user: nil)
+      expedition = create(:party, :solomonis, visibility: 1)
+      expedition.update_columns(weapons_count: 3, summons_count: 1)
+      zone = expedition.raid
+      zone.update!(released_at: 5.days.ago.to_date)
+
+      get '/api/v1/home'
+
+      battles = json_response['new_battles'].index_by { |b| b['raid']['id'] }
+      expect(battles[new_raid.id]['recent'].map { |p| p['id'] }).to contain_exactly(newer_team.id, older_team.id)
+      expect(battles[zone.id]['recent'].map { |p| p['id'] }).to eq([expedition.id])
+    end
+
     it 'orders trending teams like Rising, so a newer team can outrank a higher score' do
-      veteran = create(:party, raid: new_raid, visibility: 1, created_at: 30.days.ago)
+      veteran = create(:party, :complete, raid: new_raid, visibility: 1, created_at: 30.days.ago)
       veteran.update_columns(participation_score: 2.0)
       newer_team.update_columns(participation_score: 1.0)
       older_team.update_columns(participation_score: 0)
@@ -238,7 +269,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
     let(:old_character) { create(:character, release_date: 30.days.ago.to_date) }
 
     def team_with(character, visibility: 1, made: 1.day.ago)
-      party = create(:party, visibility: visibility)
+      party = create(:party, :complete, visibility: visibility)
       create(:grid_character, party: party, character: character, position: 0)
       party.update_columns(created_at: made, last_updated: 1.hour.ago)
       party
@@ -262,6 +293,16 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(items.first['parties'].map { |party| party['id'] }).to eq([newer.id])
       # Teams made before the uncap don't count, even if edited since
       expect(items.second['parties'].map { |party| party['id'] }).to eq([uncapped.id])
+    end
+
+    it 'leaves out teams below the quality bar' do
+      kept = team_with(new_character)
+      [team_with(new_character), team_with(new_character)].each { |p| p.update_columns(summons_count: 0) }
+      team_with(new_character).update_columns(name: 'Untitled')
+
+      get '/api/v1/home'
+
+      expect(json_response['new_items'].sole['parties'].map { |party| party['id'] }).to eq([kept.id])
     end
 
     it 'includes new items nobody has used yet, with no teams' do

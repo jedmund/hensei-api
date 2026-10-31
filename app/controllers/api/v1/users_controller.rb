@@ -324,26 +324,9 @@ module Api
       end
 
       def name_quality
-        low_quality = [
-          'Untitled',
-          'Remix of Untitled',
-          'Remix of Remix of Untitled',
-          'Remix of Remix of Remix of Untitled',
-          'Remix of Remix of Remix of Remix of Untitled',
-          'Remix of Remix of Remix of Remix of Remix of Untitled',
-          '無題',
-          '無題のリミックス',
-          '無題のリミックスのリミックス',
-          '無題のリミックスのリミックスのリミックス',
-          '無題のリミックスのリミックスのリミックスのリミックス',
-          '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
-        ]
-
-        joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
-
         return if params.key?('name_quality') || params[:name_quality].nil? || params[:name_quality] == '0'
 
-        "name NOT IN (#{joined_names})"
+        Party.quality_name_sql
       end
 
       def privacy

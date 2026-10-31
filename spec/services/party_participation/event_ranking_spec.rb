@@ -12,8 +12,8 @@ RSpec.describe PartyParticipation::EventRanking do
   end
 
   it 'ignores stickers given before the event was announced' do
-    old = create(:party, raid: raid, visibility: 1)
-    fresh = create(:party, raid: raid, visibility: 1)
+    old = create(:party, :complete, raid: raid, visibility: 1)
+    fresh = create(:party, :complete, raid: raid, visibility: 1)
     give(old, at: 10.days.ago)
     give(fresh)
 
@@ -23,9 +23,9 @@ RSpec.describe PartyParticipation::EventRanking do
   end
 
   it 'tops up raids from the stored score and respects the limit' do
-    scored = create(:party, raid: raid, visibility: 1)
+    scored = create(:party, :complete, raid: raid, visibility: 1)
     give(scored)
-    stored = create_list(:party, 3, raid: raid, visibility: 1)
+    stored = create_list(:party, 3, :complete, raid: raid, visibility: 1)
     stored.each_with_index { |p, i| p.update_columns(participation_score: i + 1) }
 
     result = described_class.call(raid_ids: [raid.id], window_event: event, limit: 3)
@@ -34,13 +34,24 @@ RSpec.describe PartyParticipation::EventRanking do
 
   it 'fills unranked raids with recent public parties of the advantage element only' do
     dark = GranblueEnums::ELEMENTS[:Dark]
-    older_dark = create(:party, raid: raid, visibility: 1, element: dark, last_updated: 3.days.ago)
-    create(:party, raid: raid, visibility: 1, element: GranblueEnums::ELEMENTS[:Fire], last_updated: 1.day.ago)
-    newest_dark = create(:party, raid: raid, visibility: 1, element: dark, last_updated: 1.hour.ago)
-    create(:party, raid: raid, visibility: 3, element: dark, last_updated: Time.current)
+    older_dark = create(:party, :complete, raid: raid, visibility: 1, element: dark, last_updated: 3.days.ago)
+    create(:party, :complete, raid: raid, visibility: 1, element: GranblueEnums::ELEMENTS[:Fire],
+                              last_updated: 1.day.ago)
+    newest_dark = create(:party, :complete, raid: raid, visibility: 1, element: dark, last_updated: 1.hour.ago)
+    create(:party, :complete, raid: raid, visibility: 3, element: dark, last_updated: Time.current)
 
     result = described_class.call(raid_ids: [raid.id], window_event: nil, element: dark)
     expect(result[raid.id]).to eq([newest_dark.id, older_dark.id])
+  end
+
+  it 'leaves out parties below the quality bar, scored or not' do
+    kept = create(:party, :complete, raid: raid, visibility: 1)
+    unfilled = create(:party, raid: raid, visibility: 1)
+    untitled = create(:party, :complete, raid: raid, visibility: 1, name: 'Untitled')
+    anonymous = create(:party, :complete, raid: raid, visibility: 1, user: nil)
+    [unfilled, untitled, anonymous].each { |p| give(p) }
+
+    expect(described_class.call(raid_ids: [raid.id], window_event: event)[raid.id]).to eq([kept.id])
   end
 
   it 'returns every raid, even without parties' do

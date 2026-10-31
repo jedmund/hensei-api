@@ -19,6 +19,14 @@ FactoryBot.define do
     visibility { 1 }
     # Note: Shortcode and edit_key will be auto-generated via before_create callbacks.
 
+    # Enough weapons and summons to meet the Gallery's quality bar
+    # (Party.quality). Sets the counters only; no grid items are created.
+    #   create(:party, :complete)
+    trait :complete do
+      weapons_count { Party::QUALITY_MIN_WEAPONS }
+      summons_count { Party::QUALITY_MIN_SUMMONS }
+    end
+
     # Evoking Solomonis parties. The route Evoker sets the raid (zone) and element.
     #   create(:party, :solomonis)
     #   create(:party, :solomonis, route_evoker: nier)
