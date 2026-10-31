@@ -9,6 +9,8 @@
 class HomeFeed
   PARTIES_PER_RAID = 6
   RISING_LIMIT = 9
+  # Effectively no decay: the all-time scores that top up Rising
+  ALL_TIME_HALF_LIFE = 100.years
   UPCOMING_WINDOW = 14.days
   UPCOMING_LIMIT = 3
   CURRENT_LIMIT = 6
@@ -110,8 +112,22 @@ class HomeFeed
   end
 
   def rising_ids
-    Party.where(visibility: 1).where('participation_score > 0')
-         .order(participation_score: :desc, id: :asc).limit(RISING_LIMIT).pluck(:id)
+    scored = Party.where(visibility: 1).where('participation_score > 0')
+                  .order(participation_score: :desc, id: :asc).limit(RISING_LIMIT).pluck(:id)
+    scored + all_time_ids(RISING_LIMIT - scored.size, excluding: scored)
+  end
+
+  # While few teams have a recent score, Rising is topped up with the teams
+  # given the most stickers, remixes and favorites over all time (the same
+  # score without decay).
+  def all_time_ids(count, excluding:)
+    return [] unless count.positive?
+
+    candidates = Party.where(visibility: 1).where.not(id: excluding).select(:id)
+    PartyParticipation::Scorer.call(candidates, half_life: ALL_TIME_HALF_LIFE, as_of: @now)
+                              .sort_by { |id, score| [-score, id] }
+                              .first(count)
+                              .map(&:first)
   end
 
   # Items whose latest date (release, FLB, ULB or transcendence) is in the
