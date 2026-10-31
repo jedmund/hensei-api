@@ -32,6 +32,19 @@ module Granblue
         5 => 400,    # {id+400} -> {id}_5 (Light)
         6 => 500     # {id+500} -> {id}_6 (Dark)
       }.freeze
+
+      # Weapons whose game art has Wind at +200 and Earth at +300, the reverse of
+      # ELEMENT_SOURCE_MAP. These are the Revenant weapons, both the element-changed
+      # and awakened forms.
+      WIND_EARTH_SWAPPED_IDS = %w[
+        1040002500 1040003700 1040102300 1040103100 1040202200
+        1040203100 1040301700 1040302400 1040402100 1040403100
+        1040501000 1040501700 1040601100 1040601800 1040701100
+        1040701800 1040800500 1040801400 1040900700 1040901400
+      ].to_set.freeze
+
+      WIND_EARTH_SWAPPED_SOURCE_MAP = ELEMENT_SOURCE_MAP.merge(3 => 300, 4 => 200).freeze
+
       # Downloads images for all variants of a weapon based on their uncap status.
       # Overrides {BaseDownloader#download} to handle weapon-specific variants.
       #
@@ -108,7 +121,9 @@ module Granblue
         variant_ids = weapon.element_variant_ids || {}
         log_info "Downloading element variants for #{@id} (base_id=#{base_id}, variant_ids=#{variant_ids})"
 
-        ELEMENT_SOURCE_MAP.each do |element_id, source|
+        source_map = WIND_EARTH_SWAPPED_IDS.include?(@id.to_s) ? WIND_EARTH_SWAPPED_SOURCE_MAP : ELEMENT_SOURCE_MAP
+
+        source_map.each do |element_id, source|
           variant_id = variant_ids[element_id.to_s]
 
           if variant_id

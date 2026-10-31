@@ -18,12 +18,13 @@ RSpec.describe Granblue::Downloaders::WeaponDownloader do
     allow(Weapon).to receive(:find_by).and_return(weapon)
     allow(Weapon).to receive(:element_changeable?).and_return(false)
 
-    # Stub the game CDN: record each URL and hand back a fake image stream
+    # Stub the game CDN: record each URL and hand back a stream whose body is that URL,
+    # so each upload can be matched to the source it came from
     allow(Granblue::Downloaders::RemoteFile).to receive(:open) do |url, &block|
       opened_urls << url
       raise Granblue::Downloaders::RemoteFile::HTTPError.new('404 Not Found', StringIO.new) if missing_urls.include?(url)
 
-      block ? block.call(StringIO.new('png')) : StringIO.new('png')
+      block ? block.call(StringIO.new(url)) : StringIO.new(url)
     end
   end
 
@@ -80,12 +81,41 @@ RSpec.describe Granblue::Downloaders::WeaponDownloader do
         downloader.download('gacha')
 
         aggregate_failures do
-          # Wind is +300 in the game's ordering and is stored as _1
-          expect(opened_urls).to include("#{cdn}/g/1040502000.png")
+          # Fire is the base id and is stored as _1
+          expect(opened_urls).to include("#{cdn}/g/1040501700.png")
           expect(aws_double).to have_received(:upload_stream).with(anything, 'weapons/gacha/1040501700_1.png')
           # Null comes from the _note art and is stored as _0
           expect(opened_urls).to include("#{cdn}/g/1040501700_note.png")
           expect(aws_double).to have_received(:upload_stream).with(anything, 'weapons/gacha/1040501700_0.png')
+        end
+      end
+
+      it 'reads Earth from +300 and Wind from +200 for the Revenant weapons' do
+        downloader.download('gacha')
+
+        aggregate_failures do
+          expect(aws_double).to have_received(:upload_stream)
+            .with(have_attributes(string: "#{cdn}/g/1040502000.png"), 'weapons/gacha/1040501700_3.png')
+          expect(aws_double).to have_received(:upload_stream)
+            .with(have_attributes(string: "#{cdn}/g/1040501900.png"), 'weapons/gacha/1040501700_4.png')
+        end
+      end
+
+      context 'with a weapon on the standard element order' do
+        let(:weapon) do
+          double('Weapon', granblue_id: '1040011300', name_en: 'Atma Sword',
+                           transcendence: false, element_variant_ids: nil)
+        end
+
+        it 'reads Earth from +200 and Wind from +300' do
+          downloader.download('gacha')
+
+          aggregate_failures do
+            expect(aws_double).to have_received(:upload_stream)
+              .with(have_attributes(string: "#{cdn}/g/1040011500.png"), 'weapons/gacha/1040011300_3.png')
+            expect(aws_double).to have_received(:upload_stream)
+              .with(have_attributes(string: "#{cdn}/g/1040011600.png"), 'weapons/gacha/1040011300_4.png')
+          end
         end
       end
 
