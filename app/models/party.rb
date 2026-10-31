@@ -266,21 +266,17 @@ class Party < ApplicationRecord
   # at least this many weapons and summons…
   QUALITY_MIN_WEAPONS = 5
   QUALITY_MIN_SUMMONS = 2
-  # …and a name other than the default (and the remixes of it)
-  LOW_QUALITY_NAMES = [
-    'Untitled',
-    'Remix of Untitled',
-    'Remix of Remix of Untitled',
-    'Remix of Remix of Remix of Untitled',
-    'Remix of Remix of Remix of Remix of Untitled',
-    'Remix of Remix of Remix of Remix of Remix of Untitled',
-    '無題',
-    '無題のリミックス',
-    '無題のリミックスのリミックス',
-    '無題のリミックスのリミックスのリミックス',
-    '無題のリミックスのリミックスのリミックスのリミックス',
-    '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
-  ].freeze
+  # …and a name other than a default one: Untitled/無題, "New Team" (what the
+  # web app names new teams), and up to five remixes of each. Lowercase,
+  # since names are compared case-insensitively.
+  LOW_QUALITY_NAMES = ['untitled', '無題', 'new team'].flat_map do |name|
+    (0..5).flat_map { |n| ["#{'remix of ' * n}#{name}", "#{name}#{'のリミックス' * n}"] }
+  end.uniq.freeze
+
+  # SQL condition: the team's name isn't a default one (NULL names fail it).
+  def self.quality_name_sql
+    "LOWER(parties.name) NOT IN (#{LOW_QUALITY_NAMES.map { |name| connection.quote(name) }.join(',')})"
+  end
 
   ##
   # Teams that meet the Gallery's default quality bar: an owner, a name that
@@ -290,7 +286,7 @@ class Party < ApplicationRecord
   scope :quality, lambda {
     filled = where(weapons_count: QUALITY_MIN_WEAPONS.., summons_count: QUALITY_MIN_SUMMONS..)
     where.not(user_id: nil)
-         .where.not(name: LOW_QUALITY_NAMES)
+         .where(quality_name_sql)
          .merge(filled.or(where(raid_id: Raid.solomonis_zones.select(:id))))
   }
 

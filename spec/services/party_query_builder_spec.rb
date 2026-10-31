@@ -99,6 +99,14 @@ RSpec.describe PartyQueryBuilder, type: :model do
         expect(results).to include(named_party)
         expect(results).not_to include(untitled_party)
       end
+
+      it 'excludes New Team and its remixes in any capitalization' do
+        defaults = ['New Team', 'NEW TEAM', 'new team', 'Remix of New Team', 'New Teamのリミックス', 'UNTITLED']
+                   .map { |name| create(:party, name: name, visibility: 1) }
+        results = subject.build
+        expect(results).to include(named_party)
+        expect(results).not_to include(*defaults)
+      end
     end
 
     context 'boost_mod filter' do

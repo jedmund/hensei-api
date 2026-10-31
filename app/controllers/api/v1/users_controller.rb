@@ -324,11 +324,9 @@ module Api
       end
 
       def name_quality
-        joined_names = Party::LOW_QUALITY_NAMES.map { |name| Party.connection.quote(name) }.join(',')
-
         return if params.key?('name_quality') || params[:name_quality].nil? || params[:name_quality] == '0'
 
-        "name NOT IN (#{joined_names})"
+        Party.quality_name_sql
       end
 
       def privacy

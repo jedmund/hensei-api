@@ -84,8 +84,9 @@ RSpec.describe 'Api::V1::Home', type: :request do
       kept = Array.new(3) { create(:party, :complete, visibility: 1) }
       unfilled = create(:party, visibility: 1)
       untitled = create(:party, :complete, visibility: 1, name: '無題')
+      new_team = create(:party, :complete, visibility: 1, name: 'new TEAM')
       anonymous = create(:party, :complete, visibility: 1, user: nil)
-      (kept + [unfilled, untitled, anonymous]).each { |p| p.update_columns(participation_score: 1.0) }
+      (kept + [unfilled, untitled, new_team, anonymous]).each { |p| p.update_columns(participation_score: 1.0) }
 
       get '/api/v1/home'
 

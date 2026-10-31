@@ -453,10 +453,9 @@ class PartyQueryBuilder
     @options[:max_summons] || 8
   end
 
-  # Excludes parties with low-quality default names (Untitled and its remixes).
+  # Excludes parties with default names (see Party::LOW_QUALITY_NAMES).
   def name_quality
-    joined_names = Party::LOW_QUALITY_NAMES.map { |name| Party.connection.quote(name) }.join(',')
-    "name NOT IN (#{joined_names})"
+    Party.quality_name_sql
   end
 
   # Stub method for user quality filtering.
