@@ -13,8 +13,10 @@ module GachaSimulation
     TOKYO = 'Asia/Tokyo'
     # "2026/10/9 19:00" in Japanese
     JAPANESE_TIME = %r{\A(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2}) (?<hour>\d{1,2}):(?<minute>\d{2})\z}
-    # "7 p.m., Oct 9, 2026 (JST)" or "6:59 p.m., Oct 12, 2026 (JST)" in English
-    ENGLISH_TIME = /\A(?<hour>\d{1,2})(?::(?<minute>\d{2}))? (?<half>[ap])\.m\., (?<month>[A-Z][a-z]+)\.? (?<day>\d{1,2}), (?<year>\d{4}) \(JST\)\z/
+    # "7 p.m., Oct 9, 2026 (JST)", "6:59 p.m., Oct 12, 2026 (JST)" or
+    # "12 noon, Oct 31, 2026 (JST)" in English
+    ENGLISH_CLOCK = /(?<hour>\d{1,2})(?::(?<minute>\d{2}))? (?:(?<half>[ap])\.m\.|(?<word>noon|midnight))/
+    ENGLISH_TIME = /\A#{ENGLISH_CLOCK.source}, (?<month>[A-Z][a-z]+)\.? (?<day>\d{1,2}), (?<year>\d{4}) \(JST\)\z/
 
     def self.call(payload)
       new(payload).call
@@ -123,6 +125,7 @@ module GachaSimulation
       hour = parts[:hour].to_i
       return hour unless parts.names.include?('half')
       raise ValidationError, 'Invalid banner time' unless hour.between?(1, 12)
+      return { 'noon' => 12, 'midnight' => 0 }.fetch(parts[:word]) if parts[:word]
 
       (hour % 12) + (parts[:half] == 'p' ? 12 : 0)
     end

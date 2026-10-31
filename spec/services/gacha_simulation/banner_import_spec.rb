@@ -28,7 +28,9 @@ RSpec.describe GachaSimulation::BannerImport do
 
   it 'reads English times around midnight and noon' do
     { '12 a.m., Jan 1, 2027 (JST)' => Time.utc(2026, 12, 31, 15, 0),
-      '12:30 p.m., Sept 3, 2027 (JST)' => Time.utc(2027, 9, 3, 3, 30) }.each do |text, expected|
+      '12:30 p.m., Sept 3, 2027 (JST)' => Time.utc(2027, 9, 3, 3, 30),
+      '12 noon, Oct 31, 2026 (JST)' => Time.utc(2026, 10, 31, 3, 0),
+      '12 midnight, Nov 1, 2026 (JST)' => Time.utc(2026, 10, 31, 15, 0) }.each do |text, expected|
       described_class.call(gacha_banner_payload(start: text))
       expect(GachaBanner.find_by!(game_id: '211960').starts_at).to eq(expected)
     end

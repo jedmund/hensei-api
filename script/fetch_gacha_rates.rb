@@ -7,9 +7,11 @@
 #
 #   0 * * * * cd hensei-api && ruby script/fetch_gacha_rates.rb
 #
-# It remembers when the uploaded banner ends and doesn't contact the game
-# until then, so most scheduled runs make no requests. After the banner ends,
-# each run checks the game until the next banner is listed.
+# It remembers when the banner it last read ends and doesn't contact the game
+# until then, so most scheduled runs make no requests. That holds when the
+# upload fails too: it alerts, and the next check waits for the banner to end
+# (run with --force once the problem is fixed). After the banner ends, each
+# run checks the game until the next banner is listed.
 #
 # It signs in as a spare game account with that account's cookies. To seed
 # them, sign the account in to the game in a browser, copy the Cookie request
@@ -42,8 +44,11 @@ class GachaRatesFetcher
   GAME = URI('https://game.granbluefantasy.jp/')
   # "2026/10/9 19:00" in Japanese
   JAPANESE_TIME = %r{\A(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2}) (?<hour>\d{1,2}):(?<minute>\d{2})\z}
-  # "7 p.m., Oct 9, 2026 (JST)" or "6:59 p.m., Oct 12, 2026 (JST)" in English
-  ENGLISH_TIME = /\A(?<hour>\d{1,2})(?::(?<minute>\d{2}))? (?<half>[ap])\.m\., (?<month>[A-Z][a-z]+)\.? (?<day>\d{1,2}), (?<year>\d{4}) \(JST\)\z/
+  # "7 p.m., Oct 9, 2026 (JST)", "6:59 p.m., Oct 12, 2026 (JST)" or
+  # "12 noon, Oct 31, 2026 (JST)" in English
+  ENGLISH_CLOCK = /(?<hour>\d{1,2})(?::(?<minute>\d{2}))? (?:(?<half>[ap])\.m\.|(?<word>noon|midnight))/
+  ENGLISH_TIME = /\A#{ENGLISH_CLOCK.source}, (?<month>[A-Z][a-z]+)\.? (?<day>\d{1,2}), (?<year>\d{4}) \(JST\)\z/
+  UNREADABLE_END_WAIT = 24 * 60 * 60
   USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                'Chrome/141.0.0.0 Safari/537.36'
 
@@ -85,25 +90,29 @@ class GachaRatesFetcher
     @cookies = load_cookies
     version = game_version
     banner = current_banner(version)
-    if !@force && state['game_id'] == banner['id']
+    ends_at = banner_end(banner)
+    if !@force && state['game_id'] == banner['id'] && state['uploaded'] != false
       # The game hasn't listed the next banner yet, or extended this one
-      save_state('game_id' => banner['id'], 'ends_at' => banner_end(banner)&.iso8601)
+      save_state('game_id' => banner['id'], 'ends_at' => ends_at.iso8601)
       puts "Banner #{banner['id']} is unchanged"
       return
     end
 
+    # Recorded before the upload, so a failed upload also waits for the
+    # banner to end instead of checking the game again every hour
+    save_state('game_id' => banner['id'], 'ends_at' => ends_at.iso8601, 'uploaded' => false) unless @dry_run
     tabs = %w[1 2].to_h { |tab| [tab, rates(version, banner['id'], tab)] }
     payload = { 'banner' => banner.slice('id', 'name', 'times', 'service_start', 'service_end'), 'tabs' => tabs }
     return puts(JSON.pretty_generate(payload)) if @dry_run
 
     result = upload(payload)
-    save_state('game_id' => banner['id'], 'ends_at' => banner_end(banner)&.iso8601)
+    save_state('game_id' => banner['id'], 'ends_at' => ends_at.iso8601)
     puts "Uploaded banner #{result['game_id']}: #{result['items']} items, #{result['unmatched']} not in the catalogue"
     alert("Banner #{result['game_id']} has #{result['unmatched']} items missing from the catalogue") if result['unmatched'].to_i.positive?
   rescue SignedOut => e
     fail_with("The spare account is signed out of the game (#{e.message}); seed its cookies again")
   rescue StandardError => e
-    fail_with("#{e.class}: #{e.message}")
+    fail_with("#{e.class}: #{e.message}#{retry_hint}")
   ensure
     save_cookies if @cookies
   end
@@ -135,23 +144,39 @@ class GachaRatesFetcher
     get_json("gacha/provision_ratio/legend/#{id}/#{tab}", version)
   end
 
+  # Once a banner is recorded, the next check waits for it to end; fixing a
+  # failed upload sooner needs a forced run
+  def retry_hint
+    state = load_state
+    return '' unless state['uploaded'] == false
+
+    "; the next check is at #{state['ends_at']}, or run with --force once fixed"
+  end
+
   # When the banner stops being drawn: a minute after its listed end, which is
-  # given to the minute ("18:59"). Nil if the time can't be read, so the next
-  # run checks the game again.
+  # given to the minute ("18:59"). If the time can't be read, a day from now,
+  # so an unreadable time doesn't make every run check the game.
   def banner_end(banner)
     text = banner['service_end'].to_s
-    parts = text.match(JAPANESE_TIME) || text.match(ENGLISH_TIME)
-    unless parts
+    read_time(text) || begin
+      alert("Couldn't read the banner's end time: #{text.inspect}; checking again in a day")
       warn "Couldn't read the banner's end time: #{text.inspect}"
-      return
+      Time.now + UNREADABLE_END_WAIT
     end
+  end
+
+  def read_time(text)
+    parts = text.match(JAPANESE_TIME) || text.match(ENGLISH_TIME)
+    return unless parts
 
     hour = parts[:hour].to_i
-    hour = (hour % 12) + (parts[:half] == 'p' ? 12 : 0) if parts.names.include?('half')
+    if parts.names.include?('half')
+      hour = (hour % 12) + (parts[:half] == 'p' ? 12 : 0)
+      hour = parts[:word] == 'noon' ? 12 : 0 if parts[:word]
+    end
     month = parts[:month].match?(/\A\d+\z/) ? parts[:month].to_i : Date::ABBR_MONTHNAMES.index(parts[:month][0, 3])
     Time.new(parts[:year].to_i, month, parts[:day].to_i, hour, parts[:minute].to_i, 0, '+09:00') + 60
   rescue ArgumentError, TypeError
-    warn "Couldn't read the banner's end time: #{text.inspect}"
     nil
   end
 
