@@ -396,6 +396,11 @@ Rails.application.routes.draw do
       end
     end
 
+    # Editor-only catalogue collections (filter/sort/facet), see AdminCollection
+    namespace :admin do
+      resources :weapons, only: :index
+    end
+
     # Pending phantom claims for current user (outside crew context)
     get :pending_phantom_claims, to: 'phantom_claims#index'
 
