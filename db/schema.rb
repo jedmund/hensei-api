@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1806,6 +1806,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.string "weapon_skill_build_fingerprint"
     t.datetime "weapon_skill_built_at"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
@@ -1813,6 +1815,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
+    t.index ["updated_at"], name: "index_weapons_on_updated_at"
     t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
     t.index ["weapon_series_variant_id"], name: "index_weapons_on_weapon_series_variant_id"
   end
