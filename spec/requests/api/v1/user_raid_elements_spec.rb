@@ -130,6 +130,15 @@ RSpec.describe 'Api::V1::UserRaidElements', type: :request do
       expect(user.user_raid_elements.pluck(:element)).to eq([fire])
     end
 
+    it 'returns 422 without an elements list' do
+      create(:user_raid_element, user: user, raid: raid, element: fire)
+
+      put '/api/v1/user_raid_elements/sync', params: { raid_id: raid.id }.to_json, headers: headers_for(user)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(user.user_raid_elements.pluck(:element)).to eq([fire])
+    end
+
     it 'returns 404 for an unknown raid' do
       sync([fire], raid_id: SecureRandom.uuid)
       expect(response).to have_http_status(:not_found)
