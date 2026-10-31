@@ -7,6 +7,11 @@ module Api
     class FeaturedPartyBlueprint < ApiBlueprint
       fields :event_id, :position
 
+      # General picks only; event picks leave Home when their event ends
+      field :expires_at do |featured|
+        featured.expires_at&.iso8601
+      end
+
       field :note do |featured|
         { en: featured.note_en, ja: featured.note_jp }
       end

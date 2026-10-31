@@ -53,10 +53,28 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
       expect(json_response['party']).to include('id' => party.id, 'shortcode' => party.shortcode, 'labels' => [])
     end
 
-    it 'allows picks without an event' do
+    it 'allows picks without an event, which expire after 30 days' do
+      freeze_time do
+        post '/api/v1/featured_parties', params: { featured_party: { party_id: party.id } }, headers: editor_headers
+        expect(response).to have_http_status(:created)
+        expect(json_response['event_id']).to be_nil
+        expect(json_response['expires_at']).to eq(30.days.from_now.iso8601)
+      end
+    end
+
+    it 'gives event picks no expiry of their own' do
+      post '/api/v1/featured_parties', params: params, headers: editor_headers
+      expect(json_response['expires_at']).to be_nil
+    end
+
+    it 'replaces an expired general pick when the team is featured again' do
+      old = create(:featured_party, party: party, created_at: 31.days.ago)
+
       post '/api/v1/featured_parties', params: { featured_party: { party_id: party.id } }, headers: editor_headers
+
       expect(response).to have_http_status(:created)
-      expect(json_response['event_id']).to be_nil
+      expect(FeaturedParty.exists?(old.id)).to be(false)
+      expect(FeaturedParty.where(party: party).count).to eq(1)
     end
 
     it 'rejects a non-public party' do

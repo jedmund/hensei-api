@@ -31,6 +31,8 @@ module Api
       # POST /featured_parties
       def create
         featured = FeaturedParty.new(featured_party_params)
+        # Featuring a team in general again restarts its window
+        FeaturedParty.expired.where(party_id: featured.party_id).destroy_all if featured.event_id.nil?
         return render_validation_error_response(featured) unless featured.save
 
         render_featured(featured, status: :created)
