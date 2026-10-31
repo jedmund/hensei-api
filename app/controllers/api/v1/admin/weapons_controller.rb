@@ -19,11 +19,7 @@ module Api
           filter :element, type: :integer, facet: true
           filter :rarity, type: :integer, facet: true
           filter :proficiency, type: :integer, facet: true
-          filter :series, type: :uuid, column: :weapon_series_id, facet: true,
-                          resolve: lambda { |values|
-                            ids, slugs = values.partition { |v| v.match?(AdminCollection::UUID_FORMAT) }
-                            ids + (slugs.any? ? WeaponSeries.where(slug: slugs).pluck(:id) : [])
-                          }
+          reference_filter :series, references: WeaponSeries, column: :weapon_series_id, facet: true
           filter :granblue_id, type: :string
           filter :release_date, type: :date
           filter :created_at, type: :datetime
@@ -59,7 +55,7 @@ module Api
           default_fields :granblue_id, :name_en, :name_jp, :element, :rarity, :proficiency,
                          :series_id, :series_slug, :release_date, :updated_at
 
-          etag_sources WeaponSkill, WeaponSeries
+          etag_sources :weapon_skills, :weapon_series
         end
 
         def index

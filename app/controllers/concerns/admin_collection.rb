@@ -16,6 +16,11 @@
 # Facets count values for the current filter set minus the facet's own filter,
 # so the other values of a multi-select stay visible. NULL values are counted
 # under "none", and list filters accept "none" to match NULL.
+#
+# The ETag is keyed on each source table's row count and max(updated_at).
+# Anything that writes catalogue rows without callbacks (update_all,
+# update_columns, raw SQL) must set updated_at itself, or editors get a stale
+# 304. insert_all/upsert_all stamp it automatically.
 module AdminCollection
   extend ActiveSupport::Concern
 

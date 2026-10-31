@@ -111,6 +111,17 @@ RSpec.describe 'Admin weapons collection', type: :request do
       expect(names).to eq(['Alpha Blade', 'Charlie Blade', 'Delta Bow'])
     end
 
+    it 'rejects series that match nothing' do
+      body = fetch(filter: { series: 'grand,no-such-series' })
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(body['error']).to eq('unknown series: no-such-series')
+
+      missing = SecureRandom.uuid
+      body = fetch(filter: { series: missing })
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(body['error']).to eq("unknown series: #{missing}")
+    end
+
     it 'filters by a date range' do
       fetch(filter: { release_date: { gte: '2022-01-01', lte: '2024-12-31' } }, sort: 'name_en')
       expect(names).to eq(['Bravo Spear', 'Charlie Blade'])
@@ -204,11 +215,8 @@ RSpec.describe 'Admin weapons collection', type: :request do
     it 'preloads series instead of querying per row' do
       create_list(:weapon, 5, weapon_series: grand)
       queries = []
-      # Ignore the ETag's COUNT; only row loads matter here.
-      callback = lambda do |*, payload|
-        sql = payload[:sql]
-        queries << sql if sql.include?('FROM "weapon_series"') && !sql.include?('COUNT')
-      end
+      # Only row loads matter here, not the ETag's COUNT/MAX.
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "weapon_series" WHERE') }
       ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') do
         fetch(fields: 'series_slug,series_name_jp')
       end
@@ -244,6 +252,15 @@ RSpec.describe 'Admin weapons collection', type: :request do
 
       bravo.update!(name_en: 'Bravo Lance')
       get path, params: { sort: 'name_en' }, headers: editor_headers.merge('If-None-Match' => etag)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'returns 200 after a series is renamed' do
+      fetch(fields: 'series_name_en')
+      etag = response.headers['ETag']
+
+      travel(1.second) { grand.update!(name_en: 'Grand Weapons (renamed)') }
+      get path, params: { fields: 'series_name_en' }, headers: editor_headers.merge('If-None-Match' => etag)
       expect(response).to have_http_status(:ok)
     end
   end
