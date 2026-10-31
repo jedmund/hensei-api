@@ -11,7 +11,8 @@ module PartyParticipation
   #
   # Raids with fewer scored parties than `limit` are topped up from the stored
   # participation_score, then with the most recently updated public parties,
-  # so a raid isn't empty before anyone has given stickers. For element-themed
+  # so a raid isn't empty before anyone has given stickers. Only parties that
+  # meet the Gallery's quality bar (Party.quality) are ranked. For element-themed
   # events (Unite and Fight, Dread Barrage), only parties of the element
   # advantaged against the event's boss are ranked.
   #
@@ -52,7 +53,7 @@ module PartyParticipation
     private
 
     def candidates
-      scope = Party.where(raid_id: @raid_ids, visibility: 1)
+      scope = Party.quality.where(raid_id: @raid_ids, visibility: 1)
       scope = scope.where(element: @element) if @element
       scope
     end

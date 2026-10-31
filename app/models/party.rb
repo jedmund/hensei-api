@@ -262,6 +262,38 @@ class Party < ApplicationRecord
     end
   }
 
+  # The Gallery's default quality bar, shared with Home's cards. A team needs
+  # at least this many weapons and summons…
+  QUALITY_MIN_WEAPONS = 5
+  QUALITY_MIN_SUMMONS = 2
+  # …and a name other than the default (and the remixes of it)
+  LOW_QUALITY_NAMES = [
+    'Untitled',
+    'Remix of Untitled',
+    'Remix of Remix of Untitled',
+    'Remix of Remix of Remix of Untitled',
+    'Remix of Remix of Remix of Remix of Untitled',
+    'Remix of Remix of Remix of Remix of Remix of Untitled',
+    '無題',
+    '無題のリミックス',
+    '無題のリミックスのリミックス',
+    '無題のリミックスのリミックスのリミックス',
+    '無題のリミックスのリミックスのリミックスのリミックス',
+    '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
+  ].freeze
+
+  ##
+  # Teams that meet the Gallery's default quality bar: an owner, a name that
+  # isn't a default, and the minimum weapons and summons. Evoking Solomonis
+  # teams are exempt from the minimums, since they start with three weapons
+  # and one summon and unlock more during a run.
+  scope :quality, lambda {
+    filled = where(weapons_count: QUALITY_MIN_WEAPONS.., summons_count: QUALITY_MIN_SUMMONS..)
+    where.not(user_id: nil)
+         .where.not(name: LOW_QUALITY_NAMES)
+         .merge(filled.or(where(raid_id: Raid.solomonis_zones.select(:id))))
+  }
+
   # A team's Rising rank halves for every this much of its age, so new teams
   # rank well above older ones with the same score
   RISING_AGE_HALF_LIFE = 14.days

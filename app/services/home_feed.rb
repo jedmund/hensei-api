@@ -5,8 +5,9 @@
 # linked raid, upcoming events with the top parties from the last time each
 # one ran, rising parties, staff picks, and teams using items that are new
 # (released or uncapped) in the last 18 days, and battles released in the
-# last 4 weeks. Returns records and ordered party ids; HomeController loads
-# and renders them.
+# last 4 weeks. Every card but staff picks only shows teams that meet the
+# Gallery's quality bar (Party.quality). Returns records and ordered party
+# ids; HomeController loads and renders them.
 class HomeFeed
   PARTIES_PER_RAID = 6
   RISING_LIMIT = 9
@@ -36,7 +37,7 @@ class HomeFeed
   NewBattle = Struct.new(:raid, :recent_ids, :trending_ids, keyword_init: true)
 
   # The cached GET /home payload (see HomeController)
-  CACHE_KEY = 'home/v2'
+  CACHE_KEY = 'home/v3'
 
   def self.call(**)
     new(**).call
@@ -120,7 +121,7 @@ class HomeFeed
   # The top teams by Party.rising (shared with the Gallery's `sort=rising`).
   # Empty unless at least RISING_MINIMUM qualify.
   def rising_ids
-    ids = Party.rising(now: @now).limit(RISING_LIMIT).pluck(:id)
+    ids = Party.quality.rising(now: @now).limit(RISING_LIMIT).pluck(:id)
     ids.size >= RISING_MINIMUM ? ids : []
   end
 
@@ -145,7 +146,7 @@ class HomeFeed
     since = @now.in_time_zone('Asia/Tokyo').to_date - NEW_BATTLES_WINDOW
     Raid.includes(:group).where(released_at: since..)
         .order(released_at: :desc, id: :asc).limit(NEW_BATTLES_LIMIT).map do |raid|
-      teams = Party.where(visibility: 1, raid_id: raid.id).limit(PARTIES_PER_BATTLE)
+      teams = Party.quality.where(visibility: 1, raid_id: raid.id).limit(PARTIES_PER_BATTLE)
       NewBattle.new(
         raid: raid,
         recent_ids: teams.order(created_at: :desc, id: :asc).pluck(:id),
@@ -161,7 +162,7 @@ class HomeFeed
     since = item.latest_date.in_time_zone('Asia/Tokyo').beginning_of_day
     # Only teams made since the release or uncap: older teams were built
     # around the item before it changed
-    Party.where(visibility: 1)
+    Party.quality.where(visibility: 1)
          .where(id: grid.where(fk => item.id).select(:party_id))
          .where(created_at: since..)
          .order(Arel.sql('parties.participation_score DESC NULLS LAST, parties.created_at DESC, parties.id ASC'))

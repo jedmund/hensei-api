@@ -429,7 +429,7 @@ class PartyQueryBuilder
 
   # Default values and maximum limits for counts.
   def default_weapons_count
-    @options[:default_weapons_count] || 5
+    @options[:default_weapons_count] || Party::QUALITY_MIN_WEAPONS
   end
 
   def default_characters_count
@@ -438,7 +438,7 @@ class PartyQueryBuilder
   end
 
   def default_summons_count
-    @options[:default_summons_count] || 2
+    @options[:default_summons_count] || Party::QUALITY_MIN_SUMMONS
   end
 
   def max_weapons
@@ -455,21 +455,7 @@ class PartyQueryBuilder
 
   # Excludes parties with low-quality default names (Untitled and its remixes).
   def name_quality
-    low_quality = [
-      'Untitled',
-      'Remix of Untitled',
-      'Remix of Remix of Untitled',
-      'Remix of Remix of Remix of Untitled',
-      'Remix of Remix of Remix of Remix of Untitled',
-      'Remix of Remix of Remix of Remix of Remix of Untitled',
-      '無題',
-      '無題のリミックス',
-      '無題のリミックスのリミックス',
-      '無題のリミックスのリミックスのリミックス',
-      '無題のリミックスのリミックスのリミックスのリミックス',
-      '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
-    ]
-    joined_names = low_quality.map { |name| "'#{name}'" }.join(',')
+    joined_names = Party::LOW_QUALITY_NAMES.map { |name| Party.connection.quote(name) }.join(',')
     "name NOT IN (#{joined_names})"
   end
 
