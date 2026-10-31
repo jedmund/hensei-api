@@ -8,7 +8,7 @@ RSpec.describe 'Api::V1::PartyViews', :party_views, type: :request do
   let(:viewer) { create(:user) }
   let(:party) { create(:party, user: owner, visibility: 1) }
   let(:internal) { { 'X-Internal-Secret' => secret, 'X-Client-IP' => '198.51.100.7' } }
-  let(:today) { Time.current.utc.to_date }
+  let(:today) { PartyViews::Recorder.date_for(Time.current) }
 
   around do |example|
     original = ENV.fetch('API_INTERNAL_SECRET', nil)

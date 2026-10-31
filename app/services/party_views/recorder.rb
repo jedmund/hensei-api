@@ -2,7 +2,7 @@
 
 module PartyViews
   ##
-  # Counts unique viewers of a party per UTC day in Redis. Page views never
+  # Counts unique viewers of a party per JST day in Redis. Page views never
   # touch Postgres: FlushJob copies the day's counts into party_view_days.
   #
   # A viewer is `u:<user id>` when signed in, otherwise a hash of their IP with
@@ -17,13 +17,19 @@ module PartyViews
   module Recorder
     PREFIX = 'party_views'
     TTL = 2.days.to_i
+    # Days follow JST, like the rest of Hensei's dates.
+    TIME_ZONE = 'Asia/Tokyo'
 
     module_function
+
+    def date_for(time)
+      time.in_time_zone(TIME_ZONE).to_date
+    end
 
     # Records a view of party_id by user (or, signed out, ip). Returns true
     # when it was the viewer's first view of the party that day.
     def record(party_id:, user: nil, ip: nil, now: Time.current)
-      date = now.utc.to_date.iso8601
+      date = date_for(now).iso8601
       Sidekiq.redis do |redis|
         viewer = user ? "u:#{user.id}" : anonymous_id(redis, ip, date)
         next false unless viewer
@@ -40,7 +46,7 @@ module PartyViews
       end
     end
 
-    # { party_id => unique viewers } for a UTC date.
+    # { party_id => unique viewers } for a JST date.
     def counts(date)
       Sidekiq.redis do |redis|
         party_ids = redis.call('SMEMBERS', "#{PREFIX}:parties:#{date.iso8601}")

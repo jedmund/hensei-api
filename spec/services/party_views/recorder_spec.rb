@@ -17,6 +17,14 @@ RSpec.describe PartyViews::Recorder, :party_views do
     expect(seen('2026-10-31').first).not_to eq(seen('2026-11-01').first)
   end
 
+  it 'counts by JST day' do
+    # 23:30 UTC on the 30th is 08:30 JST on the 31st
+    described_class.record(party_id: party_id, user: build_stubbed(:user), now: Time.utc(2026, 10, 30, 23, 30))
+
+    expect(seen('2026-10-31').size).to eq(1)
+    expect(seen('2026-10-30')).to be_empty
+  end
+
   it 'expires its keys' do
     described_class.record(party_id: party_id, ip: '198.51.100.7', now: day)
 

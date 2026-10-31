@@ -5,7 +5,7 @@ module PartyViews
   # Copies the unique-viewer counts buffered in Redis (see Recorder) into
   # party_view_days. Runs every few minutes. It writes each day's running
   # total rather than an increment, so reruns are harmless; yesterday is
-  # flushed too so views from just before midnight (UTC) aren't lost. A count
+  # flushed too so views from just before midnight (JST) aren't lost. A count
   # never goes down, in case Redis lost a day's sets.
   class FlushJob < ApplicationJob
     queue_as :maintenance
@@ -13,7 +13,7 @@ module PartyViews
     BATCH_SIZE = 1000
 
     def perform(now: Time.current)
-      today = now.utc.to_date
+      today = Recorder.date_for(now)
       [today - 1, today].each { |date| flush(date, now) }
     end
 

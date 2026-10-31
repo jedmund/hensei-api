@@ -3,8 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe PartyViews::FlushJob, :party_views do
-  let(:now) { Time.utc(2026, 10, 31, 0, 5) }
-  let(:today) { now.to_date }
+  # 00:05 JST on the 31st, so ten minutes earlier is still the 30th
+  let(:now) { Time.utc(2026, 10, 30, 15, 5) }
+  let(:today) { PartyViews::Recorder.date_for(now) }
   let(:yesterday) { today - 1 }
   let(:party) { create(:party, visibility: 1) }
   let(:other) { create(:party, visibility: 1) }
