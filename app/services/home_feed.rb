@@ -10,8 +10,11 @@
 class HomeFeed
   PARTIES_PER_RAID = 6
   RISING_LIMIT = 9
-  # Effectively no decay: the all-time scores that top up Rising
-  ALL_TIME_HALF_LIFE = 100.years
+  # Rising is hidden with fewer teams than this
+  RISING_MINIMUM = 3
+  # A team's Rising rank halves for every this much of its age, so new teams
+  # rank well above older ones with the same score
+  RISING_AGE_HALF_LIFE = 14.days
   UPCOMING_WINDOW = 14.days
   UPCOMING_LIMIT = 3
   CURRENT_LIMIT = 6
@@ -117,23 +120,21 @@ class HomeFeed
     raids.map { |raid| RaidSection.new(raid: raid, party_ids: ranked.fetch(raid.id, [])) }
   end
 
+  # Public teams with a participation score (which already decays with the
+  # age of each sticker, remix and favorite), ranked by that score discounted
+  # by the team's own age. Empty unless at least RISING_MINIMUM qualify.
   def rising_ids
-    scored = Party.where(visibility: 1).where('participation_score > 0')
-                  .order(participation_score: :desc, id: :asc).limit(RISING_LIMIT).pluck(:id)
-    scored + all_time_ids(RISING_LIMIT - scored.size, excluding: scored)
+    ids = Party.where(visibility: 1).where('participation_score > 0')
+               .order(Arel.sql(rising_rank_sql), id: :asc)
+               .limit(RISING_LIMIT).pluck(:id)
+    ids.size >= RISING_MINIMUM ? ids : []
   end
 
-  # While few teams have a recent score, Rising is topped up with the teams
-  # given the most stickers, remixes and favorites over all time (the same
-  # score without decay).
-  def all_time_ids(count, excluding:)
-    return [] unless count.positive?
-
-    candidates = Party.where(visibility: 1).where.not(id: excluding).select(:id)
-    PartyParticipation::Scorer.call(candidates, half_life: ALL_TIME_HALF_LIFE, as_of: @now)
-                              .sort_by { |id, score| [-score, id] }
-                              .first(count)
-                              .map(&:first)
+  def rising_rank_sql
+    Party.sanitize_sql_array([
+      'parties.participation_score * POWER(0.5, GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
+      @now, RISING_AGE_HALF_LIFE.to_i
+    ])
   end
 
   # Items whose latest date (release, FLB, ULB or transcendence) is in the
