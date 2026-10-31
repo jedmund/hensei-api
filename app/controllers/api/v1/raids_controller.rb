@@ -158,7 +158,7 @@ module Api
 
       def raid_params
         params.require(:raid).permit(:name_en, :name_jp, :level, :element, :slug, :group_id, :enemy_id, :summon_id, :quest_id, :extra, :player_count,
-                                     :released_at)
+                                     :released_at, :trackable)
       end
 
       def apply_filters(scope)
@@ -168,11 +168,12 @@ module Api
         scope = scope.by_hl(filter_params[:hl]) if filter_params[:hl].present?
         scope = scope.by_extra(filter_params[:extra]) if filter_params[:extra].present?
         scope = scope.with_guidebooks if filter_params[:guidebooks] == 'true'
+        scope = scope.trackable if filter_params[:trackable] == 'true'
         scope
       end
 
       def filter_params
-        params.except(:controller, :action, :format, :raid).permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks)
+        params.except(:controller, :action, :format, :raid).permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks, :trackable)
       end
     end
   end

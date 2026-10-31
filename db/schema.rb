@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_140100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1186,6 +1186,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
     t.date "released_at"
+    t.boolean "trackable", default: false, null: false
     t.index ["released_at"], name: "index_raids_on_released_at"
   end
 
@@ -1492,6 +1493,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
     t.datetime "updated_at", null: false
     t.index ["provider", "provider_uid"], name: "index_user_identities_on_provider_and_provider_uid", unique: true
     t.index ["user_id", "provider"], name: "index_user_identities_on_user_id_and_provider", unique: true
+  end
+
+  create_table "user_raid_elements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "raid_id", null: false
+    t.integer "element", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["raid_id"], name: "index_user_raid_elements_on_raid_id"
+    t.index ["user_id", "raid_id", "element"], name: "index_user_raid_elements_unique", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1933,6 +1944,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
   add_foreign_key "support_summons", "users"
   add_foreign_key "user_edit_keys", "users"
   add_foreign_key "user_identities", "users"
+  add_foreign_key "user_raid_elements", "raids"
+  add_foreign_key "user_raid_elements", "users"
   add_foreign_key "weapon_awakenings", "awakenings"
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"

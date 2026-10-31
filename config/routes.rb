@@ -196,6 +196,13 @@ Rails.application.routes.draw do
     end
     get 'raids/groups', to: 'raids#groups' # Legacy endpoint
 
+    # Elements the current user has teams for in each trackable raid
+    resources :user_raid_elements, only: [:index] do
+      collection do
+        put :sync
+      end
+    end
+
     patch 'weapon_keys/:id', to: 'weapon_keys#update'
     get 'weapon_keys', to: 'weapon_keys#all'
     get 'weapon_keys/skill_map', to: 'weapon_keys#skill_map'
@@ -434,6 +441,7 @@ Rails.application.routes.draw do
     # Reading user parties and playlists - scoped to a user
     scope 'users/:user_id', user_id: /[^\/]+/ do
       resources :parties, only: [:index], controller: '/api/v1/user_parties'
+      get 'raid_elements', to: '/api/v1/user_raid_elements#for_user'
       resources :playlists, only: [:index, :show], controller: '/api/v1/playlists'
     end
 

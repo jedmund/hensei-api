@@ -5,6 +5,7 @@ class Raid < ApplicationRecord
 
   has_many :event_raids, dependent: :destroy
   has_many :events, through: :event_raids
+  has_many :user_raid_elements, dependent: :destroy
 
   # Route Evokers whose Evoking Solomonis expeditions run in this zone.
   has_many :solomonis_evokers, class_name: 'Character', foreign_key: :solomonis_zone_id,
@@ -30,6 +31,7 @@ class Raid < ApplicationRecord
       )
     end
   }
+  scope :trackable, -> { where(trackable: true) }
   scope :with_guidebooks, -> { joins(:group).where(raid_groups: { guidebooks: true }) }
   scope :ordered, -> { joins(:group).order('raid_groups.order ASC, raids.level DESC') }
 
