@@ -262,6 +262,30 @@ class Party < ApplicationRecord
     end
   }
 
+  # A team's Rising rank halves for every this much of its age, so new teams
+  # rank well above older ones with the same score
+  RISING_AGE_HALF_LIFE = 14.days
+
+  ##
+  # Rising: public teams with a participation score (which already decays
+  # with the age of each sticker, remix and favorite), ranked by that score
+  # discounted by the team's own age, then by id. Shared by Home's Rising
+  # card and the Gallery's `sort=rising`, so the two always agree.
+  #
+  # @param now [Time] the time team ages are measured from.
+  scope :rising, lambda { |now: Time.current|
+    where(visibility: 1).where('parties.participation_score > 0')
+                        .order(Arel.sql(rising_rank_sql(now)), id: :asc)
+  }
+
+  def self.rising_rank_sql(now)
+    sanitize_sql_array([
+      'parties.participation_score * POWER(0.5, ' \
+      'GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
+      now, RISING_AGE_HALF_LIFE.to_i
+    ])
+  end
+
   # ActiveRecord Validations
   validate :skills_are_unique
   validate :guidebooks_are_unique

@@ -65,25 +65,28 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(rising.first).to have_key('last_updated')
     end
 
-    it 'tops Rising up with all-time favourites while few teams have a recent score' do
-      old_favourite = create(:party, raid: raid, visibility: 1)
-      # Long-standing givers, so the old stickers count at full trust
-      2.times do
-        veteran = create(:user, created_at: 2.years.ago)
-        create(:party, user: veteran, visibility: 1)
-        give(old_favourite, sticker: sticker, by: veteran, at: 300.days.ago)
-      end
-      quiet = create(:party, visibility: 1)
-      PartyParticipation::Persister.call([top.id, second.id, private_party.id, old_favourite.id, quiet.id])
-      second.update_columns(participation_score: 0)
+    it 'ranks newer teams above older ones with the same score' do
+      old = create(:party, visibility: 1, created_at: 30.days.ago)
+      newer = create(:party, visibility: 1, created_at: 2.days.ago)
+      newest = create(:party, visibility: 1, created_at: 1.hour.ago)
+      # Half the score of the others, but 30 days (two half-lives) older
+      # loses to it by more than that
+      old.update_columns(participation_score: 2.0)
+      newer.update_columns(participation_score: 1.0)
+      newest.update_columns(participation_score: 1.0)
 
       get '/api/v1/home'
 
-      ids = json_response['rising'].map { |p| p['id'] }
-      expect(ids.first).to eq(top.id)
-      expect(ids).to include(old_favourite.id, second.id)
-      expect(ids.index(old_favourite.id)).to be < ids.index(second.id)
-      expect(ids).not_to include(private_party.id, quiet.id)
+      expect(json_response['rising'].map { |p| p['id'] }).to eq([newest.id, newer.id, old.id])
+    end
+
+    it 'hides Rising when fewer than 3 teams have a score' do
+      2.times { create(:party, visibility: 1).update_columns(participation_score: 1.0) }
+      create(:party, visibility: 1)
+
+      get '/api/v1/home'
+
+      expect(json_response['rising']).to eq([])
     end
 
     it 'never exposes participation scores' do
@@ -212,6 +215,18 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(battles.first['raid']).to include('slug' => new_raid.slug, 'released_at' => new_raid.released_at.iso8601)
       expect(battles.first['recent'].map { |p| p['id'] }).to eq([newer_team.id, older_team.id])
       expect(battles.first['trending'].map { |p| p['id'] }).to eq([older_team.id, newer_team.id])
+    end
+
+    it 'orders trending teams like Rising, so a newer team can outrank a higher score' do
+      veteran = create(:party, raid: new_raid, visibility: 1, created_at: 30.days.ago)
+      veteran.update_columns(participation_score: 2.0)
+      newer_team.update_columns(participation_score: 1.0)
+      older_team.update_columns(participation_score: 0)
+
+      get '/api/v1/home'
+
+      trending = json_response['new_battles'].first['trending'].map { |p| p['id'] }
+      expect(trending).to eq([newer_team.id, veteran.id, older_team.id])
     end
   end
 

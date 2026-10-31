@@ -423,10 +423,10 @@ module Api
       def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
+        # A subquery rather than a join + DISTINCT, which Postgres can't order
+        # by an expression such as the Rising rank
         base_query = build_preview_base_query
-                     .joins(:favorites)
-                     .where(favorites: { user_id: current_user.id })
-                     .distinct
+                     .where(id: Favorite.where(user_id: current_user.id).select(:party_id))
         query = build_filtered_query(base_query)
         @parties = query.paginate(page: params[:page], per_page: page_size)
 

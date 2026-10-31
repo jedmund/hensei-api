@@ -10,8 +10,8 @@
 class HomeFeed
   PARTIES_PER_RAID = 6
   RISING_LIMIT = 9
-  # Effectively no decay: the all-time scores that top up Rising
-  ALL_TIME_HALF_LIFE = 100.years
+  # Rising is hidden with fewer teams than this
+  RISING_MINIMUM = 3
   UPCOMING_WINDOW = 14.days
   UPCOMING_LIMIT = 3
   CURRENT_LIMIT = 6
@@ -117,23 +117,11 @@ class HomeFeed
     raids.map { |raid| RaidSection.new(raid: raid, party_ids: ranked.fetch(raid.id, [])) }
   end
 
+  # The top teams by Party.rising (shared with the Gallery's `sort=rising`).
+  # Empty unless at least RISING_MINIMUM qualify.
   def rising_ids
-    scored = Party.where(visibility: 1).where('participation_score > 0')
-                  .order(participation_score: :desc, id: :asc).limit(RISING_LIMIT).pluck(:id)
-    scored + all_time_ids(RISING_LIMIT - scored.size, excluding: scored)
-  end
-
-  # While few teams have a recent score, Rising is topped up with the teams
-  # given the most stickers, remixes and favorites over all time (the same
-  # score without decay).
-  def all_time_ids(count, excluding:)
-    return [] unless count.positive?
-
-    candidates = Party.where(visibility: 1).where.not(id: excluding).select(:id)
-    PartyParticipation::Scorer.call(candidates, half_life: ALL_TIME_HALF_LIFE, as_of: @now)
-                              .sort_by { |id, score| [-score, id] }
-                              .first(count)
-                              .map(&:first)
+    ids = Party.rising(now: @now).limit(RISING_LIMIT).pluck(:id)
+    ids.size >= RISING_MINIMUM ? ids : []
   end
 
   # Items whose latest date (release, FLB, ULB or transcendence) is in the
@@ -150,8 +138,9 @@ class HomeFeed
   end
 
   # Raids released in the last 4 weeks (JST), newest first, each with its
-  # public teams twice: most recent first, and trending (participation score
-  # first, then most recent, so it's never emptier than the recent list).
+  # public teams twice: most recent first, and trending (Rising order, then
+  # unscored teams most recent first, so it's never emptier than the recent
+  # list).
   def new_battles
     since = @now.in_time_zone('Asia/Tokyo').to_date - NEW_BATTLES_WINDOW
     Raid.includes(:group).where(released_at: since..)
@@ -161,7 +150,7 @@ class HomeFeed
         raid: raid,
         recent_ids: teams.order(created_at: :desc, id: :asc).pluck(:id),
         trending_ids: teams.order(
-          Arel.sql('parties.participation_score DESC NULLS LAST, parties.created_at DESC, parties.id ASC')
+          Arel.sql("#{Party.rising_rank_sql(@now)} NULLS LAST, parties.created_at DESC, parties.id ASC")
         ).pluck(:id)
       )
     end
