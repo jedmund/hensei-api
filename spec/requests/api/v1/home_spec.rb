@@ -191,6 +191,30 @@ RSpec.describe 'Api::V1::Home', type: :request do
     end
   end
 
+  describe 'new battles' do
+    let!(:new_raid) { create(:raid, released_at: 10.days.ago.to_date) }
+    let!(:old_raid) { create(:raid, released_at: 40.days.ago.to_date) }
+    let!(:undated_raid) { create(:raid) }
+    let!(:older_team) { create(:party, raid: new_raid, visibility: 1, created_at: 3.days.ago) }
+    let!(:newer_team) { create(:party, raid: new_raid, visibility: 1, created_at: 1.day.ago) }
+
+    before do
+      create(:party, raid: new_raid, visibility: 3)
+      create(:party, raid: old_raid, visibility: 1)
+      older_team.update_columns(participation_score: 1.5)
+    end
+
+    it 'lists raids released in the last 4 weeks with their recent and trending teams' do
+      get '/api/v1/home'
+
+      battles = json_response['new_battles']
+      expect(battles.map { |b| b['raid']['id'] }).to eq([new_raid.id])
+      expect(battles.first['raid']).to include('slug' => new_raid.slug, 'released_at' => new_raid.released_at.iso8601)
+      expect(battles.first['recent'].map { |p| p['id'] }).to eq([newer_team.id, older_team.id])
+      expect(battles.first['trending'].map { |p| p['id'] }).to eq([older_team.id, newer_team.id])
+    end
+  end
+
   describe 'new items' do
     let(:new_character) { create(:character, release_date: 3.days.ago.to_date) }
     let(:uncapped_character) do

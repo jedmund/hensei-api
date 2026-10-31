@@ -4,8 +4,9 @@
 # Chooses what the home page shows: running events with top parties per
 # linked raid, upcoming events with the top parties from the last time each
 # one ran, rising parties, staff picks, and teams using items that are new
-# (released or uncapped) in the last 18 days. Returns records and ordered
-# party ids; HomeController loads and renders them.
+# (released or uncapped) in the last 18 days, and battles released in the
+# last 4 weeks. Returns records and ordered party ids; HomeController loads
+# and renders them.
 class HomeFeed
   PARTIES_PER_RAID = 6
   RISING_LIMIT = 9
@@ -18,6 +19,9 @@ class HomeFeed
   NEW_ITEMS_WINDOW = 18.days
   NEW_ITEMS_LIMIT = 10
   PARTIES_PER_ITEM = 6
+  NEW_BATTLES_WINDOW = 4.weeks
+  NEW_BATTLES_LIMIT = 6
+  PARTIES_PER_BATTLE = 6
 
   # Item catalogue models with their grid join table and foreign key
   ITEM_SOURCES = {
@@ -29,6 +33,7 @@ class HomeFeed
   Section = Struct.new(:event, :previous_event, :raids, keyword_init: true)
   RaidSection = Struct.new(:raid, :party_ids, keyword_init: true)
   NewItem = Struct.new(:type, :item, :change, :party_ids, keyword_init: true)
+  NewBattle = Struct.new(:raid, :recent_ids, :trending_ids, keyword_init: true)
 
   # The cached GET /home payload (see HomeController)
   CACHE_KEY = 'home/v2'
@@ -51,7 +56,8 @@ class HomeFeed
       upcoming: upcoming_sections,
       rising: rising_ids,
       staff_picks: staff_picks,
-      new_items: new_items
+      new_items: new_items,
+      new_battles: new_battles
     }
   end
 
@@ -140,6 +146,24 @@ class HomeFeed
     end
     candidates.sort_by { |type, item| [-item.latest_date.jd, type, item.id] }.first(NEW_ITEMS_LIMIT).map do |type, item|
       NewItem.new(type: type, item: item, change: item_change(item), party_ids: parties_using(type, item))
+    end
+  end
+
+  # Raids released in the last 4 weeks (JST), newest first, each with its
+  # public teams twice: most recent first, and trending (participation score
+  # first, then most recent, so it's never emptier than the recent list).
+  def new_battles
+    since = @now.in_time_zone('Asia/Tokyo').to_date - NEW_BATTLES_WINDOW
+    Raid.includes(:group).where(released_at: since..)
+        .order(released_at: :desc, id: :asc).limit(NEW_BATTLES_LIMIT).map do |raid|
+      teams = Party.where(visibility: 1, raid_id: raid.id).limit(PARTIES_PER_BATTLE)
+      NewBattle.new(
+        raid: raid,
+        recent_ids: teams.order(created_at: :desc, id: :asc).pluck(:id),
+        trending_ids: teams.order(
+          Arel.sql('parties.participation_score DESC NULLS LAST, parties.created_at DESC, parties.id ASC')
+        ).pluck(:id)
+      )
     end
   end
 
