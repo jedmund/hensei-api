@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1088,6 +1088,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
     t.index ["user_id", "party_id"], name: "index_party_stickers_on_user_id_and_party_id", unique: true
   end
 
+  create_table "party_view_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id", null: false
+    t.date "date", null: false
+    t.integer "views", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_party_view_days_on_date"
+    t.index ["party_id", "date"], name: "index_party_view_days_on_party_id_and_date", unique: true
+  end
+
   create_table "pg_search_documents", force: :cascade do |t|
     t.text "content"
     t.string "granblue_id"
@@ -1912,6 +1922,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_120000) do
   add_foreign_key "party_stickers", "parties"
   add_foreign_key "party_stickers", "stickers"
   add_foreign_key "party_stickers", "users"
+  add_foreign_key "party_view_days", "parties", on_delete: :cascade
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
   add_foreign_key "phantom_players", "crews"
   add_foreign_key "phantom_players", "users", column: "claimed_by_id"
