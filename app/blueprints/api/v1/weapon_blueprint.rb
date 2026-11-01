@@ -186,6 +186,12 @@ module Api
           WeaponSkillBlueprint.render_as_hash(weapon.weapon_skills)
         end
 
+        # When the skill build last ran for this weapon (nil: never), so the editor can
+        # tell "not built yet" from "built, and has no skills"
+        field :skills_built_at do |weapon|
+          weapon.weapon_skill_built_at
+        end
+
         field :nicknames do |w|
           {
             en: w.nicknames_en,
