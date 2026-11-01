@@ -13,9 +13,5 @@ FactoryBot.define do
     trait :for_weapon do
       object_type { "Weapon" }
     end
-
-    trait :for_summon do
-      object_type { "Summon" }
-    end
   end
 end

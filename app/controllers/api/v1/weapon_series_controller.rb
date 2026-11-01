@@ -3,6 +3,12 @@
 module Api
   module V1
     class WeaponSeriesController < Api::V1::ApiController
+      # What create and update accept; the admin schema publishes it
+      PERMITTED = %i[
+        name_en name_jp slug order extra element_changeable has_weapon_keys
+        has_awakening augment_type num_weapon_keys
+      ].freeze
+
       before_action :set_weapon_series, only: %i[show update destroy]
       before_action :ensure_editor_role, only: %i[create update destroy]
 
@@ -58,11 +64,7 @@ module Api
       end
 
       def weapon_series_params
-        params.require(:weapon_series).permit(
-          :name_en, :name_jp, :slug, :order,
-          :extra, :element_changeable, :has_weapon_keys,
-          :has_awakening, :augment_type, :num_weapon_keys
-        )
+        params.require(:weapon_series).permit(*PERMITTED)
       end
     end
   end

@@ -65,7 +65,8 @@ RSpec.describe GridDamage::Calculator do
     end
 
     it "adds weapon-awakening bonuses flat (never amplified)" do
-      atk_awakening = create(:awakening, :for_weapon, slug: "weapon-atk")
+      # The seeds may already hold it; slugs are unique
+      atk_awakening = Awakening.find_by(slug: "weapon-atk") || create(:awakening, :for_weapon, slug: "weapon-atk")
       party.weapons.find_by(position: 1).update!(awakening: atk_awakening, awakening_level: 4)
       result = described_class.boost_list(party, state: state)
       expect(result["atk"].by_series["normal"]).to eq(80.0) # 40 amplified + 40 flat

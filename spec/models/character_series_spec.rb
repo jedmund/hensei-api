@@ -16,6 +16,10 @@ RSpec.describe CharacterSeries, type: :model do
     it { is_expected.to validate_presence_of(:slug) }
     it { is_expected.to validate_uniqueness_of(:slug) }
     it { is_expected.to validate_numericality_of(:order).only_integer }
+
+    it 'rejects a slug that is not lowercase words joined by hyphens' do
+      expect(build(:character_series, slug: 'summer_2024')).not_to be_valid
+    end
   end
 
   describe 'scopes' do

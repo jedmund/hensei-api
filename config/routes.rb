@@ -417,6 +417,15 @@ Rails.application.routes.draw do
       resources :weapons, only: :index do
         get :schema, on: :collection
       end
+      resources :weapon_series, only: :index do
+        get :schema, on: :collection
+      end
+      resources :character_series, only: :index do
+        get :schema, on: :collection
+      end
+      resources :awakenings, only: :index do
+        get :schema, on: :collection
+      end
     end
 
     # Pending phantom claims for current user (outside crew context)

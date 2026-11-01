@@ -13,9 +13,13 @@ module Api
       # Base64 adds about a third to the image, plus the JSON around it.
       UPLOAD_REQUEST_MAX_BYTES = 128 * 1024
 
+      # What create and update accept; the admin schema publishes it
+      PERMITTED = %i[name_en name_jp slug object_type order].freeze
+
       limit_upload_size UPLOAD_REQUEST_MAX_BYTES, only: :upload_image
       before_action :doorkeeper_authorize!, only: %i[create update destroy upload_image]
       before_action :ensure_editor_role, only: %i[create update destroy upload_image]
+      before_action :set_awakening, only: %i[show update destroy upload_image]
 
       # GET /awakenings
       # Optional filter: ?object_type=Weapon
@@ -26,12 +30,9 @@ module Api
         render json: AwakeningBlueprint.render(awakenings)
       end
 
-      # GET /awakenings/:id
+      # GET /awakenings/:id (a UUID or slug)
       def show
-        awakening = Awakening.find_by(id: params[:id])
-        return render_not_found_response('awakening') unless awakening
-
-        render json: AwakeningBlueprint.render(awakening)
+        render json: AwakeningBlueprint.render(@awakening)
       end
 
       # POST /awakenings
@@ -46,22 +47,16 @@ module Api
 
       # PUT /awakenings/:id
       def update
-        awakening = Awakening.find_by(id: params[:id])
-        return render_not_found_response('awakening') unless awakening
-
-        if awakening.update(awakening_params)
-          render json: AwakeningBlueprint.render(awakening)
+        if @awakening.update(awakening_params)
+          render json: AwakeningBlueprint.render(@awakening)
         else
-          render_validation_error_response(awakening)
+          render_validation_error_response(@awakening)
         end
       end
 
       # DELETE /awakenings/:id
       def destroy
-        awakening = Awakening.find_by(id: params[:id])
-        return render_not_found_response('awakening') unless awakening
-
-        awakening.destroy
+        @awakening.destroy
         head :no_content
       end
 
@@ -70,29 +65,31 @@ module Api
       # Character awakenings take a JPEG and the rest a PNG (Awakening#image_formats),
       # stored at icons/awakening/<slug>.<jpg|png>, where the web app reads them.
       def upload_image
-        awakening = Awakening.find_by(id: params[:id])
-        return render_not_found_response('awakening') unless awakening
-
-        unless awakening.slug.to_s.match?(Awakening::SLUG_FORMAT)
+        unless @awakening.slug.to_s.match?(Slugged::FORMAT)
           return render json: { error: 'Awakening slug is invalid' }, status: :unprocessable_entity
         end
 
         bytes = uploaded_image_bytes(params[:image])
         result = IconUploadValidator.call(bytes, max_dimension: MAX_IMAGE_DIMENSION, max_bytes: MAX_IMAGE_BYTES,
-                                                 formats: awakening.image_formats)
+                                                 formats: @awakening.image_formats)
         return render json: { error: result.error }, status: :unprocessable_entity unless result.valid?
 
-        IconStorage.put("#{Awakening::IMAGE_PREFIX}/#{awakening.slug}.#{result.extension}", bytes,
+        IconStorage.put("#{Awakening::IMAGE_PREFIX}/#{@awakening.slug}.#{result.extension}", bytes,
                         content_type: result.content_type)
-        awakening.touch
+        @awakening.touch
 
-        render json: AwakeningBlueprint.render(awakening)
+        render json: AwakeningBlueprint.render(@awakening)
       end
 
       private
 
+      def set_awakening
+        @awakening = Awakening.find_by(slug: params[:id]) || Awakening.find_by(id: params[:id])
+        render_not_found_response('awakening') unless @awakening
+      end
+
       def awakening_params
-        params.require(:awakening).permit(:name_en, :name_jp, :slug, :object_type, :order)
+        params.require(:awakening).permit(*PERMITTED)
       end
     end
   end

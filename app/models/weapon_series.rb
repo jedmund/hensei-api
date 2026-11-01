@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class WeaponSeries < ApplicationRecord
+  include Slugged
+
   has_many :weapons, dependent: :restrict_with_error
   has_many :weapon_series_variants, dependent: :destroy
   has_many :weapon_key_series, dependent: :destroy
   has_many :weapon_keys, through: :weapon_key_series
 
-  enum :augment_type, { no_augment: 0, ax: 1, befoulment: 2 }, default: :no_augment
+  enum :augment_type, { no_augment: 0, ax: 1, befoulment: 2 }, default: :no_augment, validate: true
 
   validates :name_en, presence: true
   validates :name_jp, presence: true
-  validates :slug, presence: true, uniqueness: true
   validates :order, numericality: { only_integer: true }
+  validates :num_weapon_keys, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 
   scope :ordered, -> { order(:order) }
   scope :extra_allowed, -> { where(extra: true) }
