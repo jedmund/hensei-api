@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Raid < ApplicationRecord
+  # Party sizes the game has: solo, and 6-, 18- and 30-player raids.
+  PLAYER_COUNTS = { 'solo' => 1, 'six' => 6, 'eighteen' => 18, 'thirty' => 30 }.freeze
+  # Lowercase words joined by single hyphens, e.g. "lucilius-hard".
+  SLUG_FORMAT = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
+
   belongs_to :group, class_name: 'RaidGroup', foreign_key: :group_id
 
   has_many :event_raids, dependent: :destroy
@@ -13,10 +18,13 @@ class Raid < ApplicationRecord
   # Validations
   validates :name_en, presence: true
   validates :slug, presence: true, uniqueness: true
+  validates :slug, format: { with: SLUG_FORMAT }, allow_blank: true
   validates :group_id, presence: true
-  validates :element, inclusion: { in: 0..6 }, allow_nil: true
+  validates :element, inclusion: { in: GranblueEnums::ELEMENTS.values }, allow_nil: true
   validates :level, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
-  validates :player_count, inclusion: { in: [1, 6, 18, 30] }
+  validates :player_count, inclusion: { in: PLAYER_COUNTS.values }
+  # The game's ids for the boss (icon), its summon (thumbnail) and its quest (lobby art)
+  validates :enemy_id, :summon_id, :quest_id, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
   # Filter scopes
   scope :by_element, ->(element) { where(element: element) if element.present? }
