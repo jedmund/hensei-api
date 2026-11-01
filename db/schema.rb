@@ -1481,7 +1481,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_163100) do
     t.string "summon_aura_build_fingerprint"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.index ["granblue_id"], name: "index_summons_on_granblue_id"
+    t.index ["granblue_id"], name: "index_summons_on_granblue_id_unique", unique: true
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_summons_on_promotions", using: :gin

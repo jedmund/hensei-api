@@ -1,9 +1,10 @@
 FactoryBot.define do
   factory :summon do
-    sequence(:granblue_id) { |n| "204#{n.to_s.rjust(7, '0')}" }
+    # 29… is no real id range, so specs can use real ids without clashing
+    sequence(:granblue_id) { |n| "29#{n.to_s.rjust(8, '0')}" }
     sequence(:name_en) { |n| "Test Summon #{n}" }
     name_jp { "テスト召喚石" }
-    rarity { 4 } # SSR
+    rarity { 3 } # SSR
     element { 1 } # Fire
 
     # Release info
@@ -26,7 +27,7 @@ FactoryBot.define do
     transcendence { false }
 
     trait :r do
-      rarity { 2 }
+      rarity { 1 }
       max_hp { 200 }
       max_atk { 800 }
       max_hp_flb { nil }
@@ -35,13 +36,13 @@ FactoryBot.define do
     end
 
     trait :sr do
-      rarity { 3 }
+      rarity { 2 }
       max_hp { 350 }
       max_atk { 1400 }
     end
 
     trait :ssr do
-      rarity { 4 }
+      rarity { 3 }
     end
 
     trait :transcendable do

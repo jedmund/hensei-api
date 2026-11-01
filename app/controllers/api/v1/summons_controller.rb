@@ -7,6 +7,18 @@ module Api
       include BatchPreviewable
       include ImageDownloadOptions
 
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = [
+        :granblue_id, :name_en, :name_jp, :summon_id, :rarity, :element, :series,
+        :flb, :ulb, :transcendence, :subaura, :limit,
+        :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb, :max_hp_xlb,
+        :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb, :max_atk_xlb,
+        :max_level,
+        :release_date, :flb_date, :ulb_date, :transcendence_date,
+        :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
+        { nicknames_en: [], nicknames_jp: [], promotions: [] }
+      ].freeze
+
       before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
                                                   batch_preview raw]
@@ -221,16 +233,7 @@ module Api
       end
 
       def summon_params
-        params.require(:summon).permit(
-          :granblue_id, :name_en, :name_jp, :summon_id, :rarity, :element, :series,
-          :flb, :ulb, :transcendence, :subaura, :limit,
-          :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb, :max_hp_xlb,
-          :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb, :max_atk_xlb,
-          :max_level,
-          :release_date, :flb_date, :ulb_date, :transcendence_date,
-          :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
-          nicknames_en: [], nicknames_jp: [], promotions: []
-        )
+        params.require(:summon).permit(*PERMITTED)
       end
     end
   end

@@ -36,7 +36,7 @@ RSpec.describe SupportSummonImportService do
     let(:user) { create(:user) }
     let(:fire_summon) { create(:summon, element: 1) } # internal 2=Fire
     let(:water_summon) { create(:summon, element: 2) }
-    let(:misc_summon) { create(:summon, element: 0) }
+    let(:misc_summon) { create(:summon, element: 3) }
 
     it 'maps GBF section indices to section enums' do
       service = described_class.new(user, [
@@ -53,7 +53,7 @@ RSpec.describe SupportSummonImportService do
     end
 
     it 'maps all 7 GBF section indices correctly' do
-      summons = (0..6).map { create(:summon, element: 0) }
+      summons = Array.new(7) { create(:summon) }
       items = (0..6).map do |gbf_section|
         { 'gbf_section' => gbf_section, 'position' => 0, 'granblue_id' => summons[gbf_section].granblue_id, 'level' => 100 }
       end
