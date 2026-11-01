@@ -19,4 +19,19 @@ RSpec.describe JobAccessory, type: :model do
       expect(a).not_to eq(b)
     end
   end
+
+  describe 'validations' do
+    it 'requires a numeric granblue_id, unique' do
+      accessory = create(:job_accessory, granblue_id: '4001')
+      expect(build(:job_accessory, granblue_id: 'a1')).not_to be_valid
+      expect(build(:job_accessory, granblue_id: accessory.granblue_id)).not_to be_valid
+    end
+
+    it 'requires both names and a known type; rarity may be blank' do
+      expect(build(:job_accessory, name_en: '')).not_to be_valid
+      expect(build(:job_accessory, accessory_type: 0)).not_to be_valid
+      expect(build(:job_accessory, rarity: 0)).not_to be_valid
+      expect(build(:job_accessory, rarity: nil)).to be_valid
+    end
+  end
 end

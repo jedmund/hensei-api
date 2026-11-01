@@ -50,6 +50,14 @@ RSpec.describe 'JobSkills API', type: :request do
       expect(skill_names).not_to include('Other')
     end
 
+    it 'tells apart jobs that share a granblue_id by uuid' do
+      successor = create(:job, granblue_id: job.granblue_id, row: '2')
+      create(:job_skill, job: successor, name_en: 'Successor Skill')
+
+      get "/api/v1/jobs/#{successor.id}/skills"
+      expect(response.parsed_body.map { |s| s.dig('name', 'en') }).to eq(['Successor Skill'])
+    end
+
     it 'returns not found for a non-existent job' do
       get '/api/v1/jobs/999999/skills'
       expect(response).to have_http_status(:not_found)
@@ -74,9 +82,10 @@ RSpec.describe 'JobSkills API', type: :request do
     end
   end
 
-  describe 'POST /api/v1/jobs/:job_id/skills' do
+  describe 'POST /api/v1/job_skills' do
     let(:valid_params) do
       {
+        job_id: job.id,
         name_en: 'New Skill',
         name_jp: '新スキル',
         slug: 'new-skill',
@@ -92,7 +101,7 @@ RSpec.describe 'JobSkills API', type: :request do
     context 'as an editor' do
       it 'creates a new job skill' do
         expect {
-          post "/api/v1/jobs/#{job.granblue_id}/skills", params: valid_params.to_json, headers: editor_headers
+          post '/api/v1/job_skills', params: valid_params.to_json, headers: editor_headers
         }.to change(JobSkill, :count).by(1)
         expect(response).to have_http_status(:created)
 
@@ -102,36 +111,57 @@ RSpec.describe 'JobSkills API', type: :request do
         expect(skill['main']).to be true
       end
 
-      it 'returns not found for a non-existent job' do
-        post '/api/v1/jobs/999999/skills', params: valid_params.to_json, headers: editor_headers
-        expect(response).to have_http_status(:not_found)
+      it 'rejects a skill without a job' do
+        post '/api/v1/job_skills', params: valid_params.except(:job_id).to_json, headers: editor_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'puts a skill without an order after its job\'s others' do
+        create(:job_skill, job: job, order: 4)
+        post '/api/v1/job_skills', params: valid_params.except(:order).to_json, headers: editor_headers
+        expect(response.parsed_body['order']).to eq(5)
+      end
+
+      it 'rejects a slug its job already uses, but not another job\'s' do
+        create(:job_skill, job: job, slug: 'new-skill')
+        post '/api/v1/job_skills', params: valid_params.to_json, headers: editor_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        post '/api/v1/job_skills', params: valid_params.merge(job_id: create(:job).id).to_json, headers: editor_headers
+        expect(response).to have_http_status(:created)
       end
     end
 
     context 'as a regular user' do
       it 'returns unauthorized' do
-        post "/api/v1/jobs/#{job.granblue_id}/skills", params: valid_params.to_json, headers: regular_headers
+        post '/api/v1/job_skills', params: valid_params.to_json, headers: regular_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
   end
 
-  describe 'PUT /api/v1/jobs/:job_id/skills/:id' do
+  describe 'PUT /api/v1/job_skills/:id' do
     let!(:skill) { create(:job_skill, job: job, name_en: 'Old Name') }
 
     context 'as an editor' do
       it 'updates the job skill' do
-        put "/api/v1/jobs/#{job.granblue_id}/skills/#{skill.id}",
+        put "/api/v1/job_skills/#{skill.id}",
             params: { name_en: 'Updated Name' }.to_json,
             headers: editor_headers
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body.dig('name', 'en')).to eq('Updated Name')
       end
+
+      it 'moves the skill to another job' do
+        other = create(:job)
+        put "/api/v1/job_skills/#{skill.id}", params: { job_id: other.id }.to_json, headers: editor_headers
+        expect(skill.reload.job).to eq(other)
+      end
     end
 
     context 'as a regular user' do
       it 'returns unauthorized' do
-        put "/api/v1/jobs/#{job.granblue_id}/skills/#{skill.id}",
+        put "/api/v1/job_skills/#{skill.id}",
             params: { name_en: 'Updated Name' }.to_json,
             headers: regular_headers
         expect(response).to have_http_status(:unauthorized)
@@ -139,13 +169,13 @@ RSpec.describe 'JobSkills API', type: :request do
     end
   end
 
-  describe 'DELETE /api/v1/jobs/:job_id/skills/:id' do
+  describe 'DELETE /api/v1/job_skills/:id' do
     let!(:skill) { create(:job_skill, job: job) }
 
     context 'as an editor' do
       it 'destroys the job skill' do
         expect {
-          delete "/api/v1/jobs/#{job.granblue_id}/skills/#{skill.id}", headers: editor_headers
+          delete "/api/v1/job_skills/#{skill.id}", headers: editor_headers
         }.to change(JobSkill, :count).by(-1)
         expect(response).to have_http_status(:no_content)
       end
@@ -153,7 +183,7 @@ RSpec.describe 'JobSkills API', type: :request do
 
     context 'as a regular user' do
       it 'returns unauthorized' do
-        delete "/api/v1/jobs/#{job.granblue_id}/skills/#{skill.id}", headers: regular_headers
+        delete "/api/v1/job_skills/#{skill.id}", headers: regular_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end

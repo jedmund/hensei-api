@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -883,6 +883,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_170000) do
     t.integer "accessory_type"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["granblue_id"], name: "index_job_accessories_on_granblue_id", unique: true
     t.index ["job_id"], name: "index_job_accessories_on_job_id"
   end
 
@@ -903,7 +904,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_170000) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["action_id"], name: "index_job_skills_on_action_id"
     t.index ["image_id"], name: "index_job_skills_on_image_id"
-    t.index ["job_id"], name: "index_job_skills_on_job_id"
+    t.index ["job_id", "slug"], name: "index_job_skills_on_job_id_and_slug", unique: true
   end
 
   create_table "jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -923,6 +924,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_170000) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
+    t.index ["granblue_id", "row"], name: "index_jobs_on_granblue_id_and_row", unique: true
     t.index ["updated_at"], name: "index_jobs_on_updated_at"
   end
 

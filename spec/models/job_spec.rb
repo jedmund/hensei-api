@@ -22,4 +22,36 @@ RSpec.describe Job, type: :model do
       expect(results).to include(job)
     end
   end
+
+  describe 'validations' do
+    it 'requires a 6-digit granblue_id, unique per row' do
+      expect(build(:job, granblue_id: nil)).not_to be_valid
+      expect(build(:job, granblue_id: '1000010')).not_to be_valid
+
+      first = create(:job, granblue_id: '900001', row: '1')
+      expect(build(:job, granblue_id: first.granblue_id, row: '1')).not_to be_valid
+      expect(build(:job, granblue_id: first.granblue_id, row: '2')).to be_valid
+    end
+
+    it 'requires both names' do
+      expect(build(:job, name_en: ' ')).not_to be_valid
+      expect(build(:job, name_jp: nil)).not_to be_valid
+    end
+
+    it 'accepts only known rows, proficiencies and accessory types' do
+      expect(build(:job, row: 'ex')).not_to be_valid
+      expect(build(:job, row: 'ex1')).to be_valid
+      expect(build(:job, proficiency1: 0)).not_to be_valid
+      expect(build(:job, proficiency2: 11)).not_to be_valid
+      expect(build(:job, accessory_type: 3)).not_to be_valid
+      expect(build(:job, order: -1)).not_to be_valid
+    end
+
+    it 'finds a job by uuid or granblue_id' do
+      job = create(:job)
+      expect(Job.find_by_route_id(job.id)).to eq(job)
+      expect(Job.find_by_route_id(job.granblue_id)).to eq(job)
+      expect(Job.find_by_route_id('')).to be_nil
+    end
+  end
 end
