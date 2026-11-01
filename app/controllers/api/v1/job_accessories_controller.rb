@@ -5,6 +5,9 @@ module Api
     class JobAccessoriesController < Api::V1::ApiController
       include ImageDownloadOptions
 
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = %i[name_en name_jp granblue_id rarity release_date accessory_type job_id].freeze
+
       before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
 
@@ -109,7 +112,7 @@ module Api
       # GET /jobs/:id/accessories
       # Legacy endpoint - get accessories for a specific job
       def job
-        job = Job.find_by(granblue_id: params[:id]) || Job.find_by(id: params[:id])
+        job = Job.find_by_route_id(params[:id])
         return render_not_found_response('job') unless job
 
         accessories = JobAccessory.where(job_id: job.id)
@@ -123,7 +126,7 @@ module Api
       end
 
       def job_accessory_params
-        params.permit(:name_en, :name_jp, :granblue_id, :rarity, :release_date, :accessory_type, :job_id)
+        params.permit(*PERMITTED)
       end
     end
   end

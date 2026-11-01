@@ -164,15 +164,14 @@ Rails.application.routes.draw do
 
     get 'jobs/skills', to: 'job_skills#all'
     post 'job_skills/resolve', to: 'job_skills#resolve'
-    get 'job_skills/:id', to: 'job_skills#show'
+    # Skills are written by their own id; the job is a param (job_id)
+    resources :job_skills, only: %i[show create update destroy] do
+      post :download_image, on: :member
+    end
     get 'jobs/:id', to: 'jobs#show'
     put 'jobs/:id', to: 'jobs#update'
     get 'jobs/:id/skills', to: 'job_skills#job'
     get 'jobs/:id/emp_skills', to: 'job_skills#emp'
-    post 'jobs/:job_id/skills', to: 'job_skills#create'
-    put 'jobs/:job_id/skills/:id', to: 'job_skills#update'
-    delete 'jobs/:job_id/skills/:id', to: 'job_skills#destroy'
-    post 'jobs/:job_id/skills/:id/download_image', to: 'job_skills#download_image'
     get 'jobs/:id/accessories', to: 'job_accessories#job'
 
     # Job Accessories (database management)
@@ -399,6 +398,15 @@ Rails.application.routes.draw do
     # Editor-only catalogue collections (filter/sort/facet), see AdminCollection
     namespace :admin do
       resources :characters, only: :index do
+        get :schema, on: :collection
+      end
+      resources :jobs, only: :index do
+        get :schema, on: :collection
+      end
+      resources :job_accessories, only: :index do
+        get :schema, on: :collection
+      end
+      resources :job_skills, only: :index do
         get :schema, on: :collection
       end
       resources :summons, only: :index

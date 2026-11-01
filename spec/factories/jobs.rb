@@ -2,9 +2,10 @@ FactoryBot.define do
   factory :job do
     sequence(:name_en) { |n| "Test Job #{n}" }
     name_jp { "テストジョブ" }
-    sequence(:granblue_id) { |n| "3#{n.to_s.rjust(8, '0')}" }
-    row { 4 } # Row IV
-    master_level { 30 }
+    # Six digits, clear of the game's (which start 1-4)
+    sequence(:granblue_id) { |n| "9#{(n % 100_000).to_s.rjust(5, '0')}" }
+    row { '4' } # Class IV
+    master_level { true }
     order { 1 }
 
     proficiency1 { 1 } # Sabre

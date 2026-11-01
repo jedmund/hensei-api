@@ -5,9 +5,17 @@ module Api
     class JobsController < Api::V1::ApiController
       include PartyAuthorizationConcern
 
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = %i[
+        name_en name_jp granblue_id
+        proficiency1 proficiency2 row order
+        master_level ultimate_mastery aux_weapon
+        accessory accessory_type base_job_id
+      ].freeze
+
       before_action :set_party, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
       before_action :authorize_party!, only: %w[update_job update_job_skills destroy_job_skill update_accessory destroy_accessory]
-      before_action :set_job, only: %w[update]
+      before_action :set_job, only: %w[show update]
       before_action :ensure_editor_role, only: %w[create update]
 
       def all
@@ -15,7 +23,7 @@ module Api
       end
 
       def show
-        render json: JobBlueprint.render(Job.find_by(granblue_id: params[:id]))
+        render json: JobBlueprint.render(@job)
       end
 
       # POST /jobs
@@ -214,17 +222,12 @@ module Api
       end
 
       def set_job
-        @job = Job.find_by(granblue_id: params[:id])
+        @job = Job.find_by_route_id(params[:id])
         render_not_found_response('job') unless @job
       end
 
       def job_update_params
-        params.permit(
-          :name_en, :name_jp, :granblue_id,
-          :proficiency1, :proficiency2, :row, :order,
-          :master_level, :ultimate_mastery,
-          :accessory, :accessory_type, :base_job_id
-        )
+        params.permit(*PERMITTED)
       end
 
       def job_params

@@ -7,6 +7,20 @@ class JobSkill < ApplicationRecord
 
   belongs_to :job
 
+  # Slugs name the skill's image (<slug>.png), so they're kebab-case. A skill
+  # several jobs share (Counter, Phalanx) has a row per job with one slug.
+  SLUG_FORMAT = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
+  COLORS = { Yellow: 0, Blue: 1, Red: 2, Green: 3, Purple: 4 }.freeze
+
+  validates :name_en, :name_jp, presence: true
+  validates :slug, presence: true, format: { with: SLUG_FORMAT }, uniqueness: { scope: :job_id }
+  validates :color, inclusion: { in: COLORS.values }
+  validates :order, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :action_id, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+
+  # A new skill without an order goes after its job's other skills.
+  before_validation :assign_next_order, on: :create
+
   pg_search_scope :en_search,
                   against: :name_en,
                   using: {
@@ -55,5 +69,13 @@ class JobSkill < ApplicationRecord
 
   def ==(other)
     self.class == other.class && id == other.id
+  end
+
+  private
+
+  def assign_next_order
+    return unless order.nil? && job_id.present?
+
+    self.order = (JobSkill.where(job_id: job_id).maximum(:order) || 0) + 1
   end
 end

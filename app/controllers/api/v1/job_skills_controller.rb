@@ -3,6 +3,9 @@
 module Api
   module V1
     class JobSkillsController < Api::V1::ApiController
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = %i[job_id name_en name_jp slug color main sub emp base order image_id action_id].freeze
+
       before_action :doorkeeper_authorize!, only: %i[create update destroy download_image]
       before_action :ensure_editor_role, only: %i[create update destroy download_image]
 
@@ -28,9 +31,9 @@ module Api
         render_not_found_response('job_skill')
       end
 
-      # Returns skills that belong to a specific job
+      # Returns skills that belong to a specific job (by uuid or granblue_id)
       def job
-        job = Job.find_by(granblue_id: params[:id])
+        job = Job.find_by_route_id(params[:id])
         return render_not_found_response('job') unless job
 
         @skills = JobSkill.includes(:job)
@@ -47,12 +50,9 @@ module Api
         render json: JobSkillBlueprint.render(@skills)
       end
 
-      # POST /jobs/:job_id/skills
+      # POST /job_skills
       def create
-        job = Job.find_by(granblue_id: params[:job_id])
-        return render_not_found_response('job') unless job
-
-        skill = job.skills.build(job_skill_params)
+        skill = JobSkill.new(job_skill_params)
         if skill.save
           render json: JobSkillBlueprint.render(skill), status: :created
         else
@@ -60,7 +60,7 @@ module Api
         end
       end
 
-      # PUT /jobs/:job_id/skills/:id
+      # PUT /job_skills/:id
       def update
         skill = JobSkill.find(params[:id])
         if skill.update(job_skill_params)
@@ -70,14 +70,14 @@ module Api
         end
       end
 
-      # DELETE /jobs/:job_id/skills/:id
+      # DELETE /job_skills/:id
       def destroy
         skill = JobSkill.find(params[:id])
         skill.destroy
         head :no_content
       end
 
-      # POST /jobs/:job_id/skills/:id/download_image
+      # POST /job_skills/:id/download_image
       def download_image
         skill = JobSkill.find(params[:id])
         return render json: { error: 'No image_id' }, status: :unprocessable_entity unless skill.image_id.present?
@@ -92,8 +92,7 @@ module Api
       private
 
       def job_skill_params
-        params.permit(:name_en, :name_jp, :slug, :color, :main, :base, :sub, :emp, :order,
-                      :image_id, :action_id)
+        params.permit(*PERMITTED)
       end
     end
   end
