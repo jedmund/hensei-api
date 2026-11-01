@@ -18,12 +18,12 @@ module Api
       end
 
       view :summary do
-        # summary uses base fields only (no gw_event)
+        # summary uses base fields only (no event)
       end
 
       view :with_event do
         field :gw_event do |participation|
-          GwEventBlueprint.render_as_hash(participation.gw_event)
+          GwEventBlueprint.render_as_hash(participation.event)
         end
       end
 
@@ -32,13 +32,13 @@ module Api
           CrewBlueprint.render_as_hash(participation.crew, view: :minimal)
         end
         field :gw_event do |participation|
-          GwEventBlueprint.render_as_hash(participation.gw_event)
+          GwEventBlueprint.render_as_hash(participation.event)
         end
       end
 
       view :full do
         field :gw_event do |participation|
-          GwEventBlueprint.render_as_hash(participation.gw_event)
+          GwEventBlueprint.render_as_hash(participation.event)
         end
         field :crew_scores do |participation|
           GwCrewScoreBlueprint.render_as_hash(participation.gw_crew_scores.order(:round))
@@ -47,7 +47,7 @@ module Api
 
       view :with_individual_scores do
         field :gw_event do |participation|
-          GwEventBlueprint.render_as_hash(participation.gw_event)
+          GwEventBlueprint.render_as_hash(participation.event)
         end
         field :crew_scores do |participation|
           GwCrewScoreBlueprint.render_as_hash(participation.gw_crew_scores.order(:round))

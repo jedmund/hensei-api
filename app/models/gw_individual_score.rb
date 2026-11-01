@@ -27,7 +27,7 @@ class GwIndividualScore < ApplicationRecord
   validate :phantom_belongs_to_crew
   validate :exactly_one_player_reference
 
-  delegate :crew, :gw_event, to: :crew_gw_participation
+  delegate :crew, :event, to: :crew_gw_participation
 
   scope :for_round, ->(round) { where(round: round) }
   scope :for_membership, ->(membership) { where(crew_membership: membership) }

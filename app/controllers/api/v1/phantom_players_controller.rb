@@ -92,23 +92,25 @@ module Api
       def gw_scores
         # Get all crew GW events to identify gaps
         all_crew_events = @crew.crew_gw_participations
-                               .joins(:gw_event)
-                               .order('gw_events.event_number DESC')
-                               .pluck('gw_events.id, gw_events.event_number, gw_events.element, gw_events.start_date, gw_events.end_date')
+                               .joins(:event)
+                               .order('events.event_number DESC')
+                               .pluck('events.id, events.event_number, events.element, events.starts_at, events.ends_at')
 
         # Get scores for this phantom
         scores_by_event = GwIndividualScore
-                          .joins(crew_gw_participation: :gw_event)
+                          .joins(crew_gw_participation: :event)
                           .where(phantom_player_id: @phantom.id)
-                          .group('gw_events.id')
-                          .pluck('gw_events.id, SUM(gw_individual_scores.score)')
+                          .group('events.id')
+                          .pluck('events.id, SUM(gw_individual_scores.score)')
                           .to_h
 
         # Build event scores with gap markers
-        event_scores = all_crew_events.map do |event_id, event_number, element, start_date, end_date|
+        event_scores = all_crew_events.map do |event_id, event_number, element, starts_at, ends_at|
           score = scores_by_event[event_id]
           {
-            gw_event: { id: event_id, event_number: event_number, element: element, start_date: start_date, end_date: end_date },
+            gw_event: { id: event_id, event_number: event_number, element: element,
+                        start_date: starts_at.in_time_zone(Event::GW_TIME_ZONE).to_date,
+                        end_date: ends_at.in_time_zone(Event::GW_TIME_ZONE).to_date },
             total_score: score&.to_i,
             in_crew: score.present?
           }

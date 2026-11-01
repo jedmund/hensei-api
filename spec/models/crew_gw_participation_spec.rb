@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe CrewGwParticipation, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:crew) }
-    it { is_expected.to belong_to(:gw_event) }
+    it { is_expected.to belong_to(:event) }
     it { is_expected.to have_many(:gw_crew_scores).dependent(:destroy) }
     it { is_expected.to have_many(:gw_individual_scores).dependent(:destroy) }
   end
@@ -11,23 +11,23 @@ RSpec.describe CrewGwParticipation, type: :model do
   describe 'validations' do
     let!(:crew) { create(:crew) }
     let!(:gw_event) { create(:gw_event) }
-    let!(:existing_participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+    let!(:existing_participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
 
     it 'requires unique crew and gw_event combination' do
-      duplicate = build(:crew_gw_participation, crew: crew, gw_event: gw_event)
+      duplicate = build(:crew_gw_participation, crew: crew, event: gw_event)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:crew_id]).to include('is already participating in this event')
     end
 
     it 'allows same crew in different events' do
       other_event = create(:gw_event)
-      participation = build(:crew_gw_participation, crew: crew, gw_event: other_event)
+      participation = build(:crew_gw_participation, crew: crew, event: other_event)
       expect(participation).to be_valid
     end
 
     it 'allows different crews in same event' do
       other_crew = create(:crew)
-      participation = build(:crew_gw_participation, crew: other_crew, gw_event: gw_event)
+      participation = build(:crew_gw_participation, crew: other_crew, event: gw_event)
       expect(participation).to be_valid
     end
   end

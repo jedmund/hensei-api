@@ -128,7 +128,7 @@ RSpec.describe PhantomPlayer, type: :model do
 
     context 'with individual scores' do
       let(:gw_event) { create(:gw_event) }
-      let(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+      let(:participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
       let!(:phantom_score) do
         create(:gw_individual_score,
                crew_gw_participation: participation,

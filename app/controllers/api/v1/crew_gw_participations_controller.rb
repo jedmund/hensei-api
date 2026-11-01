@@ -13,7 +13,7 @@ module Api
 
       # GET /crew/gw_participations
       def index
-        participations = @crew.crew_gw_participations.includes(:gw_event).order('gw_events.start_date DESC')
+        participations = @crew.crew_gw_participations.eager_load(:event).order('events.starts_at DESC')
         render json: CrewGwParticipationBlueprint.render(participations, view: :with_event, root: :crew_gw_participations)
       end
 
@@ -26,16 +26,16 @@ module Api
       def by_event
         # Support lookup by event_id (UUID) or event_number (integer)
         event = if params[:event_id].match?(/\A\d+\z/)
-                  GwEvent.find_by(event_number: params[:event_id])
+                  Event.unite_and_fight.find_by(event_number: params[:event_id])
                 else
-                  GwEvent.find_by(id: params[:event_id])
+                  Event.unite_and_fight.find_by(id: params[:event_id])
                 end
 
         return render json: { gw_event: nil, crew_gw_participation: nil, members_during_event: [] } unless event
 
         participation = @crew.crew_gw_participations
-                             .includes(:gw_event, gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
-                             .find_by(gw_event: event)
+                             .includes(:event, gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
+                             .find_by(event: event)
 
         # IDs of members/phantoms who were truly active during the event
         active_during_ids = @crew.crew_memberships.active_during(event.start_date, event.end_date).pluck(:id).to_set
@@ -65,9 +65,9 @@ module Api
 
       # POST /gw_events/:id/participations
       def create
-        event = GwEvent.find(params[:id])
+        event = Event.unite_and_fight.find(params[:id])
 
-        participation = @crew.crew_gw_participations.build(gw_event: event)
+        participation = @crew.crew_gw_participations.build(event: event)
 
         if participation.save
           render json: CrewGwParticipationBlueprint.render(participation, view: :with_event, root: :crew_gw_participation), status: :created

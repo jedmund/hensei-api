@@ -126,6 +126,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(json_response['event_number']).to eq(81)
     end
 
+    it 'accepts a null event_number for other kinds' do
+      story = params.deep_merge(event: { kind: 'story_event', element: nil, event_number: nil })
+      post '/api/v1/events', params: story, headers: editor_headers, as: :json
+      expect(response).to have_http_status(:created)
+      expect(json_response).to include('kind' => 'story_event', 'event_number' => nil)
+    end
+
     it 'sets the series and falls back to its banner' do
       post '/api/v1/events', params: params.deep_merge(event: { series: 'unite_and_fight' }),
                              headers: editor_headers
@@ -183,6 +190,28 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response['name']['en']).to eq('Renamed')
       expect(json_response['raids'].map { |r| r['id'] }).to eq([raid.id])
+    end
+
+    it 'accepts a null event_number for other kinds' do
+      put "/api/v1/events/#{event.id}", params: { event: { name_en: 'Renamed', event_number: nil } },
+                                        headers: editor_headers, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(event.reload.event_number).to be_nil
+    end
+
+    it 'edits the number of a Guild War' do
+      gw = create(:gw_event, event_number: 84)
+      put "/api/v1/events/#{gw.id}", params: { event: { event_number: 85 } }, headers: editor_headers, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(json_response['event_number']).to eq(85)
+      expect(gw.reload.event_number).to eq(85)
+    end
+
+    it 'rejects a Guild War number that is taken' do
+      create(:gw_event, event_number: 84)
+      gw = create(:gw_event, event_number: 85)
+      put "/api/v1/events/#{gw.id}", params: { event: { event_number: 84 } }, headers: editor_headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
     end
 
     it 'replaces raid links when raid_ids is given' do

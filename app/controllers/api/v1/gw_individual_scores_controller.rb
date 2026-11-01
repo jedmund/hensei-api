@@ -95,8 +95,8 @@ module Api
       end
 
       def set_or_create_participation_by_event
-        event = GwEvent.find(params[:gw_event_id])
-        @participation = @crew.crew_gw_participations.find_or_create_by!(gw_event: event)
+        event = Event.unite_and_fight.find(params[:gw_event_id])
+        @participation = @crew.crew_gw_participations.find_or_create_by!(event: event)
       end
 
       def set_score

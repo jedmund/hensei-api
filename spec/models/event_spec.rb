@@ -60,4 +60,58 @@ RSpec.describe Event do
       expect(event.counting_since).to eq(event.created_at)
     end
   end
+
+  describe 'Guild Wars' do
+    let(:jst) { Time.find_zone('Asia/Tokyo') }
+
+    it 'maps JST days to 19:00 on Day 1 and 23:59:59 on the last day' do
+      window = described_class.gw_window('2026-09-21', Date.new(2026, 9, 28))
+      expect(window[:starts_at]).to eq(jst.local(2026, 9, 21, 19))
+      expect(window[:ends_at]).to eq(jst.local(2026, 9, 28, 23, 59, 59))
+      expect(window[:starts_at].utc.hour).to eq(10)
+    end
+
+    it 'leaves out a blank day and rejects a malformed one' do
+      expect(described_class.gw_window(nil, '2026-09-28').keys).to eq([:ends_at])
+      expect { described_class.gw_window('soon', nil) }.to raise_error(Date::Error)
+    end
+
+    it 'reports its days in JST' do
+      event = build(:gw_event, start_date: Date.new(2026, 9, 21), end_date: Date.new(2026, 9, 28))
+      expect([event.start_date, event.end_date]).to eq([Date.new(2026, 9, 21), Date.new(2026, 9, 28)])
+    end
+
+    it 'knows whether it is upcoming, active or finished' do
+      expect(build(:gw_event, :upcoming)).to have_attributes(upcoming?: true, active?: false, finished?: false)
+      expect(build(:gw_event, :active)).to have_attributes(upcoming?: false, active?: true, finished?: false)
+      expect(build(:gw_event, :finished)).to have_attributes(upcoming?: false, active?: false, finished?: true)
+    end
+
+    it 'requires a number when saved as a Guild War' do
+      event = build(:gw_event, event_number: nil)
+      expect(event).to be_valid
+      expect(event.valid?(:guild_war)).to be(false)
+    end
+
+    it 'finds ones that ended in the last week, by JST day' do
+      now = jst.local(2026, 10, 10, 12)
+      recent = create(:gw_event, start_date: Date.new(2026, 9, 26), end_date: Date.new(2026, 10, 3))
+      create(:gw_event, start_date: Date.new(2026, 9, 25), end_date: Date.new(2026, 10, 2))
+      running = create(:gw_event, start_date: Date.new(2026, 10, 5), end_date: Date.new(2026, 10, 12))
+
+      ended = described_class.recently_ended(now: now)
+      expect(ended).to include(recent)
+      expect(ended.size).to eq(1)
+      expect(ended).not_to include(running)
+    end
+
+    it "can't be destroyed while crews have scores for it" do
+      participation = create(:crew_gw_participation)
+      event = participation.event
+
+      expect(event.destroy).to be(false)
+      expect(event.errors[:base]).to be_present
+      expect(CrewGwParticipation.exists?(participation.id)).to be(true)
+    end
+  end
 end

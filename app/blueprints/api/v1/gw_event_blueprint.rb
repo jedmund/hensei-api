@@ -2,12 +2,13 @@
 
 module Api
   module V1
+    # A Guild War (a unite_and_fight Event) in the crew pages' shape: JST
+    # start_date and end_date instead of starts_at and ends_at, and a status
+    # of active, upcoming or finished.
     class GwEventBlueprint < ApiBlueprint
       fields :start_date, :end_date, :event_number
 
-      field :element do |event|
-        GwEvent.elements[event.element]
-      end
+      field :element, &:element_value
 
       field :status do |event|
         if event.active?
