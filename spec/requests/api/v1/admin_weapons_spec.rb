@@ -26,22 +26,22 @@ RSpec.describe 'Admin weapons collection', type: :request do
   let(:grand) { WeaponSeries.find_by(slug: 'grand') || create(:weapon_series, :grand) }
 
   let!(:alpha) do
-    create(:weapon, name_en: 'Alpha Blade', name_jp: 'アルファ', granblue_id: '1040000001', element: 1, rarity: 4,
+    create(:weapon, name_en: 'Alpha Blade', name_jp: 'アルファ', granblue_id: '1040000001', element: 1, rarity: 3,
                     proficiency: 1, weapon_series: opus, release_date: Date.new(2020, 1, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-01-01 00:00'))
   end
   let!(:bravo) do
-    create(:weapon, name_en: 'Bravo Spear', name_jp: '', granblue_id: '1040000002', element: 2, rarity: 4,
+    create(:weapon, name_en: 'Bravo Spear', name_jp: '', granblue_id: '1040000002', element: 2, rarity: 3,
                     proficiency: 4, weapon_series: grand, release_date: Date.new(2022, 6, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-03-01 00:00'))
   end
   let!(:charlie) do
-    create(:weapon, name_en: 'Charlie Blade', name_jp: nil, granblue_id: '1030000003', element: 1, rarity: 3,
+    create(:weapon, name_en: 'Charlie Blade', name_jp: nil, granblue_id: '1030000003', element: 1, rarity: 2,
                     proficiency: 1, weapon_series: nil, release_date: Date.new(2024, 6, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
   let!(:delta) do
-    create(:weapon, name_en: 'Delta Bow', name_jp: 'デルタ', granblue_id: '1040000004', element: 3, rarity: 4,
+    create(:weapon, name_en: 'Delta Bow', name_jp: 'デルタ', granblue_id: '1040000004', element: 3, rarity: 3,
                     proficiency: 5, weapon_series: opus, release_date: Date.new(2025, 1, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
@@ -128,7 +128,7 @@ RSpec.describe 'Admin weapons collection', type: :request do
     end
 
     it 'filters by a numeric range' do
-      fetch(filter: { rarity: { lte: '3' } })
+      fetch(filter: { rarity: { lte: '2' } })
       expect(names).to eq(['Charlie Blade'])
     end
 
@@ -147,7 +147,7 @@ RSpec.describe 'Admin weapons collection', type: :request do
     end
 
     it 'combines filters with q' do
-      fetch(q: 'blade', filter: { rarity: '4', missing_name_jp: 'false' })
+      fetch(q: 'blade', filter: { rarity: '3', missing_name_jp: 'false' })
       expect(names).to eq(['Alpha Blade'])
     end
   end
@@ -194,13 +194,13 @@ RSpec.describe 'Admin weapons collection', type: :request do
 
   describe 'facets' do
     it 'counts values for the current filters, excluding each facet\'s own filter' do
-      body = fetch(filter: { element: '1', rarity: '4' }, facets: 'element,rarity,proficiency,series')
+      body = fetch(filter: { element: '1', rarity: '3' }, facets: 'element,rarity,proficiency,series')
 
       expect(names(body)).to eq(['Alpha Blade'])
       # element ignores filter[element] but keeps filter[rarity]
       expect(body['facets']['element']).to eq('1' => 1, '2' => 1, '3' => 1)
       # rarity ignores filter[rarity] but keeps filter[element]
-      expect(body['facets']['rarity']).to eq('3' => 1, '4' => 1)
+      expect(body['facets']['rarity']).to eq('2' => 1, '3' => 1)
       # proficiency keeps both filters
       expect(body['facets']['proficiency']).to eq('1' => 1)
       expect(body['facets']['series']).to eq(opus.id => 1)

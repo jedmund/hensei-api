@@ -37,7 +37,8 @@ RSpec.describe Granblue::BannerCatalogueReconciliation do
   end
 
   it 'refuses duplicate catalogue identifiers' do
-    create(:weapon, granblue_id: existing.granblue_id)
+    # Weapon validates uniqueness now; the guard is for rows written around it.
+    build(:weapon, granblue_id: existing.granblue_id).save!(validate: false)
     expect { service.apply! }.to raise_error(/Duplicate catalogue ID/)
   end
 

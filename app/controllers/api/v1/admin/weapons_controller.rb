@@ -3,7 +3,8 @@
 module Api
   module V1
     module Admin
-      # Editor-only weapon list for the database editor's grid (GBF-138).
+      # Editor-only weapon list for the database editor's grid (GBF-138), and
+      # its schema: what the editor may filter, sort, show and write (GBF-142).
       # The public team-builder search stays at /search/weapons.
       class WeaponsController < Api::V1::ApiController
         include AdminCollection
@@ -63,10 +64,19 @@ module Api
                          :series_id, :series_slug, :release_date, :updated_at
 
           etag_sources :weapon_skills, :weapon_series
+
+          writable Api::V1::WeaponsController::PERMITTED
+          enums element: Weapon::ELEMENT_VALUES, rarity: Weapon::RARITY_VALUES,
+                proficiency: Weapon::PROFICIENCY_VALUES,
+                promotions: GranblueEnums::PROMOTIONS, bullet_slots: GranblueEnums::BULLET_TYPES
         end
 
         def index
           render_admin_collection
+        end
+
+        def schema
+          render_admin_schema
         end
       end
     end

@@ -400,7 +400,9 @@ Rails.application.routes.draw do
     namespace :admin do
       resources :characters, only: :index
       resources :summons, only: :index
-      resources :weapons, only: :index
+      resources :weapons, only: :index do
+        get :schema, on: :collection
+      end
     end
 
     # Pending phantom claims for current user (outside crew context)
