@@ -38,14 +38,18 @@ RSpec.describe 'CharacterSkillParser golden snapshots' do
     Granblue::Parsers::StatusCatalogBuilder.build_all
     samples.each do |key, sample|
       raw = JSON.parse(File.read(fixture_dir.join("character-#{key}-gamedata.json")))
-      whole = create(:character, granblue_id: sample[:granblue_id], wiki_raw: File.read(fixture_dir.join("character-#{key}-wikidata.txt")))
-      sanitized = create(:character, granblue_id: sample[:granblue_id], style_swap: false,
-                                     wiki_raw: whole.wiki_raw, game_raw_en: raw)
-      Source.put(whole, :game_raw_en, raw, skip_owner_hook: true) # bypasses the attribute's sanitizer
-
-      expect(Source.read(sanitized, :game_raw_en).keys).to all(satisfy { |k| raw.key?(k) })
       graph = ->(c) { Granblue::Parsers::CharacterSkillParser.new(Character.find(c.id)).graph }
-      expect(graph.call(sanitized)).to eq(graph.call(whole)), "#{key} differs"
+      wiki_raw = File.read(fixture_dir.join("character-#{key}-wikidata.txt"))
+      # One at a time: granblue_ids are unique per style
+      whole = create(:character, granblue_id: sample[:granblue_id], wiki_raw: wiki_raw)
+      Source.put(whole, :game_raw_en, raw, skip_owner_hook: true) # bypasses the attribute's sanitizer
+      expected = graph.call(whole)
+      whole.destroy!
+
+      sanitized = create(:character, granblue_id: sample[:granblue_id], style_swap: false,
+                                     wiki_raw: wiki_raw, game_raw_en: raw)
+      expect(Source.read(sanitized, :game_raw_en).keys).to all(satisfy { |k| raw.key?(k) })
+      expect(graph.call(sanitized)).to eq(expected), "#{key} differs"
     end
   end
 

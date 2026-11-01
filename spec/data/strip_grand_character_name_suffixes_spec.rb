@@ -12,7 +12,9 @@ RSpec.describe StripGrandCharacterNameSuffixes do
       [granblue_id, character || create(:character, granblue_id: granblue_id, **attributes)]
     end
   end
-  let!(:other_lecia) { create(:character, granblue_id: '3040101000', name_en: 'Lecia', name_jp: 'リーシャ') }
+  let!(:other_lecia) do
+    create(:character, granblue_id: '3040101000', style_swap: true, name_en: 'Lecia', name_jp: 'リーシャ')
+  end
 
   it 'strips the suffixes, rerunnably' do
     2.times do

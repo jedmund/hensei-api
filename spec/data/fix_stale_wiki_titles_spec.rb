@@ -39,7 +39,7 @@ RSpec.describe FixStaleWikiTitles do
   end
 
   it 'leaves another character sharing an id untouched' do
-    style = create(:character, granblue_id: '3040515000', wiki_en: 'Sandalphon (Style)')
+    style = create(:character, granblue_id: '3040515000', style_swap: true, wiki_en: 'Sandalphon (Style)')
     migration.up
     expect(style.reload.wiki_en).to eq('Sandalphon (Style)')
   end

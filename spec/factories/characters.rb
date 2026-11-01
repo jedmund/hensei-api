@@ -1,9 +1,10 @@
 FactoryBot.define do
   factory :character do
-    sequence(:granblue_id) { |n| "304#{n.to_s.rjust(7, '0')}" }
+    # 39… is no real id range, so specs can use real ids without clashing
+    sequence(:granblue_id) { |n| "39#{n.to_s.rjust(8, '0')}" }
     sequence(:name_en) { |n| "Test Character #{n}" }
     name_jp { "テストキャラクター" }
-    rarity { 4 } # SSR
+    rarity { 3 } # SSR
     element { 1 } # Fire
     race1 { 1 } # Human
     race2 { nil }
@@ -39,19 +40,19 @@ FactoryBot.define do
     end
 
     trait :r do
-      rarity { 2 }
+      rarity { 1 }
       max_hp { 800 }
       max_atk { 4000 }
     end
 
     trait :sr do
-      rarity { 3 }
+      rarity { 2 }
       max_hp { 1200 }
       max_atk { 6000 }
     end
 
     trait :ssr do
-      rarity { 4 }
+      rarity { 3 }
     end
 
     trait :transcendable do
@@ -62,7 +63,7 @@ FactoryBot.define do
     end
 
     trait :special_ulb do
-      rarity { 3 }
+      rarity { 2 }
       special { true }
       flb { true }
       ulb { true }

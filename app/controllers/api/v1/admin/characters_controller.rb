@@ -3,7 +3,8 @@
 module Api
   module V1
     module Admin
-      # Editor-only character list for the database editor's grid (GBF-138).
+      # Editor-only character list for the database editor's grid (GBF-138), and
+      # its schema: what the editor may filter, sort, show and write (GBF-143).
       # The public team-builder search stays at /search/characters.
       class CharactersController < Api::V1::ApiController
         include AdminCollection
@@ -64,10 +65,22 @@ module Api
                          :style_swap, :release_date, :latest_date, :updated_at
 
           etag_sources :character_skills, :character_series_memberships, CharacterSeries
+
+          writable Api::V1::CharactersController::PERMITTED
+          enums element: Character::ELEMENT_VALUES, rarity: Character::RARITY_VALUES,
+                gender: Character::GENDER_VALUES, season: GranblueEnums::CHARACTER_SEASONS,
+                proficiency: Character::PROFICIENCY_VALUES,
+                proficiency1: Character::PROFICIENCY_VALUES,
+                proficiency2: Character::SECOND_PROFICIENCY_VALUES,
+                race1: Character::RACE_VALUES, race2: Character::RACE_VALUES
         end
 
         def index
           render_admin_collection
+        end
+
+        def schema
+          render_admin_schema
         end
       end
     end

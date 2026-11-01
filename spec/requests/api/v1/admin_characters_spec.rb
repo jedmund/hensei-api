@@ -30,23 +30,23 @@ RSpec.describe 'Admin characters collection', type: :request do
   let(:zodiac) { CharacterSeries.find_by(slug: 'zodiac') || create(:character_series, :zodiac) }
 
   let!(:alpha) do
-    character(name_en: 'Alpha Knight', name_jp: 'アルファ', granblue_id: '3040000001', element: 1, rarity: 4,
+    character(name_en: 'Alpha Knight', name_jp: 'アルファ', granblue_id: '3040000001', element: 1, rarity: 3,
               proficiency1: 1, proficiency2: nil, season: 1, gender: 1, release_date: Date.new(2020, 1, 1),
               updated_at: Time.zone.parse('2026-01-01 00:00'))
   end
   let!(:bravo) do
-    character(name_en: 'Bravo Lancer', name_jp: '', granblue_id: '3040000002', element: 2, rarity: 4,
+    character(name_en: 'Bravo Lancer', name_jp: '', granblue_id: '3040000002', element: 2, rarity: 3,
               proficiency1: 4, proficiency2: 1, season: nil, gender: 2, style_swap: true,
               release_date: Date.new(2022, 6, 1), updated_at: Time.zone.parse('2026-03-01 00:00'))
   end
   let!(:charlie) do
-    character(name_en: 'Charlie Knight', name_jp: nil, granblue_id: '3030000003', element: 1, rarity: 3,
+    character(name_en: 'Charlie Knight', name_jp: nil, granblue_id: '3030000003', element: 1, rarity: 2,
               proficiency1: 1, proficiency2: nil, season: 2, gender: 1, special: true,
               release_date: Date.new(2024, 6, 1), updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
   let!(:delta) do
     # Both proficiency columns hold the same value: counted once in the facet.
-    character(name_en: 'Delta Archer', name_jp: 'デルタ', granblue_id: '3040000004', element: 3, rarity: 4,
+    character(name_en: 'Delta Archer', name_jp: 'デルタ', granblue_id: '3040000004', element: 3, rarity: 3,
               proficiency1: 5, proficiency2: 5, season: 1, gender: 2, release_date: Date.new(2025, 1, 1),
               updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
@@ -167,7 +167,7 @@ RSpec.describe 'Admin characters collection', type: :request do
     end
 
     it 'filters by a numeric range' do
-      fetch(filter: { rarity: { lte: '3' } })
+      fetch(filter: { rarity: { lte: '2' } })
       expect(names).to eq(['Charlie Knight'])
     end
 
@@ -186,7 +186,7 @@ RSpec.describe 'Admin characters collection', type: :request do
     end
 
     it 'combines filters with q' do
-      fetch(q: 'knight', filter: { rarity: '4', missing_name_jp: 'false', series: 'grand' })
+      fetch(q: 'knight', filter: { rarity: '3', missing_name_jp: 'false', series: 'grand' })
       expect(names).to eq(['Alpha Knight'])
     end
   end
@@ -236,11 +236,11 @@ RSpec.describe 'Admin characters collection', type: :request do
 
   describe 'facets' do
     it 'counts values for the current filters, excluding each facet\'s own filter' do
-      body = fetch(filter: { element: '1', rarity: '4' }, facets: 'element,rarity,season,proficiency,series')
+      body = fetch(filter: { element: '1', rarity: '3' }, facets: 'element,rarity,season,proficiency,series')
 
       expect(names(body)).to eq(['Alpha Knight'])
       expect(body['facets']['element']).to eq('1' => 1, '2' => 1, '3' => 1)
-      expect(body['facets']['rarity']).to eq('3' => 1, '4' => 1)
+      expect(body['facets']['rarity']).to eq('2' => 1, '3' => 1)
       expect(body['facets']['season']).to eq('1' => 1)
       expect(body['facets']['proficiency']).to eq('1' => 1)
       # One character in two series counts under each.

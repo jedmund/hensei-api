@@ -12,9 +12,12 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
   let(:headers) { { 'Authorization' => "Bearer #{access_token.token}", 'Content-Type' => 'application/json' } }
 
   let(:zone) { create(:raid, :solomonis_zone, name_en: 'Allotropic Microcosm', slug: 'allotropic-microcosm') }
+  # The canonical seed carries Nier; granblue_ids are unique per style
   let(:nier) do
-    create(:character, :solomonis_evoker, solomonis_zone: zone, name_en: 'Nier', name_jp: 'ニーア',
-                                          granblue_id: '3040169000', element: 6)
+    attrs = { solomonis_zone_id: zone.id, name_en: 'Nier', name_jp: 'ニーア', element: 6,
+              transcendence: true, max_transcendence_stage: 5 }
+    Character.find_by(granblue_id: '3040169000', style_swap: false)&.tap { |c| c.update_columns(attrs) } ||
+      create(:character, :solomonis_evoker, granblue_id: '3040169000', **attrs)
   end
   let(:caim) do
     create(:character, :solomonis_evoker, solomonis_zone: zone, name_en: 'Caim', name_jp: 'カイム',

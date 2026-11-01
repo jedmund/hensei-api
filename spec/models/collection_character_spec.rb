@@ -139,8 +139,8 @@ RSpec.describe CollectionCharacter, type: :model do
   describe 'scopes' do
     let!(:fire_char) { create(:character, element: 0) }
     let!(:water_char) { create(:character, element: 4) }
-    let!(:ssr_char) { create(:character, rarity: 4) }
-    let!(:sr_char) { create(:character, rarity: 3) }
+    let!(:ssr_char) { create(:character, rarity: 3) }
+    let!(:sr_char) { create(:character, rarity: 2) }
 
     let!(:fire_collection) { create(:collection_character, character: fire_char) }
     let!(:water_collection) { create(:collection_character, character: water_char) }
@@ -158,8 +158,8 @@ RSpec.describe CollectionCharacter, type: :model do
 
     describe '.by_rarity' do
       it 'returns characters of specified rarity' do
-        expect(CollectionCharacter.by_rarity(4)).to include(ssr_collection)
-        expect(CollectionCharacter.by_rarity(4)).not_to include(sr_collection)
+        expect(CollectionCharacter.by_rarity(3)).to include(ssr_collection)
+        expect(CollectionCharacter.by_rarity(3)).not_to include(sr_collection)
       end
     end
 
