@@ -1,0 +1,958 @@
+{
+  "components": [
+    {
+      "name": "accessory",
+      "weight": 0.5,
+      "target_max": 28.5,
+      "min_count_to_score": 0,
+      "enabled": true
+    },
+    {
+      "name": "character",
+      "weight": 2.0,
+      "target_max": 48.0,
+      "min_count_to_score": 3,
+      "enabled": true
+    },
+    {
+      "name": "job",
+      "weight": 0.75,
+      "target_max": 10.0,
+      "min_count_to_score": 0,
+      "enabled": true
+    },
+    {
+      "name": "summon",
+      "weight": 2.0,
+      "target_max": 72.0,
+      "min_count_to_score": 2,
+      "enabled": true
+    },
+    {
+      "name": "weapon",
+      "weight": 4.0,
+      "target_max": 141.0,
+      "min_count_to_score": 5,
+      "enabled": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "d2073918-c14e-42af-a90e-539f1c5e622a",
+      "name": "Unobtainable collab manatura (Chachazero)",
+      "component": "accessory",
+      "rule_type": "accessory_match",
+      "weight": 8.0,
+      "params": {
+        "accessory_ids": [
+          "fa567a0a-70ea-43e4-8bbc-7fab28fb9dae"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "415f1602-07c3-4220-8ddf-94ae313a25ed",
+      "name": "Mainhand: top-tier Expert Model bullet",
+      "component": "accessory",
+      "rule_type": "mainhand_bullet_match",
+      "weight": 6.0,
+      "params": {
+        "max_count": 4,
+        "min_count": 1,
+        "bullet_ids": [
+          "9a063ae4-8aed-427a-b029-08fd0c1b0364",
+          "a73e97e1-3e68-47ec-9c90-7b7fd1c2f29f",
+          "17defece-d8d7-4108-95ca-504533dd0ac9"
+        ],
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "21acc95e-a203-4bb1-a388-a0197a0a125a",
+      "name": "Top-tier manatura",
+      "component": "accessory",
+      "rule_type": "accessory_match",
+      "weight": 6.0,
+      "params": {
+        "accessory_ids": [
+          "a2cf6934-deab-4082-8eb8-6ec3c9c0d53e",
+          "70db38f8-3761-4c10-815d-17ab02db527b"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "680274dd-e211-4944-b035-b8b8740f4896",
+      "name": "High-tier manatura",
+      "component": "accessory",
+      "rule_type": "accessory_match",
+      "weight": 3.5,
+      "params": {
+        "accessory_ids": [
+          "f4b79884-95e8-4a7a-a559-69de2badd69f",
+          "0a8e472c-cc48-4284-b4c1-0b72790e3af3",
+          "c38626f0-a8bf-466b-aa35-d26466576864"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "a0bc708d-811a-47e6-9bfb-ee1dbad4551d",
+      "name": "Mainhand: high-tier Expert Model bullet",
+      "component": "accessory",
+      "rule_type": "mainhand_bullet_match",
+      "weight": 3.5,
+      "params": {
+        "max_count": 4,
+        "min_count": 1,
+        "bullet_ids": [
+          "9eb5962e-8a90-4734-8da6-49e8d3194212",
+          "ba6e03ac-1eec-4bb6-9282-96d0a834836a"
+        ],
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "2a3d21eb-d35e-4df1-b02e-23888cc195c5",
+      "name": "Accessory equipped",
+      "component": "accessory",
+      "rule_type": "accessory_match",
+      "weight": 1.0,
+      "params": {
+        "accessory_types": [
+          1,
+          2
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "17fe7c79-9cb3-4582-a41e-ee89e7a4a740",
+      "name": "Perpetuity ring on any character",
+      "component": "character",
+      "rule_type": "character_perpetuity_ringed",
+      "weight": 6.0,
+      "params": {
+        "max_count": 5,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "7d308bae-37ec-41ee-b0ee-ecc8faf19e80",
+      "name": "Trans5 character present",
+      "component": "character",
+      "rule_type": "character_transcendence_at_least",
+      "weight": 6.0,
+      "params": {
+        "min_step": 5,
+        "min_count": 1
+      },
+      "active": true
+    },
+    {
+      "id": "6ef56ea7-6167-42f2-acd9-ccb5d27e8ca2",
+      "name": "Formal seasonal characters",
+      "component": "character",
+      "rule_type": "character_seasonal",
+      "weight": 5.0,
+      "params": {
+        "seasons": [
+          2
+        ],
+        "max_count": 3,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "d8a412a7-2d58-41d2-bbe1-e86d07f9e821",
+      "name": "Eternal/Evoker characters",
+      "component": "character",
+      "rule_type": "character_series_match",
+      "weight": 4.0,
+      "params": {
+        "slugs": [
+          "eternal",
+          "evoker"
+        ],
+        "max_count": 3,
+        "min_count": 1,
+        "scale_by_count": true,
+        "single_series_only": true
+      },
+      "active": true
+    },
+    {
+      "id": "147c7f0c-fdc0-4242-8d3d-1843f4a8aab5",
+      "name": "Grand characters",
+      "component": "character",
+      "rule_type": "character_series_match",
+      "weight": 4.0,
+      "params": {
+        "slugs": [
+          "grand"
+        ],
+        "max_count": 3,
+        "min_count": 2,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "8260c30c-23ba-45c8-ab31-649964422316",
+      "name": "Summer/Yukata seasonal characters",
+      "component": "character",
+      "rule_type": "character_seasonal",
+      "weight": 4.0,
+      "params": {
+        "seasons": [
+          3
+        ],
+        "max_count": 4,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "7ca8e963-d179-4690-8e4a-5b809be29190",
+      "name": "Halloween/Valentine/Holiday seasonal characters",
+      "component": "character",
+      "rule_type": "character_seasonal",
+      "weight": 3.5,
+      "params": {
+        "seasons": [
+          1,
+          4,
+          5
+        ],
+        "max_count": 4,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "19aae3c3-a0b9-4216-84a9-8350aea59ea2",
+      "name": "Character: released < 14d",
+      "component": "character",
+      "rule_type": "character_release_within_days",
+      "weight": 1.5,
+      "params": {
+        "days": 14,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 0,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "df652e10-f26c-40df-ac38-4bd93009ca70",
+      "name": "Strong earring (>=15)",
+      "component": "character",
+      "rule_type": "character_earring_at_least",
+      "weight": 1.5,
+      "params": {
+        "min_count": 1,
+        "min_strength": 15
+      },
+      "active": true
+    },
+    {
+      "id": "e7f7d15b-1506-43b8-85f5-58b42266561e",
+      "name": "Character: released < 30d",
+      "component": "character",
+      "rule_type": "character_release_within_days",
+      "weight": 1.0,
+      "params": {
+        "days": 30,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 14,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "f47823a3-1168-404f-95ea-77d118d63407",
+      "name": "Character: released < 90d",
+      "component": "character",
+      "rule_type": "character_release_within_days",
+      "weight": 0.5,
+      "params": {
+        "days": 90,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 30,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "e2e01ccb-c6c6-4ee9-bec4-b6b659ba9bb6",
+      "name": "Character: released < 180d",
+      "component": "character",
+      "rule_type": "character_release_within_days",
+      "weight": 0.25,
+      "params": {
+        "days": 180,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 90,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "c3544b89-1d76-48cd-a3e5-58c7cd94bbc9",
+      "name": "Origin job",
+      "component": "job",
+      "rule_type": "job_row",
+      "weight": 10.0,
+      "params": {
+        "rows": [
+          "o1"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "f983cd2e-5a98-4e6a-a2a1-345aaaa6a85f",
+      "name": "Row V job",
+      "component": "job",
+      "rule_type": "job_row",
+      "weight": 4.0,
+      "params": {
+        "rows": [
+          "5"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "faa0fd42-d8ac-412d-9a3c-0157a8cf8104",
+      "name": "Row IV with Ultimate Mastery",
+      "component": "job",
+      "rule_type": "job_row",
+      "weight": 1.5,
+      "params": {
+        "rows": [
+          "4"
+        ],
+        "requires_ultimate_mastery": true
+      },
+      "active": true
+    },
+    {
+      "id": "9fda8b03-151b-48aa-9c16-80a6bc9d5d58",
+      "name": "Providence summons",
+      "component": "summon",
+      "rule_type": "summon_series_match",
+      "weight": 5.0,
+      "params": {
+        "slugs": [
+          "providence"
+        ],
+        "max_count": 4,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "de588d52-78eb-482a-8089-c055c34f939e",
+      "name": "Gacha summon 5★+",
+      "component": "summon",
+      "rule_type": "summon_uncap_at_least",
+      "weight": 2.0,
+      "params": {
+        "max_count": 5,
+        "min_count": 1,
+        "gacha_filter": "gacha",
+        "scale_by_count": true,
+        "min_uncap_level": 5
+      },
+      "active": true
+    },
+    {
+      "id": "d11aff29-0b3d-4fdb-aaad-d683bf0ca9d5",
+      "name": "Trans5 summons",
+      "component": "summon",
+      "rule_type": "summon_transcendence_at_least",
+      "weight": 4.0,
+      "params": {
+        "min_step": 5,
+        "min_count": 1,
+        "max_count": 3,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "13c4c010-df40-47ac-a95d-dfe1e4948a1d",
+      "name": "Gacha summon 4★+",
+      "component": "summon",
+      "rule_type": "summon_uncap_at_least",
+      "weight": 1.0,
+      "params": {
+        "max_count": 5,
+        "min_count": 1,
+        "gacha_filter": "gacha",
+        "scale_by_count": true,
+        "min_uncap_level": 4
+      },
+      "active": true
+    },
+    {
+      "id": "8560c0ef-ab71-49d8-aa25-bea6215c1f03",
+      "name": "Gacha summon 3★+",
+      "component": "summon",
+      "rule_type": "summon_uncap_at_least",
+      "weight": 4.0,
+      "params": {
+        "max_count": 5,
+        "min_count": 1,
+        "gacha_filter": "gacha",
+        "scale_by_count": true,
+        "min_uncap_level": 3
+      },
+      "active": true
+    },
+    {
+      "id": "49bae075-d473-4740-9c17-054c57ef95d8",
+      "name": "Summon: released < 14d",
+      "component": "summon",
+      "rule_type": "summon_release_within_days",
+      "weight": 3.0,
+      "params": {
+        "days": 14,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 0,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "4f79befd-2791-4d7f-aa92-7c80bdb972d1",
+      "name": "Summon: released < 30d",
+      "component": "summon",
+      "rule_type": "summon_release_within_days",
+      "weight": 3.0,
+      "params": {
+        "days": 30,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 14,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "89ba9143-134b-4743-aa4b-01dcd93b20b9",
+      "name": "High uncap on free summons",
+      "component": "summon",
+      "rule_type": "summon_uncap_at_least",
+      "weight": 0.5,
+      "params": {
+        "max_count": 5,
+        "min_count": 3,
+        "gacha_filter": "free",
+        "scale_by_count": true,
+        "min_uncap_level": 5
+      },
+      "active": true
+    },
+    {
+      "id": "a3f312a4-ca07-4908-9c82-f87437b6c896",
+      "name": "Summon: released < 90d",
+      "component": "summon",
+      "rule_type": "summon_release_within_days",
+      "weight": 2.5,
+      "params": {
+        "days": 90,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 30,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "9c639d52-a07d-40d3-ab77-b0626e1dc1cd",
+      "name": "Summon: released < 1y",
+      "component": "summon",
+      "rule_type": "summon_release_within_days",
+      "weight": 2.0,
+      "params": {
+        "days": 365,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 90,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "2bf0f938-1396-41f5-955c-4b1e97cfc752",
+      "name": "Destroyer weapon ULB",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 30.0,
+      "params": {
+        "series_slugs": [
+          "destroyer"
+        ],
+        "min_uncap_level": 5
+      },
+      "active": true
+    },
+    {
+      "id": "e57639ff-b5fd-41ab-a5b4-1ea216c12346",
+      "name": "Celestial weapon ULB + Awakening 5+",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 28.0,
+      "params": {
+        "series_slugs": [
+          "celestial"
+        ],
+        "min_uncap_level": 5,
+        "min_awakening_level": 5
+      },
+      "active": true
+    },
+    {
+      "id": "c38d9297-1118-441c-bfec-2c5a6ca7787f",
+      "name": "Illustrious weapon",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 20.0,
+      "params": {
+        "series_slugs": [
+          "illustrious"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "c0654c7e-28dd-4da5-8cb4-5f5d6d6f15f3",
+      "name": "Trans5 Dark Opus weapon",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 18.0,
+      "params": {
+        "series_slugs": [
+          "dark-opus"
+        ],
+        "min_transcendence_step": 5
+      },
+      "active": true
+    },
+    {
+      "id": "4effc13d-b489-4f80-8bdd-1c1e9344f8f2",
+      "name": "Celestial weapon ULB",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 17.0,
+      "params": {
+        "series_slugs": [
+          "celestial"
+        ],
+        "min_uncap_level": 5,
+        "max_awakening_level": 4
+      },
+      "active": true
+    },
+    {
+      "id": "29cca814-a932-4908-9da2-c33a77bc28c0",
+      "name": "Destroyer weapon FLB",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 14.0,
+      "params": {
+        "series_slugs": [
+          "destroyer"
+        ],
+        "max_uncap_level": 4,
+        "min_uncap_level": 4
+      },
+      "active": true
+    },
+    {
+      "id": "2655cf2e-3e57-4e7f-876a-84e6e999d24e",
+      "name": "Formal seasonal weapons",
+      "component": "weapon",
+      "rule_type": "weapon_seasonal_match",
+      "weight": 12.0,
+      "params": {
+        "seasons": [
+          2
+        ],
+        "max_count": 3,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "06728b9f-af5e-4658-8f2b-58fd79e2bf04",
+      "name": "Celestial weapon FLB",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 7.0,
+      "params": {
+        "series_slugs": [
+          "celestial"
+        ],
+        "max_uncap_level": 4,
+        "min_uncap_level": 4
+      },
+      "active": true
+    },
+    {
+      "id": "34e538de-95ac-4d77-9dc5-7e147eb195ab",
+      "name": "Providence/Draconic weapons",
+      "component": "weapon",
+      "rule_type": "weapon_series_match",
+      "weight": 7.0,
+      "params": {
+        "slugs": [
+          "draconic-providence"
+        ],
+        "max_count": 3,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "54b46b28-57c7-498b-bbfa-ff025b102030",
+      "name": "Trans3 Dark Opus weapon",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 7.0,
+      "params": {
+        "series_slugs": [
+          "dark-opus"
+        ],
+        "max_transcendence_step": 4,
+        "min_transcendence_step": 3
+      },
+      "active": true
+    },
+    {
+      "id": "116527be-bd6f-49ff-a689-6944250d8117",
+      "name": "Halloween/Valentine/Holiday seasonal weapons",
+      "component": "weapon",
+      "rule_type": "weapon_seasonal_match",
+      "weight": 9.0,
+      "params": {
+        "seasons": [
+          1,
+          4,
+          5
+        ],
+        "max_count": 4,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "e7a7222a-9fed-42b3-b360-ecdcad1a412e",
+      "name": "Summer/Yukata seasonal weapons",
+      "component": "weapon",
+      "rule_type": "weapon_seasonal_match",
+      "weight": 9.0,
+      "params": {
+        "seasons": [
+          3
+        ],
+        "max_count": 4,
+        "min_count": 1,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "c8ea8b14-1286-405e-9e32-fe4c9d047c5b",
+      "name": "Superlative weapon",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 6.0,
+      "params": {
+        "series_slugs": [
+          "superlative"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "5b7e8760-91fd-4d8b-a451-e804221f1ed5",
+      "name": "Grand series weapons",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 4.0,
+      "params": {
+        "series_slugs": [
+          "grand"
+        ],
+        "min_uncap_level": 3,
+        "min_count": 1,
+        "max_count": 5,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "486a938a-7ba4-4adb-a9c6-3d4d549b9d93",
+      "name": "Max awakening (level 10)",
+      "component": "weapon",
+      "rule_type": "weapon_awakening_at_least",
+      "weight": 4.0,
+      "params": {
+        "max_count": 3,
+        "min_count": 1,
+        "min_level": 10,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "2cd3b61a-038f-4a8b-b2e7-e2514c338f2a",
+      "name": "Weapon: released < 14d",
+      "component": "weapon",
+      "rule_type": "weapon_release_within_days",
+      "weight": 3.0,
+      "params": {
+        "days": 14,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 0,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "a11de3c5-4721-4bdb-a77d-ab7e803a5e06",
+      "name": "High awakening (level >= 5)",
+      "component": "weapon",
+      "rule_type": "weapon_awakening_at_least",
+      "weight": 2.5,
+      "params": {
+        "max_count": 5,
+        "min_count": 1,
+        "min_level": 5,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "c406d01d-bc4c-4ddd-a2db-00faf1de66ac",
+      "name": "Befoulment present",
+      "component": "weapon",
+      "rule_type": "weapon_befoulment_filled",
+      "weight": 2.0,
+      "params": {
+        "min_count": 1
+      },
+      "active": true
+    },
+    {
+      "id": "def3a3a2-dd62-44bf-a7fb-be40678f1a14",
+      "name": "Both AX slots filled on 3+",
+      "component": "weapon",
+      "rule_type": "weapon_ax_filled",
+      "weight": 2.0,
+      "params": {
+        "min_count": 3,
+        "min_filled": 2
+      },
+      "active": true
+    },
+    {
+      "id": "b5d69f8f-7ffe-431c-9193-5ac14a9cfe60",
+      "name": "Weapon: released < 30d",
+      "component": "weapon",
+      "rule_type": "weapon_release_within_days",
+      "weight": 2.0,
+      "params": {
+        "days": 30,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 14,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "c003e272-4975-4b68-9874-f9b39a7d5c4b",
+      "name": "AX skills filled on 3+",
+      "component": "weapon",
+      "rule_type": "weapon_ax_filled",
+      "weight": 1.5,
+      "params": {
+        "min_count": 3,
+        "min_filled": 1
+      },
+      "active": true
+    },
+    {
+      "id": "6657dd26-0ae2-4c80-ba6d-6374d7e35458",
+      "name": "Flash/Legend exclusive weapons",
+      "component": "weapon",
+      "rule_type": "weapon_promotion_includes",
+      "weight": 1.5,
+      "params": {
+        "min_count": 2,
+        "promotions": [
+          "Flash",
+          "Legend"
+        ]
+      },
+      "active": true
+    },
+    {
+      "id": "ddd37df6-dd37-4c81-a122-bcbe66b3b5b1",
+      "name": "High uncap on gacha weapons",
+      "component": "weapon",
+      "rule_type": "weapon_uncap_at_least",
+      "weight": 1.5,
+      "params": {
+        "max_count": 5,
+        "min_count": 1,
+        "gacha_filter": "gacha",
+        "scale_by_count": true,
+        "min_uncap_level": 5
+      },
+      "active": true
+    },
+    {
+      "id": "d3fc3b0a-ec9f-450d-93d0-dcad15960288",
+      "name": "Weapon: released < 90d",
+      "component": "weapon",
+      "rule_type": "weapon_release_within_days",
+      "weight": 1.5,
+      "params": {
+        "days": 90,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 30,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "f982654c-93ec-4ddb-8b06-dff957ef4cd6",
+      "name": "Weapon: released < 180d",
+      "component": "weapon",
+      "rule_type": "weapon_release_within_days",
+      "weight": 1.0,
+      "params": {
+        "days": 180,
+        "max_count": 3,
+        "min_count": 1,
+        "min_days_ago": 90,
+        "scale_by_count": true
+      },
+      "active": true
+    },
+    {
+      "id": "36f85a0b-a86b-44ec-b4fd-4a685e7c802b",
+      "name": "High uncap on free weapons",
+      "component": "weapon",
+      "rule_type": "weapon_uncap_at_least",
+      "weight": 0.5,
+      "params": {
+        "max_count": 5,
+        "min_count": 3,
+        "gacha_filter": "free",
+        "scale_by_count": true,
+        "min_uncap_level": 5
+      },
+      "active": true
+    },
+    {
+      "id": "102cca53-d619-5315-8fe2-b55cede45910",
+      "name": "Gacha series weapons",
+      "component": "weapon",
+      "rule_type": "weapon_tier_match",
+      "weight": 3.0,
+      "active": true,
+      "params": {
+        "series_slugs": [
+          "gacha"
+        ],
+        "min_uncap_level": 3,
+        "min_count": 1,
+        "max_count": 5,
+        "scale_by_count": true
+      }
+    },
+    {
+      "id": "caa48ef9-7ffb-5121-a114-b1942ac6887f",
+      "name": "Seasonal summons",
+      "component": "summon",
+      "rule_type": "summon_series_match",
+      "weight": 3.0,
+      "active": true,
+      "params": {
+        "slugs": [
+          "summer",
+          "yukata",
+          "holiday"
+        ],
+        "min_count": 1,
+        "max_count": 2,
+        "scale_by_count": true
+      }
+    },
+    {
+      "id": "b41441a1-7d00-5d30-89b1-0433011e4c1a",
+      "name": "Transcended summons",
+      "component": "summon",
+      "rule_type": "summon_transcendence_at_least",
+      "weight": 3.0,
+      "active": true,
+      "params": {
+        "min_step": 1,
+        "min_count": 1,
+        "max_count": 3,
+        "scale_by_count": true
+      }
+    }
+  ],
+  "tiers": [
+    {
+      "slug": "casual",
+      "name": "Casual",
+      "min_score": 0.0,
+      "max_score": 19.99
+    },
+    {
+      "slug": "mid",
+      "name": "Intermediate",
+      "min_score": 20.0,
+      "max_score": 51.99
+    },
+    {
+      "slug": "endgame",
+      "name": "Endgame",
+      "min_score": 52.0,
+      "max_score": 83.99
+    },
+    {
+      "slug": "whale",
+      "name": "Whale",
+      "min_score": 84.0,
+      "max_score": 100.0
+    }
+  ]
+}
