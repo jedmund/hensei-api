@@ -46,11 +46,11 @@ class Event < ApplicationRecord
   validates :starts_at, :ends_at, presence: true
   validates :series, inclusion: { in: SERIES }, allow_nil: true
   validates :element, presence: true, if: :element_themed?
+  validates :event_number, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :event_number, uniqueness: { conditions: -> { where(kind: kinds[:unite_and_fight]) } },
                            allow_nil: true, if: :unite_and_fight?
-  # The crew pages find a Guild War by its number, so the GW endpoints save
-  # with this context.
-  validates :event_number, presence: true, on: :guild_war
+  # The crew pages find a Guild War by its number.
+  validates :event_number, presence: true, if: :unite_and_fight?
   validate :ends_after_start
 
   scope :current, ->(now = Time.current) { where('starts_at <= ? AND ends_at > ?', now, now) }

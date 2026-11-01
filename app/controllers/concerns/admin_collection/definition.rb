@@ -25,7 +25,8 @@ module AdminCollection
     end
 
     # A column filter. type: :integer, :string, :uuid, :date, :datetime or
-    # :boolean. `resolve` maps raw list values to column values (e.g. slugs to
+    # :boolean. An :integer filter on an enum column (e.g. Event#element) takes
+    # and facets the stored integers, not the enum's names. `resolve` maps raw list values to column values (e.g. slugs to
     # ids). `facet: true` also makes it a facet.
     #
     # `column` may list several columns: a row matches when any of them does
@@ -39,7 +40,7 @@ module AdminCollection
       config = { type: type, column: columns.one? ? columns.first : columns, resolve: resolve }
       config[:through] = through_config(through) if through
       @filters[name.to_s] = config
-      @facets[name.to_s] = config.slice(:column, :through) if facet
+      @facets[name.to_s] = config.slice(:type, :column, :through) if facet
     end
 
     # A foreign-key filter that accepts ids or slugs of `references`.
@@ -66,8 +67,13 @@ module AdminCollection
       @filters[name.to_s] = { type: :flag, sql: sql }
     end
 
-    def sort(*names)
-      names.each { |name| @sorts[name.to_s] = name.to_s }
+    # Sortable columns. `sql` instead sorts one name by a scalar SQL
+    # expression written here (never user input), e.g. a correlated subquery
+    # reading a parent row.
+    def sort(*names, sql: nil)
+      raise ArgumentError, 'a sql sort takes one name' if sql && names.many?
+
+      names.each { |name| @sorts[name.to_s] = sql ? { sql: sql } : name.to_s }
     end
 
     # A returned field. Plain columns need only the name; `value` computes from

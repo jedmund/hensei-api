@@ -15,8 +15,12 @@ RSpec.describe RaidGroup, type: :model do
     it { is_expected.to validate_presence_of(:order) }
     it { is_expected.to validate_numericality_of(:order).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_presence_of(:section) }
-    it { is_expected.to validate_numericality_of(:section).only_integer.is_greater_than(0) }
-    it { is_expected.to validate_numericality_of(:difficulty).only_integer.allow_nil }
+    it { is_expected.to validate_inclusion_of(:section).in_array([0, 1, 2, 3]) }
+    it { is_expected.to validate_numericality_of(:difficulty).only_integer.is_greater_than_or_equal_to(0).allow_nil }
+
+    it 'accepts the Farming section (0)' do
+      expect(build(:raid_group, section: RaidGroup::SECTIONS['farming'])).to be_valid
+    end
   end
 
   describe 'scopes' do

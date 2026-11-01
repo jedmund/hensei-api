@@ -44,6 +44,8 @@ module AdminCollection
                  elsif config[:column].is_a?(Array) then multi_column_counts(scope, config[:column])
                  else scope.group(config[:column]).count
                  end
+        values = enum_values(config)
+        counts = counts.transform_keys { |k| values.fetch(k, k) } if values
         counts.transform_keys { |k| k.nil? ? NONE : k.to_s }
       end
     end
@@ -194,7 +196,9 @@ module AdminCollection
         column = @definition.sorts[name]
         raise InvalidQuery, "Unknown sort: #{name}" unless column
 
-        key.start_with?('-') ? table[column].desc.nulls_last : table[column].asc.nulls_last
+        # A sql sort's expression is written in the controller, never user input
+        node = column.is_a?(Hash) ? Arel::Nodes::Grouping.new(Arel.sql(column[:sql])) : table[column]
+        (key.start_with?('-') ? Arel::Nodes::Descending : Arel::Nodes::Ascending).new(node).nulls_last
       end
       order << table[:id].asc
     end
@@ -261,6 +265,14 @@ module AdminCollection
       counts = model.connection.select_rows(sql).to_h { |value, count| [value, count.to_i] }
       empty = scope.where(columns.index_with(nil)).count
       empty.positive? ? counts.merge(nil => empty) : counts
+    end
+
+    # An integer facet on an enum column counts under the stored integers;
+    # Rails groups enums by name.
+    def enum_values(config)
+      return unless config[:type] == :integer && config[:column].is_a?(String)
+
+      @definition.model.defined_enums[config[:column]]
     end
 
     def field_config(name) = @definition.fields[name]
