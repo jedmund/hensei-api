@@ -291,8 +291,9 @@ module PartyDifficulty
       scale = [true, 'true'].include?(params[:scale_by_count])
       max_count = params[:max_count].to_i
       max_count = 1 if max_count <= 0
+      steps = scale ? growth_steps(params[:growth_ratio], max_count) : [1.0]
 
-      max_value = scale ? weight * max_count : weight
+      max_value = weight * steps.sum
 
       if count < min_count
         return { rule: rule, count: count, contribution: 0.0, max: max_value,
@@ -304,6 +305,7 @@ module PartyDifficulty
       # count. raw_score is still clamped to 1.0 to keep things sane when a
       # team fires more matches than the cap.
       effective_factors = scale ? factors : factors.first(1)
+      effective_factors = effective_factors.each_with_index.map { |f, i| f * steps[[i, steps.size - 1].min] }
       contribution = weight * effective_factors.sum
       base_contribution = weight * (effective_factors.first || 0)
 
@@ -315,6 +317,17 @@ module PartyDifficulty
         base_weight: base_contribution,
         scale_by_count: scale
       }
+    end
+
+    # Per-match multipliers for a scaling rule, one per counted match up to
+    # max_count. With a growth_ratio r they form a geometric progression
+    # (1, r, r², …), so each further match is worth r times the one before;
+    # matches past max_count keep the last multiplier. Without one, every
+    # match is worth the same.
+    def growth_steps(ratio, max_count)
+      r = ratio.to_f
+      r = 1.0 unless r > 1.0
+      Array.new(max_count) { |i| r**i }
     end
 
     def safely_factors(impl)
