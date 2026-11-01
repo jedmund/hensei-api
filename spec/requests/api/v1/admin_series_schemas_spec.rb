@@ -2,7 +2,7 @@
 
 # Contract tests for the schemas of the database editor's weapon series,
 # character series and awakenings (GBF-143):
-#   GET /api/v1/admin/{weapon-series,character-series,awakenings}/schema
+#   GET /api/v1/admin/{weapon_series,character_series,awakenings}/schema
 #
 # Each response must equal spec/fixtures/admin_schema/<resource>.json. The web
 # app keeps a copy of each fixture and checks its definition against it, so a
@@ -23,9 +23,9 @@ RSpec.describe 'Admin series and awakenings schemas', type: :request do
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
   {
-    'weapon-series' => [Api::V1::Admin::WeaponSeriesController, Api::V1::WeaponSeriesController,
+    'weapon_series' => [Api::V1::Admin::WeaponSeriesController, Api::V1::WeaponSeriesController,
                         :weapon_series, :weapon_series_params],
-    'character-series' => [Api::V1::Admin::CharacterSeriesController, Api::V1::CharacterSeriesController,
+    'character_series' => [Api::V1::Admin::CharacterSeriesController, Api::V1::CharacterSeriesController,
                            :character_series, :character_series_params],
     'awakenings' => [Api::V1::Admin::AwakeningsController, Api::V1::AwakeningsController,
                      :awakening, :awakening_params]
