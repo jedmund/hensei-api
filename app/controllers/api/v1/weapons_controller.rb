@@ -7,6 +7,22 @@ module Api
       include BatchPreviewable
       include ImageDownloadOptions
 
+      # Everything create and update accept, in permit() form. The admin schema
+      # (GET /admin/weapons/schema) publishes it as the writable fields, so the
+      # editor's forms and the strong params come from one list.
+      PERMITTED = [
+        :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :new_series, :weapon_series_variant_id,
+        :flb, :ulb, :transcendence, :extra, :extra_prerequisite, :limit,
+        :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
+        :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
+        :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
+        :release_date, :flb_date, :ulb_date, :transcendence_date,
+        :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
+        :recruits, :forged_from, :forge_chain_id, :forge_order,
+        { nicknames_en: [], nicknames_jp: [], promotions: [], awakening_ids: [],
+          element_variant_ids: {}, bullet_slots: [] }
+      ].freeze
+
       before_action :set, only: %i[show download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
                                                   batch_preview raw]
@@ -259,18 +275,7 @@ module Api
       end
 
       def weapon_params
-        params.require(:weapon).permit(
-          :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :new_series, :weapon_series_variant_id,
-          :flb, :ulb, :transcendence, :extra, :extra_prerequisite, :limit,
-          :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
-          :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
-          :max_level, :max_skill_level, :max_awakening_level, :max_exorcism_level,
-          :release_date, :flb_date, :ulb_date, :transcendence_date,
-          :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
-          :recruits, :forged_from, :forge_chain_id, :forge_order,
-          nicknames_en: [], nicknames_jp: [], promotions: [], awakening_ids: [],
-          element_variant_ids: {}, bullet_slots: []
-        )
+        params.require(:weapon).permit(*PERMITTED)
       end
     end
   end
