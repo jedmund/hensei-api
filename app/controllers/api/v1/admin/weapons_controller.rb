@@ -12,6 +12,33 @@ module Api
         SKILL_EXISTS = 'EXISTS (SELECT 1 FROM weapon_skills ' \
                        'WHERE weapon_skills.weapon_granblue_id = weapons.granblue_id)'
 
+        # Standard level / skill level caps by rarity and uncaps: R 50/10; SR 75/10,
+        # FLB 150/15; SSR 100/10, FLB 150/15, ULB 200/20, transcended 250/25. A few
+        # real weapons differ (SR collab FLB at 120); the flag lists them for review.
+        # IS DISTINCT FROM keeps it true or false, never NULL, so filter[...]=false works.
+        CAPS_MISMATCH = <<~SQL.squish
+          (weapons.max_level, weapons.max_skill_level) IS DISTINCT FROM (
+            CASE
+              WHEN weapons.rarity = 1 THEN 50
+              WHEN weapons.rarity = 2 AND weapons.flb THEN 150
+              WHEN weapons.rarity = 2 THEN 75
+              WHEN weapons.rarity = 3 AND weapons.transcendence IS TRUE THEN 250
+              WHEN weapons.rarity = 3 AND weapons.ulb THEN 200
+              WHEN weapons.rarity = 3 AND weapons.flb THEN 150
+              WHEN weapons.rarity = 3 THEN 100
+            END,
+            CASE
+              WHEN weapons.rarity = 1 THEN 10
+              WHEN weapons.rarity = 2 AND weapons.flb THEN 15
+              WHEN weapons.rarity = 2 THEN 10
+              WHEN weapons.rarity = 3 AND weapons.transcendence IS TRUE THEN 25
+              WHEN weapons.rarity = 3 AND weapons.ulb THEN 20
+              WHEN weapons.rarity = 3 AND weapons.flb THEN 15
+              WHEN weapons.rarity = 3 THEN 10
+            END
+          )
+        SQL
+
         before_action :ensure_editor_role
 
         admin_collection Weapon do
@@ -37,6 +64,7 @@ module Api
 
           flag :missing_name_jp, "weapons.name_jp IS NULL OR weapons.name_jp = ''"
           flag :no_skills, "NOT #{SKILL_EXISTS}"
+          flag :caps_mismatch, CAPS_MISMATCH
 
           # latest_date is the stored GREATEST of the release and uncap dates:
           # the last time the game changed the weapon. updated_at is the last site edit.

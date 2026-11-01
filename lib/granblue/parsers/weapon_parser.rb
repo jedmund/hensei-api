@@ -81,7 +81,7 @@ module Granblue
         weapons.drop(start_index).each_with_index do |w, i|
           percentage = ((i + 1) / count.to_f * 100).round(2)
           ap "#{percentage}%: Fetching #{w.wiki_en}... (#{i + 1}/#{count})" if debug
-          next if w.wiki_en.include?('Element Changed') || w.wiki_en.include?('Awakened')
+          next if w.wiki_en.to_s.include?('Element Changed') || w.wiki_en.to_s.include?('Awakened')
           next unless w.release_date.nil? || overwrite
 
           begin
