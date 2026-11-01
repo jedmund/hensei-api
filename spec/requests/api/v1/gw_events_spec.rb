@@ -111,7 +111,8 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
         event = Event.find(json_response['gw_event']['id'])
         jst = Time.find_zone('Asia/Tokyo')
         expect(event).to have_attributes(kind: 'unite_and_fight', status: 'approved', series: 'unite_and_fight',
-                                         name_en: 'Unite and Fight #50', element: 'Fire')
+                                         name_en: 'Unite and Fight #50', name_jp: '星の古戦場 #50',
+                                         element: 'Fire')
         expect(event.starts_at).to eq(jst.local(*1.week.from_now.to_date.then { |d| [d.year, d.month, d.day] }, 19))
         expect(event.ends_at).to eq(jst.local(*2.weeks.from_now.to_date.then { |d| [d.year, d.month, d.day] }, 23, 59, 59))
         expect(json_response['gw_event']).to include('start_date' => 1.week.from_now.to_date.iso8601,
@@ -171,6 +172,7 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response['gw_event']['event_number']).to eq(99)
         expect(event.reload.name_en).to eq('Unite and Fight #99')
+        expect(event.name_jp).to eq('星の古戦場 #99')
       end
 
       it 'moves the dates' do

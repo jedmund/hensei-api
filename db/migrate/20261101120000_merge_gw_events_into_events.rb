@@ -24,7 +24,7 @@ class MergeGwEventsIntoEvents < ActiveRecord::Migration[8.1]
     inserted = exec_update(<<~SQL.squish)
       INSERT INTO events (id, name_en, name_jp, kind, element, event_number, starts_at, ends_at,
                           status, series, source_refs, source_payload, created_at, updated_at)
-      SELECT g.id, 'Unite and Fight #' || g.event_number, NULL, #{UNITE_AND_FIGHT}, g.element, g.event_number,
+      SELECT g.id, 'Unite and Fight #' || g.event_number, '星の古戦場 #' || g.event_number, #{UNITE_AND_FIGHT}, g.element, g.event_number,
              ((g.start_date + time '19:00:00') AT TIME ZONE 'Asia/Tokyo') AT TIME ZONE 'UTC',
              ((g.end_date + time '23:59:59') AT TIME ZONE 'Asia/Tokyo') AT TIME ZONE 'UTC',
              #{APPROVED}, 'unite_and_fight', '{}'::jsonb, '{}'::jsonb, g.created_at, g.updated_at

@@ -51,6 +51,7 @@ module Api
 
         event = Event.new(attrs.merge(kind: :unite_and_fight, series: 'unite_and_fight', status: :approved))
         event.name_en ||= default_name(event.event_number)
+        event.name_jp ||= default_name_jp(event.event_number)
 
         if event.save(context: :guild_war)
           render json: GwEventBlueprint.render(event, root: :gw_event), status: :created
@@ -67,6 +68,9 @@ module Api
         # Keep a generated name in step with the number.
         if attrs.key?(:event_number) && @event.name_en == default_name(@event.event_number)
           attrs[:name_en] = default_name(attrs[:event_number])
+        end
+        if attrs.key?(:event_number) && @event.name_jp == default_name_jp(@event.event_number)
+          attrs[:name_jp] = default_name_jp(attrs[:event_number])
         end
         @event.assign_attributes(attrs)
 
@@ -97,6 +101,10 @@ module Api
 
       def default_name(event_number)
         "Unite and Fight ##{event_number}"
+      end
+
+      def default_name_jp(event_number)
+        "星の古戦場 ##{event_number}"
       end
 
       def require_admin!
