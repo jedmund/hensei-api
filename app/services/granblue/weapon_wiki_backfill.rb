@@ -217,7 +217,7 @@ module Granblue
       Weapon.transaction do
         result.changes.group_by(&:weapon).each do |weapon, changes|
           # update_columns: no callbacks, and only the blank fields this run decided on.
-          weapon.update_columns(changes.to_h { |change| [change.field, change.new] })
+          weapon.update_columns(changes.to_h { |change| [change.field, change.new] }.merge(updated_at: Time.current))
           result.written += 1
         end
       end

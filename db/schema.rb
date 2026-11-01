@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -61,6 +61,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.string "game_name_en"
     t.string "game_name_jp"
     t.integer "score_category"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["game_name_en"], name: "index_artifact_skills_on_game_name_en"
     t.index ["game_name_jp"], name: "index_artifact_skills_on_game_name_jp"
     t.index ["skill_group", "modifier"], name: "index_artifact_skills_on_skill_group_and_modifier", unique: true
@@ -74,6 +76,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.integer "proficiency"
     t.integer "rarity", default: 0, null: false
     t.date "release_date"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["granblue_id"], name: "index_artifacts_on_granblue_id", unique: true
     t.index ["proficiency"], name: "index_artifacts_on_proficiency"
     t.index ["rarity"], name: "index_artifacts_on_rarity"
@@ -85,6 +89,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.string "slug", null: false
     t.string "object_type", null: false
     t.integer "order", default: 0, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "bullets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -111,8 +117,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.string "name_jp", null: false
     t.string "slug", null: false
     t.integer "order", default: 0, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["order"], name: "index_character_series_on_order"
     t.index ["slug"], name: "index_character_series_on_slug", unique: true
+    t.index ["updated_at"], name: "index_character_series_on_updated_at"
   end
 
   create_table "character_series_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -232,12 +241,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.uuid "solomonis_zone_id"
     t.string "character_skill_build_fingerprint"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["granblue_id"], name: "index_characters_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_characters_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_characters_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["season"], name: "index_characters_on_season"
     t.index ["series"], name: "index_characters_on_series", using: :gin
     t.index ["solomonis_zone_id"], name: "index_characters_on_solomonis_zone_id"
+    t.index ["updated_at"], name: "index_characters_on_updated_at"
   end
 
   create_table "charge_attacks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -824,6 +836,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.string "description_en", null: false
     t.string "description_jp", null: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "gw_crew_scores", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -878,6 +891,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.integer "rarity"
     t.date "release_date"
     t.integer "accessory_type"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["job_id"], name: "index_job_accessories_on_job_id"
   end
 
@@ -894,6 +909,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.boolean "base", default: false
     t.string "image_id"
     t.integer "action_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["action_id"], name: "index_job_skills_on_action_id"
     t.index ["image_id"], name: "index_job_skills_on_image_id"
     t.index ["job_id"], name: "index_job_skills_on_job_id"
@@ -913,7 +930,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.integer "accessory_type", default: 0
     t.boolean "ultimate_mastery", default: false, null: false
     t.boolean "aux_weapon", default: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
+    t.index ["updated_at"], name: "index_jobs_on_updated_at"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1180,6 +1200,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.boolean "unlimited", default: false, null: false
     t.string "content_mode"
     t.boolean "support_summon", default: true, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["content_mode"], name: "index_raid_groups_on_content_mode"
   end
 
@@ -1196,7 +1218,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
     t.date "released_at"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["released_at"], name: "index_raids_on_released_at"
+    t.index ["updated_at"], name: "index_raids_on_updated_at"
   end
 
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1418,8 +1443,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.string "name_jp", null: false
     t.string "slug", null: false
     t.integer "order", default: 0, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["order"], name: "index_summon_series_on_order"
     t.index ["slug"], name: "index_summon_series_on_slug", unique: true
+    t.index ["updated_at"], name: "index_summon_series_on_updated_at"
   end
 
   create_table "summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1461,11 +1489,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.boolean "support_eligible", default: true, null: false
     t.string "summon_aura_build_fingerprint"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["granblue_id"], name: "index_summons_on_granblue_id"
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_summons_on_promotions", using: :gin
     t.index ["summon_series_id"], name: "index_summons_on_summon_series_id"
+    t.index ["updated_at"], name: "index_summons_on_updated_at"
   end
 
   create_table "support_summons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1549,6 +1580,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
   create_table "weapon_awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "weapon_id", null: false
     t.uuid "awakening_id", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["awakening_id"], name: "index_weapon_awakenings_on_awakening_id"
     t.index ["weapon_id"], name: "index_weapon_awakenings_on_weapon_id"
   end
@@ -1556,6 +1589,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
   create_table "weapon_key_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "weapon_key_id", null: false
     t.uuid "weapon_series_id", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["updated_at"], name: "index_weapon_key_series_on_updated_at"
     t.index ["weapon_key_id", "weapon_series_id"], name: "index_weapon_key_series_on_weapon_key_id_and_weapon_series_id", unique: true
     t.index ["weapon_key_id"], name: "index_weapon_key_series_on_weapon_key_id"
     t.index ["weapon_series_id"], name: "index_weapon_key_series_on_weapon_series_id"
@@ -1570,6 +1606,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.string "slug"
     t.integer "granblue_id"
     t.integer "series", default: [], null: false, array: true
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "weapon_series", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1584,8 +1622,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.integer "augment_type", default: 0, null: false
     t.integer "num_weapon_keys"
     t.boolean "summon_boosted"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["order"], name: "index_weapon_series_on_order"
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
+    t.index ["updated_at"], name: "index_weapon_series_on_updated_at"
   end
 
   create_table "weapon_series_variants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1806,6 +1847,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.virtual "latest_date", type: :date, as: "GREATEST(release_date, flb_date, ulb_date, transcendence_date)", stored: true
     t.string "weapon_skill_build_fingerprint"
     t.datetime "weapon_skill_built_at"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
     t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
@@ -1813,6 +1856,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_31_130000) do
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin
     t.index ["recruits"], name: "index_weapons_on_recruits"
+    t.index ["updated_at"], name: "index_weapons_on_updated_at"
     t.index ["weapon_series_id"], name: "index_weapons_on_weapon_series_id"
     t.index ["weapon_series_variant_id"], name: "index_weapons_on_weapon_series_variant_id"
   end

@@ -102,7 +102,7 @@ module WeaponSkills
           record(granblue_id, v, text, page)
           next if @dry_run
 
-          v.update_columns(description_en: text[:en], description_jp: text[:jp])
+          v.update_columns(description_en: text[:en], description_jp: text[:jp], updated_at: Time.current)
           @result.written += 1
         end
       end
