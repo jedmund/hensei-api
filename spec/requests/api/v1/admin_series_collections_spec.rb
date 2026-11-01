@@ -22,8 +22,8 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
     body['results'].map { |r| r['slug'] }
   end
 
-  describe 'GET /admin/weapon-series' do
-    let(:path) { '/api/v1/admin/weapon-series' }
+  describe 'GET /admin/weapon_series' do
+    let(:path) { '/api/v1/admin/weapon_series' }
     let!(:alpha) do
       create(:weapon_series, slug: 'zz-alpha', name_en: 'Zz Alpha', order: 9002, augment_type: :ax,
                              has_weapon_keys: true, num_weapon_keys: 2)
@@ -58,8 +58,8 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
     end
   end
 
-  describe 'GET /admin/character-series' do
-    let(:path) { '/api/v1/admin/character-series' }
+  describe 'GET /admin/character_series' do
+    let(:path) { '/api/v1/admin/character_series' }
     let!(:alpha) { create(:character_series, slug: 'zz-alpha', name_en: 'Zz Alpha', order: 9002) }
 
     before do
