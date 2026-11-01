@@ -111,7 +111,8 @@
   },
   "flags": [
     "missing_name_jp",
-    "no_skills"
+    "no_skills",
+    "caps_mismatch"
   ],
   "sorts": [
     "name_en",

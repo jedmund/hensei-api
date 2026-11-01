@@ -146,6 +146,29 @@ RSpec.describe 'Admin weapons collection', type: :request do
       expect(names).to eq(['Alpha Blade', 'Delta Bow'])
     end
 
+    it 'flags levels that differ from the standard caps for the rarity and uncaps' do
+      alpha.update_columns(ulb: true, transcendence: true, max_level: 250, max_skill_level: 25)
+      bravo.update_columns(ulb: true, transcendence: nil, max_level: 200, max_skill_level: 20)
+      charlie.update_columns(max_level: 120) # SR FLB is 150/15
+      delta.update_columns(ulb: true, transcendence: true, max_level: 200, max_skill_level: 20)
+
+      fetch(filter: { caps_mismatch: 'true' }, sort: 'name_en')
+      expect(names).to eq(['Charlie Blade', 'Delta Bow'])
+      fetch(filter: { caps_mismatch: 'false' }, sort: 'name_en')
+      expect(names).to eq(['Alpha Blade', 'Bravo Spear'])
+    end
+
+    it 'flags each rarity against its own caps' do
+      create(:weapon, :r, name_en: 'Caps R ok', max_level: 50, max_skill_level: 10)
+      create(:weapon, :r, name_en: 'Caps R off', max_level: 75, max_skill_level: 10)
+      create(:weapon, :sr, name_en: 'Caps SR ok', flb: false, max_level: 75, max_skill_level: 10)
+      create(:weapon, name_en: 'Caps SSR ok', flb: false, max_level: 100, max_skill_level: 10)
+      create(:weapon, name_en: 'Caps SSR off', flb: false, max_level: 150, max_skill_level: 15)
+
+      fetch(q: 'caps', filter: { caps_mismatch: 'true' }, sort: 'name_en')
+      expect(names).to eq(['Caps R off', 'Caps SSR off'])
+    end
+
     it 'combines filters with q' do
       fetch(q: 'blade', filter: { rarity: '3', missing_name_jp: 'false' })
       expect(names).to eq(['Alpha Blade'])
