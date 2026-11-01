@@ -31,7 +31,7 @@ module Granblue
           if entry[:action] == 'create'
             model.create!(entry.fetch(:attributes))
           elsif entry[:before] != entry[:after]
-            model.where(id: entry.fetch(:id)).update_all(promotions: entry.fetch(:after))
+            model.where(id: entry.fetch(:id)).update_all(promotions: entry.fetch(:after), updated_at: Time.current)
           end
         end
       end

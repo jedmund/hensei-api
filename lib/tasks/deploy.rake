@@ -61,7 +61,7 @@ namespace :deploy do
 
       promotions = promotions_from_obtain(obtain)
       if promotions.present?
-        weapon.update_column(:promotions, promotions)
+        weapon.update_columns(promotions: promotions, updated_at: Time.current)
         updated += 1
       end
     end
@@ -95,7 +95,7 @@ namespace :deploy do
 
       promotions = promotions_from_obtain(obtain)
       if promotions.present?
-        summon.update_column(:promotions, promotions)
+        summon.update_columns(promotions: promotions, updated_at: Time.current)
         updated += 1
       end
     end
@@ -132,7 +132,8 @@ namespace :deploy do
         character.update_columns(
           series: series,
           season: season,
-          gacha_available: gacha_available
+          gacha_available: gacha_available,
+          updated_at: Time.current
         )
         updated += 1
       else

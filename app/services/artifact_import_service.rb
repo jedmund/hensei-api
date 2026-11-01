@@ -242,7 +242,7 @@ class ArtifactImportService
       next unless skill
       next if skill.score_category.present?
 
-      skill.update_column(:score_category, category.to_i)
+      skill.update_columns(score_category: category.to_i, updated_at: Time.current)
     end
   end
 
