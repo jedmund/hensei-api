@@ -47,6 +47,12 @@ RSpec.describe Weapon, type: :model do
       expect(errors_on(max_hp: -1)[:max_hp]).to be_present
       expect(errors_on(max_level: 1.5)[:max_level]).to be_present
     end
+
+    it 'takes nothing, or a whole number from 1, for the awakening level' do
+      expect(build(:weapon, max_awakening_level: 1)).to be_valid
+      expect(errors_on(max_awakening_level: 0)[:max_awakening_level]).to be_present
+      expect(errors_on(max_awakening_level: 2.5)[:max_awakening_level]).to be_present
+    end
   end
 
   describe 'element_variant_ids' do

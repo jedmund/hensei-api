@@ -232,7 +232,7 @@ class Weapon < ApplicationRecord
   RARITY_VALUES = GranblueEnums::RARITIES
   ELEMENT_VALUES = GranblueEnums::ELEMENTS
   PROFICIENCY_VALUES = GranblueEnums::PROFICIENCY.except(:None).freeze
-  STAT_COLUMNS = %i[max_level max_skill_level max_awakening_level max_exorcism_level
+  STAT_COLUMNS = %i[max_level max_skill_level max_exorcism_level
                     min_hp max_hp max_hp_flb max_hp_ulb min_atk max_atk max_atk_flb max_atk_ulb].freeze
 
   validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT }, uniqueness: true
@@ -241,6 +241,8 @@ class Weapon < ApplicationRecord
   validates :element, inclusion: { in: ELEMENT_VALUES.values }
   validates :proficiency, inclusion: { in: PROFICIENCY_VALUES.values }
   validates(*STAT_COLUMNS, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true)
+  # nil means the weapon has no awakenings; ones that do go to at least level 1.
+  validates :max_awakening_level, numericality: { only_integer: true, greater_than_or_equal_to: 1 }, allow_nil: true
 
   def self.valid_element_variant_ids?(value)
     return true if value.nil?
