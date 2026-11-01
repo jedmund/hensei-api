@@ -7,6 +7,42 @@ RSpec.describe Summon, type: :model do
     it { is_expected.to belong_to(:summon_series).optional }
   end
 
+  describe 'validations' do
+    it 'is valid from the factory' do
+      expect(build(:summon)).to be_valid
+      expect(build(:summon, :r)).to be_valid
+      expect(build(:summon, :sr)).to be_valid
+    end
+
+    it 'requires a unique 10-digit granblue_id' do
+      expect(build(:summon, granblue_id: nil)).not_to be_valid
+      expect(build(:summon, granblue_id: '204000100')).not_to be_valid
+      expect(build(:summon, granblue_id: '2040001000-1')).not_to be_valid
+      create(:summon, granblue_id: '2040001000')
+      expect(build(:summon, granblue_id: '2040001000')).not_to be_valid
+    end
+
+    it 'requires an English name' do
+      expect(build(:summon, name_en: ' ')).not_to be_valid
+    end
+
+    it 'accepts only known rarities and elements, never Null' do
+      expect(build(:summon, rarity: 4)).not_to be_valid
+      expect(build(:summon, rarity: nil)).not_to be_valid
+      expect(build(:summon, element: 0)).not_to be_valid
+      expect(build(:summon, element: 7)).not_to be_valid
+      expect(build(:summon, element: 6)).to be_valid
+    end
+
+    it 'takes whole, non-negative stats and a max level of at least 1' do
+      expect(build(:summon, max_hp_xlb: nil, summon_id: nil)).to be_valid
+      expect(build(:summon, min_atk: -1)).not_to be_valid
+      expect(build(:summon, max_hp: 1.5)).not_to be_valid
+      expect(build(:summon, summon_id: -1)).not_to be_valid
+      expect(build(:summon, max_level: 0)).not_to be_valid
+    end
+  end
+
   describe 'promotion helpers' do
     let(:flash_value) { GranblueEnums::PROMOTIONS[:Flash] }
     let(:legend_value) { GranblueEnums::PROMOTIONS[:Legend] }

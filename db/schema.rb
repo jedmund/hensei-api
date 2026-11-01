@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -91,6 +91,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_160000) do
     t.integer "order", default: 0, null: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["slug"], name: "index_awakenings_on_slug", unique: true
   end
 
   create_table "bullets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1212,6 +1213,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_160000) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["released_at"], name: "index_raids_on_released_at"
+    t.index ["slug"], name: "index_raids_on_slug", unique: true
     t.index ["updated_at"], name: "index_raids_on_updated_at"
   end
 
@@ -1482,7 +1484,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_160000) do
     t.string "summon_aura_build_fingerprint"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.index ["granblue_id"], name: "index_summons_on_granblue_id"
+    t.index ["granblue_id"], name: "index_summons_on_granblue_id_unique", unique: true
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_summons_on_promotions", using: :gin

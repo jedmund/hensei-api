@@ -83,6 +83,26 @@ class Summon < ApplicationRecord
                     }
                   }
 
+  # The game's summon ids are 10 digits; they also become image filenames.
+  GRANBLUE_ID_FORMAT = /\A\d{10}\z/
+
+  # Simple rules the admin schema publishes (GET /admin/summons/schema), so
+  # the editor checks the same things before saving. Every summon has an
+  # element, so Null (0) is not one.
+  RARITY_VALUES = GranblueEnums::RARITIES
+  ELEMENT_VALUES = GranblueEnums::ELEMENTS.except(:Null).freeze
+  STAT_COLUMNS = %i[min_hp max_hp max_hp_flb max_hp_ulb max_hp_xlb
+                    min_atk max_atk max_atk_flb max_atk_ulb max_atk_xlb].freeze
+
+  validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT }, uniqueness: true
+  validates :name_en, presence: true
+  validates :rarity, inclusion: { in: RARITY_VALUES.values }
+  validates :element, inclusion: { in: ELEMENT_VALUES.values }
+  validates(*STAT_COLUMNS, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true)
+  validates :max_level, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+  # The game's internal summon number, where known (not unique)
+  validates :summon_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+
   def blueprint
     SummonBlueprint
   end

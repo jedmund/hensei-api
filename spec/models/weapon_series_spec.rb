@@ -17,6 +17,17 @@ RSpec.describe WeaponSeries, type: :model do
     it { is_expected.to validate_presence_of(:slug) }
     it { is_expected.to validate_uniqueness_of(:slug) }
     it { is_expected.to validate_numericality_of(:order).only_integer }
+    it { is_expected.to validate_numericality_of(:num_weapon_keys).only_integer.is_greater_than_or_equal_to(0).allow_nil }
+
+    it 'rejects a slug that is not lowercase words joined by hyphens' do
+      expect(build(:weapon_series, slug: 'Dark Opus')).not_to be_valid
+    end
+
+    it 'rejects an unknown augment type instead of raising' do
+      series = build(:weapon_series, augment_type: 'sigil')
+      expect(series).not_to be_valid
+      expect(series.errors[:augment_type]).to be_present
+    end
   end
 
   describe 'enums' do

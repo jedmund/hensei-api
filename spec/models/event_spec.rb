@@ -87,10 +87,11 @@ RSpec.describe Event do
       expect(build(:gw_event, :finished)).to have_attributes(upcoming?: false, active?: false, finished?: true)
     end
 
-    it 'requires a number when saved as a Guild War' do
-      event = build(:gw_event, event_number: nil)
-      expect(event).to be_valid
-      expect(event.valid?(:guild_war)).to be(false)
+    it 'requires a positive whole number' do
+      expect(build(:gw_event, event_number: nil)).not_to be_valid
+      expect(build(:gw_event, event_number: 0)).not_to be_valid
+      expect(build(:gw_event, event_number: 1.5)).not_to be_valid
+      expect(build(:gw_event, event_number: 70)).to be_valid
     end
 
     it 'finds ones that ended in the last week, by JST day' do

@@ -48,22 +48,23 @@ RSpec.describe 'Collection Summons API', type: :request do
     end
 
     it 'supports filtering by both element and rarity' do
-      fire_ssr = create(:summon, element: 0, rarity: 4)
-      water_ssr = create(:summon, element: 4, rarity: 4)
-      fire_sr = create(:summon, element: 0, rarity: 3)
+      # The other collection summons are Fire SSRs (the factory's)
+      dark_sr = create(:summon, element: 6, rarity: 2)
+      water_sr = create(:summon, element: 2, rarity: 2)
+      dark_ssr = create(:summon, element: 6, rarity: 3)
 
-      create(:collection_summon, user: user, summon: fire_ssr)
-      create(:collection_summon, user: user, summon: water_ssr)
-      create(:collection_summon, user: user, summon: fire_sr)
+      create(:collection_summon, user: user, summon: dark_sr)
+      create(:collection_summon, user: user, summon: water_sr)
+      create(:collection_summon, user: user, summon: dark_ssr)
 
-      get "/api/v1/users/#{user.id}/collection/summons", params: { element: 0, rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons", params: { element: 6, rarity: 2 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       summons = json['summons']
       expect(summons.length).to eq(1)
-      expect(summons.first['summon']['element']).to eq(0)
-      expect(summons.first['summon']['rarity']).to eq(4)
+      expect(summons.first['summon']['element']).to eq(6)
+      expect(summons.first['summon']['rarity']).to eq(2)
     end
 
     it 'returns forbidden for private collection without authentication' do
@@ -153,13 +154,13 @@ RSpec.describe 'Collection Summons API', type: :request do
     end
 
     it 'filters by element in unowned mode' do
-      fire_smn = create(:summon, element: 0)
-      water_smn = create(:summon, element: 4)
-      owned_fire_smn = create(:summon, element: 0)
+      fire_smn = create(:summon, element: 1)
+      water_smn = create(:summon, element: 2)
+      owned_fire_smn = create(:summon, element: 1)
       create(:collection_summon, user: user, summon: owned_fire_smn)
 
       get "/api/v1/users/#{user.id}/collection/summons",
-          params: { unowned: true, element: 0 }, headers: headers
+          params: { unowned: true, element: 1 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
@@ -167,7 +168,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       expect(returned_ids).to include(fire_smn.id)
       expect(returned_ids).not_to include(water_smn.id)
       expect(returned_ids).not_to include(owned_fire_smn.id)
-      expect(json['summons'].all? { |s| s['element'] == 0 }).to be true
+      expect(json['summons'].all? { |s| s['element'] == 1 }).to be true
     end
 
     it 'searches by name in unowned mode' do

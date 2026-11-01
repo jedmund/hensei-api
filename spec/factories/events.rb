@@ -40,6 +40,7 @@ FactoryBot.define do
     trait :unite_and_fight do
       kind { :unite_and_fight }
       element { 'Water' }
+      sequence(:event_number) { |n| 1000 + n }
     end
   end
 
