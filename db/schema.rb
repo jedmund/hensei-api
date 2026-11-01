@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1813,10 +1813,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_120000) do
     t.date "release_date"
     t.date "flb_date"
     t.date "ulb_date"
-    t.string "wiki_en", default: ""
-    t.string "wiki_ja", default: ""
-    t.string "gamewith", default: ""
-    t.string "kamigame", default: ""
+    t.string "wiki_en"
+    t.string "wiki_ja"
+    t.string "gamewith"
+    t.string "kamigame"
     t.string "nicknames_en", default: [], null: false, array: true
     t.string "nicknames_jp", default: [], null: false, array: true
     t.boolean "transcendence", default: false
