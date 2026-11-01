@@ -3,6 +3,17 @@
 module Api
   module V1
     class ArtifactSkillsController < Api::V1::ApiController
+      # What an editor may change: also the admin schema's writable list. No
+      # create or destroy: skills come from the game, so the editor only edits.
+      PERMITTED = [
+        :skill_group, :modifier,
+        :name_en, :name_jp,
+        :game_name_en, :game_name_jp,
+        :suffix_en, :suffix_jp,
+        :growth, :polarity,
+        { base_values: [] }
+      ].freeze
+
       before_action :set_artifact_skill, only: %w[show update]
       before_action :ensure_editor_role, only: %w[update]
 
@@ -50,14 +61,7 @@ module Api
       end
 
       def artifact_skill_params
-        params.permit(
-          :skill_group, :modifier,
-          :name_en, :name_jp,
-          :game_name_en, :game_name_jp,
-          :suffix_en, :suffix_jp,
-          :growth, :polarity,
-          base_values: []
-        )
+        params.permit(*PERMITTED)
       end
     end
   end
