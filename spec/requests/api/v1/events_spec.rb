@@ -7,6 +7,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
   let(:member) { create(:user, role: 1) }
   let(:editor_headers) { bearer_headers(editor) }
   let(:member_headers) { bearer_headers(member) }
+  let(:curator_headers) { bearer_headers(create(:user, role: 6)) }
 
   def json_response
     JSON.parse(response.body)
@@ -65,6 +66,12 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(json_response['events'].size).to eq(4)
     end
 
+    it 'lets curators see every event with editor fields' do
+      get '/api/v1/events', params: { status: 'all' }, headers: curator_headers
+      expect(json_response['events'].size).to eq(4)
+      expect(json_response['events'].first).to include('source_refs' => {})
+    end
+
     it 'ignores status for non-editors' do
       get '/api/v1/events', params: { status: 'all' }, headers: member_headers
       expect(json_response['events'].size).to eq(3)
@@ -87,6 +94,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
       get "/api/v1/events/#{event.id}", headers: editor_headers
       expect(response).to have_http_status(:ok)
     end
+
+    it 'returns a hidden event to curators' do
+      event = create(:event, :hidden)
+      get "/api/v1/events/#{event.id}", headers: curator_headers
+      expect(response).to have_http_status(:ok)
+      expect(json_response).to include('id' => event.id, 'source_refs' => {})
+    end
   end
 
   describe 'POST /api/v1/events' do
@@ -97,11 +111,11 @@ RSpec.describe 'Api::V1::Events', type: :request do
                  raid_ids: [raids.second.id, raids.first.id] } }
     end
 
-    it 'creates a draft event with ordered raids' do
+    it 'creates an approved event with ordered raids' do
       post '/api/v1/events', params: params, headers: editor_headers
 
       expect(response).to have_http_status(:created)
-      expect(json_response).to include('status' => 'draft', 'kind' => 'unite_and_fight',
+      expect(json_response).to include('status' => 'approved', 'kind' => 'unite_and_fight',
                                        'element' => GranblueEnums::ELEMENTS[:Fire])
       expect(json_response['raids'].map { |r| r['id'] }).to eq([raids.second.id, raids.first.id])
     end
@@ -151,6 +165,11 @@ RSpec.describe 'Api::V1::Events', type: :request do
       post '/api/v1/events', params: params, headers: member_headers
       expect(response).to have_http_status(:unauthorized)
     end
+
+    it 'returns 401 for curators' do
+      expect { post '/api/v1/events', params: params, headers: curator_headers }.not_to change(Event, :count)
+      expect(response).to have_http_status(:unauthorized)
+    end
   end
 
   describe 'PUT /api/v1/events/:id' do
@@ -178,9 +197,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(event.reload.event_raids.map(&:raid_id)).to eq([raid.id])
     end
 
-    it 'returns 401 for non-editors' do
+    it 'returns 401 for non-editors and curators' do
       put "/api/v1/events/#{event.id}", params: { event: { name_en: 'Renamed' } }, headers: member_headers
       expect(response).to have_http_status(:unauthorized)
+
+      put "/api/v1/events/#{event.id}", params: { event: { name_en: 'Renamed' } }, headers: curator_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(event.reload.name_en).not_to eq('Renamed')
     end
   end
 
@@ -195,8 +218,10 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(json_response['status']).to eq('hidden')
     end
 
-    it 'returns 401 for non-editors' do
+    it 'returns 401 for non-editors and curators' do
       post "/api/v1/events/#{event.id}/approve", headers: member_headers
+      expect(response).to have_http_status(:unauthorized)
+      post "/api/v1/events/#{event.id}/approve", headers: curator_headers
       expect(response).to have_http_status(:unauthorized)
       expect(event.reload).to be_draft
     end

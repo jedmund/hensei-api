@@ -207,6 +207,16 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(picks.map { |p| p['id'] }).to eq([eventless.id, running.id])
       expect(picks.first['party']).to include('id' => eventless.party_id)
     end
+
+    it 'shows general picks for 30 days, newest first' do
+      older = create(:featured_party, party: create(:party, visibility: 1), created_at: 10.days.ago)
+      newer = create(:featured_party, party: create(:party, visibility: 1), created_at: 1.day.ago)
+      create(:featured_party, party: create(:party, visibility: 1), created_at: 31.days.ago)
+
+      get '/api/v1/home'
+
+      expect(json_response['staff_picks'].map { |p| p['id'] }).to eq([newer.id, older.id])
+    end
   end
 
   describe 'new battles' do

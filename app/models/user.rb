@@ -144,6 +144,11 @@ class User < ApplicationRecord
     role.to_i >= 7
   end
 
+  # Curators manage staff picks. Editors and admins are curators too.
+  def curator?
+    role.to_i >= 6
+  end
+
   def blueprint
     UserBlueprint
   end

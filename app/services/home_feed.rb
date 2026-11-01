@@ -177,15 +177,17 @@ class HomeFeed
     %w[transcendence ulb flb].find { |kind| item.public_send(:"#{kind}_date") == item.latest_date } || 'release'
   end
 
-  # Eventless picks always show; picks tied to an event only while that
-  # event is approved and hasn't ended.
+  # General picks show for FeaturedParty::GENERAL_WINDOW after they're made;
+  # picks tied to an event only while that event is approved and hasn't
+  # ended. Newest first.
   def staff_picks
     FeaturedParty.joins(:party)
                  .left_joins(:event)
                  .where(parties: { visibility: 1 })
-                 .where('featured_parties.event_id IS NULL OR (events.status = ? AND events.ends_at > ?)',
-                        Event.statuses[:approved], @now)
-                 .order(:position, :created_at)
+                 .where('(featured_parties.event_id IS NULL AND featured_parties.created_at > ?) OR ' \
+                        '(events.status = ? AND events.ends_at > ?)',
+                        @now - FeaturedParty::GENERAL_WINDOW, Event.statuses[:approved], @now)
+                 .order(created_at: :desc, id: :asc)
                  .limit(STAFF_PICKS_LIMIT)
                  .to_a
   end
