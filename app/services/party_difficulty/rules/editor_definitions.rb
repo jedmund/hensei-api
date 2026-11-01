@@ -66,6 +66,8 @@ module PartyDifficulty
         min_count: 'Minimum number of matches needed to score (default 1).',
         scale_by_count: 'Optional boolean (default false): score every match instead of the first.',
         max_count: 'Optional denominator cap when scaling by count (default 1); does not cap the number of scored matches.',
+        growth_ratio: 'Optional number (default 1) when scaling by count: each further match is worth this many times ' \
+                      'the one before (2 gives 1×, 2×, 4×). Matches past max_count keep the last multiplier.',
         slugs: 'Supply series slugs, or use series_ids with catalogue UUIDs. At least one list must be nonempty.',
         series_ids: 'Optional series UUIDs; combined with the slug list.',
         series_slugs: 'Series slugs, e.g. ["illustrious"]. Combined with every supplied level filter on the SAME weapon. ' \
@@ -101,7 +103,7 @@ module PartyDifficulty
       }.freeze
 
       EXAMPLE_VALUES = {
-        min_count: 1, scale_by_count: true, max_count: 4,
+        min_count: 1, scale_by_count: true, max_count: 4, growth_ratio: 2,
         slugs: ['illustrious'], series_ids: ['series-uuid'], series_slugs: ['illustrious'],
         seasons: [3, 5], weapon_ids: ['weapon-uuid'], bullet_ids: ['bullet-uuid'],
         accessory_ids: ['accessory-uuid'], accessory_types: [1], min_level: 5,
@@ -141,7 +143,7 @@ module PartyDifficulty
         Rules.registered_types.map do |type|
           template = TEMPLATES.fetch(type)
           keys = template.keys
-          keys += %i[scale_by_count max_count]
+          keys += %i[scale_by_count max_count growth_ratio]
           keys += [:series_ids] if template.key?(:slugs) || template.key?(:series_slugs)
           keys += [:awakening_id] if type == 'weapon_awakening_at_least'
           keys += [:max_uncap_level] if type == 'summon_uncap_at_least'

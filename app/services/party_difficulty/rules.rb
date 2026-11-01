@@ -56,7 +56,18 @@ module PartyDifficulty
       klass = lookup(rule_type)
       return ["Unknown rule_type: #{rule_type}"] unless klass
 
-      klass.validate_params(params || {})
+      klass.validate_params(params || {}) + validate_scaling_params(params || {})
+    end
+
+    # Scaling params apply to every rule type (the calculator reads them), so
+    # they're checked here rather than in each rule class.
+    def self.validate_scaling_params(params)
+      ratio = params.with_indifferent_access[:growth_ratio]
+      return [] if ratio.nil? || ratio.to_s.empty?
+
+      Float(ratio.to_s) >= 1 ? [] : ['growth_ratio must be at least 1']
+    rescue ArgumentError
+      ['growth_ratio must be a number']
     end
 
     def self.component_for(rule_type)

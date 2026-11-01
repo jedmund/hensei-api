@@ -66,4 +66,36 @@ RSpec.describe PartyDifficulty::Calculator do
       expect(result.difficulty.slug).to eq('endgame')
     end
   end
+
+  describe '#call with a growth_ratio' do
+    def score_with(matches, params)
+      rule = DifficultyRule.new(name: 'grands', component: 'weapon', rule_type: 'weapon_uncap_at_least',
+                                weight: 1.0, active: true, params: { 'min_uncap_level' => 0, 'min_count' => 1 }.merge(params))
+      impl = instance_double(PartyDifficulty::Rules::WeaponUncapAtLeast,
+                             matching_count: matches, min_count: 1, match_factors: Array.new(matches, 1.0))
+      allow(rule).to receive(:implementation).and_return(impl)
+
+      party = build_stubbed(:party, weapons_count: 5, characters_count: 3, summons_count: 2)
+      allow(party).to receive_messages(weapons: [], characters: [], summons: [], job_id: nil, accessory_id: nil)
+      described_class.new(party, rules: [rule], components: components, difficulties: difficulties, ruleset_version: 1).call
+    end
+
+    let(:geometric) { { 'scale_by_count' => true, 'max_count' => 3, 'growth_ratio' => 2 } }
+
+    it 'makes each further match worth the ratio times the one before' do
+      # 1 + 2 = 3 of a 1 + 2 + 4 = 7 maximum
+      expect(score_with(2, geometric).score).to eq((3 / 7.0 * 100).round(2))
+      expect(score_with(3, geometric).score).to eq(100)
+    end
+
+    it 'records the growth in the additional row' do
+      fired = score_with(3, geometric).breakdown[:components].find { |c| c[:name] == 'weapon' }[:fired]
+
+      expect(fired.map { |f| [f[:kind], f[:weight]] }).to eq([['base', 1.0], ['additional', 6.0]])
+    end
+
+    it 'scores every match the same without a ratio' do
+      expect(score_with(2, geometric.except('growth_ratio')).score).to eq((2 / 3.0 * 100).round(2))
+    end
+  end
 end
