@@ -7,6 +7,9 @@
 class Sticker < ApplicationRecord
   SLUG_FORMAT = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
   IMAGE_PREFIX = 'icons/stickers'
+  # Where its images live: its own uploads (<slug>.png, <slug>.ja.webp) or a
+  # shared library image (stamp12.png), always a PNG or WebP under the prefix
+  IMAGE_KEY_FORMAT = %r{\A#{Regexp.escape(IMAGE_PREFIX)}/[a-z0-9][a-z0-9._-]*\.(?:png|webp)\z}
 
   # Cache key for the public catalogue (GET /stickers), busted on any write.
   CATALOGUE_CACHE_KEY = 'stickers/catalogue/v2'
@@ -19,6 +22,8 @@ class Sticker < ApplicationRecord
   validates :meaning_en, presence: true, length: { maximum: 255 }
   validates :meaning_jp, length: { maximum: 255 }
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :active, inclusion: { in: [true, false] }
+  validates :image_key, :image_key_jp, format: { with: IMAGE_KEY_FORMAT }, allow_nil: true
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :created_at) }

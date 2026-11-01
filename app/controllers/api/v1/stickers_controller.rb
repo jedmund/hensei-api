@@ -7,7 +7,10 @@ module Api
       include EditorImageUpload
       include UploadSizeLimit
 
-      EDITOR_ACTIONS = %i[create update destroy upload_image remove_image reorder library].freeze
+      # What create and update accept. `library_id` isn't a column: it picks
+      # the library sticker whose images the sticker takes.
+      PERMITTED = %i[slug meaning_en meaning_jp position active library_id].freeze
+      EDITOR_ACTIONS = %i[show create update destroy upload_image remove_image reorder library].freeze
       MAX_IMAGE_DIMENSION = 512
       MAX_IMAGE_BYTES = 512 * 1024
       # Room for a base64-encoded image (a third larger) and the form around it.
@@ -17,7 +20,7 @@ module Api
 
       before_action :doorkeeper_authorize!, only: EDITOR_ACTIONS
       before_action :ensure_editor_role, only: EDITOR_ACTIONS
-      before_action :set_sticker, only: %i[update destroy upload_image remove_image]
+      before_action :set_sticker, only: %i[show update destroy upload_image remove_image]
       before_action :set_library_entry, only: %i[create update]
 
       # GET /stickers
@@ -29,6 +32,12 @@ module Api
           StickerBlueprint.render_as_hash(Sticker.active.ordered, root: :stickers)
         end
         render json: payload
+      end
+
+      # GET /stickers/:id
+      # One sticker, by slug or id, in the editor view (with `deletable`).
+      def show
+        render json: render_editor(@sticker)
       end
 
       # GET /stickers/library
@@ -50,7 +59,7 @@ module Api
       # POST /stickers
       # `library_id` takes its images from that library sticker.
       def create
-        sticker = Sticker.new(sticker_params)
+        sticker = Sticker.new(sticker_attributes)
         use_library_images(sticker)
         if sticker.save
           render json: render_editor(sticker), status: :created
@@ -62,7 +71,7 @@ module Api
       # PUT /stickers/:id
       # `library_id` swaps its images for that library sticker's.
       def update
-        @sticker.assign_attributes(sticker_params)
+        @sticker.assign_attributes(sticker_attributes)
         use_library_images(@sticker)
         if @sticker.save
           render json: render_editor(@sticker)
@@ -138,8 +147,10 @@ module Api
         StickerBlueprint.render(stickers, view: :editor, given_sticker_ids: given, **)
       end
 
+      # By id, or by slug (the database editor's route id)
       def set_sticker
-        @sticker = Sticker.find_by(id: params[:id].to_s[UUID_FORMAT])
+        id = params[:id].to_s
+        @sticker = id.match?(UUID_FORMAT) ? Sticker.find_by(id: id) : Sticker.find_by(slug: id)
         render_not_found_response('sticker') unless @sticker
       end
 
@@ -149,7 +160,7 @@ module Api
 
       # The library sticker named by `library_id`, if any; 422 for an unknown one
       def set_library_entry
-        id = params.dig(:sticker, :library_id)
+        id = sticker_params[:library_id]
         return if id.blank?
 
         @library_entry = StickerLibrary.find(id)
@@ -163,7 +174,12 @@ module Api
       end
 
       def sticker_params
-        params.require(:sticker).permit(:slug, :meaning_en, :meaning_jp, :position, :active)
+        params.require(:sticker).permit(*PERMITTED)
+      end
+
+      # The columns to assign: library_id is applied by use_library_images
+      def sticker_attributes
+        sticker_params.except(:library_id)
       end
     end
   end
