@@ -11,7 +11,7 @@ module Api
       # (GET /admin/weapons/schema) publishes it as the writable fields, so the
       # editor's forms and the strong params come from one list.
       PERMITTED = [
-        :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :new_series, :weapon_series_variant_id,
+        :granblue_id, :name_en, :name_jp, :rarity, :element, :proficiency, :series, :weapon_series_variant_id,
         :flb, :ulb, :transcendence, :extra, :extra_prerequisite, :limit,
         :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb,
         :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb,
