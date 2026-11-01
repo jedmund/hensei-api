@@ -73,7 +73,7 @@ module Api
         awakening = Awakening.find_by(id: params[:id])
         return render_not_found_response('awakening') unless awakening
 
-        unless awakening.slug.to_s.match?(Awakening::SLUG_FORMAT)
+        unless awakening.slug.to_s.match?(Slugged::FORMAT)
           return render json: { error: 'Awakening slug is invalid' }, status: :unprocessable_entity
         end
 
