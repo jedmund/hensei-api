@@ -14,7 +14,7 @@ FactoryBot.define do
     element { %i[Fire Water Earth Wind Light Dark].sample }
     sequence(:event_number) { |n| n }
     name_en { "Unite and Fight ##{event_number}" }
-    name_jp { "星の古戦場 ##{event_number}" }
+    name_jp { "星の古戦場 第#{event_number}回" }
     starts_at { Event.gw_window(start_date, nil)[:starts_at] }
     ends_at { Event.gw_window(nil, end_date)[:ends_at] }
 

@@ -104,7 +104,7 @@ module Api
       end
 
       def default_name_jp(event_number)
-        "星の古戦場 ##{event_number}"
+        "星の古戦場 第#{event_number}回"
       end
 
       def require_admin!
