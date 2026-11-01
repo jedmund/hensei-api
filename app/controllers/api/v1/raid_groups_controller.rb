@@ -3,6 +3,9 @@
 module Api
   module V1
     class RaidGroupsController < Api::V1::ApiController
+      # What create and update accept; the admin schema publishes it.
+      PERMITTED = %i[name_en name_jp difficulty order section extra hl guidebooks unlimited support_summon].freeze
+
       before_action :set_raid_group, only: %i[show update destroy]
       before_action :ensure_editor_role, only: %i[create update destroy]
 
@@ -61,10 +64,7 @@ module Api
       end
 
       def raid_group_params
-        params.require(:raid_group).permit(
-          :name_en, :name_jp, :difficulty, :order, :section, :extra, :hl, :guidebooks, :unlimited,
-          :support_summon
-        )
+        params.require(:raid_group).permit(*PERMITTED)
       end
     end
   end
