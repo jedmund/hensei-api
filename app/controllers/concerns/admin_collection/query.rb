@@ -269,8 +269,19 @@ module AdminCollection
       includes = fields.filter_map { |f| field_config(f)[:includes] }.uniq
       scope = scope.includes(*includes) if includes.any?
 
-      selects = fields.filter_map { |f| field_config(f)[:select] && Arel.sql("(#{field_config(f)[:select]}) AS #{f}") }
+      selects = fields.filter_map { |f| select_node(f) }
       selects.any? ? scope.select(@definition.model.arel_table[Arel.star], *selects) : scope
+    end
+
+    # A declared select subquery as `(<sql>) AS "<field>"`. The SQL is written in
+    # the controller's admin_collection block; the field name was checked against
+    # the declared fields in parse_fields.
+    def select_node(name)
+      sql = field_config(name)[:select]
+      return unless sql
+
+      alias_name = Arel.sql(@definition.model.connection.quote_column_name(name))
+      Arel::Nodes::As.new(Arel::Nodes::Grouping.new(Arel.sql(sql)), alias_name)
     end
 
     def serialize(record)
