@@ -13,6 +13,10 @@
 # Every parameter is validated before any query runs: an unknown or malformed
 # filter, sort, field or facet is a 422 with { error: }.
 #
+# GET /admin/weapons/schema describes the same Definition (plus writable
+# fields, enum values and model validators) for the editor; see
+# AdminCollection::Schema.
+#
 # Facets count values for the current filter set minus the facet's own filter,
 # so the other values of a multi-select stay visible. NULL values are counted
 # under "none", and list filters accept "none" to match NULL.
@@ -59,6 +63,13 @@ module AdminCollection
     body[:facets] = query.facet_counts if query.facets.any?
 
     render json: body
+  end
+
+  def render_admin_schema
+    definition = admin_collection_definition
+    return unless stale?(etag: [ETAG_VERSION, self.class.name, definition.schema_digest], public: false)
+
+    render json: definition.schema
   end
 
   # Whole-table stats rather than the filtered rows', because facets count

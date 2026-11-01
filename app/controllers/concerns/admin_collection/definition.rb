@@ -15,6 +15,8 @@ module AdminCollection
       @default_fields = []
       @default_sort = []
       @etag_models = [model]
+      @writable = []
+      @enums = {}
     end
 
     # Columns matched by `q` (case-insensitive substring).
@@ -55,6 +57,7 @@ module AdminCollection
         found.map(&:first)
       end
       filter(name, type: :uuid, column: column, resolve: resolve, facet: facet, through: through)
+      @filters[name.to_s][:reference] = references.table_name
     end
 
     # A boolean filter backed by a SQL condition written here (never user
@@ -84,6 +87,32 @@ module AdminCollection
       return @default_sort if names.empty?
 
       @default_sort = names.map(&:to_s)
+    end
+
+    # What create and update accept: the controller's permit() list (its
+    # PERMITTED constant), published by the schema.
+    def writable(permitted = nil)
+      return @writable if permitted.nil?
+
+      @writable = permitted
+    end
+
+    # Value maps ({ name => value }) for enum-valued columns, published by the
+    # schema. Pass the same constants the model validates against.
+    def enums(**maps)
+      return @enums if maps.empty?
+
+      @enums = @enums.merge(maps)
+    end
+
+    # The JSON the schema endpoint serves. Static per deploy, so it's built
+    # once (on first use, after the model's validators are declared).
+    def schema
+      @schema ||= Schema.new(self).to_h.freeze
+    end
+
+    def schema_digest
+      @schema_digest ||= Digest::SHA256.hexdigest(schema.to_json)
     end
 
     # Other tables whose changes should invalidate the ETag: model classes or
