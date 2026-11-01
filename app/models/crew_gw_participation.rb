@@ -2,12 +2,12 @@
 
 class CrewGwParticipation < ApplicationRecord
   belongs_to :crew
-  belongs_to :gw_event
+  belongs_to :event
 
   has_many :gw_crew_scores, dependent: :destroy
   has_many :gw_individual_scores, dependent: :destroy
 
-  validates :crew_id, uniqueness: { scope: :gw_event_id, message: 'is already participating in this event' }
+  validates :crew_id, uniqueness: { scope: :event_id, message: 'is already participating in this event' }
 
   # Get total crew score across all rounds (from crew battles)
   def total_crew_score

@@ -10,7 +10,7 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
   let(:crew) { create(:crew) }
   let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
   let(:gw_event) { create(:gw_event) }
-  let!(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+  let!(:participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
 
   describe 'POST /api/v1/crew/gw_participations/:gw_participation_id/crew_scores' do
     let(:valid_params) do

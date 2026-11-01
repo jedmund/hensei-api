@@ -19,6 +19,10 @@ class Event < ApplicationRecord
   # Wind -> Fire, Light <-> Dark. Keyed by GranblueEnums::ELEMENTS values.
   ADVANTAGE_AGAINST = { Water: :Earth, Fire: :Water, Earth: :Wind, Wind: :Fire, Light: :Dark, Dark: :Light }
                       .to_h { |boss, team| [ELEMENTS.fetch(boss), ELEMENTS.fetch(team)] }.freeze
+  # Guild War dates are JST calendar days: Day 1 opens at 19:00 and the last
+  # day runs to 23:59:59.
+  GW_TIME_ZONE = 'Asia/Tokyo'
+  GW_START_HOUR = 19
   UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
   enum :kind, { story_event: 0, rerun: 1, collab: 2, unite_and_fight: 3, dread_barrage: 4, farming: 5,
@@ -33,6 +37,9 @@ class Event < ApplicationRecord
   has_many :event_raids, -> { order(:position) }, dependent: :destroy, inverse_of: :event
   has_many :raids, through: :event_raids
   has_many :featured_parties, dependent: :destroy
+  # Crew Guild War scores hang off these; an event with any can't be destroyed.
+  has_many :crew_gw_participations, dependent: :restrict_with_error
+  has_many :crews, through: :crew_gw_participations
 
   validates :name_en, presence: true, length: { maximum: 255 }
   validates :name_jp, length: { maximum: 255 }
@@ -41,11 +48,34 @@ class Event < ApplicationRecord
   validates :element, presence: true, if: :element_themed?
   validates :event_number, uniqueness: { conditions: -> { where(kind: kinds[:unite_and_fight]) } },
                            allow_nil: true, if: :unite_and_fight?
+  # The crew pages find a Guild War by its number, so the GW endpoints save
+  # with this context.
+  validates :event_number, presence: true, on: :guild_war
   validate :ends_after_start
 
   scope :current, ->(now = Time.current) { where('starts_at <= ? AND ends_at > ?', now, now) }
   scope :upcoming, ->(now = Time.current) { where('starts_at > ?', now) }
   scope :past, ->(now = Time.current) { where('ends_at <= ?', now) }
+  # Ended within the last `days` JST days (counting from the start of today in JST).
+  scope :recently_ended, lambda { |days: 7, now: Time.current|
+    today = now.in_time_zone(GW_TIME_ZONE).beginning_of_day
+    where('ends_at >= ? AND ends_at <= ?', today - days.days, now).order(starts_at: :desc)
+  }
+
+  # Converts JST calendar days (Date or "YYYY-MM-DD") to a Guild War's
+  # starts_at and ends_at, leaving out a blank one. Raises Date::Error on an
+  # unparseable date.
+  def self.gw_window(start_date, end_date)
+    zone = Time.find_zone!(GW_TIME_ZONE)
+    at = lambda do |value, *time|
+      day = value.is_a?(Date) ? value : Date.parse(value.to_s)
+      zone.local(day.year, day.month, day.day, *time)
+    end
+    window = {}
+    window[:starts_at] = at.call(start_date, GW_START_HOUR) if start_date.present?
+    window[:ends_at] = at.call(end_date, 23, 59, 59) if end_date.present?
+    window
+  end
 
   # Accepts an element as its integer value (as the API emits it) or as its
   # enum name in any case ("fire", "Fire").
@@ -97,6 +127,27 @@ class Event < ApplicationRecord
     end
     event_raids.reset
     self
+  end
+
+  # First and last JST calendar days, as Guild War pages show them.
+  def start_date
+    starts_at&.in_time_zone(GW_TIME_ZONE)&.to_date
+  end
+
+  def end_date
+    ends_at&.in_time_zone(GW_TIME_ZONE)&.to_date
+  end
+
+  def active?(now = Time.current)
+    starts_at <= now && ends_at > now
+  end
+
+  def upcoming?(now = Time.current)
+    starts_at > now
+  end
+
+  def finished?(now = Time.current)
+    ends_at <= now
   end
 
   def element_themed?

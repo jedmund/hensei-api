@@ -24,7 +24,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       end
 
       it 'returns error if already participating' do
-        create(:crew_gw_participation, crew: crew, gw_event: gw_event)
+        create(:crew_gw_participation, crew: crew, event: gw_event)
 
         expect {
           post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
@@ -83,7 +83,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
   end
 
   describe 'GET /api/v1/crew/gw_participations/:id' do
-    let!(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+    let!(:participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
 
     it 'returns the participation' do
       get "/api/v1/crew/gw_participations/#{participation.id}", headers: auth_headers
@@ -101,7 +101,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
 
   describe 'GET /api/v1/crew/gw_participations/by_event/:event_id' do
     context 'when participating in the event' do
-      let!(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+      let!(:participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
 
       it 'returns the event and participation by event ID' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
@@ -160,7 +160,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
   end
 
   describe 'PUT /api/v1/crew/gw_participations/:id' do
-    let!(:participation) { create(:crew_gw_participation, crew: crew, gw_event: gw_event) }
+    let!(:participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
 
     context 'as officer' do
       it 'updates rankings' do

@@ -22,7 +22,7 @@ class GwCrewScore < ApplicationRecord
 
   before_save :determine_victory
 
-  delegate :crew, :gw_event, to: :crew_gw_participation
+  delegate :crew, :event, to: :crew_gw_participation
 
   private
 
