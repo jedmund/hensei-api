@@ -108,6 +108,38 @@ class Character < ApplicationRecord
     CharacterSkills::BuildJob.perform_later(character_id)
   end
 
+  # The game's character ids are 10 digits; they also become image filenames.
+  # A style shift shares its base character's id, so ids are unique per style.
+  # Ten digits, plus an optional -N for units with switchable forms that share one game id
+  # (Malinda's Attack/Balanced/Defense forms are 3030093000-1/-2/-3).
+  GRANBLUE_ID_FORMAT = /\A\d{10}(?:-\d+)?\z/
+
+  # Simple rules the admin schema publishes (GET /admin/characters/schema), so
+  # the editor checks the same things before saving. Null (0) is the element
+  # of element-changeable characters (Lyria, the MC). Every character has a
+  # first proficiency; a missing second one is stored as nil or None (0).
+  RARITY_VALUES = GranblueEnums::RARITIES
+  ELEMENT_VALUES = GranblueEnums::ELEMENTS
+  GENDER_VALUES = GranblueEnums::GENDERS
+  RACE_VALUES = GranblueEnums::RACES
+  PROFICIENCY_VALUES = GranblueEnums::PROFICIENCY.except(:None).freeze
+  SECOND_PROFICIENCY_VALUES = GranblueEnums::PROFICIENCY
+  STAT_COLUMNS = %i[min_hp max_hp max_hp_flb max_hp_ulb max_hp_transcendence
+                    min_atk max_atk max_atk_flb max_atk_ulb max_atk_transcendence
+                    base_da base_ta].freeze
+
+  validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT },
+                          uniqueness: { scope: :style_swap }
+  validates :name_en, presence: true
+  validates :rarity, inclusion: { in: RARITY_VALUES.values }
+  validates :element, inclusion: { in: ELEMENT_VALUES.values }
+  validates :gender, inclusion: { in: GENDER_VALUES.values }
+  validates :proficiency1, inclusion: { in: PROFICIENCY_VALUES.values }
+  validates :proficiency2, inclusion: { in: SECOND_PROFICIENCY_VALUES.values }, allow_nil: true
+  validates :race1, :race2, inclusion: { in: RACE_VALUES.values }, allow_nil: true
+  validates(*STAT_COLUMNS, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true)
+  validates :ougi_ratio, :ougi_ratio_flb, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+
   validates :season,
             numericality: { only_integer: true },
             inclusion: { in: GranblueEnums::CHARACTER_SEASONS.values },

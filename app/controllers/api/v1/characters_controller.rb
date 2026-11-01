@@ -7,6 +7,20 @@ module Api
       include BatchPreviewable
       include ImageDownloadOptions
 
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = [
+        :granblue_id, :name_en, :name_jp, :rarity, :element,
+        :proficiency1, :proficiency2, :gender, :race1, :race2,
+        :flb, :ulb, :transcendence, :max_transcendence_stage, :special, :season,
+        :style_swap, :gender_variants, :style_name_en, :style_name_jp,
+        :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb, :max_hp_transcendence,
+        :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb, :max_atk_transcendence,
+        :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,
+        :release_date, :flb_date, :ulb_date, :transcendence_date,
+        :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
+        { nicknames_en: [], nicknames_jp: [], character_id: [], series: [] }
+      ].freeze
+
       before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
                                                   batch_preview raw]
@@ -285,18 +299,7 @@ module Api
       end
 
       def character_params
-        params.require(:character).permit(
-          :granblue_id, :name_en, :name_jp, :rarity, :element,
-          :proficiency1, :proficiency2, :gender, :race1, :race2,
-          :flb, :ulb, :transcendence, :max_transcendence_stage, :special, :season,
-          :style_swap, :gender_variants, :style_name_en, :style_name_jp,
-          :min_hp, :max_hp, :max_hp_flb, :max_hp_ulb, :max_hp_transcendence,
-          :min_atk, :max_atk, :max_atk_flb, :max_atk_ulb, :max_atk_transcendence,
-          :base_da, :base_ta, :ougi_ratio, :ougi_ratio_flb,
-          :release_date, :flb_date, :ulb_date, :transcendence_date,
-          :wiki_en, :wiki_ja, :wiki_raw, :gamewith, :kamigame,
-          nicknames_en: [], nicknames_jp: [], character_id: [], series: []
-        )
+        params.require(:character).permit(*PERMITTED)
       end
     end
   end

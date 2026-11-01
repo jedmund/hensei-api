@@ -51,34 +51,34 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
 
     it 'supports filtering by rarity' do
-      ssr_character = create(:character, rarity: 4)
+      ssr_character = create(:character, rarity: 3)
       create(:collection_character, user: user, character: ssr_character)
 
-      get "/api/v1/users/#{user.id}/collection/characters", params: { rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { rarity: 3 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       characters = json['characters']
-      expect(characters.all? { |c| c['character']['rarity'] == 4 }).to be true
+      expect(characters.all? { |c| c['character']['rarity'] == 3 }).to be true
     end
 
     it 'supports filtering by both element and rarity' do
-      fire_ssr = create(:character, element: 0, rarity: 4)
-      water_ssr = create(:character, element: 4, rarity: 4)
-      fire_sr = create(:character, element: 0, rarity: 3)
+      fire_ssr = create(:character, element: 0, rarity: 3)
+      water_ssr = create(:character, element: 4, rarity: 3)
+      fire_sr = create(:character, element: 0, rarity: 2)
 
       create(:collection_character, user: user, character: fire_ssr)
       create(:collection_character, user: user, character: water_ssr)
       create(:collection_character, user: user, character: fire_sr)
 
-      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 0, rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 0, rarity: 3 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       characters = json['characters']
       expect(characters.length).to eq(1)
       expect(characters.first['character']['element']).to eq(0)
-      expect(characters.first['character']['rarity']).to eq(4)
+      expect(characters.first['character']['rarity']).to eq(3)
     end
 
     it 'supports filtering by series' do
@@ -99,10 +99,10 @@ RSpec.describe 'Collection Characters API', type: :request do
     end
 
     it 'returns empty array when filters match nothing' do
-      fire_character = create(:character, element: 0, rarity: 4)
+      fire_character = create(:character, element: 0, rarity: 3)
       create(:collection_character, user: user, character: fire_character)
 
-      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 4, rarity: 3 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/characters", params: { element: 4, rarity: 2 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body

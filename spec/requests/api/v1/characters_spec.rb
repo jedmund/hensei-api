@@ -215,7 +215,7 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       {
         character: {
           granblue_id: '3040999000', name_en: 'Test Character', name_jp: 'テストキャラ',
-          rarity: 3, element: 4, proficiency1: 1
+          rarity: 3, element: 4, proficiency1: 1, gender: 2
         }
       }
     end

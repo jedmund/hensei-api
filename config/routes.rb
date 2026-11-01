@@ -398,7 +398,9 @@ Rails.application.routes.draw do
 
     # Editor-only catalogue collections (filter/sort/facet), see AdminCollection
     namespace :admin do
-      resources :characters, only: :index
+      resources :characters, only: :index do
+        get :schema, on: :collection
+      end
       resources :summons, only: :index
       resources :weapons, only: :index do
         get :schema, on: :collection
