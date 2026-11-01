@@ -9,6 +9,10 @@ class Bullet < ApplicationRecord
   # links address bullets by it.
   GRANBLUE_ID_FORMAT = /\A\d{5}\z/
 
+  # A bullet loaded on a party's or a collection's weapon can't be deleted
+  has_many :grid_weapon_bullets, dependent: :restrict_with_error
+  has_many :collection_weapon_bullets, dependent: :restrict_with_error
+
   validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT }, uniqueness: true
   validates :name_en, presence: true
   validates :bullet_type, presence: true, inclusion: { in: BULLET_TYPES.values }

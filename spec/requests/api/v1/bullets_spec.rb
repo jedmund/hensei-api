@@ -85,6 +85,21 @@ RSpec.describe 'Api::V1::Bullets', type: :request do
   end
 
   describe 'DELETE /api/v1/bullets/:id' do
+    it 'deletes an unused bullet for an editor' do
+      delete "/api/v1/bullets/#{bullet.granblue_id}", headers: editor_headers
+      expect(response).to have_http_status(:no_content)
+      expect(Bullet.exists?(bullet.id)).to be(false)
+    end
+
+    it 'refuses to delete a bullet loaded on a weapon, with a message' do
+      grid_weapon = create(:grid_weapon)
+      GridWeaponBullet.insert!({ grid_weapon_id: grid_weapon.id, bullet_id: bullet.id, position: 0 })
+      delete "/api/v1/bullets/#{bullet.granblue_id}", headers: editor_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['error']).to include('cannot be deleted')
+      expect(Bullet.exists?(bullet.id)).to be(true)
+    end
+
     it 'rejects a non-editor' do
       delete "/api/v1/bullets/#{bullet.granblue_id}", headers: user_headers
       expect(response).to have_http_status(:unauthorized)

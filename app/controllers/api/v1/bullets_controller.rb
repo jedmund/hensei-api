@@ -55,8 +55,12 @@ module Api
         bullet = find_bullet
         return render_not_found_response('bullet') unless bullet
 
-        bullet.destroy
-        head :no_content
+        if bullet.destroy
+          head :no_content
+        else
+          render json: { error: 'This bullet is loaded on weapons and cannot be deleted.' },
+                 status: :unprocessable_entity
+        end
       end
 
       # POST /bullets/:id/download_image
