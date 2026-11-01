@@ -3,6 +3,9 @@
 module Api
   module V1
     class CharacterSeriesController < Api::V1::ApiController
+      # What create and update accept; the admin schema publishes it
+      PERMITTED = %i[name_en name_jp slug order].freeze
+
       before_action :set_character_series, only: %i[show update destroy]
       before_action :ensure_editor_role, only: %i[create update destroy]
 
@@ -58,7 +61,7 @@ module Api
       end
 
       def character_series_params
-        params.require(:character_series).permit(:name_en, :name_jp, :slug, :order)
+        params.require(:character_series).permit(*PERMITTED)
       end
     end
   end

@@ -32,6 +32,40 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
     end
   end
 
+  describe 'GET /api/v1/awakenings/:id' do
+    let!(:awakening) { create(:awakening, slug: 'weapon-lookup', object_type: 'Weapon') }
+
+    it 'finds an awakening by slug or id' do
+      [awakening.slug, awakening.id].each do |key|
+        get "/api/v1/awakenings/#{key}"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body['id']).to eq(awakening.id)
+      end
+    end
+
+    it 'is a 404 for neither' do
+      get '/api/v1/awakenings/no-such-awakening'
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'PUT /api/v1/awakenings/:id' do
+    let!(:awakening) { create(:awakening, slug: 'weapon-edit', object_type: 'Weapon') }
+
+    it 'rejects an object type awakenings do not apply to' do
+      put "/api/v1/awakenings/#{awakening.id}", params: { awakening: { object_type: 'Summon' } },
+                                                headers: editor_headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(awakening.reload.object_type).to eq('Weapon')
+    end
+
+    it 'rejects a member' do
+      put "/api/v1/awakenings/#{awakening.id}", params: { awakening: { name_en: 'X' } },
+                                                headers: member_headers, as: :json
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
   describe 'POST /api/v1/awakenings/:id/upload_image' do
     let!(:awakening) { create(:awakening, slug: 'weapon-upload', object_type: 'Weapon') }
     let(:url) { "/api/v1/awakenings/#{awakening.id}/upload_image" }
