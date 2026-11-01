@@ -36,13 +36,7 @@ RSpec.describe AssignClassicIiiPromotions do
     expect(weapon.reload.promotions).to include(1)
   end
 
-  it 'rejects duplicate identifiers before changing any rows' do
-    # Weapon IDs are unique in the database; summon IDs aren't, so a duplicate summon
-    # exercises the guard.
-    build(:summon, granblue_id: summon.granblue_id).save!(validate: false)
-    expect { migration.up }.to raise_error(/found 2/)
-    expect(weapon.reload.promotions).to include(1)
-  end
+  # Weapon and summon IDs are unique in the database, so the duplicate-row guard can't fire.
   it 'rejects catalogue rarity drift' do
     weapon.update_column(:rarity, 2)
     expect { migration.up }.to raise_error(/Rarity mismatch/)
