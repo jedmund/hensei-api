@@ -8,6 +8,10 @@ module Api
     class EventsController < Api::V1::ApiController
       include EditorImageUpload
 
+      # What create and update accept; the admin schema publishes it. raid_ids
+      # replaces the linked raids (Event#assign_raid_ids), not an attribute.
+      PERMITTED = [:name_en, :name_jp, :kind, :series, :element, :starts_at, :ends_at, :event_number,
+                   { raid_ids: [] }].freeze
       EDITOR_ACTIONS = %i[create update approve hide upload_image sync].freeze
       SCOPES = %w[current upcoming past].freeze
       MAX_IMAGE_DIMENSION = 2048
@@ -132,9 +136,12 @@ module Api
         end
       end
 
+      def event_params
+        params.require(:event).permit(*PERMITTED)
+      end
+
       def event_attributes
-        attrs = params.require(:event).permit(:name_en, :name_jp, :kind, :series, :element, :starts_at,
-                                              :ends_at, :event_number)
+        attrs = event_params.except(:raid_ids)
         attrs[:series] = attrs[:series].presence if attrs.key?(:series)
         attrs[:element] = Event.normalize_element(attrs[:element]) if attrs.key?(:element)
         attrs

@@ -14,6 +14,19 @@ RSpec.describe Raid, type: :model do
     it { is_expected.to validate_presence_of(:slug) }
     it { is_expected.to validate_uniqueness_of(:slug) }
     it { is_expected.to validate_presence_of(:group_id) }
+    it { is_expected.to validate_inclusion_of(:player_count).in_array([1, 6, 18, 30]) }
+
+    %i[enemy_id summon_id quest_id].each do |attribute|
+      it { is_expected.to validate_numericality_of(attribute).only_integer.is_greater_than(0).allow_nil }
+    end
+
+    it 'accepts lowercase hyphenated slugs only' do
+      slug_errors = ->(slug) { build(:raid, slug: slug).tap(&:validate).errors[:slug] }
+      %w[lucilius-hard tiamat-omega-2 bahamut].each { |slug| expect(slug_errors.call(slug)).to be_empty }
+      ['Lucilius', 'lucilius hard', 'lucilius--hard', '-lucilius', 'lucilius_hard'].each do |slug|
+        expect(slug_errors.call(slug)).to include('is invalid')
+      end
+    end
 
     it 'allows element values between 0 and 6' do
       group = create(:raid_group)

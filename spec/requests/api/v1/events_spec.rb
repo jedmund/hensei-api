@@ -107,7 +107,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
     let(:raids) { create_list(:raid, 2) }
     let(:params) do
       { event: { name_en: 'Unite and Fight', name_jp: '古戦場', kind: 'unite_and_fight', element: 'fire',
-                 starts_at: 3.days.from_now.iso8601, ends_at: 10.days.from_now.iso8601,
+                 event_number: 80, starts_at: 3.days.from_now.iso8601, ends_at: 10.days.from_now.iso8601,
                  raid_ids: [raids.second.id, raids.first.id] } }
     end
 
@@ -124,6 +124,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
       post '/api/v1/events', params: params.deep_merge(event: { event_number: 81 }), headers: editor_headers
       expect(response).to have_http_status(:created)
       expect(json_response['event_number']).to eq(81)
+    end
+
+    it 'requires event_number for Unite and Fight' do
+      post '/api/v1/events', params: params.deep_merge(event: { event_number: nil }), headers: editor_headers,
+                             as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include('event_number')
     end
 
     it 'accepts a null event_number for other kinds' do
@@ -190,6 +197,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response['name']['en']).to eq('Renamed')
       expect(json_response['raids'].map { |r| r['id'] }).to eq([raid.id])
+    end
+
+    it 'requires event_number for a Guild War' do
+      gw = create(:gw_event, event_number: 84)
+      put "/api/v1/events/#{gw.id}", params: { event: { event_number: nil } }, headers: editor_headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(gw.reload.event_number).to eq(84)
     end
 
     it 'accepts a null event_number for other kinds' do

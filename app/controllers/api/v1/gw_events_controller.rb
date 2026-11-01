@@ -53,7 +53,7 @@ module Api
         event.name_en ||= default_name(event.event_number)
         event.name_jp ||= default_name_jp(event.event_number)
 
-        if event.save(context: :guild_war)
+        if event.save
           render json: GwEventBlueprint.render(event, root: :gw_event), status: :created
         else
           render_validation_error_response(event)
@@ -74,7 +74,7 @@ module Api
         end
         @event.assign_attributes(attrs)
 
-        if @event.save(context: :guild_war)
+        if @event.save
           render json: GwEventBlueprint.render(@event, root: :gw_event)
         else
           render_validation_error_response(@event)
