@@ -38,9 +38,13 @@ module AdminCollection
     # stay visible; q and the remaining filters still apply.
     def facet_counts
       facets.index_with do |name|
-        apply_filters(search_scope, except: name)
-          .group(@definition.facets[name]).count
-          .transform_keys { |k| k.nil? ? NONE : k.to_s }
+        scope = apply_filters(search_scope, except: name)
+        config = @definition.facets[name]
+        counts = if config[:through] then through_counts(scope, config)
+                 elsif config[:column].is_a?(Array) then multi_column_counts(scope, config[:column])
+                 else scope.group(config[:column]).count
+                 end
+        counts.transform_keys { |k| k.nil? ? NONE : k.to_s }
       end
     end
 
@@ -110,8 +114,7 @@ module AdminCollection
                  raw_values.map { |v| cast(name, config[:type], v) }
                end
       values << nil if include_null
-      condition = { config[:column] => values }
-      ->(scope) { scope.where(condition) }
+      match(config, values)
     end
 
     def range_filter(name, config, raw)
@@ -122,8 +125,43 @@ module AdminCollection
       lte = raw['lte'].presence && cast(name, config[:type], raw['lte'], upper: true)
       raise InvalidQuery, "filter[#{name}] needs gte or lte" if gte.nil? && lte.nil?
 
-      condition = { config[:column] => gte..lte }
-      ->(scope) { scope.where(condition) }
+      match(config, gte..lte)
+    end
+
+    # A scope lambda keeping rows whose column (any of several columns, or any
+    # associated row's column) is in `values` (an array, nil meaning NULL or
+    # no associated row) or within a range.
+    def match(config, values)
+      return through_match(config[:through], config[:column], values) if config[:through]
+
+      columns = config[:column]
+      return ->(scope) { scope.where(columns => values) } unless columns.is_a?(Array)
+
+      table = @definition.model.arel_table
+      ->(scope) { scope.where(columns.map { |c| column_match(table[c], values) }.reduce(:or)) }
+    end
+
+    def column_match(attribute, values)
+      return attribute.between(values) if values.is_a?(Range)
+
+      present = values.compact
+      clauses = []
+      clauses << attribute.in(present) if present.any?
+      clauses << attribute.eq(nil) if values.include?(nil)
+      clauses.reduce(:or)
+    end
+
+    def through_match(through, column, values)
+      owner_key = through[:owner_key]
+      linked = through[:model].select(through[:key])
+      lambda do |scope|
+        present = values.is_a?(Range) ? values : values.compact
+        matched = scope.where(owner_key => linked.where(column => present))
+        next matched unless values.is_a?(Array) && values.include?(nil)
+
+        unlinked = scope.where.not(owner_key => linked)
+        present.empty? ? unlinked : matched.or(unlinked)
+      end
     end
 
     def cast(name, type, value, upper: false)
@@ -200,6 +238,29 @@ module AdminCollection
 
     def apply_filters(scope, except: nil)
       @filters.reduce(scope) { |s, (name, apply)| name == except ? s : apply.call(s) }
+    end
+
+    # Associated rows per value among the scope's rows; rows with none count
+    # under nil, so a row in two series counts once under each.
+    def through_counts(scope, config)
+      through = config[:through]
+      owners = scope.select(through[:owner_key])
+      counts = through[:model].where(through[:key] => owners).group(config[:column]).count
+      unlinked = scope.where.not(through[:owner_key] => through[:model].select(through[:key])).count
+      unlinked.positive? ? counts.merge(nil => unlinked) : counts
+    end
+
+    # Rows per value across several columns (a row whose columns repeat a
+    # value counts once); rows where every column is NULL count under nil.
+    def multi_column_counts(scope, columns)
+      model = @definition.model
+      table = model.arel_table
+      pairs = columns.map { |c| scope.unscope(:select).select(table[:id], table[c].as('facet_value')).to_sql }
+      sql = "SELECT facet_value, COUNT(*) FROM (#{pairs.join(' UNION ')}) AS facet_pairs " \
+            'WHERE facet_value IS NOT NULL GROUP BY facet_value'
+      counts = model.connection.select_rows(sql).to_h { |value, count| [value, count.to_i] }
+      empty = scope.where(columns.index_with(nil)).count
+      empty.positive? ? counts.merge(nil => empty) : counts
     end
 
     def field_config(name) = @definition.fields[name]

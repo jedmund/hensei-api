@@ -25,14 +25,25 @@ module AdminCollection
     # A column filter. type: :integer, :string, :uuid, :date, :datetime or
     # :boolean. `resolve` maps raw list values to column values (e.g. slugs to
     # ids). `facet: true` also makes it a facet.
-    def filter(name, type:, column: name, resolve: nil, facet: false)
-      @filters[name.to_s] = { type: type, column: column.to_s, resolve: resolve }
-      @facets[name.to_s] = column.to_s if facet
+    #
+    # `column` may list several columns: a row matches when any of them does
+    # (e.g. a primary or secondary proficiency), and "none" means all are NULL.
+    #
+    # `through` names a has_many association whose rows hold `column` (e.g. a
+    # join table). A row matches when any associated row does, "none" means it
+    # has no associated rows, and facets count associated rows per value.
+    def filter(name, type:, column: name, resolve: nil, facet: false, through: nil)
+      columns = Array(column).map(&:to_s)
+      config = { type: type, column: columns.one? ? columns.first : columns, resolve: resolve }
+      config[:through] = through_config(through) if through
+      @filters[name.to_s] = config
+      @facets[name.to_s] = config.slice(:column, :through) if facet
     end
 
     # A foreign-key filter that accepts ids or slugs of `references`.
-    # Values matching no row are a 422.
-    def reference_filter(name, references:, column:, slug: :slug, facet: false)
+    # Values matching no row are a 422. With `through`, the key lives on the
+    # associated rows (see `filter`).
+    def reference_filter(name, references:, column:, slug: :slug, facet: false, through: nil)
       label = name.to_s.humanize(capitalize: false)
       resolve = lambda do |values|
         values = values.map { |v| v.match?(UUID_FORMAT) ? v.downcase : v }
@@ -43,7 +54,7 @@ module AdminCollection
 
         found.map(&:first)
       end
-      filter(name, type: :uuid, column: column, resolve: resolve, facet: facet)
+      filter(name, type: :uuid, column: column, resolve: resolve, facet: facet, through: through)
     end
 
     # A boolean filter backed by a SQL condition written here (never user
@@ -90,6 +101,19 @@ module AdminCollection
         reflection.klass
       end
       @etag_models = [model, *models].uniq
+    end
+
+    private
+
+    # { model:, key:, owner_key: }: rows of `model` whose `key` equals the
+    # collection row's `owner_key`. The association's own scope is not applied.
+    def through_config(association)
+      reflection = model.reflect_on_association(association)
+      unless reflection&.collection? && !reflection.through_reflection?
+        raise ArgumentError, "#{model} has no direct has_many #{association}"
+      end
+
+      { model: reflection.klass, key: reflection.foreign_key.to_s, owner_key: reflection.active_record_primary_key.to_s }
     end
   end
 end
