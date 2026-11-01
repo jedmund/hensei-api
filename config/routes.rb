@@ -401,7 +401,9 @@ Rails.application.routes.draw do
       resources :characters, only: :index do
         get :schema, on: :collection
       end
-      resources :summons, only: :index
+      resources :summons, only: :index do
+        get :schema, on: :collection
+      end
       resources :weapons, only: :index do
         get :schema, on: :collection
       end
