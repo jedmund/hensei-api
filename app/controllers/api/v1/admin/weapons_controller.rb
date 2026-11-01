@@ -22,6 +22,10 @@ module Api
           reference_filter :series, references: WeaponSeries, column: :weapon_series_id, facet: true
           filter :granblue_id, type: :string
           filter :release_date, type: :date
+          filter :flb_date, type: :date
+          filter :ulb_date, type: :date
+          filter :transcendence_date, type: :date
+          filter :latest_date, type: :date
           filter :created_at, type: :datetime
           filter :updated_at, type: :datetime
           filter :flb, type: :boolean
@@ -33,12 +37,15 @@ module Api
           flag :missing_name_jp, "weapons.name_jp IS NULL OR weapons.name_jp = ''"
           flag :no_skills, "NOT #{SKILL_EXISTS}"
 
+          # latest_date is the stored GREATEST of the release and uncap dates:
+          # the last time the game changed the weapon. updated_at is the last site edit.
           sort :name_en, :name_jp, :granblue_id, :rarity, :element, :proficiency,
-               :release_date, :updated_at, :created_at
-          default_sort '-updated_at', 'name_en'
+               :release_date, :flb_date, :ulb_date, :transcendence_date, :latest_date,
+               :updated_at, :created_at
+          default_sort '-latest_date', 'name_en'
 
           %i[granblue_id name_en name_jp element rarity proficiency
-             release_date flb_date ulb_date transcendence_date
+             release_date flb_date ulb_date transcendence_date latest_date
              flb ulb transcendence extra limit
              max_level max_skill_level max_awakening_level max_exorcism_level
              min_hp max_hp max_hp_flb max_hp_ulb min_atk max_atk max_atk_flb max_atk_ulb

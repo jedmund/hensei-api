@@ -27,22 +27,22 @@ RSpec.describe 'Admin weapons collection', type: :request do
 
   let!(:alpha) do
     create(:weapon, name_en: 'Alpha Blade', name_jp: 'アルファ', granblue_id: '1040000001', element: 1, rarity: 4,
-                    proficiency: 1, weapon_series: opus, release_date: Date.new(2020, 1, 1),
+                    proficiency: 1, weapon_series: opus, release_date: Date.new(2020, 1, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-01-01 00:00'))
   end
   let!(:bravo) do
     create(:weapon, name_en: 'Bravo Spear', name_jp: '', granblue_id: '1040000002', element: 2, rarity: 4,
-                    proficiency: 4, weapon_series: grand, release_date: Date.new(2022, 6, 1),
+                    proficiency: 4, weapon_series: grand, release_date: Date.new(2022, 6, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-03-01 00:00'))
   end
   let!(:charlie) do
     create(:weapon, name_en: 'Charlie Blade', name_jp: nil, granblue_id: '1030000003', element: 1, rarity: 3,
-                    proficiency: 1, weapon_series: nil, release_date: Date.new(2024, 6, 1),
+                    proficiency: 1, weapon_series: nil, release_date: Date.new(2024, 6, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
   let!(:delta) do
     create(:weapon, name_en: 'Delta Bow', name_jp: 'デルタ', granblue_id: '1040000004', element: 3, rarity: 4,
-                    proficiency: 5, weapon_series: opus, release_date: Date.new(2025, 1, 1),
+                    proficiency: 5, weapon_series: opus, release_date: Date.new(2025, 1, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
 
@@ -60,11 +60,11 @@ RSpec.describe 'Admin weapons collection', type: :request do
     it 'returns results for an editor with the default fields and sort' do
       body = fetch
       expect(response).to have_http_status(:ok)
-      expect(names(body)).to eq(['Bravo Spear', 'Charlie Blade', 'Delta Bow', 'Alpha Blade'])
+      expect(names(body)).to eq(['Delta Bow', 'Charlie Blade', 'Bravo Spear', 'Alpha Blade'])
       expect(body['results'].first.keys).to match_array(
         %w[id granblue_id name_en name_jp element rarity proficiency series_id series_slug release_date updated_at]
       )
-      expect(body['results'].first['series_slug']).to eq('grand')
+      expect(body['results'].first['series_slug']).to eq('dark-opus')
       expect(body).not_to have_key('facets')
     end
 
@@ -158,6 +158,15 @@ RSpec.describe 'Admin weapons collection', type: :request do
       expect(names).to eq(['Bravo Spear', 'Charlie Blade', 'Delta Bow', 'Alpha Blade'])
       fetch(sort: 'element,-name_en')
       expect(names).to eq(['Charlie Blade', 'Alpha Blade', 'Bravo Spear', 'Delta Bow'])
+    end
+
+    it 'sorts by the latest game date, counting uncaps' do
+      alpha.update!(flb_date: Date.new(2026, 5, 1))
+      body = fetch(sort: '-latest_date', fields: 'name_en,flb_date,latest_date')
+      expect(names(body)).to eq(['Alpha Blade', 'Delta Bow', 'Charlie Blade', 'Bravo Spear'])
+      expect(body['results'].first).to include('flb_date' => '2026-05-01', 'latest_date' => '2026-05-01')
+      fetch(sort: '-flb_date,name_en')
+      expect(names.first).to eq('Alpha Blade')
     end
   end
 
