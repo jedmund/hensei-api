@@ -216,11 +216,31 @@ class Weapon < ApplicationRecord
     self.weapon_series = found
   end
 
+  # The game's weapon ids are 10 digits; they also become image filenames.
+  GRANBLUE_ID_FORMAT = /\A\d{10}\z/
+
   # element_variant_ids maps an element id ("0".."6") to the game's weapon id
   # for that element's art. The ids become image filenames, so only plain
   # 10-digit ids are accepted.
   ELEMENT_VARIANT_KEY_FORMAT = /\A[0-6]\z/
-  ELEMENT_VARIANT_ID_FORMAT = /\A\d{10}\z/
+  ELEMENT_VARIANT_ID_FORMAT = GRANBLUE_ID_FORMAT
+
+  # Simple rules the admin schema publishes (GET /admin/weapons/schema), so
+  # the editor checks the same things before saving. Null (0) is the element
+  # of element-changeable weapons; every weapon has a proficiency, so None (0)
+  # is not one.
+  RARITY_VALUES = GranblueEnums::RARITIES
+  ELEMENT_VALUES = GranblueEnums::ELEMENTS
+  PROFICIENCY_VALUES = GranblueEnums::PROFICIENCY.except(:None).freeze
+  STAT_COLUMNS = %i[max_level max_skill_level max_awakening_level max_exorcism_level
+                    min_hp max_hp max_hp_flb max_hp_ulb min_atk max_atk max_atk_flb max_atk_ulb].freeze
+
+  validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT }, uniqueness: true
+  validates :name_en, presence: true
+  validates :rarity, inclusion: { in: RARITY_VALUES.values }
+  validates :element, inclusion: { in: ELEMENT_VALUES.values }
+  validates :proficiency, inclusion: { in: PROFICIENCY_VALUES.values }
+  validates(*STAT_COLUMNS, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true)
 
   def self.valid_element_variant_ids?(value)
     return true if value.nil?

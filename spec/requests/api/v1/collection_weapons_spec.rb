@@ -50,22 +50,22 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'supports filtering by both element and rarity' do
-      fire_ssr = create(:weapon, element: 0, rarity: 4)
-      water_ssr = create(:weapon, element: 4, rarity: 4)
-      fire_sr = create(:weapon, element: 0, rarity: 3)
+      fire_ssr = create(:weapon, element: 0, rarity: 3)
+      water_ssr = create(:weapon, element: 4, rarity: 3)
+      fire_sr = create(:weapon, element: 0, rarity: 2)
 
       create(:collection_weapon, user: user, weapon: fire_ssr)
       create(:collection_weapon, user: user, weapon: water_ssr)
       create(:collection_weapon, user: user, weapon: fire_sr)
 
-      get "/api/v1/users/#{user.id}/collection/weapons", params: { element: 0, rarity: 4 }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { element: 0, rarity: 3 }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       weapons = json['weapons']
       expect(weapons.length).to eq(1)
       expect(weapons.first['weapon']['element']).to eq(0)
-      expect(weapons.first['weapon']['rarity']).to eq(4)
+      expect(weapons.first['weapon']['rarity']).to eq(3)
     end
 
     it 'returns forbidden for private collection without authentication' do

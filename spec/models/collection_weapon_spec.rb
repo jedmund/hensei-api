@@ -215,8 +215,8 @@ RSpec.describe CollectionWeapon, type: :model do
   describe 'scopes' do
     let!(:fire_weapon) { create(:weapon, element: 0) }
     let!(:water_weapon) { create(:weapon, element: 4) }
-    let!(:ssr_weapon) { create(:weapon, rarity: 4) }
-    let!(:sr_weapon) { create(:weapon, rarity: 3) }
+    let!(:ssr_weapon) { create(:weapon, rarity: 3) }
+    let!(:sr_weapon) { create(:weapon, rarity: 2) }
 
     let!(:fire_collection) { create(:collection_weapon, weapon: fire_weapon) }
     let!(:water_collection) { create(:collection_weapon, weapon: water_weapon) }
@@ -251,8 +251,8 @@ RSpec.describe CollectionWeapon, type: :model do
 
     describe '.by_rarity' do
       it 'returns weapons of specified rarity' do
-        expect(CollectionWeapon.by_rarity(4)).to include(ssr_collection)
-        expect(CollectionWeapon.by_rarity(4)).not_to include(sr_collection)
+        expect(CollectionWeapon.by_rarity(3)).to include(ssr_collection)
+        expect(CollectionWeapon.by_rarity(3)).not_to include(sr_collection)
       end
     end
 

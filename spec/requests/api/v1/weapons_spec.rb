@@ -101,7 +101,7 @@ RSpec.describe 'Weapons API', type: :request do
         weapon: {
           granblue_id: '1040000001',
           name_en: 'Test Weapon',
-          rarity: 4,
+          rarity: 3,
           element: 4,
           proficiency: 1,
           max_exorcism_level: 5

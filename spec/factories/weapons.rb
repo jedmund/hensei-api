@@ -3,7 +3,7 @@ FactoryBot.define do
     sequence(:granblue_id) { |n| "104#{n.to_s.rjust(7, '0')}" }
     sequence(:name_en) { |n| "Test Weapon #{n}" }
     name_jp { "テスト武器" }
-    rarity { 4 } # SSR
+    rarity { 3 } # SSR
     element { 1 } # Fire
     proficiency { 1 } # Sabre
     series { 99 } # Gacha (legacy)
@@ -34,7 +34,7 @@ FactoryBot.define do
     max_level { 150 }
 
     trait :r do
-      rarity { 2 }
+      rarity { 1 }
       max_hp { 120 }
       max_atk { 960 }
       max_hp_flb { nil }
@@ -43,7 +43,7 @@ FactoryBot.define do
     end
 
     trait :sr do
-      rarity { 3 }
+      rarity { 2 }
       max_hp { 200 }
       max_atk { 1600 }
       max_hp_flb { 240 }
@@ -51,7 +51,7 @@ FactoryBot.define do
     end
 
     trait :ssr do
-      rarity { 4 }
+      rarity { 3 }
     end
 
     trait :transcendable do

@@ -37,7 +37,8 @@ RSpec.describe AssignClassicIiiPromotions do
   end
 
   it 'rejects duplicate identifiers before changing any rows' do
-    create(:weapon, granblue_id: weapon.granblue_id)
+    # Weapon validates uniqueness now; the guard is for rows written around it.
+    build(:weapon, granblue_id: weapon.granblue_id).save!(validate: false)
     expect { migration.up }.to raise_error(/found 2/)
     expect(weapon.reload.promotions).to include(1)
   end

@@ -3,6 +3,52 @@
 require 'rails_helper'
 
 RSpec.describe Weapon, type: :model do
+  describe 'validations' do
+    def errors_on(attrs)
+      weapon = build(:weapon, attrs)
+      weapon.valid?
+      weapon.errors
+    end
+
+    it 'accepts the factory weapon' do
+      expect(build(:weapon)).to be_valid
+    end
+
+    it 'requires a 10-digit granblue_id' do
+      [nil, '', '104000001', '10400000011', '104000000a', "1040000001\n"].each do |id|
+        expect(errors_on(granblue_id: id)[:granblue_id]).to be_present, "expected #{id.inspect} to be invalid"
+      end
+    end
+
+    it 'requires a unique granblue_id' do
+      existing = create(:weapon)
+      expect(errors_on(granblue_id: existing.granblue_id)[:granblue_id]).to include('has already been taken')
+    end
+
+    it 'requires name_en' do
+      expect(errors_on(name_en: '')[:name_en]).to include("can't be blank")
+    end
+
+    it 'accepts only GranblueEnums rarities, elements and proficiencies' do
+      expect(errors_on(rarity: 4)[:rarity]).to be_present
+      expect(errors_on(rarity: nil)[:rarity]).to be_present
+      expect(errors_on(element: 7)[:element]).to be_present
+      expect(errors_on(element: nil)[:element]).to be_present
+      expect(errors_on(proficiency: 0)[:proficiency]).to be_present
+      expect(errors_on(proficiency: 11)[:proficiency]).to be_present
+    end
+
+    it 'accepts the Null element of element-changeable weapons' do
+      expect(build(:weapon, element: GranblueEnums::ELEMENTS[:Null])).to be_valid
+    end
+
+    it 'takes non-negative whole numbers, or nothing, for levels and stats' do
+      expect(build(:weapon, max_awakening_level: nil, min_hp: nil, max_atk_ulb: 0)).to be_valid
+      expect(errors_on(max_hp: -1)[:max_hp]).to be_present
+      expect(errors_on(max_level: 1.5)[:max_level]).to be_present
+    end
+  end
+
   describe 'element_variant_ids' do
     it 'accepts element ids mapped to 10-digit weapon ids, or nothing' do
       expect(build(:weapon, element_variant_ids: { '1' => '1040804100', '6' => '1040804500' })).to be_valid
@@ -307,8 +353,8 @@ RSpec.describe Weapon, type: :model do
   describe 'forge chain' do
     describe '#compute_forge_chain_fields' do
       it 'auto-computes forge_chain_id and forge_order on save' do
-        base = create(:weapon, granblue_id: 'chain_base')
-        forged = create(:weapon, granblue_id: 'chain_child', forged_from: 'chain_base')
+        base = create(:weapon, granblue_id: '1049900001')
+        forged = create(:weapon, granblue_id: '1049900002', forged_from: '1049900001')
 
         forged.reload
         expect(forged.forge_chain_id).to eq(base.id)
@@ -322,15 +368,15 @@ RSpec.describe Weapon, type: :model do
 
     describe '#no_circular_forge_chain' do
       it 'allows a valid forge chain' do
-        create(:weapon, granblue_id: 'forge_base_1')
-        forged = build(:weapon, granblue_id: 'forge_child_1', forged_from: 'forge_base_1')
+        create(:weapon, granblue_id: '1049900003')
+        forged = build(:weapon, granblue_id: '1049900004', forged_from: '1049900003')
         expect(forged).to be_valid
       end
 
       it 'rejects a circular forge chain' do
-        weapon_a = create(:weapon, granblue_id: 'circular_a', forged_from: nil)
-        create(:weapon, granblue_id: 'circular_b', forged_from: 'circular_a')
-        weapon_a.forged_from = 'circular_b'
+        weapon_a = create(:weapon, granblue_id: '1049900005', forged_from: nil)
+        create(:weapon, granblue_id: '1049900006', forged_from: '1049900005')
+        weapon_a.forged_from = '1049900006'
         expect(weapon_a).not_to be_valid
         expect(weapon_a.errors[:forged_from]).to include('creates a circular forge chain')
       end
@@ -338,8 +384,8 @@ RSpec.describe Weapon, type: :model do
 
     describe '#forged_from_weapon' do
       it 'returns the weapon it was forged from' do
-        base = create(:weapon, granblue_id: 'from_base_1')
-        forged = create(:weapon, forged_from: 'from_base_1')
+        base = create(:weapon, granblue_id: '1049900007')
+        forged = create(:weapon, forged_from: '1049900007')
         expect(forged.forged_from_weapon).to eq(base)
       end
 

@@ -64,7 +64,8 @@ RSpec.describe FixStaleWikiTitles do
 
   it 'promotes per weapon and retitles every row sharing an id and the old title' do
     first = weapons['1040505700']
-    second = create(:weapon, granblue_id: '1040505700', wiki_en: 'Raphael')
+    # A duplicate written before Weapon validated granblue_id uniqueness.
+    second = build(:weapon, granblue_id: '1040505700', wiki_en: 'Raphael').tap { |w| w.save!(validate: false) }
     [first, second].each_with_index do |weapon, index|
       stored.create!(weapon_id: weapon.id, kind: 'transclusion', key: 'Raphael (Weapon)', sha256: 'x',
                      body: "{{Weapon\n|id=1040505700\n|copy=#{index}\n}}", fetched_at: index.days.ago)
