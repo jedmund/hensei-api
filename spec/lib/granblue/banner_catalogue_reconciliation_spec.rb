@@ -37,8 +37,12 @@ RSpec.describe Granblue::BannerCatalogueReconciliation do
   end
 
   it 'refuses duplicate catalogue identifiers' do
-    # Weapon validates uniqueness now; the guard is for rows written around it.
-    build(:weapon, granblue_id: existing.granblue_id).save!(validate: false)
+    # Weapon IDs are unique in the database; summon IDs aren't, so duplicate summons
+    # exercise the guard.
+    summon = create(:summon, granblue_id: '2040999901', rarity: 3, promotions: [3])
+    build(:summon, granblue_id: summon.granblue_id).save!(validate: false)
+    manifest['entries'] << { 'type' => 'Summon', 'granblue_id' => summon.granblue_id, 'rarity' => 3,
+                             'category' => 0, 'add_promotion' => 4 }
     expect { service.apply! }.to raise_error(/Duplicate catalogue ID/)
   end
 

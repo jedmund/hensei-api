@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1840,7 +1840,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_130000) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["forge_chain_id"], name: "index_weapons_on_forge_chain_id"
     t.index ["forged_from"], name: "index_weapons_on_forged_from"
-    t.index ["granblue_id"], name: "index_weapons_on_granblue_id"
+    t.index ["granblue_id"], name: "index_weapons_on_granblue_id_unique", unique: true
     t.index ["latest_date", "id"], name: "index_weapons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_weapons_on_name_en", opclass: :gin_trgm_ops, using: :gin
     t.index ["promotions"], name: "index_weapons_on_promotions", using: :gin

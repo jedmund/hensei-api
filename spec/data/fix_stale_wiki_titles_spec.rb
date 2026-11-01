@@ -62,22 +62,17 @@ RSpec.describe FixStaleWikiTitles do
     expect(column_page(weapon)).to eq(copy.body)
   end
 
-  it 'promotes per weapon and retitles every row sharing an id and the old title' do
-    first = weapons['1040505700']
-    # A duplicate written before Weapon validated granblue_id uniqueness.
-    second = build(:weapon, granblue_id: '1040505700', wiki_en: 'Raphael').tap { |w| w.save!(validate: false) }
-    [first, second].each_with_index do |weapon, index|
-      stored.create!(weapon_id: weapon.id, kind: 'transclusion', key: 'Raphael (Weapon)', sha256: 'x',
-                     body: "{{Weapon\n|id=1040505700\n|copy=#{index}\n}}", fetched_at: index.days.ago)
-    end
+  # Weapon IDs are unique in the database, so only one row can carry an id and old title.
+  it 'promotes the stored page and retitles the weapon' do
+    weapon = weapons['1040505700']
+    stored.create!(weapon_id: weapon.id, kind: 'transclusion', key: 'Raphael (Weapon)', sha256: 'x',
+                   body: "{{Weapon\n|id=1040505700\n|copy=0\n}}", fetched_at: Time.current)
 
     migration.up
 
-    [first, second].each_with_index do |weapon, index|
-      expect(weapon.reload.wiki_en).to eq('Raphael (Weapon)')
-      expect(stored.where(weapon_id: weapon.id).pluck(:kind, :key)).to eq([['wiki_raw', 'Raphael (Weapon)']])
-      expect(column_page(weapon)).to include("|copy=#{index}")
-    end
+    expect(weapon.reload.wiki_en).to eq('Raphael (Weapon)')
+    expect(stored.where(weapon_id: weapon.id).pluck(:kind, :key)).to eq([['wiki_raw', 'Raphael (Weapon)']])
+    expect(column_page(weapon)).to include('|copy=0')
   end
 
   it 'keeps the sources of a retitled weapon with no stored copy of its new page' do
