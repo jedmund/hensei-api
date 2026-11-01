@@ -53,10 +53,10 @@ RSpec.describe CollectionSummon, type: :model do
   end
 
   describe 'scopes' do
-    let!(:fire_summon) { create(:summon, element: 0) }
-    let!(:water_summon) { create(:summon, element: 4) }
-    let!(:ssr_summon) { create(:summon, rarity: 4) }
-    let!(:sr_summon) { create(:summon, rarity: 3) }
+    let!(:fire_summon) { create(:summon, element: 1) }
+    let!(:water_summon) { create(:summon, element: 2) }
+    let!(:ssr_summon) { create(:summon, rarity: 3) }
+    let!(:sr_summon) { create(:summon, rarity: 2) }
 
     let!(:fire_collection) { create(:collection_summon, summon: fire_summon) }
     let!(:water_collection) { create(:collection_summon, summon: water_summon) }
@@ -66,15 +66,15 @@ RSpec.describe CollectionSummon, type: :model do
 
     describe '.by_element' do
       it 'returns summons of specified element' do
-        expect(CollectionSummon.by_element(0)).to include(fire_collection)
-        expect(CollectionSummon.by_element(0)).not_to include(water_collection)
+        expect(CollectionSummon.by_element(1)).to include(fire_collection)
+        expect(CollectionSummon.by_element(1)).not_to include(water_collection)
       end
     end
 
     describe '.by_rarity' do
       it 'returns summons of specified rarity' do
-        expect(CollectionSummon.by_rarity(4)).to include(ssr_collection)
-        expect(CollectionSummon.by_rarity(4)).not_to include(sr_collection)
+        expect(CollectionSummon.by_rarity(3)).to include(ssr_collection)
+        expect(CollectionSummon.by_rarity(3)).not_to include(sr_collection)
       end
     end
 

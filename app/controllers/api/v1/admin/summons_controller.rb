@@ -3,13 +3,31 @@
 module Api
   module V1
     module Admin
-      # Editor-only summon list for the database editor's grid (GBF-138).
+      # Editor-only summon list for the database editor's grid (GBF-138), and
+      # its schema: what the editor may filter, sort, show and write (GBF-143).
       # The public team-builder search stays at /search/summons.
       class SummonsController < Api::V1::ApiController
         include AdminCollection
 
         AURA_EXISTS = 'EXISTS (SELECT 1 FROM summon_auras ' \
                       'WHERE summon_auras.summon_granblue_id = summons.granblue_id)'
+
+        # Standard max level by rarity and uncaps, as for weapons: R 50; SR 75, FLB 150;
+        # SSR 100, FLB 150, ULB 200, transcended 250. The flag lists the summons that
+        # differ for review. IS DISTINCT FROM keeps it true or false, never NULL.
+        CAPS_MISMATCH = <<~SQL.squish
+          summons.max_level IS DISTINCT FROM (
+            CASE
+              WHEN summons.rarity = 1 THEN 50
+              WHEN summons.rarity = 2 AND summons.flb THEN 150
+              WHEN summons.rarity = 2 THEN 75
+              WHEN summons.rarity = 3 AND summons.transcendence THEN 250
+              WHEN summons.rarity = 3 AND summons.ulb THEN 200
+              WHEN summons.rarity = 3 AND summons.flb THEN 150
+              WHEN summons.rarity = 3 THEN 100
+            END
+          )
+        SQL
 
         before_action :ensure_editor_role
 
@@ -36,6 +54,7 @@ module Api
 
           flag :missing_name_jp, "summons.name_jp IS NULL OR summons.name_jp = ''"
           flag :no_auras, "NOT #{AURA_EXISTS}"
+          flag :caps_mismatch, CAPS_MISMATCH
 
           sort :name_en, :name_jp, :granblue_id, :rarity, :element, :max_level,
                :release_date, :flb_date, :ulb_date, :transcendence_date, :latest_date,
@@ -58,10 +77,18 @@ module Api
                          :release_date, :latest_date, :updated_at
 
           etag_sources :summon_series, :auras
+
+          writable Api::V1::SummonsController::PERMITTED
+          enums element: Summon::ELEMENT_VALUES, rarity: Summon::RARITY_VALUES,
+                promotions: GranblueEnums::PROMOTIONS
         end
 
         def index
           render_admin_collection
+        end
+
+        def schema
+          render_admin_schema
         end
       end
     end

@@ -30,22 +30,22 @@ RSpec.describe 'Admin summons collection', type: :request do
   let(:magna) { SummonSeries.find_by(slug: 'magna') || create(:summon_series, :magna) }
 
   let!(:alpha) do
-    summon(name_en: 'Alpha Stone', name_jp: 'アルファ', granblue_id: '2040000001', element: 1, rarity: 4,
+    summon(name_en: 'Alpha Stone', name_jp: 'アルファ', granblue_id: '2040000001', element: 1, rarity: 3,
            summon_series: providence, subaura: true, max_level: 250, release_date: Date.new(2020, 1, 1),
            updated_at: Time.zone.parse('2026-01-01 00:00'))
   end
   let!(:bravo) do
-    summon(name_en: 'Bravo Stone', name_jp: '', granblue_id: '2040000002', element: 2, rarity: 4,
+    summon(name_en: 'Bravo Stone', name_jp: '', granblue_id: '2040000002', element: 2, rarity: 3,
            summon_series: magna, support_eligible: false, max_level: 150, release_date: Date.new(2022, 6, 1),
            updated_at: Time.zone.parse('2026-03-01 00:00'))
   end
   let!(:charlie) do
-    summon(name_en: 'Charlie Gem', name_jp: nil, granblue_id: '2030000003', element: 1, rarity: 3,
+    summon(name_en: 'Charlie Gem', name_jp: nil, granblue_id: '2030000003', element: 1, rarity: 2,
            summon_series: nil, max_level: 100, release_date: Date.new(2024, 6, 1),
            updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
   let!(:delta) do
-    summon(name_en: 'Delta Stone', name_jp: 'デルタ', granblue_id: '2040000004', element: 3, rarity: 4,
+    summon(name_en: 'Delta Stone', name_jp: 'デルタ', granblue_id: '2040000004', element: 3, rarity: 3,
            summon_series: providence, limit: true, max_level: 200, release_date: Date.new(2025, 1, 1),
            updated_at: Time.zone.parse('2026-02-01 00:00'))
   end
@@ -136,7 +136,7 @@ RSpec.describe 'Admin summons collection', type: :request do
     end
 
     it 'filters by a numeric range' do
-      fetch(filter: { rarity: { lte: '3' } })
+      fetch(filter: { rarity: { lte: '2' } })
       expect(names).to eq(['Charlie Gem'])
     end
 
@@ -152,10 +152,15 @@ RSpec.describe 'Admin summons collection', type: :request do
       expect(names).to eq(['Bravo Stone', 'Charlie Gem'])
       fetch(filter: { no_auras: 'false' }, sort: 'name_en')
       expect(names).to eq(['Alpha Stone', 'Delta Stone'])
+      # All four have FLB: only Bravo (SSR, 150) has the standard max level
+      fetch(filter: { caps_mismatch: 'true' }, sort: 'name_en')
+      expect(names).to eq(['Alpha Stone', 'Charlie Gem', 'Delta Stone'])
+      fetch(filter: { caps_mismatch: 'false' }, sort: 'name_en')
+      expect(names).to eq(['Bravo Stone'])
     end
 
     it 'combines filters with q' do
-      fetch(q: 'stone', filter: { rarity: '4', missing_name_jp: 'false', series: 'providence' }, sort: 'name_en')
+      fetch(q: 'stone', filter: { rarity: '3', missing_name_jp: 'false', series: 'providence' }, sort: 'name_en')
       expect(names).to eq(['Alpha Stone', 'Delta Stone'])
     end
   end
@@ -204,11 +209,11 @@ RSpec.describe 'Admin summons collection', type: :request do
 
   describe 'facets' do
     it 'counts values for the current filters, excluding each facet\'s own filter' do
-      body = fetch(filter: { element: '1', rarity: '4' }, facets: 'element,rarity,series')
+      body = fetch(filter: { element: '1', rarity: '3' }, facets: 'element,rarity,series')
 
       expect(names(body)).to eq(['Alpha Stone'])
       expect(body['facets']['element']).to eq('1' => 1, '2' => 1, '3' => 1)
-      expect(body['facets']['rarity']).to eq('3' => 1, '4' => 1)
+      expect(body['facets']['rarity']).to eq('2' => 1, '3' => 1)
       expect(body['facets']['series']).to eq(providence.id => 1)
     end
 
