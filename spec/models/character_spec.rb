@@ -55,10 +55,19 @@ RSpec.describe Character, type: :model do
       expect(character.errors[:transcendence]).to include('is not supported for special characters')
     end
 
-    it 'requires a 10-digit granblue_id' do
+    it 'requires a 10-digit granblue_id, with an optional form suffix' do
       expect(build(:character, granblue_id: nil)).not_to be_valid
-      expect(build(:character, granblue_id: '3030093000-1')).not_to be_valid
+      expect(build(:character, granblue_id: '304000100')).not_to be_valid
+      expect(build(:character, granblue_id: '3040001000-')).not_to be_valid
       expect(build(:character, granblue_id: '3040001000')).to be_valid
+      # Malinda's switchable forms share one game id
+      expect(build(:character, granblue_id: '3030093000-1')).to be_valid
+    end
+
+    it 'enforces one granblue_id per style_swap in the database' do
+      base = create(:character, granblue_id: '3040088000')
+      duplicate = build(:character, granblue_id: base.granblue_id)
+      expect { duplicate.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
     end
 
     it 'lets a style shift share its base character granblue_id, once' do

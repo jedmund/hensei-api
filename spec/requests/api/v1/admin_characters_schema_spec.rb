@@ -97,7 +97,7 @@ RSpec.describe 'Admin characters schema', type: :request do
 
     it 'publishes the granblue_id format as a JavaScript pattern' do
       format = schema[:validators]['granblue_id'].find { |rule| rule[:kind] == 'format' }
-      expect(format).to include(pattern: '^\d{10}$', flags: '')
+      expect(format).to include(pattern: '^\d{10}(?:-\d+)?$', flags: '')
     end
   end
 end

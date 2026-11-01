@@ -110,7 +110,9 @@ class Character < ApplicationRecord
 
   # The game's character ids are 10 digits; they also become image filenames.
   # A style shift shares its base character's id, so ids are unique per style.
-  GRANBLUE_ID_FORMAT = /\A\d{10}\z/
+  # Ten digits, plus an optional -N for units with switchable forms that share one game id
+  # (Malinda's Attack/Balanced/Defense forms are 3030093000-1/-2/-3).
+  GRANBLUE_ID_FORMAT = /\A\d{10}(?:-\d+)?\z/
 
   # Simple rules the admin schema publishes (GET /admin/characters/schema), so
   # the editor checks the same things before saving. Null (0) is the element
