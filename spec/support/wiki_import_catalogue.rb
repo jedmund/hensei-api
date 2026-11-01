@@ -49,8 +49,8 @@ RSpec.shared_context 'with a wiki import catalogue' do
   let!(:ca_key) { wiki_import_key(911_003, 1, ultima_series) }
   let!(:draconic_key) { wiki_import_key(915_001, 0, draconic_series) }
 
-  let!(:chaos_legion) { Bullet.create!(name_en: 'WI Chaos Legion', slug: 'wi-chaos-legion', bullet_type: 2) }
-  let!(:chaser) { Bullet.create!(name_en: 'WI Chaser Shell', slug: 'wi-chaser-shell', bullet_type: 3) }
+  let!(:chaos_legion) { create(:bullet, name_en: 'WI Chaos Legion', slug: 'wi-chaos-legion', bullet_type: 2) }
+  let!(:chaser) { create(:bullet, name_en: 'WI Chaser Shell', slug: 'wi-chaser-shell', bullet_type: 3) }
 
   let(:wiki) do
     {
