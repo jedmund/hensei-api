@@ -54,7 +54,7 @@ RSpec.describe 'Weapon and Summon sources' do
   end
 
   describe "a weapon's page (one row)" do
-    let(:weapon) { create(:weapon, wiki_en: 'Blade', wiki_raw: '{{Pasted}}') }
+    let(:weapon) { create(:weapon, wiki_en: 'Blade') }
     let(:fetched_at) { Time.zone.parse('2026-10-02 09:00') }
 
     def store_page(body)
@@ -62,13 +62,36 @@ RSpec.describe 'Weapon and Summon sources' do
                            page_kind: 'inline')
     end
 
-    it "is the '' row until the store has fetched the page" do
-      expect(Source.owned_by(weapon).pluck(:kind, :key)).to eq([['wiki_raw', '']])
-      expect(WeaponSource.count).to eq(0)
-      expect(Weapon.find(weapon.id).wiki_raw).to eq('{{Pasted}}')
+    def untitled_page(body)
+      Source.create!(owner: weapon, kind: 'wiki_raw', key: '', body: body, sha256: Source.digest(body),
+                     fetched_at: fetched_at)
+    end
+
+    it 'titles a pasted page with the page name, so the store and the build see it' do
+      pasted = create(:weapon, wiki_en: 'Pasted Blade', wiki_raw: '{{Pasted}}')
+
+      expect(Source.owned_by(pasted).pluck(:kind, :key)).to eq([['wiki_raw', 'Pasted Blade']])
+      expect(WeaponSource.where(weapon_id: pasted.id).pluck(:key)).to eq(['Pasted Blade'])
+      expect(Weapon.find(pasted.id).wiki_raw).to eq('{{Pasted}}')
+    end
+
+    it "keeps the '' row for a weapon with no page name" do
+      unnamed = create(:weapon, wiki_en: nil, wiki_raw: '{{Pasted}}')
+
+      expect(Source.owned_by(unnamed).pluck(:kind, :key)).to eq([['wiki_raw', '']])
+      expect(WeaponSource.where(weapon_id: unnamed.id)).to be_empty
+    end
+
+    it "retitles an untitled page on the next write, keeping one row" do
+      untitled_page('{{Pasted}}')
+
+      Weapon.find(weapon.id).update!(wiki_raw: '{{Edited}}')
+
+      expect(Source.owned_by(weapon).where(kind: 'wiki_raw').pluck(:key, :body)).to eq([['Blade', '{{Edited}}']])
     end
 
     it 'reads the titled store page first, loaded or preloaded' do
+      untitled_page('{{Pasted}}')
       store_page('{{Fetched}}')
 
       expect(Weapon.find(weapon.id)).to have_attributes(wiki_raw: '{{Fetched}}', wiki_raw_fetched_at: fetched_at)
@@ -79,7 +102,6 @@ RSpec.describe 'Weapon and Summon sources' do
 
     it 'writes an edit to the titled page, keeping its key and page kind' do
       page = store_page('{{Fetched}}')
-      Source.where(owner_type: 'Weapon', owner_id: weapon.id, key: '').delete_all
 
       Weapon.find(weapon.id).update!(wiki_raw: '{{Edited}}')
 
@@ -88,6 +110,7 @@ RSpec.describe 'Weapon and Summon sources' do
     end
 
     it "leaves the weapon's other store pages out of a preload" do
+      store_page('{{Fetched}}')
       WeaponSource.create!(weapon: weapon, kind: 'expanded', key: 'Blade', body: 'expansion', fetched_at: fetched_at)
 
       loaded = Weapon.preload_sources(Weapon.where(id: weapon.id).to_a).first
