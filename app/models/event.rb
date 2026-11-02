@@ -10,9 +10,14 @@ class Event < ApplicationRecord
   IMAGE_PREFIX = 'events'
 
   # Recurring events whose header image doesn't change between runs. Each
-  # series has one image at events/series/<series>.webp (from the series' wiki
-  # page), used when the event has no image of its own.
-  SERIES = %w[unite_and_fight dread_barrage rise_of_the_beasts records_of_the_ten].freeze
+  # series has an image at events/series/<series>.webp (from the series' wiki
+  # page), and may have a Japanese one at events/series/<series>.ja.webp; they
+  # are used when the event has no image of its own.
+  SERIES = %w[
+    unite_and_fight dread_barrage rise_of_the_beasts records_of_the_ten
+    exo_ifrit_crucible exo_cocytus_crucible exo_vohu_manah_crucible
+    exo_sagittarius_crucible exo_corow_crucible exo_diablo_crucible
+  ].freeze
 
   # `element` is the boss's element. Players bring the element advantaged
   # against it: Water boss -> Earth teams, Fire -> Water, Earth -> Wind,
@@ -26,11 +31,11 @@ class Event < ApplicationRecord
   UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
   enum :kind, { story_event: 0, rerun: 1, collab: 2, unite_and_fight: 3, dread_barrage: 4, farming: 5,
-                alchemy: 6, other: 7 }, validate: true
+                alchemy: 6, other: 7, exo_crucible: 8 }, validate: true
 
   # Kinds themed around a boss element: they require an element, and their
   # home sections only show teams of the advantaged element.
-  ELEMENT_THEMED_KINDS = %w[unite_and_fight dread_barrage].freeze
+  ELEMENT_THEMED_KINDS = %w[unite_and_fight dread_barrage exo_crucible].freeze
   enum :status, { draft: 0, approved: 1, hidden: 2 }, validate: true
   enum :element, ELEMENTS, validate: { allow_nil: true }
 
@@ -97,6 +102,13 @@ class Event < ApplicationRecord
   # Bucket key of the banner to show: the event's own, else its series'.
   def banner_key
     image_key.presence || (series && "#{IMAGE_PREFIX}/series/#{series}.webp")
+  end
+
+  # The Japanese banner: the event's own, else its series' Japanese one. A
+  # series may not have one yet, so clients fall back to banner_key when it
+  # doesn't load.
+  def banner_key_jp
+    image_key_jp.presence || (series && "#{IMAGE_PREFIX}/series/#{series}.ja.webp")
   end
 
   # Half-life used to decay stickers inside this event's section: half the

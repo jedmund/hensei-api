@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -584,6 +584,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_160000) do
     t.string "wiki_en"
     t.string "gamewith"
     t.string "kamigame"
+    t.string "image_key_jp"
     t.index ["ends_at"], name: "index_events_on_ends_at"
     t.index ["event_number"], name: "index_events_on_unite_and_fight_event_number", unique: true, where: "((kind = 3) AND (event_number IS NOT NULL))"
     t.index ["kind"], name: "index_events_on_kind"
@@ -1213,6 +1214,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_160000) do
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
     t.date "released_at"
+    t.string "short_name_en"
+    t.string "short_name_jp"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["released_at"], name: "index_raids_on_released_at"

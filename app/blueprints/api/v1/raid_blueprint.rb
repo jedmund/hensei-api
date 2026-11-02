@@ -15,6 +15,14 @@ module Api
 
         fields :slug, :level, :element, :player_count, :enemy_id, :summon_id, :quest_id, :released_at
 
+        # For places that already show the group (Home's tabs, the raid picker);
+        # null when the raid has none, so its name is used
+        field :short_name do |raid|
+          next nil if raid.short_name_en.blank? && raid.short_name_jp.blank?
+
+          { en: raid.short_name_en, ja: raid.short_name_jp }
+        end
+
         field :extra do |raid|
           raid.effective_extra
         end
@@ -33,6 +41,14 @@ module Api
             en: raid.name_en,
             ja: raid.name_jp
           }
+        end
+
+        # For places that already show the group (Home's tabs, the raid picker);
+        # null when the raid has none, so its name is used
+        field :short_name do |raid|
+          next nil if raid.short_name_en.blank? && raid.short_name_jp.blank?
+
+          { en: raid.short_name_en, ja: raid.short_name_jp }
         end
 
         field :extra do |raid|

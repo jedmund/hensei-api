@@ -17,6 +17,8 @@ class Raid < ApplicationRecord
 
   # Validations
   validates :name_en, presence: true
+  # Shown where the group already is (Home's tabs, the raid picker), e.g. "Lv200"
+  validates :short_name_en, :short_name_jp, length: { maximum: 64 }
   validates :slug, presence: true, uniqueness: true
   validates :slug, format: { with: SLUG_FORMAT }, allow_blank: true
   validates :group_id, presence: true
