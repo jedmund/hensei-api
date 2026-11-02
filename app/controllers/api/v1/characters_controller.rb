@@ -276,11 +276,13 @@ module Api
       end
 
       def set
-        if params[:style_swap] == 'true' && !uuid_format?(params[:id])
-          @character = Character.where(granblue_id: params[:id], style_swap: true).first
-        else
-          @character = find_by_any_id(Character, params[:id])
-        end
+        @character = if uuid_format?(params[:id])
+                       find_by_any_id(Character, params[:id])
+                     else
+                       # A style-shifted character shares its granblue id with
+                       # the base one: pick by style_swap, the base by default
+                       Character.find_by(granblue_id: params[:id], style_swap: params[:style_swap] == 'true')
+                     end
         return render_not_found_response('character') unless @character
 
         # Preload the skill graph so the :full view's skills/skill_links don't N+1.

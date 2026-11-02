@@ -40,6 +40,17 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(section['raids'].first['raid']['slug']).to eq(raid.slug)
       expect(section['raids'].first['parties'].map { |p| p['id'] }).to eq([top.id, second.id])
       expect(section['raids'].second['parties']).to eq([])
+      expect(section['raids'].map { |r| r['has_more'] }).to eq([false, false])
+    end
+
+    it 'says when a raid has more teams than it shows' do
+      stub_const('HomeFeed::PARTIES_PER_RAID', 1)
+
+      get '/api/v1/home'
+
+      raid_section = json_response['current'].sole['raids'].first
+      expect(raid_section['parties'].map { |p| p['id'] }).to eq([top.id])
+      expect(raid_section['has_more']).to be(true)
     end
 
     it 'fills in my_sticker for the signed-in viewer' do
@@ -240,6 +251,18 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(battles.first['raid']).to include('slug' => new_raid.slug, 'released_at' => new_raid.released_at.iso8601)
       expect(battles.first['recent'].map { |p| p['id'] }).to eq([newer_team.id, older_team.id])
       expect(battles.first['trending'].map { |p| p['id'] }).to eq([older_team.id, newer_team.id])
+      expect(battles.first['has_more']).to be(false)
+    end
+
+    it 'says when a battle has more teams than it shows' do
+      stub_const('HomeFeed::PARTIES_PER_BATTLE', 1)
+
+      get '/api/v1/home'
+
+      battle = json_response['new_battles'].sole
+      expect(battle['recent'].map { |p| p['id'] }).to eq([newer_team.id])
+      expect(battle['trending'].map { |p| p['id'] }).to eq([older_team.id])
+      expect(battle['has_more']).to be(true)
     end
 
     it 'leaves out teams below the quality bar, except in Solomonis zones' do
@@ -300,9 +323,21 @@ RSpec.describe 'Api::V1::Home', type: :request do
                                              'change' => 'release')
       expect(items.second['item']['change']).to eq('flb')
       expect(items.first['item']['character']).to include('element', 'season', 'series', 'style_swap')
-      expect(items.first['parties'].map { |party| party['id'] }).to eq([newer.id])
+      expect(items.first['recent'].map { |party| party['id'] }).to eq([newer.id])
       # Teams made before the uncap don't count, even if edited since
-      expect(items.second['parties'].map { |party| party['id'] }).to eq([uncapped.id])
+      expect(items.second['recent'].map { |party| party['id'] }).to eq([uncapped.id])
+      expect(items.map { |entry| entry['has_more'] }).to eq([false, false])
+    end
+
+    it 'says when an item has more teams than it shows' do
+      stub_const('HomeFeed::PARTIES_PER_ITEM', 1)
+      2.times { team_with(new_character) }
+
+      get '/api/v1/home'
+
+      entry = json_response['new_items'].sole
+      expect(entry['recent'].size).to eq(1)
+      expect(entry['has_more']).to be(true)
     end
 
     it 'leaves out teams below the quality bar' do
@@ -312,15 +347,27 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      expect(json_response['new_items'].sole['parties'].map { |party| party['id'] }).to eq([kept.id])
+      expect(json_response['new_items'].sole['recent'].map { |party| party['id'] }).to eq([kept.id])
     end
 
     it 'includes new items nobody has used yet, with no teams' do
       new_character
 
       get '/api/v1/home'
-      expect(json_response['new_items'].map { |entry| [entry['item']['id'], entry['parties']] })
-        .to eq([[new_character.id, []]])
+      expect(json_response['new_items'].map { |entry| [entry['item']['id'], entry['recent'], entry['trending']] })
+        .to eq([[new_character.id, [], []]])
+    end
+
+    it 'orders teams by most recent and by trending, like new battles' do
+      older = team_with(new_character, made: 2.days.ago)
+      newer = team_with(new_character, made: 1.hour.ago)
+      older.update_columns(participation_score: 2.0)
+
+      get '/api/v1/home'
+
+      entry = json_response['new_items'].sole
+      expect(entry['recent'].map { |party| party['id'] }).to eq([newer.id, older.id])
+      expect(entry['trending'].map { |party| party['id'] }).to eq([older.id, newer.id])
     end
   end
 end

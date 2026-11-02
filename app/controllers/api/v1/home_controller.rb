@@ -46,13 +46,19 @@ module Api
             FeaturedPartyBlueprint.render_as_hash(featured, **options)
           end,
           new_items: feed[:new_items].map do |entry|
-            { item: render_item(entry), parties: entry.party_ids.filter_map { |id| rendered[id] } }
+            {
+              item: render_item(entry),
+              recent: entry.recent_ids.filter_map { |id| rendered[id] },
+              trending: entry.trending_ids.filter_map { |id| rendered[id] },
+              has_more: entry.has_more
+            }
           end,
           new_battles: feed[:new_battles].map do |battle|
             {
               raid: RaidBlueprint.render_as_hash(battle.raid, view: :nested),
               recent: battle.recent_ids.filter_map { |id| rendered[id] },
-              trending: battle.trending_ids.filter_map { |id| rendered[id] }
+              trending: battle.trending_ids.filter_map { |id| rendered[id] },
+              has_more: battle.has_more
             }
           end
         }
@@ -65,7 +71,8 @@ module Api
           raids: section.raids.map do |raid_section|
             {
               raid: RaidBlueprint.render_as_hash(raid_section.raid, view: :list),
-              parties: raid_section.party_ids.filter_map { |id| rendered[id] }
+              parties: raid_section.party_ids.filter_map { |id| rendered[id] },
+              has_more: raid_section.has_more
             }
           end
         }
@@ -91,7 +98,7 @@ module Api
         ids = (feed[:current] + feed[:upcoming]).flat_map { |section| section.raids.flat_map(&:party_ids) }
         ids.concat(feed[:rising])
         ids.concat(feed[:staff_picks].map(&:party_id))
-        ids.concat(feed[:new_items].flat_map(&:party_ids))
+        ids.concat(feed[:new_items].flat_map { |entry| entry.recent_ids + entry.trending_ids })
         ids.concat(feed[:new_battles].flat_map { |battle| battle.recent_ids + battle.trending_ids })
         ids.uniq
       end
@@ -102,7 +109,7 @@ module Api
         sections.flat_map { |section| section['raids'].flat_map { |raid| raid['parties'] } } +
           payload['rising'] +
           payload['staff_picks'].map { |featured| featured['party'] } +
-          payload['new_items'].flat_map { |entry| entry['parties'] } +
+          payload['new_items'].flat_map { |entry| entry['recent'] + entry['trending'] } +
           payload['new_battles'].flat_map { |battle| battle['recent'] + battle['trending'] }
       end
 
