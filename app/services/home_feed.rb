@@ -13,7 +13,8 @@ class HomeFeed
   RISING_LIMIT = 9
   # Rising is hidden with fewer teams than this
   RISING_MINIMUM = 3
-  UPCOMING_WINDOW = 14.days
+  # The game's schedule is known about a month ahead
+  UPCOMING_WINDOW = 30.days
   UPCOMING_LIMIT = 3
   CURRENT_LIMIT = 6
   STAFF_PICKS_LIMIT = 12
