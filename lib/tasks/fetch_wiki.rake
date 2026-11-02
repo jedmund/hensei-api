@@ -38,7 +38,7 @@ namespace :granblue do
     fetch = Granblue::WikiDataFetch.new(type.constantize, ids: ids, rarities: rarities,
                                                           force: ENV['force'] == 'true', delay: delay)
 
-    summary = Character.without_skill_build { Summon.without_aura_build { fetch.call } }
+    summary = Character.without_skill_build { Summon.without_aura_build { Weapon.without_skill_build { fetch.call } } }
     if type == 'Character'
       CharacterSkills::SourceFetch.finish(summary, build: build, changed_out: ENV['changed_out'].presence)
     elsif ENV['changed_out'].present?
@@ -82,7 +82,8 @@ namespace :granblue do
     count = 0
     weapons.each_with_index do |weapon, i|
       begin
-        Granblue::WikiFetcher.new(delay: delay).fetch_and_store(weapon) # also refreshes the stored sources
+        # also refreshes the stored sources; the deploy build picks the weapons up
+        Weapon.without_skill_build { Granblue::WikiFetcher.new(delay: delay).fetch_and_store(weapon) }
         count += 1
         puts "  (#{i + 1}/#{total}) #{weapon.name_en}"
       rescue StandardError => e

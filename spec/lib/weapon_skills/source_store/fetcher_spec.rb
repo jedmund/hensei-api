@@ -68,6 +68,20 @@ RSpec.describe WeaponSkills::SourceStore::Fetcher do
       expect(weapon.weapon_skills).to be_empty
     end
 
+    it "keeps an imported page when fetching only the pages it follows, and sets its page kind" do
+      xeno = "{{Weapon/Common/Xeno\n|name=Xeno Sword\n|jps1_desc=…\n}}"
+      weapon = Weapon.without_skill_build { create(:weapon, wiki_en: "Xeno Sword", wiki_raw: xeno) }
+      wiki = fake_wiki_class.new(pages: { "Template:Weapon/Common/Xeno" => "<noinclude/>" },
+                                 expansions: { xeno => "<table class=\"weapon-skills\"></table>" })
+
+      fetcher(wiki).fetch_weapon(weapon, kinds: %w[expanded transclusion])
+
+      page = WeaponSource.find_by!(weapon_id: weapon.id, kind: "wiki_raw")
+      expect(page).to have_attributes(key: "Xeno Sword", body: xeno, page_kind: "series_template")
+      expect(WeaponSource.where(weapon_id: weapon.id, kind: "expanded")).to exist
+      expect(wiki.calls).not_to include([:fetch, "Xeno Sword"])
+    end
+
     it "follows a redirect and points wiki_en at the target" do
       weapon = create(:weapon, wiki_en: "Old Name")
       wiki = fake_wiki_class.new(pages: { "Old Name" => "#REDIRECT [[New Name]]", "New Name" => "plain page" })

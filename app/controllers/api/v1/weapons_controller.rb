@@ -225,7 +225,8 @@ module Api
         end
 
         begin
-          Granblue::WikiFetcher.new.fetch_and_store(@weapon)
+          # The reparse below builds the weapon; the save mustn't queue a second build.
+          Weapon.without_skill_build { Granblue::WikiFetcher.new.fetch_and_store(@weapon) }
         rescue Granblue::WikiError => e
           return render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
         rescue StandardError => e
@@ -249,7 +250,8 @@ module Api
       def reparse
         Granblue::EntityReparser.new(@weapon, refetch: params[:refetch] == 'true').reparse
         render json: WeaponBlueprint.render(@weapon.reload, view: :full, source_dates: true)
-      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
+      rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError,
+             WeaponSkills::BuildLock::Busy => e
         render json: { error: e.message }, status: :unprocessable_entity
       rescue Granblue::WikiError => e
         render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway

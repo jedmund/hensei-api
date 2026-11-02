@@ -19,9 +19,13 @@ module Granblue
     end
 
     def reparse
-      # The fetch saves wiki_raw, which would also queue CharacterSkills::BuildJob or
-      # SummonAuras::BuildJob; this reparse builds the entity itself.
-      Character.without_skill_build { Summon.without_aura_build { WikiFetcher.new.fetch_and_store(@entity) } } if @refetch
+      # The fetch saves wiki_raw, which would also queue CharacterSkills::BuildJob,
+      # SummonAuras::BuildJob or WeaponSkills::BuildJob; this reparse builds the entity itself.
+      if @refetch
+        Character.without_skill_build do
+          Summon.without_aura_build { Weapon.without_skill_build { WikiFetcher.new.fetch_and_store(@entity) } }
+        end
+      end
 
       case @entity
       when Weapon then reparse_weapon
@@ -48,7 +52,8 @@ module Granblue
       end
 
       log = StringIO.new
-      summary = WeaponSkills::Build::Runner.new(mode: 'write', ids: [@entity.granblue_id], all: true, io: log).call
+      summary = WeaponSkills::Build::Runner.new(mode: 'write', ids: [@entity.granblue_id], all: true, io: log,
+                                                lock_wait: LOCK_WAIT).call
       raise summary.errors.first.last if summary.errors.any?
       raise MissingWikiRawError, log.string.lines.first.to_s.strip if summary.built.zero?
 

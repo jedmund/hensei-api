@@ -50,7 +50,7 @@ namespace :granblue do
       total = weapons.count
       puts "Fetching #{weapon_kinds.join(', ')} for #{total} weapons…"
       weapons.each_with_index do |weapon, i|
-        fetcher.fetch_weapon(weapon, kinds: weapon_kinds)
+        Weapon.without_skill_build { fetcher.fetch_weapon(weapon, kinds: weapon_kinds) } # the deploy build picks them up
         puts "  (#{i + 1}/#{total}) #{weapon.granblue_id} #{weapon.name_en}"
       rescue StandardError => e
         errors << "#{weapon.granblue_id} (#{weapon.name_en}): #{e.class}: #{e.message}"
@@ -123,7 +123,7 @@ namespace :granblue do
     puts "  … #{plan.problems.size - 20} more" if plan.problems.size > 20
 
     if ENV["write"] == "true"
-      transfer.apply(plan)
+      Weapon.without_skill_build { transfer.apply(plan) }
       puts "Written. stored sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
     else
       puts "Dry run; nothing written. Add write=true to apply."
@@ -155,7 +155,7 @@ namespace :granblue do
 
     if ENV["refetch"] == "true" && result.stale?
       puts "Refetching…"
-      stats = freshness.refetch(result, log: ->(l) { puts l })
+      stats = Weapon.without_skill_build { freshness.refetch(result, log: ->(l) { puts l }) }
       puts "Requests: #{stats['requests']}; failures: #{fetcher.failures.size}"
       fetcher.failures.each { |f| puts "  - #{f[:kind]} #{f[:key]} (weapon #{f[:weapon]}): #{f[:error]}" }
     end

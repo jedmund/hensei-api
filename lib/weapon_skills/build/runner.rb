@@ -13,8 +13,13 @@ module WeaponSkills
     # weapon in scope). Scope: weapons with a stored wiki_raw source or existing slots,
     # narrowed by ids (granblue_ids) and series (weapon series slugs). A weapon that raises
     # is counted and logged, and the run continues.
+    #
+    # Runs hold the weapon build lock (BuildLock), waiting up to lock_wait seconds for a running
+    # build and raising BuildLock::Busy after that. A job passes 0 and re-queues itself.
     class Runner
       MODES = %w[shadow write].freeze
+      # Long enough for any single-weapon build (BuildJob, Reparse) to finish.
+      LOCK_WAIT = 10.minutes
 
       class Failed < StandardError; end
 
@@ -49,7 +54,8 @@ module WeaponSkills
         end
       end
 
-      def initialize(mode:, ids: nil, series: nil, all: false, diff_limit: nil, io: $stdout, context: nil) # rubocop:disable Metrics/ParameterLists
+      def initialize(mode:, ids: nil, series: nil, all: false, diff_limit: nil, io: $stdout, context: nil, # rubocop:disable Metrics/ParameterLists
+                     lock_wait: LOCK_WAIT)
         raise ArgumentError, "mode must be one of #{MODES.join(', ')} (got #{mode.inspect})" unless MODES.include?(mode)
 
         @mode = mode
@@ -59,9 +65,29 @@ module WeaponSkills
         @diff_limit = diff_limit
         @io = io
         @context = context
+        @lock_wait = lock_wait
       end
 
       def call
+        summary = nil
+        ran = BuildLock.build(wait: @lock_wait) { summary = run }
+        raise BuildLock::Busy, "another weapon-skill build is running" unless ran
+
+        summary
+      end
+
+      # Weapons in scope, ordered by granblue_id.
+      def scope
+        relation = Weapon.where(id: WeaponSource.where(kind: "wiki_raw").where.not(weapon_id: nil).select(:weapon_id))
+                         .or(Weapon.where(granblue_id: WeaponSkill.select(:weapon_granblue_id)))
+        relation = relation.where(granblue_id: @ids) if @ids
+        relation = relation.where(weapon_series_id: WeaponSeries.where(slug: @series).select(:id)) if @series
+        relation.order(:granblue_id)
+      end
+
+      private
+
+      def run
         started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         Weapon.reset_column_information # the fingerprint columns may be from this deploy's migration
         @context ||= Build.context
@@ -77,17 +103,6 @@ module WeaponSkills
         @io.puts summary_line
         @summary
       end
-
-      # Weapons in scope, ordered by granblue_id.
-      def scope
-        relation = Weapon.where(id: WeaponSource.where(kind: "wiki_raw").where.not(weapon_id: nil).select(:weapon_id))
-                         .or(Weapon.where(granblue_id: WeaponSkill.select(:weapon_granblue_id)))
-        relation = relation.where(granblue_id: @ids) if @ids
-        relation = relation.where(weapon_series_id: WeaponSeries.where(slug: @series).select(:id)) if @series
-        relation.order(:granblue_id)
-      end
-
-      private
 
       # → [[weapon, fingerprint]] for the weapons to build.
       def stale_weapons
