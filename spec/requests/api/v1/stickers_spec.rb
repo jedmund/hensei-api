@@ -42,9 +42,9 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(deletable.except('given').values).to all(be(true))
     end
 
-    it 'leaves deletable out of the public catalogue' do
+    it 'leaves deletable and the given count out of the public catalogue' do
       get '/api/v1/stickers'
-      expect(json_response['stickers']).to all(satisfy { |s| !s.key?('deletable') })
+      expect(json_response['stickers']).to all(satisfy { |s| !s.key?('deletable') && !s.key?('given_count') })
     end
 
     it 'ignores include_inactive for non-editors' do
@@ -91,6 +91,21 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       put "/api/v1/stickers/#{sticker.id}", params: { sticker: { meaning_en: 'New', active: false } }, headers: editor_headers
       expect(response).to have_http_status(:ok)
       expect(sticker.reload).to have_attributes(meaning_en: 'New', active: false)
+    end
+
+    it 'refuses to change the slug' do
+      put "/api/v1/stickers/#{sticker.id}", params: { sticker: { slug: 'renamed', meaning_en: 'New' } },
+                                             headers: editor_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(sticker.reload).to have_attributes(slug: sticker.slug)
+      expect(sticker.meaning_en).not_to eq('New')
+    end
+
+    it 'accepts the unchanged slug, as the editor sends it' do
+      put "/api/v1/stickers/#{sticker.id}", params: { sticker: { slug: sticker.slug, meaning_en: 'New' } },
+                                             headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(sticker.reload.meaning_en).to eq('New')
     end
 
     it 'returns 401 for non-editors' do
@@ -322,9 +337,67 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it 'returns 401 for non-editors' do
+    it 'returns 401 for non-editors and leaves the order alone' do
       put '/api/v1/stickers/reorder', params: { ids: [b.id, a.id] }, headers: member_headers
       expect(response).to have_http_status(:unauthorized)
+      expect([a.reload.position, b.reload.position]).to eq([0, 1])
+    end
+
+    it 'returns 401 when signed out' do
+      put '/api/v1/stickers/reorder', params: { ids: [b.id, a.id] }
+      expect(response).to have_http_status(:unauthorized)
+      expect(a.reload.position).to eq(0)
+    end
+  end
+
+  describe 'GET /api/v1/stickers/:id' do
+    let!(:sticker) { create(:sticker, :inactive, slug: 'retired', image_key: 'icons/stickers/stamp3.png') }
+
+    it 'finds a sticker by slug or id for editors, in the editor view' do
+      get '/api/v1/stickers/retired', headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(json_response).to include('id' => sticker.id, 'slug' => 'retired', 'active' => false, 'deletable' => true)
+      expect(json_response['image_url']).to start_with('icons/stickers/stamp3.png?v=')
+
+      get "/api/v1/stickers/#{sticker.id}", headers: editor_headers
+      expect(json_response['slug']).to eq('retired')
+    end
+
+    it 'says how often a sticker was given, and that a given one cannot be deleted' do
+      get '/api/v1/stickers/retired', headers: editor_headers
+      expect(json_response).to include('given_count' => 0, 'deletable' => true)
+
+      create_list(:party_sticker, 2, sticker: sticker)
+      get '/api/v1/stickers/retired', headers: editor_headers
+      expect(json_response).to include('given_count' => 2, 'deletable' => false)
+    end
+
+    it 'returns 404 for an unknown sticker' do
+      get '/api/v1/stickers/nope', headers: editor_headers
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'is for editors only' do
+      get '/api/v1/stickers/retired', headers: member_headers
+      expect(response).to have_http_status(:unauthorized)
+      get '/api/v1/stickers/retired'
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'validation on write' do
+    let!(:sticker) { create(:sticker) }
+
+    it 'rejects a missing active flag' do
+      put "/api/v1/stickers/#{sticker.id}", params: { sticker: { active: '' } }, headers: editor_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(sticker.reload.active).to be(true)
+    end
+
+    it 'ignores image keys sent as params' do
+      put "/api/v1/stickers/#{sticker.id}", params: { sticker: { image_key: 'weapons/x.png' } }, headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(sticker.reload.image_key).to be_nil
     end
   end
 end

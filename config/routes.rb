@@ -244,7 +244,7 @@ Rails.application.routes.draw do
     resources :weapon_skill_boost_types, only: %i[index show]
 
     # The sticker catalogue (editors manage it)
-    resources :stickers, only: %i[index create update destroy] do
+    resources :stickers, only: %i[index show create update destroy] do
       collection do
         put :reorder
         get :library
@@ -441,6 +441,9 @@ Rails.application.routes.draw do
         get :schema, on: :collection
       end
       resources :artifact_skills, only: :index do
+        get :schema, on: :collection
+      end
+      resources :stickers, only: :index do
         get :schema, on: :collection
       end
     end
