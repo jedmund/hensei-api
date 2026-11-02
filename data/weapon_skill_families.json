@@ -671,6 +671,16 @@
     "icon_stems": {}
   },
   {
+    "name": "Impulse",
+    "aura_boostable": false,
+    "boosts": [
+      "DMG Supp.",
+      "DMG Cap (Sp.)"
+    ],
+    "icon_stems": {},
+    "color": null
+  },
+  {
     "name": "Initiation",
     "aura_boostable": false,
     "boosts": [

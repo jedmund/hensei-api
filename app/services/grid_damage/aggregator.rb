@@ -26,10 +26,12 @@ module GridDamage
     # producing skill for per-line breakdowns; `base_value`/`multiplier` record the
     # pre-amplification value and the enhancement factor applied to it. `panel_hidden`
     # marks a skill the game counts in Estimated DMG but doesn't list on the panel.
+    # `crit_gated` marks a boost that applies only once critical hits are guaranteed
+    # (a `critical_capped` condition); Calculator#panel drops it below Critical 100%.
     Contribution = Struct.new(:boost_type, :series, :value, :main_hand_only, :mainhand,
                               :shared_cap_group, :cap, :amplifiable, :source_ids,
                               :source_label, :source_icon, :base_value, :multiplier,
-                              :stacking_group, :panel_hidden,
+                              :stacking_group, :panel_hidden, :crit_gated,
                               keyword_init: true)
 
     # An aggregated boost_type. `by_series` is set only for multiplicative_by_series;

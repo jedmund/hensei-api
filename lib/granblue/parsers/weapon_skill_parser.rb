@@ -149,7 +149,7 @@ module Granblue
         Aramis Ars Arts Ascendancy Athos Blessing Bloodrage Blow Charge
         Convergence Craft Dominion Enforcement Excelsior Exertion Fathoms
         Fortified Fortitude Frailty Godblade Godflair Godheart Godshield
-        Godstrike Honing Initiation Marvel Pact Parity Persistence Plenum
+        Godstrike Honing Impulse Initiation Marvel Pact Parity Persistence Plenum
         Porthos Quenching Quintessence Resonator Rigor Rubell Ruination
         Sovereign Spectacle Strike Supremacy Surge
         Ultio Utopia Valuables Vitality Vivification Voltage Wrath

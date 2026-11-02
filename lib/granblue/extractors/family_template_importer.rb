@@ -23,7 +23,7 @@ module Granblue
         "Fulgor Elatio", "Fulgor Fortis", "Fulgor Impetus", "Fulgor Sanatio", "Garrison",
         "Glory", "Godblade", "Godflair", "Godheart", "Godshield",
         "Godstrike", "Grace", "Grand Epic", "Haunt", "Healing",
-        "Heed", "Heroism", "Honing", "Hunt", "Impalement",
+        "Heed", "Heroism", "Honing", "Hunt", "Impalement", "Impulse",
         "Initiation", "Insignia", "Majesty", "Maneuver", "Marvel",
         "Might", "Mystery", "Onslaught", "Pact", "Parity",
         "Persistence", "Plenum", "Porthos", "Precocity", "Preemptive Barrier",
