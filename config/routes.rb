@@ -437,6 +437,9 @@ Rails.application.routes.draw do
       resources :awakenings, only: :index do
         get :schema, on: :collection
       end
+      resources :artifact_skills, only: :index do
+        get :schema, on: :collection
+      end
     end
 
     # Pending phantom claims for current user (outside crew context)
