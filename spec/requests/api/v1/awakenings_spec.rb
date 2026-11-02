@@ -87,7 +87,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       post url, params: { image: Base64.strict_encode64('hello world') }, headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body['error']).to eq('Icon must be a PNG')
+      expect(response.parsed_body['error']).to eq('Image must be a PNG')
       expect(IconStorage).not_to have_received(:put)
     end
 
