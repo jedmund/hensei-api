@@ -112,7 +112,8 @@ RSpec.describe Granblue::Parsers::Wiki do
     end
 
     it "fails a reparse whose source is missing without calling the wiki" do
-      weapon = create(:weapon, wiki_en: "Unfetched", wiki_raw: "{{Weapon/Common/Xeno\n|name=Unfetched\n}}")
+      weapon = create(:weapon, wiki_en: "Unfetched")
+      put_source(weapon, :wiki_raw, "{{Weapon/Common/Xeno\n|name=Unfetched\n}}") # untitled: not in the store
 
       expect { described_class.offline { Granblue::EntityReparser.new(weapon).reparse } }
         .to raise_error(Granblue::EntityReparser::MissingWikiRawError)
