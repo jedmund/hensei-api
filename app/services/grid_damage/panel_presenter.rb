@@ -137,11 +137,16 @@ module GridDamage
       ["rupie_ax", nil, "Rupie Gain", "ax-rupie-gain", "ax"]
     ].freeze
 
+    # Decimal places the game keeps internally. The API returns values at this
+    # precision; clients round for display.
+    PRECISION = 4
+
     FLAT_KEYS = %w[dmg_supp na_supp na_supp_sp skill_dmg_supp skill_supp_sp ca_supp
                    ca_supp_ax skill_supp_ax hp_fixed].freeze
 
     # → { enhancements: {optimus:, omega:, taboo:}, lines: [{key, series, label,
-    #    label_slug, group, value, display, capped}] } for the party at the given state.
+    #    label_slug, group, value, display, flat, capped}] } for the party at the given
+    #    state. `flat` marks counts (supplements, fixed HP); every other value is a percent.
     def present(party, state: {})
       computed = Calculator.panel(party, state: state)
       agg = computed[:agg]
@@ -151,7 +156,7 @@ module GridDamage
       lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
       lines += leftover_lines(agg, contributions)
       lines += hidden_lines(computed[:hidden_agg], computed[:hidden_contributions], element)
-      { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(2) }, lines: lines }
+      { enhancements: computed[:enhancements].transform_values { |v| v.to_f.round(PRECISION) }, lines: lines }
     end
 
     # Skills the game counts in Estimated DMG without a panel line (MjthwV: Advocatus
@@ -176,8 +181,9 @@ module GridDamage
         label: resolve_element(label, element&.capitalize),
         label_slug: resolve_element(slug, element),
         group: group,
-        value: value.round(2),
+        value: value.round(PRECISION),
         display: display_value(key, value),
+        flat: FLAT_KEYS.include?(key),
         capped: series.nil? && result.capped == true,
         sources: line_sources(result, series),
         breakdown: breakdown_for(agg, contributions, key, series)
@@ -205,15 +211,15 @@ module GridDamage
       return overskill_breakdown(agg, feeds) if feeds
 
       matching = contributions.select { |c| c.boost_type == key && (series.nil? || c.series == series) }
-      matching.group_by { |c| [c.source_label, c.source_icon, c.value.to_f.round(2)] }
+      matching.group_by { |c| [c.source_label, c.source_icon, c.value.to_f.round(PRECISION)] }
               .map do |(label, icon, value), group|
         first = group.first
         {
           name: label || { en: key.tr("_", " "), ja: nil },
           icon: icon,
           value: value,
-          base: first.base_value&.to_f&.round(2),
-          multiplier: first.multiplier&.to_f&.round(2),
+          base: first.base_value&.to_f&.round(PRECISION),
+          multiplier: first.multiplier&.to_f&.round(PRECISION),
           count: group.size
         }
       end
@@ -226,7 +232,7 @@ module GridDamage
         next if over.zero?
 
         { name: { en: "#{label_en} over cap", ja: "#{label_ja}の上限超過分" }, icon: nil,
-          value: (over * rate).round(2), base: over.round(2), multiplier: rate, count: 1 }
+          value: (over * rate).round(PRECISION), base: over.round(PRECISION), multiplier: rate, count: 1 }
       end
     end
 
@@ -260,7 +266,7 @@ module GridDamage
     def display_value(key, value)
       return format("%+d", value).gsub(/(\d)(?=(\d{3})+\z)/, '\1,') if FLAT_KEYS.include?(key)
 
-      rounded = value.round(2)
+      rounded = value.round(PRECISION)
       rounded = rounded.to_i if rounded == rounded.to_i
       "#{rounded}%"
     end
@@ -289,7 +295,8 @@ module GridDamage
         next if value.zero?
 
         { key: key, series: nil, label: key.tr("_", " "), label_slug: nil, group: "other",
-          value: value.round(2), display: display_value(key, value),
+          value: value.round(PRECISION), display: display_value(key, value),
+          flat: FLAT_KEYS.include?(key),
           capped: result.capped == true, sources: line_sources(result, nil),
           breakdown: breakdown_for(agg, contributions, key, nil) }
       end
