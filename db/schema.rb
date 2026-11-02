@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -585,6 +585,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_170000) do
     t.string "gamewith"
     t.string "kamigame"
     t.string "image_key_jp"
+    t.integer "second_element"
     t.index ["ends_at"], name: "index_events_on_ends_at"
     t.index ["event_number"], name: "index_events_on_unite_and_fight_event_number", unique: true, where: "((kind = 3) AND (event_number IS NOT NULL))"
     t.index ["kind"], name: "index_events_on_kind"

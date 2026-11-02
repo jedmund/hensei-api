@@ -40,8 +40,19 @@ RSpec.describe PartyParticipation::EventRanking do
     newest_dark = create(:party, :complete, raid: raid, visibility: 1, element: dark, last_updated: 1.hour.ago)
     create(:party, :complete, raid: raid, visibility: 3, element: dark, last_updated: Time.current)
 
-    result = described_class.call(raid_ids: [raid.id], window_event: nil, element: dark)
+    result = described_class.call(raid_ids: [raid.id], window_event: nil, elements: [dark])
     expect(result[raid.id]).to eq([newest_dark.id, older_dark.id])
+  end
+
+  it 'ranks parties of either element for a two-element event' do
+    fire = GranblueEnums::ELEMENTS[:Fire]
+    dark = GranblueEnums::ELEMENTS[:Dark]
+    fire_party = create(:party, :complete, raid: raid, visibility: 1, element: fire, last_updated: 2.hours.ago)
+    dark_party = create(:party, :complete, raid: raid, visibility: 1, element: dark, last_updated: 1.hour.ago)
+    create(:party, :complete, raid: raid, visibility: 1, element: GranblueEnums::ELEMENTS[:Water])
+
+    result = described_class.call(raid_ids: [raid.id], window_event: nil, elements: [fire, dark])
+    expect(result[raid.id]).to eq([dark_party.id, fire_party.id])
   end
 
   it 'leaves out parties below the quality bar, scored or not' do

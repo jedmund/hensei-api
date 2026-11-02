@@ -18,6 +18,12 @@ FactoryBot.define do
       element { 'Fire' }
     end
 
+    trait :records_of_the_ten do
+      kind { :records_of_the_ten }
+      series { 'records_of_the_ten' }
+      element { 'Water' }
+    end
+
     trait :hidden do
       status { :hidden }
     end

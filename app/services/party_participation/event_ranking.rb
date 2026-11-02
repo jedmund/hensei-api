@@ -13,7 +13,7 @@ module PartyParticipation
   # participation_score, then with the most recently updated public parties,
   # so a raid isn't empty before anyone has given stickers. Only parties that
   # meet the Gallery's quality bar (Party.quality) are ranked. For element-themed
-  # events (Unite and Fight, Dread Barrage), only parties of the element
+  # events (Unite and Fight, Dread Barrage, ...), only parties of the elements
   # advantaged against the event's boss are ranked.
   #
   # Returns { raid_id => [party_id, …] } with every raid present (possibly []).
@@ -24,12 +24,12 @@ module PartyParticipation
 
     # raid_ids: the raids to rank parties for, in order
     # window_event: the event whose activity window scores parties, or nil
-    # element: integer party element to limit to (element-themed events: the
-    #   advantage element), or nil
-    def initialize(raid_ids:, window_event:, element: nil, limit: 6, now: Time.current)
+    # elements: integer party elements to limit to (element-themed events: the
+    #   advantage elements, two for Records of the Ten's Fire and Dark run), or nil
+    def initialize(raid_ids:, window_event:, elements: nil, limit: 6, now: Time.current)
       @raid_ids = raid_ids
       @window_event = window_event
-      @element = element
+      @elements = elements
       @limit = limit
       @now = now
     end
@@ -54,7 +54,7 @@ module PartyParticipation
 
     def candidates
       scope = Party.quality.where(raid_id: @raid_ids, visibility: 1)
-      scope = scope.where(element: @element) if @element
+      scope = scope.where(element: @elements) if @elements
       scope
     end
 

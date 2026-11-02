@@ -148,6 +148,28 @@ RSpec.describe 'Api::V1::Home', type: :request do
     it_behaves_like 'advantage ordering', :dread_barrage
   end
 
+  describe 'Records of the Ten ordering' do
+    it_behaves_like 'advantage ordering', :records_of_the_ten
+
+    it 'shows parties of both elements for a Fire and Dark run' do
+      event = create(:event, :current, :records_of_the_ten, element: 'Wind', second_element: 'Light',
+                                                            created_at: 3.days.ago)
+      create(:event_raid, event: event, raid: raid)
+      el = GranblueEnums::ELEMENTS
+      fire, dark, water = %i[Fire Dark Water].map do |element|
+        create(:party, :complete, raid: raid, visibility: 1).tap { |p| p.update_columns(element: el[element]) }
+      end
+      give(fire, sticker: sticker)
+      2.times { give(dark, sticker: sticker) }
+      give(water, sticker: sticker)
+
+      get '/api/v1/home'
+      section = json_response['current'].sole
+      expect(section['event']['advantage_elements']).to eq([el[:Fire], el[:Dark]])
+      expect(section['raids'].sole['parties'].map { |p| p['id'] }).to eq([dark.id, fire.id])
+    end
+  end
+
   describe 'non-themed events' do
     let!(:event) { create(:event, :current, kind: :farming, element: 'Water', created_at: 3.days.ago) }
     let!(:fire_party) { create(:party, :complete, raid: raid, visibility: 1) }

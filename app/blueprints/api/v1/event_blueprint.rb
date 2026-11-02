@@ -17,9 +17,21 @@ module Api
         event.element_value
       end
 
+      # A second boss element (integer), or null: Records of the Ten's Fire and
+      # Dark run has Wind and Light bosses.
+      field :second_element do |event|
+        event.second_element_value
+      end
+
       # The element teams bring against that boss (integer), or null.
       field :advantage_element do |event|
         event.advantage_element
+      end
+
+      # Every element teams can bring (integers): one, or two for a second
+      # boss element. Empty without an element.
+      field :advantage_elements do |event|
+        event.advantage_elements
       end
 
       # Host-relative, like StickerBlueprint. Falls back to the series banner

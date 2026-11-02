@@ -74,7 +74,9 @@ class HomeFeed
                  .where.not(id: event.id)
 
     if event.element_themed?
-      scope = scope.where(element: event.element) if event.element
+      # The same boss element(s): Records of the Ten's Fire and Dark run
+      # follows the last Fire and Dark run, not a Wind-only one
+      scope = scope.where(element: event.element, second_element: event.second_element) if event.element
     else
       raid_ids = event.event_raids.map(&:raid_id)
       return nil if raid_ids.empty?
@@ -113,7 +115,7 @@ class HomeFeed
     ranked = PartyParticipation::EventRanking.call(
       raid_ids: raids.map(&:id),
       window_event: window_event,
-      element: event.element_themed? ? event.advantage_element : nil,
+      elements: event.element_themed? ? event.advantage_elements.presence : nil,
       limit: PARTIES_PER_RAID + 1,
       now: @now
     )

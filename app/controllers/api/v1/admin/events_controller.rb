@@ -31,6 +31,7 @@ module Api
           %i[name_en name_jp kind series status event_number starts_at ends_at image_key
              created_at updated_at].each { |name| field name }
           field :element, value: ->(event) { event.element_value }
+          field :second_element, value: ->(event) { event.second_element_value }
           field :raid_count, select: 'SELECT COUNT(*) FROM event_raids WHERE event_raids.event_id = events.id'
 
           default_fields :name_en, :name_jp, :kind, :element, :event_number, :starts_at, :ends_at, :raid_count
@@ -39,7 +40,7 @@ module Api
 
           writable Api::V1::EventsController::PERMITTED
           enums kind: Event.kinds, series: Event::SERIES.index_by(&:itself), status: Event.statuses,
-                element: GranblueEnums::ELEMENTS
+                element: GranblueEnums::ELEMENTS, second_element: GranblueEnums::ELEMENTS
         end
 
         def index

@@ -10,7 +10,7 @@ module Api
 
       # What create and update accept; the admin schema publishes it. raid_ids
       # replaces the linked raids (Event#assign_raid_ids), not an attribute.
-      PERMITTED = [:name_en, :name_jp, :kind, :series, :element, :starts_at, :ends_at, :event_number,
+      PERMITTED = [:name_en, :name_jp, :kind, :series, :element, :second_element, :starts_at, :ends_at, :event_number,
                    :wiki_en, :gamewith, :kamigame, { raid_ids: [] }].freeze
       EDITOR_ACTIONS = %i[create update approve hide upload_image sync].freeze
       SCOPES = %w[current upcoming past].freeze
@@ -147,7 +147,9 @@ module Api
       def event_attributes
         attrs = event_params.except(:raid_ids)
         attrs[:series] = attrs[:series].presence if attrs.key?(:series)
-        attrs[:element] = Event.normalize_element(attrs[:element]) if attrs.key?(:element)
+        %i[element second_element].each do |key|
+          attrs[key] = Event.normalize_element(attrs[key]) if attrs.key?(key)
+        end
         attrs
       end
     end
