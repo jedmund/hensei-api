@@ -32,12 +32,14 @@ class HomeFeed
   }.freeze
 
   Section = Struct.new(:event, :previous_event, :raids, keyword_init: true)
-  RaidSection = Struct.new(:raid, :party_ids, keyword_init: true)
-  NewItem = Struct.new(:type, :item, :change, :party_ids, keyword_init: true)
-  NewBattle = Struct.new(:raid, :recent_ids, :trending_ids, keyword_init: true)
+  # has_more: more teams qualify than party_ids holds (the web shows "See all"
+  # only then). Each query fetches one extra id to find out.
+  RaidSection = Struct.new(:raid, :party_ids, :has_more, keyword_init: true)
+  NewItem = Struct.new(:type, :item, :change, :party_ids, :has_more, keyword_init: true)
+  NewBattle = Struct.new(:raid, :recent_ids, :trending_ids, :has_more, keyword_init: true)
 
   # The cached GET /home payload (see HomeController)
-  CACHE_KEY = 'home/v3'
+  CACHE_KEY = 'home/v4'
 
   def self.call(**)
     new(**).call
@@ -112,10 +114,13 @@ class HomeFeed
       raid_ids: raids.map(&:id),
       window_event: window_event,
       element: event.element_themed? ? event.advantage_element : nil,
-      limit: PARTIES_PER_RAID,
+      limit: PARTIES_PER_RAID + 1,
       now: @now
     )
-    raids.map { |raid| RaidSection.new(raid: raid, party_ids: ranked.fetch(raid.id, [])) }
+    raids.map do |raid|
+      ids = ranked.fetch(raid.id, [])
+      RaidSection.new(raid: raid, party_ids: ids.first(PARTIES_PER_RAID), has_more: ids.size > PARTIES_PER_RAID)
+    end
   end
 
   # The top teams by Party.rising (shared with the Gallery's `sort=rising`).
@@ -134,7 +139,9 @@ class HomeFeed
       model.where(latest_date: since..).order(latest_date: :desc).limit(NEW_ITEMS_LIMIT * 2).map { |item| [type, item] }
     end
     candidates.sort_by { |type, item| [-item.latest_date.jd, type, item.id] }.first(NEW_ITEMS_LIMIT).map do |type, item|
-      NewItem.new(type: type, item: item, change: item_change(item), party_ids: parties_using(type, item))
+      ids = parties_using(type, item)
+      NewItem.new(type: type, item: item, change: item_change(item),
+                  party_ids: ids.first(PARTIES_PER_ITEM), has_more: ids.size > PARTIES_PER_ITEM)
     end
   end
 
@@ -146,13 +153,15 @@ class HomeFeed
     since = @now.in_time_zone('Asia/Tokyo').to_date - NEW_BATTLES_WINDOW
     Raid.includes(:group).where(released_at: since..)
         .order(released_at: :desc, id: :asc).limit(NEW_BATTLES_LIMIT).map do |raid|
-      teams = Party.quality.where(visibility: 1, raid_id: raid.id).limit(PARTIES_PER_BATTLE)
+      teams = Party.quality.where(visibility: 1, raid_id: raid.id).limit(PARTIES_PER_BATTLE + 1)
+      recent = teams.order(created_at: :desc, id: :asc).pluck(:id)
       NewBattle.new(
         raid: raid,
-        recent_ids: teams.order(created_at: :desc, id: :asc).pluck(:id),
+        recent_ids: recent.first(PARTIES_PER_BATTLE),
         trending_ids: teams.order(
           Arel.sql("#{Party.rising_rank_sql(@now)} NULLS LAST, parties.created_at DESC, parties.id ASC")
-        ).pluck(:id)
+        ).pluck(:id).first(PARTIES_PER_BATTLE),
+        has_more: recent.size > PARTIES_PER_BATTLE
       )
     end
   end
@@ -166,7 +175,7 @@ class HomeFeed
          .where(id: grid.where(fk => item.id).select(:party_id))
          .where(created_at: since..)
          .order(Arel.sql('parties.participation_score DESC NULLS LAST, parties.created_at DESC, parties.id ASC'))
-         .limit(PARTIES_PER_ITEM)
+         .limit(PARTIES_PER_ITEM + 1)
          .pluck(:id)
   end
 

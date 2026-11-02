@@ -46,13 +46,14 @@ module Api
             FeaturedPartyBlueprint.render_as_hash(featured, **options)
           end,
           new_items: feed[:new_items].map do |entry|
-            { item: render_item(entry), parties: entry.party_ids.filter_map { |id| rendered[id] } }
+            { item: render_item(entry), parties: entry.party_ids.filter_map { |id| rendered[id] }, has_more: entry.has_more }
           end,
           new_battles: feed[:new_battles].map do |battle|
             {
               raid: RaidBlueprint.render_as_hash(battle.raid, view: :nested),
               recent: battle.recent_ids.filter_map { |id| rendered[id] },
-              trending: battle.trending_ids.filter_map { |id| rendered[id] }
+              trending: battle.trending_ids.filter_map { |id| rendered[id] },
+              has_more: battle.has_more
             }
           end
         }
@@ -65,7 +66,8 @@ module Api
           raids: section.raids.map do |raid_section|
             {
               raid: RaidBlueprint.render_as_hash(raid_section.raid, view: :list),
-              parties: raid_section.party_ids.filter_map { |id| rendered[id] }
+              parties: raid_section.party_ids.filter_map { |id| rendered[id] },
+              has_more: raid_section.has_more
             }
           end
         }
