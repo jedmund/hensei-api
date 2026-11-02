@@ -1,16 +1,28 @@
 # frozen_string_literal: true
 
 class ArtifactSkill < ApplicationRecord
+  # Cygames' score bucket for a skill (an artifact's attack, defense and
+  # special scores), as the game sends it in skill*_info.score_category.
+  # Filled in on artifact import (ArtifactImportService) when blank.
+  SCORE_CATEGORIES = { attack: 1, defense: 2, special: 3 }.freeze
+
+  # The most base values a skill has: one per quality tier (1-5)
+  MAX_BASE_VALUES = 5
+
   # Enums
-  enum :skill_group, { group_i: 1, group_ii: 2, group_iii: 3 }
-  enum :polarity, { positive: 'positive', negative: 'negative' }
+  enum :skill_group, { group_i: 1, group_ii: 2, group_iii: 3 }, validate: true
+  enum :polarity, { positive: 'positive', negative: 'negative' }, validate: true
 
   # Validations
   validates :skill_group, presence: true
-  validates :modifier, presence: true, uniqueness: { scope: :skill_group }
+  validates :modifier, presence: true, uniqueness: { scope: :skill_group },
+                       numericality: { only_integer: true, greater_than: 0 }
   validates :name_en, presence: true
   validates :name_jp, presence: true
   validates :polarity, presence: true
+  validates :growth, numericality: true, allow_nil: true
+  validates :score_category, inclusion: { in: SCORE_CATEGORIES.values }, allow_nil: true
+  validate :base_values_format
 
   # Scopes
   scope :for_slot, ->(slot) {
@@ -99,5 +111,21 @@ class ArtifactSkill < ApplicationRecord
     # Quality 1-5 maps to index 0-4
     index = (quality - 1).clamp(0, base_values.size - 1)
     base_values[index]
+  end
+
+  private
+
+  # A list of up to five numbers, one per quality tier. A null is a value
+  # nobody has recorded yet (valid_strength? accepts anything then).
+  def base_values_format
+    unless base_values.is_a?(Array)
+      errors.add(:base_values, 'must be a list')
+      return
+    end
+
+    errors.add(:base_values, "can have at most #{MAX_BASE_VALUES} values") if base_values.size > MAX_BASE_VALUES
+    return if base_values.all? { |value| value.nil? || value.is_a?(Numeric) }
+
+    errors.add(:base_values, 'must be numbers')
   end
 end

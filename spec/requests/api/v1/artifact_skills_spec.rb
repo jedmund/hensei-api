@@ -87,4 +87,73 @@ RSpec.describe 'Artifact Skills API', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+  describe 'PATCH /api/v1/artifact_skills/:id' do
+    let(:skill) { ArtifactSkill.find_by!(skill_group: :group_i, modifier: 1) }
+    let(:path) { "/api/v1/artifact_skills/#{skill.id}" }
+
+    def auth_headers(account)
+      token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+      { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
+    end
+
+    let(:editor_headers) { auth_headers(create(:user, role: 7)) }
+
+    it 'lets an editor change the permitted fields' do
+      patch path, params: { name_en: 'Attack', game_name_en: 'ATK Up', growth: 250, polarity: 'negative',
+                            base_values: [1, 2.5, 3], suffix_en: '%' }.to_json, headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      skill.reload
+      expect(skill).to have_attributes(name_en: 'Attack', game_name_en: 'ATK Up', polarity: 'negative',
+                                       base_values: [1, 2.5, 3], suffix_en: '%')
+      expect(skill.growth).to eq(250)
+    end
+
+    it 'ignores the group and modifier, which saved artifacts store skills by' do
+      patch path, params: { skill_group: 'group_iii', modifier: 40, name_en: 'Attack' }.to_json,
+                  headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(skill.reload).to have_attributes(skill_group: 'group_i', modifier: 1, name_en: 'Attack')
+    end
+
+    it 'ignores the score category, which comes from imports' do
+      patch path, params: { score_category: 3 }.to_json, headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(skill.reload.score_category).to be_nil
+    end
+
+    it 'answers invalid values with 422 and field errors' do
+      patch path, params: { polarity: 'neutral', base_values: [1, 'two'], growth: 'fast' }.to_json,
+                  headers: editor_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body['errors'].keys).to include('polarity', 'base_values', 'growth')
+      expect(skill.reload.name_en).to eq('ATK')
+    end
+
+    # Rails' deep_munge compacts arrays in JSON params, so a null can't be
+    # sent in place: the editor sends quality tiers with no gaps instead.
+    it 'drops nulls from base values, as Rails does for every JSON array' do
+      patch path, params: { base_values: [1, nil, 3] }.to_json, headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(skill.reload.base_values).to eq([1, 3])
+    end
+
+    it 'rejects a user below the editor role' do
+      patch path, params: { name_en: 'Hijacked' }.to_json, headers: auth_headers(create(:user, role: 3))
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(skill.reload.name_en).to eq('ATK')
+    end
+
+    it 'rejects a signed-out request' do
+      patch path, params: { name_en: 'Hijacked' }.to_json, headers: { 'Content-Type' => 'application/json' }
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(skill.reload.name_en).to eq('ATK')
+    end
+  end
 end
