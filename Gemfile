@@ -33,7 +33,9 @@ gem 'responders'
 # Parse emoji to strings
 gem 'gemoji-parser'
 
-# Mini replacement for RMagick
+# Image format and dimensions from file headers, for upload checks (no ImageMagick needed)
+gem 'fastimage', '~> 2.4'
+# Converts images in rake tasks run locally (events:fetch_series_images)
 gem 'mini_magick'
 
 # An awesome replacement for acts_as_nested_set and better_nested_set.

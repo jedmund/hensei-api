@@ -5,6 +5,9 @@
 # Used by Difficulty tier icon uploads (PNG only, the defaults), sticker images
 # (PNG or WebP) and event banners (PNG, WebP or JPEG). The result carries the
 # detected format so callers can pick a file extension and content type.
+#
+# Format and dimensions come from the file's header (FastImage), so no image
+# library has to be installed on the server. Uploads are stored as sent.
 class IconUploadValidator
   PNG_SIGNATURE = "\x89PNG\r\n\x1A\n".b
   JPEG_SIGNATURE = "\xFF\xD8\xFF".b
@@ -12,7 +15,7 @@ class IconUploadValidator
   DEFAULT_MAX_BYTES = 256 * 1024
   DEFAULT_FORMATS = %w[PNG].freeze
 
-  # Format name (as ImageMagick reports it) => [file extension, content type]
+  # Format name => [file extension, content type]
   FORMATS = {
     'PNG' => ['png', 'image/png'],
     'WEBP' => ['webp', 'image/webp'],
@@ -41,29 +44,26 @@ class IconUploadValidator
     @formats = formats
   end
 
+  # FastImage's type for each format
+  HEADER_TYPES = { 'PNG' => :png, 'JPEG' => :jpeg, 'WEBP' => :webp }.freeze
+
   def call
     return invalid('No image data provided') if @bytes.blank?
-    return invalid("Icon must be #{@max_bytes / 1024}KB or smaller") if @bytes.bytesize > @max_bytes
+    return invalid("Image must be #{@max_bytes / 1024}KB or smaller") if @bytes.bytesize > @max_bytes
 
     format = signature_format
     return invalid(format_error) unless format && @formats.include?(format)
 
-    Tempfile.create(['icon', ".#{FORMATS.dig(format, 0)}"]) do |tmp|
-      tmp.binmode
-      tmp.write(@bytes)
-      tmp.flush
+    header = FastImage.new(StringIO.new(@bytes.b))
+    width, height = header.size
+    # The header has to agree with the signature, and give dimensions
+    return invalid('Image could not be read') unless header.type == HEADER_TYPES[format] && width && height
 
-      image = MiniMagick::Image.open(tmp.path)
-      return invalid(format_error) unless image.type == format
-
-      if image.width > @max_dimension || image.height > @max_dimension
-        return invalid("Icon must be #{@max_dimension}x#{@max_dimension} or smaller")
-      end
+    if width > @max_dimension || height > @max_dimension
+      return invalid("Image must be #{@max_dimension}x#{@max_dimension} or smaller")
     end
 
     Result.new(valid?: true, error: nil, format: format)
-  rescue MiniMagick::Invalid, MiniMagick::Error
-    invalid('Icon could not be read as an image')
   end
 
   private
@@ -79,7 +79,7 @@ class IconUploadValidator
 
   def format_error
     names = @formats.map { |f| f == 'WEBP' ? 'WebP' : f }
-    "Icon must be a #{names.to_sentence(two_words_connector: ' or ', last_word_connector: ' or ')}"
+    "Image must be a #{names.to_sentence(two_words_connector: ' or ', last_word_connector: ' or ')}"
   end
 
   def invalid(message)
