@@ -398,6 +398,9 @@ Rails.application.routes.draw do
     # Editor-only catalogue collections (filter/sort/facet), see AdminCollection.
     # Events are readable by curators too.
     namespace :admin do
+      resources :bullets, only: :index do
+        get :schema, on: :collection
+      end
       resources :characters, only: :index do
         get :schema, on: :collection
       end
