@@ -5,6 +5,9 @@ module Api
     class BulletsController < Api::V1::ApiController
       include ImageDownloadOptions
 
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = %i[name_en name_jp effect_en effect_jp granblue_id slug bullet_type atk hits_all order].freeze
+
       before_action :doorkeeper_authorize!, only: %i[create update destroy download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
       before_action :set_bullet, only: %i[download_image download_images download_status]
@@ -52,8 +55,12 @@ module Api
         bullet = find_bullet
         return render_not_found_response('bullet') unless bullet
 
-        bullet.destroy
-        head :no_content
+        if bullet.destroy
+          head :no_content
+        else
+          render json: { error: 'This bullet is loaded on weapons and cannot be deleted.' },
+                 status: :unprocessable_entity
+        end
       end
 
       # POST /bullets/:id/download_image
@@ -111,8 +118,7 @@ module Api
       end
 
       def bullet_params
-        params.permit(:name_en, :name_jp, :effect_en, :effect_jp, :granblue_id,
-                      :slug, :bullet_type, :atk, :hits_all, :order)
+        params.permit(*PERMITTED)
       end
     end
   end

@@ -5,6 +5,9 @@ module Api
     class GridCharacterRolesController < ApiController
       include UploadSizeLimit
 
+      # What an editor may write; the admin schema publishes it (GBF-143).
+      PERMITTED = %i[name_en name_jp sort_order].freeze
+
       ICON_MAX_DIMENSION = 128
       ICON_MAX_BYTES = 256 * 1024
       # Base64 adds about a third to the icon, plus the JSON around it.
@@ -120,7 +123,7 @@ module Api
       end
 
       def role_params
-        params.require(:grid_character_role).permit(:name_en, :name_jp, :sort_order)
+        params.permit(*PERMITTED)
       end
 
       def next_sort_order

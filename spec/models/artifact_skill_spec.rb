@@ -25,6 +25,41 @@ RSpec.describe ArtifactSkill, type: :model do
       different_group = build(:artifact_skill, skill_group: :group_ii, modifier: 5001)
       expect(different_group).to be_valid
     end
+
+    it 'takes only known groups and polarities' do
+      skill = build(:artifact_skill, skill_group: 'group_iv', polarity: 'neutral')
+      expect(skill).not_to be_valid
+      expect(skill.errors.attribute_names).to include(:skill_group, :polarity)
+    end
+
+    it 'needs the modifier to be a positive whole number' do
+      [0, -1, 1.5].each do |modifier|
+        expect(build(:artifact_skill, modifier: modifier)).not_to be_valid
+      end
+      expect(build(:artifact_skill, modifier: 29)).to be_valid
+    end
+
+    it 'takes a numeric or blank growth, negative included' do
+      expect(build(:artifact_skill, growth: 'fast')).not_to be_valid
+      expect(build(:artifact_skill, growth: -1)).to be_valid
+      expect(build(:artifact_skill, growth: nil)).to be_valid
+    end
+
+    it 'takes a score category of 1 to 3, or none' do
+      expect(build(:artifact_skill, score_category: 4)).not_to be_valid
+      [1, 2, 3, nil].each { |category| expect(build(:artifact_skill, score_category: category)).to be_valid }
+    end
+
+    it 'takes up to five base values, numbers or unknown (null)' do
+      [[], [10], [0.2, nil], [1320, 1440, 1560, 1680, 1800]].each do |values|
+        expect(build(:artifact_skill, base_values: values)).to be_valid
+      end
+      [[1, 2, 3, 4, 5, 6], [1, '2'], [{ 'a' => 1 }], 'big'].each do |values|
+        skill = build(:artifact_skill, base_values: values)
+        expect(skill).not_to be_valid
+        expect(skill.errors[:base_values]).to be_present
+      end
+    end
   end
 
   describe 'enums' do

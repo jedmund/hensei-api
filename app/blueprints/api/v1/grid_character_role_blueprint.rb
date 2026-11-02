@@ -5,13 +5,9 @@ module Api
     class GridCharacterRoleBlueprint < ApiBlueprint
       fields :id, :name_en, :name_jp, :sort_order
 
-      # icon_key is the S3 path with a version query appended so re-uploads bust
-      # browser/CDN caches. The actual S3 object lives at the un-versioned path;
-      # query strings are ignored by S3 but key the public URL on the CDN.
+      # Versioned so re-uploads bust browser and CDN caches
       field :icon_key do |role|
-        if role.icon_key.present?
-          "#{role.icon_key}?v=#{role.updated_at.to_i}"
-        end
+        role.versioned_icon_key
       end
     end
   end
