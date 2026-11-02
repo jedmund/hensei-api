@@ -7,14 +7,29 @@ class Weapon < ApplicationRecord
   # The fetched sources live in `sources` (D35, PR 7b).
   # The weapon's page is one row, keyed by its page title (wiki_en): the weapon-skill source
   # store (WeaponSource) and the build read it by title. A page stored without the store's
-  # fetch (an editor's wiki import) is titled too, so a new weapon builds on the next deploy;
-  # only a weapon with no wiki_en keeps key ''.
+  # fetch (an editor's wiki import) is titled too; only a weapon with no wiki_en keeps key ''.
   source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at, titled: :wiki_en
   # Only div#body of the gbf-wiki.com page (Granblue::JpWikiPage.trim, done by the fetch).
   source_attribute :wiki_raw_jp, fetched_at: :wiki_raw_jp_fetched_at
   # Stored game payloads keep only the item's data, whoever writes them (import, Dataminer).
   source_attribute :game_raw_en, fetched_at: :game_raw_en_fetched_at, filter: Granblue::GamePayload.method(:sanitize_item)
   source_attribute :game_raw_jp, fetched_at: :game_raw_jp_fetched_at, filter: Granblue::GamePayload.method(:sanitize_item)
+
+  # Skill build: a new page, or a change to the page or its title, queues WeaponSkills::BuildJob
+  # once the save commits. Every writer of a weapon's page saves the weapon (editor import, wiki
+  # fetch, SourceStore::Fetcher). Bulk work skips it with Weapon.without_skill_build { ... }; the
+  # deploy build picks those weapons up.
+  thread_cattr_accessor :skip_skill_build, instance_accessor: false
+  after_save :capture_skill_build
+  after_commit :enqueue_skill_build, on: %i[create update], if: :skill_inputs_changed?
+
+  def self.without_skill_build
+    previous = skip_skill_build
+    self.skip_skill_build = true
+    yield
+  ensure
+    self.skip_skill_build = previous
+  end
 
   # Stored in MediaWiki's canonical form (Granblue::WikiTitle); links encode it.
   normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
@@ -282,6 +297,24 @@ class Weapon < ApplicationRecord
   end
 
   private
+
+  # Decided at the save, not the commit: without_skill_build may only wrap the save.
+  def capture_skill_build
+    @skill_build_pending = !self.class.skip_skill_build &&
+                           (saved_change_to_wiki_en? || saved_source_changes.include?('wiki_raw'))
+  end
+
+  def skill_inputs_changed?
+    return false unless @skill_build_pending
+
+    @skill_build_pending = false
+    # The build reads the page by title: without both there's nothing to build from.
+    wiki_en.present? && source_sha256(:wiki_raw).present?
+  end
+
+  def enqueue_skill_build
+    WeaponSkills::BuildJob.perform_later(id)
+  end
 
   # Auto-compute forge_order and forge_chain_id based on forged_from
   # Walks the full chain to the root to ensure correct ordering

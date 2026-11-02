@@ -78,6 +78,9 @@ module WeaponSkills
             # The stored page is now the weapon's page (Weapon#wiki_raw): one stored without a
             # fetch (key '') goes.
             drop_untitled_page(weapon) if @store.is_a?(Database)
+          elsif @store.is_a?(Database)
+            # The page stays as stored (an editor's import); its kind is decided here, like a fetched one's.
+            WeaponSource.where(weapon_id: weapon.id, kind: "wiki_raw", key: page).update_all(page_kind: kind_of_page)
           end
           put("expanded", page, expanded, weapon, kind_of_page) if expanded && kinds.include?("expanded")
           store_followed(weapon, followed) if kinds.include?("transclusion")
