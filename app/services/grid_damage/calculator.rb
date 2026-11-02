@@ -70,6 +70,7 @@ module GridDamage
       hidden, contributions = contributions.partition(&:panel_hidden)
       agg = Aggregator.aggregate(contributions)
       apply_rate_caps(agg)
+      agg, contributions = drop_uncapped_crit_gated(agg, contributions)
       add_overskills(agg)
       drop_unrealized_crit_amp(agg)
       { agg: agg, contributions: contributions, enhancements: enh,
@@ -82,6 +83,20 @@ module GridDamage
     def drop_unrealized_crit_amp(agg)
       agg.delete("crit_amp") unless agg["critical"]&.capped
       agg
+    end
+
+    # Boosts that apply only on guaranteed critical hits (crit_gated: Impulse's DMG Supp.
+    # and DMG Cap (Sp.)) count only at Critical 100%. They don't feed Critical, so dropping
+    # them and aggregating again can't change the cap they were gated on.
+    def drop_uncapped_crit_gated(agg, contributions)
+      return [agg, contributions] if agg["critical"]&.capped
+
+      kept = contributions.reject(&:crit_gated)
+      return [agg, contributions] if kept.size == contributions.size
+
+      agg = Aggregator.aggregate(kept)
+      apply_rate_caps(agg)
+      [agg, kept]
     end
 
     # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.

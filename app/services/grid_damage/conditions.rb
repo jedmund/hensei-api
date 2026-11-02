@@ -12,6 +12,13 @@ module GridDamage
     # composition: GridComposition.for_party result.
     # weapon:      the Weapon bearing the effect (for skill/weapon level, same-id count).
     # grid_weapon: the GridWeapon copy (for per-copy state like transcendence).
+    # Whether the condition gates on Critical reaching its 100% cap: the Impulse family
+    # applies on a critical hit and the panel lists it only at Critical 100% (czpldM and
+    # SMBKDB show it there; mBaLHl at 50% and xblyJu at 96% don't).
+    def crit_gated?(condition)
+      condition.to_h["type"] == "critical_capped"
+    end
+
     def met?(condition, state: {}, composition: {}, weapon: nil, grid_weapon: nil)
       return true if condition.blank?
 
@@ -49,6 +56,9 @@ module GridDamage
       when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
       when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
       when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))
+      # Met here; the panel gates it on the grid's Critical total, which only exists once
+      # every contribution is aggregated (Calculator#drop_uncapped_crit_gated).
+      when "critical_capped" then true
       when "boost_level"
         # self-referential: needs the per-frame enhancement totals, supplied by the
         # calculator's 2nd pass via state[:enhancements] (false in the 1st pass).

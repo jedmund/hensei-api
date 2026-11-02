@@ -145,4 +145,35 @@ RSpec.describe GridDamage::Calculator do
       expect(described_class.drop_unrealized_crit_amp(uncapped)).not_to have_key("crit_amp")
     end
   end
+
+  describe ".drop_uncapped_crit_gated" do
+    def contribution(boost_type, value, crit_gated: nil)
+      GridDamage::Aggregator::Contribution.new(boost_type: boost_type, series: "ex", value: value,
+                                               amplifiable: false, crit_gated: crit_gated)
+    end
+
+    # Impulse (Graphite Impulse): czpldM lists DMG Supp. at Critical 100, mBaLHl at 50 doesn't.
+    it "drops crit-gated boosts below Critical 100 and keeps the rest" do
+      impulse = contribution("dmg_supp", 50_000.0, crit_gated: true)
+      other = contribution("dmg_supp", 20_000.0)
+      contributions = [contribution("critical", 50.0), impulse, other]
+      agg = GridDamage::Aggregator.aggregate(contributions)
+
+      agg, kept = described_class.drop_uncapped_crit_gated(agg, contributions)
+
+      expect(kept).not_to include(impulse)
+      expect(agg["dmg_supp"].total).to eq(20_000.0)
+    end
+
+    it "keeps crit-gated boosts once Critical is capped" do
+      contributions = [contribution("critical", 100.0), contribution("dmg_supp", 50_000.0, crit_gated: true)]
+      agg = GridDamage::Aggregator.aggregate(contributions)
+      agg["critical"].capped = true
+
+      agg, kept = described_class.drop_uncapped_crit_gated(agg, contributions)
+
+      expect(kept.size).to eq(2)
+      expect(agg["dmg_supp"].total).to eq(50_000.0)
+    end
+  end
 end

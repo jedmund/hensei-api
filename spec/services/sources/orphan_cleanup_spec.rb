@@ -6,7 +6,8 @@ RSpec.describe Sources::OrphanCleanup do
   it "removes orphan rows and a weapon's untitled page beside its titled one" do
     gone = create(:summon, wiki_raw: '{{Gone}}')
     Summon.where(id: gone.id).delete_all
-    weapon = create(:weapon, wiki_en: 'Blade', wiki_raw: '{{Own}}')
+    weapon = create(:weapon, wiki_en: 'Blade')
+    put_source(weapon, :wiki_raw, '{{Own}}') # an untitled page from before Weapon#wiki_raw titled it
     WeaponSource.create!(weapon: weapon, kind: 'wiki_raw', key: 'Blade', body: '{{Own}}', fetched_at: Time.current)
     lone = create(:weapon, wiki_raw: '{{Lone}}')
 

@@ -49,7 +49,8 @@ module GridDamage
               source_ids: [gw.id],
               source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
               source_icon: v.icon_stem,
-              stacking_group: stacking_group(e, v)
+              stacking_group: stacking_group(e, v),
+              crit_gated: Conditions.crit_gated?(e.condition)
             )
           end
         end

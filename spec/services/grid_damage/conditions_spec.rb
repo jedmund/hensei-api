@@ -88,4 +88,13 @@ RSpec.describe GridDamage::Conditions do
   it "uses turn 1 when a turn_lte panel state omits the turn" do
     expect(described_class.met?({ "type" => "turn_lte", "lte" => 8 }, state: {})).to be(true)
   end
+
+  it "leaves critical_capped to the panel and flags it as crit-gated" do
+    condition = { "type" => "critical_capped" }
+
+    expect(described_class.met?(condition)).to be(true)
+    expect(described_class.crit_gated?(condition)).to be(true)
+    expect(described_class.crit_gated?({ "type" => "mc_crit_rate", "gte" => 100 })).to be(false)
+    expect(described_class.crit_gated?(nil)).to be(false)
+  end
 end

@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe WeaponSkills::SourceStore::Transfer do
   let(:path) { Rails.root.join("tmp/transfer_spec_#{SecureRandom.hex(4)}.jsonl.gz") }
-  let(:weapon) { create(:weapon, name_en: "Ray of Zhuque Regus", wiki_en: "Ray of Zhuque Regus", wiki_raw: "old page") }
+  let(:weapon) { create(:weapon, name_en: "Ray of Zhuque Regus", wiki_en: "Ray of Zhuque Regus") }
   let(:fetched_at) { Time.utc(2026, 10, 15, 13, 27) }
 
   after { FileUtils.rm_f(path) }
@@ -22,7 +22,7 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
   end
 
   it "round-trips every row and writes each weapon's page to its wiki_raw" do
-    weapon.update!(wiki_raw_fetched_at: Time.utc(2026, 6, 17))
+    put_source(weapon, :wiki_raw, "old page", fetched_at: Time.utc(2026, 6, 17)) # an untitled page from before the store
     source("wiki_raw", "Ray_of_Zhuque_Regus", "|id=1040906500", weapon: weapon)
     source("transclusion", "Template:Weapon/Common/Six", "{{template}}", weapon: weapon)
     source("family_template", "Template:Weapon Skills/Might", "family")
@@ -45,7 +45,7 @@ RSpec.describe WeaponSkills::SourceStore::Transfer do
   end
 
   it "stamps a weapon whose page is unchanged with the stored fetch time" do
-    weapon.update!(wiki_raw: "same", wiki_raw_fetched_at: Time.utc(2026, 6, 17))
+    put_source(weapon, :wiki_raw, "same", fetched_at: Time.utc(2026, 6, 17))
     source("wiki_raw", "Ray of Zhuque Regus", "same", weapon: weapon)
     rows = export_and_clear
 

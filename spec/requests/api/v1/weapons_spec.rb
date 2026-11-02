@@ -228,7 +228,7 @@ RSpec.describe 'Weapons API', type: :request do
       put "/api/v1/weapons/#{stored.id}", params: { weapon: { wiki_raw: '{{Theirs}}' } }.to_json, headers: regular_headers
 
       expect(response).to have_http_status(:unauthorized)
-      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+      expect(Weapon.find(stored.id).wiki_raw).to eq('{{Stored}}')
     end
 
     it 'rejects POST /api/v1/weapons/:id/fetch_wiki from a non-editor or without a session' do
@@ -238,7 +238,7 @@ RSpec.describe 'Weapons API', type: :request do
       post "/api/v1/weapons/#{stored.id}/fetch_wiki"
       expect(response).to have_http_status(:unauthorized)
 
-      expect(Source.read(stored, :wiki_raw)).to eq('{{Stored}}')
+      expect(Weapon.find(stored.id).wiki_raw).to eq('{{Stored}}')
       expect(WebMock).not_to have_requested(:any, /.*/)
     end
   end

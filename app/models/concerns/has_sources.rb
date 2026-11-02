@@ -33,17 +33,25 @@ module HasSources
       @source_attributes ||= {}
     end
 
-    # Kinds whose row may be keyed by a title (titled: true).
+    # Kinds whose row may be keyed by a title (titled: true or titled: :method).
     def titled_source_kinds
       @titled_source_kinds ||= Set.new
     end
 
+    # Titled kind → the method naming its title (titled: :method).
+    def source_title_methods
+      @source_title_methods ||= {}
+    end
+
     # filter: applied to every assigned value before it's staged (e.g. a sanitizer).
-    # titled: the row may be keyed by a page title (see above).
+    # titled: the row may be keyed by a page title (see above). A method name (titled:
+    # :wiki_en) also titles the record's row on save, so a row first stored from an
+    # assignment (an editor import) gets the title its readers look it up by.
     def source_attribute(name, kind: name, fetched_at: nil, filter: nil, titled: false)
       kind = kind.to_s
       source_attributes[name.to_s] = kind
       titled_source_kinds << kind if titled
+      source_title_methods[kind] = titled if titled.is_a?(Symbol)
 
       define_method(name) { source_value(kind) }
       define_method(:"#{name}=") { |value| stage_source(kind, filter ? filter.call(value) : value) }
@@ -168,9 +176,16 @@ module HasSources
   end
 
   # → the Source::PutResult, or nil when only a fetch time was assigned. Writes the row the
-  # record has (a titled kind's titled row), or a new one with key ''.
+  # record has (a titled kind's titled row), or a new one: titled when the kind names a title
+  # method and the record has a title, otherwise key ''. An untitled row of such a kind is
+  # retitled first, so the record never keeps both.
   def store_staged_source(kind, staged)
     key = source_meta[kind]&.key || ''
+    title = source_title(kind)
+    if key == '' && title
+      Source.owned_by(self).where(kind: kind, key: '').update_all(key: title)
+      key = title
+    end
     if staged.key?(:body)
       # No fetch time assigned: an edit, which keeps the stored fetch time.
       return Source.put_body(self, kind, staged[:body], key: key, fetched_at: staged[:fetched_at], skip_owner_hook: true)
@@ -179,6 +194,11 @@ module HasSources
     # Only a fetch time was assigned: date the stored row, if there is one.
     Source.owned_by(self).where(kind: kind, key: key).update_all(fetched_at: staged[:fetched_at])
     nil
+  end
+
+  def source_title(kind)
+    method = self.class.source_title_methods[kind]
+    method && public_send(method).presence
   end
 
   def reset_sources

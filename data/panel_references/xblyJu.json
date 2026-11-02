@@ -1,0 +1,27 @@
+{
+  "party": "xblyJu",
+  "captured_on": "2026-11-02",
+  "notes": "SMBKDB's two Ragnarok without Sariel: 380% / 0% enhancements, Critical 96 = 10 x 4.8 x 2. Impulse (DMG Cap (Sp.), DMG Supp.) and Crit. Amp. not listed below Critical 100. Estimated DMG 10337 / to Light 15640 / Max HP 25982.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 380,
+    "omega": 0,
+    "taboo": 0
+  },
+  "absent": [
+    "crit_amp",
+    "dmg_cap_sp",
+    "dmg_supp"
+  ],
+  "lines": [
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 96
+    }
+  ]
+}

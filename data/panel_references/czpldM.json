@@ -1,0 +1,55 @@
+{
+  "party": "czpldM",
+  "captured_on": "2026-11-02",
+  "notes": "Dark grid: Ragnarok MH (SL15, lvl 150) + 2 Bab-el-Mandeb (Attack awk 1), Sariel, Hades x2 (trans 5) + Fediel. One Ragnarok at Critical 100: Graphite Impulse (Impulse family) gives DMG Cap (Sp.) 10 and DMG Supp. +50000 per copy, unboostable; Oblivion's Stratagem Crit. Amp. 9 = 1.8 x 5. Estimated DMG 29116 / to Light 129235 / Max HP 52378.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 145
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "capped": true,
+      "value": 100
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 145
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "value": 10
+    },
+    {
+      "label": "Crit. Amp.",
+      "boost": "crit_amp",
+      "value": 9
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "value": 50000
+    },
+    {
+      "label": "Crit. DMG",
+      "boost": "crit_dmg",
+      "value": 35
+    }
+  ]
+}

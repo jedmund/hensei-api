@@ -284,6 +284,46 @@
       "edited_at": "2026-10-16T00:00:00Z"
     },
     {
+      "modifier": "Impulse",
+      "boost_type": "dmg_cap_sp",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 10.0,
+      "value_unit": "percent",
+      "total_cap": 20.0,
+      "condition": {
+        "type": "critical_capped"
+      },
+      "target_instance": "critical",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "panel_capture: czpldM (1 Ragnarok SL15, Critical 100: DMG Cap (Sp.) 10, DMG Supp. +50000), SMBKDB (2 Ragnarok: 20 / +100000, both orange); hidden below Critical 100 in mBaLHl (50) and xblyJu (96); gbf.wiki Impulse: 50,000 supplemental and 10% DMG Cap (Sp.) upon a critical hit, unboostable, stacking to 100,000 / 20%",
+      "edited_at": "2026-11-02T12:00:00Z"
+    },
+    {
+      "modifier": "Impulse",
+      "boost_type": "dmg_supp",
+      "series": "ex",
+      "scaling_kind": "conditional_flat",
+      "value": 50000.0,
+      "value_unit": "flat",
+      "total_cap": 100000.0,
+      "condition": {
+        "type": "critical_capped"
+      },
+      "target_instance": "critical",
+      "aura_boostable": false,
+      "seraphic_affected": false,
+      "stacking": "additive",
+      "applies_to": "element_allies",
+      "battle_interaction": false,
+      "provenance": "panel_capture: czpldM (1 Ragnarok SL15, Critical 100: DMG Cap (Sp.) 10, DMG Supp. +50000), SMBKDB (2 Ragnarok: 20 / +100000, both orange); hidden below Critical 100 in mBaLHl (50) and xblyJu (96); gbf.wiki Impulse: 50,000 supplemental and 10% DMG Cap (Sp.) upon a critical hit, unboostable, stacking to 100,000 / 20%",
+      "edited_at": "2026-11-02T12:00:00Z"
+    },
+    {
       "modifier": "Pillar-Smasher's Conviction",
       "boost_type": "atk",
       "series": "ex",
@@ -896,6 +936,32 @@
       "aura_boostable": false,
       "provenance": "panel_capture: C1UGnK (Armed Shadow SL15, EX Might +18), FaJB80 (Armed Shadow SL20, +20), Clarion Armed Flood SL20 with Attack awakening lv15 (+35 = 20 + 15); SL1/SL10 as Template:Weapon Skills/Might normal Big",
       "edited_at": "2026-10-16T12:00:00Z"
+    },
+    {
+      "modifier": "Spearhead",
+      "boost_type": "critical",
+      "series": "normal_omega",
+      "size": "medium",
+      "formula_type": "flat",
+      "sl1": 3.2,
+      "sl10": 5.0,
+      "sl15": 6.5,
+      "aura_boostable": true,
+      "provenance": "panel_capture: uCMtKn (Ewiyar-Pocus SL15 with Hatred's Spearhead at 400% normal aura: Critical 32.5 = 6.5 x 5, TA Rate 29 = (Fandango 2.9 + Spearhead 2.9) x 5); SL1/SL10 as the Medium tiers of Template:Weapon Skills/Verity (critical) and Fandango (TA), whose Small tiers equal Spearhead Small",
+      "edited_at": "2026-11-02T12:00:00Z"
+    },
+    {
+      "modifier": "Spearhead",
+      "boost_type": "ta",
+      "series": "normal_omega",
+      "size": "medium",
+      "formula_type": "flat",
+      "sl1": 0.8,
+      "sl10": 2.15,
+      "sl15": 2.9,
+      "aura_boostable": true,
+      "provenance": "panel_capture: uCMtKn (Ewiyar-Pocus SL15 with Hatred's Spearhead at 400% normal aura: Critical 32.5 = 6.5 x 5, TA Rate 29 = (Fandango 2.9 + Spearhead 2.9) x 5); SL1/SL10 as the Medium tiers of Template:Weapon Skills/Verity (critical) and Fandango (TA), whose Small tiers equal Spearhead Small",
+      "edited_at": "2026-11-02T12:00:00Z"
     }
   ],
   "ops": [
