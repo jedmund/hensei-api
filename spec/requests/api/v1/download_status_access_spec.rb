@@ -19,10 +19,7 @@ RSpec.describe 'download_status access', type: :request do
     'characters' => -> { create(:character).id },
     'artifacts' => -> { create(:artifact).id },
     'raids' => -> { create(:raid).slug },
-    'bullets' => lambda {
-      Bullet.create!(name_en: 'Test Bullet', slug: "test-bullet-#{SecureRandom.hex(4)}",
-                     bullet_type: Bullet::BULLET_TYPES.values.first).id
-    }
+    'bullets' => -> { create(:bullet).id }
   }.each do |resource, build_id|
     describe "GET /api/v1/#{resource}/:id/download_status" do
       let(:path) { "/api/v1/#{resource}/#{instance_exec(&build_id)}/download_status" }
