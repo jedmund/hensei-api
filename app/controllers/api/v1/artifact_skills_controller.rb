@@ -5,8 +5,9 @@ module Api
     class ArtifactSkillsController < Api::V1::ApiController
       # What an editor may change: also the admin schema's writable list. No
       # create or destroy: skills come from the game, so the editor only edits.
+      # Group and modifier are the skill's identity: collection and grid
+      # artifacts store their skills by that pair, so they're not editable.
       PERMITTED = [
-        :skill_group, :modifier,
         :name_en, :name_jp,
         :game_name_en, :game_name_jp,
         :suffix_en, :suffix_jp,

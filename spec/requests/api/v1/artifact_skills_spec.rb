@@ -109,11 +109,12 @@ RSpec.describe 'Artifact Skills API', type: :request do
       expect(skill.growth).to eq(250)
     end
 
-    it 'accepts the group by name' do
-      patch path, params: { skill_group: 'group_iii', modifier: 40 }.to_json, headers: editor_headers
+    it 'ignores the group and modifier, which saved artifacts store skills by' do
+      patch path, params: { skill_group: 'group_iii', modifier: 40, name_en: 'Attack' }.to_json,
+                  headers: editor_headers
 
       expect(response).to have_http_status(:ok)
-      expect(skill.reload).to have_attributes(skill_group: 'group_iii', modifier: 40)
+      expect(skill.reload).to have_attributes(skill_group: 'group_i', modifier: 1, name_en: 'Attack')
     end
 
     it 'ignores the score category, which comes from imports' do
@@ -124,12 +125,11 @@ RSpec.describe 'Artifact Skills API', type: :request do
     end
 
     it 'answers invalid values with 422 and field errors' do
-      patch path, params: { skill_group: 'group_iv', polarity: 'neutral', modifier: 0,
-                            base_values: [1, 'two'], growth: 'fast' }.to_json, headers: editor_headers
+      patch path, params: { polarity: 'neutral', base_values: [1, 'two'], growth: 'fast' }.to_json,
+                  headers: editor_headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body['errors'].keys).to include('skill_group', 'polarity', 'modifier', 'base_values',
-                                                             'growth')
+      expect(response.parsed_body['errors'].keys).to include('polarity', 'base_values', 'growth')
       expect(skill.reload.name_en).to eq('ATK')
     end
 
