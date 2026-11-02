@@ -32,6 +32,17 @@ module Api
         end
       end
 
+      # The Japanese banner (its art has Japanese text), versioned like
+      # image_url. A series' Japanese banner may not exist yet: clients fall
+      # back to image_url when this doesn't load.
+      field :image_url_ja do |event|
+        if event.image_key_jp.present?
+          "#{event.image_key_jp}?v=#{event.updated_at.to_i}"
+        else
+          event.banner_key_jp
+        end
+      end
+
       # External pages: a gbf.wiki title, a GameWith article id, a Kamigame path
       fields :wiki_en, :gamewith, :kamigame
 

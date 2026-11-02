@@ -32,6 +32,14 @@ RSpec.describe Event do
       expect(build(:event, series: 'dread_barrage').banner_key).to eq('events/series/dread_barrage.webp')
       expect(build(:event).banner_key).to be_nil
     end
+
+    it "prefers the event's own Japanese banner, then its series' Japanese one" do
+      expect(build(:event, image_key_jp: 'events/abc.ja.png', series: 'exo_diablo_crucible').banner_key_jp)
+        .to eq('events/abc.ja.png')
+      expect(build(:event, series: 'exo_diablo_crucible').banner_key_jp)
+        .to eq('events/series/exo_diablo_crucible.ja.webp')
+      expect(build(:event, series: nil).banner_key_jp).to be_nil
+    end
   end
 
   describe '.normalize_element' do

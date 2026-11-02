@@ -83,9 +83,13 @@ module Api
       end
 
       # POST /events/:id/upload_image
-      # Multipart `image` (PNG, WebP or JPEG), stored at events/<id>.<ext>.
+      # Multipart `image` (PNG, WebP or JPEG), stored at events/<id>.<ext>, or
+      # with `language=ja` at events/<id>.ja.<ext> as the Japanese banner.
       def upload_image
-        stored = store_editor_image(@event, prefix: Event::IMAGE_PREFIX, name: @event.id,
+        japanese = params[:language] == 'ja'
+        stored = store_editor_image(@event, prefix: Event::IMAGE_PREFIX,
+                                            name: japanese ? "#{@event.id}.ja" : @event.id,
+                                            column: japanese ? :image_key_jp : :image_key,
                                             formats: %w[PNG WEBP JPEG],
                                             max_dimension: MAX_IMAGE_DIMENSION,
                                             max_bytes: MAX_IMAGE_BYTES)

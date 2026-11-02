@@ -303,6 +303,18 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(json_response['image_url']).to start_with("events/#{event.id}.jpg?v=")
     end
 
+    it 'stores the Japanese banner under events/<id>.ja, next to the English one' do
+      upload = Rack::Test::UploadedFile.new(StringIO.new(jpeg_bytes), 'image/jpeg', original_filename: 'b.jpg')
+      post "/api/v1/events/#{event.id}/upload_image", params: { image: upload, language: 'ja' },
+                                                       headers: editor_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(IconStorage).to have_received(:put)
+        .with("events/#{event.id}.ja.jpg", kind_of(String), content_type: 'image/jpeg')
+      expect(event.reload).to have_attributes(image_key_jp: "events/#{event.id}.ja.jpg", image_key: nil)
+      expect(json_response['image_url_ja']).to start_with("events/#{event.id}.ja.jpg?v=")
+    end
+
     it 'returns 401 for non-editors' do
       post "/api/v1/events/#{event.id}/upload_image", params: { image: png_upload }, headers: member_headers
       expect(response).to have_http_status(:unauthorized)
