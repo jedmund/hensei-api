@@ -135,6 +135,20 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       expect(raid.reload.released_at).to eq(Date.new(2026, 10, 20))
     end
 
+    it 'sets the short names, and returns them with the raid' do
+      put "/api/v1/raids/#{raid.id}",
+          params: { raid: { short_name_en: 'Lv200', short_name_jp: 'Lv200' } }.to_json,
+          headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['short_name']).to eq('en' => 'Lv200', 'ja' => 'Lv200')
+      expect(raid.reload).to have_attributes(short_name_en: 'Lv200', short_name_jp: 'Lv200')
+    end
+
+    it 'returns no short name for a raid without one' do
+      get "/api/v1/raids/#{raid.slug}"
+      expect(response.parsed_body['short_name']).to be_nil
+    end
+
     it 'rejects update by regular user' do
       put "/api/v1/raids/#{raid.id}",
           params: { raid: { level: 200 } }.to_json,
