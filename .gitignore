@@ -75,3 +75,6 @@ data/weapon_skill_parity/*_last.json
 data/weapon_skill_parity/full_reparse_*.json
 data/weapon_skill_parity/w5_key_diff.json
 data/weapon_skill_parity/version_description_backfill.json
+
+/.claude/
+/static/
