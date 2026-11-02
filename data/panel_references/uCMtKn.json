@@ -1,0 +1,39 @@
+{
+  "party": "uCMtKn",
+  "captured_on": "2026-11-02",
+  "notes": "Ewiyar-Pocus MH (SL15), Sariel, Hades x2 (trans 5) + Fediel. Hatred's Spearhead (Medium): Critical 32.5 = 6.5 x 5, TA 29 = (Fandango 2.9 + Spearhead 2.9) x 5; Hatred's Fandango Might 72.5 = 14.5 x 5; Strike: Dark N.A. DMG Cap 7.5. Estimated DMG 11287 / to Light 17371 / Max HP 18473.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Might",
+      "boost": "atk",
+      "series": "normal",
+      "value": 72.5
+    },
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "value": 32.5
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 29
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 7.5
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "party": "SMBKDB",
+  "captured_on": "2026-11-02",
+  "notes": "Two Ragnarok (SL15, lvl 150), Sariel, Hades x2 (trans 5) + Fediel. Critical 100 (Oblivion's Verity 10 x 5 x 2): Impulse stacks to its caps, DMG Cap (Sp.) 20 and DMG Supp. +100000 (both orange); Crit. Amp. 18. Estimated DMG 10337 / to Light 126923 / Max HP 25982.",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "light"
+  },
+  "enhancements": {
+    "optimus": 400,
+    "omega": 20,
+    "taboo": 0
+  },
+  "absent": [],
+  "lines": [
+    {
+      "label": "Critical",
+      "boost": "critical",
+      "capped": true,
+      "value": 100
+    },
+    {
+      "label": "DMG Cap (Sp.)",
+      "boost": "dmg_cap_sp",
+      "capped": true,
+      "value": 20
+    },
+    {
+      "label": "Crit. Amp.",
+      "boost": "crit_amp",
+      "value": 18
+    },
+    {
+      "label": "DMG Supp.",
+      "boost": "dmg_supp",
+      "capped": true,
+      "value": 100000
+    }
+  ]
+}
