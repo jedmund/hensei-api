@@ -39,6 +39,16 @@ RSpec.describe 'Api::V1::Characters', type: :request do
       expect(response.parsed_body['id']).to eq(character.id)
     end
 
+    it 'picks the base or the style-shifted character sharing a granblue_id' do
+      style = create(:character, granblue_id: character.granblue_id, style_swap: true)
+
+      get "/api/v1/characters/#{character.granblue_id}"
+      expect(response.parsed_body['id']).to eq(character.id)
+
+      get "/api/v1/characters/#{character.granblue_id}?style_swap=true"
+      expect(response.parsed_body['id']).to eq(style.id)
+    end
+
     it 'serializes distinct ULB and released transcendence-stage capabilities' do
       character.update!(transcendence: true, max_transcendence_stage: 1)
 
