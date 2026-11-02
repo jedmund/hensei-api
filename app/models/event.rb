@@ -31,13 +31,16 @@ class Event < ApplicationRecord
   UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
   enum :kind, { story_event: 0, rerun: 1, collab: 2, unite_and_fight: 3, dread_barrage: 4, farming: 5,
-                alchemy: 6, other: 7, exo_crucible: 8 }, validate: true
+                alchemy: 6, other: 7, exo_crucible: 8, records_of_the_ten: 9 }, validate: true
 
   # Kinds themed around a boss element: they require an element, and their
-  # home sections only show teams of the advantaged element.
-  ELEMENT_THEMED_KINDS = %w[unite_and_fight dread_barrage exo_crucible].freeze
+  # home sections only show teams of the advantaged element(s).
+  ELEMENT_THEMED_KINDS = %w[unite_and_fight dread_barrage exo_crucible records_of_the_ten].freeze
   enum :status, { draft: 0, approved: 1, hidden: 2 }, validate: true
   enum :element, ELEMENTS, validate: { allow_nil: true }
+  # A second boss element, for runs whose bosses share two weaknesses (Records
+  # of the Ten runs Fire and Dark together: Wind and Light bosses).
+  enum :second_element, ELEMENTS, prefix: :second, validate: { allow_nil: true }
 
   has_many :event_raids, -> { order(:position) }, dependent: :destroy, inverse_of: :event
   has_many :raids, through: :event_raids
@@ -63,6 +66,7 @@ class Event < ApplicationRecord
   # The crew pages find a Guild War by its number.
   validates :event_number, presence: true, if: :unite_and_fight?
   validate :ends_after_start
+  validate :second_element_pairs_with_element
 
   scope :current, ->(now = Time.current) { where('starts_at <= ? AND ends_at > ?', now, now) }
   scope :upcoming, ->(now = Time.current) { where('starts_at > ?', now) }
@@ -182,10 +186,21 @@ class Event < ApplicationRecord
     self.class.advantage_for(element_value)
   end
 
+  # Every element teams can bring (integers): the advantage against each boss
+  # element. Empty without an element.
+  def advantage_elements
+    [advantage_element, self.class.advantage_for(second_element_value)].compact
+  end
+
   # The element as its integer value (GranblueEnums::ELEMENTS), as the API
   # emits it.
   def element_value
     element.nil? ? nil : self.class.elements[element]
+  end
+
+  # The second element as its integer value, or nil.
+  def second_element_value
+    second_element.nil? ? nil : self.class.second_elements[second_element]
   end
 
   private
@@ -194,5 +209,19 @@ class Event < ApplicationRecord
     return unless starts_at && ends_at
 
     errors.add(:ends_at, 'must be after starts_at') if ends_at <= starts_at
+  end
+
+  # A second element needs a first, a different one, and a real element (the
+  # Null element has no advantage to bring).
+  def second_element_pairs_with_element
+    return if second_element.nil?
+
+    if element.nil?
+      errors.add(:second_element, 'needs an element')
+    elsif second_element == element
+      errors.add(:second_element, 'must differ from element')
+    elsif second_element == 'Null'
+      errors.add(:second_element, 'must be a real element')
+    end
   end
 end

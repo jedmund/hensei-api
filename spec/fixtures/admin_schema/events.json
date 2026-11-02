@@ -87,6 +87,7 @@
     "created_at",
     "updated_at",
     "element",
+    "second_element",
     "raid_count"
   ],
   "default_fields": [
@@ -106,6 +107,7 @@
     "kind": "scalar",
     "series": "scalar",
     "element": "scalar",
+    "second_element": "scalar",
     "starts_at": "scalar",
     "ends_at": "scalar",
     "event_number": "scalar",
@@ -124,7 +126,8 @@
       "farming": 5,
       "alchemy": 6,
       "other": 7,
-      "exo_crucible": 8
+      "exo_crucible": 8,
+      "records_of_the_ten": 9
     },
     "series": {
       "unite_and_fight": "unite_and_fight",
@@ -151,6 +154,15 @@
       "Wind": 4,
       "Light": 5,
       "Dark": 6
+    },
+    "second_element": {
+      "Null": 0,
+      "Fire": 1,
+      "Water": 2,
+      "Earth": 3,
+      "Wind": 4,
+      "Light": 5,
+      "Dark": 6
     }
   },
   "validators": {
@@ -166,7 +178,8 @@
           "farming",
           "alchemy",
           "other",
-          "exo_crucible"
+          "exo_crucible",
+          "records_of_the_ten"
         ]
       }
     ],
@@ -197,6 +210,21 @@
       {
         "kind": "presence",
         "conditional": true
+      }
+    ],
+    "second_element": [
+      {
+        "kind": "inclusion",
+        "in": [
+          "Null",
+          "Fire",
+          "Water",
+          "Earth",
+          "Wind",
+          "Light",
+          "Dark"
+        ],
+        "allow_nil": true
       }
     ],
     "name_en": [

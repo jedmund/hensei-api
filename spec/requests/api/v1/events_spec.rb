@@ -208,6 +208,16 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(event.reload.gamewith).to eq('412345')
     end
 
+    it 'stores a second boss element and returns both advantages' do
+      put "/api/v1/events/#{event.id}",
+          params: { event: { kind: 'records_of_the_ten', element: 4, second_element: 'light' } },
+          headers: editor_headers, as: :json
+      expect(response).to have_http_status(:ok)
+      el = GranblueEnums::ELEMENTS
+      expect(json_response).to include('element' => el[:Wind], 'second_element' => el[:Light],
+                                       'advantage_elements' => [el[:Fire], el[:Dark]])
+    end
+
     it 'rejects a GameWith link that is not an article number' do
       put "/api/v1/events/#{event.id}", params: { event: { gamewith: 'https://gamewith.jp/x' } },
                                         headers: editor_headers, as: :json

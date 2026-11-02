@@ -148,6 +148,28 @@ RSpec.describe 'Api::V1::Home', type: :request do
     it_behaves_like 'advantage ordering', :dread_barrage
   end
 
+  describe 'Records of the Ten ordering' do
+    it_behaves_like 'advantage ordering', :records_of_the_ten
+
+    it 'shows parties of both elements for a Fire and Dark run' do
+      event = create(:event, :current, :records_of_the_ten, element: 'Wind', second_element: 'Light',
+                                                            created_at: 3.days.ago)
+      create(:event_raid, event: event, raid: raid)
+      el = GranblueEnums::ELEMENTS
+      fire, dark, water = %i[Fire Dark Water].map do |element|
+        create(:party, :complete, raid: raid, visibility: 1).tap { |p| p.update_columns(element: el[element]) }
+      end
+      give(fire, sticker: sticker)
+      2.times { give(dark, sticker: sticker) }
+      give(water, sticker: sticker)
+
+      get '/api/v1/home'
+      section = json_response['current'].sole
+      expect(section['event']['advantage_elements']).to eq([el[:Fire], el[:Dark]])
+      expect(section['raids'].sole['parties'].map { |p| p['id'] }).to eq([dark.id, fire.id])
+    end
+  end
+
   describe 'non-themed events' do
     let!(:event) { create(:event, :current, kind: :farming, element: 'Water', created_at: 3.days.ago) }
     let!(:fire_party) { create(:party, :complete, raid: raid, visibility: 1) }
@@ -171,7 +193,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
   describe 'upcoming events' do
     let!(:previous) { create(:event, :past, created_at: 45.days.ago) }
     let!(:upcoming) { create(:event, :upcoming) }
-    let!(:far_future) { create(:event, starts_at: 30.days.from_now, ends_at: 37.days.from_now) }
+    let!(:far_future) { create(:event, starts_at: 31.days.from_now, ends_at: 38.days.from_now) }
     let!(:party) { create(:party, :complete, raid: raid, visibility: 1) }
 
     before do
@@ -180,13 +202,19 @@ RSpec.describe 'Api::V1::Home', type: :request do
       give(party, sticker: sticker, at: 36.days.ago)
     end
 
-    it 'includes events starting within 14 days with the previous run and its top parties' do
+    it 'includes events starting within 30 days with the previous run and its top parties' do
       get '/api/v1/home'
 
       section = json_response['upcoming'].sole
       expect(section['event']['id']).to eq(upcoming.id)
       expect(section['previous_event']['id']).to eq(previous.id)
       expect(section['raids'].sole['parties'].map { |p| p['id'] }).to eq([party.id])
+    end
+
+    it 'includes an event three weeks out' do
+      later = create(:event, starts_at: 19.days.from_now, ends_at: 26.days.from_now)
+      get '/api/v1/home'
+      expect(json_response['upcoming'].map { |s| s['event']['id'] }).to eq([upcoming.id, later.id])
     end
 
     it 'caps upcoming at 3, soonest first' do

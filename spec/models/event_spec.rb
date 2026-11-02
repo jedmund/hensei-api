@@ -26,6 +26,31 @@ RSpec.describe Event do
     end
   end
 
+  describe '#advantage_elements' do
+    let(:el) { GranblueEnums::ELEMENTS }
+
+    it 'brings the advantage against each boss element' do
+      # Records of the Ten's Fire and Dark run: Wind and Light bosses
+      event = build(:event, kind: :records_of_the_ten, element: 'Wind', second_element: 'Light')
+      expect(event.advantage_elements).to eq([el[:Fire], el[:Dark]])
+      expect(build(:event, element: 'Water').advantage_elements).to eq([el[:Earth]])
+      expect(build(:event, element: nil).advantage_elements).to eq([])
+    end
+
+    it 'needs a first element, a different one, and not Null' do
+      expect(build(:event, element: nil, second_element: 'Light')).not_to be_valid
+      expect(build(:event, element: 'Light', second_element: 'Light')).not_to be_valid
+      expect(build(:event, element: 'Wind', second_element: 'Null')).not_to be_valid
+      expect(build(:event, element: 'Wind', second_element: 'Light')).to be_valid
+    end
+
+    it 'makes Records of the Ten element-themed' do
+      event = build(:event, kind: :records_of_the_ten, element: nil)
+      expect(event).to be_element_themed
+      expect(event).not_to be_valid
+    end
+  end
+
   describe '#banner_key' do
     it "prefers the event's own banner, then its series banner" do
       expect(build(:event, image_key: 'events/abc.png', series: 'dread_barrage').banner_key).to eq('events/abc.png')
