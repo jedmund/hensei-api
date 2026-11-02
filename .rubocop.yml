@@ -21,8 +21,6 @@ AllCops:
     - 'node_modules/**/*'
     - 'config/**/*'
     - 'Gemfile'
-    # Unused Minitest scaffold; the suite is RSpec
-    - 'test/**/*'
 
 # --- Layout ---
 Layout/MultilineOperationIndentation:
