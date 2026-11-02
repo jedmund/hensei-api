@@ -22,6 +22,13 @@ RSpec.describe Sticker, type: :model do
     end
   end
 
+  it 'keeps its slug once created' do
+    sticker = create(:sticker, slug: 'cleared')
+    sticker.slug = 'renamed'
+    expect(sticker).not_to be_valid
+    expect(sticker.errors).to include(:slug)
+  end
+
   it 'requires active to be true or false' do
     expect(build(:sticker, active: nil)).not_to be_valid
   end

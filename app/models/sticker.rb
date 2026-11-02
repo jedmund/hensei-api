@@ -24,6 +24,8 @@ class Sticker < ApplicationRecord
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :active, inclusion: { in: [true, false] }
   validates :image_key, :image_key_jp, format: { with: IMAGE_KEY_FORMAT }, allow_nil: true
+  # The slug names its uploaded images and the parties' labels, so it's fixed once created
+  validate :slug_unchanged, on: :update
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :created_at) }
@@ -33,6 +35,10 @@ class Sticker < ApplicationRecord
   end
 
   private
+
+  def slug_unchanged
+    errors.add(:slug, "can't be changed once the sticker exists") if slug_changed?
+  end
 
   def bust_catalogue_cache
     Rails.cache.delete(CATALOGUE_CACHE_KEY)
