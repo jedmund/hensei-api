@@ -43,7 +43,7 @@ module Api
         end
       end
 
-      # External pages: a gbf.wiki title, a GameWith article id, a Kamigame path
+      # External pages: a gbf.wiki title, a GameWith article id, a Kamigame path under /グラブル/
       fields :wiki_en, :gamewith, :kamigame
 
       field :raids do |event|
