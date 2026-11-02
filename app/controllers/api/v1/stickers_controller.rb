@@ -143,8 +143,8 @@ module Api
 
       # The editor view, with whether each sticker can be deleted
       def render_editor(stickers, **)
-        given = PartySticker.where(sticker_id: Array(stickers).map(&:id)).distinct.pluck(:sticker_id).to_set
-        StickerBlueprint.render(stickers, view: :editor, given_sticker_ids: given, **)
+        given = PartySticker.where(sticker_id: Array(stickers).map(&:id)).group(:sticker_id).count
+        StickerBlueprint.render(stickers, view: :editor, given_counts: given, **)
       end
 
       # By id, or by slug (the database editor's route id)

@@ -42,9 +42,9 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(deletable.except('given').values).to all(be(true))
     end
 
-    it 'leaves deletable out of the public catalogue' do
+    it 'leaves deletable and the given count out of the public catalogue' do
       get '/api/v1/stickers'
-      expect(json_response['stickers']).to all(satisfy { |s| !s.key?('deletable') })
+      expect(json_response['stickers']).to all(satisfy { |s| !s.key?('deletable') && !s.key?('given_count') })
     end
 
     it 'ignores include_inactive for non-editors' do
@@ -363,10 +363,13 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       expect(json_response['slug']).to eq('retired')
     end
 
-    it 'says a given sticker cannot be deleted' do
-      create(:party_sticker, sticker: sticker)
+    it 'says how often a sticker was given, and that a given one cannot be deleted' do
       get '/api/v1/stickers/retired', headers: editor_headers
-      expect(json_response['deletable']).to be(false)
+      expect(json_response).to include('given_count' => 0, 'deletable' => true)
+
+      create_list(:party_sticker, 2, sticker: sticker)
+      get '/api/v1/stickers/retired', headers: editor_headers
+      expect(json_response).to include('given_count' => 2, 'deletable' => false)
     end
 
     it 'returns 404 for an unknown sticker' do

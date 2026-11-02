@@ -29,11 +29,15 @@ module Api
 
       fields :position, :active
 
-      # For editors: whether it can still be deleted (nobody has given it).
-      # Takes `given_sticker_ids`, the given ones looked up at once.
+      # For editors: how many teams carry it, and whether it can still be
+      # deleted (nobody has given it). Takes `given_counts`, sticker id →
+      # count, looked up at once.
       view :editor do
+        field :given_count do |sticker, options|
+          options.fetch(:given_counts).fetch(sticker.id, 0)
+        end
         field :deletable do |sticker, options|
-          !options.fetch(:given_sticker_ids).include?(sticker.id)
+          options.fetch(:given_counts).fetch(sticker.id, 0).zero?
         end
       end
     end
