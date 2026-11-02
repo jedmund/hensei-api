@@ -404,6 +404,9 @@ Rails.application.routes.draw do
       resources :characters, only: :index do
         get :schema, on: :collection
       end
+      resources :character_roles, only: :index do
+        get :schema, on: :collection
+      end
       resources :events, only: :index do
         get :schema, on: :collection
       end

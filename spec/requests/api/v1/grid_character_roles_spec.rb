@@ -47,7 +47,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
 
   describe 'POST /api/v1/grid_character_roles' do
     let(:valid_params) do
-      { grid_character_role: { name_en: 'Defender', name_jp: 'ディフェンダー' } }
+      { name_en: 'Defender', name_jp: 'ディフェンダー' }
     end
 
     context 'as editor' do
@@ -55,7 +55,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
         create(:grid_character_role, sort_order: 5)
 
         expect {
-          post '/api/v1/grid_character_roles', params: valid_params, headers: editor_headers
+          post '/api/v1/grid_character_roles', params: valid_params, headers: editor_headers, as: :json
         }.to change(GridCharacterRole, :count).by(1)
 
         expect(response).to have_http_status(:created)
@@ -66,22 +66,38 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
 
       it 'rejects missing name_en' do
         post '/api/v1/grid_character_roles',
-             params: { grid_character_role: { name_jp: 'ディフェンダー' } },
-             headers: editor_headers
+             params: { name_jp: 'ディフェンダー' },
+             headers: editor_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'rejects a negative or fractional sort_order' do
+        [-1, 1.5].each do |sort_order|
+          post '/api/v1/grid_character_roles',
+               params: valid_params.merge(sort_order: sort_order), headers: editor_headers, as: :json
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      it 'ignores fields outside PERMITTED' do
+        post '/api/v1/grid_character_roles',
+             params: valid_params.merge(icon_key: 'images/grid_character_roles/x.png'),
+             headers: editor_headers, as: :json
+        expect(response).to have_http_status(:created)
+        expect(GridCharacterRole.find(response.parsed_body['id']).icon_key).to be_nil
       end
     end
 
     context 'as regular user' do
       it 'returns unauthorized' do
-        post '/api/v1/grid_character_roles', params: valid_params, headers: user_headers
+        post '/api/v1/grid_character_roles', params: valid_params, headers: user_headers, as: :json
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'unauthenticated' do
       it 'returns unauthorized' do
-        post '/api/v1/grid_character_roles', params: valid_params
+        post '/api/v1/grid_character_roles', params: valid_params, as: :json
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -92,17 +108,24 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
 
     it 'updates as editor' do
       put "/api/v1/grid_character_roles/#{role.id}",
-          params: { grid_character_role: { name_en: 'New' } },
-          headers: editor_headers
+          params: { name_en: 'New' },
+          headers: editor_headers, as: :json
       expect(response).to have_http_status(:ok)
       expect(role.reload.name_en).to eq('New')
     end
 
+    it 'rejects a blank name' do
+      put "/api/v1/grid_character_roles/#{role.id}", params: { name_en: '' }, headers: editor_headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(role.reload.name_en).to eq('Old')
+    end
+
     it 'returns unauthorized for regular user' do
       put "/api/v1/grid_character_roles/#{role.id}",
-          params: { grid_character_role: { name_en: 'Hacked' } },
-          headers: user_headers
+          params: { name_en: 'Hacked' },
+          headers: user_headers, as: :json
       expect(response).to have_http_status(:unauthorized)
+      expect(role.reload.name_en).to eq('Old')
     end
   end
 
@@ -175,6 +198,23 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { roles: [{ id: role1.id, sort_order: 9 }] },
            headers: user_headers, as: :json
       expect(response).to have_http_status(:unauthorized)
+      expect(role1.reload.sort_order).to eq(1)
+    end
+
+    it 'returns unauthorized when signed out' do
+      post '/api/v1/grid_character_roles/reorder',
+           params: { roles: [{ id: role1.id, sort_order: 9 }] }, as: :json
+      expect(response).to have_http_status(:unauthorized)
+      expect(role1.reload.sort_order).to eq(1)
+    end
+
+    it 'rejects a negative sort_order and rolls back the batch' do
+      post '/api/v1/grid_character_roles/reorder',
+           params: { roles: [{ id: role1.id, sort_order: 5 }, { id: role2.id, sort_order: -1 }] },
+           headers: editor_headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect([role1.reload.sort_order, role2.reload.sort_order]).to eq([1, 2])
     end
   end
 
