@@ -200,11 +200,11 @@ RSpec.describe 'Api::V1::Events', type: :request do
     end
 
     it 'stores and returns the external links' do
-      links = { wiki_en: 'Exo Diablo Crucible', gamewith: '412345', kamigame: '天上劇団もぐら座/index' }
+      links = { wiki_en: 'Exo Diablo Crucible', gamewith: '412345', kamigame: 'イベント/天上劇団もぐら座/index' }
       put "/api/v1/events/#{event.id}", params: { event: links }, headers: editor_headers, as: :json
       expect(response).to have_http_status(:ok)
       expect(json_response).to include('wiki_en' => 'Exo Diablo Crucible', 'gamewith' => '412345',
-                                       'kamigame' => '天上劇団もぐら座/index')
+                                       'kamigame' => 'イベント/天上劇団もぐら座/index')
       expect(event.reload.gamewith).to eq('412345')
     end
 
