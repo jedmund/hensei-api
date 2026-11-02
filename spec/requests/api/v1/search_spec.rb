@@ -28,14 +28,16 @@ RSpec.describe 'Api::V1::Search', type: :request do
       expect(response.parsed_body['results']).to be_an(Array)
     end
 
-    # Regression: sorting by name in a Japanese locale must order by the real
-    # name_jp column (was a 500: PG undefined column name_ja).
-    it 'does not error when sorting by name in ja locale' do
-      create(:character)
+    # Sorting was removed (no client sent it); stray params are ignored
+    it 'ignores sort params and keeps the newest-first order' do
+      older = create(:character, release_date: 2.years.ago)
+      newer = create(:character, release_date: 1.day.ago)
       post '/api/v1/search/characters',
            params: { search: { page: 1, locale: 'ja', sort: 'name', order: 'asc' } }.to_json,
            headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
+      ids = response.parsed_body['results'].map { |r| r['id'] }
+      expect(ids.index(newer.id)).to be < ids.index(older.id)
     end
 
     it 'filters by element and returns only matching results' do

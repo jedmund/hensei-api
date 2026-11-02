@@ -78,12 +78,8 @@ module Api
                        Character.where(conditions)
                      end
 
-        # Apply sorting if specified, otherwise use default
-        if search_params[:sort].present?
-          characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
-        elsif search_params[:query].blank?
-          characters = characters.order(latest_date: :desc, id: :asc)
-        end
+        # Newest first when browsing; a query keeps its relevance order
+        characters = characters.order(latest_date: :desc, id: :asc) if search_params[:query].blank?
 
         # Filter by proficiency (matches proficiency1 or proficiency2)
         if filters && filters['proficiency1'].present? && !filters['proficiency1'].empty?
@@ -143,12 +139,8 @@ module Api
                     Weapon.where(conditions)
                   end
 
-        # Apply sorting if specified, otherwise use default
-        if search_params[:sort].present?
-          weapons = apply_sort(weapons, search_params[:sort], search_params[:order], locale)
-        elsif search_params[:query].blank?
-          weapons = weapons.order(latest_date: :desc, id: :asc)
-        end
+        # Newest first when browsing; a query keeps its relevance order
+        weapons = weapons.order(latest_date: :desc, id: :asc) if search_params[:query].blank?
 
         # Filter by promotions (array overlap)
         if filters && filters['promotions'].present? && !filters['promotions'].empty?
@@ -192,12 +184,8 @@ module Api
                     Summon.where(conditions)
                   end
 
-        # Apply sorting if specified, otherwise use default
-        if search_params[:sort].present?
-          summons = apply_sort(summons, search_params[:sort], search_params[:order], locale)
-        elsif search_params[:query].blank?
-          summons = summons.order(latest_date: :desc, id: :asc)
-        end
+        # Newest first when browsing; a query keeps its relevance order
+        summons = summons.order(latest_date: :desc, id: :asc) if search_params[:query].blank?
 
         # Filter by promotions (array overlap)
         if filters && filters['promotions'].present? && !filters['promotions'].empty?
@@ -305,12 +293,7 @@ module Api
           jobs = jobs.where(accessory: true) if filters['accessory'] == true || filters['accessory'] == 'true'
         end
 
-        # Apply sorting if specified, otherwise use default (row, then order)
-        if search_params[:sort].present?
-          jobs = apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
-        else
-          jobs = jobs.order(:row, :order)
-        end
+        jobs = jobs.order(:row, :order)
 
         count = jobs.length
         paginated = jobs.paginate(page: search_params[:page], per_page: search_page_size)
@@ -370,42 +353,6 @@ module Api
       # and name_en / name_jp. Anything else falls back to English.
       def search_locale
         %w[ja jp].include?(search_params[:locale].to_s) ? 'ja' : 'en'
-      end
-
-      # Apply sorting based on column name and order
-      def apply_sort(scope, column, order, locale)
-        sort_dir = order == 'desc' ? :desc : :asc
-
-        case column
-        when 'name'
-          name_col = locale == 'ja' ? :name_jp : :name_en
-          scope.order(name_col => sort_dir, id: :asc)
-        when 'element'
-          scope.order(element: sort_dir, id: :asc)
-        when 'rarity'
-          scope.order(rarity: sort_dir, id: :asc)
-        when 'last_updated'
-          scope.order(latest_date: sort_dir, id: :asc)
-        else
-          scope
-        end
-      end
-
-      # Apply sorting for jobs
-      def apply_job_sort(scope, column, order, locale)
-        sort_dir = order == 'desc' ? :desc : :asc
-
-        case column
-        when 'name'
-          name_col = locale == 'ja' ? :name_jp : :name_en
-          scope.order(name_col => sort_dir, id: :asc)
-        when 'row'
-          scope.order(row: sort_dir, order: :asc, id: :asc)
-        when 'proficiency'
-          scope.order(proficiency1: sort_dir, id: :asc)
-        else
-          scope.order(:row, :order, :id)
-        end
       end
     end
   end
