@@ -171,7 +171,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
   describe 'upcoming events' do
     let!(:previous) { create(:event, :past, created_at: 45.days.ago) }
     let!(:upcoming) { create(:event, :upcoming) }
-    let!(:far_future) { create(:event, starts_at: 30.days.from_now, ends_at: 37.days.from_now) }
+    let!(:far_future) { create(:event, starts_at: 31.days.from_now, ends_at: 38.days.from_now) }
     let!(:party) { create(:party, :complete, raid: raid, visibility: 1) }
 
     before do
@@ -180,13 +180,19 @@ RSpec.describe 'Api::V1::Home', type: :request do
       give(party, sticker: sticker, at: 36.days.ago)
     end
 
-    it 'includes events starting within 14 days with the previous run and its top parties' do
+    it 'includes events starting within 30 days with the previous run and its top parties' do
       get '/api/v1/home'
 
       section = json_response['upcoming'].sole
       expect(section['event']['id']).to eq(upcoming.id)
       expect(section['previous_event']['id']).to eq(previous.id)
       expect(section['raids'].sole['parties'].map { |p| p['id'] }).to eq([party.id])
+    end
+
+    it 'includes an event three weeks out' do
+      later = create(:event, starts_at: 19.days.from_now, ends_at: 26.days.from_now)
+      get '/api/v1/home'
+      expect(json_response['upcoming'].map { |s| s['event']['id'] }).to eq([upcoming.id, later.id])
     end
 
     it 'caps upcoming at 3, soonest first' do
