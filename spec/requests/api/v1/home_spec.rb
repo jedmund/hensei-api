@@ -323,9 +323,9 @@ RSpec.describe 'Api::V1::Home', type: :request do
                                              'change' => 'release')
       expect(items.second['item']['change']).to eq('flb')
       expect(items.first['item']['character']).to include('element', 'season', 'series', 'style_swap')
-      expect(items.first['parties'].map { |party| party['id'] }).to eq([newer.id])
+      expect(items.first['recent'].map { |party| party['id'] }).to eq([newer.id])
       # Teams made before the uncap don't count, even if edited since
-      expect(items.second['parties'].map { |party| party['id'] }).to eq([uncapped.id])
+      expect(items.second['recent'].map { |party| party['id'] }).to eq([uncapped.id])
       expect(items.map { |entry| entry['has_more'] }).to eq([false, false])
     end
 
@@ -336,7 +336,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
 
       entry = json_response['new_items'].sole
-      expect(entry['parties'].size).to eq(1)
+      expect(entry['recent'].size).to eq(1)
       expect(entry['has_more']).to be(true)
     end
 
@@ -347,15 +347,27 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      expect(json_response['new_items'].sole['parties'].map { |party| party['id'] }).to eq([kept.id])
+      expect(json_response['new_items'].sole['recent'].map { |party| party['id'] }).to eq([kept.id])
     end
 
     it 'includes new items nobody has used yet, with no teams' do
       new_character
 
       get '/api/v1/home'
-      expect(json_response['new_items'].map { |entry| [entry['item']['id'], entry['parties']] })
-        .to eq([[new_character.id, []]])
+      expect(json_response['new_items'].map { |entry| [entry['item']['id'], entry['recent'], entry['trending']] })
+        .to eq([[new_character.id, [], []]])
+    end
+
+    it 'orders teams by most recent and by trending, like new battles' do
+      older = team_with(new_character, made: 2.days.ago)
+      newer = team_with(new_character, made: 1.hour.ago)
+      older.update_columns(participation_score: 2.0)
+
+      get '/api/v1/home'
+
+      entry = json_response['new_items'].sole
+      expect(entry['recent'].map { |party| party['id'] }).to eq([newer.id, older.id])
+      expect(entry['trending'].map { |party| party['id'] }).to eq([older.id, newer.id])
     end
   end
 end
