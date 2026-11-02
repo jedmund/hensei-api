@@ -32,6 +32,9 @@ module Api
         end
       end
 
+      # External pages: a gbf.wiki title, a GameWith article id, a Kamigame path
+      fields :wiki_en, :gamewith, :kamigame
+
       field :raids do |event|
         RaidBlueprint.render_as_hash(event.event_raids.map(&:raid), view: :list)
       end

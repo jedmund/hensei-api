@@ -11,7 +11,7 @@ module Api
       # What create and update accept; the admin schema publishes it. raid_ids
       # replaces the linked raids (Event#assign_raid_ids), not an attribute.
       PERMITTED = [:name_en, :name_jp, :kind, :series, :element, :starts_at, :ends_at, :event_number,
-                   { raid_ids: [] }].freeze
+                   :wiki_en, :gamewith, :kamigame, { raid_ids: [] }].freeze
       EDITOR_ACTIONS = %i[create update approve hide upload_image sync].freeze
       SCOPES = %w[current upcoming past].freeze
       MAX_IMAGE_DIMENSION = 2048

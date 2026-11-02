@@ -42,6 +42,11 @@ class Event < ApplicationRecord
   has_many :crews, through: :crew_gw_participations
 
   validates :name_en, presence: true, length: { maximum: 255 }
+  # Links, as units have them: a gbf.wiki title, a GameWith article id and a
+  # Kamigame path under /グラブル/イベント/ (without .html)
+  normalizes :wiki_en, with: ->(title) { Granblue::WikiTitle.normalize(title) }
+  validates :wiki_en, :kamigame, length: { maximum: 255 }
+  validates :gamewith, format: { with: /\A\d+\z/, message: 'must be a GameWith article number' }, allow_blank: true
   validates :name_jp, length: { maximum: 255 }
   validates :starts_at, :ends_at, presence: true
   validates :series, inclusion: { in: SERIES }, allow_nil: true
