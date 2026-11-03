@@ -205,11 +205,13 @@ module GridDamage
     def for_party(party, composition: nil)
       composition ||= GridComposition.for_party(party)
       awakenings = Awakening.where(id: party.weapons.filter_map(&:awakening_id)).index_by(&:id)
+      panel_element = ElementScope.panel_element(party)
       party.weapons.flat_map do |gw|
         awakening = awakenings[gw.awakening_id] or next []
         # Character awakenings can end up attached to grid weapons (frontend data quirk)
         # — they are not weapon awakenings and contribute nothing to the panel.
         next [] unless awakening.object_type == "Weapon"
+        next [] unless ElementScope.awakening_applies?(grid_weapon: gw, panel_element: panel_element)
 
         slug = awakening.slug
         bonus = case gw.weapon&.weapon_series&.slug

@@ -151,7 +151,7 @@ module GridDamage
       computed = Calculator.panel(party, state: state)
       agg = computed[:agg]
       contributions = active_contributions(computed[:contributions])
-      element = Calculator.send(:grid_element, party)
+      element = ElementScope.panel_element(party)
 
       lines = effective_lines.filter_map { |spec| line_for(agg, contributions, spec, element) }
       lines += leftover_lines(agg, contributions)

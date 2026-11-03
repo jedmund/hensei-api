@@ -1372,5 +1372,114 @@
     }
   ],
   "data": [],
-  "ops": []
+  "ops": [
+    {
+      "op": "description",
+      "weapon": "1040028900",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "description_en": "25% boost to {{WeaponElement}} MC's {{atkmod|ATK|m=ex}}. <br /> 15% Bonus Destruction DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Sword: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040028900",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "description_en": "20% boost to {{WeaponElement}} MC's max HP. <br /> 5% Bonus Destruction C.A. DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Sword: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040122300",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "description_en": "25% boost to {{WeaponElement}} MC's {{atkmod|ATK|m=ex}}. <br /> 15% Bonus Destruction DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Edge: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040122300",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "description_en": "20% boost to {{WeaponElement}} MC's max HP. <br /> 5% Bonus Destruction C.A. DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Edge: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040220300",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "description_en": "25% boost to {{WeaponElement}} MC's {{atkmod|ATK|m=ex}}. <br /> 15% Bonus Destruction DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Trident: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040220300",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "description_en": "20% boost to {{WeaponElement}} MC's max HP. <br /> 5% Bonus Destruction C.A. DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Trident: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040621200",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "description_en": "25% boost to {{WeaponElement}} MC's {{atkmod|ATK|m=ex}}. <br /> 15% Bonus Destruction DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Gauntlet: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040621200",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "description_en": "20% boost to {{WeaponElement}} MC's max HP. <br /> 5% Bonus Destruction C.A. DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Gauntlet: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040714700",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "description_en": "25% boost to {{WeaponElement}} MC's {{atkmod|ATK|m=ex}}. <br /> 15% Bonus Destruction DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Bow: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040714700",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "description_en": "20% boost to {{WeaponElement}} MC's max HP. <br /> 5% Bonus Destruction C.A. DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Bow: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040817900",
+      "skill": "Destruction's Godblade I",
+      "ordinal": 0,
+      "description_en": "25% boost to {{WeaponElement}} MC's {{atkmod|ATK|m=ex}}. <br /> 15% Bonus Destruction DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Lyre: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    },
+    {
+      "op": "description",
+      "weapon": "1040817900",
+      "skill": "Rebirth's Godshield I",
+      "ordinal": 0,
+      "description_en": "20% boost to {{WeaponElement}} MC's max HP. <br /> 5% Bonus Destruction C.A. DMG effect.",
+      "reason": "gbf.wiki/Doombringer_Lyre: tier I boosts the weapon's own element's MC; the stored text named dark MC on every Doombringer",
+      "edited_at": "2026-11-03T06:30:00Z"
+    }
+  ]
 }

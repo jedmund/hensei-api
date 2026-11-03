@@ -469,7 +469,7 @@ module Api
         foe = params[:foe_element].presence&.downcase
         # "null" is a real foe element (element-less foes) — advantaged effects turn off.
         foe = nil unless foe == "null" || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
-        foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::Calculator.send(:grid_element, @party)]
+        foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::ElementScope.panel_element(@party)]
         { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe, arcarum: arcarum }.compact
       end
 

@@ -164,7 +164,7 @@ module GridDamage
     # Per-frame enhancement totals (summon + character auras + Exalto) — what `boost_level`
     # conditions compare against.
     def enhancements(party, agg)
-      element = grid_element(party)
+      element = ElementScope.panel_element(party)
       auras = Auras.for_party(party, element: element)
       # A line-less "+N% to [element]'s weapon skills" weapon effect would boost the
       # OPTIMUS frame here. No weapon carries one: those boosts come from summons and
@@ -215,13 +215,7 @@ module GridDamage
       end
     end
 
-    def grid_element(party)
-      id = party.weapons.filter_map { |gw| gw.element || gw.weapon&.element }
-                .group_by(&:itself).max_by { |_, v| v.size }&.first
-      ELEMENT_WORD[id]
-    end
-
-    private_class_method :enhancements, :aggregate_pass, :collect_contributions, :grid_element,
+    private_class_method :enhancements, :aggregate_pass, :collect_contributions,
                          :amplify_contributions
   end
 end

@@ -18,10 +18,12 @@ RSpec.describe GridDamage::Calculator do
 
   # A grid weapon whose single skill is (modifier, series, size), backed by a canonical
   # SL-curve for `boosts` (sl15 values). max_skill_level 15 + uncap 4 ⇒ evaluates at SL15.
-  # Extra opts: `main_hand_only:` for the version; the rest go to the grid weapon.
+  # Extra opts: `main_hand_only:` for the version, `weapon_series:`/`weapon_element:` for
+  # the weapon; the rest go to the grid weapon.
   def add_weapon(modifier:, series:, position:, boosts:, size: "big", **opts)
     weapon_series = opts.delete(:weapon_series)
-    weapon = create(:weapon, max_skill_level: 15, weapon_series: weapon_series)
+    weapon = create(:weapon, max_skill_level: 15, weapon_series: weapon_series,
+                             element: opts.delete(:weapon_element) || 1)
     ws = create(:weapon_skill, weapon: weapon)
     create(:weapon_skill_version, weapon_skill: ws, skill_modifier: modifier,
                                   skill_series: series, skill_size: size,
@@ -104,6 +106,67 @@ RSpec.describe GridDamage::Calculator do
       expect(lines.select { |l| l[:key] == "critical" }).to contain_exactly(
         a_hash_including(group: "hidden", label: "Critical", display: "12%")
       )
+    end
+  end
+
+  # 0umD8e: three Earth Fang of the Dragonslayer Mk II on a Fire grid under two Colossus
+  # Omega auras.
+  context "with off-element weapons in the grid" do
+    let(:earth) { 3 }
+
+    def describe_skill(weapon_position, text)
+      party.weapons.find_by(position: weapon_position).weapon.weapon_skills.first
+           .weapon_skill_versions.first.update!(description_en: text)
+    end
+
+    before do
+      add_main_summon(normal_aura: 100)
+      add_weapon(modifier: "Might", series: "normal", position: -1, mainhand: true, boosts: { "atk" => 20.0 })
+      describe_skill(-1, "Big boost to fire allies' ATK")
+    end
+
+    it "leaves out skills that boost another element's allies but keeps their demerits" do
+      create(:weapon_skill_boost_type, key: "turn_dmg")
+      add_weapon(modifier: "Insignia", series: "normal", position: 0, weapon_element: earth,
+                 boosts: { "atk" => 18.0, "turn_dmg" => 5.0 })
+      describe_skill(0, "Big boost to earth allies' ATK / Take 5% damage every turn.")
+
+      result = described_class.boost_list(party, state: state)
+
+      expect(result["atk"].by_series["normal"]).to eq(40.0) # the fire Might alone, amplified
+      expect(result["turn_dmg"].total).to eq(5.0) # a demerit: per copy, never amplified
+    end
+
+    it "keeps skills that affect allies of any element" do
+      add_weapon(modifier: "Majesty", series: "normal", position: 0, weapon_element: earth,
+                 boosts: { "hp" => 10.0 })
+      describe_skill(0, "Boost to all allies' ATK and max HP based on number of Humans in party.")
+
+      expect(described_class.boost_list(party, state: state)["hp"].total).to eq(20.0)
+    end
+
+    it "follows the element a skill names over the weapon's own (early gacha weapons)" do
+      add_weapon(modifier: "Aegis", series: "normal", position: 0, weapon_element: earth,
+                 boosts: { "hp" => 10.0 })
+      describe_skill(0, "Big boost to fire allies' max HP")
+
+      expect(described_class.boost_list(party, state: state)["hp"].total).to eq(20.0)
+    end
+
+    it "reads a copy's own element over the catalogue's" do
+      add_weapon(modifier: "Majesty", series: "normal", position: 0, boosts: { "hp" => 10.0 }, element: earth)
+      describe_skill(0, "Small boost to {{WeaponElement|wpn}} allies' ATK and max HP")
+
+      expect(described_class.boost_list(party, state: state)).not_to have_key("hp")
+    end
+
+    it "drops an off-element Revans weapon's awakening" do
+      revans = WeaponSeries.find_by(slug: "revans") || create(:weapon_series, slug: "revans")
+      atk = Awakening.find_by(slug: "weapon-atk") || create(:awakening, :for_weapon, slug: "weapon-atk")
+      add_weapon(modifier: "Aegis", series: "normal", position: 0, boosts: { "hp" => 10.0 },
+                 weapon_series: revans, weapon_element: earth, awakening: atk, awakening_level: 4)
+
+      expect(GridDamage::AwakeningContributions.for_party(party)).to be_empty
     end
   end
 
