@@ -1,0 +1,5 @@
+# Commits that only reformat code. GitHub skips these in blame views;
+# locally, run: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# chore(lint): enforce RuboCop on new code and autocorrect the formatting (#703)
+e7936ec635a8a5ebf32bb777d5e0dd393ca3429f
