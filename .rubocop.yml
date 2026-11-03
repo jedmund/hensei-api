@@ -126,3 +126,8 @@ RSpec/ExampleLength:
 
 RSpec/NestedGroups:
   Max: 5
+
+# rails_helper doesn't call infer_spec_type_from_file_location!, so the
+# `type:` metadata this cop calls redundant is what sets the spec type
+RSpecRails/InferredSpecType:
+  Enabled: false
