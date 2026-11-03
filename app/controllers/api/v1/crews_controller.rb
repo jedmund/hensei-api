@@ -48,9 +48,6 @@ module Api
         filter = params[:filter]&.to_sym || :active
 
         case filter
-        when :active
-          members = @crew.active_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, created_at: :asc)
-          phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         when :retired
           members = @crew.crew_memberships.retired.includes(user: { active_crew_membership: :crew }).order(retired_at: :desc)
           phantoms = @crew.phantom_players.not_deleted.retired.includes(:claimed_by).order(:name)
@@ -60,7 +57,7 @@ module Api
         when :all
           members = @crew.crew_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, retired: :asc, created_at: :asc)
           phantoms = @crew.phantom_players.not_deleted.includes(:claimed_by).order(:name)
-        else
+        else # :active, and any unknown filter
           members = @crew.active_memberships.includes(user: { active_crew_membership: :crew }).order(role: :desc, created_at: :asc)
           phantoms = @crew.phantom_players.not_deleted.active.includes(:claimed_by).order(:name)
         end
