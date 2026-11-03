@@ -9,7 +9,7 @@ module Api
       before_action :authenticate_fetcher
 
       rescue_from GachaSimulation::ValidationError do |error|
-        render json: { error: error.message }, status: :unprocessable_entity
+        render json: { error: error.message }, status: :unprocessable_content
       end
 
       def create

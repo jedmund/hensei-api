@@ -129,7 +129,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
     it 'requires event_number for Unite and Fight' do
       post '/api/v1/events', params: params.deep_merge(event: { event_number: nil }), headers: editor_headers,
                              as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include('event_number')
     end
 
@@ -150,7 +150,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
 
     it 'rejects an unknown series' do
       post '/api/v1/events', params: params.deep_merge(event: { series: 'tower_of_babyl' }), headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'accepts the element as an integer' do
@@ -160,19 +160,19 @@ RSpec.describe 'Api::V1::Events', type: :request do
 
     it 'requires an element for Unite and Fight' do
       post '/api/v1/events', params: params.deep_merge(event: { element: '' }), headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects an unknown raid with 422 and creates nothing' do
       bad = params.deep_merge(event: { raid_ids: ['00000000-0000-0000-0000-000000000000'] })
       expect { post '/api/v1/events', params: bad, headers: editor_headers }.not_to change(Event, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include('raid_ids')
     end
 
     it 'rejects an end before the start' do
       post '/api/v1/events', params: params.deep_merge(event: { ends_at: 1.day.ago.iso8601 }), headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 401 for non-editors' do
@@ -221,14 +221,14 @@ RSpec.describe 'Api::V1::Events', type: :request do
     it 'rejects a GameWith link that is not an article number' do
       put "/api/v1/events/#{event.id}", params: { event: { gamewith: 'https://gamewith.jp/x' } },
                                         headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(event.reload.gamewith).to be_nil
     end
 
     it 'requires event_number for a Guild War' do
       gw = create(:gw_event, event_number: 84)
       put "/api/v1/events/#{gw.id}", params: { event: { event_number: nil } }, headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(gw.reload.event_number).to eq(84)
     end
 
@@ -251,7 +251,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
       create(:gw_event, event_number: 84)
       gw = create(:gw_event, event_number: 85)
       put "/api/v1/events/#{gw.id}", params: { event: { event_number: 84 } }, headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'replaces raid links when raid_ids is given' do
@@ -262,7 +262,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
 
     it 'returns 422 (not 404) for an unknown raid' do
       put "/api/v1/events/#{event.id}", params: { event: { raid_ids: ['nope'] } }, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(event.reload.event_raids.map(&:raid_id)).to eq([raid.id])
     end
 

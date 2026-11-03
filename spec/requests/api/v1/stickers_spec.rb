@@ -69,7 +69,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'rejects an invalid slug' do
       post '/api/v1/stickers', params: { sticker: { slug: '../Bad Slug', meaning_en: 'x' } }, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 401 for non-editors' do
@@ -96,7 +96,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     it 'refuses to change the slug' do
       put "/api/v1/stickers/#{sticker.id}", params: { sticker: { slug: 'renamed', meaning_en: 'New' } },
                                             headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(sticker.reload).to have_attributes(slug: sticker.slug)
       expect(sticker.meaning_en).not_to eq('New')
     end
@@ -127,7 +127,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     it 'returns 422 once the sticker has been given' do
       create(:party_sticker, sticker: sticker)
       delete "/api/v1/stickers/#{sticker.id}", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response['error']).to be_present
       expect(Sticker.exists?(sticker.id)).to be(true)
     end
@@ -191,20 +191,20 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     it 'rejects a JPEG' do
       upload = Rack::Test::UploadedFile.new(StringIO.new(jpeg_bytes), 'image/jpeg', original_filename: 'x.jpg')
       post "/api/v1/stickers/#{sticker.id}/upload_image", params: { image: upload }, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(IconStorage).not_to have_received(:put)
     end
 
     it 'rejects a missing image' do
       post "/api/v1/stickers/#{sticker.id}/upload_image", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects a body over the size limit before reading it' do
       post "/api/v1/stickers/#{sticker.id}/upload_image",
            params: 'x' * (Api::V1::StickersController::UPLOAD_REQUEST_MAX_BYTES + 1),
            headers: editor_headers.merge('Content-Type' => 'application/json')
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
       expect(IconStorage).not_to have_received(:put)
     end
 
@@ -241,7 +241,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       sticker = create(:sticker, image_key: 'icons/stickers/x.png')
       delete "/api/v1/stickers/#{sticker.id}/image", params: { language: 'en' }, headers: editor_headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(sticker.reload.image_key).to eq('icons/stickers/x.png')
     end
 
@@ -295,7 +295,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     it 'rejects an unknown library sticker' do
       post '/api/v1/stickers', params: { sticker: { slug: 'nope', meaning_en: 'Hi', library_id: 999_999 } },
                                headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(Sticker.exists?(slug: 'nope')).to be(false)
     end
 
@@ -334,7 +334,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'returns 422 for unknown ids' do
       put '/api/v1/stickers/reorder', params: { ids: [a.id, 'nope'] }, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 401 for non-editors and leaves the order alone' do
@@ -390,7 +390,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'rejects a missing active flag' do
       put "/api/v1/stickers/#{sticker.id}", params: { sticker: { active: '' } }, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(sticker.reload.active).to be(true)
     end
 

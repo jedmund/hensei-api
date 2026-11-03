@@ -31,7 +31,7 @@ module Api
       # write still hits a unique index, it's a conflict to retry, not a 500.
       rescue_from ActiveRecord::RecordNotUnique do
         render json: ErrorBlueprint.render_as_json(nil, errors: { base: ['changed at the same time; try again'] }),
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       before_action :set_party
@@ -135,7 +135,7 @@ module Api
 
       def render_list_error(key, messages)
         render json: ErrorBlueprint.render_as_json(nil, errors: { key => Array(messages) }),
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       def render_party

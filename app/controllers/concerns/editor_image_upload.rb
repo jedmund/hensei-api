@@ -15,7 +15,7 @@ module EditorImageUpload
     bytes = uploaded_image_bytes(params[:image])
     result = IconUploadValidator.call(bytes, **validator_options)
     unless result.valid?
-      render json: { error: result.error }, status: :unprocessable_entity
+      render json: { error: result.error }, status: :unprocessable_content
       return nil
     end
 

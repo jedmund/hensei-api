@@ -84,7 +84,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
            params: { party: { solomonis: { route_evoker_id: nier.id, outcome: 'failed' } } }.to_json,
            headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['errors'].keys).to include('solomonis.outcome')
     end
 
@@ -93,7 +93,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
         post '/api/v1/parties', params: { party: { raid_id: zone.id } }.to_json, headers: headers
       end.not_to change(Party, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'solomonis.route_evoker_id')).to be_present
     end
 
@@ -101,7 +101,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       post '/api/v1/parties', params: { party: { solomonis: { route_evoker_id: create(:character).id } } }.to_json,
                               headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['errors'].keys).to include('solomonis.route_evoker_id')
     end
 
@@ -109,7 +109,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       post '/api/v1/parties', params: { party: { solomonis: { route_evoker_id: SecureRandom.uuid } } }.to_json,
                               headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['errors'].keys).to include('solomonis.route_evoker_id')
     end
 
@@ -117,7 +117,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       post '/api/v1/parties', params: { party: { solomonis: { route_evoker_id: nier.id, pledge_level: 9 } } }.to_json,
                               headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['errors'].keys).to include('solomonis.pledge_level')
     end
   end
@@ -139,7 +139,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}", params: { party: { solomonis: { pledge_level: 3_000_000_000 } } }.to_json,
                                          headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(party.reload.solomonis_expedition.pledge_level).to eq(0)
     end
 
@@ -170,7 +170,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
 
       put "/api/v1/parties/#{party.id}", params: { party: { raid_id: zone.id } }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['errors']).to eq('solomonis.route_evoker_id' => ['is required to enter an Evoking Solomonis zone'])
       expect(party.reload.raid_id).not_to eq(zone.id)
     end
@@ -226,7 +226,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/blessings",
           params: { blessing_level_ids: [justice_level.id, hanged_man_level.id] }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'blessings').join).to include('over the limit')
       expect(party.party_blessings.reload).to be_empty
     end
@@ -238,21 +238,21 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/blessings", params: { blessing_level_ids: [level.id] }.to_json,
                                                    headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'blessings')).to include('must be released')
     end
 
     it 'rejects unknown or repeated levels and a missing list' do
       put "/api/v1/parties/#{party.id}/blessings", params: { blessing_level_ids: [SecureRandom.uuid] }.to_json,
                                                    headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       put "/api/v1/parties/#{party.id}/blessings",
           params: { blessing_level_ids: [justice_level.id, justice_level.id] }.to_json, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       put "/api/v1/parties/#{party.id}/blessings", params: {}.to_json, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'blessing_level_ids')).to eq(['must be a list'])
     end
 
@@ -262,7 +262,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/blessings", params: { blessing_level_ids: [justice_level.id] }.to_json,
                                                    headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "rejects someone else's party" do
@@ -324,7 +324,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
 
       put "/api/v1/parties/#{ordinary.id}/guide_effects", params: guidebook_params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'guide_effects')).to be_present
     end
 
@@ -332,25 +332,25 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/guide_effects",
           params: { guide_effects: [{ guide_effect_id: unique.id, count: 2 }] }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'guide_effects').join).to include('cannot be stacked')
     end
 
     it 'rejects unknown and repeated effects and two inherited ones' do
       put "/api/v1/parties/#{party.id}/guide_effects",
           params: { guide_effects: [{ guide_effect_id: SecureRandom.uuid }] }.to_json, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       put "/api/v1/parties/#{party.id}/guide_effects",
           params: { guide_effects: [{ guide_effect_id: stackable.id }, { guide_effect_id: stackable.id }] }.to_json,
           headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       put "/api/v1/parties/#{party.id}/guide_effects",
           params: { guide_effects: [{ guide_effect_id: stackable.id, inherited: true },
                                     { guide_effect_id: unique.id, inherited: true }] }.to_json,
           headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(party.expedition_guide_effects.reload).to be_empty
     end
 
@@ -360,7 +360,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
         put "/api/v1/parties/#{party.id}/guide_effects",
             params: { guide_effects: [{ guide_effect_id: stackable.id }.merge(fields)] }.to_json, headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity), fields.inspect
+        expect(response).to have_http_status(:unprocessable_content), fields.inspect
       end
       expect(party.expedition_guide_effects.reload).to be_empty
     end
@@ -371,7 +371,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
 
       put "/api/v1/parties/#{party.id}/guide_effects", params: guidebook_params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'base')).to be_present
     end
 
@@ -416,7 +416,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/unseal_priority",
           params: { items: [{ type: 'weapon', id: mainhand.id }] }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'unseal_priority')).to be_present
     end
 
@@ -426,7 +426,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/unseal_priority",
           params: { items: [{ type: 'weapon', id: foreign.id }] }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(foreign.reload.unseal_priority).to be_nil
     end
 
@@ -436,7 +436,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/parties/#{party.id}/unseal_priority",
           params: { items: [{ type: 'weapon', id: weapon_five.id }] }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'unseal_priority')).to be_present
     end
 
@@ -445,7 +445,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
 
       put "/api/v1/parties/#{ordinary.id}/unseal_priority", params: { items: [] }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "rejects someone else's party" do
@@ -502,13 +502,13 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       start_weapon = create(:grid_weapon, party: party, position: 0)
       put "/api/v1/grid_weapons/#{start_weapon.id}", params: { weapon: { seal_state: 'sealed' } }.to_json,
                                                      headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'seal_state')).to be_present
 
       weapon = create(:grid_weapon, party: party, position: 5)
       put "/api/v1/grid_weapons/#{weapon.id}", params: { weapon: { seal_state: 'start' } }.to_json,
                                                headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(weapon.reload.seal_state).to eq('sealed')
     end
 
@@ -518,7 +518,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/grid_weapons/#{weapon.id}", params: { weapon: { seal_state: 'sealed' } }.to_json,
                                                headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "rejects seal_state on someone else's party" do
@@ -552,7 +552,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       put "/api/v1/grid_characters/#{ally.id}", params: { character: { brought_by_blessing: true } }.to_json,
                                                 headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body.dig('errors', 'brought_by_blessing')).to be_present
     end
 

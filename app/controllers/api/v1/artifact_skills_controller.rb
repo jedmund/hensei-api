@@ -32,7 +32,7 @@ module Api
       def for_slot
         slot = params[:slot].to_i
 
-        return render json: { error: 'Slot must be between 1 and 4' }, status: :unprocessable_entity unless (1..4).cover?(slot)
+        return render json: { error: 'Slot must be between 1 and 4' }, status: :unprocessable_content unless (1..4).cover?(slot)
 
         @skills = ArtifactSkill.for_slot(slot)
         render json: ArtifactSkillBlueprint.render(@skills, root: :artifact_skills)

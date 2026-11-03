@@ -29,7 +29,7 @@ RSpec.describe 'Image download options', type: :request do
         expect do
           post url, params: { options: { size: size } }, headers: headers, as: :json
         end.not_to have_enqueued_job(job_class)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['error']).to start_with('Invalid size')
       end
     end
@@ -46,12 +46,12 @@ RSpec.describe 'Image download options', type: :request do
       weapon.update_column(:element_variant_ids, { '1' => '../1040001000' })
 
       expect { post url, params: {}, headers: headers, as: :json }.not_to have_enqueued_job(DownloadWeaponImagesJob)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'still refuses an unknown size on the sync download' do
       post "/api/v1/weapons/#{weapon.id}/download_image", params: { size: 'huge' }, headers: headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

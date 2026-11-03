@@ -58,7 +58,7 @@ module Api
             meta: { created: result.created.size }
           ), status: :ok
         else
-          render json: { errors: result.errors }, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_content
         end
       end
 

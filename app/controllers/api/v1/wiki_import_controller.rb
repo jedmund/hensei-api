@@ -20,7 +20,7 @@ module Api
       limit_requests 'wiki-import', to: 30, within: 1.minute, only: :create
 
       def create
-        return render json: { error: 'payload_too_large' }, status: :payload_too_large if request.raw_post.bytesize > MAX_BODY_BYTES
+        return render json: { error: 'payload_too_large' }, status: :content_too_large if request.raw_post.bytesize > MAX_BODY_BYTES
 
         payload = WikiImport::Payload.parse(parse_body)
         importer = WikiImport::Importer.new(payload, user: current_user)

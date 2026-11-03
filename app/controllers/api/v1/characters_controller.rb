@@ -99,14 +99,14 @@ module Api
         # Validate transformation for characters (01, 02, 03, 04, or style for style swaps)
         valid_transformations = %w[01 02 03 04 style]
         if transformation.present? && !valid_transformations.include?(transformation)
-          return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_entity
+          return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_content
         end
 
         # Validate element for null-element characters
-        return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_entity if element.present? && !(1..6).cover?(element)
+        return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_content if element.present? && !(1..6).cover?(element)
 
         # Validate gender (0=Gran, 1=Djeeta)
-        return render json: { error: 'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)' }, status: :unprocessable_entity unless [0, 1].include?(gender)
+        return render json: { error: 'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)' }, status: :unprocessable_content unless [0, 1].include?(gender)
 
         begin
           downloader = Granblue::Downloaders::CharacterDownloader.new(
@@ -196,7 +196,7 @@ module Api
         wiki_data = params[:wiki_data] || {}
 
         unless wiki_pages.is_a?(Array) && wiki_pages.any?
-          return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_entity
+          return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_content
         end
 
         # Limit to 10 pages
@@ -212,7 +212,7 @@ module Api
       # POST /characters/:id/fetch_wiki
       # Fetches and stores wiki data for this character
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_entity unless @character.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_content unless @character.wiki_en.present?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@character)
@@ -246,10 +246,10 @@ module Api
           end
         render json: { refresh: result, character: result[:written] ? full_character : nil }
       rescue CharacterSkills::Refresh::PreviewExpired => e
-        render json: { error: 'preview_expired', message: e.message }, status: :unprocessable_entity
+        render json: { error: 'preview_expired', message: e.message }, status: :unprocessable_content
       rescue Granblue::WikiFetcher::MissingPageError, CharacterSkills::Refresh::BuildRefused,
              CharacterSkills::Refresh::BuildBusy => e
-        render json: { error: e.message, message: e.message }, status: :unprocessable_entity
+        render json: { error: e.message, message: e.message }, status: :unprocessable_content
       rescue Granblue::WikiError => e
         render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
       rescue StandardError => e

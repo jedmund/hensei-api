@@ -186,7 +186,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
         post '/api/v1/playlists', params: { playlist: { description: 'No title' } }.to_json, headers: auth_headers
       end.not_to change(Playlist, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects duplicate title for same user with 422' do
@@ -196,7 +196,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
         post '/api/v1/playlists', params: { playlist: { title: 'Duplicate' } }.to_json, headers: auth_headers
       end.not_to change(Playlist, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 401 without authentication' do
@@ -235,7 +235,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
             params: { playlist: { visibility: 99 } }.to_json,
             headers: auth_headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

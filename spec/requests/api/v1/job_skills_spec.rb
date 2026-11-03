@@ -105,7 +105,7 @@ RSpec.describe 'JobSkills API', type: :request do
 
       it 'rejects a skill without a job' do
         post '/api/v1/job_skills', params: valid_params.except(:job_id).to_json, headers: editor_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'puts a skill without an order after its job\'s others' do
@@ -117,7 +117,7 @@ RSpec.describe 'JobSkills API', type: :request do
       it 'rejects a slug its job already uses, but not another job\'s' do
         create(:job_skill, job: job, slug: 'new-skill')
         post '/api/v1/job_skills', params: valid_params.to_json, headers: editor_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         post '/api/v1/job_skills', params: valid_params.merge(job_id: create(:job).id).to_json, headers: editor_headers
         expect(response).to have_http_status(:created)

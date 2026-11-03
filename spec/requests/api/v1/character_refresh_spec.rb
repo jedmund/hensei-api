@@ -178,7 +178,7 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       travel 31.minutes do
         apply(token)
       end
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body).to include('error' => 'preview_expired', 'message' => be_present)
       expect(character.reload.wiki_raw).to eq(stored_text)
     end
@@ -192,14 +192,14 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       apply(token)
       expect(response).to have_http_status(:ok)
       apply(token)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "is a 422 for someone else's preview" do
       stub_wiki(fetched_text)
       token = preview['refresh']['preview_token']
       apply(token, as: other_editor)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(character.reload.wiki_raw).to eq(stored_text)
     end
 
@@ -209,7 +209,7 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       other = Character.without_skill_build { create(:character, wiki_raw: stored_text) }
       post "/api/v1/characters/#{other.id}/reparse", params: { preview: false, preview_token: token }.to_json,
                                                      headers: auth_headers(editor)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(other.reload.wiki_raw).to eq(stored_text)
     end
 
@@ -268,7 +268,7 @@ RSpec.describe 'Character refresh (C6)', type: :request do
 
     it 'is a 422 with the build refusal shape for a preview' do
       held_elsewhere(:character, character.id) { preview }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body).to eq('error' => busy, 'message' => busy)
     end
 
@@ -276,7 +276,7 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       token = preview['refresh']['preview_token']
       before_versions = versions
       held_elsewhere(:all) { apply(token) }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['message']).to eq(busy)
       expect(versions).to eq(before_versions)
       expect(character.reload.wiki_raw).to eq(stored_text)

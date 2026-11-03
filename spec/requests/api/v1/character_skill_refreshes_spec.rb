@@ -97,15 +97,15 @@ RSpec.describe 'Character skill refreshes', type: :request do
     it 'is a 422 too_many_characters over 20' do
       ids = Array.new(21) { |i| make("30409100#{i.to_s.rjust(2, '0')}").id }
       expect { create_refresh(ids) }.not_to have_enqueued_job(CharacterSkills::RefreshJob)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body).to include('error' => 'too_many_characters', 'message' => be_present)
     end
 
     it 'is a 422 for no or unknown characters' do
       create_refresh([])
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       create_refresh([first.id, SecureRandom.uuid, 'nope'])
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects non-editors' do

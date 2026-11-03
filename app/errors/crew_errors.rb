@@ -4,7 +4,7 @@ module CrewErrors
   # Base class for all crew-related errors
   class CrewError < StandardError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -21,7 +21,7 @@ module CrewErrors
 
   class AlreadyInCrewError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -35,7 +35,7 @@ module CrewErrors
 
   class CaptainCannotLeaveError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -49,7 +49,7 @@ module CrewErrors
 
   class CannotRemoveCaptainError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -63,7 +63,7 @@ module CrewErrors
 
   class ViceCaptainLimitError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -77,7 +77,7 @@ module CrewErrors
 
   class NotInCrewError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -105,7 +105,7 @@ module CrewErrors
 
   class CannotDemoteCaptainError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -147,7 +147,7 @@ module CrewErrors
 
   class CannotInviteSelfError < CrewError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code

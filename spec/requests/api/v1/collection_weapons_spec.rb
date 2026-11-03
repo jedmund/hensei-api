@@ -249,7 +249,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
         post '/api/v1/collection/weapons', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionWeapon, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('must be a weapon awakening')
     end
@@ -263,7 +263,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
         post '/api/v1/collection/weapons', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionWeapon, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
@@ -311,7 +311,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
         post '/api/v1/collection/weapons', params: invalid_ax.to_json, headers: headers
       end.not_to change(CollectionWeapon, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('AX skill 1 must have both modifier and strength')
     end
@@ -365,7 +365,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       put "/api/v1/collection/weapons/#{collection_weapon.id}",
           params: invalid_attributes.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('cannot have duplicate keys')
     end

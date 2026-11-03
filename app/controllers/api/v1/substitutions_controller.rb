@@ -23,14 +23,14 @@ module Api
         item_id = substitution_params[:item_id]
 
         grid_class = grid_class_for(grid_type)
-        return render json: { error: "invalid grid_type: #{grid_type}" }, status: :unprocessable_entity unless grid_class
+        return render json: { error: "invalid grid_type: #{grid_type}" }, status: :unprocessable_content unless grid_class
 
         grid_item = grid_class.where(party: @party).find_by(id: grid_id)
         return render_not_found_response('grid item') unless grid_item
 
         item_fk = item_foreign_key(grid_type)
         canonical = ITEM_CLASS_FOR_GRID[grid_type]&.find_by(id: item_id)
-        return render json: { error: "unknown item_id: #{item_id}" }, status: :unprocessable_entity unless canonical
+        return render json: { error: "unknown item_id: #{item_id}" }, status: :unprocessable_content unless canonical
 
         substitution = ApplicationRecord.transaction do
           substitute = grid_class.create!(
@@ -63,14 +63,14 @@ module Api
         # parallel requests claimed the same position (caught by
         # index_substitutions_on_slot_position). The user-visible error is the
         # same in both cases.
-        render json: { error: DUPLICATE_ERROR }, status: :unprocessable_entity
+        render json: { error: DUPLICATE_ERROR }, status: :unprocessable_content
       rescue ActiveRecord::InvalidForeignKey
         render json: { error: "unknown item_id: #{params.dig(:substitution, :item_id)}" },
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       def update
-        return render json: { error: 'position is required' }, status: :unprocessable_entity if substitution_params[:position].blank?
+        return render json: { error: 'position is required' }, status: :unprocessable_content if substitution_params[:position].blank?
 
         ApplicationRecord.transaction do
           @substitution.update!(position: substitution_params[:position])
@@ -81,7 +81,7 @@ module Api
         render json: SubstitutionBlueprint.render(@substitution)
       rescue ActiveRecord::RecordNotUnique
         render json: { error: 'another substitution already occupies that position' },
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       def destroy
@@ -107,7 +107,7 @@ module Api
         raw_entries = params[:substitutions]
         if raw_entries.blank?
           return render json: { error: 'substitutions array required' },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         entries = raw_entries.map do |e|
@@ -117,13 +117,13 @@ module Api
         positions = entries.map { |e| (e['position'] || e[:position]).to_i }
 
         if (validation_error = validate_reorder_batch(ids, positions))
-          return render json: { error: validation_error }, status: :unprocessable_entity
+          return render json: { error: validation_error }, status: :unprocessable_content
         end
 
         substitutions = Substitution.where(id: ids).to_a
         if substitutions.length != ids.length
           return render json: { error: 'unknown substitution id(s)' },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         # Cross-party access is rendered as not-found rather than 403 to avoid
@@ -133,14 +133,14 @@ module Api
         slot_keys = substitutions.map { |s| [s.grid_type, s.grid_id] }.uniq
         if slot_keys.length > 1
           return render json: { error: 'all entries must belong to the same slot' },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         grid_type, grid_id = slot_keys.first
         existing_ids = Substitution.where(grid_type: grid_type, grid_id: grid_id).pluck(:id)
         if existing_ids.sort != ids.sort
           return render json: { error: 'reorder batch must cover all substitutions in the slot' },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         ApplicationRecord.transaction do
@@ -166,7 +166,7 @@ module Api
         ordered = Substitution.where(grid_type: grid_type, grid_id: grid_id).order(:position)
         render json: SubstitutionBlueprint.render(ordered)
       rescue ActiveRecord::RecordNotUnique
-        render json: { error: 'position collision' }, status: :unprocessable_entity
+        render json: { error: 'position collision' }, status: :unprocessable_content
       end
 
       private

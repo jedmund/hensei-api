@@ -59,7 +59,7 @@ module Api
           head :no_content
         else
           render json: { error: 'This bullet is loaded on weapons and cannot be deleted.' },
-                 status: :unprocessable_entity
+                 status: :unprocessable_content
         end
       end
 
@@ -76,7 +76,7 @@ module Api
         if result.success?
           render json: { success: true, images: result.images }
         else
-          render json: { success: false, error: result.error }, status: :unprocessable_entity
+          render json: { success: false, error: result.error }, status: :unprocessable_content
         end
       end
 

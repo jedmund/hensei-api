@@ -108,7 +108,7 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
 
     it 'rejects an unknown sort' do
       fetch(path, sort: 'weapon_count')
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end

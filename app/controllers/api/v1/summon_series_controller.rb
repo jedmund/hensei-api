@@ -43,7 +43,7 @@ module Api
           render json: ErrorBlueprint.render(nil, error: {
                                                message: 'Cannot delete series with associated summons',
                                                code: 'has_dependencies'
-                                             }), status: :unprocessable_entity
+                                             }), status: :unprocessable_content
         else
           @summon_series.destroy!
           head :no_content

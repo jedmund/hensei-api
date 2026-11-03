@@ -269,7 +269,7 @@ RSpec.describe 'Collection Summons API', type: :request do
         post '/api/v1/collection/summons', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionSummon, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
@@ -315,7 +315,7 @@ RSpec.describe 'Collection Summons API', type: :request do
       put "/api/v1/collection/summons/#{collection_summon.id}",
           params: invalid_attributes.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(collection_summon.reload.transcendence_step).not_to eq(5)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')

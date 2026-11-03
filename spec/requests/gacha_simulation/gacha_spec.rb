@@ -133,7 +133,7 @@ RSpec.describe 'Gacha API', type: :request do
 
   it 'returns validation and catalogue-unavailable errors' do
     post '/api/v1/gacha/simulations', params: { draws: '11' }, as: :json
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     allow(GachaSimulation::Catalogue).to receive(:snapshot).and_raise(GachaSimulation::Unavailable, 'Unavailable')
     get '/api/v1/gacha/catalogue'
     expect(response).to have_http_status(:service_unavailable)

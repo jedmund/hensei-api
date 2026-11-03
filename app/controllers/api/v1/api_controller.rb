@@ -162,12 +162,12 @@ module Api
                      end
 
         render json: ErrorBlueprint.render_as_json(nil, errors: error_data),
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       def render_validation_error_response(object)
         render json: ErrorBlueprint.render_as_json(nil, errors: object.errors),
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       def render_not_found_response_without_object

@@ -77,7 +77,7 @@ RSpec.describe 'Api::V1::PartyShares', type: :request do
 
         post "/api/v1/parties/#{party.id}/shares", headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe 'Api::V1::PartyShares', type: :request do
       it 'returns not_in_crew error' do
         post "/api/v1/parties/#{party.id}/shares", headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('not_in_crew')
       end

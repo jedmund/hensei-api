@@ -5,7 +5,7 @@ module CollectionErrors
   class CollectionError < StandardError
     attr_reader :http_status, :code
 
-    def initialize(message = nil, http_status: :unprocessable_entity, code: nil)
+    def initialize(message = nil, http_status: :unprocessable_content, code: nil)
       super(message)
       @http_status = http_status
       @code = code || self.class.name.demodulize.underscore

@@ -12,7 +12,7 @@ module Api
 
       def create
         shortcode = params[:shortcode] || params.dig(:preview, :shortcode)
-        return render json: { error: 'shortcode is required' }, status: :unprocessable_entity if shortcode.blank?
+        return render json: { error: 'shortcode is required' }, status: :unprocessable_content if shortcode.blank?
 
         party = Party.find_by(shortcode: shortcode)
         return render_not_found_response('party') unless party

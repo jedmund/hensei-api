@@ -80,14 +80,14 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
     it 'rejects a non-public party' do
       party.update!(visibility: 3)
       post '/api/v1/featured_parties', params: params, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects an unknown event' do
       post '/api/v1/featured_parties',
            params: { featured_party: { party_id: party.id, event_id: '00000000-0000-0000-0000-000000000000' } },
            headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 401 for non-editors' do
@@ -195,7 +195,7 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
     it 'rejects a non-public party' do
       party.update!(visibility: 2)
       post '/api/v1/featured_parties', params: { featured_party: { party_id: party.id } }, headers: curator_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "leaves editors free to change an ended event's picks" do

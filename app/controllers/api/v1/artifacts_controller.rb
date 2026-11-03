@@ -39,7 +39,7 @@ module Api
         if result.success?
           render json: { success: true, images: result.images }
         else
-          render json: { success: false, error: result.error }, status: :unprocessable_entity
+          render json: { success: false, error: result.error }, status: :unprocessable_content
         end
       end
 

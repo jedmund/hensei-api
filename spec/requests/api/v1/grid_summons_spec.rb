@@ -126,7 +126,7 @@ RSpec.describe 'GridSummons API', type: :request do
 
       it 'returns unprocessable entity when position is missing' do
         post '/api/v1/grid_summons', params: invalid_params.to_json, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
@@ -184,7 +184,7 @@ RSpec.describe 'GridSummons API', type: :request do
 
       it 'returns unprocessable entity with uncap_level error' do
         put "/api/v1/grid_summons/#{grid_summon.id}", params: invalid_update_params.to_json, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['errors']).to include('uncap_level')
       end
     end

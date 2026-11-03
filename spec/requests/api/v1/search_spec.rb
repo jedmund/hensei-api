@@ -105,7 +105,7 @@ RSpec.describe 'Api::V1::Search', type: :request do
       post '/api/v1/search/job_skills',
            params: { search: { page: 1 } }.to_json,
            headers: { 'Content-Type' => 'application/json' }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     # Regression: clients send "jp" for Japanese, but the search scope is

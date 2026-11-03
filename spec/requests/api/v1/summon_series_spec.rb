@@ -110,7 +110,7 @@ RSpec.describe 'Api::V1::SummonSeries', type: :request do
       series = create(:summon_series)
       create(:summon, summon_series: series)
       delete "/api/v1/summon_series/#{series.id}", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']['code']).to eq('has_dependencies')
     end
 

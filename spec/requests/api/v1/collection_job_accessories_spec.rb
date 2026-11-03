@@ -116,7 +116,7 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
       expect do
         post '/api/v1/collection/job_accessories', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionJobAccessory, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

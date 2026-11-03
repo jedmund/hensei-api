@@ -50,7 +50,7 @@ module Api
           render json: ErrorBlueprint.render(nil, error: {
                                                message: 'Cannot delete group with associated raids',
                                                code: 'has_dependencies'
-                                             }), status: :unprocessable_entity
+                                             }), status: :unprocessable_content
         else
           @raid_group.destroy!
           head :no_content

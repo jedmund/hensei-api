@@ -41,7 +41,7 @@ RSpec.describe 'ImportController', type: :request do
       it 'returns unprocessable entity error' do
         invalid_data = { 'import' => { 'deck' => { 'name' => '', 'pc' => nil } } }.to_json
         post '/api/v1/import', params: invalid_data, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['error']).to eq('Invalid deck data')
       end
     end
@@ -102,7 +102,7 @@ RSpec.describe 'ImportController', type: :request do
         allow(failing_processor).to receive(:process).and_raise(StandardError.new('Error processing import'))
 
         post '/api/v1/import', params: valid_deck_json, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['error']).to eq('Import failed due to an unexpected error. Please try again.')
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe 'ImportController', type: :request do
         allow(failing_processor).to receive(:process).and_raise(ActiveRecord::RecordInvalid.new(record))
 
         post '/api/v1/import', params: valid_deck_json, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['error']).to eq('invalid_data')
         expect(response.parsed_body['details']).to eq(['Ax strength2 must be between 1.0 and 3.0'])
       end

@@ -33,7 +33,7 @@ module Api
           render json: { message: 'Password has been reset.' }, status: :ok
         else
           render json: ErrorBlueprint.render_as_json(nil, errors: user.errors),
-                 status: :unprocessable_entity
+                 status: :unprocessable_content
         end
       end
     end

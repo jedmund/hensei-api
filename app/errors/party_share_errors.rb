@@ -4,7 +4,7 @@ module PartyShareErrors
   # Base class for all party share-related errors
   class PartyShareError < StandardError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code
@@ -21,7 +21,7 @@ module PartyShareErrors
 
   class NotInCrewError < PartyShareError
     def http_status
-      :unprocessable_entity
+      :unprocessable_content
     end
 
     def code

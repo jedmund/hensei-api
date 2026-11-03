@@ -100,7 +100,7 @@ RSpec.describe 'Admin jobs collection', type: :request do
 
     it 'rejects an unknown filter' do
       fetch(filter: { element: '1' })
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

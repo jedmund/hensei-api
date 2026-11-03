@@ -87,7 +87,7 @@ module Api
           head :no_content
         else
           render json: { error: 'This sticker has been given and cannot be deleted. Deactivate it instead.' },
-                 status: :unprocessable_entity
+                 status: :unprocessable_content
         end
       end
 
@@ -112,7 +112,7 @@ module Api
       # Its file is deleted only if it's the sticker's own, never a shared
       # library image. The English image can be replaced but not removed.
       def remove_image
-        return render json: { error: 'Only the Japanese image can be removed' }, status: :unprocessable_entity unless params[:language].to_s == 'ja'
+        return render json: { error: 'Only the Japanese image can be removed' }, status: :unprocessable_content unless params[:language].to_s == 'ja'
 
         previous_key = @sticker.image_key_jp
         @sticker.update!(image_key_jp: nil)
@@ -126,7 +126,7 @@ module Api
         ids = Array(params[:ids]).map(&:to_s).uniq
         stickers = Sticker.where(id: ids.grep(UUID_FORMAT)).index_by(&:id)
         missing = ids - stickers.keys
-        return render json: { error: "Unknown sticker ids: #{missing.join(', ')}" }, status: :unprocessable_entity if missing.any?
+        return render json: { error: "Unknown sticker ids: #{missing.join(', ')}" }, status: :unprocessable_content if missing.any?
 
         Sticker.transaction do
           ids.each_with_index { |id, index| stickers[id].update!(position: index) }
@@ -160,7 +160,7 @@ module Api
         return if id.blank?
 
         @library_entry = StickerLibrary.find(id)
-        render json: { error: 'Unknown library sticker' }, status: :unprocessable_entity unless @library_entry
+        render json: { error: 'Unknown library sticker' }, status: :unprocessable_content unless @library_entry
       end
 
       def use_library_images(sticker)

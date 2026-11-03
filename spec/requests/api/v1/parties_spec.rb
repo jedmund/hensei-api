@@ -329,7 +329,7 @@ RSpec.describe 'Parties API', type: :request do
 
       put "/api/v1/parties/#{party.id}", params: update_params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'filters out-of-range MC full_auto_skills slots' do

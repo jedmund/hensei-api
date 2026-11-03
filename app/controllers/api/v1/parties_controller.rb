@@ -150,7 +150,7 @@ module Api
         raise Api::V1::UnauthorizedError unless current_user
 
         entries = resolve_edit_key_entries
-        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity if entries.nil?
+        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_content if entries.nil?
 
         results = []
         migrated_count = 0
@@ -187,7 +187,7 @@ module Api
         raise Api::V1::UnauthorizedError unless current_user
 
         entries = resolve_edit_key_entries
-        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity if entries.nil?
+        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_content if entries.nil?
 
         identifiers = entries.map { |e| e[:shortcode] }.uniq
         uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
@@ -554,7 +554,7 @@ module Api
       end
 
       def render_solomonis_errors(errors)
-        render json: ErrorBlueprint.render_as_json(nil, errors: errors.to_h), status: :unprocessable_entity
+        render json: ErrorBlueprint.render_as_json(nil, errors: errors.to_h), status: :unprocessable_content
       end
 
       # Permits parameters for grid update operation.

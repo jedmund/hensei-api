@@ -86,7 +86,7 @@ module Api
         # Validate transformation for summons (none, 02, 03, 04)
         valid_transformations = [nil, '', '02', '03', '04']
         if transformation.present? && !valid_transformations.include?(transformation)
-          return render json: { error: 'Invalid transformation. Must be one of: 02, 03, 04 (or empty for base)' }, status: :unprocessable_entity
+          return render json: { error: 'Invalid transformation. Must be one of: 02, 03, 04 (or empty for base)' }, status: :unprocessable_content
         end
 
         # Build variant ID - summons don't have suffix for base
@@ -171,7 +171,7 @@ module Api
         wiki_data = params[:wiki_data] || {}
 
         unless wiki_pages.is_a?(Array) && wiki_pages.any?
-          return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_entity
+          return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_content
         end
 
         # Limit to 10 pages
@@ -187,7 +187,7 @@ module Api
       # POST /summons/:id/fetch_wiki
       # Fetches and stores wiki data for this summon
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this summon' }, status: :unprocessable_entity unless @summon.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this summon' }, status: :unprocessable_content unless @summon.wiki_en.present?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@summon)
@@ -206,7 +206,7 @@ module Api
         Granblue::EntityReparser.new(@summon, refetch: params[:refetch] == 'true').reparse
         render json: SummonBlueprint.render(@summon.reload, view: :full, source_dates: true)
       rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError => e
-        render json: { error: e.message }, status: :unprocessable_entity
+        render json: { error: e.message }, status: :unprocessable_content
       rescue Granblue::WikiError => e
         render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
       rescue StandardError => e

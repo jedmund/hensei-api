@@ -171,7 +171,7 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       raid = create(:raid)
       create(:party, raid: raid)
       delete "/api/v1/raids/#{raid.id}", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']['code']).to eq('has_dependencies')
     end
 
