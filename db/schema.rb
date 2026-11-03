@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_03_030100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_03_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1624,6 +1624,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_030100) do
     t.boolean "summon_boosted"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.integer "key_slot_min_uncaps", default: [], null: false, array: true
     t.index ["order"], name: "index_weapon_series_on_order"
     t.index ["slug"], name: "index_weapon_series_on_slug", unique: true
     t.index ["updated_at"], name: "index_weapon_series_on_updated_at"

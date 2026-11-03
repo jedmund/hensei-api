@@ -50,7 +50,8 @@ module GridDamage
              grid_weapon.weapon_key3_id, grid_weapon.weapon_key4_id].compact
       return [] if ids.empty?
 
-      WeaponKey.where(id: ids)
+      # A key in a slot this copy hasn't opened (Tria on a 4★ Ultima) grants nothing.
+      WeaponKey.where(id: ids).select { |key| grid_weapon.key_slot_unlocked?(key) }
     end
 
     def equipped_key_slugs(grid_weapon)

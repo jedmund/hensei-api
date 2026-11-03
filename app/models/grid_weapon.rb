@@ -24,6 +24,7 @@ class GridWeapon < ApplicationRecord
   include WeaponCapabilityResolution
   include AxSkillValidation
   include SolomonisSealable
+  include WeaponKeySlots
 
   # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze

@@ -34,6 +34,7 @@ module Api
           augment_type: w.effective_augment_type,
           ax_type: w.effective_ax_type,
           num_weapon_keys: w.effective_num_weapon_keys,
+          key_slot_min_uncaps: w.weapon_series.key_slot_min_uncaps,
           extra: w.effective_extra,
           element_changeable: w.effective_element_changeable,
           weapon_series_variant_id: w.weapon_series_variant_id,

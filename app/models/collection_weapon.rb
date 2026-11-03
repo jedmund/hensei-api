@@ -1,6 +1,7 @@
 class CollectionWeapon < ApplicationRecord
   include WeaponCapabilityResolution
   include AxSkillValidation
+  include WeaponKeySlots
 
   belongs_to :user
   belongs_to :weapon

@@ -100,6 +100,31 @@ RSpec.describe 'Api::V1::WeaponSeries', type: :request do
           headers: user_headers
       expect(response).to have_http_status(:unauthorized)
     end
+
+    it "sets the key slots' unlock uncaps" do
+      put "/api/v1/weapon_series/#{series.id}",
+          params: { weapon_series: { num_weapon_keys: 2, key_slot_min_uncaps: [4, 5] } }.to_json,
+          headers: editor_headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['key_slot_min_uncaps']).to eq([4, 5])
+      expect(series.reload.key_slot_min_uncaps).to eq([4, 5])
+    end
+
+    it 'rejects more unlock uncaps than key slots' do
+      put "/api/v1/weapon_series/#{series.id}",
+          params: { weapon_series: { num_weapon_keys: 1, key_slot_min_uncaps: [4, 5] } }.to_json,
+          headers: editor_headers
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(series.reload.key_slot_min_uncaps).to eq([])
+    end
+
+    it 'rejects a transcendence unlock uncap' do
+      put "/api/v1/weapon_series/#{series.id}",
+          params: { weapon_series: { num_weapon_keys: 1, key_slot_min_uncaps: [6] } }.to_json,
+          headers: editor_headers
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(series.reload.key_slot_min_uncaps).to eq([])
+    end
   end
 
   describe 'DELETE /api/v1/weapon_series/:id' do
