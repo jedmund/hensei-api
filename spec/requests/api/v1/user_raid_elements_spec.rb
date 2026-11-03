@@ -115,7 +115,7 @@ RSpec.describe 'Api::V1::UserRaidElements', type: :request do
 
       sync([fire], raid_id: untracked.id)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(UserRaidElement.count).to eq(0)
     end
 
@@ -124,7 +124,7 @@ RSpec.describe 'Api::V1::UserRaidElements', type: :request do
 
       [[GranblueEnums::ELEMENTS[:Null]], [7], [fire, 'wind'], 'fire'].each do |elements|
         sync(elements)
-        expect(response).to have_http_status(:unprocessable_entity), "expected 422 for #{elements.inspect}"
+        expect(response).to have_http_status(:unprocessable_content), "expected 422 for #{elements.inspect}"
       end
 
       expect(user.user_raid_elements.pluck(:element)).to eq([fire])
@@ -135,7 +135,7 @@ RSpec.describe 'Api::V1::UserRaidElements', type: :request do
 
       put '/api/v1/user_raid_elements/sync', params: { raid_id: raid.id }.to_json, headers: headers_for(user)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(user.user_raid_elements.pluck(:element)).to eq([fire])
     end
 
@@ -146,7 +146,7 @@ RSpec.describe 'Api::V1::UserRaidElements', type: :request do
 
     it 'returns 422 without a raid_id' do
       put '/api/v1/user_raid_elements/sync', params: { elements: [fire] }.to_json, headers: headers_for(user)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

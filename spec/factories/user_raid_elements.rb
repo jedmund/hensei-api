@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :user_raid_element do
     user
-    association :raid, :trackable
+    raid factory: %i[raid trackable]
     element { GranblueEnums::ELEMENTS[:Fire] }
   end
 end

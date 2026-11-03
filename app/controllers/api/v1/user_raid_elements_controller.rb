@@ -70,7 +70,7 @@ module Api
 
       def render_sync_error(message, code)
         render json: ErrorBlueprint.render(nil, error: { message: message, code: code }),
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       def render_forbidden
