@@ -272,9 +272,9 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'deletes the roster' do
-        expect {
+        expect do
           delete "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
-        }.to change(CrewRoster, :count).by(-1)
+        end.to change(CrewRoster, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
       end
@@ -284,9 +284,9 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           delete "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
-        }.not_to change(CrewRoster, :count)
+        end.not_to change(CrewRoster, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

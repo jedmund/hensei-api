@@ -33,7 +33,7 @@ class Raid < ApplicationRecord
   scope :by_group, ->(group_id) { where(group_id: group_id) if group_id.present? }
   scope :by_difficulty, ->(difficulty) { joins(:group).where(raid_groups: { difficulty: difficulty }) if difficulty.present? }
   scope :by_hl, ->(hl) { joins(:group).where(raid_groups: { hl: hl }) if hl.present? }
-  scope :by_extra, ->(extra) {
+  scope :by_extra, lambda { |extra|
     if extra.present?
       joins(:group).where(
         'COALESCE(raids.extra, raid_groups.extra) = ?', ActiveModel::Type::Boolean.new.cast(extra)

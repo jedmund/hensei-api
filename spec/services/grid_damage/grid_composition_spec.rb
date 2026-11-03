@@ -60,9 +60,9 @@ RSpec.describe GridDamage::GridComposition do
 
     it "rejects legacy and unsupported count bases" do
       %w[weapon_type group:arbitrary].each do |basis|
-        expect {
+        expect do
           described_class.count_for_basis(basis, weapon: weapon, composition: composition)
-        }.to raise_error(ArgumentError, /Unknown count_basis/)
+        end.to raise_error(ArgumentError, /Unknown count_basis/)
       end
     end
   end

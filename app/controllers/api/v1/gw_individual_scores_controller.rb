@@ -16,9 +16,7 @@ module Api
       def create
         # Members can only record their own scores, officers can record anyone's
         membership_id = score_params[:crew_membership_id]
-        unless can_record_score_for?(membership_id)
-          raise Api::V1::UnauthorizedError
-        end
+        raise Api::V1::UnauthorizedError unless can_record_score_for?(membership_id)
 
         score = @participation.gw_individual_scores.build(score_params)
         score.recorded_by = current_user
@@ -32,9 +30,7 @@ module Api
 
       # PUT /crew/gw_participations/:gw_participation_id/individual_scores/:id
       def update
-        unless can_record_score_for?(@score.crew_membership_id)
-          raise Api::V1::UnauthorizedError
-        end
+        raise Api::V1::UnauthorizedError unless can_record_score_for?(@score.crew_membership_id)
 
         if @score.update(score_params.except(:crew_membership_id))
           render json: GwIndividualScoreBlueprint.render(@score, view: :with_member, root: :individual_score, current_user: current_user)
@@ -45,9 +41,7 @@ module Api
 
       # DELETE /crew/gw_participations/:gw_participation_id/individual_scores/:id
       def destroy
-        unless can_record_score_for?(@score.crew_membership_id)
-          raise Api::V1::UnauthorizedError
-        end
+        raise Api::V1::UnauthorizedError unless can_record_score_for?(@score.crew_membership_id)
 
         @score.destroy!
         head :no_content

@@ -6,9 +6,7 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
   include CharacterSourceColumns
 
   let(:migration_class) do
-    unless defined?(CopyCharacterSourcesToSourcesTable)
-      require Rails.root.join('db/data/20261020210000_copy_character_sources_to_sources_table')
-    end
+    require Rails.root.join('db/data/20261020210000_copy_character_sources_to_sources_table') unless defined?(CopyCharacterSourcesToSourcesTable)
     CopyCharacterSourcesToSourcesTable
   end
   let(:fetched_at) { Time.utc(2026, 10, 15) }

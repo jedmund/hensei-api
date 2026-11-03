@@ -117,10 +117,10 @@ module GachaSimulation
         blocks += geometric(random, log_failure)
         value = random.rand
         cumulative = 0.0
-        index = weights.index { |weight|
+        index = weights.index do |weight|
           cumulative += weight
           value < cumulative
-        } || 9
+        end || 9
         count += index + 1
       end
       { 'draws' => (blocks * 10).to_s, 'copies' => count.to_s }

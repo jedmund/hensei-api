@@ -25,9 +25,9 @@ module PostDeployment
         end
       end
 
-      if @processed_files.any?
+      return unless @processed_files.any?
         print_summary
-      end
+      
     end
 
     private

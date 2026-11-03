@@ -212,12 +212,12 @@ class GridCharacter < ApplicationRecord
     r1 = ring1.with_indifferent_access
     r2 = ring2.with_indifferent_access
     # Only check if either ring has a modifier set.
-    if r1[:modifier].present? || r2[:modifier].present?
+    return unless r1[:modifier].present? || r2[:modifier].present?
       # Ensure that ring2's strength equals exactly half of ring1's strength.
-      unless r2[:strength].to_f == (r1[:strength].to_f / 2)
+      return if r2[:strength].to_f == (r1[:strength].to_f / 2)
         errors.add(:over_mastery, 'over mastery attack and hp values do not match')
-      end
-    end
+      
+    
   end
 
   ##
@@ -237,7 +237,7 @@ class GridCharacter < ApplicationRecord
     return unless earring['modifier'].to_i.positive?
 
     modifier = aetherial_mastery_modifiers[earring['modifier'].to_i].to_sym
-    check_value({ "earring": { modifier => earring['strength'] } },
+    check_value({ 'earring': { modifier => earring['strength'] } },
                 'aetherial_mastery')
   end
 

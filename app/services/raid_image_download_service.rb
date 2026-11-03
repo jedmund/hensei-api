@@ -55,13 +55,9 @@ class RaidImageDownloadService
   def build_image_manifest
     manifest = {}
 
-    if @raid.enemy_id
-      manifest['icon'] = ["#{@raid.enemy_id}.png"]
-    end
+    manifest['icon'] = ["#{@raid.enemy_id}.png"] if @raid.enemy_id
 
-    if @raid.summon_id
-      manifest['thumbnail'] = ["#{@raid.summon_id}_high.png"]
-    end
+    manifest['thumbnail'] = ["#{@raid.summon_id}_high.png"] if @raid.summon_id
 
     if @raid.quest_id
       manifest['lobby'] = ["#{@raid.quest_id}1.png"]

@@ -54,9 +54,9 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       it 'creates a role and assigns next sort_order' do
         create(:grid_character_role, sort_order: 5)
 
-        expect {
+        expect do
           post '/api/v1/grid_character_roles', params: valid_params, headers: editor_headers, as: :json
-        }.to change(GridCharacterRole, :count).by(1)
+        end.to change(GridCharacterRole, :count).by(1)
 
         expect(response).to have_http_status(:created)
         body = JSON.parse(response.body)
@@ -133,9 +133,9 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
     let!(:role) { create(:grid_character_role) }
 
     it 'destroys as editor' do
-      expect {
+      expect do
         delete "/api/v1/grid_character_roles/#{role.id}", headers: editor_headers
-      }.to change(GridCharacterRole, :count).by(-1)
+      end.to change(GridCharacterRole, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 
@@ -144,9 +144,9 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       gc = create(:grid_character, party: party)
       gc.grid_character_roles << role
 
-      expect {
+      expect do
         delete "/api/v1/grid_character_roles/#{role.id}", headers: editor_headers
-      }.to change(GridCharacterRole, :count).by(-1)
+      end.to change(GridCharacterRole, :count).by(-1)
                                             .and change(GridCharacterRoleAssignment, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)

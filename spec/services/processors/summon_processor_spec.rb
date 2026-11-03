@@ -133,8 +133,6 @@ RSpec.describe Processors::SummonProcessor, type: :model do
   end
 
   after(:each) do |example|
-    if example.exception
-      puts "\nDEBUG [SummonProcessor]: #{example.full_description} failed with error: #{example.exception.message}"
-    end
+    puts "\nDEBUG [SummonProcessor]: #{example.full_description} failed with error: #{example.exception.message}" if example.exception
   end
 end

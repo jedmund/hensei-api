@@ -113,9 +113,7 @@ module Granblue
         limited = tokens.filter_map { |token| LIMITED_PROMOTIONS[token] }
         limited << 10 if premium && tokens.include?('collab')
         limited << 4 if tokens.include?('flash')
-        if tokens.include?('legend') || tokens.include?('zodiac') || (tokens.include?('gala') && !tokens.include?('flash'))
-          limited << 5
-        end
+        limited << 5 if tokens.include?('legend') || tokens.include?('zodiac') || (tokens.include?('gala') && !tokens.include?('flash'))
         return limited.uniq.sort if limited.any?
 
         return [] if tokens.include?('collab')

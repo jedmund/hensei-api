@@ -151,9 +151,7 @@ namespace :deploy do
     return nil if wiki_raw.blank?
 
     wiki_raw.each_line do |line|
-      if line.start_with?("|#{field}=")
-        return line.sub("|#{field}=", '').strip
-      end
+      return line.sub("|#{field}=", '').strip if line.start_with?("|#{field}=")
     end
     nil
   end
@@ -257,9 +255,7 @@ namespace :deploy do
   def parse_storage_option
     storage = (ENV['STORAGE'] || 'both').to_sym
 
-    unless [:local, :s3, :both].include?(storage)
-      raise ArgumentError, 'Invalid STORAGE option. Must be one of: local, s3, both'
-    end
+    raise ArgumentError, 'Invalid STORAGE option. Must be one of: local, s3, both' unless %i[local s3 both].include?(storage)
 
     storage
   end

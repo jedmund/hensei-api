@@ -64,11 +64,11 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
 
     context 'as officer' do
       it 'creates a phantom player' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/phantom_players",
                params: valid_params,
                headers: auth_headers
-        }.to change(PhantomPlayer, :count).by(1)
+        end.to change(PhantomPlayer, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -77,11 +77,11 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       end
 
       it 'returns validation error for missing name' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/phantom_players",
                params: { phantom_player: { name: '' } },
                headers: auth_headers
-        }.not_to change(PhantomPlayer, :count)
+        end.not_to change(PhantomPlayer, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -91,11 +91,11 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/phantom_players",
                params: valid_params,
                headers: auth_headers
-        }.not_to change(PhantomPlayer, :count)
+        end.not_to change(PhantomPlayer, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -136,10 +136,10 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
 
     context 'as officer' do
       it 'deletes the phantom player' do
-        expect {
+        expect do
           delete "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}",
                  headers: auth_headers
-        }.to change(PhantomPlayer, :count).by(-1)
+        end.to change(PhantomPlayer, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
       end
@@ -149,10 +149,10 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           delete "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}",
                  headers: auth_headers
-        }.not_to change(PhantomPlayer, :count)
+        end.not_to change(PhantomPlayer, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

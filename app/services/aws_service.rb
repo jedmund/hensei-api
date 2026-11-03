@@ -83,11 +83,11 @@ class AwsService
     if ENV['AWS_ACCESS_KEY_ID']
       Rails.logger.debug 'Using environment variables'
       return {
-        region: ENV['AWS_REGION'],
+        region: ENV.fetch('AWS_REGION', nil),
         access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-        secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+        secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil),
         session_token: ENV['AWS_SESSION_TOKEN'].presence,
-        bucket_name: ENV['AWS_BUCKET_NAME'],
+        bucket_name: ENV.fetch('AWS_BUCKET_NAME', nil),
         source: 'environment'
       }
     end
@@ -96,10 +96,10 @@ class AwsService
     if ENV['RAILS_AWS_ACCESS_KEY_ID']
       Rails.logger.debug 'Using Rails-prefixed environment variables'
       return {
-        region: ENV['RAILS_AWS_REGION'],
+        region: ENV.fetch('RAILS_AWS_REGION', nil),
         access_key_id: ENV['RAILS_AWS_ACCESS_KEY_ID'],
-        secret_access_key: ENV['RAILS_AWS_SECRET_ACCESS_KEY'],
-        bucket_name: ENV['RAILS_AWS_BUCKET_NAME'],
+        secret_access_key: ENV.fetch('RAILS_AWS_SECRET_ACCESS_KEY', nil),
+        bucket_name: ENV.fetch('RAILS_AWS_BUCKET_NAME', nil),
         source: 'rails_environment'
       }
     end

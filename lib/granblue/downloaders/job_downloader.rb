@@ -114,8 +114,6 @@ module Granblue
           nil # Will be handled by download_wide_variants
         when 'zoom'
           nil # Handled by build_zoom_url
-        else
-          nil
         end
       end
 

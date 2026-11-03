@@ -120,9 +120,7 @@ module Api
       end
 
       def admin_mode
-        if current_user&.admin? && request.headers['X-Admin-Mode']
-          @admin_mode ||= request.headers['X-Admin-Mode'] == 'true'
-        end
+        @admin_mode ||= request.headers['X-Admin-Mode'] == 'true' if current_user&.admin? && request.headers['X-Admin-Mode']
 
         @admin_mode
       end

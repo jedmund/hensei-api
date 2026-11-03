@@ -44,9 +44,9 @@ module Granblue
       rows = model.where(granblue_id: entry.fetch('granblue_id')).to_a
       raise "Duplicate catalogue ID #{entry['granblue_id']}" if rows.length > 1
       if rows.empty? && entry['create']
-        return new_weapon(entry, metadata.fetch(entry.fetch('granblue_id')) {
+        return new_weapon(entry, metadata.fetch(entry.fetch('granblue_id')) do
           raise "Missing verified metadata #{entry['granblue_id']}"
-        })
+        end)
       end
       raise "Missing catalogue ID #{entry['granblue_id']}" if rows.empty?
 
@@ -55,9 +55,7 @@ module Granblue
       validate_metadata!(row, metadata.fetch(entry['granblue_id'])) if entry['create']
       if entry['expected_obtain']
         obtain = row.wiki_raw.to_s[/\|obtain\s*=\s*([^\n]+)/, 1].to_s.strip
-        unless obtain == entry['expected_obtain'] && row.recruits == entry['expected_recruits']
-          raise "Source drift #{entry['granblue_id']}"
-        end
+        raise "Source drift #{entry['granblue_id']}" unless obtain == entry['expected_obtain'] && row.recruits == entry['expected_recruits']
       end
       promotion = entry['add_promotion']
       if entry['rarity'] == 3 && row.promotions.include?(12) && promotion && !row.promotions.include?(1)

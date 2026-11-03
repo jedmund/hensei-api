@@ -2,7 +2,7 @@ module Api
   module V1
     class CollectionJobAccessoriesController < ApiController
       before_action :restrict_access
-      before_action :set_collection_job_accessory, only: [:show, :destroy]
+      before_action :set_collection_job_accessory, only: %i[show destroy]
 
       def index
         @collection_accessories = current_user.collection_job_accessories

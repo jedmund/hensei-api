@@ -129,7 +129,7 @@ RSpec.describe GridArtifact, type: :model do
       expect(grid_artifact.grid_character).to eq(grid_character)
     end
 
-    # Note: The controller handles uniqueness by destroying existing artifact before creating new one
+    # NOTE: The controller handles uniqueness by destroying existing artifact before creating new one
     # See GridArtifactsController#create lines 15-17
   end
 

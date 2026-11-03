@@ -47,17 +47,17 @@ class GwIndividualScore < ApplicationRecord
   def membership_belongs_to_crew
     return unless crew_membership.present?
 
-    unless crew_membership.crew_id == crew_gw_participation.crew_id
+    return if crew_membership.crew_id == crew_gw_participation.crew_id
       errors.add(:crew_membership, 'must belong to the participating crew')
-    end
+    
   end
 
   def phantom_belongs_to_crew
     return unless phantom_player.present?
 
-    unless phantom_player.crew_id == crew_gw_participation.crew_id
+    return if phantom_player.crew_id == crew_gw_participation.crew_id
       errors.add(:phantom_player, 'must belong to the participating crew')
-    end
+    
   end
 
   def exactly_one_player_reference

@@ -30,9 +30,7 @@ namespace :granblue do
 
     errors = result.findings.count { |finding| finding.severity == :error } + db_null_errors.size
     warnings = result.findings.count { |finding| finding.severity == :warning }
-    unless result.ok && db_null_errors.empty?
-      abort "Weapon skill ownership audit failed: #{errors} error(s), #{warnings} warning(s)."
-    end
+    abort "Weapon skill ownership audit failed: #{errors} error(s), #{warnings} warning(s)." unless result.ok && db_null_errors.empty?
 
     puts "Weapon skill ownership audit passed: #{warnings} warning(s)."
   end

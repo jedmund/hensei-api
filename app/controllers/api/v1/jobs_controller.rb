@@ -49,7 +49,12 @@ module Api
       end
 
       def update_job
-        if job_params[:job_id] != -1
+        if job_params[:job_id] == -1
+          @party.job = nil
+          %w[skill0_id skill1_id skill2_id skill3_id].each do |key|
+            @party[key] = nil
+          end
+        else
           # Extract job and find its main skills
           old_job = @party.job
           job = Job.find(job_params[:job_id])
@@ -73,11 +78,6 @@ module Api
             @party.skill1 && @party.skill2 && @party.skill3 &&
             @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
             @party['skill3_id'] = nil
-          end
-        else
-          @party.job = nil
-          %w[skill0_id skill1_id skill2_id skill3_id].each do |key|
-            @party[key] = nil
           end
         end
 
@@ -164,13 +164,9 @@ module Api
         # Test if skill will exceed allowances of skill types
         skill_type = skill.sub ? 'sub' : 'emp'
 
-        unless can_add_skill_of_type?(existing_skills, position, skill_type)
-          raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type)
-        end
+        raise Api::V1::TooManySkillsOfTypeError.new(skill_type: skill_type) unless can_add_skill_of_type?(existing_skills, position, skill_type)
 
-        if !existing_skills[position]
-          existing_skills[position] = skill
-        else
+        if existing_skills[position]
           value = existing_skills.compact.detect { |_, value| value && value.id == skill.id }
           old_position = existing_skills.key(value[1]) if value
 
@@ -179,6 +175,8 @@ module Api
           else
             existing_skills[position] = skill
           end
+        else
+          existing_skills[position] = skill
         end
 
         existing_skills

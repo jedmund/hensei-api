@@ -68,9 +68,7 @@ module Api
         size = params[:size]
         force = [true, 'true'].include?(params[:force])
 
-        unless %w[square].include?(size)
-          return render json: { error: "Invalid size. Must be 'square'" }, status: :bad_request
-        end
+        return render json: { error: "Invalid size. Must be 'square'" }, status: :bad_request unless %w[square].include?(size)
 
         service = BulletImageDownloadService.new(@bullet, force: force, size: size, storage: :s3)
         result = service.download

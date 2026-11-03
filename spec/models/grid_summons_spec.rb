@@ -475,7 +475,9 @@ RSpec.describe GridSummon, type: :model do
   end
 
   describe 'boost recomputation callback' do
-    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
+    let(:magna_series) do SummonSeries.find_or_create_by!(slug: 'magna') do |s| s.name_en = 'Magna'
+ s.name_jp = 'マグナ'
+ s.order = 2 end end
     let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
     let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }
 

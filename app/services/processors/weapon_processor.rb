@@ -151,7 +151,7 @@ module Processors
       grid_weapons = process_weapons(weapons_data)
 
       grid_weapons.each do |grid_weapon|
-        begin
+        
           grid_weapon.save!
           if grid_weapon.collection_weapon.present?
             update_collection_from_game(grid_weapon)
@@ -173,7 +173,7 @@ module Processors
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
           add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
           discard_unsaved(grid_weapon, :weapons)
-        end
+        
       end
     end
 

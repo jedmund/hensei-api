@@ -250,14 +250,14 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
     it 'returns the awakening id if found' do
       arousal_data = {
-        "is_arousal_weapon": true,
-        "level": 4,
-        "form": 2,
-        "form_name": 'Defense',
-        "remain_for_next_level": 0,
-        "width": 100,
-        "is_complete_condition": true,
-        "max_level": 4,
+        'is_arousal_weapon': true,
+        'level': 4,
+        'form': 2,
+        'form_name': 'Defense',
+        'remain_for_next_level': 0,
+        'width': 100,
+        'is_complete_condition': true,
+        'max_level': 4
       }
 
       awakening = Awakening.find_by(slug: 'weapon-def')

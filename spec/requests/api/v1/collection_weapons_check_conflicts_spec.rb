@@ -145,9 +145,9 @@ RSpec.describe 'Collection Weapons - check_conflicts', type: :request do
         conflict_resolutions: { '12345' => 'import' }
       }
 
-      expect {
+      expect do
         post import_endpoint, params: payload.to_json, headers: headers
-      }.not_to change(user.collection_weapons, :count)
+      end.not_to change(user.collection_weapons, :count)
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body

@@ -30,9 +30,7 @@ module Api
 
         item_fk = item_foreign_key(grid_type)
         canonical = ITEM_CLASS_FOR_GRID[grid_type]&.find_by(id: item_id)
-        unless canonical
-          return render json: { error: "unknown item_id: #{item_id}" }, status: :unprocessable_entity
-        end
+        return render json: { error: "unknown item_id: #{item_id}" }, status: :unprocessable_entity unless canonical
 
         substitution = ApplicationRecord.transaction do
           substitute = grid_class.create!(
@@ -72,9 +70,7 @@ module Api
       end
 
       def update
-        if substitution_params[:position].blank?
-          return render json: { error: 'position is required' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'position is required' }, status: :unprocessable_entity if substitution_params[:position].blank?
 
         ApplicationRecord.transaction do
           @substitution.update!(position: substitution_params[:position])
@@ -132,9 +128,7 @@ module Api
 
         # Cross-party access is rendered as not-found rather than 403 to avoid
         # leaking which ids exist in other parties — matches set_substitution.
-        if substitutions.any? { |s| s.grid&.party_id != @party.id }
-          return render_not_found_response('substitution')
-        end
+        return render_not_found_response('substitution') if substitutions.any? { |s| s.grid&.party_id != @party.id }
 
         slot_keys = substitutions.map { |s| [s.grid_type, s.grid_id] }.uniq
         if slot_keys.length > 1

@@ -110,9 +110,7 @@ class GridArtifact < ApplicationRecord
     # Characters with element=0 (Null) can equip any element artifact (e.g., Lyria)
     if char.element.present? && char.element != 0
       char_element = GranblueEnums::ELEMENTS.key(char.element)&.to_s&.downcase
-      unless char_element == element
-        errors.add(:element, "must match character's element (#{char_element})")
-      end
+      errors.add(:element, "must match character's element (#{char_element})") unless char_element == element
     end
 
     # Check proficiency compatibility
@@ -123,8 +121,8 @@ class GridArtifact < ApplicationRecord
     prof_value = Artifact.proficiencies[eff_prof]
     char_proficiencies = [char.proficiency1, char.proficiency2].compact
 
-    unless char_proficiencies.include?(prof_value)
+    return if char_proficiencies.include?(prof_value)
       errors.add(:artifact, "proficiency must match one of the character's proficiencies")
-    end
+    
   end
 end

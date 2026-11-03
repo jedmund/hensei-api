@@ -56,9 +56,9 @@ class PartyQueryBuilder
     query = apply_boost_mod_filter(query)
     query = apply_difficulty_filter(query)
     query = apply_solomonis_filters(query)
-    query = apply_label_filter(query)
+    apply_label_filter(query)
 
-    query
+    
   end
 
   # `sort=rising` lists only teams in Rising, in Home's Rising order (see
@@ -391,7 +391,7 @@ class PartyQueryBuilder
     SQL
 
     # Summons: same count-based logic
-    query = query.where(<<-SQL.squish, user_id)
+    query.where(<<-SQL.squish, user_id)
       NOT EXISTS (
         SELECT 1 FROM grid_summons gs
         WHERE gs.party_id = parties.id
@@ -404,7 +404,7 @@ class PartyQueryBuilder
       )
     SQL
 
-    query
+    
   end
 
   # Maps an ID’s first character to the corresponding grid table and object table names.

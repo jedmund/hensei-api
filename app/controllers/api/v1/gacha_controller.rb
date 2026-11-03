@@ -27,11 +27,11 @@ module Api
                 end
         query = params[:q].to_s.downcase.first(100)
         if query.present?
-          items = items.select { |item|
-            [item['identity'], item['granblue_id'], *item['name'].values, *item['recruits']&.values].compact.any? { |v|
+          items = items.select do |item|
+            [item['identity'], item['granblue_id'], *item['name'].values, *item['recruits']&.values].compact.any? do |v|
               v.downcase.include?(query)
-            }
-          }
+            end
+          end
         end
         modes = GachaSimulation::Configuration::MODES.keys
         modes = [GachaSimulation::Configuration::CURRENT, *modes] if GachaBanner.exists?
@@ -90,9 +90,7 @@ module Api
       end
 
       def prepare
-        if params.key?(:rateups) && !params[:rateups].is_a?(Array)
-          raise GachaSimulation::ValidationError, 'Rate-ups must be an array'
-        end
+        raise GachaSimulation::ValidationError, 'Rate-ups must be an array' if params.key?(:rateups) && !params[:rateups].is_a?(Array)
         input = params.permit(:mode, :season, :purchase, :banner, :draws, :seed, :target, :copies, :comparison,
                               rateups: %i[identity percent]).to_h
         config = GachaSimulation::Configuration.normalize(input)

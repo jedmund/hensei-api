@@ -113,9 +113,7 @@ module WikiImport
       value.each_with_object({}) do |(group, ids), memo|
         raise Invalid, "keys.#{group} must be an array" unless ids.is_a?(Array)
         raise Invalid, "keys.#{group} has too many entries" if ids.length > MAX_KEYS
-        unless ids.all? { |id| id.nil? || id.is_a?(Integer) }
-          raise Invalid, "keys.#{group} must hold integers or null"
-        end
+        raise Invalid, "keys.#{group} must hold integers or null" unless ids.all? { |id| id.nil? || id.is_a?(Integer) }
 
         memo[group.to_s] = ids
       end

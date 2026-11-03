@@ -17,7 +17,7 @@ module Processors
 end
 
 RSpec.describe Processors::DummyBaseProcessor, type: :model do
-  # Note: BaseProcessor.new expects (party, data, options = {})
+  # NOTE: BaseProcessor.new expects (party, data, options = {})
   let(:dummy_party) { nil }
   let(:dummy_data) { {} }
   let(:processor) { described_class.new(dummy_party, dummy_data) }

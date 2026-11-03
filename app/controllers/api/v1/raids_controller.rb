@@ -72,9 +72,7 @@ module Api
         force = params[:force] == true
 
         # Check if the required ID exists
-        if size == 'icon' && @raid.enemy_id.blank?
-          return render json: { error: 'Raid has no enemy_id configured' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Raid has no enemy_id configured' }, status: :unprocessable_entity if size == 'icon' && @raid.enemy_id.blank?
         if size == 'thumbnail' && @raid.summon_id.blank?
           return render json: { error: 'Raid has no summon_id configured' }, status: :unprocessable_entity
         end

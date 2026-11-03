@@ -19,9 +19,7 @@ module Api
           @summons = @summons.where(element: array_param(:element)) if params[:element]
           @summons = @summons.where(rarity: array_param(:rarity)) if params[:rarity]
           @summons = @summons.where(summon_series_id: array_param(:series)) if params[:series]
-          if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
-            @summons = @summons.where(support_eligible: true)
-          end
+          @summons = @summons.where(support_eligible: true) if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
             @summons = @summons.where('name_en ILIKE :q OR name_jp ILIKE :q', q: q)
@@ -49,9 +47,7 @@ module Api
         @collection_summons = @collection_summons.by_rarity(array_param(:rarity)) if params[:rarity]
         @collection_summons = @collection_summons.by_series(array_param(:series)) if params[:series]
         @collection_summons = @collection_summons.by_name(params[:search]) if params[:search].present?
-        if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
-          @collection_summons = @collection_summons.support_eligible
-        end
+        @collection_summons = @collection_summons.support_eligible if ActiveModel::Type::Boolean.new.cast(params[:support_eligible])
 
         @collection_summons = @collection_summons.sorted_by(params[:sort], current_user&.language || 'en')
 
@@ -154,9 +150,7 @@ module Api
       def import
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = SummonImportService.new(
           current_user,
@@ -191,9 +185,7 @@ module Api
         game_data = import_params[:data]
         filter = import_params[:filter]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = SummonImportService.new(current_user, game_data, filter: filter)
         items_to_delete = service.preview_deletions
@@ -221,9 +213,7 @@ module Api
       def check_conflicts
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         items = game_data.is_a?(Array) ? game_data : (game_data['list'] || [])
         conflicts = []
@@ -271,9 +261,7 @@ module Api
       def check_updates
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = SummonImportService.new(current_user, game_data)
         render json: { updates: service.preview_updates }
@@ -289,9 +277,9 @@ module Api
 
       def check_collection_access
         return if @target_user.nil? # Already handled by set_target_user
-        unless @target_user.collection_viewable_by?(current_user)
+        return if @target_user.collection_viewable_by?(current_user)
           render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
-        end
+        
       end
 
       def set_collection_summon_for_read
@@ -313,8 +301,8 @@ module Api
       end
 
       def batch_summon_params
-        params.permit(collection_summons: [
-          :summon_id, :uncap_level, :transcendence_step
+        params.permit(collection_summons: %i[
+          summon_id uncap_level transcendence_step
         ])
       end
 

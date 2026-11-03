@@ -98,14 +98,10 @@ module Api
         end
 
         # Filter by character series (UUID-based)
-        if filters && filters['series'].present? && !filters['series'].empty?
-          characters = characters.by_series(Array(filters['series']))
-        end
+        characters = characters.by_series(Array(filters['series'])) if filters && filters['series'].present? && !filters['series'].empty?
 
         # Exclude already-owned characters (for collection modal)
-        if exclude.present? && exclude.any?
-          characters = characters.where.not(id: exclude)
-        end
+        characters = characters.where.not(id: exclude) if exclude.present? && exclude.any?
 
         count = characters.length
         paginated = characters.includes(:character_series_records)
@@ -300,17 +296,17 @@ module Api
 
         # Apply feature filters
         if filters
-          jobs = jobs.where(master_level: true) if filters['masterLevel'] == true || filters['masterLevel'] == 'true'
-          jobs = jobs.where(ultimate_mastery: true) if filters['ultimateMastery'] == true || filters['ultimateMastery'] == 'true'
-          jobs = jobs.where(accessory: true) if filters['accessory'] == true || filters['accessory'] == 'true'
+          jobs = jobs.where(master_level: true) if [true, 'true'].include?(filters['masterLevel'])
+          jobs = jobs.where(ultimate_mastery: true) if [true, 'true'].include?(filters['ultimateMastery'])
+          jobs = jobs.where(accessory: true) if [true, 'true'].include?(filters['accessory'])
         end
 
         # Apply sorting if specified, otherwise use default (row, then order)
-        if search_params[:sort].present?
-          jobs = apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
+        jobs = if search_params[:sort].present?
+          apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
         else
-          jobs = jobs.order(:row, :order)
-        end
+          jobs.order(:row, :order)
+               end
 
         count = jobs.length
         paginated = jobs.paginate(page: search_params[:page], per_page: search_page_size)
@@ -328,7 +324,7 @@ module Api
         weapons = Weapon.order(Arel.sql('RANDOM()')).limit(per_type)
         summons = Summon.order(Arel.sql('RANDOM()')).limit(per_type)
 
-        results = (characters + weapons + summons).shuffle.first(count).map do |entity|
+        results = (characters + weapons + summons).sample(count).map do |entity|
           {
             id: entity.id,
             granblue_id: entity.granblue_id,

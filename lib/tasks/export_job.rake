@@ -51,7 +51,7 @@ namespace :granblue do
     end
 
     desc 'Download job images using the JobDownloader'
-    task :job_images, [:id, :test_mode, :verbose, :storage, :size] => :environment do |_t, args|
+    task :job_images, %i[id test_mode verbose storage size] => :environment do |_t, args|
       require 'granblue/downloaders/job_downloader'
 
       id = args[:id]

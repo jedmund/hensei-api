@@ -305,11 +305,11 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
           { type: 'move', entity: 'weapon', id: 'invalid-id', position: 4 }
         ]
 
-        expect {
+        expect do
           post "/api/v1/parties/#{party.id}/grid_update",
                params: { operations: operations }.to_json,
                headers: headers
-        }.not_to change { weapon.reload.position }
+        end.not_to change { weapon.reload.position }
 
         expect(response).to have_http_status(:unprocessable_entity)
       end

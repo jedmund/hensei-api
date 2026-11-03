@@ -74,14 +74,10 @@ module Granblue
           summon[:transcend] = calculate_transcendence_level(level)
 
           # Mark quick summon status if this summon matches quick_summon_id.
-          if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
-            summon[:qs] = true
-          end
+          summon[:qs] = true if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
 
           # Include subaura (sub_skill) information if present.
-          if summon_data['sub_skill'].is_a?(Hash) && summon_data['sub_skill']['name']
-            summon[:sub_aura] = summon_data['sub_skill']['name']
-          end
+          summon[:sub_aura] = summon_data['sub_skill']['name'] if summon_data['sub_skill'].is_a?(Hash) && summon_data['sub_skill']['name']
 
           # Place the summon in the proper 0-indexed slot.
           summons[key.to_i - 1] = summon

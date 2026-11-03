@@ -346,9 +346,9 @@ RSpec.describe 'Parties API', type: :request do
     let!(:party) { create(:party, user: user) }
 
     it 'destroys the party' do
-      expect {
+      expect do
         delete "/api/v1/parties/#{party.id}", headers: headers
-      }.to change(Party, :count).by(-1)
+      end.to change(Party, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 
@@ -357,9 +357,9 @@ RSpec.describe 'Parties API', type: :request do
       other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
       other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
 
-      expect {
+      expect do
         delete "/api/v1/parties/#{party.id}", headers: other_headers
-      }.not_to change(Party, :count)
+      end.not_to change(Party, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -386,17 +386,17 @@ RSpec.describe 'Parties API', type: :request do
     end
 
     it 'allows deleting an anonymous party with correct edit_key' do
-      expect {
+      expect do
         delete "/api/v1/parties/#{anon_party.id}", headers: anon_headers
-      }.to change(Party, :count).by(-1)
+      end.to change(Party, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 
     it 'rejects deleting an anonymous party with wrong edit_key' do
       wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
-      expect {
+      expect do
         delete "/api/v1/parties/#{anon_party.id}", headers: wrong_headers
-      }.not_to change(Party, :count)
+      end.not_to change(Party, :count)
       expect(response).to have_http_status(:unauthorized)
     end
 

@@ -20,9 +20,9 @@ RSpec.describe 'ImportController', type: :request do
   describe 'POST /api/v1/import' do
     context 'with valid deck data' do
       it 'creates a new party and returns a shortcode' do
-        expect {
+        expect do
           post '/api/v1/import', params: valid_deck_json, headers: headers
-        }.to change(Party, :count).by(1)
+        end.to change(Party, :count).by(1)
         expect(response).to have_http_status(:created)
         expect(response.parsed_body['shortcode']).to be_present
         expect(response.parsed_body['warnings']).to eq([])
@@ -53,9 +53,9 @@ RSpec.describe 'ImportController', type: :request do
       it 'adds the imported party to the specified playlists' do
         body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, playlist2.id] }.to_json
 
-        expect {
+        expect do
           post '/api/v1/import', params: body, headers: headers
-        }.to change(PlaylistParty, :count).by(2)
+        end.to change(PlaylistParty, :count).by(2)
 
         expect(response).to have_http_status(:created)
         party = Party.find_by(shortcode: response.parsed_body['shortcode'])
@@ -67,9 +67,9 @@ RSpec.describe 'ImportController', type: :request do
         other_playlist = create(:playlist, user: other_user)
         body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, other_playlist.id] }.to_json
 
-        expect {
+        expect do
           post '/api/v1/import', params: body, headers: headers
-        }.to change(PlaylistParty, :count).by(1)
+        end.to change(PlaylistParty, :count).by(1)
 
         party = Party.find_by(shortcode: response.parsed_body['shortcode'])
         expect(party.playlists).to contain_exactly(playlist1)
@@ -78,18 +78,18 @@ RSpec.describe 'ImportController', type: :request do
       it 'ignores non-existent playlist IDs' do
         body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, SecureRandom.uuid] }.to_json
 
-        expect {
+        expect do
           post '/api/v1/import', params: body, headers: headers
-        }.to change(PlaylistParty, :count).by(1)
+        end.to change(PlaylistParty, :count).by(1)
 
         party = Party.find_by(shortcode: response.parsed_body['shortcode'])
         expect(party.playlists).to contain_exactly(playlist1)
       end
 
       it 'works normally when playlist_ids is not provided' do
-        expect {
+        expect do
           post '/api/v1/import', params: valid_deck_json, headers: headers
-        }.not_to change(PlaylistParty, :count)
+        end.not_to change(PlaylistParty, :count)
 
         expect(response).to have_http_status(:created)
       end

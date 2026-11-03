@@ -25,11 +25,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
 
     context 'as crew officer' do
       it 'creates an individual score' do
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores",
                params: valid_params,
                headers: auth_headers
-        }.to change(GwIndividualScore, :count).by(1)
+        end.to change(GwIndividualScore, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -97,11 +97,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
           }
         }
 
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores",
                params: params,
                headers: auth_headers
-        }.not_to change(GwIndividualScore, :count)
+        end.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -169,10 +169,10 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
 
     context 'as crew officer' do
       it 'deletes the score' do
-        expect {
+        expect do
           delete "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/#{score.id}",
                  headers: auth_headers
-        }.to change(GwIndividualScore, :count).by(-1)
+        end.to change(GwIndividualScore, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
       end
@@ -182,10 +182,10 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'can delete own score' do
-        expect {
+        expect do
           delete "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/#{score.id}",
                  headers: auth_headers
-        }.to change(GwIndividualScore, :count).by(-1)
+        end.to change(GwIndividualScore, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
       end
@@ -197,10 +197,10 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
                              crew_gw_participation: participation,
                              crew_membership: other_membership)
 
-        expect {
+        expect do
           delete "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/#{other_score.id}",
                  headers: auth_headers
-        }.not_to change(GwIndividualScore, :count)
+        end.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -220,11 +220,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
           ]
         }
 
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/batch",
                params: params,
                headers: auth_headers
-        }.to change(GwIndividualScore, :count).by(2)
+        end.to change(GwIndividualScore, :count).by(2)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -244,11 +244,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
           ]
         }
 
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/batch",
                params: params,
                headers: auth_headers
-        }.not_to change(GwIndividualScore, :count)
+        end.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:created)
         expect(existing.reload.score).to eq(2_000_000)
@@ -265,11 +265,11 @@ RSpec.describe 'Api::V1::GwIndividualScores', type: :request do
           ]
         }
 
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/individual_scores/batch",
                params: params,
                headers: auth_headers
-        }.not_to change(GwIndividualScore, :count)
+        end.not_to change(GwIndividualScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

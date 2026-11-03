@@ -84,13 +84,9 @@ module Api
         payload = UserBlueprint.render_as_hash(@user, view: :minimal)
         cast_bool = ActiveModel::Type::Boolean.new
 
-        if cast_bool.cast(params[:check_collection])
-          payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
-        end
+        payload[:collection_accessible] = @user.collection_viewable_by?(current_user) if cast_bool.cast(params[:check_collection])
 
-        if cast_bool.cast(params[:check_support_summons])
-          payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user)
-        end
+        payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user) if cast_bool.cast(params[:check_support_summons])
 
         render json: payload
       end
@@ -132,7 +128,7 @@ module Api
             :guidebook2,
             :guidebook3,
             { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
-            { weapons: [{ weapon: [:weapon_series, :weapon_series_variant], collection_weapon: {} }, :awakening] },
+            { weapons: [{ weapon: %i[weapon_series weapon_series_variant], collection_weapon: {} }, :awakening] },
             { summons: [{ summon: :summon_series }, :collection_summon] }
           )
           # Restrict to parties belonging to the profile owner
@@ -184,9 +180,7 @@ module Api
       def deposit_edit_keys
         entries = params.require(:edit_keys).map { |e| e.permit(:shortcode, :edit_key) }
 
-        if entries.size > 100
-          return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_entity if entries.size > 100
 
         entries.each do |entry|
           current_user.user_edit_keys.find_or_create_by(edit_key: entry[:edit_key]) do |uek|
@@ -248,7 +242,7 @@ module Api
           :guidebook2,
           :guidebook3,
           { characters: [{ character: :character_series_records }, :awakening] },
-          { weapons: [{ weapon: [:weapon_series, :weapon_series_variant] }, :awakening] },
+          { weapons: [{ weapon: %i[weapon_series weapon_series_variant] }, :awakening] },
           { summons: { summon: :summon_series } }
         )
         # Restrict to parties belonging to the profile’s owner.

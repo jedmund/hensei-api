@@ -115,13 +115,11 @@ module Granblue
             existing_record.update!(update_attributes) if was_updated
             [existing_record, was_updated]
           end
-        else
-          if @test_mode
-            log_test_creation(attributes)
+        elsif @test_mode
+          log_test_creation(attributes)
             nil
           else
             [model_class.create!(attributes), false]
-          end
         end
       end
 
@@ -153,7 +151,7 @@ module Granblue
         update_attributes = attributes.compact
         would_update = update_attributes.any? { |key, value| existing_record[key] != value }
 
-        if would_update
+        return unless would_update
           # Create a test record with existing data
           test_record = existing_record.dup
 
@@ -171,7 +169,7 @@ module Granblue
             attributes: update_attributes,
             operation: :update
           }
-        end
+        
       end
 
       # Validate that all required attributes are present
@@ -186,7 +184,7 @@ module Granblue
             !%w[id created_at updated_at].include?(column)
         end
 
-        if missing_columns.any?
+        return unless missing_columns.any?
           details = [
             'Missing required columns:',
             missing_columns.map { |col| "  • #{col}" },
@@ -198,7 +196,7 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-        end
+        
       end
 
       # Validate attributes for an update
@@ -219,7 +217,7 @@ module Granblue
             !%w[id created_at updated_at].include?(column)
         end
 
-        if missing_columns.any?
+        return unless missing_columns.any?
           details = [
             'Missing required values for update:',
             missing_columns.map { |col| "  • #{col}" },
@@ -231,7 +229,7 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-        end
+        
       end
 
       # Validate a record can be saved
@@ -387,7 +385,11 @@ module Granblue
       def parse_date(date_str)
         return nil if date_str.nil? || date_str.strip.empty?
 
-        Date.parse(date_str) rescue nil
+        begin
+          Date.parse(date_str)
+        rescue StandardError
+          nil
+        end
       end
 
       # Parse a string array

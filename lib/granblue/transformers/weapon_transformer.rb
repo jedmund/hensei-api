@@ -157,7 +157,7 @@ module Granblue
         keys = []
 
         # Add weapon keys if they exist
-        ['skill1', 'skill2', 'skill3'].each do |skill_key|
+        %w[skill1 skill2 skill3].each do |skill_key|
           if weapon_data[skill_key]&.[]('id')
             keys << weapon_data[skill_key]['id']
             Rails.logger.debug "[TRANSFORM] Added weapon key: #{weapon_data[skill_key]['id']}"

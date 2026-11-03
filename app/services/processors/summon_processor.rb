@@ -58,7 +58,7 @@ module Processors
       summons = [*grid_summons, friend_summon, *sub_summons].compact
 
       summons.each do |summon|
-        begin
+        
           summon.save!
           if summon.collection_summon.present?
             update_collection_from_game(summon)
@@ -73,7 +73,7 @@ module Processors
           Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
           add_warning('item_skipped', summon, summon.summon)
           discard_unsaved(summon, :summons)
-        end
+        
       end
     end
 
@@ -89,10 +89,10 @@ module Processors
       updates[:uncap_level] = grid_summon.uncap_level if grid_summon.uncap_level > cs.uncap_level
       updates[:transcendence_step] = grid_summon.transcendence_step if grid_summon.transcendence_step > cs.transcendence_step
 
-      if updates.any?
+      return unless updates.any?
         cs.update!(updates)
         Rails.logger.info "[SUMMON] Updated collection summon #{cs.id} from game data: #{updates}"
-      end
+      
     end
 
     ##

@@ -62,9 +62,9 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       draft = workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { name: 'Renamed' })
       workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { weight: 3 })
       expect(draft.reload.attributes_payload).to eq('name' => 'Renamed', 'weight' => 3)
-      expect {
+      expect do
         workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { params: {} })
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      end.to raise_error(ActiveRecord::RecordInvalid)
       expect(draft.reload.attributes_payload).to eq('name' => 'Renamed', 'weight' => 3)
       expect(rule.reload.name).to eq('Spec base rule')
     end

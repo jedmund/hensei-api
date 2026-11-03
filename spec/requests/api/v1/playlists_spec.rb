@@ -172,9 +172,9 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
     let(:valid_params) { { playlist: { title: 'My Playlist', description: 'A description' } } }
 
     it 'creates a playlist and returns 201' do
-      expect {
+      expect do
         post '/api/v1/playlists', params: valid_params.to_json, headers: auth_headers
-      }.to change(Playlist, :count).by(1)
+      end.to change(Playlist, :count).by(1)
 
       expect(response).to have_http_status(:created)
       expect(response.parsed_body.dig('playlist', 'title')).to eq('My Playlist')
@@ -182,9 +182,9 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
     end
 
     it 'rejects missing title with 422' do
-      expect {
+      expect do
         post '/api/v1/playlists', params: { playlist: { description: 'No title' } }.to_json, headers: auth_headers
-      }.not_to change(Playlist, :count)
+      end.not_to change(Playlist, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -192,9 +192,9 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
     it 'rejects duplicate title for same user with 422' do
       create(:playlist, user: user, title: 'Duplicate')
 
-      expect {
+      expect do
         post '/api/v1/playlists', params: { playlist: { title: 'Duplicate' } }.to_json, headers: auth_headers
-      }.not_to change(Playlist, :count)
+      end.not_to change(Playlist, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -245,9 +245,9 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
     it 'deletes the playlist and cascades playlist_parties' do
       create_list(:playlist_party, 2, playlist: playlist)
 
-      expect {
+      expect do
         delete "/api/v1/playlists/#{playlist.id}", headers: auth_headers
-      }.to change(Playlist, :count).by(-1)
+      end.to change(Playlist, :count).by(-1)
         .and change(PlaylistParty, :count).by(-2)
 
       expect(response).to have_http_status(:no_content)
@@ -257,9 +257,9 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
       other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
 
-      expect {
+      expect do
         delete "/api/v1/playlists/#{playlist.id}", headers: other_headers
-      }.not_to change(Playlist, :count)
+      end.not_to change(Playlist, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end

@@ -21,7 +21,7 @@ class CrewMembership < ApplicationRecord
 
   # Members who were active during a date range (either still active, or retired after the end date)
   # Uses joined_at (editable) instead of created_at (system timestamp) for historical accuracy
-  scope :active_during, ->(start_date, end_date) {
+  scope :active_during, lambda { |start_date, end_date|
     where('retired = false OR retired_at >= ?', start_date)
       .where('joined_at <= ?', end_date)
   }
@@ -47,9 +47,9 @@ class CrewMembership < ApplicationRecord
   def one_active_crew_per_user
     return if retired
 
-    if CrewMembership.where(user_id: user_id, retired: false).where.not(id: id).exists?
+    return unless CrewMembership.where(user_id: user_id, retired: false).where.not(id: id).exists?
       errors.add(:user, 'can only be in one active crew')
-    end
+    
   end
 
   def captain_limit

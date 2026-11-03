@@ -14,9 +14,9 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
   describe 'POST /api/v1/gw_events/:id/participations' do
     context 'as crew officer' do
       it 'joins the crew to an event' do
-        expect {
+        expect do
           post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
-        }.to change(CrewGwParticipation, :count).by(1)
+        end.to change(CrewGwParticipation, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -26,9 +26,9 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'returns error if already participating' do
         create(:crew_gw_participation, crew: crew, event: gw_event)
 
-        expect {
+        expect do
           post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
-        }.not_to change(CrewGwParticipation, :count)
+        end.not_to change(CrewGwParticipation, :count)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body['errors']).to be_present
       end
@@ -38,9 +38,9 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           post "/api/v1/gw_events/#{gw_event.id}/participations", headers: auth_headers
-        }.not_to change(CrewGwParticipation, :count)
+        end.not_to change(CrewGwParticipation, :count)
         expect(response).to have_http_status(:unauthorized)
       end
     end

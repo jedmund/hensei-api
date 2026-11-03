@@ -28,7 +28,7 @@ module PostDeployment
       download_images
       rebuild_search_indices
       display_completion_message
-    rescue => e
+    rescue StandardError => e
       handle_error(e)
     end
 

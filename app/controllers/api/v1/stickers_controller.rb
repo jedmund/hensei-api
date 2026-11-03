@@ -112,9 +112,7 @@ module Api
       # Its file is deleted only if it's the sticker's own, never a shared
       # library image. The English image can be replaced but not removed.
       def remove_image
-        unless params[:language].to_s == 'ja'
-          return render json: { error: 'Only the Japanese image can be removed' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Only the Japanese image can be removed' }, status: :unprocessable_entity unless params[:language].to_s == 'ja'
 
         previous_key = @sticker.image_key_jp
         @sticker.update!(image_key_jp: nil)
@@ -128,9 +126,7 @@ module Api
         ids = Array(params[:ids]).map(&:to_s).uniq
         stickers = Sticker.where(id: ids.grep(UUID_FORMAT)).index_by(&:id)
         missing = ids - stickers.keys
-        if missing.any?
-          return render json: { error: "Unknown sticker ids: #{missing.join(', ')}" }, status: :unprocessable_entity
-        end
+        return render json: { error: "Unknown sticker ids: #{missing.join(', ')}" }, status: :unprocessable_entity if missing.any?
 
         Sticker.transaction do
           ids.each_with_index { |id, index| stickers[id].update!(position: index) }

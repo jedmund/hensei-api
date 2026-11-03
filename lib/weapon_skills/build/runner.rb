@@ -47,9 +47,7 @@ module WeaponSkills
           # stale, so the next deploy retries it. Failing the deploy here would leave the
           # other weapons written but the release blocked.
           summary = new(mode: 'write', io: io).call
-          if summary.failed.positive?
-            io.puts "build_weapon_skills (write): #{summary.failed} weapons failed and kept their existing rows"
-          end
+          io.puts "build_weapon_skills (write): #{summary.failed} weapons failed and kept their existing rows" if summary.failed.positive?
           summary
         end
       end
@@ -147,9 +145,7 @@ module WeaponSkills
           # the surrounding (shadow) transaction usable.
           ActiveRecord::Base.transaction(requires_new: true) do
             @summary.counts.merge!(Writer.call(result, context: @context))
-            if store_fingerprints
-              weapon.update_columns(weapon_skill_build_fingerprint: fingerprint, weapon_skill_built_at: Time.current)
-            end
+            weapon.update_columns(weapon_skill_build_fingerprint: fingerprint, weapon_skill_built_at: Time.current) if store_fingerprints
           end
           @summary.warnings += result.warnings.size
           @summary.fallback_rows += result.rows.count { |row| Rows.fallback_row?(row) }

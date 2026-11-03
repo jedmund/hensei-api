@@ -31,7 +31,7 @@ FactoryBot.define do
     end
 
     trait :quirk do
-      association :artifact, factory: [:artifact, :quirk]
+      association :artifact, factory: %i[artifact quirk]
       proficiency { :sabre }
       level { 1 }
       skill1 { {} }

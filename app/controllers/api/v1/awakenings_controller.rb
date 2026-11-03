@@ -65,9 +65,7 @@ module Api
       # Character awakenings take a JPEG and the rest a PNG (Awakening#image_formats),
       # stored at icons/awakening/<slug>.<jpg|png>, where the web app reads them.
       def upload_image
-        unless @awakening.slug.to_s.match?(Slugged::FORMAT)
-          return render json: { error: 'Awakening slug is invalid' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Awakening slug is invalid' }, status: :unprocessable_entity unless @awakening.slug.to_s.match?(Slugged::FORMAT)
 
         bytes = uploaded_image_bytes(params[:image])
         result = IconUploadValidator.call(bytes, max_dimension: MAX_IMAGE_DIMENSION, max_bytes: MAX_IMAGE_BYTES,

@@ -52,9 +52,7 @@ module Api
                                   :count_basis, :count_cap, :target_instance, :aura_boostable,
                                   :stacking, :applies_to, :notes, :key_slug, :frame_rule,
                                   :weapon_skill_version_id, condition: {})
-        if params[:weapon_skill_effect].key?(:condition) && params[:weapon_skill_effect][:condition].nil?
-          permitted[:condition] = nil
-        end
+        permitted[:condition] = nil if params[:weapon_skill_effect].key?(:condition) && params[:weapon_skill_effect][:condition].nil?
         permitted
       end
     end

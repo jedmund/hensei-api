@@ -23,13 +23,9 @@ module Granblue
         rows.each_with_index do |row, index|
           text = row.text
 
-          if text.include?('MinHP')
-            merge_stat(stats, :min_hp, :max_hp, :max_hp_flb, row_values(rows[index + 1]))
-          end
+          merge_stat(stats, :min_hp, :max_hp, :max_hp_flb, row_values(rows[index + 1])) if text.include?('MinHP')
 
-          if text.include?('MinATK')
-            merge_stat(stats, :min_atk, :max_atk, :max_atk_flb, row_values(rows[index + 1]))
-          end
+          merge_stat(stats, :min_atk, :max_atk, :max_atk_flb, row_values(rows[index + 1])) if text.include?('MinATK')
         end
 
         stats

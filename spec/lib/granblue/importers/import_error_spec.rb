@@ -18,9 +18,9 @@ RSpec.describe Granblue::Importers::ImportError do
   end
 
   it 'can be raised and rescued' do
-    expect {
+    expect do
       raise described_class.new(file_name: 'test.csv', details: 'bad')
-    }.to raise_error(described_class, 'Error importing test.csv: bad')
+    end.to raise_error(described_class, 'Error importing test.csv: bad')
   end
 end
 

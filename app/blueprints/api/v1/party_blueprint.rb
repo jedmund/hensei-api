@@ -151,7 +151,7 @@ module Api
 
         # Private sticker counts, only for the owner. Retired stickers are
         # included because they still count.
-        field :sticker_breakdown, if: ->(_field_name, party, options) {
+        field :sticker_breakdown, if: lambda { |_field_name, party, options|
           options[:current_user] && party.user_id.present? && party.user_id == options[:current_user].id
         } do |party|
           PartyStickerSummary.breakdown_for(party.id)
@@ -166,7 +166,7 @@ module Api
         end
 
         # Shares (only visible to owner)
-        field :shares, if: ->(_field_name, party, options) {
+        field :shares, if: lambda { |_field_name, party, options|
           options[:current_user] && party.user_id == options[:current_user].id
         } do |party|
           party.party_shares.map do |share|
@@ -181,7 +181,7 @@ module Api
         end
 
         # Viewing user's collection items matching this party's grid items
-        field :viewer_collection, if: ->(_field_name, _party, options) {
+        field :viewer_collection, if: lambda { |_field_name, _party, options|
           options[:viewer_collection].present?
         } do |_party, options|
           vc = options[:viewer_collection]
@@ -193,7 +193,7 @@ module Api
         end
 
         # Collection source user's items matching this party's grid items
-        field :source_collection, if: ->(_field_name, _party, options) {
+        field :source_collection, if: lambda { |_field_name, _party, options|
           options[:source_collection].present?
         } do |_party, options|
           sc = options[:source_collection]
@@ -282,10 +282,10 @@ module Api
         association :source_party,
                     blueprint: PartyBlueprint,
                     view: :summary,
-                    if: ->(_field_name, party, options) do
+                    if: lambda { |_field_name, party, options|
                       party.source_party_id.present? &&
                         party.source_party.viewable_by?(options[:current_user], admin_mode: options[:admin_mode])
-                    end
+                    }
       end
 
       view :remix_metadata do

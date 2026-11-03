@@ -110,13 +110,11 @@ module PostDeployment
       final_schema_version = schema_context.current_version
       final_data_version = data_context.current_version
 
-      if initial_schema_version != final_schema_version
-        log_step "Migrated schema from version #{initial_schema_version} to #{final_schema_version}"
-      end
+      log_step "Migrated schema from version #{initial_schema_version} to #{final_schema_version}" if initial_schema_version != final_schema_version
 
-      if initial_data_version != final_data_version
+      return unless initial_data_version != final_data_version
         log_step "Migrated data from version #{initial_data_version} to #{final_data_version}"
-      end
+      
     end
   end
 end

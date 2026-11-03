@@ -45,9 +45,7 @@ RSpec.describe 'Rose Crystal series data' do
   before do
     create(:weapon_skill_boost_type, :multiplicative, key: 'atk') unless WeaponSkillBoostType.exists?(key: 'atk')
     create(:weapon_skill_boost_type, :defensive, key: 'hp', grid_cap: 400) unless WeaponSkillBoostType.exists?(key: 'hp')
-    unless WeaponSkillBoostType.exists?(key: 'elem_reduc')
-      create(:weapon_skill_boost_type, :defensive, key: 'elem_reduc', grid_cap: 30)
-    end
+    create(:weapon_skill_boost_type, :defensive, key: 'elem_reduc', grid_cap: 30) unless WeaponSkillBoostType.exists?(key: 'elem_reduc')
 
     ROSE_WEAPONS.each { |attrs| seed_rose_weapon(attrs) }
     CurateRoseCrystalSeriesValues.new.up

@@ -187,9 +187,9 @@ RSpec.describe 'Collection Artifacts API', type: :request do
         }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/artifacts', params: invalid_attributes.to_json, headers: headers
-      }.not_to change(CollectionArtifact, :count)
+      end.not_to change(CollectionArtifact, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -197,9 +197,9 @@ RSpec.describe 'Collection Artifacts API', type: :request do
     end
 
     it 'returns unauthorized without authentication' do
-      expect {
+      expect do
         post '/api/v1/collection/artifacts', params: valid_attributes.to_json
-      }.not_to change(CollectionArtifact, :count)
+      end.not_to change(CollectionArtifact, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end

@@ -30,7 +30,7 @@ class Crew < ApplicationRecord
   end
 
   def officers
-    crew_memberships.where(role: [:captain, :vice_captain], retired: false).includes(:user).map(&:user)
+    crew_memberships.where(role: %i[captain vice_captain], retired: false).includes(:user).map(&:user)
   end
 
   def member_count

@@ -25,8 +25,8 @@ RSpec.describe Granblue::WikiError do
   end
 
   it 'can be raised and rescued' do
-    expect {
+    expect do
       raise described_class.new(code: '404', page: 'Test')
-    }.to raise_error(described_class)
+    end.to raise_error(described_class)
   end
 end

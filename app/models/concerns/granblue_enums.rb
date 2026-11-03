@@ -6,7 +6,7 @@ module GranblueEnums
   # Element, proficiency and race values are the game's own numbers, so data
   # read from the game needs no conversion.
   ELEMENTS = { Null: 0, Fire: 1, Water: 2, Earth: 3, Wind: 4, Light: 5, Dark: 6 }.freeze
-  GENDERS = { Unknown: 0, Male: 1, Female: 2, "Male/Female": 3 }.freeze
+  GENDERS = { Unknown: 0, Male: 1, Female: 2, 'Male/Female': 3 }.freeze
 
   # Single proficiency enum mapping used for both proficiency1 and proficiency2.
   # Matches the game's weapon kind.

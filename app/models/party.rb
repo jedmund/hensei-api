@@ -320,12 +320,12 @@ class Party < ApplicationRecord
   validate :validate_full_auto_skills
 
   validates :name,
-            profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
+            profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
 
   validates :description,
-            profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
+            profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
   validates :description, rich_text_description: true, if: :description_changed?

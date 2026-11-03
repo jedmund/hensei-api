@@ -63,9 +63,7 @@ module CollectionSourceConcern
     end
 
     # Set the source user if this is the first collection-linked item
-    if party.collection_source_user_id.nil?
-      party.update!(collection_source_user_id: owner.id)
-    end
+    party.update!(collection_source_user_id: owner.id) if party.collection_source_user_id.nil?
 
     true
   end

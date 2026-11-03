@@ -19,7 +19,7 @@ class PartyShare < ApplicationRecord
 
   # Validations
   validates :party_id, uniqueness: {
-    scope: [:shareable_type, :shareable_id],
+    scope: %i[shareable_type shareable_id],
     message: 'has already been shared with this group'
   }
   validate :owner_can_share

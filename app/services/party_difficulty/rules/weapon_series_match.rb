@@ -16,9 +16,7 @@ module PartyDifficulty
       def self.validate_params(params)
         errors = []
         params = (params || {}).with_indifferent_access
-        if params[:series_ids].blank? && params[:slugs].blank?
-          errors << 'series_ids or slugs must be provided'
-        end
+        errors << 'series_ids or slugs must be provided' if params[:series_ids].blank? && params[:slugs].blank?
         errors
       end
 

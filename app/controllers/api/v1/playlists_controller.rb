@@ -34,9 +34,7 @@ module Api
         owner = User.with_username(params[:user_id]).first!
         playlist = owner.playlists.find_by!(slug: params[:id])
 
-        unless playlist.viewable_by?(current_user)
-          return render_not_found_response('playlist')
-        end
+        return render_not_found_response('playlist') unless playlist.viewable_by?(current_user)
 
         favorite_party_ids = current_user ? current_user.favorites.pluck(:party_id).to_set : Set.new
 

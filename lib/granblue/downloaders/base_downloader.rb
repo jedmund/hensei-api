@@ -181,7 +181,11 @@ module Granblue
       def ensure_directories_exist
         return unless store_locally?
 
-        sizes = self.class::SIZES rescue SIZES
+        sizes = begin
+                  self.class::SIZES
+                rescue StandardError
+                  SIZES
+                end
         sizes.each do |size|
           FileUtils.mkdir_p(download_path(size))
         end
@@ -242,9 +246,7 @@ module Granblue
           content = file.read
           raise "Failed to read content from #{url}" unless content
 
-          File.open(filepath, 'wb') do |output|
-            output.write(content)
-          end
+          File.binwrite(filepath, content)
         end
         log_info "-> #{size}:\t#{url}..."
       rescue OpenURI::HTTPError

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :weapon_key do
-    sequence(:name_en) { |n| "Pendulum of #{['Strife', 'Sagacity', 'Prosperity', 'Forbiddance', 'Temperament'].sample}" }
+    sequence(:name_en) { |n| "Pendulum of #{%w[Strife Sagacity Prosperity Forbiddance Temperament].sample}" }
     name_jp { '鍵' }
     slot { rand(1..3) }
     group { rand(1..5) }

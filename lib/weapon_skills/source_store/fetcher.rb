@@ -46,9 +46,7 @@ module WeaponSkills
         return 'key_determined' if expanded.to_s.match?(KEY_PLACEHOLDER)
         # The template supplies the skills unless the page has an English "|s1_desc=" line
         # ("|jps1_desc=" doesn't count).
-        if wiki_raw.to_s.include?('{{Weapon/Common/') && !wiki_raw.to_s.match?(ENGLISH_S1_DESC)
-          return 'series_template'
-        end
+        return 'series_template' if wiki_raw.to_s.include?('{{Weapon/Common/') && !wiki_raw.to_s.match?(ENGLISH_S1_DESC)
 
         'inline'
       end

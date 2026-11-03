@@ -231,9 +231,9 @@ RSpec.describe 'Api::V1::Characters', type: :request do
     end
 
     it 'creates a character as editor and returns it' do
-      expect {
+      expect do
         post '/api/v1/characters', params: valid_params.to_json, headers: editor_headers
-      }.to change(Character, :count).by(1)
+      end.to change(Character, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body
@@ -243,9 +243,9 @@ RSpec.describe 'Api::V1::Characters', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      expect {
+      expect do
         post '/api/v1/characters', params: valid_params.to_json, headers: user_headers
-      }.not_to change(Character, :count)
+      end.not_to change(Character, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end

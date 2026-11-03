@@ -117,9 +117,7 @@ module Api
       def import
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = ArtifactImportService.new(
           current_user,
@@ -153,9 +151,7 @@ module Api
         game_data = import_params[:data]
         filter = import_params[:filter]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = ArtifactImportService.new(current_user, game_data, filter: filter)
         items_to_delete = service.preview_deletions

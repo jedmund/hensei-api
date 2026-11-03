@@ -145,9 +145,9 @@ RSpec.describe 'Collection Summons - check_conflicts', type: :request do
         conflict_resolutions: { '12345' => 'import' }
       }
 
-      expect {
+      expect do
         post import_endpoint, params: payload.to_json, headers: headers
-      }.not_to change(user.collection_summons, :count)
+      end.not_to change(user.collection_summons, :count)
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body

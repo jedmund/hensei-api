@@ -44,9 +44,9 @@ module ArtifactSkillValidations
     end
 
     # Validate quality is in valid range (1-5)
-    unless (1..5).cover?(quality)
+    return if (1..5).cover?(quality)
       errors.add(slot_name, "has invalid quality #{quality}")
-    end
+    
   end
 
   def validate_skill1_group_i
@@ -71,9 +71,9 @@ module ArtifactSkillValidations
     # Skills 1 and 2 are both from Group I and cannot have the same modifier
     return if skill1.blank? || skill1 == {} || skill2.blank? || skill2 == {}
 
-    if skill1['modifier'] == skill2['modifier']
+    return unless skill1['modifier'] == skill2['modifier']
       errors.add(:base, 'Skill 1 and Skill 2 cannot have the same modifier')
-    end
+    
   end
 
   def validate_skill_levels_sum

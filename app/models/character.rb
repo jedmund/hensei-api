@@ -287,9 +287,7 @@ class Character < ApplicationRecord
     end
 
     # Remove memberships not in the new list
-    if persisted?
-      character_series_memberships.where.not(character_series_id: new_series_ids).destroy_all
-    end
+    character_series_memberships.where.not(character_series_id: new_series_ids).destroy_all if persisted?
 
     # Add new memberships
     new_series_ids.each do |series_id|

@@ -92,9 +92,9 @@ RSpec.describe 'JobSkills API', type: :request do
 
     context 'as an editor' do
       it 'creates a new job skill' do
-        expect {
+        expect do
           post '/api/v1/job_skills', params: valid_params.to_json, headers: editor_headers
-        }.to change(JobSkill, :count).by(1)
+        end.to change(JobSkill, :count).by(1)
         expect(response).to have_http_status(:created)
 
         skill = response.parsed_body
@@ -166,9 +166,9 @@ RSpec.describe 'JobSkills API', type: :request do
 
     context 'as an editor' do
       it 'destroys the job skill' do
-        expect {
+        expect do
           delete "/api/v1/job_skills/#{skill.id}", headers: editor_headers
-        }.to change(JobSkill, :count).by(-1)
+        end.to change(JobSkill, :count).by(-1)
         expect(response).to have_http_status(:no_content)
       end
     end

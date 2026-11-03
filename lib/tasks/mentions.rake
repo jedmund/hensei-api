@@ -23,9 +23,7 @@ namespace :mentions do
         skipped += 1
       end
 
-      if ((i + 1) % 100).zero?
-        puts "  Processed #{i + 1}/#{total} (#{updated} updated, #{skipped} skipped, #{errors} errors)"
-      end
+      puts "  Processed #{i + 1}/#{total} (#{updated} updated, #{skipped} skipped, #{errors} errors)" if ((i + 1) % 100).zero?
     rescue JSON::ParserError
       skipped += 1
     rescue StandardError => e
@@ -42,9 +40,7 @@ def backfill_mention_node(node)
 
   changed = false
 
-  if node['type'] == 'mention' && node['attrs']&.dig('id')
-    changed = backfill_mention_attrs(node['attrs']['id'])
-  end
+  changed = backfill_mention_attrs(node['attrs']['id']) if node['type'] == 'mention' && node['attrs']&.dig('id')
 
   # Recurse into content array
   if node['content'].is_a?(Array)

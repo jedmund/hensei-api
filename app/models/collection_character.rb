@@ -24,26 +24,26 @@ class CollectionCharacter < ApplicationRecord
 
   scope :by_element, ->(element) { joins(:character).where(characters: { element: element }) }
   scope :by_rarity, ->(rarity) { joins(:character).where(characters: { rarity: rarity }) }
-  scope :by_race, ->(races) {
+  scope :by_race, lambda { |races|
     joins(:character).where('characters.race1 IN (?) OR characters.race2 IN (?)', races, races)
   }
-  scope :by_proficiency, ->(proficiencies) {
+  scope :by_proficiency, lambda { |proficiencies|
     joins(:character).where('characters.proficiency1 IN (?) OR characters.proficiency2 IN (?)', proficiencies, proficiencies)
   }
   scope :by_gender, ->(genders) { joins(:character).where(characters: { gender: genders }) }
-  scope :by_series, ->(series_ids) {
+  scope :by_series, lambda { |series_ids|
     joins(character: :character_series_records)
       .where(character_series: { id: series_ids })
       .distinct
   }
-  scope :by_name, ->(query) {
+  scope :by_name, lambda { |query|
     joins(:character).where('characters.name_en ILIKE :q OR characters.name_jp ILIKE :q', q: "%#{sanitize_sql_like(query)}%")
   }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
 
   # Sorting scopes
-  scope :sorted_by, ->(sort_key, locale = 'en') {
+  scope :sorted_by, lambda { |sort_key, locale = 'en'|
     name_col = locale == 'ja' ? 'characters.name_jp' : 'characters.name_en'
     case sort_key
     when 'name_asc'
@@ -83,30 +83,28 @@ class CollectionCharacter < ApplicationRecord
     [ring1, ring2, ring3, ring4, earring].each_with_index do |ring, index|
       next unless ring['modifier'].present? || ring['strength'].present?
 
-      if ring['modifier'].blank? || ring['strength'].blank?
-        errors.add(:base, "Ring #{index + 1} must have both modifier and strength")
-      end
+      errors.add(:base, "Ring #{index + 1} must have both modifier and strength") if ring['modifier'].blank? || ring['strength'].blank?
     end
   end
 
   def validate_awakening_compatibility
     return unless awakening.present?
 
-    unless awakening.object_type == 'Character'
+    return if awakening.object_type == 'Character'
       errors.add(:awakening, 'must be a character awakening')
-    end
+    
   end
 
   def validate_awakening_level
-    if awakening_level.present? && awakening_level > 1 && awakening_id.blank?
+    return unless awakening_level.present? && awakening_level > 1 && awakening_id.blank?
       errors.add(:awakening_level, 'cannot be set without an awakening')
-    end
+    
   end
 
   def validate_transcendence_requirements
-    if transcendence_step.present? && transcendence_step > 0 && uncap_level < 5
+    return unless transcendence_step.present? && transcendence_step > 0 && uncap_level < 5
       errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
-    end
+    
   end
 
   def add_default_awakening

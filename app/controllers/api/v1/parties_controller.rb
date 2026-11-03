@@ -63,9 +63,7 @@ module Api
         # Validate collection source user if provided
         if party_params[:collection_source_user_id].present?
           source_user = User.find_by(id: party_params[:collection_source_user_id])
-          if source_user.nil?
-            return render_not_found_response('user')
-          end
+          return render_not_found_response('user') if source_user.nil?
           unless source_user == current_user || source_user.collection_viewable_by?(current_user)
             return render_forbidden_response('Collection is not accessible')
           end
@@ -105,9 +103,7 @@ module Api
         if @party
           options = { view: :full, root: :party, current_user: current_user, admin_mode: admin_mode }
 
-          if current_user
-            options[:viewer_collection] = fetch_collection_for(@party, current_user)
-          end
+          options[:viewer_collection] = fetch_collection_for(@party, current_user) if current_user
 
           if @party.collection_source_user_id.present?
             source_user = @party.collection_source_user
@@ -158,9 +154,7 @@ module Api
         raise Api::V1::UnauthorizedError unless current_user
 
         entries = resolve_edit_key_entries
-        if entries.nil?
-          return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity if entries.nil?
 
         results = []
         migrated_count = 0
@@ -197,9 +191,7 @@ module Api
         raise Api::V1::UnauthorizedError unless current_user
 
         entries = resolve_edit_key_entries
-        if entries.nil?
-          return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_entity if entries.nil?
 
         identifiers = entries.map { |e| e[:shortcode] }.uniq
         uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
@@ -208,7 +200,7 @@ module Api
         query = Party.includes(
           { raid: :group }, :job,
           { characters: { character: :character_series_records } },
-          { weapons: { weapon: [:weapon_series, :weapon_series_variant] } },
+          { weapons: { weapon: %i[weapon_series weapon_series_variant] } },
           { summons: { summon: :summon_series } }
         )
         conditions = []
@@ -594,9 +586,7 @@ module Api
             errors << "Operation #{index}: unknown operation type #{op[:type]}"
           end
 
-          unless %w[weapon character summon].include?(op[:entity])
-            errors << "Operation #{index}: invalid entity type #{op[:entity]}"
-          end
+          errors << "Operation #{index}: invalid entity type #{op[:entity]}" unless %w[weapon character summon].include?(op[:entity])
         end
 
         errors
@@ -694,16 +684,28 @@ module Api
         summ_gids = party.summons.filter_map { |gs| gs.summon&.granblue_id }.uniq
 
         {
-          characters: char_gids.any? ? user.collection_characters.joins(:character)
+          characters: if char_gids.any?
+  user.collection_characters.joins(:character)
             .includes({ character: :character_series_records }, :awakening)
-            .where(characters: { granblue_id: char_gids }) : [],
-          weapons: weap_gids.any? ? user.collection_weapons.joins(:weapon)
-            .includes({ weapon: [:weapon_series, :weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
+            .where(characters: { granblue_id: char_gids })
+else
+  []
+end,
+          weapons: if weap_gids.any?
+  user.collection_weapons.joins(:weapon)
+            .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
                       :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
-            .where(weapons: { granblue_id: weap_gids }) : [],
-          summons: summ_gids.any? ? user.collection_summons.joins(:summon)
+            .where(weapons: { granblue_id: weap_gids })
+else
+  []
+end,
+          summons: if summ_gids.any?
+  user.collection_summons.joins(:summon)
             .includes(summon: :summon_series)
-            .where(summons: { granblue_id: summ_gids }) : []
+            .where(summons: { granblue_id: summ_gids })
+else
+  []
+end
         }
       end
 

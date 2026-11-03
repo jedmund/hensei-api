@@ -41,9 +41,7 @@ module WeaponSkills
     def version_errors(entry)
       errors = reference_errors(entry, required: true) + stamp_errors(entry)
       errors << "needs at least one of #{OVERRIDES.join(', ')}" unless entry.keys.intersect?(OVERRIDES)
-      if entry.key?('suppressed_boosts') && !entry['suppressed_boosts'].is_a?(Array)
-        errors << 'suppressed_boosts must be an array'
-      end
+      errors << 'suppressed_boosts must be an array' if entry.key?('suppressed_boosts') && !entry['suppressed_boosts'].is_a?(Array)
       errors
     end
 

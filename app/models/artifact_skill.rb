@@ -25,7 +25,7 @@ class ArtifactSkill < ApplicationRecord
   validate :base_values_format
 
   # Scopes
-  scope :for_slot, ->(slot) {
+  scope :for_slot, lambda { |slot|
     case slot
     when 1, 2 then group_i
     when 3 then group_ii

@@ -70,9 +70,7 @@ module GridDamage
 
     def aura(granblue_id, slot, target, uncap, transcendence_step, element: nil)
       rows = SummonAura.where(summon_granblue_id: granblue_id, slot: slot, target: target).to_a
-      if element
-        rows = rows.select { |r| r.element.nil? || r.element == 'all' || r.element.to_s.include?(element.to_s) }
-      end
+      rows = rows.select { |r| r.element.nil? || r.element == 'all' || r.element.to_s.include?(element.to_s) } if element
       best_value(rows, uncap: uncap, transcendence_step: transcendence_step)
     end
 

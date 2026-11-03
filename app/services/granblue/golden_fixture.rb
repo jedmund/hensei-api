@@ -179,9 +179,7 @@ module Granblue
         match = sql.match(SELECT_HEAD) or raise Error, "unsupported query shape: #{sql}"
         table = match[1]
         return if IGNORED_TABLES.include?(table)
-        if sql.match?(/\bJOIN\b|\(\s*SELECT\b|\bGROUP\s+BY\b|\bUNION\b/i)
-          raise Error, "unsupported query (join/subquery/group): #{sql}"
-        end
+        raise Error, "unsupported query (join/subquery/group): #{sql}" if sql.match?(/\bJOIN\b|\(\s*SELECT\b|\bGROUP\s+BY\b|\bUNION\b/i)
 
         ids[table] # an empty result still marks the table as read
         id_sql = sql.sub(SELECT_HEAD, %(SELECT "#{table}"."id" FROM "#{table}"))

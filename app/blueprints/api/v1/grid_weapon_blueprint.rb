@@ -68,7 +68,7 @@ module Api
 
         association :weapon_keys,
                     blueprint: WeaponKeyBlueprint,
-                    if: ->(_field_name, w, _options) {
+                    if: lambda { |_field_name, w, _options|
                       w.weapon.present? &&
                         w.weapon.effective_has_weapon_keys
                     }

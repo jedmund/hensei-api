@@ -56,9 +56,7 @@ module CharacterSkills
 
     # wiki_name and qualifier arrive together (D59): StatusDisplayNames needs both to replace a placeholder.
     def wiki_names?
-      if @wiki_names.nil?
-        @wiki_names = db.column_exists?(:statuses, :wiki_name) && db.column_exists?(:statuses, :qualifier)
-      end
+      @wiki_names = db.column_exists?(:statuses, :wiki_name) && db.column_exists?(:statuses, :qualifier) if @wiki_names.nil?
       @wiki_names
     end
 

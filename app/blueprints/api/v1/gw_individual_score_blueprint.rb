@@ -25,15 +25,11 @@ module Api
 
       view :with_member do
         field :member do |score|
-          if score.crew_membership.present?
-            CrewMembershipBlueprint.render_as_hash(score.crew_membership, view: :with_user)
-          end
+          CrewMembershipBlueprint.render_as_hash(score.crew_membership, view: :with_user) if score.crew_membership.present?
         end
 
         field :phantom do |score|
-          if score.phantom_player.present?
-            PhantomPlayerBlueprint.render_as_hash(score.phantom_player)
-          end
+          PhantomPlayerBlueprint.render_as_hash(score.phantom_player) if score.phantom_player.present?
         end
       end
     end

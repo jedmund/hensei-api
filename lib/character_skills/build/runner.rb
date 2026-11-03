@@ -58,9 +58,7 @@ module CharacterSkills
           end
         when 'write'
           summary = new(mode: 'write', io: io).call
-          if summary.failed.positive?
-            io.puts "build_character_skills (write): #{summary.failed} characters failed and kept their existing rows"
-          end
+          io.puts "build_character_skills (write): #{summary.failed} characters failed and kept their existing rows" if summary.failed.positive?
           summary
         end
       end

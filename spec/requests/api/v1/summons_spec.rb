@@ -66,9 +66,9 @@ RSpec.describe 'Api::V1::Summons', type: :request do
     end
 
     it 'creates a summon as editor and returns it' do
-      expect {
+      expect do
         post '/api/v1/summons', params: valid_params.to_json, headers: editor_headers
-      }.to change(Summon, :count).by(1)
+      end.to change(Summon, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body
@@ -78,9 +78,9 @@ RSpec.describe 'Api::V1::Summons', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      expect {
+      expect do
         post '/api/v1/summons', params: valid_params.to_json, headers: user_headers
-      }.not_to change(Summon, :count)
+      end.not_to change(Summon, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end

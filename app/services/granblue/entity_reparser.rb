@@ -47,9 +47,7 @@ module Granblue
     # Raises MissingWikiRawError when the weapon's page isn't stored (WeaponSource; a build
     # without it would delete the weapon's generated skills), and re-raises a build failure.
     def reparse_weapon
-      unless stored_page?
-        raise MissingWikiRawError, 'No stored wiki source for this weapon — fetch the wiki page first'
-      end
+      raise MissingWikiRawError, 'No stored wiki source for this weapon — fetch the wiki page first' unless stored_page?
 
       log = StringIO.new
       summary = WeaponSkills::Build::Runner.new(mode: 'write', ids: [@entity.granblue_id], all: true, io: log,

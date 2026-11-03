@@ -8,11 +8,11 @@ FactoryBot.define do
     wiki_profile { nil }
     youtube { nil }
     picture { 'gran' }
-    language { ['en', 'ja'].sample }
+    language { %w[en ja].sample }
     private { Faker::Boolean.boolean }
-    element { ['water', 'fire', 'wind', 'earth', 'light', 'dark'].sample }
+    element { %w[water fire wind earth light dark].sample }
     gender { Faker::Number.between(from: 0, to: 1) }
-    theme { ['system', 'dark', 'light'].sample }
+    theme { %w[system dark light].sample }
     role { Faker::Number.between(from: 1, to: 3) }
   end
 end

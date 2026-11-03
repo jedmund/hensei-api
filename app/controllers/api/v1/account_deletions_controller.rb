@@ -17,9 +17,7 @@ module Api
       def create
         return render json: { error: 'password_required' }, status: :unprocessable_entity unless current_user.password?
 
-        unless current_user.authenticate(params[:password].to_s)
-          return render json: { error: 'invalid_password' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'invalid_password' }, status: :unprocessable_entity unless current_user.authenticate(params[:password].to_s)
 
         AccountDeletion::Scheduler.schedule!(current_user)
         render json: { deletion_scheduled_at: current_user.deletion_scheduled_at }

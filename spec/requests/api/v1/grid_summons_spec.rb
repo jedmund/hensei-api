@@ -41,9 +41,9 @@ RSpec.describe 'GridSummons API', type: :request do
       other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
       other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
 
-      expect {
+      expect do
         post '/api/v1/grid_summons', params: valid_params.to_json, headers: other_headers
-      }.not_to change(GridSummon, :count)
+      end.not_to change(GridSummon, :count)
       expect(response).to have_http_status(:unauthorized)
     end
 
@@ -66,17 +66,17 @@ RSpec.describe 'GridSummons API', type: :request do
       end
 
       it 'allows anonymous creation with correct edit_key' do
-        expect {
+        expect do
           post '/api/v1/grid_summons', params: anon_params.to_json, headers: anon_headers
-        }.to change(GridSummon, :count).by(1)
+        end.to change(GridSummon, :count).by(1)
         expect(response).to have_http_status(:created)
       end
 
       it 'rejects anonymous creation with wrong edit_key' do
         wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
-        expect {
+        expect do
           post '/api/v1/grid_summons', params: anon_params.to_json, headers: wrong_headers
-        }.not_to change(GridSummon, :count)
+        end.not_to change(GridSummon, :count)
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -318,7 +318,7 @@ RSpec.describe 'GridSummons API', type: :request do
     let(:foreign_summon) { foreign_item.summon }
 
     it 'rejects another user\'s private collection summon on create and writes no row' do
-      expect {
+      expect do
         post '/api/v1/grid_summons', params: {
           summon: {
             party_id: party.id,
@@ -332,7 +332,7 @@ RSpec.describe 'GridSummons API', type: :request do
             collection_summon_id: foreign_item.id
           }
         }.to_json, headers: headers
-      }.not_to change(GridSummon, :count)
+      end.not_to change(GridSummon, :count)
       expect(response).to have_http_status(:forbidden)
     end
 

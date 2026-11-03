@@ -51,9 +51,9 @@ RSpec.describe 'GridCharacters API', type: :request do
         other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
         other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
 
-        expect {
+        expect do
           post '/api/v1/grid_characters', params: valid_params.to_json, headers: other_headers
-        }.not_to change(GridCharacter, :count)
+        end.not_to change(GridCharacter, :count)
         expect(response).to have_http_status(:unauthorized)
       end
 
@@ -706,7 +706,7 @@ RSpec.describe 'GridCharacters API', type: :request do
     let(:foreign_item) { create(:collection_character, user: private_owner) }
 
     it 'rejects another user\'s private collection character on create and writes no row' do
-      expect {
+      expect do
         post '/api/v1/grid_characters', params: {
           character: {
             party_id: party.id,
@@ -718,7 +718,7 @@ RSpec.describe 'GridCharacters API', type: :request do
             collection_character_id: foreign_item.id
           }
         }.to_json, headers: headers
-      }.not_to change(GridCharacter, :count)
+      end.not_to change(GridCharacter, :count)
       expect(response).to have_http_status(:forbidden)
     end
 

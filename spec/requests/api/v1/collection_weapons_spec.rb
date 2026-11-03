@@ -245,9 +245,9 @@ RSpec.describe 'Collection Weapons API', type: :request do
         collection_weapon: { awakening_id: character_awakening.id }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/weapons', params: invalid_attributes.to_json, headers: headers
-      }.not_to change(CollectionWeapon, :count)
+      end.not_to change(CollectionWeapon, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -259,9 +259,9 @@ RSpec.describe 'Collection Weapons API', type: :request do
         collection_weapon: { uncap_level: 3, transcendence_step: 5 }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/weapons', params: invalid_attributes.to_json, headers: headers
-      }.not_to change(CollectionWeapon, :count)
+      end.not_to change(CollectionWeapon, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -307,9 +307,9 @@ RSpec.describe 'Collection Weapons API', type: :request do
         }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/weapons', params: invalid_ax.to_json, headers: headers
-      }.not_to change(CollectionWeapon, :count)
+      end.not_to change(CollectionWeapon, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body

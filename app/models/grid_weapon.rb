@@ -234,12 +234,8 @@ class GridWeapon < ApplicationRecord
     fields << 'weaponKey2' if weapon_key2_id != collection_weapon.weapon_key2_id
     fields << 'weaponKey3' if weapon_key3_id != collection_weapon.weapon_key3_id
     fields << 'weaponKey4' if weapon_key4_id != collection_weapon.weapon_key4_id
-    if ax_modifier1_id != collection_weapon.ax_modifier1_id || ax_strength1 != collection_weapon.ax_strength1
-      fields << 'ax.0'
-    end
-    if ax_modifier2_id != collection_weapon.ax_modifier2_id || ax_strength2 != collection_weapon.ax_strength2
-      fields << 'ax.1'
-    end
+    fields << 'ax.0' if ax_modifier1_id != collection_weapon.ax_modifier1_id || ax_strength1 != collection_weapon.ax_strength1
+    fields << 'ax.1' if ax_modifier2_id != collection_weapon.ax_modifier2_id || ax_strength2 != collection_weapon.ax_strength2
     fields << 'befoulmentModifier' if befoulment_modifier_id != collection_weapon.befoulment_modifier_id
     fields << 'befoulmentStrength' if befoulment_strength != collection_weapon.befoulment_strength
     fields << 'befoulmentPermeation' if befoulment_permeation != collection_weapon.befoulment_permeation
@@ -362,16 +358,16 @@ class GridWeapon < ApplicationRecord
   def compatible_with_position
     return unless weapon.present?
 
-    if EXTRA_POSITIONS.include?(position.to_i)
+    return unless EXTRA_POSITIONS.include?(position.to_i)
       unless weapon.extra
         errors.add(:series, 'must be compatible with position')
         return
       end
 
-      if weapon.extra_prerequisite.present? && uncap_level < weapon.extra_prerequisite
+      return unless weapon.extra_prerequisite.present? && uncap_level < weapon.extra_prerequisite
         errors.add(:uncap_level, 'must meet extra prerequisite')
-      end
-    end
+      
+    
   end
 
   ##
@@ -389,16 +385,16 @@ class GridWeapon < ApplicationRecord
 
   def no_duplicate_weapon_keys
     key_ids = [weapon_key1_id, weapon_key2_id, weapon_key3_id, weapon_key4_id].compact
-    if key_ids.length != key_ids.uniq.length
+    return unless key_ids.length != key_ids.uniq.length
       errors.add(:weapon_keys, 'cannot have duplicate keys')
-    end
+    
   end
 
   def no_duplicate_weapon_key_slots
     slots = [weapon_key1, weapon_key2, weapon_key3, weapon_key4].compact.map(&:slot)
-    if slots.length != slots.uniq.length
+    return unless slots.length != slots.uniq.length
       errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
-    end
+    
   end
 
   ##
@@ -428,9 +424,9 @@ class GridWeapon < ApplicationRecord
     weapon_prof = weapon.proficiency
 
     # Weapon proficiency must match one of the job's proficiencies
-    unless [job.proficiency1, job.proficiency2].include?(weapon_prof)
+    return if [job.proficiency1, job.proficiency2].include?(weapon_prof)
       errors.add(:weapon, 'proficiency must match job proficiency for mainhand')
-    end
+    
   end
 
   ##

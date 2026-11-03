@@ -15,7 +15,7 @@ RSpec.describe 'GridWeapons API', type: :request do
   let(:headers) do
     {
       'Authorization' => "Bearer #{access_token.token}",
-      'Content-Type' => 'application/json',
+      'Content-Type' => 'application/json'
     }
   end
   let(:weapon) { Weapon.find_by!(granblue_id: '1040611300') }
@@ -32,7 +32,7 @@ RSpec.describe 'GridWeapons API', type: :request do
             mainhand: true,
             uncap_level: 3,
             transcendence_step: 0,
-            element: weapon.element,
+            element: weapon.element
           }
         }
       end
@@ -67,7 +67,7 @@ RSpec.describe 'GridWeapons API', type: :request do
             mainhand: true,
             uncap_level: 3,
             transcendence_step: 0,
-            element: weapon.element,
+            element: weapon.element
           }
         }
       end
@@ -110,7 +110,7 @@ RSpec.describe 'GridWeapons API', type: :request do
             ax_strength1: nil,
             ax_strength2: nil,
             awakening_id: nil,
-            awakening_level: 1,
+            awakening_level: 1
           }
         }
       end
@@ -156,7 +156,7 @@ RSpec.describe 'GridWeapons API', type: :request do
             mainhand: true,
             uncap_level: 3,
             transcendence_step: 0,
-            element: weapon.element,
+            element: weapon.element
           }
         }
       end
@@ -517,7 +517,7 @@ RSpec.describe 'GridWeapons API', type: :request do
     let(:foreign_item) { create(:collection_weapon, user: private_owner) }
 
     it 'rejects another user\'s private collection weapon on create and writes no row' do
-      expect {
+      expect do
         post '/api/v1/grid_weapons', params: {
           weapon: {
             party_id: party.id,
@@ -530,7 +530,7 @@ RSpec.describe 'GridWeapons API', type: :request do
             collection_weapon_id: foreign_item.id
           }
         }.to_json, headers: headers
-      }.not_to change(GridWeapon, :count)
+      end.not_to change(GridWeapon, :count)
       expect(response).to have_http_status(:forbidden)
     end
 

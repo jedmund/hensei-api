@@ -252,9 +252,7 @@ module WeaponSkills
       # first). The lowest tier when a slot has several; nothing when slots disagree.
       def filled_tier(name, dropped, fields)
         matches = dropped.select { |entry| resolved_name(entry, fields) == name }
-        if matches.empty?
-          matches = dropped.select { |entry| name_pattern(entry[:name_en], fields)&.match?(name) }
-        end
+        matches = dropped.select { |entry| name_pattern(entry[:name_en], fields)&.match?(name) } if matches.empty?
         return nil unless matches.map { |e| e[:position] }.uniq.size == 1
 
         matches.min_by { |e| e[:ordinal] }
