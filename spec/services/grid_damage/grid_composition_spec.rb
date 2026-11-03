@@ -19,11 +19,20 @@ RSpec.describe GridDamage::GridComposition do
       expect(r[:skill_type_count]).to eq(3) # Might, Enmity, Stamina (deduped)
       expect(r[:omega_skill_count]).to eq(1)
     end
+
+    it "tallies omega-skill weapons per element" do
+      entries = [
+        { proficiency: 1, granblue_id: "A", modifiers: [], omega: true, element: "fire" },
+        { proficiency: 1, granblue_id: "B", modifiers: [], omega: true, element: "earth" },
+        { proficiency: 1, granblue_id: "C", modifiers: [], omega: true, element: "earth" }
+      ]
+      expect(described_class.summarize(entries)[:omega_skill_counts_by_element]).to eq("fire" => 1, "earth" => 2)
+    end
   end
 
   describe ".count_for_basis" do
     let(:series) { instance_double(WeaponSeries, slug: "epic") }
-    let(:weapon) { instance_double(Weapon, proficiency: 1, weapon_series: series) }
+    let(:weapon) { instance_double(Weapon, proficiency: 1, weapon_series: series, element: 1) }
     let(:composition) do
       {
         weapon_type_counts: { 1 => 3 },
@@ -32,6 +41,12 @@ RSpec.describe GridDamage::GridComposition do
         weapon_series_counts: { "epic" => 2 },
         omega_skill_count: 6
       }
+    end
+
+    # 6C5bN9: Iron's Vivification counts Fire omega weapons only, not Earth Lifetree's.
+    it "counts only the bearing weapon's element's omega weapons" do
+      by_element = composition.merge(omega_skill_counts_by_element: { "fire" => 4, "earth" => 3 })
+      expect(described_class.count_for_basis("omega_skill", weapon: weapon, composition: by_element)).to eq(4)
     end
 
     it "resolves canonical count bases" do
