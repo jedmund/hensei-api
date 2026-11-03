@@ -24,7 +24,7 @@ RSpec.describe Granblue::Schedule::WikiSource do
 
     it 'returns the normalized hash shape' do
       expect(records.first.keys).to eq(Granblue::Schedule::Normalization::RECORD_KEYS)
-      expect(records.map { |r| r[:source] }.uniq).to eq(['gbf_wiki'])
+      expect(records.pluck(:source).uniq).to eq(['gbf_wiki'])
     end
 
     it 'reads October 2026 in JST from utc_start/utc_end' do
@@ -77,7 +77,7 @@ RSpec.describe Granblue::Schedule::WikiSource do
 
     it 'filters to a window' do
       names = source.parse(File.read(fixture_dir.join('event_history.json')),
-                           from: jst.local(2026, 11, 7), to: jst.local(2026, 11, 30)).map { |r| r[:name_en] }
+                           from: jst.local(2026, 11, 7), to: jst.local(2026, 11, 30)).pluck(:name_en)
 
       expect(names).to eq(['Trick or Treat', 'Unite and Fight'])
     end
@@ -87,7 +87,7 @@ RSpec.describe Granblue::Schedule::WikiSource do
     let(:records) { source.parse(File.read(fixture_dir.join('event_history_synthetic.json'))) }
 
     it 'skips rows without a name or epochs and reports odd values' do
-      expect(records.map { |r| r[:name_en] }).to eq(['Proving Grounds', 'Unite and Fight', 'Mystery Missions'])
+      expect(records.pluck(:name_en)).to eq(['Proving Grounds', 'Unite and Fight', 'Mystery Missions'])
       expect(source.warnings).to contain_exactly(
         'Proving Grounds: unmapped grp "Proving Grounds"',
         'Proving Grounds: unrecognised element "plasma"',

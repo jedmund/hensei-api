@@ -50,14 +50,14 @@ RSpec.describe Granblue::Schedule::Matcher do
     it 'keeps wiki-only events as single-source candidates' do
       singles = candidates.select { |c| c[:sources].size == 1 }
 
-      expect(singles.map { |c| c[:name_en] }).to contain_exactly(
+      expect(singles.pluck(:name_en)).to contain_exactly(
         'Farewell, Cold Heart', 'Trick or Treat', 'New Story Event'
       )
       expect(singles.first).to include(disagreements: [], alternatives: [], overlap: nil)
     end
 
     it 'sorts candidates by start time' do
-      expect(candidates.map { |c| c[:starts_at] }).to eq(candidates.map { |c| c[:starts_at] }.sort)
+      expect(candidates.pluck(:starts_at)).to eq(candidates.pluck(:starts_at).sort)
     end
 
     it 'agrees on the Dread Barrage boss element and kind' do

@@ -102,7 +102,9 @@ module Granblue
       private
 
       def check_response!(code, body)
-        raise WikiError.new(code: code, message: 'Blocked by a Cloudflare challenge', page: TABLE) if CHALLENGE_MARKERS.any? { |marker| body.include?(marker) }
+        if CHALLENGE_MARKERS.any? { |marker| body.include?(marker) }
+          raise WikiError.new(code: code, message: 'Blocked by a Cloudflare challenge', page: TABLE)
+        end
         raise WikiError.new(code: code, message: 'Unexpected response', page: TABLE) unless code == 200
 
         JSON.parse(body)
@@ -175,7 +177,9 @@ module Granblue
       def element_for(row, label)
         value = row['element'].to_s.strip
         unf = row['unf_element'].to_s.strip
-        @warnings << "#{label}: element #{value.inspect} and unf_element #{unf.inspect} differ" if value.present? && unf.present? && !value.casecmp?(unf)
+        if value.present? && unf.present? && !value.casecmp?(unf)
+          @warnings << "#{label}: element #{value.inspect} and unf_element #{unf.inspect} differ"
+        end
         return nil if value.empty?
 
         name = Normalization.element_name(value)

@@ -40,7 +40,7 @@ RSpec.describe Granblue::Schedule::OfficialPostSource do
     let(:by_name) { records.index_by { |r| r[:name_jp] } }
 
     it 'returns one record per section with a 開催期間 block' do
-      expect(records.map { |r| r[:name_jp] }).to eq(
+      expect(records.pluck(:name_jp)).to eq(
         [
           '銀魂 少年ならジャンプの裏表紙までちゃんと楽しめ',
           '僕のヒーローアカデミア レスキュー・アナザーワールド',
@@ -70,7 +70,7 @@ RSpec.describe Granblue::Schedule::OfficialPostSource do
     end
 
     it 'guesses kinds from the heading' do
-      expect(records.map { |r| r[:kind_guess] }).to eq(%w[collab collab alchemy dread_barrage])
+      expect(records.pluck(:kind_guess)).to eq(%w[collab collab alchemy dread_barrage])
     end
 
     it 'stores the Dread Barrage boss element, keeping the advantaged one in raw' do
@@ -176,7 +176,7 @@ RSpec.describe Granblue::Schedule::OfficialPostSource do
     end
 
     it 'numbers source ids by section' do
-      expect(records.map { |r| r[:source_id] }).to eq(%w[42:0 42:1 42:2])
+      expect(records.pluck(:source_id)).to eq(%w[42:0 42:1 42:2])
     end
   end
 

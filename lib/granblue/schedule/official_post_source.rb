@@ -131,26 +131,9 @@ module Granblue
 
       def build_record(section, index, year:, month:, post_id:)
         name = event_name(section.heading)
-        lines = period_lines(section)
-        if lines.nil?
-          @warnings << "#{section.heading}: announces an event but has no 開催期間" if announces_event?(section.heading)
-          return nil
-        end
+        line, (starts_at, ends_at) = event_period(section, name, year: year, month: month)
+        return nil unless line
 
-        if lines.empty?
-          @warnings << "#{name}: 開催期間 block is empty"
-          return nil
-        end
-
-        ranges = lines.map { |line| [line, parse_period(line, year: year, month: month)] }
-        parsed = ranges.select { |_, range| range }
-        ranges.reject { |_, range| range }.map(&:first).each do |line|
-          @warnings << "#{name}: can't read 開催期間 line #{line.inspect}"
-        end
-        return nil if parsed.empty?
-
-        parsed.drop(1).map(&:first).each { |line| @warnings << "#{name}: extra 開催期間 line ignored #{line.inspect}" }
-        line, (starts_at, ends_at) = parsed.first
         body = section.nodes.map { |node| text_of(node) }.join("\n")
         boss, advantage = elements(body, name)
 
@@ -168,6 +151,29 @@ module Granblue
           raw: { heading: section.heading, period: line, enemy_element: boss,
                  advantage_element: advantage, post_id: post_id, section_index: index }
         )
+      end
+
+      # The first readable 開催期間 line and its range, or nil. Warns about missing,
+      # empty, unreadable and extra lines along the way.
+      def event_period(section, name, year:, month:)
+        lines = period_lines(section)
+        if lines.nil?
+          @warnings << "#{section.heading}: announces an event but has no 開催期間" if announces_event?(section.heading)
+          return nil
+        end
+
+        if lines.empty?
+          @warnings << "#{name}: 開催期間 block is empty"
+          return nil
+        end
+
+        ranges = lines.map { |line| [line, parse_period(line, year: year, month: month)] }
+        parsed = ranges.select { |_, range| range }
+        ranges.reject { |_, range| range }.map(&:first).each do |line|
+          @warnings << "#{name}: can't read 開催期間 line #{line.inspect}"
+        end
+        parsed.drop(1).map(&:first).each { |line| @warnings << "#{name}: extra 開催期間 line ignored #{line.inspect}" }
+        parsed.first
       end
 
       # The first 「…」 in the heading (names may contain ～), else the heading itself.
@@ -202,7 +208,9 @@ module Granblue
       def elements(body, name)
         enemy = enemy_element(body)
         advantage = advantage_element(body)
-        @warnings << "#{name}: boss element #{enemy} doesn't match advantage element #{advantage}" if enemy && advantage && Normalization.advantage_for(enemy) != advantage
+        if enemy && advantage && Normalization.advantage_for(enemy) != advantage
+          @warnings << "#{name}: boss element #{enemy} doesn't match advantage element #{advantage}"
+        end
         boss = enemy || Normalization.boss_for(advantage)
         [boss, advantage || Normalization.advantage_for(boss)]
       end
