@@ -90,7 +90,8 @@ module Api
       end
 
       def update
-        if @collection_weapon.update(collection_weapon_params)
+        @collection_weapon.assign_with_skill_level(collection_weapon_params)
+        if @collection_weapon.save
           render json: Api::V1::CollectionWeaponBlueprint.render(
             @collection_weapon,
             view: :full

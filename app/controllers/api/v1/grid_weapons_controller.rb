@@ -78,7 +78,8 @@ module Api
         description_in_payload = weapon_params.key?(:description)
 
         ActiveRecord::Base.transaction do
-          raise ActiveRecord::Rollback unless @grid_weapon.update(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
+          @grid_weapon.assign_with_skill_level(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
+          raise ActiveRecord::Rollback unless @grid_weapon.save
 
           update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets]) if params.dig(:weapon, :bullets).present?
 
@@ -119,7 +120,9 @@ module Api
           new_uncap = [new_uncap, @grid_weapon.weapon.extra_prerequisite].max
         end
 
-        if @grid_weapon.update(uncap_level: new_uncap, transcendence_step: [(weapon_params[:transcendence_step] || 0).to_i, 5].min)
+        @grid_weapon.assign_with_skill_level(uncap_level: new_uncap,
+                                             transcendence_step: [(weapon_params[:transcendence_step] || 0).to_i, 5].min)
+        if @grid_weapon.save
           render json: GridWeaponBlueprint.render(@grid_weapon, view: :uncap, root: :grid_weapon), status: :ok
         else
           render_validation_error_response(@grid_weapon)

@@ -21,6 +21,7 @@
 # @!attribute [r] awakening
 #   @return [Awakening, nil] the associated awakening, if any.
 class GridWeapon < ApplicationRecord
+  include ImportedSkillLevel
   include WeaponCapabilityResolution
   include AxSkillValidation
   include SolomonisSealable
