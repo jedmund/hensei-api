@@ -84,7 +84,7 @@ class WeaponSkillDatum < ApplicationRecord
     return matched if matched.any?
 
     lone = group.map(&:series).uniq
-    lone.size == 1 && !EXPLICIT_SERIES.include?(lone.first) ? group : []
+    lone.size == 1 && EXPLICIT_SERIES.exclude?(lone.first) ? group : []
   end
   private_class_method :series_matched
 end
