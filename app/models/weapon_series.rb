@@ -39,10 +39,10 @@ class WeaponSeries < ApplicationRecord
 
   private
 
-  # One uncap level (0–6) per key slot, at most num_weapon_keys of them.
+  # One uncap level (0–5; no key unlock needs transcendence) per key slot, at most num_weapon_keys of them.
   def key_slot_min_uncaps_fit_slots
     levels = Array(key_slot_min_uncaps)
-    errors.add(:key_slot_min_uncaps, 'must be uncap levels from 0 to 6') unless levels.all? { |l| (0..6).cover?(l) }
+    errors.add(:key_slot_min_uncaps, 'must be uncap levels from 0 to 5') unless levels.all? { |l| (0..5).cover?(l) }
     return if num_weapon_keys.nil? || levels.size <= num_weapon_keys
 
     errors.add(:key_slot_min_uncaps, 'has more entries than key slots')
