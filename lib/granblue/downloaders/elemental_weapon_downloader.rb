@@ -20,11 +20,13 @@ module Granblue
       # @return [Array<Integer>] Ordered list of suffixes for element variants
       SUFFIXES = [1, 2, 3, 4, 5, 6].freeze
 
-      # Initialize downloader with base weapon ID
+      # Initialize downloader with base weapon ID. Images are only written to
+      # local disk, so storage is :local (which also creates the directories).
       # @param id_base [Integer] Base ID for the elemental weapon series
       # @return [void]
       def initialize(id_base)
         @id_base = id_base.to_i
+        super(@id_base, storage: :local)
       end
 
       # Downloads all elemental variants of the weapon
@@ -33,7 +35,7 @@ module Granblue
       # @note Uses progress reporter to show download status
       def download
         (1..6).each do |i|
-          id = @id_base + (i - 1) * 100
+          id = @id_base + ((i - 1) * 100)
           suffix = SUFFIXES[i - 1]
 
           puts "Elemental Weapon #{id}_#{suffix}"
@@ -59,7 +61,7 @@ module Granblue
         filled_len = (bar_len * count / total).round
         status = result
         percents = (100.0 * count / total).round(1)
-        bar = '=' * filled_len + '-' * (bar_len - filled_len)
+        bar = ('=' * filled_len) + ('-' * (bar_len - filled_len))
         print("\n[#{bar}] #{percents}% ...#{' ' * 14}#{status}\n")
       end
     end
