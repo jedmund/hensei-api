@@ -41,7 +41,7 @@ RSpec.describe GridDamage::KeySkills do
   # Gate of Omnipotence opens at level 200: Tria on a 4★ Ultima grants nothing.
   it 'skips an Ultima key whose slot the copy has not unlocked' do
     series = WeaponSeries.find_by!(slug: 'ultima')
-    series.update!(has_weapon_keys: true, summon_boosted: false)
+    series.update!(has_weapon_keys: true, summon_boosted: false, num_weapon_keys: 3, key_slot_min_uncaps: [0, 0, 5])
     key = compatible_key(series, slug: 'gauph-tria', slot: 2)
     weapon = create(:weapon, :transcendable, weapon_series: series)
     grid_weapon = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 4)

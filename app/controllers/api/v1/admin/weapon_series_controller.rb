@@ -24,7 +24,7 @@ module Api
           default_sort 'order', 'name_en'
 
           %i[slug name_en name_jp order extra element_changeable has_weapon_keys has_awakening
-             augment_type num_weapon_keys created_at updated_at].each { |name| field name }
+             augment_type num_weapon_keys key_slot_min_uncaps created_at updated_at].each { |name| field name }
           field :weapon_count, select: 'SELECT COUNT(*) FROM weapons WHERE weapons.weapon_series_id = weapon_series.id'
 
           default_fields :slug, :name_en, :name_jp, :order

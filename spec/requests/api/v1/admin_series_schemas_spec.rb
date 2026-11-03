@@ -73,7 +73,8 @@ RSpec.describe 'Admin series and awakenings schemas', type: :request do
       end
 
       it 'publishes exactly what the strong params permit' do
-        attrs = schema[:writable].to_h { |key, _shape| [key, '1'] }
+        sample = { 'scalar' => '1', 'array' => %w[1 2] }
+        attrs = schema[:writable].to_h { |key, shape| [key, sample.fetch(shape)] }
         params = ActionController::Parameters.new(
           param_key => attrs.merge('id' => 'x', 'user_id' => 'x', 'created_at' => 'x')
         )

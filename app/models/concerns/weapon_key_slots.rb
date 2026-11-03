@@ -1,31 +1,16 @@
 # frozen_string_literal: true
 
-# Which key slots a weapon copy has opened, per gbf.wiki's series pages. A slot
-# belongs to a weapon skill that only appears at some level, so a key can't sit
-# there below that uncap (3★ = lvl 100, 4★ = 150, 5★ = 200):
-#
-# - Dark Opus: Pendulums in skill 2 open at lvl 120 (4★); skill 3 (Pendulums/Chains) at 200.
-# - Draconic: Four Orbs' Judgment at lvl 150 (4★); Six Dragons' Radiance at 200.
-# - Draconic Provenance: forged from a lvl-200 Draconic, both skills at 200.
-# - Destroyer: Anklets modify skill 3, open at lvl 150 (4★).
-# - Ultima: Soulless Passage only on Ultima weapons, not their Atma stage (the
-#   lvl-100 weapons without a ULB); Gate of Omnipotence at lvl 200.
+# Which key slots a weapon copy has opened. A slot belongs to a weapon skill that
+# only appears at some uncap, so a key can't sit there below it. The rules are
+# data editors keep in the Database: the series' `key_slot_min_uncaps` (index =
+# slot) and the weapon's key slot count (a variant can lower it: Atma weapons have
+# only the first of Ultima's three).
 #
 # Lowering a copy's uncap drops the keys it locks; setting a key into a locked
 # slot is a validation error. Included by GridWeapon and CollectionWeapon.
 module WeaponKeySlots
   extend ActiveSupport::Concern
 
-  # series slug => { key slot => minimum uncap level }
-  MIN_UNCAP = {
-    'dark-opus' => { 0 => 4, 1 => 5 },
-    'draconic' => { 0 => 4, 1 => 5 },
-    'draconic-providence' => { 0 => 5, 1 => 5 },
-    'destroyer' => { 0 => 4 },
-    'ultima' => { 2 => 5 }
-  }.freeze
-  # Ultima slots that Atma weapons don't have at all.
-  ULTIMA_ONLY_SLOTS = [1, 2].freeze
   KEY_COLUMNS = %i[weapon_key1 weapon_key2 weapon_key3 weapon_key4].freeze
 
   included do
@@ -36,10 +21,12 @@ module WeaponKeySlots
   class_methods do
     # @return [Boolean] whether a copy of weapon at uncap_level has opened key_slot
     def key_slot_unlocked_for?(weapon, uncap_level, key_slot)
-      series = weapon&.weapon_series&.slug
-      return false if series == 'ultima' && ULTIMA_ONLY_SLOTS.include?(key_slot) && weapon.ulb != true
+      return true if weapon.nil?
 
-      uncap_level.to_i >= MIN_UNCAP.dig(series, key_slot).to_i
+      count = weapon.effective_num_weapon_keys
+      return false if count && key_slot >= count
+
+      uncap_level.to_i >= Array(weapon.weapon_series&.key_slot_min_uncaps)[key_slot].to_i
     end
   end
 

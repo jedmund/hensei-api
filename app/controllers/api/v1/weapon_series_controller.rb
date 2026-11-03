@@ -4,9 +4,9 @@ module Api
   module V1
     class WeaponSeriesController < Api::V1::ApiController
       # What create and update accept; the admin schema publishes it
-      PERMITTED = %i[
-        name_en name_jp slug order extra element_changeable has_weapon_keys
-        has_awakening augment_type num_weapon_keys
+      PERMITTED = [
+        :name_en, :name_jp, :slug, :order, :extra, :element_changeable, :has_weapon_keys,
+        :has_awakening, :augment_type, :num_weapon_keys, { key_slot_min_uncaps: [] }
       ].freeze
 
       before_action :set_weapon_series, only: %i[show update destroy]

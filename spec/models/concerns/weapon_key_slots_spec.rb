@@ -3,8 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe WeaponKeySlots do
-  def series(slug, trait)
-    WeaponSeries.find_by(slug: slug) || create(:weapon_series, trait)
+  let(:opus) do
+    series = WeaponSeries.find_by(slug: 'dark-opus') || create(:weapon_series, :opus)
+    series.update!(num_weapon_keys: 2, key_slot_min_uncaps: [4, 5])
+    series
   end
 
   def unlocked_slots(weapon, uncap_level)
@@ -12,42 +14,33 @@ RSpec.describe WeaponKeySlots do
   end
 
   describe '.key_slot_unlocked_for?' do
-    it 'opens Dark Opus and Draconic skills 2 and 3 at 4★ and 5★' do
-      [series('dark-opus', :opus), series('draconic', :draconic)].each do |weapon_series|
-        weapon = build(:weapon, weapon_series: weapon_series)
+    it "opens each slot at its series' minimum uncap and closes slots past the count" do
+      weapon = build(:weapon, weapon_series: opus)
 
-        expect(unlocked_slots(weapon, 3).first(2)).to eq([false, false])
-        expect(unlocked_slots(weapon, 4).first(2)).to eq([true, false])
-        expect(unlocked_slots(weapon, 5).first(2)).to eq([true, true])
-      end
+      expect(unlocked_slots(weapon, 3)).to eq([false, false, false])
+      expect(unlocked_slots(weapon, 4)).to eq([true, false, false])
+      expect(unlocked_slots(weapon, 5)).to eq([true, true, false])
     end
 
-    it 'opens both Provenance skills at 5★' do
-      weapon = build(:weapon, weapon_series: series('draconic-providence', :draconic_providence))
+    it "uses a variant's lower slot count (Atma: only the Gauph slot)" do
+      ultima = WeaponSeries.find_by(slug: 'ultima') || create(:weapon_series, :ultima)
+      ultima.update!(num_weapon_keys: 3, key_slot_min_uncaps: [0, 0, 5])
+      atma = WeaponSeriesVariant.create!(weapon_series: ultima, name: 'Atma', num_weapon_keys: 1)
 
-      expect(unlocked_slots(weapon, 4).first(2)).to eq([false, false])
-      expect(unlocked_slots(weapon, 5).first(2)).to eq([true, true])
+      expect(unlocked_slots(build(:weapon, weapon_series: ultima, weapon_series_variant: atma), 3))
+        .to eq([true, false, false])
+      expect(unlocked_slots(build(:weapon, weapon_series: ultima), 5)).to eq([true, true, true])
     end
 
-    it 'opens the Destroyer anklet slot at 4★' do
-      weapon = build(:weapon, weapon_series: WeaponSeries.find_by(slug: 'destroyer') ||
-                                             create(:weapon_series, slug: 'destroyer'))
+    it 'leaves series without rules or a slot count unrestricted' do
+      series = create(:weapon_series, slug: 'test-keys', num_weapon_keys: nil, key_slot_min_uncaps: [])
 
-      expect(unlocked_slots(weapon, 3).first).to be(false)
-      expect(unlocked_slots(weapon, 4).first).to be(true)
-    end
-
-    it 'gives Atma weapons only the Gauph slot and opens Gate of Omnipotence at 5★' do
-      ultima = series('ultima', :ultima)
-
-      expect(unlocked_slots(build(:weapon, weapon_series: ultima, ulb: false), 3)).to eq([true, false, false])
-      expect(unlocked_slots(build(:weapon, weapon_series: ultima, ulb: true), 4)).to eq([true, true, false])
-      expect(unlocked_slots(build(:weapon, weapon_series: ultima, ulb: true), 5)).to eq([true, true, true])
+      expect(unlocked_slots(build(:weapon, weapon_series: series), 0)).to eq([true, true, true])
     end
   end
 
   describe 'saving a grid weapon' do
-    let(:weapon) { create(:weapon, :opus, flb: true, ulb: true) }
+    let(:weapon) { create(:weapon, flb: true, ulb: true, weapon_series: opus) }
     let(:pendulum) { create(:weapon_key, :opus_key, slot: 0) }
     let(:chain) { create(:weapon_key, :opus_key, slot: 1) }
 
@@ -74,7 +67,7 @@ RSpec.describe WeaponKeySlots do
   end
 
   it 'applies the same rules to collection weapons' do
-    weapon = create(:weapon, :opus, flb: true, ulb: true)
+    weapon = create(:weapon, flb: true, ulb: true, weapon_series: opus)
     collection_weapon = build(:collection_weapon, weapon: weapon, uncap_level: 3,
                                                   weapon_key1: create(:weapon_key, :opus_key, slot: 0))
 
