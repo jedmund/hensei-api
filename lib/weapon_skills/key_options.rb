@@ -16,7 +16,7 @@ module WeaponSkills
     USE = /Use \[\[(?:[^\]|]*\|)?([^\]|]+)\]\]/
     OPTION = /Alternate skill (\d+)(?: at level (\d+))?/i
 
-    Summary = Struct.new(:weapons, :keys, :unmatched, keyword_init: true)
+    Summary = Struct.new(:weapons, :keys, :unmatched, :failed, keyword_init: true)
 
     module_function
 
@@ -105,28 +105,57 @@ module WeaponSkills
     # Writes every keyed weapon's key skills from the stored expansions. Idempotent: a
     # weapon's rows are replaced only when they changed, and rows for keys its page no
     # longer lists are removed. Weapons without a stored expansion keep what they have.
+    # A weapon that raises keeps its rows too (its savepoint rolls back); it's logged and
+    # counted, and the run moves on, so one bad page can't stop the rest.
     def build(store: SourceStore::Database.new, io: $stdout)
-      summary = Summary.new(weapons: 0, keys: 0, unmatched: [])
+      summary = Summary.new(weapons: 0, keys: 0, unmatched: [], failed: [])
       keys_by_name = WeaponKey.all.index_by { |k| k.name_en.to_s.downcase }
 
       keyed_weapons.find_each do |weapon|
-        expanded = fetch(store, weapon.wiki_en) or next
-        found = parse(expanded.body).filter_map do |option|
-          key = keys_by_name[option[:key_name].downcase]
-          next(summary.unmatched << "#{weapon.name_en}: #{option[:key_name]}") && nil unless key
+        found = build_weapon(weapon, store, keys_by_name, summary)
+        next if found.nil?
 
-          [key, option[:versions]]
-        end
-        next if found.empty?
-
-        write(weapon, found)
         summary.weapons += 1
-        summary.keys += found.size
+        summary.keys += found
+      rescue StandardError => e
+        summary.failed << weapon.granblue_id
+        io.puts "#{weapon.granblue_id} #{weapon.name_en}: #{e.class}: #{e.message.lines.first&.strip}"
       end
 
-      io.puts "Weapon key skills: #{summary.keys} keys on #{summary.weapons} weapons" \
-              "#{"; unmatched: #{summary.unmatched.uniq.join(', ')}" if summary.unmatched.any?}"
+      io.puts summary_line(summary)
       summary
+    end
+
+    # The deploy hook (Runner.deploy, after the weapon-skill build): never raises, so a
+    # failure here can't block a release. The table is display-only.
+    def deploy(io: $stdout)
+      build(io: io)
+    rescue StandardError => e
+      io.puts "Weapon key skills failed; the deploy continues: #{e.class}: #{e.message}"
+      nil
+    end
+
+    # → the number of keys written, or nil when the weapon has no stored expansion or no
+    # matched key options
+    def build_weapon(weapon, store, keys_by_name, summary)
+      expanded = fetch(store, weapon.wiki_en) or return nil
+      found = parse(expanded.body).filter_map do |option|
+        key = keys_by_name[option[:key_name].downcase]
+        next(summary.unmatched << "#{weapon.name_en}: #{option[:key_name]}") && nil unless key
+
+        [key, option[:versions]]
+      end
+      return nil if found.empty?
+
+      ActiveRecord::Base.transaction(requires_new: true) { write(weapon, found) }
+      found.size
+    end
+
+    def summary_line(summary)
+      line = "Weapon key skills: #{summary.keys} keys on #{summary.weapons} weapons"
+      line += "; unmatched: #{summary.unmatched.uniq.join(', ')}" if summary.unmatched.any?
+      line += "; #{summary.failed.size} weapons failed and kept their rows" if summary.failed.any?
+      line
     end
 
     def keyed_weapons

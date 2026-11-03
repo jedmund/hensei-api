@@ -90,6 +90,28 @@ RSpec.describe WeaponSkills::KeyOptions do
       expect(WeaponKeySkill.where(weapon_granblue_id: weapon.granblue_id).pluck(:weapon_key_id)).to eq([alpha.id])
     end
 
+    it 'logs a weapon that fails, keeps its rows, and writes the rest' do
+      other = create(:weapon, weapon_series: series, name_en: 'Staff of Renunciation', wiki_en: 'Staff of Renunciation')
+      store.put('expanded', 'Staff of Renunciation', html)
+      kept = WeaponKeySkill.create!(weapon_granblue_id: weapon.granblue_id, weapon_key: alpha, versions: [{ 'name_en' => 'old' }])
+      allow(described_class).to receive(:write).and_call_original
+      allow(described_class).to receive(:write).with(have_attributes(id: weapon.id), anything).and_raise('broken page')
+
+      summary = described_class.build(store: store, io: io)
+
+      expect(summary.failed).to eq([weapon.granblue_id])
+      expect(io.string).to include("#{weapon.granblue_id} Scythe of Repudiation: RuntimeError: broken page")
+      expect(io.string).to include('1 weapons failed and kept their rows')
+      expect(kept.reload.versions).to eq([{ 'name_en' => 'old' }])
+      expect(WeaponKeySkill.where(weapon_granblue_id: other.granblue_id).count).to eq(1)
+    end
+
+    it 'never fails a deploy' do
+      allow(described_class).to receive(:build).and_raise(ActiveRecord::StatementInvalid, 'no table')
+      expect(described_class.deploy(io: io)).to be_nil
+      expect(io.string).to include('Weapon key skills failed; the deploy continues: ActiveRecord::StatementInvalid')
+    end
+
     it 'leaves weapons without a stored expansion alone' do
       expect(described_class.build(store: WeaponSkills::SourceStore::Memory.new, io: io).weapons).to eq(0)
     end
