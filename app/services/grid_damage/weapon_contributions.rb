@@ -20,6 +20,7 @@ module GridDamage
       # family-level amplifiability from the wiki WsBox header (aura_boostable=no
       # families land flat regardless of series) — nil/unknown means boostable
       unboostable_families = WeaponSkillFamily.where(aura_boostable: false).pluck(:name).to_set
+      panel_element = ElementScope.panel_element(party)
       out = []
       party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
         w = gw.weapon
@@ -39,6 +40,9 @@ module GridDamage
                                 !(unboostable_families.include?(v.resolved_modifier) &&
                                   AURA_BOOSTED_FRAMES.include?(frame))
           v.weapon_skill_data.each do |d|
+            next unless ElementScope.applies?(version: v, boost_type: d.boost_type, grid_weapon: gw,
+                                              panel_element: panel_element)
+
             value = Scaling.value(d, skill_level: row_skill_level(v, d, skill_level), hp_percent: hp, turn: turn)
             out << Aggregator::Contribution.new(
               boost_type: d.boost_type, series: frame,

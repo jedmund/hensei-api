@@ -25,6 +25,7 @@ module GridDamage
 
     def contributions(party, state: {}, composition: nil)
       composition ||= GridComposition.for_party(party)
+      panel_element = ElementScope.panel_element(party)
       out = []
       party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
         w = gw.weapon
@@ -36,6 +37,9 @@ module GridDamage
           # The wiki Multiplier (captured at expansion) is the authoritative frame for the whole
           # skill; otherwise fall back to the effect's heuristic series.
           v.weapon_skill_effects.each do |e|
+            next unless ElementScope.applies?(version: v, boost_type: e.boost_type, grid_weapon: gw,
+                                              panel_element: panel_element)
+
             frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
             value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw,
                                  levels: WeaponContributions.levels?(v))

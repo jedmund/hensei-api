@@ -1,0 +1,95 @@
+{
+  "party": "6C5bN9",
+  "captured_on": "2026-11-03",
+  "notes": "Fire grid: Scythe of Renunciation MH (6*, trans 5), 3 Colossus Cane Ira, Doombringer Sword, Mortality Bow Mk II + 3 Earth Fang of the Dragonslayer Mk II (Attack awk 20); Versusia + Colossus Omega 6*. The Earth Fangs add nothing for the Fire MC: no Lifetree's Insignia Might or Turn DMG, no awakening bonuses, and Iron's Vivification counts 4 Fire omega weapons, not 7 (EX Might 59 = 8 x 3 + 35, DMG Cap 17 = 4 x 3 + 5).",
+  "state": {
+    "turn": 1,
+    "hp_percent": 100,
+    "foe_element": "wind"
+  },
+  "enhancements": {
+    "optimus": 0,
+    "omega": 230,
+    "taboo": 0
+  },
+  "absent": [
+    "turn_dmg",
+    "dmg_cap_pen",
+    "e_atk"
+  ],
+  "lines": [
+    {
+      "label": "Ω Might",
+      "boost": "atk",
+      "series": "omega",
+      "value": 257
+    },
+    {
+      "label": "EX Might",
+      "boost": "atk",
+      "series": "ex",
+      "value": 59
+    },
+    {
+      "label": "DA Rate",
+      "boost": "da",
+      "value": 5
+    },
+    {
+      "label": "TA Rate",
+      "boost": "ta",
+      "value": 5
+    },
+    {
+      "label": "Fire Omega",
+      "boost": "omega_exalto",
+      "value": 60
+    },
+    {
+      "label": "Bonus Des. DMG",
+      "boost": "bonus_des_dmg",
+      "value": 20
+    },
+    {
+      "label": "Bonus Des. DMG C.A.",
+      "boost": "bonus_des_ca",
+      "value": 10
+    },
+    {
+      "label": "HP",
+      "boost": "hp",
+      "value": 109
+    },
+    {
+      "label": "HP Cut",
+      "boost": "hp_cut",
+      "value": -30
+    },
+    {
+      "label": "DMG Cap",
+      "boost": "dmg_cap",
+      "value": 17
+    },
+    {
+      "label": "Ω DMG Amp.",
+      "boost": "dmg_amp",
+      "series": "omega",
+      "value": 6.6
+    },
+    {
+      "label": "N.A. DMG Cap",
+      "boost": "na_dmg_cap",
+      "value": 19
+    },
+    {
+      "label": "Skill DMG Cap",
+      "boost": "skill_dmg_cap",
+      "value": 15
+    },
+    {
+      "label": "C.A. DMG Cap",
+      "boost": "ca_dmg_cap",
+      "value": 10
+    }
+  ]
+}

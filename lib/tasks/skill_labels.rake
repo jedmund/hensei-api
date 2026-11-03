@@ -45,6 +45,7 @@ namespace :granblue do
       'fc-dmg-cap' => '04_icon_fc_dmg_cap.png',
       'debuff-res' => '02_icon_debuff_res.png',
       'added-hp' => '06_icon_hp.png', # overskill (teal) HP
+      'turn-dmg' => '03_icon_turn_dmg.png', # Insignia's end-of-turn self-damage
       # Befoulment "Hit" lines
       'bf-atk' => '05_icon_atk_down.png',
       'bf-debuff' => '05_icon_debuff_suc_down.png',

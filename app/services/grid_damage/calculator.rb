@@ -38,6 +38,8 @@ module GridDamage
                   "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0,
                   # 0ZA6Ak: C.B. DMG orange at 120
                   "cb_dmg" => 120.0,
+                  # Elemental ATK from weapon skills and awakenings tops out at 40% (user report, 0umD8e)
+                  "e_atk" => 40.0,
                   # gbf.wiki/AX_Skills: utility AX boosts cap across the whole grid.
                   "exp_ax" => 30.0, "rupie_ax" => 50.0 }.freeze
 
@@ -48,7 +50,8 @@ module GridDamage
     # "caps/supplementals aren't amplified" reads came from key/EX sources, whose frame
     # factor is 1.0 anyway. Only the Exalto totals themselves are excluded — they ARE the
     # enhancement, and amplifying them would feed back into itself.
-    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto odious_exalto hp_dmg].freeze
+    # Self-damage demerits (Insignia's turn damage) also stay at their per-copy value.
+    NON_AMPLIFIED_BOOSTS = %w[optimus_exalto omega_exalto odious_exalto hp_dmg turn_dmg].freeze
 
     # → { boost_type => Aggregator::Result } for the party at the given battle state.
     def boost_list(party, state: {})
@@ -164,7 +167,7 @@ module GridDamage
     # Per-frame enhancement totals (summon + character auras + Exalto) — what `boost_level`
     # conditions compare against.
     def enhancements(party, agg)
-      element = grid_element(party)
+      element = ElementScope.panel_element(party)
       auras = Auras.for_party(party, element: element)
       # A line-less "+N% to [element]'s weapon skills" weapon effect would boost the
       # OPTIMUS frame here. No weapon carries one: those boosts come from summons and
@@ -215,13 +218,7 @@ module GridDamage
       end
     end
 
-    def grid_element(party)
-      id = party.weapons.filter_map { |gw| gw.element || gw.weapon&.element }
-                .group_by(&:itself).max_by { |_, v| v.size }&.first
-      ELEMENT_WORD[id]
-    end
-
-    private_class_method :enhancements, :aggregate_pass, :collect_contributions, :grid_element,
+    private_class_method :enhancements, :aggregate_pass, :collect_contributions,
                          :amplify_contributions
   end
 end
