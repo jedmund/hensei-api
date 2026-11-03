@@ -4,6 +4,17 @@ require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::WeaponSkillParser do
   describe '.parse' do
+    # The Odious Hard-raid weapons' skills are one family per name, whatever the element
+    # (Doomfire's, Allowater's, Netherfell's, …), so their rows attach by modifier
+    {
+      "Doomfire's Vitiation" => 'Vitiation', "Netherfell's Execration" => 'Execration',
+      "Allowater's Guile" => 'Guile', "Taboo Netherfell's Puncturing" => 'Puncturing'
+    }.each do |name, modifier|
+      it "reads #{name.inspect} as the #{modifier} family" do
+        expect(described_class.parse(name)[:modifier]).to eq(modifier)
+      end
+    end
+
     subject(:result) { described_class.parse(input) }
 
     # --- Blank / nil input ---
