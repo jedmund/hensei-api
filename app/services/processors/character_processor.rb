@@ -15,7 +15,7 @@ module Processors
       4 => 'character-multi'
     }.freeze
 
-    def initialize(party, data, type = :normal, options = {})
+    def initialize(party, data, _type = :normal, options = {})
       super(party, data, options)
       @party = party
       @data = data
@@ -57,8 +57,6 @@ module Processors
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[CHARACTER] Failed to create GridCharacter: #{e.record.errors.full_messages.join(', ')}"
       end
-    rescue StandardError => e
-      raise e
     end
 
     private

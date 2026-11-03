@@ -28,7 +28,7 @@ module Granblue
       #
       # @param selected_size [String] The size to download (ignored, only icon exists)
       # @return [Hash] Result with :success key
-      def download(selected_size = nil)
+      def download(_selected_size = nil)
         log_info("-> #{@id} (storing as #{@slug})") if @verbose
         return { success: false } if @test_mode
 
@@ -73,14 +73,14 @@ module Granblue
       # @param size [String] Image size variant (ignored)
       # @param filename [String] Image filename
       # @return [String] Complete S3 key
-      def build_s3_key(size, filename)
+      def build_s3_key(_size, filename)
         "icons/job-skills/#{filename}"
       end
 
       # Override download path to not append size
       # @param size [String] Image size variant (ignored)
       # @return [String] Local directory path
-      def download_path(size)
+      def download_path(_size)
         "#{Rails.root.join("download/#{object_type}")}"
       end
 
@@ -94,14 +94,14 @@ module Granblue
       #
       # @param size [String] Image size variant
       # @return [nil] Job skills don't use subdirectories
-      def directory_for_size(size)
+      def directory_for_size(_size)
         nil
       end
 
       # Build complete URL for the job skill icon
       # @param size [String] Image size variant (ignored)
       # @return [String] Complete download URL
-      def build_url(size)
+      def build_url(_size)
         "#{base_url}/#{@id}.png"
       end
     end

@@ -118,7 +118,7 @@ module Processors
     # @param data [Hash] the full deck JSON.
     # @param type [Symbol] (optional) processing type.
     # @param options [Hash] additional options.
-    def initialize(party, data, type = :normal, options = {})
+    def initialize(party, data, _type = :normal, options = {})
       super(party, data, options)
       @party = party
       @data = data
@@ -368,9 +368,9 @@ module Processors
         return
       end
 
-      skill_ids.each_with_index do |skill_id, idx|
+      skill_ids.each do |skill_id|
         # Go to the next iteration unless the key under which `skill_id` exists
-        mapping_pair = KEY_MAPPING.find { |key, value| Array(value).include?(skill_id.to_s) }
+        mapping_pair = KEY_MAPPING.find { |_key, value| Array(value).include?(skill_id.to_s) }
         next unless mapping_pair
 
         # Fetch the key from the mapping_pair and find the weapon key based on the weapon series

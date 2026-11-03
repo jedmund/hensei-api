@@ -107,7 +107,7 @@ module Granblue
         'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon'
       end
 
-      def base_url_for_size(size)
+      def base_url_for_size(_size)
         @base_url
       end
 
