@@ -3,10 +3,6 @@
 module Api
   module V1
     class IncompatibleSkillError < GranblueError
-      def initialize(data)
-        @data = data
-      end
-
       def http_status
         422
       end
