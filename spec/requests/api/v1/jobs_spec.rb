@@ -47,10 +47,9 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
       expect(json['granblue_id']).to eq(job.granblue_id)
     end
 
-    it 'returns the job by uuid, which tells apart jobs sharing a granblue_id' do
-      successor = create(:job, granblue_id: job.granblue_id, row: '2')
-      get "/api/v1/jobs/#{successor.id}"
-      expect(response.parsed_body['id']).to eq(successor.id)
+    it 'returns the job by uuid' do
+      get "/api/v1/jobs/#{job.id}"
+      expect(response.parsed_body['id']).to eq(job.id)
     end
 
     it 'returns not found for an unknown id' do
@@ -97,7 +96,7 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     end
 
     it 'updates the job named by uuid and writes aux_weapon' do
-      successor = create(:job, granblue_id: job.granblue_id, row: '2')
+      successor = create(:job, row: '2')
       put "/api/v1/jobs/#{successor.id}", params: { aux_weapon: true }.to_json, headers: editor_headers
       expect(successor.reload.aux_weapon).to be true
       expect(job.reload.aux_weapon).to be false

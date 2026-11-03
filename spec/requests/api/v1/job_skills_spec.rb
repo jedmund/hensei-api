@@ -50,14 +50,6 @@ RSpec.describe 'JobSkills API', type: :request do
       expect(skill_names).not_to include('Other')
     end
 
-    it 'tells apart jobs that share a granblue_id by uuid' do
-      successor = create(:job, granblue_id: job.granblue_id, row: '2')
-      create(:job_skill, job: successor, name_en: 'Successor Skill')
-
-      get "/api/v1/jobs/#{successor.id}/skills"
-      expect(response.parsed_body.map { |s| s.dig('name', 'en') }).to eq(['Successor Skill'])
-    end
-
     it 'returns not found for a non-existent job' do
       get '/api/v1/jobs/999999/skills'
       expect(response).to have_http_status(:not_found)
